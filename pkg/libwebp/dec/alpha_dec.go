@@ -7,11 +7,8 @@ package dec
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Alpha-plane decompression.
-//
-// Author: Skal (pascal.massimino@gmail.com)
+
+
 
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stdlib"
@@ -31,6 +28,22 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // ALPHDecoder object.
+
+type ALPHDecoder struct {
+	width int
+	height int
+	method int
+	filter WEBP_FILTER_TYPE
+	pre_processing int
+	vp *VP8LDecoder8l_dec
+	io VP8Io
+	// Although alpha channel requires only 1 byte per
+	// pixel, sometimes VP8LDecoder may need to allocate
+	// 4 bytes per pixel internally during decode.
+	use_8b_decode int  
+	output *uint8
+	prev_line *uint8  // last output row (or nil)
+}
 
 // Allocates a new alpha decoder instance.
 func ALPHNew() *ALPHDecoder {
@@ -162,6 +175,7 @@ func ALPHDecode(/* const  */dec *VP8Decoder, row, num_rows int) int {
   return 1;
 }
 
+// Deallocate memory associated to dec.alpha_plane decoding
 func WebPDeallocateAlphaMemory(/* const */ dec *VP8Decoder) {
   assert.Assert(dec != nil);
   WebPSafeFree(dec.alpha_plane_mem);
