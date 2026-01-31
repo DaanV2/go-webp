@@ -61,31 +61,32 @@ func WebPGetInfo(data *uint8, data_size uint64,  width *int, height *int) int {
 // Returns nil in case of error.
 func  WebPDecodeRGBA( data *uint8 , data_size uint64, width *int, height *int) *uint8 {
 	//TODO: implement
-	return 0
+	return nil
 }
 
 // Same as WebPDecodeRGBA, but returning A, R, G, B, A, R, G, B... ordered data.
-func  WebPDecodeARGB(    data *uint8  , data_size uint64, width *int, height *int)*uint8 {
+func  WebPDecodeARGB(data *uint8  , data_size uint64, width *int, height *int) *uint8 {
 	//TODO: implement
-	return 0
+	return nil
 }
 
 // Same as WebPDecodeRGBA, but returning B, G, R, A, B, G, R, A... ordered data.
-func WebPDecodeBGRA(    data *uint8, data_size uint64, width *int, height *int)*uint8 {
+func WebPDecodeBGRA(data *uint8, data_size uint64, width *int, height *int) *uint8 {
 	//TODO: implement
-	return 0
+	return nil
 }
 
 // Same as WebPDecodeRGBA, but returning R, G, B, R, G, B... ordered data.
 // If the bitstream contains transparency, it is ignored.
-func  WebPDecodeRGB(    data *uint8, data_size uint64, width *int, height *int)*uint8 {
+func  WebPDecodeRGB(data *uint8, data_size uint64, width *int, height *int) *uint8 {
 	//TODO: implement
+	return nil
 }
 
 // Same as WebPDecodeRGB, but returning B, G, R, B, G, R... ordered data.
-func  WebPDecodeBGR(    data *uint8, data_size uint64, width *int, height *int) *uint8 {
+func  WebPDecodeBGR(data *uint8, data_size uint64, width *int, height *int) *uint8 {
 	//TODO: implement
-	return 0
+	return nil
 }
 
 // Decode WebP images pointed to by 'data' to Y'UV format(*). The pointer
@@ -98,8 +99,9 @@ func  WebPDecodeBGR(    data *uint8, data_size uint64, width *int, height *int) 
 // 'width' and 'height' may be nil, the other pointers must not be.
 // Returns nil in case of error.
 // (*) Also named Y'CbCr. See: https://en.wikipedia.org/wiki/YCbCr
-WebPDecodeYUV(    data *uint8, data_size uint64, width *int, height *int, *uint8* u, *uint8* v, *int stride, *int uv_stride) *uint8 {
-
+func WebPDecodeYUV(data *uint8, data_size uint64, width *int, height *int,  u *uint8,  v *uint8, stride *int,  uv_stride *int) *uint8 {
+	//TODO: implement
+	return nil
 }
 
 // These five functions are variants of the above ones, that decode the image
@@ -110,14 +112,29 @@ WebPDecodeYUV(    data *uint8, data_size uint64, width *int, height *int, *uint8
 // The parameter 'output_stride' specifies the distance (in bytes)
 // between scanlines. Hence, output_buffer_size is expected to be at least
 // output_stride x picture-height.
-  *uint8 WebPDecodeRGBAInto(    data *uint8, data_size uint64, *uint8  output_buffer, uint64 output_buffer_size, int output_stride);
-  *uint8 WebPDecodeARGBInto(    data *uint8, data_size uint64, *uint8  output_buffer, uint64 output_buffer_size, int output_stride);
-  *uint8 WebPDecodeBGRAInto(    data *uint8, data_size uint64, *uint8  output_buffer, uint64 output_buffer_size, int output_stride);
+func WebPDecodeRGBAInto(data *uint8, data_size uint64,   output_buffer *uint8,  output_buffer_size uint64,  output_stride int) *uint8 {
+	//TODO: implement
+	return nil
+}
+func WebPDecodeARGBInto(data *uint8, data_size uint64,   output_buffer *uint8,  output_buffer_size uint64,  output_stride int) *uint8 {
+	//TODO: implement
+	return nil
+}
+func WebPDecodeBGRAInto(data *uint8, data_size uint64,   output_buffer *uint8,  output_buffer_size uint64,  output_stride int) *uint8 {
+	//TODO: implement
+	return nil
+}
 
 // RGB and BGR variants. Here too the transparency information, if present,
 // will be dropped and ignored.
-  *uint8 WebPDecodeRGBInto(    data *uint8, data_size uint64, *uint8  output_buffer, uint64 output_buffer_size, int output_stride);
-  *uint8 WebPDecodeBGRInto(    data *uint8, data_size uint64, *uint8  output_buffer, uint64 output_buffer_size, int output_stride);
+func WebPDecodeRGBInto(    data *uint8, data_size uint64,output_buffer *uint8  ,output_buffer_size uint64 , output_stride int ) *uint8 {
+	//TODO: implement
+	return nil
+}
+func WebPDecodeBGRInto(    data *uint8, data_size uint64,output_buffer *uint8  ,output_buffer_size uint64 , output_stride int ) *uint8 {
+	//TODO: implement
+	return nil
+}
 
 // WebPDecodeYUVInto() is a variant of WebPDecodeYUV() that operates directly
 // into pre-allocated luma/chroma plane buffers. This function requires the
@@ -126,27 +143,9 @@ WebPDecodeYUV(    data *uint8, data_size uint64, width *int, height *int, *uint8
 // 'u_size' and 'v_size' respectively.
 // Pointer to the luma plane ('*luma') is returned or nil if an error occurred
 // during decoding (or because some buffers were found to be too small).
-  *uint8 WebPDecodeYUVInto(    data *uint8, data_size uint64, *uint8  luma, uint64 luma_size, int luma_stride, *uint8  u, uint64 u_size, int u_stride, *uint8  v, uint64 v_size, int v_stride);
-
-//------------------------------------------------------------------------------
-// Output colorspaces and buffer
-
-
-
-// Some useful macros:
-static  int WebPIsPremultipliedMode(WEBP_CSP_MODE mode) {
-  return (mode == MODE_rgbA || mode == MODE_bgrA || mode == MODE_Argb ||
-          mode == MODE_rgbA_4444);
-}
-
-static  int WebPIsAlphaMode(WEBP_CSP_MODE mode) {
-  return (mode == MODE_RGBA || mode == MODE_BGRA || mode == MODE_ARGB ||
-          mode == MODE_RGBA_4444 || mode == MODE_YUVA ||
-          WebPIsPremultipliedMode(mode));
-}
-
-static  int WebPIsRGBMode(WEBP_CSP_MODE mode) {
-  return (mode < MODE_YUV);
+func WebPDecodeYUVInto(    data *uint8, data_size uint64,  luma *uint8,  luma_size uint64,  luma_stride int,   u *uint8,  u_size uint64,  u_stride int,   v *uint8,  v_size uint64, int v_stride) *uint8 {
+	//TODO: implement
+	return nil
 }
 
 //------------------------------------------------------------------------------

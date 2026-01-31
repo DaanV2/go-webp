@@ -63,6 +63,34 @@ const (
 	MODE_LAST WEBP_CSP_MODE = 13
 )
 
+// Some useful macros:
+func WebPIsPremultipliedMode(mode WEBP_CSP_MODE) bool {
+	return (mode == MODE_rgbA || mode == MODE_bgrA || mode == MODE_Argb ||
+		mode == MODE_rgbA_4444)
+}
+
+func (mode WEBP_CSP_MODE) IsPremultipliedMode() bool {
+	return WebPIsPremultipliedMode(mode)
+}
+
+func WebPIsAlphaMode(mode WEBP_CSP_MODE) bool {
+	return (mode == MODE_RGBA || mode == MODE_BGRA || mode == MODE_ARGB ||
+		mode == MODE_RGBA_4444 || mode == MODE_YUVA ||
+		WebPIsPremultipliedMode(mode))
+}
+
+func (mode WEBP_CSP_MODE) IsAlphaMode() bool {
+	return WebPIsAlphaMode(mode)
+}
+
+func WebPIsRGBMode(mode WEBP_CSP_MODE) bool {
+	return (mode < MODE_YUV)
+}
+
+func (mode WEBP_CSP_MODE) IsRGBMode() bool {
+	return WebPIsRGBMode(mode)
+}
+
 //------------------------------------------------------------------------------
 // Enumeration of the status codes
 
