@@ -438,8 +438,7 @@ static WebPMuxError SynthesizeBitstream(const WebPMuxImage* const wpi,
   return WEBP_MUX_OK;
 }
 
-WebPMuxError WebPMuxGetChunk(const WebPMux* mux, const char fourcc[4],
-                             WebPData* chunk_data) {
+func WebPMuxGetChunk(const WebPMux* mux, fourcc byte[4], chunk_data WebPData*) WebPMuxError {
   CHUNK_INDEX idx;
   if (mux == nil || fourcc == nil || chunk_data == nil) {
     return WEBP_MUX_INVALID_ARGUMENT;
@@ -459,8 +458,7 @@ WebPMuxError WebPMuxGetChunk(const WebPMux* mux, const char fourcc[4],
   }
 }
 
-static WebPMuxError MuxGetImageInternal(const WebPMuxImage* const wpi,
-                                        WebPMuxFrameInfo* const info) {
+func MuxGetImageInternal(wpi WebPMuxImage*, info WebPMuxFrameInfo*) WebPMuxError {
   // Set some defaults for unrelated fields.
   info.x_offset = 0;
   info.y_offset = 0;
@@ -472,8 +470,7 @@ static WebPMuxError MuxGetImageInternal(const WebPMuxImage* const wpi,
   return SynthesizeBitstream(wpi, &info.bitstream);
 }
 
-static WebPMuxError MuxGetFrameInternal(const WebPMuxImage* const wpi,
-                                        WebPMuxFrameInfo* const frame) {
+func MuxGetFrameInternal(wpi WebPMuxImage*, frame WebPMuxFrameInfo*) WebPMuxError {
   const int is_frame = (wpi.header.tag == kChunks[IDX_ANMF].tag);
   const WebPData* frame_data;
   if (!is_frame) return WEBP_MUX_INVALID_ARGUMENT;
@@ -495,8 +492,7 @@ static WebPMuxError MuxGetFrameInternal(const WebPMuxImage* const wpi,
   return SynthesizeBitstream(wpi, &frame.bitstream);
 }
 
-WebPMuxError WebPMuxGetFrame(const WebPMux* mux, uint32 nth,
-                             WebPMuxFrameInfo* frame) {
+func WebPMuxGetFrame(mux WebPMux* , nth uint32 , frame WebPMuxFrameInfo*) WebPMuxError {
   WebPMuxError err;
   WebPMuxImage* wpi;
 
@@ -516,8 +512,7 @@ WebPMuxError WebPMuxGetFrame(const WebPMux* mux, uint32 nth,
   }
 }
 
-WebPMuxError WebPMuxGetAnimationParams(const WebPMux* mux,
-                                       WebPMuxAnimParams* params) {
+func WebPMuxGetAnimationParams(mux WebPMux* ,  params WebPMuxAnimParams*) WebPMuxError {
   WebPData anim;
   WebPMuxError err;
 
@@ -533,7 +528,7 @@ WebPMuxError WebPMuxGetAnimationParams(const WebPMux* mux,
 }
 
 // Get chunk index from chunk id. Returns IDX_NIL if not found.
-static CHUNK_INDEX ChunkGetIndexFromId(WebPChunkId id) {
+func ChunkGetIndexFromId(id WebPChunkId) CHUNK_INDEX {
   int i;
   for (i = 0; kChunks[i].id != WEBP_CHUNK_NIL; ++i) {
     if (id == kChunks[i].id) return (CHUNK_INDEX)i;
@@ -543,7 +538,7 @@ static CHUNK_INDEX ChunkGetIndexFromId(WebPChunkId id) {
 
 // Count number of chunks matching 'tag' in the 'chunk_list'.
 // If tag == NIL_TAG, any tag will be matched.
-static int CountChunks(const WebPChunk* const chunk_list, uint32 tag) {
+func CountChunks(chunk_list WebPChunk*, tag uint32) int {
   int count = 0;
   const WebPChunk* current;
   for (current = chunk_list; current != nil; current = current.next) {
