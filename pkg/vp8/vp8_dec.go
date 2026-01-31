@@ -9,11 +9,9 @@ package vp8
 // be found in the AUTHORS file in the root of the source tree.
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 import "github.com/daanv2/go-webp/pkg/string"
-
 import "github.com/daanv2/go-webp/pkg/libwebp/dec"
 import "github.com/daanv2/go-webp/pkg/libwebp/dec"
 import "github.com/daanv2/go-webp/pkg/libwebp/dec"
@@ -98,29 +96,20 @@ type VP8Io struct {
   a *uint8;
 }
 
-// WebPGetDecoderVersion Return the decoder's version number, packed in hexadecimal using 8bits for
-// each of major/minor/revision. E.g: v2.5.7 is 0x020507.
-func WebPGetDecoderVersion() int {
-  return (DEC_MAJ_VERSION << 16) | (DEC_MIN_VERSION << 8) | DEC_REV_VERSION;
-}
-
 //------------------------------------------------------------------------------
 // Signature and pointer-to-function for GetCoeffs() variants below.
 
-typedef int (*GetCoeffsFunc)(const br *VP8BitReader, const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16);
-static volatile GetCoeffsFunc GetCoeffs = nil;
-
-func InitGetCoeffs(void);
+type GetCoeffsFunc = func(br *VP8BitReader, /* const */ prob []*VP8BandProbas,  ctx int, dq quant_t, n int, out *int16) int;
 
 //------------------------------------------------------------------------------
 // VP8Decoder
 
-func SetOk(const dec *VP8Decoder) {
+func SetOk(/* const */ dec *VP8Decoder) {
   dec.status = VP8_STATUS_OK;
   dec.error_msg = "OK";
 }
 
-int VP8InitIoInternal(const io *VP8Io, int version) {
+func VP8InitIoInternal(/* const */ io *VP8Io, version int) int {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION)) {
     return 0;  // mismatch error
   }
@@ -130,7 +119,7 @@ int VP8InitIoInternal(const io *VP8Io, int version) {
   return 1;
 }
 
-VP *VP8Decoder8New(){
+func VP8Decoder8New() *VP {
   var dec *VP8Decoder = (*VP8Decoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
   if (dec != nil) {
     SetOk(dec);
@@ -142,12 +131,12 @@ VP *VP8Decoder8New(){
   return dec;
 }
 
-VP8StatusCode VP8Status(const dec *VP8Decoder) {
-  if (!dec) return VP8_STATUS_INVALID_PARAM;
+func VP8Status(/* const */ dec *VP8Decoder) VP8StatusCode {
+  if (!dec) { return VP8_STATUS_INVALID_PARAM }
   return dec.status;
 }
 
-const VP *byte8StatusMessage(const dec *VP8Decoder) {
+func byte8StatusMessage(/* const */ dec *VP8Decoder) *VP {
   if (dec == nil) return "no object";
   if (!dec.error_msg) return "OK";
   return dec.error_msg;
@@ -160,7 +149,7 @@ func VP8Delete(const dec *VP8Decoder) {
   }
 }
 
-int VP8SetError(const dec *VP8Decoder, VP8StatusCode error, const msg *byte) {
+func VP8SetError(/* const */ dec *VP8Decoder, error VP8StatusCode, /* const */ msg *byte) int {
   // VP8_STATUS_SUSPENDED is only meaningful in incremental decoding.
   assert.Assert(dec.incremental || error != VP8_STATUS_SUSPENDED);
   // The oldest error reported takes precedence over the new one.
@@ -172,14 +161,12 @@ int VP8SetError(const dec *VP8Decoder, VP8StatusCode error, const msg *byte) {
   return 0;
 }
 
-//------------------------------------------------------------------------------
 
-int VP8CheckSignature(const *uint8  data, uint64 data_size) {
-  return (data_size >= 3 && data[0] == 0x9d && data[1] == 0x01 &&
-          data[2] == 0x2a);
+func VP8CheckSignature(data []uint8, data_size uint64) int {
+  return (data_size >= 3 && data[0] == 0x9d && data[1] == 0x01 && data[2] == 0x2a);
 }
 
-int VP8GetInfo(const *uint8  data, uint64 data_size, uint64 chunk_size, const width *int, const height *int) {
+func VP8GetInfo(data *uint8, data_size uint64, chunk_size uint64, width *int, height *int) int {
   if (data == nil || data_size < VP8_FRAME_HEADER_SIZE) {
     return 0;  // not enough data
   }
@@ -220,10 +207,8 @@ int VP8GetInfo(const *uint8  data, uint64 data_size, uint64 chunk_size, const wi
   }
 }
 
-//------------------------------------------------------------------------------
 // Header parsing
-
-func ResetSegmentHeader(const hdr *VP8SegmentHeader) {
+func ResetSegmentHeader(/* const */ hdr *VP8SegmentHeader) {
   assert.Assert(hdr != nil);
   hdr.use_segment = 0;
   hdr.update_map = 0;
@@ -233,7 +218,7 @@ func ResetSegmentHeader(const hdr *VP8SegmentHeader) {
 }
 
 // Paragraph 9.3
-static int ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP8Proba) {
+func ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP8Proba) int {
   assert.Assert(br != nil);
   assert.Assert(hdr != nil);
   hdr.use_segment = VP8Get(br, "global-header");
@@ -277,7 +262,7 @@ static int ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP
 // If we don't even have the partitions' sizes, then VP8_STATUS_NOT_ENOUGH_DATA
 // is returned, and this is an unrecoverable error.
 // If the partitions were positioned ok, VP8_STATUS_OK is returned.
-static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, size uint64 ) {
+func ParsePartitions(dec *VP8Decoder, buf *uint8, size uint64 ) VP8StatusCode {
   var br *VP8BitReader = &dec.br;
   const sz *uint8 = buf;
   var buf_end *uint8 = buf + size;
@@ -303,14 +288,15 @@ static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, s
     sz += 3;
   }
   VP8InitBitReader(dec.parts + last_part, part_start, size_left);
-  if (part_start < buf_end) return VP8_STATUS_OK;
-  return dec.incremental
-             ? VP8_STATUS_SUSPENDED  // Init is ok, but there's not enough data
-             : VP8_STATUS_NOT_ENOUGH_DATA;
+  if (part_start < buf_end) {return VP8_STATUS_OK}
+
+  return tenary.If(dec.incremental, 
+		VP8_STATUS_SUSPENDED,  // Init is ok, but there's not enough data
+        VP8_STATUS_NOT_ENOUGH_DATA)
 }
 
 // Paragraph 9.4
-static int ParseFilterHeader(br *VP8BitReader, const dec *VP8Decoder) {
+func ParseFilterHeader(br *VP8BitReader, /* const */ dec *VP8Decoder) int {
   var hdr *VP8FilterHeader = &dec.filter_hdr;
   hdr.simple = VP8Get(br, "global-header");
   hdr.level = VP8GetValue(br, 6, "global-header");
@@ -336,13 +322,13 @@ static int ParseFilterHeader(br *VP8BitReader, const dec *VP8Decoder) {
 }
 
 // Topmost call
-int VP8GetHeaders(const dec *VP8Decoder, const io *VP8Io) {
-  uint64 buf_size;
-  const *uint8  buf;
-  frm_hdr *VP8FrameHeader;
-  pic_hdr *VP8PictureHeader;
-  br *VP8BitReader;
-  VP8StatusCode status;
+func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
+  var buf_size uint64;
+  var buf *uint8 ;
+  var frm_hdr *VP8FrameHeader;
+  var pic_hdr *VP8PictureHeader;
+  var br *VP8BitReader;
+  var status VP8StatusCode;
 
   if (dec == nil) {
     return 0;
@@ -352,8 +338,7 @@ int VP8GetHeaders(const dec *VP8Decoder, const io *VP8Io) {
     return VP8SetError(dec, VP8_STATUS_INVALID_PARAM, "nil VP8Io passed to VP8GetHeaders()");
   }
   buf_size = io.data_size;
-  buf =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, io.data, io.data_size);
+  buf = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, io.data, io.data_size);
   if (buf_size < 4) {
     return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "Truncated header.");
   }
@@ -461,18 +446,17 @@ int VP8GetHeaders(const dec *VP8Decoder, const io *VP8Io) {
   return 1;
 }
 
-//------------------------------------------------------------------------------
-// Residual decoding (Paragraph 13.2 / 13.3)
-
-static const uint8 kCat3[] = {173, 148, 140, 0}
-static const uint8 kCat4[] = {176, 155, 140, 135, 0}
-static const uint8 kCat5[] = {180, 157, 141, 134, 130, 0}
-static const uint8 kCat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0}
-static const kCat *uint83456[] = {kCat3, kCat4, kCat5, kCat6}
-static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
+const (
+	kCat3 = []uint8{173, 148, 140, 0}
+	kCat4 = []uint8{176, 155, 140, 135, 0}
+	kCat5 = []uint8{180, 157, 141, 134, 130, 0}
+	kCat6 = []uint8{254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0}
+	kCat3456 = [][]uint8{kCat3, kCat4, kCat5, kCat6}
+	kZigzag = [16]uint8{0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
+)
 
 // See section 13-2: https://datatracker.ietf.org/doc/html/rfc6386#section-13.2
-static int GetLargeValue(const br *VP8BitReader, const p *uint8) {
+func GetLargeValue(/* const */ br *VP8BitReader, /* const */ p *uint8) int {
   int v;
   if (!VP8GetBit(br, p[3], "coeffs")) {
     if (!VP8GetBit(br, p[4], "coeffs")) {
@@ -504,7 +488,7 @@ static int GetLargeValue(const br *VP8BitReader, const p *uint8) {
 }
 
 // Returns the position of the last non-zero coeff plus one
-static int GetCoeffsFast(const br *VP8BitReader, const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16) {
+func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[], ctx int, dq quant_t , n int, out *int16) int {
   var p *uint8 = prob[n].probas[ctx];
   for (; n < 16; ++n) {
     if (!VP8GetBit(br, p[0], "coeffs")) {
@@ -533,7 +517,7 @@ static int GetCoeffsFast(const br *VP8BitReader, const prob *VP8BandProbas[], in
 
 // This version of GetCoeffs() uses VP8GetBitAlt() which is an alternate version
 // of VP8GetBitAlt() targeting specific platforms.
-static int GetCoeffsAlt(const br *VP8BitReader, const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16) {
+func GetCoeffsAlt(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[], ctx int , dq quant_t , n int , out *int16) int {
   var p *uint8 = prob[n].probas[ctx];
   for (; n < 16; ++n) {
     if (!VP8GetBitAlt(br, p[0], "coeffs")) {
@@ -560,9 +544,9 @@ static int GetCoeffsAlt(const br *VP8BitReader, const prob *VP8BandProbas[], int
   return 16;
 }
 
-extern VP8CPUInfo VP8GetCPUInfo;
 
-WEBP_DSP_INIT_FUNC(InitGetCoeffs) {
+func init() {
+	// func WEBP_DSP_INIT_FUNC(InitGetCoeffs) {
   if (VP8GetCPUInfo != nil && VP8GetCPUInfo(kSlowSSSE3)) {
     GetCoeffs = GetCoeffsAlt;
   } else {
@@ -570,13 +554,13 @@ WEBP_DSP_INIT_FUNC(InitGetCoeffs) {
   }
 }
 
-static  uint32 NzCodeBits(uint32 nz_coeffs, int nz, int dc_nz) {
+func NzCodeBits(nz_coeffs uint32, nz, dc_nz int) uint32 {
   nz_coeffs <<= 2;
   nz_coeffs |= (nz > 3) ? 3 : (nz > 1) ? 2 : dc_nz;
   return nz_coeffs;
 }
 
-static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br *VP8BitReader) {
+func ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br *VP8BitReader)int {
   const *VP8BandProbas(bands *const)[16 + 1] = dec.proba.bands_ptr;
   const ac_proba *VP8BandProbas *const;
   var block *VP8MBData = dec.mb_data + dec.mb_x;
@@ -669,7 +653,7 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
 //------------------------------------------------------------------------------
 // Main loop
 
-int VP8DecodeMB(const dec *VP8Decoder, const token_br *VP8BitReader) {
+func VP8DecodeMB(/* const */ dec *VP8Decoder, /* const */ token_br *VP8BitReader) int {
   var left *VP8MB = dec.mb_info - 1;
   var mb *VP8MB = dec.mb_info + dec.mb_x;
   var block *VP8MBData = dec.mb_data + dec.mb_x;
@@ -696,7 +680,7 @@ int VP8DecodeMB(const dec *VP8Decoder, const token_br *VP8BitReader) {
   return !token_br.eof;
 }
 
-func VP8InitScanline(const dec *VP8Decoder) {
+func VP8InitScanline(/* const */ dec *VP8Decoder) {
   var left *VP8MB = dec.mb_info - 1;
   left.nz = 0;
   left.nz_dc = 0;
@@ -704,7 +688,7 @@ func VP8InitScanline(const dec *VP8Decoder) {
   dec.mb_x = 0;
 }
 
-static int ParseFrame(const dec *VP8Decoder, io *VP8Io) {
+func ParseFrame(/* const */ dec *VP8Decoder, io *VP8Io) int {
   for (dec.mb_y = 0; dec.mb_y < dec.br_mb_y; ++dec.mb_y) {
     // Parse bitstream for this row.
     const token_br *VP8BitReader =
@@ -732,7 +716,7 @@ static int ParseFrame(const dec *VP8Decoder, io *VP8Io) {
 }
 
 // Main entry point
-int VP8Decode(const dec *VP8Decoder, const io *VP8Io) {
+func VP8Decode(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   ok := 0;
   if (dec == nil) {
     return 0;
@@ -770,7 +754,7 @@ int VP8Decode(const dec *VP8Decoder, const io *VP8Io) {
   return ok;
 }
 
-func VP8Clear(const dec *VP8Decoder) {
+func VP8Clear(/* const */ dec *VP8Decoder) {
   if (dec == nil) {
     return;
   }
@@ -782,5 +766,3 @@ func VP8Clear(const dec *VP8Decoder) {
   WEBP_UNSAFE_MEMSET(&dec.br, 0, sizeof(dec.br));
   dec.ready = 0;
 }
-
-//------------------------------------------------------------------------------

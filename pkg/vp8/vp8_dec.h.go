@@ -63,31 +63,30 @@ VP *VP8Decoder8New(void);
 
 // Decode the VP8 frame header. Returns true if ok.
 // Note: 'io.data' must be pointing to the start of the VP8 frame header.
- int VP8GetHeaders(const dec *VP8Decoder, const io *VP8Io);
+ int VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io);
 
 // Decode a picture. Will call VP8GetHeaders() if it wasn't done already.
 // Returns false in case of error.
- int VP8Decode(const dec *VP8Decoder, const io *VP8Io);
+ int VP8Decode(/* const */ dec *VP8Decoder, /* const */ io *VP8Io);
 
 // Return current status of the decoder:
-VP8StatusCode VP8Status(const dec *VP8Decoder);
+VP8StatusCode VP8Status(/* const */ dec *VP8Decoder);
 
 // return readable string corresponding to the last status.
-const VP *byte8StatusMessage(const dec *VP8Decoder);
+const VP *byte8StatusMessage(/* const */ dec *VP8Decoder);
 
 // Resets the decoder in its initial state, reclaiming memory.
 // Not a mandatory call between calls to VP8Decode().
-func VP8Clear(const dec *VP8Decoder);
+func VP8Clear(/* const */ dec *VP8Decoder);
 
 // Destroy the decoder object.
-func VP8Delete(const dec *VP8Decoder);
+func VP8Delete(/* const */ dec *VP8Decoder);
 
 //------------------------------------------------------------------------------
 // Miscellaneous VP8/VP8L bitstream probing functions.
 
 // Returns true if the next 3 bytes in data contain the VP8 signature.
- int VP8CheckSignature(
-    const *uint8  data, uint64 data_size);
+ int VP8CheckSignature(const *uint8  data, uint64 data_size);
 
 // Validates the VP8 data-header and retrieves basic header information viz
 // width and height. Returns 0 in case of formatting error. *width/*height
