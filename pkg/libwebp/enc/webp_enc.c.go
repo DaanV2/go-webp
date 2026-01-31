@@ -206,9 +206,9 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
   printf("===================================\n");
 #endif
   mem = (uint8*)WebPSafeMalloc(size, sizeof(*mem));
-  if (mem == NULL) {
+  if (mem == nil) {
     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
-    return NULL;
+    return nil;
   }
   enc = (VP8Encoder*)mem;
   mem = (uint8*)WEBP_ALIGN(mem + sizeof(*enc));
@@ -223,7 +223,7 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
   mem += preds_size;
   enc.nz = 1 + (uint32*)WEBP_ALIGN(mem);
   mem += nz_size;
-  enc.lf_stats = lf_stats_size ? (LFStats*)WEBP_ALIGN(mem) : NULL;
+  enc.lf_stats = lf_stats_size ? (LFStats*)WEBP_ALIGN(mem) : nil;
   mem += lf_stats_size;
 
   // top samples (all 16-aligned)
@@ -231,7 +231,7 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
   enc.y_top = mem;
   enc.uv_top = enc.y_top + top_stride;
   mem += 2 * top_stride;
-  enc.top_derr = top_derr_size ? (DError*)mem : NULL;
+  enc.top_derr = top_derr_size ? (DError*)mem : nil;
   mem += top_derr_size;
   assert.Assert(mem <= (uint8*)enc + size);
 
@@ -260,7 +260,7 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
 
 static int DeleteVP8Encoder(VP8Encoder* enc) {
   int ok = 1;
-  if (enc != NULL) {
+  if (enc != nil) {
     ok = VP8EncDeleteAlpha(enc);
     VP8TBufferClear(&enc.tokens);
     WebPSafeFree(enc);
@@ -290,7 +290,7 @@ func FinalizePSNR(const VP8Encoder* const enc) {
 func StoreStats(VP8Encoder* const enc) {
 #if !defined(WEBP_DISABLE_STATS)
   WebPAuxStats* const stats = enc.pic.stats;
-  if (stats != NULL) {
+  if (stats != nil) {
     int i, s;
     for (i = 0; i < NUM_MB_SEGMENTS; ++i) {
       stats.segment_level[i] = enc.dqm[i].fstrength;
@@ -323,7 +323,7 @@ int WebPEncodingSetError(const WebPPicture* const pic,
 
 int WebPReportProgress(const WebPPicture* const pic, int percent,
                        int* const percent_store) {
-  if (percent_store != NULL && percent != *percent_store) {
+  if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
     if (pic.progress_hook && !pic.progress_hook(percent, pic)) {
       // user abort requested
@@ -336,11 +336,11 @@ int WebPReportProgress(const WebPPicture* const pic, int percent,
 
 int WebPEncode(const WebPConfig* config, WebPPicture* pic) {
   int ok = 0;
-  if (pic == NULL) return 0;
+  if (pic == nil) return 0;
 
   pic.error_code = VP8_ENC_OK;  // all ok so far
-  if (config == NULL) {          // bad params
-    return WebPEncodingSetError(pic, VP8_ENC_ERROR_NULL_PARAMETER);
+  if (config == nil) {          // bad params
+    return WebPEncodingSetError(pic, VP8_ENC_ERROR_nil_PARAMETER);
   }
   if (!WebPValidateConfig(config)) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_INVALID_CONFIGURATION);
@@ -350,12 +350,12 @@ int WebPEncode(const WebPConfig* config, WebPPicture* pic) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_DIMENSION);
   }
 
-  if (pic.stats != NULL) memset(pic.stats, 0, sizeof(*pic.stats));
+  if (pic.stats != nil) memset(pic.stats, 0, sizeof(*pic.stats));
 
   if (!config.lossless) {
-    VP8Encoder* enc = NULL;
+    VP8Encoder* enc = nil;
 
-    if (pic.use_argb || pic.y == NULL || pic.u == NULL || pic.v == NULL) {
+    if (pic.use_argb || pic.y == nil || pic.u == nil || pic.v == nil) {
       // Make sure we have YUVA samples.
       if (config.use_sharp_yuv || (config.preprocessing & 4)) {
         if (!WebPPictureSharpARGBToYUVA(pic)) {
@@ -381,7 +381,7 @@ int WebPEncode(const WebPConfig* config, WebPPicture* pic) {
     }
 
     enc = InitVP8Encoder(config, pic);
-    if (enc == NULL) return 0;  // pic.error is already set.
+    if (enc == nil) return 0;  // pic.error is already set.
     // Note: each of the tasks below account for 20% in the progress report.
     ok = VP8EncAnalyze(enc);
 
@@ -402,7 +402,7 @@ int WebPEncode(const WebPConfig* config, WebPPicture* pic) {
     ok &= DeleteVP8Encoder(enc);  // must always be called, even if !ok
   } else {
     // Make sure we have ARGB samples.
-    if (pic.argb == NULL && !WebPPictureYUVAToARGB(pic)) {
+    if (pic.argb == nil && !WebPPictureYUVAToARGB(pic)) {
       return 0;
     }
 

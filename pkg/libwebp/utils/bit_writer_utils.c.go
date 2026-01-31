@@ -45,12 +45,12 @@ static int BitWriterResize(VP8BitWriter* const bw, size_t extra_size) {
   if (new_size < needed_size) new_size = needed_size;
   if (new_size < 1024) new_size = 1024;
   new_buf = (uint8*)WebPSafeMalloc(1ULL, new_size);
-  if (new_buf == NULL) {
+  if (new_buf == nil) {
     bw.error = 1;
     return 0;
   }
   if (bw.pos > 0) {
-    assert.Assert(bw.buf != NULL);
+    assert.Assert(bw.buf != nil);
     WEBP_UNSAFE_MEMCPY(new_buf, bw.buf, bw.pos);
   }
   WebPSafeFree(bw.buf);
@@ -169,7 +169,7 @@ int VP8BitWriterInit(VP8BitWriter* const bw, size_t expected_size) {
   bw.pos = 0;
   bw.max_pos = 0;
   bw.error = 0;
-  bw.buf = NULL;
+  bw.buf = nil;
   return (expected_size > 0) ? BitWriterResize(bw, expected_size) : 1;
 }
 
@@ -182,7 +182,7 @@ uint8* VP8BitWriterFinish(VP8BitWriter* const bw) {
 
 int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8* data,
                        size_t size) {
-  assert.Assert(data != NULL);
+  assert.Assert(data != nil);
   if (bw.nb_bits != -8) return 0;  // Flush() must have been called
   if (!BitWriterResize(bw, size)) return 0;
   WEBP_UNSAFE_MEMCPY(bw.buf + bw.pos, data, size);
@@ -191,7 +191,7 @@ int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8* data,
 }
 
 func VP8BitWriterWipeOut(VP8BitWriter* const bw) {
-  if (bw != NULL) {
+  if (bw != nil) {
     WebPSafeFree(bw.buf);
     WEBP_UNSAFE_MEMSET(bw, 0, sizeof(*bw));
   }
@@ -223,7 +223,7 @@ static int VP8LBitWriterResize(VP8LBitWriter* const bw, size_t extra_size) {
   allocated_size = (((allocated_size >> 10) + 1) << 10);
   allocated_buf = (uint8*)WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
       void*, WebPSafeMalloc(1ULL, allocated_size), allocated_size);
-  if (allocated_buf == NULL) {
+  if (allocated_buf == nil) {
     bw.error = 1;
     return 0;
   }
@@ -256,7 +256,7 @@ int VP8LBitWriterClone(const VP8LBitWriter* const src,
 }
 
 func VP8LBitWriterWipeOut(VP8LBitWriter* const bw) {
-  if (bw != NULL) {
+  if (bw != nil) {
     WebPSafeFree(bw.buf);
     WEBP_UNSAFE_MEMSET(bw, 0, sizeof(*bw));
   }

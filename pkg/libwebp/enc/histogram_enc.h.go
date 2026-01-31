@@ -73,7 +73,7 @@ func VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits,
 
 // Collect all the references into a histogram (without reset)
 // The distance modifier function is applied to the distance before
-// the histogram is updated. It can be NULL.
+// the histogram is updated. It can be nil.
 func VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs,
                             int (*const distance_modifier)(int, int),
                             int distance_modifier_arg0,
@@ -86,14 +86,14 @@ func VP8LFreeHistogram(VP8LHistogram* const histo);
 func VP8LFreeHistogramSet(VP8LHistogramSet* const histo);
 
 // Allocate an array of pointer to histograms, allocated and initialized
-// using 'cache_bits'. Return NULL in case of memory error.
+// using 'cache_bits'. Return nil in case of memory error.
 VP8LHistogramSet* VP8LAllocateHistogramSet(int size, int cache_bits);
 
 // Set the histograms in set to 0.
 func VP8LHistogramSetClear(VP8LHistogramSet* const set);
 
 // Allocate and initialize histogram object with specified 'cache_bits'.
-// Returns NULL in case of memory error.
+// Returns nil in case of memory error.
 // Special case of VP8LAllocateHistogramSet, with size equals 1.
 VP8LHistogram* VP8LAllocateHistogram(int cache_bits);
 

@@ -121,7 +121,7 @@ func Upsample32Pixels_SSE2(const uint8* WEBP_RESTRICT const r1,
                        cur_x)                                                  \
   do {                                                                         \
     FUNC##32_SSE2((top_y) + (cur_x), r_u, r_v, (top_dst) + (cur_x) * (XSTEP)); \
-    if ((bottom_y) != NULL) {                                                  \
+    if ((bottom_y) != nil) {                                                  \
       FUNC##32_SSE2((bottom_y) + (cur_x), r_u + 64, r_v + 64,                  \
                     (bottom_dst) + (cur_x) * (XSTEP));                         \
     }                                                                          \
@@ -142,14 +142,14 @@ func Upsample32Pixels_SSE2(const uint8* WEBP_RESTRICT const r1,
         (uint8*)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
     uint8* const r_v = r_u + 32;                                            \
                                                                               \
-    assert.Assert(top_y != NULL);                                                    \
+    assert.Assert(top_y != nil);                                                    \
     { /* Treat the first pixel in regular way */                              \
       const int u_diag = ((top_u[0] + cur_u[0]) >> 1) + 1;                    \
       const int v_diag = ((top_v[0] + cur_v[0]) >> 1) + 1;                    \
       const int u0_t = (top_u[0] + u_diag) >> 1;                              \
       const int v0_t = (top_v[0] + v_diag) >> 1;                              \
       FUNC(top_y[0], u0_t, v0_t, top_dst);                                    \
-      if (bottom_y != NULL) {                                                 \
+      if (bottom_y != nil) {                                                 \
         const int u0_b = (cur_u[0] + u_diag) >> 1;                            \
         const int v0_b = (cur_v[0] + v_diag) >> 1;                            \
         FUNC(bottom_y[0], u0_b, v0_b, bottom_dst);                            \
@@ -167,16 +167,16 @@ func Upsample32Pixels_SSE2(const uint8* WEBP_RESTRICT const r1,
       uint8* const tmp_top_dst = r_u + 4 * 32;                              \
       uint8* const tmp_bottom_dst = tmp_top_dst + 4 * 32;                   \
       uint8* const tmp_top = tmp_bottom_dst + 4 * 32;                       \
-      uint8* const tmp_bottom = (bottom_y == NULL) ? NULL : tmp_top + 32;   \
+      uint8* const tmp_bottom = (bottom_y == nil) ? nil : tmp_top + 32;   \
       assert.Assert(left_over > 0);                                                  \
       UPSAMPLE_LAST_BLOCK(top_u + uv_pos, cur_u + uv_pos, left_over, r_u);    \
       UPSAMPLE_LAST_BLOCK(top_v + uv_pos, cur_v + uv_pos, left_over, r_v);    \
       memcpy(tmp_top, top_y + pos, len - pos);                                \
-      if (bottom_y != NULL) memcpy(tmp_bottom, bottom_y + pos, len - pos);    \
+      if (bottom_y != nil) memcpy(tmp_bottom, bottom_y + pos, len - pos);    \
       CONVERT2RGB_32(FUNC, XSTEP, tmp_top, tmp_bottom, tmp_top_dst,           \
                      tmp_bottom_dst, 0);                                      \
       memcpy(top_dst + pos * (XSTEP), tmp_top_dst, (len - pos) * (XSTEP));    \
-      if (bottom_y != NULL) {                                                 \
+      if (bottom_y != nil) {                                                 \
         memcpy(bottom_dst + pos * (XSTEP), tmp_bottom_dst,                    \
                (len - pos) * (XSTEP));                                        \
       }                                                                       \

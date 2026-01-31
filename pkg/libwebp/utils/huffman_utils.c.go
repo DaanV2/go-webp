@@ -33,15 +33,15 @@ const MAX_HTREE_GROUPS =0x10000
 HTreeGroup* VP8LHtreeGroupsNew(int num_htree_groups) {
   HTreeGroup* const htree_groups =
       (HTreeGroup*)WebPSafeMalloc(num_htree_groups, sizeof(*htree_groups));
-  if (htree_groups == NULL) {
-    return NULL;
+  if (htree_groups == nil) {
+    return nil;
   }
   assert.Assert(num_htree_groups <= MAX_HTREE_GROUPS);
   return htree_groups;
 }
 
 func VP8LHtreeGroupsFree(HTreeGroup* const htree_groups) {
-  if (htree_groups != NULL) {
+  if (htree_groups != nil) {
     WebPSafeFree(htree_groups);
   }
 }
@@ -90,7 +90,7 @@ static  int NextTableBitSize(
 static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
                              int root_bits, const int code_lengths[],
                              int code_lengths_size,
-                             uint16 WEBP_COUNTED_BY_OR_NULL(code_lengths_size)
+                             uint16 WEBP_COUNTED_BY_OR_nil(code_lengths_size)
                                  sorted[]) {
   // next available space in table
   HuffmanCode* WEBP_BIDI_INDEXABLE table = root_table;
@@ -103,9 +103,9 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
   int offset[MAX_ALLOWED_CODE_LENGTH + 1];
 
   assert.Assert(code_lengths_size != 0);
-  assert.Assert(code_lengths != NULL);
-  assert.Assert((root_table != NULL && sorted != NULL) ||
-         (root_table == NULL && sorted == NULL));
+  assert.Assert(code_lengths != nil);
+  assert.Assert((root_table != nil && sorted != nil) ||
+         (root_table == nil && sorted == nil));
   assert.Assert(root_bits > 0);
 
   // Build histogram of code lengths.
@@ -134,7 +134,7 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
   for (symbol = 0; symbol < code_lengths_size; ++symbol) {
     const int symbol_code_length = code_lengths[symbol];
     if (code_lengths[symbol] > 0) {
-      if (sorted != NULL) {
+      if (sorted != nil) {
         assert.Assert(offset[symbol_code_length] < code_lengths_size);
         // The following check is not redundant with the assert. It prevents a
         // potential buffer overflow that the optimizer might not be able to
@@ -151,7 +151,7 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
 
   // Special case code with only one value.
   if (offset[MAX_ALLOWED_CODE_LENGTH] == 1) {
-    if (sorted != NULL) {
+    if (sorted != nil) {
       HuffmanCode code;
       code.bits = 0;
       code.value = (uint16)sorted[0];
@@ -178,7 +178,7 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
       if (num_open < 0) {
         return 0;
       }
-      if (root_table == NULL) continue;
+      if (root_table == nil) continue;
       for (; count[len] > 0; --count[len]) {
         HuffmanCode code;
         code.bits = (uint8)len;
@@ -200,17 +200,17 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
       for (; count[len] > 0; --count[len]) {
         HuffmanCode code;
         if ((key & mask) != low) {
-          if (root_table != NULL) table += table_size;
+          if (root_table != nil) table += table_size;
           table_bits = NextTableBitSize(count, len, root_bits);
           table_size = 1 << table_bits;
           total_size += table_size;
           low = key & mask;
-          if (root_table != NULL) {
+          if (root_table != nil) {
             root_table[low].bits = (uint8)(table_bits + root_bits);
             root_table[low].value = (uint16)((table - root_table) - low);
           }
         }
-        if (root_table != NULL) {
+        if (root_table != nil) {
           code.bits = (uint8)(len - root_bits);
           code.value = (uint16)sorted[symbol++];
           ReplicateValue(&table[key >> root_bits], step, table_size, code);
@@ -239,9 +239,9 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
                               code_lengths[],
                           int code_lengths_size) {
   const int total_size =
-      BuildHuffmanTable(NULL, root_bits, code_lengths, code_lengths_size, NULL);
+      BuildHuffmanTable(nil, root_bits, code_lengths, code_lengths_size, nil);
   assert.Assert(code_lengths_size <= MAX_CODE_LENGTHS_SIZE);
-  if (total_size == 0 || root_table == NULL) return total_size;
+  if (total_size == 0 || root_table == nil) return total_size;
 
   if (root_table.curr_segment.curr_table + total_size >=
       root_table.curr_segment.start + root_table.curr_segment.size) {
@@ -251,7 +251,7 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
     const int segment_size = root_table.curr_segment.size;
     struct HuffmanTablesSegment* next =
         (HuffmanTablesSegment*)WebPSafeMalloc(1, sizeof(*next));
-    if (next == NULL) return 0;
+    if (next == nil) return 0;
     // Fill the new segment.
     // We need at least 'total_size' but if that value is small, it is better to
     // allocate a big chunk to prevent more allocations later. 'segment_size' is
@@ -261,7 +261,7 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
           total_size > segment_size ? total_size : segment_size;
       HuffmanCode* WEBP_BIDI_INDEXABLE const next_start =
           (HuffmanCode*)WebPSafeMalloc(next_size, sizeof(*next_start));
-      if (next_start == NULL) {
+      if (next_start == nil) {
         WebPSafeFree(next);
         return 0;
       }
@@ -269,7 +269,7 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
       next.start = next_start;
     }
     next.curr_table = next.start;
-    next.next = NULL;
+    next.next = nil;
     // Point to the new segment.
     root_table.curr_segment.next = next;
     root_table.curr_segment = next;
@@ -285,7 +285,7 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
   } else {  // rare case. Use heap allocation.
     uint16* const sorted =
         (uint16*)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
-    if (sorted == NULL) return 0;
+    if (sorted == nil) return 0;
     BuildHuffmanTable(
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
             HuffmanCode*, root_table.curr_segment.curr_table,
@@ -302,13 +302,13 @@ int VP8LHuffmanTablesAllocate(int size, HuffmanTables* huffman_tables) {
   // Have 'segment' point to the first segment for now, 'root'.
   HuffmanTablesSegment* const root = &huffman_tables.root;
   huffman_tables.curr_segment = root;
-  root.next = NULL;
+  root.next = nil;
   // Allocate root.
   {
     HuffmanCode* WEBP_BIDI_INDEXABLE const start =
         (HuffmanCode*)WebPSafeMalloc(size, sizeof(*root.start));
-    if (start == NULL) {
-      root.start = NULL;
+    if (start == nil) {
+      root.start = nil;
       root.size = 0;
       return 0;
     }
@@ -321,17 +321,17 @@ int VP8LHuffmanTablesAllocate(int size, HuffmanTables* huffman_tables) {
 
 func VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables) {
   HuffmanTablesSegment *current, *next;
-  if (huffman_tables == NULL) return;
+  if (huffman_tables == nil) return;
   // Free the root node.
   current = &huffman_tables.root;
   next = current.next;
   WebPSafeFree(current.start);
-  current.start = NULL;
+  current.start = nil;
   current.size = 0;
-  current.next = NULL;
+  current.next = nil;
   current = next;
   // Free the following nodes.
-  while (current != NULL) {
+  while (current != nil) {
     next = current.next;
     WebPSafeFree(current.start);
     WebPSafeFree(current);

@@ -67,7 +67,7 @@ func DefaultDecoderOptions(WebPAnimDecoderOptions* const dec_options) {
 
 int WebPAnimDecoderOptionsInitInternal(WebPAnimDecoderOptions* dec_options,
                                        int abi_version) {
-  if (dec_options == NULL ||
+  if (dec_options == nil ||
       WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_DEMUX_ABI_VERSION)) {
     return 0;
   }
@@ -80,7 +80,7 @@ int WebPAnimDecoderOptionsInitInternal(WebPAnimDecoderOptions* dec_options,
     WebPAnimDecoder* const dec) {
   WEBP_CSP_MODE mode;
   WebPDecoderConfig* config = &dec.config;
-  assert.Assert(dec_options != NULL);
+  assert.Assert(dec_options != nil);
 
   mode = dec_options.color_mode;
   if (mode != MODE_RGBA && mode != MODE_BGRA && mode != MODE_rgbA &&
@@ -104,25 +104,25 @@ WebPAnimDecoder* WebPAnimDecoderNewInternal(
     const WebPData* webp_data, const WebPAnimDecoderOptions* dec_options,
     int abi_version) {
   WebPAnimDecoderOptions options;
-  WebPAnimDecoder* dec = NULL;
+  WebPAnimDecoder* dec = nil;
   WebPBitstreamFeatures features;
-  if (webp_data == NULL ||
+  if (webp_data == nil ||
       WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_DEMUX_ABI_VERSION)) {
-    return NULL;
+    return nil;
   }
 
   // Validate the bitstream before doing expensive allocations. The demuxer may
   // be more tolerant than the decoder.
   if (WebPGetFeatures(webp_data.bytes, webp_data.size, &features) !=
       VP8_STATUS_OK) {
-    return NULL;
+    return nil;
   }
 
-  // Note: calloc() so that the pointer members are initialized to NULL.
+  // Note: calloc() so that the pointer members are initialized to nil.
   dec = (WebPAnimDecoder*)WebPSafeCalloc(1ULL, sizeof(*dec));
-  if (dec == NULL) goto Error;
+  if (dec == nil) goto Error;
 
-  if (dec_options != NULL) {
+  if (dec_options != nil) {
     options = *dec_options;
   } else {
     DefaultDecoderOptions(&options);
@@ -130,7 +130,7 @@ WebPAnimDecoder* WebPAnimDecoderNewInternal(
   if (!ApplyDecoderOptions(&options, dec)) goto Error;
 
   dec.demux = WebPDemux(webp_data);
-  if (dec.demux == NULL) goto Error;
+  if (dec.demux == nil) goto Error;
 
   dec.info.canvas_width = WebPDemuxGetI(dec.demux, WEBP_FF_CANVAS_WIDTH);
   dec.info.canvas_height = WebPDemuxGetI(dec.demux, WEBP_FF_CANVAS_HEIGHT);
@@ -141,21 +141,21 @@ WebPAnimDecoder* WebPAnimDecoderNewInternal(
   // Note: calloc() because we fill frame with zeroes as well.
   dec.curr_frame = (uint8*)WebPSafeCalloc(
       dec.info.canvas_width * NUM_CHANNELS, dec.info.canvas_height);
-  if (dec.curr_frame == NULL) goto Error;
+  if (dec.curr_frame == nil) goto Error;
   dec.prev_frame_disposed = (uint8*)WebPSafeCalloc(
       dec.info.canvas_width * NUM_CHANNELS, dec.info.canvas_height);
-  if (dec.prev_frame_disposed == NULL) goto Error;
+  if (dec.prev_frame_disposed == nil) goto Error;
 
   WebPAnimDecoderReset(dec);
   return dec;
 
 Error:
   WebPAnimDecoderDelete(dec);
-  return NULL;
+  return nil;
 }
 
 int WebPAnimDecoderGetInfo(const WebPAnimDecoder* dec, WebPAnimInfo* info) {
-  if (dec == NULL || info == NULL) return 0;
+  if (dec == nil || info == nil) return 0;
   *info = dec.info;
   return 1;
 }
@@ -193,7 +193,7 @@ func ZeroFillFrameRect(uint8* buf, int buf_stride, int x_offset,
                                      uint32 width, uint32 height) {
   const uint64 size = (uint64)width * height * NUM_CHANNELS;
   if (!CheckSizeOverflow(size)) return 0;
-  assert.Assert(src != NULL && dst != NULL);
+  assert.Assert(src != nil && dst != nil);
   WEBP_UNSAFE_MEMCPY(dst, src, (size_t)size);
   return 1;
 }
@@ -340,7 +340,7 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
   int timestamp;
   BlendRowFunc blend_row;
 
-  if (dec == NULL || buf_ptr == NULL || timestamp_ptr == NULL) return 0;
+  if (dec == nil || buf_ptr == nil || timestamp_ptr == nil) return 0;
   if (!WebPAnimDecoderHasMoreFrames(dec)) return 0;
 
   width = dec.info.canvas_width;
@@ -452,12 +452,12 @@ Error:
 }
 
 int WebPAnimDecoderHasMoreFrames(const WebPAnimDecoder* dec) {
-  if (dec == NULL) return 0;
+  if (dec == nil) return 0;
   return (dec.next_frame <= (int)dec.info.frame_count);
 }
 
 func WebPAnimDecoderReset(WebPAnimDecoder* dec) {
-  if (dec != NULL) {
+  if (dec != nil) {
     dec.prev_frame_timestamp = 0;
     WebPDemuxReleaseIterator(&dec.prev_iter);
     WEBP_UNSAFE_MEMSET(&dec.prev_iter, 0, sizeof(dec.prev_iter));
@@ -467,12 +467,12 @@ func WebPAnimDecoderReset(WebPAnimDecoder* dec) {
 }
 
 const WebPDemuxer* WebPAnimDecoderGetDemuxer(const WebPAnimDecoder* dec) {
-  if (dec == NULL) return NULL;
+  if (dec == nil) return nil;
   return dec.demux;
 }
 
 func WebPAnimDecoderDelete(WebPAnimDecoder* dec) {
-  if (dec != NULL) {
+  if (dec != nil) {
     WebPDemuxReleaseIterator(&dec.prev_iter);
     WebPDemuxDelete(dec.demux);
     WebPSafeFree(dec.curr_frame);

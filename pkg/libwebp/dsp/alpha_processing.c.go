@@ -463,7 +463,7 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
   WebPAlphaReplace = AlphaReplace_C;
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitAlphaProcessingSSE2();
@@ -483,24 +483,24 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
 
 #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
+      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     WebPInitAlphaProcessingNEON();
   }
 #endif
 
-  assert.Assert(WebPMultARGBRow != NULL);
-  assert.Assert(WebPMultRow != NULL);
-  assert.Assert(WebPApplyAlphaMultiply != NULL);
-  assert.Assert(WebPApplyAlphaMultiply4444 != NULL);
-  assert.Assert(WebPDispatchAlpha != NULL);
-  assert.Assert(WebPDispatchAlphaToGreen != NULL);
-  assert.Assert(WebPExtractAlpha != NULL);
-  assert.Assert(WebPExtractGreen != NULL);
+  assert.Assert(WebPMultARGBRow != nil);
+  assert.Assert(WebPMultRow != nil);
+  assert.Assert(WebPApplyAlphaMultiply != nil);
+  assert.Assert(WebPApplyAlphaMultiply4444 != nil);
+  assert.Assert(WebPDispatchAlpha != nil);
+  assert.Assert(WebPDispatchAlphaToGreen != nil);
+  assert.Assert(WebPExtractAlpha != nil);
+  assert.Assert(WebPExtractGreen != nil);
 #ifdef WORDS_BIGENDIAN
-  assert.Assert(WebPPackARGB != NULL);
+  assert.Assert(WebPPackARGB != nil);
 #endif
-  assert.Assert(WebPPackRGB != NULL);
-  assert.Assert(WebPHasAlpha8b != NULL);
-  assert.Assert(WebPHasAlpha32b != NULL);
-  assert.Assert(WebPAlphaReplace != NULL);
+  assert.Assert(WebPPackRGB != nil);
+  assert.Assert(WebPHasAlpha8b != nil);
+  assert.Assert(WebPHasAlpha32b != nil);
+  assert.Assert(WebPAlphaReplace != nil);
 }

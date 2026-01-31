@@ -26,8 +26,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert.Assert((in) != NULL);    \
-    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != nil);    \
+    assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
     assert.Assert(width > 0);       \
     assert.Assert(height > 0);      \
@@ -171,7 +171,7 @@ func NoneUnfilter_C(const uint8* prev, const uint8* in, uint8* out,
 
 func HorizontalUnfilter_C(const uint8* prev, const uint8* in,
                                  uint8* out, int width) {
-  uint8 pred = (prev == NULL) ? 0 : prev[0];
+  uint8 pred = (prev == nil) ? 0 : prev[0];
   int i;
   for (i = 0; i < width; ++i) {
     out[i] = (uint8)(pred + in[i]);
@@ -182,8 +182,8 @@ func HorizontalUnfilter_C(const uint8* prev, const uint8* in,
 #if !WEBP_NEON_OMIT_C_CODE
 func VerticalUnfilter_C(const uint8* prev, const uint8* in,
                                uint8* out, int width) {
-  if (prev == NULL) {
-    HorizontalUnfilter_C(NULL, in, out, width);
+  if (prev == nil) {
+    HorizontalUnfilter_C(nil, in, out, width);
   } else {
     int i;
     for (i = 0; i < width; ++i) out[i] = (uint8)(prev[i] + in[i]);
@@ -193,8 +193,8 @@ func VerticalUnfilter_C(const uint8* prev, const uint8* in,
 
 func GradientUnfilter_C(const uint8* prev, const uint8* in,
                                uint8* out, int width) {
-  if (prev == NULL) {
-    HorizontalUnfilter_C(NULL, in, out, width);
+  if (prev == nil) {
+    HorizontalUnfilter_C(nil, in, out, width);
   } else {
     uint8 top = prev[0], top_left = top, left = top;
     int i;
@@ -227,14 +227,14 @@ WEBP_DSP_INIT_FUNC(VP8FiltersInit) {
 #endif
   WebPUnfilters[WEBP_FILTER_GRADIENT] = GradientUnfilter_C;
 
-  WebPFilters[WEBP_FILTER_NONE] = NULL;
+  WebPFilters[WEBP_FILTER_NONE] = nil;
 #if !WEBP_NEON_OMIT_C_CODE
   WebPFilters[WEBP_FILTER_HORIZONTAL] = HorizontalFilter_C;
   WebPFilters[WEBP_FILTER_VERTICAL] = VerticalFilter_C;
   WebPFilters[WEBP_FILTER_GRADIENT] = GradientFilter_C;
 #endif
 
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8FiltersInitSSE2();
@@ -254,16 +254,16 @@ WEBP_DSP_INIT_FUNC(VP8FiltersInit) {
 
 #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
+      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     VP8FiltersInitNEON();
   }
 #endif
 
-  assert.Assert(WebPUnfilters[WEBP_FILTER_NONE] != NULL);
-  assert.Assert(WebPUnfilters[WEBP_FILTER_HORIZONTAL] != NULL);
-  assert.Assert(WebPUnfilters[WEBP_FILTER_VERTICAL] != NULL);
-  assert.Assert(WebPUnfilters[WEBP_FILTER_GRADIENT] != NULL);
-  assert.Assert(WebPFilters[WEBP_FILTER_HORIZONTAL] != NULL);
-  assert.Assert(WebPFilters[WEBP_FILTER_VERTICAL] != NULL);
-  assert.Assert(WebPFilters[WEBP_FILTER_GRADIENT] != NULL);
+  assert.Assert(WebPUnfilters[WEBP_FILTER_NONE] != nil);
+  assert.Assert(WebPUnfilters[WEBP_FILTER_HORIZONTAL] != nil);
+  assert.Assert(WebPUnfilters[WEBP_FILTER_VERTICAL] != nil);
+  assert.Assert(WebPUnfilters[WEBP_FILTER_GRADIENT] != nil);
+  assert.Assert(WebPFilters[WEBP_FILTER_HORIZONTAL] != nil);
+  assert.Assert(WebPFilters[WEBP_FILTER_VERTICAL] != nil);
+  assert.Assert(WebPFilters[WEBP_FILTER_GRADIENT] != nil);
 }

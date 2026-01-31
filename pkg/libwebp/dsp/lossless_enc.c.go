@@ -620,7 +620,7 @@ func PredictorSub1_C(const uint32* in, const uint32* upper,
       const uint32* in, const uint32* upper, int num_pixels, \
       uint32* WEBP_RESTRICT out) {                             \
     int x;                                                       \
-    assert.Assert(upper != NULL);                                       \
+    assert.Assert(upper != nil);                                       \
     for (x = 0; x < num_pixels; ++x) {                           \
       const uint32 pred =                                      \
           VP8LPredictor##PREDICTOR_I##_C(&in[x - 1], upper + x); \
@@ -747,7 +747,7 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
   VP8LPredictorsSub_C[15] = PredictorSub0_C;
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8LEncDspInitSSE2();
@@ -782,58 +782,58 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
 
 #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
+      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     VP8LEncDspInitNEON();
   }
 #endif
 
-  assert.Assert(VP8LSubtractGreenFromBlueAndRed != NULL);
-  assert.Assert(VP8LTransformColor != NULL);
-  assert.Assert(VP8LCollectColorBlueTransforms != NULL);
-  assert.Assert(VP8LCollectColorRedTransforms != NULL);
-  assert.Assert(VP8LFastLog2Slow != NULL);
-  assert.Assert(VP8LFastSLog2Slow != NULL);
-  assert.Assert(VP8LExtraCost != NULL);
-  assert.Assert(VP8LCombinedShannonEntropy != NULL);
-  assert.Assert(VP8LShannonEntropy != NULL);
-  assert.Assert(VP8LGetEntropyUnrefined != NULL);
-  assert.Assert(VP8LGetCombinedEntropyUnrefined != NULL);
-  assert.Assert(VP8LAddVector != NULL);
-  assert.Assert(VP8LAddVectorEq != NULL);
-  assert.Assert(VP8LVectorMismatch != NULL);
-  assert.Assert(VP8LBundleColorMap != NULL);
-  assert.Assert(VP8LPredictorsSub[0] != NULL);
-  assert.Assert(VP8LPredictorsSub[1] != NULL);
-  assert.Assert(VP8LPredictorsSub[2] != NULL);
-  assert.Assert(VP8LPredictorsSub[3] != NULL);
-  assert.Assert(VP8LPredictorsSub[4] != NULL);
-  assert.Assert(VP8LPredictorsSub[5] != NULL);
-  assert.Assert(VP8LPredictorsSub[6] != NULL);
-  assert.Assert(VP8LPredictorsSub[7] != NULL);
-  assert.Assert(VP8LPredictorsSub[8] != NULL);
-  assert.Assert(VP8LPredictorsSub[9] != NULL);
-  assert.Assert(VP8LPredictorsSub[10] != NULL);
-  assert.Assert(VP8LPredictorsSub[11] != NULL);
-  assert.Assert(VP8LPredictorsSub[12] != NULL);
-  assert.Assert(VP8LPredictorsSub[13] != NULL);
-  assert.Assert(VP8LPredictorsSub[14] != NULL);
-  assert.Assert(VP8LPredictorsSub[15] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[0] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[1] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[2] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[3] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[4] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[5] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[6] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[7] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[8] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[9] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[10] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[11] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[12] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[13] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[14] != NULL);
-  assert.Assert(VP8LPredictorsSub_C[15] != NULL);
+  assert.Assert(VP8LSubtractGreenFromBlueAndRed != nil);
+  assert.Assert(VP8LTransformColor != nil);
+  assert.Assert(VP8LCollectColorBlueTransforms != nil);
+  assert.Assert(VP8LCollectColorRedTransforms != nil);
+  assert.Assert(VP8LFastLog2Slow != nil);
+  assert.Assert(VP8LFastSLog2Slow != nil);
+  assert.Assert(VP8LExtraCost != nil);
+  assert.Assert(VP8LCombinedShannonEntropy != nil);
+  assert.Assert(VP8LShannonEntropy != nil);
+  assert.Assert(VP8LGetEntropyUnrefined != nil);
+  assert.Assert(VP8LGetCombinedEntropyUnrefined != nil);
+  assert.Assert(VP8LAddVector != nil);
+  assert.Assert(VP8LAddVectorEq != nil);
+  assert.Assert(VP8LVectorMismatch != nil);
+  assert.Assert(VP8LBundleColorMap != nil);
+  assert.Assert(VP8LPredictorsSub[0] != nil);
+  assert.Assert(VP8LPredictorsSub[1] != nil);
+  assert.Assert(VP8LPredictorsSub[2] != nil);
+  assert.Assert(VP8LPredictorsSub[3] != nil);
+  assert.Assert(VP8LPredictorsSub[4] != nil);
+  assert.Assert(VP8LPredictorsSub[5] != nil);
+  assert.Assert(VP8LPredictorsSub[6] != nil);
+  assert.Assert(VP8LPredictorsSub[7] != nil);
+  assert.Assert(VP8LPredictorsSub[8] != nil);
+  assert.Assert(VP8LPredictorsSub[9] != nil);
+  assert.Assert(VP8LPredictorsSub[10] != nil);
+  assert.Assert(VP8LPredictorsSub[11] != nil);
+  assert.Assert(VP8LPredictorsSub[12] != nil);
+  assert.Assert(VP8LPredictorsSub[13] != nil);
+  assert.Assert(VP8LPredictorsSub[14] != nil);
+  assert.Assert(VP8LPredictorsSub[15] != nil);
+  assert.Assert(VP8LPredictorsSub_C[0] != nil);
+  assert.Assert(VP8LPredictorsSub_C[1] != nil);
+  assert.Assert(VP8LPredictorsSub_C[2] != nil);
+  assert.Assert(VP8LPredictorsSub_C[3] != nil);
+  assert.Assert(VP8LPredictorsSub_C[4] != nil);
+  assert.Assert(VP8LPredictorsSub_C[5] != nil);
+  assert.Assert(VP8LPredictorsSub_C[6] != nil);
+  assert.Assert(VP8LPredictorsSub_C[7] != nil);
+  assert.Assert(VP8LPredictorsSub_C[8] != nil);
+  assert.Assert(VP8LPredictorsSub_C[9] != nil);
+  assert.Assert(VP8LPredictorsSub_C[10] != nil);
+  assert.Assert(VP8LPredictorsSub_C[11] != nil);
+  assert.Assert(VP8LPredictorsSub_C[12] != nil);
+  assert.Assert(VP8LPredictorsSub_C[13] != nil);
+  assert.Assert(VP8LPredictorsSub_C[14] != nil);
+  assert.Assert(VP8LPredictorsSub_C[15] != nil);
 }
 
 //------------------------------------------------------------------------------

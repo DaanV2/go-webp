@@ -39,7 +39,7 @@ func SmoothSegmentMap(VP8Encoder* const enc) {
   uint8* const tmp = (uint8*)WebPSafeMalloc(w * h, sizeof(*tmp));
   assert.Assert((uint64)(w * h) == (uint64)w * h);  // no overflow, as per spec
 
-  if (tmp == NULL) return;
+  if (tmp == nil) return;
   for (y = 1; y < h - 1; ++y) {
     for (x = 1; x < w - 1; ++x) {
       int cnt[NUM_MB_SEGMENTS] = {0};

@@ -193,13 +193,13 @@ typedef struct {
 VP8LRefsCursor VP8LRefsCursorInit(const VP8LBackwardRefs* const refs);
 // Returns true if cursor is pointing at a valid position.
 static  int VP8LRefsCursorOk(const VP8LRefsCursor* const c) {
-  return (c.cur_pos != NULL);
+  return (c.cur_pos != nil);
 }
 // Move to next block of references. Internal, not to be called directly.
 func VP8LRefsCursorNextBlock(VP8LRefsCursor* const c);
-// Move to next position, or NULL. Should not be called if !VP8LRefsCursorOk().
+// Move to next position, or nil. Should not be called if !VP8LRefsCursorOk().
 static  func VP8LRefsCursorNext(VP8LRefsCursor* const c) {
-  assert.Assert(c != NULL);
+  assert.Assert(c != nil);
   assert.Assert(VP8LRefsCursorOk(c));
   if (++c.cur_pos == c.last_pos) VP8LRefsCursorNextBlock(c);
 }

@@ -42,7 +42,7 @@ const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 // Returns true if alpha[] has non-0xff values.
 static int CheckNonOpaque(const uint8* alpha, int width, int height,
                           int x_step, int y_step) {
-  if (alpha == NULL) return 0;
+  if (alpha == nil) return 0;
   WebPInitAlphaProcessing();
   if (x_step == 1) {
     for (; height-- > 0; alpha += y_step) {
@@ -58,9 +58,9 @@ static int CheckNonOpaque(const uint8* alpha, int width, int height,
 
 // Checking for the presence of non-opaque alpha.
 int WebPPictureHasTransparency(const WebPPicture* picture) {
-  if (picture == NULL) return 0;
+  if (picture == nil) return 0;
   if (picture.use_argb) {
-    if (picture.argb != NULL) {
+    if (picture.argb != nil) {
       return CheckNonOpaque((const uint8*)picture.argb + ALPHA_OFFSET,
                             picture.width, picture.height, 4,
                             picture.argb_stride * sizeof(*picture.argb));
@@ -168,7 +168,7 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
     uint8* dst_a = picture.a;
 
     VP8Random base_rg;
-    VP8Random* rg = NULL;
+    VP8Random* rg = nil;
     if (dithering > 0.) {
       VP8InitRandom(&base_rg, dithering);
       rg = &base_rg;
@@ -176,11 +176,11 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
     WebPInitConvertARGBToYUV();
     WebPInitGammaTables();
 
-    if (tmp_rgb == NULL) {
+    if (tmp_rgb == nil) {
       return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
     }
 
-    if (rg == NULL) {
+    if (rg == nil) {
       // Downsample Y/U/V planes, two rows at a time
       WebPImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride,
                              has_alpha, width, height, tmp_rgb,
@@ -267,9 +267,9 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
 
 static int PictureARGBToYUVA(WebPPicture* picture, WebPEncCSP colorspace,
                              float dithering, int use_iterative_conversion) {
-  if (picture == NULL) return 0;
-  if (picture.argb == NULL) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_NULL_PARAMETER);
+  if (picture == nil) return 0;
+  if (picture.argb == nil) {
+    return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   } else if ((colorspace & WEBP_CSP_UV_MASK) != WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   } else {
@@ -306,12 +306,12 @@ int WebPPictureSmartARGBToYUVA(WebPPicture* picture) {
 // call for YUVA . ARGB conversion
 
 int WebPPictureYUVAToARGB(WebPPicture* picture) {
-  if (picture == NULL) return 0;
-  if (picture.y == NULL || picture.u == NULL || picture.v == NULL) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_NULL_PARAMETER);
+  if (picture == nil) return 0;
+  if (picture.y == nil || picture.u == nil || picture.v == nil) {
+    return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   }
-  if ((picture.colorspace & WEBP_CSP_ALPHA_BIT) && picture.a == NULL) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_NULL_PARAMETER);
+  if ((picture.colorspace & WEBP_CSP_ALPHA_BIT) && picture.a == nil) {
+    return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   }
   if ((picture.colorspace & WEBP_CSP_UV_MASK) != WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
@@ -332,7 +332,7 @@ int WebPPictureYUVAToARGB(WebPPicture* picture) {
         WebPGetLinePairConverter(ALPHA_OFFSET > 0);
 
     // First row, with replicated top samples.
-    upsample(cur_y, NULL, cur_u, cur_v, cur_u, cur_v, dst, NULL, width);
+    upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst, nil, width);
     cur_y += picture.y_stride;
     dst += argb_stride;
     // Center rows.
@@ -348,7 +348,7 @@ int WebPPictureYUVAToARGB(WebPPicture* picture) {
     }
     // Last row (if needed), with replicated bottom samples.
     if (height > 1 && !(height & 1)) {
-      upsample(cur_y, NULL, cur_u, cur_v, cur_u, cur_v, dst, NULL, width);
+      upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst, nil, width);
     }
     // Insert alpha values if needed, in replacement for the default 0xff ones.
     if (picture.colorspace & WEBP_CSP_ALPHA_BIT) {
@@ -381,7 +381,7 @@ static int Import(WebPPicture* const picture, const uint8* rgb,
   if (abs(rgb_stride) < (import_alpha ? 4 : 3) * width) return 0;
 
   if (!picture.use_argb) {
-    const uint8* a_ptr = import_alpha ? rgb + 3 : NULL;
+    const uint8* a_ptr = import_alpha ? rgb + 3 : nil;
     return ImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride,
                               0.f /* no dithering */, 0, picture);
   }
@@ -438,21 +438,21 @@ static int Import(WebPPicture* const picture, const uint8* rgb,
 
 int WebPPictureImportBGR(WebPPicture* picture, const uint8* bgr,
                          int bgr_stride) {
-  return (picture != NULL && bgr != NULL)
+  return (picture != nil && bgr != nil)
              ? Import(picture, bgr, bgr_stride, 3, 1, 0)
              : 0;
 }
 
 int WebPPictureImportBGRA(WebPPicture* picture, const uint8* bgra,
                           int bgra_stride) {
-  return (picture != NULL && bgra != NULL)
+  return (picture != nil && bgra != nil)
              ? Import(picture, bgra, bgra_stride, 4, 1, 1)
              : 0;
 }
 
 int WebPPictureImportBGRX(WebPPicture* picture, const uint8* bgrx,
                           int bgrx_stride) {
-  return (picture != NULL && bgrx != NULL)
+  return (picture != nil && bgrx != nil)
              ? Import(picture, bgrx, bgrx_stride, 4, 1, 0)
              : 0;
 }
@@ -461,21 +461,21 @@ int WebPPictureImportBGRX(WebPPicture* picture, const uint8* bgrx,
 
 int WebPPictureImportRGB(WebPPicture* picture, const uint8* rgb,
                          int rgb_stride) {
-  return (picture != NULL && rgb != NULL)
+  return (picture != nil && rgb != nil)
              ? Import(picture, rgb, rgb_stride, 3, 0, 0)
              : 0;
 }
 
 int WebPPictureImportRGBA(WebPPicture* picture, const uint8* rgba,
                           int rgba_stride) {
-  return (picture != NULL && rgba != NULL)
+  return (picture != nil && rgba != nil)
              ? Import(picture, rgba, rgba_stride, 4, 0, 1)
              : 0;
 }
 
 int WebPPictureImportRGBX(WebPPicture* picture, const uint8* rgbx,
                           int rgbx_stride) {
-  return (picture != NULL && rgbx != NULL)
+  return (picture != nil && rgbx != nil)
              ? Import(picture, rgbx, rgbx_stride, 4, 0, 0)
              : 0;
 }

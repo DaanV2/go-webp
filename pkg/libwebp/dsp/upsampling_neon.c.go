@@ -192,7 +192,7 @@ const v255 = vdup_n_u8(255)
                       cur_x, len)                                           \
   {                                                                         \
     CONVERT8(FMT, XSTEP, len, top_y, uv, top_dst, cur_x);                   \
-    if (bottom_y != NULL) {                                                 \
+    if (bottom_y != nil) {                                                 \
       CONVERT8(FMT, XSTEP, len, bottom_y, (uv) + 32, bottom_dst, cur_x);    \
     }                                                                       \
   }
@@ -201,7 +201,7 @@ const v255 = vdup_n_u8(255)
                       cur_x, len)                                            \
   {                                                                          \
     CONVERT1(FUNC, XSTEP, len, top_y, uv, top_dst, cur_x);                   \
-    if (bottom_y != NULL) {                                                  \
+    if (bottom_y != nil) {                                                  \
       CONVERT1(FUNC, XSTEP, len, bottom_y, (uv) + 32, bottom_dst, cur_x);    \
     }                                                                        \
   }
@@ -234,13 +234,13 @@ const v255 = vdup_n_u8(255)
     const int16x8_t B_Rounder = vdupq_n_s16(-17685);                          \
                                                                               \
     /* Treat the first pixel in regular way */                                \
-    assert.Assert(top_y != NULL);                                                    \
+    assert.Assert(top_y != nil);                                                    \
     {                                                                         \
       const int u0 = (top_u[0] + u_diag) >> 1;                                \
       const int v0 = (top_v[0] + v_diag) >> 1;                                \
       VP8YuvTo##FMT(top_y[0], u0, v0, top_dst);                               \
     }                                                                         \
-    if (bottom_y != NULL) {                                                   \
+    if (bottom_y != nil) {                                                   \
       const int u0 = (cur_u[0] + u_diag) >> 1;                                \
       const int v0 = (cur_v[0] + v_diag) >> 1;                                \
       VP8YuvTo##FMT(bottom_y[0], u0, v0, bottom_dst);                         \

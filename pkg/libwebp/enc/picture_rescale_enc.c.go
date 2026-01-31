@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 // into 'dst'. Mark 'dst' as not owning any memory.
 func PictureGrabSpecs(const WebPPicture* const src,
                              WebPPicture* const dst) {
-  assert.Assert(src != NULL && dst != NULL);
+  assert.Assert(src != nil && dst != nil);
   *dst = *src;
   WebPPictureResetBuffers(dst);
 }
@@ -62,7 +62,7 @@ static int AdjustAndCheckRectangle(const WebPPicture* const pic,
 
 #if !defined(WEBP_REDUCE_SIZE)
 int WebPPictureCopy(const WebPPicture* src, WebPPicture* dst) {
-  if (src == NULL || dst == NULL) return 0;
+  if (src == nil || dst == nil) return 0;
   if (src == dst) return 1;
 
   PictureGrabSpecs(src, dst);
@@ -75,7 +75,7 @@ int WebPPictureCopy(const WebPPicture* src, WebPPicture* dst) {
                   HALVE(dst.width), HALVE(dst.height));
     WebPCopyPlane(src.v, src.uv_stride, dst.v, dst.uv_stride,
                   HALVE(dst.width), HALVE(dst.height));
-    if (dst.a != NULL) {
+    if (dst.a != nil) {
       WebPCopyPlane(src.a, src.a_stride, dst.a, dst.a_stride, dst.width,
                     dst.height);
     }
@@ -89,16 +89,16 @@ int WebPPictureCopy(const WebPPicture* src, WebPPicture* dst) {
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
 int WebPPictureIsView(const WebPPicture* picture) {
-  if (picture == NULL) return 0;
+  if (picture == nil) return 0;
   if (picture.use_argb) {
-    return (picture.memory_argb_ == NULL);
+    return (picture.memory_argb_ == nil);
   }
-  return (picture.memory_ == NULL);
+  return (picture.memory_ == nil);
 }
 
 int WebPPictureView(const WebPPicture* src, int left, int top, int width,
                     int height, WebPPicture* dst) {
-  if (src == NULL || dst == NULL) return 0;
+  if (src == nil || dst == nil) return 0;
 
   // verify rectangle position.
   if (!AdjustAndCheckRectangle(src, &left, &top, width, height)) return 0;
@@ -114,7 +114,7 @@ int WebPPictureView(const WebPPicture* src, int left, int top, int width,
     dst.v = src.v + (top >> 1) * src.uv_stride + (left >> 1);
     dst.y_stride = src.y_stride;
     dst.uv_stride = src.uv_stride;
-    if (src.a != NULL) {
+    if (src.a != nil) {
       dst.a = src.a + top * src.a_stride + left;
       dst.a_stride = src.a_stride;
     }
@@ -133,7 +133,7 @@ int WebPPictureCrop(WebPPicture* pic, int left, int top, int width,
                     int height) {
   WebPPicture tmp;
 
-  if (pic == NULL) return 0;
+  if (pic == nil) return 0;
   if (!AdjustAndCheckRectangle(pic, &left, &top, width, height)) return 0;
 
   PictureGrabSpecs(pic, &tmp);
@@ -153,7 +153,7 @@ int WebPPictureCrop(WebPPicture* pic, int left, int top, int width,
     WebPCopyPlane(pic.v + uv_offset, pic.uv_stride, tmp.v, tmp.uv_stride,
                   HALVE(width), HALVE(height));
 
-    if (tmp.a != NULL) {
+    if (tmp.a != nil) {
       const int a_offset = top * pic.a_stride + left;
       WebPCopyPlane(pic.a + a_offset, pic.a_stride, tmp.a, tmp.a_stride,
                     width, height);
@@ -191,13 +191,13 @@ static int RescalePlane(const uint8* src, int src_width, int src_height,
 }
 
 func AlphaMultiplyARGB(WebPPicture* const pic, int inverse) {
-  assert.Assert(pic.argb != NULL);
+  assert.Assert(pic.argb != nil);
   WebPMultARGBRows((uint8*)pic.argb, pic.argb_stride * sizeof(*pic.argb),
                    pic.width, pic.height, inverse);
 }
 
 func AlphaMultiplyY(WebPPicture* const pic, int inverse) {
-  if (pic.a != NULL) {
+  if (pic.a != nil) {
     WebPMultRows(pic.y, pic.y_stride, pic.a, pic.a_stride, pic.width,
                  pic.height, inverse);
   }
@@ -209,7 +209,7 @@ int WebPPictureRescale(WebPPicture* picture, int width, int height) {
   rescaler_t* work;
   int status = VP8_ENC_OK;
 
-  if (picture == NULL) return 0;
+  if (picture == nil) return 0;
   prev_width = picture.width;
   prev_height = picture.height;
   if (!WebPRescalerGetScaledDimensions(prev_width, prev_height, &width,
@@ -226,12 +226,12 @@ int WebPPictureRescale(WebPPicture* picture, int width, int height) {
 
   if (!picture.use_argb) {
     work = (rescaler_t*)WebPSafeMalloc(2ULL * width, sizeof(*work));
-    if (work == NULL) {
+    if (work == nil) {
       status = VP8_ENC_ERROR_OUT_OF_MEMORY;
       goto Cleanup;
     }
     // If present, we need to rescale alpha first (for AlphaMultiplyY).
-    if (picture.a != NULL) {
+    if (picture.a != nil) {
       WebPInitAlphaProcessing();
       if (!RescalePlane(picture.a, prev_width, prev_height, picture.a_stride,
                         tmp.a, width, height, tmp.a_stride, work, 1)) {
@@ -257,7 +257,7 @@ int WebPPictureRescale(WebPPicture* picture, int width, int height) {
     AlphaMultiplyY(&tmp, 1);
   } else {
     work = (rescaler_t*)WebPSafeMalloc(2ULL * width * 4, sizeof(*work));
-    if (work == NULL) {
+    if (work == nil) {
       status = VP8_ENC_ERROR_BAD_DIMENSION;
       goto Cleanup;
     }

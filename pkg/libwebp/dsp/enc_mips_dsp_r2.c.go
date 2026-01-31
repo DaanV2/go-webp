@@ -472,8 +472,8 @@ HORIZONTAL_PRED(dst, left, 16)
 static  func TrueMotion##SIZE(uint8* WEBP_RESTRICT (DST),         \
                                          const uint8* WEBP_RESTRICT (LEFT),  \
                                          const uint8* WEBP_RESTRICT (TOP)) { \
-  if ((LEFT) != NULL) {                                                        \
-    if ((TOP) != NULL) {                                                       \
+  if ((LEFT) != nil) {                                                        \
+    if ((TOP) != nil) {                                                       \
       CLIP_TO_DST((DST), (LEFT), (TOP), (SIZE));                               \
     } else {                                                                   \
       HorizontalPred##SIZE((DST), (LEFT));                                     \
@@ -483,7 +483,7 @@ static  func TrueMotion##SIZE(uint8* WEBP_RESTRICT (DST),         \
     /* is equivalent to VE prediction where you just copy the top samples. */  \
     /* Note that if top samples are not available, the default value is    */  \
     /* then 129, and not 127 as in the VerticalPred case.                  */  \
-    if ((TOP) != NULL) {                                                       \
+    if ((TOP) != nil) {                                                       \
       VerticalPred##SIZE((DST), (TOP));                                        \
     } else {                                                                   \
       FILL_8_OR_16((DST), 129, (SIZE));                                        \

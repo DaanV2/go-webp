@@ -281,10 +281,10 @@ const WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW =\
 #endif
 #endif
 
-// If 'ptr' is NULL, returns NULL. Otherwise returns 'ptr + off'.
-// Prevents undefined behavior sanitizer nullptr-with-nonzero-offset warning.
+// If 'ptr' is nil, returns nil. Otherwise returns 'ptr + off'.
+// Prevents undefined behavior sanitizer nilptr-with-nonzero-offset warning.
 #if !defined(WEBP_OFFSET_PTR)
-#define WEBP_OFFSET_PTR(ptr, off) (((ptr) == NULL) ? NULL : ((ptr) + (off)))
+#define WEBP_OFFSET_PTR(ptr, off) (((ptr) == nil) ? nil : ((ptr) + (off)))
 #endif
 
 // Regularize the definition of WEBP_SWAP_16BIT_CSP (backward compatibility)

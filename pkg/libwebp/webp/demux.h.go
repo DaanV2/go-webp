@@ -93,14 +93,14 @@ typedef enum WebPDemuxState {
 
 // Parses the full WebP file given by 'data'. For single images the WebP file
 // header alone or the file header and the chunk header may be absent.
-// Returns a WebPDemuxer object on successful parse, NULL otherwise.
+// Returns a WebPDemuxer object on successful parse, nil otherwise.
  static  WebPDemuxer* WebPDemux(const WebPData* data) {
-  return WebPDemuxInternal(data, 0, NULL, WEBP_DEMUX_ABI_VERSION);
+  return WebPDemuxInternal(data, 0, nil, WEBP_DEMUX_ABI_VERSION);
 }
 
 // Parses the possibly incomplete WebP file given by 'data'.
-// If 'state' is non-NULL it will be set to indicate the status of the demuxer.
-// Returns NULL in case of error or if there isn't enough data to start parsing;
+// If 'state' is non-nil it will be set to indicate the status of the demuxer.
+// Returns nil in case of error or if there isn't enough data to start parsing;
 // and a WebPDemuxer object on successful parse.
 // Note that WebPDemuxer keeps internal pointers to 'data' memory segment.
 // If this data is volatile, the demuxer object should be deleted (by calling
@@ -164,7 +164,7 @@ type WebPIterator struct {
 // Retrieves frame 'frame_number' from 'dmux'.
 // 'iter.fragment' points to the frame on return from this function.
 // Setting 'frame_number' equal to 0 will return the last frame of the image.
-// Returns false if 'dmux' is NULL or frame 'frame_number' is not present.
+// Returns false if 'dmux' is nil or frame 'frame_number' is not present.
 // Call WebPDemuxReleaseIterator() when use of the iterator is complete.
 // NOTE: 'dmux' must persist for the lifetime of 'iter'.
   int WebPDemuxGetFrame(const WebPDemuxer* dmux,
@@ -283,11 +283,11 @@ type WebPAnimDecoderOptions struct {
 // Parameters:
 //   webp_data - (in) WebP bitstream. This should remain unchanged during the
 //                    lifetime of the output WebPAnimDecoder object.
-//   dec_options - (in) decoding options. Can be passed NULL to choose
+//   dec_options - (in) decoding options. Can be passed nil to choose
 //                      reasonable defaults (in particular, color mode MODE_RGBA
 //                      will be picked).
 // Returns:
-//   A pointer to the newly created WebPAnimDecoder object, or NULL in case of
+//   A pointer to the newly created WebPAnimDecoder object, or nil in case of
 //   parsing error, invalid option or memory error.
  static  WebPAnimDecoder* WebPAnimDecoderNew(
     const WebPData* webp_data, const WebPAnimDecoderOptions* dec_options) {
@@ -324,7 +324,7 @@ type WebPAnimInfo struct {
 //   buf - (out) decoded frame.
 //   timestamp - (out) timestamp of the frame in milliseconds.
 // Returns:
-//   False if any of the arguments are NULL, or if there is a parsing or
+//   False if any of the arguments are nil, or if there is a parsing or
 //   decoding error, or if there are no more frames. Otherwise, returns true.
   int WebPAnimDecoderGetNext(WebPAnimDecoder* dec,
                                                       uint8** buf,
@@ -334,7 +334,7 @@ type WebPAnimInfo struct {
 // Parameters:
 //   dec - (in) decoder instance to be checked.
 // Returns:
-//   True if 'dec' is not NULL and some frames are yet to be decoded.
+//   True if 'dec' is not nil and some frames are yet to be decoded.
 //   Otherwise, returns false.
   int WebPAnimDecoderHasMoreFrames(
     const WebPAnimDecoder* dec);

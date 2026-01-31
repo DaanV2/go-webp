@@ -24,7 +24,7 @@ func WEBP_ABI_IS_INCOMPATIBLE(a, b int) int {
 }
 
 
-// Allocates 'size' bytes of memory. Returns NULL upon error. Memory
+// Allocates 'size' bytes of memory. Returns nil upon error. Memory
 // must be deallocated by calling WebPFree(). This function is made available
 // by the core 'libwebp' library.
 // Deprecated: Not needed in Go, use built-in memory management.
@@ -63,9 +63,9 @@ const WEBP_ASSUME_UNSAFE_INDEXABLE_ABI =\
   __ptrcheck_abi_assume_unsafe_indexable()
 
 #define  __counted_by(x)
-#define WEBP_COUNTED_BY_OR_NULL(x) __counted_by_or_null(x)
+#define WEBP_COUNTED_BY_OR_nil(x) __counted_by_or_nil(x)
 #define WEBP_SIZED_BY(x) __sized_by(x)
-#define WEBP_SIZED_BY_OR_NULL(x) __sized_by_or_null(x)
+#define WEBP_SIZED_BY_OR_nil(x) __sized_by_or_nil(x)
 #define WEBP_ENDED_BY(x) __ended_by(x)
 
 const WEBP_UNSAFE_INDEXABLE =__unsafe_indexable
@@ -103,9 +103,9 @@ const WEBP_SINGLE =__single
 #define WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 func WEBP_COUNTED_BY(x int) {}
-func WEBP_COUNTED_BY_OR_NULL(x int) {}
+func WEBP_COUNTED_BY_OR_nil(x int) {}
 func WEBP_SIZED_BY(x int) {}
-func WEBP_SIZED_BY_OR_NULL(x int) {}
+func WEBP_SIZED_BY_OR_nil(x int) {}
 func WEBP_ENDED_BY(x int) {}
 
 #define WEBP_UNSAFE_INDEXABLE

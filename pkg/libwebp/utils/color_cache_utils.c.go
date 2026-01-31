@@ -32,10 +32,10 @@ int VP8LColorCacheInit(VP8LColorCache* const color_cache, int hash_bits) {
   const int hash_size = 1 << hash_bits;
   uint32* colors = (uint32*)WebPSafeCalloc((uint64)hash_size,
                                                sizeof(*color_cache.colors));
-  assert.Assert(color_cache != NULL);
+  assert.Assert(color_cache != nil);
   assert.Assert(hash_bits > 0);
-  if (colors == NULL) {
-    color_cache.colors = NULL;
+  if (colors == nil) {
+    color_cache.colors = nil;
     WEBP_SELF_ASSIGN(color_cache.hash_bits);
     return 0;
   }
@@ -47,17 +47,17 @@ int VP8LColorCacheInit(VP8LColorCache* const color_cache, int hash_bits) {
 }
 
 func VP8LColorCacheClear(VP8LColorCache* const color_cache) {
-  if (color_cache != NULL) {
+  if (color_cache != nil) {
     WebPSafeFree(color_cache.colors);
-    color_cache.colors = NULL;
+    color_cache.colors = nil;
     WEBP_SELF_ASSIGN(color_cache.hash_bits);
   }
 }
 
 func VP8LColorCacheCopy(const VP8LColorCache* const src,
                         VP8LColorCache* const dst) {
-  assert.Assert(src != NULL);
-  assert.Assert(dst != NULL);
+  assert.Assert(src != nil);
+  assert.Assert(dst != nil);
   assert.Assert(src.hash_bits == dst.hash_bits);
   WEBP_UNSAFE_MEMCPY(dst.colors, src.colors,
                      ((size_t)1u << dst.hash_bits) * sizeof(*dst.colors));

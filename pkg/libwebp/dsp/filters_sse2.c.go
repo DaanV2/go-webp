@@ -30,8 +30,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert.Assert((in) != NULL);    \
-    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != nil);    \
+    assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
     assert.Assert(width > 0);       \
     assert.Assert(height > 0);      \
@@ -211,7 +211,7 @@ func HorizontalUnfilter_SSE2(const uint8* prev, const uint8* in,
                                     uint8* out, int width) {
   int i;
   __m128i last;
-  out[0] = (uint8)(in[0] + (prev == NULL ? 0 : prev[0]));
+  out[0] = (uint8)(in[0] + (prev == nil ? 0 : prev[0]));
   if (width <= 1) return;
   last = _mm_set_epi32(0, 0, 0, out[0]);
   for (i = 1; i + 8 <= width; i += 8) {
@@ -231,8 +231,8 @@ func HorizontalUnfilter_SSE2(const uint8* prev, const uint8* in,
 
 func VerticalUnfilter_SSE2(const uint8* prev, const uint8* in,
                                   uint8* out, int width) {
-  if (prev == NULL) {
-    HorizontalUnfilter_SSE2(NULL, in, out, width);
+  if (prev == nil) {
+    HorizontalUnfilter_SSE2(nil, in, out, width);
   } else {
     int i;
     const int max_pos = width & ~31;
@@ -292,8 +292,8 @@ func GradientPredictInverse_SSE2(const uint8* const in,
 
 func GradientUnfilter_SSE2(const uint8* prev, const uint8* in,
                                   uint8* out, int width) {
-  if (prev == NULL) {
-    HorizontalUnfilter_SSE2(NULL, in, out, width);
+  if (prev == nil) {
+    HorizontalUnfilter_SSE2(nil, in, out, width);
   } else {
     out[0] = (uint8)(in[0] + prev[0]);  // predict from above
     GradientPredictInverse_SSE2(in + 1, prev + 1, out + 1, width - 1);

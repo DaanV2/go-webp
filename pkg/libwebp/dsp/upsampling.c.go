@@ -52,12 +52,12 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
     const int last_pixel_pair = (len - 1) >> 1;                               \
     uint32 tl_uv = LOAD_UV(top_u[0], top_v[0]); /* top-left sample */       \
     uint32 l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
-    assert.Assert(top_y != NULL);                                                    \
+    assert.Assert(top_y != nil);                                                    \
     {                                                                         \
       const uint32 uv0 = (3 * tl_uv + l_uv + 0x00020002u) >> 2;             \
       FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                       \
     }                                                                         \
-    if (bottom_y != NULL) {                                                   \
+    if (bottom_y != nil) {                                                   \
       const uint32 uv0 = (3 * l_uv + tl_uv + 0x00020002u) >> 2;             \
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
@@ -77,7 +77,7 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
         FUNC(top_y[2 * x - 0], uv1 & 0xff, (uv1 >> 16),                       \
              top_dst + (2 * x - 0) * (XSTEP));                                \
       }                                                                       \
-      if (bottom_y != NULL) {                                                 \
+      if (bottom_y != nil) {                                                 \
         const uint32 uv0 = (diag_03 + l_uv) >> 1;                           \
         const uint32 uv1 = (diag_12 + uv) >> 1;                             \
         FUNC(bottom_y[2 * x - 1], uv0 & 0xff, (uv0 >> 16),                    \
@@ -94,7 +94,7 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
         FUNC(top_y[len - 1], uv0 & 0xff, (uv0 >> 16),                         \
              top_dst + (len - 1) * (XSTEP));                                  \
       }                                                                       \
-      if (bottom_y != NULL) {                                                 \
+      if (bottom_y != nil) {                                                 \
         const uint32 uv0 = (3 * l_uv + tl_uv + 0x00020002u) >> 2;           \
         FUNC(bottom_y[len - 1], uv0 & 0xff, (uv0 >> 16),                      \
              bottom_dst + (len - 1) * (XSTEP));                               \
@@ -154,7 +154,7 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
       int len) {                                                              \
     const int half_len = len >> 1;                                            \
     int x;                                                                    \
-    assert.Assert(top_dst != NULL);                                                  \
+    assert.Assert(top_dst != nil);                                                  \
     {                                                                         \
       for (x = 0; x < half_len; ++x) {                                        \
         FUNC(top_y[2 * x + 0], top_u[x], top_v[x], top_dst + 8 * x + 0);      \
@@ -163,7 +163,7 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
       if (len & 1)                                                            \
         FUNC(top_y[2 * x + 0], top_u[x], top_v[x], top_dst + 8 * x);          \
     }                                                                         \
-    if (bot_dst != NULL) {                                                    \
+    if (bot_dst != nil) {                                                    \
       for (x = 0; x < half_len; ++x) {                                        \
         FUNC(bot_y[2 * x + 0], bot_u[x], bot_v[x], bot_dst + 8 * x + 0);      \
         FUNC(bot_y[2 * x + 1], bot_u[x], bot_v[x], bot_dst + 8 * x + 4);      \
@@ -248,7 +248,7 @@ WEBP_DSP_INIT_FUNC(WebPInitYUV444Converters) {
   WebPYUV444Converters[MODE_Argb] = WebPYuv444ToArgb_C;
   WebPYUV444Converters[MODE_rgbA_4444] = WebPYuv444ToRgba4444_C;
 
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitYUV444ConvertersSSE2();
@@ -293,7 +293,7 @@ WEBP_DSP_INIT_FUNC(WebPInitUpsamplers) {
 #endif
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitUpsamplersSSE2();
@@ -318,23 +318,23 @@ WEBP_DSP_INIT_FUNC(WebPInitUpsamplers) {
 
 #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
+      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     WebPInitUpsamplersNEON();
   }
 #endif
 
-  assert.Assert(WebPUpsamplers[MODE_RGBA] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_BGRA] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_rgbA] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_bgrA] != NULL);
+  assert.Assert(WebPUpsamplers[MODE_RGBA] != nil);
+  assert.Assert(WebPUpsamplers[MODE_BGRA] != nil);
+  assert.Assert(WebPUpsamplers[MODE_rgbA] != nil);
+  assert.Assert(WebPUpsamplers[MODE_bgrA] != nil);
 #if !defined(WEBP_REDUCE_CSP) || !WEBP_NEON_OMIT_C_CODE
-  assert.Assert(WebPUpsamplers[MODE_RGB] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_BGR] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_ARGB] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_RGBA_4444] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_RGB_565] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_Argb] != NULL);
-  assert.Assert(WebPUpsamplers[MODE_rgbA_4444] != NULL);
+  assert.Assert(WebPUpsamplers[MODE_RGB] != nil);
+  assert.Assert(WebPUpsamplers[MODE_BGR] != nil);
+  assert.Assert(WebPUpsamplers[MODE_ARGB] != nil);
+  assert.Assert(WebPUpsamplers[MODE_RGBA_4444] != nil);
+  assert.Assert(WebPUpsamplers[MODE_RGB_565] != nil);
+  assert.Assert(WebPUpsamplers[MODE_Argb] != nil);
+  assert.Assert(WebPUpsamplers[MODE_rgbA_4444] != nil);
 #endif
 
 #endif  // FANCY_UPSAMPLING

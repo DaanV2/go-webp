@@ -49,16 +49,16 @@ static  int CheckSizeOverflow(uint64 size) {
 }
 
 // size-checking safe malloc/calloc: verify that the requested size is not too
-// large, or return NULL. You don't need to call these for constructs like
+// large, or return nil. You don't need to call these for constructs like
 // malloc(sizeof(foo)), but only if there's picture-dependent size involved
 // somewhere (like: malloc(num_pixels * sizeof(*something))). That's why this
 // safe malloc() borrows the signature from calloc(), pointing at the dangerous
 // underlying multiply involved.
- void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
+ void* WEBP_SIZED_BY_OR_nil(nmemb* size)
     WebPSafeMalloc(uint64 nmemb, size_t size);
 // Note that WebPSafeCalloc() expects the second argument type to be 'size_t'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
- void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
+ void* WEBP_SIZED_BY_OR_nil(nmemb* size)
     WebPSafeCalloc(uint64 nmemb, size_t size);
 
 // Companion deallocation function to the above allocations.
@@ -201,14 +201,14 @@ struct WebPPicture;
 // Returns count of unique colors in 'pic', assuming pic.use_argb is true.
 // If the unique color count is more than MAX_PALETTE_SIZE, returns
 // MAX_PALETTE_SIZE+1.
-// If 'palette' is not NULL and number of unique colors is less than or equal to
+// If 'palette' is not nil and number of unique colors is less than or equal to
 // MAX_PALETTE_SIZE, also outputs the actual unique colors into 'palette'.
 // Note: 'palette' is assumed to be an array already allocated with at least
 // MAX_PALETTE_SIZE elements.
 // TODO(vrabaud) remove whenever we can break the ABI.
  int WebPGetColorPalette(
     const struct WebPPicture* const pic,
-    uint32* const WEBP_COUNTED_BY_OR_NULL(MAX_PALETTE_SIZE) palette);
+    uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE) palette);
 
 //------------------------------------------------------------------------------
 

@@ -133,12 +133,12 @@ int WebPPlaneDistortion(const uint8* src, size_t src_stride,
                         const uint8* ref, size_t ref_stride, int width,
                         int height, size_t x_step, int type, float* distortion,
                         float* result) {
-  uint8* allocated = NULL;
+  uint8* allocated = nil;
   const AccumulateFunc metric = (type == 0)   ? AccumulateSSE
                                 : (type == 1) ? AccumulateSSIM
                                               : AccumulateLSIM;
-  if (src == NULL || ref == NULL || src_stride < x_step * width ||
-      ref_stride < x_step * width || result == NULL || distortion == NULL) {
+  if (src == nil || ref == nil || src_stride < x_step * width ||
+      ref_stride < x_step * width || result == nil || distortion == nil) {
     return 0;
   }
 
@@ -149,7 +149,7 @@ int WebPPlaneDistortion(const uint8* src, size_t src_stride,
     uint8* tmp2;
     allocated =
         (uint8*)WebPSafeMalloc(2ULL * width * height, sizeof(*allocated));
-    if (allocated == NULL) return 0;
+    if (allocated == nil) return 0;
     tmp1 = allocated;
     tmp2 = tmp1 + (size_t)width * height;
     for (y = 0; y < height; ++y) {
@@ -181,8 +181,8 @@ int WebPPictureDistortion(const WebPPicture* src, const WebPPicture* ref,
   int ok = 0;
   WebPPicture p0, p1;
   double total_size = 0., total_distortion = 0.;
-  if (src == NULL || ref == NULL || src.width != ref.width ||
-      src.height != ref.height || results == NULL) {
+  if (src == nil || ref == nil || src.width != ref.width ||
+      src.height != ref.height || results == nil) {
     return 0;
   }
 
@@ -236,7 +236,7 @@ int WebPPlaneDistortion(const uint8* src, size_t src_stride,
   (void)height;
   (void)x_step;
   (void)type;
-  if (distortion == NULL || result == NULL) return 0;
+  if (distortion == nil || result == nil) return 0;
   *distortion = 0.f;
   *result = 0.f;
   return 1;
@@ -248,7 +248,7 @@ int WebPPictureDistortion(const WebPPicture* src, const WebPPicture* ref,
   (void)src;
   (void)ref;
   (void)type;
-  if (results == NULL) return 0;
+  if (results == nil) return 0;
   for (i = 0; i < 5; ++i) results[i] = 0.f;
   return 1;
 }

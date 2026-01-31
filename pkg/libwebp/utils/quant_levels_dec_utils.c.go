@@ -73,7 +73,7 @@ typedef struct {
   int min_level_dist;  // smallest distance between two consecutive levels
 
   // size = 1 + 2*LUT_SIZE  . ~4k memory
-  int16* WEBP_COUNTED_BY_OR_NULL(CORRECTION_LUT_SIZE) correction;
+  int16* WEBP_COUNTED_BY_OR_nil(CORRECTION_LUT_SIZE) correction;
 } SmoothParams;
 
 //------------------------------------------------------------------------------
@@ -238,7 +238,7 @@ static int InitParams(uint8* WEBP_SIZED_BY((size_t)stride* height) const data,
   const size_t total_size = size_scratch_m + size_m + size_lut;
   uint8* WEBP_BIDI_INDEXABLE mem = (uint8*)WebPSafeMalloc(1U, total_size);
 
-  if (mem == NULL) return 0;
+  if (mem == nil) return 0;
   p.mem = (void*)mem;
 
   p.start = (uint16*)mem;
@@ -279,7 +279,7 @@ int WebPDequantizeLevels(uint8* WEBP_SIZED_BY((size_t)stride* height)
   int radius = 4 * strength / 100;
 
   if (strength < 0 || strength > 100) return 0;
-  if (data == NULL || width <= 0 || height <= 0) return 0;  // bad params
+  if (data == nil || width <= 0 || height <= 0) return 0;  // bad params
 
   // limit the filter size to not exceed the image dimensions
   if (2 * radius + 1 > width) radius = (width - 1) >> 1;

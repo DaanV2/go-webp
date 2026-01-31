@@ -219,7 +219,7 @@ WEBP_DSP_INIT_FUNC(WebPRescalerDspInit) {
   WebPRescalerImportRowExpand = WebPRescalerImportRowExpand_C;
   WebPRescalerImportRowShrink = WebPRescalerImportRowShrink_C;
 
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPRescalerDspInitSSE2();
@@ -244,14 +244,14 @@ WEBP_DSP_INIT_FUNC(WebPRescalerDspInit) {
 
 #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
+      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     WebPRescalerDspInitNEON();
   }
 #endif
 
-  assert.Assert(WebPRescalerExportRowExpand != NULL);
-  assert.Assert(WebPRescalerExportRowShrink != NULL);
-  assert.Assert(WebPRescalerImportRowExpand != NULL);
-  assert.Assert(WebPRescalerImportRowShrink != NULL);
+  assert.Assert(WebPRescalerExportRowExpand != nil);
+  assert.Assert(WebPRescalerExportRowShrink != nil);
+  assert.Assert(WebPRescalerImportRowExpand != nil);
+  assert.Assert(WebPRescalerImportRowShrink != nil);
 #endif  // WEBP_REDUCE_SIZE
 }

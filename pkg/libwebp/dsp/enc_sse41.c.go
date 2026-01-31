@@ -226,7 +226,7 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16],
   __m128i coeff8 = _mm_abs_epi16(in8);
 
   // coeff = abs(in) + sharpen
-  if (sharpen != NULL) {
+  if (sharpen != nil) {
     const __m128i sharpen0 = _mm_loadu_si128((const __m128i*)&sharpen[0]);
     const __m128i sharpen8 = _mm_loadu_si128((const __m128i*)&sharpen[8]);
     coeff0 = _mm_add_epi16(coeff0, sharpen0);
@@ -315,7 +315,7 @@ static int QuantizeBlock_SSE41(int16 in[16], int16 out[16],
 
 static int QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16],
                                   const VP8Matrix* WEBP_RESTRICT const mtx) {
-  return DoQuantizeBlock_SSE41(in, out, NULL, mtx);
+  return DoQuantizeBlock_SSE41(in, out, nil, mtx);
 }
 
 static int Quantize2Blocks_SSE41(int16 in[32], int16 out[32],

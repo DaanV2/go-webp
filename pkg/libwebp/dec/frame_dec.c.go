@@ -343,8 +343,8 @@ static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
 
 func VP8InitDithering(const WebPDecoderOptions* const options,
                       VP8Decoder* const dec) {
-  assert.Assert(dec != NULL);
-  if (options != NULL) {
+  assert.Assert(dec != nil);
+  if (options != nil) {
     const int d = options.dithering_strength;
     const int max_amp = (1 << VP8_RANDOM_DITHER_FIX) - 1;
     const int f = (d < 0) ? 0 : (d > 100) ? max_amp : (d * max_amp / 100);
@@ -445,7 +445,7 @@ static int FinishRow(void* arg1, void* arg2) {
     DitherRow(dec);
   }
 
-  if (io.put != NULL) {
+  if (io.put != nil) {
     int y_start = MACROBLOCK_VPOS(mb_y);
     int y_end = MACROBLOCK_VPOS(mb_y + 1);
     if (!is_first_row) {
@@ -465,11 +465,11 @@ static int FinishRow(void* arg1, void* arg2) {
     if (y_end > io.crop_bottom) {
       y_end = io.crop_bottom;  // make sure we don't overflow on last row.
     }
-    // If dec.alpha_data is not NULL, we have some alpha plane present.
-    io.a = NULL;
-    if (dec.alpha_data != NULL && y_start < y_end) {
+    // If dec.alpha_data is not nil, we have some alpha plane present.
+    io.a = nil;
+    if (dec.alpha_data != nil && y_start < y_end) {
       io.a = VP8DecompressAlphaRows(dec, io, y_start, y_end - y_start);
-      if (io.a == NULL) {
+      if (io.a == nil) {
         return VP8SetError(dec, VP8_STATUS_BITSTREAM_ERROR,
                            "Could not decode alpha data.");
       }
@@ -481,7 +481,7 @@ static int FinishRow(void* arg1, void* arg2) {
       io.y += dec.cache_y_stride * delta_y;
       io.u += dec.cache_uv_stride * (delta_y >> 1);
       io.v += dec.cache_uv_stride * (delta_y >> 1);
-      if (io.a != NULL) {
+      if (io.a != nil) {
         io.a += io.width * delta_y;
       }
     }
@@ -489,7 +489,7 @@ static int FinishRow(void* arg1, void* arg2) {
       io.y += io.crop_left;
       io.u += io.crop_left >> 1;
       io.v += io.crop_left >> 1;
-      if (io.a != NULL) {
+      if (io.a != nil) {
         io.a += io.crop_left;
       }
       io.mb_y = y_start - io.crop_top;
@@ -568,7 +568,7 @@ int VP8ProcessRow(VP8Decoder* const dec, VP8Io* const io) {
 VP8StatusCode VP8EnterCritical(VP8Decoder* const dec, VP8Io* const io) {
   // Call setup() first. This may trigger additional decoding features on 'io'.
   // Note: Afterward, we must call teardown() no matter what.
-  if (io.setup != NULL && !io.setup(io)) {
+  if (io.setup != nil && !io.setup(io)) {
     VP8SetError(dec, VP8_STATUS_INVALID_PARAM, "Frame setup failed");
     return dec.status;
   }
@@ -623,7 +623,7 @@ int VP8ExitCritical(VP8Decoder* const dec, VP8Io* const io) {
     ok = WebPGetWorkerInterface().Sync(&dec.worker);
   }
 
-  if (io.teardown != NULL) {
+  if (io.teardown != nil) {
     io.teardown(io);
   }
   return ok;
@@ -679,13 +679,13 @@ static int InitThreadContext(VP8Decoder* const dec) {
 int VP8GetThreadMethod(const WebPDecoderOptions* const options,
                        const WebPHeaderStructure* const headers, int width,
                        int height) {
-  if (options == NULL || options.use_threads == 0) {
+  if (options == nil || options.use_threads == 0) {
     return 0;
   }
   (void)headers;
   (void)width;
   (void)height;
-  assert.Assert(headers == NULL || !headers.is_lossless);
+  assert.Assert(headers == nil || !headers.is_lossless);
 #if defined(WEBP_USE_THREAD)
   if (width >= MIN_WIDTH_FOR_THREADS) return 2;
 #endif
@@ -717,7 +717,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
   const size_t cache_size = top_size * cache_height;
   // alpha_size is the only one that scales as width x height.
   const uint64 alpha_size =
-      (dec.alpha_data != NULL)
+      (dec.alpha_data != nil)
           ? (uint64)dec.pic_hdr.width * dec.pic_hdr.height
           : 0ULL;
   const uint64 needed = (uint64)intra_pred_mode_size + top_size +
@@ -730,7 +730,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
     WebPSafeFree(dec.mem);
     dec.mem_size = 0;
     dec.mem = WebPSafeMalloc(needed, sizeof(uint8));
-    if (dec.mem == NULL) {
+    if (dec.mem == nil) {
       return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY,
                          "no memory during frame initialization.");
     }
@@ -748,7 +748,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
   dec.mb_info = ((VP8MB*)mem) + 1;
   mem += mb_info_size;
 
-  dec.f_info = f_info_size ? (VP8FInfo*)mem : NULL;
+  dec.f_info = f_info_size ? (VP8FInfo*)mem : nil;
   mem += f_info_size;
   dec.thread_ctx.id = 0;
   dec.thread_ctx.f_info = dec.f_info;
@@ -787,7 +787,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
   mem += cache_size;
 
   // alpha plane
-  dec.alpha_plane = alpha_size ? mem : NULL;
+  dec.alpha_plane = alpha_size ? mem : nil;
   mem += alpha_size;
   assert.Assert(mem <= (uint8*)dec.mem + dec.mem_size);
 
@@ -809,7 +809,7 @@ func InitIo(VP8Decoder* const dec, VP8Io* io) {
   io.v = dec.cache_v;
   io.y_stride = dec.cache_y_stride;
   io.uv_stride = dec.cache_uv_stride;
-  io.a = NULL;
+  io.a = nil;
 }
 
 int VP8InitFrame(VP8Decoder* const dec, VP8Io* const io) {

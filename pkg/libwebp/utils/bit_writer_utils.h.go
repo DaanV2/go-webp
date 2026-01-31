@@ -36,7 +36,7 @@ type VP8BitWriter struct {
   int run;      // number of outstanding bits
   int nb_bits;  // number of pending bits
   // internal buffer. Re-allocated regularly. Not owned.
-  uint8* WEBP_SIZED_BY_OR_NULL(max_pos) buf;
+  uint8* WEBP_SIZED_BY_OR_nil(max_pos) buf;
   size_t pos;
   size_t max_pos;
   int error;  // true in case of error

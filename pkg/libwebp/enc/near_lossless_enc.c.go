@@ -118,7 +118,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
   const int ysize = picture.height;
   const int stride = picture.argb_stride;
   const int limit_bits = VP8LNearLosslessBits(quality);
-  assert.Assert(argb_dst != NULL);
+  assert.Assert(argb_dst != nil);
   assert.Assert(limit_bits > 0);
   assert.Assert(limit_bits <= MAX_LIMIT_BITS);
 
@@ -134,7 +134,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
   }
 
   copy_buffer = (uint32*)WebPSafeMalloc(xsize * 3, sizeof(*copy_buffer));
-  if (copy_buffer == NULL) {
+  if (copy_buffer == nil) {
     return 0;
   }
 

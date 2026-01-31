@@ -50,12 +50,12 @@ func PrepareMapToPalette(const uint32  palette[],
 // Returns count of unique colors in 'pic', assuming pic.use_argb is true.
 // If the unique color count is more than MAX_PALETTE_SIZE, returns
 // MAX_PALETTE_SIZE+1.
-// If 'palette' is not NULL and the number of unique colors is less than or
+// If 'palette' is not nil and the number of unique colors is less than or
 // equal to MAX_PALETTE_SIZE, also outputs the actual unique colors into
 // 'palette' in a sorted order. Note: 'palette' is assumed to be an array
 // already allocated with at least MAX_PALETTE_SIZE elements.
 int GetColorPalette(const struct WebPPicture* const pic,
-                    uint32* const WEBP_COUNTED_BY_OR_NULL(MAX_PALETTE_SIZE)
+                    uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE)
                         palette);
 
 // Sorts the palette according to the criterion defined by 'method'.

@@ -178,8 +178,8 @@ func MuxImageInit(WebPMuxImage* const wpi);
 // Releases image 'wpi' and returns wpi.next.
 WebPMuxImage* MuxImageRelease(WebPMuxImage* const wpi);
 
-// Delete image 'wpi' and return the next image in the list or NULL.
-// 'wpi' can be NULL.
+// Delete image 'wpi' and return the next image in the list or nil.
+// 'wpi' can be nil.
 WebPMuxImage* MuxImageDelete(WebPMuxImage* const wpi);
 
 // Count number of images matching the given tag id in the 'wpi_list'.

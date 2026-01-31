@@ -159,12 +159,12 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v,
     const int last_pixel_pair = (len - 1) >> 1;                               \
     uint32 tl_uv = LOAD_UV(top_u[0], top_v[0]); /* top-left sample */       \
     uint32 l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
-    assert.Assert(top_y != NULL);                                                    \
+    assert.Assert(top_y != nil);                                                    \
     {                                                                         \
       const uint32 uv0 = (3 * tl_uv + l_uv + 0x00020002u) >> 2;             \
       FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                       \
     }                                                                         \
-    if (bottom_y != NULL) {                                                   \
+    if (bottom_y != nil) {                                                   \
       const uint32 uv0 = (3 * l_uv + tl_uv + 0x00020002u) >> 2;             \
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
@@ -184,7 +184,7 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v,
         FUNC(top_y[2 * x - 0], uv1 & 0xff, (uv1 >> 16),                       \
              top_dst + (2 * x - 0) * XSTEP);                                  \
       }                                                                       \
-      if (bottom_y != NULL) {                                                 \
+      if (bottom_y != nil) {                                                 \
         const uint32 uv0 = (diag_03 + l_uv) >> 1;                           \
         const uint32 uv1 = (diag_12 + uv) >> 1;                             \
         FUNC(bottom_y[2 * x - 1], uv0 & 0xff, (uv0 >> 16),                    \
@@ -201,7 +201,7 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v,
         FUNC(top_y[len - 1], uv0 & 0xff, (uv0 >> 16),                         \
              top_dst + (len - 1) * XSTEP);                                    \
       }                                                                       \
-      if (bottom_y != NULL) {                                                 \
+      if (bottom_y != nil) {                                                 \
         const uint32 uv0 = (3 * l_uv + tl_uv + 0x00020002u) >> 2;           \
         FUNC(bottom_y[len - 1], uv0 & 0xff, (uv0 >> 16),                      \
              bottom_dst + (len - 1) * XSTEP);                                 \

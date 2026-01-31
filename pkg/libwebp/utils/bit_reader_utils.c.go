@@ -36,7 +36,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 func VP8BitReaderSetBuffer(VP8BitReader* const br,
                            const uint8* const  start,
                            size_t size) {
-  assert.Assert(start != NULL);
+  assert.Assert(start != nil);
   br.buf = start;
   br.buf_end = start + size;
   br.buf_max =
@@ -46,8 +46,8 @@ func VP8BitReaderSetBuffer(VP8BitReader* const br,
 func VP8InitBitReader(VP8BitReader* const br,
                       const uint8* const  start,
                       size_t size) {
-  assert.Assert(br != NULL);
-  assert.Assert(start != NULL);
+  assert.Assert(br != nil);
+  assert.Assert(start != nil);
   assert.Assert(size < (1u << 31));  // limit ensured by format and upstream checks
   br.range = 255 - 1;
   br.value = 0;
@@ -58,7 +58,7 @@ func VP8InitBitReader(VP8BitReader* const br,
 }
 
 func VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset) {
-  if (br.buf != NULL) {
+  if (br.buf != nil) {
     br.buf += offset;
     br.buf_end += offset;
     br.buf_max += offset;
@@ -86,7 +86,7 @@ const uint8 kVP8NewRange[128] = {
     241, 243, 245, 247, 249, 251, 253, 127};
 
 func VP8LoadFinalBytes(VP8BitReader* const br) {
-  assert.Assert(br != NULL && br.buf != NULL);
+  assert.Assert(br != nil && br.buf != nil);
   // Only read 8bits at a time
   if (br.buf < br.buf_end) {
     br.bits += 8;
@@ -140,8 +140,8 @@ func VP8LInitBitReader(VP8LBitReader* const br,
                        size_t length) {
   size_t i;
   vp8l_val_t value = 0;
-  assert.Assert(br != NULL);
-  assert.Assert(start != NULL);
+  assert.Assert(br != nil);
+  assert.Assert(start != nil);
   assert.Assert(length < 0xfffffff8u);  // can't happen with a RIFF chunk.
 
   br.buf = start;
@@ -162,8 +162,8 @@ func VP8LInitBitReader(VP8LBitReader* const br,
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
                             const uint8* const  buf,
                             size_t len) {
-  assert.Assert(br != NULL);
-  assert.Assert(buf != NULL);
+  assert.Assert(br != nil);
+  assert.Assert(buf != nil);
   assert.Assert(len < 0xfffffff8u);  // can't happen with a RIFF chunk.
   br.buf = buf;
   br.len = len;
@@ -237,7 +237,7 @@ static struct {
 
 static int last_label = 0;
 static int last_pos = 0;
-static const uint8* buf_start = NULL;
+static const uint8* buf_start = nil;
 static int init_done = 0;
 
 func PrintBitTraces(){

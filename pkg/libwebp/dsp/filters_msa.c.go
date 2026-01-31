@@ -61,8 +61,8 @@ static  func PredictLineInverse0(const uint8* src,
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert.Assert((in) != NULL);    \
-    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != nil);    \
+    assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
     assert.Assert(width > 0);       \
     assert.Assert(height > 0);      \

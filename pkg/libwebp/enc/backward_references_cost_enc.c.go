@@ -67,7 +67,7 @@ static int CostModelBuild(CostModel* const m, int xsize, int cache_bits,
                           const VP8LBackwardRefs* const refs) {
   int ok = 0;
   VP8LHistogram* const histo = VP8LAllocateHistogram(cache_bits);
-  if (histo == NULL) goto Error;
+  if (histo == nil) goto Error;
 
   // The following code is similar to VP8LHistogramCreate but converts the
   // distance to plane code.
@@ -213,7 +213,7 @@ static int CostIntervalIsInFreeList(const CostManager* const manager,
 
 func CostManagerInitFreeList(CostManager* const manager) {
   int i;
-  manager.free_intervals = NULL;
+  manager.free_intervals = nil;
   for (i = 0; i < COST_MANAGER_MAX_FREE_LIST; ++i) {
     CostIntervalAddToFreeList(manager, &manager.intervals[i]);
   }
@@ -221,7 +221,7 @@ func CostManagerInitFreeList(CostManager* const manager) {
 
 func DeleteIntervalList(CostManager* const manager,
                                const CostInterval* interval) {
-  while (interval != NULL) {
+  while (interval != nil) {
     const CostInterval* const next = interval.next;
     if (!CostIntervalIsInFreeList(manager, interval)) {
       WebPSafeFree((void*)interval);
@@ -231,16 +231,16 @@ func DeleteIntervalList(CostManager* const manager,
 }
 
 func CostManagerClear(CostManager* const manager) {
-  if (manager == NULL) return;
+  if (manager == nil) return;
 
   WebPSafeFree(manager.costs);
   WebPSafeFree(manager.cache_intervals);
 
   // Clear the interval lists.
   DeleteIntervalList(manager, manager.head);
-  manager.head = NULL;
+  manager.head = nil;
   DeleteIntervalList(manager, manager.recycled_intervals);
-  manager.recycled_intervals = NULL;
+  manager.recycled_intervals = nil;
 
   // Reset pointers, 'count' and 'cache_intervals_size'.
   memset(manager, 0, sizeof(*manager));
@@ -253,10 +253,10 @@ static int CostManagerInit(CostManager* const manager,
   int i;
   const int cost_cache_size = (pix_count > MAX_LENGTH) ? MAX_LENGTH : pix_count;
 
-  manager.costs = NULL;
-  manager.cache_intervals = NULL;
-  manager.head = NULL;
-  manager.recycled_intervals = NULL;
+  manager.costs = nil;
+  manager.cache_intervals = nil;
+  manager.head = nil;
+  manager.recycled_intervals = nil;
   manager.count = 0;
   manager.dist_array = dist_array;
   CostManagerInitFreeList(manager);
@@ -282,7 +282,7 @@ static int CostManagerInit(CostManager* const manager,
   assert.Assert(manager.cache_intervals_size <= MAX_LENGTH);
   manager.cache_intervals = (CostCacheInterval*)WebPSafeMalloc(
       manager.cache_intervals_size, sizeof(*manager.cache_intervals));
-  if (manager.cache_intervals == NULL) {
+  if (manager.cache_intervals == nil) {
     CostManagerClear(manager);
     return 0;
   }
@@ -311,7 +311,7 @@ static int CostManagerInit(CostManager* const manager,
   }
 
   manager.costs = (int64*)WebPSafeMalloc(pix_count, sizeof(*manager.costs));
-  if (manager.costs == NULL) {
+  if (manager.costs == nil) {
     CostManagerClear(manager);
     return 0;
   }
@@ -348,19 +348,19 @@ static  func UpdateCostPerInterval(CostManager* const manager,
 static  func ConnectIntervals(CostManager* const manager,
                                          CostInterval* const prev,
                                          CostInterval* const next) {
-  if (prev != NULL) {
+  if (prev != nil) {
     prev.next = next;
   } else {
     manager.head = next;
   }
 
-  if (next != NULL) next.previous = prev;
+  if (next != nil) next.previous = prev;
 }
 
 // Pop an interval in the manager.
 static  func PopInterval(CostManager* const manager,
                                     CostInterval* const interval) {
-  if (interval == NULL) return;
+  if (interval == nil) return;
 
   ConnectIntervals(manager, interval.previous, interval.next);
   if (CostIntervalIsInFreeList(manager, interval)) {
@@ -381,7 +381,7 @@ static  func UpdateCostAtIndex(CostManager* const manager, int i,
                                           int do_clean_intervals) {
   CostInterval* current = manager.head;
 
-  while (current != NULL && current.start <= i) {
+  while (current != nil && current.start <= i) {
     CostInterval* const next = current.next;
     if (current.end <= i) {
       if (do_clean_intervals) {
@@ -396,23 +396,23 @@ static  func UpdateCostAtIndex(CostManager* const manager, int i,
 }
 
 // Given a current orphan interval and its previous interval, before
-// it was orphaned (which can be NULL), set it at the right place in the list
+// it was orphaned (which can be nil), set it at the right place in the list
 // of intervals using the 'start' ordering and the previous interval as a hint.
 static  func PositionOrphanInterval(CostManager* const manager,
                                                CostInterval* const current,
                                                CostInterval* previous) {
-  assert.Assert(current != NULL);
+  assert.Assert(current != nil);
 
-  if (previous == NULL) previous = manager.head;
-  while (previous != NULL && current.start < previous.start) {
+  if (previous == nil) previous = manager.head;
+  while (previous != nil && current.start < previous.start) {
     previous = previous.previous;
   }
-  while (previous != NULL && previous.next != NULL &&
+  while (previous != nil && previous.next != nil &&
          previous.next.start < current.start) {
     previous = previous.next;
   }
 
-  if (previous != NULL) {
+  if (previous != nil) {
     ConnectIntervals(manager, current, previous.next);
   } else {
     ConnectIntervals(manager, current, manager.head);
@@ -434,15 +434,15 @@ static  func InsertInterval(CostManager* const manager,
     UpdateCostPerInterval(manager, start, end, position, cost);
     return;
   }
-  if (manager.free_intervals != NULL) {
+  if (manager.free_intervals != nil) {
     interval_new = manager.free_intervals;
     manager.free_intervals = interval_new.next;
-  } else if (manager.recycled_intervals != NULL) {
+  } else if (manager.recycled_intervals != nil) {
     interval_new = manager.recycled_intervals;
     manager.recycled_intervals = interval_new.next;
   } else {  // malloc for good
     interval_new = (CostInterval*)WebPSafeMalloc(1, sizeof(*interval_new));
-    if (interval_new == NULL) {
+    if (interval_new == nil) {
       // Write down the interval if we cannot create it.
       UpdateCostPerInterval(manager, start, end, position, cost);
       return;
@@ -500,7 +500,7 @@ static  func PushInterval(CostManager* const manager,
         (cost_cache_intervals[i].end > len ? len : cost_cache_intervals[i].end);
     const int64 cost = distance_cost + cost_cache_intervals[i].cost;
 
-    for (; interval != NULL && interval.start < end;
+    for (; interval != nil && interval.start < end;
          interval = interval_next) {
       interval_next = interval.next;
 
@@ -576,7 +576,7 @@ static int BackwardReferencesHashChainDistanceOnly(
   const int pix_count = xsize * ysize;
   const int use_color_cache = (cache_bits > 0);
   const size_t literal_array_size =
-      sizeof(*((CostModel*)NULL).literal) * VP8LHistogramNumCodes(cache_bits);
+      sizeof(*((CostModel*)nil).literal) * VP8LHistogramNumCodes(cache_bits);
   const size_t cost_model_size = sizeof(CostModel) + literal_array_size;
   CostModel* const cost_model =
       (CostModel*)WebPSafeCalloc(1ULL, cost_model_size);
@@ -588,7 +588,7 @@ static int BackwardReferencesHashChainDistanceOnly(
   int first_offset_is_constant = -1;  // initialized with 'impossible' value
   int reach = 0;
 
-  if (cost_model == NULL || cost_manager == NULL) goto Error;
+  if (cost_model == nil || cost_manager == nil) goto Error;
 
   cost_model.literal = (uint32*)(cost_model + 1);
   if (use_color_cache) {
@@ -771,12 +771,12 @@ int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize,
                                          VP8LBackwardRefs* const refs_dst) {
   int ok = 0;
   const int dist_array_size = xsize * ysize;
-  uint16* chosen_path = NULL;
+  uint16* chosen_path = nil;
   int chosen_path_size = 0;
   uint16* dist_array =
       (uint16*)WebPSafeMalloc(dist_array_size, sizeof(*dist_array));
 
-  if (dist_array == NULL) goto Error;
+  if (dist_array == nil) goto Error;
 
   if (!BackwardReferencesHashChainDistanceOnly(
           xsize, ysize, argb, cache_bits, hash_chain, refs_src, dist_array)) {

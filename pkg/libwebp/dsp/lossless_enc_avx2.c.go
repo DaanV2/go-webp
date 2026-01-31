@@ -491,7 +491,7 @@ func PredictorSub0_AVX2(const uint32* in, const uint32* upper,
     _mm256_storeu_si256((__m256i*)&out[i], res);
   }
   if (i != num_pixels) {
-    VP8LPredictorsSub_SSE[0](in + i, NULL, num_pixels - i, out + i);
+    VP8LPredictorsSub_SSE[0](in + i, nil, num_pixels - i, out + i);
   }
   (void)upper;
 }

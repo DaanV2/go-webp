@@ -41,7 +41,7 @@ type ALPHDecoder struct {
                       // pixel, sometimes VP8LDecoder may need to allocate
                       // 4 bytes per pixel internally during decode.
   uint8* output;
-  const uint8* prev_line;  // last output row (or NULL)
+  const uint8* prev_line;  // last output row (or nil)
 };
 
 //------------------------------------------------------------------------------

@@ -48,7 +48,7 @@ typedef struct {
 
 // Contiguous memory segment of HuffmanCodes.
 typedef type HuffmanTablesSegment struct {
-  HuffmanCode* WEBP_COUNTED_BY_OR_NULL(size) start;
+  HuffmanCode* WEBP_COUNTED_BY_OR_nil(size) start;
   // Pointer to where we are writing into the segment. Starts at 'start' and
   // cannot go beyond 'start' + 'size'.
   HuffmanCode* WEBP_UNSAFE_INDEXABLE curr_table;

@@ -96,7 +96,7 @@ static  func PredictBatch(int mode, int x_start, int y,
   if (x_start == 0) {
     if (y == 0) {
       // ARGB_BLACK.
-      VP8LPredictorsSub[0](current, NULL, 1, out);
+      VP8LPredictorsSub[0](current, nil, 1, out);
     } else {
       // Top one.
       VP8LPredictorsSub[2](current, upper, 1, out);
@@ -107,7 +107,7 @@ static  func PredictBatch(int mode, int x_start, int y,
   }
   if (y == 0) {
     // Left one.
-    VP8LPredictorsSub[1](current + x_start, NULL, num_pixels, out);
+    VP8LPredictorsSub[1](current + x_start, nil, num_pixels, out);
   } else {
     VP8LPredictorsSub[mode](current + x_start, upper + x_start, num_pixels,
                             out);
@@ -653,8 +653,8 @@ func GetBestPredictorsAndSubSampling(
   uint32 tile_x = 0, tile_y = 0;
 
   *best_bits = 0;
-  *best_mode = NULL;
-  if (raw_data == NULL) return;
+  *best_mode = nil;
+  if (raw_data == nil) return;
 
   while (tile_y < tiles_per_col) {
     ComputeResidualsForTile(width, height, tile_x, tile_y, min_bits,
@@ -800,7 +800,7 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits,
       sum_num_pixels += num_pixels[bits];
     }
     modes_raw = (uint32*)WebPSafeMalloc(sum_num_pixels, sizeof(*modes_raw));
-    if (modes_raw == NULL) return 0;
+    if (modes_raw == nil) return 0;
     // Have modes point to the right global memory modes_raw.
     modes[min_bits] = modes_raw;
     for (bits = min_bits + 1; bits <= max_bits; ++bits) {

@@ -48,7 +48,7 @@ int WebPGetDecoderVersion(){
 typedef int (*GetCoeffsFunc)(VP8BitReader* const br,
                              const VP8BandProbas* const prob[], int ctx,
                              const quant_t dq, int n, int16* out);
-static volatile GetCoeffsFunc GetCoeffs = NULL;
+static volatile GetCoeffsFunc GetCoeffs = nil;
 
 func InitGetCoeffs(void);
 
@@ -64,7 +64,7 @@ int VP8InitIoInternal(VP8Io* const io, int version) {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION)) {
     return 0;  // mismatch error
   }
-  if (io != NULL) {
+  if (io != nil) {
     WEBP_UNSAFE_MEMSET(io, 0, sizeof(*io));
   }
   return 1;
@@ -72,7 +72,7 @@ int VP8InitIoInternal(VP8Io* const io, int version) {
 
 VP8Decoder* VP8New(){
   VP8Decoder* const dec = (VP8Decoder*)WebPSafeCalloc(1ULL, sizeof(*dec));
-  if (dec != NULL) {
+  if (dec != nil) {
     SetOk(dec);
     WebPGetWorkerInterface().Init(&dec.worker);
     dec.ready = 0;
@@ -88,13 +88,13 @@ VP8StatusCode VP8Status(VP8Decoder* const dec) {
 }
 
 const char* VP8StatusMessage(VP8Decoder* const dec) {
-  if (dec == NULL) return "no object";
+  if (dec == nil) return "no object";
   if (!dec.error_msg) return "OK";
   return dec.error_msg;
 }
 
 func VP8Delete(VP8Decoder* const dec) {
-  if (dec != NULL) {
+  if (dec != nil) {
     VP8Clear(dec);
     WebPSafeFree(dec);
   }
@@ -123,7 +123,7 @@ int VP8CheckSignature(const uint8* const  data,
 
 int VP8GetInfo(const uint8*  data, size_t data_size,
                size_t chunk_size, int* const width, int* const height) {
-  if (data == NULL || data_size < VP8_FRAME_HEADER_SIZE) {
+  if (data == nil || data_size < VP8_FRAME_HEADER_SIZE) {
     return 0;  // not enough data
   }
   // check signature
@@ -167,7 +167,7 @@ int VP8GetInfo(const uint8*  data, size_t data_size,
 // Header parsing
 
 func ResetSegmentHeader(VP8SegmentHeader* const hdr) {
-  assert.Assert(hdr != NULL);
+  assert.Assert(hdr != nil);
   hdr.use_segment = 0;
   hdr.update_map = 0;
   hdr.absolute_delta = 1;
@@ -178,8 +178,8 @@ func ResetSegmentHeader(VP8SegmentHeader* const hdr) {
 // Paragraph 9.3
 static int ParseSegmentHeader(VP8BitReader* br, VP8SegmentHeader* hdr,
                               VP8Proba* proba) {
-  assert.Assert(br != NULL);
-  assert.Assert(hdr != NULL);
+  assert.Assert(br != nil);
+  assert.Assert(hdr != nil);
   hdr.use_segment = VP8Get(br, "global-header");
   if (hdr.use_segment) {
     hdr.update_map = VP8Get(br, "global-header");
@@ -290,13 +290,13 @@ int VP8GetHeaders(VP8Decoder* const dec, VP8Io* const io) {
   VP8BitReader* br;
   VP8StatusCode status;
 
-  if (dec == NULL) {
+  if (dec == nil) {
     return 0;
   }
   SetOk(dec);
-  if (io == NULL) {
+  if (io == nil) {
     return VP8SetError(dec, VP8_STATUS_INVALID_PARAM,
-                       "null VP8Io passed to VP8GetHeaders()");
+                       "nil VP8Io passed to VP8GetHeaders()");
   }
   buf_size = io.data_size;
   buf =
@@ -519,7 +519,7 @@ static int GetCoeffsAlt(VP8BitReader* const br,
 extern VP8CPUInfo VP8GetCPUInfo;
 
 WEBP_DSP_INIT_FUNC(InitGetCoeffs) {
-  if (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kSlowSSSE3)) {
+  if (VP8GetCPUInfo != nil && VP8GetCPUInfo(kSlowSSSE3)) {
     GetCoeffs = GetCoeffsAlt;
   } else {
     GetCoeffs = GetCoeffsFast;
@@ -693,12 +693,12 @@ static int ParseFrame(VP8Decoder* const dec, VP8Io* io) {
 // Main entry point
 int VP8Decode(VP8Decoder* const dec, VP8Io* const io) {
   int ok = 0;
-  if (dec == NULL) {
+  if (dec == nil) {
     return 0;
   }
-  if (io == NULL) {
+  if (io == nil) {
     return VP8SetError(dec, VP8_STATUS_INVALID_PARAM,
-                       "NULL VP8Io parameter in VP8Decode().");
+                       "nil VP8Io parameter in VP8Decode().");
   }
 
   if (!dec.ready) {
@@ -731,13 +731,13 @@ int VP8Decode(VP8Decoder* const dec, VP8Io* const io) {
 }
 
 func VP8Clear(VP8Decoder* const dec) {
-  if (dec == NULL) {
+  if (dec == nil) {
     return;
   }
   WebPGetWorkerInterface().End(&dec.worker);
   WebPDeallocateAlphaMemory(dec);
   WebPSafeFree(dec.mem);
-  dec.mem = NULL;
+  dec.mem = nil;
   dec.mem_size = 0;
   WEBP_UNSAFE_MEMSET(&dec.br, 0, sizeof(dec.br));
   dec.ready = 0;

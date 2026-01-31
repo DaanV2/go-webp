@@ -45,7 +45,7 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // Retrieve basic header information: width, height.
 // This function will also validate the header, returning true on success,
 // false otherwise. '*width' and '*height' are only valid on successful return.
-// Pointers 'width' and 'height' can be passed NULL if deemed irrelevant.
+// Pointers 'width' and 'height' can be passed nil if deemed irrelevant.
 // Note: The following chunk sequences (before the raw VP8/VP8L data) are
 // considered valid by this function:
 // RIFF + VP8(L)
@@ -60,7 +60,7 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // with the dimensions in *width and *height. The ordering of samples in
 // memory is R, G, B, A, R, G, B, A... in scan order (endian-independent).
 // The returned pointer should be deleted calling WebPFree().
-// Returns NULL in case of error.
+// Returns nil in case of error.
   uint8* WebPDecodeRGBA(
     const uint8*  data, size_t data_size,
     int* width, int* height);
@@ -93,8 +93,8 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // planes are both (*width + 1) / 2 and (*height + 1) / 2.
 // Upon return, the Y buffer has a stride returned as '*stride', while U and V
 // have a common stride returned as '*uv_stride'.
-// 'width' and 'height' may be NULL, the other pointers must not be.
-// Returns NULL in case of error.
+// 'width' and 'height' may be nil, the other pointers must not be.
+// Returns nil in case of error.
 // (*) Also named Y'CbCr. See: https://en.wikipedia.org/wiki/YCbCr
   uint8* WebPDecodeYUV(
     const uint8*  data, size_t data_size,
@@ -104,7 +104,7 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // These five functions are variants of the above ones, that decode the image
 // directly into a pre-allocated buffer 'output_buffer'. The maximum storage
 // available in this buffer is indicated by 'output_buffer_size'. If this
-// storage is not sufficient (or an error occurred), NULL is returned.
+// storage is not sufficient (or an error occurred), nil is returned.
 // Otherwise, output_buffer is returned, for convenience.
 // The parameter 'output_stride' specifies the distance (in bytes)
 // between scanlines. Hence, output_buffer_size is expected to be at least
@@ -138,7 +138,7 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // strides to be passed: one for the luma plane and one for each of the
 // chroma ones. The size of each plane buffer is passed as 'luma_size',
 // 'u_size' and 'v_size' respectively.
-// Pointer to the luma plane ('*luma') is returned or NULL if an error occurred
+// Pointer to the luma plane ('*luma') is returned or nil if an error occurred
 // during decoding (or because some buffers were found to be too small).
   uint8* WebPDecodeYUVInto(
     const uint8*  data, size_t data_size,
@@ -248,7 +248,7 @@ type WebPDecBuffer struct {
 */
 
 // Creates a new incremental decoder with the supplied buffer parameter.
-// This output_buffer can be passed NULL, in which case a default output buffer
+// This output_buffer can be passed nil, in which case a default output buffer
 // is used (with MODE_RGB). Otherwise, an internal reference to 'output_buffer'
 // is kept, which means that the lifespan of 'output_buffer' must be larger than
 // that of the returned WebPIDecoder object.
@@ -258,7 +258,7 @@ type WebPDecBuffer struct {
 // stride of output_buffer.u.RGBA or output_buffer.u.YUVA, provided they remain
 // within valid bounds.
 // All other fields of WebPDecBuffer MUST remain constant between calls.
-// Returns NULL if the allocation failed.
+// Returns nil if the allocation failed.
   WebPIDecoder* WebPINewDecoder(
     WebPDecBuffer* output_buffer);
 
@@ -267,11 +267,11 @@ type WebPDecBuffer struct {
 // buffer 'output_buffer'. The size of this buffer is at least
 // 'output_buffer_size' and the stride (distance in bytes between two scanlines)
 // is specified by 'output_stride'.
-// Additionally, output_buffer can be passed NULL in which case the output
+// Additionally, output_buffer can be passed nil in which case the output
 // buffer will be allocated automatically when the decoding starts. The
 // colorspace 'csp' is taken into account for allocating this buffer. All other
 // parameters are ignored.
-// Returns NULL if the allocation failed, or if some parameters are invalid.
+// Returns nil if the allocation failed, or if some parameters are invalid.
   WebPIDecoder* WebPINewRGB(
     WEBP_CSP_MODE csp,
     uint8*  output_buffer,
@@ -283,11 +283,11 @@ type WebPDecBuffer struct {
 // 'luma_size' and its stride 'luma_stride'. Similarly, the chroma-u plane
 // is specified by the 'u', 'u_size' and 'u_stride' parameters, and the chroma-v
 // plane by 'v' and 'v_size'. And same for the alpha-plane. The 'a' pointer
-// can be pass NULL in case one is not interested in the transparency plane.
-// Conversely, 'luma' can be passed NULL if no preallocated planes are supplied.
+// can be pass nil in case one is not interested in the transparency plane.
+// Conversely, 'luma' can be passed nil if no preallocated planes are supplied.
 // In this case, the output buffer will be automatically allocated (using
 // MODE_YUVA) when decoding starts. All parameters are then ignored.
-// Returns NULL if the allocation failed or if a parameter is invalid.
+// Returns nil if the allocation failed or if a parameter is invalid.
   WebPIDecoder* WebPINewYUVA(
     uint8*  luma, size_t luma_size, int luma_stride,
     uint8*  u, size_t u_size, int u_stride,
@@ -323,20 +323,20 @@ type WebPDecBuffer struct {
                                           data,
                                       size_t data_size);
 
-// Returns the RGB/A image decoded so far. Returns NULL if output params
+// Returns the RGB/A image decoded so far. Returns nil if output params
 // are not initialized yet. The RGB/A output type corresponds to the colorspace
 // specified during call to WebPINewDecoder() or WebPINewRGB().
 // *last_y is the index of last decoded row in raster scan order. Some pointers
-// (*last_y, *width etc.) can be NULL if corresponding information is not
-// needed. The values in these pointers are only valid on successful (non-NULL)
+// (*last_y, *width etc.) can be nil if corresponding information is not
+// needed. The values in these pointers are only valid on successful (non-nil)
 // return.
   uint8* WebPIDecGetRGB(const WebPIDecoder* idec,
                                                    int* last_y, int* width,
                                                    int* height, int* stride);
 
 // Same as above function to get a YUVA image. Returns pointer to the luma
-// plane or NULL in case of error. If there is no alpha information
-// the alpha pointer '*a' will be returned NULL.
+// plane or nil in case of error. If there is no alpha information
+// the alpha pointer '*a' will be returned nil.
   uint8* WebPIDecGetYUVA(const WebPIDecoder* idec,
                                                     int* last_y, uint8** u,
                                                     uint8** v, uint8** a,
@@ -349,14 +349,14 @@ type WebPDecBuffer struct {
  static  uint8* WebPIDecGetYUV(
     const WebPIDecoder* idec, int* last_y, uint8** u, uint8** v, int* width,
     int* height, int* stride, int* uv_stride) {
-  return WebPIDecGetYUVA(idec, last_y, u, v, NULL, width, height, stride,
-                         uv_stride, NULL);
+  return WebPIDecGetYUVA(idec, last_y, u, v, nil, width, height, stride,
+                         uv_stride, nil);
 }
 
 // Generic call to retrieve information about the displayable area.
-// If non NULL, the left/right/width/height pointers are filled with the visible
+// If non nil, the left/right/width/height pointers are filled with the visible
 // rectangular area so far.
-// Returns NULL in case the incremental decoder object is in an invalid state.
+// Returns nil in case the incremental decoder object is in an invalid state.
 // Otherwise returns the pointer to the internal representation. This structure
 // is read-only, tied to WebPIDecoder's lifespan and should not be modified.
   const WebPDecBuffer* WebPIDecodedArea(
@@ -468,7 +468,7 @@ type WebPDecoderConfig struct {
   return WebPInitDecoderConfigInternal(config, WEBP_DECODER_ABI_VERSION);
 }
 
-// Returns true if 'config' is non-NULL and all configuration parameters are
+// Returns true if 'config' is non-nil and all configuration parameters are
 // within their valid ranges.
   int WebPValidateDecoderConfig(
     const WebPDecoderConfig* config);
@@ -476,13 +476,13 @@ type WebPDecoderConfig struct {
 // Instantiate a new incremental decoder object with the requested
 // configuration. The bitstream can be passed using 'data' and 'data_size'
 // parameter, in which case the features will be parsed and stored into
-// config.input. Otherwise, 'data' can be NULL and no parsing will occur.
-// Note that 'config' can be NULL too, in which case a default configuration
-// is used. If 'config' is not NULL, it must outlive the WebPIDecoder object
+// config.input. Otherwise, 'data' can be nil and no parsing will occur.
+// Note that 'config' can be nil too, in which case a default configuration
+// is used. If 'config' is not nil, it must outlive the WebPIDecoder object
 // as some references to its fields will be used. No internal copy of 'config'
 // is made.
 // The return WebPIDecoder object must always be deleted calling WebPIDelete().
-// Returns NULL in case of error (and config.status will then reflect
+// Returns nil in case of error (and config.status will then reflect
 // the error condition, if available).
   WebPIDecoder* WebPIDecode(
     const uint8*  data, size_t data_size,
@@ -490,7 +490,7 @@ type WebPDecoderConfig struct {
 
 // Non-incremental version. This version decodes the full data at once, taking
 // 'config' into account. Returns decoding status (which should be VP8_STATUS_OK
-// if the decoding was successful). Note that 'config' cannot be NULL.
+// if the decoding was successful). Note that 'config' cannot be nil.
 func WebPDecode(const uint8* 
                                          data,
                                      size_t data_size,

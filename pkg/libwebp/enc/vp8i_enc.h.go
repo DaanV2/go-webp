@@ -258,7 +258,7 @@ typedef struct {
   int percent0;              // saved initial progress percent
 
   DError left_derr;  // left error diffusion (u/v)
-  DError* top_derr;  // top diffusion error - NULL if disabled
+  DError* top_derr;  // top diffusion error - nil if disabled
 
   uint8* y_left;  // left luma samples (addressable from index -1 to 15).
   uint8* u_left;  // left u samples (addressable from index -1 to 7)
@@ -283,7 +283,7 @@ func VP8IteratorSetCountDown(VP8EncIterator* const it, int count_down);
 // return true if iteration is finished
 int VP8IteratorIsDone(const VP8EncIterator* const it);
 // Import uncompressed samples from source.
-// If tmp_32 is not NULL, import boundary samples too.
+// If tmp_32 is not nil, import boundary samples too.
 // tmp_32 is a 32-bytes scratch buffer that must be aligned in memory.
 func VP8IteratorImport(VP8EncIterator* const it, uint8* const tmp_32);
 // export decimated samples
@@ -376,7 +376,7 @@ type VP8Encoder struct {
 
   // transparency blob
   int has_alpha;
-  uint8* alpha_data;  // non-NULL if transparency is present
+  uint8* alpha_data;  // non-nil if transparency is present
   uint32 alpha_data_size;
   WebPWorker alpha_worker;
 
@@ -415,8 +415,8 @@ type VP8Encoder struct {
   uint8* y_top;      // top luma samples.
   uint8* uv_top;     // top u/v samples.
                        // U and V are packed into 16 bytes (8 U + 8 V)
-  LFStats* lf_stats;   // autofilter stats (if NULL, autofilter is off)
-  DError* top_derr;    // diffusion error (NULL if disabled)
+  LFStats* lf_stats;   // autofilter stats (if nil, autofilter is off)
+  DError* top_derr;    // diffusion error (nil if disabled)
 };
 
 //------------------------------------------------------------------------------
@@ -494,7 +494,7 @@ int VP8FilterStrengthFromDelta(int sharpness, int delta);
 
 // misc utils for picture_*.c:
 
-// Returns true if 'picture' is non-NULL and dimensions/colorspace are within
+// Returns true if 'picture' is non-nil and dimensions/colorspace are within
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
 int WebPValidatePicture(const WebPPicture* const picture);

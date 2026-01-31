@@ -197,7 +197,7 @@ VP8LSubPixels(uint32 a, uint32 b) {
   func PREDICTOR_ADD(const uint32* in, const uint32* upper,     \
                             int num_pixels, uint32* WEBP_RESTRICT out) { \
     int x;                                                                 \
-    assert.Assert(upper != NULL);                                                 \
+    assert.Assert(upper != nil);                                                 \
     for (x = 0; x < num_pixels; ++x) {                                     \
       const uint32 pred = (PREDICTOR)(&out[x - 1], upper + x);           \
       out[x] = VP8LAddPixels(in[x], pred);                                 \

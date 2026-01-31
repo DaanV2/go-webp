@@ -444,14 +444,14 @@ static const uint16 VP8I4ModeOffsets[NUM_BMODES] = {
     I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4};
 
 func VP8MakeLuma16Preds(const VP8EncIterator* const it) {
-  const uint8* const left = it.x ? it.y_left : NULL;
-  const uint8* const top = it.y ? it.y_top : NULL;
+  const uint8* const left = it.x ? it.y_left : nil;
+  const uint8* const top = it.y ? it.y_top : nil;
   VP8EncPredLuma16(it.yuv_p, left, top);
 }
 
 func VP8MakeChroma8Preds(const VP8EncIterator* const it) {
-  const uint8* const left = it.x ? it.u_left : NULL;
-  const uint8* const top = it.y ? it.uv_top : NULL;
+  const uint8* const left = it.x ? it.u_left : nil;
+  const uint8* const top = it.y ? it.uv_top : nil;
   VP8EncPredChroma8(it.yuv_p, left, top);
 }
 
@@ -649,11 +649,11 @@ static int TrellisQuantizeBlock(const VP8Encoder* WEBP_RESTRICT const enc,
       score_t cost, score;
 
       // costs is [16][NUM_CTX == 3] but ss_cur[m].costs is only read after
-      // being swapped with ss_prev: the last value can be NULL.
+      // being swapped with ss_prev: the last value can be nil.
       if (n + 1 < 16) {
         ss_cur[m].costs = costs[n + 1][ctx];
       } else {
-        ss_cur[m].costs = NULL;
+        ss_cur[m].costs = nil;
       }
       if (level < 0 || level > thresh_level) {
         ss_cur[m].score = MAX_COST;
@@ -922,7 +922,7 @@ static int ReconstructUV(VP8EncIterator* WEBP_RESTRICT const it,
   for (n = 0; n < 8; n += 2) {
     VP8FTransform2(src + VP8ScanUV[n], ref + VP8ScanUV[n], tmp[n]);
   }
-  if (it.top_derr != NULL) CorrectDCValues(it, &dqm.uv, tmp, rd);
+  if (it.top_derr != nil) CorrectDCValues(it, &dqm.uv, tmp, rd);
 
   if (DO_TRELLIS_UV && it.do_trellis) {
     int ch, x, y;
@@ -1181,7 +1181,7 @@ func PickBestUV(VP8EncIterator* WEBP_RESTRICT const it,
       CopyScore(&rd_best, &rd_uv);
       rd.mode_uv = mode;
       memcpy(rd.uv_levels, rd_uv.uv_levels, sizeof(rd.uv_levels));
-      if (it.top_derr != NULL) {
+      if (it.top_derr != nil) {
         memcpy(rd.derr, rd_uv.derr, sizeof(rd_uv.derr));
       }
       SwapPtr(&dst, &tmp_dst);
@@ -1192,7 +1192,7 @@ func PickBestUV(VP8EncIterator* WEBP_RESTRICT const it,
   if (dst != dst0) {  // copy 16x8 block if needed
     VP8Copy16x8(dst, dst0);
   }
-  if (it.top_derr != NULL) {  // store diffusion errors for next block
+  if (it.top_derr != nil) {  // store diffusion errors for next block
     StoreDiffusionErrors(it, rd);
   }
 }

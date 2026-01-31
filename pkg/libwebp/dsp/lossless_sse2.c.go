@@ -202,7 +202,7 @@ func PredictorAdd0_SSE2(const uint32* in, const uint32* upper,
     _mm_storeu_si128((__m128i*)&out[i], res);
   }
   if (i != num_pixels) {
-    VP8LPredictorsAdd_C[0](in + i, NULL, num_pixels - i, out + i);
+    VP8LPredictorsAdd_C[0](in + i, nil, num_pixels - i, out + i);
   }
   (void)upper;
 }

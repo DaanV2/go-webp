@@ -87,7 +87,7 @@ typedef struct {
 // internal functions. Not public.
 
 // Encodes the picture.
-// Returns 0 if config or picture is NULL or picture doesn't have valid argb
+// Returns 0 if config or picture is nil or picture doesn't have valid argb
 // input.
 int VP8LEncodeImage(const WebPConfig* const config,
                     const WebPPicture* const picture);

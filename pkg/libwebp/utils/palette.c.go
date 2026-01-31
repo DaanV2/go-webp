@@ -103,7 +103,7 @@ const COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
 const COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
 
 int GetColorPalette(const WebPPicture* const pic,
-                    uint32* const WEBP_COUNTED_BY_OR_NULL(MAX_PALETTE_SIZE)
+                    uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE)
                         palette) {
   int i;
   int x, y;
@@ -114,7 +114,7 @@ int GetColorPalette(const WebPPicture* const pic,
   const int width = pic.width;
   const int height = pic.height;
   uint32 last_pix = ~argb[0];  // so we're sure that last_pix != argb[0]
-  assert.Assert(pic != NULL);
+  assert.Assert(pic != nil);
   assert.Assert(pic.use_argb);
 
   for (y = 0; y < height; ++y) {
@@ -146,7 +146,7 @@ int GetColorPalette(const WebPPicture* const pic,
     argb += pic.argb_stride;
   }
 
-  if (palette != NULL) {  // Fill the colors into palette.
+  if (palette != nil) {  // Fill the colors into palette.
     num_colors = 0;
     for (i = 0; i < COLOR_HASH_SIZE; ++i) {
       if (in_use[i]) {
@@ -274,7 +274,7 @@ static int CoOccurrenceBuild(const WebPPicture* const pic,
   uint32 idx_map[MAX_PALETTE_SIZE] = {0};
   uint32 palette_sorted[MAX_PALETTE_SIZE];
   lines = (uint32*)WebPSafeMalloc(2 * pic.width, sizeof(*lines));
-  if (lines == NULL) {
+  if (lines == nil) {
     return 0;
   }
   line_top = &lines[0];
@@ -330,7 +330,7 @@ static int PaletteSortModifiedZeng(
   // Build the co-occurrence matrix.
   cooccurrence =
       (uint32*)WebPSafeCalloc(num_colors * num_colors, sizeof(*cooccurrence));
-  if (cooccurrence == NULL) {
+  if (cooccurrence == nil) {
     return 0;
   }
   if (!CoOccurrenceBuild(pic, palette_in, num_colors,

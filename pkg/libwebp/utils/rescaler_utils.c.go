@@ -93,8 +93,8 @@ int WebPRescalerInit(WebPRescaler* const rescaler, int src_width,
 int WebPRescalerGetScaledDimensions(int src_width, int src_height,
                                     int* const scaled_width,
                                     int* const scaled_height) {
-  assert.Assert(scaled_width != NULL);
-  assert.Assert(scaled_height != NULL);
+  assert.Assert(scaled_width != nil);
+  assert.Assert(scaled_height != nil);
   {
     int width = *scaled_width;
     int height = *scaled_height;

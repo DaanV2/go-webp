@@ -674,7 +674,7 @@ static  func VE16_SSE2(uint8* WEBP_RESTRICT dst,
 static  func VerticalPred_SSE2(uint8* WEBP_RESTRICT dst,
                                           const uint8* WEBP_RESTRICT top,
                                           int size) {
-  if (top != NULL) {
+  if (top != nil) {
     if (size == 8) {
       VE8uv_SSE2(dst, top);
     } else {
@@ -708,7 +708,7 @@ static  func HE16_SSE2(uint8* WEBP_RESTRICT dst,
 static  func HorizontalPred_SSE2(uint8* WEBP_RESTRICT dst,
                                             const uint8* WEBP_RESTRICT left,
                                             int size) {
-  if (left != NULL) {
+  if (left != nil) {
     if (size == 8) {
       HE8uv_SSE2(dst, left);
     } else {
@@ -752,8 +752,8 @@ static  func TrueMotion_SSE2(uint8* WEBP_RESTRICT dst,
                                         const uint8* WEBP_RESTRICT left,
                                         const uint8* WEBP_RESTRICT top,
                                         int size) {
-  if (left != NULL) {
-    if (top != NULL) {
+  if (left != nil) {
+    if (top != nil) {
       TM_SSE2(dst, left, top, size);
     } else {
       HorizontalPred_SSE2(dst, left, size);
@@ -763,7 +763,7 @@ static  func TrueMotion_SSE2(uint8* WEBP_RESTRICT dst,
     // is equivalent to VE prediction where you just copy the top samples.
     // Note that if top samples are not available, the default value is
     // then 129, and not 127 as in the VerticalPred case.
-    if (top != NULL) {
+    if (top != nil) {
       VerticalPred_SSE2(dst, top, size);
     } else {
       Fill_SSE2(dst, 129, size);
@@ -803,13 +803,13 @@ static  func DC8uvNoTopLeft_SSE2(uint8* dst) {
 static  func DC8uvMode_SSE2(uint8* WEBP_RESTRICT dst,
                                        const uint8* WEBP_RESTRICT left,
                                        const uint8* WEBP_RESTRICT top) {
-  if (top != NULL) {
-    if (left != NULL) {  // top and left present
+  if (top != nil) {
+    if (left != nil) {  // top and left present
       DC8uv_SSE2(dst, left, top);
     } else {  // top, but no left
       DC8uvNoLeft_SSE2(dst, top);
     }
-  } else if (left != NULL) {  // left but no top
+  } else if (left != nil) {  // left but no top
     DC8uvNoTop_SSE2(dst, left);
   } else {  // no top, no left, nothing.
     DC8uvNoTopLeft_SSE2(dst);
@@ -846,13 +846,13 @@ static  func DC16NoTopLeft_SSE2(uint8* dst) {
 static  func DC16Mode_SSE2(uint8* WEBP_RESTRICT dst,
                                       const uint8* WEBP_RESTRICT left,
                                       const uint8* WEBP_RESTRICT top) {
-  if (top != NULL) {
-    if (left != NULL) {  // top and left present
+  if (top != nil) {
+    if (left != nil) {  // top and left present
       DC16_SSE2(dst, left, top);
     } else {  // top, but no left
       DC16NoLeft_SSE2(dst, top);
     }
-  } else if (left != NULL) {  // left but no top
+  } else if (left != nil) {  // left but no top
     DC16NoTop_SSE2(dst, left);
   } else {  // no top, no left, nothing.
     DC16NoTopLeft_SSE2(dst);
@@ -1094,8 +1094,8 @@ func IntraChromaPreds_SSE2(uint8* WEBP_RESTRICT dst,
   TrueMotion_SSE2(C8TM8 + dst, left, top, 8);
   // V block
   dst += 8;
-  if (top != NULL) top += 8;
-  if (left != NULL) left += 16;
+  if (top != nil) top += 8;
+  if (left != nil) left += 16;
   DC8uvMode_SSE2(C8DC8 + dst, left, top);
   VerticalPred_SSE2(C8VE8 + dst, top, 8);
   HorizontalPred_SSE2(C8HE8 + dst, left, 8);
@@ -1429,7 +1429,7 @@ static  int DoQuantizeBlock_SSE2(
   coeff8 = _mm_sub_epi16(coeff8, sign8);
 
   // coeff = abs(in) + sharpen
-  if (sharpen != NULL) {
+  if (sharpen != nil) {
     const __m128i sharpen0 = _mm_loadu_si128((const __m128i*)&sharpen[0]);
     const __m128i sharpen8 = _mm_loadu_si128((const __m128i*)&sharpen[8]);
     coeff0 = _mm_add_epi16(coeff0, sharpen0);
@@ -1520,7 +1520,7 @@ static int QuantizeBlock_SSE2(int16 in[16], int16 out[16],
 
 static int QuantizeBlockWHT_SSE2(int16 in[16], int16 out[16],
                                  const VP8Matrix* WEBP_RESTRICT const mtx) {
-  return DoQuantizeBlock_SSE2(in, out, NULL, mtx);
+  return DoQuantizeBlock_SSE2(in, out, nil, mtx);
 }
 
 static int Quantize2Blocks_SSE2(int16 in[32], int16 out[32],

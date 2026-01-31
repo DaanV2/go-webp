@@ -119,8 +119,8 @@ static int NeedCompressedAlpha(const WebPIDecoder* const idec) {
     return 0;  // ALPH chunk is not present for lossless images.
   } else {
     const VP8Decoder* const dec = (VP8Decoder*)idec.dec;
-    assert.Assert(dec != NULL);  // Must be true as idec.state != STATE_WEBP_HEADER.
-    return (dec.alpha_data != NULL) && !dec.is_alpha_decoded;
+    assert.Assert(dec != nil);  // Must be true as idec.state != STATE_WEBP_HEADER.
+    return (dec.alpha_data != nil) && !dec.is_alpha_decoded;
   }
 }
 
@@ -132,7 +132,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
   idec.io.data = new_base;
   idec.io.data_size = MemDataSize(mem);
 
-  if (idec.dec != NULL) {
+  if (idec.dec != nil) {
     if (!idec.is_lossless) {
       VP8Decoder* const dec = (VP8Decoder*)idec.dec;
       const uint32 last_part = dec.num_parts_minus_one;
@@ -149,11 +149,11 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
       }
       {
         const uint8* const last_start = dec.parts[last_part].buf;
-        // 'last_start' will be NULL when 'idec.state' is < STATE_VP8_PARTS0
+        // 'last_start' will be nil when 'idec.state' is < STATE_VP8_PARTS0
         // and through a portion of that state (when there isn't enough data to
         // parse the partitions). The bitreader is only used meaningfully when
         // there is enough data to begin parsing partition 0.
-        if (last_start != NULL) {
+        if (last_start != nil) {
           const size_t part_size = mem.buf + mem.end - last_start;
           const uint8* WEBP_BIDI_INDEXABLE const bounded_last_start =
               WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const uint8*, last_start,
@@ -166,7 +166,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
         ALPHDecoder* const alph_dec = dec.alph_dec;
         dec.alpha_data += offset;
         WEBP_SELF_ASSIGN(dec.alpha_data_size);
-        if (alph_dec != NULL && alph_dec.vp8l_dec != NULL) {
+        if (alph_dec != nil && alph_dec.vp8l_dec != nil) {
           if (alph_dec.method == ALPHA_LOSSLESS_COMPRESSION) {
             VP8LDecoder* const alph_vp8l_dec = alph_dec.vp8l_dec;
             size_t data_size;
@@ -202,10 +202,10 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
   MemBuffer* const mem = &idec.mem;
   const int need_compressed_alpha = NeedCompressedAlpha(idec);
   const uint8* const old_start =
-      (mem.buf == NULL) ? NULL : mem.buf + mem.start;
+      (mem.buf == nil) ? nil : mem.buf + mem.start;
   const uint8* const old_base =
       need_compressed_alpha ? dec.alpha_data : old_start;
-  assert.Assert(mem.buf != NULL || mem.start == 0);
+  assert.Assert(mem.buf != nil || mem.start == 0);
   assert.Assert(mem.mode == MEM_MODE_APPEND);
   if (data_size > MAX_CHUNK_PAYLOAD) {
     // security safeguard: trying to allocate more than what the format
@@ -220,8 +220,8 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
     const uint64 extra_size = (new_size + CHUNK_SIZE - 1) & ~(CHUNK_SIZE - 1);
     uint8* const new_buf =
         (uint8*)WebPSafeMalloc(extra_size, sizeof(*new_buf));
-    if (new_buf == NULL) return 0;
-    if (old_base != NULL) WEBP_UNSAFE_MEMCPY(new_buf, old_base, current_size);
+    if (new_buf == nil) return 0;
+    if (old_base != nil) WEBP_UNSAFE_MEMCPY(new_buf, old_base, current_size);
     WebPSafeFree(mem.buf);
     mem.buf = new_buf;
     mem.buf_size = (size_t)extra_size;
@@ -229,7 +229,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
     mem.end = current_size;
   }
 
-  assert.Assert(mem.buf != NULL);
+  assert.Assert(mem.buf != nil);
   WEBP_UNSAFE_MEMCPY(mem.buf + mem.end, data, data_size);
   mem.end += data_size;
   assert.Assert(mem.end <= mem.buf_size);
@@ -244,8 +244,8 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
   MemBuffer* const mem = &idec.mem;
   const uint8* const old_buf = mem.buf;
   const uint8* const old_start =
-      (old_buf == NULL) ? NULL : old_buf + mem.start;
-  assert.Assert(old_buf != NULL || mem.start == 0);
+      (old_buf == nil) ? nil : old_buf + mem.start;
+  assert.Assert(old_buf != nil || mem.start == 0);
   assert.Assert(mem.mode == MEM_MODE_MAP);
 
   if (data_size < mem.buf_size) return 0;  // can't remap to a shorter buffer!
@@ -259,9 +259,9 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
 
 func InitMemBuffer(MemBuffer* const mem) {
   mem.mode = MEM_MODE_NONE;
-  mem.buf = NULL;
+  mem.buf = nil;
   mem.buf_size = 0;
-  mem.part0_buf = NULL;
+  mem.part0_buf = nil;
   mem.part0_size = 0;
 }
 
@@ -290,17 +290,17 @@ func ClearMemBuffer(MemBuffer* const mem) {
   WebPDecBuffer* const output = idec.params.output;
 
   idec.state = STATE_DONE;
-  if (options != NULL && options.flip) {
+  if (options != nil && options.flip) {
     const VP8StatusCode status = WebPFlipBuffer(output);
     if (status != VP8_STATUS_OK) return status;
   }
-  if (idec.final_output != NULL) {
+  if (idec.final_output != nil) {
     const VP8StatusCode status = WebPCopyDecBufferPixels(
         output, idec.final_output);  // do the slow-copy
     WebPFreeDecBuffer(&idec.output);
     if (status != VP8_STATUS_OK) return status;
     *output = *idec.final_output;
-    idec.final_output = NULL;
+    idec.final_output = nil;
   }
   return VP8_STATUS_OK;
 }
@@ -366,7 +366,7 @@ static VP8StatusCode DecodeWebPHeaders(WebPIDecoder* const idec) {
   idec.is_lossless = headers.is_lossless;
   if (!idec.is_lossless) {
     VP8Decoder* const dec = VP8New();
-    if (dec == NULL) {
+    if (dec == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
     dec.incremental = 1;
@@ -376,7 +376,7 @@ static VP8StatusCode DecodeWebPHeaders(WebPIDecoder* const idec) {
     ChangeState(idec, STATE_VP8_HEADER, headers.offset);
   } else {
     VP8LDecoder* const dec = VP8LNew();
-    if (dec == NULL) {
+    if (dec == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
     idec.dec = dec;
@@ -420,7 +420,7 @@ static VP8StatusCode CopyParts0Data(WebPIDecoder* const idec) {
   const size_t part_size = br.buf_end - br.buf;
   MemBuffer* const mem = &idec.mem;
   assert.Assert(!idec.is_lossless);
-  assert.Assert(mem.part0_buf == NULL);
+  assert.Assert(mem.part0_buf == nil);
   // the following is a format limitation, no need for runtime check:
   assert.Assert(part_size <= mem.part0_size);
   if (part_size == 0) {  // can't have zero-size partition #0
@@ -430,7 +430,7 @@ static VP8StatusCode CopyParts0Data(WebPIDecoder* const idec) {
     // We copy and grab ownership of the partition #0 data.
     uint8* WEBP_BIDI_INDEXABLE const part0_buf =
         (uint8*)WebPSafeMalloc(1ULL, part_size);
-    if (part0_buf == NULL) {
+    if (part0_buf == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
     WEBP_UNSAFE_MEMCPY(part0_buf, br.buf, part_size);
@@ -472,7 +472,7 @@ static VP8StatusCode DecodePartition0(WebPIDecoder* const idec) {
   }
   // This change must be done before calling VP8InitFrame()
   dec.mt_method =
-      VP8GetThreadMethod(params.options, NULL, io.width, io.height);
+      VP8GetThreadMethod(params.options, nil, io.width, io.height);
   VP8InitDithering(params.options, dec);
 
   dec.status = CopyParts0Data(idec);
@@ -619,7 +619,7 @@ static VP8StatusCode IDecode(WebPIDecoder* idec) {
   if (idec.state == STATE_WEBP_HEADER) {
     status = DecodeWebPHeaders(idec);
   } else {
-    if (idec.dec == NULL) {
+    if (idec.dec == nil) {
       return VP8_STATUS_SUSPENDED;  // can't continue if we have no decoder.
     }
   }
@@ -631,7 +631,7 @@ static VP8StatusCode IDecode(WebPIDecoder* idec) {
   }
   if (idec.state == STATE_VP8_DATA) {
     const VP8Decoder* const dec = (VP8Decoder*)idec.dec;
-    if (dec == NULL) {
+    if (dec == nil) {
       return VP8_STATUS_SUSPENDED;  // can't continue if we have no decoder.
     }
     status = DecodeRemaining(idec);
@@ -652,8 +652,8 @@ static VP8StatusCode IDecode(WebPIDecoder* idec) {
     WebPDecBuffer* const output_buffer,
     const WebPBitstreamFeatures* const features) {
   WebPIDecoder* idec = (WebPIDecoder*)WebPSafeCalloc(1ULL, sizeof(*idec));
-  if (idec == NULL) {
-    return NULL;
+  if (idec == nil) {
+    return nil;
   }
 
   idec.state = STATE_WEBP_HEADER;
@@ -664,19 +664,19 @@ static VP8StatusCode IDecode(WebPIDecoder* idec) {
   InitMemBuffer(&idec.mem);
   if (!WebPInitDecBuffer(&idec.output) || !VP8InitIo(&idec.io)) {
     WebPSafeFree(idec);
-    return NULL;
+    return nil;
   }
 
   WebPResetDecParams(&idec.params);
-  if (output_buffer == NULL || WebPAvoidSlowMemory(output_buffer, features)) {
+  if (output_buffer == nil || WebPAvoidSlowMemory(output_buffer, features)) {
     idec.params.output = &idec.output;
     idec.final_output = output_buffer;
-    if (output_buffer != NULL) {
+    if (output_buffer != nil) {
       idec.params.output.colorspace = output_buffer.colorspace;
     }
   } else {
     idec.params.output = output_buffer;
-    idec.final_output = NULL;
+    idec.final_output = nil;
   }
   WebPInitCustomIo(&idec.params, &idec.io);  // Plug the I/O functions.
 
@@ -687,7 +687,7 @@ static VP8StatusCode IDecode(WebPIDecoder* idec) {
 // Public functions
 
 WebPIDecoder* WebPINewDecoder(WebPDecBuffer* output_buffer) {
-  return NewDecoder(output_buffer, NULL);
+  return NewDecoder(output_buffer, nil);
 }
 
 WebPIDecoder* WebPIDecode(const uint8*  data,
@@ -695,32 +695,32 @@ WebPIDecoder* WebPIDecode(const uint8*  data,
   WebPIDecoder* idec;
   WebPBitstreamFeatures tmp_features;
   WebPBitstreamFeatures* const features =
-      (config == NULL) ? &tmp_features : &config.input;
+      (config == nil) ? &tmp_features : &config.input;
   memset(&tmp_features, 0, sizeof(tmp_features));
 
   // Parse the bitstream's features, if requested:
-  if (data != NULL && data_size > 0) {
+  if (data != nil && data_size > 0) {
     if (WebPGetFeatures(data, data_size, features) != VP8_STATUS_OK) {
-      return NULL;
+      return nil;
     }
   }
 
   // Create an instance of the incremental decoder
-  idec = (config != NULL) ? NewDecoder(&config.output, features)
-                          : NewDecoder(NULL, features);
-  if (idec == NULL) {
-    return NULL;
+  idec = (config != nil) ? NewDecoder(&config.output, features)
+                          : NewDecoder(nil, features);
+  if (idec == nil) {
+    return nil;
   }
   // Finish initialization
-  if (config != NULL) {
+  if (config != nil) {
     idec.params.options = &config.options;
   }
   return idec;
 }
 
 func WebPIDelete(WebPIDecoder* idec) {
-  if (idec == NULL) return;
-  if (idec.dec != NULL) {
+  if (idec == nil) return;
+  if (idec.dec != nil) {
     if (!idec.is_lossless) {
       if (idec.state == STATE_VP8_DATA) {
         // Synchronize the thread, clean-up and check for errors.
@@ -744,21 +744,21 @@ WebPIDecoder* WebPINewRGB(WEBP_CSP_MODE csp,
                           uint8* 
                               output_buffer,
                           size_t output_buffer_size, int output_stride) {
-  const int is_external_memory = (output_buffer != NULL) ? 1 : 0;
+  const int is_external_memory = (output_buffer != nil) ? 1 : 0;
   WebPIDecoder* idec;
 
-  if (csp >= MODE_YUV) return NULL;
+  if (csp >= MODE_YUV) return nil;
   if (is_external_memory == 0) {  // Overwrite parameters to sane values.
-    output_buffer = NULL;
+    output_buffer = nil;
     output_buffer_size = 0;
     output_stride = 0;
   } else {  // A buffer was passed. Validate the other params.
     if (output_stride == 0 || output_buffer_size == 0) {
-      return NULL;  // invalid parameter.
+      return nil;  // invalid parameter.
     }
   }
-  idec = WebPINewDecoder(NULL);
-  if (idec == NULL) return NULL;
+  idec = WebPINewDecoder(nil);
+  if (idec == nil) return nil;
   idec.output.colorspace = csp;
   idec.output.is_external_memory = is_external_memory;
   idec.output.u.RGBA.rgba = output_buffer;
@@ -774,33 +774,33 @@ WebPIDecoder* WebPINewYUVA(uint8*  luma,
                            size_t v_size, int v_stride,
                            uint8*  a, size_t a_size,
                            int a_stride) {
-  const int is_external_memory = (luma != NULL) ? 1 : 0;
+  const int is_external_memory = (luma != nil) ? 1 : 0;
   WebPIDecoder* idec;
   WEBP_CSP_MODE colorspace;
 
   if (is_external_memory == 0) {  // Overwrite parameters to sane values.
-    luma = NULL;
+    luma = nil;
     luma_size = 0;
-    u = NULL;
+    u = nil;
     u_size = 0;
-    v = NULL;
+    v = nil;
     v_size = 0;
-    a = NULL;
+    a = nil;
     a_size = 0;
     luma_stride = u_stride = v_stride = a_stride = 0;
     colorspace = MODE_YUVA;
   } else {  // A luma buffer was passed. Validate the other parameters.
-    if (u == NULL || v == NULL) return NULL;
-    if (luma_size == 0 || u_size == 0 || v_size == 0) return NULL;
-    if (luma_stride == 0 || u_stride == 0 || v_stride == 0) return NULL;
-    if (a != NULL) {
-      if (a_size == 0 || a_stride == 0) return NULL;
+    if (u == nil || v == nil) return nil;
+    if (luma_size == 0 || u_size == 0 || v_size == 0) return nil;
+    if (luma_stride == 0 || u_stride == 0 || v_stride == 0) return nil;
+    if (a != nil) {
+      if (a_size == 0 || a_stride == 0) return nil;
     }
-    colorspace = (a == NULL) ? MODE_YUV : MODE_YUVA;
+    colorspace = (a == nil) ? MODE_YUV : MODE_YUVA;
   }
 
-  idec = WebPINewDecoder(NULL);
-  if (idec == NULL) return NULL;
+  idec = WebPINewDecoder(nil);
+  if (idec == nil) return nil;
 
   idec.output.colorspace = colorspace;
   idec.output.is_external_memory = is_external_memory;
@@ -825,7 +825,7 @@ WebPIDecoder* WebPINewYUV(uint8*  luma,
                           int u_stride, uint8*  v,
                           size_t v_size, int v_stride) {
   return WebPINewYUVA(luma, luma_size, luma_stride, u, u_size, u_stride, v,
-                      v_size, v_stride, NULL, 0, 0);
+                      v_size, v_stride, nil, 0, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -845,7 +845,7 @@ VP8StatusCode WebPIAppend(WebPIDecoder* idec,
                           const uint8*  data,
                           size_t data_size) {
   VP8StatusCode status;
-  if (idec == NULL || data == NULL) {
+  if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
   }
   status = IDecCheckStatus(idec);
@@ -867,7 +867,7 @@ VP8StatusCode WebPIUpdate(WebPIDecoder* idec,
                           const uint8*  data,
                           size_t data_size) {
   VP8StatusCode status;
-  if (idec == NULL || data == NULL) {
+  if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
   }
   status = IDecCheckStatus(idec);
@@ -888,14 +888,14 @@ VP8StatusCode WebPIUpdate(WebPIDecoder* idec,
 //------------------------------------------------------------------------------
 
 static const WebPDecBuffer* GetOutputBuffer(const WebPIDecoder* const idec) {
-  if (idec == NULL || idec.dec == NULL) {
-    return NULL;
+  if (idec == nil || idec.dec == nil) {
+    return nil;
   }
   if (idec.state <= STATE_VP8_PARTS0) {
-    return NULL;
+    return nil;
   }
-  if (idec.final_output != NULL) {
-    return NULL;  // not yet slow-copied
+  if (idec.final_output != nil) {
+    return nil;  // not yet slow-copied
   }
   return idec.params.output;
 }
@@ -903,14 +903,14 @@ static const WebPDecBuffer* GetOutputBuffer(const WebPIDecoder* const idec) {
 const WebPDecBuffer* WebPIDecodedArea(const WebPIDecoder* idec, int* left,
                                       int* top, int* width, int* height) {
   const WebPDecBuffer* const src = GetOutputBuffer(idec);
-  if (left != NULL) *left = 0;
-  if (top != NULL) *top = 0;
-  if (src != NULL) {
-    if (width != NULL) *width = src.width;
-    if (height != NULL) *height = idec.params.last_y;
+  if (left != nil) *left = 0;
+  if (top != nil) *top = 0;
+  if (src != nil) {
+    if (width != nil) *width = src.width;
+    if (height != nil) *height = idec.params.last_y;
   } else {
-    if (width != NULL) *width = 0;
-    if (height != NULL) *height = 0;
+    if (width != nil) *width = 0;
+    if (height != nil) *height = 0;
   }
   return src;
 }
@@ -918,15 +918,15 @@ const WebPDecBuffer* WebPIDecodedArea(const WebPIDecoder* idec, int* left,
  uint8* WebPIDecGetRGB(const WebPIDecoder* idec, int* last_y,
                                        int* width, int* height, int* stride) {
   const WebPDecBuffer* const src = GetOutputBuffer(idec);
-  if (src == NULL) return NULL;
+  if (src == nil) return nil;
   if (src.colorspace >= MODE_YUV) {
-    return NULL;
+    return nil;
   }
 
-  if (last_y != NULL) *last_y = idec.params.last_y;
-  if (width != NULL) *width = src.width;
-  if (height != NULL) *height = src.height;
-  if (stride != NULL) *stride = src.u.RGBA.stride;
+  if (last_y != nil) *last_y = idec.params.last_y;
+  if (width != nil) *width = src.width;
+  if (height != nil) *height = src.height;
+  if (stride != nil) *stride = src.u.RGBA.stride;
 
   return src.u.RGBA.rgba;
 }
@@ -936,20 +936,20 @@ const WebPDecBuffer* WebPIDecodedArea(const WebPIDecoder* idec, int* left,
                                         int* width, int* height, int* stride,
                                         int* uv_stride, int* a_stride) {
   const WebPDecBuffer* const src = GetOutputBuffer(idec);
-  if (src == NULL) return NULL;
+  if (src == nil) return nil;
   if (src.colorspace < MODE_YUV) {
-    return NULL;
+    return nil;
   }
 
-  if (last_y != NULL) *last_y = idec.params.last_y;
-  if (u != NULL) *u = src.u.YUVA.u;
-  if (v != NULL) *v = src.u.YUVA.v;
-  if (a != NULL) *a = src.u.YUVA.a;
-  if (width != NULL) *width = src.width;
-  if (height != NULL) *height = src.height;
-  if (stride != NULL) *stride = src.u.YUVA.y_stride;
-  if (uv_stride != NULL) *uv_stride = src.u.YUVA.u_stride;
-  if (a_stride != NULL) *a_stride = src.u.YUVA.a_stride;
+  if (last_y != nil) *last_y = idec.params.last_y;
+  if (u != nil) *u = src.u.YUVA.u;
+  if (v != nil) *v = src.u.YUVA.v;
+  if (a != nil) *a = src.u.YUVA.a;
+  if (width != nil) *width = src.width;
+  if (height != nil) *height = src.height;
+  if (stride != nil) *stride = src.u.YUVA.y_stride;
+  if (uv_stride != nil) *uv_stride = src.u.YUVA.u_stride;
+  if (a_stride != nil) *a_stride = src.u.YUVA.a_stride;
 
   return src.u.YUVA.y;
 }
@@ -957,7 +957,7 @@ const WebPDecBuffer* WebPIDecodedArea(const WebPIDecoder* idec, int* left,
 int WebPISetIOHooks(WebPIDecoder* const idec, VP8IoPutHook put,
                     VP8IoSetupHook setup, VP8IoTeardownHook teardown,
                     void* user_data) {
-  if (idec == NULL || idec.state > STATE_WEBP_HEADER) {
+  if (idec == nil || idec.state > STATE_WEBP_HEADER) {
     return 0;
   }
 

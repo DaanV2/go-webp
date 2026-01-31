@@ -818,7 +818,7 @@ WEBP_DSP_INIT_FUNC(VP8DspInit) {
   VP8DitherCombine8x8 = DitherCombine8x8_C;
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8DspInitSSE2();
@@ -848,52 +848,52 @@ WEBP_DSP_INIT_FUNC(VP8DspInit) {
 
 #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
+      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     VP8DspInitNEON();
   }
 #endif
 
-  assert.Assert(VP8TransformWHT != NULL);
-  assert.Assert(VP8Transform != NULL);
-  assert.Assert(VP8TransformDC != NULL);
-  assert.Assert(VP8TransformAC3 != NULL);
-  assert.Assert(VP8TransformUV != NULL);
-  assert.Assert(VP8TransformDCUV != NULL);
-  assert.Assert(VP8VFilter16 != NULL);
-  assert.Assert(VP8HFilter16 != NULL);
-  assert.Assert(VP8VFilter8 != NULL);
-  assert.Assert(VP8HFilter8 != NULL);
-  assert.Assert(VP8VFilter16i != NULL);
-  assert.Assert(VP8HFilter16i != NULL);
-  assert.Assert(VP8VFilter8i != NULL);
-  assert.Assert(VP8HFilter8i != NULL);
-  assert.Assert(VP8SimpleVFilter16 != NULL);
-  assert.Assert(VP8SimpleHFilter16 != NULL);
-  assert.Assert(VP8SimpleVFilter16i != NULL);
-  assert.Assert(VP8SimpleHFilter16i != NULL);
-  assert.Assert(VP8PredLuma4[0] != NULL);
-  assert.Assert(VP8PredLuma4[1] != NULL);
-  assert.Assert(VP8PredLuma4[2] != NULL);
-  assert.Assert(VP8PredLuma4[3] != NULL);
-  assert.Assert(VP8PredLuma4[4] != NULL);
-  assert.Assert(VP8PredLuma4[5] != NULL);
-  assert.Assert(VP8PredLuma4[6] != NULL);
-  assert.Assert(VP8PredLuma4[7] != NULL);
-  assert.Assert(VP8PredLuma4[8] != NULL);
-  assert.Assert(VP8PredLuma4[9] != NULL);
-  assert.Assert(VP8PredLuma16[0] != NULL);
-  assert.Assert(VP8PredLuma16[1] != NULL);
-  assert.Assert(VP8PredLuma16[2] != NULL);
-  assert.Assert(VP8PredLuma16[3] != NULL);
-  assert.Assert(VP8PredLuma16[4] != NULL);
-  assert.Assert(VP8PredLuma16[5] != NULL);
-  assert.Assert(VP8PredLuma16[6] != NULL);
-  assert.Assert(VP8PredChroma8[0] != NULL);
-  assert.Assert(VP8PredChroma8[1] != NULL);
-  assert.Assert(VP8PredChroma8[2] != NULL);
-  assert.Assert(VP8PredChroma8[3] != NULL);
-  assert.Assert(VP8PredChroma8[4] != NULL);
-  assert.Assert(VP8PredChroma8[5] != NULL);
-  assert.Assert(VP8PredChroma8[6] != NULL);
-  assert.Assert(VP8DitherCombine8x8 != NULL);
+  assert.Assert(VP8TransformWHT != nil);
+  assert.Assert(VP8Transform != nil);
+  assert.Assert(VP8TransformDC != nil);
+  assert.Assert(VP8TransformAC3 != nil);
+  assert.Assert(VP8TransformUV != nil);
+  assert.Assert(VP8TransformDCUV != nil);
+  assert.Assert(VP8VFilter16 != nil);
+  assert.Assert(VP8HFilter16 != nil);
+  assert.Assert(VP8VFilter8 != nil);
+  assert.Assert(VP8HFilter8 != nil);
+  assert.Assert(VP8VFilter16i != nil);
+  assert.Assert(VP8HFilter16i != nil);
+  assert.Assert(VP8VFilter8i != nil);
+  assert.Assert(VP8HFilter8i != nil);
+  assert.Assert(VP8SimpleVFilter16 != nil);
+  assert.Assert(VP8SimpleHFilter16 != nil);
+  assert.Assert(VP8SimpleVFilter16i != nil);
+  assert.Assert(VP8SimpleHFilter16i != nil);
+  assert.Assert(VP8PredLuma4[0] != nil);
+  assert.Assert(VP8PredLuma4[1] != nil);
+  assert.Assert(VP8PredLuma4[2] != nil);
+  assert.Assert(VP8PredLuma4[3] != nil);
+  assert.Assert(VP8PredLuma4[4] != nil);
+  assert.Assert(VP8PredLuma4[5] != nil);
+  assert.Assert(VP8PredLuma4[6] != nil);
+  assert.Assert(VP8PredLuma4[7] != nil);
+  assert.Assert(VP8PredLuma4[8] != nil);
+  assert.Assert(VP8PredLuma4[9] != nil);
+  assert.Assert(VP8PredLuma16[0] != nil);
+  assert.Assert(VP8PredLuma16[1] != nil);
+  assert.Assert(VP8PredLuma16[2] != nil);
+  assert.Assert(VP8PredLuma16[3] != nil);
+  assert.Assert(VP8PredLuma16[4] != nil);
+  assert.Assert(VP8PredLuma16[5] != nil);
+  assert.Assert(VP8PredLuma16[6] != nil);
+  assert.Assert(VP8PredChroma8[0] != nil);
+  assert.Assert(VP8PredChroma8[1] != nil);
+  assert.Assert(VP8PredChroma8[2] != nil);
+  assert.Assert(VP8PredChroma8[3] != nil);
+  assert.Assert(VP8PredChroma8[4] != nil);
+  assert.Assert(VP8PredChroma8[5] != nil);
+  assert.Assert(VP8PredChroma8[6] != nil);
+  assert.Assert(VP8DitherCombine8x8 != nil);
 }

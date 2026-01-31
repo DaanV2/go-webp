@@ -69,7 +69,7 @@ type MemBlock struct {
   MemBlock* next;
 };
 
-var MemBlock* all_blocks = NULL;
+var MemBlock* all_blocks = nil;
 var size_t total_mem = 0;
 var size_t total_mem_allocated = 0;
 var size_t high_water_mark = 0;
@@ -85,7 +85,7 @@ func PrintMemInfo(){
   fprintf(stderr, "total_mem: %u\n", (uint32)total_mem);
   fprintf(stderr, "total_mem allocated: %u\n", (uint32)total_mem_allocated);
   fprintf(stderr, "high-water mark: %u\n", (uint32)high_water_mark);
-  while (all_blocks != NULL) {
+  while (all_blocks != nil) {
     MemBlock* b = all_blocks;
     all_blocks = b.next;
     free(b);
@@ -97,7 +97,7 @@ func Increment(int* const v) {
 #if defined(MALLOC_FAIL_AT)
     {
       const char* const malloc_fail_at_str = getenv("MALLOC_FAIL_AT");
-      if (malloc_fail_at_str != NULL) {
+      if (malloc_fail_at_str != nil) {
         countdown_to_fail = atoi(malloc_fail_at_str);
       }
     }
@@ -108,7 +108,7 @@ func Increment(int* const v) {
 #if MALLOC_LIMIT > 1
       mem_limit = (size_t)MALLOC_LIMIT;
 #endif
-      if (malloc_limit_str != NULL) {
+      if (malloc_limit_str != nil) {
         mem_limit = atoi(malloc_limit_str);
       }
     }
@@ -122,9 +122,9 @@ func Increment(int* const v) {
 }
 
 func AddMem(void* ptr, size_t size) {
-  if (ptr != NULL) {
+  if (ptr != nil) {
     MemBlock* const b = (MemBlock*)malloc(sizeof(*b));
-    if (b == NULL) abort();
+    if (b == nil) abort();
     b.next = all_blocks;
     all_blocks = b;
     b.ptr = ptr;
@@ -144,11 +144,11 @@ func AddMem(void* ptr, size_t size) {
 }
 
 func SubMem(void* ptr) {
-  if (ptr != NULL) {
+  if (ptr != nil) {
     MemBlock** b = &all_blocks;
     // Inefficient search, but that's just for debugging.
-    while (*b != NULL && (*b).ptr != ptr) b = &(*b).next;
-    if (*b == NULL) {
+    while (*b != nil && (*b).ptr != ptr) b = &(*b).next;
+    if (*b == nil) {
       fprintf(stderr, "Invalid pointer free! (%p)\n", ptr);
       abort();
     }
@@ -200,22 +200,22 @@ static int CheckSizeArgumentsOverflow(uint64 nmemb, size_t size) {
   return 1;
 }
 
-void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
+void* WEBP_SIZED_BY_OR_nil(nmemb* size)
     WebPSafeMalloc(uint64 nmemb, size_t size) {
   void* ptr;
   Increment(&num_malloc_calls);
-  if (!CheckSizeArgumentsOverflow(nmemb, size)) return NULL;
+  if (!CheckSizeArgumentsOverflow(nmemb, size)) return nil;
   assert.Assert(nmemb * size > 0);
   ptr = malloc((size_t)(nmemb * size));
   AddMem(ptr, (size_t)(nmemb * size));
   return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(void*, ptr, (size_t)(nmemb * size));
 }
 
-void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
+void* WEBP_SIZED_BY_OR_nil(nmemb* size)
     WebPSafeCalloc(uint64 nmemb, size_t size) {
   void* ptr;
   Increment(&num_calloc_calls);
-  if (!CheckSizeArgumentsOverflow(nmemb, size)) return NULL;
+  if (!CheckSizeArgumentsOverflow(nmemb, size)) return nil;
   assert.Assert(nmemb * size > 0);
   ptr = calloc((size_t)nmemb, size);
   AddMem(ptr, (size_t)(nmemb * size));
@@ -223,7 +223,7 @@ void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
 }
 
 func WebPSafeFree(void* const ptr) {
-  if (ptr != NULL) {
+  if (ptr != nil) {
     Increment(&num_free_calls);
     SubMem(ptr);
   }
@@ -252,7 +252,7 @@ func WebPFree(void* WEBP_SINGLE ptr) { WebPSafeFree(ptr); }
 
 func WebPCopyPlane(const uint8* src, int src_stride, uint8* dst,
                    int dst_stride, int width, int height) {
-  assert.Assert(src != NULL && dst != NULL);
+  assert.Assert(src != nil && dst != nil);
   assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
   while (height-- > 0) {
     WEBP_UNSAFE_MEMCPY(dst, src, width);
@@ -262,7 +262,7 @@ func WebPCopyPlane(const uint8* src, int src_stride, uint8* dst,
 }
 
 func WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
-  assert.Assert(src != NULL && dst != NULL)
+  assert.Assert(src != nil && dst != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   assert.Assert(src.use_argb && dst.use_argb)
   WebPCopyPlane((uint8*)src.argb, 4 * src.argb_stride, (uint8*)dst.argb,
@@ -273,7 +273,7 @@ func WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
 
 int WebPGetColorPalette(
     const WebPPicture* const pic,
-    uint32* const WEBP_COUNTED_BY_OR_NULL(MAX_PALETTE_SIZE) palette) {
+    uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE) palette) {
   return GetColorPalette(pic, palette);
 }
 

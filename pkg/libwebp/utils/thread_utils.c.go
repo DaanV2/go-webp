@@ -70,16 +70,16 @@ static int pthread_create(pthread_t* const thread, const void* attr,
                           unsigned int(__stdcall* start)(void*), void* arg) {
   (void)attr;
 #ifdef USE_CREATE_THREAD
-  *thread = CreateThread(/*lpThreadAttributes=*/NULL,
+  *thread = CreateThread(/*lpThreadAttributes=*/nil,
                          /*dwStackSize=*/0, start, arg, /*dwStackSize=*/0,
-                         /*lpThreadId=*/NULL);
+                         /*lpThreadId=*/nil);
 #else
   *thread =
-      (pthread_t)_beginthreadex(/*security=*/NULL,
+      (pthread_t)_beginthreadex(/*security=*/nil,
                                 /*stack_size=*/0, start, arg, /*initflag=*/0,
-                                /*thrdaddr=*/NULL);
+                                /*thrdaddr=*/nil);
 #endif
-  if (*thread == NULL) return 1;
+  if (*thread == nil) return 1;
   SetThreadPriority(*thread, THREAD_PRIORITY_ABOVE_NORMAL);
   return 0;
 }
@@ -165,7 +165,7 @@ static THREADFN ThreadLoop(void* ptr) {
     pthread_mutex_unlock(&impl.mutex);
     pthread_cond_signal(&impl.condition);
   }
-  return THREAD_RETURN(NULL);  // Thread is finished
+  return THREAD_RETURN(nil);  // Thread is finished
 }
 
 // main thread state control
@@ -174,7 +174,7 @@ func ChangeState(WebPWorker* const worker, WebPWorkerStatus new_status) {
   // Checking 'status' without acquiring the lock first would result in a data
   // race.
   WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker.impl;
-  if (impl == NULL) return;
+  if (impl == nil) return;
 
   pthread_mutex_lock(&impl.mutex);
   if (worker.status >= OK) {
@@ -222,18 +222,18 @@ static int Reset(WebPWorker* const worker) {
     WebPWorkerImpl* const impl =
         (WebPWorkerImpl*)WebPSafeCalloc(1, sizeof(WebPWorkerImpl));
     worker.impl = (void*)impl;
-    if (worker.impl == NULL) {
+    if (worker.impl == nil) {
       return 0;
     }
-    if (pthread_mutex_init(&impl.mutex, NULL)) {
+    if (pthread_mutex_init(&impl.mutex, nil)) {
       goto Error;
     }
-    if (pthread_cond_init(&impl.condition, NULL)) {
+    if (pthread_cond_init(&impl.condition, nil)) {
       pthread_mutex_destroy(&impl.mutex);
       goto Error;
     }
     pthread_mutex_lock(&impl.mutex);
-    ok = !pthread_create(&impl.thread, NULL, ThreadLoop, worker);
+    ok = !pthread_create(&impl.thread, nil, ThreadLoop, worker);
     if (ok) worker.status = OK;
     pthread_mutex_unlock(&impl.mutex);
     if (!ok) {
@@ -241,7 +241,7 @@ static int Reset(WebPWorker* const worker) {
       pthread_cond_destroy(&impl.condition);
     Error:
       WebPSafeFree(impl);
-      worker.impl = NULL;
+      worker.impl = nil;
       return 0;
     }
 #else
@@ -255,7 +255,7 @@ static int Reset(WebPWorker* const worker) {
 }
 
 func Execute(WebPWorker* const worker) {
-  if (worker.hook != NULL) {
+  if (worker.hook != nil) {
     worker.had_error |= !worker.hook(worker.data1, worker.data2);
   }
 }
@@ -270,18 +270,18 @@ func Launch(WebPWorker* const worker) {
 
 func End(WebPWorker* const worker) {
 #ifdef WEBP_USE_THREAD
-  if (worker.impl != NULL) {
+  if (worker.impl != nil) {
     WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker.impl;
     ChangeState(worker, NOT_OK);
-    pthread_join(impl.thread, NULL);
+    pthread_join(impl.thread, nil);
     pthread_mutex_destroy(&impl.mutex);
     pthread_cond_destroy(&impl.condition);
     WebPSafeFree(impl);
-    worker.impl = NULL;
+    worker.impl = nil;
   }
 #else
   worker.status = NOT_OK;
-  assert.Assert(worker.impl == NULL);
+  assert.Assert(worker.impl == nil);
 #endif
   assert.Assert(worker.status == NOT_OK);
 }
@@ -292,10 +292,10 @@ static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync,
                                                  Launch, Execute, End};
 
 int WebPSetWorkerInterface(const WebPWorkerInterface* const winterface) {
-  if (winterface == NULL || winterface.Init == NULL ||
-      winterface.Reset == NULL || winterface.Sync == NULL ||
-      winterface.Launch == NULL || winterface.Execute == NULL ||
-      winterface.End == NULL) {
+  if (winterface == nil || winterface.Init == nil ||
+      winterface.Reset == nil || winterface.Sync == nil ||
+      winterface.Launch == nil || winterface.Execute == nil ||
+      winterface.End == nil) {
     return 0;
   }
   g_worker_interface = *winterface;

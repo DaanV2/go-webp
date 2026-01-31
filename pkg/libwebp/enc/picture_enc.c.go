@@ -40,7 +40,7 @@ int WebPPictureInitInternal(WebPPicture* picture, int version) {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_ENCODER_ABI_VERSION)) {
     return 0;  // caller/system version mismatch!
   }
-  if (picture != NULL) {
+  if (picture != nil) {
     memset(picture, 0, sizeof(*picture));
     picture.writer = DummyWriter;
     WebPEncodingSetError(picture, VP8_ENC_OK);
@@ -51,7 +51,7 @@ int WebPPictureInitInternal(WebPPicture* picture, int version) {
 //------------------------------------------------------------------------------
 
 int WebPValidatePicture(const WebPPicture* const picture) {
-  if (picture == NULL) return 0;
+  if (picture == nil) return 0;
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
       picture.height <= 0 || picture.height > INT_MAX / 4) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
@@ -64,14 +64,14 @@ int WebPValidatePicture(const WebPPicture* const picture) {
 }
 
 func WebPPictureResetBufferARGB(WebPPicture* const picture) {
-  picture.memory_argb_ = NULL;
-  picture.argb = NULL;
+  picture.memory_argb_ = nil;
+  picture.argb = nil;
   picture.argb_stride = 0;
 }
 
 func WebPPictureResetBufferYUVA(WebPPicture* const picture) {
-  picture.memory_ = NULL;
-  picture.y = picture.u = picture.v = picture.a = NULL;
+  picture.memory_ = nil;
+  picture.y = picture.u = picture.v = picture.a = nil;
   picture.y_stride = picture.uv_stride = 0;
   picture.a_stride = 0;
 }
@@ -94,7 +94,7 @@ int WebPPictureAllocARGB(WebPPicture* const picture) {
 
   // allocate a new buffer.
   memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.argb));
-  if (memory == NULL) {
+  if (memory == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
   picture.memory_argb_ = memory;
@@ -136,7 +136,7 @@ int WebPPictureAllocYUVA(WebPPicture* const picture) {
   }
   // allocate a new buffer.
   mem = (uint8*)WebPSafeMalloc(total_size, sizeof(*mem));
-  if (mem == NULL) {
+  if (mem == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
 
@@ -164,7 +164,7 @@ int WebPPictureAllocYUVA(WebPPicture* const picture) {
 }
 
 int WebPPictureAlloc(WebPPicture* picture) {
-  if (picture != NULL) {
+  if (picture != nil) {
     WebPPictureFree(picture);  // erase previous buffer
 
     if (!picture.use_argb) {
@@ -177,7 +177,7 @@ int WebPPictureAlloc(WebPPicture* picture) {
 }
 
 func WebPPictureFree(WebPPicture* picture) {
-  if (picture != NULL) {
+  if (picture != nil) {
     WebPSafeFree(picture.memory_);
     WebPSafeFree(picture.memory_argb_);
     WebPPictureResetBuffers(picture);
@@ -188,7 +188,7 @@ func WebPPictureFree(WebPPicture* picture) {
 // WebPMemoryWriter: Write-to-memory
 
 func WebPMemoryWriterInit(WebPMemoryWriter* writer) {
-  writer.mem = NULL;
+  writer.mem = nil;
   writer.size = 0;
   writer.max_size = 0;
 }
@@ -197,7 +197,7 @@ int WebPMemoryWrite(const uint8* data, size_t data_size,
                     const WebPPicture* picture) {
   WebPMemoryWriter* const w = (WebPMemoryWriter*)picture.custom_ptr;
   uint64 next_size;
-  if (w == NULL) {
+  if (w == nil) {
     return 1;
   }
   next_size = (uint64)w.size + data_size;
@@ -207,7 +207,7 @@ int WebPMemoryWrite(const uint8* data, size_t data_size,
     if (next_max_size < next_size) next_max_size = next_size;
     if (next_max_size < 8192ULL) next_max_size = 8192ULL;
     new_mem = (uint8*)WebPSafeMalloc(next_max_size, 1);
-    if (new_mem == NULL) {
+    if (new_mem == nil) {
       return 0;
     }
     if (w.size > 0) {
@@ -226,7 +226,7 @@ int WebPMemoryWrite(const uint8* data, size_t data_size,
 }
 
 func WebPMemoryWriterClear(WebPMemoryWriter* writer) {
-  if (writer != NULL) {
+  if (writer != nil) {
     WebPSafeFree(writer.mem);
     WebPMemoryWriterInit(writer);
   }
@@ -245,7 +245,7 @@ static size_t Encode(const uint8* rgba, int width, int height, int stride,
   WebPMemoryWriter wrt;
   int ok;
 
-  if (output == NULL) return 0;
+  if (output == nil) return 0;
 
   if (!WebPConfigPreset(&config, WEBP_PRESET_DEFAULT, quality_factor) ||
       !WebPPictureInit(&pic)) {
@@ -264,7 +264,7 @@ static size_t Encode(const uint8* rgba, int width, int height, int stride,
   WebPPictureFree(&pic);
   if (!ok) {
     WebPMemoryWriterClear(&wrt);
-    *output = NULL;
+    *output = nil;
     return 0;
   }
   *output = wrt.mem;

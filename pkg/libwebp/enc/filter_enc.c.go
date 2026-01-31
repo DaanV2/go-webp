@@ -145,7 +145,7 @@ static double GetMBSSIM(const uint8* yuv1, const uint8* yuv2) {
 
 func VP8InitFilter(VP8EncIterator* const it) {
 #if !defined(WEBP_REDUCE_SIZE)
-  if (it.lf_stats != NULL) {
+  if (it.lf_stats != nil) {
     int s, i;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
       for (i = 0; i < MAX_LF_LEVELS; i++) {
@@ -171,7 +171,7 @@ func VP8StoreFilterStats(VP8EncIterator* const it) {
   const int delta_max = enc.dqm[s].quant;
   const int step_size = (delta_max - delta_min >= 4) ? 4 : 1;
 
-  if (it.lf_stats == NULL) return;
+  if (it.lf_stats == nil) return;
 
   // NOTE: Currently we are applying filter only across the sublock edges
   // There are two reasons for that.
@@ -200,7 +200,7 @@ func VP8StoreFilterStats(VP8EncIterator* const it) {
 func VP8AdjustFilterStrength(VP8EncIterator* const it) {
   VP8Encoder* const enc = it.enc;
 #if !defined(WEBP_REDUCE_SIZE)
-  if (it.lf_stats != NULL) {
+  if (it.lf_stats != nil) {
     int s;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
       int i, best_level = 0;

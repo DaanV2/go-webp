@@ -43,7 +43,7 @@ int QuantizeLevels(uint8* const WEBP_COUNTED_BY((size_t)width* height) data,
   double last_err = 1.e38, err = 0.;
   const double err_threshold = ERROR_THRESHOLD * data_size;
 
-  if (data == NULL) {
+  if (data == nil) {
     return 0;
   }
 
@@ -141,7 +141,7 @@ int QuantizeLevels(uint8* const WEBP_COUNTED_BY((size_t)width* height) data,
   }
 End:
   // Store sum of squared error if needed.
-  if (sse != NULL) *sse = (uint64)err;
+  if (sse != nil) *sse = (uint64)err;
 
   return 1;
 }

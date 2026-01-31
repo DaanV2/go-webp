@@ -29,8 +29,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert.Assert((in) != NULL);    \
-    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != nil);    \
+    assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
     assert.Assert(width > 0);       \
     assert.Assert(height > 0);      \
@@ -327,14 +327,14 @@ func GradientFilter_MIPSdspR2(const uint8* WEBP_RESTRICT data,
 
 func HorizontalUnfilter_MIPSdspR2(const uint8* prev, const uint8* in,
                                          uint8* out, int width) {
-  out[0] = in[0] + (prev == NULL ? 0 : prev[0]);
+  out[0] = in[0] + (prev == nil ? 0 : prev[0]);
   DO_PREDICT_LINE(in + 1, out + 1, width - 1, 1);
 }
 
 func VerticalUnfilter_MIPSdspR2(const uint8* prev, const uint8* in,
                                        uint8* out, int width) {
-  if (prev == NULL) {
-    HorizontalUnfilter_MIPSdspR2(NULL, in, out, width);
+  if (prev == nil) {
+    HorizontalUnfilter_MIPSdspR2(nil, in, out, width);
   } else {
     DO_PREDICT_LINE_VERTICAL(in, prev, out, width, 1);
   }
@@ -342,8 +342,8 @@ func VerticalUnfilter_MIPSdspR2(const uint8* prev, const uint8* in,
 
 func GradientUnfilter_MIPSdspR2(const uint8* prev, const uint8* in,
                                        uint8* out, int width) {
-  if (prev == NULL) {
-    HorizontalUnfilter_MIPSdspR2(NULL, in, out, width);
+  if (prev == nil) {
+    HorizontalUnfilter_MIPSdspR2(nil, in, out, width);
   } else {
     uint8 top = prev[0], top_left = top, left = top;
     int i;

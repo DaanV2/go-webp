@@ -199,7 +199,7 @@ typedef enum WebPPreset {
   int WebPConfigLosslessPreset(WebPConfig* config,
                                                         int level);
 
-// Returns true if 'config' is non-NULL and all configuration parameters are
+// Returns true if 'config' is non-nil and all configuration parameters are
 // within their valid ranges.
   int WebPValidateConfig(const WebPConfig* config);
 
@@ -285,7 +285,7 @@ typedef enum WebPEncodingError {
   VP8_ENC_OK = 0,
   VP8_ENC_ERROR_OUT_OF_MEMORY,            // memory error allocating objects
   VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY,  // memory error while flushing bits
-  VP8_ENC_ERROR_NULL_PARAMETER,           // a pointer parameter is NULL
+  VP8_ENC_ERROR_nil_PARAMETER,           // a pointer parameter is nil
   VP8_ENC_ERROR_INVALID_CONFIGURATION,    // configuration is invalid
   VP8_ENC_ERROR_BAD_DIMENSION,            // picture has invalid width/height
   VP8_ENC_ERROR_PARTITION0_OVERFLOW,      // partition is bigger than 512k
@@ -331,7 +331,7 @@ type WebPPicture struct {
   //   OUTPUT
   ///////////////
   // Byte-emission hook, to store compressed bytes as they are ready.
-  WebPWriterFunction writer;  // can be NULL
+  WebPWriterFunction writer;  // can be nil
   void* custom_ptr;           // can be used by the writer.
 
   // map for extra information (only for lossy compression mode)
@@ -339,20 +339,20 @@ type WebPPicture struct {
                         // 4: intra-16 prediction mode,
                         // 5: chroma prediction mode,
                         // 6: bit cost, 7: distortion
-  uint8* extra_info;  // if not NULL, points to an array of size
+  uint8* extra_info;  // if not nil, points to an array of size
                         // ((width + 15) / 16) * ((height + 15) / 16) that
                         // will be filled with a macroblock map, depending
                         // on extra_info_type.
 
   //   STATS AND REPORTS
   ///////////////////////////
-  // Pointer to side statistics (updated only if not NULL)
+  // Pointer to side statistics (updated only if not nil)
   WebPAuxStats* stats;
 
   // Error code for the latest error encountered during encoding
   WebPEncodingError error_code;
 
-  // If not NULL, report progress during encoding.
+  // If not nil, report progress during encoding.
   WebPProgressHook progress_hook;
 
   void* user_data;  // this field is free to be set to any value and

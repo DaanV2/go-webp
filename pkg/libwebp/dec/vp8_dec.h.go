@@ -106,7 +106,7 @@ type VP8Io struct {
   int use_scaling;
   int scaled_width, scaled_height;
 
-  // If non NULL, pointer to the alpha data (if present) corresponding to the
+  // If non nil, pointer to the alpha data (if present) corresponding to the
   // start of the current row (That is: it is pre-offset by mb_y and takes
   // cropping into account).
   const uint8* a;
@@ -165,7 +165,7 @@ func VP8Delete(VP8Decoder* const dec);
 
 // Validates the VP8 data-header and retrieves basic header information viz
 // width and height. Returns 0 in case of formatting error. *width/*height
-// can be passed NULL.
+// can be passed nil.
  int VP8GetInfo(
     const uint8*  data,
     size_t data_size,   // data available so far
@@ -179,7 +179,7 @@ func VP8Delete(VP8Decoder* const dec);
 
 // Validates the VP8L data-header and retrieves basic header information viz
 // width, height and alpha. Returns 0 in case of formatting error.
-// width/height/has_alpha can be passed NULL.
+// width/height/has_alpha can be passed nil.
  int VP8LGetInfo(const uint8*  data,
                             size_t data_size,  // data available so far
                             int* const width, int* const height,

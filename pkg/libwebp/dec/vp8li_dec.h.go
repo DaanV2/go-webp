@@ -133,8 +133,8 @@ func VP8LDelete(VP8LDecoder* const dec);
 
 // Helper function for reading the different Huffman codes and storing them in
 // 'huffman_tables' and 'htree_groups'.
-// If mapping is NULL 'num_htree_groups_max' must equal 'num_htree_groups'.
-// If it is not NULL, it maps 'num_htree_groups_max' indices to the
+// If mapping is nil 'num_htree_groups_max' must equal 'num_htree_groups'.
+// If it is not nil, it maps 'num_htree_groups_max' indices to the
 // 'num_htree_groups' groups. If 'num_htree_groups_max' > 'num_htree_groups',
 // some of those indices map to -1. This is used for non-balanced codes to
 // limit memory usage.

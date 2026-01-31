@@ -269,7 +269,7 @@ type VP8Decoder struct {
   int is_alpha_decoded;      // true if alpha_data is decoded in alpha_plane
   uint8* alpha_plane_mem;  // memory allocated for alpha_plane
   uint8* alpha_plane;      // output. Persistent, contains the whole data.
-  const uint8* alpha_prev_line;  // last decoded alpha row (or NULL)
+  const uint8* alpha_prev_line;  // last decoded alpha row (or nil)
   int alpha_dithering;  // derived from decoding options (0=off, 100=full)
 };
 

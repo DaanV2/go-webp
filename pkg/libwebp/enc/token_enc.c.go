@@ -49,8 +49,8 @@ type VP8Tokens struct {
 //------------------------------------------------------------------------------
 
 func VP8TBufferInit(VP8TBuffer* const b, int page_size) {
-  b.tokens = NULL;
-  b.pages = NULL;
+  b.tokens = nil;
+  b.pages = nil;
   b.last_page = &b.pages;
   b.left = 0;
   b.page_size = (page_size < MIN_PAGE_SIZE) ? MIN_PAGE_SIZE : page_size;
@@ -58,9 +58,9 @@ func VP8TBufferInit(VP8TBuffer* const b, int page_size) {
 }
 
 func VP8TBufferClear(VP8TBuffer* const b) {
-  if (b != NULL) {
+  if (b != nil) {
     VP8Tokens* p = b.pages;
-    while (p != NULL) {
+    while (p != nil) {
       VP8Tokens* const next = p.next;
       WebPSafeFree(p);
       p = next;
@@ -70,16 +70,16 @@ func VP8TBufferClear(VP8TBuffer* const b) {
 }
 
 static int TBufferNewPage(VP8TBuffer* const b) {
-  VP8Tokens* page = NULL;
+  VP8Tokens* page = nil;
   if (!b.error) {
     const size_t size = sizeof(*page) + b.page_size * sizeof(token_t);
     page = (VP8Tokens*)WebPSafeMalloc(1ULL, size);
   }
-  if (page == NULL) {
+  if (page == nil) {
     b.error = 1;
     return 0;
   }
-  page.next = NULL;
+  page.next = nil;
 
   *b.last_page = page;
   b.last_page = &page.next;
@@ -206,9 +206,9 @@ int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw,
                   const uint8* const probas, int final_pass) {
   const VP8Tokens* p = b.pages;
   assert.Assert(!b.error);
-  while (p != NULL) {
+  while (p != nil) {
     const VP8Tokens* const next = p.next;
-    const int N = (next == NULL) ? b.left : 0;
+    const int N = (next == nil) ? b.left : 0;
     int n = b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {
@@ -223,7 +223,7 @@ int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw,
     if (final_pass) WebPSafeFree((void*)p);
     p = next;
   }
-  if (final_pass) b.pages = NULL;
+  if (final_pass) b.pages = nil;
   return 1;
 }
 
@@ -232,9 +232,9 @@ size_t VP8EstimateTokenSize(VP8TBuffer* const b, const uint8* const probas) {
   size_t size = 0;
   const VP8Tokens* p = b.pages;
   assert.Assert(!b.error);
-  while (p != NULL) {
+  while (p != nil) {
     const VP8Tokens* const next = p.next;
-    const int N = (next == NULL) ? b.left : 0;
+    const int N = (next == nil) ? b.left : 0;
     int n = b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {

@@ -210,7 +210,7 @@ func SetSegmentProbas(VP8Encoder* const enc) {
     ++p[mb.segment];
   }
 #if !defined(WEBP_DISABLE_STATS)
-  if (enc.pic.stats != NULL) {
+  if (enc.pic.stats != nil) {
     for (n = 0; n < NUM_MB_SEGMENTS; ++n) {
       enc.pic.stats.segment_size[n] = p[n];
     }
@@ -497,14 +497,14 @@ func StoreSideInfo(const VP8EncIterator* const it) {
   const VP8MBInfo* const mb = it.mb;
   WebPPicture* const pic = enc.pic;
 
-  if (pic.stats != NULL) {
+  if (pic.stats != nil) {
     StoreSSE(it);
     enc.block_count[0] += (mb.type == 0);
     enc.block_count[1] += (mb.type == 1);
     enc.block_count[2] += (mb.skip != 0);
   }
 
-  if (pic.extra_info != NULL) {
+  if (pic.extra_info != nil) {
     uint8* const info = &pic.extra_info[it.x + it.y * enc.mb_w];
     switch (pic.extra_info_type) {
       case 1:
@@ -545,7 +545,7 @@ func StoreSideInfo(const VP8EncIterator* const it) {
 func ResetSideInfo(const VP8EncIterator* const it) {
   VP8Encoder* const enc = it.enc;
   WebPPicture* const pic = enc.pic;
-  if (pic.stats != NULL) {
+  if (pic.stats != nil) {
     memset(enc.block_count, 0, sizeof(enc.block_count));
   }
   ResetSSE(enc);
@@ -555,7 +555,7 @@ func ResetSSE(VP8Encoder* const enc) { (void)enc; }
 func StoreSideInfo(const VP8EncIterator* const it) {
   VP8Encoder* const enc = it.enc;
   WebPPicture* const pic = enc.pic;
-  if (pic.extra_info != NULL) {
+  if (pic.extra_info != nil) {
     if (it.x == 0 && it.y == 0) {  // only do it once, at start
       memset(pic.extra_info, 0,
              enc.mb_w * enc.mb_h * sizeof(*pic.extra_info));
@@ -598,7 +598,7 @@ static uint64 OneStatPass(VP8Encoder* const enc, VP8RDLevel rd_opt,
   SetLoopParams(enc, s.q);
   do {
     VP8ModeScore info;
-    VP8IteratorImport(&it, NULL);
+    VP8IteratorImport(&it, nil);
     if (VP8Decimate(&it, &info, rd_opt)) {
       // Just record the number of skips and act like skip_proba is not used.
       ++enc.proba.nb_skip;
@@ -720,7 +720,7 @@ static int PostLoopFinalize(VP8EncIterator* const it, int ok) {
 
   if (ok) {  // All good. Finish up.
 #if !defined(WEBP_DISABLE_STATS)
-    if (enc.pic.stats != NULL) {  // finalize byte counters...
+    if (enc.pic.stats != nil) {  // finalize byte counters...
       int i, s;
       for (i = 0; i <= 2; ++i) {
         for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
@@ -764,7 +764,7 @@ int VP8EncLoop(VP8Encoder* const enc) {
     const int dont_use_skip = !enc.proba.use_skip_proba;
     const VP8RDLevel rd_opt = enc.rd_opt_level;
 
-    VP8IteratorImport(&it, NULL);
+    VP8IteratorImport(&it, nil);
     // Warning! order is important: first call VP8Decimate() and
     // *then* decide how to code the skip decision if there's one.
     if (!VP8Decimate(&it, &info, rd_opt) || dont_use_skip) {
@@ -838,7 +838,7 @@ int VP8EncTokenLoop(VP8Encoder* const enc) {
     VP8TBufferClear(&enc.tokens);
     do {
       VP8ModeScore info;
-      VP8IteratorImport(&it, NULL);
+      VP8IteratorImport(&it, nil);
       if (--cnt < 0) {
         FinalizeTokenProbas(proba);
         VP8CalculateLevelCosts(proba);  // refresh cost tables for rd-opt

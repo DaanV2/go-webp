@@ -109,7 +109,7 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
   WebPSamplers[MODE_rgbA_4444] = YuvToRgba4444Row;
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitSamplersSSE2();
@@ -526,7 +526,7 @@ func ImportYUVAFromRGBA_C(const uint8* r_ptr, const uint8* g_ptr,
   const int is_rgb = (r_ptr < b_ptr);  // otherwise it's bgr
   const int uv_width = (width + 1) >> 1;
 
-  has_alpha &= dst_a != NULL;
+  has_alpha &= dst_a != nil;
   if (has_alpha) {
 #if defined(USE_GAMMA_COMPRESSION) && defined(USE_INVERSE_ALPHA_TABLE)
     assert.Assert(kAlphaFix + GAMMA_FIX <= 31);
@@ -550,7 +550,7 @@ func ImportYUVAFromRGBA_C(const uint8* r_ptr, const uint8* g_ptr,
       rows_have_alpha &=
           !WebPExtractAlpha(a_ptr, rgb_stride, width, 2, dst_a, a_stride);
       dst_a += 2 * a_stride;
-    } else if (dst_a != NULL) {
+    } else if (dst_a != nil) {
       int i;
       for (i = 0; i < 2; ++i, dst_a += a_stride) {
         memset(dst_a, 0xff, width);
@@ -583,7 +583,7 @@ func ImportYUVAFromRGBALastLine_C(
     uint8* dst_v, uint8* dst_a) {
   const int is_rgb = (r_ptr < b_ptr);  // otherwise it's bgr
   const int uv_width = (width + 1) >> 1;
-  int row_has_alpha = has_alpha && dst_a != NULL;
+  int row_has_alpha = has_alpha && dst_a != nil;
 
   if (is_rgb) {
     WebPConvertRGBToY(r_ptr, dst_y, width, step);
@@ -592,7 +592,7 @@ func ImportYUVAFromRGBALastLine_C(
   }
   if (row_has_alpha) {
     row_has_alpha &= !WebPExtractAlpha(a_ptr, 0, width, 1, dst_a, 0);
-  } else if (dst_a != NULL) {
+  } else if (dst_a != nil) {
     memset(dst_a, 0xff, width);
   }
 
@@ -655,7 +655,7 @@ WEBP_DSP_INIT_FUNC(WebPInitConvertARGBToYUV) {
   WebPImportYUVAFromRGBA = ImportYUVAFromRGBA_C;
   WebPImportYUVAFromRGBALastLine = ImportYUVAFromRGBALastLine_C;
 
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitConvertARGBToYUVSSE2();
@@ -670,14 +670,14 @@ WEBP_DSP_INIT_FUNC(WebPInitConvertARGBToYUV) {
 
 #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
+      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     WebPInitConvertARGBToYUVNEON();
   }
 #endif  // WEBP_HAVE_NEON
 
-  assert.Assert(WebPConvertARGBToY != NULL);
-  assert.Assert(WebPConvertARGBToUV != NULL);
-  assert.Assert(WebPConvertRGBToY != NULL);
-  assert.Assert(WebPConvertBGRToY != NULL);
-  assert.Assert(WebPConvertRGBA32ToUV != NULL);
+  assert.Assert(WebPConvertARGBToY != nil);
+  assert.Assert(WebPConvertARGBToUV != nil);
+  assert.Assert(WebPConvertRGBToY != nil);
+  assert.Assert(WebPConvertBGRToY != nil);
+  assert.Assert(WebPConvertRGBA32ToUV != nil);
 }

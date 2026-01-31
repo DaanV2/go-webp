@@ -70,13 +70,13 @@ static VP8StatusCode CheckDecBuffer(const WebPDecBuffer* const buffer) {
     ok &= (y_stride >= width);
     ok &= (u_stride >= uv_width);
     ok &= (v_stride >= uv_width);
-    ok &= (buf.y != NULL);
-    ok &= (buf.u != NULL);
-    ok &= (buf.v != NULL);
+    ok &= (buf.y != nil);
+    ok &= (buf.u != nil);
+    ok &= (buf.v != nil);
     if (mode == MODE_YUVA) {
       ok &= (a_stride >= width);
       ok &= (a_size <= buf.a_size);
-      ok &= (buf.a != NULL);
+      ok &= (buf.a != nil);
     }
   } else {  // RGB checks
     const WebPRGBABuffer* const buf = &buffer.u.RGBA;
@@ -85,7 +85,7 @@ static VP8StatusCode CheckDecBuffer(const WebPDecBuffer* const buffer) {
         MIN_BUFFER_SIZE((uint64)width * kModeBpp[mode], height, stride);
     ok &= (size <= buf.size);
     ok &= (stride >= width * kModeBpp[mode]);
-    ok &= (buf.rgba != NULL);
+    ok &= (buf.rgba != nil);
   }
   return ok ? VP8_STATUS_OK : VP8_STATUS_INVALID_PARAM;
 }
@@ -100,7 +100,7 @@ static VP8StatusCode AllocateBuffer(WebPDecBuffer* const buffer) {
     return VP8_STATUS_INVALID_PARAM;
   }
 
-  if (buffer.is_external_memory <= 0 && buffer.private_memory == NULL) {
+  if (buffer.is_external_memory <= 0 && buffer.private_memory == nil) {
     uint8* output;
     int uv_stride = 0, a_stride = 0;
     uint64 uv_size = 0, a_size = 0, total_size;
@@ -125,7 +125,7 @@ static VP8StatusCode AllocateBuffer(WebPDecBuffer* const buffer) {
     total_size = size + 2 * uv_size + a_size;
 
     output = (uint8*)WebPSafeMalloc(total_size, sizeof(*output));
-    if (output == NULL) {
+    if (output == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
     buffer.private_memory = output;
@@ -157,7 +157,7 @@ static VP8StatusCode AllocateBuffer(WebPDecBuffer* const buffer) {
 }
 
 VP8StatusCode WebPFlipBuffer(WebPDecBuffer* const buffer) {
-  if (buffer == NULL) {
+  if (buffer == nil) {
     return VP8_STATUS_INVALID_PARAM;
   }
   if (WebPIsRGBMode(buffer.colorspace)) {
@@ -173,7 +173,7 @@ VP8StatusCode WebPFlipBuffer(WebPDecBuffer* const buffer) {
     buf.u_stride = -buf.u_stride;
     buf.v += ((H - 1) >> 1) * buf.v_stride;
     buf.v_stride = -buf.v_stride;
-    if (buf.a != NULL) {
+    if (buf.a != nil) {
       buf.a += (H - 1) * buf.a_stride;
       buf.a_stride = -buf.a_stride;
     }
@@ -185,10 +185,10 @@ VP8StatusCode WebPAllocateDecBuffer(int width, int height,
                                     const WebPDecoderOptions* const options,
                                     WebPDecBuffer* const buffer) {
   VP8StatusCode status;
-  if (buffer == NULL || width <= 0 || height <= 0) {
+  if (buffer == nil || width <= 0 || height <= 0) {
     return VP8_STATUS_INVALID_PARAM;
   }
-  if (options != NULL) {  // First, apply options if there is any.
+  if (options != nil) {  // First, apply options if there is any.
     if (options.use_cropping) {
       const int cw = options.crop_width;
       const int ch = options.crop_height;
@@ -224,7 +224,7 @@ VP8StatusCode WebPAllocateDecBuffer(int width, int height,
   if (status != VP8_STATUS_OK) return status;
 
   // Use the stride trick if vertical flip is needed.
-  if (options != NULL && options.flip) {
+  if (options != nil && options.flip) {
     status = WebPFlipBuffer(buffer);
   }
   return status;
@@ -237,45 +237,45 @@ int WebPInitDecBufferInternal(WebPDecBuffer* buffer, int version) {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION)) {
     return 0;  // version mismatch
   }
-  if (buffer == NULL) return 0;
+  if (buffer == nil) return 0;
   WEBP_UNSAFE_MEMSET(buffer, 0, sizeof(*buffer));
   return 1;
 }
 
 func WebPFreeDecBuffer(WebPDecBuffer* buffer) {
-  if (buffer != NULL) {
+  if (buffer != nil) {
     if (buffer.is_external_memory <= 0) {
       WebPSafeFree(buffer.private_memory);
     }
-    buffer.private_memory = NULL;
+    buffer.private_memory = nil;
   }
 }
 
 func WebPCopyDecBuffer(const WebPDecBuffer* const src,
                        WebPDecBuffer* const dst) {
-  if (src != NULL && dst != NULL) {
+  if (src != nil && dst != nil) {
     *dst = *src;
-    if (src.private_memory != NULL) {
+    if (src.private_memory != nil) {
       dst.is_external_memory = 1;  // dst buffer doesn't own the memory.
-      dst.private_memory = NULL;
+      dst.private_memory = nil;
     }
   }
 }
 
 // Copy and transfer ownership from src to dst (beware of parameter order!)
 func WebPGrabDecBuffer(WebPDecBuffer* const src, WebPDecBuffer* const dst) {
-  if (src != NULL && dst != NULL) {
+  if (src != nil && dst != nil) {
     *dst = *src;
-    if (src.private_memory != NULL) {
+    if (src.private_memory != nil) {
       src.is_external_memory = 1;  // src relinquishes ownership
-      src.private_memory = NULL;
+      src.private_memory = nil;
     }
   }
 }
 
 VP8StatusCode WebPCopyDecBufferPixels(const WebPDecBuffer* const src_buf,
                                       WebPDecBuffer* const dst_buf) {
-  assert.Assert(src_buf != NULL && dst_buf != NULL);
+  assert.Assert(src_buf != nil && dst_buf != nil);
   assert.Assert(src_buf.colorspace == dst_buf.colorspace);
 
   dst_buf.width = src_buf.width;
@@ -308,10 +308,10 @@ VP8StatusCode WebPCopyDecBufferPixels(const WebPDecBuffer* const src_buf,
 
 int WebPAvoidSlowMemory(const WebPDecBuffer* const output,
                         const WebPBitstreamFeatures* const features) {
-  assert.Assert(output != NULL);
+  assert.Assert(output != nil);
   return (output.is_external_memory >= 2) &&
          WebPIsPremultipliedMode(output.colorspace) &&
-         (features != NULL && features.has_alpha);
+         (features != nil && features.has_alpha);
 }
 
 //------------------------------------------------------------------------------

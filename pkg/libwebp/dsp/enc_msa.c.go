@@ -477,7 +477,7 @@ func Intra4Preds_MSA(uint8* WEBP_RESTRICT dst,
 
 static  func VerticalPred16x16(uint8* WEBP_RESTRICT dst,
                                           const uint8* WEBP_RESTRICT top) {
-  if (top != NULL) {
+  if (top != nil) {
     const v16u8 out = LD_UB(top);
     STORE16x16(out, dst);
   } else {
@@ -488,7 +488,7 @@ static  func VerticalPred16x16(uint8* WEBP_RESTRICT dst,
 
 static  func HorizontalPred16x16(uint8* WEBP_RESTRICT dst,
                                             const uint8* WEBP_RESTRICT left) {
-  if (left != NULL) {
+  if (left != nil) {
     int j;
     for (j = 0; j < 16; j += 4) {
       const v16u8 L0 = (v16u8)__msa_fill_b(left[0]);
@@ -508,8 +508,8 @@ static  func HorizontalPred16x16(uint8* WEBP_RESTRICT dst,
 static  func TrueMotion16x16(uint8* WEBP_RESTRICT dst,
                                         const uint8* WEBP_RESTRICT left,
                                         const uint8* WEBP_RESTRICT top) {
-  if (left != NULL) {
-    if (top != NULL) {
+  if (left != nil) {
+    if (top != nil) {
       int j;
       v8i16 d1, d2;
       const v16i8 zero = {0};
@@ -536,7 +536,7 @@ static  func TrueMotion16x16(uint8* WEBP_RESTRICT dst,
       HorizontalPred16x16(dst, left);
     }
   } else {
-    if (top != NULL) {
+    if (top != nil) {
       VerticalPred16x16(dst, top);
     } else {
       const v16u8 out = (v16u8)__msa_fill_b(0x81);
@@ -550,7 +550,7 @@ static  func DCMode16x16(uint8* WEBP_RESTRICT dst,
                                     const uint8* WEBP_RESTRICT top) {
   int DC;
   v16u8 out;
-  if (top != NULL && left != NULL) {
+  if (top != nil && left != nil) {
     const v16u8 rtop = LD_UB(top);
     const v8u16 dctop = __msa_hadd_u_h(rtop, rtop);
     const v16u8 rleft = LD_UB(left);
@@ -558,12 +558,12 @@ static  func DCMode16x16(uint8* WEBP_RESTRICT dst,
     const v8u16 dctemp = dctop + dcleft;
     DC = HADD_UH_U32(dctemp);
     DC = (DC + 16) >> 5;
-  } else if (left != NULL) {  // left but no top
+  } else if (left != nil) {  // left but no top
     const v16u8 rleft = LD_UB(left);
     const v8u16 dcleft = __msa_hadd_u_h(rleft, rleft);
     DC = HADD_UH_U32(dcleft);
     DC = (DC + DC + 16) >> 5;
-  } else if (top != NULL) {  // top but no left
+  } else if (top != nil) {  // top but no left
     const v16u8 rtop = LD_UB(top);
     const v8u16 dctop = __msa_hadd_u_h(rtop, rtop);
     DC = HADD_UH_U32(dctop);
@@ -606,7 +606,7 @@ func Intra16Preds_MSA(uint8* WEBP_RESTRICT dst,
 
 static  func VerticalPred8x8(uint8* WEBP_RESTRICT dst,
                                         const uint8* WEBP_RESTRICT top) {
-  if (top != NULL) {
+  if (top != nil) {
     const uint64 out = LD(top);
     STORE8x8(out, dst);
   } else {
@@ -617,7 +617,7 @@ static  func VerticalPred8x8(uint8* WEBP_RESTRICT dst,
 
 static  func HorizontalPred8x8(uint8* WEBP_RESTRICT dst,
                                           const uint8* WEBP_RESTRICT left) {
-  if (left != NULL) {
+  if (left != nil) {
     int j;
     for (j = 0; j < 8; j += 4) {
       const v16u8 L0 = (v16u8)__msa_fill_b(left[0]);
@@ -641,8 +641,8 @@ static  func HorizontalPred8x8(uint8* WEBP_RESTRICT dst,
 static  func TrueMotion8x8(uint8* WEBP_RESTRICT dst,
                                       const uint8* WEBP_RESTRICT left,
                                       const uint8* WEBP_RESTRICT top) {
-  if (left != NULL) {
-    if (top != NULL) {
+  if (left != nil) {
+    if (top != nil) {
       int j;
       const v8i16 TL = (v8i16)__msa_fill_h(left[-1]);
       const v16u8 T1 = LD_UB(top);
@@ -670,7 +670,7 @@ static  func TrueMotion8x8(uint8* WEBP_RESTRICT dst,
       HorizontalPred8x8(dst, left);
     }
   } else {
-    if (top != NULL) {
+    if (top != nil) {
       VerticalPred8x8(dst, top);
     } else {
       const uint64 out = 0x8181818181818181ULL;
@@ -684,16 +684,16 @@ static  func DCMode8x8(uint8* WEBP_RESTRICT dst,
                                   const uint8* WEBP_RESTRICT top) {
   uint64 out;
   v16u8 src = {0};
-  if (top != NULL && left != NULL) {
+  if (top != nil && left != nil) {
     const uint64 left_m = LD(left);
     const uint64 top_m = LD(top);
     INSERT_D2_UB(left_m, top_m, src);
     CALC_DC8(src, out);
-  } else if (left != NULL) {  // left but no top
+  } else if (left != nil) {  // left but no top
     const uint64 left_m = LD(left);
     INSERT_D2_UB(left_m, left_m, src);
     CALC_DC8(src, out);
-  } else if (top != NULL) {  // top but no left
+  } else if (top != nil) {  // top but no left
     const uint64 top_m = LD(top);
     INSERT_D2_UB(top_m, top_m, src);
     CALC_DC8(src, out);
@@ -714,8 +714,8 @@ func IntraChromaPreds_MSA(uint8* WEBP_RESTRICT dst,
   TrueMotion8x8(C8TM8 + dst, left, top);
   // V block
   dst += 8;
-  if (top != NULL) top += 8;
-  if (left != NULL) left += 16;
+  if (top != nil) top += 8;
+  if (left != nil) left += 16;
   DCMode8x8(C8DC8 + dst, left, top);
   VerticalPred8x8(C8VE8 + dst, top);
   HorizontalPred8x8(C8HE8 + dst, left);

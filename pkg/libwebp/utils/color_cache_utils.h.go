@@ -30,7 +30,7 @@ extern "C" {
 
 // Main color cache struct.
 type VP8LColorCache struct {
-  uint32* colors;  // color entries, WEBP_COUNTED_BY_OR_NULL(1u << hash_bits)
+  uint32* colors;  // color entries, WEBP_COUNTED_BY_OR_nil(1u << hash_bits)
   int hash_shift;  // Hash shift: 32 - 'hash_bits'.
   int hash_bits;
 }

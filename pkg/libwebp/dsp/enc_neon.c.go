@@ -1068,7 +1068,7 @@ static  func HorizontalPred16_NEON(uint8* dst,
                                               const uint8* left) {
   uint8x16_t a;
 
-  if (left == NULL) {
+  if (left == nil) {
     Fill_NEON(dst, 129);
     return;
   }
@@ -1093,7 +1093,7 @@ static  func HorizontalPred16_NEON(uint8* dst,
 }
 
 static  func VerticalPred16_NEON(uint8* dst, const uint8* top) {
-  if (top != NULL) {
+  if (top != nil) {
     Fill16_NEON(dst, top);
   } else {
     Fill_NEON(dst, 127);
@@ -1104,10 +1104,10 @@ static  func DCMode_NEON(uint8* dst, const uint8* left,
                                     const uint8* top) {
   uint8 s;
 
-  if (top != NULL) {
+  if (top != nil) {
     uint16 dc;
     dc = vaddlvq_u8(vld1q_u8(top));
-    if (left != NULL) {
+    if (left != nil) {
       // top and left present.
       dc += vaddlvq_u8(vld1q_u8(left));
       s = vqrshrnh_n_u16(dc, 5);
@@ -1116,7 +1116,7 @@ static  func DCMode_NEON(uint8* dst, const uint8* left,
       s = vqrshrnh_n_u16(dc, 4);
     }
   } else {
-    if (left != NULL) {
+    if (left != nil) {
       uint16 dc;
       // left but no top.
       dc = vaddlvq_u8(vld1q_u8(left));
@@ -1153,12 +1153,12 @@ static  func TrueMotion_NEON(uint8* dst, const uint8* left,
   uint16x8_t a;
   uint8x8x2_t inner;
 
-  if (left == NULL) {
+  if (left == nil) {
     // True motion without left samples (hence: with default 129 value) is
     // equivalent to VE prediction where you just copy the top samples.
     // Note that if top samples are not available, the default value is then
     // 129, and not 127 as in the VerticalPred case.
-    if (top != NULL) {
+    if (top != nil) {
       VerticalPred16_NEON(dst, top);
     } else {
       Fill_NEON(dst, 129);
@@ -1166,13 +1166,13 @@ static  func TrueMotion_NEON(uint8* dst, const uint8* left,
     return;
   }
 
-  // left is not NULL.
-  if (top == NULL) {
+  // left is not nil.
+  if (top == nil) {
     HorizontalPred16_NEON(dst, left);
     return;
   }
 
-  // Neither left nor top are NULL.
+  // Neither left nor top are nil.
   a = vdupq_n_u16(left[-1]);
   inner = Vld1U8x2(top);
 

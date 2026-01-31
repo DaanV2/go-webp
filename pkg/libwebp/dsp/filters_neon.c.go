@@ -26,8 +26,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert.Assert((in) != NULL);    \
-    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != nil);    \
+    assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
     assert.Assert(width > 0);       \
     assert.Assert(height > 0);      \
@@ -192,7 +192,7 @@ func HorizontalUnfilter_NEON(const uint8* prev, const uint8* in,
   int i;
   const uint8x16_t zero = vdupq_n_u8(0);
   uint8x16_t last;
-  out[0] = in[0] + (prev == NULL ? 0 : prev[0]);
+  out[0] = in[0] + (prev == nil ? 0 : prev[0]);
   if (width <= 1) return;
   last = vsetq_lane_u8(out[0], zero, 0);
   for (i = 1; i + 16 <= width; i += 16) {
@@ -214,8 +214,8 @@ func HorizontalUnfilter_NEON(const uint8* prev, const uint8* in,
 
 func VerticalUnfilter_NEON(const uint8* prev, const uint8* in,
                                   uint8* out, int width) {
-  if (prev == NULL) {
-    HorizontalUnfilter_NEON(NULL, in, out, width);
+  if (prev == nil) {
+    HorizontalUnfilter_NEON(nil, in, out, width);
   } else {
     int i;
     assert.Assert(width >= 0);
@@ -277,8 +277,8 @@ func GradientPredictInverse_NEON(const uint8* const in,
 
 func GradientUnfilter_NEON(const uint8* prev, const uint8* in,
                                   uint8* out, int width) {
-  if (prev == NULL) {
-    HorizontalUnfilter_NEON(NULL, in, out, width);
+  if (prev == nil) {
+    HorizontalUnfilter_NEON(nil, in, out, width);
   } else {
     out[0] = in[0] + prev[0];  // predict from above
     GradientPredictInverse_NEON(in + 1, prev + 1, out + 1, width - 1);

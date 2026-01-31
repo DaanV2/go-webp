@@ -31,7 +31,7 @@ func InitLeft(VP8EncIterator* const it) {
   memset(it.u_left, 129, 8);
   memset(it.v_left, 129, 8);
   it.left_nz[8] = 0;
-  if (it.top_derr != NULL) {
+  if (it.top_derr != nil) {
     memset(&it.left_derr, 0, sizeof(it.left_derr));
   }
 }
@@ -41,7 +41,7 @@ func InitTop(VP8EncIterator* const it) {
   const size_t top_size = enc.mb_w * 16;
   memset(enc.y_top, 127, 2 * top_size);
   memset(enc.nz, 0, enc.mb_w * sizeof(*enc.nz));
-  if (enc.top_derr != NULL) {
+  if (enc.top_derr != nil) {
     memset(enc.top_derr, 0, enc.mb_w * sizeof(*enc.top_derr));
   }
 }
@@ -94,7 +94,7 @@ func VP8IteratorInit(VP8Encoder* const enc, VP8EncIterator* const it) {
 
 int VP8IteratorProgress(const VP8EncIterator* const it, int delta) {
   VP8Encoder* const enc = it.enc;
-  if (delta && enc.pic.progress_hook != NULL) {
+  if (delta && enc.pic.progress_hook != nil) {
     const int done = it.count_down0 - it.count_down;
     const int percent = (it.count_down0 <= 0)
                             ? it.percent0
@@ -150,7 +150,7 @@ func VP8IteratorImport(VP8EncIterator* const it, uint8* const tmp_32) {
   ImportBlock(usrc, pic.uv_stride, it.yuv_in + U_OFF_ENC, uv_w, uv_h, 8);
   ImportBlock(vsrc, pic.uv_stride, it.yuv_in + V_OFF_ENC, uv_w, uv_h, 8);
 
-  if (tmp_32 == NULL) return;
+  if (tmp_32 == nil) return;
 
   // Import source (uncompressed) samples into boundary.
   if (x == 0) {

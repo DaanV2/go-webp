@@ -103,7 +103,7 @@ func VP8LHistogramCreate(VP8LHistogram* const h,
     h.palette_code_bits = palette_code_bits;
   }
   HistogramClear(h);
-  VP8LHistogramStoreRefs(refs, /*distance_modifier=*/NULL,
+  VP8LHistogramStoreRefs(refs, /*distance_modifier=*/nil,
                          /*distance_modifier_arg0=*/0, h);
 }
 
@@ -118,10 +118,10 @@ func VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits,
 }
 
 VP8LHistogram* VP8LAllocateHistogram(int cache_bits) {
-  VP8LHistogram* histo = NULL;
+  VP8LHistogram* histo = nil;
   const int total_size = GetHistogramSize(cache_bits);
   uint8* const memory = (uint8*)WebPSafeMalloc(total_size, sizeof(*memory));
-  if (memory == NULL) return NULL;
+  if (memory == nil) return nil;
   histo = (VP8LHistogram*)memory;
   // 'literal' won't necessary be aligned.
   histo.literal = (uint32*)(memory + sizeof(VP8LHistogram));
@@ -157,7 +157,7 @@ VP8LHistogramSet* VP8LAllocateHistogramSet(int size, int cache_bits) {
   VP8LHistogramSet* set;
   const size_t total_size = HistogramSetTotalSize(size, cache_bits);
   uint8* memory = (uint8*)WebPSafeMalloc(total_size, sizeof(*memory));
-  if (memory == NULL) return NULL;
+  if (memory == nil) return nil;
 
   set = (VP8LHistogramSet*)memory;
   memory += sizeof(*set);
@@ -215,7 +215,7 @@ func HistogramAddSinglePixOrCopy(
     int code, extra_bits;
     VP8LPrefixEncodeBits(PixOrCopyLength(v), &code, &extra_bits);
     ++histo.literal[NUM_LITERAL_CODES + code];
-    if (distance_modifier == NULL) {
+    if (distance_modifier == nil) {
       VP8LPrefixEncodeBits(PixOrCopyDistance(v), &code, &extra_bits);
     } else {
       VP8LPrefixEncodeBits(
@@ -320,11 +320,11 @@ static uint64 PopulationCost(const uint32* const population, int length,
   VP8LBitEntropy bit_entropy;
   VP8LStreaks stats;
   VP8LGetEntropyUnrefined(population, length, &bit_entropy, &stats);
-  if (trivial_sym != NULL) {
+  if (trivial_sym != nil) {
     *trivial_sym = (bit_entropy.nonzeros == 1) ? bit_entropy.nonzero_code
                                                : VP8L_NON_TRIVIAL_SYM;
   }
-  if (is_used != NULL) {
+  if (is_used != nil) {
     // The histogram is used if there is at least one non-zero streak.
     *is_used = (stats.streaks[1][0] != 0 || stats.streaks[1][1] != 0);
   }
@@ -397,8 +397,8 @@ uint64 VP8LHistogramEstimateBits(const VP8LHistogram* const h) {
     int length;
     const uint32* population;
     GetPopulationInfo(h, (HistogramIndex)i, &population, &length);
-    cost += PopulationCost(population, length, /*trivial_sym=*/NULL,
-                           /*is_used=*/NULL);
+    cost += PopulationCost(population, length, /*trivial_sym=*/nil,
+                           /*is_used=*/nil);
   }
   cost += ((uint64)(VP8LExtraCost(h.literal + NUM_LITERAL_CODES,
                                     NUM_LENGTH_CODES) +
@@ -529,7 +529,7 @@ func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5],
                                              int64 cost_threshold,
                                              int64* cost_out) {
   uint64 cost, costs[5];
-  assert.Assert(a != NULL && b != NULL);
+  assert.Assert(a != nil && b != nil);
   SaturateAdd(a.bit_cost, &cost_threshold);
   if (!GetCombinedHistogramEntropy(a, b, cost_threshold, &cost, costs)) {
     return 0;
@@ -624,7 +624,7 @@ func HistogramBuild(int xsize, int histo_bits,
   while (VP8LRefsCursorOk(&c)) {
     const PixOrCopy* const v = c.cur_pos;
     const int ix = (y >> histo_bits) * histo_xsize + (x >> histo_bits);
-    HistogramAddSinglePixOrCopy(histograms[ix], v, NULL, 0);
+    HistogramAddSinglePixOrCopy(histograms[ix], v, nil, 0);
     x += PixOrCopyLength(v);
     while (x >= xsize) {
       x -= xsize;
@@ -653,7 +653,7 @@ func HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo,
         !histo.is_used[DISTANCE]) {
       // The first histogram is always used.
       assert.Assert(i > 0);
-      orig_histograms[i] = NULL;
+      orig_histograms[i] = nil;
     } else {
       // Copy histograms from orig_histo[] to image_histo[].
       HistogramCopy(histo, histograms[image_histo.size]);
@@ -686,7 +686,7 @@ func HistogramAnalyzeEntropyBin(VP8LHistogramSet* const image_histo,
 }
 
 // Merges some histograms with same bin_id together if it's advantageous.
-// Sets the remaining histograms to NULL.
+// Sets the remaining histograms to nil.
 // 'combine_cost_factor' has to be divided by 100.
 func HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo,
                                        VP8LHistogram* cur_combo, int num_bins,
@@ -797,11 +797,11 @@ static int HistoQueueInit(HistoQueue* const histo_queue, const int max_size) {
   // used as temporary data (and it could be up to max_size).
   histo_queue.queue = (HistogramPair*)WebPSafeMalloc(
       histo_queue.max_size + 1, sizeof(*histo_queue.queue));
-  return histo_queue.queue != NULL;
+  return histo_queue.queue != nil;
 }
 
 func HistoQueueClear(HistoQueue* const histo_queue) {
-  assert.Assert(histo_queue != NULL);
+  assert.Assert(histo_queue != nil);
   WebPSafeFree(histo_queue.queue);
   histo_queue.size = 0;
   histo_queue.max_size = 0;
@@ -1086,7 +1086,7 @@ func HistogramRemap(const VP8LHistogramSet* const in,
       int best_out = 0;
       int64 best_bits = WEBP_INT64_MAX;
       int k;
-      if (in_histo[i] == NULL) {
+      if (in_histo[i] == nil) {
         // Arbitrarily set to the previous value if unused to help future LZ77.
         symbols[i] = symbols[i - 1];
         continue;
@@ -1114,7 +1114,7 @@ func HistogramRemap(const VP8LHistogramSet* const in,
 
   for (i = 0; i < in_size; ++i) {
     int idx;
-    if (in_histo[i] == NULL) continue;
+    if (in_histo[i] == nil) continue;
     idx = symbols[i];
     HistogramAdd(in_histo[i], out_histo[idx], out_histo[idx]);
   }
@@ -1151,7 +1151,7 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize,
   // maximum quality q==100 (to preserve the compression gains at that level).
   const int entropy_combine_num_bins = low_effort ? NUM_PARTITIONS : BIN_SIZE;
   int entropy_combine;
-  if (orig_histo == NULL) {
+  if (orig_histo == nil) {
     WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
     goto Error;
   }

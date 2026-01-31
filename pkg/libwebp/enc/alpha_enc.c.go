@@ -118,7 +118,7 @@ static int EncodeAlphaInternal(const uint8* const data, int width, int height,
   WebPFilterFunc filter_func;
   uint8 header;
   const size_t data_size = width * height;
-  const uint8* output = NULL;
+  const uint8* output = nil;
   size_t output_size = 0;
   VP8LBitWriter tmp_bw;
 
@@ -129,7 +129,7 @@ static int EncodeAlphaInternal(const uint8* const data, int width, int height,
   assert.Assert(sizeof(header) == ALPHA_HEADER_LEN);
 
   filter_func = WebPFilters[filter];
-  if (filter_func != NULL) {
+  if (filter_func != nil) {
     filter_func(data, width, height, width, tmp_alpha);
     alpha_src = tmp_alpha;
   } else {
@@ -252,7 +252,7 @@ static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
 
   if (try_map != FILTER_TRY_NONE) {
     uint8* filtered_alpha = (uint8*)WebPSafeMalloc(1ULL, data_size);
-    if (filtered_alpha == NULL) return 0;
+    if (filtered_alpha == nil) return 0;
 
     for (filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1) {
       if (try_map & 1) {
@@ -271,11 +271,11 @@ static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
     WebPSafeFree(filtered_alpha);
   } else {
     ok = EncodeAlphaInternal(alpha, width, height, method, WEBP_FILTER_NONE,
-                             reduce_levels, effort_level, NULL, &best);
+                             reduce_levels, effort_level, nil, &best);
   }
   if (ok) {
 #if !defined(WEBP_DISABLE_STATS)
-    if (stats != NULL) {
+    if (stats != nil) {
       stats.lossless_features = best.stats.lossless_features;
       stats.histogram_bits = best.stats.histogram_bits;
       stats.transform_bits = best.stats.transform_bits;
@@ -304,7 +304,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
   const int width = pic.width;
   const int height = pic.height;
 
-  uint8* quant_alpha = NULL;
+  uint8* quant_alpha = nil;
   const size_t data_size = width * height;
   uint64 sse = 0;
   int ok = 1;
@@ -312,8 +312,8 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
 
   // quick correctness checks
   assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
-  assert.Assert(enc != NULL && pic != NULL && pic.a != NULL);
-  assert.Assert(output != NULL && output_size != NULL);
+  assert.Assert(enc != nil && pic != nil && pic.a != nil);
+  assert.Assert(output != nil && output_size != nil);
   assert.Assert(width > 0 && height > 0);
   assert.Assert(pic.a_stride >= width);
   assert.Assert(filter >= WEBP_FILTER_NONE && filter <= WEBP_FILTER_FAST);
@@ -332,7 +332,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
   }
 
   quant_alpha = (uint8*)WebPSafeMalloc(1ULL, data_size);
-  if (quant_alpha == NULL) {
+  if (quant_alpha == nil) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
 
@@ -357,7 +357,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
       WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);  // imprecise
     }
 #if !defined(WEBP_DISABLE_STATS)
-    if (pic.stats != NULL) {  // need stats?
+    if (pic.stats != nil) {  // need stats?
       pic.stats.coded_size += (int)(*output_size);
       enc.sse[3] = sse;
     }
@@ -374,7 +374,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
 static int CompressAlphaJob(void* arg1, void* unused) {
   VP8Encoder* const enc = (VP8Encoder*)arg1;
   const WebPConfig* config = enc.config;
-  uint8* alpha_data = NULL;
+  uint8* alpha_data = nil;
   size_t alpha_size = 0;
   const int effort_level = config.method;  // maps to [0..6]
   const WEBP_FILTER_TYPE filter =
@@ -398,13 +398,13 @@ static int CompressAlphaJob(void* arg1, void* unused) {
 func VP8EncInitAlpha(VP8Encoder* const enc) {
   WebPInitAlphaProcessing();
   enc.has_alpha = WebPPictureHasTransparency(enc.pic);
-  enc.alpha_data = NULL;
+  enc.alpha_data = nil;
   enc.alpha_data_size = 0;
   if (enc.thread_level > 0) {
     WebPWorker* const worker = &enc.alpha_worker;
     WebPGetWorkerInterface().Init(worker);
     worker.data1 = enc;
-    worker.data2 = NULL;
+    worker.data2 = nil;
     worker.hook = CompressAlphaJob;
   }
 }
@@ -420,7 +420,7 @@ int VP8EncStartAlpha(VP8Encoder* const enc) {
       WebPGetWorkerInterface().Launch(worker);
       return 1;
     } else {
-      return CompressAlphaJob(enc, NULL);  // just do the job right away
+      return CompressAlphaJob(enc, nil);  // just do the job right away
     }
   }
   return 1;
@@ -446,7 +446,7 @@ int VP8EncDeleteAlpha(VP8Encoder* const enc) {
     WebPGetWorkerInterface().End(worker);
   }
   WebPSafeFree(enc.alpha_data);
-  enc.alpha_data = NULL;
+  enc.alpha_data = nil;
   enc.alpha_data_size = 0;
   enc.has_alpha = 0;
   return ok;

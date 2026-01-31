@@ -40,9 +40,9 @@ func ALPHNew() ALPHDecoder* {
 
 // Clears and deallocates an alpha decoder instance.
 func ALPHDelete(ALPHDecoder* const dec) {
-  if (dec != NULL) {
+  if (dec != nil) {
     VP8LDelete(dec.vp8l_dec);
-    dec.vp8l_dec = NULL;
+    dec.vp8l_dec = nil;
     WebPSafeFree(dec);
   }
 }
@@ -63,7 +63,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
   int rsrv;
   VP8Io* const io = &dec.io;
 
-  assert.Assert(data != NULL && output != NULL && src_io != NULL);
+  assert.Assert(data != nil && output != nil && src_io != nil);
 
   VP8FiltersInit();
   dec.output = output;
@@ -90,7 +90,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
   if (!VP8InitIo(io)) {
     return 0;
   }
-  WebPInitCustomIo(NULL, io);
+  WebPInitCustomIo(nil, io);
   io.opaque = dec;
   io.width = src_io.width;
   io.height = src_io.height;
@@ -133,7 +133,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
     const uint8* deltas = dec.alpha_data + ALPHA_HEADER_LEN + row * width;
     uint8* dst = dec.alpha_plane + row * width;
     assert.Assert(deltas <= &dec.alpha_data[dec.alpha_data_size]);
-    assert.Assert(WebPUnfilters[alph_dec.filter] != NULL);
+    assert.Assert(WebPUnfilters[alph_dec.filter] != nil);
     for (y = 0; y < num_rows; ++y) {
       WebPUnfilters[alph_dec.filter](prev_line, deltas, dst, width);
       prev_line = dst;
@@ -142,7 +142,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
     }
     dec.alpha_prev_line = prev_line;
   } else {  // alph_dec.method == ALPHA_LOSSLESS_COMPRESSION
-    assert.Assert(alph_dec.vp8l_dec != NULL);
+    assert.Assert(alph_dec.vp8l_dec != nil);
     if (!VP8LDecodeAlphaImageStream(alph_dec, row + num_rows)) {
       return 0;
     }
@@ -159,25 +159,25 @@ func ALPHDelete(ALPHDecoder* const dec) {
   const int stride = io.width;
   const int height = io.crop_bottom;
   const uint64 alpha_size = (uint64)stride * height;
-  assert.Assert(dec.alpha_plane_mem == NULL);
+  assert.Assert(dec.alpha_plane_mem == nil);
   dec.alpha_plane_mem =
       (uint8*)WebPSafeMalloc(alpha_size, sizeof(*dec.alpha_plane));
-  if (dec.alpha_plane_mem == NULL) {
+  if (dec.alpha_plane_mem == nil) {
     return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY,
                        "Alpha decoder initialization failed.");
   }
   dec.alpha_plane = dec.alpha_plane_mem;
-  dec.alpha_prev_line = NULL;
+  dec.alpha_prev_line = nil;
   return 1;
 }
 
 func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
-  assert.Assert(dec != NULL);
+  assert.Assert(dec != nil);
   WebPSafeFree(dec.alpha_plane_mem);
-  dec.alpha_plane_mem = NULL;
-  dec.alpha_plane = NULL;
+  dec.alpha_plane_mem = nil;
+  dec.alpha_plane = nil;
   ALPHDelete(dec.alph_dec);
-  dec.alph_dec = NULL;
+  dec.alph_dec = nil;
 }
 
 //------------------------------------------------------------------------------
@@ -189,19 +189,19 @@ func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
   const int width = io.width;
   const int height = io.crop_bottom;
 
-  assert.Assert(dec != NULL && io != NULL);
+  assert.Assert(dec != nil && io != nil);
 
   if (row < 0 || num_rows <= 0 || row + num_rows > height) {
-    return NULL;
+    return nil;
   }
 
   if (!dec.is_alpha_decoded) {
-    if (dec.alph_dec == NULL) {  // Initialize decoder.
+    if (dec.alph_dec == nil) {  // Initialize decoder.
       dec.alph_dec = ALPHNew();
-      if (dec.alph_dec == NULL) {
+      if (dec.alph_dec == nil) {
         VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY,
                     "Alpha decoder initialization failed.");
-        return NULL;
+        return nil;
       }
       if (!AllocateAlphaPlane(dec, io)) goto Error;
       if (!ALPHInit(dec.alph_dec, dec.alpha_data, dec.alpha_data_size, io,
@@ -209,7 +209,7 @@ func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
         VP8LDecoder* const vp8l_dec = dec.alph_dec.vp8l_dec;
         VP8SetError(
             dec,
-            (vp8l_dec == NULL) ? VP8_STATUS_OUT_OF_MEMORY : vp8l_dec.status,
+            (vp8l_dec == nil) ? VP8_STATUS_OUT_OF_MEMORY : vp8l_dec.status,
             "Alpha decoder initialization failed.");
         goto Error;
       }
@@ -221,13 +221,13 @@ func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
       }
     }
 
-    assert.Assert(dec.alph_dec != NULL);
+    assert.Assert(dec.alph_dec != nil);
     assert.Assert(row + num_rows <= height);
     if (!ALPHDecode(dec, row, num_rows)) goto Error;
 
     if (dec.is_alpha_decoded) {  // finished?
       ALPHDelete(dec.alph_dec);
-      dec.alph_dec = NULL;
+      dec.alph_dec = nil;
       if (dec.alpha_dithering > 0) {
         uint8* const alpha =
             dec.alpha_plane + io.crop_top * width + io.crop_left;
@@ -249,5 +249,5 @@ func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
 
 Error:
   WebPDeallocateAlphaMemory(dec);
-  return NULL;
+  return nil;
 }

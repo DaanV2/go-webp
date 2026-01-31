@@ -303,7 +303,7 @@ WEBP_DSP_INIT_FUNC(VP8EncDspCostInit) {
   VP8SetResidualCoeffs = SetResidualCoeffs_C;
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != NULL) {
+  if (VP8GetCPUInfo != nil) {
 #if defined(WEBP_USE_MIPS32)
     if (VP8GetCPUInfo(kMIPS32)) {
       VP8EncDspCostInitMIPS32();

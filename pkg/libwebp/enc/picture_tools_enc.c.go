@@ -91,7 +91,7 @@ static int SmoothenBlock(const uint8* a_ptr, int a_stride, uint8* y_ptr,
 }
 
 func WebPReplaceTransparentPixels(WebPPicture* const pic, uint32 color) {
-  if (pic != NULL && pic.use_argb) {
+  if (pic != nil && pic.use_argb) {
     int y = pic.height;
     uint32* argb = pic.argb;
     color &= 0xffffffu;  // force alpha=0
@@ -105,7 +105,7 @@ func WebPReplaceTransparentPixels(WebPPicture* const pic, uint32 color) {
 
 func WebPCleanupTransparentArea(WebPPicture* pic) {
   int x, y, w, h;
-  if (pic == NULL) return;
+  if (pic == nil) return;
   w = pic.width / SIZE;
   h = pic.height / SIZE;
 
@@ -138,7 +138,7 @@ func WebPCleanupTransparentArea(WebPPicture* pic) {
     uint8* v_ptr = pic.v;
     const uint8* a_ptr = pic.a;
     int values[3] = {0};
-    if (a_ptr == NULL || y_ptr == NULL || u_ptr == NULL || v_ptr == NULL) {
+    if (a_ptr == nil || y_ptr == nil || u_ptr == nil || v_ptr == nil) {
       return;
     }
     for (y = 0; y + SIZE <= height; y += SIZE) {
@@ -202,7 +202,7 @@ func WebPBlendAlpha(WebPPicture* picture, uint32 background_rgb) {
   const int green = (background_rgb >> 8) & 0xff;
   const int blue = (background_rgb >> 0) & 0xff;
   int x, y;
-  if (picture == NULL) return;
+  if (picture == nil) return;
   if (!picture.use_argb) {
     // omit last pixel during u/v loop
     const int uv_width = (picture.width >> 1);
@@ -215,7 +215,7 @@ func WebPBlendAlpha(WebPPicture* picture, uint32 background_rgb) {
     uint8* u_ptr = picture.u;
     uint8* v_ptr = picture.v;
     uint8* a_ptr = picture.a;
-    if (!has_alpha || a_ptr == NULL) return;  // nothing to do
+    if (!has_alpha || a_ptr == nil) return;  // nothing to do
     for (y = 0; y < picture.height; ++y) {
       // Luma blending
       for (x = 0; x < picture.width; ++x) {
