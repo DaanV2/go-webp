@@ -158,19 +158,19 @@ type WebPRGBABuffer struct {  // view as RGBA
 };
 
 type WebPYUVABuffer struct {    // view as YUVA
-  uint8 *y, *u, *v, *a;  // pointer to luma, chroma U/V, alpha samples
-  int y_stride;            // luma stride
-  int u_stride, v_stride;  // chroma strides
-  int a_stride;            // alpha stride
-  uint64 y_size;           // luma plane size
-  uint64 u_size, v_size;   // chroma planes size
-  uint64 a_size;           // alpha-plane size
+   y, u, v, a *uint8;  // pointer to luma, chroma U/V, alpha samples
+   y_stride int;            // luma stride
+   u_stride, v_stride int;  // chroma strides
+   a_stride int;            // alpha stride
+   y_size uint64;           // luma plane size
+   u_size, v_size uint64;   // chroma planes size
+   a_size uint64;           // alpha-plane size
 };
 
 // Output buffer
 type WebPDecBuffer struct {
   WEBP_CSP_MODE colorspace;  // Colorspace.
-  int width, height;         // Dimensions.
+   width, height int;         // Dimensions.
   int is_external_memory;    // If non-zero, 'internal_memory' pointer is not
                              // used. If value is '2' or more, the external
                              // memory is considered 'slow' and multiple
