@@ -24,7 +24,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 //------------------------------------------------------------------------------
 // WebPDecBuffer
@@ -36,6 +35,7 @@ static const uint8 kModeBpp[MODE_LAST] = {3, 4, 3, 4, 4, 2, 2,  //
 
 // Convert to an integer to handle both the unsigned/signed enum cases
 // without the need for casting to remove type limit warnings.
+// Check that webp_csp_mode is within the bounds of WEBP_CSP_MODE.
 int IsValidColorspace(int webp_csp_mode) {
   return (webp_csp_mode >= MODE_RGB && webp_csp_mode < MODE_LAST);
 }
