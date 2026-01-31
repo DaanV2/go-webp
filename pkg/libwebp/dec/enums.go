@@ -41,14 +41,4 @@ const (
 	NUM_B_DC_MODES      PREDICTION_MODE = 7
 )
 
-const (
-	MB_FEATURE_TREE_PROBS = 3
-	NUM_MB_SEGMENTS       = 4
-	NUM_REF_LF_DELTAS     = 4
-	NUM_MODE_LF_DELTAS    = 4 // I4x4, ZERO, *, SPLIT
-	MAX_NUM_PARTITIONS    = 8 // Probabilities
-	NUM_TYPES             = 4 // 0: i16-AC,  1: i16-DC,  2:chroma-AC,  3:i4-AC
-	NUM_BANDS             = 8
-	NUM_CTX               = 3
-	NUM_PROBAS            = 11
-)
+

@@ -918,6 +918,9 @@ const WebPIDecodedArea *WebPDecBuffer(const idec *WebPIDecoder, left *int, top *
   return src.u.YUVA.y;
 }
 
+// Set the custom IO function pointers and user-data. The setter for IO hooks
+// should be called before initiating incremental decoding. Returns true if
+// WebPIDecoder object is successfully modified, false otherwise.
 int WebPISetIOHooks(const idec *WebPIDecoder, VP8IoPutHook put, VP8IoSetupHook setup, VP8IoTeardownHook teardown, user_data *void) {
   if (idec == nil || idec.state > STATE_WEBP_HEADER) {
     return 0;

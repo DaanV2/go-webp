@@ -103,6 +103,7 @@ func DecodeImageStream(xsize int , ysize int , is_level0 int, /* const */ dec *V
 
 //------------------------------------------------------------------------------
 
+// Returns true if the next byte(s) in data is a VP8L signature.
 func VP8LCheckSignature(/* const */  data *uint8 , size uint64) int {
   return (size >= VP8L_FRAME_HEADER_SIZE && data[0] == VP8L_MAGIC_BYTE &&
           (data[4] >> 5) == 0);  // version
@@ -117,6 +118,9 @@ func ReadImageInfo(/* const */ br *VP8LBitReader, /* const */ width *int, /* con
   return !br.eos;
 }
 
+// Validates the VP8L data-header and retrieves basic header information viz
+// width, height and alpha. Returns 0 in case of formatting error.
+// width/height/has_alpha can be passed nil.
 func VP8LGetInfo(/* const */ data *uint8, data_size uint64 , /* const */ width *int, /* const */ height *int, /* const */ has_alpha *int) int {
   if (data == nil || data_size < VP8L_FRAME_HEADER_SIZE) {
     return 0;  // not enough data
@@ -424,6 +428,13 @@ Error:
   return ok;
 }
 
+// Helper function for reading the different Huffman codes and storing them in
+// 'huffman_tables' and 'htree_groups'.
+// If mapping is nil 'num_htree_groups_max' must equal 'num_htree_groups'.
+// If it is not nil, it maps 'num_htree_groups_max' indices to the
+// 'num_htree_groups' groups. If 'num_htree_groups_max' > 'num_htree_groups',
+// some of those indices map to -1. This is used for non-balanced codes to
+// limit memory usage.
 int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_htree_groups_max, const mapping *int, const dec *VP8LDecoder, const huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) {
   int i, j, ok = 0;
   max_alphabet_size :=
@@ -1413,6 +1424,7 @@ func ClearMetadata(const hdr *VP8LMetadata) {
 // -----------------------------------------------------------------------------
 // VP8LDecoder
 
+// Allocates and initialize a new lossless decoder instance.
 VP *VP8LDecoder8LNew(){
   var dec *VP8LDecoder = (*VP8LDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
   if (dec == nil) return nil;
@@ -1445,6 +1457,7 @@ func VP8LClear(const dec *VP8LDecoder) {
   dec.output = nil;  // leave no trace behind
 }
 
+// Clears and deallocate a lossless decoder instance.
 func VP8LDelete(const dec *VP8LDecoder) {
   if (dec != nil) {
     VP8LClear(dec);
@@ -1622,6 +1635,8 @@ func ExtractAlphaRows(const dec *VP8LDecoder, int last_row, int wait_for_biggest
   dec.last_row = dec.last_out_row = last_row;
 }
 
+// Decodes image header for alpha data stored using lossless compression.
+// Returns false in case of error.
 int VP8LDecodeAlphaHeader(const alph_dec *ALPHDecoder, const *uint8  data, uint64 data_size) {
   ok := 0;
   dec *VP8LDecoder = VP8LNew();
@@ -1669,6 +1684,10 @@ Err:
   return 0;
 }
 
+// Decodes *at *least 'last_row' rows of alpha. If some of the initial rows are
+// already decoded in previous call(s), it will resume decoding from where it
+// was paused.
+// Returns false in case of bitstream error.
 int VP8LDecodeAlphaImageStream(const alph_dec *ALPHDecoder, int last_row) {
   var dec *VP8LDecoder = alph_dec.vp8l_dec;
   assert.Assert(dec != nil);
@@ -1688,6 +1707,7 @@ int VP8LDecodeAlphaImageStream(const alph_dec *ALPHDecoder, int last_row) {
 
 //------------------------------------------------------------------------------
 
+// Decodes the image header. Returns false in case of error.
 int VP8LDecodeHeader(const dec *VP8LDecoder, const io *VP8Io) {
   int width, height, has_alpha;
 
@@ -1722,6 +1742,8 @@ Error:
   return 0;
 }
 
+// Decodes an image. It's required to decode the lossless header before calling
+// this function. Returns false in case of error, with updated dec.status.
 int VP8LDecodeImage(const dec *VP8LDecoder) {
   io *VP8Io = nil;
   params *WebPDecParams = nil;

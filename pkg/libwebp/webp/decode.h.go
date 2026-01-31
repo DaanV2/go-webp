@@ -13,12 +13,14 @@ package webp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+import (
+	"github.com/daanv2/go-webp/pkg/constants"
+	"github.com/daanv2/go-webp/pkg/stddef"
+)
 
-import "github.com/daanv2/go-webp/pkg/stddef"
 
 
-
-const WEBP_DECODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
+const WEBP_DECODER_ABI_VERSION = constants.WEBP_DECODER_ABI_VERSION  // MAJOR(8b) + MINOR(8b)
 
 // Note: forward declaring enumerations is not allowed in (strict) C and C++,
 // the types are left here for reference.

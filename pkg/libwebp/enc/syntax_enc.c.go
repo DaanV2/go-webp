@@ -301,6 +301,7 @@ static int GeneratePartition0(const enc *VP8Encoder) {
   return 1;
 }
 
+// Release memory allocated for bit-writing in VP8EncLoop & seq.
 func VP8EncFreeBitWriters(const enc *VP8Encoder) {
   int p;
   VP8BitWriterWipeOut(&enc.bw);
@@ -309,6 +310,9 @@ func VP8EncFreeBitWriters(const enc *VP8Encoder) {
   }
 }
 
+// Generates the final bitstream by coding the partition0 and headers,
+// and appending an assembly of all the pre-coded token partitions.
+// Return true if everything is ok.
 int VP8EncWrite(const enc *VP8Encoder) {
   var pic *WebPPicture = enc.pic;
   var bw *VP8BitWriter = &enc.bw;

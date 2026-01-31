@@ -46,6 +46,7 @@ func InitTop(const it *VP8EncIterator) {
   }
 }
 
+// reset iterator position to row 'y'
 func VP8IteratorSetRow(const it *VP8EncIterator, int y) {
   var enc *VP8Encoder = it.enc;
   it.x = 0;
@@ -69,14 +70,17 @@ func VP8IteratorReset(const it *VP8EncIterator) {
   it.do_trellis = 0;
 }
 
+// set count down (=number of iterations to go)
 func VP8IteratorSetCountDown(const it *VP8EncIterator, int count_down) {
   it.count_down = it.count_down0 = count_down;
 }
 
+// return true if iteration is finished
 int VP8IteratorIsDone(const it *VP8EncIterator) {
   return (it.count_down <= 0);
 }
 
+// must be called first
 func VP8IteratorInit(const enc *VP8Encoder, const it *VP8EncIterator) {
   it.enc = enc;
   it.yuv_in = (*uint8)WEBP_ALIGN(it.yuv_mem);
@@ -92,6 +96,7 @@ func VP8IteratorInit(const enc *VP8Encoder, const it *VP8EncIterator) {
   VP8IteratorReset(it);
 }
 
+// Report progression based on macroblock rows. Return 0 for user-abort request.
 int VP8IteratorProgress(const it *VP8EncIterator, int delta) {
   var enc *VP8Encoder = it.enc;
   if (delta && enc.pic.progress_hook != nil) {
@@ -132,6 +137,9 @@ func ImportLine(const src *uint8, int src_stride, dst *uint8, int len, int total
   for (; i < total_len; ++i) dst[i] = dst[len - 1];
 }
 
+// Import uncompressed samples from source.
+// If tmp_32 is not nil, import boundary samples too.
+// tmp_32 is a 32-bytes scratch buffer that must be aligned in memory.
 func VP8IteratorImport(const it *VP8EncIterator, const tmp_ *uint832) {
   var enc *VP8Encoder = it.enc;
   x := it.x, y = it.y;
@@ -188,6 +196,7 @@ func ExportBlock(const src *uint8, dst *uint8, int dst_stride, int w, int h) {
   }
 }
 
+// export decimated samples
 func VP8IteratorExport(const it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
   if (enc.config.show_compressed) {
@@ -290,6 +299,8 @@ func VP8IteratorBytesToNz(const it *VP8EncIterator) {
 //------------------------------------------------------------------------------
 // Advance to the next position, doing the bookkeeping.
 
+// save the 'yuv_out' boundary values to 'top'/'left' arrays for next
+// iterations.
 func VP8IteratorSaveBoundary(const it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
   x := it.x, y = it.y;
@@ -315,6 +326,7 @@ func VP8IteratorSaveBoundary(const it *VP8EncIterator) {
   }
 }
 
+// go to next macroblock. Returns false if not finished.
 int VP8IteratorNext(const it *VP8EncIterator) {
   if (++it.x == it.enc.mb_w) {
     VP8IteratorSetRow(it, ++it.y);
@@ -396,8 +408,9 @@ func VP8SetSegment(const it *VP8EncIterator, int segment) {
 
 // Array to record the position of the top sample to pass to the prediction
 // functions in dsp.c.
-static const uint8 VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25, 9,  13, 17, 21, 5,  9,  13, 17}
+const VP8TopLeftI4 = [16]uint8{17, 21, 25, 29, 13, 17, 21, 25, 9,  13, 17, 21, 5,  9,  13, 17}
 
+// Intra4x4 iterations
 func VP8IteratorStartI4(const it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
   int i;
@@ -434,6 +447,7 @@ func VP8IteratorStartI4(const it *VP8EncIterator) {
   VP8IteratorNzToBytes(it);  // import the non-zero context
 }
 
+// returns true if not done.
 int VP8IteratorRotateI4(const it *VP8EncIterator, const yuv_out *uint8) {
   var blk *uint8 = yuv_out + VP8Scan[it.i4];
   var top *uint8 = it.i4_top;

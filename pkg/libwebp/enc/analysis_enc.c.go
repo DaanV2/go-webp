@@ -423,6 +423,8 @@ func InitSegmentJob(const enc *VP8Encoder, const job *SegmentJob, int start_row,
 }
 
 // main entry point
+// Main analysis loop. Decides the segmentations and complexity.
+// Assigns a first guess for Intra16 and 'uvmode' prediction modes
 int VP8EncAnalyze(const enc *VP8Encoder) {
   ok := 1;
   do_segments :=

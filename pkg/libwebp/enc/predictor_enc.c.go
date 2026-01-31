@@ -705,6 +705,8 @@ func GetBestPredictorsAndSubSampling(
 // with respect to predictions. If near_lossless_quality < 100, applies
 // near lossless processing, shaving off more bits of residuals for lower
 // qualities.
+// pic and percent are for progress.
+// Returns false in case of error (stored in pic.error_code).
 int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low_effort, const argb *uint32, const argb_scratch *uint32, const image *uint32, int near_lossless_quality, int exact, int used_subtract_green, const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int) {
   percent_start := *percent;
   max_quantization := 1 << VP8LNearLosslessBits(near_lossless_quality);

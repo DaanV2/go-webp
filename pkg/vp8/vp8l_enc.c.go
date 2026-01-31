@@ -99,14 +99,14 @@ func AddSingle(p uint32, a, r, g, b HistogramBuckets) {
   b[(p >> 0) & 0xff]++
 }
 
-static  uint8 HashPix(uint32 pix) {
+func HashPix(pix uint32) uint8 {
   // Note that masking with uint(0xffffffff) is for preventing an
   // 'unsigned int overflow' warning. Doesn't impact the compiled code.
-  return ((((uint64)pix + (pix >> 19)) * uint64(0x39c5fba7)) & uint64(0xffffffff)) >> 24;
+  return (((uint64(pix) + (pix >> 19)) * uint64(0x39c5fba7)) & uint64(0xffffffff)) >> 24;
 }
 
-static int AnalyzeEntropy(const argb *uint32, int width, int height, int argb_stride, int use_palette, int palette_size, int transform_bits, const min_entropy_ix *EntropyIx, const red_and_blue_always_zero *int) {
-  histo *Histograms;
+func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_palette, palette_size, transform_bits int , /* const */ min_entropy_ix *EntropyIx, /* const */ red_and_blue_always_zero *int) int {
+  var histo *Histograms;
 
   if (use_palette && palette_size <= 16) {
     // In the case of small palettes, we pack 2, 4 or 8 pixels together. In
@@ -152,12 +152,12 @@ static int AnalyzeEntropy(const argb *uint32, int width, int height, int argb_st
       // Let's add one zero to the predicted histograms. The zeros are removed
       // too efficiently by the pix_diff == 0 comparison, at least one of the
       // zeros is likely to exist.
-      ++histo.category[kHistoRedPredSubGreen][0];
-      ++histo.category[kHistoBluePredSubGreen][0];
-      ++histo.category[kHistoRedPred][0];
-      ++histo.category[kHistoGreenPred][0];
-      ++histo.category[kHistoBluePred][0];
-      ++histo.category[kHistoAlphaPred][0];
+      histo.category[kHistoRedPredSubGreen][0]++
+      histo.category[kHistoBluePredSubGreen][0]++
+      histo.category[kHistoRedPred][0]++
+      histo.category[kHistoGreenPred][0]++
+      histo.category[kHistoBluePred][0]++
+      histo.category[kHistoAlphaPred][0]++
 
       for (j = 0; j < kHistoTotal; ++j) {
         entropy_comp[j] = VP8LBitsEntropy(histo.category[j], NUM_BUCKETS);
@@ -204,7 +204,7 @@ static int AnalyzeEntropy(const argb *uint32, int width, int height, int argb_st
       // non-zero red and blue values. If all are zero, we can later skip
       // the cross color optimization.
       {
-        static const uint8 kHistoPairs[5][2] = {
+        kHistoPairs = [5][2]uint8{
             {kHistoRed, kHistoBlue}, {kHistoRedPred, kHistoBluePred}, {kHistoRedSubGreen, kHistoBlueSubGreen}, {kHistoRedPredSubGreen, kHistoBluePredSubGreen}, {kHistoRed, kHistoBlue}}
         const red_histo *HistogramBuckets =
             &histo.category[kHistoPairs[*min_entropy_ix][0]];
@@ -476,13 +476,12 @@ End:
   return ok;
 }
 
-func StoreHuffmanTreeOfHuffmanTreeToBitMask(
-    const bw *VP8LBitWriter, const code_length_bitdepth *uint8) {
+func StoreHuffmanTreeOfHuffmanTreeToBitMask(/* const */ bw *VP8LBitWriter, /* const */ code_length_bitdepth *uint8) {
   // RFC 1951 will calm you down if you are worried about this funny sequence.
   // This sequence is tuned from that, but more weighted for lower symbol count, // and more spiking histograms.
-  static const uint8 kStorageOrder[CODE_LENGTH_CODES] = {
+  kStorageOrder = [CODE_LENGTH_CODES]uint8{
       17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
-  int i;
+  var i int
   // Throw away trailing zeros:
   codes_to_store := CODE_LENGTH_CODES;
   for (; codes_to_store > 4; --codes_to_store) {
@@ -496,8 +495,7 @@ func StoreHuffmanTreeOfHuffmanTreeToBitMask(
   }
 }
 
-func ClearHuffmanTreeIfOnlyOneSymbol(
-    const huffman_code *HuffmanTreeCode) {
+func ClearHuffmanTreeIfOnlyOneSymbol(/* const */ huffman_code *HuffmanTreeCode) {
   int k;
   count := 0;
   for (k = 0; k < huffman_code.num_symbols; ++k) {
@@ -512,8 +510,7 @@ func ClearHuffmanTreeIfOnlyOneSymbol(
   }
 }
 
-func StoreHuffmanTreeToBitMask(
-    const bw *VP8LBitWriter, const tokens *HuffmanTreeToken, const int num_tokens, const huffman_code *HuffmanTreeCode) {
+func StoreHuffmanTreeToBitMask(/* const */ bw *VP8LBitWriter, /* const */ tokens *HuffmanTreeToken, /* const */ num_tokens int , /* const */ huffman_code *HuffmanTreeCode) {
   int i;
   for (i = 0; i < num_tokens; ++i) {
     ix := tokens[i].code;
@@ -534,7 +531,7 @@ func StoreHuffmanTreeToBitMask(
 }
 
 // 'huff_tree' and 'tokens' are pre-alloacted buffers.
-func StoreFullHuffmanCode(const bw *VP8LBitWriter, const huff_tree *HuffmanTree, const tokens *HuffmanTreeToken, const tree *HuffmanTreeCode) {
+func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *HuffmanTree, /* const */ tokens *HuffmanTreeToken, /* const */ tree *HuffmanTreeCode) {
   uint8 code_length_bitdepth[CODE_LENGTH_CODES] = {0}
   uint16 code_length_bitdepth_symbols[CODE_LENGTH_CODES] = {0}
   max_tokens := tree.num_symbols;
@@ -671,9 +668,8 @@ static int StoreImageToBitMask(const bw *VP8LBitWriter, int width, int histo_bit
       codes = huffman_codes + 5 * histogram_ix;
     }
     if (PixOrCopyIsLiteral(v)) {
-      static const uint8 order[] = {1, 2, 0, 3}
-      int k;
-      for (k = 0; k < 4; ++k) {
+      order = []uint8{1, 2, 0, 3}
+      for (k := 0; k < 4; ++k) {
         code := PixOrCopyLiteral(v, order[k]);
         WriteHuffmanCode(bw, codes + k, code);
       }
@@ -1176,7 +1172,7 @@ static int MakeInputImageCopy(const enc *VP8LEncoder) {
 
 const APPLY_PALETTE_GREEDY_MAX =4
 
-static  uint32 SearchColorGreedy(const uint32 palette[], int palette_size, uint32 color) {
+static  uint32 SearchColorGreedy(/* const */ uint32 palette[], int palette_size, uint32 color) {
   (void)palette_size;
   assert.Assert(palette_size < APPLY_PALETTE_GREEDY_MAX);
   assert.Assert(3 == APPLY_PALETTE_GREEDY_MAX - 1);
@@ -1194,43 +1190,42 @@ static  uint32 ApplyPaletteHash0(uint32 color) {
 const PALETTE_INV_SIZE_BITS =11
 const PALETTE_INV_SIZE =(1 << PALETTE_INV_SIZE_BITS)
 
-static  uint32 ApplyPaletteHash1(uint32 color) {
+func ApplyPaletteHash1( color uint32) uint32 {
   // Forget about alpha.
-  return ((uint32)((color & uint(0x00ffffff)) * uint64(4222244071))) >>
-         (32 - PALETTE_INV_SIZE_BITS);
+  return (((color & uint(0x00ffffff)) * uint64(4222244071))) >> (32 - PALETTE_INV_SIZE_BITS);
 }
 
-static  uint32 ApplyPaletteHash2(uint32 color) {
+func ApplyPaletteHash2(color uint32) uint32 {
   // Forget about alpha.
-  return ((uint32)((color & uint(0x00ffffff)) * ((uint64(1) << 31) - 1))) >>
-         (32 - PALETTE_INV_SIZE_BITS);
+  return (((color & uint(0x00ffffff)) * ((uint64(1) << 31) - 1))) >> (32 - PALETTE_INV_SIZE_BITS)
 }
 
 // Use 1 pixel cache for ARGB pixels.
-#define APPLY_PALETTE_FOR(COLOR_INDEX)                \
-  for {                                                \
-    prev_pix := palette[0];                   \
-    prev_idx := 0;                            \
-    for (y = 0; y < height; ++y) {                    \
-      for (x = 0; x < width; ++x) {                   \
-        pix := src[x];                  \
-        if (pix != prev_pix) {                        \
-          prev_idx = COLOR_INDEX;                     \
-          prev_pix = pix;                             \
-        }                                             \
-        tmp_row[x] = prev_idx;                        \
-      }                                               \
-      VP8LBundleColorMap(tmp_row, width, xbits, dst); \
-      src += src_stride;                              \
-      dst += dst_stride;                              \
-    }                                                 \
-  } while (0)
+func APPLY_PALETTE_FOR(COLOR_INDEX int) {
+//   do {
+    prev_pix := palette[0];
+    prev_idx := 0;
+    for (y = 0; y < height; ++y) {
+      for (x = 0; x < width; ++x) {
+        pix := src[x];
+        if (pix != prev_pix) {
+          prev_idx = COLOR_INDEX;
+          prev_pix = pix;
+        }
+        tmp_row[x] = prev_idx;
+      }
+      VP8LBundleColorMap(tmp_row, width, xbits, dst);
+      src += src_stride;
+      dst += dst_stride;
+    }
+//   } while (0)
+}
 
 // Remap argb values in src[] to packed palettes entries in dst[]
 // using 'row' as a temporary buffer of size 'width'.
 // We assume that all src[] values have a corresponding entry in the palette.
 // Note: src[] can be the same as dst[]
-static int ApplyPalette(const src *uint32, uint32 src_stride, dst *uint32, uint32 dst_stride, const palette *uint32, int palette_size, int width, int height, int xbits, const pic *WebPPicture) {
+func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst_stride uint32, /* const */ palette *uint32, palette_size, width, height,  xbits int, /* const */ pic *WebPPicture) int {
   // TODO(skal): this tmp buffer is not needed if VP8LBundleColorMap() can be
   // made to work in-place.
   var tmp_row *uint8 = (*uint8)WebPSafeMalloc(width, sizeof(*tmp_row));
@@ -1550,6 +1545,8 @@ Error:
   return (params.picture.error_code == VP8_ENC_OK);
 }
 
+// Encodes the main image stream using the supplied bit writer.
+// Returns false in case of error (stored in picture.error_code).
 int VP8LEncodeStream(const config *WebPConfig, const picture *WebPPicture, const bw_main *VP8LBitWriter) {
   var enc_main *VP8LEncoder = VP8LEncoderNew(config, picture);
   enc_side *VP8LEncoder = nil;
@@ -1703,6 +1700,9 @@ Error:
 #undef CRUNCH_CONFIGS_MAX
 #undef CRUNCH_SUBCONFIGS_MAX
 
+// Encodes the picture.
+// Returns 0 if config or picture is nil or picture doesn't have valid argb
+// input.
 int VP8LEncodeImage(const config *WebPConfig, const picture *WebPPicture) {
   int width, height;
   int has_alpha;

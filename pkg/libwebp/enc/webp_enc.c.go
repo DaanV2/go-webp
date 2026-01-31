@@ -305,6 +305,8 @@ func StoreStats(const enc *VP8Encoder) {
 #endif  // !defined(WEBP_DISABLE_STATS)
 }
 
+// Assign an error code to a picture. Return false for convenience.
+// Deprecated: time to start using golang errors
 int WebPEncodingSetError(const pic *WebPPicture, WebPEncodingError error) {
   assert.Assert((int)error < VP8_ENC_ERROR_LAST);
   assert.Assert((int)error >= VP8_ENC_OK);

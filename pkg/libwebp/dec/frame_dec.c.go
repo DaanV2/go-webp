@@ -332,6 +332,7 @@ static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
     // roughly, it's dqm.uv_mat[1]
     8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1}
 
+// Initialize dithering post-process if needed.
 func VP8InitDithering(const options *WebPDecoderOptions, const dec *VP8Decoder) {
   assert.Assert(dec != nil);
   if (options != nil) {
@@ -503,6 +504,7 @@ static int FinishRow(arg *void1, arg *void2) {
 
 //------------------------------------------------------------------------------
 
+// Process the last decoded row (filtering + output).
 int VP8ProcessRow(const dec *VP8Decoder, const io *VP8Io) {
   ok := 1;
   var ctx *VP8ThreadContext = &dec.thread_ctx;
@@ -551,6 +553,9 @@ int VP8ProcessRow(const dec *VP8Decoder, const io *VP8Io) {
 //------------------------------------------------------------------------------
 // Finish setting up the decoding parameter once user's setup() is called.
 
+// After this call returns, one must always call VP8ExitCritical() with the
+// same parameters. Both functions should be used in pair. Returns VP8_STATUS_OK
+// if ok, otherwise sets and returns the error status on *dec.
 VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, const io *VP8Io) {
   // Call setup() first. This may trigger additional decoding features on 'io'.
   // Note: Afterward, we must call teardown() no matter what.
@@ -603,6 +608,8 @@ VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, const io *VP8Io) {
   return VP8_STATUS_OK;
 }
 
+// Must always be called in pair with VP8EnterCritical().
+// Returns false in case of error.
 int VP8ExitCritical(const dec *VP8Decoder, const io *VP8Io) {
   ok := 1;
   if (dec.mt_method > 0) {
@@ -661,6 +668,8 @@ static int InitThreadContext(const dec *VP8Decoder) {
   return 1;
 }
 
+// Return the multi-threading method to use (0=off), depending
+// on options and bitstream size. Only for lossy decoding.
 int VP8GetThreadMethod(const options *WebPDecoderOptions, const headers *WebPHeaderStructure, int width, int height) {
   if (options == nil || options.use_threads == 0) {
     return 0;

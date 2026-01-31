@@ -49,6 +49,9 @@ int WebPPictureInitInternal(picture *WebPPicture, int version) {
 
 //------------------------------------------------------------------------------
 
+// Returns true if 'picture' is non-nil and dimensions/colorspace are within
+// their valid ranges. If returning false, the 'error_code' in 'picture' is
+// updated.
 int WebPValidatePicture(const picture *WebPPicture) {
   if (picture == nil) return 0;
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
@@ -75,11 +78,15 @@ func WebPPictureResetBufferYUVA(const picture *WebPPicture) {
   picture.a_stride = 0;
 }
 
+// Remove reference to the ARGB/YUVA buffer (doesn't free anything).
 func WebPPictureResetBuffers(const picture *WebPPicture) {
   WebPPictureResetBufferARGB(picture);
   WebPPictureResetBufferYUVA(picture);
 }
 
+// Allocates ARGB buffer according to set width/height (previous one is
+// always free'd). Preserves the YUV(A) buffer. Returns false in case of error
+// (invalid param, out-of-memory).
 int WebPPictureAllocARGB(const picture *WebPPicture) {
   memory *void;
   width := picture.width;
@@ -102,6 +109,10 @@ int WebPPictureAllocARGB(const picture *WebPPicture) {
   return 1;
 }
 
+// Allocates YUVA buffer according to set width/height (previous one is always
+// free'd). Uses picture.csp to determine whether an alpha buffer is needed.
+// Preserves the ARGB buffer.
+// Returns false in case of error (invalid param, out-of-memory).
 int WebPPictureAllocYUVA(const picture *WebPPicture) {
   has_alpha := (int)picture.colorspace & WEBP_CSP_ALPHA_BIT;
   width := picture.width;

@@ -1,4 +1,3 @@
-package vp8
 
 // Copyright 2010 Google Inc. All Rights Reserved.
 //
@@ -8,6 +7,7 @@ package vp8
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
 
+package vp8
 import "github.com/daanv2/go-webp/pkg/libwebp/dec"
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stdlib"
@@ -26,6 +26,15 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+
+const (
+	kCat3 = []uint8{173, 148, 140, 0}
+	kCat4 = []uint8{176, 155, 140, 135, 0}
+	kCat5 = []uint8{180, 157, 141, 134, 130, 0}
+	kCat6 = []uint8{254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0}
+	kCat3456 = [][]uint8{kCat3, kCat4, kCat5, kCat6}
+	kZigzag = [16]uint8{0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
+)
 
 // Input / Output
 type VP8IoPutHook func(/* const */ io *VP8Io)int 
@@ -109,6 +118,7 @@ func SetOk(/* const */ dec *VP8Decoder) {
   dec.error_msg = "OK";
 }
 
+// Internal, version-checked, entry point
 func VP8InitIoInternal(/* const */ io *VP8Io, version int) int {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION)) {
     return 0;  // mismatch error
@@ -119,6 +129,7 @@ func VP8InitIoInternal(/* const */ io *VP8Io, version int) int {
   return 1;
 }
 
+// Create a new decoder object.
 func VP8Decoder8New() *VP {
   var dec *VP8Decoder = (*VP8Decoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
   if (dec != nil) {
@@ -131,18 +142,21 @@ func VP8Decoder8New() *VP {
   return dec;
 }
 
+// Return current status of the decoder:
 func VP8Status(/* const */ dec *VP8Decoder) VP8StatusCode {
   if (!dec) { return VP8_STATUS_INVALID_PARAM }
   return dec.status;
 }
 
+// return readable string corresponding to the last status.
 func byte8StatusMessage(/* const */ dec *VP8Decoder) *VP {
   if (dec == nil) return "no object";
   if (!dec.error_msg) return "OK";
   return dec.error_msg;
 }
 
-func VP8Delete(const dec *VP8Decoder) {
+// Destroy the decoder object.
+func VP8Delete(/* const */ dec *VP8Decoder) {
   if (dec != nil) {
     VP8Clear(dec);
     WebPSafeFree(dec);
@@ -161,11 +175,14 @@ func VP8SetError(/* const */ dec *VP8Decoder, error VP8StatusCode, /* const */ m
   return 0;
 }
 
-
+// Returns true if the next 3 bytes in data contain the VP8 signature.
 func VP8CheckSignature(data []uint8, data_size uint64) int {
   return (data_size >= 3 && data[0] == 0x9d && data[1] == 0x01 && data[2] == 0x2a);
 }
 
+// Validates the VP8 data-header and retrieves basic header information viz
+// width and height. Returns 0 in case of formatting error. *width/*height
+// can be passed nil.
 func VP8GetInfo(data *uint8, data_size uint64, chunk_size uint64, width *int, height *int) int {
   if (data == nil || data_size < VP8_FRAME_HEADER_SIZE) {
     return 0;  // not enough data
@@ -321,7 +338,8 @@ func ParseFilterHeader(br *VP8BitReader, /* const */ dec *VP8Decoder) int {
   return !br.eof;
 }
 
-// Topmost call
+// Decode the VP8 frame header. Returns true if ok.
+// Note: 'io.data' must be pointing to the start of the VP8 frame header.
 func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   var buf_size uint64;
   var buf *uint8 ;
@@ -446,14 +464,7 @@ func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   return 1;
 }
 
-const (
-	kCat3 = []uint8{173, 148, 140, 0}
-	kCat4 = []uint8{176, 155, 140, 135, 0}
-	kCat5 = []uint8{180, 157, 141, 134, 130, 0}
-	kCat6 = []uint8{254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0}
-	kCat3456 = [][]uint8{kCat3, kCat4, kCat5, kCat6}
-	kZigzag = [16]uint8{0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
-)
+
 
 // See section 13-2: https://datatracker.ietf.org/doc/html/rfc6386#section-13.2
 func GetLargeValue(/* const */ br *VP8BitReader, /* const */ p *uint8) int {
@@ -650,9 +661,8 @@ func ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br *VP8B
   return !(non_zero_y | non_zero_uv);  // will be used for further optimization
 }
 
-//------------------------------------------------------------------------------
 // Main loop
-
+// Decode one macroblock. Returns false if there is not enough data.
 func VP8DecodeMB(/* const */ dec *VP8Decoder, /* const */ token_br *VP8BitReader) int {
   var left *VP8MB = dec.mb_info - 1;
   var mb *VP8MB = dec.mb_info + dec.mb_x;
@@ -680,6 +690,7 @@ func VP8DecodeMB(/* const */ dec *VP8Decoder, /* const */ token_br *VP8BitReader
   return !token_br.eof;
 }
 
+// To be called at the start of a new scanline, to initialize predictors.
 func VP8InitScanline(/* const */ dec *VP8Decoder) {
   var left *VP8MB = dec.mb_info - 1;
   left.nz = 0;
@@ -716,6 +727,8 @@ func ParseFrame(/* const */ dec *VP8Decoder, io *VP8Io) int {
 }
 
 // Main entry point
+// Decode a picture. Will call VP8GetHeaders() if it wasn't done already.
+// Returns false in case of error.
 func VP8Decode(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   ok := 0;
   if (dec == nil) {
@@ -754,6 +767,8 @@ func VP8Decode(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   return ok;
 }
 
+// Resets the decoder in its initial state, reclaiming memory.
+// Not a mandatory call between calls to VP8Decode().
 func VP8Clear(/* const */ dec *VP8Decoder) {
   if (dec == nil) {
     return;

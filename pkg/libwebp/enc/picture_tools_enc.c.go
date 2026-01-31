@@ -89,6 +89,8 @@ static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_s
   return (count == 0);
 }
 
+// Replace samples that are fully transparent by 'color' to help compressibility
+// (no guarantee, though). Assumes pic.use_argb is true.
 func WebPReplaceTransparentPixels(const pic *WebPPicture, uint32 color) {
   if (pic != nil && pic.use_argb) {
     y := pic.height;

@@ -346,6 +346,7 @@ func SimplifySegments(const enc *VP8Encoder) {
   }
 }
 
+// Sets up segment's quantization values, 'base_quant' and filter strengths.
 func VP8SetSegmentParams(const enc *VP8Encoder, float quality) {
   int i;
   int dq_uv_ac, dq_uv_dc;
@@ -405,19 +406,21 @@ func VP8SetSegmentParams(const enc *VP8Encoder, float quality) {
 // Form the predictions in cache
 
 // Must be ordered using {DC_PRED, TM_PRED, V_PRED, H_PRED} as index
-const uint16 VP8I16ModeOffsets[4] = {I16DC16, I16TM16, I16VE16, I16HE16}
-const uint16 VP8UVModeOffsets[4] = {C8DC8, C8TM8, C8VE8, C8HE8}
+const VP8I16ModeOffsets = [4]uint16 {I16DC16, I16TM16, I16VE16, I16HE16}
+const VP8UVModeOffsets = [4]uint16 {C8DC8, C8TM8, C8VE8, C8HE8}
 
 // Must be indexed using {B_DC_PRED . B_HU_PRED} as index
-static const uint16 VP8I4ModeOffsets[NUM_BMODES] = {
+const VP8I4ModeOffsets = [NUM_BMODES]uint16{
     I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4}
 
+	//Form all the four Intra16x16 predictions in the 'yuv_p' cache
 func VP8MakeLuma16Preds(const it *VP8EncIterator) {
   var left *uint8 = it.x ? it.y_left : nil;
   var top *uint8 = it.y ? it.y_top : nil;
   VP8EncPredLuma16(it.yuv_p, left, top);
 }
 
+// Form all the four Chroma8x8 predictions in the 'yuv_p' cache
 func VP8MakeChroma8Preds(const it *VP8EncIterator) {
   var left *uint8 = it.x ? it.u_left : nil;
   var top *uint8 = it.y ? it.uv_top : nil;
@@ -1273,6 +1276,7 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
 //------------------------------------------------------------------------------
 // Entry point
 
+// Pick best modes and fills the levels. Returns true if skipped.
 int VP8Decimate(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, VP8RDLevel rd_opt) {
   int is_skipped;
   method := it.enc.method;

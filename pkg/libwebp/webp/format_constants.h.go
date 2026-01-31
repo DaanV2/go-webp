@@ -1,5 +1,7 @@
 package webp
 
+import "github.com/daanv2/go-webp/pkg/constants"
+
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,84 +9,97 @@ package webp
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-//  Internal header for constants related to WebP file format.
-//
-// Author: Urvang (urvang@google.com)
 
 // Create fourcc of the chunk from the chunk tag characters.
 func MKFOURCC(a, b, c, d uint32) uint32 {
 	return ((a) | (b)<<8 | (c)<<16 | (uint32)(d)<<24)
 }
 
-// VP8 related constants.
-const VP8_SIGNATURE = 0x9d012a            // Signature in VP8 data.
-const VP8_MAX_PARTITION0_SIZE = (1 << 19) // max size of mode partition
-const VP8_MAX_PARTITION_SIZE = (1 << 24)  // max size for token partition
-const VP8_FRAME_HEADER_SIZE = 10          // Size of the frame header within VP8 data.
-
-// VP8L related constants.
-const VP8L_SIGNATURE_SIZE = 1    // VP8L signature size.
-const VP8L_MAGIC_BYTE = 0x2f     // VP8L signature byte.
-const VP8L_IMAGE_SIZE_BITS = 14  // Number of bits used to store width and height.
-const VP8L_VERSION_BITS = 3      // 3 bits reserved for version.
-const VP8L_VERSION = 0           // version 0
-const VP8L_FRAME_HEADER_SIZE = 5 // Size of the VP8L frame header.
-
-const MAX_PALETTE_SIZE = 256
-const MAX_CACHE_BITS = 11
-const HUFFMAN_CODES_PER_META_CODE = 5
-const ARGB_BLACK = 0xff000000
-
-const DEFAULT_CODE_LENGTH = 8
-const MAX_ALLOWED_CODE_LENGTH = 15
-
-const NUM_LITERAL_CODES = 256
-const NUM_LENGTH_CODES = 24
-const NUM_DISTANCE_CODES = 40
-const CODE_LENGTH_CODES = 19
-
-const MIN_HUFFMAN_BITS = 2 // min number of Huffman bits
-const NUM_HUFFMAN_BITS = 3
-
-// the maximum number of bits defining a transform is
-// MIN_TRANSFORM_BITS + (1 << NUM_TRANSFORM_BITS) - 1
-const MIN_TRANSFORM_BITS = 2
-const NUM_TRANSFORM_BITS = 3
-
-const TRANSFORM_PRESENT = 1 // The bit to be written when next data to be read is a transform.
-const NUM_TRANSFORMS = 4    // Maximum number of allowed transform in a bitstream.
-type VP8LImageTransformType int
-
 const (
-	PREDICTOR_TRANSFORM      VP8LImageTransformType = 0
-	CROSS_COLOR_TRANSFORM    VP8LImageTransformType = 1
-	SUBTRACT_GREEN_TRANSFORM VP8LImageTransformType = 2
-	COLOR_INDEXING_TRANSFORM VP8LImageTransformType = 3
+	// Deprecated: use [constants.VP8_SIGNATURE]
+	VP8_SIGNATURE = constants.VP8_SIGNATURE
+	// Deprecated: use [constants.VP8_MAX_PARTITION0_SIZE]
+	VP8_MAX_PARTITION0_SIZE = constants.VP8_MAX_PARTITION0_SIZE
+	// Deprecated: use [constants.VP8_MAX_PARTITION_SIZE]
+	VP8_MAX_PARTITION_SIZE = constants.VP8_MAX_PARTITION_SIZE
+	// Deprecated: use [constants.VP8_FRAME_HEADER_SIZE]
+	VP8_FRAME_HEADER_SIZE = constants.VP8_FRAME_HEADER_SIZE
+	// Deprecated: use [constants.VP8L_SIGNATURE_SIZE]
+	VP8L_SIGNATURE_SIZE = constants.VP8L_SIGNATURE_SIZE
+	// Deprecated: use [constants.VP8L_MAGIC_BYTE]
+	VP8L_MAGIC_BYTE = constants.VP8L_MAGIC_BYTE
+	// Deprecated: use [constants.VP8L_IMAGE_SIZE_BITS]
+	VP8L_IMAGE_SIZE_BITS = constants.VP8L_IMAGE_SIZE_BITS
+	// Deprecated: use [constants.VP8L_VERSION_BITS]
+	VP8L_VERSION_BITS = constants.VP8L_VERSION_BITS
+	// Deprecated: use [constants.VP8L_VERSION]
+	VP8L_VERSION = constants.VP8L_VERSION
+	// Deprecated: use [constants.VP8L_FRAME_HEADER_SIZE]
+	VP8L_FRAME_HEADER_SIZE = constants.VP8L_FRAME_HEADER_SIZE
+	// Deprecated: use [constants.MAX_PALETTE_SIZE]
+	MAX_PALETTE_SIZE = constants.MAX_PALETTE_SIZE
+	// Deprecated: use [constants.MAX_CACHE_BITS]
+	MAX_CACHE_BITS = constants.MAX_CACHE_BITS
+	// Deprecated: use [constants.HUFFMAN_CODES_PER_META_CODE]
+	HUFFMAN_CODES_PER_META_CODE = constants.HUFFMAN_CODES_PER_META_CODE
+	// Deprecated: use [constants.ARGB_BLACK]
+	ARGB_BLACK = constants.ARGB_BLACK
+	// Deprecated: use [constants.DEFAULT_CODE_LENGTH]
+	DEFAULT_CODE_LENGTH = constants.DEFAULT_CODE_LENGTH
+	// Deprecated: use [constants.MAX_ALLOWED_CODE_LENGTH]
+	MAX_ALLOWED_CODE_LENGTH = constants.MAX_ALLOWED_CODE_LENGTH
+	// Deprecated: use [constants.NUM_LITERAL_CODES]
+	NUM_LITERAL_CODES = constants.NUM_LITERAL_CODES
+	// Deprecated: use [constants.NUM_LENGTH_CODES]
+	NUM_LENGTH_CODES = constants.NUM_LENGTH_CODES
+	// Deprecated: use [constants.NUM_DISTANCE_CODES]
+	NUM_DISTANCE_CODES = constants.NUM_DISTANCE_CODES
+	// Deprecated: use [constants.CODE_LENGTH_CODES]
+	CODE_LENGTH_CODES = constants.CODE_LENGTH_CODES
+	// Deprecated: use [constants.MIN_HUFFMAN_BITS]
+	MIN_HUFFMAN_BITS = constants.MIN_HUFFMAN_BITS
+	// Deprecated: use [constants.NUM_HUFFMAN_BITS]
+	NUM_HUFFMAN_BITS = constants.NUM_HUFFMAN_BITS
+	// Deprecated: use [constants.MIN_TRANSFORM_BITS]
+	MIN_TRANSFORM_BITS = constants.MIN_TRANSFORM_BITS
+	// Deprecated: use [constants.NUM_TRANSFORM_BITS]
+	NUM_TRANSFORM_BITS = constants.NUM_TRANSFORM_BITS
+	// Deprecated: use [constants.TRANSFORM_PRESENT]
+	TRANSFORM_PRESENT = constants.TRANSFORM_PRESENT
+	// Deprecated: use [constants.NUM_TRANSFORMS]
+	NUM_TRANSFORMS = constants.NUM_TRANSFORMS
+	// Deprecated: use [constants.ALPHA_HEADER_LEN]
+	ALPHA_HEADER_LEN = constants.ALPHA_HEADER_LEN
+	// Deprecated: use [constants.ALPHA_NO_COMPRESSION]
+	ALPHA_NO_COMPRESSION = constants.ALPHA_NO_COMPRESSION
+	// Deprecated: use [constants.ALPHA_LOSSLESS_COMPRESSION]
+	ALPHA_LOSSLESS_COMPRESSION = constants.ALPHA_LOSSLESS_COMPRESSION
+	// Deprecated: use [constants.ALPHA_PREPROCESSED_LEVELS]
+	ALPHA_PREPROCESSED_LEVELS = constants.ALPHA_PREPROCESSED_LEVELS
+	// Deprecated: use [constants.TAG_SIZE]
+	TAG_SIZE = constants.TAG_SIZE
+	// Deprecated: use [constants.CHUNK_SIZE_BYTES]
+	CHUNK_SIZE_BYTES = constants.CHUNK_SIZE_BYTES
+	// Deprecated: use [constants.CHUNK_HEADER_SIZE]
+	CHUNK_HEADER_SIZE = constants.CHUNK_HEADER_SIZE
+	// Deprecated: use [constants.RIFF_HEADER_SIZE]
+	RIFF_HEADER_SIZE = constants.RIFF_HEADER_SIZE
+	// Deprecated: use [constants.ANMF_CHUNK_SIZE]
+	ANMF_CHUNK_SIZE = constants.ANMF_CHUNK_SIZE
+	// Deprecated: use [constants.ANIM_CHUNK_SIZE]
+	ANIM_CHUNK_SIZE = constants.ANIM_CHUNK_SIZE
+	// Deprecated: use [constants.VP8X_CHUNK_SIZE]
+	VP8X_CHUNK_SIZE = constants.VP8X_CHUNK_SIZE
+	// Deprecated: use [constants.MAX_CANVAS_SIZE]
+	MAX_CANVAS_SIZE = constants.MAX_CANVAS_SIZE
+	// Deprecated: use [constants.MAX_IMAGE_AREA]
+	MAX_IMAGE_AREA = constants.MAX_IMAGE_AREA
+	// Deprecated: use [constants.MAX_LOOP_COUNT]
+	MAX_LOOP_COUNT = constants.MAX_LOOP_COUNT
+	// Deprecated: use [constants.MAX_DURATION]
+	MAX_DURATION = constants.MAX_DURATION
+	// Deprecated: use [constants.MAX_POSITION_OFFSET]
+	MAX_POSITION_OFFSET = constants.MAX_POSITION_OFFSET
+	// Deprecated: use [constants.MAX_CHUNK_PAYLOAD]
+	MAX_CHUNK_PAYLOAD = constants.MAX_CHUNK_PAYLOAD
 )
-
-// Alpha related constants.
-const ALPHA_HEADER_LEN = 1
-const ALPHA_NO_COMPRESSION = 0
-const ALPHA_LOSSLESS_COMPRESSION = 1
-const ALPHA_PREPROCESSED_LEVELS = 1
-
-// Mux related constants.
-const TAG_SIZE = 4          // Size of a chunk tag (e.g. "VP8L").
-const CHUNK_SIZE_BYTES = 4  // Size needed to store chunk's size.
-const CHUNK_HEADER_SIZE = 8 // Size of a chunk header.
-const RIFF_HEADER_SIZE = 12 // Size of the RIFF header ("RIFFnnnnWEBP").
-const ANMF_CHUNK_SIZE = 16  // Size of an ANMF chunk.
-const ANIM_CHUNK_SIZE = 6   // Size of an ANIM chunk.
-const VP8X_CHUNK_SIZE = 10  // Size of a VP8X chunk.
-
-const MAX_CANVAS_SIZE = (1 << 24)        // 24-bit max for VP8X width/height.
-const MAX_IMAGE_AREA = (uint64(1) << 32) // 32-bit max for width x height.
-const MAX_LOOP_COUNT = (1 << 16)         // maximum value for loop-count
-const MAX_DURATION = (1 << 24)           // maximum duration
-const MAX_POSITION_OFFSET = (1 << 24)    // maximum frame x/y offset
-
-// Maximum chunk payload is such that adding the header and padding won't
-// overflow a uint32.
-const MAX_CHUNK_PAYLOAD = (^uint(0) - CHUNK_HEADER_SIZE - 1)
