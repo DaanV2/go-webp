@@ -24,7 +24,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // If PRINT_MEM_INFO is defined, extra info (like total memory used, number of
 // alloc/free etc) is printed. For debugging/tuning purpose only (it's slow,
@@ -56,29 +55,27 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 // Checked memory allocation
 
-#if defined(PRINT_MEM_INFO)
 
 import "github.com/daanv2/go-webp/pkg/stdio"
 
-static int num_malloc_calls = 0;
-static int num_calloc_calls = 0;
-static int num_free_calls = 0;
-static int countdown_to_fail = 0;  // 0 = off
+var int num_malloc_calls = 0;
+var int num_calloc_calls = 0;
+var int num_free_calls = 0;
+var int countdown_to_fail = 0;  // 0 = off
 
-typedef struct MemBlock MemBlock;
-struct MemBlock {
+type MemBlock struct {
   void* ptr;
   size_t size;
   MemBlock* next;
 };
 
-static MemBlock* all_blocks = NULL;
-static size_t total_mem = 0;
-static size_t total_mem_allocated = 0;
-static size_t high_water_mark = 0;
-static size_t mem_limit = 0;
+var MemBlock* all_blocks = NULL;
+var size_t total_mem = 0;
+var size_t total_mem_allocated = 0;
+var size_t high_water_mark = 0;
+var size_t mem_limit = 0;
 
-static int exit_registered = 0;
+var int exit_registered = 0;
 
 static void PrintMemInfo(void) {
   fprintf(stderr, "\nMEMORY INFO:\n");
