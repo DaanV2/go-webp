@@ -14,10 +14,10 @@
 #ifndef WEBP_WEBP_TYPES_H_
 #define WEBP_WEBP_TYPES_H_
 
-#include <stddef.h>  // IWYU pragma: export for size_t
+import <stddef.h>  // IWYU pragma: export for size_t
 
 #ifndef _MSC_VER
-#include <inttypes.h>  // IWYU pragma: export
+import <inttypes.h>  // IWYU pragma: export
 #if defined(__cplusplus) || !defined(__STRICT_ANSI__) || \
     (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define WEBP_INLINE inline
@@ -90,7 +90,7 @@ WEBP_EXTERN void WebPFree(void* ptr);
 }  // extern "C"
 #endif
 
-#include <string.h>  // For memcpy and friends
+import <string.h>  // For memcpy and friends
 
 #ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 
@@ -108,7 +108,7 @@ WEBP_EXTERN void WebPFree(void* ptr);
 // Currently, we only allow non-ABI changing annotations in this file to ensure
 // we don't accidentally change the ABI for public functions.
 
-#include <ptrcheck.h>
+import <ptrcheck.h>
 
 #define WEBP_ASSUME_UNSAFE_INDEXABLE_ABI \
   __ptrcheck_abi_assume_unsafe_indexable()

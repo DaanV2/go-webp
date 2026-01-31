@@ -11,17 +11,17 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <stddef.h>
+import <assert.h>
+import <stddef.h>
 
-#include "src/dec/common_dec.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/bit_writer_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"  // RIFF constants
-#include "src/webp/mux_types.h"         // ALPHA_FLAG
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/bit_writer_utils.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"  // RIFF constants
+import "src/webp/mux_types.h"         // ALPHA_FLAG
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Helper functions

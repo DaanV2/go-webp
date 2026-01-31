@@ -10,21 +10,21 @@
 // Author: Jyrki Alakuijala (jyrki@google.com)
 //
 
-#include "src/enc/backward_references_enc.h"
+import "src/enc/backward_references_enc.h"
 
-#include <assert.h>
-#include <string.h>
+import <assert.h>
+import <string.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
-#include "src/enc/histogram_enc.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/color_cache_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
+import "src/enc/histogram_enc.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/color_cache_utils.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 #define MIN_BLOCK_SIZE 256  // minimum block size for backward references
 

@@ -11,14 +11,14 @@
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
-#include <assert.h>
-#include <stddef.h>
-#include <string.h>
+import <assert.h>
+import <stddef.h>
+import <string.h>
 
-#include "src/dec/common_dec.h"
-#include "src/dsp/dsp.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dsp/dsp.h"
+import "src/enc/vp8i_enc.h"
+import "src/webp/types.h"
 
 // This table gives, for a given sharpness, the filtering strength to be
 // used (at least) in order to filter a given edge step delta.

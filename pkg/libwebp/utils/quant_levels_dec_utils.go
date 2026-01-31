@@ -14,13 +14,13 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/utils/quant_levels_dec_utils.h"
+import "src/utils/quant_levels_dec_utils.h"
 
-#include <string.h>  // for memset
+import <string.h>  // for memset
 
-#include "src/utils/bounds_safety.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

@@ -12,16 +12,16 @@
 // Author: Skal (pascal.massimino@gmail.com)
 //         Vikas Arora (vikaas.arora@gmail.com)
 
-#include "src/utils/bit_writer_utils.h"
+import "src/utils/bit_writer_utils.h"
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>  // for memcpy()
+import <assert.h>
+import <stdlib.h>
+import <string.h>  // for memcpy()
 
-#include "src/utils/bounds_safety.h"
-#include "src/utils/endian_inl_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/utils/endian_inl_utils.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

@@ -13,12 +13,12 @@
 #define WEBP_UTILS_ENDIAN_INL_UTILS_H_
 
 #ifdef HAVE_CONFIG_H
-#include "src/webp/config.h"
+import "src/webp/config.h"
 #endif
 
-#include "src/dsp/dsp.h"
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/dsp/dsp.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

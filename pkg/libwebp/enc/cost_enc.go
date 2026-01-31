@@ -11,14 +11,14 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/enc/cost_enc.h"
+import "src/enc/cost_enc.h"
 
-#include <stdlib.h>
+import <stdlib.h>
 
-#include "src/dec/common_dec.h"
-#include "src/dsp/dsp.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dsp/dsp.h"
+import "src/enc/vp8i_enc.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Level cost tables

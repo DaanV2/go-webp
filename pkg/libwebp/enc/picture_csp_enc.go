@@ -11,25 +11,25 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <math.h>
+import <stdlib.h>
+import <string.h>
 
-#include "sharpyuv/sharpyuv.h"
-#include "sharpyuv/sharpyuv_csp.h"
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/dsp/lossless.h"
-#include "src/dsp/yuv.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/random_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/types.h"
+import "sharpyuv/sharpyuv.h"
+import "sharpyuv/sharpyuv_csp.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/dsp/lossless.h"
+import "src/dsp/yuv.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/random_utils.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/types.h"
 
 #if defined(WEBP_USE_THREAD) && !defined(_WIN32)
-#include <pthread.h>
+import <pthread.h>
 #endif
 
 #define ALPHA_OFFSET CHANNEL_OFFSET(0)

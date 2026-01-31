@@ -10,22 +10,22 @@
 // Author: Jyrki Alakuijala (jyrki@google.com)
 //
 #ifdef HAVE_CONFIG_H
-#include "src/webp/config.h"
+import "src/webp/config.h"
 #endif
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
-#include "src/enc/backward_references_enc.h"
-#include "src/enc/histogram_enc.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
+import "src/enc/backward_references_enc.h"
+import "src/enc/histogram_enc.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 // Number of partitions for the three dominant (literal, red and blue) symbol
 // costs.

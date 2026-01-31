@@ -14,16 +14,16 @@
 #ifndef WEBP_ENC_VP8I_ENC_H_
 #define WEBP_ENC_VP8I_ENC_H_
 
-#include <string.h>  // for memcpy()
+import <string.h>  // for memcpy()
 
-#include "src/dec/common_dec.h"
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/utils/bit_writer_utils.h"
-#include "src/utils/thread_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/utils/bit_writer_utils.h"
+import "src/utils/thread_utils.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/types.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -14,13 +14,13 @@
 #ifndef WEBP_ENC_COST_ENC_H_
 #define WEBP_ENC_COST_ENC_H_
 
-#include <assert.h>
-#include <stdlib.h>
+import <assert.h>
+import <stdlib.h>
 
-#include "src/dec/common_dec.h"
-#include "src/dsp/dsp.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dsp/dsp.h"
+import "src/enc/vp8i_enc.h"
+import "src/webp/types.h"
 
 #ifdef __cplusplus
 extern "C" {

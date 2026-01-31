@@ -48,11 +48,11 @@
 #ifndef WEBP_WEBP_DEMUX_H_
 #define WEBP_WEBP_DEMUX_H_
 
-#include <stddef.h>
+import <stddef.h>
 
-#include "./decode.h"  // for WEBP_CSP_MODE
-#include "./mux_types.h"
-#include "./types.h"
+import "./decode.h"  // for WEBP_CSP_MODE
+import "./mux_types.h"
+import "./types.h"
 
 #ifdef __cplusplus
 extern "C" {

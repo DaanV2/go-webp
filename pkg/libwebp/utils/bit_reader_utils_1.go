@@ -15,15 +15,15 @@
 #ifndef WEBP_UTILS_BIT_READER_UTILS_H_
 #define WEBP_UTILS_BIT_READER_UTILS_H_
 
-#include <assert.h>
-#include <stddef.h>
+import <assert.h>
+import <stddef.h>
 
 #ifdef _MSC_VER
-#include <stdlib.h>  // _byteswap_ulong
+import <stdlib.h>  // _byteswap_ulong
 #endif
-#include "src/dsp/cpu.h"
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

@@ -12,19 +12,19 @@
 // Author: Skal (pascal.massimino@gmail.com)
 
 #ifdef HAVE_CONFIG_H
-#include "src/webp/config.h"
+import "src/webp/config.h"
 #endif
 
-#include <assert.h>
-#include <stddef.h>
+import <assert.h>
+import <stddef.h>
 
-#include "src/dsp/cpu.h"
-#include "src/utils/bit_reader_inl_utils.h"
-#include "src/utils/bit_reader_utils.h"
-#include "src/utils/bounds_safety.h"
-#include "src/utils/endian_inl_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/utils/bit_reader_inl_utils.h"
+import "src/utils/bit_reader_utils.h"
+import "src/utils/bounds_safety.h"
+import "src/utils/endian_inl_utils.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -222,9 +222,9 @@ uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits) {
 
 #if (BITTRACE > 0)
 
-#include <stdio.h>
-#include <stdlib.h>  // for atexit()
-#include <string.h>
+import <stdio.h>
+import <stdlib.h>  // for atexit()
+import <string.h>
 
 #define MAX_NUM_LABELS 32
 static struct {

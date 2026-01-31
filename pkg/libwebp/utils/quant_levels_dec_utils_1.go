@@ -14,8 +14,8 @@
 #ifndef WEBP_UTILS_QUANT_LEVELS_DEC_UTILS_H_
 #define WEBP_UTILS_QUANT_LEVELS_DEC_UTILS_H_
 
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

@@ -12,13 +12,13 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/utils/quant_levels_utils.h"
+import "src/utils/quant_levels_utils.h"
 
-#include <assert.h>
-#include <stddef.h>
+import <assert.h>
+import <stddef.h>
 
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 #define NUM_SYMBOLS 256
 

@@ -14,10 +14,10 @@
 #ifndef WEBP_DEC_VP8_DEC_H_
 #define WEBP_DEC_VP8_DEC_H_
 
-#include <stddef.h>
+import <stddef.h>
 
-#include "src/webp/decode.h"
-#include "src/webp/types.h"
+import "src/webp/decode.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

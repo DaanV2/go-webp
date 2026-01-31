@@ -14,11 +14,11 @@
 #ifndef WEBP_DEC_ALPHAI_DEC_H_
 #define WEBP_DEC_ALPHAI_DEC_H_
 
-#include "src/dec/vp8_dec.h"
-#include "src/dec/webpi_dec.h"
-#include "src/dsp/dsp.h"
-#include "src/utils/filters_utils.h"
-#include "src/webp/types.h"
+import "src/dec/vp8_dec.h"
+import "src/dec/webpi_dec.h"
+import "src/dsp/dsp.h"
+import "src/utils/filters_utils.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

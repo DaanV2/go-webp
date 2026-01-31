@@ -11,20 +11,20 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dsp/dsp.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/bit_writer_utils.h"
-#include "src/utils/filters_utils.h"
-#include "src/utils/quant_levels_utils.h"
-#include "src/utils/thread_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/dsp.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/bit_writer_utils.h"
+import "src/utils/filters_utils.h"
+import "src/utils/quant_levels_utils.h"
+import "src/utils/thread_utils.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 // -----------------------------------------------------------------------------
 // Encodes the given alpha data via specified compression method 'method'.
@@ -49,7 +49,7 @@
 //           invalid quality or method, or
 //           memory allocation for the compressed data fails.
 
-#include "src/enc/vp8li_enc.h"
+import "src/enc/vp8li_enc.h"
 
 static int EncodeLossless(const uint8_t* const data, int width, int height,
                           int effort_level,  // in [0..6] range

@@ -11,21 +11,21 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <stddef.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dec/vp8_dec.h"
-#include "src/dec/vp8i_dec.h"
-#include "src/dec/webpi_dec.h"
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/dsp/yuv.h"
-#include "src/utils/rescaler_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/decode.h"
-#include "src/webp/types.h"
+import "src/dec/vp8_dec.h"
+import "src/dec/vp8i_dec.h"
+import "src/dec/webpi_dec.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/dsp/yuv.h"
+import "src/utils/rescaler_utils.h"
+import "src/utils/utils.h"
+import "src/webp/decode.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

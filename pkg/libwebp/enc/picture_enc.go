@@ -11,15 +11,15 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <limits.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/types.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // WebPPicture

@@ -14,9 +14,9 @@
 #ifndef WEBP_WEBP_MUX_TYPES_H_
 #define WEBP_WEBP_MUX_TYPES_H_
 
-#include <string.h>  // memset()
+import <string.h>  // memset()
 
-#include "./types.h"
+import "./types.h"
 
 #ifdef __cplusplus
 extern "C" {

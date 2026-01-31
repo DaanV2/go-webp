@@ -11,17 +11,17 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <stdlib.h>
+import <assert.h>
+import <stdlib.h>
 
-#include "src/dsp/dsp.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/webp/encode.h"
-#include "src/webp/types.h"
+import "src/dsp/dsp.h"
+import "src/enc/vp8i_enc.h"
+import "src/webp/encode.h"
+import "src/webp/types.h"
 
 #if !defined(WEBP_REDUCE_SIZE)
-#include "src/utils/rescaler_utils.h"
-#include "src/utils/utils.h"
+import "src/utils/rescaler_utils.h"
+import "src/utils/utils.h"
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
 #define HALVE(x) (((x) + 1) >> 1)

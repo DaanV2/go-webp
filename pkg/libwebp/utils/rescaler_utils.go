@@ -11,17 +11,17 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/utils/rescaler_utils.h"
+import "src/utils/rescaler_utils.h"
 
-#include <assert.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <limits.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dsp/dsp.h"
-#include "src/utils/bounds_safety.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/dsp/dsp.h"
+import "src/utils/bounds_safety.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

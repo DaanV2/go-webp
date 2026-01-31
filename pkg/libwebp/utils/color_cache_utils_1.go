@@ -15,12 +15,12 @@
 #ifndef WEBP_UTILS_COLOR_CACHE_UTILS_H_
 #define WEBP_UTILS_COLOR_CACHE_UTILS_H_
 
-#include <assert.h>
+import <assert.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

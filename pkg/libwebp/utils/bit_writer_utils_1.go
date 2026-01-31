@@ -14,11 +14,11 @@
 #ifndef WEBP_UTILS_BIT_WRITER_UTILS_H_
 #define WEBP_UTILS_BIT_WRITER_UTILS_H_
 
-#include <stddef.h>
+import <stddef.h>
 
-#include "src/dsp/cpu.h"
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

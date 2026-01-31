@@ -14,9 +14,9 @@
 #ifndef WEBP_WEBP_DECODE_H_
 #define WEBP_WEBP_DECODE_H_
 
-#include <stddef.h>
+import <stddef.h>
 
-#include "./types.h"
+import "./types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
