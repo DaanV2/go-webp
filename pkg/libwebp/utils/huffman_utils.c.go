@@ -232,7 +232,7 @@ const MAX_CODE_LENGTHS_SIZE =\
   ((1 << MAX_CACHE_BITS) + NUM_LITERAL_CODES + NUM_LENGTH_CODES)
 // Cut-off value for switching between heap and stack allocation.
 const SORTED_SIZE_CUTOFF =512
-int VP8LBuildHuffmanTable(const root_table *HuffmanTables, int root_bits, const int 
+int VP8LBuildHuffmanTable(root_table *HuffmanTables, int root_bits, int 
                               code_lengths[], int code_lengths_size) {
   total_size :=
       BuildHuffmanTable(nil, root_bits, code_lengths, code_lengths_size, nil);

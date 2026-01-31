@@ -86,7 +86,7 @@ int SearchColorNoIdx(  sorted []uint32, uint32 color, int num_colors) {
   return 0;
 }
 
-func PrepareMapToPalette(const uint32  palette[], uint32 num_colors, uint32  sorted[], uint32  idx_map[]) {
+func PrepareMapToPalette(palette []uint32,  num_colors uint32, sorted []uint32, idx_map []uint32) {
   uint32 i;
   memcpy(sorted, palette, num_colors * sizeof(*sorted));
   qsort(sorted, num_colors, sizeof(*sorted), PaletteCompareColorsForQsort);

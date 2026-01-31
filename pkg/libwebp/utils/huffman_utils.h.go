@@ -74,33 +74,34 @@ const HUFFMAN_PACKED_TABLE_SIZE =(uint(1) << HUFFMAN_PACKED_BITS)
 //  - use_packed_table: few enough literal symbols, so all the bit codes
 //    can fit into a small look-up table packed_table[]
 // The common literal base, if applicable, is stored in 'literal_arb'.
-typedef struct HTreeGroup HTreeGroup;
 type HTreeGroup struct {
-  htrees *HuffmanCode[HUFFMAN_CODES_PER_META_CODE];
-  int is_trivial_literal;  // True, if huffman trees for Red, Blue & Alpha
-                           // Symbols are trivial (have a single code).
-  uint32 literal_arb;    // If is_trivial_literal is true, this is the
-                           // ARGB value of the pixel, with Green channel
-                           // being set to zero.
-  int is_trivial_code;     // true if is_trivial_literal with only one code
-  int use_packed_table;    // use packed table below for short literal code
-  // table mapping input bits to a packed values, or escape case to literal code
-  HuffmanCode32 packed_table[HUFFMAN_PACKED_TABLE_SIZE];
+	htrees [HUFFMAN_CODES_PER_META_CODE]*HuffmanCode
+	// True, if huffman trees for Red, Blue & Alpha
+	// Symbols are trivial (have a single code).
+	is_trivial_literal int  
+	// If is_trivial_literal is true, this is the
+	// ARGB value of the pixel, with Green channel
+	// being set to zero.
+	literal_arb uint32     
+	is_trivial_code int     // true if is_trivial_literal with only one code
+	// use packed table below for short literal code
+	// table mapping input bits to a packed values, or escape case to literal code
+	use_packed_table int    
+	packed_table [HUFFMAN_PACKED_TABLE_SIZE]HuffmanCode32
 }
 
 // Creates the instance of HTreeGroup with specified number of tree-groups.
- VP *HTreeGroup8LHtreeGroupsNew(int num_htree_groups);
+func HTreeGroup8LHtreeGroupsNew(int num_htree_groups) *VP;
 
 // Releases the memory allocated for HTreeGroup.
-func VP8LHtreeGroupsFree(const htree_groups *HTreeGroup);
+func VP8LHtreeGroupsFree(/* const */ htree_groups *HTreeGroup);
 
 // Builds Huffman lookup table assuming code lengths are in symbol order.
 // The 'code_lengths' is pre-allocated temporary memory buffer used for creating
 // the huffman table.
 // Returns built table size or 0 in case of error (invalid tree or
 // memory error).
- int VP8LBuildHuffmanTable(
-    const root_table *HuffmanTables, int root_bits, const int  code_lengths[], int code_lengths_size);
+func VP8LBuildHuffmanTable(/* const */ root_table *HuffmanTables, root_bits int, /* const */   code_lengths []int, code_lengths_size int) int;
 
 
 

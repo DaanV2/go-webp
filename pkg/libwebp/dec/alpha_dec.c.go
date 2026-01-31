@@ -53,12 +53,12 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 // header for alpha data stored using lossless compression.
 // Returns false in case of error in alpha header (data too short, invalid
 // compression method or filter, error in lossless header data etc).
- static int ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, uint64 data_size, const src_io *VP8Io, output *uint8) {
+func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, uint64 data_size, src_io *VP8Io, output *uint8) int {
   ok := 0;
   var alpha_data *uint8 = data + ALPHA_HEADER_LEN;
   alpha_data_size := data_size - ALPHA_HEADER_LEN;
-  int rsrv;
-  var io *VP8Io = &dec.io;
+  var rsrv int
+  var io *VP8Io = &dec.io
 
   assert.Assert(data != nil && output != nil && src_io != nil);
 
@@ -105,8 +105,7 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
   } else {
     assert.Assert(dec.method == ALPHA_LOSSLESS_COMPRESSION);
     {
-      var bounded_alpha_data *uint8 =
-          WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, alpha_data, alpha_data_size);
+      var bounded_alpha_data *uint8 = alpha_data
       ok = VP8LDecodeAlphaHeader(dec, bounded_alpha_data, alpha_data_size);
     }
   }
@@ -118,12 +117,12 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 // starting from row number 'row'. It assumes that rows up to (row - 1) have
 // already been decoded.
 // Returns false in case of bitstream error.
- static int ALPHDecode(const dec *VP8Decoder, int row, int num_rows) {
+func ALPHDecode(/* const  */dec *VP8Decoder, row, num_rows int) int {
   var alph_dec *ALPHDecoder = dec.alph_dec;
   width := alph_dec.width;
   height := alph_dec.io.crop_bottom;
   if (alph_dec.method == ALPHA_NO_COMPRESSION) {
-    int y;
+    var y int;
     var prev_line *uint8 = dec.alpha_prev_line;
     var deltas *uint8 = dec.alpha_data + ALPHA_HEADER_LEN + row * width;
     dst *uint8 = dec.alpha_plane + row * width;

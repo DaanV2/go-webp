@@ -225,7 +225,7 @@ func CountLevels(const p *SmoothParams) {
 }
 
 // Initialize all params.
-static int InitParams(WEBP_SIZED_BY *uint8((uint64)height *stride) const data, int width, int height, int stride, int radius, const p *SmoothParams) {
+func InitParams(WEBP_SIZED_BY *uint8((uint64)height *stride) data, width, height, stride, radius int, p *SmoothParams) int {
   R := 2 * radius + 1;  // total size of the kernel
 
   size_scratch_m := (R + 1) * width * sizeof(*p.start);

@@ -526,10 +526,9 @@ func WebPResetDecParams(const params *WebPDecParams) {
 }
 
 // Helpers
- static DecodeIntoRGBABuffer *uint8(
-    WEBP_CSP_MODE colorspace, const *uint8  const data, uint64 data_size, *uint8  const rgba, int stride, size uint64 ) {
-  WebPDecParams params;
-  WebPDecBuffer buf;
+func DecodeIntoRGBABuffer(colorspace WEBP_CSP_MODE, data *uint8,  data_size uint64,  rgba *uint8, stride int, size uint64 )  *uint8 {
+  var  params WebPDecParams;
+  var  buf WebPDecBuffer;
   if (rgba == nil || !WebPInitDecBuffer(&buf)) {
     return nil;
   }
