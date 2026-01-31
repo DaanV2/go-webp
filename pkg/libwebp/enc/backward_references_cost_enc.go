@@ -185,7 +185,7 @@ typedef struct {
   CostInterval* head;
   int count;  // The number of stored intervals.
   CostCacheInterval* cache_intervals;
-  size_t cache_intervals_size;
+  uint64 cache_intervals_size;
   // Contains the GetLengthCost(cost_model, k).
   int64_t cost_cache[MAX_LENGTH];
   int64_t* costs;
@@ -306,7 +306,7 @@ static int CostManagerInit(CostManager* const manager,
       }
       cur->end = i + 1;
     }
-    assert((size_t)(cur - manager->cache_intervals) + 1 ==
+    assert((uint64)(cur - manager->cache_intervals) + 1 ==
            manager->cache_intervals_size);
   }
 
@@ -465,7 +465,7 @@ static WEBP_INLINE void InsertInterval(CostManager* const manager,
 static WEBP_INLINE void PushInterval(CostManager* const manager,
                                      int64_t distance_cost, int position,
                                      int len) {
-  size_t i;
+  uint64 i;
   CostInterval* interval = manager->head;
   CostInterval* interval_next;
   const CostCacheInterval* const cost_cache_intervals =
@@ -575,9 +575,9 @@ static int BackwardReferencesHashChainDistanceOnly(
   int cc_init = 0;
   const int pix_count = xsize * ysize;
   const int use_color_cache = (cache_bits > 0);
-  const size_t literal_array_size =
+  const uint64 literal_array_size =
       sizeof(*((CostModel*)NULL)->literal) * VP8LHistogramNumCodes(cache_bits);
-  const size_t cost_model_size = sizeof(CostModel) + literal_array_size;
+  const uint64 cost_model_size = sizeof(CostModel) + literal_array_size;
   CostModel* const cost_model =
       (CostModel*)WebPSafeCalloc(1ULL, cost_model_size);
   VP8LColorCache hashers;

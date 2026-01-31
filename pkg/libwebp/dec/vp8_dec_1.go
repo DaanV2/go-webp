@@ -90,7 +90,7 @@ struct VP8Io {
   int fancy_upsampling;
 
   // Input buffer.
-  size_t data_size;
+  uint64 data_size;
   const uint8_t* data;
 
   // If true, in-loop filtering will not be performed even if present in the
@@ -162,27 +162,27 @@ void VP8Delete(VP8Decoder* const dec);
 
 // Returns true if the next 3 bytes in data contain the VP8 signature.
 WEBP_EXTERN int VP8CheckSignature(
-    const uint8_t* const WEBP_COUNTED_BY(data_size) data, size_t data_size);
+    const uint8_t* const WEBP_COUNTED_BY(data_size) data, uint64 data_size);
 
 // Validates the VP8 data-header and retrieves basic header information viz
 // width and height. Returns 0 in case of formatting error. *width/*height
 // can be passed NULL.
 WEBP_EXTERN int VP8GetInfo(
     const uint8_t* WEBP_COUNTED_BY(data_size) data,
-    size_t data_size,   // data available so far
-    size_t chunk_size,  // total data size expected in the chunk
+    uint64 data_size,   // data available so far
+    uint64 chunk_size,  // total data size expected in the chunk
     int* const width, int* const height);
 
 // Returns true if the next byte(s) in data is a VP8L signature.
 WEBP_EXTERN int VP8LCheckSignature(const uint8_t* const WEBP_COUNTED_BY(size)
                                        data,
-                                   size_t size);
+                                   uint64 size);
 
 // Validates the VP8L data-header and retrieves basic header information viz
 // width, height and alpha. Returns 0 in case of formatting error.
 // width/height/has_alpha can be passed NULL.
 WEBP_EXTERN int VP8LGetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data,
-                            size_t data_size,  // data available so far
+                            uint64 data_size,  // data available so far
                             int* const width, int* const height,
                             int* const has_alpha);
 

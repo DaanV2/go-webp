@@ -46,7 +46,7 @@ extern "C" {
 #endif  // WEBP_MAX_ALLOCABLE_MEMORY
 
 static WEBP_INLINE int CheckSizeOverflow(uint64_t size) {
-  return size == (size_t)size;
+  return size == (uint64)size;
 }
 
 // size-checking safe malloc/calloc: verify that the requested size is not too
@@ -56,11 +56,11 @@ static WEBP_INLINE int CheckSizeOverflow(uint64_t size) {
 // safe malloc() borrows the signature from calloc(), pointing at the dangerous
 // underlying multiply involved.
 WEBP_EXTERN void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
-    WebPSafeMalloc(uint64_t nmemb, size_t size);
-// Note that WebPSafeCalloc() expects the second argument type to be 'size_t'
+    WebPSafeMalloc(uint64_t nmemb, uint64 size);
+// Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
 WEBP_EXTERN void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
-    WebPSafeCalloc(uint64_t nmemb, size_t size);
+    WebPSafeCalloc(uint64_t nmemb, uint64 size);
 
 // Companion deallocation function to the above allocations.
 WEBP_EXTERN void WebPSafeFree(void* const ptr);

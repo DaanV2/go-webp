@@ -57,7 +57,7 @@ typedef struct {
                                         // (used for prediction).
   uint32_t* transform_data;             // Scratch memory for transform data.
   uint32_t* transform_mem;              // Currently allocated memory.
-  size_t transform_mem_size;            // Currently allocated memory size.
+  uint64 transform_mem_size;            // Currently allocated memory size.
 
   int current_width;  // Corresponds to packed image width.
 

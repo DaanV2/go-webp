@@ -422,10 +422,10 @@ void VP8LCreateHuffmanTree(uint32_t* const histogram, int tree_depth_limit,
   const int num_symbols = huff_code->num_symbols;
   uint32_t* const WEBP_BIDI_INDEXABLE bounded_histogram =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-          uint32_t*, histogram, (size_t)num_symbols * sizeof(*histogram));
+          uint32_t*, histogram, (uint64)num_symbols * sizeof(*histogram));
   uint8_t* const WEBP_BIDI_INDEXABLE bounded_buf_rle =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, buf_rle,
-                                       (size_t)num_symbols * sizeof(*buf_rle));
+                                       (uint64)num_symbols * sizeof(*buf_rle));
 
   memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));
   OptimizeHuffmanForRle(num_symbols, bounded_buf_rle, bounded_histogram);

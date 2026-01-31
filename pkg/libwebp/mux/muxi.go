@@ -151,19 +151,19 @@ WebPChunk* ChunkDelete(WebPChunk* const chunk);
 void ChunkListDelete(WebPChunk** const chunk_list);
 
 // Returns size of the chunk including chunk header and padding byte (if any).
-static WEBP_INLINE size_t SizeWithPadding(size_t chunk_size) {
+static WEBP_INLINE uint64 SizeWithPadding(uint64 chunk_size) {
   assert(chunk_size <= MAX_CHUNK_PAYLOAD);
   return CHUNK_HEADER_SIZE + ((chunk_size + 1) & ~1U);
 }
 
 // Size of a chunk including header and padding.
-static WEBP_INLINE size_t ChunkDiskSize(const WebPChunk* chunk) {
-  const size_t data_size = chunk->data.size;
+static WEBP_INLINE uint64 ChunkDiskSize(const WebPChunk* chunk) {
+  const uint64 data_size = chunk->data.size;
   return SizeWithPadding(data_size);
 }
 
 // Total size of a list of chunks.
-size_t ChunkListDiskSize(const WebPChunk* chunk_list);
+uint64 ChunkListDiskSize(const WebPChunk* chunk_list);
 
 // Write out the given list of chunks into 'dst'.
 uint8_t* ChunkListEmit(const WebPChunk* chunk_list, uint8_t* dst);
@@ -212,7 +212,7 @@ WebPMuxError MuxImageGetNth(const WebPMuxImage** wpi_list, uint32_t nth,
                             WebPMuxImage** wpi);
 
 // Total size of the given image.
-size_t MuxImageDiskSize(const WebPMuxImage* const wpi);
+uint64 MuxImageDiskSize(const WebPMuxImage* const wpi);
 
 // Write out the given image into 'dst'.
 uint8_t* MuxImageEmit(const WebPMuxImage* const wpi, uint8_t* dst);
@@ -224,7 +224,7 @@ uint8_t* MuxImageEmit(const WebPMuxImage* const wpi, uint8_t* dst);
 int MuxHasAlpha(const WebPMuxImage* images);
 
 // Write out RIFF header into 'data', given total data size 'size'.
-uint8_t* MuxEmitRiffHeader(uint8_t* const data, size_t size);
+uint8_t* MuxEmitRiffHeader(uint8_t* const data, uint64 size);
 
 // Returns the list where chunk with given ID is to be inserted in mux.
 WebPChunk** MuxGetChunkListFromId(const WebPMux* mux, WebPChunkId id);

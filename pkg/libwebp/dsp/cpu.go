@@ -109,7 +109,7 @@ static int CheckSlowModel(int info) {
   const uint32_t model = ((info & 0xf0000) >> 12) | ((info >> 4) & 0xf);
   const uint32_t family = (info >> 8) & 0xf;
   if (family == 0x06) {
-    size_t i;
+    uint64 i;
     for (i = 0; i < sizeof(kSlowModels) / sizeof(kSlowModels[0]); ++i) {
       if (model == kSlowModels[i]) return 1;
     }

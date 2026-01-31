@@ -35,7 +35,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 void VP8BitReaderSetBuffer(VP8BitReader* const br,
                            const uint8_t* const WEBP_COUNTED_BY(size) start,
-                           size_t size) {
+                           uint64 size) {
   assert(start != NULL);
   br->buf = start;
   br->buf_end = start + size;
@@ -45,7 +45,7 @@ void VP8BitReaderSetBuffer(VP8BitReader* const br,
 
 void VP8InitBitReader(VP8BitReader* const br,
                       const uint8_t* const WEBP_COUNTED_BY(size) start,
-                      size_t size) {
+                      uint64 size) {
   assert(br != NULL);
   assert(start != NULL);
   assert(size < (1u << 31));  // limit ensured by format and upstream checks
@@ -137,8 +137,8 @@ static const uint32_t kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
 
 void VP8LInitBitReader(VP8LBitReader* const br,
                        const uint8_t* const WEBP_COUNTED_BY(length) start,
-                       size_t length) {
-  size_t i;
+                       uint64 length) {
+  uint64 i;
   vp8l_val_t value = 0;
   assert(br != NULL);
   assert(start != NULL);
@@ -161,7 +161,7 @@ void VP8LInitBitReader(VP8LBitReader* const br,
 
 void VP8LBitReaderSetBuffer(VP8LBitReader* const br,
                             const uint8_t* const WEBP_COUNTED_BY(len) buf,
-                            size_t len) {
+                            uint64 len) {
   assert(br != NULL);
   assert(buf != NULL);
   assert(len < 0xfffffff8u);  // can't happen with a RIFF chunk.

@@ -252,7 +252,7 @@ struct VP8Decoder {
 
   // main memory chunk for the above data. Persistent.
   void* mem;
-  size_t mem_size;
+  uint64 mem_size;
 
   // Per macroblock non-persistent infos.
   int mb_x, mb_y;      // current position, in macroblock units
@@ -266,7 +266,7 @@ struct VP8Decoder {
   struct ALPHDecoder* alph_dec;  // alpha-plane decoder object
   const uint8_t* WEBP_COUNTED_BY(alpha_data_size)
       alpha_data;  // compressed alpha data (if present)
-  size_t alpha_data_size;
+  uint64 alpha_data_size;
   int is_alpha_decoded;      // true if alpha_data is decoded in alpha_plane
   uint8_t* alpha_plane_mem;  // memory allocated for alpha_plane
   uint8_t* alpha_plane;      // output. Persistent, contains the whole data.

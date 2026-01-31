@@ -63,7 +63,7 @@ static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx,
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
 static WebPMuxError ChunkVerifyAndAssign(WebPChunk* chunk, const uint8_t* data,
-                                         size_t data_size, size_t riff_size,
+                                         uint64 data_size, uint64 riff_size,
                                          int copy_data) {
   uint32_t chunk_size;
   WebPData chunk_data;
@@ -74,7 +74,7 @@ static WebPMuxError ChunkVerifyAndAssign(WebPChunk* chunk, const uint8_t* data,
   if (chunk_size > MAX_CHUNK_PAYLOAD) return WEBP_MUX_BAD_DATA;
 
   {
-    const size_t chunk_disk_size = SizeWithPadding(chunk_size);
+    const uint64 chunk_disk_size = SizeWithPadding(chunk_size);
     if (chunk_disk_size > riff_size) return WEBP_MUX_BAD_DATA;
     if (chunk_disk_size > data_size) return WEBP_MUX_NOT_ENOUGH_DATA;
   }
@@ -112,10 +112,10 @@ int MuxImageFinalize(WebPMuxImage* const wpi) {
 static int MuxImageParse(const WebPChunk* const chunk, int copy_data,
                          WebPMuxImage* const wpi) {
   const uint8_t* bytes = chunk->data.bytes;
-  size_t size = chunk->data.size;
+  uint64 size = chunk->data.size;
   const uint8_t* const last = (bytes == NULL) ? NULL : bytes + size;
   WebPChunk subchunk;
-  size_t subchunk_size;
+  uint64 subchunk_size;
   WebPChunk** unknown_chunk_list = &wpi->unknown;
   ChunkInit(&subchunk);
 
@@ -124,7 +124,7 @@ static int MuxImageParse(const WebPChunk* const chunk, int copy_data,
 
   // ANMF.
   {
-    const size_t hdr_size = ANMF_CHUNK_SIZE;
+    const uint64 hdr_size = ANMF_CHUNK_SIZE;
     const WebPData temp = {bytes, hdr_size};
     // Each of ANMF chunk contain a header at the beginning. So, its size should
     // be at least 'hdr_size'.
@@ -189,13 +189,13 @@ Fail:
 
 WebPMux* WebPMuxCreateInternal(const WebPData* bitstream, int copy_data,
                                int version) {
-  size_t riff_size;
+  uint64 riff_size;
   uint32_t tag;
   const uint8_t* end;
   WebPMux* mux = NULL;
   WebPMuxImage* wpi = NULL;
   const uint8_t* data;
-  size_t size;
+  uint64 size;
   WebPChunk chunk;
   // Stores the end of the chunk lists so that it is faster to append data to
   // their ends.
@@ -251,7 +251,7 @@ WebPMux* WebPMuxCreateInternal(const WebPData* bitstream, int copy_data,
 
   // Loop over chunks.
   while (data != end) {
-    size_t data_size;
+    uint64 data_size;
     WebPChunkId id;
     if (ChunkVerifyAndAssign(&chunk, data, size, riff_size, copy_data) !=
         WEBP_MUX_OK) {
@@ -389,7 +389,7 @@ WebPMuxError WebPMuxGetFeatures(const WebPMux* mux, uint32_t* flags) {
 
 static uint8_t* EmitVP8XChunk(uint8_t* const dst, int width, int height,
                               uint32_t flags) {
-  const size_t vp8x_size = CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
+  const uint64 vp8x_size = CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   assert(width >= 1 && height >= 1);
   assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE);
   assert(width * (uint64_t)height < MAX_IMAGE_AREA);
@@ -408,10 +408,10 @@ static WebPMuxError SynthesizeBitstream(const WebPMuxImage* const wpi,
 
   // Allocate data.
   const int need_vp8x = (wpi->alpha != NULL);
-  const size_t vp8x_size = need_vp8x ? CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE : 0;
-  const size_t alpha_size = need_vp8x ? ChunkDiskSize(wpi->alpha) : 0;
+  const uint64 vp8x_size = need_vp8x ? CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE : 0;
+  const uint64 alpha_size = need_vp8x ? ChunkDiskSize(wpi->alpha) : 0;
   // Note: No need to output ANMF chunk for a single image.
-  const size_t size =
+  const uint64 size =
       RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi->img);
   uint8_t* const data = (uint8_t*)WebPSafeMalloc(1ULL, size);
   if (data == NULL) return WEBP_MUX_MEMORY_ERROR;

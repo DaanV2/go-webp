@@ -15,7 +15,7 @@ package webp
 
 
 
-import <stddef.h>  // IWYU pragma: export for size_t
+import <stddef.h>  // IWYU pragma: export for uint64
 
 // #ifndef _MSC_VER
 import <inttypes.h>  // IWYU pragma: export
@@ -82,7 +82,7 @@ extern "C" {
 // Allocates 'size' bytes of memory. Returns NULL upon error. Memory
 // must be deallocated by calling WebPFree(). This function is made available
 // by the core 'libwebp' library.
-WEBP_NODISCARD WEBP_EXTERN void* WebPMalloc(size_t size);
+WEBP_NODISCARD WEBP_EXTERN void* WebPMalloc(uint64 size);
 
 // Releases memory returned by the WebPDecode*() functions (from decode.h).
 WEBP_EXTERN void WebPFree(void* ptr);

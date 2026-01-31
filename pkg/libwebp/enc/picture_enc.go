@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 // WebPPicture
 //------------------------------------------------------------------------------
 
-static int DummyWriter(const uint8_t* data, size_t data_size,
+static int DummyWriter(const uint8_t* data, uint64 data_size,
                        const WebPPicture* const picture) {
   // The following are to prevent 'unused variable' error message.
   (void)data;
@@ -193,7 +193,7 @@ void WebPMemoryWriterInit(WebPMemoryWriter* writer) {
   writer->max_size = 0;
 }
 
-int WebPMemoryWrite(const uint8_t* data, size_t data_size,
+int WebPMemoryWrite(const uint8_t* data, uint64 data_size,
                     const WebPPicture* picture) {
   WebPMemoryWriter* const w = (WebPMemoryWriter*)picture->custom_ptr;
   uint64_t next_size;
@@ -216,7 +216,7 @@ int WebPMemoryWrite(const uint8_t* data, size_t data_size,
     WebPSafeFree(w->mem);
     w->mem = new_mem;
     // down-cast is ok, thanks to WebPSafeMalloc
-    w->max_size = (size_t)next_max_size;
+    w->max_size = (uint64)next_max_size;
   }
   if (data_size > 0) {
     memcpy(w->mem + w->size, data, data_size);
@@ -237,7 +237,7 @@ void WebPMemoryWriterClear(WebPMemoryWriter* writer) {
 
 typedef int (*Importer)(WebPPicture* const, const uint8_t* const, int);
 
-static size_t Encode(const uint8_t* rgba, int width, int height, int stride,
+static uint64 Encode(const uint8_t* rgba, int width, int height, int stride,
                      Importer import, float quality_factor, int lossless,
                      uint8_t** output) {
   WebPPicture pic;
@@ -272,7 +272,7 @@ static size_t Encode(const uint8_t* rgba, int width, int height, int stride,
 }
 
 #define ENCODE_FUNC(NAME, IMPORTER)                              \
-  size_t NAME(const uint8_t* in, int w, int h, int bps, float q, \
+  uint64 NAME(const uint8_t* in, int w, int h, int bps, float q, \
               uint8_t** out) {                                   \
     return Encode(in, w, h, bps, IMPORTER, q, 0, out);           \
   }
@@ -288,7 +288,7 @@ ENCODE_FUNC(WebPEncodeBGRA, WebPPictureImportBGRA)
 
 #define LOSSLESS_DEFAULT_QUALITY 70.
 #define LOSSLESS_ENCODE_FUNC(NAME, IMPORTER)                                  \
-  size_t NAME(const uint8_t* in, int w, int h, int bps, uint8_t** out) {      \
+  uint64 NAME(const uint8_t* in, int w, int h, int bps, uint8_t** out) {      \
     return Encode(in, w, h, bps, IMPORTER, LOSSLESS_DEFAULT_QUALITY, 1, out); \
   }
 

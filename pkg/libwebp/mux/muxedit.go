@@ -111,7 +111,7 @@ static WebPMuxError CreateFrameData(int width, int height,
                                     const WebPMuxFrameInfo* const info,
                                     WebPData* const frame) {
   uint8_t* frame_bytes;
-  const size_t frame_size = kChunks[IDX_ANMF].size;
+  const uint64 frame_size = kChunks[IDX_ANMF].size;
 
   assert(width > 0 && height > 0 && info->duration >= 0);
   assert(info->dispose_method == (info->dispose_method & 1));
@@ -403,7 +403,7 @@ static WebPMuxError GetFrameInfo(const WebPChunk* const frame_chunk,
                                  int* const x_offset, int* const y_offset,
                                  int* const duration) {
   const WebPData* const data = &frame_chunk->data;
-  const size_t expected_data_size = ANMF_CHUNK_SIZE;
+  const uint64 expected_data_size = ANMF_CHUNK_SIZE;
   assert(frame_chunk->tag == kChunks[IDX_ANMF].tag);
   assert(frame_chunk != NULL);
   if (data->size != expected_data_size) return WEBP_MUX_INVALID_ARGUMENT;
@@ -592,8 +592,8 @@ static WebPMuxError MuxCleanup(WebPMux* const mux) {
 }
 
 // Total size of a list of images.
-static size_t ImageListDiskSize(const WebPMuxImage* wpi_list) {
-  size_t size = 0;
+static uint64 ImageListDiskSize(const WebPMuxImage* wpi_list) {
+  uint64 size = 0;
   while (wpi_list != NULL) {
     size += MuxImageDiskSize(wpi_list);
     wpi_list = wpi_list->next;
@@ -611,7 +611,7 @@ static uint8_t* ImageListEmit(const WebPMuxImage* wpi_list, uint8_t* dst) {
 }
 
 WebPMuxError WebPMuxAssemble(WebPMux* mux, WebPData* assembled_data) {
-  size_t size = 0;
+  uint64 size = 0;
   uint8_t* data = NULL;
   uint8_t* dst = NULL;
   WebPMuxError err;

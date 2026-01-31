@@ -107,7 +107,7 @@ static int DecodeImageStream(int xsize, int ysize, int is_level0,
 //------------------------------------------------------------------------------
 
 int VP8LCheckSignature(const uint8_t* const WEBP_COUNTED_BY(size) data,
-                       size_t size) {
+                       uint64 size) {
   return (size >= VP8L_FRAME_HEADER_SIZE && data[0] == VP8L_MAGIC_BYTE &&
           (data[4] >> 5) == 0);  // version
 }
@@ -123,7 +123,7 @@ static int ReadImageInfo(VP8LBitReader* const br, int* const width,
 }
 
 int VP8LGetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data,
-                size_t data_size, int* const width, int* const height,
+                uint64 data_size, int* const width, int* const height,
                 int* const has_alpha) {
   if (data == NULL || data_size < VP8L_FRAME_HEADER_SIZE) {
     return 0;  // not enough data
@@ -1698,7 +1698,7 @@ static void ExtractAlphaRows(VP8LDecoder* const dec, int last_row,
 
 int VP8LDecodeAlphaHeader(ALPHDecoder* const alph_dec,
                           const uint8_t* const WEBP_COUNTED_BY(data_size) data,
-                          size_t data_size) {
+                          uint64 data_size) {
   int ok = 0;
   VP8LDecoder* dec = VP8LNew();
 

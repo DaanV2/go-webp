@@ -42,7 +42,7 @@ int VP8LColorCacheInit(VP8LColorCache* const color_cache, int hash_bits) {
   color_cache->hash_shift = 32 - hash_bits;
   color_cache->hash_bits = hash_bits;
   color_cache->colors = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-      uint32_t*, colors, (size_t)hash_size * sizeof(*color_cache->colors));
+      uint32_t*, colors, (uint64)hash_size * sizeof(*color_cache->colors));
   return 1;
 }
 
@@ -60,5 +60,5 @@ void VP8LColorCacheCopy(const VP8LColorCache* const src,
   assert(dst != NULL);
   assert(src->hash_bits == dst->hash_bits);
   WEBP_UNSAFE_MEMCPY(dst->colors, src->colors,
-                     ((size_t)1u << dst->hash_bits) * sizeof(*dst->colors));
+                     ((uint64)1u << dst->hash_bits) * sizeof(*dst->colors));
 }

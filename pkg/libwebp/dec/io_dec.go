@@ -309,10 +309,10 @@ static int InitYUVRescaler(const VP8Io* const io, WebPDecParams* const p) {
   const int uv_in_width = (io->mb_w + 1) >> 1;
   const int uv_in_height = (io->mb_h + 1) >> 1;
   // scratch memory for luma rescaler
-  const size_t work_size = 2 * (size_t)out_width;
-  const size_t uv_work_size = 2 * uv_out_width;  // and for each u/v ones
+  const uint64 work_size = 2 * (uint64)out_width;
+  const uint64 uv_work_size = 2 * uv_out_width;  // and for each u/v ones
   uint64_t total_size;
-  size_t rescaler_size;
+  uint64 rescaler_size;
   rescaler_t* WEBP_BIDI_INDEXABLE work;
   WebPRescaler* scalers;
   const int num_rescalers = has_alpha ? 4 : 3;
@@ -327,7 +327,7 @@ static int InitYUVRescaler(const VP8Io* const io, WebPDecParams* const p) {
     return 0;
   }
 
-  work = (rescaler_t*)WebPSafeMalloc(1ULL, (size_t)total_size);
+  work = (rescaler_t*)WebPSafeMalloc(1ULL, (uint64)total_size);
   if (work == NULL) {
     return 0;  // memory error
   }
@@ -500,12 +500,12 @@ static int InitRGBRescaler(const VP8Io* const io, WebPDecParams* const p) {
   const int uv_in_width = (io->mb_w + 1) >> 1;
   const int uv_in_height = (io->mb_h + 1) >> 1;
   // scratch memory for one rescaler
-  const size_t work_size = 2 * (size_t)out_width;
+  const uint64 work_size = 2 * (uint64)out_width;
   rescaler_t* WEBP_BIDI_INDEXABLE work;  // rescalers work area
   uint8_t* WEBP_BIDI_INDEXABLE
       tmp;  // tmp storage for scaled YUV444 samples before RGB conversion
   uint64_t tmp_size1, tmp_size2, total_size;
-  size_t rescaler_size;
+  uint64 rescaler_size;
   WebPRescaler* scalers;
   const int num_rescalers = has_alpha ? 4 : 3;
 
@@ -518,7 +518,7 @@ static int InitRGBRescaler(const VP8Io* const io, WebPDecParams* const p) {
     return 0;
   }
 
-  work = (rescaler_t*)WebPSafeMalloc(1ULL, (size_t)total_size);
+  work = (rescaler_t*)WebPSafeMalloc(1ULL, (uint64)total_size);
   if (work == NULL) {
     return 0;  // memory error
   }
@@ -601,7 +601,7 @@ static int CustomSetup(VP8Io* io) {
       if (io->fancy_upsampling) {
 // #ifdef FANCY_UPSAMPLING
         const int uv_width = (io->mb_w + 1) >> 1;
-        p->memory = WebPSafeMalloc(1ULL, (size_t)(io->mb_w + 2 * uv_width));
+        p->memory = WebPSafeMalloc(1ULL, (uint64)(io->mb_w + 2 * uv_width));
         if (p->memory == NULL) {
           return 0;  // memory error.
         }

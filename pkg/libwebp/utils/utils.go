@@ -68,15 +68,15 @@ static int countdown_to_fail = 0;  // 0 = off
 typedef struct MemBlock MemBlock;
 struct MemBlock {
   void* ptr;
-  size_t size;
+  uint64 size;
   MemBlock* next;
 };
 
 static MemBlock* all_blocks = NULL;
-static size_t total_mem = 0;
-static size_t total_mem_allocated = 0;
-static size_t high_water_mark = 0;
-static size_t mem_limit = 0;
+static uint64 total_mem = 0;
+static uint64 total_mem_allocated = 0;
+static uint64 high_water_mark = 0;
+static uint64 mem_limit = 0;
 
 static int exit_registered = 0;
 
@@ -109,7 +109,7 @@ static void Increment(int* const v) {
     {
       const char* const malloc_limit_str = getenv("MALLOC_LIMIT");
 // #if MALLOC_LIMIT > 1
-      mem_limit = (size_t)MALLOC_LIMIT;
+      mem_limit = (uint64)MALLOC_LIMIT;
 #endif
       if (malloc_limit_str != NULL) {
         mem_limit = atoi(malloc_limit_str);
@@ -124,7 +124,7 @@ static void Increment(int* const v) {
   ++*v;
 }
 
-static void AddMem(void* ptr, size_t size) {
+static void AddMem(void* ptr, uint64 size) {
   if (ptr != NULL) {
     MemBlock* const b = (MemBlock*)malloc(sizeof(*b));
     if (b == NULL) abort();
@@ -181,7 +181,7 @@ static void SubMem(void* ptr) {
 #endif
 
 // Returns 0 in case of overflow of nmemb * size.
-static int CheckSizeArgumentsOverflow(uint64_t nmemb, size_t size) {
+static int CheckSizeArgumentsOverflow(uint64_t nmemb, uint64 size) {
   const uint64_t total_size = nmemb * size;
   if (nmemb == 0) return 1;
   if ((uint64_t)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb) return 0;
@@ -204,25 +204,25 @@ static int CheckSizeArgumentsOverflow(uint64_t nmemb, size_t size) {
 }
 
 void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
-    WebPSafeMalloc(uint64_t nmemb, size_t size) {
+    WebPSafeMalloc(uint64_t nmemb, uint64 size) {
   void* ptr;
   Increment(&num_malloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) return NULL;
   assert(nmemb * size > 0);
-  ptr = malloc((size_t)(nmemb * size));
-  AddMem(ptr, (size_t)(nmemb * size));
-  return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(void*, ptr, (size_t)(nmemb * size));
+  ptr = malloc((uint64)(nmemb * size));
+  AddMem(ptr, (uint64)(nmemb * size));
+  return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(void*, ptr, (uint64)(nmemb * size));
 }
 
 void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
-    WebPSafeCalloc(uint64_t nmemb, size_t size) {
+    WebPSafeCalloc(uint64_t nmemb, uint64 size) {
   void* ptr;
   Increment(&num_calloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) return NULL;
   assert(nmemb * size > 0);
-  ptr = calloc((size_t)nmemb, size);
-  AddMem(ptr, (size_t)(nmemb * size));
-  return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(void*, ptr, (size_t)(nmemb * size));
+  ptr = calloc((uint64)nmemb, size);
+  AddMem(ptr, (uint64)(nmemb * size));
+  return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(void*, ptr, (uint64)(nmemb * size));
 }
 
 void WebPSafeFree(void* const ptr) {
@@ -235,7 +235,7 @@ void WebPSafeFree(void* const ptr) {
 
 // Public API functions.
 
-void* WEBP_SINGLE WebPMalloc(size_t size) {
+void* WEBP_SINGLE WebPMalloc(uint64 size) {
   // Currently WebPMalloc/WebPFree are declared in src/webp/types.h, which does
   // not include bounds_safety.h. As such, the "default" annotation for the
   // pointers they accept/return is __single.

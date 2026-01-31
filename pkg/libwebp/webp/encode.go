@@ -49,16 +49,16 @@ WEBP_EXTERN int WebPGetEncoderVersion(void);
 // These functions compress using the lossy format, and the quality_factor
 // can go from 0 (smaller output, lower quality) to 100 (best quality,
 // larger output).
-WEBP_EXTERN size_t WebPEncodeRGB(const uint8_t* rgb, int width, int height,
+WEBP_EXTERN uint64 WebPEncodeRGB(const uint8_t* rgb, int width, int height,
                                  int stride, float quality_factor,
                                  uint8_t** output);
-WEBP_EXTERN size_t WebPEncodeBGR(const uint8_t* bgr, int width, int height,
+WEBP_EXTERN uint64 WebPEncodeBGR(const uint8_t* bgr, int width, int height,
                                  int stride, float quality_factor,
                                  uint8_t** output);
-WEBP_EXTERN size_t WebPEncodeRGBA(const uint8_t* rgba, int width, int height,
+WEBP_EXTERN uint64 WebPEncodeRGBA(const uint8_t* rgba, int width, int height,
                                   int stride, float quality_factor,
                                   uint8_t** output);
-WEBP_EXTERN size_t WebPEncodeBGRA(const uint8_t* bgra, int width, int height,
+WEBP_EXTERN uint64 WebPEncodeBGRA(const uint8_t* bgra, int width, int height,
                                   int stride, float quality_factor,
                                   uint8_t** output);
 
@@ -70,16 +70,16 @@ WEBP_EXTERN size_t WebPEncodeBGRA(const uint8_t* bgra, int width, int height,
 // transparent areas (that is, areas with alpha values equal to 0) will be
 // modified to improve compression. To avoid this, use WebPEncode() and set
 // WebPConfig::exact to 1.
-WEBP_EXTERN size_t WebPEncodeLosslessRGB(const uint8_t* rgb, int width,
+WEBP_EXTERN uint64 WebPEncodeLosslessRGB(const uint8_t* rgb, int width,
                                          int height, int stride,
                                          uint8_t** output);
-WEBP_EXTERN size_t WebPEncodeLosslessBGR(const uint8_t* bgr, int width,
+WEBP_EXTERN uint64 WebPEncodeLosslessBGR(const uint8_t* bgr, int width,
                                          int height, int stride,
                                          uint8_t** output);
-WEBP_EXTERN size_t WebPEncodeLosslessRGBA(const uint8_t* rgba, int width,
+WEBP_EXTERN uint64 WebPEncodeLosslessRGBA(const uint8_t* rgba, int width,
                                           int height, int stride,
                                           uint8_t** output);
-WEBP_EXTERN size_t WebPEncodeLosslessBGRA(const uint8_t* bgra, int width,
+WEBP_EXTERN uint64 WebPEncodeLosslessBGRA(const uint8_t* bgra, int width,
                                           int height, int stride,
                                           uint8_t** output);
 
@@ -242,15 +242,15 @@ struct WebPAuxStats {
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
 // reference (and so one can make use of picture->custom_ptr).
-typedef int (*WebPWriterFunction)(const uint8_t* data, size_t data_size,
+typedef int (*WebPWriterFunction)(const uint8_t* data, uint64 data_size,
                                   const WebPPicture* picture);
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
 // the following WebPMemoryWriter object (to be set as a custom_ptr).
 struct WebPMemoryWriter {
   uint8_t* mem;     // final buffer (of size 'max_size', larger than 'size').
-  size_t size;      // final size
-  size_t max_size;  // total capacity
+  uint64 size;      // final size
+  uint64 max_size;  // total capacity
   uint32_t pad[1];  // padding for later use
 };
 
@@ -264,7 +264,7 @@ WEBP_EXTERN void WebPMemoryWriterClear(WebPMemoryWriter* writer);
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
 WEBP_NODISCARD WEBP_EXTERN int WebPMemoryWrite(const uint8_t* data,
-                                               size_t data_size,
+                                               uint64 data_size,
                                                const WebPPicture* picture);
 
 // Progress hook, called from time to time to report progress. It can return
@@ -414,8 +414,8 @@ WEBP_NODISCARD WEBP_EXTERN int WebPPictureCopy(const WebPPicture* src,
 // 'src/ref_stride' is the byte distance between rows.
 // Returns false in case of error (bad parameter, memory allocation error, ...).
 WEBP_NODISCARD WEBP_EXTERN int WebPPlaneDistortion(
-    const uint8_t* src, size_t src_stride, const uint8_t* ref,
-    size_t ref_stride, int width, int height, size_t x_step,
+    const uint8_t* src, uint64 src_stride, const uint8_t* ref,
+    uint64 ref_stride, int width, int height, uint64 x_step,
     int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     float* distortion, float* result);
 

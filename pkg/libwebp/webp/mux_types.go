@@ -60,7 +60,7 @@ typedef enum WebPMuxAnimBlend {
 // 'bytes' memory must be allocated using WebPMalloc() and such.
 struct WebPData {
   const uint8_t* bytes;
-  size_t size;
+  uint64 size;
 };
 
 // Initializes the contents of the 'webp_data' object with default values.

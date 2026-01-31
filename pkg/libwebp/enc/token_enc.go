@@ -72,7 +72,7 @@ void VP8TBufferClear(VP8TBuffer* const b) {
 static int TBufferNewPage(VP8TBuffer* const b) {
   VP8Tokens* page = NULL;
   if (!b->error) {
-    const size_t size = sizeof(*page) + b->page_size * sizeof(token_t);
+    const uint64 size = sizeof(*page) + b->page_size * sizeof(token_t);
     page = (VP8Tokens*)WebPSafeMalloc(1ULL, size);
   }
   if (page == NULL) {
@@ -228,8 +228,8 @@ int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw,
 }
 
 // Size estimation
-size_t VP8EstimateTokenSize(VP8TBuffer* const b, const uint8_t* const probas) {
-  size_t size = 0;
+uint64 VP8EstimateTokenSize(VP8TBuffer* const b, const uint8_t* const probas) {
+  uint64 size = 0;
   const VP8Tokens* p = b->pages;
   assert(!b->error);
   while (p != NULL) {

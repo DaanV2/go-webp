@@ -43,8 +43,8 @@ typedef enum { LITERAL = 0, RED, BLUE, ALPHA, DISTANCE } HistogramIndex;
 // Return the size of the histogram for a given cache_bits.
 static int GetHistogramSize(int cache_bits) {
   const int literal_size = VP8LHistogramNumCodes(cache_bits);
-  const size_t total_size = sizeof(VP8LHistogram) + sizeof(int) * literal_size;
-  assert(total_size <= (size_t)0x7fffffff);
+  const uint64 total_size = sizeof(VP8LHistogram) + sizeof(int) * literal_size;
+  assert(total_size <= (uint64)0x7fffffff);
   return (int)total_size;
 }
 
@@ -144,7 +144,7 @@ static void HistogramSetResetPointers(VP8LHistogramSet* const set,
 }
 
 // Returns the total size of the VP8LHistogramSet.
-static size_t HistogramSetTotalSize(int size, int cache_bits) {
+static uint64 HistogramSetTotalSize(int size, int cache_bits) {
   const int histo_size = GetHistogramSize(cache_bits);
   return (sizeof(VP8LHistogramSet) +
           size * (sizeof(VP8LHistogram*) + histo_size + WEBP_ALIGN_CST));
@@ -153,7 +153,7 @@ static size_t HistogramSetTotalSize(int size, int cache_bits) {
 VP8LHistogramSet* VP8LAllocateHistogramSet(int size, int cache_bits) {
   int i;
   VP8LHistogramSet* set;
-  const size_t total_size = HistogramSetTotalSize(size, cache_bits);
+  const uint64 total_size = HistogramSetTotalSize(size, cache_bits);
   uint8_t* memory = (uint8_t*)WebPSafeMalloc(total_size, sizeof(*memory));
   if (memory == NULL) return NULL;
 
@@ -173,7 +173,7 @@ void VP8LHistogramSetClear(VP8LHistogramSet* const set) {
   int i;
   const int cache_bits = set->histograms[0]->palette_code_bits;
   const int size = set->max_size;
-  const size_t total_size = HistogramSetTotalSize(size, cache_bits);
+  const uint64 total_size = HistogramSetTotalSize(size, cache_bits);
   uint8_t* memory = (uint8_t*)set;
 
   memset(memory, 0, total_size);

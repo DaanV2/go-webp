@@ -30,11 +30,11 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 // VP8BitWriter
 
-static int BitWriterResize(VP8BitWriter* const bw, size_t extra_size) {
+static int BitWriterResize(VP8BitWriter* const bw, uint64 extra_size) {
   uint8_t* new_buf;
-  size_t new_size;
+  uint64 new_size;
   const uint64_t needed_size_64b = (uint64_t)bw->pos + extra_size;
-  const size_t needed_size = (size_t)needed_size_64b;
+  const uint64 needed_size = (uint64)needed_size_64b;
   if (needed_size_64b != needed_size) {
     bw->error = 1;
     return 0;
@@ -66,7 +66,7 @@ static void Flush(VP8BitWriter* const bw) {
   bw->value -= bits << s;
   bw->nb_bits -= 8;
   if ((bits & 0xff) != 0xff) {
-    size_t pos = bw->pos;
+    uint64 pos = bw->pos;
     if (!BitWriterResize(bw, bw->run + 1)) {
       return;
     }
@@ -161,7 +161,7 @@ void VP8PutSignedBits(VP8BitWriter* const bw, int value, int nb_bits) {
 
 //------------------------------------------------------------------------------
 
-int VP8BitWriterInit(VP8BitWriter* const bw, size_t expected_size) {
+int VP8BitWriterInit(VP8BitWriter* const bw, uint64 expected_size) {
   bw->range = 255 - 1;
   bw->value = 0;
   bw->run = 0;
@@ -181,7 +181,7 @@ uint8_t* VP8BitWriterFinish(VP8BitWriter* const bw) {
 }
 
 int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8_t* data,
-                       size_t size) {
+                       uint64 size) {
   assert(data != NULL);
   if (bw->nb_bits != -8) return 0;  // Flush() must have been called
   if (!BitWriterResize(bw, size)) return 0;
@@ -205,13 +205,13 @@ void VP8BitWriterWipeOut(VP8BitWriter* const bw) {
 #define MIN_EXTRA_SIZE (32768ULL)
 
 // Returns 1 on success.
-static int VP8LBitWriterResize(VP8LBitWriter* const bw, size_t extra_size) {
+static int VP8LBitWriterResize(VP8LBitWriter* const bw, uint64 extra_size) {
   uint8_t* WEBP_BIDI_INDEXABLE allocated_buf;
-  size_t allocated_size;
-  const size_t max_bytes = bw->end - bw->buf;
-  const size_t current_size = bw->cur - bw->buf;
+  uint64 allocated_size;
+  const uint64 max_bytes = bw->end - bw->buf;
+  const uint64 current_size = bw->cur - bw->buf;
   const uint64_t size_required_64b = (uint64_t)current_size + extra_size;
-  const size_t size_required = (size_t)size_required_64b;
+  const uint64 size_required = (uint64)size_required_64b;
   if (size_required != size_required_64b) {
     bw->error = 1;
     return 0;
@@ -237,14 +237,14 @@ static int VP8LBitWriterResize(VP8LBitWriter* const bw, size_t extra_size) {
   return 1;
 }
 
-int VP8LBitWriterInit(VP8LBitWriter* const bw, size_t expected_size) {
+int VP8LBitWriterInit(VP8LBitWriter* const bw, uint64 expected_size) {
   WEBP_UNSAFE_MEMSET(bw, 0, sizeof(*bw));
   return VP8LBitWriterResize(bw, expected_size);
 }
 
 int VP8LBitWriterClone(const VP8LBitWriter* const src,
                        VP8LBitWriter* const dst) {
-  const size_t current_size = src->cur - src->buf;
+  const uint64 current_size = src->cur - src->buf;
   assert(src->cur >= src->buf && src->cur <= src->end);
   if (!VP8LBitWriterResize(dst, current_size)) return 0;
   WEBP_UNSAFE_MEMCPY(dst->buf, src->buf, current_size);
@@ -283,7 +283,7 @@ void VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
   if (bw->cur + VP8L_WRITER_BYTES > bw->end) {
     const uint64_t extra_size = (bw->end - bw->buf) + MIN_EXTRA_SIZE;
     if (!CheckSizeOverflow(extra_size) ||
-        !VP8LBitWriterResize(bw, (size_t)extra_size)) {
+        !VP8LBitWriterResize(bw, (uint64)extra_size)) {
       bw->cur = bw->buf;
       bw->error = 1;
       return;
