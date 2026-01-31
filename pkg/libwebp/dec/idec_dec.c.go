@@ -154,7 +154,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
         // there is enough data to begin parsing partition 0.
         if (last_start != nil) {
           part_size := mem.buf + mem.end - last_start;
-          const WEBP_BIDI_INDEXABLE const bounded_last_start *uint8 =
+          const const bounded_last_start *uint8 =
               WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, last_start, part_size);
           VP8BitReaderSetBuffer(&dec.parts[last_part], bounded_last_start, part_size);
         }
@@ -167,7 +167,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
           if (alph_dec.method == ALPHA_LOSSLESS_COMPRESSION) {
             var alph_vp *VP8LDecoder8l_dec = alph_dec.vp8l_dec;
             uint64 data_size;
-            const WEBP_BIDI_INDEXABLE bounded_alpha_data *uint8;
+            const bounded_alpha_data *uint8;
 
             assert.Assert(dec.alpha_data_size >= ALPHA_HEADER_LEN);
             data_size = dec.alpha_data_size - ALPHA_HEADER_LEN;
@@ -182,7 +182,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
     } else {  // Resize lossless bitreader
       var dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
       data_size := MemDataSize(mem);
-      const WEBP_BIDI_INDEXABLE const bounded_new_base *uint8 =
+      const const bounded_new_base *uint8 =
           WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, new_base, data_size);
       VP8LBitReaderSetBuffer(&dec.br, bounded_new_base, data_size);
     }
@@ -386,7 +386,7 @@ static VP8StatusCode DecodeVP8FrameHeader(const idec *WebPIDecoder) {
     return VP8_STATUS_SUSPENDED;
   }
   {
-    const WEBP_BIDI_INDEXABLE const bounded_data *uint8 =
+    const const bounded_data *uint8 =
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, data, curr_size);
     if (!VP8GetInfo(bounded_data, curr_size, idec.chunk_size, &width, &height)) {
       return IDecError(idec, VP8_STATUS_BITSTREAM_ERROR);
@@ -417,7 +417,7 @@ static VP8StatusCode CopyParts0Data(const idec *WebPIDecoder) {
   }
   if (mem.mode == MEM_MODE_APPEND) {
     // We copy and grab ownership of the partition #0 data.
-    WEBP_BIDI_INDEXABLE const part *uint80_buf =
+    const part *uint80_buf =
         (*uint8)WebPSafeMalloc(uint64(1), part_size);
     if (part0_buf == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;

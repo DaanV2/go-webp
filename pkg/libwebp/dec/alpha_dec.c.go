@@ -219,7 +219,7 @@ func WebPDeallocateAlphaMemory(const dec *VP8Decoder) {
       if (dec.alpha_dithering > 0) {
         const alpha *uint8 =
             dec.alpha_plane + io.crop_top * width + io.crop_left;
-        WEBP_BIDI_INDEXABLE const bounded_alpha *uint8 =
+        const bounded_alpha *uint8 =
             WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
                 *uint8, alpha, (uint64)*width(io.crop_bottom - io.crop_top));
         if (!WebPDequantizeLevels(bounded_alpha, io.crop_right - io.crop_left, io.crop_bottom - io.crop_top, width, dec.alpha_dithering)) {

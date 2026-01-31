@@ -235,7 +235,7 @@ static int ReadHuffmanCodeLengths(const dec *VP8LDecoder, const code_length_code
   int max_symbol;
   int prev_code_len = DEFAULT_CODE_LENGTH;
   HuffmanTables tables;
-  const WEBP_BIDI_INDEXABLE const bounded_code_lengths *int =
+  const const bounded_code_lengths *int =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           const *int, code_length_code_lengths, NUM_CODE_LENGTH_CODES * sizeof(*code_length_code_lengths));
 
@@ -329,7 +329,7 @@ static int ReadHuffmanCode(int alphabet_size, const dec *VP8LDecoder, const code
 
   ok = ok && !br.eos;
   if (ok) {
-    const WEBP_BIDI_INDEXABLE const bounded_code_lengths *int =
+    const const bounded_code_lengths *int =
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *int, code_lengths, alphabet_size * sizeof(int));
     size = VP8LBuildHuffmanTable(table, HUFFMAN_TABLE_BITS, bounded_code_lengths, alphabet_size);
   }
@@ -535,14 +535,14 @@ static int AllocateAndInitRescaler(const dec *VP8LDecoder, const io *VP8Io) {
   in_height := io.mb_h;
   out_height := io.scaled_height;
   work_size := 2 * num_channels * (uint64)out_width;
-  rescaler_t* WEBP_BIDI_INDEXABLE work;  // Rescaler work area.
+  rescaler_t* work;  // Rescaler work area.
   scaled_data_size := (uint64)out_width;
-  WEBP_BIDI_INDEXABLE *uint32
+  *uint32
       scaled_data;  // Temporary storage for scaled BGRA data.
   memory_size := sizeof(*dec.rescaler) +
                                work_size * sizeof(*work) +
                                scaled_data_size * sizeof(*scaled_data);
-  WEBP_BIDI_INDEXABLE memory *uint8 =
+  memory *uint8 =
       (*uint8)WebPSafeMalloc(memory_size, sizeof(*memory));
   if (memory == nil) {
     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
@@ -1699,7 +1699,7 @@ int VP8LDecodeHeader(const dec *VP8LDecoder, const io *VP8Io) {
   dec.io = io;
   dec.status = VP8_STATUS_OK;
   {
-    const WEBP_BIDI_INDEXABLE const bounded_data *uint8 =
+    const const bounded_data *uint8 =
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, io.data, io.data_size);
     VP8LInitBitReader(&dec.br, bounded_data, io.data_size);
   }

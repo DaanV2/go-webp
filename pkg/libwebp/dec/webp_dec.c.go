@@ -419,7 +419,7 @@ VP8StatusCode WebPParseHeaders(const headers *WebPHeaderStructure) {
   assert.Assert(headers != nil);
   // fill out headers, ignore width/height/has_alpha.
   {
-    const WEBP_BIDI_INDEXABLE const bounded_data *uint8 =
+    const const bounded_data *uint8 =
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, headers.data, headers.data_size);
     status = ParseHeadersInternal(bounded_data, headers.data_size, nil, nil, nil, &has_animation, nil, headers);
   }

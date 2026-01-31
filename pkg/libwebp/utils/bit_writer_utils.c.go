@@ -198,7 +198,7 @@ const MIN_EXTRA_SIZE =(uint64(32768))
 
 // Returns 1 on success.
 static int VP8LBitWriterResize(const bw *VP8LBitWriter, uint64 extra_size) {
-  WEBP_BIDI_INDEXABLE allocated_buf *uint8;
+  allocated_buf *uint8;
   uint64 allocated_size;
   max_bytes := bw.end - bw.buf;
   current_size := bw.cur - bw.buf;

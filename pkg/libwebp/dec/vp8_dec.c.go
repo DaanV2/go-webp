@@ -217,9 +217,9 @@ static int ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP
 // If the partitions were positioned ok, VP8_STATUS_OK is returned.
 static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, size uint64 ) {
   var br *VP8BitReader = &dec.br;
-  const WEBP_BIDI_INDEXABLE sz *uint8 = buf;
+  const sz *uint8 = buf;
   var buf_end *uint8 = buf + size;
-  const WEBP_BIDI_INDEXABLE part_start *uint8;
+  const part_start *uint8;
   uint64 size_left = size;
   uint64 last_part;
   uint64 p;

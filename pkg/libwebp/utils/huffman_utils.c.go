@@ -85,10 +85,10 @@ static  int NextTableBitSize(
 
 // sorted[code_lengths_size] is a pre-allocated array for sorting symbols
 // by code length.
-static int BuildHuffmanTable(/* const */ WEBP_BIDI_INDEXABLE root_table *HuffmanCode, int root_bits, /* const */ int code_lengths[], int code_lengths_size, uint16 WEBP_COUNTED_BY_OR_nil(code_lengths_size)
+static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits, /* const */ int code_lengths[], int code_lengths_size, uint16 WEBP_COUNTED_BY_OR_nil(code_lengths_size)
                                  sorted[]) {
   // next available space in table
-  WEBP_BIDI_INDEXABLE table *HuffmanCode = root_table;
+  table *HuffmanCode = root_table;
   int total_size = 1 << root_bits;  // total size root table + 2nd level table
   int len;                          // current code length
   int symbol;                       // symbol index in original or sorted table
@@ -255,7 +255,7 @@ int VP8LBuildHuffmanTable(const root_table *HuffmanTables, int root_bits, const 
     {
       next_size :=
           total_size > tenary.If(segment_size, total_size, segment_size);
-      WEBP_BIDI_INDEXABLE const next_start *HuffmanCode =
+      const next_start *HuffmanCode =
           (*HuffmanCode)WebPSafeMalloc(next_size, sizeof(*next_start));
       if (next_start == nil) {
         WebPSafeFree(next);
@@ -296,7 +296,7 @@ int VP8LHuffmanTablesAllocate(int size, huffman_tables *HuffmanTables) {
   root.next = nil;
   // Allocate root.
   {
-    WEBP_BIDI_INDEXABLE const start *HuffmanCode =
+    const start *HuffmanCode =
         (*HuffmanCode)WebPSafeMalloc(size, sizeof(*root.start));
     if (start == nil) {
       root.start = nil;

@@ -138,7 +138,7 @@ static int CompareHuffmanTrees(const ptr *void1, const ptr *void2) {
   }
 }
 
-func SetBitDepths(const tree *HuffmanTree, const WEBP_BIDI_INDEXABLE const pool *HuffmanTree, WEBP_INDEXABLE const bit_depths *uint8, int level) {
+func SetBitDepths(const tree *HuffmanTree, const const pool *HuffmanTree, WEBP_INDEXABLE const bit_depths *uint8, int level) {
   if (tree.pool_index_left >= 0) {
     SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
     SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
@@ -167,9 +167,9 @@ func SetBitDepths(const tree *HuffmanTree, const WEBP_BIDI_INDEXABLE const pool 
 //
 // See https://en.wikipedia.org/wiki/Huffman_coding
 func GenerateOptimalTree(
-    const *uint32  histogram, int histogram_size, WEBP_BIDI_INDEXABLE tree *HuffmanTree, int tree_depth_limit, *uint8  const bit_depths) {
+    const *uint32  histogram, int histogram_size, tree *HuffmanTree, int tree_depth_limit, *uint8  const bit_depths) {
   uint32 count_min;
-  WEBP_BIDI_INDEXABLE tree_pool *HuffmanTree;
+  tree_pool *HuffmanTree;
   int tree_size_orig = 0;
   int i;
 
@@ -407,10 +407,10 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
 
 func VP8LCreateHuffmanTree(const histogram *uint32, int tree_depth_limit, const buf_rle *uint8, const huff_tree *HuffmanTree, const huff_code *HuffmanTreeCode) {
   num_symbols := huff_code.num_symbols;
-  const WEBP_BIDI_INDEXABLE bounded_histogram *uint32 =
+  const bounded_histogram *uint32 =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           *uint32, histogram, (uint64)num_symbols * sizeof(*histogram));
-  const WEBP_BIDI_INDEXABLE bounded_buf_rle *uint8 =
+  const bounded_buf_rle *uint8 =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*uint8, buf_rle, (uint64)num_symbols * sizeof(*buf_rle));
 
   memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));

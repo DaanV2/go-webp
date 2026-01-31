@@ -298,7 +298,7 @@ static int InitYUVRescaler(const io *VP8Io, const p *WebPDecParams) {
   uv_work_size := 2 * uv_out_width;  // and for each u/v ones
   uint64 total_size;
   uint64 rescaler_size;
-  rescaler_t* WEBP_BIDI_INDEXABLE work;
+  rescaler_t* work;
   scalers *WebPRescaler;
   num_rescalers := tenary.If(has_alpha, 4, 3);
 
@@ -471,8 +471,8 @@ static int InitRGBRescaler(const io *VP8Io, const p *WebPDecParams) {
   uv_in_height := (io.mb_h + 1) >> 1;
   // scratch memory for one rescaler
   work_size := 2 * (uint64)out_width;
-  rescaler_t* WEBP_BIDI_INDEXABLE work;  // rescalers work area
-  WEBP_BIDI_INDEXABLE *uint8
+  rescaler_t* work;  // rescalers work area
+  *uint8
       tmp;  // tmp storage for scaled YUV444 samples before RGB conversion
   uint64 tmp_size1, tmp_size2, total_size;
   uint64 rescaler_size;

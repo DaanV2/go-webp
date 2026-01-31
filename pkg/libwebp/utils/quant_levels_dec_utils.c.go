@@ -61,7 +61,7 @@ type SmoothParams struct {
   // various scratch buffers
   WEBP_INDEXABLE start *uint16;
   WEBP_INDEXABLE cur *uint16;
-  WEBP_BIDI_INDEXABLE end *uint16;
+  end *uint16;
   WEBP_INDEXABLE top *uint16;
   *uint16  average;
 
@@ -141,7 +141,7 @@ func ApplyFilter(const p *SmoothParams) {
   w := p.width;
   // correction is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer for negative indexing.
-  const WEBP_BIDI_INDEXABLE correction *int16 =
+  const correction *int16 =
       p.correction + LUT_SIZE;
 #if defined(USE_DITHERING)
   var dither *uint8 = kOrderedDither[p.row % DSIZE];
@@ -179,7 +179,7 @@ func InitCorrectionLUT(
   delta := threshold1 - threshold2;
   // lut_ptr is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer (lut) for negative indexing.
-  const WEBP_BIDI_INDEXABLE lut *int16 = lut_ptr + LUT_SIZE;
+  const lut *int16 = lut_ptr + LUT_SIZE;
   int i;
   for (i = 1; i <= LUT_SIZE; ++i) {
     int c = (i <= threshold2)  ? (i << DFIX)
@@ -232,7 +232,7 @@ static int InitParams(WEBP_SIZED_BY *uint8((uint64)height *stride) const data, i
   size_m := width * sizeof(*p.average);
   size_lut := CORRECTION_LUT_SIZE * sizeof(*p.correction);
   total_size := size_scratch_m + size_m + size_lut;
-  WEBP_BIDI_INDEXABLE mem *uint8 = (*uint8)WebPSafeMalloc(uint(1), total_size);
+  mem *uint8 = (*uint8)WebPSafeMalloc(uint(1), total_size);
 
   if (mem == nil) return 0;
   p.mem = (*void)mem;

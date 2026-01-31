@@ -48,7 +48,7 @@ import "github.com/daanv2/go-webp/pkg/ptrcheck"
 // See https://clang.llvm.org/docs/BoundsSafety.html for more comprehensive
 // documentation
 const WEBP_INDEXABLE =__indexable
-const WEBP_BIDI_INDEXABLE =__bidi_indexable
+const =__bidi_indexable
 
 #else  // WEBP_SUPPORT_FBOUNDS_SAFETY
 
