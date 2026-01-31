@@ -13,19 +13,19 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_SSE2)
+// #if defined(WEBP_USE_SSE2)
 import <assert.h>
 import <emmintrin.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#ifdef FANCY_UPSAMPLING
+// #ifdef FANCY_UPSAMPLING
 
 // We compute (9*a + 3*b + 3*c + d + 8) / 16 as follows
 // u = (9*a + 3*b + 3*c + d + 8) / 16
@@ -187,7 +187,7 @@ static void Upsample32Pixels_SSE2(const uint8_t* WEBP_RESTRICT const r1,
 SSE2_UPSAMPLE_FUNC(UpsampleRgbaLinePair_SSE2, VP8YuvToRgba, 4)
 SSE2_UPSAMPLE_FUNC(UpsampleBgraLinePair_SSE2, VP8YuvToBgra, 4)
 
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 SSE2_UPSAMPLE_FUNC(UpsampleRgbLinePair_SSE2, VP8YuvToRgb, 3)
 SSE2_UPSAMPLE_FUNC(UpsampleBgrLinePair_SSE2, VP8YuvToBgr, 3)
 SSE2_UPSAMPLE_FUNC(UpsampleArgbLinePair_SSE2, VP8YuvToArgb, 4)
@@ -215,7 +215,7 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersSSE2(void) {
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair_SSE2;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair_SSE2;
   WebPUpsamplers[MODE_bgrA] = UpsampleBgraLinePair_SSE2;
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
   WebPUpsamplers[MODE_RGB] = UpsampleRgbLinePair_SSE2;
   WebPUpsamplers[MODE_BGR] = UpsampleBgrLinePair_SSE2;
   WebPUpsamplers[MODE_ARGB] = UpsampleArgbLinePair_SSE2;
@@ -252,7 +252,7 @@ extern void WebPInitYUV444ConvertersSSE2(void);
 
 YUV444_FUNC(Yuv444ToRgba_SSE2, VP8YuvToRgba32_SSE2, WebPYuv444ToRgba_C, 4)
 YUV444_FUNC(Yuv444ToBgra_SSE2, VP8YuvToBgra32_SSE2, WebPYuv444ToBgra_C, 4)
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 YUV444_FUNC(Yuv444ToRgb_SSE2, VP8YuvToRgb32_SSE2, WebPYuv444ToRgb_C, 3)
 YUV444_FUNC(Yuv444ToBgr_SSE2, VP8YuvToBgr32_SSE2, WebPYuv444ToBgr_C, 3)
 YUV444_FUNC(Yuv444ToArgb_SSE2, VP8YuvToArgb32_SSE2, WebPYuv444ToArgb_C, 4)
@@ -266,7 +266,7 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitYUV444ConvertersSSE2(void) {
   WebPYUV444Converters[MODE_BGRA] = Yuv444ToBgra_SSE2;
   WebPYUV444Converters[MODE_rgbA] = Yuv444ToRgba_SSE2;
   WebPYUV444Converters[MODE_bgrA] = Yuv444ToBgra_SSE2;
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
   WebPYUV444Converters[MODE_RGB] = Yuv444ToRgb_SSE2;
   WebPYUV444Converters[MODE_BGR] = Yuv444ToBgr_SSE2;
   WebPYUV444Converters[MODE_ARGB] = Yuv444ToArgb_SSE2;
@@ -283,6 +283,6 @@ WEBP_DSP_INIT_STUB(WebPInitYUV444ConvertersSSE2)
 
 #endif  // WEBP_USE_SSE2
 
-#if !(defined(FANCY_UPSAMPLING) && defined(WEBP_USE_SSE2))
+// #if !(defined(FANCY_UPSAMPLING) && defined(WEBP_USE_SSE2))
 WEBP_DSP_INIT_STUB(WebPInitUpsamplersSSE2)
 #endif

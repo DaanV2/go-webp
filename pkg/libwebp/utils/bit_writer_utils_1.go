@@ -17,13 +17,13 @@ package utils
 
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -79,7 +79,7 @@ static WEBP_INLINE size_t VP8BitWriterSize(const VP8BitWriter* const bw) {
 // VP8LBitWriter
 
 // 64bit
-#if defined(__x86_64__) || defined(_M_X64) || WEBP_AARCH64 || defined(__wasm__)
+// #if defined(__x86_64__) || defined(_M_X64) || WEBP_AARCH64 || defined(__wasm__)
 typedef uint64_t vp8l_atype_t;  // accumulator type
 typedef uint32_t vp8l_wtype_t;  // writing type
 #define WSWAP HToLE32
@@ -133,7 +133,7 @@ void VP8LBitWriterSwap(VP8LBitWriter* const src, VP8LBitWriter* const dst);
 void VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
                           vp8l_atype_t* bits);
 
-#if VP8L_WRITER_BITS == 16
+// #if VP8L_WRITER_BITS == 16
 // PutBits internal function used in the 16 bit vp8l_wtype_t case.
 void VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits);
 #endif
@@ -145,7 +145,7 @@ void VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits);
 // VP8LBitWriter's 'error' flag is set in case of memory allocation error.
 static WEBP_INLINE void VP8LPutBits(VP8LBitWriter* const bw, uint32_t bits,
                                     int n_bits) {
-#if VP8L_WRITER_BYTES == 4
+// #if VP8L_WRITER_BYTES == 4
   if (n_bits == 0) return;
   if (bw->used >= VP8L_WRITER_BITS) {
     VP8LPutBitsFlushBits(bw, &bw->used, &bw->bits);
@@ -159,7 +159,7 @@ static WEBP_INLINE void VP8LPutBits(VP8LBitWriter* const bw, uint32_t bits,
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

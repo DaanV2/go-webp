@@ -13,18 +13,18 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_SSE2)
+// #if defined(WEBP_USE_SSE2)
 import <emmintrin.h>
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/common_sse2.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //-----------------------------------------------------------------------------
 // Convert spans of 32 pixels to various RGB formats for the fancy upsampler.
@@ -126,7 +126,7 @@ static WEBP_INLINE void PackAndStore4_SSE2(const __m128i* const R,
 static WEBP_INLINE void PackAndStore4444_SSE2(
     const __m128i* const R, const __m128i* const G, const __m128i* const B,
     const __m128i* const A, uint8_t* WEBP_RESTRICT const dst) {
-#if (WEBP_SWAP_16BIT_CSP == 0)
+// #if (WEBP_SWAP_16BIT_CSP == 0)
   const __m128i rg0 = _mm_packus_epi16(*R, *G);
   const __m128i ba0 = _mm_packus_epi16(*B, *A);
 #else
@@ -157,7 +157,7 @@ static WEBP_INLINE void PackAndStore565_SSE2(const __m128i* const R,
   const __m128i g2 = _mm_slli_epi16(_mm_and_si128(g0, _mm_set1_epi8(0x1c)), 3);
   const __m128i rg = _mm_or_si128(r1, g1);
   const __m128i gb = _mm_or_si128(g2, b1);
-#if (WEBP_SWAP_16BIT_CSP == 0)
+// #if (WEBP_SWAP_16BIT_CSP == 0)
   const __m128i rgb565 = _mm_unpacklo_epi8(rg, gb);
 #else
   const __m128i rgb565 = _mm_unpacklo_epi8(gb, rg);

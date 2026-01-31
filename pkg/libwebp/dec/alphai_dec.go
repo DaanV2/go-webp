@@ -15,17 +15,11 @@ package dec
 
 
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/filters_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
-
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 struct VP8LDecoder;  // Defined in dec/vp8li.h.
 
@@ -53,8 +47,5 @@ void WebPDeallocateAlphaMemory(VP8Decoder* const dec);
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
 
 #endif  // WEBP_DEC_ALPHAI_DEC_H_

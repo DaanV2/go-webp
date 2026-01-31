@@ -13,17 +13,17 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_SSE2)
+// #if defined(WEBP_USE_SSE2)
 import <assert.h>
 import <emmintrin.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/common_sse2.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
 
 // Helper function
 static WEBP_INLINE void SubtractAndSquare_SSE2(const __m128i a, const __m128i b,
@@ -84,7 +84,7 @@ static uint32_t AccumulateSSE_SSE2(const uint8_t* src1, const uint8_t* src2,
 }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 
 static uint32_t HorizontalAdd16b_SSE2(const __m128i* const m) {
   uint16_t tmp[8];
@@ -154,10 +154,10 @@ static double SSIMGet_SSE2(const uint8_t* src1, int stride1,
 extern void VP8SSIMDspInitSSE2(void);
 
 WEBP_TSAN_IGNORE_FUNCTION void VP8SSIMDspInitSSE2(void) {
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
   VP8AccumulateSSE = AccumulateSSE_SSE2;
 #endif
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
   VP8SSIMGet = SSIMGet_SSE2;
 #endif
 }

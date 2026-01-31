@@ -13,19 +13,19 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_SSE2)
+// #if defined(WEBP_USE_SSE2)
 import <assert.h>
 import <emmintrin.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // For sign-extended multiplying constants, pre-shifted by 5:
 #define CST_5b(X) (((int16_t)((uint16_t)(X) << 8)) >> 5)
@@ -281,7 +281,7 @@ static void AddVectorEq_SSE2(const uint32_t* WEBP_RESTRICT a,
 //------------------------------------------------------------------------------
 // Entropy
 
-#if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
+// #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
 
 static uint64_t CombinedShannonEntropy_SSE2(const uint32_t X[256],
                                             const uint32_t Y[256]) {
@@ -712,7 +712,7 @@ WEBP_TSAN_IGNORE_FUNCTION void VP8LEncDspInitSSE2(void) {
   VP8LCollectColorRedTransforms = VP8LCollectColorRedTransforms_SSE;
   VP8LAddVector = AddVector_SSE2;
   VP8LAddVectorEq = AddVectorEq_SSE2;
-#if !defined(DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC)
+// #if !defined(DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC)
   VP8LCombinedShannonEntropy = CombinedShannonEntropy_SSE2;
 #endif
   VP8LVectorMismatch = VectorMismatch_SSE2;

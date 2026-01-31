@@ -18,14 +18,14 @@ package mux
 import <assert.h>
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8li_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux_types.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -234,7 +234,7 @@ WebPMuxError MuxValidate(const WebPMux* const mux);
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

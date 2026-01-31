@@ -13,20 +13,20 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
 import <assert.h>
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_reader_inl_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_reader_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/endian_inl_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -123,7 +123,7 @@ int32_t VP8GetSignedValue(VP8BitReader* const br, int bits,
 
 #define VP8L_LOG8_WBITS 4  // Number of bytes needed to store VP8L_WBITS bits.
 
-#if defined(__arm__) || defined(_M_ARM) || WEBP_AARCH64 ||          \
+// #if defined(__arm__) || defined(_M_ARM) || WEBP_AARCH64 ||          \
     defined(__i386__) || defined(_M_IX86) || defined(__x86_64__) || \
     defined(_M_X64) || defined(__wasm__)
 #define VP8L_USE_FAST_LOAD
@@ -191,7 +191,7 @@ static void ShiftBytes(VP8LBitReader* const br) {
 
 void VP8LDoFillBitWindow(VP8LBitReader* const br) {
   assert(br->bit_pos >= VP8L_WBITS);
-#if defined(VP8L_USE_FAST_LOAD)
+// #if defined(VP8L_USE_FAST_LOAD)
   if (br->pos + sizeof(br->val) < br->len) {
     br->val >>= VP8L_WBITS;
     br->bit_pos -= VP8L_WBITS;
@@ -222,7 +222,7 @@ uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits) {
 //------------------------------------------------------------------------------
 // Bit-tracing tool
 
-#if (BITTRACE > 0)
+// #if (BITTRACE > 0)
 
 import <stdio.h>
 import <stdlib.h>  // for atexit()
@@ -245,7 +245,7 @@ static void PrintBitTraces(void) {
   int scale = 1;
   int total = 0;
   const char* units = "bits";
-#if (BITTRACE == 2)
+// #if (BITTRACE == 2)
   scale = 8;
   units = "bytes";
 #endif

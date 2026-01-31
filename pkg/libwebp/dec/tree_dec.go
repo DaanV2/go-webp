@@ -15,18 +15,18 @@ package dec
 
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_reader_inl_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_reader_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#if !defined(USE_GENERIC_TREE)
-#if !defined(__arm__) && !defined(_M_ARM) && !WEBP_AARCH64 && !defined(__wasm__)
+// #if !defined(USE_GENERIC_TREE)
+// #if !defined(__arm__) && !defined(_M_ARM) && !WEBP_AARCH64 && !defined(__wasm__)
 // using a table is ~1-2% slower on ARM. Prefer the coded-tree approach then.
 const USE_GENERIC_TREE = 1  // ALTERNATE_CODE
 #else
@@ -34,7 +34,7 @@ const USE_GENERIC_TREE = 0
 #endif
 #endif  // USE_GENERIC_TREE
 
-#if (USE_GENERIC_TREE == 1)
+// #if (USE_GENERIC_TREE == 1)
 static const int8_t kYModesIntra4[18] = {
     -B_DC_PRED, 1, -B_TM_PRED, 2, -B_VE_PRED, 3,
     4,          6, -B_HE_PRED, 5, -B_RD_PRED, -B_VR_PRED,
@@ -292,7 +292,7 @@ static void ParseIntraMode(VP8BitReader* const br, VP8Decoder* const dec,
       int x;
       for (x = 0; x < 4; ++x) {
         const uint8_t* const prob = kBModesProba[top[x]][ymode];
-#if (USE_GENERIC_TREE == 1)
+// #if (USE_GENERIC_TREE == 1)
         // Generic tree-parsing
         int i = kYModesIntra4[VP8GetBit(br, prob[0], "pred-modes")];
         while (i > 0) {

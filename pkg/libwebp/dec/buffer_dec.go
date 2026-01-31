@@ -17,12 +17,12 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -203,7 +203,7 @@ VP8StatusCode WebPAllocateDecBuffer(int width, int height,
     }
 
     if (options->use_scaling) {
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
       int scaled_width = options->scaled_width;
       int scaled_height = options->scaled_height;
       if (!WebPRescalerGetScaledDimensions(width, height, &scaled_width,

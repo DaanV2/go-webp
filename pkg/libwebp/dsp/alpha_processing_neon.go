@@ -13,11 +13,11 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_NEON)
+// #if defined(WEBP_USE_NEON)
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
 //------------------------------------------------------------------------------
 

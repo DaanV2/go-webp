@@ -13,14 +13,14 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_NEON)
+// #if defined(WEBP_USE_NEON)
 
 import <assert.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
 
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)
@@ -37,7 +37,7 @@ static const int16_t kC2 =
 // (with gcc-4.6). So we disable it for now. Later, it'll be conditional to
 // WEBP_USE_INTRINSICS define.
 // With gcc-4.8, it's a little faster speed than inlined-assembly.
-#if defined(WEBP_USE_INTRINSICS)
+// #if defined(WEBP_USE_INTRINSICS)
 
 // Treats 'v' as an uint8x8_t and zero extends to an int16x8_t.
 static WEBP_INLINE int16x8_t ConvertU8ToS16_NEON(uint32x2_t v) {
@@ -272,7 +272,7 @@ static uint8x16_t Load4x4_NEON(const uint8_t* src) {
 
 // Forward transform.
 
-#if defined(WEBP_USE_INTRINSICS)
+// #if defined(WEBP_USE_INTRINSICS)
 
 static WEBP_INLINE void Transpose4x4_S16_NEON(
     const int16x4_t A, const int16x4_t B, const int16x4_t C, const int16x4_t D,
@@ -768,7 +768,7 @@ static WEBP_INLINE void AccumulateSSE16_NEON(
 
 // Horizontal sum of all four uint32_t values in 'sum'.
 static int SumToInt_NEON(uint32x4_t sum) {
-#if WEBP_AARCH64
+// #if WEBP_AARCH64
   return (int)vaddvq_u32(sum);
 #else
   const uint64x2_t sum2 = vpaddlq_u32(sum);
@@ -830,7 +830,7 @@ static int SSE4x4_NEON(const uint8_t* WEBP_RESTRICT a,
 //------------------------------------------------------------------------------
 
 // Compilation with gcc-4.6.x is problematic for now.
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 
 static int16x8_t Quantize_NEON(int16_t* WEBP_RESTRICT const in,
                                const VP8Matrix* WEBP_RESTRICT const mtx,
@@ -872,7 +872,7 @@ static int QuantizeBlock_NEON(int16_t in[16], int16_t out[16],
   uint8x8x4_t shuffles;
   // vtbl?_u8 are marked unavailable for iOS arm64 with Xcode < 6.3, use
   // non-standard versions there.
-#if defined(__APPLE__) && WEBP_AARCH64 && defined(__apple_build_version__) && \
+// #if defined(__APPLE__) && WEBP_AARCH64 && defined(__apple_build_version__) && \
     (__apple_build_version__ < 6020037)
   uint8x16x2_t all_out;
   INIT_VECTOR2(all_out, vreinterpretq_u8_s16(out0), vreinterpretq_u8_s16(out1));
@@ -914,9 +914,9 @@ static int Quantize2Blocks_NEON(int16_t in[32], int16_t out[32],
 
 #endif  // !WORK_AROUND_GCC
 
-#if WEBP_AARCH64
+// #if WEBP_AARCH64
 
-#if BPS == 32
+// #if BPS == 32
 #define DC4_VE4_HE4_TM4_NEON(dst, tbl, res, lane)                     \
   do {                                                                \
     uint8x16_t r;                                                     \
@@ -935,7 +935,7 @@ static int Quantize2Blocks_NEON(int16_t in[32], int16_t out[32],
   } while (0)
 
 static WEBP_INLINE uint8x8x2_t Vld1U8x2(const uint8_t* ptr) {
-#if LOCAL_CLANG_PREREQ(3, 4) || LOCAL_GCC_PREREQ(8, 5) || defined(_MSC_VER)
+// #if LOCAL_CLANG_PREREQ(3, 4) || LOCAL_GCC_PREREQ(8, 5) || defined(_MSC_VER)
   return vld1_u8_x2(ptr);
 #else
   uint8x8x2_t res;
@@ -945,7 +945,7 @@ static WEBP_INLINE uint8x8x2_t Vld1U8x2(const uint8_t* ptr) {
 }
 
 static WEBP_INLINE uint8x16x4_t Vld1qU8x4(const uint8_t* ptr) {
-#if LOCAL_CLANG_PREREQ(3, 4) || LOCAL_GCC_PREREQ(9, 4) || defined(_MSC_VER)
+// #if LOCAL_CLANG_PREREQ(3, 4) || LOCAL_GCC_PREREQ(9, 4) || defined(_MSC_VER)
   return vld1q_u8_x4(ptr);
 #else
   uint8x16x4_t res;
@@ -1217,14 +1217,14 @@ WEBP_TSAN_IGNORE_FUNCTION void VP8EncDspInitNEON(void) {
   VP8SSE8x8 = SSE8x8_NEON;
   VP8SSE4x4 = SSE4x4_NEON;
 
-#if WEBP_AARCH64
-#if BPS == 32
+// #if WEBP_AARCH64
+// #if BPS == 32
   VP8EncPredLuma4 = Intra4Preds_NEON;
 #endif
   VP8EncPredLuma16 = Intra16Preds_NEON;
 #endif
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
   VP8EncQuantizeBlock = QuantizeBlock_NEON;
   VP8EncQuantize2Blocks = Quantize2Blocks_NEON;
   VP8EncQuantizeBlockWHT = QuantizeBlock_NEON;

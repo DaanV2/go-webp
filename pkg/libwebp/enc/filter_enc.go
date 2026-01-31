@@ -17,10 +17,10 @@ import <assert.h>
 import <stddef.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // This table gives, for a given sharpness, the filtering strength to be
 // used (at least) in order to filter a given edge step delta.
@@ -71,7 +71,7 @@ int VP8FilterStrengthFromDelta(int sharpness, int delta) {
 //------------------------------------------------------------------------------
 // Paragraph 15.4: compute the inner-edge filtering strength
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 
 static int GetILevel(int sharpness, int level) {
   if (sharpness > 0) {
@@ -144,7 +144,7 @@ static double GetMBSSIM(const uint8_t* yuv1, const uint8_t* yuv2) {
 // loop filter strength
 
 void VP8InitFilter(VP8EncIterator* const it) {
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
   if (it->lf_stats != NULL) {
     int s, i;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
@@ -160,7 +160,7 @@ void VP8InitFilter(VP8EncIterator* const it) {
 }
 
 void VP8StoreFilterStats(VP8EncIterator* const it) {
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
   int d;
   VP8Encoder* const enc = it->enc;
   const int s = it->mb->segment;
@@ -199,7 +199,7 @@ void VP8StoreFilterStats(VP8EncIterator* const it) {
 
 void VP8AdjustFilterStrength(VP8EncIterator* const it) {
   VP8Encoder* const enc = it->enc;
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
   if (it->lf_stats != NULL) {
     int s;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {

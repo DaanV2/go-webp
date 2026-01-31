@@ -13,15 +13,15 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_NEON) && !defined(WEBP_REDUCE_SIZE)
+// #if defined(WEBP_USE_NEON) && !defined(WEBP_REDUCE_SIZE)
 
 import <arm_neon.h>
 import <assert.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 #define ROUNDER (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX_C(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
@@ -38,7 +38,7 @@ import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
     vst1q_u32((DST) + 4, SRC1);     \
   } while (0)
 
-#if (WEBP_RESCALER_RFIX == 32)
+// #if (WEBP_RESCALER_RFIX == 32)
 #define MAKE_HALF_CST(C) vdupq_n_s32((int32_t)((C) >> 1))
 // note: B is actualy scale>>1. See MAKE_HALF_CST
 #define MULT_FIX(A, B) \

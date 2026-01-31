@@ -17,16 +17,16 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/filters_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/quant_levels_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // -----------------------------------------------------------------------------
 // Encodes the given alpha data via specified compression method 'method'.
@@ -51,7 +51,7 @@ import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 //           invalid quality or method, or
 //           memory allocation for the compressed data fails.
 
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8li_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
 
 static int EncodeLossless(const uint8_t* const data, int width, int height,
                           int effort_level,  // in [0..6] range
@@ -274,7 +274,7 @@ static int ApplyFiltersAndEncode(const uint8_t* alpha, int width, int height,
                              reduce_levels, effort_level, NULL, &best);
   }
   if (ok) {
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
     if (stats != NULL) {
       stats->lossless_features = best.stats.lossless_features;
       stats->histogram_bits = best.stats.histogram_bits;
@@ -356,7 +356,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
     if (!ok) {
       WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);  // imprecise
     }
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
     if (pic->stats != NULL) {  // need stats?
       pic->stats->coded_size += (int)(*output_size);
       enc->sse[3] = sse;

@@ -14,15 +14,15 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
 //------------------------------------------------------------------------------
 // Helpful macro.

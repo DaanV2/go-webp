@@ -17,13 +17,13 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 const MAX_ITERS_K_MEANS = 6
 
@@ -402,7 +402,7 @@ static int DoSegmentsJob(void* arg1, void* arg2) {
   return ok;
 }
 
-#ifdef WEBP_USE_THREAD
+// #ifdef WEBP_USE_THREAD
 static void MergeJobs(const SegmentJob* const src, SegmentJob* const dst) {
   int i;
   for (i = 0; i <= MAX_ALPHA; ++i) dst->alphas[i] += src->alphas[i];
@@ -439,7 +439,7 @@ int VP8EncAnalyze(VP8Encoder* const enc) {
   if (do_segments) {
     const int last_row = enc->mb_h;
     const int total_mb = last_row * enc->mb_w;
-#ifdef WEBP_USE_THREAD
+// #ifdef WEBP_USE_THREAD
     // We give a little more than a half work to the main thread.
     const int split_row = (9 * last_row + 15) >> 4;
     const int kMinSplitRow = 2;  // minimal rows needed for mt to be worth it
@@ -451,7 +451,7 @@ int VP8EncAnalyze(VP8Encoder* const enc) {
         WebPGetWorkerInterface();
     SegmentJob main_job;
     if (do_mt) {
-#ifdef WEBP_USE_THREAD
+// #ifdef WEBP_USE_THREAD
       SegmentJob side_job;
       // Note the use of '&' instead of '&&' because we must call the functions
       // no matter what.

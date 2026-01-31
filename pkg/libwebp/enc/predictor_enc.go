@@ -20,14 +20,14 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8li_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 #define HISTO_SIZE (4 * 256)
 static const int64_t kSpatialPredictorBias = 15ll << LOG_2_PRECISION_BITS;
@@ -114,7 +114,7 @@ static WEBP_INLINE void PredictBatch(int mode, int x_start, int y,
   }
 }
 
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
 static int MaxDiffBetweenPixels(uint32_t p1, uint32_t p2) {
   const int diff_a = abs((int)(p1 >> 24) - (int)(p2 >> 24));
   const int diff_r = abs((int)((p1 >> 16) & 0xff) - (int)((p2 >> 16) & 0xff));
@@ -274,7 +274,7 @@ static WEBP_INLINE void GetResidual(
       } else {
         predict = pred_func(&current_row[x - 1], upper_row + x);
       }
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
       if (max_quantization == 1 || mode == 0 || y == 0 || y == height - 1 ||
           x == 0 || x == width - 1) {
         residual = VP8LSubPixels(current_row[x], predict);
@@ -394,7 +394,7 @@ static void ComputeResidualsForTile(
   // Position and size of the strip covering the tile and adjacent columns if
   // they exist.
   const int context_start_x = start_x - have_left;
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
   const int context_width = max_x + have_left + (max_x < width - start_x);
 #endif
   // The width of upper_row and current_row is one pixel larger than image width
@@ -432,7 +432,7 @@ static void ComputeResidualsForTile(
       // not exist in the current row).
       memcpy(current_row + context_start_x, argb + y * width + context_start_x,
              sizeof(*argb) * (max_x + have_left + (y + 1 < height)));
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
       if (max_quantization > 1 && y >= 1 && y + 1 < height) {
         MaxDiffsForRow(context_width, width, argb + y * width + context_start_x,
                        max_diffs + context_start_x, used_subtract_green);
@@ -477,7 +477,7 @@ static void CopyImageWithPrediction(int width, int height, int bits,
   uint32_t* upper_row = argb_scratch;
   uint32_t* current_row = upper_row + width + 1;
   uint8_t* current_max_diffs = (uint8_t*)(current_row + width + 1);
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
   uint8_t* lower_max_diffs = current_max_diffs + width;
 #endif
   int y;
@@ -494,7 +494,7 @@ static void CopyImageWithPrediction(int width, int height, int bits,
       PredictBatch(kPredLowEffort, 0, y, width, current_row, upper_row,
                    argb + y * width);
     } else {
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
       if (max_quantization > 1) {
         // Compute max_diffs for the lower row now, because that needs the
         // contents of argb for the current row, which we will overwrite with

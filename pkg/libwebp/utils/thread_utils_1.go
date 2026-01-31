@@ -15,16 +15,16 @@ package utils
 
 
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -87,7 +87,7 @@ WEBP_EXTERN const WebPWorkerInterface* WebPGetWorkerInterface(void);
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

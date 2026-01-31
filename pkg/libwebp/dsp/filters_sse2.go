@@ -13,17 +13,17 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_SSE2)
+// #if defined(WEBP_USE_SSE2)
 
 import <assert.h>
 import <emmintrin.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Helpful macro.
@@ -307,7 +307,7 @@ extern void VP8FiltersInitSSE2(void);
 
 WEBP_TSAN_IGNORE_FUNCTION void VP8FiltersInitSSE2(void) {
   WebPUnfilters[WEBP_FILTER_HORIZONTAL] = HorizontalUnfilter_SSE2;
-#if defined(CHROMIUM)
+// #if defined(CHROMIUM)
   // TODO(crbug.com/654974)
   (void)VerticalUnfilter_SSE2;
 #else

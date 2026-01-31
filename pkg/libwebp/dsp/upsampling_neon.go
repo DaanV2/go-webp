@@ -14,18 +14,18 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_NEON)
+// #if defined(WEBP_USE_NEON)
 
 import <arm_neon.h>
 import <assert.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#ifdef FANCY_UPSAMPLING
+// #ifdef FANCY_UPSAMPLING
 
 //-----------------------------------------------------------------------------
 // U/V upsampling
@@ -122,7 +122,7 @@ static const int16_t kCoeffs1[4] = {19077, 26149, 6419, 13320};
     vst4_u8(out, v255_r_g_b);                \
   } while (0)
 
-#if (WEBP_SWAP_16BIT_CSP == 0)
+// #if (WEBP_SWAP_16BIT_CSP == 0)
 #define ZIP_U8(lo, hi) vzip_u8((lo), (hi))
 #else
 #define ZIP_U8(lo, hi) vzip_u8((hi), (lo))
@@ -266,7 +266,7 @@ static const int16_t kCoeffs1[4] = {19077, 26149, 6419, 13320};
 // NEON variants of the fancy upsampler.
 NEON_UPSAMPLE_FUNC(UpsampleRgbaLinePair_NEON, Rgba, 4)
 NEON_UPSAMPLE_FUNC(UpsampleBgraLinePair_NEON, Bgra, 4)
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 NEON_UPSAMPLE_FUNC(UpsampleRgbLinePair_NEON, Rgb, 3)
 NEON_UPSAMPLE_FUNC(UpsampleBgrLinePair_NEON, Bgr, 3)
 NEON_UPSAMPLE_FUNC(UpsampleArgbLinePair_NEON, Argb, 4)
@@ -286,7 +286,7 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersNEON(void) {
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair_NEON;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair_NEON;
   WebPUpsamplers[MODE_bgrA] = UpsampleBgraLinePair_NEON;
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
   WebPUpsamplers[MODE_RGB] = UpsampleRgbLinePair_NEON;
   WebPUpsamplers[MODE_BGR] = UpsampleBgrLinePair_NEON;
   WebPUpsamplers[MODE_ARGB] = UpsampleArgbLinePair_NEON;
@@ -301,6 +301,6 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersNEON(void) {
 
 #endif  // WEBP_USE_NEON
 
-#if !(defined(FANCY_UPSAMPLING) && defined(WEBP_USE_NEON))
+// #if !(defined(FANCY_UPSAMPLING) && defined(WEBP_USE_NEON))
 WEBP_DSP_INIT_STUB(WebPInitUpsamplersNEON)
 #endif

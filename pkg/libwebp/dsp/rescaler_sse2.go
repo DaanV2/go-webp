@@ -13,17 +13,17 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_SSE2) && !defined(WEBP_REDUCE_SIZE)
+// #if defined(WEBP_USE_SSE2) && !defined(WEBP_REDUCE_SIZE)
 import <assert.h>
 import <emmintrin.h>
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Implementations of critical functions ImportRow / ExportRow
@@ -209,7 +209,7 @@ static WEBP_INLINE void ProcessRow_SSE2(
   const __m128i C3 = _mm_add_epi64(B3, rounder);
   const __m128i D0 = _mm_srli_epi64(C0, WEBP_RESCALER_RFIX);
   const __m128i D1 = _mm_srli_epi64(C1, WEBP_RESCALER_RFIX);
-#if (WEBP_RESCALER_RFIX < 32)
+// #if (WEBP_RESCALER_RFIX < 32)
   const __m128i D2 =
       _mm_and_si128(_mm_slli_epi64(C2, 32 - WEBP_RESCALER_RFIX), mask);
   const __m128i D3 =

@@ -15,9 +15,9 @@ package mux
 
 
 
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -37,7 +37,7 @@ int WebPAnimEncoderRefineRect(const struct WebPPicture* const prev_canvas,
                               int* const x_offset, int* const y_offset,
                               int* const width, int* const height);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

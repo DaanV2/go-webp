@@ -22,15 +22,15 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if !defined(DISABLE_TOKEN_BUFFER)
+// #if !defined(DISABLE_TOKEN_BUFFER)
 
 // we use pages to reduce the number of memcpy()
 const MIN_PAGE_SIZE = 8192  // minimum number of token per page

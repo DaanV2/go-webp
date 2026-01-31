@@ -13,16 +13,16 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // Uncomment to disable gamma-compression during RGB->U/V averaging
 #define USE_GAMMA_COMPRESSION
@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 // If defined, use table to compute x / alpha.
 #define USE_INVERSE_ALPHA_TABLE
 
-#ifdef USE_GAMMA_COMPRESSION
+// #ifdef USE_GAMMA_COMPRESSION
 import <math.h>
 #endif
 
@@ -110,22 +110,22 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitSamplersSSE2();
     }
 #endif  // WEBP_HAVE_SSE2
-#if defined(WEBP_HAVE_SSE41)
+// #if defined(WEBP_HAVE_SSE41)
     if (VP8GetCPUInfo(kSSE4_1)) {
       WebPInitSamplersSSE41();
     }
 #endif  // WEBP_HAVE_SSE41
-#if defined(WEBP_USE_MIPS32)
+// #if defined(WEBP_USE_MIPS32)
     if (VP8GetCPUInfo(kMIPS32)) {
       WebPInitSamplersMIPS32();
     }
 #endif  // WEBP_USE_MIPS32
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       WebPInitSamplersMIPSdspR2();
     }
@@ -220,7 +220,7 @@ void WebPConvertRGBA32ToUV_C(const uint16_t* WEBP_RESTRICT rgb,
 //------------------------------------------------------------------------------
 // Code for gamma correction
 
-#if defined(USE_GAMMA_COMPRESSION)
+// #if defined(USE_GAMMA_COMPRESSION)
 
 // Gamma correction compensates loss of resolution during chroma subsampling.
 const GAMMA_FIX = 12     // fixed-point precision for linear values
@@ -307,7 +307,7 @@ static WEBP_INLINE int LinearToGamma(uint32_t base_value, int shift) {
 #define SUM2ALPHA(ptr) ((ptr)[0] + (ptr)[rgb_stride])
 #define SUM4ALPHA(ptr) (SUM2ALPHA(ptr) + SUM2ALPHA((ptr) + 4))
 
-#if defined(USE_INVERSE_ALPHA_TABLE)
+// #if defined(USE_INVERSE_ALPHA_TABLE)
 
 static const int kAlphaFix = 19;
 // Following table is (1 << kAlphaFix) / a. The (v * kInvAlpha[a]) >> kAlphaFix
@@ -442,7 +442,7 @@ static WEBP_INLINE int LinearToGammaWeighted(const uint8_t* src,
       a_ptr[rgb_stride] * GammaToLinear(src[rgb_stride]) +
       a_ptr[rgb_stride + step] * GammaToLinear(src[rgb_stride + step]);
   assert(total_a > 0 && total_a <= 4 * 0xff);
-#if defined(USE_INVERSE_ALPHA_TABLE)
+// #if defined(USE_INVERSE_ALPHA_TABLE)
   assert((uint64_t)sum * kInvAlpha[total_a] < ((uint64_t)1 << 32));
 #endif
   return LinearToGamma(DIVIDE_BY_ALPHA(sum, total_a), 0);
@@ -500,7 +500,7 @@ void WebPAccumulateRGB(const uint8_t* const r_ptr, const uint8_t* const g_ptr,
     // MemorySanitizer may raise false positives with data that passes through
     // RGBA32PackedToPlanar_16b_SSE41() due to incorrect modeling of shuffles.
     // See https://crbug.com/webp/573.
-#ifdef WEBP_MSAN
+// #ifdef WEBP_MSAN
     dst[3] = 0;
 #endif
   }
@@ -508,7 +508,7 @@ void WebPAccumulateRGB(const uint8_t* const r_ptr, const uint8_t* const g_ptr,
     dst[0] = SUM2(r_ptr + j);
     dst[1] = SUM2(g_ptr + j);
     dst[2] = SUM2(b_ptr + j);
-#ifdef WEBP_MSAN
+// #ifdef WEBP_MSAN
     dst[3] = 0;
 #endif
   }
@@ -528,7 +528,7 @@ static void ImportYUVAFromRGBA_C(const uint8_t* r_ptr, const uint8_t* g_ptr,
 
   has_alpha &= dst_a != NULL;
   if (has_alpha) {
-#if defined(USE_GAMMA_COMPRESSION) && defined(USE_INVERSE_ALPHA_TABLE)
+// #if defined(USE_GAMMA_COMPRESSION) && defined(USE_INVERSE_ALPHA_TABLE)
     assert(kAlphaFix + GAMMA_FIX <= 31);
 #endif
   }
@@ -656,19 +656,19 @@ WEBP_DSP_INIT_FUNC(WebPInitConvertARGBToYUV) {
   WebPImportYUVAFromRGBALastLine = ImportYUVAFromRGBALastLine_C;
 
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitConvertARGBToYUVSSE2();
     }
 #endif  // WEBP_HAVE_SSE2
-#if defined(WEBP_HAVE_SSE41)
+// #if defined(WEBP_HAVE_SSE41)
     if (VP8GetCPUInfo(kSSE4_1)) {
       WebPInitConvertARGBToYUVSSE41();
     }
 #endif  // WEBP_HAVE_SSE41
   }
 
-#if defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
     WebPInitConvertARGBToYUVNEON();

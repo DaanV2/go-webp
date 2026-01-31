@@ -15,11 +15,11 @@ import <assert.h>
 import <stddef.h>
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Boolean-cost cost table
@@ -304,22 +304,22 @@ WEBP_DSP_INIT_FUNC(VP8EncDspCostInit) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_USE_MIPS32)
+// #if defined(WEBP_USE_MIPS32)
     if (VP8GetCPUInfo(kMIPS32)) {
       VP8EncDspCostInitMIPS32();
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       VP8EncDspCostInitMIPSdspR2();
     }
 #endif
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8EncDspCostInitSSE2();
     }
 #endif
-#if defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_HAVE_NEON)
     if (VP8GetCPUInfo(kNEON)) {
       VP8EncDspCostInitNEON();
     }

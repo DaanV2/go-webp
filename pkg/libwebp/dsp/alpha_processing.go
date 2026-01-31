@@ -16,12 +16,12 @@ package dsp
 import <assert.h>
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // Tables can be faster on some platform but incur some extra binary size (~2k).
-#if !defined(USE_TABLES_FOR_ALPHA_MULT)
+// #if !defined(USE_TABLES_FOR_ALPHA_MULT)
 const USE_TABLES_FOR_ALPHA_MULT = 0  // ALTERNATE_CODE
 #endif
 
@@ -37,7 +37,7 @@ static uint32_t Mult(uint8_t x, uint32_t mult) {
   return v;
 }
 
-#if (USE_TABLES_FOR_ALPHA_MULT == 1)
+// #if (USE_TABLES_FOR_ALPHA_MULT == 1)
 
 static const uint32_t kMultTables[2][256] = {
     // (255u << MFIX) / alpha
@@ -218,7 +218,7 @@ void WebPMultRows(uint8_t* WEBP_RESTRICT ptr, int stride,
 // (x * a * 32897) >> 23 is bit-wise equivalent to (int)(x * a / 255.)
 // for all 8bit x or a. For bit-wise equivalence to (int)(x * a / 255. + .5),
 // one can use instead: (x * a * 65793 + (1 << 23)) >> 24
-#if 1  // (int)(x * a / 255.)
+// #if 1  // (int)(x * a / 255.)
 func MULTIPLIER(a uint32) uint32 {
   return a * 32897
 }
@@ -234,7 +234,7 @@ func PREMULTIPLY(x, m uint32) uint32 {
 }
 #endif
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static void ApplyAlphaMultiply_C(uint8_t* rgba, int alpha_first, int w, int h,
                                  int stride) {
   while (h-- > 0) {
@@ -298,14 +298,14 @@ static WEBP_INLINE void ApplyAlphaMultiply4444_C(uint8_t* rgba4444, int w,
 
 static void ApplyAlphaMultiply_16b_C(uint8_t* rgba4444, int w, int h,
                                      int stride) {
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
   ApplyAlphaMultiply4444_C(rgba4444, w, h, stride, 1);
 #else
   ApplyAlphaMultiply4444_C(rgba4444, w, h, stride, 0);
 #endif
 }
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static int DispatchAlpha_C(const uint8_t* WEBP_RESTRICT alpha, int alpha_stride,
                            int width, int height, uint8_t* WEBP_RESTRICT dst,
                            int dst_stride) {
@@ -395,7 +395,7 @@ static WEBP_INLINE uint32_t MakeARGB32(int a, int r, int g, int b) {
   return (((uint32_t)a << 24) | (r << 16) | (g << 8) | b);
 }
 
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
 static void PackARGB_C(const uint8_t* WEBP_RESTRICT a,
                        const uint8_t* WEBP_RESTRICT r,
                        const uint8_t* WEBP_RESTRICT g,
@@ -429,7 +429,7 @@ int (*WebPExtractAlpha)(const uint8_t* WEBP_RESTRICT, int, int, int,
                         uint8_t* WEBP_RESTRICT, int);
 void (*WebPExtractGreen)(const uint32_t* WEBP_RESTRICT argb,
                          uint8_t* WEBP_RESTRICT alpha, int size);
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
 void (*WebPPackARGB)(const uint8_t* a, const uint8_t* r, const uint8_t* g,
                      const uint8_t* b, int, uint32_t*);
 #endif
@@ -456,11 +456,11 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
   WebPMultRow = WebPMultRow_C;
   WebPApplyAlphaMultiply4444 = ApplyAlphaMultiply_16b_C;
 
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
   WebPPackARGB = PackARGB_C;
 #endif
   WebPPackRGB = PackRGB_C;
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
   WebPApplyAlphaMultiply = ApplyAlphaMultiply_C;
   WebPDispatchAlpha = DispatchAlpha_C;
   WebPDispatchAlphaToGreen = DispatchAlphaToGreen_C;
@@ -474,24 +474,24 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitAlphaProcessingSSE2();
-#if defined(WEBP_HAVE_SSE41)
+// #if defined(WEBP_HAVE_SSE41)
       if (VP8GetCPUInfo(kSSE4_1)) {
         WebPInitAlphaProcessingSSE41();
       }
 #endif
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       WebPInitAlphaProcessingMIPSdspR2();
     }
 #endif
   }
 
-#if defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
     WebPInitAlphaProcessingNEON();
@@ -506,7 +506,7 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
   assert(WebPDispatchAlphaToGreen != NULL);
   assert(WebPExtractAlpha != NULL);
   assert(WebPExtractGreen != NULL);
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
   assert(WebPPackARGB != NULL);
 #endif
   assert(WebPPackRGB != NULL);

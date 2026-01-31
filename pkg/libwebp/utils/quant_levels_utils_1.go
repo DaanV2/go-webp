@@ -17,12 +17,12 @@ package utils
 
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -33,7 +33,7 @@ extern "C" {
 int QuantizeLevels(uint8_t* const WEBP_COUNTED_BY((size_t)width* height) data,
                    int width, int height, int num_levels, uint64_t* const sse);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

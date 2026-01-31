@@ -17,9 +17,9 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Helpful macro.
@@ -34,7 +34,7 @@ import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
     assert(stride >= width); \
   } while (0)
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static WEBP_INLINE void PredictLine_C(const uint8_t* WEBP_RESTRICT src,
                                       const uint8_t* WEBP_RESTRICT pred,
                                       uint8_t* WEBP_RESTRICT dst, int length) {
@@ -105,7 +105,7 @@ static WEBP_INLINE int GradientPredictor_C(uint8_t a, uint8_t b, uint8_t c) {
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static WEBP_INLINE void DoGradientFilter_C(const uint8_t* WEBP_RESTRICT in,
                                            int width, int height, int stride,
                                            uint8_t* WEBP_RESTRICT out) {
@@ -141,7 +141,7 @@ static WEBP_INLINE void DoGradientFilter_C(const uint8_t* WEBP_RESTRICT in,
 
 //------------------------------------------------------------------------------
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static void HorizontalFilter_C(const uint8_t* WEBP_RESTRICT data, int width,
                                int height, int stride,
                                uint8_t* WEBP_RESTRICT filtered_data) {
@@ -179,7 +179,7 @@ static void HorizontalUnfilter_C(const uint8_t* prev, const uint8_t* in,
   }
 }
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static void VerticalUnfilter_C(const uint8_t* prev, const uint8_t* in,
                                uint8_t* out, int width) {
   if (prev == NULL) {
@@ -221,38 +221,38 @@ extern void VP8FiltersInitSSE2(void);
 
 WEBP_DSP_INIT_FUNC(VP8FiltersInit) {
   WebPUnfilters[WEBP_FILTER_NONE] = NoneUnfilter_C;
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
   WebPUnfilters[WEBP_FILTER_HORIZONTAL] = HorizontalUnfilter_C;
   WebPUnfilters[WEBP_FILTER_VERTICAL] = VerticalUnfilter_C;
 #endif
   WebPUnfilters[WEBP_FILTER_GRADIENT] = GradientUnfilter_C;
 
   WebPFilters[WEBP_FILTER_NONE] = NULL;
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
   WebPFilters[WEBP_FILTER_HORIZONTAL] = HorizontalFilter_C;
   WebPFilters[WEBP_FILTER_VERTICAL] = VerticalFilter_C;
   WebPFilters[WEBP_FILTER_GRADIENT] = GradientFilter_C;
 #endif
 
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8FiltersInitSSE2();
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       VP8FiltersInitMIPSdspR2();
     }
 #endif
-#if defined(WEBP_USE_MSA)
+// #if defined(WEBP_USE_MSA)
     if (VP8GetCPUInfo(kMSA)) {
       VP8FiltersInitMSA();
     }
 #endif
   }
 
-#if defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
     VP8FiltersInitNEON();

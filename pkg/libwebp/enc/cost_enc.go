@@ -13,14 +13,14 @@
 
 package enc
 
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
 
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Level cost tables
@@ -312,7 +312,7 @@ int VP8RecordCoeffs(int ctx, const VP8Residual* const res) {
       s = res->stats[VP8EncBands[n]][1];
     } else {
       v = abs(v);
-#if !defined(USE_LEVEL_CODE_TABLE)
+// #if !defined(USE_LEVEL_CODE_TABLE)
       if (!VP8RecordStats(v > 4, s + 3)) {
         if (VP8RecordStats(v != 2, s + 4)) VP8RecordStats(v == 4, s + 5);
       } else if (!VP8RecordStats(v > 10, s + 6)) {

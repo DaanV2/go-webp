@@ -15,8 +15,8 @@ package enc
 
 
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
 import <stddef.h>
@@ -26,14 +26,14 @@ import <stddef.h>
 
 #endif
 
-import "github.com/daanv2/go-webp/pkg/libwebpenc/backward_references_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/histogram_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -97,7 +97,7 @@ int VP8LEncodeImage(const WebPConfig* const config,
 int VP8LEncodeStream(const WebPConfig* const config,
                      const WebPPicture* const picture, VP8LBitWriter* const bw);
 
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
 // in near_lossless.c
 // Near lossless preprocessing in RGB color-space.
 int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
@@ -127,7 +127,7 @@ void VP8LOptimizeSampling(uint32_t* const image, int full_width,
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

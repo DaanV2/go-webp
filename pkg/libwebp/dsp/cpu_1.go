@@ -17,13 +17,13 @@ package dsp
 
 import <stddef.h>
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if defined(__GNUC__)
+// #if defined(__GNUC__)
 #define LOCAL_GCC_VERSION ((__GNUC__ << 8) | __GNUC_MINOR__)
 #define LOCAL_GCC_PREREQ(maj, min) (LOCAL_GCC_VERSION >= (((maj) << 8) | (min)))
 #else
@@ -31,7 +31,7 @@ const LOCAL_GCC_VERSION = 0
 #define LOCAL_GCC_PREREQ(maj, min) 0
 #endif
 
-#if defined(__clang__)
+// #if defined(__clang__)
 #define LOCAL_CLANG_VERSION ((__clang_major__ << 8) | __clang_minor__)
 #define LOCAL_CLANG_PREREQ(maj, min) \
   (LOCAL_CLANG_VERSION >= (((maj) << 8) | (min)))
@@ -46,18 +46,18 @@ const LOCAL_CLANG_VERSION = 0
 //------------------------------------------------------------------------------
 // x86 defines.
 
-#if !defined(HAVE_CONFIG_H)
-#if defined(_MSC_VER) && _MSC_VER > 1310 && \
+// #if !defined(HAVE_CONFIG_H)
+// #if defined(_MSC_VER) && _MSC_VER > 1310 && \
     (defined(_M_X64) || defined(_M_IX86))
 #define WEBP_MSC_SSE2  // Visual C++ SSE2 targets
 #endif
 
-#if defined(_MSC_VER) && _MSC_VER >= 1500 && \
+// #if defined(_MSC_VER) && _MSC_VER >= 1500 && \
     (defined(_M_X64) || defined(_M_IX86))
 #define WEBP_MSC_SSE41  // Visual C++ SSE4.1 targets
 #endif
 
-#if defined(_MSC_VER) && _MSC_VER >= 1700 && \
+// #if defined(_MSC_VER) && _MSC_VER >= 1700 && \
     (defined(_M_X64) || defined(_M_IX86))
 #define WEBP_MSC_AVX2  // Visual C++ AVX2 targets
 #endif
@@ -67,34 +67,34 @@ const LOCAL_CLANG_VERSION = 0
 // files without intrinsics, allowing the corresponding Init() to be called.
 // Files containing intrinsics will need to be built targeting the instruction
 // set so should succeed on one of the earlier tests.
-#if (defined(__SSE2__) || defined(WEBP_MSC_SSE2)) && \
+// #if (defined(__SSE2__) || defined(WEBP_MSC_SSE2)) && \
     (!defined(HAVE_CONFIG_H) || defined(WEBP_HAVE_SSE2))
 #define WEBP_USE_SSE2
 #endif
 
-#if defined(WEBP_USE_SSE2) && !defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_USE_SSE2) && !defined(WEBP_HAVE_SSE2)
 #define WEBP_HAVE_SSE2
 #endif
 
-#if (defined(__SSE4_1__) || defined(WEBP_MSC_SSE41)) && \
+// #if (defined(__SSE4_1__) || defined(WEBP_MSC_SSE41)) && \
     (!defined(HAVE_CONFIG_H) || defined(WEBP_HAVE_SSE41))
 #define WEBP_USE_SSE41
 #endif
 
-#if defined(WEBP_USE_SSE41) && !defined(WEBP_HAVE_SSE41)
+// #if defined(WEBP_USE_SSE41) && !defined(WEBP_HAVE_SSE41)
 #define WEBP_HAVE_SSE41
 #endif
 
-#if (defined(__AVX2__) || defined(WEBP_MSC_AVX2)) && \
+// #if (defined(__AVX2__) || defined(WEBP_MSC_AVX2)) && \
     (!defined(HAVE_CONFIG_H) || defined(WEBP_HAVE_AVX2))
 #define WEBP_USE_AVX2
 #endif
 
-#if defined(WEBP_USE_AVX2) && !defined(WEBP_HAVE_AVX2)
+// #if defined(WEBP_USE_AVX2) && !defined(WEBP_HAVE_AVX2)
 #define WEBP_HAVE_AVX2
 #endif
 
-#if defined(WEBP_MSC_AVX2) && _MSC_VER <= 1900
+// #if defined(WEBP_MSC_AVX2) && _MSC_VER <= 1900
 import <immintrin.h>
 
 static WEBP_INLINE int _mm256_extract_epi32(__m256i a, const int i) {
@@ -114,13 +114,13 @@ static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
 
 // The intrinsics currently cause compiler errors with arm-nacl-gcc and the
 // inline assembly would need to be modified for use with Native Client.
-#if ((defined(__ARM_NEON__) || defined(__aarch64__)) &&       \
+// #if ((defined(__ARM_NEON__) || defined(__aarch64__)) &&       \
      (!defined(HAVE_CONFIG_H) || defined(WEBP_HAVE_NEON))) && \
     !defined(__native_client__)
 #define WEBP_USE_NEON
 #endif
 
-#if !defined(WEBP_USE_NEON) && defined(__ANDROID__) && \
+// #if !defined(WEBP_USE_NEON) && defined(__ANDROID__) && \
     defined(__ARM_ARCH_7A__) && defined(HAVE_CPU_FEATURES_H)
 const WEBP_ANDROID_NEON =  // Android targets that may have NEON
 #define WEBP_USE_NEON
@@ -130,38 +130,38 @@ const WEBP_ANDROID_NEON =  // Android targets that may have NEON
 // inclusion of arm64_neon.h; Visual Studio 2019 includes this file in
 // arm_neon.h. Compile errors were seen with Visual Studio 2019 16.4 with
 // vtbl4_u8(); a fix was made in 16.6.
-#if defined(_MSC_VER) &&                      \
+// #if defined(_MSC_VER) &&                      \
     ((_MSC_VER >= 1700 && defined(_M_ARM)) || \
      (_MSC_VER >= 1926 && (defined(_M_ARM64) || defined(_M_ARM64EC))))
 #define WEBP_USE_NEON
 #define WEBP_USE_INTRINSICS
 #endif
 
-#if defined(__aarch64__) || defined(_M_ARM64) || defined(_M_ARM64EC)
+// #if defined(__aarch64__) || defined(_M_ARM64) || defined(_M_ARM64EC)
 #define WEBP_AARCH64 1
 #else
 #define WEBP_AARCH64 0
 #endif
 
-#if defined(WEBP_USE_NEON) && !defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_USE_NEON) && !defined(WEBP_HAVE_NEON)
 #define WEBP_HAVE_NEON
 #endif
 
 //------------------------------------------------------------------------------
 // MIPS defines.
 
-#if defined(__mips__) && !defined(__mips64) && defined(__mips_isa_rev) && \
+// #if defined(__mips__) && !defined(__mips64) && defined(__mips_isa_rev) && \
     (__mips_isa_rev >= 1) && (__mips_isa_rev < 6)
 #define WEBP_USE_MIPS32
-#if (__mips_isa_rev >= 2)
+// #if (__mips_isa_rev >= 2)
 #define WEBP_USE_MIPS32_R2
-#if defined(__mips_dspr2) || (defined(__mips_dsp_rev) && __mips_dsp_rev >= 2)
+// #if defined(__mips_dspr2) || (defined(__mips_dsp_rev) && __mips_dsp_rev >= 2)
 #define WEBP_USE_MIPS_DSP_R2
 #endif
 #endif
 #endif
 
-#if defined(__mips_msa) && defined(__mips_isa_rev) && (__mips_isa_rev >= 5)
+// #if defined(__mips_msa) && defined(__mips_isa_rev) && (__mips_isa_rev >= 5)
 #define WEBP_USE_MSA
 #endif
 
@@ -170,13 +170,13 @@ const WEBP_ANDROID_NEON =  // Android targets that may have NEON
 
 #endif
 
-#if defined(WEBP_USE_NEON) && WEBP_DSP_OMIT_C_CODE
+// #if defined(WEBP_USE_NEON) && WEBP_DSP_OMIT_C_CODE
 const WEBP_NEON_OMIT_C_CODE = 1
 #else
 const WEBP_NEON_OMIT_C_CODE = 0
 #endif
 
-#if !(LOCAL_CLANG_PREREQ(3, 8) || LOCAL_GCC_PREREQ(4, 8) || WEBP_AARCH64)
+// #if !(LOCAL_CLANG_PREREQ(3, 8) || LOCAL_GCC_PREREQ(4, 8) || WEBP_AARCH64)
 const WEBP_NEON_WORK_AROUND_GCC = 1
 #else
 const WEBP_NEON_WORK_AROUND_GCC = 0
@@ -186,25 +186,25 @@ const WEBP_NEON_WORK_AROUND_GCC = 0
 
 // This macro prevents thread_sanitizer from reporting known concurrent writes.
 #define WEBP_TSAN_IGNORE_FUNCTION
-#if defined(__has_feature)
-#if __has_feature(thread_sanitizer)
+// #if defined(__has_feature)
+// #if __has_feature(thread_sanitizer)
 #undef WEBP_TSAN_IGNORE_FUNCTION
 #define WEBP_TSAN_IGNORE_FUNCTION __attribute__((no_sanitize_thread))
 #endif
 #endif
 
-#if defined(__has_feature)
+// #if defined(__has_feature)
 // Clang 21 should have all the MSAN fixes needed for WebP.
-#if __has_feature(memory_sanitizer) && !LOCAL_CLANG_PREREQ(21, 0)
+// #if __has_feature(memory_sanitizer) && !LOCAL_CLANG_PREREQ(21, 0)
 #define WEBP_MSAN
 #endif
 #endif
 
-#if defined(WEBP_USE_THREAD)
-#if defined(_WIN32)
+// #if defined(WEBP_USE_THREAD)
+// #if defined(_WIN32)
 import <windows.h>
 
-#if _WIN32_WINNT < 0x0600
+// #if _WIN32_WINNT < 0x0600
 #error _WIN32_WINNT must target Windows Vista / Server 2008 or newer.
 #endif
 // clang-format off
@@ -267,8 +267,8 @@ import <pthread.h>
 
 #define WEBP_UBSAN_IGNORE_UNDEF
 #define WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW
-#if defined(__clang__) && defined(__has_attribute)
-#if __has_attribute(no_sanitize)
+// #if defined(__clang__) && defined(__has_attribute)
+// #if __has_attribute(no_sanitize)
 // This macro prevents the undefined behavior sanitizer from reporting
 // failures. This is only meant to silence unaligned loads on platforms that
 // are known to support them.
@@ -286,17 +286,17 @@ import <pthread.h>
 
 // If 'ptr' is NULL, returns NULL. Otherwise returns 'ptr + off'.
 // Prevents undefined behavior sanitizer nullptr-with-nonzero-offset warning.
-#if !defined(WEBP_OFFSET_PTR)
+// #if !defined(WEBP_OFFSET_PTR)
 #define WEBP_OFFSET_PTR(ptr, off) (((ptr) == NULL) ? NULL : ((ptr) + (off)))
 #endif
 
 // Regularize the definition of WEBP_SWAP_16BIT_CSP (backward compatibility)
-#if !defined(WEBP_SWAP_16BIT_CSP)
+// #if !defined(WEBP_SWAP_16BIT_CSP)
 #define WEBP_SWAP_16BIT_CSP 0
 #endif
 
 // some endian fix (e.g.: mips-gcc doesn't define __BIG_ENDIAN__)
-#if !defined(WORDS_BIGENDIAN) &&                   \
+// #if !defined(WORDS_BIGENDIAN) &&                   \
     (defined(__BIG_ENDIAN__) || defined(_M_PPC) || \
      (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)))
 #define WORDS_BIGENDIAN

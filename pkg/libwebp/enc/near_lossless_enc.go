@@ -20,13 +20,13 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8li_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
 
 const MIN_DIM_FOR_NEAR_LOSSLESS = 64
 const MAX_LIMIT_BITS = 5

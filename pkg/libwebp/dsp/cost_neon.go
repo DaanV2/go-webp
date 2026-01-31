@@ -11,12 +11,12 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_NEON)
+// #if defined(WEBP_USE_NEON)
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
 
 static const uint8_t position[16] = {1, 2,  3,  4,  5,  6,  7,  8,
                                      9, 10, 11, 12, 13, 14, 15, 16};
@@ -31,7 +31,7 @@ static void SetResidualCoeffs_NEON(const int16_t* WEBP_RESTRICT const coeffs,
   const uint8x16_t eob = vcombine_u8(vqmovn_u16(eob_0), vqmovn_u16(eob_1));
   const uint8x16_t masked = vandq_u8(eob, vld1q_u8(position));
 
-#if WEBP_AARCH64
+// #if WEBP_AARCH64
   res->last = vmaxvq_u8(masked) - 1;
 #else
   const uint8x8_t eob_8x8 = vmax_u8(vget_low_u8(masked), vget_high_u8(masked));

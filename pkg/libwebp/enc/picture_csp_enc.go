@@ -17,19 +17,19 @@ import <math.h>
 import <stdlib.h>
 import <string.h>
 
-import "sharpyuv/sharpyuv.h"
-import "sharpyuv/sharpyuv_csp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/random_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "sharpyuv"
+import "sharpyuv"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if defined(WEBP_USE_THREAD) && !defined(_WIN32)
+// #if defined(WEBP_USE_THREAD) && !defined(_WIN32)
 import <pthread.h>
 #endif
 
@@ -402,7 +402,7 @@ static int Import(WebPPicture* const picture, const uint8_t* rgb,
       }
     } else {
       for (y = 0; y < height; ++y) {
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
         // BGRA or RGBA input order.
         const uint8_t* a_ptr = rgb + 3;
         WebPPackARGB(a_ptr, r_ptr, g_ptr, b_ptr, width, dst);
@@ -433,7 +433,7 @@ static int Import(WebPPicture* const picture, const uint8_t* rgb,
 
 // Public API
 
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 
 int WebPPictureImportBGR(WebPPicture* picture, const uint8_t* bgr,
                          int bgr_stride) {

@@ -17,21 +17,21 @@
 package dsp
 
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8li_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/endian_inl_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Image transforms.
@@ -89,7 +89,7 @@ static WEBP_INLINE uint32_t ClampedAddSubtractHalf(uint32_t c0, uint32_t c1,
 
 // gcc <= 4.9 on ARM generates incorrect code in Select() when Sub3() is
 // inlined.
-#if defined(__arm__) && defined(__GNUC__) && LOCAL_GCC_VERSION <= 0x409
+// #if defined(__arm__) && defined(__GNUC__) && LOCAL_GCC_VERSION <= 0x409
 #define LOCAL_INLINE __attribute__((noinline))
 #else
 #define LOCAL_INLINE WEBP_INLINE
@@ -481,7 +481,7 @@ void VP8LConvertBGRAToRGBA4444_C(const uint32_t* WEBP_RESTRICT src,
     const uint32_t argb = *src++;
     const uint8_t rg = ((argb >> 16) & 0xf0) | ((argb >> 12) & 0xf);
     const uint8_t ba = ((argb >> 0) & 0xf0) | ((argb >> 28) & 0xf);
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
     *dst++ = ba;
     *dst++ = rg;
 #else
@@ -498,7 +498,7 @@ void VP8LConvertBGRAToRGB565_C(const uint32_t* WEBP_RESTRICT src,
     const uint32_t argb = *src++;
     const uint8_t rg = ((argb >> 16) & 0xf8) | ((argb >> 13) & 0x7);
     const uint8_t gb = ((argb >> 5) & 0xe0) | ((argb >> 3) & 0x1f);
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
     *dst++ = gb;
     *dst++ = rg;
 #else
@@ -636,7 +636,7 @@ WEBP_DSP_INIT_FUNC(VP8LDspInit) {
   COPY_PREDICTOR_ARRAY(PredictorAdd, VP8LPredictorsAdd)
   COPY_PREDICTOR_ARRAY(PredictorAdd, VP8LPredictorsAdd_C)
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
   VP8LAddGreenToBlueAndRed = VP8LAddGreenToBlueAndRed_C;
 
   VP8LTransformColorInverse = VP8LTransformColorInverse_C;
@@ -654,13 +654,13 @@ WEBP_DSP_INIT_FUNC(VP8LDspInit) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8LDspInitSSE2();
-#if defined(WEBP_HAVE_SSE41)
+// #if defined(WEBP_HAVE_SSE41)
       if (VP8GetCPUInfo(kSSE4_1)) {
         VP8LDspInitSSE41();
-#if defined(WEBP_HAVE_AVX2)
+// #if defined(WEBP_HAVE_AVX2)
         if (VP8GetCPUInfo(kAVX2)) {
           VP8LDspInitAVX2();
         }
@@ -669,19 +669,19 @@ WEBP_DSP_INIT_FUNC(VP8LDspInit) {
 #endif
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       VP8LDspInitMIPSdspR2();
     }
 #endif
-#if defined(WEBP_USE_MSA)
+// #if defined(WEBP_USE_MSA)
     if (VP8GetCPUInfo(kMSA)) {
       VP8LDspInitMSA();
     }
 #endif
   }
 
-#if defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
     VP8LDspInitNEON();

@@ -120,7 +120,7 @@ static WEBP_INLINE void VP8L32bToPlanar_SSE41(__m128i* const in0,
 
 #endif  // WEBP_USE_SSE41
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

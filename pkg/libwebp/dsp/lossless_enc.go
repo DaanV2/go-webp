@@ -20,14 +20,14 @@ import <math.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/histogram_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // lookup table for small values of log2(int) * (1 << LOG_2_PRECISION_BITS).
 // Obtained in Python with:
@@ -255,7 +255,7 @@ static uint64_t FastSLog2Slow_C(uint32_t v) {
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     const uint64_t orig_v = v;
     uint64_t correction;
-#if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
+// #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
     // use clz if available
     const uint64_t log_cnt = BitsLog2Floor(v) - 7;
     const uint32_t y = 1 << log_cnt;
@@ -287,7 +287,7 @@ static uint32_t FastLog2Slow_C(uint32_t v) {
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     const uint32_t orig_v = v;
     uint32_t log_2;
-#if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
+// #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
     // use clz if available
     const uint32_t log_cnt = BitsLog2Floor(v) - 7;
     const uint32_t y = 1 << log_cnt;
@@ -687,7 +687,7 @@ extern void VP8LEncDspInitMSA(void);
 WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
   VP8LDspInit();
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
   VP8LSubtractGreenFromBlueAndRed = VP8LSubtractGreenFromBlueAndRed_C;
 
   VP8LTransformColor = VP8LTransformColor_C;
@@ -748,13 +748,13 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8LEncDspInitSSE2();
-#if defined(WEBP_HAVE_SSE41)
+// #if defined(WEBP_HAVE_SSE41)
       if (VP8GetCPUInfo(kSSE4_1)) {
         VP8LEncDspInitSSE41();
-#if defined(WEBP_HAVE_AVX2)
+// #if defined(WEBP_HAVE_AVX2)
         if (VP8GetCPUInfo(kAVX2)) {
           VP8LEncDspInitAVX2();
         }
@@ -763,24 +763,24 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
 #endif
     }
 #endif
-#if defined(WEBP_USE_MIPS32)
+// #if defined(WEBP_USE_MIPS32)
     if (VP8GetCPUInfo(kMIPS32)) {
       VP8LEncDspInitMIPS32();
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       VP8LEncDspInitMIPSdspR2();
     }
 #endif
-#if defined(WEBP_USE_MSA)
+// #if defined(WEBP_USE_MSA)
     if (VP8GetCPUInfo(kMSA)) {
       VP8LEncDspInitMSA();
     }
 #endif
   }
 
-#if defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
     VP8LEncDspInitNEON();

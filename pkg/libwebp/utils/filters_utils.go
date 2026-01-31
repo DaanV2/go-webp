@@ -13,14 +13,14 @@ package utils
 //
 // Author: Urvang (urvang@google.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/filters_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

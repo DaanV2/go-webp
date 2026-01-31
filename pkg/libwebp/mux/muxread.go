@@ -17,13 +17,13 @@ package mux
 import <assert.h>
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpmux/muxi.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux_types.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpmux"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Helper method(s).

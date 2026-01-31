@@ -16,13 +16,13 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/quant_levels_dec_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 import <string.h>  // for memset
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -33,7 +33,7 @@ const LFIX = 2                            // extra precision for look-up table
 const LUT_SIZE = ((1 << (8 + LFIX)) - 1)  // look-up table size
 #define CORRECTION_LUT_SIZE (1 + 2 * LUT_SIZE)
 
-#if defined(USE_DITHERING)
+// #if defined(USE_DITHERING)
 
 const DFIX = 4   // extra precision for ordered dithering
 const DSIZE = 4  // dithering size (must be a power of two)
@@ -145,7 +145,7 @@ static void ApplyFilter(SmoothParams* const p) {
   // We need the middle pointer for negative indexing.
   const int16_t* const WEBP_BIDI_INDEXABLE correction =
       p->correction + LUT_SIZE;
-#if defined(USE_DITHERING)
+// #if defined(USE_DITHERING)
   const uint8_t* const dither = kOrderedDither[p->row % DSIZE];
 #endif
   uint8_t* const WEBP_INDEXABLE dst = p->dst;
@@ -154,7 +154,7 @@ static void ApplyFilter(SmoothParams* const p) {
     const int v = dst[x];
     if (v < p->max && v > p->min) {
       const int c = (v << DFIX) + correction[average[x] - (v << LFIX)];
-#if defined(USE_DITHERING)
+// #if defined(USE_DITHERING)
       dst[x] = clip_8b(c + dither[x % DSIZE]);
 #else
       dst[x] = clip_8b(c);

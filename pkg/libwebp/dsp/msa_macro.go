@@ -15,18 +15,18 @@ package dsp
 
 
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MSA)
+// #if defined(WEBP_USE_MSA)
 
 import <msa.h>
 import <stdint.h>
 
-#if defined(__clang__)
+// #if defined(__clang__)
 #define CLANG_BUILD
 #endif
 
-#ifdef CLANG_BUILD
+// #ifdef CLANG_BUILD
 #define ALPHAVAL (-1)
 #define ADDVI_H(a, b) __msa_addvi_h((v8i16)a, b)
 #define ADDVI_W(a, b) __msa_addvi_w((v4i32)a, b)
@@ -97,12 +97,12 @@ import <stdint.h>
 
 #define MSA_STORE(val, pdst, FUNC_NAME) FUNC_NAME(val, pdst)
 
-#if (__mips_isa_rev >= 6)
+// #if (__mips_isa_rev >= 6)
 MSA_LOAD_FUNC(uint16_t, lh, msa_lh);
 #define LH(psrc) MSA_LOAD(psrc, msa_lh)
 MSA_LOAD_FUNC(uint32_t, lw, msa_lw);
 #define LW(psrc) MSA_LOAD(psrc, msa_lw)
-#if (__mips == 64)
+// #if (__mips == 64)
 MSA_LOAD_FUNC(uint64_t, ld, msa_ld);
 #define LD(psrc) MSA_LOAD(psrc, msa_ld)
 #else  // !(__mips == 64)
@@ -121,7 +121,7 @@ MSA_LOAD_FUNC(uint16_t, ulh, msa_ulh);
 #define LH(psrc) MSA_LOAD(psrc, msa_ulh)
 MSA_LOAD_FUNC(uint32_t, ulw, msa_ulw);
 #define LW(psrc) MSA_LOAD(psrc, msa_ulw)
-#if (__mips == 64)
+// #if (__mips == 64)
 MSA_LOAD_FUNC(uint64_t, uld, msa_uld);
 #define LD(psrc) MSA_LOAD(psrc, msa_uld)
 #else  // !(__mips == 64)

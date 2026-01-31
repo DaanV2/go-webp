@@ -14,12 +14,12 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
 // clang-format off
 #define MAP_COLOR_FUNCS(FUNC_NAME, TYPE, GET_INDEX, GET_VALUE)                 \
@@ -496,7 +496,7 @@ static void ConvertBGRAToRGBA4444_MIPSdspR2(const uint32_t* src, int num_pixels,
       "ins            %[temp3],    %[temp5],          16,   4    \n\t"
       "addiu          %[src],      %[src],            16         \n\t"
       "precr.qb.ph    %[temp3],    %[temp3],          %[temp2]   \n\t"
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
       "usw            %[temp1],    0(%[dst])                     \n\t"
       "usw            %[temp3],    4(%[dst])                     \n\t"
 #else
@@ -518,7 +518,7 @@ static void ConvertBGRAToRGBA4444_MIPSdspR2(const uint32_t* src, int num_pixels,
       "ins            %[temp0],    %[temp5],          16,   4    \n\t"
       "addiu          %[src],      %[src],            4          \n\t"
       "precr.qb.ph    %[temp0],    %[temp0],          %[temp0]   \n\t"
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
       "ush            %[temp0],    0(%[dst])                     \n\t"
 #else
       "wsbh           %[temp0],    %[temp0]                      \n\t"
@@ -573,7 +573,7 @@ static void ConvertBGRAToRGB565_MIPSdspR2(const uint32_t* src, int num_pixels,
       "ins            %[temp2],    %[temp3],          0,    5    \n\t"
       "addiu          %[src],      %[src],            16         \n\t"
       "append         %[temp2],    %[temp1],          16         \n\t"
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
       "usw            %[temp0],    0(%[dst])                     \n\t"
       "usw            %[temp2],    4(%[dst])                     \n\t"
 #else
@@ -595,7 +595,7 @@ static void ConvertBGRAToRGB565_MIPSdspR2(const uint32_t* src, int num_pixels,
       "ins            %[temp4],    %[temp5],          0,    11   \n\t"
       "addiu          %[src],      %[src],            4          \n\t"
       "ins            %[temp4],    %[temp0],          0,    5    \n\t"
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
       "ush            %[temp4],    0(%[dst])                     \n\t"
 #else
       "wsbh           %[temp4],    %[temp4]                      \n\t"

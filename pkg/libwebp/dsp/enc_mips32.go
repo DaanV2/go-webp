@@ -15,13 +15,13 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MIPS32)
+// #if defined(WEBP_USE_MIPS32)
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/mips_macro.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
 
 static const int kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int kC2 = WEBP_TRANSFORM_AC3_C2;
@@ -519,7 +519,7 @@ static void FTransform_MIPS32(const uint8_t* WEBP_RESTRICT src,
 #undef VERTICAL_PASS
 #undef HORIZONTAL_PASS
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 
 // clang-format off
 #define GET_SSE_INNER(A, B, C, D)                               \
@@ -668,7 +668,7 @@ WEBP_TSAN_IGNORE_FUNCTION void VP8EncDspInitMIPS32(void) {
   VP8TDisto4x4 = Disto4x4_MIPS32;
   VP8TDisto16x16 = Disto16x16_MIPS32;
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
   VP8SSE16x16 = SSE16x16_MIPS32;
   VP8SSE8x8 = SSE8x8_MIPS32;
   VP8SSE16x8 = SSE16x8_MIPS32;

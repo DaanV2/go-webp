@@ -16,10 +16,10 @@ package dsp
 import <assert.h>
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Implementations of critical functions ImportRow / ExportRow
@@ -210,8 +210,8 @@ extern void WebPRescalerDspInitMSA(void);
 extern void WebPRescalerDspInitNEON(void);
 
 WEBP_DSP_INIT_FUNC(WebPRescalerDspInit) {
-#if !defined(WEBP_REDUCE_SIZE)
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !defined(WEBP_REDUCE_SIZE)
+// #if !WEBP_NEON_OMIT_C_CODE
   WebPRescalerExportRowExpand = WebPRescalerExportRowExpand_C;
   WebPRescalerExportRowShrink = WebPRescalerExportRowShrink_C;
 #endif
@@ -220,29 +220,29 @@ WEBP_DSP_INIT_FUNC(WebPRescalerDspInit) {
   WebPRescalerImportRowShrink = WebPRescalerImportRowShrink_C;
 
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       WebPRescalerDspInitSSE2();
     }
 #endif
-#if defined(WEBP_USE_MIPS32)
+// #if defined(WEBP_USE_MIPS32)
     if (VP8GetCPUInfo(kMIPS32)) {
       WebPRescalerDspInitMIPS32();
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       WebPRescalerDspInitMIPSdspR2();
     }
 #endif
-#if defined(WEBP_USE_MSA)
+// #if defined(WEBP_USE_MSA)
     if (VP8GetCPUInfo(kMSA)) {
       WebPRescalerDspInitMSA();
     }
 #endif
   }
 
-#if defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
     WebPRescalerDspInitNEON();

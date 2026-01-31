@@ -13,27 +13,27 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_HAVE_NEON_RTCD)
+// #if defined(WEBP_HAVE_NEON_RTCD)
 import <stdio.h>
 import <string.h>
 #endif
 
-#if defined(WEBP_ANDROID_NEON)
+// #if defined(WEBP_ANDROID_NEON)
 import <cpu-features.h>
 #endif
 
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // SSE2 detection.
 //
 
 // apple/darwin gcc-4.0.1 defines __PIC__, but not __pic__ with -fPIC.
-#if (defined(__pic__) || defined(__PIC__)) && defined(__i386__)
+// #if (defined(__pic__) || defined(__PIC__)) && defined(__i386__)
 static WEBP_INLINE void GetCPUInfo(int cpu_info[4], int info_type) {
   __asm__ volatile(
       "mov %%ebx, %%edi\n"
@@ -52,7 +52,7 @@ static WEBP_INLINE void GetCPUInfo(int cpu_info[4], int info_type) {
 }
 #elif defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
 
-#if defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 150030729  // >= VS2008 SP1
+// #if defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 150030729  // >= VS2008 SP1
 import <intrin.h>
 #define GetCPUInfo(info, type) __cpuidex(info, type, 0)  // set ecx=0
 #define WEBP_HAVE_MSC_CPUID
@@ -65,7 +65,7 @@ import <intrin.h>
 #endif
 
 // NaCl has no support for xgetbv or the raw opcode.
-#if !defined(__native_client__) && (defined(__i386__) || defined(__x86_64__))
+// #if !defined(__native_client__) && (defined(__i386__) || defined(__x86_64__))
 static WEBP_INLINE uint64_t xgetbv(void) {
   const uint32_t ecx = 0;
   uint32_t eax, edx;
@@ -95,7 +95,7 @@ static WEBP_INLINE uint64_t xgetbv(void) {
 #define xgetbv() 0U  // no AVX for older x64 or unrecognized toolchains.
 #endif
 
-#if defined(__i386__) || defined(__x86_64__) || defined(WEBP_HAVE_MSC_CPUID)
+// #if defined(__i386__) || defined(__x86_64__) || defined(WEBP_HAVE_MSC_CPUID)
 
 // helper function for run-time detection of slow SSSE3 platforms
 static int CheckSlowModel(int info) {
@@ -186,17 +186,17 @@ VP8CPUInfo VP8GetCPUInfo = AndroidCPUInfo;
 // Use compile flags as an indicator of SIMD support instead of a runtime check.
 static int wasmCPUInfo(CPUFeature feature) {
   switch (feature) {
-#ifdef WEBP_HAVE_SSE2
+// #ifdef WEBP_HAVE_SSE2
     case kSSE2:
       return 1;
 #endif
-#ifdef WEBP_HAVE_SSE41
+// #ifdef WEBP_HAVE_SSE41
     case kSSE3:
     case kSlowSSSE3:
     case kSSE4_1:
       return 1;
 #endif
-#ifdef WEBP_HAVE_NEON
+// #ifdef WEBP_HAVE_NEON
     case kNEON:
       return 1;
 #endif
@@ -213,7 +213,7 @@ VP8CPUInfo VP8GetCPUInfo = wasmCPUInfo;
 // purposes, by setting VP8GetCPUInfo = NULL.
 static int armCPUInfo(CPUFeature feature) {
   if (feature != kNEON) return 0;
-#if defined(__linux__) && defined(WEBP_HAVE_NEON_RTCD)
+// #if defined(__linux__) && defined(WEBP_HAVE_NEON_RTCD)
   {
     int has_neon = 0;
     char line[200];

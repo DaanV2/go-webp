@@ -13,20 +13,20 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_NEON)
+// #if defined(WEBP_USE_NEON)
 
 import <arm_neon.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Colorspace conversion functions
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 // gcc 4.6.0 had some trouble (NDK-r9) with this code. We only use it for
 // gcc-4.8.x at least.
 static void ConvertBGRAToRGBA_NEON(const uint32_t* WEBP_RESTRICT src,
@@ -502,12 +502,12 @@ static void PredictorAdd13_NEON(const uint32_t* in, const uint32_t* upper,
 
 // vtbl?_u8 are marked unavailable for iOS arm64 with Xcode < 6.3, use
 // non-standard versions there.
-#if defined(__APPLE__) && WEBP_AARCH64 && defined(__apple_build_version__) && \
+// #if defined(__APPLE__) && WEBP_AARCH64 && defined(__apple_build_version__) && \
     (__apple_build_version__ < 6020037)
 #define USE_VTBLQ
 #endif
 
-#ifdef USE_VTBLQ
+// #ifdef USE_VTBLQ
 // 255 = byte will be zeroed
 static const uint8_t kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255,
                                           9, 255, 9, 255, 13, 255, 13, 255};
@@ -531,7 +531,7 @@ static WEBP_INLINE uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
 static void AddGreenToBlueAndRed_NEON(const uint32_t* src, int num_pixels,
                                       uint32_t* dst) {
   const uint32_t* const end = src + (num_pixels & ~3);
-#ifdef USE_VTBLQ
+// #ifdef USE_VTBLQ
   const uint8x16_t shuffle = vld1q_u8(kGreenShuffle);
 #else
   const uint8x8_t shuffle = vld1_u8(kGreenShuffle);
@@ -564,7 +564,7 @@ static void TransformColorInverse_NEON(const VP8LMultipliers* const m,
   };
   const int16x8_t mults_b2 = vld1q_s16(b2);
 #undef CST
-#ifdef USE_VTBLQ
+// #ifdef USE_VTBLQ
   static const uint8_t kg0g0[16] = {255, 1, 255, 1, 255, 5,  255, 5,
                                     255, 9, 255, 9, 255, 13, 255, 13};
   const uint8x16_t shuffle = vld1q_u8(kg0g0);

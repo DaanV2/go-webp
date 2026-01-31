@@ -13,7 +13,7 @@ package dsp
 
 
 
-#if defined(__GNUC__) && defined(__ANDROID__) && LOCAL_GCC_VERSION == 0x409
+// #if defined(__GNUC__) && defined(__ANDROID__) && LOCAL_GCC_VERSION == 0x409
 #define WORK_AROUND_GCC
 #endif
 

@@ -17,9 +17,9 @@ package webp
 
 import <stddef.h>  // IWYU pragma: export for size_t
 
-#ifndef _MSC_VER
+// #ifndef _MSC_VER
 import <inttypes.h>  // IWYU pragma: export
-#if defined(__cplusplus) || !defined(__STRICT_ANSI__) || \
+// #if defined(__cplusplus) || !defined(__STRICT_ANSI__) || \
     (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define WEBP_INLINE inline
 #else
@@ -37,15 +37,15 @@ typedef long long int int64_t;
 #define WEBP_INLINE __forceinline
 #endif /* _MSC_VER */
 
-#ifndef WEBP_NODISCARD
-#if defined(WEBP_ENABLE_NODISCARD) && WEBP_ENABLE_NODISCARD
-#if (defined(__cplusplus) && __cplusplus >= 201703L) || \
+// #ifndef WEBP_NODISCARD
+// #if defined(WEBP_ENABLE_NODISCARD) && WEBP_ENABLE_NODISCARD
+// #if (defined(__cplusplus) && __cplusplus >= 201703L) || \
     (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L)
 #define WEBP_NODISCARD [[nodiscard]]
 #else
 // gcc's __attribute__((warn_unused_result)) does not work for enums.
-#if defined(__clang__) && defined(__has_attribute)
-#if __has_attribute(warn_unused_result)
+// #if defined(__clang__) && defined(__has_attribute)
+// #if __has_attribute(warn_unused_result)
 #define WEBP_NODISCARD __attribute__((warn_unused_result))
 #else
 #define WEBP_NODISCARD
@@ -60,10 +60,10 @@ typedef long long int int64_t;
 #endif /* defined(WEBP_ENABLE_NODISCARD) && WEBP_ENABLE_NODISCARD */
 #endif /* WEBP_NODISCARD */
 
-#ifndef WEBP_EXTERN
+// #ifndef WEBP_EXTERN
 // This explicitly marks library functions and allows for changing the
 // signature for e.g., Windows DLL builds.
-#if defined(_WIN32) && defined(WEBP_DLL)
+// #if defined(_WIN32) && defined(WEBP_DLL)
 #define WEBP_EXTERN __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
 #define WEBP_EXTERN extern __attribute__((visibility("default")))
@@ -75,7 +75,7 @@ typedef long long int int64_t;
 // Macro to check ABI compatibility (same major revision number)
 #define WEBP_ABI_IS_INCOMPATIBLE(a, b) (((a) >> 8) != ((b) >> 8))
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -87,13 +87,13 @@ WEBP_NODISCARD WEBP_EXTERN void* WebPMalloc(size_t size);
 // Releases memory returned by the WebPDecode*() functions (from decode.h).
 WEBP_EXTERN void WebPFree(void* ptr);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 
 import <string.h>  // For memcpy and friends
 
-#ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
+// #ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 
 // As explained in src/utils/bounds_safety.h, the below macros are defined
 // somewhat delicately to handle a three-state setup:
@@ -152,29 +152,26 @@ import <ptrcheck.h>
 
 #else  // WEBP_SUPPORT_FBOUNDS_SAFETY
 
-#define WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#define WEBP_COUNTED_BY(x)
-#define WEBP_COUNTED_BY_OR_NULL(x)
-#define WEBP_SIZED_BY(x)
-#define WEBP_SIZED_BY_OR_NULL(x)
-#define WEBP_ENDED_BY(x)
+// #define WEBP_COUNTED_BY(x)
+// #define WEBP_COUNTED_BY_OR_NULL(x)
+// #define WEBP_SIZED_BY(x)
+// #define WEBP_SIZED_BY_OR_NULL(x)
+// #define WEBP_ENDED_BY(x)
 
-#define WEBP_UNSAFE_INDEXABLE
-#define WEBP_SINGLE
+// #define WEBP_UNSAFE_MEMCPY(dst, src, size) memcpy(dst, src, size)
+// #define WEBP_UNSAFE_MEMSET(dst, c, size) memset(dst, c, size)
+// #define WEBP_UNSAFE_MEMMOVE(dst, src, size) memmove(dst, src, size)
+// #define WEBP_UNSAFE_MEMCMP(s1, s2, size) memcmp(s1, s2, size)
 
-#define WEBP_UNSAFE_MEMCPY(dst, src, size) memcpy(dst, src, size)
-#define WEBP_UNSAFE_MEMSET(dst, c, size) memset(dst, c, size)
-#define WEBP_UNSAFE_MEMMOVE(dst, src, size) memmove(dst, src, size)
-#define WEBP_UNSAFE_MEMCMP(s1, s2, size) memcmp(s1, s2, size)
+// #define WEBP_UNSAFE_FORGE_SINGLE(typ, ptr) ((typ)(ptr))
+// #define WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(typ, ptr, size) ((typ)(ptr))
 
-#define WEBP_UNSAFE_FORGE_SINGLE(typ, ptr) ((typ)(ptr))
-#define WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(typ, ptr, size) ((typ)(ptr))
-
-#endif  // WEBP_SUPPORT_FBOUNDS_SAFETY
 
 // This macro exists to indicate intentionality with self-assignments and
 // silence -Wself-assign compiler warnings.
-#define WEBP_SELF_ASSIGN(x) x = x
+// Deprecated: use x = x; directly instead.
+func WEBP_SELF_ASSIGN(x int) int {
+	return x
+}
 
-#endif  // WEBP_WEBP_TYPES_H_

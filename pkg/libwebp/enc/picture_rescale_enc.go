@@ -16,14 +16,14 @@ package enc
 import <assert.h>
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if !defined(WEBP_REDUCE_SIZE)
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+// #if !defined(WEBP_REDUCE_SIZE)
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
 #define HALVE(x) (((x) + 1) >> 1)
@@ -60,7 +60,7 @@ static int AdjustAndCheckRectangle(const WebPPicture* const pic,
   return 1;
 }
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 int WebPPictureCopy(const WebPPicture* src, WebPPicture* dst) {
   if (src == NULL || dst == NULL) return 0;
   if (src == dst) return 1;
@@ -125,7 +125,7 @@ int WebPPictureView(const WebPPicture* src, int left, int top, int width,
   return 1;
 }
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 //------------------------------------------------------------------------------
 // Picture cropping
 

@@ -16,10 +16,10 @@ package webp
 
 
 
-import "./mux_types.h"
-import "./types.h"
+import "."
+import "."
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -589,7 +589,7 @@ WEBP_EXTERN WebPMuxError WebPAnimEncoderDeleteChunk(WebPAnimEncoder* enc,
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

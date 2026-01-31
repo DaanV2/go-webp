@@ -13,17 +13,17 @@
 
 package enc
 
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if !(defined(WEBP_DISABLE_STATS) || defined(WEBP_REDUCE_SIZE))
+// #if !(defined(WEBP_DISABLE_STATS) || defined(WEBP_REDUCE_SIZE))
 
 import <math.h>
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 typedef double (*AccumulateFunc)(const uint8_t* src, int src_stride,
                                  const uint8_t* ref, int ref_stride, int w,
@@ -169,7 +169,7 @@ int WebPPlaneDistortion(const uint8_t* src, size_t src_stride,
   return 1;
 }
 
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
 const BLUE_OFFSET = 3  // uint32_t 0x000000ff is 0x00,00,00,ff in memory
 #else
 const BLUE_OFFSET = 0  // uint32_t 0x000000ff is 0xff,00,00,00 in memory

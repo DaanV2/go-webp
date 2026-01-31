@@ -17,9 +17,9 @@ package webp
 
 import <string.h>  // memset()
 
-import "./types.h"
+import "."
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -94,7 +94,7 @@ WEBP_NODISCARD static WEBP_INLINE int WebPDataCopy(const WebPData* src,
   return 1;
 }
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

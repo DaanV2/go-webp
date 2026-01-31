@@ -13,21 +13,21 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_SSE41)
+// #if defined(WEBP_USE_SSE41)
 import <assert.h>
 import <smmintrin.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#ifdef FANCY_UPSAMPLING
+// #ifdef FANCY_UPSAMPLING
 
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 
 // We compute (9*a + 3*b + 3*c + d + 8) / 16 as follows
 // u = (9*a + 3*b + 3*c + d + 8) / 16
@@ -208,7 +208,7 @@ extern WebPUpsampleLinePairFunc WebPUpsamplers[/* MODE_LAST */];
 extern void WebPInitUpsamplersSSE41(void);
 
 WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersSSE41(void) {
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
   WebPUpsamplers[MODE_RGB] = UpsampleRgbLinePair_SSE41;
   WebPUpsamplers[MODE_BGR] = UpsampleBgrLinePair_SSE41;
 #endif  // WEBP_REDUCE_CSP
@@ -238,13 +238,13 @@ extern void WebPInitYUV444ConvertersSSE41(void);
     }                                                                        \
   }
 
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 YUV444_FUNC(Yuv444ToRgb_SSE41, VP8YuvToRgb32_SSE41, WebPYuv444ToRgb_C, 3)
 YUV444_FUNC(Yuv444ToBgr_SSE41, VP8YuvToBgr32_SSE41, WebPYuv444ToBgr_C, 3)
 #endif  // WEBP_REDUCE_CSP
 
 WEBP_TSAN_IGNORE_FUNCTION void WebPInitYUV444ConvertersSSE41(void) {
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
   WebPYUV444Converters[MODE_RGB] = Yuv444ToRgb_SSE41;
   WebPYUV444Converters[MODE_BGR] = Yuv444ToBgr_SSE41;
 #endif  // WEBP_REDUCE_CSP
@@ -256,6 +256,6 @@ WEBP_DSP_INIT_STUB(WebPInitYUV444ConvertersSSE41)
 
 #endif  // WEBP_USE_SSE41
 
-#if !(defined(FANCY_UPSAMPLING) && defined(WEBP_USE_SSE41))
+// #if !(defined(FANCY_UPSAMPLING) && defined(WEBP_USE_SSE41))
 WEBP_DSP_INIT_STUB(WebPInitUpsamplersSSE41)
 #endif

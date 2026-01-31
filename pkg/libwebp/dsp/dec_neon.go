@@ -14,17 +14,17 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_NEON)
+// #if defined(WEBP_USE_NEON)
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
 //------------------------------------------------------------------------------
 // NxM Loading functions
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 
 // This intrinsics version makes gcc-4.6.3 crash during Load4x??() compilation
 // (register alloc, probably). The variants somewhat mitigate the problem, but
@@ -159,7 +159,7 @@ static WEBP_INLINE void Load8x8x2_NEON(
   *q3 = vcombine_u8(vld1_u8(u + 3 * stride), vld1_u8(v + 3 * stride));
 }
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 
 #define LOAD_UV_8(ROW) \
   vcombine_u8(vld1_u8(u - 4 + (ROW) * stride), vld1_u8(v - 4 + (ROW) * stride))
@@ -246,7 +246,7 @@ static WEBP_INLINE void Store2x16_NEON(const uint8x16_t p0, const uint8x16_t q0,
   Store2x8_NEON(hi, dst - 1 + 8 * stride, stride);
 }
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 static WEBP_INLINE void Store4x8_NEON(const uint8x8x4_t v, uint8_t* const dst,
                                       int stride) {
   vst4_lane_u8(dst + 0 * stride, v, 0);
@@ -305,7 +305,7 @@ static WEBP_INLINE void Store8x4x2_NEON(const uint8x16_t p1,
   Store8x2x2_NEON(q0, q1, u + stride, v + stride, stride);
 }
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 
 #define STORE6_LANE(DST, VAL0, VAL1, LANE)   \
   do {                                       \
@@ -475,7 +475,7 @@ static void ApplyFilter2NoFlip_NEON(const int8x16_t p0s, const int8x16_t q0s,
   *oq0 = vqsubq_s8(q0s, delta4);
 }
 
-#if defined(WEBP_USE_INTRINSICS)
+// #if defined(WEBP_USE_INTRINSICS)
 
 static void ApplyFilter2_NEON(const int8x16_t p0s, const int8x16_t q0s,
                               const int8x16_t delta, uint8x16_t* const op0,
@@ -888,7 +888,7 @@ static void VFilter16i_NEON(uint8_t* p, int stride, int thresh, int ithresh,
   }
 }
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 static void HFilter16i_NEON(uint8_t* p, int stride, int thresh, int ithresh,
                             int hev_thresh) {
   uint32_t k;
@@ -945,7 +945,7 @@ static void VFilter8i_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
   }
 }
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 static void HFilter8_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                           int stride, int thresh, int ithresh, int hev_thresh) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
@@ -1002,7 +1002,7 @@ static const int16_t kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int16_t kC2 =
     WEBP_TRANSFORM_AC3_C2 / 2;  // half of kC2, actually. See comment above.
 
-#if defined(WEBP_USE_INTRINSICS)
+// #if defined(WEBP_USE_INTRINSICS)
 static WEBP_INLINE void Transpose8x2_NEON(const int16x8_t in0,
                                           const int16x8_t in1,
                                           int16x8x2_t* const out) {
@@ -1434,7 +1434,7 @@ static WEBP_INLINE void DC8_NEON(uint8_t* dst, int do_top, int do_left) {
 
   if (do_top) {
     const uint8x8_t A = vld1_u8(dst - BPS);  // top row
-#if WEBP_AARCH64
+// #if WEBP_AARCH64
     const uint16_t p2 = vaddlv_u8(A);
     sum_top = vdupq_n_u16(p2);
 #else
@@ -1517,7 +1517,7 @@ static WEBP_INLINE void DC16_NEON(uint8_t* dst, int do_top, int do_left) {
 
   if (do_top) {
     const uint8x16_t A = vld1q_u8(dst - BPS);  // top row
-#if WEBP_AARCH64
+// #if WEBP_AARCH64
     const uint16_t p3 = vaddlvq_u8(A);
     sum_top = vdupq_n_u16(p3);
 #else
@@ -1626,12 +1626,12 @@ WEBP_TSAN_IGNORE_FUNCTION void VP8DspInitNEON(void) {
   VP8VFilter16 = VFilter16_NEON;
   VP8VFilter16i = VFilter16i_NEON;
   VP8HFilter16 = HFilter16_NEON;
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
   VP8HFilter16i = HFilter16i_NEON;
 #endif
   VP8VFilter8 = VFilter8_NEON;
   VP8VFilter8i = VFilter8i_NEON;
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
   VP8HFilter8 = HFilter8_NEON;
   VP8HFilter8i = HFilter8i_NEON;
 #endif

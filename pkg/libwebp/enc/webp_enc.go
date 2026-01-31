@@ -18,18 +18,18 @@ import <math.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8li_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // #define PRINT_MEMORY_INFO
 
-#ifdef PRINT_MEMORY_INFO
+// #ifdef PRINT_MEMORY_INFO
 import <stdio.h>
 #endif
 
@@ -119,7 +119,7 @@ static void MapConfigToTools(VP8Encoder* const enc) {
 
   enc->do_search = (config->target_size > 0 || config->target_PSNR > 0);
   if (!config->low_memory) {
-#if !defined(DISABLE_TOKEN_BUFFER)
+// #if !defined(DISABLE_TOKEN_BUFFER)
     enc->use_tokens = (enc->rd_opt_level >= RD_OPT_BASIC);  // need rd stats
 #endif
     if (enc->use_tokens) {
@@ -179,7 +179,7 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
                         + nz_size               // coeff context bits
                         + lf_stats_size;        // autofilter stats
 
-#ifdef PRINT_MEMORY_INFO
+// #ifdef PRINT_MEMORY_INFO
   printf("===================================\n");
   printf(
       "Memory used:\n"
@@ -270,7 +270,7 @@ static int DeleteVP8Encoder(VP8Encoder* enc) {
 
 //------------------------------------------------------------------------------
 
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
 static double GetPSNR(uint64_t err, uint64_t size) {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
@@ -288,7 +288,7 @@ static void FinalizePSNR(const VP8Encoder* const enc) {
 #endif  // !defined(WEBP_DISABLE_STATS)
 
 static void StoreStats(VP8Encoder* const enc) {
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
   WebPAuxStats* const stats = enc->pic->stats;
   if (stats != NULL) {
     int i, s;

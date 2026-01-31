@@ -14,16 +14,16 @@ package utils
 // Author: Skal (pascal.massimino@gmail.com)
 //         Vikas Arora (vikaas.arora@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>  // for memcpy()
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/endian_inl_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -295,7 +295,7 @@ void VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
   *used -= VP8L_WRITER_BITS;
 }
 
-#if VP8L_WRITER_BITS == 16
+// #if VP8L_WRITER_BITS == 16
 void VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits) {
   vp8l_atype_t lbits = bw->bits;
   int used = bw->used;

@@ -16,11 +16,11 @@ package dsp
 import <assert.h>
 import <stdlib.h>  // for abs()
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 
 //------------------------------------------------------------------------------
 // SSIM / PSNR
@@ -115,7 +115,7 @@ static double SSIMGet_C(const uint8_t* src1, int stride1, const uint8_t* src2,
 
 //------------------------------------------------------------------------------
 
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
 static uint32_t AccumulateSSE_C(const uint8_t* src1, const uint8_t* src2,
                                 int len) {
   int i;
@@ -131,11 +131,11 @@ static uint32_t AccumulateSSE_C(const uint8_t* src1, const uint8_t* src2,
 
 //------------------------------------------------------------------------------
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 VP8SSIMGetFunc VP8SSIMGet;
 VP8SSIMGetClippedFunc VP8SSIMGetClipped;
 #endif
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
 VP8AccumulateSSEFunc VP8AccumulateSSE;
 #endif
 
@@ -143,17 +143,17 @@ extern VP8CPUInfo VP8GetCPUInfo;
 extern void VP8SSIMDspInitSSE2(void);
 
 WEBP_DSP_INIT_FUNC(VP8SSIMDspInit) {
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
   VP8SSIMGetClipped = SSIMGetClipped_C;
   VP8SSIMGet = SSIMGet_C;
 #endif
 
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
   VP8AccumulateSSE = AccumulateSSE_C;
 #endif
 
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8SSIMDspInitSSE2();
     }

@@ -17,9 +17,9 @@ package webp
 
 import <stddef.h>
 
-import "./types.h"
+import "."
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -562,7 +562,7 @@ WEBP_NODISCARD WEBP_EXTERN int WebPEncode(const WebPConfig* config,
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

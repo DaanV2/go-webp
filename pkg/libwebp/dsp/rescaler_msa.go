@@ -13,14 +13,14 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MSA) && !defined(WEBP_REDUCE_SIZE)
+// #if defined(WEBP_USE_MSA) && !defined(WEBP_REDUCE_SIZE)
 
 import <assert.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/msa_macro.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 #define ROUNDER (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
@@ -268,7 +268,7 @@ static void RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
   }
 }
 
-#if 0   // disabled for now. TODO(skal): make match the C-code
+// #if 0   // disabled for now. TODO(skal): make match the C-code
 static WEBP_INLINE void ExportRowShrink_0(
     const uint32_t* WEBP_RESTRICT frow, uint32_t* WEBP_RESTRICT irow,
     uint8_t* WEBP_RESTRICT dst, int length, const uint32_t yscale,

@@ -14,13 +14,13 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
 
 import <assert.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
 // clang-format off
 #define YUV_TO_RGB(Y, U, V, R, G, B) do {                                      \
@@ -51,7 +51,7 @@ import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
   } while (0)
 // clang-format on
 
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 static WEBP_INLINE void YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
@@ -72,7 +72,7 @@ static WEBP_INLINE void YuvToRgb565(int y, int u, int v, uint8_t* const rgb) {
   {
     const int rg = (r & 0xf8) | (g >> 5);
     const int gb = ((g << 3) & 0xe0) | (b >> 3);
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
     rgb[0] = gb;
     rgb[1] = rg;
 #else
@@ -88,7 +88,7 @@ static WEBP_INLINE void YuvToRgba4444(int y, int u, int v,
   {
     const int rg = (r & 0xf0) | (g >> 4);
     const int ba = (b & 0xf0) | 0x0f;  // overwrite the lower 4 bits
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
     argb[0] = ba;
     argb[1] = rg;
 #else
@@ -102,7 +102,7 @@ static WEBP_INLINE void YuvToRgba4444(int y, int u, int v,
 //-----------------------------------------------------------------------------
 // Alpha handling variants
 
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 static WEBP_INLINE void YuvToArgb(uint8_t y, uint8_t u, uint8_t v,
                                   uint8_t* const argb) {
   int r, g, b;
@@ -135,7 +135,7 @@ static WEBP_INLINE void YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
 //------------------------------------------------------------------------------
 // Fancy upsampler
 
-#ifdef FANCY_UPSAMPLING
+// #ifdef FANCY_UPSAMPLING
 
 // Given samples laid out in a square as:
 //  [a b]
@@ -212,7 +212,7 @@ static WEBP_INLINE void YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
 // All variants implemented.
 UPSAMPLE_FUNC(UpsampleRgbaLinePair, YuvToRgba, 4)
 UPSAMPLE_FUNC(UpsampleBgraLinePair, YuvToBgra, 4)
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 UPSAMPLE_FUNC(UpsampleRgbLinePair, YuvToRgb, 3)
 UPSAMPLE_FUNC(UpsampleBgrLinePair, YuvToBgr, 3)
 UPSAMPLE_FUNC(UpsampleArgbLinePair, YuvToArgb, 4)
@@ -233,7 +233,7 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersMIPSdspR2(void) {
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair;
   WebPUpsamplers[MODE_bgrA] = UpsampleBgraLinePair;
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
   WebPUpsamplers[MODE_RGB] = UpsampleRgbLinePair;
   WebPUpsamplers[MODE_BGR] = UpsampleBgrLinePair;
   WebPUpsamplers[MODE_ARGB] = UpsampleArgbLinePair;
@@ -259,7 +259,7 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersMIPSdspR2(void) {
 
 YUV444_FUNC(Yuv444ToRgba, YuvToRgba, 4)
 YUV444_FUNC(Yuv444ToBgra, YuvToBgra, 4)
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
 YUV444_FUNC(Yuv444ToRgb, YuvToRgb, 3)
 YUV444_FUNC(Yuv444ToBgr, YuvToBgr, 3)
 YUV444_FUNC(Yuv444ToArgb, YuvToArgb, 4)
@@ -279,7 +279,7 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitYUV444ConvertersMIPSdspR2(void) {
   WebPYUV444Converters[MODE_BGRA] = Yuv444ToBgra;
   WebPYUV444Converters[MODE_rgbA] = Yuv444ToRgba;
   WebPYUV444Converters[MODE_bgrA] = Yuv444ToBgra;
-#if !defined(WEBP_REDUCE_CSP)
+// #if !defined(WEBP_REDUCE_CSP)
   WebPYUV444Converters[MODE_RGB] = Yuv444ToRgb;
   WebPYUV444Converters[MODE_BGR] = Yuv444ToBgr;
   WebPYUV444Converters[MODE_ARGB] = Yuv444ToArgb;
@@ -296,6 +296,6 @@ WEBP_DSP_INIT_STUB(WebPInitYUV444ConvertersMIPSdspR2)
 
 #endif  // WEBP_USE_MIPS_DSP_R2
 
-#if !(defined(FANCY_UPSAMPLING) && defined(WEBP_USE_MIPS_DSP_R2))
+// #if !(defined(FANCY_UPSAMPLING) && defined(WEBP_USE_MIPS_DSP_R2))
 WEBP_DSP_INIT_STUB(WebPInitUpsamplersMIPSdspR2)
 #endif

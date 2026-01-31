@@ -17,11 +17,11 @@ package webp
 
 import <stddef.h>
 
-import "./types.h"
+import "."
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -538,7 +538,7 @@ WEBP_EXTERN VP8StatusCode WebPDecode(const uint8_t* WEBP_COUNTED_BY(data_size)
                                      size_t data_size,
                                      WebPDecoderConfig* config);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

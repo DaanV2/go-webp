@@ -13,20 +13,20 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_AVX2)
+// #if defined(WEBP_USE_AVX2)
 import <assert.h>
 import <emmintrin.h>
 import <immintrin.h>
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
@@ -279,7 +279,7 @@ static void AddVectorEq_AVX2(const uint32_t* WEBP_RESTRICT a,
 //------------------------------------------------------------------------------
 // Entropy
 
-#if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
+// #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
 
 static uint64_t CombinedShannonEntropy_AVX2(const uint32_t X[256],
                                             const uint32_t Y[256]) {

@@ -18,12 +18,12 @@ import <math.h>
 import <stdlib.h>  // for abs()
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/quant.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 #define DO_TRELLIS_I4 1
 #define DO_TRELLIS_I16 1  // not a huge gain, but ok at low bitrate.
@@ -53,7 +53,7 @@ const RD_DISTO_MULT = 256  // distortion multiplier (equivalent of lambda)
 
 //------------------------------------------------------------------------------
 
-#if defined(DEBUG_BLOCK)
+// #if defined(DEBUG_BLOCK)
 
 import <stdio.h>
 import <stdlib.h>
@@ -492,7 +492,7 @@ static const uint16_t kWeightY[16] = {38, 32, 20, 9, 32, 28, 17, 7,
                                       20, 17, 10, 4, 9,  7,  4,  2};
 
 static const uint16_t kWeightTrellis[16] = {
-#if USE_TDISTO == 0
+// #if USE_TDISTO == 0
     16, 16, 16, 16, 16, 16, 16, 16, 16,
     16, 16, 16, 16, 16, 16, 16
 #else

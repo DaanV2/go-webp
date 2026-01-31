@@ -13,13 +13,13 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MIPS_DSP_R2) && !defined(WEBP_REDUCE_SIZE)
+// #if defined(WEBP_USE_MIPS_DSP_R2) && !defined(WEBP_REDUCE_SIZE)
 
 import <assert.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 #define ROUNDER (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
 //------------------------------------------------------------------------------
 // Row export
 
-#if 0   // disabled for now. TODO(skal): make match the C-code
+// #if 0   // disabled for now. TODO(skal): make match the C-code
 static void ExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
   int i;
   const int x_out_max = wrk->dst_width * wrk->num_channels;

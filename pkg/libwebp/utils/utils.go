@@ -13,16 +13,16 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>  // for memcpy()
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/palette.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -56,7 +56,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 // Checked memory allocation
 
-#if defined(PRINT_MEM_INFO)
+// #if defined(PRINT_MEM_INFO)
 
 import <stdio.h>
 
@@ -97,7 +97,7 @@ static void PrintMemInfo(void) {
 
 static void Increment(int* const v) {
   if (!exit_registered) {
-#if defined(MALLOC_FAIL_AT)
+// #if defined(MALLOC_FAIL_AT)
     {
       const char* const malloc_fail_at_str = getenv("MALLOC_FAIL_AT");
       if (malloc_fail_at_str != NULL) {
@@ -105,10 +105,10 @@ static void Increment(int* const v) {
       }
     }
 #endif
-#if defined(MALLOC_LIMIT)
+// #if defined(MALLOC_LIMIT)
     {
       const char* const malloc_limit_str = getenv("MALLOC_LIMIT");
-#if MALLOC_LIMIT > 1
+// #if MALLOC_LIMIT > 1
       mem_limit = (size_t)MALLOC_LIMIT;
 #endif
       if (malloc_limit_str != NULL) {
@@ -134,8 +134,8 @@ static void AddMem(void* ptr, size_t size) {
     b->size = size;
     total_mem += size;
     total_mem_allocated += size;
-#if defined(PRINT_MEM_TRAFFIC)
-#if defined(MALLOC_FAIL_AT)
+// #if defined(PRINT_MEM_TRAFFIC)
+// #if defined(MALLOC_FAIL_AT)
     fprintf(stderr, "fail-count: %5d [mem=%u]\n",
             num_malloc_calls + num_calloc_calls, (uint32_t)total_mem);
 #else
@@ -159,7 +159,7 @@ static void SubMem(void* ptr) {
       MemBlock* const block = *b;
       *b = block->next;
       total_mem -= block->size;
-#if defined(PRINT_MEM_TRAFFIC)
+// #if defined(PRINT_MEM_TRAFFIC)
       fprintf(stderr, "Mem: %u (-%u)\n", (uint32_t)total_mem,
               (uint32_t)block->size);
 #endif
@@ -186,12 +186,12 @@ static int CheckSizeArgumentsOverflow(uint64_t nmemb, size_t size) {
   if (nmemb == 0) return 1;
   if ((uint64_t)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb) return 0;
   if (!CheckSizeOverflow(total_size)) return 0;
-#if defined(PRINT_MEM_INFO) && defined(MALLOC_FAIL_AT)
+// #if defined(PRINT_MEM_INFO) && defined(MALLOC_FAIL_AT)
   if (countdown_to_fail > 0 && --countdown_to_fail == 0) {
     return 0;  // fake fail!
   }
 #endif
-#if defined(PRINT_MEM_INFO) && defined(MALLOC_LIMIT)
+// #if defined(PRINT_MEM_INFO) && defined(MALLOC_LIMIT)
   if (mem_limit > 0) {
     const uint64_t new_total_mem = (uint64_t)total_mem + total_size;
     if (!CheckSizeOverflow(new_total_mem) || new_total_mem > mem_limit) {
@@ -282,7 +282,7 @@ int WebPGetColorPalette(
 
 //------------------------------------------------------------------------------
 
-#if defined(WEBP_NEED_LOG_TABLE_8BIT)
+// #if defined(WEBP_NEED_LOG_TABLE_8BIT)
 const uint8_t WebPLogTable8bit[256] = {  // 31 ^ clz(i)
     0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,

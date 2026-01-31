@@ -15,19 +15,19 @@ package dsp
 
 
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -42,7 +42,7 @@ const BPS = 32  // this is the common stride for enc/dec
 // is declared. This may allow for improved optimizations due to the lack of
 // pointer aliasing. See also:
 // https://en.cppreference.com/w/c/language/restrict
-#if defined(__GNUC__)
+// #if defined(__GNUC__)
 #define WEBP_RESTRICT __restrict__
 #elif defined(_MSC_VER)
 #define WEBP_RESTRICT __restrict
@@ -190,7 +190,7 @@ typedef double (*VP8SSIMGetClippedFunc)(const uint8_t* src1, int stride1,
                                         int xo, int yo,  // center position
                                         int W, int H);   // plane dimension
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 // This version is called with the guarantee that you can load 8 bytes and
 // 8 rows at offset src1 and src2
 typedef double (*VP8SSIMGetFunc)(const uint8_t* src1, int stride1,
@@ -200,7 +200,7 @@ extern VP8SSIMGetFunc VP8SSIMGet;                // unclipped / unchecked
 extern VP8SSIMGetClippedFunc VP8SSIMGetClipped;  // with clipping
 #endif
 
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
 typedef uint32_t (*VP8AccumulateSSEFunc)(const uint8_t* src1,
                                          const uint8_t* src2, int len);
 extern VP8AccumulateSSEFunc VP8AccumulateSSE;
@@ -294,7 +294,7 @@ typedef void (*WebPUpsampleLinePairFunc)(
     const uint8_t* WEBP_RESTRICT cur_u, const uint8_t* WEBP_RESTRICT cur_v,
     uint8_t* WEBP_RESTRICT top_dst, uint8_t* WEBP_RESTRICT bottom_dst, int len);
 
-#ifdef FANCY_UPSAMPLING
+// #ifdef FANCY_UPSAMPLING
 
 // Fancy upsampling functions to convert YUV to RGB(A) modes
 extern WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
@@ -478,7 +478,7 @@ void WebPMultRow_C(uint8_t* WEBP_RESTRICT const ptr,
                    int inverse);
 void WebPMultARGBRow_C(uint32_t* const ptr, int width, int inverse);
 
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
 // ARGB packing function: a/r/g/b input is rgba or bgra order.
 extern void (*WebPPackARGB)(const uint8_t* WEBP_RESTRICT a,
                             const uint8_t* WEBP_RESTRICT r,
@@ -539,7 +539,7 @@ extern WebPUnfilterFunc WebPUnfilters[WEBP_FILTER_LAST];
 // To be called first before using the above.
 void VP8FiltersInit(void);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

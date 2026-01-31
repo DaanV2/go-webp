@@ -13,24 +13,24 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 import <assert.h>
 import <string.h>  // for memset()
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef WEBP_USE_THREAD
+// #ifdef WEBP_USE_THREAD
 
-#if defined(_WIN32)
+// #if defined(_WIN32)
 
 import <windows.h>
 typedef HANDLE pthread_t;
 
-#if _WIN32_WINNT < 0x0600
+// #if _WIN32_WINNT < 0x0600
 #error _WIN32_WINNT must target Windows Vista / Server 2008 or newer.
 #endif
 typedef SRWLOCK pthread_mutex_t;
@@ -40,7 +40,7 @@ typedef CONDITION_VARIABLE pthread_cond_t;
 #define WINAPI_FAMILY_PARTITION(x) x
 #endif
 
-#if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+// #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 #define USE_CREATE_THREAD
 #endif
 
@@ -56,7 +56,7 @@ typedef struct {
   pthread_t thread;
 } WebPWorkerImpl;
 
-#if defined(_WIN32)
+// #if defined(_WIN32)
 
 //------------------------------------------------------------------------------
 // simplistic pthread emulation layer
@@ -70,7 +70,7 @@ import <process.h>
 static int pthread_create(pthread_t* const thread, const void* attr,
                           unsigned int(__stdcall* start)(void*), void* arg) {
   (void)attr;
-#ifdef USE_CREATE_THREAD
+// #ifdef USE_CREATE_THREAD
   *thread = CreateThread(/*lpThreadAttributes=*/NULL,
                          /*dwStackSize=*/0, start, arg, /*dwStackSize=*/0,
                          /*lpThreadId=*/NULL);
@@ -208,7 +208,7 @@ static void Init(WebPWorker* const worker) {
 }
 
 static int Sync(WebPWorker* const worker) {
-#ifdef WEBP_USE_THREAD
+// #ifdef WEBP_USE_THREAD
   ChangeState(worker, OK);
 #endif
   assert(worker->status <= OK);
@@ -219,7 +219,7 @@ static int Reset(WebPWorker* const worker) {
   int ok = 1;
   worker->had_error = 0;
   if (worker->status < OK) {
-#ifdef WEBP_USE_THREAD
+// #ifdef WEBP_USE_THREAD
     WebPWorkerImpl* const impl =
         (WebPWorkerImpl*)WebPSafeCalloc(1, sizeof(WebPWorkerImpl));
     worker->impl = (void*)impl;
@@ -262,7 +262,7 @@ static void Execute(WebPWorker* const worker) {
 }
 
 static void Launch(WebPWorker* const worker) {
-#ifdef WEBP_USE_THREAD
+// #ifdef WEBP_USE_THREAD
   ChangeState(worker, WORK);
 #else
   Execute(worker);
@@ -270,7 +270,7 @@ static void Launch(WebPWorker* const worker) {
 }
 
 static void End(WebPWorker* const worker) {
-#ifdef WEBP_USE_THREAD
+// #ifdef WEBP_USE_THREAD
   if (worker->impl != NULL) {
     WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker->impl;
     ChangeState(worker, NOT_OK);

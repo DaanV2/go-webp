@@ -17,14 +17,14 @@ import <assert.h>
 import <math.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"  // RIFF constants
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"  // RIFF constants
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 const SEGMENT_VISU = 0
 const DEBUG_SEARCH = 0  // useful to track search convergence
@@ -209,7 +209,7 @@ static void SetSegmentProbas(VP8Encoder* const enc) {
     const VP8MBInfo* const mb = &enc->mb_info[n];
     ++p[mb->segment];
   }
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
   if (enc->pic->stats != NULL) {
     for (n = 0; n < NUM_MB_SEGMENTS; ++n) {
       enc->pic->stats->segment_size[n] = p[n];
@@ -412,7 +412,7 @@ static void RecordResiduals(VP8EncIterator* const it,
 //------------------------------------------------------------------------------
 // Token buffer
 
-#if !defined(DISABLE_TOKEN_BUFFER)
+// #if !defined(DISABLE_TOKEN_BUFFER)
 
 static int RecordTokens(VP8EncIterator* const it, const VP8ModeScore* const rd,
                         VP8TBuffer* const tokens) {
@@ -461,9 +461,9 @@ static int RecordTokens(VP8EncIterator* const it, const VP8ModeScore* const rd,
 //------------------------------------------------------------------------------
 // ExtraInfo map / Debug function
 
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
 
-#if SEGMENT_VISU
+// #if SEGMENT_VISU
 static void SetBlock(uint8_t* p, int value, int size) {
   int y;
   for (y = 0; y < size; ++y) {
@@ -535,7 +535,7 @@ static void StoreSideInfo(const VP8EncIterator* const it) {
         break;
     }
   }
-#if SEGMENT_VISU  // visualize segments and prediction modes
+// #if SEGMENT_VISU  // visualize segments and prediction modes
   SetBlock(it->yuv_out + Y_OFF_ENC, mb->segment * 64, 16);
   SetBlock(it->yuv_out + U_OFF_ENC, it->preds[0] * 64, 8);
   SetBlock(it->yuv_out + V_OFF_ENC, mb->uv_mode * 64, 8);
@@ -658,7 +658,7 @@ static int StatLoop(VP8Encoder* const enc) {
     const uint64_t size_p0 =
         OneStatPass(enc, rd_opt, nb_mbs, percent_per_pass, &stats);
     if (size_p0 == 0) return 0;
-#if (DEBUG_SEARCH > 0)
+// #if (DEBUG_SEARCH > 0)
     printf("#%d value:%.1lf -> %.1lf   q:%.2f -> %.2f\n", num_pass_left,
            stats.last_value, stats.value, stats.last_q, stats.q);
 #endif
@@ -719,7 +719,7 @@ static int PostLoopFinalize(VP8EncIterator* const it, int ok) {
   }
 
   if (ok) {  // All good. Finish up.
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
     if (enc->pic->stats != NULL) {  // finalize byte counters...
       int i, s;
       for (i = 0; i <= 2; ++i) {
@@ -790,7 +790,7 @@ int VP8EncLoop(VP8Encoder* const enc) {
 //------------------------------------------------------------------------------
 // Single pass using Token Buffer.
 
-#if !defined(DISABLE_TOKEN_BUFFER)
+// #if !defined(DISABLE_TOKEN_BUFFER)
 
 const MIN_COUNT = 96  // minimum number of macroblocks before updating stats
 
@@ -873,7 +873,7 @@ int VP8EncTokenLoop(VP8Encoder* const enc) {
       stats.value = GetPSNR(distortion, pixel_count);
     }
 
-#if (DEBUG_SEARCH > 0)
+// #if (DEBUG_SEARCH > 0)
     printf(
         "#%2d metric:%.1lf -> %.1lf   last_q=%.2lf q=%.2lf dq=%.2lf "
         " range:[%.1f, %.1f]\n",

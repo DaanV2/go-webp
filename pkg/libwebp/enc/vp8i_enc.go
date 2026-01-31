@@ -17,16 +17,16 @@ package enc
 
 import <string.h>  // for memcpy()
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -238,7 +238,7 @@ typedef struct {
   VP8BitWriter* bw;   // current bit-writer
   uint8_t* preds;     // intra mode predictors (4x4 blocks)
   uint32_t* nz;       // non-zero pattern
-#if WEBP_AARCH64 && BPS == 32
+// #if WEBP_AARCH64 && BPS == 32
   uint8_t i4_boundary[40];  // 32+8 boundary samples needed by intra4x4
 #else
   uint8_t i4_boundary[37];  // 32+5 boundary samples needed by intra4x4
@@ -316,7 +316,7 @@ void VP8SetSegment(const VP8EncIterator* const it, int segment);
 typedef struct VP8Tokens VP8Tokens;  // struct details in token.c
 
 typedef struct {
-#if !defined(DISABLE_TOKEN_BUFFER)
+// #if !defined(DISABLE_TOKEN_BUFFER)
   VP8Tokens* pages;       // first page
   VP8Tokens** last_page;  // last page
   uint16_t* tokens;       // set to (*last_page)->tokens
@@ -330,7 +330,7 @@ typedef struct {
 void VP8TBufferInit(VP8TBuffer* const b, int page_size);
 void VP8TBufferClear(VP8TBuffer* const b);  // de-allocate pages memory
 
-#if !defined(DISABLE_TOKEN_BUFFER)
+// #if !defined(DISABLE_TOKEN_BUFFER)
 
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
@@ -518,7 +518,7 @@ void WebPReplaceTransparentPixels(WebPPicture* const pic, uint32_t color);
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

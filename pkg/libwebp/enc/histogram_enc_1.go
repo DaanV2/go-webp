@@ -15,12 +15,12 @@ package enc
 
 
 
-import "github.com/daanv2/go-webp/pkg/libwebpenc/backward_references_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -121,7 +121,7 @@ uint64_t VP8LBitsEntropy(const uint32_t* const array, int n);
 // approximately maps to.
 uint64_t VP8LHistogramEstimateBits(const VP8LHistogram* const h);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }
 #endif
 

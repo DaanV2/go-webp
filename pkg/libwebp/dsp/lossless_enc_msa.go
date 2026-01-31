@@ -13,12 +13,12 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MSA)
+// #if defined(WEBP_USE_MSA)
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/msa_macro.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
 #define TRANSFORM_COLOR_8(src0, src1, dst0, dst1, c0, c1, mask0, mask1) \
   do {                                                                  \

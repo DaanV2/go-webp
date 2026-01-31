@@ -15,18 +15,18 @@ package dsp
 
 
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if defined(WEBP_USE_SSE2)
+// #if defined(WEBP_USE_SSE2)
 
 import <emmintrin.h>
 
 //------------------------------------------------------------------------------
 // Quite useful macro for debugging. Left here for convenience.
 
-#if 0
+// #if 0
 import <stdio.h>
 static WEBP_INLINE void PrintReg(const __m128i r, const char* const name,
                                  int size) {
@@ -188,7 +188,7 @@ static WEBP_INLINE void VP8L32bToPlanar_SSE2(__m128i* const in0,
 
 #endif  // WEBP_USE_SSE2
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

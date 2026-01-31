@@ -19,21 +19,21 @@ package utils
 import <assert.h>
 import <stddef.h>
 
-#ifdef _MSC_VER
+// #ifdef _MSC_VER
 import <stdlib.h>  // _byteswap_ulong
 #endif
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // Warning! This macro triggers quite some MACRO wizardry around func signature!
-#if !defined(BITTRACE)
+// #if !defined(BITTRACE)
 const BITTRACE = 0  // 0 = off, 1 = print bits, 2 = print bytes
 #endif
 
-#if (BITTRACE > 0)
+// #if (BITTRACE > 0)
 struct VP8BitReader;
 extern void BitTrace(const struct VP8BitReader* const br, const char label[]);
 #define BT_TRACK(br) BitTrace(br, label)
@@ -49,7 +49,7 @@ extern void BitTrace(const struct VP8BitReader* const br, const char label[]);
 #define VP8GetSigned(BR, V, L) VP8GetSigned(BR, V)
 #endif
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -65,7 +65,7 @@ extern "C" {
 // BITS can be any multiple of 8 from 8 to 56 (inclusive).
 // Pick values that fit natural register size.
 
-#if defined(__i386__) || defined(_M_IX86)  // x86 32bit
+// #if defined(__i386__) || defined(_M_IX86)  // x86 32bit
 const BITS = 24
 #elif defined(__x86_64__) || defined(_M_X64)  // x86 64bit
 const BITS = 56
@@ -86,7 +86,7 @@ const BITS = 24
 //   bit_t = natural register type for storing 'value' (which is BITS+8 bits)
 //   range_t = register for 'range' (which is 8bits only)
 
-#if (BITS > 24)
+// #if (BITS > 24)
 typedef uint64_t bit_t;
 #else
 typedef uint32_t bit_t;
@@ -200,7 +200,7 @@ static WEBP_INLINE void VP8LFillBitWindow(VP8LBitReader* const br) {
   if (br->bit_pos >= VP8L_WBITS) VP8LDoFillBitWindow(br);
 }
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

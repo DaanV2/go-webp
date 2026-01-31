@@ -13,16 +13,16 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // define to 0 to have run-time table initialization
-#if !defined(USE_STATIC_TABLES)
+// #if !defined(USE_STATIC_TABLES)
 const USE_STATIC_TABLES = 1  // ALTERNATE_CODE
 #endif
 
-#if (USE_STATIC_TABLES == 1)
+// #if (USE_STATIC_TABLES == 1)
 
 static const uint8_t abs0[255 + 255 + 1] = {
     0xff, 0xfe, 0xfd, 0xfc, 0xfb, 0xfa, 0xf9, 0xf8, 0xf7, 0xf6, 0xf5, 0xf4,
@@ -327,7 +327,7 @@ const uint8_t* const VP8kclip1 = &clip1[255];
 const uint8_t* const VP8kabs0 = &abs0[255];
 
 WEBP_TSAN_IGNORE_FUNCTION void VP8InitClipTables(void) {
-#if (USE_STATIC_TABLES == 0)
+// #if (USE_STATIC_TABLES == 0)
   int i;
   if (!tables_ok) {
     for (i = -255; i <= 255; ++i) {

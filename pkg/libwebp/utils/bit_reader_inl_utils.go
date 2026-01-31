@@ -17,31 +17,31 @@ package utils
 
 
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
 import <assert.h>
 import <string.h>  // for memcpy
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_reader_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/endian_inl_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
 //------------------------------------------------------------------------------
 // Derived type lbit_t = natural type for memory I/O
 
-#if (BITS > 32)
+// #if (BITS > 32)
 typedef uint64_t lbit_t;
 #elif (BITS > 16)
 typedef uint32_t lbit_t;
@@ -68,7 +68,7 @@ static WEBP_UBSAN_IGNORE_UNDEF WEBP_INLINE void VP8LoadNewBytes(
   if (br->buf < br->buf_max) {
     // convert memory type to register type (with some zero'ing!)
     bit_t bits;
-#if defined(WEBP_USE_MIPS32)
+// #if defined(WEBP_USE_MIPS32)
     // This is needed because of un-aligned read.
     lbit_t in_bits;
     lbit_t* p_buf = (lbit_t*)br->buf;
@@ -87,8 +87,8 @@ static WEBP_UBSAN_IGNORE_UNDEF WEBP_INLINE void VP8LoadNewBytes(
 #endif
     br->buf += BITS >> 3;
     WEBP_SELF_ASSIGN(br->buf_end);
-#if !defined(WORDS_BIGENDIAN)
-#if (BITS > 32)
+// #if !defined(WORDS_BIGENDIAN)
+// #if (BITS > 32)
     bits = BSwap64(in_bits);
     bits >>= 64 - BITS;
 #elif (BITS >= 24)
@@ -195,7 +195,7 @@ static WEBP_INLINE int VP8GetBitAlt(VP8BitReader* WEBP_RESTRICT const br,
   }
 }
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

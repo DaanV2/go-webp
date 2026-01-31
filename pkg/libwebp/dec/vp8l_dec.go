@@ -19,22 +19,22 @@ import <stddef.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/alphai_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8li_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_reader_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/color_cache_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/huffman_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -556,7 +556,7 @@ Error:
 //------------------------------------------------------------------------------
 // Scaling.
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 static int AllocateAndInitRescaler(VP8LDecoder* const dec, VP8Io* const io) {
   const int num_channels = 4;
   const int in_width = io->mb_w;
@@ -597,7 +597,7 @@ static int AllocateAndInitRescaler(VP8LDecoder* const dec, VP8Io* const io) {
 //------------------------------------------------------------------------------
 // Export to ARGB
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 
 // We have special "export" function since we need to convert from BGRA
 static int Export(WebPRescaler* const rescaler, WEBP_CSP_MODE colorspace,
@@ -678,7 +678,7 @@ static void ConvertToYUVA(const uint32_t* const src, int width, int y_pos,
   // Lastly, store alpha if needed.
   if (buf->a != NULL) {
     uint8_t* const a = buf->a + (ptrdiff_t)y_pos * buf->a_stride;
-#if defined(WORDS_BIGENDIAN)
+// #if defined(WORDS_BIGENDIAN)
     WebPExtractAlpha((uint8_t*)src + 0, 0, width, 1, a, 0);
 #else
     WebPExtractAlpha((uint8_t*)src + 3, 0, width, 1, a, 0);
@@ -906,7 +906,7 @@ static void ProcessRows(VP8LDecoder* const dec, int row,
         uint8_t* const rgba =
             buf->rgba + (ptrdiff_t)dec->last_out_row * buf->stride;
         const int num_rows_out =
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
             io->use_scaling ? EmitRescaledRowsRGBA(dec, rows_data, in_stride,
                                                    io->mb_h, rgba, buf->stride)
                             :
@@ -992,7 +992,7 @@ static void ExtractPalettedAlphaRows(VP8LDecoder* const dec, int last_row) {
 
 // cyclic rotation of pattern word
 static WEBP_INLINE uint32_t Rotate8b(uint32_t V) {
-#if defined(WORDS_BIGENDIAN)
+// #if defined(WORDS_BIGENDIAN)
   return ((V & 0xff000000u) >> 24) | (V << 8);
 #else
   return ((V & 0xffu) << 24) | (V >> 8);
@@ -1027,7 +1027,7 @@ static WEBP_INLINE void CopyBlock8b(uint8_t* const dst, int dist, int length) {
     switch (dist) {
       case 1:
         pattern = src[0];
-#if defined(__arm__) || defined(_M_ARM)  // arm doesn't like multiply that much
+// #if defined(__arm__) || defined(_M_ARM)  // arm doesn't like multiply that much
         pattern |= pattern << 8;
         pattern |= pattern << 16;
 #elif defined(WEBP_USE_MIPS_DSP_R2)
@@ -1037,12 +1037,12 @@ static WEBP_INLINE void CopyBlock8b(uint8_t* const dst, int dist, int length) {
 #endif
         break;
       case 2:
-#if !defined(WORDS_BIGENDIAN)
+// #if !defined(WORDS_BIGENDIAN)
         WEBP_UNSAFE_MEMCPY(&pattern, src, sizeof(uint16_t));
 #else
         pattern = ((uint32_t)src[0] << 8) | src[1];
 #endif
-#if defined(__arm__) || defined(_M_ARM)
+// #if defined(__arm__) || defined(_M_ARM)
         pattern |= pattern << 16;
 #elif defined(WEBP_USE_MIPS_DSP_R2)
         __asm__ volatile("replv.ph %0, %0" : "+r"(pattern));
@@ -1830,7 +1830,7 @@ int VP8LDecodeImage(VP8LDecoder* const dec) {
 
     if (!AllocateInternalBuffers32b(dec, io->width)) goto Err;
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
     if (io->use_scaling && !AllocateAndInitRescaler(dec, io)) goto Err;
 #else
     if (io->use_scaling) {

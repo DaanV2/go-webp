@@ -17,11 +17,11 @@ package enc
 import <assert.h>
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -112,7 +112,7 @@ const MAX_LENGTH_BITS = 12
 const WINDOW_SIZE_BITS = 20
 // We want the max value to be attainable and stored in MAX_LENGTH_BITS bits.
 #define MAX_LENGTH ((1 << MAX_LENGTH_BITS) - 1)
-#if MAX_LENGTH_BITS + WINDOW_SIZE_BITS > 32
+// #if MAX_LENGTH_BITS + WINDOW_SIZE_BITS > 32
 #error "MAX_LENGTH_BITS + WINDOW_SIZE_BITS > 32"
 #endif
 
@@ -230,7 +230,7 @@ int VP8LGetBackwardReferences(
     int* const cache_bits_best, const WebPPicture* const pic, int percent_range,
     int* const percent);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }
 #endif
 

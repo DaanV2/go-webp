@@ -14,23 +14,23 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_SSE2)
+// #if defined(WEBP_USE_SSE2)
 
 // The 3-coeff sparse transform in SSE2 is not really faster than the plain-C
 // one it seems => disable it by default. Uncomment the following to enable:
-#if !defined(USE_TRANSFORM_AC3)
+// #if !defined(USE_TRANSFORM_AC3)
 #define USE_TRANSFORM_AC3 0  // ALTERNATE_CODE
 #endif
 
 import <emmintrin.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/common_sse2.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)
@@ -201,7 +201,7 @@ static void Transform_SSE2(const int16_t* WEBP_RESTRICT in,
   }
 }
 
-#if (USE_TRANSFORM_AC3 == 1)
+// #if (USE_TRANSFORM_AC3 == 1)
 
 static void TransformAC3_SSE2(const int16_t* WEBP_RESTRICT in,
                               uint8_t* WEBP_RESTRICT dst) {
@@ -1191,7 +1191,7 @@ extern void VP8DspInitSSE2(void);
 
 WEBP_TSAN_IGNORE_FUNCTION void VP8DspInitSSE2(void) {
   VP8Transform = Transform_SSE2;
-#if (USE_TRANSFORM_AC3 == 1)
+// #if (USE_TRANSFORM_AC3 == 1)
   VP8TransformAC3 = TransformAC3_SSE2;
 #endif
 

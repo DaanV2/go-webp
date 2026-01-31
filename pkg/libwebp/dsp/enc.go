@@ -17,17 +17,17 @@ import <assert.h>
 import <stdlib.h>  // for abs()
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 static WEBP_INLINE uint8_t clip_8b(int v) {
   return (!(v & ~0xff)) ? v : (v < 0) ? 0 : 255;
 }
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static WEBP_INLINE int clip_max(int v, int max) { return (v > max) ? max : v; }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
@@ -62,7 +62,7 @@ void VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1],
   histo->last_non_zero = last_non_zero;
 }
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static void CollectHistogram_C(const uint8_t* WEBP_RESTRICT ref,
                                const uint8_t* WEBP_RESTRICT pred,
                                int start_block, int end_block,
@@ -108,7 +108,7 @@ static WEBP_TSAN_IGNORE_FUNCTION void InitTables(void) {
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 
 #define STORE(x, y, v) \
   dst[(x) + (y) * BPS] = clip_8b(ref[(x) + (y) * BPS] + ((v) >> 3))
@@ -199,7 +199,7 @@ static void FTransform2_C(const uint8_t* WEBP_RESTRICT src,
   VP8FTransform(src + 4, ref + 4, out + 16);
 }
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static void FTransformWHT_C(const int16_t* WEBP_RESTRICT in,
                             int16_t* WEBP_RESTRICT out) {
   // input is 12b signed
@@ -347,7 +347,7 @@ static void IntraChromaPreds_C(uint8_t* WEBP_RESTRICT dst,
 //------------------------------------------------------------------------------
 // luma 16x16 prediction (paragraph 12.3)
 
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64
+// #if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64
 static void Intra16Preds_C(uint8_t* WEBP_RESTRICT dst,
                            const uint8_t* WEBP_RESTRICT left,
                            const uint8_t* WEBP_RESTRICT top) {
@@ -361,7 +361,7 @@ static void Intra16Preds_C(uint8_t* WEBP_RESTRICT dst,
 //------------------------------------------------------------------------------
 // luma 4x4 prediction
 
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || BPS != 32
+// #if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || BPS != 32
 
 #define DST(x, y) dst[(x) + (y) * BPS]
 #define AVG3(a, b, c) ((uint8_t)(((a) + 2 * (b) + (c) + 2) >> 2))
@@ -556,7 +556,7 @@ static void Intra4Preds_C(uint8_t* WEBP_RESTRICT dst,
 //------------------------------------------------------------------------------
 // Metric
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 static WEBP_INLINE int GetSSE(const uint8_t* WEBP_RESTRICT a,
                               const uint8_t* WEBP_RESTRICT b, int w, int h) {
   int count = 0;
@@ -610,7 +610,7 @@ static void Mean16x4_C(const uint8_t* WEBP_RESTRICT ref, uint32_t dc[4]) {
 // We try to match the spectral content (weighted) between source and
 // reconstructed samples.
 
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
@@ -675,7 +675,7 @@ static int Disto16x16_C(const uint8_t* WEBP_RESTRICT const a,
 // Quantization
 //
 
-#if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
+// #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 static const uint8_t kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6,
                                     9, 12, 13, 10, 7, 11, 14, 15};
 
@@ -777,7 +777,7 @@ WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
   InitTables();
 
   // default C implementations
-#if !WEBP_NEON_OMIT_C_CODE
+// #if !WEBP_NEON_OMIT_C_CODE
   VP8ITransform = ITransform_C;
   VP8FTransform = FTransform_C;
   VP8FTransformWHT = FTransformWHT_C;
@@ -790,16 +790,16 @@ WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
   VP8SSE4x4 = SSE4x4_C;
 #endif
 
-#if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
+// #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
   VP8EncQuantizeBlock = QuantizeBlock_C;
   VP8EncQuantize2Blocks = Quantize2Blocks_C;
   VP8EncQuantizeBlockWHT = QuantizeBlock_C;
 #endif
 
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || BPS != 32
+// #if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || BPS != 32
   VP8EncPredLuma4 = Intra4Preds_C;
 #endif
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64
+// #if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64
   VP8EncPredLuma16 = Intra16Preds_C;
 #endif
 
@@ -811,34 +811,34 @@ WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_HAVE_SSE2)
+// #if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8EncDspInitSSE2();
-#if defined(WEBP_HAVE_SSE41)
+// #if defined(WEBP_HAVE_SSE41)
       if (VP8GetCPUInfo(kSSE4_1)) {
         VP8EncDspInitSSE41();
       }
 #endif
     }
 #endif
-#if defined(WEBP_USE_MIPS32)
+// #if defined(WEBP_USE_MIPS32)
     if (VP8GetCPUInfo(kMIPS32)) {
       VP8EncDspInitMIPS32();
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       VP8EncDspInitMIPSdspR2();
     }
 #endif
-#if defined(WEBP_USE_MSA)
+// #if defined(WEBP_USE_MSA)
     if (VP8GetCPUInfo(kMSA)) {
       VP8EncDspInitMSA();
     }
 #endif
   }
 
-#if defined(WEBP_HAVE_NEON)
+// #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
     VP8EncDspInitNEON();

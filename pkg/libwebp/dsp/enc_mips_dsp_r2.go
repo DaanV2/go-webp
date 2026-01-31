@@ -14,13 +14,13 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/mips_macro.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
 
 static const int kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int kC2 = WEBP_TRANSFORM_AC3_C2;
@@ -1083,7 +1083,7 @@ static void Intra4Preds_MIPSdspR2(uint8_t* WEBP_RESTRICT dst,
 //------------------------------------------------------------------------------
 // Metric
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
 
 // clang-format off
 #define GET_SSE_INNER(A)                                                  \
@@ -1525,7 +1525,7 @@ WEBP_TSAN_IGNORE_FUNCTION void VP8EncDspInitMIPSdspR2(void) {
   VP8EncPredChroma8 = IntraChromaPreds_MIPSdspR2;
   VP8EncPredLuma4 = Intra4Preds_MIPSdspR2;
 
-#if !defined(WORK_AROUND_GCC)
+// #if !defined(WORK_AROUND_GCC)
   VP8SSE16x16 = SSE16x16_MIPSdspR2;
   VP8SSE8x8 = SSE8x8_MIPSdspR2;
   VP8SSE16x8 = SSE16x8_MIPSdspR2;

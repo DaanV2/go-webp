@@ -13,7 +13,7 @@ package utils
 
 
 
-#ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
+// #ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 
 import <ptrcheck.h>
 //

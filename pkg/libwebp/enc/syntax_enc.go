@@ -16,14 +16,14 @@ package enc
 import <assert.h>
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"  // RIFF constants
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux_types.h"         // ALPHA_FLAG
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"  // RIFF constants
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"         // ALPHA_FLAG
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 //------------------------------------------------------------------------------
 // Helper functions
@@ -294,7 +294,7 @@ static int GeneratePartition0(VP8Encoder* const enc) {
 
   pos3 = VP8BitWriterPos(bw);
 
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
   if (enc->pic->stats) {
     enc->pic->stats->header_bytes[0] = (int)((pos2 - pos1 + 7) >> 3);
     enc->pic->stats->header_bytes[1] = (int)((pos3 - pos2 + 7) >> 3);

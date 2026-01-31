@@ -14,9 +14,9 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MIPS_DSP_R2)
+// #if defined(WEBP_USE_MIPS_DSP_R2)
 
 static int DispatchAlpha_MIPSdspR2(const uint8_t* alpha, int alpha_stride,
                                    int width, int height, uint8_t* dst,
@@ -122,7 +122,7 @@ static void MultARGBRow_MIPSdspR2(uint32_t* const ptr, int width, int inverse) {
   }
 }
 
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
 static void PackARGB_MIPSdspR2(const uint8_t* a, const uint8_t* r,
                                const uint8_t* g, const uint8_t* b, int len,
                                uint32_t* out) {
@@ -210,7 +210,7 @@ extern void WebPInitAlphaProcessingMIPSdspR2(void);
 WEBP_TSAN_IGNORE_FUNCTION void WebPInitAlphaProcessingMIPSdspR2(void) {
   WebPDispatchAlpha = DispatchAlpha_MIPSdspR2;
   WebPMultARGBRow = MultARGBRow_MIPSdspR2;
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
   WebPPackARGB = PackARGB_MIPSdspR2;
 #endif
   WebPPackRGB = PackRGB_MIPSdspR2;

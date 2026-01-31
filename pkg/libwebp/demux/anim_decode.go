@@ -14,19 +14,19 @@
 package demux
 
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
 import <assert.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/demux.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux_types.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -34,7 +34,7 @@ const NUM_CHANNELS = 4
 
 // Channel extraction from a uint32_t representation of a uint8_t RGBA/BGRA
 // buffer.
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
 func CHANNEL_SHIFT(i int) int {
 	return (24 - (i) * 8)
 }

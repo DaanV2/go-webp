@@ -18,20 +18,20 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/backward_references_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/histogram_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8li_enc.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/huffman_encode_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/palette.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 // Maximum number of histogram images (sub-blocks).
 const MAX_HUFF_IMAGE_SIZE = 2600
@@ -1499,18 +1499,18 @@ static int EncodeStreamHook(void* input, void* data2) {
   const CrunchConfig* const crunch_configs = params->crunch_configs;
   const int num_crunch_configs = params->num_crunch_configs;
   const int red_and_blue_always_zero = params->red_and_blue_always_zero;
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
   WebPAuxStats* const stats = params->stats;
 #endif
   const int quality = (int)config->quality;
   const int low_effort = (config->method == 0);
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
   const int width = picture->width;
 #endif
   const int height = picture->height;
   const size_t byte_position = VP8LBitWriterNumBytes(bw);
   int percent = 2;  // for WebPProgressHook
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
   int use_near_lossless = 0;
 #endif
   int hdr_size = 0;
@@ -1548,7 +1548,7 @@ static int EncodeStreamHook(void* input, void* data2) {
     VP8LBackwardRefsClear(&enc->refs[0]);
     VP8LBackwardRefsClear(&enc->refs[1]);
 
-#if (WEBP_NEAR_LOSSLESS == 1)
+// #if (WEBP_NEAR_LOSSLESS == 1)
     // Apply near-lossless preprocessing.
     use_near_lossless =
         (config->near_lossless < 100) && !enc->use_palette && !enc->use_predict;
@@ -1637,7 +1637,7 @@ static int EncodeStreamHook(void* input, void* data2) {
       best_size = VP8LBitWriterNumBytes(bw);
       // Store the BitWriter.
       VP8LBitWriterSwap(bw, &bw_best);
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
       // Update the stats.
       if (stats != NULL) {
         stats->lossless_features = 0;
@@ -1781,7 +1781,7 @@ int VP8LEncodeStream(const WebPConfig* const config,
       goto Error;
     }
 
-    #if !defined(WEBP_DISABLE_STATS)
+    // #if !defined(WEBP_DISABLE_STATS)
     // This line is here and not in the param initialization above to remove a
     // Clang static analyzer warning.
     if (picture->stats != NULL) {
@@ -1807,7 +1807,7 @@ int VP8LEncodeStream(const WebPConfig* const config,
     }
     if (VP8LBitWriterNumBytes(&bw_side) < VP8LBitWriterNumBytes(bw_main)) {
       VP8LBitWriterSwap(bw_main, &bw_side);
-  #if !defined(WEBP_DISABLE_STATS)
+  // #if !defined(WEBP_DISABLE_STATS)
       if (picture->stats != NULL) {
         memcpy(picture->stats, &stats_side, sizeof(*picture->stats));
       }
@@ -1892,7 +1892,7 @@ int VP8LEncodeImage(const WebPConfig* const config,
 
   if (!WebPReportProgress(picture, 100, &percent)) goto UserAbort;
 
-#if !defined(WEBP_DISABLE_STATS)
+// #if !defined(WEBP_DISABLE_STATS)
   // Save size.
   if (picture->stats != NULL) {
     picture->stats->coded_size += (int)coded_size;

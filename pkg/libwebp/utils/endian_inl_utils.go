@@ -13,17 +13,17 @@ package utils
 
 
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#if defined(WORDS_BIGENDIAN)
+// #if defined(WORDS_BIGENDIAN)
 #define HToLE32 BSwap32
 #define HToLE16 BSwap16
 #else
@@ -31,20 +31,20 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 #define HToLE16(x) (x)
 #endif
 
-#if !defined(HAVE_CONFIG_H)
-#if LOCAL_GCC_PREREQ(4, 8) || __has_builtin(__builtin_bswap16)
+// #if !defined(HAVE_CONFIG_H)
+// #if LOCAL_GCC_PREREQ(4, 8) || __has_builtin(__builtin_bswap16)
 #define HAVE_BUILTIN_BSWAP16
 #endif
-#if LOCAL_GCC_PREREQ(4, 3) || __has_builtin(__builtin_bswap32)
+// #if LOCAL_GCC_PREREQ(4, 3) || __has_builtin(__builtin_bswap32)
 #define HAVE_BUILTIN_BSWAP32
 #endif
-#if LOCAL_GCC_PREREQ(4, 3) || __has_builtin(__builtin_bswap64)
+// #if LOCAL_GCC_PREREQ(4, 3) || __has_builtin(__builtin_bswap64)
 #define HAVE_BUILTIN_BSWAP64
 #endif
 #endif  // !HAVE_CONFIG_H
 
 static WEBP_INLINE uint16_t BSwap16(uint16_t x) {
-#if defined(HAVE_BUILTIN_BSWAP16)
+// #if defined(HAVE_BUILTIN_BSWAP16)
   return __builtin_bswap16(x);
 #elif defined(_MSC_VER)
   return _byteswap_ushort(x);
@@ -55,7 +55,7 @@ static WEBP_INLINE uint16_t BSwap16(uint16_t x) {
 }
 
 static WEBP_INLINE uint32_t BSwap32(uint32_t x) {
-#if defined(WEBP_USE_MIPS32_R2)
+// #if defined(WEBP_USE_MIPS32_R2)
   uint32_t ret;
   __asm__ volatile(
       "wsbh   %[ret], %[x]          \n\t"
@@ -77,7 +77,7 @@ static WEBP_INLINE uint32_t BSwap32(uint32_t x) {
 }
 
 static WEBP_INLINE uint64_t BSwap64(uint64_t x) {
-#if defined(HAVE_BUILTIN_BSWAP64)
+// #if defined(HAVE_BUILTIN_BSWAP64)
   return __builtin_bswap64(x);
 #elif defined(__x86_64__)
   uint64_t swapped_bytes;

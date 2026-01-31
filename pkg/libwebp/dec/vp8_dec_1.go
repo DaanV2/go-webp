@@ -17,12 +17,12 @@ package dec
 
 import <stddef.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -186,7 +186,7 @@ WEBP_EXTERN int VP8LGetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data,
                             int* const width, int* const height,
                             int* const has_alpha);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

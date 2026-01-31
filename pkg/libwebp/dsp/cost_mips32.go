@@ -11,11 +11,11 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MIPS32)
+// #if defined(WEBP_USE_MIPS32)
 
-import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
 
 static int GetResidualCost_MIPS32(int ctx0, const VP8Residual* const res) {
   int temp0, temp1;
@@ -113,7 +113,7 @@ static void SetResidualCoeffs_MIPS32(const int16_t* WEBP_RESTRICT const coeffs,
       "0:                                                   \n\t"
       "ulw      %[temp0],      0(%[p_coeffs])             \n\t"
       "beqz     %[temp0],      1f                         \n\t"
-#if defined(WORDS_BIGENDIAN)
+// #if defined(WORDS_BIGENDIAN)
       " sll     %[temp1],      %[temp0],       16         \n\t"
 #else
       " srl     %[temp1],      %[temp0],       16         \n\t"

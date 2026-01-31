@@ -53,11 +53,11 @@ package webp
 
 import <stddef.h>
 
-import "./decode.h"  // for WEBP_CSP_MODE
-import "./mux_types.h"
-import "./types.h"
+import "."  // for WEBP_CSP_MODE
+import "."
+import "."
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -366,7 +366,7 @@ WEBP_NODISCARD WEBP_EXTERN const WebPDemuxer* WebPAnimDecoderGetDemuxer(
 //   dec - (in/out) decoder instance to be deleted
 WEBP_EXTERN void WebPAnimDecoderDelete(WebPAnimDecoder* dec);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

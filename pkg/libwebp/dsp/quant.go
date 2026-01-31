@@ -13,17 +13,17 @@ package dsp
 
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
-#if defined(WEBP_USE_NEON) && !defined(WEBP_ANDROID_NEON) && \
+// #if defined(WEBP_USE_NEON) && !defined(WEBP_ANDROID_NEON) && \
     !defined(WEBP_HAVE_NEON_RTCD)
 import <arm_neon.h>
 
 #define IsFlat IsFlat_NEON
 
 static uint32_t horizontal_add_uint32x4(const uint32x4_t a) {
-#if WEBP_AARCH64
+// #if WEBP_AARCH64
   return vaddvq_u32(a);
 #else
   const uint64x2_t b = vpaddlq_u32(a);

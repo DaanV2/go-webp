@@ -18,16 +18,16 @@ import <stddef.h>
 import <stdlib.h>
 import <string.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -64,7 +64,7 @@ static int EmitSampledRGB(const VP8Io* const io, WebPDecParams* const p) {
 //------------------------------------------------------------------------------
 // Fancy upsampling
 
-#ifdef FANCY_UPSAMPLING
+// #ifdef FANCY_UPSAMPLING
 static int EmitFancyRGB(const VP8Io* const io, WebPDecParams* const p) {
   int num_lines_out = io->mb_h;  // a priori guess
   const WebPRGBABuffer* const buf = &p->output->u.RGBA;
@@ -217,7 +217,7 @@ static int EmitAlphaRGBA4444(const VP8Io* const io, WebPDecParams* const p,
     int num_rows;
     const int start_y = GetAlphaSourceRow(io, &alpha, &num_rows);
     uint8_t* const base_rgba = buf->rgba + (ptrdiff_t)start_y * buf->stride;
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
     uint8_t* alpha_dst = base_rgba;
 #else
     uint8_t* alpha_dst = base_rgba + 1;
@@ -246,7 +246,7 @@ static int EmitAlphaRGBA4444(const VP8Io* const io, WebPDecParams* const p,
 //------------------------------------------------------------------------------
 // YUV rescaling (no final RGB conversion needed)
 
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
 static int Rescale(const uint8_t* src, int src_stride, int new_lines,
                    WebPRescaler* const wrk) {
   int num_lines_out = 0;
@@ -446,7 +446,7 @@ static int ExportAlphaRGBA4444(WebPDecParams* const p, int y_pos,
                                int max_lines_out) {
   const WebPRGBABuffer* const buf = &p->output->u.RGBA;
   uint8_t* const base_rgba = buf->rgba + (ptrdiff_t)y_pos * buf->stride;
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
   uint8_t* alpha_dst = base_rgba;
 #else
   uint8_t* alpha_dst = base_rgba + 1;
@@ -586,7 +586,7 @@ static int CustomSetup(VP8Io* io) {
     WebPInitUpsamplers();
   }
   if (io->use_scaling) {
-#if !defined(WEBP_REDUCE_SIZE)
+// #if !defined(WEBP_REDUCE_SIZE)
     const int ok = is_rgb ? InitRGBRescaler(io, p) : InitYUVRescaler(io, p);
     if (!ok) {
       return 0;  // memory error
@@ -599,7 +599,7 @@ static int CustomSetup(VP8Io* io) {
       WebPInitSamplers();
       p->emit = EmitSampledRGB;  // default
       if (io->fancy_upsampling) {
-#ifdef FANCY_UPSAMPLING
+// #ifdef FANCY_UPSAMPLING
         const int uv_width = (io->mb_w + 1) >> 1;
         p->memory = WebPSafeMalloc(1ULL, (size_t)(io->mb_w + 2 * uv_width));
         if (p->memory == NULL) {

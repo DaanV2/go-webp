@@ -13,14 +13,14 @@
 
 package dsp
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
 
-#if defined(WEBP_USE_MSA)
+// #if defined(WEBP_USE_MSA)
 
 import <stdlib.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/msa_macro.h"
-import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpenc"
 
 //------------------------------------------------------------------------------
 // Transforms

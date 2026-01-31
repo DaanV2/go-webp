@@ -38,15 +38,15 @@ package dsp
 
 
 
-import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
-import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // Macros to give the offset of each channel in a uint32_t containing ARGB.
-#ifdef WORDS_BIGENDIAN
+// #ifdef WORDS_BIGENDIAN
 // uint32_t 0xff000000 is 0xff,00,00,00 in memory
 #define CHANNEL_OFFSET(i) (i)
 #else
@@ -57,7 +57,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 // YUV -> RGB conversion
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -111,7 +111,7 @@ static WEBP_INLINE void VP8YuvToRgb565(int y, int u, int v,
   const int b = VP8YUVToB(y, u);     // 5 usable bits
   const int rg = (r & 0xf8) | (g >> 5);
   const int gb = ((g << 3) & 0xe0) | (b >> 3);
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
   rgb[0] = gb;
   rgb[1] = rg;
 #else
@@ -127,7 +127,7 @@ static WEBP_INLINE void VP8YuvToRgba4444(int y, int u, int v,
   const int b = VP8YUVToB(y, u);     // 4 usable bits
   const int rg = (r & 0xf0) | (g >> 4);
   const int ba = (b & 0xf0) | 0x0f;  // overwrite the lower 4 bits
-#if (WEBP_SWAP_16BIT_CSP == 1)
+// #if (WEBP_SWAP_16BIT_CSP == 1)
   argb[0] = ba;
   argb[1] = rg;
 #else
@@ -160,7 +160,7 @@ static WEBP_INLINE void VP8YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
 //-----------------------------------------------------------------------------
 // SSE2 extra functions (mostly for upsampling_sse2.c)
 
-#if defined(WEBP_USE_SSE2)
+// #if defined(WEBP_USE_SSE2)
 
 // Process 32 pixels and store the result (16b, 24b or 32b per pixel) in *dst.
 void VP8YuvToRgba32_SSE2(const uint8_t* WEBP_RESTRICT y,
@@ -197,7 +197,7 @@ void VP8YuvToRgb56532_SSE2(const uint8_t* WEBP_RESTRICT y,
 //-----------------------------------------------------------------------------
 // SSE41 extra functions (mostly for upsampling_sse41.c)
 
-#if defined(WEBP_USE_SSE41)
+// #if defined(WEBP_USE_SSE41)
 
 // Process 32 pixels and store the result (16b, 24b or 32b per pixel) in *dst.
 void VP8YuvToRgb32_SSE41(const uint8_t* WEBP_RESTRICT y,
@@ -261,7 +261,7 @@ void WebPAccumulateRGB(const uint8_t* const r_ptr, const uint8_t* const g_ptr,
 // Must be called before calling WebPAccumulateRGB*.
 void WebPInitGammaTables(void);
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 

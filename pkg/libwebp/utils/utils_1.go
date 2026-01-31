@@ -16,19 +16,19 @@ package utils
 
 
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
+// #ifdef HAVE_CONFIG_H
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 #endif
 
 import <assert.h>
 
-import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
-import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -36,8 +36,8 @@ extern "C" {
 // Memory allocation
 
 // This is the maximum memory amount that libwebp will ever try to allocate.
-#ifndef WEBP_MAX_ALLOCABLE_MEMORY
-#if SIZE_MAX > (1ULL << 34)
+// #ifndef WEBP_MAX_ALLOCABLE_MEMORY
+// #if SIZE_MAX > (1ULL << 34)
 #define WEBP_MAX_ALLOCABLE_MEMORY (1ULL << 34)
 #else
 // For 32-bit targets keep this below INT_MAX to avoid valgrind warnings.
@@ -131,7 +131,7 @@ static WEBP_INLINE void PutLE32(uint8_t* const WEBP_COUNTED_BY(4) data,
 }
 
 // use GNU builtins where available.
-#if defined(__GNUC__) && \
+// #if defined(__GNUC__) && \
     ((__GNUC__ == 3 && __GNUC_MINOR__ >= 4) || __GNUC__ >= 4)
 // Returns (int)floor(log2(n)). n must be > 0.
 static WEBP_INLINE int BitsLog2Floor(uint32_t n) {
@@ -213,7 +213,7 @@ WEBP_EXTERN int WebPGetColorPalette(
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
+// #ifdef __cplusplus
 }  // extern "C"
 #endif
 
