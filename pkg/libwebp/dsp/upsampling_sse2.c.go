@@ -135,7 +135,7 @@ func Upsample32Pixels_SSE2(const *uint8 WEBP_RESTRICT const r1, const *uint8 WEB
       int len) {                                                              \
     int uv_pos, pos;                                                          \
     /* 16byte-aligned array to cache reconstructed u and v */                 \
-    uint8 uv_buf[14 * 32 + 15] = {0};                                       \
+    uint8 uv_buf[14 * 32 + 15] = {0}                                       \
     *uint8 const r_u =                                                      \
         (*uint8)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
     *uint8 const r_v = r_u + 32;                                            \

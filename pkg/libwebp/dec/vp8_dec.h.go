@@ -110,7 +110,7 @@ type VP8Io struct {
   // start of the current row (That is: it is pre-offset by mb_y and takes
   // cropping into account).
   const *uint8 a;
-};
+}
 
 // Internal, version-checked, entry point
  int VP8InitIoInternal(*VP8Io const, int);

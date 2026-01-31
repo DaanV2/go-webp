@@ -34,7 +34,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // Main reconstruction function.
 
 static const uint16 kScan[16] = {
-    0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS, 0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS, 0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS, 0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS};
+    0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS, 0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS, 0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS, 0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS}
 
 static int CheckMode(int mb_x, int mb_y, int mode) {
   if (mode == B_DC_PRED) {
@@ -206,7 +206,7 @@ func ReconstructRow(const *VP8Decoder const dec, const *VP8ThreadContext ctx) {
 // Simple filter:  up to 2 luma samples are read and 1 is written.
 // Complex filter: up to 4 luma samples are read and 3 are written. Same for
 //                 U/V, so it's 8 samples total (because of the 2x upsampling).
-static const uint8 kFilterExtraRows[3] = {0, 2, 8};
+static const uint8 kFilterExtraRows[3] = {0, 2, 8}
 
 func DoFilter(const *VP8Decoder const dec, int mb_x, int mb_y) {
   const *VP8ThreadContext const ctx = &dec.thread_ctx;
@@ -330,7 +330,7 @@ const MIN_DITHER_AMP =4
 const DITHER_AMP_TAB_SIZE =12
 static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
     // roughly, it's dqm.uv_mat[1]
-    8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1};
+    8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1}
 
 func VP8InitDithering(const *WebPDecoderOptions const options, *VP8Decoder const dec) {
   assert.Assert(dec != nil);

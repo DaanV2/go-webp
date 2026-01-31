@@ -127,7 +127,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define CALC_RGB16(y, u, v, R, G, B)          \
   do {                                        \
-    const v16u8 zero = {0};                   \
+    const v16u8 zero = {0}                   \
     v8u16 y0, y1, u0, u1, v0, v1;             \
     v4u32 p0, p1, p2, p3;                     \
     const v16u8 in_y = LD_UB(y);              \
@@ -148,7 +148,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define CALC_RGB8(y, u, v, R, G, B) \
   do {                              \
-    const v16u8 zero = {0};         \
+    const v16u8 zero = {0}         \
     v8u16 y0, u0, v0;               \
     v4u32 p0, p1;                   \
     const v16u8 in_y = LD_UB(y);    \
@@ -170,11 +170,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 #define STORE16_3(a0, a1, a2, dst)                             \
   do {                                                         \
     const v16u8 mask0 = {                                      \
-        0, 1, 16, 2, 3, 17, 4, 5, 18, 6, 7, 19, 8, 9, 20, 10}; \
+        0, 1, 16, 2, 3, 17, 4, 5, 18, 6, 7, 19, 8, 9, 20, 10} \
     const v16u8 mask1 = {                                      \
-        0, 21, 1, 2, 22, 3, 4, 23, 5, 6, 24, 7, 8, 25, 9, 10}; \
+        0, 21, 1, 2, 22, 3, 4, 23, 5, 6, 24, 7, 8, 25, 9, 10} \
     const v16u8 mask2 = {                                      \
-        26, 0, 1, 27, 2, 3, 28, 4, 5, 29, 6, 7, 30, 8, 9, 31}; \
+        26, 0, 1, 27, 2, 3, 28, 4, 5, 29, 6, 7, 30, 8, 9, 31} \
     v16u8 out0, out1, out2, tmp0, tmp1, tmp2;                  \
     ILVRL_B2_UB(a1, a0, tmp0, tmp1);                           \
     out0 = VSHF_UB(tmp0, a2, mask0);                           \
@@ -191,9 +191,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   do {                                                            \
     int64 out_m;                                                \
     const v16u8 mask0 = {                                         \
-        0, 1, 16, 2, 3, 17, 4, 5, 18, 6, 7, 19, 8, 9, 20, 10};    \
+        0, 1, 16, 2, 3, 17, 4, 5, 18, 6, 7, 19, 8, 9, 20, 10}    \
     const v16u8 mask1 = {11,  21,  12,  13,  22,  14,  15,  23,   \
-                         255, 255, 255, 255, 255, 255, 255, 255}; \
+                         255, 255, 255, 255, 255, 255, 255, 255} \
     const v16u8 tmp0 = (v16u8)__msa_ilvr_b((v16i8)a1, (v16i8)a0); \
     v16u8 out0, out1;                                             \
     VSHF_B2_UB(tmp0, a2, tmp0, a2, mask0, mask1, out0, out1);     \
@@ -353,13 +353,13 @@ func YuvToRgbLine(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u, co
     length -= 16;
   }
   if (length > 8) {
-    uint8 temp[3 * 16] = {0};
+    uint8 temp[3 * 16] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB16(temp, u, v, R, G, B);
     STORE16_3(R, G, B, temp);
     memcpy(dst, temp, length * 3 * sizeof(*dst));
   } else if (length > 0) {
-    uint8 temp[3 * 8] = {0};
+    uint8 temp[3 * 8] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB8(temp, u, v, R, G, B);
     STORE8_3(R, G, B, temp);
@@ -379,13 +379,13 @@ func YuvToBgrLine(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u, co
     length -= 16;
   }
   if (length > 8) {
-    uint8 temp[3 * 16] = {0};
+    uint8 temp[3 * 16] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB16(temp, u, v, R, G, B);
     STORE16_3(B, G, R, temp);
     memcpy(dst, temp, length * 3 * sizeof(*dst));
   } else if (length > 0) {
-    uint8 temp[3 * 8] = {0};
+    uint8 temp[3 * 8] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB8(temp, u, v, R, G, B);
     STORE8_3(B, G, R, temp);
@@ -407,13 +407,13 @@ func YuvToRgbaLine(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u, c
     length -= 16;
   }
   if (length > 8) {
-    uint8 temp[4 * 16] = {0};
+    uint8 temp[4 * 16] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB16(&temp[0], u, v, R, G, B);
     STORE16_4(R, G, B, A, temp);
     memcpy(dst, temp, length * 4 * sizeof(*dst));
   } else if (length > 0) {
-    uint8 temp[4 * 8] = {0};
+    uint8 temp[4 * 8] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB8(temp, u, v, R, G, B);
     STORE8_4(R, G, B, A, temp);
@@ -434,13 +434,13 @@ func YuvToBgraLine(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u, c
     length -= 16;
   }
   if (length > 8) {
-    uint8 temp[4 * 16] = {0};
+    uint8 temp[4 * 16] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB16(temp, u, v, R, G, B);
     STORE16_4(B, G, R, A, temp);
     memcpy(dst, temp, length * 4 * sizeof(*dst));
   } else if (length > 0) {
-    uint8 temp[4 * 8] = {0};
+    uint8 temp[4 * 8] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB8(temp, u, v, R, G, B);
     STORE8_4(B, G, R, A, temp);
@@ -462,13 +462,13 @@ func YuvToArgbLine(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u, c
     length -= 16;
   }
   if (length > 8) {
-    uint8 temp[4 * 16] = {0};
+    uint8 temp[4 * 16] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB16(temp, u, v, R, G, B);
     STORE16_4(A, R, G, B, temp);
     memcpy(dst, temp, length * 4 * sizeof(*dst));
   } else if (length > 0) {
-    uint8 temp[4 * 8] = {0};
+    uint8 temp[4 * 8] = {0}
     memcpy(temp, y, length * sizeof(*temp));
     CALC_RGB8(temp, u, v, R, G, B);
     STORE8_4(A, R, G, B, temp);
@@ -491,7 +491,7 @@ func YuvToRgba4444Line(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT 
     length -= 16;
   }
   if (length > 8) {
-    uint8 temp[2 * 16] = {0};
+    uint8 temp[2 * 16] = {0}
     memcpy(temp, y, length * sizeof(*temp));
 #if (WEBP_SWAP_16BIT_CSP == 1)
     CALC_RGBA4444(temp, u, v, BA, RG, 16, temp);
@@ -500,7 +500,7 @@ func YuvToRgba4444Line(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT 
 #endif
     memcpy(dst, temp, length * 2 * sizeof(*dst));
   } else if (length > 0) {
-    uint8 temp[2 * 8] = {0};
+    uint8 temp[2 * 8] = {0}
     memcpy(temp, y, length * sizeof(*temp));
 #if (WEBP_SWAP_16BIT_CSP == 1)
     CALC_RGBA4444(temp, u, v, BA, RG, 8, temp);
@@ -526,7 +526,7 @@ func YuvToRgb565Line(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,
     length -= 16;
   }
   if (length > 8) {
-    uint8 temp[2 * 16] = {0};
+    uint8 temp[2 * 16] = {0}
     memcpy(temp, y, length * sizeof(*temp));
 #if (WEBP_SWAP_16BIT_CSP == 1)
     CALC_RGB565(temp, u, v, GB, RG, 16, temp);
@@ -535,7 +535,7 @@ func YuvToRgb565Line(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,
 #endif
     memcpy(dst, temp, length * 2 * sizeof(*dst));
   } else if (length > 0) {
-    uint8 temp[2 * 8] = {0};
+    uint8 temp[2 * 8] = {0}
     memcpy(temp, y, length * sizeof(*temp));
 #if (WEBP_SWAP_16BIT_CSP == 1)
     CALC_RGB565(temp, u, v, GB, RG, 8, temp);

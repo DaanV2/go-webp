@@ -31,7 +31,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 func CollectHistogram_SSE41(const *uint8 WEBP_RESTRICT ref, const *uint8 WEBP_RESTRICT pred, int start_block, int end_block, *VP8Histogram WEBP_RESTRICT const histo) {
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   int j;
-  int distribution[MAX_COEFF_THRESH + 1] = {0};
+  int distribution[MAX_COEFF_THRESH + 1] = {0}
   for (j = start_block; j < end_block; ++j) {
     int16 out[16];
     int k;

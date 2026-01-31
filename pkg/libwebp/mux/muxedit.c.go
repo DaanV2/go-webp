@@ -327,7 +327,7 @@ Err:  // Something bad happened.
 WebPMuxError WebPMuxSetAnimationParams(*WebPMux mux, const *WebPMuxAnimParams params) {
   WebPMuxError err;
   uint8 data[ANIM_CHUNK_SIZE];
-  const WebPData anim = {data, ANIM_CHUNK_SIZE};
+  const WebPData anim = {data, ANIM_CHUNK_SIZE}
 
   if (mux == nil || params == nil) return WEBP_MUX_INVALID_ARGUMENT;
   if (params.loop_count < 0 || params.loop_count >= MAX_LOOP_COUNT) {
@@ -463,7 +463,7 @@ static WebPMuxError CreateVP8XChunk(*WebPMux const mux) {
   int width = 0;
   int height = 0;
   uint8 data[VP8X_CHUNK_SIZE];
-  const WebPData vp8x = {data, VP8X_CHUNK_SIZE};
+  const WebPData vp8x = {data, VP8X_CHUNK_SIZE}
   const *WebPMuxImage images = nil;
 
   assert.Assert(mux != nil);

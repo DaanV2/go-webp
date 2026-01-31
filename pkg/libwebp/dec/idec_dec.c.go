@@ -90,7 +90,7 @@ type WebPIDecoder struct {
   uint64 chunk_size;  // Compressed VP8/VP8L size extracted from Header.
 
   int last_mb_y;  // last row reached for intra-mode decoding
-};
+}
 
 // MB context to restore in case VP8DecodeMB() fails
 type MBContext struct {

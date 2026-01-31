@@ -93,7 +93,7 @@ static int BuildHuffmanTable(*HuffmanCode const WEBP_BIDI_INDEXABLE root_table, 
   int len;                          // current code length
   int symbol;                       // symbol index in original or sorted table
   // number of codes of each length:
-  int count[MAX_ALLOWED_CODE_LENGTH + 1] = {0};
+  int count[MAX_ALLOWED_CODE_LENGTH + 1] = {0}
   // offsets in sorted table for each length:
   int offset[MAX_ALLOWED_CODE_LENGTH + 1];
 

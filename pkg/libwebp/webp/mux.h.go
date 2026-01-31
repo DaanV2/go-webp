@@ -204,7 +204,7 @@ type WebPMuxFrameInfo struct {
   WebPMuxAnimDispose dispose_method;  // Disposal method for the frame.
   WebPMuxAnimBlend blend_method;      // Blend operation for the frame.
   uint32 pad[1];                    // padding for later use
-};
+}
 
 // Sets the (non-animated) image in the mux object.
 // Note: Any existing images (including frames) will be removed.
@@ -282,7 +282,7 @@ type WebPMuxAnimParams struct {
                      // Bits 16 to 23: Green.
                      // Bits 24 to 31: Blue.
   int loop_count;    // Number of times to repeat the animation [0 = infinite].
-};
+}
 
 // Sets the animation parameters in the mux object. Any existing ANIM chunks
 // will be removed.
@@ -429,7 +429,7 @@ type WebPAnimEncoderOptions struct {
   int verbose;      // If true, print info and warning messages to stderr.
 
   uint32 padding[4];  // Padding for later use.
-};
+}
 
 // Internal, version-checked, entry point.
  int WebPAnimEncoderOptionsInitInternal(*WebPAnimEncoderOptions, int);

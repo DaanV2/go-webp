@@ -121,7 +121,7 @@ static int MuxImageParse(const *WebPChunk const chunk, int copy_data, *WebPMuxIm
   // ANMF.
   {
     const uint64 hdr_size = ANMF_CHUNK_SIZE;
-    const WebPData temp = {bytes, hdr_size};
+    const WebPData temp = {bytes, hdr_size}
     // Each of ANMF chunk contain a header at the beginning. So, its size should
     // be at least 'hdr_size'.
     if (size < hdr_size) goto Fail;
@@ -194,7 +194,7 @@ Fail:
   WebPChunk chunk;
   // Stores the end of the chunk lists so that it is faster to append data to
   // their ends.
-  *WebPChunk* chunk_list_ends[WEBP_CHUNK_NIL + 1] = {nil};
+  *WebPChunk* chunk_list_ends[WEBP_CHUNK_NIL + 1] = {nil}
   ChunkInit(&chunk);
 
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_MUX_ABI_VERSION)) {

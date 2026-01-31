@@ -30,7 +30,7 @@ const MAX_COLOR_CACHE_BITS =10
 // -----------------------------------------------------------------------------
 // PixOrCopy
 
-enum Mode { kLiteral, kCacheIdx, kCopy, kNone };
+enum Mode { kLiteral, kCacheIdx, kCopy, kNone }
 
 type <Foo> struct {
   // mode as uint8 to make the memory layout to be exactly 8 bytes.
@@ -124,7 +124,7 @@ type VP8LHashChain struct {
   // This is the maximum size of the hash_chain that can be constructed.
   // Typically this is the pixel count (width x height) for a given image.
   int size;
-};
+}
 
 // Must be called first, to set size.
 int VP8LHashChainInit(*VP8LHashChain const p, int size);
@@ -162,7 +162,7 @@ type VP8LBackwardRefs struct {
   *PixOrCopyBlock* tail;        // for list recycling
   *PixOrCopyBlock free_blocks;  // free-list
   *PixOrCopyBlock last_block;   // used for adding new refs (internal)
-};
+}
 
 // Initialize the object. 'block_size' is the common block size to store
 // references (typically, width * height / MAX_REFS_BLOCK_PER_IMAGE).
@@ -197,7 +197,7 @@ static  func VP8LRefsCursorNext(*VP8LRefsCursor const c) {
 // -----------------------------------------------------------------------------
 // Main entry points
 
-enum VP8LLZ77Type { kLZ77Standard = 1, kLZ77RLE = 2, kLZ77Box = 4 };
+enum VP8LLZ77Type { kLZ77Standard = 1, kLZ77RLE = 2, kLZ77Box = 4 }
 
 // Evaluates best possible backward references for specified quality.
 // The input cache_bits to 'VP8LGetBackwardReferences' sets the maximum cache

@@ -131,24 +131,24 @@ static  int clip(int v, int m, int M) {
   return v < m ? m : v > M ? M : v;
 }
 
-static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15};
+static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
 
 static const uint8 kDcTable[128] = {
-    4,   5,   6,   7,   8,   9,   10,  10,  11,  12,  13,  14,  15,  16,  17, 17,  18,  19,  20,  20,  21,  21,  22,  22,  23,  23,  24,  25,  25,  26, 27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  37,  38,  39,  40, 41,  42,  43,  44,  45,  46,  46,  47,  48,  49,  50,  51,  52,  53,  54, 55,  56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69, 70,  71,  72,  73,  74,  75,  76,  76,  77,  78,  79,  80,  81,  82,  83, 84,  85,  86,  87,  88,  89,  91,  93,  95,  96,  98,  100, 101, 102, 104, 106, 108, 110, 112, 114, 116, 118, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 143, 145, 148, 151, 154, 157};
+    4,   5,   6,   7,   8,   9,   10,  10,  11,  12,  13,  14,  15,  16,  17, 17,  18,  19,  20,  20,  21,  21,  22,  22,  23,  23,  24,  25,  25,  26, 27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  37,  38,  39,  40, 41,  42,  43,  44,  45,  46,  46,  47,  48,  49,  50,  51,  52,  53,  54, 55,  56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69, 70,  71,  72,  73,  74,  75,  76,  76,  77,  78,  79,  80,  81,  82,  83, 84,  85,  86,  87,  88,  89,  91,  93,  95,  96,  98,  100, 101, 102, 104, 106, 108, 110, 112, 114, 116, 118, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 143, 145, 148, 151, 154, 157}
 
 static const uint16 kAcTable[128] = {
-    4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18, 19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33, 34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,  48, 49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  60,  62,  64,  66,  68, 70,  72,  74,  76,  78,  80,  82,  84,  86,  88,  90,  92,  94,  96,  98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 119, 122, 125, 128, 131, 134, 137, 140, 143, 146, 149, 152, 155, 158, 161, 164, 167, 170, 173, 177, 181, 185, 189, 193, 197, 201, 205, 209, 213, 217, 221, 225, 229, 234, 239, 245, 249, 254, 259, 264, 269, 274, 279, 284};
+    4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18, 19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33, 34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,  48, 49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  60,  62,  64,  66,  68, 70,  72,  74,  76,  78,  80,  82,  84,  86,  88,  90,  92,  94,  96,  98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 119, 122, 125, 128, 131, 134, 137, 140, 143, 146, 149, 152, 155, 158, 161, 164, 167, 170, 173, 177, 181, 185, 189, 193, 197, 201, 205, 209, 213, 217, 221, 225, 229, 234, 239, 245, 249, 254, 259, 264, 269, 274, 279, 284}
 
 static const uint16 kAcTable2[128] = {
-    8,   8,   9,   10,  12,  13,  15,  17,  18,  20,  21,  23,  24,  26,  27, 29,  31,  32,  34,  35,  37,  38,  40,  41,  43,  44,  46,  48,  49,  51, 52,  54,  55,  57,  58,  60,  62,  63,  65,  66,  68,  69,  71,  72,  74, 75,  77,  79,  80,  82,  83,  85,  86,  88,  89,  93,  96,  99,  102, 105, 108, 111, 114, 117, 120, 124, 127, 130, 133, 136, 139, 142, 145, 148, 151, 155, 158, 161, 164, 167, 170, 173, 176, 179, 184, 189, 193, 198, 203, 207, 212, 217, 221, 226, 230, 235, 240, 244, 249, 254, 258, 263, 268, 274, 280, 286, 292, 299, 305, 311, 317, 323, 330, 336, 342, 348, 354, 362, 370, 379, 385, 393, 401, 409, 416, 424, 432, 440};
+    8,   8,   9,   10,  12,  13,  15,  17,  18,  20,  21,  23,  24,  26,  27, 29,  31,  32,  34,  35,  37,  38,  40,  41,  43,  44,  46,  48,  49,  51, 52,  54,  55,  57,  58,  60,  62,  63,  65,  66,  68,  69,  71,  72,  74, 75,  77,  79,  80,  82,  83,  85,  86,  88,  89,  93,  96,  99,  102, 105, 108, 111, 114, 117, 120, 124, 127, 130, 133, 136, 139, 142, 145, 148, 151, 155, 158, 161, 164, 167, 170, 173, 176, 179, 184, 189, 193, 198, 203, 207, 212, 217, 221, 226, 230, 235, 240, 244, 249, 254, 258, 263, 268, 274, 280, 286, 292, 299, 305, 311, 317, 323, 330, 336, 342, 348, 354, 362, 370, 379, 385, 393, 401, 409, 416, 424, 432, 440}
 
 static const uint8 kBiasMatrices[3][2] = {  // [luma-ac,luma-dc,chroma][dc,ac]
-    {96, 110}, {96, 108}, {110, 115}};
+    {96, 110}, {96, 108}, {110, 115}}
 
 // Sharpening by (slightly) raising the hi-frequency coeffs.
 // Hack-ish but helpful for mid-bitrate range. Use with care.
 const SHARPEN_BITS =11  // number of descaling bits for sharpening bias
-static const uint8 kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90, 60, 90, 90, 90, 90, 90, 90, 90};
+static const uint8 kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90, 60, 90, 90, 90, 90, 90, 90, 90}
 
 //------------------------------------------------------------------------------
 // Initialize quantization parameters in VP8Matrix
@@ -307,7 +307,7 @@ static int SegmentsAreEquivalent(const *VP8SegmentInfo const S1, const *VP8Segme
 }
 
 func SimplifySegments(*VP8Encoder const enc) {
-  int map[NUM_MB_SEGMENTS] = {0, 1, 2, 3};
+  int map[NUM_MB_SEGMENTS] = {0, 1, 2, 3}
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
   // explicit check is needed to afunc a spurious warning about 'i' exceeding
   // array bounds of 'dqm' with some compilers (noticed with gcc-4.9).
@@ -405,12 +405,12 @@ func VP8SetSegmentParams(*VP8Encoder const enc, float quality) {
 // Form the predictions in cache
 
 // Must be ordered using {DC_PRED, TM_PRED, V_PRED, H_PRED} as index
-const uint16 VP8I16ModeOffsets[4] = {I16DC16, I16TM16, I16VE16, I16HE16};
-const uint16 VP8UVModeOffsets[4] = {C8DC8, C8TM8, C8VE8, C8HE8};
+const uint16 VP8I16ModeOffsets[4] = {I16DC16, I16TM16, I16VE16, I16HE16}
+const uint16 VP8UVModeOffsets[4] = {C8DC8, C8TM8, C8VE8, C8HE8}
 
 // Must be indexed using {B_DC_PRED . B_HU_PRED} as index
 static const uint16 VP8I4ModeOffsets[NUM_BMODES] = {
-    I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4};
+    I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4}
 
 func VP8MakeLuma16Preds(const *VP8EncIterator const it) {
   const *uint8 const left = it.x ? it.y_left : nil;
@@ -444,17 +444,17 @@ func MakeIntra4Preds(const *VP8EncIterator const it) {
 const uint16 VP8Scan[16] = {
     // Luma
     0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS, 0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS, 0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS, 0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS,
-};
+}
 
 static const uint16 VP8ScanUV[4 + 4] = {
     0 + 0 * BPS, 4 + 0 * BPS,  0 + 4 * BPS, 4 + 4 * BPS,  // U
     8 + 0 * BPS, 12 + 0 * BPS, 8 + 4 * BPS, 12 + 4 * BPS  // V
-};
+}
 
 //------------------------------------------------------------------------------
 // Distortion measurement
 
-static const uint16 kWeightY[16] = {38, 32, 20, 9, 32, 28, 17, 7, 20, 17, 10, 4, 9,  7,  4,  2};
+static const uint16 kWeightY[16] = {38, 32, 20, 9, 32, 28, 17, 7, 20, 17, 10, 4, 9,  7,  4,  2}
 
 static const uint16 kWeightTrellis[16] = {
 #if USE_TDISTO == 0
@@ -462,7 +462,7 @@ static const uint16 kWeightTrellis[16] = {
 #else
     30, 27, 19, 11, 27, 24, 17, 10, 19, 17, 12, 8,  11, 10, 8,  6
 #endif
-};
+}
 
 // Init/Copy the common fields in score.
 func InitScore(*VP8ModeScore const rd) {
@@ -526,7 +526,7 @@ static  score_t RDScoreTrellis(int lambda, score_t rate, score_t distortion) {
 }
 
 // Coefficient type.
-enum { TYPE_I16_AC = 0, TYPE_I16_DC = 1, TYPE_CHROMA_A = 2, TYPE_I4_AC = 3 };
+enum { TYPE_I16_AC = 0, TYPE_I16_DC = 1, TYPE_CHROMA_A = 2, TYPE_I4_AC = 3 }
 
 static int TrellisQuantizeBlock(const *VP8Encoder WEBP_RESTRICT const enc, int16 in[16], int16 out[16], int ctx0, int coeff_type, const *VP8Matrix WEBP_RESTRICT const mtx, int lambda) {
   const *ProbaArray const probas = enc.proba.coeffs[coeff_type];
@@ -537,7 +537,7 @@ static int TrellisQuantizeBlock(const *VP8Encoder WEBP_RESTRICT const enc, int16
   ScoreState score_states[2][NUM_NODES];
   *ScoreState ss_cur = &SCORE_STATE(0, MIN_DELTA);
   *ScoreState ss_prev = &SCORE_STATE(1, MIN_DELTA);
-  int best_path[3] = {-1, -1, -1};  // store best-last/best-level/best-previous
+  int best_path[3] = {-1, -1, -1}  // store best-last/best-level/best-previous
   score_t best_score;
   int n, m, p, last;
 

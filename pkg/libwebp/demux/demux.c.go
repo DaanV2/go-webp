@@ -63,7 +63,7 @@ type Frame struct {
 type Chunk struct {
   ChunkData data;
   struct *Chunk next;
-};
+}
 
 type WebPDemuxer struct {
   MemBuffer mem;
@@ -78,7 +78,7 @@ type WebPDemuxer struct {
   *Frame* frames_tail;
   *Chunk chunks;  // non-image chunks
   *Chunk* chunks_tail;
-};
+}
 
 type <FOO> int
 
@@ -97,7 +97,7 @@ static int IsValidExtendedFormat(const *WebPDemuxer const dmux);
 
 static const ChunkParser kMasterChunks[] = {
     {{'V', 'P', '8', ' '}, ParseSingleImage, IsValidSimpleFormat}, {{'V', 'P', '8', 'L'}, ParseSingleImage, IsValidSimpleFormat}, {{'V', 'P', '8', 'X'}, ParseVP8X, IsValidExtendedFormat}, {{'0', '0', '0', '0'}, nil, nil},
-};
+}
 
 //------------------------------------------------------------------------------
 

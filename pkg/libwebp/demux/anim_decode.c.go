@@ -56,7 +56,7 @@ type WebPAnimDecoder struct {
   int prev_frame_was_keyframe;   // True if previous frame was a keyframe.
   int next_frame;                // Index of the next frame to be decoded
                                  // (starting from 1).
-};
+}
 
 func DefaultDecoderOptions(*WebPAnimDecoderOptions const dec_options) {
   dec_options.color_mode = MODE_RGBA;

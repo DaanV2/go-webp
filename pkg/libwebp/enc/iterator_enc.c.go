@@ -396,7 +396,7 @@ func VP8SetSegment(const *VP8EncIterator const it, int segment) {
 
 // Array to record the position of the top sample to pass to the prediction
 // functions in dsp.c.
-static const uint8 VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25, 9,  13, 17, 21, 5,  9,  13, 17};
+static const uint8 VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25, 9,  13, 17, 21, 5,  9,  13, 17}
 
 func VP8IteratorStartI4(*VP8EncIterator const it) {
   const *VP8Encoder const enc = it.enc;

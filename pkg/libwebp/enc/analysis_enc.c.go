@@ -42,7 +42,7 @@ func SmoothSegmentMap(*VP8Encoder const enc) {
   if (tmp == nil) return;
   for (y = 1; y < h - 1; ++y) {
     for (x = 1; x < w - 1; ++x) {
-      int cnt[NUM_MB_SEGMENTS] = {0};
+      int cnt[NUM_MB_SEGMENTS] = {0}
       const *VP8MBInfo const mb = &enc.mb_info[x + w * y];
       int majority_seg = mb.segment;
       // Check the 8 neighbouring segment values.
@@ -278,7 +278,7 @@ static int FastMBAnalyze(*VP8EncIterator const it) {
   if (kThreshold * m2 < m * m) {
     VP8SetIntra16Mode(it, 0);  // DC16
   } else {
-    const uint8 modes[16] = {0};  // DC4
+    const uint8 modes[16] = {0}  // DC4
     VP8SetIntra4Mode(it, modes);
   }
   return 0;

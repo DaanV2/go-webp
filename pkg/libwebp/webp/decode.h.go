@@ -155,7 +155,7 @@ type WebPRGBABuffer struct {  // view as RGBA
   rgba *uint8          // pointer to RGBA samples
   stride int            // stride in bytes from one scanline to the next.
   size uint64           // total size of the *rgba buffer.
-};
+}
 
 type WebPYUVABuffer struct {    // view as YUVA
    y, u, v, a *uint8;  // pointer to luma, chroma U/V, alpha samples
@@ -165,7 +165,7 @@ type WebPYUVABuffer struct {    // view as YUVA
    y_size uint64;           // luma plane size
    u_size, v_size uint64;   // chroma planes size
    a_size uint64;           // alpha-plane size
-};
+}
 
 // Output buffer
 type WebPDecBuffer struct {
@@ -184,7 +184,7 @@ type WebPDecBuffer struct {
   *uint8 private_memory;  // Internally allocated memory (only when
                             // is_external_memory is 0). Should not be used
                             // externally, but accessed via the buffer union.
-};
+}
 
 // Internal, version-checked, entry point
   int WebPInitDecBufferInternal(*WebPDecBuffer, int);
@@ -365,7 +365,7 @@ type WebPBitstreamFeatures struct {
   int format;         // 0 = undefined (/mixed), 1 = lossy, 2 = lossless
 
   uint32 pad[5];  // padding for later use
-};
+}
 
 // Internal, version-checked, entry point
  VP8StatusCode
@@ -405,14 +405,14 @@ type WebPDecoderOptions struct {
   int alpha_dithering_strength;     // alpha dithering strength in [0..100]
 
   uint32 pad[5];  // padding for later use
-};
+}
 
 // Main object storing the configuration for advanced decoding.
 type WebPDecoderConfig struct {
   WebPBitstreamFeatures input;  // Immutable bitstream features (optional)
   WebPDecBuffer output;         // Output buffer (can point to external mem)
   WebPDecoderOptions options;   // Decoding options
-};
+}
 
 // Internal, version-checked, entry point
   int WebPInitDecoderConfigInternal(*WebPDecoderConfig, int);

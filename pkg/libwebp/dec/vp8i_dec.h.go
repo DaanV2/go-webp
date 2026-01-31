@@ -271,7 +271,7 @@ type VP8Decoder struct {
   *uint8 alpha_plane;      // output. Persistent, contains the whole data.
   const *uint8 alpha_prev_line;  // last decoded alpha row (or nil)
   int alpha_dithering;  // derived from decoding options (0=off, 100=full)
-};
+}
 
 //------------------------------------------------------------------------------
 // internal functions. Not public.

@@ -64,7 +64,7 @@ enum {
 
   YUV_FIX2 = 6,  // fixed-point precision for YUV.RGB
   YUV_MASK2 = (256 << YUV_FIX2) - 1
-};
+}
 
 //------------------------------------------------------------------------------
 // slower on x86 by ~7-8%, but bit-exact with the SSE2/NEON version

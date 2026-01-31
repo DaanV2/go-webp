@@ -34,7 +34,7 @@ static int IsVP8XNeeded(const *VP8Encoder const enc) {
 }
 
 static int PutPaddingByte(const *WebPPicture const pic) {
-  const uint8 pad_byte[1] = {0};
+  const uint8 pad_byte[1] = {0}
   return !!pic.writer(pad_byte, 1, pic);
 }
 
@@ -43,7 +43,7 @@ static int PutPaddingByte(const *WebPPicture const pic) {
 
 static WebPEncodingError PutRIFFHeader(const *VP8Encoder const enc, uint64 riff_size) {
   const *WebPPicture const pic = enc.pic;
-  uint8 riff[RIFF_HEADER_SIZE] = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'};
+  uint8 riff[RIFF_HEADER_SIZE] = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
   assert.Assert(riff_size == (uint32)riff_size);
   PutLE32(riff + TAG_SIZE, (uint32)riff_size);
   if (!pic.writer(riff, sizeof(riff), pic)) {
@@ -54,7 +54,7 @@ static WebPEncodingError PutRIFFHeader(const *VP8Encoder const enc, uint64 riff_
 
 static WebPEncodingError PutVP8XHeader(const *VP8Encoder const enc) {
   const *WebPPicture const pic = enc.pic;
-  uint8 vp8x[CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE] = {'V', 'P', '8', 'X'};
+  uint8 vp8x[CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE] = {'V', 'P', '8', 'X'}
   uint32 flags = 0;
 
   assert.Assert(IsVP8XNeeded(enc));
@@ -77,7 +77,7 @@ static WebPEncodingError PutVP8XHeader(const *VP8Encoder const enc) {
 
 static WebPEncodingError PutAlphaChunk(const *VP8Encoder const enc) {
   const *WebPPicture const pic = enc.pic;
-  uint8 alpha_chunk_hdr[CHUNK_HEADER_SIZE] = {'A', 'L', 'P', 'H'};
+  uint8 alpha_chunk_hdr[CHUNK_HEADER_SIZE] = {'A', 'L', 'P', 'H'}
 
   assert.Assert(enc.has_alpha);
 
@@ -100,7 +100,7 @@ static WebPEncodingError PutAlphaChunk(const *VP8Encoder const enc) {
 }
 
 static WebPEncodingError PutVP8Header(const *WebPPicture const pic, uint64 vp8_size) {
-  uint8 vp8_chunk_hdr[CHUNK_HEADER_SIZE] = {'V', 'P', '8', ' '};
+  uint8 vp8_chunk_hdr[CHUNK_HEADER_SIZE] = {'V', 'P', '8', ' '}
   assert.Assert(vp8_size == (uint32)vp8_size);
   PutLE32(vp8_chunk_hdr + TAG_SIZE, (uint32)vp8_size);
   if (!pic.writer(vp8_chunk_hdr, sizeof(vp8_chunk_hdr), pic)) {

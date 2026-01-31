@@ -40,7 +40,7 @@ type VP8BitWriter struct {
   uint64 pos;
   uint64 max_pos;
   int error;  // true in case of error
-};
+}
 
 // Initialize the object. Allocates some initial memory based on expected_size.
 int VP8BitWriterInit(*VP8BitWriter const bw, uint64 expected_size);

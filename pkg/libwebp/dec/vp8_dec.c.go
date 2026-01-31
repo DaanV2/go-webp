@@ -402,12 +402,12 @@ int VP8GetHeaders(*VP8Decoder const dec, *VP8Io const io) {
 //------------------------------------------------------------------------------
 // Residual decoding (Paragraph 13.2 / 13.3)
 
-static const uint8 kCat3[] = {173, 148, 140, 0};
-static const uint8 kCat4[] = {176, 155, 140, 135, 0};
-static const uint8 kCat5[] = {180, 157, 141, 134, 130, 0};
-static const uint8 kCat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0};
-static const *uint8 const kCat3456[] = {kCat3, kCat4, kCat5, kCat6};
-static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15};
+static const uint8 kCat3[] = {173, 148, 140, 0}
+static const uint8 kCat4[] = {176, 155, 140, 135, 0}
+static const uint8 kCat5[] = {180, 157, 141, 134, 130, 0}
+static const uint8 kCat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0}
+static const *uint8 const kCat3456[] = {kCat3, kCat4, kCat5, kCat6}
+static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
 
 // See section 13-2: https://datatracker.ietf.org/doc/html/rfc6386#section-13.2
 static int GetLargeValue(*VP8BitReader const br, const *uint8 const p) {
@@ -528,7 +528,7 @@ static int ParseResiduals(*VP8Decoder const dec, *VP8MB const mb, *VP8BitReader 
 
   WEBP_UNSAFE_MEMSET(dst, 0, 384 * sizeof(*dst));
   if (!block.is_i4x4) {  // parse DC
-    int16 dc[16] = {0};
+    int16 dc[16] = {0}
     const int ctx = mb.nz_dc + left_mb.nz_dc;
     const int nz = GetCoeffs(token_br, bands[1], ctx, q.y2_mat, 0, dc);
     mb.nz_dc = left_mb.nz_dc = (nz > 0);

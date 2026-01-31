@@ -33,7 +33,7 @@ extern "C" {
 type WebPData struct {
   const *uint8 bytes;
   uint64 size;
-};
+}
 
 // Initializes the contents of the 'webp_data' object with default values.
 static  func WebPDataInit(*WebPData webp_data) {

@@ -89,7 +89,7 @@ type HTreeGroup struct {
   int use_packed_table;    // use packed table below for short literal code
   // table mapping input bits to a packed values, or escape case to literal code
   HuffmanCode32 packed_table[HUFFMAN_PACKED_TABLE_SIZE];
-};
+}
 
 // Creates the instance of HTreeGroup with specified number of tree-groups.
  *HTreeGroup VP8LHtreeGroupsNew(int num_htree_groups);

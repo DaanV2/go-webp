@@ -125,7 +125,7 @@ static  func ExportRowExpand_0(
     const *uint32 WEBP_RESTRICT frow, *uint8 WEBP_RESTRICT dst, int length, *WebPRescaler WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk.fy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
-  const v4i32 zero = {0};
+  const v4i32 zero = {0}
 
   while (length >= 16) {
     v4u32 src0, src1, src2, src3;
@@ -271,7 +271,7 @@ static  func ExportRowShrink_0(
   const v4u32 y_scale = (v4u32)__msa_fill_w(yscale);
   const v4u32 fxyscale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shiftval = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
-  const v4i32 zero = { 0 };
+  const v4i32 zero = { 0 }
 
   while (length >= 16) {
     v4u32 src0, src1, src2, src3, frac0, frac1, frac2, frac3;
@@ -352,7 +352,7 @@ static  func ExportRowShrink_1(
     *uint32 WEBP_RESTRICT irow, *uint8 WEBP_RESTRICT dst, int length, *WebPRescaler WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
-  const v4i32 zero = { 0 };
+  const v4i32 zero = { 0 }
 
   while (length >= 16) {
     v4u32 src0, src1, src2, src3;

@@ -103,7 +103,7 @@ static int CheckSlowModel(int info) {
   static const uint8 kSlowModels[] = {
       0x37, 0x4a, 0x4d,  // Silvermont Microarchitecture
       0x1c, 0x26, 0x27   // Atom Microarchitecture
-  };
+  }
   const uint32 model = ((info & 0xf0000) >> 12) | ((info >> 4) & 0xf);
   const uint32 family = (info >> 8) & 0xf;
   if (family == 0x06) {

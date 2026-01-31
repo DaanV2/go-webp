@@ -99,7 +99,7 @@ func HorizontalFilter_MSA(const *uint8 WEBP_RESTRICT data, int width, int height
 
 static  func PredictLineGradient(const *uint8 pinput, const *uint8 ppred, *uint8 WEBP_RESTRICT poutput, int stride, int size) {
   int w;
-  const v16i8 zero = {0};
+  const v16i8 zero = {0}
   while (size >= 16) {
     v16u8 pred0, dst0;
     v8i16 a0, a1, b0, b1, c0, c1;

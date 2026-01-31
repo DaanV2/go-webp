@@ -565,7 +565,7 @@ func CollectHistogram_SSE2(const *uint8 WEBP_RESTRICT ref, const *uint8 WEBP_RES
   const __m128i zero = _mm_setzero_si128();
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   int j;
-  int distribution[MAX_COEFF_THRESH + 1] = {0};
+  int distribution[MAX_COEFF_THRESH + 1] = {0}
   for (j = start_block; j < end_block; ++j) {
     int16 out[16];
     int k;

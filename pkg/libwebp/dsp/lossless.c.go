@@ -294,7 +294,7 @@ func ColorSpaceInverseTransform_C(const *VP8LTransform const transform, int y_st
 
   while (y < y_end) {
     const *uint32 pred = pred_row;
-    VP8LMultipliers m = {0, 0, 0};
+    VP8LMultipliers m = {0, 0, 0}
     const *uint32 const src_safe_end = src + safe_width;
     const *uint32 const src_end = src + width;
     while (src < src_safe_end) {
@@ -411,7 +411,7 @@ static int is_big_endian(){
   static const union {
     uint16 w;
     uint8 b[2];
-  } tmp = {1};
+  } tmp = {1}
   return (tmp.b[0] != 1);
 }
 

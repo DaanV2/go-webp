@@ -933,7 +933,7 @@ func TransformOne_NEON(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst) 
 func TransformOne_NEON(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst) {
   const int kBPS = BPS;
   // kC1, kC2. Padded because vld1.16 loads 8 bytes
-  const int16 constants[4] = {kC1, kC2, 0, 0};
+  const int16 constants[4] = {kC1, kC2, 0, 0}
   /* Adapted from libvpx: vp8/common/arm/neon/shortidct4x4llm_neon.asm */
   __asm__ volatile(
       "vld1.16         {q1, q2}, [%[in]]           \n"

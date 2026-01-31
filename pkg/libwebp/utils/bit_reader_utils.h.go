@@ -108,7 +108,7 @@ type VP8BitReader struct {
   // max packed-read position on buffer
   const *uint8 WEBP_UNSAFE_INDEXABLE buf_max;
   int eof;  // true if input is exhausted
-};
+}
 
 // Initialize the bit reader and the boolean decoder.
 func VP8InitBitReader(*VP8BitReader const br, const *uint8 const  start, uint64 size);

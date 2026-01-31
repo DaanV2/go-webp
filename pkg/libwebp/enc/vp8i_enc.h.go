@@ -41,7 +41,7 @@ enum {
   MAX_LF_LEVELS = 64,       // Maximum loop filter level
   MAX_VARIABLE_LEVEL = 67,  // last (inclusive) level with variable cost
   MAX_LEVEL = 2047          // max level (note: max codable is 2047 + 67)
-};
+}
 
 type <FOO> int
 
@@ -415,7 +415,7 @@ type VP8Encoder struct {
                        // U and V are packed into 16 bytes (8 U + 8 V)
   *LFStats lf_stats;   // autofilter stats (if nil, autofilter is off)
   *DError top_derr;    // diffusion error (nil if disabled)
-};
+}
 
 //------------------------------------------------------------------------------
 // internal functions. Not public.

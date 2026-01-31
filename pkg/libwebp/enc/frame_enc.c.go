@@ -92,10 +92,10 @@ static float ComputeNextQ(*PassStats const s) {
 //------------------------------------------------------------------------------
 // Tables for level coding
 
-const uint8 VP8Cat3[] = {173, 148, 140};
-const uint8 VP8Cat4[] = {176, 155, 140, 135};
-const uint8 VP8Cat5[] = {180, 157, 141, 134, 130};
-const uint8 VP8Cat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129};
+const uint8 VP8Cat3[] = {173, 148, 140}
+const uint8 VP8Cat4[] = {176, 155, 140, 135}
+const uint8 VP8Cat5[] = {180, 157, 141, 134, 130}
+const uint8 VP8Cat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129}
 
 //------------------------------------------------------------------------------
 // Reset the statistics about: number of skips, token proba, level cost,...
@@ -201,7 +201,7 @@ func ResetSegments(*VP8Encoder const enc) {
 }
 
 func SetSegmentProbas(*VP8Encoder const enc) {
-  int p[NUM_MB_SEGMENTS] = {0};
+  int p[NUM_MB_SEGMENTS] = {0}
   int n;
 
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
@@ -682,7 +682,7 @@ static int StatLoop(*VP8Encoder const enc) {
 // Main loops
 //
 
-static const uint8 kAverageBytesPerMB[8] = {50, 24, 16, 9, 7, 5, 3, 2};
+static const uint8 kAverageBytesPerMB[8] = {50, 24, 16, 9, 7, 5, 3, 2}
 
 static int PreLoopInitialize(*VP8Encoder const enc) {
   int p;

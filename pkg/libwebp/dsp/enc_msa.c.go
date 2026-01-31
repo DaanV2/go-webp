@@ -50,7 +50,7 @@ static  func ITransformOne(const *uint8 WEBP_RESTRICT ref, const *int16 WEBP_RES
   v4i32 in0, in1, in2, in3, hz0, hz1, hz2, hz3, vt0, vt1, vt2, vt3;
   v4i32 res0, res1, res2, res3;
   v16i8 dest0, dest1, dest2, dest3;
-  const v16i8 zero = {0};
+  const v16i8 zero = {0}
 
   LD_SH2(in, 8, input0, input1);
   UNPCK_SH_SW(input0, in0, in1);
@@ -82,13 +82,13 @@ func FTransform_MSA(const *uint8 WEBP_RESTRICT src, const *uint8 WEBP_RESTRICT r
   uint32 in0, in1, in2, in3;
   v4i32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5;
   v8i16 t0, t1, t2, t3;
-  v16u8 srcl0, srcl1, src0 = {0}, src1 = {0};
-  const v8i16 mask0 = {0, 4, 8, 12, 1, 5, 9, 13};
-  const v8i16 mask1 = {3, 7, 11, 15, 2, 6, 10, 14};
-  const v8i16 mask2 = {4, 0, 5, 1, 6, 2, 7, 3};
-  const v8i16 mask3 = {0, 4, 1, 5, 2, 6, 3, 7};
-  const v8i16 cnst0 = {2217, -5352, 2217, -5352, 2217, -5352, 2217, -5352};
-  const v8i16 cnst1 = {5352, 2217, 5352, 2217, 5352, 2217, 5352, 2217};
+  v16u8 srcl0, srcl1, src0 = {0}, src1 = {0}
+  const v8i16 mask0 = {0, 4, 8, 12, 1, 5, 9, 13}
+  const v8i16 mask1 = {3, 7, 11, 15, 2, 6, 10, 14}
+  const v8i16 mask2 = {4, 0, 5, 1, 6, 2, 7, 3}
+  const v8i16 mask3 = {0, 4, 1, 5, 2, 6, 3, 7}
+  const v8i16 cnst0 = {2217, -5352, 2217, -5352, 2217, -5352, 2217, -5352}
+  const v8i16 cnst1 = {5352, 2217, 5352, 2217, 5352, 2217, 5352, 2217}
 
   LW4(src, BPS, in0, in1, in2, in3);
   INSERT_W4_UB(in0, in1, in2, in3, src0);
@@ -131,14 +131,14 @@ func FTransform_MSA(const *uint8 WEBP_RESTRICT src, const *uint8 WEBP_RESTRICT r
 }
 
 func FTransformWHT_MSA(const *int16 WEBP_RESTRICT in, *int16 WEBP_RESTRICT out) {
-  v8i16 in0 = {0};
-  v8i16 in1 = {0};
+  v8i16 in0 = {0}
+  v8i16 in1 = {0}
   v8i16 tmp0, tmp1, tmp2, tmp3;
   v8i16 out0, out1;
-  const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11};
-  const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15};
-  const v8i16 mask2 = {0, 4, 8, 12, 1, 5, 9, 13};
-  const v8i16 mask3 = {3, 7, 11, 15, 2, 6, 10, 14};
+  const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11}
+  const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15}
+  const v8i16 mask2 = {0, 4, 8, 12, 1, 5, 9, 13}
+  const v8i16 mask3 = {3, 7, 11, 15, 2, 6, 10, 14}
 
   in0 = __msa_insert_h(in0, 0, in[0]);
   in0 = __msa_insert_h(in0, 1, in[64]);
@@ -170,14 +170,14 @@ func FTransformWHT_MSA(const *int16 WEBP_RESTRICT in, *int16 WEBP_RESTRICT out) 
 static int TTransform_MSA(const *uint8 WEBP_RESTRICT in, const *uint16 WEBP_RESTRICT w) {
   int sum;
   uint32 in0_m, in1_m, in2_m, in3_m;
-  v16i8 src0 = {0};
+  v16i8 src0 = {0}
   v8i16 in0, in1, tmp0, tmp1, tmp2, tmp3;
   v4i32 dst0, dst1;
-  const v16i8 zero = {0};
-  const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11};
-  const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15};
-  const v8i16 mask2 = {0, 4, 8, 12, 1, 5, 9, 13};
-  const v8i16 mask3 = {3, 7, 11, 15, 2, 6, 10, 14};
+  const v16i8 zero = {0}
+  const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11}
+  const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15}
+  const v8i16 mask2 = {0, 4, 8, 12, 1, 5, 9, 13}
+  const v8i16 mask3 = {3, 7, 11, 15, 2, 6, 10, 14}
 
   LW4(in, BPS, in0_m, in1_m, in2_m, in3_m);
   INSERT_W4_SB(in0_m, in1_m, in2_m, in3_m, src0);
@@ -221,14 +221,14 @@ static int Disto16x16_MSA(const *uint8 WEBP_RESTRICT const a, const *uint8 WEBP_
 
 func CollectHistogram_MSA(const *uint8 ref, const *uint8 pred, int start_block, int end_block, *VP8Histogram const histo) {
   int j;
-  int distribution[MAX_COEFF_THRESH + 1] = {0};
+  int distribution[MAX_COEFF_THRESH + 1] = {0}
   for (j = start_block; j < end_block; ++j) {
     int16 out[16];
     VP8FTransform(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
     {
       int k;
       v8i16 coeff0, coeff1;
-      const v8i16 zero = {0};
+      const v8i16 zero = {0}
       const v8i16 max_coeff_thr = __msa_ldi_h(MAX_COEFF_THRESH);
       LD_SH2(&out[0], 8, coeff0, coeff1);
       coeff0 = __msa_add_a_h(coeff0, zero);
@@ -256,7 +256,7 @@ func CollectHistogram_MSA(const *uint8 ref, const *uint8 pred, int start_block, 
 
 // vertical
 static  func VE4(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) {
-  const v16u8 A1 = {0};
+  const v16u8 A1 = {0}
   const uint64 val_m = LD(top - 1);
   const v16u8 A = (v16u8)__msa_insert_d((v2i64)A1, 0, val_m);
   const v16u8 B = SLDI_UB(A, A, 1);
@@ -291,7 +291,7 @@ static  func DC4(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) {
 }
 
 static  func RD4(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) {
-  const v16u8 A2 = {0};
+  const v16u8 A2 = {0}
   const uint64 val_m = LD(top - 5);
   const v16u8 A1 = (v16u8)__msa_insert_d((v2i64)A2, 0, val_m);
   const v16u8 A = (v16u8)__msa_insert_b((v16i8)A1, 8, top[3]);
@@ -311,7 +311,7 @@ static  func RD4(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) {
 }
 
 static  func LD4(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) {
-  const v16u8 A1 = {0};
+  const v16u8 A1 = {0}
   const uint64 val_m = LD(top);
   const v16u8 A = (v16u8)__msa_insert_d((v2i64)A1, 0, val_m);
   const v16u8 B = SLDI_UB(A, A, 1);
@@ -408,7 +408,7 @@ static  func HD4(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) {
 }
 
 static  func TM4(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) {
-  const v16i8 zero = {0};
+  const v16i8 zero = {0}
   const v8i16 TL = (v8i16)__msa_fill_h(top[-1]);
   const v8i16 L0 = (v8i16)__msa_fill_h(top[-2]);
   const v8i16 L1 = (v8i16)__msa_fill_h(top[-3]);
@@ -481,7 +481,7 @@ static  func TrueMotion16x16(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRIC
     if (top != nil) {
       int j;
       v8i16 d1, d2;
-      const v16i8 zero = {0};
+      const v16i8 zero = {0}
       const v8i16 TL = (v8i16)__msa_fill_h(left[-1]);
       const v16u8 T = LD_UB(top);
       ILVRL_B2_SH(zero, T, d1, d2);
@@ -607,7 +607,7 @@ static  func TrueMotion8x8(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT 
       int j;
       const v8i16 TL = (v8i16)__msa_fill_h(left[-1]);
       const v16u8 T1 = LD_UB(top);
-      const v16i8 zero = {0};
+      const v16i8 zero = {0}
       const v8i16 T = (v8i16)__msa_ilvr_b(zero, (v16i8)T1);
       const v8i16 d = T - TL;
       for (j = 0; j < 8; j += 4) {
@@ -642,7 +642,7 @@ static  func TrueMotion8x8(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT 
 
 static  func DCMode8x8(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT left, const *uint8 WEBP_RESTRICT top) {
   uint64 out;
-  v16u8 src = {0};
+  v16u8 src = {0}
   if (top != nil && left != nil) {
     const uint64 left_m = LD(left);
     const uint64 top_m = LD(top);
@@ -799,9 +799,9 @@ static int QuantizeBlock_MSA(int16 in[16], int16 out[16], const *VP8Matrix WEBP_
   v8i16 in0, in1, sh0, sh1, out0, out1;
   v8i16 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, sign0, sign1;
   v4i32 s0, s1, s2, s3, b0, b1, b2, b3, t0, t1, t2, t3;
-  const v8i16 zero = {0};
-  const v8i16 zigzag0 = {0, 1, 4, 8, 5, 2, 3, 6};
-  const v8i16 zigzag1 = {9, 12, 13, 10, 7, 11, 14, 15};
+  const v8i16 zero = {0}
+  const v8i16 zigzag0 = {0, 1, 4, 8, 5, 2, 3, 6}
+  const v8i16 zigzag1 = {9, 12, 13, 10, 7, 11, 14, 15}
   const v8i16 maxlevel = __msa_fill_h(MAX_LEVEL);
 
   LD_SH2(&in[0], 8, in0, in1);

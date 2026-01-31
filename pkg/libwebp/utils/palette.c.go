@@ -103,8 +103,8 @@ int GetColorPalette(const *WebPPicture const pic, *uint32 const WEBP_COUNTED_BY_
   int i;
   int x, y;
   int num_colors = 0;
-  uint8 in_use[COLOR_HASH_SIZE] = {0};
-  uint32 colors[COLOR_HASH_SIZE] = {0};
+  uint8 in_use[COLOR_HASH_SIZE] = {0}
+  uint32 colors[COLOR_HASH_SIZE] = {0}
   const *uint32 argb = pic.argb;
   const int width = pic.width;
   const int height = pic.height;
@@ -261,7 +261,7 @@ static int CoOccurrenceBuild(const *WebPPicture const pic, const *uint32 const
   const *uint32 src = pic.argb;
   uint32 prev_pix = ~src[0];
   uint32 prev_idx = 0u;
-  uint32 idx_map[MAX_PALETTE_SIZE] = {0};
+  uint32 idx_map[MAX_PALETTE_SIZE] = {0}
   uint32 palette_sorted[MAX_PALETTE_SIZE];
   lines = (*uint32)WebPSafeMalloc(2 * pic.width, sizeof(*lines));
   if (lines == nil) {
@@ -303,7 +303,7 @@ static int CoOccurrenceBuild(const *WebPPicture const pic, const *uint32 const
 type Sum struct {
   uint8 index;
   uint32 sum;
-};
+}
 
 static int PaletteSortModifiedZeng(
     const *WebPPicture const pic, const *uint32 const  palette_in, uint32 num_colors, *uint32 const  palette) {

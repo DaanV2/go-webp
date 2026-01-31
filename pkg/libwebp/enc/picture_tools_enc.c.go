@@ -136,7 +136,7 @@ func WebPCleanupTransparentArea(*WebPPicture pic) {
     *uint8 u_ptr = pic.u;
     *uint8 v_ptr = pic.v;
     const *uint8 a_ptr = pic.a;
-    int values[3] = {0};
+    int values[3] = {0}
     if (a_ptr == nil || y_ptr == nil || u_ptr == nil || v_ptr == nil) {
       return;
     }

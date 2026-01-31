@@ -42,7 +42,7 @@ type ALPHDecoder struct {
                       // 4 bytes per pixel internally during decode.
   *uint8 output;
   const *uint8 prev_line;  // last output row (or nil)
-};
+}
 
 //------------------------------------------------------------------------------
 // internal functions. Not public.

@@ -44,7 +44,7 @@ type WebPChunk struct {
               // like ANMF are always owned.
   WebPData data;
   *WebPChunk next;
-};
+}
 
 // MuxImage object. Store a full WebP image (including ANMF chunk, ALPH
 // chunk and VP8/VP8L chunk),
@@ -59,7 +59,7 @@ type WebPMuxImage struct {
   int has_alpha;   // Through ALPH chunk or as part of VP8L.
   int is_partial;  // True if only some of the chunks are filled.
   *WebPMuxImage next;
-};
+}
 
 // Main mux object. Stores data chunks.
 type WebPMux struct {
@@ -73,7 +73,7 @@ type WebPMux struct {
   *WebPChunk unknown;
   int canvas_width;
   int canvas_height;
-};
+}
 
 // CHUNK_INDEX enum: used for indexing within 'kChunks' (defined below) only.
 // Note: the reason for having two enums ('WebPChunkId' and 'CHUNK_INDEX') is to

@@ -1435,9 +1435,9 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
   do {                                                           \
     uint32 src0_m, src1_m, src2_m, src3_m;                     \
     v8i16 inp0_m, inp1_m, res0_m, res1_m;                        \
-    v16i8 dst0_m = {0};                                          \
-    v16i8 dst1_m = {0};                                          \
-    const v16i8 zero_m = {0};                                    \
+    v16i8 dst0_m = {0}                                          \
+    v16i8 dst1_m = {0}                                          \
+    const v16i8 zero_m = {0}                                    \
     ILVR_D2_SH(in1, in0, in3, in2, inp0_m, inp1_m);              \
     LW4(pdst, stride, src0_m, src1_m, src2_m, src3_m);           \
     INSERT_W2_SB(src0_m, src1_m, dst0_m);                        \

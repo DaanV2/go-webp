@@ -784,7 +784,7 @@ static int64 PredictionCostCrossColor(const uint32 accumulated[256], const uint3
 
 static int64 GetPredictionCostCrossColorRed(
     const *uint32 argb, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int green_to_red, const uint32 accumulated_red_histo[256]) {
-  uint32 histo[256] = {0};
+  uint32 histo[256] = {0}
   int64 cur_diff;
 
   VP8LCollectColorRedTransforms(argb, stride, tile_width, tile_height, green_to_red, histo);
@@ -831,7 +831,7 @@ func GetBestGreenToRed(const *uint32 argb, int stride, int tile_width, int tile_
 
 static int64 GetPredictionCostCrossColorBlue(
     const *uint32 argb, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int green_to_blue, int red_to_blue, const uint32 accumulated_blue_histo[256]) {
-  uint32 histo[256] = {0};
+  uint32 histo[256] = {0}
   int64 cur_diff;
 
   VP8LCollectColorBlueTransforms(argb, stride, tile_width, tile_height, green_to_blue, red_to_blue, histo);
@@ -866,8 +866,8 @@ const kGreenRedToBlueNumAxis = 8
 const kGreenRedToBlueMaxIters = 7
 func GetBestGreenRedToBlue(const *uint32 argb, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, const uint32 accumulated_blue_histo[256], *VP8LMultipliers const best_tx) {
   const int8 offset[kGreenRedToBlueNumAxis][2] = {
-      {0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-  const int8 delta_lut[kGreenRedToBlueMaxIters] = {16, 16, 8, 4, 2, 2, 2};
+      {0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}}
+  const int8 delta_lut[kGreenRedToBlueMaxIters] = {16, 16, 8, 4, 2, 2, 2}
   const int iters = (quality < 25)   ? 1
                     : (quality > 50) ? kGreenRedToBlueMaxIters
                                      : 4;
@@ -941,8 +941,8 @@ int VP8LColorSpaceTransform(int width, int height, int bits, int quality, *uint3
   const int tile_xsize = VP8LSubSampleSize(width, bits);
   const int tile_ysize = VP8LSubSampleSize(height, bits);
   int percent_start = *percent;
-  uint32 accumulated_red_histo[256] = {0};
-  uint32 accumulated_blue_histo[256] = {0};
+  uint32 accumulated_red_histo[256] = {0}
+  uint32 accumulated_blue_histo[256] = {0}
   int tile_x, tile_y;
   VP8LMultipliers prev_x, prev_y;
   MultipliersClear(&prev_y);

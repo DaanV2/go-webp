@@ -151,7 +151,7 @@ func FTransform_MIPSdspR2(const *uint8 WEBP_RESTRICT src, const *uint8 WEBP_REST
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   int temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16;
   int temp17, temp18, temp19, temp20;
-  const *int const args[3] = {(const *int)src, (const *int)ref, (const *int)out};
+  const *int const args[3] = {(const *int)src, (const *int)ref, (const *int)out}
 
   __asm__ volatile(
     HORIZONTAL_PASS(0, temp0,  temp1,  temp2,  temp3)
@@ -1360,7 +1360,7 @@ func FTransformWHT_MIPSdspR2(const *int16 WEBP_RESTRICT in, *int16 WEBP_RESTRICT
 
 func CollectHistogram_MIPSdspR2(const *uint8 ref, const *uint8 pred, int start_block, int end_block, *VP8Histogram const histo) {
   int j;
-  int distribution[MAX_COEFF_THRESH + 1] = {0};
+  int distribution[MAX_COEFF_THRESH + 1] = {0}
   const int max_coeff = (MAX_COEFF_THRESH << 16) + MAX_COEFF_THRESH;
   for (j = start_block; j < end_block; ++j) {
     int16 out[16];

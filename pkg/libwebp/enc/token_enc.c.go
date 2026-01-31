@@ -41,7 +41,7 @@ typedef uint16 token_t;  // bit #15: bit value
                            // bits #0..13: slot or constant proba
 type VP8Tokens struct {
   *VP8Tokens next;  // pointer to next page
-};
+}
 // Token data is located in memory just after the 'next' field.
 // This macro is used to return their address and hide the trick.
 #define TOKEN_DATA(p) ((const token_t*)&(p)[1])

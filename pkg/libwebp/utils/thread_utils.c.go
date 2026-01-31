@@ -282,7 +282,7 @@ func End(*WebPWorker const worker) {
 
 //------------------------------------------------------------------------------
 
-static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync, Launch, Execute, End};
+static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync, Launch, Execute, End}
 
 int WebPSetWorkerInterface(const *WebPWorkerInterface const winterface) {
   if (winterface == nil || winterface.Init == nil ||

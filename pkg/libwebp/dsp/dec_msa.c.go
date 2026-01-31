@@ -44,7 +44,7 @@ func TransformOne(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst) {
   v8i16 input0, input1;
   v4i32 in0, in1, in2, in3, hz0, hz1, hz2, hz3, vt0, vt1, vt2, vt3;
   v4i32 res0, res1, res2, res3;
-  const v16i8 zero = {0};
+  const v16i8 zero = {0}
   v16i8 dest0, dest1, dest2, dest3;
 
   LD_SH2(in, 8, input0, input1);
@@ -74,10 +74,10 @@ func TransformTwo(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst, int d
 
 func TransformWHT(const *int16 WEBP_RESTRICT in, *int16 WEBP_RESTRICT out) {
   v8i16 input0, input1;
-  const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11};
-  const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15};
-  const v8i16 mask2 = {0, 4, 8, 12, 1, 5, 9, 13};
-  const v8i16 mask3 = {3, 7, 11, 15, 2, 6, 10, 14};
+  const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11}
+  const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15}
+  const v8i16 mask2 = {0, 4, 8, 12, 1, 5, 9, 13}
+  const v8i16 mask3 = {3, 7, 11, 15, 2, 6, 10, 14}
   v8i16 tmp0, tmp1, tmp2, tmp3;
   v8i16 out0, out1;
 
@@ -126,13 +126,13 @@ func TransformAC3(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst) {
   const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
   const int in2 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
   const int in3 = WEBP_TRANSFORM_AC3_MUL1(in[1]);
-  v4i32 tmp0 = {0};
+  v4i32 tmp0 = {0}
   v4i32 out0 = __msa_fill_w(a + d4);
   v4i32 out1 = __msa_fill_w(a + c4);
   v4i32 out2 = __msa_fill_w(a - c4);
   v4i32 out3 = __msa_fill_w(a - d4);
   v4i32 res0, res1, res2, res3;
-  const v4i32 zero = {0};
+  const v4i32 zero = {0}
   v16u8 dest0, dest1, dest2, dest3;
 
   INSERT_W4_SW(in3, in2, -in2, -in3, tmp0);
@@ -661,7 +661,7 @@ func DC4(*uint8 dst) {  // DC
 func TM4(*uint8 dst) {
   const *uint8 const ptemp = dst - BPS - 1;
   v8i16 T, d, r0, r1, r2, r3;
-  const v16i8 zero = {0};
+  const v16i8 zero = {0}
   const v8i16 TL = (v8i16)__msa_fill_h(ptemp[0 * BPS]);
   const v8i16 L0 = (v8i16)__msa_fill_h(ptemp[1 * BPS]);
   const v8i16 L1 = (v8i16)__msa_fill_h(ptemp[2 * BPS]);
@@ -698,7 +698,7 @@ func RD4(*uint8 dst) {  // Down-right
   uint32 val0 = LW(ptop + 0);
   uint32 val1 = LW(ptop + 4);
   uint32 val2, val3;
-  v16u8 A, B, C, AC, B2, R, A1 = {0};
+  v16u8 A, B, C, AC, B2, R, A1 = {0}
 
   INSERT_W2_UB(val0, val1, A1);
   A = SLDI_UB(A1, A1, 12);
@@ -766,7 +766,7 @@ func DC16(*uint8 dst) {  // DC
 func TM16(*uint8 dst) {
   int j;
   v8i16 d1, d2;
-  const v16i8 zero = {0};
+  const v16i8 zero = {0}
   const v8i16 TL = (v8i16)__msa_fill_h(dst[-1 - BPS]);
   const v16i8 T = LD_SB(dst - BPS);
 
@@ -868,7 +868,7 @@ func DC8uv(*uint8 dst) {  // DC
 func TM8uv(*uint8 dst) {
   int j;
   const v16i8 T1 = LD_SB(dst - BPS);
-  const v16i8 zero = {0};
+  const v16i8 zero = {0}
   const v8i16 T = (v8i16)__msa_ilvr_b(zero, T1);
   const v8i16 TL = (v8i16)__msa_fill_h(dst[-1 - BPS]);
   const v8i16 d = T - TL;

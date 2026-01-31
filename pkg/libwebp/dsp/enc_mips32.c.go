@@ -117,7 +117,7 @@ static  func ITransformOne_MIPS32(const *uint8 WEBP_RESTRICT ref, const *int16 W
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   int temp7, temp8, temp9, temp10, temp11, temp12, temp13;
   int temp14, temp15, temp16, temp17, temp18, temp19, temp20;
-  const *int args[3] = {(const *int)ref, (const *int)in, (const *int)dst};
+  const *int args[3] = {(const *int)ref, (const *int)in, (const *int)dst}
 
   __asm__ volatile(
       "lw      %[temp20],      4(%[args])                      \n\t"        //
@@ -466,7 +466,7 @@ func FTransform_MIPS32(const *uint8 WEBP_RESTRICT src, const *uint8 WEBP_RESTRIC
   int temp17, temp18, temp19, temp20;
   const int c2217 = 2217;
   const int c5352 = 5352;
-  const *int const args[3] = {(const *int)src, (const *int)ref, (const *int)out};
+  const *int const args[3] = {(const *int)src, (const *int)ref, (const *int)out}
 
   __asm__ volatile(
     HORIZONTAL_PASS(0, temp0,  temp1,  temp2,  temp3)

@@ -40,7 +40,7 @@ const MIN_LENGTH =4
 // -----------------------------------------------------------------------------
 
 static const uint8 plane_to_code_lut[128] = {
-    96,  73,  55,  39,  23, 13, 5,  1,  255, 255, 255, 255, 255, 255, 255, 255, 101, 78,  58,  42,  26, 16, 8,  2,  0,   3,   9,   17,  27,  43,  59,  79, 102, 86,  62,  46,  32, 20, 10, 6,  4,   7,   11,  21,  33,  47,  63,  87, 105, 90,  70,  52,  37, 28, 18, 14, 12,  15,  19,  29,  38,  53,  71,  91, 110, 99,  82,  66,  48, 35, 30, 24, 22,  25,  31,  36,  49,  67,  83,  100, 115, 108, 94,  76,  64, 50, 44, 40, 34,  41,  45,  51,  65,  77,  95,  109, 118, 113, 103, 92,  80, 68, 60, 56, 54,  57,  61,  69,  81,  93,  104, 114, 119, 116, 111, 106, 97, 88, 84, 74, 72,  75,  85,  89,  98,  107, 112, 117};
+    96,  73,  55,  39,  23, 13, 5,  1,  255, 255, 255, 255, 255, 255, 255, 255, 101, 78,  58,  42,  26, 16, 8,  2,  0,   3,   9,   17,  27,  43,  59,  79, 102, 86,  62,  46,  32, 20, 10, 6,  4,   7,   11,  21,  33,  47,  63,  87, 105, 90,  70,  52,  37, 28, 18, 14, 12,  15,  19,  29,  38,  53,  71,  91, 110, 99,  82,  66,  48, 35, 30, 24, 22,  25,  31,  36,  49,  67,  83,  100, 115, 108, 94,  76,  64, 50, 44, 40, 34,  41,  45,  51,  65,  77,  95,  109, 118, 113, 103, 92,  80, 68, 60, 56, 54,  57,  61,  69,  81,  93,  104, 114, 119, 116, 111, 106, 97, 88, 84, 74, 72,  75,  85,  89,  98,  107, 112, 117}
 
 extern int VP8LDistanceToPlaneCode(int xsize, int dist);
 int VP8LDistanceToPlaneCode(int xsize, int dist) {
@@ -74,7 +74,7 @@ type PixOrCopyBlock struct {
   *PixOrCopyBlock next;  // next block (or nil)
   *PixOrCopy start;      // data start
   int size;              // currently used size
-};
+}
 
 extern func VP8LClearBackwardRefs(*VP8LBackwardRefs const refs);
 func VP8LClearBackwardRefs(*VP8LBackwardRefs const refs) {
@@ -560,8 +560,8 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, const *uint32 const a
   int i;
   const int pix_count = xsize * ysize;
   *uint16 counts;
-  int window_offsets[WINDOW_OFFSETS_SIZE_MAX] = {0};
-  int window_offsets_new[WINDOW_OFFSETS_SIZE_MAX] = {0};
+  int window_offsets[WINDOW_OFFSETS_SIZE_MAX] = {0}
+  int window_offsets_new[WINDOW_OFFSETS_SIZE_MAX] = {0}
   int window_offsets_size = 0;
   int window_offsets_new_size = 0;
   *uint16 const counts_ini =
@@ -723,10 +723,10 @@ static int CalculateBestCacheSize(const *uint32 argb, int quality, const *VP8LBa
   int i;
   const int cache_bits_max = (quality <= 25) ? 0 : *best_cache_bits;
   uint64 entropy_min = WEBP_UINT64_MAX;
-  int cc_init[MAX_COLOR_CACHE_BITS + 1] = {0};
+  int cc_init[MAX_COLOR_CACHE_BITS + 1] = {0}
   VP8LColorCache hashers[MAX_COLOR_CACHE_BITS + 1];
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
-  *VP8LHistogram histos[MAX_COLOR_CACHE_BITS + 1] = {nil};
+  *VP8LHistogram histos[MAX_COLOR_CACHE_BITS + 1] = {nil}
   int ok = 0;
 
   assert.Assert(cache_bits_max >= 0 && cache_bits_max <= MAX_COLOR_CACHE_BITS);
@@ -871,8 +871,8 @@ static int GetBackwardReferences(int width, int height, const *uint32 const argb
   *VP8LHistogram histo = nil;
   int i, lz77_type;
   // Index 0 is for a color cache, index 1 for no cache (if needed).
-  int lz77_types_best[2] = {0, 0};
-  uint64 bit_costs_best[2] = {WEBP_UINT64_MAX, WEBP_UINT64_MAX};
+  int lz77_types_best[2] = {0, 0}
+  uint64 bit_costs_best[2] = {WEBP_UINT64_MAX, WEBP_UINT64_MAX}
   VP8LHashChain hash_chain_box;
   *VP8LBackwardRefs const refs_tmp = &refs[do_no_cache ? 2 : 1];
   int status = 0;

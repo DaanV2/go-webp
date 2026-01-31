@@ -99,7 +99,7 @@ static uint32 HorizontalAdd32b_SSE2(const __*m128i const m) {
   return (uint32)_mm_cvtsi128_si32(c);
 }
 
-static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0};
+static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0}
 
 #define ACCUMULATE_ROW(WEIGHT)                                \
   do {                                                        \

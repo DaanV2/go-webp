@@ -135,7 +135,7 @@ type WebPConfig struct {
 
   int qmin;  // minimum permissible quality factor
   int qmax;  // maximum permissible quality factor
-};
+}
 
 // Enumerate some predefined settings for WebPConfig, depending on the type
 // of source picture. These presets are used when calling WebPConfigPreset().
@@ -212,7 +212,7 @@ type WebPAuxStats struct {
   int cross_color_transform_bits;  // precision bits for cross-color transform
 
   uint32 pad[1];  // padding for later use
-};
+}
 
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
@@ -226,7 +226,7 @@ type WebPMemoryWriter struct {
   uint64 size;      // final size
   uint64 max_size;  // total capacity
   uint32 pad[1];  // padding for later use
-};
+}
 
 // The following must be called first before any use.
  func WebPMemoryWriterInit(*WebPMemoryWriter writer);
@@ -339,7 +339,7 @@ type WebPPicture struct {
   *void memory_;       // row chunk of memory for yuva planes
   *void memory_argb_;  // and for argb too.
   *void pad7[2];       // padding for later use
-};
+}
 
 // Internal, version-checked, entry point
   int WebPPictureInitInternal(*WebPPicture, int);

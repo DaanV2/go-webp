@@ -47,7 +47,7 @@ func ConvertBGRAToBGR_NEON(const *uint32 WEBP_RESTRICT src, int num_pixels, *uin
   const *uint32 const end = src + (num_pixels & ~15);
   for (; src < end; src += 16) {
     const uint8x16x4_t pixel = vld4q_u8((*uint8)src);
-    const uint8x16x3_t tmp = {{pixel.val[0], pixel.val[1], pixel.val[2]}};
+    const uint8x16x3_t tmp = {{pixel.val[0], pixel.val[1], pixel.val[2]}}
     vst3q_u8(dst, tmp);
     dst += 48;
   }
@@ -58,7 +58,7 @@ func ConvertBGRAToRGB_NEON(const *uint32 WEBP_RESTRICT src, int num_pixels, *uin
   const *uint32 const end = src + (num_pixels & ~15);
   for (; src < end; src += 16) {
     const uint8x16x4_t pixel = vld4q_u8((*uint8)src);
-    const uint8x16x3_t tmp = {{pixel.val[2], pixel.val[1], pixel.val[0]}};
+    const uint8x16x3_t tmp = {{pixel.val[2], pixel.val[1], pixel.val[0]}}
     vst3q_u8(dst, tmp);
     dst += 48;
   }
@@ -69,7 +69,7 @@ func ConvertBGRAToRGB_NEON(const *uint32 WEBP_RESTRICT src, int num_pixels, *uin
 
 // gcc-4.6.0 fallback
 
-static const uint8 kRGBAShuffle[8] = {2, 1, 0, 3, 6, 5, 4, 7};
+static const uint8 kRGBAShuffle[8] = {2, 1, 0, 3, 6, 5, 4, 7}
 
 func ConvertBGRAToRGBA_NEON(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
   const *uint32 const end = src + (num_pixels & ~1);
@@ -82,7 +82,7 @@ func ConvertBGRAToRGBA_NEON(const *uint32 WEBP_RESTRICT src, int num_pixels, *ui
   VP8LConvertBGRAToRGBA_C(src, num_pixels & 1, dst);  // left-overs
 }
 
-static const uint8 kBGRShuffle[3][8] = {{0, 1, 2, 4, 5, 6, 8, 9}, {10, 12, 13, 14, 16, 17, 18, 20}, {21, 22, 24, 25, 26, 28, 29, 30}};
+static const uint8 kBGRShuffle[3][8] = {{0, 1, 2, 4, 5, 6, 8, 9}, {10, 12, 13, 14, 16, 17, 18, 20}, {21, 22, 24, 25, 26, 28, 29, 30}}
 
 func ConvertBGRAToBGR_NEON(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
   const *uint32 const end = src + (num_pixels & ~7);
@@ -100,7 +100,7 @@ func ConvertBGRAToBGR_NEON(const *uint32 WEBP_RESTRICT src, int num_pixels, *uin
   VP8LConvertBGRAToBGR_C(src, num_pixels & 7, dst);  // left-overs
 }
 
-static const uint8 kRGBShuffle[3][8] = {{2, 1, 0, 6, 5, 4, 10, 9}, {8, 14, 13, 12, 18, 17, 16, 22}, {21, 20, 26, 25, 24, 30, 29, 28}};
+static const uint8 kRGBShuffle[3][8] = {{2, 1, 0, 6, 5, 4, 10, 9}, {8, 14, 13, 12, 18, 17, 16, 22}, {21, 20, 26, 25, 24, 30, 29, 28}}
 
 func ConvertBGRAToRGB_NEON(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
   const *uint32 const end = src + (num_pixels & ~7);
@@ -477,14 +477,14 @@ func PredictorAdd13_NEON(const *uint32 in, const *uint32 upper, int num_pixels, 
 
 #ifdef USE_VTBLQ
 // 255 = byte will be zeroed
-static const uint8 kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255};
+static const uint8 kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255}
 
 static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x16_t shuffle) {
   return vcombine_u8(vtbl1q_u8(argb, vget_low_u8(shuffle)), vtbl1q_u8(argb, vget_high_u8(shuffle)));
 }
 #else   // !USE_VTBLQ
 // 255 = byte will be zeroed
-static const uint8 kGreenShuffle[8] = {1, 255, 1, 255, 5, 255, 5, 255};
+static const uint8 kGreenShuffle[8] = {1, 255, 1, 255, 5, 255, 5, 255}
 
 static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x8_t shuffle) {
   return vcombine_u8(vtbl1_u8(vget_low_u8(argb), shuffle), vtbl1_u8(vget_high_u8(argb), shuffle));
@@ -513,17 +513,17 @@ func AddGreenToBlueAndRed_NEON(const *uint32 src, int num_pixels, *uint32 dst) {
 func TransformColorInverse_NEON(const *VP8LMultipliers const m, const *uint32 const src, int num_pixels, *uint32 dst) {
 // sign-extended multiplying constants, pre-shifted by 6.
 #define CST(X) (((int16)(m.X << 8)) >> 6)
-  const int16 rb[8] = {CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red)};
+  const int16 rb[8] = {CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red)}
   const int16x8_t mults_rb = vld1q_s16(rb);
   const int16 b2[8] = {
-      0, CST(red_to_blue), 0, CST(red_to_blue), 0, CST(red_to_blue), 0, CST(red_to_blue), };
+      0, CST(red_to_blue), 0, CST(red_to_blue), 0, CST(red_to_blue), 0, CST(red_to_blue), }
   const int16x8_t mults_b2 = vld1q_s16(b2);
 #undef CST
 #ifdef USE_VTBLQ
-  static const uint8 kg0g0[16] = {255, 1, 255, 1, 255, 5,  255, 5, 255, 9, 255, 9, 255, 13, 255, 13};
+  static const uint8 kg0g0[16] = {255, 1, 255, 1, 255, 5,  255, 5, 255, 9, 255, 9, 255, 13, 255, 13}
   const uint8x16_t shuffle = vld1q_u8(kg0g0);
 #else
-  static const uint8 k0g0g[8] = {255, 1, 255, 1, 255, 5, 255, 5};
+  static const uint8 k0g0g[8] = {255, 1, 255, 1, 255, 5, 255, 5}
   const uint8x8_t shuffle = vld1_u8(k0g0g);
 #endif
   const uint32x4_t mask_ag = vdupq_n_u32(0xff00ff00u);

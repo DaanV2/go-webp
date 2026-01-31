@@ -41,7 +41,7 @@ const int VP8DspScan[16 + 4 + 4] = {
 
     0 + 0 * BPS,  4 + 0 * BPS,  0 + 4 * BPS,  4 + 4 * BPS,  // U
     8 + 0 * BPS,  12 + 0 * BPS, 8 + 4 * BPS,  12 + 4 * BPS  // V
-};
+}
 
 // general-purpose util function
 func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], *VP8Histogram const histo) {
@@ -61,7 +61,7 @@ func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], *VP8Histo
 #if !WEBP_NEON_OMIT_C_CODE
 func CollectHistogram_C(const *uint8 WEBP_RESTRICT ref, const *uint8 WEBP_RESTRICT pred, int start_block, int end_block, *VP8Histogram WEBP_RESTRICT const histo) {
   int j;
-  int distribution[MAX_COEFF_THRESH + 1] = {0};
+  int distribution[MAX_COEFF_THRESH + 1] = {0}
   for (j = start_block; j < end_block; ++j) {
     int k;
     int16 out[16];
@@ -341,7 +341,7 @@ func Intra16Preds_C(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT left, c
 // vertical
 func VE4(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) {
   const uint8 vals[4] = {
-      AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), };
+      AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
   int i;
   for (i = 0; i < 4; ++i) {
     memcpy(dst + i * BPS, vals, 4);
@@ -632,7 +632,7 @@ static int Disto16x16_C(const *uint8 WEBP_RESTRICT const a, const *uint8 WEBP_RE
 //
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
-static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15};
+static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
 
 // Simple quantization
 static int QuantizeBlock_C(int16 in[16], int16 out[16], const *VP8Matrix WEBP_RESTRICT const mtx) {

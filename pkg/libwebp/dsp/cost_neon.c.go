@@ -18,7 +18,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static const uint8 position[16] = {1, 2,  3,  4,  5,  6,  7,  8, 9, 10, 11, 12, 13, 14, 15, 16};
+static const uint8 position[16] = {1, 2,  3,  4,  5,  6,  7,  8, 9, 10, 11, 12, 13, 14, 15, 16}
 
 func SetResidualCoeffs_NEON(const *int16 WEBP_RESTRICT const coeffs, *VP8Residual WEBP_RESTRICT const res) {
   const int16x8_t minus_one = vdupq_n_s16(-1);

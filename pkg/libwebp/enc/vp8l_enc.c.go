@@ -186,7 +186,7 @@ static int AnalyzeEntropy(const *uint32 argb, int width, int height, int argb_st
       // the cross color optimization.
       {
         static const uint8 kHistoPairs[5][2] = {
-            {kHistoRed, kHistoBlue}, {kHistoRedPred, kHistoBluePred}, {kHistoRedSubGreen, kHistoBlueSubGreen}, {kHistoRedPredSubGreen, kHistoBluePredSubGreen}, {kHistoRed, kHistoBlue}};
+            {kHistoRed, kHistoBlue}, {kHistoRedPred, kHistoBluePred}, {kHistoRedSubGreen, kHistoBlueSubGreen}, {kHistoRedPredSubGreen, kHistoBluePredSubGreen}, {kHistoRed, kHistoBlue}}
         const *HistogramBuckets const red_histo =
             &histo.category[kHistoPairs[*min_entropy_ix][0]];
         const *HistogramBuckets const blue_histo =
@@ -462,7 +462,7 @@ func StoreHuffmanTreeOfHuffmanTreeToBitMask(
   // RFC 1951 will calm you down if you are worried about this funny sequence.
   // This sequence is tuned from that, but more weighted for lower symbol count, // and more spiking histograms.
   static const uint8 kStorageOrder[CODE_LENGTH_CODES] = {
-      17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+      17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
   int i;
   // Throw away trailing zeros:
   int codes_to_store = CODE_LENGTH_CODES;
@@ -516,8 +516,8 @@ func StoreHuffmanTreeToBitMask(
 
 // 'huff_tree' and 'tokens' are pre-alloacted buffers.
 func StoreFullHuffmanCode(*VP8LBitWriter const bw, *HuffmanTree const huff_tree, *HuffmanTreeToken const tokens, const *HuffmanTreeCode const tree) {
-  uint8 code_length_bitdepth[CODE_LENGTH_CODES] = {0};
-  uint16 code_length_bitdepth_symbols[CODE_LENGTH_CODES] = {0};
+  uint8 code_length_bitdepth[CODE_LENGTH_CODES] = {0}
+  uint16 code_length_bitdepth_symbols[CODE_LENGTH_CODES] = {0}
   const int max_tokens = tree.num_symbols;
   int num_tokens;
   HuffmanTreeCode huffman_code;
@@ -528,8 +528,8 @@ func StoreFullHuffmanCode(*VP8LBitWriter const bw, *HuffmanTree const huff_tree,
   VP8LPutBits(bw, 0, 1);
   num_tokens = VP8LCreateCompressedHuffmanTree(tree, tokens, max_tokens);
   {
-    uint32 histogram[CODE_LENGTH_CODES] = {0};
-    uint8 buf_rle[CODE_LENGTH_CODES] = {0};
+    uint32 histogram[CODE_LENGTH_CODES] = {0}
+    uint8 buf_rle[CODE_LENGTH_CODES] = {0}
     int i;
     for (i = 0; i < num_tokens; ++i) {
       ++histogram[tokens[i].code];
@@ -583,7 +583,7 @@ func StoreFullHuffmanCode(*VP8LBitWriter const bw, *HuffmanTree const huff_tree,
 func StoreHuffmanCode(*VP8LBitWriter const bw, *HuffmanTree const huff_tree, *HuffmanTreeToken const tokens, const *HuffmanTreeCode const huffman_code) {
   int i;
   int count = 0;
-  int symbols[2] = {0, 0};
+  int symbols[2] = {0, 0}
   const int kMaxBits = 8;
   const int kMaxSymbol = 1 << kMaxBits;
 
@@ -652,7 +652,7 @@ static int StoreImageToBitMask(*VP8LBitWriter const bw, int width, int histo_bit
       codes = huffman_codes + 5 * histogram_ix;
     }
     if (PixOrCopyIsLiteral(v)) {
-      static const uint8 order[] = {1, 2, 0, 3};
+      static const uint8 order[] = {1, 2, 0, 3}
       int k;
       for (k = 0; k < 4; ++k) {
         const int code = PixOrCopyLiteral(v, order[k]);
@@ -697,8 +697,8 @@ static int EncodeImageNoHuffman(*VP8LBitWriter const bw, const *uint32 const arg
   int max_tokens = 0;
   *VP8LBackwardRefs refs;
   *HuffmanTreeToken tokens = nil;
-  HuffmanTreeCode huffman_codes[5] = {{0, nil, nil}};
-  const uint32 histogram_symbols[1] = {0};  // only one tree, one symbol
+  HuffmanTreeCode huffman_codes[5] = {{0, nil, nil}}
+  const uint32 histogram_symbols[1] = {0}  // only one tree, one symbol
   int cache_bits = 0;
   *VP8LHistogramSet histogram_image = nil;
   *HuffmanTree const huff_tree = (*HuffmanTree)WebPSafeMalloc(
@@ -1028,7 +1028,7 @@ static int ApplyCrossColorFilter(*VP8LEncoder const enc, int width, int height, 
 
 static int WriteRiffHeader(const *WebPPicture const pic, uint64 riff_size, uint64 vp8l_size) {
   uint8 riff[RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE + VP8L_SIGNATURE_SIZE] = {
-      'R', 'I', 'F', 'F', 0,   0,   0, 0,   'W', 'E', 'B', 'P', 'V', 'P', '8', 'L', 0,   0,   0,   0,   VP8L_MAGIC_BYTE, };
+      'R', 'I', 'F', 'F', 0,   0,   0, 0,   'W', 'E', 'B', 'P', 'V', 'P', '8', 'L', 0,   0,   0,   0,   VP8L_MAGIC_BYTE, }
   PutLE32(riff + TAG_SIZE, (uint32)riff_size);
   PutLE32(riff + RIFF_HEADER_SIZE + TAG_SIZE, (uint32)vp8l_size);
   return pic.writer(riff, sizeof(riff), pic);
@@ -1068,7 +1068,7 @@ static int WriteImage(const *WebPPicture const pic, *VP8LBitWriter const bw, *ui
   }
 
   if (pad) {
-    const uint8 pad_byte[1] = {0};
+    const uint8 pad_byte[1] = {0}
     if (!pic.writer(pad_byte, 1, pic)) {
       return WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_WRITE);
     }
@@ -1227,7 +1227,7 @@ static int ApplyPalette(const *uint32 src, uint32 src_stride, *uint32 dst, uint3
     int i, j;
     uint16 buffer[PALETTE_INV_SIZE];
     uint32 (*const hash_functions[])(uint32) = {
-        ApplyPaletteHash0, ApplyPaletteHash1, ApplyPaletteHash2};
+        ApplyPaletteHash0, ApplyPaletteHash1, ApplyPaletteHash2}
 
     // Try to find a perfect hash function able to go from a color to an index
     // within 1 << PALETTE_INV_SIZE_BITS in order to build a hash map to go

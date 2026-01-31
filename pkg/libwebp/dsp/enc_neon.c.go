@@ -125,7 +125,7 @@ func ITransformOne_NEON(const *uint8 WEBP_RESTRICT ref, const *int16 WEBP_RESTRI
 
 func ITransformOne_NEON(const *uint8 WEBP_RESTRICT ref, const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst) {
   const int kBPS = BPS;
-  const int16 kC1C2[] = {kC1, kC2, 0, 0};
+  const int16 kC1C2[] = {kC1, kC2, 0, 0}
 
   __asm__ volatile(
       "vld1.16         {q1, q2}, [%[in]]           \n"
@@ -334,8 +334,8 @@ func FTransform_NEON(const *uint8 WEBP_RESTRICT src, const *uint8 WEBP_RESTRICT 
 #else
 
 // adapted from vp8/encoder/arm/neon/shortfdct_neon.asm
-static const int16 kCoeff16[] = {5352, 5352, 5352, 5352, 2217, 2217, 2217, 2217};
-static const int32 kCoeff32[] = {1812,  1812,  1812,  1812,  937,   937, 937,   937,   12000, 12000, 12000, 12000, 51000, 51000, 51000, 51000};
+static const int16 kCoeff16[] = {5352, 5352, 5352, 5352, 2217, 2217, 2217, 2217}
+static const int32 kCoeff32[] = {1812,  1812,  1812,  1812,  937,   937, 937,   937,   12000, 12000, 12000, 12000, 51000, 51000, 51000, 51000}
 
 func FTransform_NEON(const *uint8 WEBP_RESTRICT src, const *uint8 WEBP_RESTRICT ref, *int16 WEBP_RESTRICT out) {
   const int kBPS = BPS;
@@ -674,7 +674,7 @@ static int Disto16x16_NEON(const *uint8 WEBP_RESTRICT const a, const *uint8 WEBP
 func CollectHistogram_NEON(const *uint8 WEBP_RESTRICT ref, const *uint8 WEBP_RESTRICT pred, int start_block, int end_block, *VP8Histogram WEBP_RESTRICT const histo) {
   const uint16x8_t max_coeff_thresh = vdupq_n_u16(MAX_COEFF_THRESH);
   int j;
-  int distribution[MAX_COEFF_THRESH + 1] = {0};
+  int distribution[MAX_COEFF_THRESH + 1] = {0}
   for (j = start_block; j < end_block; ++j) {
     int16 out[16];
     FTransform_NEON(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
@@ -803,7 +803,7 @@ static int16x8_t Quantize_NEON(*int16 WEBP_RESTRICT const in, const *VP8Matrix W
   return c3;
 }
 
-static const uint8 kShuffles[4][8] = {{0, 1, 2, 3, 8, 9, 16, 17}, {10, 11, 4, 5, 6, 7, 12, 13}, {18, 19, 24, 25, 26, 27, 20, 21}, {14, 15, 22, 23, 28, 29, 30, 31}};
+static const uint8 kShuffles[4][8] = {{0, 1, 2, 3, 8, 9, 16, 17}, {10, 11, 4, 5, 6, 7, 12, 13}, {18, 19, 24, 25, 26, 27, 20, 21}, {14, 15, 22, 23, 28, 29, 30, 31}}
 
 static int QuantizeBlock_NEON(int16 in[16], int16 out[16], const *VP8Matrix WEBP_RESTRICT const mtx) {
   const int16x8_t out0 = Quantize_NEON(in, mtx, 0);
@@ -888,13 +888,13 @@ func Intra4Preds_NEON(*uint8 WEBP_RESTRICT dst, const *uint8 WEBP_RESTRICT top) 
   //     L   K   J   I   X   A   B   C   D   E   F   G   H
   //    -5  -4  -3  -2  -1   0   1   2   3   4   5   6   7
   static const uint8 kLookupTbl1[64] = {
-      0, 0,  1,  2,  3, 4,  5,  6,  7, 8,  9, 10, 11, 12, 12, 12, 3, 3,  3,  3,  2, 2,  2,  2,  1, 1,  1, 1,  0,  0,  0,  0, 4, 20, 21, 22, 3, 18, 2,  17, 3, 19, 4, 20, 2,  17, 1,  16, 2, 18, 3,  19, 1, 16, 31, 31, 1, 17, 2, 18, 31, 31, 31, 31};
+      0, 0,  1,  2,  3, 4,  5,  6,  7, 8,  9, 10, 11, 12, 12, 12, 3, 3,  3,  3,  2, 2,  2,  2,  1, 1,  1, 1,  0,  0,  0,  0, 4, 20, 21, 22, 3, 18, 2,  17, 3, 19, 4, 20, 2,  17, 1,  16, 2, 18, 3,  19, 1, 16, 31, 31, 1, 17, 2, 18, 31, 31, 31, 31}
 
   static const uint8 kLookupTbl2[64] = {
-      20, 21, 22, 23, 5,  6,  7,  8,  22, 23, 24, 25, 6,  7,  8,  9, 19, 20, 21, 22, 20, 21, 22, 23, 23, 24, 25, 26, 22, 23, 24, 25, 18, 19, 20, 21, 19, 5,  6,  7,  24, 25, 26, 27, 7,  8,  9,  26, 17, 18, 19, 20, 18, 20, 21, 22, 25, 26, 27, 28, 23, 24, 25, 27};
+      20, 21, 22, 23, 5,  6,  7,  8,  22, 23, 24, 25, 6,  7,  8,  9, 19, 20, 21, 22, 20, 21, 22, 23, 23, 24, 25, 26, 22, 23, 24, 25, 18, 19, 20, 21, 19, 5,  6,  7,  24, 25, 26, 27, 7,  8,  9,  26, 17, 18, 19, 20, 18, 20, 21, 22, 25, 26, 27, 28, 23, 24, 25, 27}
 
   static const uint8 kLookupTbl3[64] = {
-      30, 30, 30, 30, 0, 0, 0, 0, 21, 22, 23, 24, 19, 19, 19, 19, 30, 30, 30, 30, 0, 0, 0, 0, 21, 22, 23, 24, 18, 18, 18, 18, 30, 30, 30, 30, 0, 0, 0, 0, 21, 22, 23, 24, 17, 17, 17, 17, 30, 30, 30, 30, 0, 0, 0, 0, 21, 22, 23, 24, 16, 16, 16, 16};
+      30, 30, 30, 30, 0, 0, 0, 0, 21, 22, 23, 24, 19, 19, 19, 19, 30, 30, 30, 30, 0, 0, 0, 0, 21, 22, 23, 24, 18, 18, 18, 18, 30, 30, 30, 30, 0, 0, 0, 0, 21, 22, 23, 24, 17, 17, 17, 17, 30, 30, 30, 30, 0, 0, 0, 0, 21, 22, 23, 24, 16, 16, 16, 16}
 
   const uint8x16x4_t lookup_avgs1 = Vld1qU8x4(kLookupTbl1);
   const uint8x16x4_t lookup_avgs2 = Vld1qU8x4(kLookupTbl2);

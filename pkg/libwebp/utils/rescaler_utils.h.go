@@ -49,7 +49,7 @@ type WebPRescaler struct {
   // work buffer
   rescaler_t* WEBP_COUNTED_BY(dst_*width num_channels) irow;
   rescaler_t* WEBP_COUNTED_BY(dst_*width num_channels) frow;
-};
+}
 
 // Initialize a rescaler given scratch area 'work' and dimensions of src & dst.
 // Returns false in case of error.

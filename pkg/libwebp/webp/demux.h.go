@@ -153,7 +153,7 @@ type WebPIterator struct {
 
   uint32 pad[2];  // padding for later use.
   *void private_;   // for internal use only.
-};
+}
 
 // Retrieves frame 'frame_number' from 'dmux'.
 // 'iter.fragment' points to the frame on return from this function.
@@ -187,7 +187,7 @@ type WebPChunkIterator struct {
 
   uint32 pad[6];  // padding for later use
   *void private_;
-};
+}
 
 // Retrieves the 'chunk_number' instance of the chunk with id 'fourcc' from
 // 'dmux'.
@@ -248,7 +248,7 @@ type WebPAnimDecoderOptions struct {
   WEBP_CSP_MODE color_mode;
   int use_threads;      // If true, use multi-threaded decoding.
   uint32 padding[7];  // Padding for later use.
-};
+}
 
 // Internal, version-checked, entry point.
   int WebPAnimDecoderOptionsInitInternal(
@@ -290,7 +290,7 @@ type WebPAnimInfo struct {
   uint32 bgcolor;
   uint32 frame_count;
   uint32 pad[4];  // padding for later use
-};
+}
 
 // Get global information about the animation.
 // Parameters:

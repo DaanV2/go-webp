@@ -155,7 +155,7 @@ type CostInterval struct {
   int index;
   *CostInterval previous;
   *CostInterval next;
-};
+}
 
 // The GetLengthCost(cost_model, k) are cached in a CostCacheInterval.
 type <Foo> struct {

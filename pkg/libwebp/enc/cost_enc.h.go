@@ -38,7 +38,7 @@ type VP8Residual struct {
   *ProbaArray prob;
   *StatsArray stats;
   CostArrayPtr costs;
-};
+}
 
 func VP8InitResidual(int first, int coeff_type, *VP8Encoder const enc, *VP8Residual const res);
 

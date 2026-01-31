@@ -33,9 +33,9 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // Quantize levels.
 
 int QuantizeLevels(*uint8 const WEBP_COUNTED_BY((uint64)*width height) data, int width, int height, int num_levels, *uint64 const sse) {
-  int freq[NUM_SYMBOLS] = {0};
-  int q_level[NUM_SYMBOLS] = {0};
-  double inv_q_level[NUM_SYMBOLS] = {0};
+  int freq[NUM_SYMBOLS] = {0}
+  int q_level[NUM_SYMBOLS] = {0}
+  double inv_q_level[NUM_SYMBOLS] = {0}
   int min_s = 255, max_s = 0;
   const uint64 data_size = height * width;
   int i, num_levels_in, iter;
@@ -80,8 +80,8 @@ int QuantizeLevels(*uint8 const WEBP_COUNTED_BY((uint64)*width height) data, int
 
   // k-Means iterations.
   for (iter = 0; iter < MAX_ITER; ++iter) {
-    double q_sum[NUM_SYMBOLS] = {0};
-    double q_count[NUM_SYMBOLS] = {0};
+    double q_sum[NUM_SYMBOLS] = {0}
+    double q_count[NUM_SYMBOLS] = {0}
     int s, slot = 0;
 
     // Assign classes to representatives.

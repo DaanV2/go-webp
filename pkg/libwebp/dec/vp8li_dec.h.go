@@ -44,7 +44,7 @@ type VP8LTransform struct {
   int xsize;                    // transform window X index.
   int ysize;                    // transform window Y index.
   *uint32 data;               // transform data.
-};
+}
 
 type <Foo> struct {
   int color_cache_size;
@@ -96,7 +96,7 @@ type VP8LDecoder struct {
 
   *uint8 rescaler_memory;  // Working memory for rescaling work.
   *WebPRescaler rescaler;    // Common rescaler for all channels.
-};
+}
 
 //------------------------------------------------------------------------------
 // internal functions. Not public.

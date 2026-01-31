@@ -263,7 +263,7 @@ VP8PredFunc VP8PredLuma16[NUM_B_DC_MODES];
 func VE4_C(*uint8 dst) {  // vertical
   const *uint8 top = dst - BPS;
   const uint8 vals[4] = {
-      AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), };
+      AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
   int i;
   for (i = 0; i < 4; ++i) {
     memcpy(dst + i * BPS, vals, sizeof(vals));

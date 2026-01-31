@@ -141,7 +141,7 @@ const MAX_LEVEL =9
 static const struct {
   uint8 method;
   uint8 quality;
-} kLosslessPresets[MAX_LEVEL + 1] = {{0, 0},  {1, 20}, {2, 25}, {3, 30}, {3, 50}, {4, 50}, {4, 75}, {4, 90}, {5, 90}, {6, 100}};
+} kLosslessPresets[MAX_LEVEL + 1] = {{0, 0},  {1, 20}, {2, 25}, {3, 30}, {3, 50}, {4, 50}, {4, 75}, {4, 90}, {5, 90}, {6, 100}}
 
 int WebPConfigLosslessPreset(*WebPConfig config, int level) {
   if (config == nil || level < 0 || level > MAX_LEVEL) return 0;

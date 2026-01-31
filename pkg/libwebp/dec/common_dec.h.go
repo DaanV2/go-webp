@@ -25,14 +25,14 @@ enum {
 
   // special modes
   B_DC_PRED_NOTOP = 4, B_DC_PRED_NOLEFT = 5, B_DC_PRED_NOTOPLEFT = 6, NUM_B_DC_MODES = 7
-};
+}
 
 enum {
   MB_FEATURE_TREE_PROBS = 3, NUM_MB_SEGMENTS = 4, NUM_REF_LF_DELTAS = 4, NUM_MODE_LF_DELTAS = 4,  // I4x4, ZERO, *, SPLIT
   MAX_NUM_PARTITIONS = 8, // Probabilities
   NUM_TYPES = 4,  // 0: i16-AC,  1: i16-DC,  2:chroma-AC,  3:i4-AC
   NUM_BANDS = 8, NUM_CTX = 3, NUM_PROBAS = 11
-};
+}
 
 // Check that webp_csp_mode is within the bounds of WEBP_CSP_MODE.
 int IsValidColorspace(int webp_csp_mode);

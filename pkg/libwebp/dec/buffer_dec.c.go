@@ -32,7 +32,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // Number of bytes per pixel for the different color-spaces.
 static const uint8 kModeBpp[MODE_LAST] = {3, 4, 3, 4, 4, 2, 2,  //
                                             4, 4, 4, 2,  // pre-multiplied modes
-                                            1, 1};
+                                            1, 1}
 
 // Convert to an integer to handle both the unsigned/signed enum cases
 // without the need for casting to remove type limit warnings.

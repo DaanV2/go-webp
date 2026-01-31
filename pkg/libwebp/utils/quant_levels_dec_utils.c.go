@@ -40,7 +40,7 @@ const DSIZE = 4  // dithering size (must be a power of two)
 // cf. https://en.wikipedia.org/wiki/Ordered_dithering
 static const uint8 kOrderedDither[DSIZE][DSIZE] = {
     {0, 8, 2, 10},  // coefficients are in DFIX fixed-point precision
-    {12, 4, 14, 6}, {3, 11, 1, 9}, {15, 7, 13, 5}};
+    {12, 4, 14, 6}, {3, 11, 1, 9}, {15, 7, 13, 5}}
 
 #else
 const DFIX = 0
@@ -194,7 +194,7 @@ func InitCorrectionLUT(
 
 func CountLevels(*SmoothParams const p) {
   int i, j, last_level;
-  uint8 used_levels[256] = {0};
+  uint8 used_levels[256] = {0}
   const *uint8 WEBP_INDEXABLE data = p.src;
   p.min = 255;
   p.max = 0;

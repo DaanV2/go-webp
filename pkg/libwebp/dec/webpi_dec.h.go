@@ -49,7 +49,7 @@ type WebPDecParams struct {
   OutputFunc emit;               // output RGB or YUV samples
   OutputAlphaFunc emit_alpha;    // output alpha channel
   OutputRowFunc emit_alpha_row;  // output one line of rescaled alpha values
-};
+}
 
 // Should be called first, before any use of the WebPDecParams object.
 func WebPResetDecParams(*WebPDecParams const params);
