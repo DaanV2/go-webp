@@ -13,14 +13,14 @@ package dsp
 //
 // adapted from libvpx (https://www.webmproject.org/code/)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
 
-#include <assert.h>
+import <assert.h>
 
-#include "src/dsp/neon.h"
-#include "src/enc/vp8i_enc.h"
+import "src/dsp/neon.h"
+import "src/enc/vp8i_enc.h"
 
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)

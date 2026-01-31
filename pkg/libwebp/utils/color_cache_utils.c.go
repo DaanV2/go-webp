@@ -13,15 +13,15 @@ package utils
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
 
-#include "src/utils/color_cache_utils.h"
+import "src/utils/color_cache_utils.h"
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/utils/bounds_safety.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

@@ -13,17 +13,17 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
-#include <assert.h>
-#include <emmintrin.h>
+import <assert.h>
+import <emmintrin.h>
 
-#include "src/dsp/cpu.h"
-#include "src/enc/cost_enc.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/enc/cost_enc.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 

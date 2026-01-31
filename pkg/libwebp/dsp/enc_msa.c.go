@@ -13,14 +13,14 @@ package dsp
 //
 // Author:  Prashant Patil   (prashant.patil@imgtec.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MSA)
 
-#include <stdlib.h>
+import <stdlib.h>
 
-#include "src/dsp/msa_macro.h"
-#include "src/enc/vp8i_enc.h"
+import "src/dsp/msa_macro.h"
+import "src/enc/vp8i_enc.h"
 
 //------------------------------------------------------------------------------
 // Transforms

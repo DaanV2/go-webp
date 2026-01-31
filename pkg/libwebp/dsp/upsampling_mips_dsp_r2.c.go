@@ -14,13 +14,13 @@ package dsp
 // Author(s): Branimir Vasic (branimir.vasic@imgtec.com)
 //            Djordje Pesut  (djordje.pesut@imgtec.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-#include <assert.h>
+import <assert.h>
 
-#include "src/dsp/yuv.h"
+import "src/dsp/yuv.h"
 
 // clang-format off
 #define YUV_TO_RGB(Y, U, V, R, G, B) do {                                      \

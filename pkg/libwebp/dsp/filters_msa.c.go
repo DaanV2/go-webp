@@ -13,13 +13,13 @@ package dsp
 //
 // Author: Prashant Patil (prashant.patil@imgtec.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MSA)
 
-#include <assert.h>
+import <assert.h>
 
-#include "src/dsp/msa_macro.h"
+import "src/dsp/msa_macro.h"
 
 static WEBP_INLINE void PredictLineInverse0(const uint8_t* src,
                                             const uint8_t* pred,

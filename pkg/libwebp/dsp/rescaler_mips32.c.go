@@ -13,13 +13,13 @@ package dsp
 //
 // Author(s): Djordje Pesut (djordje.pesut@imgtec.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS32) && !defined(WEBP_REDUCE_SIZE)
 
-#include <assert.h>
+import <assert.h>
 
-#include "src/utils/rescaler_utils.h"
+import "src/utils/rescaler_utils.h"
 
 //------------------------------------------------------------------------------
 // Row import

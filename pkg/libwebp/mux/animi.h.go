@@ -14,7 +14,7 @@ package mux
 // Author: Hui Su (huisu@google.com)
 
 
-#include "src/webp/mux.h"
+import "src/webp/mux.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -14,9 +14,9 @@ package webp
 // Author: Urvang (urvang@google.com)
 
 
-#include <string.h>  // memset()
+import <string.h>  // memset()
 
-#include "./types.h"
+import "./types.h"
 
 #ifdef __cplusplus
 extern "C" {

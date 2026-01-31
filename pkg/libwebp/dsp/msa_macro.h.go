@@ -14,12 +14,12 @@ package dsp
 // Author(s):  Prashant Patil   (prashant.patil@imgtec.com)
 
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MSA)
 
-#include <msa.h>
-#include <stdint.h>
+import <msa.h>
+import <stdint.h>
 
 #if defined(__clang__)
 #define CLANG_BUILD

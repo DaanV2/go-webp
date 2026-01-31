@@ -14,7 +14,7 @@ package utils
 
 #ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 
-#include <ptrcheck.h>
+import <ptrcheck.h>
 //
 // There's some inherent complexity here due to the way -fbounds-safety works.
 // Some annotations (notably __indexable and __bidi_indexable) change the ABI

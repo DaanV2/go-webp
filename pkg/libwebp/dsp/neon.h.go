@@ -12,11 +12,11 @@ package dsp
 //  NEON common code.
 
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
 
-#include <arm_neon.h>
+import <arm_neon.h>
 
 // Right now, some intrinsics functions seem slower, so we disable them
 // everywhere except newer clang/gcc or aarch64 where the inline assembly is
@@ -86,7 +86,7 @@ static WEBP_INLINE int32x4x4_t Transpose4x4_NEON(const int32x4x4_t rows) {
 }
 
 #if 0  // Useful debug macro.
-#include <stdio.h>
+import <stdio.h>
 #define PRINT_REG(REG, SIZE)                            \
   do {                                                  \
     int i;                                              \

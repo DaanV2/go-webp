@@ -14,13 +14,13 @@ package dsp
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-#include <stddef.h>
+import <stddef.h>
 
 #ifdef HAVE_CONFIG_H
-#include "src/webp/config.h"
+import "src/webp/config.h"
 #endif
 
-#include "src/webp/types.h"
+import "src/webp/types.h"
 
 #if defined(__GNUC__)
 #define LOCAL_GCC_VERSION ((__GNUC__ << 8) | __GNUC_MINOR__)
@@ -93,7 +93,7 @@ package dsp
 #endif
 
 #if defined(WEBP_MSC_AVX2) && _MSC_VER <= 1900
-#include <immintrin.h>
+import <immintrin.h>
 
 static WEBP_INLINE int _mm256_extract_epi32(__m256i a, const int i) {
   return a.m256i_i32[i & 7];
@@ -199,7 +199,7 @@ static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
 
 #if defined(WEBP_USE_THREAD)
 #if defined(_WIN32)
-#include <windows.h>
+import <windows.h>
 
 #if _WIN32_WINNT < 0x0600
 #error _WIN32_WINNT must target Windows Vista / Server 2008 or newer.
@@ -219,7 +219,7 @@ static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
 // clang-format on
 #else  // !defined(_WIN32)
 // NOLINTNEXTLINE
-#include <pthread.h>
+import <pthread.h>
 
 // clang-format off
 #define WEBP_DSP_INIT_VARS(func)               \

@@ -11,12 +11,12 @@ package dsp
 //
 // ARM NEON version of cost functions
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
 
-#include "src/dsp/neon.h"
-#include "src/enc/cost_enc.h"
+import "src/dsp/neon.h"
+import "src/enc/cost_enc.h"
 
 static const uint8_t position[16] = {1, 2,  3,  4,  5,  6,  7,  8,
                                      9, 10, 11, 12, 13, 14, 15, 16};

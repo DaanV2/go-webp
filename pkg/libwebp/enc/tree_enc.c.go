@@ -13,12 +13,12 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <string.h>
+import <string.h>
 
-#include "src/dec/common_dec.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/bit_writer_utils.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/bit_writer_utils.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Default probabilities

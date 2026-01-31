@@ -13,17 +13,17 @@ package dsp
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
-#include <assert.h>
-#include <emmintrin.h>
-#include <string.h>
+import <assert.h>
+import <emmintrin.h>
+import <string.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/yuv.h"
-#include "src/webp/decode.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/yuv.h"
+import "src/webp/decode.h"
+import "src/webp/types.h"
 
 #ifdef FANCY_UPSAMPLING
 

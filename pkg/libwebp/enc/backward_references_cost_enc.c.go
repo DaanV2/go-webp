@@ -16,16 +16,16 @@ package enc
 // Author: Vincent Rabaud (vrabaud@google.com)
 //
 
-#include <assert.h>
-#include <string.h>
+import <assert.h>
+import <string.h>
 
-#include "src/dsp/lossless_common.h"
-#include "src/enc/backward_references_enc.h"
-#include "src/enc/histogram_enc.h"
-#include "src/utils/color_cache_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/lossless_common.h"
+import "src/enc/backward_references_enc.h"
+import "src/enc/histogram_enc.h"
+import "src/utils/color_cache_utils.h"
+import "src/utils/utils.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 #define VALUES_IN_BYTE 256
 

@@ -15,17 +15,17 @@ package dec
 //         Vikas Arora(vikaas.arora@gmail.com)
 
 
-#include <string.h>  // for memcpy()
+import <string.h>  // for memcpy()
 
-#include "src/dec/vp8_dec.h"
-#include "src/dec/webpi_dec.h"
-#include "src/utils/bit_reader_utils.h"
-#include "src/utils/color_cache_utils.h"
-#include "src/utils/huffman_utils.h"
-#include "src/utils/rescaler_utils.h"
-#include "src/webp/decode.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dec/vp8_dec.h"
+import "src/dec/webpi_dec.h"
+import "src/utils/bit_reader_utils.h"
+import "src/utils/color_cache_utils.h"
+import "src/utils/huffman_utils.h"
+import "src/utils/rescaler_utils.h"
+import "src/webp/decode.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

@@ -13,18 +13,18 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <math.h>
-#include <string.h>
+import <assert.h>
+import <math.h>
+import <string.h>
 
-#include "src/dec/common_dec.h"
-#include "src/dsp/dsp.h"
-#include "src/enc/cost_enc.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/utils/bit_writer_utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"  // RIFF constants
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dsp/dsp.h"
+import "src/enc/cost_enc.h"
+import "src/enc/vp8i_enc.h"
+import "src/utils/bit_writer_utils.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"  // RIFF constants
+import "src/webp/types.h"
 
 #define SEGMENT_VISU 0
 #define DEBUG_SEARCH 0  // useful to track search convergence

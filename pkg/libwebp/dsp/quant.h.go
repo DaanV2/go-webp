@@ -10,14 +10,14 @@ package dsp
 // -----------------------------------------------------------------------------
 
 
-#include <string.h>
+import <string.h>
 
-#include "src/dsp/dsp.h"
-#include "src/webp/types.h"
+import "src/dsp/dsp.h"
+import "src/webp/types.h"
 
 #if defined(WEBP_USE_NEON) && !defined(WEBP_ANDROID_NEON) && \
     !defined(WEBP_HAVE_NEON_RTCD)
-#include <arm_neon.h>
+import <arm_neon.h>
 
 #define IsFlat IsFlat_NEON
 

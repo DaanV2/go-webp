@@ -14,9 +14,9 @@ package webp
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-#include <stddef.h>
+import <stddef.h>
 
-#include "./types.h"
+import "./types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

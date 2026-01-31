@@ -15,9 +15,9 @@ package dsp
 //          Jyrki Alakuijala (jyrki@google.com)
 
 
-#include "src/dsp/dsp.h"
-#include "src/webp/decode.h"
-#include "src/webp/types.h"
+import "src/dsp/dsp.h"
+import "src/webp/decode.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

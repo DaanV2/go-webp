@@ -13,14 +13,14 @@ package dsp
 //
 // Author: Prashant Patil (prashant.patil@imgtec.com)
 
-#include <string.h>
+import <string.h>
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MSA)
 
-#include "src/dsp/msa_macro.h"
-#include "src/dsp/yuv.h"
+import "src/dsp/msa_macro.h"
+import "src/dsp/yuv.h"
 
 #ifdef FANCY_UPSAMPLING
 

@@ -14,12 +14,12 @@ package dsp
 // Author(s):  Djordje Pesut    (djordje.pesut@imgtec.com)
 //             Jovan Zelincevic (jovan.zelincevic@imgtec.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
 
 // clang-format off
 #define MAP_COLOR_FUNCS(FUNC_NAME, TYPE, GET_INDEX, GET_VALUE)                 \

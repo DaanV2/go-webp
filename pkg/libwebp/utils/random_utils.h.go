@@ -14,10 +14,10 @@ package utils
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-#include <assert.h>
+import <assert.h>
 
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

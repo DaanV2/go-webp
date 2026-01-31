@@ -11,15 +11,15 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <stddef.h>
-#include <stdlib.h>
+import <assert.h>
+import <stddef.h>
+import <stdlib.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/enc/cost_enc.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/enc/cost_enc.h"
+import "src/enc/vp8i_enc.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Boolean-cost cost table

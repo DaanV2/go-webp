@@ -13,13 +13,13 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
-#include <emmintrin.h>
+import <emmintrin.h>
 
-#include "src/dsp/cpu.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 

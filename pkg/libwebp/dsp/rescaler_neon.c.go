@@ -13,15 +13,15 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_NEON) && !defined(WEBP_REDUCE_SIZE)
 
-#include <arm_neon.h>
-#include <assert.h>
+import <arm_neon.h>
+import <assert.h>
 
-#include "src/dsp/neon.h"
-#include "src/utils/rescaler_utils.h"
+import "src/dsp/neon.h"
+import "src/utils/rescaler_utils.h"
 
 #define ROUNDER (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX_C(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)

@@ -15,19 +15,19 @@ package dsp
 //          Jyrki Alakuijala (jyrki@google.com)
 //          Urvang Joshi (urvang@google.com)
 
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <math.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
-#include "src/enc/histogram_enc.h"
-#include "src/utils/utils.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
+import "src/enc/histogram_enc.h"
+import "src/utils/utils.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 // lookup table for small values of log2(int) * (1 << LOG_2_PRECISION_BITS).
 // Obtained in Python with:

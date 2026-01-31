@@ -13,20 +13,20 @@ package dsp
 //
 // Author: Vincent Rabaud (vrabaud@google.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_AVX2)
-#include <assert.h>
-#include <emmintrin.h>
-#include <immintrin.h>
-#include <stddef.h>
+import <assert.h>
+import <emmintrin.h>
+import <immintrin.h>
+import <stddef.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
-#include "src/utils/utils.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
+import "src/utils/utils.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Subtract-Green Transform

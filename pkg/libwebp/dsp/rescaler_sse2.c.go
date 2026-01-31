@@ -13,17 +13,17 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2) && !defined(WEBP_REDUCE_SIZE)
-#include <assert.h>
-#include <emmintrin.h>
-#include <stddef.h>
+import <assert.h>
+import <emmintrin.h>
+import <stddef.h>
 
-#include "src/dsp/cpu.h"
-#include "src/utils/rescaler_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/utils/rescaler_utils.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Implementations of critical functions ImportRow / ExportRow

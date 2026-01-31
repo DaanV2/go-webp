@@ -14,24 +14,24 @@ package enc
 // Author: Vikas Arora (vikaas.arora@gmail.com)
 //
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
-#include "src/enc/backward_references_enc.h"
-#include "src/enc/histogram_enc.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/enc/vp8li_enc.h"
-#include "src/utils/bit_writer_utils.h"
-#include "src/utils/huffman_encode_utils.h"
-#include "src/utils/palette.h"
-#include "src/utils/thread_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
+import "src/enc/backward_references_enc.h"
+import "src/enc/histogram_enc.h"
+import "src/enc/vp8i_enc.h"
+import "src/enc/vp8li_enc.h"
+import "src/utils/bit_writer_utils.h"
+import "src/utils/huffman_encode_utils.h"
+import "src/utils/palette.h"
+import "src/utils/thread_utils.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 // Maximum number of histogram images (sub-blocks).
 #define MAX_HUFF_IMAGE_SIZE 2600

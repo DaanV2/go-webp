@@ -13,20 +13,20 @@ package dec
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dec/common_dec.h"
-#include "src/dec/vp8_dec.h"
-#include "src/dec/vp8i_dec.h"
-#include "src/dec/webpi_dec.h"
-#include "src/dsp/dsp.h"
-#include "src/utils/random_utils.h"
-#include "src/utils/thread_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/decode.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dec/vp8_dec.h"
+import "src/dec/vp8i_dec.h"
+import "src/dec/webpi_dec.h"
+import "src/dsp/dsp.h"
+import "src/utils/random_utils.h"
+import "src/utils/thread_utils.h"
+import "src/utils/utils.h"
+import "src/webp/decode.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

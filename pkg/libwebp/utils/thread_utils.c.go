@@ -13,13 +13,13 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/utils/thread_utils.h"
+import "src/utils/thread_utils.h"
 
-#include <assert.h>
-#include <string.h>  // for memset()
+import <assert.h>
+import <string.h>  // for memset()
 
-#include "src/utils/bounds_safety.h"
-#include "src/utils/utils.h"
+import "src/utils/bounds_safety.h"
+import "src/utils/utils.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -27,7 +27,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 #if defined(_WIN32)
 
-#include <windows.h>
+import <windows.h>
 typedef HANDLE pthread_t;
 
 #if _WIN32_WINNT < 0x0600
@@ -45,7 +45,7 @@ typedef CONDITION_VARIABLE pthread_cond_t;
 
 #else  // !_WIN32
 
-#include <pthread.h>
+import <pthread.h>
 
 #endif  // _WIN32
 
@@ -60,7 +60,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 // simplistic pthread emulation layer
 
-#include <process.h>
+import <process.h>
 
 // _beginthreadex requires __stdcall
 #define THREADFN unsigned int __stdcall

@@ -13,24 +13,24 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <math.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dec/common_dec.h"
-#include "src/dsp/dsp.h"
-#include "src/enc/cost_enc.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/enc/vp8li_enc.h"
-#include "src/utils/utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dsp/dsp.h"
+import "src/enc/cost_enc.h"
+import "src/enc/vp8i_enc.h"
+import "src/enc/vp8li_enc.h"
+import "src/utils/utils.h"
+import "src/webp/encode.h"
+import "src/webp/types.h"
 
 // #define PRINT_MEMORY_INFO
 
 #ifdef PRINT_MEMORY_INFO
-#include <stdio.h>
+import <stdio.h>
 #endif
 
 //------------------------------------------------------------------------------

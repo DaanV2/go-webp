@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 #if defined(WEBP_USE_SSE41)
-#include <smmintrin.h>
+import <smmintrin.h>
 
 //------------------------------------------------------------------------------
 // Channel mixing.

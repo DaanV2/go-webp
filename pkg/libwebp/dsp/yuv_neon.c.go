@@ -13,15 +13,15 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/yuv.h"
+import "src/dsp/yuv.h"
 
 #if defined(WEBP_USE_NEON)
 
-#include <assert.h>
-#include <stdlib.h>
+import <assert.h>
+import <stdlib.h>
 
-#include "src/dsp/dsp.h"
-#include "src/dsp/neon.h"
+import "src/dsp/dsp.h"
+import "src/dsp/neon.h"
 
 //-----------------------------------------------------------------------------
 

@@ -13,11 +13,11 @@ package dec
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dec/common_dec.h"
-#include "src/dec/vp8_dec.h"
-#include "src/dec/vp8i_dec.h"
-#include "src/utils/bit_reader_utils.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dec/vp8_dec.h"
+import "src/dec/vp8i_dec.h"
+import "src/utils/bit_reader_utils.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

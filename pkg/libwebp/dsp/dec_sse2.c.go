@@ -14,7 +14,7 @@ package dsp
 // Author: somnath@google.com (Somnath Banerjee)
 //         cduvivier@google.com (Christian Duvivier)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
 
@@ -24,13 +24,13 @@ package dsp
 #define USE_TRANSFORM_AC3 0  // ALTERNATE_CODE
 #endif
 
-#include <emmintrin.h>
+import <emmintrin.h>
 
-#include "src/dec/vp8i_dec.h"
-#include "src/dsp/common_sse2.h"
-#include "src/dsp/cpu.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/dec/vp8i_dec.h"
+import "src/dsp/common_sse2.h"
+import "src/dsp/cpu.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)

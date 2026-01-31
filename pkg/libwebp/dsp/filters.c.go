@@ -13,13 +13,13 @@ package dsp
 //
 // Author: Urvang (urvang@google.com)
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Helpful macro.

@@ -35,10 +35,10 @@ package dsp
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-#include "src/dec/vp8_dec.h"
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/webp/types.h"
+import "src/dec/vp8_dec.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

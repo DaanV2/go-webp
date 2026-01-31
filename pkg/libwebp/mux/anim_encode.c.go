@@ -12,21 +12,21 @@ package mux
 //  AnimEncoder implementation.
 //
 
-#include <assert.h>
-#include <limits.h>
-#include <math.h>  // for pow()
-#include <stdio.h>
-#include <stdlib.h>  // for abs()
-#include <string.h>
+import <assert.h>
+import <limits.h>
+import <math.h>  // for pow()
+import <stdio.h>
+import <stdlib.h>  // for abs()
+import <string.h>
 
-#include "src/mux/animi.h"
-#include "src/utils/utils.h"
-#include "src/webp/decode.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/mux.h"
-#include "src/webp/mux_types.h"
-#include "src/webp/types.h"
+import "src/mux/animi.h"
+import "src/utils/utils.h"
+import "src/webp/decode.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"
+import "src/webp/mux.h"
+import "src/webp/mux_types.h"
+import "src/webp/types.h"
 
 #if defined(_MSC_VER) && _MSC_VER < 1900
 #define snprintf _snprintf

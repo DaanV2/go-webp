@@ -15,21 +15,21 @@ package enc
 
 
 #ifdef HAVE_CONFIG_H
-#include "src/webp/config.h"
+import "src/webp/config.h"
 #endif
 
-#include <stddef.h>
+import <stddef.h>
 
 // Either WEBP_NEAR_LOSSLESS is defined as 0 in config.h when compiling to
 // disable near-lossless, or it is enabled by default.
 #endif
 
-#include "src/enc/backward_references_enc.h"
-#include "src/enc/histogram_enc.h"
-#include "src/utils/bit_writer_utils.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/enc/backward_references_enc.h"
+import "src/enc/histogram_enc.h"
+import "src/utils/bit_writer_utils.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 #ifdef __cplusplus
 extern "C" {

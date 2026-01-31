@@ -11,11 +11,11 @@ package dsp
 //
 // Author: Djordje Pesut (djordje.pesut@imgtec.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-#include "src/enc/cost_enc.h"
+import "src/enc/cost_enc.h"
 
 static int GetResidualCost_MIPSdspR2(int ctx0, const VP8Residual* const res) {
   int temp0, temp1;

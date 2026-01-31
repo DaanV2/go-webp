@@ -20,13 +20,13 @@ extern "C" {
 
 #if defined(WEBP_USE_SSE2)
 
-#include <emmintrin.h>
+import <emmintrin.h>
 
 //------------------------------------------------------------------------------
 // Quite useful macro for debugging. Left here for convenience.
 
 #if 0
-#include <stdio.h>
+import <stdio.h>
 static WEBP_INLINE void PrintReg(const __m128i r, const char* const name,
                                  int size) {
   int n;

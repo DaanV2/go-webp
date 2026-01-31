@@ -11,15 +11,15 @@ package dsp
 //
 // SSE41 variant of methods for lossless decoder
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE41)
-#include <emmintrin.h>
-#include <smmintrin.h>
+import <emmintrin.h>
+import <smmintrin.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/lossless.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/lossless.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Color-space conversion functions

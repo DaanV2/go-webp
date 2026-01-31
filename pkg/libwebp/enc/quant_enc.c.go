@@ -13,17 +13,17 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>  // for abs()
-#include <string.h>
+import <assert.h>
+import <math.h>
+import <stdlib.h>  // for abs()
+import <string.h>
 
-#include "src/dec/common_dec.h"
-#include "src/dsp/dsp.h"
-#include "src/dsp/quant.h"
-#include "src/enc/cost_enc.h"
-#include "src/enc/vp8i_enc.h"
-#include "src/webp/types.h"
+import "src/dec/common_dec.h"
+import "src/dsp/dsp.h"
+import "src/dsp/quant.h"
+import "src/enc/cost_enc.h"
+import "src/enc/vp8i_enc.h"
+import "src/webp/types.h"
 
 #define DO_TRELLIS_I4 1
 #define DO_TRELLIS_I16 1  // not a huge gain, but ok at low bitrate.
@@ -55,8 +55,8 @@ package enc
 
 #if defined(DEBUG_BLOCK)
 
-#include <stdio.h>
-#include <stdlib.h>
+import <stdio.h>
+import <stdlib.h>
 
 static void PrintBlockInfo(const VP8EncIterator* const it,
                            const VP8ModeScore* const rd) {

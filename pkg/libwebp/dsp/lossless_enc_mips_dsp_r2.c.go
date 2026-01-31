@@ -14,11 +14,11 @@ package dsp
 // Author(s):  Djordje Pesut    (djordje.pesut@imgtec.com)
 //             Jovan Zelincevic (jovan.zelincevic@imgtec.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-#include "src/dsp/lossless.h"
+import "src/dsp/lossless.h"
 
 static void SubtractGreenFromBlueAndRed_MIPSdspR2(uint32_t* argb_data,
                                                   int num_pixels) {

@@ -14,10 +14,10 @@ package enc
 // Models the histograms of literal and distance codes.
 
 
-#include "src/enc/backward_references_enc.h"
-#include "src/webp/encode.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/enc/backward_references_enc.h"
+import "src/webp/encode.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 #ifdef __cplusplus
 extern "C" {

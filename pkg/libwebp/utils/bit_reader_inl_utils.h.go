@@ -17,19 +17,19 @@ package utils
 
 
 #ifdef HAVE_CONFIG_H
-#include "src/webp/config.h"
+import "src/webp/config.h"
 #endif
 
-#include <assert.h>
-#include <string.h>  // for memcpy
+import <assert.h>
+import <string.h>  // for memcpy
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/utils/bit_reader_utils.h"
-#include "src/utils/bounds_safety.h"
-#include "src/utils/endian_inl_utils.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/utils/bit_reader_utils.h"
+import "src/utils/bounds_safety.h"
+import "src/utils/endian_inl_utils.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

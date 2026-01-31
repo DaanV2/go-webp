@@ -13,14 +13,14 @@ package dsp
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
-#include <assert.h>
-#include <stddef.h>
+import <assert.h>
+import <stddef.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/dsp/yuv.h"
-#include "src/webp/decode.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/dsp/yuv.h"
+import "src/webp/decode.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Fancy upsampler

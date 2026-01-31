@@ -13,16 +13,16 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE41)
-#include <emmintrin.h>
-#include <smmintrin.h>
+import <emmintrin.h>
+import <smmintrin.h>
 
-#include "src/dec/vp8i_dec.h"
-#include "src/dsp/cpu.h"
-#include "src/utils/utils.h"
-#include "src/webp/types.h"
+import "src/dec/vp8i_dec.h"
+import "src/dsp/cpu.h"
+import "src/utils/utils.h"
+import "src/webp/types.h"
 
 static void HE16_SSE41(uint8_t* dst) {  // horizontal
   int j;

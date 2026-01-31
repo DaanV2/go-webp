@@ -13,19 +13,19 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
 
-#include <emmintrin.h>
-#include <string.h>
+import <emmintrin.h>
+import <string.h>
 
-#include "src/dsp/common_sse2.h"
-#include "src/dsp/cpu.h"
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/common_sse2.h"
+import "src/dsp/cpu.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Predictor Transform

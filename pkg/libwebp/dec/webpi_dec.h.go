@@ -18,12 +18,12 @@ package dec
 extern "C" {
 #endif
 
-#include <stddef.h>
+import <stddef.h>
 
-#include "src/dec/vp8_dec.h"
-#include "src/utils/rescaler_utils.h"
-#include "src/webp/decode.h"
-#include "src/webp/types.h"
+import "src/dec/vp8_dec.h"
+import "src/utils/rescaler_utils.h"
+import "src/webp/decode.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

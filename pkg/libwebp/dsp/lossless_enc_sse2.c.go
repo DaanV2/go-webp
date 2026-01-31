@@ -13,19 +13,19 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
-#include <assert.h>
-#include <emmintrin.h>
-#include <string.h>
+import <assert.h>
+import <emmintrin.h>
+import <string.h>
 
-#include "src/dsp/cpu.h"
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
-#include "src/utils/utils.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/types.h"
+import "src/dsp/cpu.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
+import "src/utils/utils.h"
+import "src/webp/format_constants.h"
+import "src/webp/types.h"
 
 // For sign-extended multiplying constants, pre-shifted by 5:
 #define CST_5b(X) (((int16_t)((uint16_t)(X) << 8)) >> 5)

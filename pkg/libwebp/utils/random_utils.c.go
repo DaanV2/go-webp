@@ -13,12 +13,12 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/utils/random_utils.h"
+import "src/utils/random_utils.h"
 
-#include <string.h>
+import <string.h>
 
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

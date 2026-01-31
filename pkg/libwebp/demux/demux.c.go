@@ -13,20 +13,20 @@
 package demux
 
 #ifdef HAVE_CONFIG_H
-#include "src/webp/config.h"
+import "src/webp/config.h"
 #endif
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <stdlib.h>
+import <string.h>
 
-#include "src/utils/utils.h"
-#include "src/webp/decode.h"  // WebPGetFeatures
-#include "src/webp/demux.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/mux.h"
-#include "src/webp/mux_types.h"
-#include "src/webp/types.h"
+import "src/utils/utils.h"
+import "src/webp/decode.h"  // WebPGetFeatures
+import "src/webp/demux.h"
+import "src/webp/format_constants.h"
+import "src/webp/mux.h"
+import "src/webp/mux_types.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

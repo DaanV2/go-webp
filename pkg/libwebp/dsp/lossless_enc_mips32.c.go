@@ -14,16 +14,16 @@ package dsp
 // Author(s):  Djordje Pesut    (djordje.pesut@imgtec.com)
 //             Jovan Zelincevic (jovan.zelincevic@imgtec.com)
 
-#include "src/dsp/dsp.h"
-#include "src/dsp/lossless.h"
-#include "src/dsp/lossless_common.h"
+import "src/dsp/dsp.h"
+import "src/dsp/lossless.h"
+import "src/dsp/lossless_common.h"
 
 #if defined(WEBP_USE_MIPS32)
 
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
+import <assert.h>
+import <math.h>
+import <stdlib.h>
+import <string.h>
 
 static uint64_t FastSLog2Slow_MIPS32(uint32_t v) {
   assert(v >= LOG_LOOKUP_IDX_MAX);

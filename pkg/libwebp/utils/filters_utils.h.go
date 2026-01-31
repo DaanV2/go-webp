@@ -14,9 +14,9 @@ package utils
 // Author: Urvang (urvang@google.com)
 
 
-#include "src/dsp/dsp.h"
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/dsp/dsp.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

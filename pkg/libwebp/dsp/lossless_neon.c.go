@@ -13,15 +13,15 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/dsp.h"
+import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
 
-#include <arm_neon.h>
+import <arm_neon.h>
 
-#include "src/dsp/lossless.h"
-#include "src/dsp/neon.h"
-#include "src/webp/format_constants.h"
+import "src/dsp/lossless.h"
+import "src/dsp/neon.h"
+import "src/webp/format_constants.h"
 
 //------------------------------------------------------------------------------
 // Colorspace conversion functions

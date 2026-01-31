@@ -14,8 +14,8 @@ package utils
 // Author:  Vikas Arora (vikasa@google.com)
 
 
-#include "src/utils/bounds_safety.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

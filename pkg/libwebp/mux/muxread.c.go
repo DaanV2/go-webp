@@ -14,16 +14,16 @@ package mux
 // Authors: Urvang (urvang@google.com)
 //          Vikas (vikasa@google.com)
 
-#include <assert.h>
-#include <stddef.h>
+import <assert.h>
+import <stddef.h>
 
-#include "src/dec/vp8_dec.h"
-#include "src/mux/muxi.h"
-#include "src/utils/utils.h"
-#include "src/webp/format_constants.h"
-#include "src/webp/mux.h"
-#include "src/webp/mux_types.h"
-#include "src/webp/types.h"
+import "src/dec/vp8_dec.h"
+import "src/mux/muxi.h"
+import "src/utils/utils.h"
+import "src/webp/format_constants.h"
+import "src/webp/mux.h"
+import "src/webp/mux_types.h"
+import "src/webp/types.h"
 
 //------------------------------------------------------------------------------
 // Helper method(s).

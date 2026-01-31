@@ -13,16 +13,16 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/utils/utils.h"
+import "src/utils/utils.h"
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>  // for memcpy()
+import <assert.h>
+import <stdlib.h>
+import <string.h>  // for memcpy()
 
-#include "src/utils/bounds_safety.h"
-#include "src/utils/palette.h"
-#include "src/webp/encode.h"
-#include "src/webp/types.h"
+import "src/utils/bounds_safety.h"
+import "src/utils/palette.h"
+import "src/webp/encode.h"
+import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -58,7 +58,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 #if defined(PRINT_MEM_INFO)
 
-#include <stdio.h>
+import <stdio.h>
 
 static int num_malloc_calls = 0;
 static int num_calloc_calls = 0;

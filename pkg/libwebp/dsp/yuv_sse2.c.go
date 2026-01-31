@@ -13,18 +13,18 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#include "src/dsp/yuv.h"
+import "src/dsp/yuv.h"
 
 #if defined(WEBP_USE_SSE2)
-#include <emmintrin.h>
-#include <stdlib.h>
+import <emmintrin.h>
+import <stdlib.h>
 
-#include "src/dsp/common_sse2.h"
-#include "src/dsp/cpu.h"
-#include "src/dsp/dsp.h"
-#include "src/utils/utils.h"
-#include "src/webp/decode.h"
-#include "src/webp/types.h"
+import "src/dsp/common_sse2.h"
+import "src/dsp/cpu.h"
+import "src/dsp/dsp.h"
+import "src/utils/utils.h"
+import "src/webp/decode.h"
+import "src/webp/types.h"
 
 //-----------------------------------------------------------------------------
 // Convert spans of 32 pixels to various RGB formats for the fancy upsampler.
