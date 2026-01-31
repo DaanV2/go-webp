@@ -23,9 +23,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // clang-format off
 #define MAP_COLOR_FUNCS(FUNC_NAME, TYPE, GET_INDEX, GET_VALUE)                 \
-func FUNC_NAME(const TYPE* src,                                         \
-                      const uint32* const color_map,                         \
-                      TYPE* dst, int y_start, int y_end,                       \
+func FUNC_NAME(const *TYPE src,                                         \
+                      const *uint32 const color_map,                         \
+                      *TYPE dst, int y_start, int y_end,                       \
                       int width) {                                             \
   int y;                                                                       \
   for (y = y_start; y < y_end; ++y) {                                          \
@@ -180,50 +180,50 @@ static  uint32 Average4(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
   return Average2(Average2(a0, a1), Average2(a2, a3));
 }
 
-static uint32 Predictor5_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor5_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   return Average3(*left, top[0], top[1]);
 }
 
-static uint32 Predictor6_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor6_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   return Average2(*left, top[-1]);
 }
 
-static uint32 Predictor7_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor7_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   return Average2(*left, top[0]);
 }
 
-static uint32 Predictor8_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor8_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   (void)left;
   return Average2(top[-1], top[0]);
 }
 
-static uint32 Predictor9_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor9_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   (void)left;
   return Average2(top[0], top[1]);
 }
 
-static uint32 Predictor10_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor10_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   return Average4(*left, top[-1], top[0], top[1]);
 }
 
-static uint32 Predictor11_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor11_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   return Select(top[0], *left, top[-1]);
 }
 
-static uint32 Predictor12_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor12_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   return ClampedAddSubtractFull(*left, top[0], top[-1]);
 }
 
-static uint32 Predictor13_MIPSdspR2(const uint32* const left, const uint32* const top) {
+static uint32 Predictor13_MIPSdspR2(const *uint32 const left, const *uint32 const top) {
   return ClampedAddSubtractHalf(*left, top[0], top[-1]);
 }
 
 // Add green to blue and red channels (i.e. perform the inverse transform of
 // 'subtract green').
-func AddGreenToBlueAndRed_MIPSdspR2(const uint32* src, int num_pixels, uint32* dst) {
+func AddGreenToBlueAndRed_MIPSdspR2(const *uint32 src, int num_pixels, *uint32 dst) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
-  const uint32* const p_loop1_end = src + (num_pixels & ~3);
-  const uint32* const p_loop2_end = src + num_pixels;
+  const *uint32 const p_loop1_end = src + (num_pixels & ~3);
+  const *uint32 const p_loop2_end = src + num_pixels;
   __asm__ volatile(
       ".set       push                                          \n\t"
       ".set       noreorder                                     \n\t"
@@ -272,13 +272,13 @@ func AddGreenToBlueAndRed_MIPSdspR2(const uint32* src, int num_pixels, uint32* d
       : "memory");
 }
 
-func TransformColorInverse_MIPSdspR2(const VP8LMultipliers* const m, const uint32* src, int num_pixels, uint32* dst) {
+func TransformColorInverse_MIPSdspR2(const *VP8LMultipliers const m, const *uint32 src, int num_pixels, *uint32 dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   uint32 argb, argb1, new_red;
   const uint32 G_to_R = m.green_to_red;
   const uint32 G_to_B = m.green_to_blue;
   const uint32 R_to_B = m.red_to_blue;
-  const uint32* const p_loop_end = src + (num_pixels & ~1);
+  const *uint32 const p_loop_end = src + (num_pixels & ~1);
   __asm__ volatile(
       ".set            push                                    \n\t"
       ".set            noreorder                               \n\t"
@@ -336,10 +336,10 @@ func TransformColorInverse_MIPSdspR2(const VP8LMultipliers* const m, const uint3
   if (num_pixels & 1) VP8LTransformColorInverse_C(m, src, 1, dst);
 }
 
-func ConvertBGRAToRGB_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
+func ConvertBGRAToRGB_MIPSdspR2(const *uint32 src, int num_pixels, *uint8 dst) {
   int temp0, temp1, temp2, temp3;
-  const uint32* const p_loop1_end = src + (num_pixels & ~3);
-  const uint32* const p_loop2_end = src + num_pixels;
+  const *uint32 const p_loop1_end = src + (num_pixels & ~3);
+  const *uint32 const p_loop2_end = src + num_pixels;
   __asm__ volatile(
       ".set       push                                       \n\t"
       ".set       noreorder                                  \n\t"
@@ -385,10 +385,10 @@ func ConvertBGRAToRGB_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
       : "memory");
 }
 
-func ConvertBGRAToRGBA_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
+func ConvertBGRAToRGBA_MIPSdspR2(const *uint32 src, int num_pixels, *uint8 dst) {
   int temp0, temp1, temp2, temp3;
-  const uint32* const p_loop1_end = src + (num_pixels & ~3);
-  const uint32* const p_loop2_end = src + num_pixels;
+  const *uint32 const p_loop1_end = src + (num_pixels & ~3);
+  const *uint32 const p_loop2_end = src + num_pixels;
   __asm__ volatile(
       ".set       push                                       \n\t"
       ".set       noreorder                                  \n\t"
@@ -432,10 +432,10 @@ func ConvertBGRAToRGBA_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) 
       : "memory");
 }
 
-func ConvertBGRAToRGBA4444_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
+func ConvertBGRAToRGBA4444_MIPSdspR2(const *uint32 src, int num_pixels, *uint8 dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
-  const uint32* const p_loop1_end = src + (num_pixels & ~3);
-  const uint32* const p_loop2_end = src + num_pixels;
+  const *uint32 const p_loop1_end = src + (num_pixels & ~3);
+  const *uint32 const p_loop2_end = src + num_pixels;
   __asm__ volatile(
       ".set           push                                       \n\t"
       ".set           noreorder                                  \n\t"
@@ -502,10 +502,10 @@ func ConvertBGRAToRGBA4444_MIPSdspR2(const uint32* src, int num_pixels, uint8* d
       : "memory");
 }
 
-func ConvertBGRAToRGB565_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
+func ConvertBGRAToRGB565_MIPSdspR2(const *uint32 src, int num_pixels, *uint8 dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
-  const uint32* const p_loop1_end = src + (num_pixels & ~3);
-  const uint32* const p_loop2_end = src + num_pixels;
+  const *uint32 const p_loop1_end = src + (num_pixels & ~3);
+  const *uint32 const p_loop2_end = src + num_pixels;
   __asm__ volatile(
       ".set           push                                       \n\t"
       ".set           noreorder                                  \n\t"
@@ -576,10 +576,10 @@ func ConvertBGRAToRGB565_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst
       : "memory");
 }
 
-func ConvertBGRAToBGR_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
+func ConvertBGRAToBGR_MIPSdspR2(const *uint32 src, int num_pixels, *uint8 dst) {
   int temp0, temp1, temp2, temp3;
-  const uint32* const p_loop1_end = src + (num_pixels & ~3);
-  const uint32* const p_loop2_end = src + num_pixels;
+  const *uint32 const p_loop1_end = src + (num_pixels & ~3);
+  const *uint32 const p_loop2_end = src + num_pixels;
   __asm__ volatile(
       ".set       push                                         \n\t"
       ".set       noreorder                                    \n\t"

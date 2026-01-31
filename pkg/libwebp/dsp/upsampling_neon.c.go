@@ -62,7 +62,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample16Pixels_NEON(const uint8* WEBP_RESTRICT const r1, const uint8* WEBP_RESTRICT const r2, uint8* WEBP_RESTRICT const out) {
+func Upsample16Pixels_NEON(const *uint8 WEBP_RESTRICT const r1, const *uint8 WEBP_RESTRICT const r2, *uint8 WEBP_RESTRICT const out) {
   UPSAMPLE_16PIXELS(r1, r2, out);
 }
 
@@ -206,17 +206,17 @@ const v255 = vdup_n_u8(255)
 
 #define NEON_UPSAMPLE_FUNC(FUNC_NAME, FMT, XSTEP)                             \
   func FUNC_NAME(                                                      \
-      const uint8* WEBP_RESTRICT top_y,                                     \
-      const uint8* WEBP_RESTRICT bottom_y,                                  \
-      const uint8* WEBP_RESTRICT top_u, const uint8* WEBP_RESTRICT top_v, \
-      const uint8* WEBP_RESTRICT cur_u, const uint8* WEBP_RESTRICT cur_v, \
-      uint8* WEBP_RESTRICT top_dst, uint8* WEBP_RESTRICT bottom_dst,      \
+      const *uint8 WEBP_RESTRICT top_y,                                     \
+      const *uint8 WEBP_RESTRICT bottom_y,                                  \
+      const *uint8 WEBP_RESTRICT top_u, const *uint8 WEBP_RESTRICT top_v, \
+      const *uint8 WEBP_RESTRICT cur_u, const *uint8 WEBP_RESTRICT cur_v, \
+      *uint8 WEBP_RESTRICT top_dst, *uint8 WEBP_RESTRICT bottom_dst,      \
       int len) {                                                              \
     int block;                                                                \
     /* 16 byte aligned array to cache reconstructed u and v */                \
     uint8 uv_buf[2 * 32 + 15];                                              \
-    uint8* const r_uv =                                                     \
-        (uint8*)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
+    *uint8 const r_uv =                                                     \
+        (*uint8)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
     const int uv_len = (len + 1) >> 1;                                        \
     /* 9 pixels must be read-able for each block */                           \
     const int num_blocks = (uv_len - 1) >> 3;                                 \

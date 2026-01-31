@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Predictor Transform
 
-static  func Average2_m256i(const __m256i* const a0, const __m256i* const a1, __m256i* const avg) {
+static  func Average2_m256i(const __*m256i const a0, const __*m256i const a1, __*m256i const avg) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m256i ones = _mm256_set1_epi8(1);
   const __m256i avg1 = _mm256_avg_epu8(*a0, *a1);
@@ -39,13 +39,13 @@ static  func Average2_m256i(const __m256i* const a0, const __m256i* const a1, __
 // Batch versions of those functions.
 
 // Predictor0: ARGB_BLACK.
-func PredictorAdd0_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd0_AVX2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   const __m256i black = _mm256_set1_epi32((int)ARGB_BLACK);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
-    const __m256i src = _mm256_loadu_si256((const __m256i*)&in[i]);
+    const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
     const __m256i res = _mm256_add_epi8(src, black);
-    _mm256_storeu_si256((__m256i*)&out[i], res);
+    _mm256_storeu_si256((__*m256i)&out[i], res);
   }
   if (i != num_pixels) {
     VP8LPredictorsAdd_SSE[0](in + i, nil, num_pixels - i, out + i);
@@ -54,12 +54,12 @@ func PredictorAdd0_AVX2(const uint32* in, const uint32* upper, int num_pixels, u
 }
 
 // Predictor1: left.
-func PredictorAdd1_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd1_AVX2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   __m256i prev = _mm256_set1_epi32((int)out[-1]);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     // h | g | f | e | d | c | b | a
-    const __m256i src = _mm256_loadu_si256((const __m256i*)&in[i]);
+    const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
     // g | f | e | 0 | c | b | a | 0
     const __m256i shift0 = _mm256_slli_si256(src, 4);
     // g + h | f + g | e + f | e | c + d | b + c | a + b | a
@@ -75,7 +75,7 @@ func PredictorAdd1_AVX2(const uint32* in, const uint32* upper, int num_pixels, u
         sum1, _mm256_set_epi32(sum_abcd, sum_abcd, sum_abcd, sum_abcd, 0, 0, 0, 0));
 
     const __m256i res = _mm256_add_epi8(sum2, prev);
-    _mm256_storeu_si256((__m256i*)&out[i], res);
+    _mm256_storeu_si256((__*m256i)&out[i], res);
     // replicate last res output in prev.
     prev = _mm256_permutevar8x32_epi32(
         res, _mm256_set_epi32(7, 7, 7, 7, 7, 7, 7, 7));
@@ -88,15 +88,15 @@ func PredictorAdd1_AVX2(const uint32* in, const uint32* upper, int num_pixels, u
 // Macro that adds 32-bit integers from IN using mod 256 arithmetic
 // per 8 bit channel.
 #define GENERATE_PREDICTOR_1(X, IN)                                           \
-  func PredictorAdd##X##_AVX2(const uint32* in,                      \
-                                     const uint32* upper, int num_pixels,   \
-                                     uint32* WEBP_RESTRICT out) {           \
+  func PredictorAdd##X##_AVX2(const *uint32 in,                      \
+                                     const *uint32 upper, int num_pixels,   \
+                                     *uint32 WEBP_RESTRICT out) {           \
     int i;                                                                    \
     for (i = 0; i + 8 <= num_pixels; i += 8) {                                \
-      const __m256i src = _mm256_loadu_si256((const __m256i*)&in[i]);         \
-      const __m256i other = _mm256_loadu_si256((const __m256i*)&(IN));        \
+      const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);         \
+      const __m256i other = _mm256_loadu_si256((const __*m256i)&(IN));        \
       const __m256i res = _mm256_add_epi8(src, other);                        \
-      _mm256_storeu_si256((__m256i*)&out[i], res);                            \
+      _mm256_storeu_si256((__*m256i)&out[i], res);                            \
     }                                                                         \
     if (i != num_pixels) {                                                    \
       VP8LPredictorsAdd_SSE[(X)](in + i, upper + i, num_pixels - i, out + i); \
@@ -115,18 +115,18 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])
 // predictors 5 to 7.
 
 #define GENERATE_PREDICTOR_2(X, IN)                                           \
-  func PredictorAdd##X##_AVX2(const uint32* in,                      \
-                                     const uint32* upper, int num_pixels,   \
-                                     uint32* WEBP_RESTRICT out) {           \
+  func PredictorAdd##X##_AVX2(const *uint32 in,                      \
+                                     const *uint32 upper, int num_pixels,   \
+                                     *uint32 WEBP_RESTRICT out) {           \
     int i;                                                                    \
     for (i = 0; i + 8 <= num_pixels; i += 8) {                                \
-      const __m256i Tother = _mm256_loadu_si256((const __m256i*)&(IN));       \
-      const __m256i T = _mm256_loadu_si256((const __m256i*)&upper[i]);        \
-      const __m256i src = _mm256_loadu_si256((const __m256i*)&in[i]);         \
+      const __m256i Tother = _mm256_loadu_si256((const __*m256i)&(IN));       \
+      const __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);        \
+      const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);         \
       __m256i avg, res;                                                       \
       Average2_m256i(&T, &Tother, &avg);                                      \
       res = _mm256_add_epi8(avg, src);                                        \
-      _mm256_storeu_si256((__m256i*)&out[i], res);                            \
+      _mm256_storeu_si256((__*m256i)&out[i], res);                            \
     }                                                                         \
     if (i != num_pixels) {                                                    \
       VP8LPredictorsAdd_SSE[(X)](in + i, upper + i, num_pixels - i, out + i); \
@@ -156,14 +156,14 @@ const DO_PRED10_SHIFT =                                        \
     src = _mm256_srli_si256(src, 4);                            \
   } while (0)
 
-func PredictorAdd10_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd10_AVX2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i, j;
   __m256i L = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
-    __m256i src = _mm256_loadu_si256((const __m256i*)&in[i]);
-    __m256i TL = _mm256_loadu_si256((const __m256i*)&upper[i - 1]);
-    const __m256i T = _mm256_loadu_si256((const __m256i*)&upper[i]);
-    const __m256i TR = _mm256_loadu_si256((const __m256i*)&upper[i + 1]);
+    __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
+    __m256i TL = _mm256_loadu_si256((const __*m256i)&upper[i - 1]);
+    const __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);
+    const __m256i TR = _mm256_loadu_si256((const __*m256i)&upper[i + 1]);
     __m256i avgTTR;
     Average2_m256i(&T, &TR, &avgTTR);
     {
@@ -213,14 +213,14 @@ const DO_PRED11_SHIFT =                                      \
     pa = _mm256_srli_si256(pa, 4);                            \
   } while (0)
 
-func PredictorAdd11_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd11_AVX2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i, j;
   __m256i pa;
   __m256i L = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
-    __m256i T = _mm256_loadu_si256((const __m256i*)&upper[i]);
-    __m256i TL = _mm256_loadu_si256((const __m256i*)&upper[i - 1]);
-    __m256i src = _mm256_loadu_si256((const __m256i*)&in[i]);
+    __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);
+    __m256i TL = _mm256_loadu_si256((const __*m256i)&upper[i - 1]);
+    __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
     {
       // We can unpack with any value on the upper 32 bits, provided it's the
       // same on both operands (so that their sum of abs diff is zero). Here we
@@ -276,18 +276,18 @@ func PredictorAdd11_AVX2(const uint32* in, const uint32* upper, int num_pixels, 
     src = _mm256_srli_si256(src, 4);                          \
   } while (0)
 
-func PredictorAdd12_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd12_AVX2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   const __m256i zero = _mm256_setzero_si256();
   const __m256i L8 = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
   __m256i L = _mm256_unpacklo_epi8(L8, zero);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     // Load 8 pixels at a time.
-    __m256i src = _mm256_loadu_si256((const __m256i*)&in[i]);
-    const __m256i T = _mm256_loadu_si256((const __m256i*)&upper[i]);
+    __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
+    const __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);
     const __m256i T_lo = _mm256_unpacklo_epi8(T, zero);
     const __m256i T_hi = _mm256_unpackhi_epi8(T, zero);
-    const __m256i TL = _mm256_loadu_si256((const __m256i*)&upper[i - 1]);
+    const __m256i TL = _mm256_loadu_si256((const __*m256i)&upper[i - 1]);
     const __m256i TL_lo = _mm256_unpacklo_epi8(TL, zero);
     const __m256i TL_hi = _mm256_unpackhi_epi8(TL, zero);
     __m256i diff_lo = _mm256_sub_epi16(T_lo, TL_lo);
@@ -330,15 +330,15 @@ func PredictorAdd12_AVX2(const uint32* in, const uint32* upper, int num_pixels, 
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func AddGreenToBlueAndRed_AVX2(const uint32* const src, int num_pixels, uint32* dst) {
+func AddGreenToBlueAndRed_AVX2(const *uint32 const src, int num_pixels, *uint32 dst) {
   int i;
   const __m256i kCstShuffle = _mm256_set_epi8(
       -1, 29, -1, 29, -1, 25, -1, 25, -1, 21, -1, 21, -1, 17, -1, 17, -1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
-    const __m256i in = _mm256_loadu_si256((const __m256i*)&src[i]);  // argb
+    const __m256i in = _mm256_loadu_si256((const __*m256i)&src[i]);  // argb
     const __m256i in_0g0g = _mm256_shuffle_epi8(in, kCstShuffle);    // 0g0g
     const __m256i out = _mm256_add_epi8(in, in_0g0g);
-    _mm256_storeu_si256((__m256i*)&dst[i], out);
+    _mm256_storeu_si256((__*m256i)&dst[i], out);
   }
   // fallthrough and finish off with SSE.
   if (i != num_pixels) {
@@ -349,7 +349,7 @@ func AddGreenToBlueAndRed_AVX2(const uint32* const src, int num_pixels, uint32* 
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColorInverse_AVX2(const VP8LMultipliers* const m, const uint32* const src, int num_pixels, uint32* dst) {
+func TransformColorInverse_AVX2(const *VP8LMultipliers const m, const *uint32 const src, int num_pixels, *uint32 dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
 #define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
   const __m256i mults_rb = _mm256_set1_epi32(
@@ -363,7 +363,7 @@ func TransformColorInverse_AVX2(const VP8LMultipliers* const m, const uint32* co
       -1, 2, -1, -1, -1, 6, -1, -1, -1, 10, -1, -1, -1, 14, -1, -1, -1, 18, -1, -1, -1, 22, -1, -1, -1, 26, -1, -1, -1, 30, -1, -1);
   int i;
   for (i = 0; i + 8 <= num_pixels; i += 8) {
-    const __m256i A = _mm256_loadu_si256((const __m256i*)(src + i));
+    const __m256i A = _mm256_loadu_si256((const __*m256i)(src + i));
     const __m256i B = _mm256_shuffle_epi8(A, perm1);  // argb . g0g0
     const __m256i C = _mm256_mulhi_epi16(B, mults_rb);
     const __m256i D = _mm256_add_epi8(A, C);
@@ -371,7 +371,7 @@ func TransformColorInverse_AVX2(const VP8LMultipliers* const m, const uint32* co
     const __m256i F = _mm256_mulhi_epi16(E, mults_b2);
     const __m256i G = _mm256_add_epi8(D, F);
     const __m256i out = _mm256_blendv_epi8(G, A, mask_ag);
-    _mm256_storeu_si256((__m256i*)&dst[i], out);
+    _mm256_storeu_si256((__*m256i)&dst[i], out);
   }
   // Fall-back to SSE-version for left-overs.
   if (i != num_pixels) {
@@ -382,9 +382,9 @@ func TransformColorInverse_AVX2(const VP8LMultipliers* const m, const uint32* co
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-func ConvertBGRAToRGBA_AVX2(const uint32* WEBP_RESTRICT src, int num_pixels, uint8* WEBP_RESTRICT dst) {
-  const __m256i* in = (const __m256i*)src;
-  __m256i* out = (__m256i*)dst;
+func ConvertBGRAToRGBA_AVX2(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
+  const __*m256i in = (const __*m256i)src;
+  __*m256i out = (__*m256i)dst;
   while (num_pixels >= 8) {
     const __m256i A = _mm256_loadu_si256(in++);
     const __m256i B = _mm256_shuffle_epi8(
@@ -394,7 +394,7 @@ func ConvertBGRAToRGBA_AVX2(const uint32* WEBP_RESTRICT src, int num_pixels, uin
   }
   // left-overs
   if (num_pixels > 0) {
-    VP8LConvertBGRAToRGBA_SSE((const uint32*)in, num_pixels, (uint8*)out);
+    VP8LConvertBGRAToRGBA_SSE((const *uint32)in, num_pixels, (*uint8)out);
   }
 }
 

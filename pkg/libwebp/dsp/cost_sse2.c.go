@@ -27,9 +27,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-func SetResidualCoeffs_SSE2(const int16* WEBP_RESTRICT const coeffs, VP8Residual* WEBP_RESTRICT const res) {
-  const __m128i c0 = _mm_loadu_si128((const __m128i*)(coeffs + 0));
-  const __m128i c1 = _mm_loadu_si128((const __m128i*)(coeffs + 8));
+func SetResidualCoeffs_SSE2(const *int16 WEBP_RESTRICT const coeffs, *VP8Residual WEBP_RESTRICT const res) {
+  const __m128i c0 = _mm_loadu_si128((const __*m128i)(coeffs + 0));
+  const __m128i c1 = _mm_loadu_si128((const __*m128i)(coeffs + 8));
   // Use SSE2 to compare 16 values with a single instruction.
   const __m128i zero = _mm_setzero_si128();
   const __m128i m0 = _mm_packs_epi16(c0, c1);
@@ -46,14 +46,14 @@ func SetResidualCoeffs_SSE2(const int16* WEBP_RESTRICT const coeffs, VP8Residual
   res.coeffs = coeffs;
 }
 
-static int GetResidualCost_SSE2(int ctx0, const VP8Residual* const res) {
+static int GetResidualCost_SSE2(int ctx0, const *VP8Residual const res) {
   uint8 levels[16], ctxs[16];
   uint16 abs_levels[16];
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   const int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const uint16* t = costs[n][ctx0];
+  const *uint16 t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
@@ -67,8 +67,8 @@ static int GetResidualCost_SSE2(int ctx0, const VP8Residual* const res) {
     const __m128i zero = _mm_setzero_si128();
     const __m128i kCst2 = _mm_set1_epi8(2);
     const __m128i kCst67 = _mm_set1_epi8(MAX_VARIABLE_LEVEL);
-    const __m128i c0 = _mm_loadu_si128((const __m128i*)&res.coeffs[0]);
-    const __m128i c1 = _mm_loadu_si128((const __m128i*)&res.coeffs[8]);
+    const __m128i c0 = _mm_loadu_si128((const __*m128i)&res.coeffs[0]);
+    const __m128i c1 = _mm_loadu_si128((const __*m128i)&res.coeffs[8]);
     const __m128i D0 = _mm_sub_epi16(zero, c0);
     const __m128i D1 = _mm_sub_epi16(zero, c1);
     const __m128i E0 = _mm_max_epi16(c0, D0);  // abs(v), 16b
@@ -77,11 +77,11 @@ static int GetResidualCost_SSE2(int ctx0, const VP8Residual* const res) {
     const __m128i G = _mm_min_epu8(F, kCst2);   // context = 0,1,2
     const __m128i H = _mm_min_epu8(F, kCst67);  // clamp_level in [0..67]
 
-    _mm_storeu_si128((__m128i*)&ctxs[0], G);
-    _mm_storeu_si128((__m128i*)&levels[0], H);
+    _mm_storeu_si128((__*m128i)&ctxs[0], G);
+    _mm_storeu_si128((__*m128i)&levels[0], H);
 
-    _mm_storeu_si128((__m128i*)&abs_levels[0], E0);
-    _mm_storeu_si128((__m128i*)&abs_levels[8], E1);
+    _mm_storeu_si128((__*m128i)&abs_levels[0], E0);
+    _mm_storeu_si128((__*m128i)&abs_levels[8], E1);
   }
   for (; n < res.last; ++n) {
     const int ctx = ctxs[n];

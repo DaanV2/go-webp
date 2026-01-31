@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/smmintrin"
 
 //------------------------------------------------------------------------------
 
-static int ExtractAlpha_SSE41(const uint8* WEBP_RESTRICT argb, int argb_stride, int width, int height, uint8* WEBP_RESTRICT alpha, int alpha_stride) {
+static int ExtractAlpha_SSE41(const *uint8 WEBP_RESTRICT argb, int argb_stride, int width, int height, *uint8 WEBP_RESTRICT alpha, int alpha_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
   uint32 alpha_and = 0xff;
@@ -44,7 +44,7 @@ static int ExtractAlpha_SSE41(const uint8* WEBP_RESTRICT argb, int argb_stride, 
   const __m128i kCstAlpha3 =
       _mm_set_epi8(12, 8, 4, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
   for (j = 0; j < height; ++j) {
-    const __m128i* src = (const __m128i*)argb;
+    const __*m128i src = (const __*m128i)argb;
     for (i = 0; i < limit; i += 16) {
       // load 64 argb bytes
       const __m128i a0 = _mm_loadu_si128(src + 0);
@@ -59,7 +59,7 @@ static int ExtractAlpha_SSE41(const uint8* WEBP_RESTRICT argb, int argb_stride, 
       const __m128i c1 = _mm_or_si128(b2, b3);
       const __m128i d0 = _mm_or_si128(c0, c1);
       // store
-      _mm_storeu_si128((__m128i*)&alpha[i], d0);
+      _mm_storeu_si128((__*m128i)&alpha[i], d0);
       // accumulate sixteen alpha 'and' in parallel
       all_alphas = _mm_and_si128(all_alphas, d0);
       src += 4;

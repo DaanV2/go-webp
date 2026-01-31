@@ -42,11 +42,11 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
 
 #define UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                                 \
   func FUNC_NAME(                                                      \
-      const uint8* WEBP_RESTRICT top_y,                                     \
-      const uint8* WEBP_RESTRICT bottom_y,                                  \
-      const uint8* WEBP_RESTRICT top_u, const uint8* WEBP_RESTRICT top_v, \
-      const uint8* WEBP_RESTRICT cur_u, const uint8* WEBP_RESTRICT cur_v, \
-      uint8* WEBP_RESTRICT top_dst, uint8* WEBP_RESTRICT bottom_dst,      \
+      const *uint8 WEBP_RESTRICT top_y,                                     \
+      const *uint8 WEBP_RESTRICT bottom_y,                                  \
+      const *uint8 WEBP_RESTRICT top_u, const *uint8 WEBP_RESTRICT top_v, \
+      const *uint8 WEBP_RESTRICT cur_u, const *uint8 WEBP_RESTRICT cur_v, \
+      *uint8 WEBP_RESTRICT top_dst, *uint8 WEBP_RESTRICT bottom_dst,      \
       int len) {                                                              \
     int x;                                                                    \
     const int last_pixel_pair = (len - 1) >> 1;                               \
@@ -65,7 +65,7 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
       const uint32 t_uv = LOAD_UV(top_u[x], top_v[x]); /* top sample */     \
       const uint32 uv = LOAD_UV(cur_u[x], cur_v[x]);   /* sample */         \
       /* precompute invariant values associated with first and second         \
-       * diagonals*/                                                          \
+       * *diagonals/                                                          \
       const uint32 avg = tl_uv + t_uv + l_uv + uv + 0x00080008u;            \
       const uint32 diag_12 = (avg + 2 * (t_uv + l_uv)) >> 3;                \
       const uint32 diag_03 = (avg + 2 * (tl_uv + uv)) >> 3;                 \
@@ -113,7 +113,7 @@ UPSAMPLE_FUNC(UpsampleBgrLinePair_C, VP8YuvToBgr, 3)
 UPSAMPLE_FUNC(UpsampleRgba4444LinePair_C, VP8YuvToRgba4444, 2)
 UPSAMPLE_FUNC(UpsampleRgb565LinePair_C, VP8YuvToRgb565, 2)
 #else
-func EmptyUpsampleFunc(const uint8* top_y, const uint8* bottom_y, const uint8* top_u, const uint8* top_v, const uint8* cur_u, const uint8* cur_v, uint8* top_dst, uint8* bottom_dst, int len) {
+func EmptyUpsampleFunc(const *uint8 top_y, const *uint8 bottom_y, const *uint8 top_u, const *uint8 top_v, const *uint8 cur_u, const *uint8 cur_v, *uint8 top_dst, *uint8 bottom_dst, int len) {
   (void)top_y;
   (void)bottom_y;
   (void)top_u;
@@ -144,10 +144,10 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
 #if !defined(FANCY_UPSAMPLING)
 #define DUAL_SAMPLE_FUNC(FUNC_NAME, FUNC)                                     \
   func FUNC_NAME(                                                      \
-      const uint8* WEBP_RESTRICT top_y, const uint8* WEBP_RESTRICT bot_y, \
-      const uint8* WEBP_RESTRICT top_u, const uint8* WEBP_RESTRICT top_v, \
-      const uint8* WEBP_RESTRICT bot_u, const uint8* WEBP_RESTRICT bot_v, \
-      uint8* WEBP_RESTRICT top_dst, uint8* WEBP_RESTRICT bot_dst,         \
+      const *uint8 WEBP_RESTRICT top_y, const *uint8 WEBP_RESTRICT bot_y, \
+      const *uint8 WEBP_RESTRICT top_u, const *uint8 WEBP_RESTRICT top_v, \
+      const *uint8 WEBP_RESTRICT bot_u, const *uint8 WEBP_RESTRICT bot_v, \
+      *uint8 WEBP_RESTRICT top_dst, *uint8 WEBP_RESTRICT bot_dst,         \
       int len) {                                                              \
     const int half_len = len >> 1;                                            \
     int x;                                                                    \
@@ -190,11 +190,11 @@ WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last) {
 
 #define YUV444_FUNC(FUNC_NAME, FUNC, XSTEP)                                  \
   extern func FUNC_NAME(                                                     \
-      const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u,        \
-      const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int len);  \
+      const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,        \
+      const *uint8 WEBP_RESTRICT v, *uint8 WEBP_RESTRICT dst, int len);  \
   func FUNC_NAME(                                                            \
-      const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u,        \
-      const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int len) { \
+      const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,        \
+      const *uint8 WEBP_RESTRICT v, *uint8 WEBP_RESTRICT dst, int len) { \
     int i;                                                                   \
     for (i = 0; i < len; ++i) FUNC(y[i], u[i], v[i], &dst[i * (XSTEP)]);     \
   }
@@ -208,7 +208,7 @@ YUV444_FUNC(WebPYuv444ToArgb_C, VP8YuvToArgb, 4)
 YUV444_FUNC(WebPYuv444ToRgba4444_C, VP8YuvToRgba4444, 2)
 YUV444_FUNC(WebPYuv444ToRgb565_C, VP8YuvToRgb565, 2)
 #else
-func EmptyYuv444Func(const uint8* y, const uint8* u, const uint8* v, uint8* dst, int len) {
+func EmptyYuv444Func(const *uint8 y, const *uint8 u, const *uint8 v, *uint8 dst, int len) {
   (void)y;
   (void)u;
   (void)v;

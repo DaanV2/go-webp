@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if !defined(WEBP_DISABLE_STATS)
 
 // Helper function
-static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b, __m128i* const sum) {
+static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b, __*m128i const sum) {
   // take abs(a-b) in 8b
   const __m128i a_b = _mm_subs_epu8(a, b);
   const __m128i b_a = _mm_subs_epu8(b, a);
@@ -44,7 +44,7 @@ static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b, __m128i* c
 //------------------------------------------------------------------------------
 // SSIM / PSNR entry point
 
-static uint32 AccumulateSSE_SSE2(const uint8* src1, const uint8* src2, int len) {
+static uint32 AccumulateSSE_SSE2(const *uint8 src1, const *uint8 src2, int len) {
   int i = 0;
   uint32 sse2 = 0;
   if (len >= 16) {
@@ -52,25 +52,25 @@ static uint32 AccumulateSSE_SSE2(const uint8* src1, const uint8* src2, int len) 
     int32 tmp[4];
     __m128i sum1;
     __m128i sum = _mm_setzero_si128();
-    __m128i a0 = _mm_loadu_si128((const __m128i*)&src1[i]);
-    __m128i b0 = _mm_loadu_si128((const __m128i*)&src2[i]);
+    __m128i a0 = _mm_loadu_si128((const __*m128i)&src1[i]);
+    __m128i b0 = _mm_loadu_si128((const __*m128i)&src2[i]);
     i += 16;
     while (i <= limit) {
-      const __m128i a1 = _mm_loadu_si128((const __m128i*)&src1[i]);
-      const __m128i b1 = _mm_loadu_si128((const __m128i*)&src2[i]);
+      const __m128i a1 = _mm_loadu_si128((const __*m128i)&src1[i]);
+      const __m128i b1 = _mm_loadu_si128((const __*m128i)&src2[i]);
       __m128i sum2;
       i += 16;
       SubtractAndSquare_SSE2(a0, b0, &sum1);
       sum = _mm_add_epi32(sum, sum1);
-      a0 = _mm_loadu_si128((const __m128i*)&src1[i]);
-      b0 = _mm_loadu_si128((const __m128i*)&src2[i]);
+      a0 = _mm_loadu_si128((const __*m128i)&src1[i]);
+      b0 = _mm_loadu_si128((const __*m128i)&src2[i]);
       i += 16;
       SubtractAndSquare_SSE2(a1, b1, &sum2);
       sum = _mm_add_epi32(sum, sum2);
     }
     SubtractAndSquare_SSE2(a0, b0, &sum1);
     sum = _mm_add_epi32(sum, sum1);
-    _mm_storeu_si128((__m128i*)tmp, sum);
+    _mm_storeu_si128((__*m128i)tmp, sum);
     sse2 += (tmp[3] + tmp[2] + tmp[1] + tmp[0]);
   }
 
@@ -84,15 +84,15 @@ static uint32 AccumulateSSE_SSE2(const uint8* src1, const uint8* src2, int len) 
 
 #if !defined(WEBP_REDUCE_SIZE)
 
-static uint32 HorizontalAdd16b_SSE2(const __m128i* const m) {
+static uint32 HorizontalAdd16b_SSE2(const __*m128i const m) {
   uint16 tmp[8];
   const __m128i a = _mm_srli_si128(*m, 8);
   const __m128i b = _mm_add_epi16(*m, a);
-  _mm_storeu_si128((__m128i*)tmp, b);
+  _mm_storeu_si128((__*m128i)tmp, b);
   return (uint32)tmp[3] + tmp[2] + tmp[1] + tmp[0];
 }
 
-static uint32 HorizontalAdd32b_SSE2(const __m128i* const m) {
+static uint32 HorizontalAdd32b_SSE2(const __*m128i const m) {
   const __m128i a = _mm_srli_si128(*m, 8);
   const __m128i b = _mm_add_epi32(*m, a);
   const __m128i c = _mm_add_epi32(b, _mm_srli_si128(b, 4));
@@ -107,8 +107,8 @@ static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0};
     const __m128i Wy = _mm_set1_epi16((WEIGHT));              \
     const __m128i W = _mm_mullo_epi16(Wx, Wy);                \
     /* process 8 bytes at a time (7 bytes, actually) */       \
-    const __m128i a0 = _mm_loadl_epi64((const __m128i*)src1); \
-    const __m128i b0 = _mm_loadl_epi64((const __m128i*)src2); \
+    const __m128i a0 = _mm_loadl_epi64((const __*m128i)src1); \
+    const __m128i b0 = _mm_loadl_epi64((const __*m128i)src2); \
     /* convert to 16b and multiply by weight */               \
     const __m128i a1 = _mm_unpacklo_epi8(a0, zero);           \
     const __m128i b1 = _mm_unpacklo_epi8(b0, zero);           \
@@ -124,12 +124,12 @@ static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0};
     src2 += stride2;                                          \
   } while (0)
 
-static double SSIMGet_SSE2(const uint8* src1, int stride1, const uint8* src2, int stride2) {
+static double SSIMGet_SSE2(const *uint8 src1, int stride1, const *uint8 src2, int stride2) {
   VP8DistoStats stats;
   const __m128i zero = _mm_setzero_si128();
   __m128i xm = zero, ym = zero;                // 16b accums
   __m128i xxm = zero, yym = zero, xym = zero;  // 32b accum
-  const __m128i Wx = _mm_loadu_si128((const __m128i*)kWeight);
+  const __m128i Wx = _mm_loadu_si128((const __*m128i)kWeight);
   assert.Assert(2 * VP8_SSIM_KERNEL + 1 == 7);
   ACCUMULATE_ROW(1);
   ACCUMULATE_ROW(2);

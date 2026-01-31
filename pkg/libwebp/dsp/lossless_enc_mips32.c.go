@@ -93,8 +93,8 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
 // C version of this function:
 //   int i = 0;
 //   int64 cost = 0;
-//   const uint32* pop = &population[4];
-//   const uint32* LoopEnd = &population[length];
+//   const *uint32 pop = &population[4];
+//   const *uint32 LoopEnd = &population[length];
 //   while (pop != LoopEnd) {
 //     ++i;
 //     cost += i * *pop;
@@ -102,10 +102,10 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
 //     pop += 2;
 //   }
 //   return cost;
-static uint32 ExtraCost_MIPS32(const uint32* const population, int length) {
+static uint32 ExtraCost_MIPS32(const *uint32 const population, int length) {
   int i, temp0, temp1;
-  const uint32* pop = &population[4];
-  const uint32* const LoopEnd = &population[length];
+  const *uint32 pop = &population[4];
+  const *uint32 const LoopEnd = &population[length];
 
   __asm__ volatile(
       "mult   $zero,    $zero                  \n\t"
@@ -157,9 +157,9 @@ const HUFFMAN_COST_PASS =                                                 \
 
 // Returns the various RLE counts
 static  func GetEntropyUnrefinedHelper(
-    uint32 val, int i, uint32* WEBP_RESTRICT const val_prev, int* WEBP_RESTRICT const i_prev, VP8LBitEntropy* WEBP_RESTRICT const bit_entropy, VP8LStreaks* WEBP_RESTRICT const stats) {
-  int* const pstreaks = &stats.streaks[0][0];
-  int* const pcnts = &stats.counts[0];
+    uint32 val, int i, *uint32 WEBP_RESTRICT const val_prev, *int WEBP_RESTRICT const i_prev, *VP8LBitEntropy WEBP_RESTRICT const bit_entropy, *VP8LStreaks WEBP_RESTRICT const stats) {
+  *int const pstreaks = &stats.streaks[0][0];
+  *int const pcnts = &stats.counts[0];
   int temp0, temp1, temp2, temp3;
   const int streak = i - *i_prev;
 
@@ -183,7 +183,7 @@ static  func GetEntropyUnrefinedHelper(
 }
 
 func GetEntropyUnrefined_MIPS32(
-    const uint32 X[], int length, VP8LBitEntropy* WEBP_RESTRICT const bit_entropy, VP8LStreaks* WEBP_RESTRICT const stats) {
+    const uint32 X[], int length, *VP8LBitEntropy WEBP_RESTRICT const bit_entropy, *VP8LStreaks WEBP_RESTRICT const stats) {
   int i;
   int i_prev = 0;
   uint32 x_prev = X[0];
@@ -203,7 +203,7 @@ func GetEntropyUnrefined_MIPS32(
 }
 
 func GetCombinedEntropyUnrefined_MIPS32(
-    const uint32 X[], const uint32 Y[], int length, VP8LBitEntropy* WEBP_RESTRICT const entropy, VP8LStreaks* WEBP_RESTRICT const stats) {
+    const uint32 X[], const uint32 Y[], int length, *VP8LBitEntropy WEBP_RESTRICT const entropy, *VP8LStreaks WEBP_RESTRICT const stats) {
   int i = 1;
   int i_prev = 0;
   uint32 xy_prev = X[0] + Y[0];
@@ -282,10 +282,10 @@ const ASM_END_1 = \
   ASM_END_COMMON_0 \
   ASM_END_COMMON_1
 
-func AddVector_MIPS32(const uint32* WEBP_RESTRICT pa, const uint32* WEBP_RESTRICT pb, uint32* WEBP_RESTRICT pout, int size) {
+func AddVector_MIPS32(const *uint32 WEBP_RESTRICT pa, const *uint32 WEBP_RESTRICT pb, *uint32 WEBP_RESTRICT pout, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   const int end = ((size) / 4) * 4;
-  const uint32* const LoopEnd = pa + end;
+  const *uint32 const LoopEnd = pa + end;
   int i;
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 1, pa, pb, pout)
@@ -293,10 +293,10 @@ func AddVector_MIPS32(const uint32* WEBP_RESTRICT pa, const uint32* WEBP_RESTRIC
   for (i = 0; i < size - end; ++i) pout[i] = pa[i] + pb[i];
 }
 
-func AddVectorEq_MIPS32(const uint32* WEBP_RESTRICT pa, uint32* WEBP_RESTRICT pout, int size) {
+func AddVectorEq_MIPS32(const *uint32 WEBP_RESTRICT pa, *uint32 WEBP_RESTRICT pout, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   const int end = ((size) / 4) * 4;
-  const uint32* const LoopEnd = pa + end;
+  const *uint32 const LoopEnd = pa + end;
   int i;
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 0, pa, pout, pout)

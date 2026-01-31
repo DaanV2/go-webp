@@ -63,18 +63,18 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
         _mm_avg_epu8(b, db); /* (3a + 9b +  c + 3d + 8) / 16 */ \
     const __m128i t_1 = _mm_unpacklo_epi8(t_a, t_b);            \
     const __m128i t_2 = _mm_unpackhi_epi8(t_a, t_b);            \
-    _mm_store_si128(((__m128i*)(out)) + 0, t_1);                \
-    _mm_store_si128(((__m128i*)(out)) + 1, t_2);                \
+    _mm_store_si128(((__*m128i)(out)) + 0, t_1);                \
+    _mm_store_si128(((__*m128i)(out)) + 1, t_2);                \
   } while (0)
 
 // Loads 17 pixels each from rows r1 and r2 and generates 32 pixels.
 #define UPSAMPLE_32PIXELS(r1, r2, out)                                         \
   do {                                                                         \
     const __m128i one = _mm_set1_epi8(1);                                      \
-    const __m128i a = _mm_loadu_si128((const __m128i*)&(r1)[0]);               \
-    const __m128i b = _mm_loadu_si128((const __m128i*)&(r1)[1]);               \
-    const __m128i c = _mm_loadu_si128((const __m128i*)&(r2)[0]);               \
-    const __m128i d = _mm_loadu_si128((const __m128i*)&(r2)[1]);               \
+    const __m128i a = _mm_loadu_si128((const __*m128i)&(r1)[0]);               \
+    const __m128i b = _mm_loadu_si128((const __*m128i)&(r1)[1]);               \
+    const __m128i c = _mm_loadu_si128((const __*m128i)&(r2)[0]);               \
+    const __m128i d = _mm_loadu_si128((const __*m128i)&(r2)[1]);               \
                                                                                \
     const __m128i s = _mm_avg_epu8(a, d);   /* s = (a + d + 1) / 2 */          \
     const __m128i t = _mm_avg_epu8(b, c);   /* t = (b + c + 1) / 2 */          \
@@ -99,7 +99,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample32Pixels_SSE2(const uint8* WEBP_RESTRICT const r1, const uint8* WEBP_RESTRICT const r2, uint8* WEBP_RESTRICT const out) {
+func Upsample32Pixels_SSE2(const *uint8 WEBP_RESTRICT const r1, const *uint8 WEBP_RESTRICT const r2, *uint8 WEBP_RESTRICT const out) {
   UPSAMPLE_32PIXELS(r1, r2, out);
 }
 
@@ -127,18 +127,18 @@ func Upsample32Pixels_SSE2(const uint8* WEBP_RESTRICT const r1, const uint8* WEB
 
 #define SSE2_UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                            \
   func FUNC_NAME(                                                      \
-      const uint8* WEBP_RESTRICT top_y,                                     \
-      const uint8* WEBP_RESTRICT bottom_y,                                  \
-      const uint8* WEBP_RESTRICT top_u, const uint8* WEBP_RESTRICT top_v, \
-      const uint8* WEBP_RESTRICT cur_u, const uint8* WEBP_RESTRICT cur_v, \
-      uint8* WEBP_RESTRICT top_dst, uint8* WEBP_RESTRICT bottom_dst,      \
+      const *uint8 WEBP_RESTRICT top_y,                                     \
+      const *uint8 WEBP_RESTRICT bottom_y,                                  \
+      const *uint8 WEBP_RESTRICT top_u, const *uint8 WEBP_RESTRICT top_v, \
+      const *uint8 WEBP_RESTRICT cur_u, const *uint8 WEBP_RESTRICT cur_v, \
+      *uint8 WEBP_RESTRICT top_dst, *uint8 WEBP_RESTRICT bottom_dst,      \
       int len) {                                                              \
     int uv_pos, pos;                                                          \
     /* 16byte-aligned array to cache reconstructed u and v */                 \
     uint8 uv_buf[14 * 32 + 15] = {0};                                       \
-    uint8* const r_u =                                                      \
-        (uint8*)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
-    uint8* const r_v = r_u + 32;                                            \
+    *uint8 const r_u =                                                      \
+        (*uint8)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
+    *uint8 const r_v = r_u + 32;                                            \
                                                                               \
     assert.Assert(top_y != nil);                                                    \
     { /* Treat the first pixel in regular way */                              \
@@ -162,10 +162,10 @@ func Upsample32Pixels_SSE2(const uint8* WEBP_RESTRICT const r1, const uint8* WEB
     }                                                                         \
     if (len > 1) {                                                            \
       const int left_over = ((len + 1) >> 1) - (pos >> 1);                    \
-      uint8* const tmp_top_dst = r_u + 4 * 32;                              \
-      uint8* const tmp_bottom_dst = tmp_top_dst + 4 * 32;                   \
-      uint8* const tmp_top = tmp_bottom_dst + 4 * 32;                       \
-      uint8* const tmp_bottom = (bottom_y == nil) ? nil : tmp_top + 32;   \
+      *uint8 const tmp_top_dst = r_u + 4 * 32;                              \
+      *uint8 const tmp_bottom_dst = tmp_top_dst + 4 * 32;                   \
+      *uint8 const tmp_top = tmp_bottom_dst + 4 * 32;                       \
+      *uint8 const tmp_bottom = (bottom_y == nil) ? nil : tmp_top + 32;   \
       assert.Assert(left_over > 0);                                                  \
       UPSAMPLE_LAST_BLOCK(top_u + uv_pos, cur_u + uv_pos, left_over, r_u);    \
       UPSAMPLE_LAST_BLOCK(top_v + uv_pos, cur_v + uv_pos, left_over, r_v);    \
@@ -233,11 +233,11 @@ extern func WebPInitYUV444ConvertersSSE2(void);
 
 #define YUV444_FUNC(FUNC_NAME, CALL, CALL_C, XSTEP)                          \
   extern func CALL_C(                                                        \
-      const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u,        \
-      const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int len);  \
+      const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,        \
+      const *uint8 WEBP_RESTRICT v, *uint8 WEBP_RESTRICT dst, int len);  \
   func FUNC_NAME(                                                     \
-      const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u,        \
-      const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int len) { \
+      const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,        \
+      const *uint8 WEBP_RESTRICT v, *uint8 WEBP_RESTRICT dst, int len) { \
     int i;                                                                   \
     const int max_len = len & ~31;                                           \
     for (i = 0; i < max_len; i += 32) {                                      \

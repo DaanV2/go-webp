@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Compute susceptibility based on DCT-coeff histograms.
 
-func CollectHistogram_SSE41(const uint8* WEBP_RESTRICT ref, const uint8* WEBP_RESTRICT pred, int start_block, int end_block, VP8Histogram* WEBP_RESTRICT const histo) {
+func CollectHistogram_SSE41(const *uint8 WEBP_RESTRICT ref, const *uint8 WEBP_RESTRICT pred, int start_block, int end_block, *VP8Histogram WEBP_RESTRICT const histo) {
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   int j;
   int distribution[MAX_COEFF_THRESH + 1] = {0};
@@ -41,8 +41,8 @@ func CollectHistogram_SSE41(const uint8* WEBP_RESTRICT ref, const uint8* WEBP_RE
     // Convert coefficients to bin (within out[]).
     {
       // Load.
-      const __m128i out0 = _mm_loadu_si128((__m128i*)&out[0]);
-      const __m128i out1 = _mm_loadu_si128((__m128i*)&out[8]);
+      const __m128i out0 = _mm_loadu_si128((__*m128i)&out[0]);
+      const __m128i out1 = _mm_loadu_si128((__*m128i)&out[8]);
       // v = abs(out) >> 3
       const __m128i abs0 = _mm_abs_epi16(out0);
       const __m128i abs1 = _mm_abs_epi16(out1);
@@ -52,8 +52,8 @@ func CollectHistogram_SSE41(const uint8* WEBP_RESTRICT ref, const uint8* WEBP_RE
       const __m128i bin0 = _mm_min_epi16(v0, max_coeff_thresh);
       const __m128i bin1 = _mm_min_epi16(v1, max_coeff_thresh);
       // Store.
-      _mm_storeu_si128((__m128i*)&out[0], bin0);
-      _mm_storeu_si128((__m128i*)&out[8], bin1);
+      _mm_storeu_si128((__*m128i)&out[0], bin0);
+      _mm_storeu_si128((__*m128i)&out[8], bin1);
     }
 
     // Convert coefficients to bin.
@@ -73,23 +73,23 @@ func CollectHistogram_SSE41(const uint8* WEBP_RESTRICT ref, const uint8* WEBP_RE
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int TTransform_SSE41(const uint8* inA, const uint8* inB, const uint16* const w) {
+static int TTransform_SSE41(const *uint8 inA, const *uint8 inB, const *uint16 const w) {
   int32 sum[4];
   __m128i tmp_0, tmp_1, tmp_2, tmp_3;
 
   // Load and combine inputs.
   {
-    const __m128i inA_0 = _mm_loadu_si128((const __m128i*)&inA[BPS * 0]);
-    const __m128i inA_1 = _mm_loadu_si128((const __m128i*)&inA[BPS * 1]);
-    const __m128i inA_2 = _mm_loadu_si128((const __m128i*)&inA[BPS * 2]);
+    const __m128i inA_0 = _mm_loadu_si128((const __*m128i)&inA[BPS * 0]);
+    const __m128i inA_1 = _mm_loadu_si128((const __*m128i)&inA[BPS * 1]);
+    const __m128i inA_2 = _mm_loadu_si128((const __*m128i)&inA[BPS * 2]);
     // In SSE4.1, with gcc 4.8 at least (maybe other versions), // _mm_loadu_si128 is faster than _mm_loadl_epi64. But for the last lump
     // of inA and inB, _mm_loadl_epi64 is still used not to have an out of
     // bound read.
-    const __m128i inA_3 = _mm_loadl_epi64((const __m128i*)&inA[BPS * 3]);
-    const __m128i inB_0 = _mm_loadu_si128((const __m128i*)&inB[BPS * 0]);
-    const __m128i inB_1 = _mm_loadu_si128((const __m128i*)&inB[BPS * 1]);
-    const __m128i inB_2 = _mm_loadu_si128((const __m128i*)&inB[BPS * 2]);
-    const __m128i inB_3 = _mm_loadl_epi64((const __m128i*)&inB[BPS * 3]);
+    const __m128i inA_3 = _mm_loadl_epi64((const __*m128i)&inA[BPS * 3]);
+    const __m128i inB_0 = _mm_loadu_si128((const __*m128i)&inB[BPS * 0]);
+    const __m128i inB_1 = _mm_loadu_si128((const __*m128i)&inB[BPS * 1]);
+    const __m128i inB_2 = _mm_loadu_si128((const __*m128i)&inB[BPS * 2]);
+    const __m128i inB_3 = _mm_loadl_epi64((const __*m128i)&inB[BPS * 3]);
 
     // Combine inA and inB (we'll do two transforms in parallel).
     const __m128i inAB_0 = _mm_unpacklo_epi32(inA_0, inB_0);
@@ -130,8 +130,8 @@ static int TTransform_SSE41(const uint8* inA, const uint8* inB, const uint16* co
   // Horizontal pass and difference of weighted sums.
   {
     // Load all inputs.
-    const __m128i w_0 = _mm_loadu_si128((const __m128i*)&w[0]);
-    const __m128i w_8 = _mm_loadu_si128((const __m128i*)&w[8]);
+    const __m128i w_0 = _mm_loadu_si128((const __*m128i)&w[0]);
+    const __m128i w_8 = _mm_loadu_si128((const __*m128i)&w[8]);
 
     // Calculate a and b (two 4x4 at once).
     const __m128i a0 = _mm_add_epi16(tmp_0, tmp_2);
@@ -164,17 +164,17 @@ static int TTransform_SSE41(const uint8* inA, const uint8* inB, const uint16* co
 
     // difference of weighted sums
     A_b2 = _mm_sub_epi32(A_b0, B_b0);
-    _mm_storeu_si128((__m128i*)&sum[0], A_b2);
+    _mm_storeu_si128((__*m128i)&sum[0], A_b2);
   }
   return sum[0] + sum[1] + sum[2] + sum[3];
 }
 
-static int Disto4x4_SSE41(const uint8* WEBP_RESTRICT const a, const uint8* WEBP_RESTRICT const b, const uint16* WEBP_RESTRICT const w) {
+static int Disto4x4_SSE41(const *uint8 WEBP_RESTRICT const a, const *uint8 WEBP_RESTRICT const b, const *uint16 WEBP_RESTRICT const w) {
   const int diff_sum = TTransform_SSE41(a, b, w);
   return abs(diff_sum) >> 5;
 }
 
-static int Disto16x16_SSE41(const uint8* WEBP_RESTRICT const a, const uint8* WEBP_RESTRICT const b, const uint16* WEBP_RESTRICT const w) {
+static int Disto16x16_SSE41(const *uint8 WEBP_RESTRICT const a, const *uint8 WEBP_RESTRICT const b, const *uint16 WEBP_RESTRICT const w) {
   int D = 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
@@ -196,19 +196,19 @@ static int Disto16x16_SSE41(const uint8* WEBP_RESTRICT const a, const uint8* WEB
                2 * (D) + 1, 2 * (D) + 0, 2 * (C) + 1, 2 * (C) + 0, \
                2 * (B) + 1, 2 * (B) + 0, 2 * (A) + 1, 2 * (A) + 0)
 
-static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const uint16* const sharpen, const VP8Matrix* const mtx) {
+static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const *uint16 const sharpen, const *VP8Matrix const mtx) {
   const __m128i max_coeff_2047 = _mm_set1_epi16(MAX_LEVEL);
   const __m128i zero = _mm_setzero_si128();
   __m128i out0, out8;
   __m128i packed_out;
 
   // Load all inputs.
-  __m128i in0 = _mm_loadu_si128((__m128i*)&in[0]);
-  __m128i in8 = _mm_loadu_si128((__m128i*)&in[8]);
-  const __m128i iq0 = _mm_loadu_si128((const __m128i*)&mtx.iq[0]);
-  const __m128i iq8 = _mm_loadu_si128((const __m128i*)&mtx.iq[8]);
-  const __m128i q0 = _mm_loadu_si128((const __m128i*)&mtx.q[0]);
-  const __m128i q8 = _mm_loadu_si128((const __m128i*)&mtx.q[8]);
+  __m128i in0 = _mm_loadu_si128((__*m128i)&in[0]);
+  __m128i in8 = _mm_loadu_si128((__*m128i)&in[8]);
+  const __m128i iq0 = _mm_loadu_si128((const __*m128i)&mtx.iq[0]);
+  const __m128i iq8 = _mm_loadu_si128((const __*m128i)&mtx.iq[8]);
+  const __m128i q0 = _mm_loadu_si128((const __*m128i)&mtx.q[0]);
+  const __m128i q8 = _mm_loadu_si128((const __*m128i)&mtx.q[8]);
 
   // coeff = abs(in)
   __m128i coeff0 = _mm_abs_epi16(in0);
@@ -216,8 +216,8 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const uint16* con
 
   // coeff = abs(in) + sharpen
   if (sharpen != nil) {
-    const __m128i sharpen0 = _mm_loadu_si128((const __m128i*)&sharpen[0]);
-    const __m128i sharpen8 = _mm_loadu_si128((const __m128i*)&sharpen[8]);
+    const __m128i sharpen0 = _mm_loadu_si128((const __*m128i)&sharpen[0]);
+    const __m128i sharpen8 = _mm_loadu_si128((const __*m128i)&sharpen[8]);
     coeff0 = _mm_add_epi16(coeff0, sharpen0);
     coeff8 = _mm_add_epi16(coeff8, sharpen8);
   }
@@ -235,10 +235,10 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const uint16* con
     __m128i out_08 = _mm_unpacklo_epi16(coeff_iQ8L, coeff_iQ8H);
     __m128i out_12 = _mm_unpackhi_epi16(coeff_iQ8L, coeff_iQ8H);
     // out = (coeff * iQ + B)
-    const __m128i bias_00 = _mm_loadu_si128((const __m128i*)&mtx.bias[0]);
-    const __m128i bias_04 = _mm_loadu_si128((const __m128i*)&mtx.bias[4]);
-    const __m128i bias_08 = _mm_loadu_si128((const __m128i*)&mtx.bias[8]);
-    const __m128i bias_12 = _mm_loadu_si128((const __m128i*)&mtx.bias[12]);
+    const __m128i bias_00 = _mm_loadu_si128((const __*m128i)&mtx.bias[0]);
+    const __m128i bias_04 = _mm_loadu_si128((const __*m128i)&mtx.bias[4]);
+    const __m128i bias_08 = _mm_loadu_si128((const __*m128i)&mtx.bias[8]);
+    const __m128i bias_12 = _mm_loadu_si128((const __*m128i)&mtx.bias[12]);
     out_00 = _mm_add_epi32(out_00, bias_00);
     out_04 = _mm_add_epi32(out_04, bias_04);
     out_08 = _mm_add_epi32(out_08, bias_08);
@@ -266,8 +266,8 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const uint16* con
   in0 = _mm_mullo_epi16(out0, q0);
   in8 = _mm_mullo_epi16(out8, q8);
 
-  _mm_storeu_si128((__m128i*)&in[0], in0);
-  _mm_storeu_si128((__m128i*)&in[8], in8);
+  _mm_storeu_si128((__*m128i)&in[0], in0);
+  _mm_storeu_si128((__*m128i)&in[8], in8);
 
   // zigzag the output before storing it. The re-ordering is:
   //    0 1 2 3 4 5 6 7 | 8  9 10 11 12 13 14 15
@@ -286,8 +286,8 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const uint16* con
     const __m128i tmp_8 = _mm_shuffle_epi8(out8, kCst_8);  // extract #8
     const __m128i out_z0 = _mm_or_si128(tmp_lo, tmp_8);
     const __m128i out_z8 = _mm_or_si128(tmp_hi, tmp_7);
-    _mm_storeu_si128((__m128i*)&out[0], out_z0);
-    _mm_storeu_si128((__m128i*)&out[8], out_z8);
+    _mm_storeu_si128((__*m128i)&out[0], out_z0);
+    _mm_storeu_si128((__*m128i)&out[8], out_z8);
     packed_out = _mm_packs_epi16(out_z0, out_z8);
   }
 
@@ -297,17 +297,17 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const uint16* con
 
 #undef PSHUFB_CST
 
-static int QuantizeBlock_SSE41(int16 in[16], int16 out[16], const VP8Matrix* WEBP_RESTRICT const mtx) {
+static int QuantizeBlock_SSE41(int16 in[16], int16 out[16], const *VP8Matrix WEBP_RESTRICT const mtx) {
   return DoQuantizeBlock_SSE41(in, out, &mtx.sharpen[0], mtx);
 }
 
-static int QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16], const VP8Matrix* WEBP_RESTRICT const mtx) {
+static int QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16], const *VP8Matrix WEBP_RESTRICT const mtx) {
   return DoQuantizeBlock_SSE41(in, out, nil, mtx);
 }
 
-static int Quantize2Blocks_SSE41(int16 in[32], int16 out[32], const VP8Matrix* WEBP_RESTRICT const mtx) {
+static int Quantize2Blocks_SSE41(int16 in[32], int16 out[32], const *VP8Matrix WEBP_RESTRICT const mtx) {
   int nz;
-  const uint16* const sharpen = &mtx.sharpen[0];
+  const *uint16 const sharpen = &mtx.sharpen[0];
   nz = DoQuantizeBlock_SSE41(in + 0 * 16, out + 0 * 16, sharpen, mtx) << 0;
   nz |= DoQuantizeBlock_SSE41(in + 1 * 16, out + 1 * 16, sharpen, mtx) << 1;
   return nz;

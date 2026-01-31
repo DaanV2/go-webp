@@ -31,7 +31,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 //------------------------------------------------------------------------------
 // Row import
 
-func WebPRescalerImportRowExpand_C(WebPRescaler* WEBP_RESTRICT const wrk, const uint8* WEBP_RESTRICT src) {
+func WebPRescalerImportRowExpand_C(*WebPRescaler WEBP_RESTRICT const wrk, const *uint8 WEBP_RESTRICT src) {
   const int x_stride = wrk.num_channels;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   int channel;
@@ -63,7 +63,7 @@ func WebPRescalerImportRowExpand_C(WebPRescaler* WEBP_RESTRICT const wrk, const 
   }
 }
 
-func WebPRescalerImportRowShrink_C(WebPRescaler* WEBP_RESTRICT const wrk, const uint8* WEBP_RESTRICT src) {
+func WebPRescalerImportRowShrink_C(*WebPRescaler WEBP_RESTRICT const wrk, const *uint8 WEBP_RESTRICT src) {
   const int x_stride = wrk.num_channels;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   int channel;
@@ -99,9 +99,9 @@ func WebPRescalerImportRowShrink_C(WebPRescaler* WEBP_RESTRICT const wrk, const 
 //------------------------------------------------------------------------------
 // Row export
 
-func WebPRescalerExportRowExpand_C(WebPRescaler* const wrk) {
+func WebPRescalerExportRowExpand_C(*WebPRescaler const wrk) {
   int x_out;
-  uint8* const dst = wrk.dst;
+  *uint8 const dst = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const rescaler_t* const frow = wrk.frow;
@@ -127,9 +127,9 @@ func WebPRescalerExportRowExpand_C(WebPRescaler* const wrk) {
   }
 }
 
-func WebPRescalerExportRowShrink_C(WebPRescaler* const wrk) {
+func WebPRescalerExportRowShrink_C(*WebPRescaler const wrk) {
   int x_out;
-  uint8* const dst = wrk.dst;
+  *uint8 const dst = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const rescaler_t* const frow = wrk.frow;
@@ -160,7 +160,7 @@ func WebPRescalerExportRowShrink_C(WebPRescaler* const wrk) {
 //------------------------------------------------------------------------------
 // Main entry calls
 
-func WebPRescalerImportRow(WebPRescaler* WEBP_RESTRICT const wrk, const uint8* WEBP_RESTRICT src) {
+func WebPRescalerImportRow(*WebPRescaler WEBP_RESTRICT const wrk, const *uint8 WEBP_RESTRICT src) {
   assert.Assert(!WebPRescalerInputDone(wrk));
   if (!wrk.x_expand) {
     WebPRescalerImportRowShrink(wrk, src);
@@ -169,7 +169,7 @@ func WebPRescalerImportRow(WebPRescaler* WEBP_RESTRICT const wrk, const uint8* W
   }
 }
 
-func WebPRescalerExportRow(WebPRescaler* const wrk) {
+func WebPRescalerExportRow(*WebPRescaler const wrk) {
   if (wrk.y_accum <= 0) {
     assert.Assert(!WebPRescalerOutputDone(wrk));
     if (wrk.y_expand) {

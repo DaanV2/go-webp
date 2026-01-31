@@ -42,29 +42,29 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     (V).val[(OTHER)] = vshrn_n_u16(b3, 8);                   \
   } while (0)
 
-func ApplyAlphaMultiply_NEON(uint8* rgba, int alpha_first, int w, int h, int stride) {
+func ApplyAlphaMultiply_NEON(*uint8 rgba, int alpha_first, int w, int h, int stride) {
   const uint16x8_t kOne = vdupq_n_u16(1u);
   while (h-- > 0) {
-    uint32* const rgbx = (uint32*)rgba;
+    *uint32 const rgbx = (*uint32)rgba;
     int i = 0;
     if (alpha_first) {
       for (; i + 8 <= w; i += 8) {
         // load aaaa...|rrrr...|gggg...|bbbb...
-        uint8x8x4_t RGBX = vld4_u8((const uint8*)(rgbx + i));
+        uint8x8x4_t RGBX = vld4_u8((const *uint8)(rgbx + i));
         MULTIPLY_BY_ALPHA(RGBX, 0, 3);
-        vst4_u8((uint8*)(rgbx + i), RGBX);
+        vst4_u8((*uint8)(rgbx + i), RGBX);
       }
     } else {
       for (; i + 8 <= w; i += 8) {
-        uint8x8x4_t RGBX = vld4_u8((const uint8*)(rgbx + i));
+        uint8x8x4_t RGBX = vld4_u8((const *uint8)(rgbx + i));
         MULTIPLY_BY_ALPHA(RGBX, 3, 0);
-        vst4_u8((uint8*)(rgbx + i), RGBX);
+        vst4_u8((*uint8)(rgbx + i), RGBX);
       }
     }
     // Finish with left-overs.
     for (; i < w; ++i) {
-      uint8* const rgb = rgba + (tenary.If(alpha_first, 1, 0));
-      const uint8* const alpha = rgba + (tenary.If(alpha_first, 0, 3));
+      *uint8 const rgb = rgba + (tenary.If(alpha_first, 1, 0));
+      const *uint8 const alpha = rgba + (tenary.If(alpha_first, 0, 3));
       const uint32 a = alpha[4 * i];
       if (a != 0xff) {
         const uint32 mult = MULTIPLIER(a);
@@ -82,7 +82,7 @@ func ApplyAlphaMultiply_NEON(uint8* rgba, int alpha_first, int w, int h, int str
 
 //------------------------------------------------------------------------------
 
-static int DispatchAlpha_NEON(const uint8* WEBP_RESTRICT alpha, int alpha_stride, int width, int height, uint8* WEBP_RESTRICT dst, int dst_stride) {
+static int DispatchAlpha_NEON(const *uint8 WEBP_RESTRICT alpha, int alpha_stride, int width, int height, *uint8 WEBP_RESTRICT dst, int dst_stride) {
   uint32 alpha_mask = 0xffu;
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
@@ -92,10 +92,10 @@ static int DispatchAlpha_NEON(const uint8* WEBP_RESTRICT alpha, int alpha_stride
     // mode). So we must be sure dst[4*i + 8 - 1] is writable for the store.
     // Hence the test with 'width - 1' instead of just 'width'.
     for (i = 0; i + 8 <= width - 1; i += 8) {
-      uint8x8x4_t rgbX = vld4_u8((const uint8*)(dst + 4 * i));
+      uint8x8x4_t rgbX = vld4_u8((const *uint8)(dst + 4 * i));
       const uint8x8_t alphas = vld1_u8(alpha + i);
       rgbX.val[0] = alphas;
-      vst4_u8((uint8*)(dst + 4 * i), rgbX);
+      vst4_u8((*uint8)(dst + 4 * i), rgbX);
       mask8 = vand_u8(mask8, alphas);
     }
     for (; i < width; ++i) {
@@ -106,14 +106,14 @@ static int DispatchAlpha_NEON(const uint8* WEBP_RESTRICT alpha, int alpha_stride
     alpha += alpha_stride;
     dst += dst_stride;
   }
-  vst1_u8((uint8*)tmp, mask8);
+  vst1_u8((*uint8)tmp, mask8);
   alpha_mask *= 0x01010101;
   alpha_mask &= tmp[0];
   alpha_mask &= tmp[1];
   return (alpha_mask != 0xffffffffu);
 }
 
-func DispatchAlphaToGreen_NEON(const uint8* WEBP_RESTRICT alpha, int alpha_stride, int width, int height, uint32* WEBP_RESTRICT dst, int dst_stride) {
+func DispatchAlphaToGreen_NEON(const *uint8 WEBP_RESTRICT alpha, int alpha_stride, int width, int height, *uint32 WEBP_RESTRICT dst, int dst_stride) {
   int i, j;
   uint8x8x4_t greens;  // leave A/R/B channels zero'd.
   greens.val[0] = vdup_n_u8(0);
@@ -122,7 +122,7 @@ func DispatchAlphaToGreen_NEON(const uint8* WEBP_RESTRICT alpha, int alpha_strid
   for (j = 0; j < height; ++j) {
     for (i = 0; i + 8 <= width; i += 8) {
       greens.val[1] = vld1_u8(alpha + i);
-      vst4_u8((uint8*)(dst + i), greens);
+      vst4_u8((*uint8)(dst + i), greens);
     }
     for (; i < width; ++i) dst[i] = alpha[i] << 8;
     alpha += alpha_stride;
@@ -130,7 +130,7 @@ func DispatchAlphaToGreen_NEON(const uint8* WEBP_RESTRICT alpha, int alpha_strid
   }
 }
 
-static int ExtractAlpha_NEON(const uint8* WEBP_RESTRICT argb, int argb_stride, int width, int height, uint8* WEBP_RESTRICT alpha, int alpha_stride) {
+static int ExtractAlpha_NEON(const *uint8 WEBP_RESTRICT argb, int argb_stride, int width, int height, *uint8 WEBP_RESTRICT alpha, int alpha_stride) {
   uint32 alpha_mask = 0xffu;
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
@@ -140,9 +140,9 @@ static int ExtractAlpha_NEON(const uint8* WEBP_RESTRICT argb, int argb_stride, i
     // mode). So we must be sure dst[4*i + 8 - 1] is writable for the store.
     // Hence the test with 'width - 1' instead of just 'width'.
     for (i = 0; i + 8 <= width - 1; i += 8) {
-      const uint8x8x4_t rgbX = vld4_u8((const uint8*)(argb + 4 * i));
+      const uint8x8x4_t rgbX = vld4_u8((const *uint8)(argb + 4 * i));
       const uint8x8_t alphas = rgbX.val[0];
-      vst1_u8((uint8*)(alpha + i), alphas);
+      vst1_u8((*uint8)(alpha + i), alphas);
       mask8 = vand_u8(mask8, alphas);
     }
     for (; i < width; ++i) {
@@ -152,17 +152,17 @@ static int ExtractAlpha_NEON(const uint8* WEBP_RESTRICT argb, int argb_stride, i
     argb += argb_stride;
     alpha += alpha_stride;
   }
-  vst1_u8((uint8*)tmp, mask8);
+  vst1_u8((*uint8)tmp, mask8);
   alpha_mask *= 0x01010101;
   alpha_mask &= tmp[0];
   alpha_mask &= tmp[1];
   return (alpha_mask == 0xffffffffu);
 }
 
-func ExtractGreen_NEON(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT alpha, int size) {
+func ExtractGreen_NEON(const *uint32 WEBP_RESTRICT argb, *uint8 WEBP_RESTRICT alpha, int size) {
   int i;
   for (i = 0; i + 16 <= size; i += 16) {
-    const uint8x16x4_t rgbX = vld4q_u8((const uint8*)(argb + i));
+    const uint8x16x4_t rgbX = vld4q_u8((const *uint8)(argb + i));
     const uint8x16_t greens = rgbX.val[1];
     vst1q_u8(alpha + i, greens);
   }

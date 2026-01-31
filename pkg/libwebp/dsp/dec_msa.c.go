@@ -40,7 +40,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     BUTTERFLY_4(a1_m, b1_m, c1_m, d1_m, out0, out1, out2, out3); \
   }
 
-func TransformOne(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
+func TransformOne(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst) {
   v8i16 input0, input1;
   v4i32 in0, in1, in2, in3, hz0, hz1, hz2, hz3, vt0, vt1, vt2, vt3;
   v4i32 res0, res1, res2, res3;
@@ -65,14 +65,14 @@ func TransformOne(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   ST4x4_UB(res0, res0, 3, 2, 1, 0, dst, BPS);
 }
 
-func TransformTwo(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst, int do_two) {
+func TransformTwo(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst, int do_two) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);
   }
 }
 
-func TransformWHT(const int16* WEBP_RESTRICT in, int16* WEBP_RESTRICT out) {
+func TransformWHT(const *int16 WEBP_RESTRICT in, *int16 WEBP_RESTRICT out) {
   v8i16 input0, input1;
   const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11};
   const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15};
@@ -114,13 +114,13 @@ func TransformWHT(const int16* WEBP_RESTRICT in, int16* WEBP_RESTRICT out) {
   out[240] = __msa_copy_s_h(out1, 7);
 }
 
-func TransformDC(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
+func TransformDC(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst) {
   const int DC = (in[0] + 4) >> 3;
   const v8i16 tmp0 = __msa_fill_h(DC);
   ADDBLK_ST4x4_UB(tmp0, tmp0, tmp0, tmp0, dst, BPS);
 }
 
-func TransformAC3(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
+func TransformAC3(const *int16 WEBP_RESTRICT in, *uint8 WEBP_RESTRICT dst) {
   const int a = in[0] + 4;
   const int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
   const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
@@ -300,7 +300,7 @@ func TransformAC3(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
 
 #define ST6x4_UB(in0, start_in0_idx, in1, start_in1_idx, pdst, stride)  \
   do {                                                                  \
-    uint8* ptmp1 = (uint8*)pdst;                                    \
+    *uint8 ptmp1 = (*uint8)pdst;                                    \
     ST6x1_UB(in0, start_in0_idx, in1, start_in1_idx, ptmp1, 4);         \
     ptmp1 += stride;                                                    \
     ST6x1_UB(in0, start_in0_idx + 1, in1, start_in1_idx + 1, ptmp1, 4); \
@@ -341,8 +341,8 @@ func TransformAC3(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
     mask = (mask <= b_limit);                                 \
   } while (0)
 
-func VFilter16(uint8* src, int stride, int b_limit_in, int limit_in, int thresh_in) {
-  uint8* ptemp = src - 4 * stride;
+func VFilter16(*uint8 src, int stride, int b_limit_in, int limit_in, int thresh_in) {
+  *uint8 ptemp = src - 4 * stride;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 mask, hev;
   const v16u8 thresh = (v16u8)__msa_fill_b(thresh_in);
@@ -358,8 +358,8 @@ func VFilter16(uint8* src, int stride, int b_limit_in, int limit_in, int thresh_
   ST_UB2(q1, q2, ptemp, stride);
 }
 
-func HFilter16(uint8* src, int stride, int b_limit_in, int limit_in, int thresh_in) {
-  uint8* ptmp = src - 4;
+func HFilter16(*uint8 src, int stride, int b_limit_in, int limit_in, int thresh_in) {
+  *uint8 ptmp = src - 4;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 mask, hev;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7, row8;
@@ -415,7 +415,7 @@ func HFilter16(uint8* src, int stride, int b_limit_in, int limit_in, int thresh_
 }
 
 // on three inner edges
-func VFilterHorEdge16i(uint8* src, int stride, int b_limit, int limit, int thresh) {
+func VFilterHorEdge16i(*uint8 src, int stride, int b_limit, int limit, int thresh) {
   v16u8 mask, hev;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   const v16u8 thresh0 = (v16u8)__msa_fill_b(thresh);
@@ -428,13 +428,13 @@ func VFilterHorEdge16i(uint8* src, int stride, int b_limit, int limit, int thres
   ST_UB4(p1, p0, q0, q1, (src - 2 * stride), stride);
 }
 
-func VFilter16i(uint8* src_y, int stride, int b_limit, int limit, int thresh) {
+func VFilter16i(*uint8 src_y, int stride, int b_limit, int limit, int thresh) {
   VFilterHorEdge16i(src_y + 4 * stride, stride, b_limit, limit, thresh);
   VFilterHorEdge16i(src_y + 8 * stride, stride, b_limit, limit, thresh);
   VFilterHorEdge16i(src_y + 12 * stride, stride, b_limit, limit, thresh);
 }
 
-func HFilterVertEdge16i(uint8* src, int stride, int b_limit, int limit, int thresh) {
+func HFilterVertEdge16i(*uint8 src, int stride, int b_limit, int limit, int thresh) {
   v16u8 mask, hev;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7;
@@ -459,16 +459,16 @@ func HFilterVertEdge16i(uint8* src, int stride, int b_limit, int limit, int thre
   ST4x8_UB(tmp4, tmp5, src, stride);
 }
 
-func HFilter16i(uint8* src_y, int stride, int b_limit, int limit, int thresh) {
+func HFilter16i(*uint8 src_y, int stride, int b_limit, int limit, int thresh) {
   HFilterVertEdge16i(src_y + 4, stride, b_limit, limit, thresh);
   HFilterVertEdge16i(src_y + 8, stride, b_limit, limit, thresh);
   HFilterVertEdge16i(src_y + 12, stride, b_limit, limit, thresh);
 }
 
 // 8-pixels wide variants, for chroma filtering
-func VFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
-  uint8* ptmp_src_u = src_u - 4 * stride;
-  uint8* ptmp_src_v = src_v - 4 * stride;
+func VFilter8(*uint8 WEBP_RESTRICT src_u, *uint8 WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
+  *uint8 ptmp_src_u = src_u - 4 * stride;
+  *uint8 ptmp_src_v = src_v - 4 * stride;
   uint64 p2_d, p1_d, p0_d, q0_d, q1_d, q2_d;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 p3_u, p2_u, p1_u, p0_u, q3_u, q2_u, q1_u, q0_u;
@@ -509,9 +509,9 @@ func VFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride
   SD(q2_d, ptmp_src_v);
 }
 
-func HFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
-  uint8* ptmp_src_u = src_u - 4;
-  uint8* ptmp_src_v = src_v - 4;
+func HFilter8(*uint8 WEBP_RESTRICT src_u, *uint8 WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
+  *uint8 ptmp_src_u = src_u - 4;
+  *uint8 ptmp_src_v = src_v - 4;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7, row8;
   v16u8 row9, row10, row11, row12, row13, row14, row15;
@@ -540,7 +540,7 @@ func HFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride
   ST6x4_UB(tmp7, 0, tmp5, 4, ptmp_src_v, stride);
 }
 
-func VFilter8i(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
+func VFilter8i(*uint8 WEBP_RESTRICT src_u, *uint8 WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
   uint64 p1_d, p0_d, q0_d, q1_d;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 p3_u, p2_u, p1_u, p0_u, q3_u, q2_u, q1_u, q0_u;
@@ -569,7 +569,7 @@ func VFilter8i(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int strid
   SD4(q1_d, q0_d, p0_d, p1_d, src_v, -stride);
 }
 
-func HFilter8i(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
+func HFilter8i(*uint8 WEBP_RESTRICT src_u, *uint8 WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7, row8;
   v16u8 row9, row10, row11, row12, row13, row14, row15;
@@ -597,7 +597,7 @@ func HFilter8i(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int strid
   ST4x4_UB(tmp5, tmp5, 0, 1, 2, 3, src_v, stride);
 }
 
-func SimpleVFilter16(uint8* src, int stride, int b_limit_in) {
+func SimpleVFilter16(*uint8 src, int stride, int b_limit_in) {
   v16u8 p1, p0, q1, q0, mask;
   const v16u8 b_limit = (v16u8)__msa_fill_b(b_limit_in);
 
@@ -607,12 +607,12 @@ func SimpleVFilter16(uint8* src, int stride, int b_limit_in) {
   ST_UB2(p0, q0, src - stride, stride);
 }
 
-func SimpleHFilter16(uint8* src, int stride, int b_limit_in) {
+func SimpleHFilter16(*uint8 src, int stride, int b_limit_in) {
   v16u8 p1, p0, q1, q0, mask, row0, row1, row2, row3, row4, row5, row6, row7;
   v16u8 row8, row9, row10, row11, row12, row13, row14, row15;
   v8i16 tmp0, tmp1;
   const v16u8 b_limit = (v16u8)__msa_fill_b(b_limit_in);
-  uint8* ptemp_src = src - 2;
+  *uint8 ptemp_src = src - 2;
 
   LD_UB8(ptemp_src, stride, row0, row1, row2, row3, row4, row5, row6, row7);
   LD_UB8(ptemp_src + 8 * stride, stride, row8, row9, row10, row11, row12, row13, row14, row15);
@@ -631,13 +631,13 @@ func SimpleHFilter16(uint8* src, int stride, int b_limit_in) {
   ptemp_src += 4 * stride;
 }
 
-func SimpleVFilter16i(uint8* src_y, int stride, int b_limit_in) {
+func SimpleVFilter16i(*uint8 src_y, int stride, int b_limit_in) {
   SimpleVFilter16(src_y + 4 * stride, stride, b_limit_in);
   SimpleVFilter16(src_y + 8 * stride, stride, b_limit_in);
   SimpleVFilter16(src_y + 12 * stride, stride, b_limit_in);
 }
 
-func SimpleHFilter16i(uint8* src_y, int stride, int b_limit_in) {
+func SimpleHFilter16i(*uint8 src_y, int stride, int b_limit_in) {
   SimpleHFilter16(src_y + 4, stride, b_limit_in);
   SimpleHFilter16(src_y + 8, stride, b_limit_in);
   SimpleHFilter16(src_y + 12, stride, b_limit_in);
@@ -649,7 +649,7 @@ func SimpleHFilter16i(uint8* src_y, int stride, int b_limit_in) {
 
 // 4x4
 
-func DC4(uint8* dst) {  // DC
+func DC4(*uint8 dst) {  // DC
   uint32 dc = 4;
   int i;
   for (i = 0; i < 4; ++i) dc += dst[i - BPS] + dst[-1 + i * BPS];
@@ -658,8 +658,8 @@ func DC4(uint8* dst) {  // DC
   SW4(dc, dc, dc, dc, dst, BPS);
 }
 
-func TM4(uint8* dst) {
-  const uint8* const ptemp = dst - BPS - 1;
+func TM4(*uint8 dst) {
+  const *uint8 const ptemp = dst - BPS - 1;
   v8i16 T, d, r0, r1, r2, r3;
   const v16i8 zero = {0};
   const v8i16 TL = (v8i16)__msa_fill_h(ptemp[0 * BPS]);
@@ -676,8 +676,8 @@ func TM4(uint8* dst) {
   PCKEV_ST4x4_UB(r0, r1, r2, r3, dst, BPS);
 }
 
-func VE4(uint8* dst) {  // vertical
-  const uint8* const ptop = dst - BPS - 1;
+func VE4(*uint8 dst) {  // vertical
+  const *uint8 const ptop = dst - BPS - 1;
   const uint32 val0 = LW(ptop + 0);
   const uint32 val1 = LW(ptop + 4);
   uint32 out;
@@ -693,8 +693,8 @@ func VE4(uint8* dst) {  // vertical
   SW4(out, out, out, out, dst, BPS);
 }
 
-func RD4(uint8* dst) {  // Down-right
-  const uint8* const ptop = dst - 1 - BPS;
+func RD4(*uint8 dst) {  // Down-right
+  const *uint8 const ptop = dst - 1 - BPS;
   uint32 val0 = LW(ptop + 0);
   uint32 val1 = LW(ptop + 4);
   uint32 val2, val3;
@@ -721,8 +721,8 @@ func RD4(uint8* dst) {  // Down-right
   SW4(val0, val1, val2, val3, dst, BPS);
 }
 
-func LD4(uint8* dst) {  // Down-Left
-  const uint8* const ptop = dst - BPS;
+func LD4(*uint8 dst) {  // Down-Left
+  const *uint8 const ptop = dst - BPS;
   uint32 val0 = LW(ptop + 0);
   uint32 val1 = LW(ptop + 4);
   uint32 val2, val3;
@@ -747,7 +747,7 @@ func LD4(uint8* dst) {  // Down-Left
 
 // 16x16
 
-func DC16(uint8* dst) {  // DC
+func DC16(*uint8 dst) {  // DC
   uint32 dc = 16;
   int i;
   const v16u8 rtop = LD_UB(dst - BPS);
@@ -763,7 +763,7 @@ func DC16(uint8* dst) {  // DC
   ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS);
 }
 
-func TM16(uint8* dst) {
+func TM16(*uint8 dst) {
   int j;
   v8i16 d1, d2;
   const v16i8 zero = {0};
@@ -789,13 +789,13 @@ func TM16(uint8* dst) {
   }
 }
 
-func VE16(uint8* dst) {  // vertical
+func VE16(*uint8 dst) {  // vertical
   const v16u8 rtop = LD_UB(dst - BPS);
   ST_UB8(rtop, rtop, rtop, rtop, rtop, rtop, rtop, rtop, dst, BPS);
   ST_UB8(rtop, rtop, rtop, rtop, rtop, rtop, rtop, rtop, dst + 8 * BPS, BPS);
 }
 
-func HE16(uint8* dst) {  // horizontal
+func HE16(*uint8 dst) {  // horizontal
   int j;
   for (j = 16; j > 0; j -= 4) {
     const v16u8 L0 = (v16u8)__msa_fill_b(dst[-1 + 0 * BPS]);
@@ -807,7 +807,7 @@ func HE16(uint8* dst) {  // horizontal
   }
 }
 
-func DC16NoTop(uint8* dst) {  // DC with top samples not available
+func DC16NoTop(*uint8 dst) {  // DC with top samples not available
   int j;
   uint32 dc = 8;
   v16u8 out;
@@ -820,7 +820,7 @@ func DC16NoTop(uint8* dst) {  // DC with top samples not available
   ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS);
 }
 
-func DC16NoLeft(uint8* dst) {  // DC with left samples not available
+func DC16NoLeft(*uint8 dst) {  // DC with left samples not available
   uint32 dc = 8;
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 dctop = __msa_hadd_u_h(rtop, rtop);
@@ -832,7 +832,7 @@ func DC16NoLeft(uint8* dst) {  // DC with left samples not available
   ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS);
 }
 
-func DC16NoTopLeft(uint8* dst) {  // DC with nothing
+func DC16NoTopLeft(*uint8 dst) {  // DC with nothing
   const v16u8 out = (v16u8)__msa_fill_b(0x80);
   ST_UB8(out, out, out, out, out, out, out, out, dst, BPS);
   ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS);
@@ -846,7 +846,7 @@ func DC16NoTopLeft(uint8* dst) {  // DC with nothing
     SD4(out, out, out, out, dst + 4 * BPS, BPS); \
   } while (0)
 
-func DC8uv(uint8* dst) {  // DC
+func DC8uv(*uint8 dst) {  // DC
   uint32 dc = 8;
   int i;
   uint64 out;
@@ -865,7 +865,7 @@ func DC8uv(uint8* dst) {  // DC
   STORE8x8(out, dst);
 }
 
-func TM8uv(uint8* dst) {
+func TM8uv(*uint8 dst) {
   int j;
   const v16i8 T1 = LD_SB(dst - BPS);
   const v16i8 zero = {0};
@@ -888,13 +888,13 @@ func TM8uv(uint8* dst) {
   }
 }
 
-func VE8uv(uint8* dst) {  // vertical
+func VE8uv(*uint8 dst) {  // vertical
   const v16u8 rtop = LD_UB(dst - BPS);
   const uint64 out = __msa_copy_s_d((v2i64)rtop, 0);
   STORE8x8(out, dst);
 }
 
-func HE8uv(uint8* dst) {  // horizontal
+func HE8uv(*uint8 dst) {  // horizontal
   int j;
   for (j = 0; j < 8; j += 4) {
     const v16u8 L0 = (v16u8)__msa_fill_b(dst[-1 + 0 * BPS]);
@@ -910,7 +910,7 @@ func HE8uv(uint8* dst) {  // horizontal
   }
 }
 
-func DC8uvNoLeft(uint8* dst) {  // DC with no left samples
+func DC8uvNoLeft(*uint8 dst) {  // DC with no left samples
   const uint32 dc = 4;
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 temp0 = __msa_hadd_u_h(rtop, rtop);
@@ -922,7 +922,7 @@ func DC8uvNoLeft(uint8* dst) {  // DC with no left samples
   STORE8x8(out, dst);
 }
 
-func DC8uvNoTop(uint8* dst) {  // DC with no top samples
+func DC8uvNoTop(*uint8 dst) {  // DC with no top samples
   uint32 dc = 4;
   int i;
   uint64 out;
@@ -936,7 +936,7 @@ func DC8uvNoTop(uint8* dst) {  // DC with no top samples
   STORE8x8(out, dst);
 }
 
-func DC8uvNoTopLeft(uint8* dst) {  // DC with nothing
+func DC8uvNoTopLeft(*uint8 dst) {  // DC with nothing
   const uint64 out = 0x8080808080808080ULL;
   STORE8x8(out, dst);
 }

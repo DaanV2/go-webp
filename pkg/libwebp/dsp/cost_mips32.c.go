@@ -17,23 +17,23 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int GetResidualCost_MIPS32(int ctx0, const VP8Residual* const res) {
+static int GetResidualCost_MIPS32(int ctx0, const *VP8Residual const res) {
   int temp0, temp1;
   int v_reg, ctx_reg;
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const uint16* t = costs[n][ctx0];
+  const *uint16 t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
   int cost = (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
-  const int16* res_coeffs = res.coeffs;
+  const *int16 res_coeffs = res.coeffs;
   const int res_last = res.last;
   const int const_max_level = MAX_VARIABLE_LEVEL;
   const int const_2 = 2;
-  const uint16** p_costs = &costs[n][0];
+  const *uint16* p_costs = &costs[n][0];
   const uint64 inc_p_costs = NUM_CTX * sizeof(*p_costs);
 
   if (res.last < 0) {
@@ -93,8 +93,8 @@ static int GetResidualCost_MIPS32(int ctx0, const VP8Residual* const res) {
   return cost;
 }
 
-func SetResidualCoeffs_MIPS32(const int16* WEBP_RESTRICT const coeffs, VP8Residual* WEBP_RESTRICT const res) {
-  const int16* p_coeffs = (int16*)coeffs;
+func SetResidualCoeffs_MIPS32(const *int16 WEBP_RESTRICT const coeffs, *VP8Residual WEBP_RESTRICT const res) {
+  const *int16 p_coeffs = (*int16)coeffs;
   int temp0, temp1, temp2, n, n1;
   assert.Assert(res.first == 0 || coeffs[0] == 0);
 

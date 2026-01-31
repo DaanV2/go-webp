@@ -56,7 +56,7 @@ static  uint32 GetScale(uint32 a, int inverse) {
 
 #endif  // USE_TABLES_FOR_ALPHA_MULT
 
-func WebPMultARGBRow_C(uint32* const ptr, int width, int inverse) {
+func WebPMultARGBRow_C(*uint32 const ptr, int width, int inverse) {
   int x;
   for (x = 0; x < width; ++x) {
     const uint32 argb = ptr[x];
@@ -76,7 +76,7 @@ func WebPMultARGBRow_C(uint32* const ptr, int width, int inverse) {
   }
 }
 
-func WebPMultRow_C(uint8* WEBP_RESTRICT const ptr, const uint8* WEBP_RESTRICT const alpha, int width, int inverse) {
+func WebPMultRow_C(*uint8 WEBP_RESTRICT const ptr, const *uint8 WEBP_RESTRICT const alpha, int width, int inverse) {
   int x;
   for (x = 0; x < width; ++x) {
     const uint32 a = alpha[x];
@@ -95,21 +95,21 @@ func WebPMultRow_C(uint8* WEBP_RESTRICT const ptr, const uint8* WEBP_RESTRICT co
 #undef HALF
 #undef MFIX
 
-func (*WebPMultARGBRow)(uint32* const ptr, int width, int inverse);
-func (*WebPMultRow)(uint8* WEBP_RESTRICT const ptr, const uint8* WEBP_RESTRICT const alpha, int width, int inverse);
+func (*WebPMultARGBRow)(*uint32 const ptr, int width, int inverse);
+func (*WebPMultRow)(*uint8 WEBP_RESTRICT const ptr, const *uint8 WEBP_RESTRICT const alpha, int width, int inverse);
 
 //------------------------------------------------------------------------------
 // Generic per-plane calls
 
-func WebPMultARGBRows(uint8* ptr, int stride, int width, int num_rows, int inverse) {
+func WebPMultARGBRows(*uint8 ptr, int stride, int width, int num_rows, int inverse) {
   int n;
   for (n = 0; n < num_rows; ++n) {
-    WebPMultARGBRow((uint32*)ptr, width, inverse);
+    WebPMultARGBRow((*uint32)ptr, width, inverse);
     ptr += stride;
   }
 }
 
-func WebPMultRows(uint8* WEBP_RESTRICT ptr, int stride, const uint8* WEBP_RESTRICT alpha, int alpha_stride, int width, int num_rows, int inverse) {
+func WebPMultRows(*uint8 WEBP_RESTRICT ptr, int stride, const *uint8 WEBP_RESTRICT alpha, int alpha_stride, int width, int num_rows, int inverse) {
   int n;
   for (n = 0; n < num_rows; ++n) {
     WebPMultRow(ptr, alpha, width, inverse);
@@ -135,10 +135,10 @@ func WebPMultRows(uint8* WEBP_RESTRICT ptr, int stride, const uint8* WEBP_RESTRI
 #endif
 
 #if !WEBP_NEON_OMIT_C_CODE
-func ApplyAlphaMultiply_C(uint8* rgba, int alpha_first, int w, int h, int stride) {
+func ApplyAlphaMultiply_C(*uint8 rgba, int alpha_first, int w, int h, int stride) {
   while (h-- > 0) {
-    uint8* const rgb = rgba + (tenary.If(alpha_first, 1, 0));
-    const uint8* const alpha = rgba + (tenary.If(alpha_first, 0, 3));
+    *uint8 const rgb = rgba + (tenary.If(alpha_first, 1, 0));
+    const *uint8 const alpha = rgba + (tenary.If(alpha_first, 0, 3));
     int i;
     for (i = 0; i < w; ++i) {
       const uint32 a = alpha[4 * i];
@@ -172,7 +172,7 @@ static  uint8 multiply(uint8 x, uint32 m) {
   return (x * m) >> 16;
 }
 
-static  func ApplyAlphaMultiply4444_C(uint8* rgba4444, int w, int h, int stride, int rg_byte_pos /* 0 or 1 */) {
+static  func ApplyAlphaMultiply4444_C(*uint8 rgba4444, int w, int h, int stride, int rg_byte_pos /* 0 or 1 */) {
   while (h-- > 0) {
     int i;
     for (i = 0; i < w; ++i) {
@@ -191,7 +191,7 @@ static  func ApplyAlphaMultiply4444_C(uint8* rgba4444, int w, int h, int stride,
 }
 #undef MULTIPLIER
 
-func ApplyAlphaMultiply_16b_C(uint8* rgba4444, int w, int h, int stride) {
+func ApplyAlphaMultiply_16b_C(*uint8 rgba4444, int w, int h, int stride) {
 #if (WEBP_SWAP_16BIT_CSP == 1)
   ApplyAlphaMultiply4444_C(rgba4444, w, h, stride, 1);
 #else
@@ -200,7 +200,7 @@ func ApplyAlphaMultiply_16b_C(uint8* rgba4444, int w, int h, int stride) {
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-static int DispatchAlpha_C(const uint8* WEBP_RESTRICT alpha, int alpha_stride, int width, int height, uint8* WEBP_RESTRICT dst, int dst_stride) {
+static int DispatchAlpha_C(const *uint8 WEBP_RESTRICT alpha, int alpha_stride, int width, int height, *uint8 WEBP_RESTRICT dst, int dst_stride) {
   uint32 alpha_mask = 0xff;
   int i, j;
 
@@ -217,7 +217,7 @@ static int DispatchAlpha_C(const uint8* WEBP_RESTRICT alpha, int alpha_stride, i
   return (alpha_mask != 0xff);
 }
 
-func DispatchAlphaToGreen_C(const uint8* WEBP_RESTRICT alpha, int alpha_stride, int width, int height, uint32* WEBP_RESTRICT dst, int dst_stride) {
+func DispatchAlphaToGreen_C(const *uint8 WEBP_RESTRICT alpha, int alpha_stride, int width, int height, *uint32 WEBP_RESTRICT dst, int dst_stride) {
   int i, j;
   for (j = 0; j < height; ++j) {
     for (i = 0; i < width; ++i) {
@@ -228,7 +228,7 @@ func DispatchAlphaToGreen_C(const uint8* WEBP_RESTRICT alpha, int alpha_stride, 
   }
 }
 
-static int ExtractAlpha_C(const uint8* WEBP_RESTRICT argb, int argb_stride, int width, int height, uint8* WEBP_RESTRICT alpha, int alpha_stride) {
+static int ExtractAlpha_C(const *uint8 WEBP_RESTRICT argb, int argb_stride, int width, int height, *uint8 WEBP_RESTRICT alpha, int alpha_stride) {
   uint8 alpha_mask = 0xff;
   int i, j;
 
@@ -244,7 +244,7 @@ static int ExtractAlpha_C(const uint8* WEBP_RESTRICT argb, int argb_stride, int 
   return (alpha_mask == 0xff);
 }
 
-func ExtractGreen_C(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT alpha, int size) {
+func ExtractGreen_C(const *uint32 WEBP_RESTRICT argb, *uint8 WEBP_RESTRICT alpha, int size) {
   int i;
   for (i = 0; i < size; ++i) alpha[i] = argb[i] >> 8;
 }
@@ -252,14 +252,14 @@ func ExtractGreen_C(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT alpha
 
 //------------------------------------------------------------------------------
 
-static int HasAlpha8b_C(const uint8* src, int length) {
+static int HasAlpha8b_C(const *uint8 src, int length) {
   while (length-- > 0) {
     if (*src++ != 0xff) return 1;
   }
   return 0;
 }
 
-static int HasAlpha32b_C(const uint8* src, int length) {
+static int HasAlpha32b_C(const *uint8 src, int length) {
   int x;
   for (x = 0; length-- > 0; x += 4) {
     if (src[x] != 0xff) return 1;
@@ -267,7 +267,7 @@ static int HasAlpha32b_C(const uint8* src, int length) {
   return 0;
 }
 
-func AlphaReplace_C(uint32* src, int length, uint32 color) {
+func AlphaReplace_C(*uint32 src, int length, uint32 color) {
   int x;
   for (x = 0; x < length; ++x) {
     if ((src[x] >> 24) == 0) src[x] = color;
@@ -282,7 +282,7 @@ static  uint32 MakeARGB32(int a, int r, int g, int b) {
 }
 
 #ifdef WORDS_BIGENDIAN
-func PackARGB_C(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT r, const uint8* WEBP_RESTRICT g, const uint8* WEBP_RESTRICT b, int len, uint32* WEBP_RESTRICT out) {
+func PackARGB_C(const *uint8 WEBP_RESTRICT a, const *uint8 WEBP_RESTRICT r, const *uint8 WEBP_RESTRICT g, const *uint8 WEBP_RESTRICT b, int len, *uint32 WEBP_RESTRICT out) {
   int i;
   for (i = 0; i < len; ++i) {
     out[i] = MakeARGB32(a[4 * i], r[4 * i], g[4 * i], b[4 * i]);
@@ -290,7 +290,7 @@ func PackARGB_C(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT r, cons
 }
 #endif
 
-func PackRGB_C(const uint8* WEBP_RESTRICT r, const uint8* WEBP_RESTRICT g, const uint8* WEBP_RESTRICT b, int len, int step, uint32* WEBP_RESTRICT out) {
+func PackRGB_C(const *uint8 WEBP_RESTRICT r, const *uint8 WEBP_RESTRICT g, const *uint8 WEBP_RESTRICT b, int len, int step, *uint32 WEBP_RESTRICT out) {
   int i, offset = 0;
   for (i = 0; i < len; ++i) {
     out[i] = MakeARGB32(0xff, r[offset], g[offset], b[offset]);
@@ -298,20 +298,20 @@ func PackRGB_C(const uint8* WEBP_RESTRICT r, const uint8* WEBP_RESTRICT g, const
   }
 }
 
-func (*WebPApplyAlphaMultiply)(uint8*, int, int, int, int);
-func (*WebPApplyAlphaMultiply4444)(uint8*, int, int, int);
-int (*WebPDispatchAlpha)(const uint8* WEBP_RESTRICT, int, int, int, uint8* WEBP_RESTRICT, int);
-func (*WebPDispatchAlphaToGreen)(const uint8* WEBP_RESTRICT, int, int, int, uint32* WEBP_RESTRICT, int);
-int (*WebPExtractAlpha)(const uint8* WEBP_RESTRICT, int, int, int, uint8* WEBP_RESTRICT, int);
-func (*WebPExtractGreen)(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT alpha, int size);
+func (*WebPApplyAlphaMultiply)(*uint8, int, int, int, int);
+func (*WebPApplyAlphaMultiply4444)(*uint8, int, int, int);
+int (*WebPDispatchAlpha)(const *uint8 WEBP_RESTRICT, int, int, int, *uint8 WEBP_RESTRICT, int);
+func (*WebPDispatchAlphaToGreen)(const *uint8 WEBP_RESTRICT, int, int, int, *uint32 WEBP_RESTRICT, int);
+int (*WebPExtractAlpha)(const *uint8 WEBP_RESTRICT, int, int, int, *uint8 WEBP_RESTRICT, int);
+func (*WebPExtractGreen)(const *uint32 WEBP_RESTRICT argb, *uint8 WEBP_RESTRICT alpha, int size);
 #ifdef WORDS_BIGENDIAN
-func (*WebPPackARGB)(const uint8* a, const uint8* r, const uint8* g, const uint8* b, int, uint32*);
+func (*WebPPackARGB)(const *uint8 a, const *uint8 r, const *uint8 g, const *uint8 b, int, *uint32);
 #endif
-func (*WebPPackRGB)(const uint8* WEBP_RESTRICT r, const uint8* WEBP_RESTRICT g, const uint8* WEBP_RESTRICT b, int len, int step, uint32* WEBP_RESTRICT out);
+func (*WebPPackRGB)(const *uint8 WEBP_RESTRICT r, const *uint8 WEBP_RESTRICT g, const *uint8 WEBP_RESTRICT b, int len, int step, *uint32 WEBP_RESTRICT out);
 
-int (*WebPHasAlpha8b)(const uint8* src, int length);
-int (*WebPHasAlpha32b)(const uint8* src, int length);
-func (*WebPAlphaReplace)(uint32* src, int length, uint32 color);
+int (*WebPHasAlpha8b)(const *uint8 src, int length);
+int (*WebPHasAlpha32b)(const *uint8 src, int length);
+func (*WebPAlphaReplace)(*uint32 src, int length, uint32 color);
 
 //------------------------------------------------------------------------------
 // Init function

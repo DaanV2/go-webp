@@ -40,8 +40,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // clang-format off
 #define DO_PREDICT_LINE(SRC, DST, LENGTH, INVERSE)                             \
   do {                                                                         \
-    const uint8* psrc = (uint8*)(SRC);                                     \
-    uint8* pdst = (uint8*)(DST);                                           \
+    const *uint8 psrc = (*uint8)(SRC);                                     \
+    *uint8 pdst = (*uint8)(DST);                                           \
     const int ilength = (int)(LENGTH);                                         \
     int temp0, temp1, temp2, temp3, temp4, temp5, temp6;                       \
     __asm__ volatile(                                                          \
@@ -108,16 +108,16 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 // clang-format on
 
-static  func PredictLine_MIPSdspR2(const uint8* WEBP_RESTRICT src, uint8* WEBP_RESTRICT dst, int length) {
+static  func PredictLine_MIPSdspR2(const *uint8 WEBP_RESTRICT src, *uint8 WEBP_RESTRICT dst, int length) {
   DO_PREDICT_LINE(src, dst, length, 0);
 }
 
 // clang-format off
 #define DO_PREDICT_LINE_VERTICAL(SRC, PRED, DST, LENGTH, INVERSE)              \
   do {                                                                         \
-    const uint8* psrc = (uint8*)(SRC);                                     \
-    const uint8* ppred = (uint8*)(PRED);                                   \
-    uint8* pdst = (uint8*)(DST);                                           \
+    const *uint8 psrc = (*uint8)(SRC);                                     \
+    const *uint8 ppred = (*uint8)(PRED);                                   \
+    *uint8 pdst = (*uint8)(DST);                                           \
     const int ilength = (int)(LENGTH);                                         \
     int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;                \
     __asm__ volatile(                                                          \
@@ -203,8 +203,8 @@ const FILTER_LINE_BY_LINE =                          \
   } while (0)
 
 static  func DoHorizontalFilter_MIPSdspR2(
-    const uint8* WEBP_RESTRICT in, int width, int height, int stride, uint8* WEBP_RESTRICT out) {
-  const uint8* preds = in;
+    const *uint8 WEBP_RESTRICT in, int width, int height, int stride, *uint8 WEBP_RESTRICT out) {
+  const *uint8 preds = in;
   int row;
   DCHECK(in, out);
 
@@ -220,7 +220,7 @@ static  func DoHorizontalFilter_MIPSdspR2(
 }
 #undef FILTER_LINE_BY_LINE
 
-func HorizontalFilter_MIPSdspR2(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
+func HorizontalFilter_MIPSdspR2(const *uint8 WEBP_RESTRICT data, int width, int height, int stride, *uint8 WEBP_RESTRICT filtered_data) {
   DoHorizontalFilter_MIPSdspR2(data, width, height, stride, filtered_data);
 }
 
@@ -238,8 +238,8 @@ const FILTER_LINE_BY_LINE =                              \
   } while (0)
 
 static  func DoVerticalFilter_MIPSdspR2(
-    const uint8* WEBP_RESTRICT in, int width, int height, int stride, uint8* WEBP_RESTRICT out) {
-  const uint8* preds = in;
+    const *uint8 WEBP_RESTRICT in, int width, int height, int stride, *uint8 WEBP_RESTRICT out) {
+  const *uint8 preds = in;
   int row;
   DCHECK(in, out);
 
@@ -255,7 +255,7 @@ static  func DoVerticalFilter_MIPSdspR2(
 }
 #undef FILTER_LINE_BY_LINE
 
-func VerticalFilter_MIPSdspR2(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
+func VerticalFilter_MIPSdspR2(const *uint8 WEBP_RESTRICT data, int width, int height, int stride, *uint8 WEBP_RESTRICT filtered_data) {
   DoVerticalFilter_MIPSdspR2(data, width, height, stride, filtered_data);
 }
 
@@ -290,8 +290,8 @@ static int GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) {
     }                                                                \
   } while (0)
 
-func DoGradientFilter_MIPSdspR2(const uint8* WEBP_RESTRICT in, int width, int height, int stride, uint8* WEBP_RESTRICT out) {
-  const uint8* preds = in;
+func DoGradientFilter_MIPSdspR2(const *uint8 WEBP_RESTRICT in, int width, int height, int stride, *uint8 WEBP_RESTRICT out) {
+  const *uint8 preds = in;
   int row;
   DCHECK(in, out);
 
@@ -307,18 +307,18 @@ func DoGradientFilter_MIPSdspR2(const uint8* WEBP_RESTRICT in, int width, int he
 }
 #undef FILTER_LINE_BY_LINE
 
-func GradientFilter_MIPSdspR2(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
+func GradientFilter_MIPSdspR2(const *uint8 WEBP_RESTRICT data, int width, int height, int stride, *uint8 WEBP_RESTRICT filtered_data) {
   DoGradientFilter_MIPSdspR2(data, width, height, stride, filtered_data);
 }
 
 //------------------------------------------------------------------------------
 
-func HorizontalUnfilter_MIPSdspR2(const uint8* prev, const uint8* in, uint8* out, int width) {
+func HorizontalUnfilter_MIPSdspR2(const *uint8 prev, const *uint8 in, *uint8 out, int width) {
   out[0] = in[0] + (prev == tenary.If(nil, 0, prev)[0]);
   DO_PREDICT_LINE(in + 1, out + 1, width - 1, 1);
 }
 
-func VerticalUnfilter_MIPSdspR2(const uint8* prev, const uint8* in, uint8* out, int width) {
+func VerticalUnfilter_MIPSdspR2(const *uint8 prev, const *uint8 in, *uint8 out, int width) {
   if (prev == nil) {
     HorizontalUnfilter_MIPSdspR2(nil, in, out, width);
   } else {
@@ -326,7 +326,7 @@ func VerticalUnfilter_MIPSdspR2(const uint8* prev, const uint8* in, uint8* out, 
   }
 }
 
-func GradientUnfilter_MIPSdspR2(const uint8* prev, const uint8* in, uint8* out, int width) {
+func GradientUnfilter_MIPSdspR2(const *uint8 prev, const *uint8 in, *uint8 out, int width) {
   if (prev == nil) {
     HorizontalUnfilter_MIPSdspR2(nil, in, out, width);
   } else {

@@ -48,17 +48,17 @@ static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x8_t sh
 }
 #endif  // USE_VTBLQ
 
-func SubtractGreenFromBlueAndRed_NEON(uint32* argb_data, int num_pixels) {
-  const uint32* const end = argb_data + (num_pixels & ~3);
+func SubtractGreenFromBlueAndRed_NEON(*uint32 argb_data, int num_pixels) {
+  const *uint32 const end = argb_data + (num_pixels & ~3);
 #ifdef USE_VTBLQ
   const uint8x16_t shuffle = vld1q_u8(kGreenShuffle);
 #else
   const uint8x8_t shuffle = vld1_u8(kGreenShuffle);
 #endif
   for (; argb_data < end; argb_data += 4) {
-    const uint8x16_t argb = vld1q_u8((uint8*)argb_data);
+    const uint8x16_t argb = vld1q_u8((*uint8)argb_data);
     const uint8x16_t greens = DoGreenShuffle_NEON(argb, shuffle);
-    vst1q_u8((uint8*)argb_data, vsubq_u8(argb, greens));
+    vst1q_u8((*uint8)argb_data, vsubq_u8(argb, greens));
   }
   // fallthrough and finish off with plain-C
   VP8LSubtractGreenFromBlueAndRed_C(argb_data, num_pixels & 3);
@@ -67,7 +67,7 @@ func SubtractGreenFromBlueAndRed_NEON(uint32* argb_data, int num_pixels) {
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColor_NEON(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* WEBP_RESTRICT argb_data, int num_pixels) {
+func TransformColor_NEON(const *VP8LMultipliers WEBP_RESTRICT const m, *uint32 WEBP_RESTRICT argb_data, int num_pixels) {
   // sign-extended multiplying constants, pre-shifted by 6.
 #define CST(X) (((int16)(m.X << 8)) >> 6)
   const int16 rb[8] = {CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red)};
@@ -86,7 +86,7 @@ func TransformColor_NEON(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* W
   const uint32x4_t mask_rb = vdupq_n_u32(0x00ff00ffu);  // red-blue masks
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const uint8x16_t in = vld1q_u8((uint8*)(argb_data + i));
+    const uint8x16_t in = vld1q_u8((*uint8)(argb_data + i));
     // 0 g 0 g
     const uint8x16_t greens = DoGreenShuffle_NEON(in, shuffle);
     // x dr  x db1
@@ -104,7 +104,7 @@ func TransformColor_NEON(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* W
     const uint32x4_t F = vandq_u32(vreinterpretq_u32_s8(E), mask_rb);
     const int8x16_t out =
         vsubq_s8(vreinterpretq_s8_u8(in), vreinterpretq_s8_u32(F));
-    vst1q_s8((int8*)(argb_data + i), out);
+    vst1q_s8((*int8)(argb_data + i), out);
   }
   // fallthrough and finish off with plain-C
   VP8LTransformColor_C(m, argb_data + i, num_pixels - i);

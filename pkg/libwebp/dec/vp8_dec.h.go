@@ -37,7 +37,7 @@ extern "C" {
 //   io.data_size = size;
 //   /* customize io's functions (setup()/put()/teardown()) if needed. */
 //
-//   VP8Decoder* dec = VP8New();
+//   *VP8Decoder dec = VP8New();
 //   int ok = VP8Decode(dec, &io);
 //   if (!ok) printf("Error: %s\n", VP8StatusMessage(dec));
 //   VP8Delete(dec);
@@ -45,9 +45,9 @@ extern "C" {
 
 // Input / Output
 typedef struct VP8Io VP8Io;
-typedef int (*VP8IoPutHook)(const VP8Io* io);
-typedef int (*VP8IoSetupHook)(VP8Io* io);
-typedef func (*VP8IoTeardownHook)(const VP8Io* io);
+typedef int (*VP8IoPutHook)(const *VP8Io io);
+typedef int (*VP8IoSetupHook)(*VP8Io io);
+typedef func (*VP8IoTeardownHook)(const *VP8Io io);
 
 type VP8Io struct {
   // set by VP8GetHeaders()
@@ -64,7 +64,7 @@ type VP8Io struct {
   int y_stride;              // row stride for luma
   int uv_stride;             // row stride for chroma
 
-  void* opaque;  // user data
+  *void opaque;  // user data
 
   // called when fresh samples are available. Currently, samples are in
   // YUV420 format, and can be up to width x 24 in size (depending on the
@@ -90,7 +90,7 @@ type VP8Io struct {
 
   // Input buffer.
   uint64 data_size;
-  const uint8* data;
+  const *uint8 data;
 
   // If true, in-loop filtering will not be performed even if present in the
   // bitstream. Switching off filtering may speed up decoding at the expense
@@ -109,75 +109,75 @@ type VP8Io struct {
   // If non nil, pointer to the alpha data (if present) corresponding to the
   // start of the current row (That is: it is pre-offset by mb_y and takes
   // cropping into account).
-  const uint8* a;
+  const *uint8 a;
 };
 
 // Internal, version-checked, entry point
- int VP8InitIoInternal(VP8Io* const, int);
+ int VP8InitIoInternal(*VP8Io const, int);
 
 // Set the custom IO function pointers and user-data. The setter for IO hooks
 // should be called before initiating incremental decoding. Returns true if
 // WebPIDecoder object is successfully modified, false otherwise.
- int WebPISetIOHooks(WebPIDecoder* const idec, VP8IoPutHook put, VP8IoSetupHook setup, VP8IoTeardownHook teardown, void* user_data);
+ int WebPISetIOHooks(*WebPIDecoder const idec, VP8IoPutHook put, VP8IoSetupHook setup, VP8IoTeardownHook teardown, *void user_data);
 
 // Main decoding object. This is an opaque structure.
 typedef struct VP8Decoder VP8Decoder;
 
 // Create a new decoder object.
-VP8Decoder* VP8New(void);
+*VP8Decoder VP8New(void);
 
 // Must be called to make sure 'io' is initialized properly.
 // Returns false in case of version mismatch. Upon such failure, no other
 // decoding function should be called (VP8Decode, VP8GetHeaders, ...)
- static  int VP8InitIo(VP8Io* const io) {
+ static  int VP8InitIo(*VP8Io const io) {
   return VP8InitIoInternal(io, WEBP_DECODER_ABI_VERSION);
 }
 
 // Decode the VP8 frame header. Returns true if ok.
 // Note: 'io.data' must be pointing to the start of the VP8 frame header.
- int VP8GetHeaders(VP8Decoder* const dec, VP8Io* const io);
+ int VP8GetHeaders(*VP8Decoder const dec, *VP8Io const io);
 
 // Decode a picture. Will call VP8GetHeaders() if it wasn't done already.
 // Returns false in case of error.
- int VP8Decode(VP8Decoder* const dec, VP8Io* const io);
+ int VP8Decode(*VP8Decoder const dec, *VP8Io const io);
 
 // Return current status of the decoder:
-VP8StatusCode VP8Status(VP8Decoder* const dec);
+VP8StatusCode VP8Status(*VP8Decoder const dec);
 
 // return readable string corresponding to the last status.
-const byte* VP8StatusMessage(VP8Decoder* const dec);
+const *byte VP8StatusMessage(*VP8Decoder const dec);
 
 // Resets the decoder in its initial state, reclaiming memory.
 // Not a mandatory call between calls to VP8Decode().
-func VP8Clear(VP8Decoder* const dec);
+func VP8Clear(*VP8Decoder const dec);
 
 // Destroy the decoder object.
-func VP8Delete(VP8Decoder* const dec);
+func VP8Delete(*VP8Decoder const dec);
 
 //------------------------------------------------------------------------------
 // Miscellaneous VP8/VP8L bitstream probing functions.
 
 // Returns true if the next 3 bytes in data contain the VP8 signature.
  int VP8CheckSignature(
-    const uint8* const  data, uint64 data_size);
+    const *uint8 const  data, uint64 data_size);
 
 // Validates the VP8 data-header and retrieves basic header information viz
 // width and height. Returns 0 in case of formatting error. *width/*height
 // can be passed nil.
  int VP8GetInfo(
-    const uint8*  data, uint64 data_size,   // data available so far
+    const *uint8  data, uint64 data_size,   // data available so far
     uint64 chunk_size,  // total data size expected in the chunk
-    int* const width, int* const height);
+    *int const width, *int const height);
 
 // Returns true if the next byte(s) in data is a VP8L signature.
- int VP8LCheckSignature(const uint8* const 
+ int VP8LCheckSignature(const *uint8 const 
                                        data, uint64 size);
 
 // Validates the VP8L data-header and retrieves basic header information viz
 // width, height and alpha. Returns 0 in case of formatting error.
 // width/height/has_alpha can be passed nil.
- int VP8LGetInfo(const uint8*  data, uint64 data_size,  // data available so far
-                            int* const width, int* const height, int* const has_alpha);
+ int VP8LGetInfo(const *uint8  data, uint64 data_size,  // data available so far
+                            *int const width, *int const height, *int const has_alpha);
 
 #ifdef __cplusplus
 }  // extern "C"

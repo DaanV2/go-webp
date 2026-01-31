@@ -33,15 +33,15 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func SubtractGreenFromBlueAndRed_SSE2(uint32* argb_data, int num_pixels) {
+func SubtractGreenFromBlueAndRed_SSE2(*uint32 argb_data, int num_pixels) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const __m128i in = _mm_loadu_si128((__m128i*)&argb_data[i]);  // argb
+    const __m128i in = _mm_loadu_si128((__*m128i)&argb_data[i]);  // argb
     const __m128i A = _mm_srli_epi16(in, 8);                      // 0 a 0 g
     const __m128i B = _mm_shufflelo_epi16(A, _MM_SHUFFLE(2, 2, 0, 0));
     const __m128i C = _mm_shufflehi_epi16(B, _MM_SHUFFLE(2, 2, 0, 0));  // 0g0g
     const __m128i out = _mm_sub_epi8(in, C);
-    _mm_storeu_si128((__m128i*)&argb_data[i], out);
+    _mm_storeu_si128((__*m128i)&argb_data[i], out);
   }
   // fallthrough and finish off with plain-C
   if (i != num_pixels) {
@@ -55,7 +55,7 @@ func SubtractGreenFromBlueAndRed_SSE2(uint32* argb_data, int num_pixels) {
 #define MK_CST_16(HI, LO) \
   _mm_set1_epi32((int)(((uint32)(HI) << 16) | ((LO) & 0xffff)))
 
-func TransformColor_SSE2(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* WEBP_RESTRICT argb_data, int num_pixels) {
+func TransformColor_SSE2(const *VP8LMultipliers WEBP_RESTRICT const m, *uint32 WEBP_RESTRICT argb_data, int num_pixels) {
   const __m128i mults_rb =
       MK_CST_16(CST_5b(m.green_to_red), CST_5b(m.green_to_blue));
   const __m128i mults_b2 = MK_CST_16(CST_5b(m.red_to_blue), 0);
@@ -63,7 +63,7 @@ func TransformColor_SSE2(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* W
   const __m128i mask_rb = _mm_set1_epi32(0x00ff00ff);       // red-blue masks
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const __m128i in = _mm_loadu_si128((__m128i*)&argb_data[i]);  // argb
+    const __m128i in = _mm_loadu_si128((__*m128i)&argb_data[i]);  // argb
     const __m128i A = _mm_and_si128(in, mask_ag);  // a   0   g   0
     const __m128i B = _mm_shufflelo_epi16(A, _MM_SHUFFLE(2, 2, 0, 0));
     const __m128i C = _mm_shufflehi_epi16(B, _MM_SHUFFLE(2, 2, 0, 0));  // g0g0
@@ -74,7 +74,7 @@ func TransformColor_SSE2(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* W
     const __m128i H = _mm_add_epi8(G, D);            // x dr  x  db
     const __m128i I = _mm_and_si128(H, mask_rb);     // 0 dr  0  db
     const __m128i out = _mm_sub_epi8(in, I);
-    _mm_storeu_si128((__m128i*)&argb_data[i], out);
+    _mm_storeu_si128((__*m128i)&argb_data[i], out);
   }
   // fallthrough and finish off with plain-C
   if (i != num_pixels) {
@@ -84,19 +84,19 @@ func TransformColor_SSE2(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* W
 
 //------------------------------------------------------------------------------
 const SPAN = 8
-func CollectColorBlueTransforms_SSE2(const uint32* WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
+func CollectColorBlueTransforms_SSE2(const *uint32 WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   const __m128i mults_r = MK_CST_16(CST_5b(red_to_blue), 0);
   const __m128i mults_g = MK_CST_16(0, CST_5b(green_to_blue));
   const __m128i mask_g = _mm_set1_epi32(0x00ff00);  // green mask
   const __m128i mask_b = _mm_set1_epi32(0x0000ff);  // blue mask
   int y;
   for (y = 0; y < tile_height; ++y) {
-    const uint32* const src = argb + y * stride;
+    const *uint32 const src = argb + y * stride;
     int i, x;
     for (x = 0; x + SPAN <= tile_width; x += SPAN) {
       uint16 values[SPAN];
-      const __m128i in0 = _mm_loadu_si128((__m128i*)&src[x + 0]);
-      const __m128i in1 = _mm_loadu_si128((__m128i*)&src[x + SPAN / 2]);
+      const __m128i in0 = _mm_loadu_si128((__*m128i)&src[x + 0]);
+      const __m128i in1 = _mm_loadu_si128((__*m128i)&src[x + SPAN / 2]);
       const __m128i A0 = _mm_slli_epi16(in0, 8);  // r 0  | b 0
       const __m128i A1 = _mm_slli_epi16(in1, 8);
       const __m128i B0 = _mm_and_si128(in0, mask_g);  // 0 0  | g 0
@@ -114,7 +114,7 @@ func CollectColorBlueTransforms_SSE2(const uint32* WEBP_RESTRICT argb, int strid
       const __m128i H0 = _mm_and_si128(G0, mask_b);  // 0 0  | 0 b
       const __m128i H1 = _mm_and_si128(G1, mask_b);
       const __m128i I = _mm_packs_epi32(H0, H1);  // 0 b' | 0 b'
-      _mm_storeu_si128((__m128i*)values, I);
+      _mm_storeu_si128((__*m128i)values, I);
       for (i = 0; i < SPAN; ++i) ++histo[values[i]];
     }
   }
@@ -126,19 +126,19 @@ func CollectColorBlueTransforms_SSE2(const uint32* WEBP_RESTRICT argb, int strid
   }
 }
 
-func CollectColorRedTransforms_SSE2(const uint32* WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
+func CollectColorRedTransforms_SSE2(const *uint32 WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
   const __m128i mults_g = MK_CST_16(0, CST_5b(green_to_red));
   const __m128i mask_g = _mm_set1_epi32(0x00ff00);  // green mask
   const __m128i mask = _mm_set1_epi32(0xff);
 
   int y;
   for (y = 0; y < tile_height; ++y) {
-    const uint32* const src = argb + y * stride;
+    const *uint32 const src = argb + y * stride;
     int i, x;
     for (x = 0; x + SPAN <= tile_width; x += SPAN) {
       uint16 values[SPAN];
-      const __m128i in0 = _mm_loadu_si128((__m128i*)&src[x + 0]);
-      const __m128i in1 = _mm_loadu_si128((__m128i*)&src[x + SPAN / 2]);
+      const __m128i in0 = _mm_loadu_si128((__*m128i)&src[x + 0]);
+      const __m128i in1 = _mm_loadu_si128((__*m128i)&src[x + SPAN / 2]);
       const __m128i A0 = _mm_and_si128(in0, mask_g);  // 0 0  | g 0
       const __m128i A1 = _mm_and_si128(in1, mask_g);
       const __m128i B0 = _mm_srli_epi32(in0, 16);  // 0 0  | x r
@@ -150,7 +150,7 @@ func CollectColorRedTransforms_SSE2(const uint32* WEBP_RESTRICT argb, int stride
       const __m128i F0 = _mm_and_si128(E0, mask);  // 0 0  | 0 r'
       const __m128i F1 = _mm_and_si128(E1, mask);
       const __m128i I = _mm_packs_epi32(F0, F1);
-      _mm_storeu_si128((__m128i*)values, I);
+      _mm_storeu_si128((__*m128i)values, I);
       for (i = 0; i < SPAN; ++i) ++histo[values[i]];
     }
   }
@@ -166,9 +166,9 @@ func CollectColorRedTransforms_SSE2(const uint32* WEBP_RESTRICT argb, int stride
 
 //------------------------------------------------------------------------------
 
-// Note we are adding uint32's as *signed* int32's (using _mm_add_epi32). But
+// Note we are adding uint32's as **signed int32's (using _mm_add_epi32). But
 // that's ok since the histogram values are less than 1<<28 (max picture size).
-func AddVector_SSE2(const uint32* WEBP_RESTRICT a, const uint32* WEBP_RESTRICT b, uint32* WEBP_RESTRICT out, int size) {
+func AddVector_SSE2(const *uint32 WEBP_RESTRICT a, const *uint32 WEBP_RESTRICT b, *uint32 WEBP_RESTRICT out, int size) {
   int i = 0;
   int aligned_size = size & ~15;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
@@ -178,44 +178,44 @@ func AddVector_SSE2(const uint32* WEBP_RESTRICT a, const uint32* WEBP_RESTRICT b
   assert.Assert(size % 2 == 0);
 
   do {
-    const __m128i a0 = _mm_loadu_si128((const __m128i*)&a[i + 0]);
-    const __m128i a1 = _mm_loadu_si128((const __m128i*)&a[i + 4]);
-    const __m128i a2 = _mm_loadu_si128((const __m128i*)&a[i + 8]);
-    const __m128i a3 = _mm_loadu_si128((const __m128i*)&a[i + 12]);
-    const __m128i b0 = _mm_loadu_si128((const __m128i*)&b[i + 0]);
-    const __m128i b1 = _mm_loadu_si128((const __m128i*)&b[i + 4]);
-    const __m128i b2 = _mm_loadu_si128((const __m128i*)&b[i + 8]);
-    const __m128i b3 = _mm_loadu_si128((const __m128i*)&b[i + 12]);
-    _mm_storeu_si128((__m128i*)&out[i + 0], _mm_add_epi32(a0, b0));
-    _mm_storeu_si128((__m128i*)&out[i + 4], _mm_add_epi32(a1, b1));
-    _mm_storeu_si128((__m128i*)&out[i + 8], _mm_add_epi32(a2, b2));
-    _mm_storeu_si128((__m128i*)&out[i + 12], _mm_add_epi32(a3, b3));
+    const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i + 0]);
+    const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
+    const __m128i a2 = _mm_loadu_si128((const __*m128i)&a[i + 8]);
+    const __m128i a3 = _mm_loadu_si128((const __*m128i)&a[i + 12]);
+    const __m128i b0 = _mm_loadu_si128((const __*m128i)&b[i + 0]);
+    const __m128i b1 = _mm_loadu_si128((const __*m128i)&b[i + 4]);
+    const __m128i b2 = _mm_loadu_si128((const __*m128i)&b[i + 8]);
+    const __m128i b3 = _mm_loadu_si128((const __*m128i)&b[i + 12]);
+    _mm_storeu_si128((__*m128i)&out[i + 0], _mm_add_epi32(a0, b0));
+    _mm_storeu_si128((__*m128i)&out[i + 4], _mm_add_epi32(a1, b1));
+    _mm_storeu_si128((__*m128i)&out[i + 8], _mm_add_epi32(a2, b2));
+    _mm_storeu_si128((__*m128i)&out[i + 12], _mm_add_epi32(a3, b3));
     i += 16;
   } while (i != aligned_size);
 
   if ((size & 8) != 0) {
-    const __m128i a0 = _mm_loadu_si128((const __m128i*)&a[i + 0]);
-    const __m128i a1 = _mm_loadu_si128((const __m128i*)&a[i + 4]);
-    const __m128i b0 = _mm_loadu_si128((const __m128i*)&b[i + 0]);
-    const __m128i b1 = _mm_loadu_si128((const __m128i*)&b[i + 4]);
-    _mm_storeu_si128((__m128i*)&out[i + 0], _mm_add_epi32(a0, b0));
-    _mm_storeu_si128((__m128i*)&out[i + 4], _mm_add_epi32(a1, b1));
+    const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i + 0]);
+    const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
+    const __m128i b0 = _mm_loadu_si128((const __*m128i)&b[i + 0]);
+    const __m128i b1 = _mm_loadu_si128((const __*m128i)&b[i + 4]);
+    _mm_storeu_si128((__*m128i)&out[i + 0], _mm_add_epi32(a0, b0));
+    _mm_storeu_si128((__*m128i)&out[i + 4], _mm_add_epi32(a1, b1));
     i += 8;
   }
 
   size &= 7;
   if (size == 4) {
-    const __m128i a0 = _mm_loadu_si128((const __m128i*)&a[i]);
-    const __m128i b0 = _mm_loadu_si128((const __m128i*)&b[i]);
-    _mm_storeu_si128((__m128i*)&out[i], _mm_add_epi32(a0, b0));
+    const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i]);
+    const __m128i b0 = _mm_loadu_si128((const __*m128i)&b[i]);
+    _mm_storeu_si128((__*m128i)&out[i], _mm_add_epi32(a0, b0));
   } else if (size == 2) {
-    const __m128i a0 = _mm_loadl_epi64((const __m128i*)&a[i]);
-    const __m128i b0 = _mm_loadl_epi64((const __m128i*)&b[i]);
-    _mm_storel_epi64((__m128i*)&out[i], _mm_add_epi32(a0, b0));
+    const __m128i a0 = _mm_loadl_epi64((const __*m128i)&a[i]);
+    const __m128i b0 = _mm_loadl_epi64((const __*m128i)&b[i]);
+    _mm_storel_epi64((__*m128i)&out[i], _mm_add_epi32(a0, b0));
   }
 }
 
-func AddVectorEq_SSE2(const uint32* WEBP_RESTRICT a, uint32* WEBP_RESTRICT out, int size) {
+func AddVectorEq_SSE2(const *uint32 WEBP_RESTRICT a, *uint32 WEBP_RESTRICT out, int size) {
   int i = 0;
   int aligned_size = size & ~15;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
@@ -225,40 +225,40 @@ func AddVectorEq_SSE2(const uint32* WEBP_RESTRICT a, uint32* WEBP_RESTRICT out, 
   assert.Assert(size % 2 == 0);
 
   do {
-    const __m128i a0 = _mm_loadu_si128((const __m128i*)&a[i + 0]);
-    const __m128i a1 = _mm_loadu_si128((const __m128i*)&a[i + 4]);
-    const __m128i a2 = _mm_loadu_si128((const __m128i*)&a[i + 8]);
-    const __m128i a3 = _mm_loadu_si128((const __m128i*)&a[i + 12]);
-    const __m128i b0 = _mm_loadu_si128((const __m128i*)&out[i + 0]);
-    const __m128i b1 = _mm_loadu_si128((const __m128i*)&out[i + 4]);
-    const __m128i b2 = _mm_loadu_si128((const __m128i*)&out[i + 8]);
-    const __m128i b3 = _mm_loadu_si128((const __m128i*)&out[i + 12]);
-    _mm_storeu_si128((__m128i*)&out[i + 0], _mm_add_epi32(a0, b0));
-    _mm_storeu_si128((__m128i*)&out[i + 4], _mm_add_epi32(a1, b1));
-    _mm_storeu_si128((__m128i*)&out[i + 8], _mm_add_epi32(a2, b2));
-    _mm_storeu_si128((__m128i*)&out[i + 12], _mm_add_epi32(a3, b3));
+    const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i + 0]);
+    const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
+    const __m128i a2 = _mm_loadu_si128((const __*m128i)&a[i + 8]);
+    const __m128i a3 = _mm_loadu_si128((const __*m128i)&a[i + 12]);
+    const __m128i b0 = _mm_loadu_si128((const __*m128i)&out[i + 0]);
+    const __m128i b1 = _mm_loadu_si128((const __*m128i)&out[i + 4]);
+    const __m128i b2 = _mm_loadu_si128((const __*m128i)&out[i + 8]);
+    const __m128i b3 = _mm_loadu_si128((const __*m128i)&out[i + 12]);
+    _mm_storeu_si128((__*m128i)&out[i + 0], _mm_add_epi32(a0, b0));
+    _mm_storeu_si128((__*m128i)&out[i + 4], _mm_add_epi32(a1, b1));
+    _mm_storeu_si128((__*m128i)&out[i + 8], _mm_add_epi32(a2, b2));
+    _mm_storeu_si128((__*m128i)&out[i + 12], _mm_add_epi32(a3, b3));
     i += 16;
   } while (i != aligned_size);
 
   if ((size & 8) != 0) {
-    const __m128i a0 = _mm_loadu_si128((const __m128i*)&a[i + 0]);
-    const __m128i a1 = _mm_loadu_si128((const __m128i*)&a[i + 4]);
-    const __m128i b0 = _mm_loadu_si128((const __m128i*)&out[i + 0]);
-    const __m128i b1 = _mm_loadu_si128((const __m128i*)&out[i + 4]);
-    _mm_storeu_si128((__m128i*)&out[i + 0], _mm_add_epi32(a0, b0));
-    _mm_storeu_si128((__m128i*)&out[i + 4], _mm_add_epi32(a1, b1));
+    const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i + 0]);
+    const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
+    const __m128i b0 = _mm_loadu_si128((const __*m128i)&out[i + 0]);
+    const __m128i b1 = _mm_loadu_si128((const __*m128i)&out[i + 4]);
+    _mm_storeu_si128((__*m128i)&out[i + 0], _mm_add_epi32(a0, b0));
+    _mm_storeu_si128((__*m128i)&out[i + 4], _mm_add_epi32(a1, b1));
     i += 8;
   }
 
   size &= 7;
   if (size == 4) {
-    const __m128i a0 = _mm_loadu_si128((const __m128i*)&a[i]);
-    const __m128i b0 = _mm_loadu_si128((const __m128i*)&out[i]);
-    _mm_storeu_si128((__m128i*)&out[i], _mm_add_epi32(a0, b0));
+    const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i]);
+    const __m128i b0 = _mm_loadu_si128((const __*m128i)&out[i]);
+    _mm_storeu_si128((__*m128i)&out[i], _mm_add_epi32(a0, b0));
   } else if (size == 2) {
-    const __m128i a0 = _mm_loadl_epi64((const __m128i*)&a[i]);
-    const __m128i b0 = _mm_loadl_epi64((const __m128i*)&out[i]);
-    _mm_storel_epi64((__m128i*)&out[i], _mm_add_epi32(a0, b0));
+    const __m128i a0 = _mm_loadl_epi64((const __*m128i)&a[i]);
+    const __m128i b0 = _mm_loadl_epi64((const __*m128i)&out[i]);
+    _mm_storel_epi64((__*m128i)&out[i], _mm_add_epi32(a0, b0));
   }
 }
 
@@ -274,14 +274,14 @@ static uint64 CombinedShannonEntropy_SSE2(const uint32 X[256], const uint32 Y[25
   const __m128i zero = _mm_setzero_si128();
 
   for (i = 0; i < 256; i += 16) {
-    const __m128i x0 = _mm_loadu_si128((const __m128i*)(X + i + 0));
-    const __m128i y0 = _mm_loadu_si128((const __m128i*)(Y + i + 0));
-    const __m128i x1 = _mm_loadu_si128((const __m128i*)(X + i + 4));
-    const __m128i y1 = _mm_loadu_si128((const __m128i*)(Y + i + 4));
-    const __m128i x2 = _mm_loadu_si128((const __m128i*)(X + i + 8));
-    const __m128i y2 = _mm_loadu_si128((const __m128i*)(Y + i + 8));
-    const __m128i x3 = _mm_loadu_si128((const __m128i*)(X + i + 12));
-    const __m128i y3 = _mm_loadu_si128((const __m128i*)(Y + i + 12));
+    const __m128i x0 = _mm_loadu_si128((const __*m128i)(X + i + 0));
+    const __m128i y0 = _mm_loadu_si128((const __*m128i)(Y + i + 0));
+    const __m128i x1 = _mm_loadu_si128((const __*m128i)(X + i + 4));
+    const __m128i y1 = _mm_loadu_si128((const __*m128i)(Y + i + 4));
+    const __m128i x2 = _mm_loadu_si128((const __*m128i)(X + i + 8));
+    const __m128i y2 = _mm_loadu_si128((const __*m128i)(Y + i + 8));
+    const __m128i x3 = _mm_loadu_si128((const __*m128i)(X + i + 12));
+    const __m128i y3 = _mm_loadu_si128((const __*m128i)(Y + i + 12));
     const __m128i x4 =
         _mm_packs_epi16(_mm_packs_epi32(x0, x1), _mm_packs_epi32(x2, x3));
     const __m128i y4 =
@@ -314,28 +314,28 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_SSE2(const uint32* const array1, const uint32* const array2, int length) {
+static int VectorMismatch_SSE2(const *uint32 const array1, const *uint32 const array2, int length) {
   int match_len;
 
   if (length >= 12) {
-    __m128i A0 = _mm_loadu_si128((const __m128i*)&array1[0]);
-    __m128i A1 = _mm_loadu_si128((const __m128i*)&array2[0]);
+    __m128i A0 = _mm_loadu_si128((const __*m128i)&array1[0]);
+    __m128i A1 = _mm_loadu_si128((const __*m128i)&array2[0]);
     match_len = 0;
     do {
       // Loop unrolling and early load both provide a speedup of 10% for the
       // current function. Also, max_limit can be MAX_LENGTH=4096 at most.
       const __m128i cmpA = _mm_cmpeq_epi32(A0, A1);
       const __m128i B0 =
-          _mm_loadu_si128((const __m128i*)&array1[match_len + 4]);
+          _mm_loadu_si128((const __*m128i)&array1[match_len + 4]);
       const __m128i B1 =
-          _mm_loadu_si128((const __m128i*)&array2[match_len + 4]);
+          _mm_loadu_si128((const __*m128i)&array2[match_len + 4]);
       if (_mm_movemask_epi8(cmpA) != 0xffff) break;
       match_len += 4;
 
       {
         const __m128i cmpB = _mm_cmpeq_epi32(B0, B1);
-        A0 = _mm_loadu_si128((const __m128i*)&array1[match_len + 4]);
-        A1 = _mm_loadu_si128((const __m128i*)&array2[match_len + 4]);
+        A0 = _mm_loadu_si128((const __*m128i)&array1[match_len + 4]);
+        A1 = _mm_loadu_si128((const __*m128i)&array2[match_len + 4]);
         if (_mm_movemask_epi8(cmpB) != 0xffff) break;
         match_len += 4;
       }
@@ -345,11 +345,11 @@ static int VectorMismatch_SSE2(const uint32* const array1, const uint32* const a
     // Unroll the potential first two loops.
     if (length >= 4 &&
         _mm_movemask_epi8(_mm_cmpeq_epi32(
-            _mm_loadu_si128((const __m128i*)&array1[0]), _mm_loadu_si128((const __m128i*)&array2[0]))) == 0xffff) {
+            _mm_loadu_si128((const __*m128i)&array1[0]), _mm_loadu_si128((const __*m128i)&array2[0]))) == 0xffff) {
       match_len = 4;
       if (length >= 8 &&
           _mm_movemask_epi8(_mm_cmpeq_epi32(
-              _mm_loadu_si128((const __m128i*)&array1[4]), _mm_loadu_si128((const __m128i*)&array2[4]))) == 0xffff) {
+              _mm_loadu_si128((const __*m128i)&array1[4]), _mm_loadu_si128((const __*m128i)&array2[4]))) == 0xffff) {
         match_len = 8;
       }
     }
@@ -362,7 +362,7 @@ static int VectorMismatch_SSE2(const uint32* const array1, const uint32* const a
 }
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
-func BundleColorMap_SSE2(const uint8* WEBP_RESTRICT const row, int width, int xbits, uint32* WEBP_RESTRICT dst) {
+func BundleColorMap_SSE2(const *uint8 WEBP_RESTRICT const row, int width, int xbits, *uint32 WEBP_RESTRICT dst) {
   int x;
   assert.Assert(xbits >= 0);
   assert.Assert(xbits <= 3);
@@ -372,17 +372,17 @@ func BundleColorMap_SSE2(const uint8* WEBP_RESTRICT const row, int width, int xb
       const __m128i zero = _mm_setzero_si128();
       // Store 0xff000000 | (row[x] << 8).
       for (x = 0; x + 16 <= width; x += 16, dst += 16) {
-        const __m128i in = _mm_loadu_si128((const __m128i*)&row[x]);
+        const __m128i in = _mm_loadu_si128((const __*m128i)&row[x]);
         const __m128i in_lo = _mm_unpacklo_epi8(zero, in);
         const __m128i dst0 = _mm_unpacklo_epi16(in_lo, ff);
         const __m128i dst1 = _mm_unpackhi_epi16(in_lo, ff);
         const __m128i in_hi = _mm_unpackhi_epi8(zero, in);
         const __m128i dst2 = _mm_unpacklo_epi16(in_hi, ff);
         const __m128i dst3 = _mm_unpackhi_epi16(in_hi, ff);
-        _mm_storeu_si128((__m128i*)&dst[0], dst0);
-        _mm_storeu_si128((__m128i*)&dst[4], dst1);
-        _mm_storeu_si128((__m128i*)&dst[8], dst2);
-        _mm_storeu_si128((__m128i*)&dst[12], dst3);
+        _mm_storeu_si128((__*m128i)&dst[0], dst0);
+        _mm_storeu_si128((__*m128i)&dst[4], dst1);
+        _mm_storeu_si128((__*m128i)&dst[8], dst2);
+        _mm_storeu_si128((__*m128i)&dst[12], dst3);
       }
       break;
     }
@@ -391,13 +391,13 @@ func BundleColorMap_SSE2(const uint8* WEBP_RESTRICT const row, int width, int xb
       const __m128i mul = _mm_set1_epi16(0x110);
       for (x = 0; x + 16 <= width; x += 16, dst += 8) {
         // 0a0b | (where a/b are 4 bits).
-        const __m128i in = _mm_loadu_si128((const __m128i*)&row[x]);
+        const __m128i in = _mm_loadu_si128((const __*m128i)&row[x]);
         const __m128i tmp = _mm_mullo_epi16(in, mul);  // aba0
         const __m128i pack = _mm_and_si128(tmp, ff);   // ab00
         const __m128i dst0 = _mm_unpacklo_epi16(pack, ff);
         const __m128i dst1 = _mm_unpackhi_epi16(pack, ff);
-        _mm_storeu_si128((__m128i*)&dst[0], dst0);
-        _mm_storeu_si128((__m128i*)&dst[4], dst1);
+        _mm_storeu_si128((__*m128i)&dst[0], dst0);
+        _mm_storeu_si128((__*m128i)&dst[4], dst1);
       }
       break;
     }
@@ -407,14 +407,14 @@ func BundleColorMap_SSE2(const uint8* WEBP_RESTRICT const row, int width, int xb
       const __m128i mask_mul = _mm_set1_epi16(0x0f00);
       for (x = 0; x + 16 <= width; x += 16, dst += 4) {
         // 000a000b000c000d | (where a/b/c/d are 2 bits).
-        const __m128i in = _mm_loadu_si128((const __m128i*)&row[x]);
+        const __m128i in = _mm_loadu_si128((const __*m128i)&row[x]);
         const __m128i mul = _mm_mullo_epi16(in, mul_cst);  // 00ab00b000cd00d0
         const __m128i tmp = _mm_and_si128(mul, mask_mul);  // 00ab000000cd0000
         const __m128i shift = _mm_srli_epi32(tmp, 12);     // 00000000ab000000
         const __m128i pack = _mm_or_si128(shift, tmp);     // 00000000abcd0000
-        // Convert to 0xff00**00.
+        // Convert to 0*xff00*00.
         const __m128i res = _mm_or_si128(pack, mask_or);
-        _mm_storeu_si128((__m128i*)dst, res);
+        _mm_storeu_si128((__*m128i)dst, res);
       }
       break;
     }
@@ -422,7 +422,7 @@ func BundleColorMap_SSE2(const uint8* WEBP_RESTRICT const row, int width, int xb
       assert.Assert(xbits == 3);
       for (x = 0; x + 16 <= width; x += 16, dst += 2) {
         // 0000000a00000000b... | (where a/b are 1 bit).
-        const __m128i in = _mm_loadu_si128((const __m128i*)&row[x]);
+        const __m128i in = _mm_loadu_si128((const __*m128i)&row[x]);
         const __m128i shift = _mm_slli_epi64(in, 7);
         const uint32 move = _mm_movemask_epi8(shift);
         dst[0] = 0xff000000 | ((move & 0xff) << 8);
@@ -439,7 +439,7 @@ func BundleColorMap_SSE2(const uint8* WEBP_RESTRICT const row, int width, int xb
 //------------------------------------------------------------------------------
 // Batch version of Predictor Transform subtraction
 
-static  func Average2_m128i(const __m128i* const a0, const __m128i* const a1, __m128i* const avg) {
+static  func Average2_m128i(const __*m128i const a0, const __*m128i const a1, __*m128i const avg) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m128i ones = _mm_set1_epi8(1);
   const __m128i avg1 = _mm_avg_epu8(*a0, *a1);
@@ -448,13 +448,13 @@ static  func Average2_m128i(const __m128i* const a0, const __m128i* const a1, __
 }
 
 // Predictor0: ARGB_BLACK.
-func PredictorSub0_SSE2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorSub0_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   const __m128i black = _mm_set1_epi32((int)ARGB_BLACK);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const __m128i src = _mm_loadu_si128((const __m128i*)&in[i]);
+    const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
     const __m128i res = _mm_sub_epi8(src, black);
-    _mm_storeu_si128((__m128i*)&out[i], res);
+    _mm_storeu_si128((__*m128i)&out[i], res);
   }
   if (i != num_pixels) {
     VP8LPredictorsSub_C[0](in + i, nil, num_pixels - i, out + i);
@@ -464,14 +464,14 @@ func PredictorSub0_SSE2(const uint32* in, const uint32* upper, int num_pixels, u
 
 #define GENERATE_PREDICTOR_1(X, IN)                                          \
   func PredictorSub##X##_SSE2(                                        \
-      const uint32* const in, const uint32* const upper, int num_pixels, \
-      uint32* WEBP_RESTRICT const out) {                                   \
+      const *uint32 const in, const *uint32 const upper, int num_pixels, \
+      *uint32 WEBP_RESTRICT const out) {                                   \
     int i;                                                                   \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                               \
-      const __m128i src = _mm_loadu_si128((const __m128i*)&in[i]);           \
-      const __m128i pred = _mm_loadu_si128((const __m128i*)&(IN));           \
+      const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);           \
+      const __m128i pred = _mm_loadu_si128((const __*m128i)&(IN));           \
       const __m128i res = _mm_sub_epi8(src, pred);                           \
-      _mm_storeu_si128((__m128i*)&out[i], res);                              \
+      _mm_storeu_si128((__*m128i)&out[i], res);                              \
     }                                                                        \
     if (i != num_pixels) {                                                   \
       VP8LPredictorsSub_C[(X)](in + i, WEBP_OFFSET_PTR(upper, i),            \
@@ -486,18 +486,18 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])  // Predictor4: TL
 #undef GENERATE_PREDICTOR_1
 
 // Predictor5: avg2(avg2(L, TR), T)
-func PredictorSub5_SSE2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorSub5_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const __m128i L = _mm_loadu_si128((const __m128i*)&in[i - 1]);
-    const __m128i T = _mm_loadu_si128((const __m128i*)&upper[i]);
-    const __m128i TR = _mm_loadu_si128((const __m128i*)&upper[i + 1]);
-    const __m128i src = _mm_loadu_si128((const __m128i*)&in[i]);
+    const __m128i L = _mm_loadu_si128((const __*m128i)&in[i - 1]);
+    const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);
+    const __m128i TR = _mm_loadu_si128((const __*m128i)&upper[i + 1]);
+    const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
     __m128i avg, pred, res;
     Average2_m128i(&L, &TR, &avg);
     Average2_m128i(&avg, &T, &pred);
     res = _mm_sub_epi8(src, pred);
-    _mm_storeu_si128((__m128i*)&out[i], res);
+    _mm_storeu_si128((__*m128i)&out[i], res);
   }
   if (i != num_pixels) {
     VP8LPredictorsSub_C[5](in + i, upper + i, num_pixels - i, out + i);
@@ -505,18 +505,18 @@ func PredictorSub5_SSE2(const uint32* in, const uint32* upper, int num_pixels, u
 }
 
 #define GENERATE_PREDICTOR_2(X, A, B)                                       \
-  func PredictorSub##X##_SSE2(const uint32* in,                    \
-                                     const uint32* upper, int num_pixels, \
-                                     uint32* WEBP_RESTRICT out) {         \
+  func PredictorSub##X##_SSE2(const *uint32 in,                    \
+                                     const *uint32 upper, int num_pixels, \
+                                     *uint32 WEBP_RESTRICT out) {         \
     int i;                                                                  \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                              \
-      const __m128i tA = _mm_loadu_si128((const __m128i*)&(A));             \
-      const __m128i tB = _mm_loadu_si128((const __m128i*)&(B));             \
-      const __m128i src = _mm_loadu_si128((const __m128i*)&in[i]);          \
+      const __m128i tA = _mm_loadu_si128((const __*m128i)&(A));             \
+      const __m128i tB = _mm_loadu_si128((const __*m128i)&(B));             \
+      const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);          \
       __m128i pred, res;                                                    \
       Average2_m128i(&tA, &tB, &pred);                                      \
       res = _mm_sub_epi8(src, pred);                                        \
-      _mm_storeu_si128((__m128i*)&out[i], res);                             \
+      _mm_storeu_si128((__*m128i)&out[i], res);                             \
     }                                                                       \
     if (i != num_pixels) {                                                  \
       VP8LPredictorsSub_C[(X)](in + i, upper + i, num_pixels - i, out + i); \
@@ -530,20 +530,20 @@ GENERATE_PREDICTOR_2(9, upper[i], upper[i + 1])   // Predictor9: average(T, TR)
 #undef GENERATE_PREDICTOR_2
 
 // Predictor10: avg(avg(L,TL), avg(T, TR)).
-func PredictorSub10_SSE2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorSub10_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const __m128i L = _mm_loadu_si128((const __m128i*)&in[i - 1]);
-    const __m128i src = _mm_loadu_si128((const __m128i*)&in[i]);
-    const __m128i TL = _mm_loadu_si128((const __m128i*)&upper[i - 1]);
-    const __m128i T = _mm_loadu_si128((const __m128i*)&upper[i]);
-    const __m128i TR = _mm_loadu_si128((const __m128i*)&upper[i + 1]);
+    const __m128i L = _mm_loadu_si128((const __*m128i)&in[i - 1]);
+    const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
+    const __m128i TL = _mm_loadu_si128((const __*m128i)&upper[i - 1]);
+    const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);
+    const __m128i TR = _mm_loadu_si128((const __*m128i)&upper[i + 1]);
     __m128i avgTTR, avgLTL, avg, res;
     Average2_m128i(&T, &TR, &avgTTR);
     Average2_m128i(&L, &TL, &avgLTL);
     Average2_m128i(&avgTTR, &avgLTL, &avg);
     res = _mm_sub_epi8(src, avg);
-    _mm_storeu_si128((__m128i*)&out[i], res);
+    _mm_storeu_si128((__*m128i)&out[i], res);
   }
   if (i != num_pixels) {
     VP8LPredictorsSub_C[10](in + i, upper + i, num_pixels - i, out + i);
@@ -551,7 +551,7 @@ func PredictorSub10_SSE2(const uint32* in, const uint32* upper, int num_pixels, 
 }
 
 // Predictor11: select.
-func GetSumAbsDiff32_SSE2(const __m128i* const A, const __m128i* const B, __m128i* const out) {
+func GetSumAbsDiff32_SSE2(const __*m128i const A, const __*m128i const B, __*m128i const out) {
   // We can unpack with any value on the upper 32 bits, provided it's the same
   // on both operands (to that their sum of abs diff is zero). Here we use *A.
   const __m128i A_lo = _mm_unpacklo_epi32(*A, *A);
@@ -563,13 +563,13 @@ func GetSumAbsDiff32_SSE2(const __m128i* const A, const __m128i* const B, __m128
   *out = _mm_packs_epi32(s_lo, s_hi);
 }
 
-func PredictorSub11_SSE2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorSub11_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const __m128i L = _mm_loadu_si128((const __m128i*)&in[i - 1]);
-    const __m128i T = _mm_loadu_si128((const __m128i*)&upper[i]);
-    const __m128i TL = _mm_loadu_si128((const __m128i*)&upper[i - 1]);
-    const __m128i src = _mm_loadu_si128((const __m128i*)&in[i]);
+    const __m128i L = _mm_loadu_si128((const __*m128i)&in[i - 1]);
+    const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);
+    const __m128i TL = _mm_loadu_si128((const __*m128i)&upper[i - 1]);
+    const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
     __m128i pa, pb;
     GetSumAbsDiff32_SSE2(&T, &TL, &pa);  // pa = sum |T-TL|
     GetSumAbsDiff32_SSE2(&L, &TL, &pb);  // pb = sum |L-TL|
@@ -579,7 +579,7 @@ func PredictorSub11_SSE2(const uint32* in, const uint32* upper, int num_pixels, 
       const __m128i B = _mm_andnot_si128(mask, T);
       const __m128i pred = _mm_or_si128(A, B);  // pred = (L > T)? L : T
       const __m128i res = _mm_sub_epi8(src, pred);
-      _mm_storeu_si128((__m128i*)&out[i], res);
+      _mm_storeu_si128((__*m128i)&out[i], res);
     }
   }
   if (i != num_pixels) {
@@ -588,18 +588,18 @@ func PredictorSub11_SSE2(const uint32* in, const uint32* upper, int num_pixels, 
 }
 
 // Predictor12: ClampedSubSubtractFull.
-func PredictorSub12_SSE2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorSub12_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   const __m128i zero = _mm_setzero_si128();
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const __m128i src = _mm_loadu_si128((const __m128i*)&in[i]);
-    const __m128i L = _mm_loadu_si128((const __m128i*)&in[i - 1]);
+    const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
+    const __m128i L = _mm_loadu_si128((const __*m128i)&in[i - 1]);
     const __m128i L_lo = _mm_unpacklo_epi8(L, zero);
     const __m128i L_hi = _mm_unpackhi_epi8(L, zero);
-    const __m128i T = _mm_loadu_si128((const __m128i*)&upper[i]);
+    const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);
     const __m128i T_lo = _mm_unpacklo_epi8(T, zero);
     const __m128i T_hi = _mm_unpackhi_epi8(T, zero);
-    const __m128i TL = _mm_loadu_si128((const __m128i*)&upper[i - 1]);
+    const __m128i TL = _mm_loadu_si128((const __*m128i)&upper[i - 1]);
     const __m128i TL_lo = _mm_unpacklo_epi8(TL, zero);
     const __m128i TL_hi = _mm_unpackhi_epi8(TL, zero);
     const __m128i diff_lo = _mm_sub_epi16(T_lo, TL_lo);
@@ -608,7 +608,7 @@ func PredictorSub12_SSE2(const uint32* in, const uint32* upper, int num_pixels, 
     const __m128i pred_hi = _mm_add_epi16(L_hi, diff_hi);
     const __m128i pred = _mm_packus_epi16(pred_lo, pred_hi);
     const __m128i res = _mm_sub_epi8(src, pred);
-    _mm_storeu_si128((__m128i*)&out[i], res);
+    _mm_storeu_si128((__*m128i)&out[i], res);
   }
   if (i != num_pixels) {
     VP8LPredictorsSub_C[12](in + i, upper + i, num_pixels - i, out + i);
@@ -616,14 +616,14 @@ func PredictorSub12_SSE2(const uint32* in, const uint32* upper, int num_pixels, 
 }
 
 // Predictors13: ClampedAddSubtractHalf
-func PredictorSub13_SSE2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorSub13_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
   int i;
   const __m128i zero = _mm_setzero_si128();
   for (i = 0; i + 4 <= num_pixels; i += 4) {
-    const __m128i L = _mm_loadu_si128((const __m128i*)&in[i - 1]);
-    const __m128i src = _mm_loadu_si128((const __m128i*)&in[i]);
-    const __m128i T = _mm_loadu_si128((const __m128i*)&upper[i]);
-    const __m128i TL = _mm_loadu_si128((const __m128i*)&upper[i - 1]);
+    const __m128i L = _mm_loadu_si128((const __*m128i)&in[i - 1]);
+    const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
+    const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);
+    const __m128i TL = _mm_loadu_si128((const __*m128i)&upper[i - 1]);
     __m128i A4_lo, A4_hi;
     // lo.
     {
@@ -654,7 +654,7 @@ func PredictorSub13_SSE2(const uint32* in, const uint32* upper, int num_pixels, 
     {
       const __m128i pred = _mm_packus_epi16(A4_lo, A4_hi);
       const __m128i res = _mm_sub_epi8(src, pred);
-      _mm_storeu_si128((__m128i*)&out[i], res);
+      _mm_storeu_si128((__*m128i)&out[i], res);
     }
   }
   if (i != num_pixels) {

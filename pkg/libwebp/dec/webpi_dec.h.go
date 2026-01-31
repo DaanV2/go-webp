@@ -31,20 +31,20 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // WebPDecParams: Decoding output parameters. Transient internal object.
 
 typedef struct WebPDecParams WebPDecParams;
-typedef int (*OutputFunc)(const VP8Io* const io, WebPDecParams* const p);
-typedef int (*OutputAlphaFunc)(const VP8Io* const io, WebPDecParams* const p, int expected_num_out_lines);
-typedef int (*OutputRowFunc)(WebPDecParams* const p, int y_pos, int max_out_lines);
+typedef int (*OutputFunc)(const *VP8Io const io, *WebPDecParams const p);
+typedef int (*OutputAlphaFunc)(const *VP8Io const io, *WebPDecParams const p, int expected_num_out_lines);
+typedef int (*OutputRowFunc)(*WebPDecParams const p, int y_pos, int max_out_lines);
 
 type WebPDecParams struct {
-  WebPDecBuffer* output;           // output buffer.
+  *WebPDecBuffer output;           // output buffer.
   uint8 *tmp_y, *tmp_u, *tmp_v;  // cache for the fancy upsampler
                                    // or used for tmp rescaling
 
   int last_y;  // coordinate of the line that was last output
-  const WebPDecoderOptions* options;  // if not nil, use alt decoding features
+  const *WebPDecoderOptions options;  // if not nil, use alt decoding features
 
   WebPRescaler *scaler_y, *scaler_u, *scaler_v, *scaler_a;  // rescalers
-  void* memory;  // overall scratch memory for the output work.
+  *void memory;  // overall scratch memory for the output work.
 
   OutputFunc emit;               // output RGB or YUV samples
   OutputAlphaFunc emit_alpha;    // output alpha channel
@@ -52,18 +52,18 @@ type WebPDecParams struct {
 };
 
 // Should be called first, before any use of the WebPDecParams object.
-func WebPResetDecParams(WebPDecParams* const params);
+func WebPResetDecParams(*WebPDecParams const params);
 
 //------------------------------------------------------------------------------
 // Header parsing helpers
 
 // Structure storing a description of the RIFF headers.
 type <Foo> struct {
-  const uint8*  data;  // input buffer
+  const *uint8  data;  // input buffer
   uint64 data_size;                                // input buffer size
   int have_all_data;  // true if all data is known to be available
   uint64 offset;      // offset to main data chunk (VP8 or VP8L)
-  const uint8* 
+  const *uint8 
       alpha_data;          // points to alpha chunk (if present)
   uint64 alpha_data_size;  // alpha chunk size
   uint64 compressed_size;  // VP8/VP8L compressed data size
@@ -77,7 +77,7 @@ type <Foo> struct {
 // in the case of non-decodable features (animation for instance).
 // In 'headers', compressed_size, offset, alpha_data, alpha_size, and lossless
 // fields are updated appropriately upon success.
-VP8StatusCode WebPParseHeaders(WebPHeaderStructure* const headers);
+VP8StatusCode WebPParseHeaders(*WebPHeaderStructure const headers);
 
 //------------------------------------------------------------------------------
 // Misc utils
@@ -87,12 +87,12 @@ int WebPCheckCropDimensions(int image_width, int image_height, int x, int y, int
 
 // Initializes VP8Io with custom setup, io and teardown functions. The default
 // hooks will use the supplied 'params' as io.opaque handle.
-func WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io);
+func WebPInitCustomIo(*WebPDecParams const params, *VP8Io const io);
 
 // Setup crop_xxx fields, mb_w and mb_h in io. 'src_colorspace' refers
-// to the *compressed* format, not the output one.
+// to the **compressed format, not the output one.
  int WebPIoInitFromOptions(
-    const WebPDecoderOptions* const options, VP8Io* const io, WEBP_CSP_MODE src_colorspace);
+    const *WebPDecoderOptions const options, *VP8Io const io, WEBP_CSP_MODE src_colorspace);
 
 //------------------------------------------------------------------------------
 // Internal functions regarding WebPDecBuffer memory (in buffer.c).
@@ -107,25 +107,25 @@ func WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io);
 // output buffer. This takes cropping / scaling / rotation into account.
 // Also incorporates the options.flip flag to flip the buffer parameters if
 // needed.
-VP8StatusCode WebPAllocateDecBuffer(int width, int height, const WebPDecoderOptions* const options, WebPDecBuffer* const buffer);
+VP8StatusCode WebPAllocateDecBuffer(int width, int height, const *WebPDecoderOptions const options, *WebPDecBuffer const buffer);
 
 // Flip buffer vertically by negating the various strides.
-VP8StatusCode WebPFlipBuffer(WebPDecBuffer* const buffer);
+VP8StatusCode WebPFlipBuffer(*WebPDecBuffer const buffer);
 
 // Copy 'src' into 'dst' buffer, making sure 'dst' is not marked as owner of the
 // memory (still held by 'src'). No pixels are copied.
-func WebPCopyDecBuffer(const WebPDecBuffer* const src, WebPDecBuffer* const dst);
+func WebPCopyDecBuffer(const *WebPDecBuffer const src, *WebPDecBuffer const dst);
 
 // Copy and transfer ownership from src to dst (beware of parameter order!)
-func WebPGrabDecBuffer(WebPDecBuffer* const src, WebPDecBuffer* const dst);
+func WebPGrabDecBuffer(*WebPDecBuffer const src, *WebPDecBuffer const dst);
 
-// Copy pixels from 'src' into a *preallocated* 'dst' buffer. Returns
+// Copy pixels from 'src' into a **preallocated 'dst' buffer. Returns
 // VP8_STATUS_INVALID_PARAM if the 'dst' is not set up correctly for the copy.
-VP8StatusCode WebPCopyDecBufferPixels(const WebPDecBuffer* const src, WebPDecBuffer* const dst);
+VP8StatusCode WebPCopyDecBufferPixels(const *WebPDecBuffer const src, *WebPDecBuffer const dst);
 
 // Returns true if decoding will be slow with the current configuration
 // and bitstream features.
-int WebPAvoidSlowMemory(const WebPDecBuffer* const output, const WebPBitstreamFeatures* const features);
+int WebPAvoidSlowMemory(const *WebPDecBuffer const output, const *WebPBitstreamFeatures const features);
 
 //------------------------------------------------------------------------------
 
