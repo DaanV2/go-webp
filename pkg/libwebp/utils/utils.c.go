@@ -198,7 +198,8 @@ static int CheckSizeArgumentsOverflow(uint64 nmemb, size uint64 ) {
   return 1;
 }
 
-*void(size *nmemb) WebPSafeMalloc(uint64 nmemb, size uint64 ) {
+// Deprecated: WebPSafeMalloc is just new in golang.
+func WebPSafeMalloc(uint64 nmemb, size uint64 ) *void(size *nmemb) {
   ptr *void;
   Increment(&num_malloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) return nil;
@@ -208,7 +209,8 @@ static int CheckSizeArgumentsOverflow(uint64 nmemb, size uint64 ) {
   return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*void, ptr, (uint64)(nmemb * size));
 }
 
-*void(size *nmemb) WebPSafeCalloc(uint64 nmemb, size uint64 ) {
+// Deprecated: WebPSafeMalloc is just new in golang.
+func WebPSafeCalloc(nmemb, size uint64) *void(size *nmemb) {
   ptr *void;
   Increment(&num_calloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) return nil;

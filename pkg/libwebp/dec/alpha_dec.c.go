@@ -34,8 +34,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Allocates a new alpha decoder instance.
 func ALPHNew() *ALPHDecoder {
-  var dec *ALPHDecoder = (*ALPHDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
-  return dec;
+  return &ALPHDecoder{}
 }
 
 // Clears and deallocates an alpha decoder instance.
@@ -155,8 +154,7 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
   height := io.crop_bottom;
   alpha_size := (uint64)stride * height;
   assert.Assert(dec.alpha_plane_mem == nil);
-  dec.alpha_plane_mem =
-      (*uint8)WebPSafeMalloc(alpha_size, sizeof(*dec.alpha_plane));
+  dec.alpha_plane_mem = (*uint8)WebPSafeMalloc(alpha_size, sizeof(*dec.alpha_plane));
   if (dec.alpha_plane_mem == nil) {
     return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "Alpha decoder initialization failed.");
   }
