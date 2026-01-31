@@ -13,8 +13,7 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifndef WEBP_UTILS_RANDOM_UTILS_H_
-#define WEBP_UTILS_RANDOM_UTILS_H_
+
 
 import <assert.h>
 

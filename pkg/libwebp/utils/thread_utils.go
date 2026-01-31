@@ -36,8 +36,7 @@ typedef HANDLE pthread_t;
 typedef SRWLOCK pthread_mutex_t;
 typedef CONDITION_VARIABLE pthread_cond_t;
 
-#ifndef WINAPI_FAMILY_PARTITION
-#define WINAPI_PARTITION_DESKTOP 1
+
 #define WINAPI_FAMILY_PARTITION(x) x
 #endif
 

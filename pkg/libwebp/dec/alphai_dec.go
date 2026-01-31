@@ -13,8 +13,7 @@
 
 package dec
 
-#ifndef WEBP_DEC_ALPHAI_DEC_H_
-#define WEBP_DEC_ALPHAI_DEC_H_
+
 
 import "src/dec/vp8_dec.h"
 import "src/dec/webpi_dec.h"

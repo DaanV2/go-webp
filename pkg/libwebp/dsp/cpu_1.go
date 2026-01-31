@@ -13,8 +13,7 @@
 
 package dsp
 
-#ifndef WEBP_DSP_CPU_H_
-#define WEBP_DSP_CPU_H_
+
 
 import <stddef.h>
 
@@ -41,8 +40,7 @@ import "src/webp/types.h"
 #define LOCAL_CLANG_PREREQ(maj, min) 0
 #endif
 
-#ifndef __has_builtin
-#define __has_builtin(x) 0
+
 #endif
 
 //------------------------------------------------------------------------------
@@ -169,8 +167,7 @@ static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
 
 //------------------------------------------------------------------------------
 
-#ifndef WEBP_DSP_OMIT_C_CODE
-#define WEBP_DSP_OMIT_C_CODE 1
+
 #endif
 
 #if defined(WEBP_USE_NEON) && WEBP_DSP_OMIT_C_CODE

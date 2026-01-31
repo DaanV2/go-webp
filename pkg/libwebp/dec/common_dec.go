@@ -13,8 +13,7 @@
 
 package dec
 
-#ifndef WEBP_DEC_COMMON_DEC_H_
-#define WEBP_DEC_COMMON_DEC_H_
+
 
 // intra prediction modes
 enum {

@@ -13,8 +13,7 @@
 
 package webp
 
-#ifndef WEBP_WEBP_FORMAT_CONSTANTS_H_
-#define WEBP_WEBP_FORMAT_CONSTANTS_H_
+
 
 // Create fourcc of the chunk from the chunk tag characters.
 #define MKFOURCC(a, b, c, d) ((a) | (b) << 8 | (c) << 16 | (uint32_t)(d) << 24)

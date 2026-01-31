@@ -14,8 +14,7 @@ package utils
 // Author: Skal (pascal.massimino@gmail.com)
 //         Vikas Arora (vikaas.arora@gmail.com)
 
-#ifndef WEBP_UTILS_BIT_READER_UTILS_H_
-#define WEBP_UTILS_BIT_READER_UTILS_H_
+
 
 import <assert.h>
 import <stddef.h>

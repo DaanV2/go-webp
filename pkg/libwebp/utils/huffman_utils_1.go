@@ -13,8 +13,7 @@ package utils
 //
 // Author: Urvang Joshi (urvang@google.com)
 
-#ifndef WEBP_UTILS_HUFFMAN_UTILS_H_
-#define WEBP_UTILS_HUFFMAN_UTILS_H_
+
 
 import <assert.h>
 

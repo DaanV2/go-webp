@@ -13,8 +13,7 @@
 
 package dsp
 
-#ifndef WEBP_DSP_MSA_MACRO_H_
-#define WEBP_DSP_MSA_MACRO_H_
+
 
 import "src/dsp/dsp.h"
 

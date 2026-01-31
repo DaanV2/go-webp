@@ -13,8 +13,7 @@
 
 package dsp
 
-#ifndef WEBP_DSP_DSP_H_
-#define WEBP_DSP_DSP_H_
+
 
 #ifdef HAVE_CONFIG_H
 import "src/webp/config.h"

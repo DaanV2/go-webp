@@ -9,8 +9,7 @@
 
 package dsp
 
-#ifndef WEBP_DSP_QUANT_H_
-#define WEBP_DSP_QUANT_H_
+
 
 import <string.h>
 

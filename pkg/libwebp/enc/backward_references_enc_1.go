@@ -12,8 +12,7 @@
 package enc
 //
 
-#ifndef WEBP_ENC_BACKWARD_REFERENCES_ENC_H_
-#define WEBP_ENC_BACKWARD_REFERENCES_ENC_H_
+
 
 import <assert.h>
 import <stdlib.h>

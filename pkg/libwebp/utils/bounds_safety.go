@@ -11,8 +11,7 @@
 
 package utils
 
-#ifndef WEBP_UTILS_BOUNDS_SAFETY_H_
-#define WEBP_UTILS_BOUNDS_SAFETY_H_
+
 
 #ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 

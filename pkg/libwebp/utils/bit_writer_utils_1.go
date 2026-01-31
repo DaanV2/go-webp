@@ -13,8 +13,7 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifndef WEBP_UTILS_BIT_WRITER_UTILS_H_
-#define WEBP_UTILS_BIT_WRITER_UTILS_H_
+
 
 import <stddef.h>
 

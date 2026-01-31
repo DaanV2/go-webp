@@ -36,8 +36,7 @@
 package dsp
 
 
-#ifndef WEBP_DSP_YUV_H_
-#define WEBP_DSP_YUV_H_
+
 
 import "src/dec/vp8_dec.h"
 import "src/dsp/cpu.h"

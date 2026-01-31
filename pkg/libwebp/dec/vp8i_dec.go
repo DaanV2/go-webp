@@ -13,8 +13,7 @@
 
 package dec
 
-#ifndef WEBP_DEC_VP8I_DEC_H_
-#define WEBP_DEC_VP8I_DEC_H_
+
 
 import <string.h>  // for memcpy()
 

@@ -13,8 +13,7 @@ package utils
 //
 // Author: Urvang (urvang@google.com)
 
-#ifndef WEBP_UTILS_FILTERS_UTILS_H_
-#define WEBP_UTILS_FILTERS_UTILS_H_
+
 
 import "src/dsp/dsp.h"
 import "src/utils/bounds_safety.h"

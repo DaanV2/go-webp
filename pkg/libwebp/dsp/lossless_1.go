@@ -14,8 +14,7 @@
 
 package dsp
 
-#ifndef WEBP_DSP_LOSSLESS_H_
-#define WEBP_DSP_LOSSLESS_H_
+
 
 import "src/dsp/dsp.h"
 import "src/webp/decode.h"

@@ -13,8 +13,7 @@
 
 package enc
 
-#ifndef WEBP_ENC_COST_ENC_H_
-#define WEBP_ENC_COST_ENC_H_
+
 
 import <assert.h>
 import <stdlib.h>

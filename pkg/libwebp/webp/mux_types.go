@@ -13,8 +13,7 @@
 
 package webp
 
-#ifndef WEBP_WEBP_MUX_TYPES_H_
-#define WEBP_WEBP_MUX_TYPES_H_
+
 
 import <string.h>  // memset()
 

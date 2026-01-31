@@ -14,8 +14,7 @@
 
 package webp
 
-#ifndef WEBP_WEBP_MUX_H_
-#define WEBP_WEBP_MUX_H_
+
 
 import "./mux_types.h"
 import "./types.h"

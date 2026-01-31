@@ -13,8 +13,7 @@
 
 package webp
 
-#ifndef WEBP_WEBP_ENCODE_H_
-#define WEBP_WEBP_ENCODE_H_
+
 
 import <stddef.h>
 

@@ -15,8 +15,7 @@
 
 package dsp
 
-#ifndef WEBP_DSP_LOSSLESS_COMMON_H_
-#define WEBP_DSP_LOSSLESS_COMMON_H_
+
 
 import <assert.h>
 import <stddef.h>

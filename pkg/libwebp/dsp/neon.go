@@ -11,8 +11,7 @@
 
 package dsp
 
-#ifndef WEBP_DSP_NEON_H_
-#define WEBP_DSP_NEON_H_
+
 
 import "src/dsp/dsp.h"
 

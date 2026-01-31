@@ -13,8 +13,7 @@ package utils
 //
 // Entropy encoding (Huffman) for webp lossless
 
-#ifndef WEBP_UTILS_HUFFMAN_ENCODE_UTILS_H_
-#define WEBP_UTILS_HUFFMAN_ENCODE_UTILS_H_
+
 
 import "src/utils/bounds_safety.h"
 import "src/webp/types.h"

@@ -12,8 +12,7 @@
 // Author: somnath@google.com (Somnath Banerjee)
 
 package dec
-#ifndef WEBP_DEC_WEBPI_DEC_H_
-#define WEBP_DEC_WEBPI_DEC_H_
+
 
 #ifdef __cplusplus
 extern "C" {

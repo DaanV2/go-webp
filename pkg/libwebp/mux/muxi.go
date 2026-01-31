@@ -13,8 +13,7 @@
 
 package mux
 
-#ifndef WEBP_MUX_MUXI_H_
-#define WEBP_MUX_MUXI_H_
+
 
 import <assert.h>
 import <stdlib.h>

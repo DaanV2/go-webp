@@ -13,8 +13,7 @@ package utils
 //
 // Author:  Vikas Arora (vikasa@google.com)
 
-#ifndef WEBP_UTILS_QUANT_LEVELS_UTILS_H_
-#define WEBP_UTILS_QUANT_LEVELS_UTILS_H_
+
 
 import <stdlib.h>
 

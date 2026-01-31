@@ -15,8 +15,7 @@
 
 package utils
 
-#ifndef WEBP_UTILS_BIT_READER_INL_UTILS_H_
-#define WEBP_UTILS_BIT_READER_INL_UTILS_H_
+
 
 #ifdef HAVE_CONFIG_H
 import "src/webp/config.h"

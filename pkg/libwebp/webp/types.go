@@ -13,8 +13,7 @@
 
 package webp
 
-#ifndef WEBP_WEBP_TYPES_H_
-#define WEBP_WEBP_TYPES_H_
+
 
 import <stddef.h>  // IWYU pragma: export for size_t
 

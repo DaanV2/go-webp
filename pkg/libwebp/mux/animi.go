@@ -13,8 +13,7 @@
 
 package mux
 
-#ifndef WEBP_MUX_ANIMI_H_
-#define WEBP_MUX_ANIMI_H_
+
 
 import "src/webp/mux.h"
 
