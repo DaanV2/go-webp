@@ -215,8 +215,10 @@ func GenerateOptimalTree(
       int tree_pool_size = 0;
       while (tree_size > 1) {  // Finish when we have only one root.
         uint32 count;
-        tree_pool[tree_pool_size++] = tree[tree_size - 1];
-        tree_pool[tree_pool_size++] = tree[tree_size - 2];
+        tree_pool[tree_pool_size] = tree[tree_size - 1]
+		tree_pool_size++
+        tree_pool[tree_pool_size] = tree[tree_size - 2]
+		tree_pool_size++
         count = tree_pool[tree_pool_size - 1].total_count +
                 tree_pool[tree_pool_size - 2].total_count;
         tree_size -= 2;

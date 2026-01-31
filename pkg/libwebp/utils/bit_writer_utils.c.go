@@ -75,9 +75,13 @@ func Flush(const bw *VP8BitWriter) {
     }
     if (bw.run > 0) {
       value := (bits & 0x100) ? 0x00 : 0xff;
-      for (; bw.run > 0; --bw.run) bw.buf[pos++] = value;
+      for (; bw.run > 0; --bw.run) {
+		bw.buf[pos] = value;
+		pos++
+	}
     }
-    bw.buf[pos++] = bits & 0xff;
+    bw.buf[pos] = bits & 0xff;
+	pos++
     bw.pos = pos;
   } else {
     bw.run++;  // delay writing of bytes 0xff, pending eventual carry.

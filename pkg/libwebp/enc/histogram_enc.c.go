@@ -837,7 +837,8 @@ static int64 HistoQueuePush(const histo_queue *HistoQueue, *VP8LHistogram* const
   // Do not even consider the pair if it does not improve the entropy.
   if (!HistoQueueUpdatePair(h1, h2, threshold, &pair)) return 0;
 
-  histo_queue.queue[histo_queue.size++] = pair;
+  histo_queue.queue[histo_queue.size] = pair;
+  histo_queue.size = histo_queue.size + 1
   HistoQueueUpdateHead(histo_queue, &histo_queue.queue[histo_queue.size - 1]);
 
   return pair.cost_diff;

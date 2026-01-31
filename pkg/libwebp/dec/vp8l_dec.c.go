@@ -256,19 +256,24 @@ static int ReadHuffmanCodeLengths(const dec *VP8LDecoder, const const code_lengt
     VP8LSetBitPos(br, br.bit_pos + p.bits);
     code_len = p.value;
     if (code_len < kCodeLengthLiterals) {
-      code_lengths[symbol++] = code_len;
+		symbol++
+      code_lengths[symbol] = code_len;
       if (code_len != 0) prev_code_len = code_len;
     } else {
       use_prev := (code_len == kCodeLengthRepeatCode);
       slot := code_len - kCodeLengthLiterals;
       extra_bits := kCodeLengthExtraBits[slot];
       repeat_offset := kCodeLengthRepeatOffsets[slot];
-      int repeat = VP8LReadBits(br, extra_bits) + repeat_offset;
+      repeat := VP8LReadBits(br, extra_bits) + repeat_offset;
       if (symbol + repeat > num_symbols) {
         goto End;
       } else {
-        length := use_prev ? prev_code_len : 0;
-        while (repeat-- > 0) code_lengths[symbol++] = length;
+        length := tenary.If(use_prev, prev_code_len,  0);
+        for (repeat > 0) {
+			symbol++
+			code_lengths[symbol] = length
+			repeat--
+		}
       }
     }
   }

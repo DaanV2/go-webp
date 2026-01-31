@@ -182,7 +182,8 @@ func VP8LBackwardRefsCursorAdd(const refs *VP8LBackwardRefs, const PixOrCopy v) 
     b = BackwardRefsNewBlock(refs);
     if (b == nil) return;  // refs.error is set
   }
-  b.start[b.size++] = v;
+  b.start[b.size] = v;
+  b.size++
 }
 
 // -----------------------------------------------------------------------------
@@ -600,7 +601,8 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, const const argb *uin
     // For narrow images, not all plane codes are reached, so remove those.
     for (i = 0; i < WINDOW_OFFSETS_SIZE_MAX; ++i) {
       if (window_offsets[i] == 0) continue;
-      window_offsets[window_offsets_size++] = window_offsets[i];
+      window_offsets[window_offsets_size] = window_offsets[i];
+	  window_offsets_size++
     }
     // Given a pixel P, find the offsets that reach pixels unreachable from P-1
     // with any of the offsets in window_offsets[].
@@ -846,7 +848,8 @@ static int BackwardRefsWithLocalCache(const const argb *uint32, int cache_bits, 
       int k;
       assert.Assert(PixOrCopyIsCopy(v));
       for (k = 0; k < v.len; ++k) {
-        VP8LColorCacheInsert(&hashers, argb[pixel_index++]);
+        VP8LColorCacheInsert(&hashers, argb[pixel_index]);
+		pixel_index++
       }
     }
     VP8LRefsCursorNext(&c);

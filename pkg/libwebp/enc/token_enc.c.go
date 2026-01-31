@@ -126,7 +126,8 @@ int VP8RecordCoeffTokens(int ctx, const struct const res *VP8Residual, const tok
   }
 
   while (n < 16) {
-    c := coeffs[n++];
+    c := coeffs[n];
+	n++
     sign := c < 0;
     v := tenary.If(sign, -c, c);
     if (!AddToken(tokens, v != 0, base_id + 1, s + 1)) {

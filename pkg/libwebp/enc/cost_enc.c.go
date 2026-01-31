@@ -187,10 +187,17 @@ int VP8RecordCoeffs(int ctx, const const res *VP8Residual) {
   while (n <= res.last) {
     int v;
     VP8RecordStats(1, s + 0);  // order of record doesn't matter
-    while ((v = res.coeffs[n++]) == 0) {
-      VP8RecordStats(0, s + 1);
-      s = res.stats[VP8EncBands[n]][0];
-    }
+
+	for  {
+		v = res.coeffs[n]
+		n++
+		if v != 0 {
+			break
+		}
+		VP8RecordStats(0, s + 1);
+		s = res.stats[VP8EncBands[n]][0];
+	}
+
     VP8RecordStats(1, s + 1);
     if (!VP8RecordStats(uint(2) < (unsigned int)(v + 1), s + 2)) {  // v = -1 or 1
       s = res.stats[VP8EncBands[n]][1];

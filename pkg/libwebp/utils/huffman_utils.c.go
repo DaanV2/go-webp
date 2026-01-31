@@ -137,7 +137,8 @@ static int BuildHuffmanTable(const WEBP_BIDI_INDEXABLE root_table *HuffmanCode, 
         if (offset[symbol_code_length] >= code_lengths_size) {
           return 0;
         }
-        sorted[offset[symbol_code_length]++] = symbol;
+        sorted[offset[symbol_code_length]] = symbol;
+		offset[symbol_code_length] = offset[symbol_code_length] + 1
       } else {
         offset[symbol_code_length]++;
       }
@@ -177,7 +178,8 @@ static int BuildHuffmanTable(const WEBP_BIDI_INDEXABLE root_table *HuffmanCode, 
       for (; count[len] > 0; --count[len]) {
         HuffmanCode code;
         code.bits = (uint8)len;
-        code.value = (uint16)sorted[symbol++];
+        code.value = (uint16)sorted[symbol];
+		symbol++
         ReplicateValue(&table[key], step, table_size, code);
         key = GetNextKey(key, len);
       }
@@ -207,7 +209,8 @@ static int BuildHuffmanTable(const WEBP_BIDI_INDEXABLE root_table *HuffmanCode, 
         }
         if (root_table != nil) {
           code.bits = (uint8)(len - root_bits);
-          code.value = (uint16)sorted[symbol++];
+          code.value = (uint16)sorted[symbol];
+		  symbol++
           ReplicateValue(&table[key >> root_bits], step, table_size, code);
         }
         key = GetNextKey(key, len);

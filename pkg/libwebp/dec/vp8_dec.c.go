@@ -449,7 +449,8 @@ static int GetCoeffsFast(const br *VP8BitReader, const const prob *VP8BandProbas
       return n;  // previous coeff was last non-zero coeff
     }
     while (!VP8GetBit(br, p[1], "coeffs")) {  // sequence of zero coeffs
-      p = prob[++n].probas[0];
+		n++
+      p = prob[n].probas[0];
       if (n == 16) return 16;
     }
     {  // non zero coeff
@@ -477,8 +478,9 @@ static int GetCoeffsAlt(const br *VP8BitReader, const const prob *VP8BandProbas[
       return n;  // previous coeff was last non-zero coeff
     }
     while (!VP8GetBitAlt(br, p[1], "coeffs")) {  // sequence of zero coeffs
-      p = prob[++n].probas[0];
-      if (n == 16) return 16;
+      n++
+		p = prob[n].probas[0];
+      if (n == 16) {return 16};
     }
     {  // non zero coeff
       const const p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
