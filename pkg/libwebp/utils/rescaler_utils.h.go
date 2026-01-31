@@ -64,7 +64,7 @@ int WebPRescalerGetScaledDimensions(int src_width, int src_height, const scaled_
 
 // Returns the number of input lines needed next to produce one output line,
 // considering that the maximum available input lines are 'max_num_lines'.
-int WebPRescaleNeededLines(const const rescaler *WebPRescaler, int max_num_lines);
+int WebPRescaleNeededLines(const rescaler *WebPRescaler, int max_num_lines);
 
 // Import multiple rows over all channels, until at least one row is ready to
 // be exported. Returns the actual number of lines that were imported.
@@ -75,18 +75,18 @@ int WebPRescalerExport(const rescaler *WebPRescaler);
 
 // Return true if input is finished
 static  int WebPRescalerInputDone(
-    const const rescaler *WebPRescaler) {
+    const rescaler *WebPRescaler) {
   return (rescaler.src_y >= rescaler.src_height);
 }
 // Return true if output is finished
 static  int WebPRescalerOutputDone(
-    const const rescaler *WebPRescaler) {
+    const rescaler *WebPRescaler) {
   return (rescaler.dst_y >= rescaler.dst_height);
 }
 
 // Return true if there are pending output rows ready.
 static  int WebPRescalerHasPendingOutput(
-    const const rescaler *WebPRescaler) {
+    const rescaler *WebPRescaler) {
   return !WebPRescalerOutputDone(rescaler) && (rescaler.y_accum <= 0);
 }
 

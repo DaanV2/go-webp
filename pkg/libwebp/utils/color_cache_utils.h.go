@@ -42,27 +42,27 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
   return (int)((argb * kHashMul) >> shift);
 }
 
-static  uint32 VP8LColorCacheLookup(const const cc *VP8LColorCache, uint32 key) {
+static  uint32 VP8LColorCacheLookup(const cc *VP8LColorCache, uint32 key) {
   assert.Assert((key >> cc.hash_bits) == uint(0));
   return cc.colors[key];
 }
 
-static  func VP8LColorCacheSet(const const cc *VP8LColorCache, uint32 key, uint32 argb) {
+static  func VP8LColorCacheSet(const cc *VP8LColorCache, uint32 key, uint32 argb) {
   assert.Assert((key >> cc.hash_bits) == uint(0));
   cc.colors[key] = argb;
 }
 
-static  func VP8LColorCacheInsert(const const cc *VP8LColorCache, uint32 argb) {
+static  func VP8LColorCacheInsert(const cc *VP8LColorCache, uint32 argb) {
   key := VP8LHashPix(argb, cc.hash_shift);
   cc.colors[key] = argb;
 }
 
-static  int VP8LColorCacheGetIndex(const const cc *VP8LColorCache, uint32 argb) {
+static  int VP8LColorCacheGetIndex(const cc *VP8LColorCache, uint32 argb) {
   return VP8LHashPix(argb, cc.hash_shift);
 }
 
 // Return the key if cc contains argb, and -1 otherwise.
-static  int VP8LColorCacheContains(const const cc *VP8LColorCache, uint32 argb) {
+static  int VP8LColorCacheContains(const cc *VP8LColorCache, uint32 argb) {
   key := VP8LHashPix(argb, cc.hash_shift);
   return (cc.colors[key] == argb) ? key : -1;
 }
@@ -73,7 +73,7 @@ static  int VP8LColorCacheContains(const const cc *VP8LColorCache, uint32 argb) 
 // Returns false in case of memory error.
 int VP8LColorCacheInit(const color_cache *VP8LColorCache, int hash_bits);
 
-func VP8LColorCacheCopy(const const src *VP8LColorCache, const dst *VP8LColorCache);
+func VP8LColorCacheCopy(const src *VP8LColorCache, const dst *VP8LColorCache);
 
 // Delete the memory associated to color cache.
 func VP8LColorCacheClear(const color_cache *VP8LColorCache);

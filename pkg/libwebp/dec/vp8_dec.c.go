@@ -45,7 +45,7 @@ int WebPGetDecoderVersion(){
 //------------------------------------------------------------------------------
 // Signature and pointer-to-function for GetCoeffs() variants below.
 
-typedef int (*GetCoeffsFunc)(const br *VP8BitReader, const const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16);
+typedef int (*GetCoeffsFunc)(const br *VP8BitReader, const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16);
 static volatile GetCoeffsFunc GetCoeffs = nil;
 
 func InitGetCoeffs(void);
@@ -98,7 +98,7 @@ func VP8Delete(const dec *VP8Decoder) {
   }
 }
 
-int VP8SetError(const dec *VP8Decoder, VP8StatusCode error, const const msg *byte) {
+int VP8SetError(const dec *VP8Decoder, VP8StatusCode error, const msg *byte) {
   // VP8_STATUS_SUSPENDED is only meaningful in incremental decoding.
   assert.Assert(dec.incremental || error != VP8_STATUS_SUSPENDED);
   // The oldest error reported takes precedence over the new one.
@@ -112,7 +112,7 @@ int VP8SetError(const dec *VP8Decoder, VP8StatusCode error, const const msg *byt
 
 //------------------------------------------------------------------------------
 
-int VP8CheckSignature(const const *uint8  data, uint64 data_size) {
+int VP8CheckSignature(const *uint8  data, uint64 data_size) {
   return (data_size >= 3 && data[0] == 0x9d && data[1] == 0x01 &&
           data[2] == 0x2a);
 }
@@ -406,11 +406,11 @@ static const uint8 kCat3[] = {173, 148, 140, 0}
 static const uint8 kCat4[] = {176, 155, 140, 135, 0}
 static const uint8 kCat5[] = {180, 157, 141, 134, 130, 0}
 static const uint8 kCat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0}
-static const const kCat *uint83456[] = {kCat3, kCat4, kCat5, kCat6}
+static const kCat *uint83456[] = {kCat3, kCat4, kCat5, kCat6}
 static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
 
 // See section 13-2: https://datatracker.ietf.org/doc/html/rfc6386#section-13.2
-static int GetLargeValue(const br *VP8BitReader, const const p *uint8) {
+static int GetLargeValue(const br *VP8BitReader, const p *uint8) {
   int v;
   if (!VP8GetBit(br, p[3], "coeffs")) {
     if (!VP8GetBit(br, p[4], "coeffs")) {
@@ -442,7 +442,7 @@ static int GetLargeValue(const br *VP8BitReader, const const p *uint8) {
 }
 
 // Returns the position of the last non-zero coeff plus one
-static int GetCoeffsFast(const br *VP8BitReader, const const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16) {
+static int GetCoeffsFast(const br *VP8BitReader, const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16) {
   const p *uint8 = prob[n].probas[ctx];
   for (; n < 16; ++n) {
     if (!VP8GetBit(br, p[0], "coeffs")) {
@@ -454,7 +454,7 @@ static int GetCoeffsFast(const br *VP8BitReader, const const prob *VP8BandProbas
       if (n == 16) return 16;
     }
     {  // non zero coeff
-      const const p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
+      const p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
       int v;
       if (!VP8GetBit(br, p[2], "coeffs")) {
         v = 1;
@@ -471,7 +471,7 @@ static int GetCoeffsFast(const br *VP8BitReader, const const prob *VP8BandProbas
 
 // This version of GetCoeffs() uses VP8GetBitAlt() which is an alternate version
 // of VP8GetBitAlt() targeting specific platforms.
-static int GetCoeffsAlt(const br *VP8BitReader, const const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16) {
+static int GetCoeffsAlt(const br *VP8BitReader, const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16) {
   const p *uint8 = prob[n].probas[ctx];
   for (; n < 16; ++n) {
     if (!VP8GetBitAlt(br, p[0], "coeffs")) {
@@ -483,7 +483,7 @@ static int GetCoeffsAlt(const br *VP8BitReader, const const prob *VP8BandProbas[
       if (n == 16) {return 16};
     }
     {  // non zero coeff
-      const const p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
+      const p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
       int v;
       if (!VP8GetBitAlt(br, p[2], "coeffs")) {
         v = 1;
@@ -518,7 +518,7 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
   const *VP8BandProbas(bands *const)[16 + 1] = dec.proba.bands_ptr;
   const ac_proba *VP8BandProbas *const;
   const block *VP8MBData = dec.mb_data + dec.mb_x;
-  const const q *VP8QuantMatrix = &dec.dqm[block.segment];
+  const q *VP8QuantMatrix = &dec.dqm[block.segment];
   dst *int16 = block.coeffs;
   const left_mb *VP8MB = dec.mb_info - 1;
   uint8 tnz, lnz;

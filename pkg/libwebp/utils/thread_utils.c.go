@@ -284,7 +284,7 @@ func End(const worker *WebPWorker) {
 
 static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync, Launch, Execute, End}
 
-int WebPSetWorkerInterface(const const winterface *WebPWorkerInterface) {
+int WebPSetWorkerInterface(const winterface *WebPWorkerInterface) {
   if (winterface == nil || winterface.Init == nil ||
       winterface.Reset == nil || winterface.Sync == nil ||
       winterface.Launch == nil || winterface.Execute == nil ||

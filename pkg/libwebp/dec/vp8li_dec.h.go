@@ -108,7 +108,7 @@ struct ALPHDecoder;  // Defined in dec/alphai.h.
 // Decodes image header for alpha data stored using lossless compression.
 // Returns false in case of error.
  int VP8LDecodeAlphaHeader(
-    struct const alph_dec *ALPHDecoder, const const *uint8  data, uint64 data_size);
+    struct const alph_dec *ALPHDecoder, const *uint8  data, uint64 data_size);
 
 // Decodes *at *least 'last_row' rows of alpha. If some of the initial rows are
 // already decoded in previous call(s), it will resume decoding from where it
@@ -138,7 +138,7 @@ func VP8LDelete(const dec *VP8LDecoder);
 // some of those indices map to -1. This is used for non-balanced codes to
 // limit memory usage.
  int ReadHuffmanCodesHelper(
-    int color_cache_bits, int num_htree_groups, int num_htree_groups_max, const const mapping *int, const dec *VP8LDecoder, const huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups);
+    int color_cache_bits, int num_htree_groups, int num_htree_groups_max, const mapping *int, const dec *VP8LDecoder, const huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups);
 
 //------------------------------------------------------------------------------
 

@@ -31,8 +31,8 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // WebPDecParams: Decoding output parameters. Transient internal object.
 
 typedef struct WebPDecParams WebPDecParams;
-typedef int (*OutputFunc)(const const io *VP8Io, const p *WebPDecParams);
-typedef int (*OutputAlphaFunc)(const const io *VP8Io, const p *WebPDecParams, int expected_num_out_lines);
+typedef int (*OutputFunc)(const io *VP8Io, const p *WebPDecParams);
+typedef int (*OutputAlphaFunc)(const io *VP8Io, const p *WebPDecParams, int expected_num_out_lines);
 typedef int (*OutputRowFunc)(const p *WebPDecParams, int y_pos, int max_out_lines);
 
 type WebPDecParams struct {
@@ -92,7 +92,7 @@ func WebPInitCustomIo(const params *WebPDecParams, const io *VP8Io);
 // Setup crop_xxx fields, mb_w and mb_h in io. 'src_colorspace' refers
 // to the *format *compressed, not the output one.
  int WebPIoInitFromOptions(
-    const const options *WebPDecoderOptions, const io *VP8Io, WEBP_CSP_MODE src_colorspace);
+    const options *WebPDecoderOptions, const io *VP8Io, WEBP_CSP_MODE src_colorspace);
 
 //------------------------------------------------------------------------------
 // Internal functions regarding WebPDecBuffer memory (in buffer.c).
@@ -107,25 +107,25 @@ func WebPInitCustomIo(const params *WebPDecParams, const io *VP8Io);
 // output buffer. This takes cropping / scaling / rotation into account.
 // Also incorporates the options.flip flag to flip the buffer parameters if
 // needed.
-VP8StatusCode WebPAllocateDecBuffer(int width, int height, const const options *WebPDecoderOptions, const buffer *WebPDecBuffer);
+VP8StatusCode WebPAllocateDecBuffer(int width, int height, const options *WebPDecoderOptions, const buffer *WebPDecBuffer);
 
 // Flip buffer vertically by negating the various strides.
 VP8StatusCode WebPFlipBuffer(const buffer *WebPDecBuffer);
 
 // Copy 'src' into 'dst' buffer, making sure 'dst' is not marked as owner of the
 // memory (still held by 'src'). No pixels are copied.
-func WebPCopyDecBuffer(const const src *WebPDecBuffer, const dst *WebPDecBuffer);
+func WebPCopyDecBuffer(const src *WebPDecBuffer, const dst *WebPDecBuffer);
 
 // Copy and transfer ownership from src to dst (beware of parameter order!)
 func WebPGrabDecBuffer(const src *WebPDecBuffer, const dst *WebPDecBuffer);
 
 // Copy pixels from 'src' into a **preallocated 'dst' buffer. Returns
 // VP8_STATUS_INVALID_PARAM if the 'dst' is not set up correctly for the copy.
-VP8StatusCode WebPCopyDecBufferPixels(const const src *WebPDecBuffer, const dst *WebPDecBuffer);
+VP8StatusCode WebPCopyDecBufferPixels(const src *WebPDecBuffer, const dst *WebPDecBuffer);
 
 // Returns true if decoding will be slow with the current configuration
 // and bitstream features.
-int WebPAvoidSlowMemory(const const output *WebPDecBuffer, const const features *WebPBitstreamFeatures);
+int WebPAvoidSlowMemory(const output *WebPDecBuffer, const features *WebPBitstreamFeatures);
 
 //------------------------------------------------------------------------------
 

@@ -73,13 +73,13 @@ const WEBP_ALIGN_CST =31
 
 import "github.com/daanv2/go-webp/pkg/string"
 // memcpy() is the safe way of moving potentially unaligned 32b memory.
-static  uint32 WebPMemToUint32(const const ptr *uint8) {
+static  uint32 WebPMemToUint32(const ptr *uint8) {
   uint32 A;
   WEBP_UNSAFE_MEMCPY(&A, ptr, sizeof(A));
   return A;
 }
 
-static  int32 WebPMemToInt32(const const ptr *uint8) {
+static  int32 WebPMemToInt32(const ptr *uint8) {
   return (int32)WebPMemToUint32(ptr);
 }
 
@@ -95,15 +95,15 @@ static  func WebPInt32ToMem(const ptr *uint8, int val) {
 // Reading/writing data.
 
 // Read 16, 24 or 32 bits stored in little-endian order.
-static  int GetLE16(const const WEBP_COUNTED_BY *uint8(2) data) {
+static  int GetLE16(const WEBP_COUNTED_BY *uint8(2) data) {
   return (int)(data[0] << 0) | (data[1] << 8);
 }
 
-static  int GetLE24(const const WEBP_COUNTED_BY *uint8(3) data) {
+static  int GetLE24(const WEBP_COUNTED_BY *uint8(3) data) {
   return GetLE16(data) | (data[2] << 16);
 }
 
-static  uint32 GetLE32(const const WEBP_COUNTED_BY *uint8(4)
+static  uint32 GetLE32(const WEBP_COUNTED_BY *uint8(4)
                                         data) {
   return GetLE16(data) | ((uint32)GetLE16(data + 2) << 16);
 }

@@ -92,7 +92,7 @@ func ParseIntraMode(const br *VP8BitReader, const dec *VP8Decoder, int mb_x) {
       int ymode = left[y];
       int x;
       for (x = 0; x < 4; ++x) {
-        const const prob *uint8 = kBModesProba[top[x]][ymode];
+        const prob *uint8 = kBModesProba[top[x]][ymode];
 #if (USE_GENERIC_TREE == 1)
         // Generic tree-parsing
         int i = kYModesIntra4[VP8GetBit(br, prob[0], "pred-modes")];

@@ -159,7 +159,7 @@ func VP8Delete(const dec *VP8Decoder);
 
 // Returns true if the next 3 bytes in data contain the VP8 signature.
  int VP8CheckSignature(
-    const const *uint8  data, uint64 data_size);
+    const *uint8  data, uint64 data_size);
 
 // Validates the VP8 data-header and retrieves basic header information viz
 // width and height. Returns 0 in case of formatting error. *width/*height
@@ -170,7 +170,7 @@ func VP8Delete(const dec *VP8Decoder);
     const width *int, const height *int);
 
 // Returns true if the next byte(s) in data is a VP8L signature.
- int VP8LCheckSignature(const const *uint8 
+ int VP8LCheckSignature(const *uint8 
                                        data, size uint64 );
 
 // Validates the VP8L data-header and retrieves basic header information viz

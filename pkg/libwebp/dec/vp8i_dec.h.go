@@ -277,7 +277,7 @@ type VP8Decoder struct {
 // internal functions. Not public.
 
 // in vp8.c
-int VP8SetError(const dec *VP8Decoder, VP8StatusCode error, const const msg *byte);
+int VP8SetError(const dec *VP8Decoder, VP8StatusCode error, const msg *byte);
 
 // in tree.c
 func VP8ResetProba(const proba *VP8Proba);
@@ -300,9 +300,9 @@ VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, const io *VP8Io);
  int VP8ExitCritical(const dec *VP8Decoder, const io *VP8Io);
 // Return the multi-threading method to use (0=off), depending
 // on options and bitstream size. Only for lossy decoding.
-int VP8GetThreadMethod(const const options *WebPDecoderOptions, const const headers *WebPHeaderStructure, int width, int height);
+int VP8GetThreadMethod(const options *WebPDecoderOptions, const headers *WebPHeaderStructure, int width, int height);
 // Initialize dithering post-process if needed.
-func VP8InitDithering(const const options *WebPDecoderOptions, const dec *VP8Decoder);
+func VP8InitDithering(const options *WebPDecoderOptions, const dec *VP8Decoder);
 // Process the last decoded row (filtering + output).
  int VP8ProcessRow(const dec *VP8Decoder, const io *VP8Io);
 // To be called at the start of a new scanline, to initialize predictors.
@@ -311,7 +311,7 @@ func VP8InitScanline(const dec *VP8Decoder);
  int VP8DecodeMB(const dec *VP8Decoder, const token_br *VP8BitReader);
 
 // in alpha.c
-const VP *uint88DecompressAlphaRows(const dec *VP8Decoder, const const io *VP8Io, int row, int num_rows);
+const VP *uint88DecompressAlphaRows(const dec *VP8Decoder, const io *VP8Io, int row, int num_rows);
 
 //------------------------------------------------------------------------------
 

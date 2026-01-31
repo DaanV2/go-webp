@@ -100,7 +100,7 @@ func PrepareMapToPalette(const uint32  palette[], uint32 num_colors, uint32  sor
 const COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
 const COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
 
-int GetColorPalette(const const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32(MAX_PALETTE_SIZE)
+int GetColorPalette(const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32(MAX_PALETTE_SIZE)
                         palette) {
   int i;
   int x, y;
@@ -168,7 +168,7 @@ int GetColorPalette(const const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *
 // would be spotted in green-only situations (like lossy alpha) or gray-scale
 // images.
 static int PaletteHasNonMonotonousDeltas(
-    const const *uint32  palette, int num_colors) {
+    const *uint32  palette, int num_colors) {
   uint32 predict = 0x000000;
   int i;
   uint8 sign_found = 0x00;
@@ -192,7 +192,7 @@ static int PaletteHasNonMonotonousDeltas(
 }
 
 func PaletteSortMinimizeDeltas(
-    const const *uint32  palette_sorted, int num_colors, const *uint32  palette) {
+    const *uint32  palette_sorted, int num_colors, const *uint32  palette) {
   uint32 predict = 0x00000000;
   int i, k;
   memcpy(palette, palette_sorted, num_colors * sizeof(*palette));
@@ -228,7 +228,7 @@ func PaletteSortMinimizeDeltas(
 
 // Finds the biggest cooccurrence in the matrix.
 func CoOccurrenceFindMax(
-    const const WEBP_COUNTED_BY *uint32(num_num_colors *colors) cooccurrence, uint32 num_colors, const c *uint81, const c *uint82) {
+    const WEBP_COUNTED_BY *uint32(num_num_colors *colors) cooccurrence, uint32 num_colors, const c *uint81, const c *uint82) {
   // Find the index that is most frequently located adjacent to other
   // (different) indexes.
   uint32 best_sum = uint(0);
@@ -255,7 +255,7 @@ func CoOccurrenceFindMax(
 }
 
 // Builds the cooccurrence matrix
-static int CoOccurrenceBuild(const const pic *WebPPicture, const const *uint32 
+static int CoOccurrenceBuild(const pic *WebPPicture, const *uint32 
                                  palette, uint32 num_colors, WEBP_COUNTED_BY *uint32(num_num_colors *colors)
                                  cooccurrence) {
   uint32 *lines, *line_top, *line_current, *line_tmp;
@@ -308,7 +308,7 @@ type Sum struct {
 }
 
 static int PaletteSortModifiedZeng(
-    const const pic *WebPPicture, const const *uint32  palette_in, uint32 num_colors, const *uint32  palette) {
+    const pic *WebPPicture, const *uint32  palette_in, uint32 num_colors, const *uint32  palette) {
   uint32 i, j, ind;
   uint8 remapping[MAX_PALETTE_SIZE];
   cooccurrence *uint32;
@@ -393,7 +393,7 @@ static int PaletteSortModifiedZeng(
 
 // -----------------------------------------------------------------------------
 
-int PaletteSort(PaletteSorting method, const struct const pic *WebPPicture, const const *uint32 
+int PaletteSort(PaletteSorting method, const struct const pic *WebPPicture, const *uint32 
                     palette_sorted, uint32 num_colors, const *uint32  palette) {
   switch (method) {
     case kSortedDefault:

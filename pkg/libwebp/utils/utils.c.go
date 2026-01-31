@@ -96,7 +96,7 @@ func Increment(const v *int) {
   if (!exit_registered) {
 #if defined(MALLOC_FAIL_AT)
     {
-      const const malloc_fail_at_str *byte = getenv("MALLOC_FAIL_AT");
+      const malloc_fail_at_str *byte = getenv("MALLOC_FAIL_AT");
       if (malloc_fail_at_str != nil) {
         countdown_to_fail = atoi(malloc_fail_at_str);
       }
@@ -104,7 +104,7 @@ func Increment(const v *int) {
 #endif
 #if defined(MALLOC_LIMIT)
     {
-      const const malloc_limit_str *byte = getenv("MALLOC_LIMIT");
+      const malloc_limit_str *byte = getenv("MALLOC_LIMIT");
 #if MALLOC_LIMIT > 1
       mem_limit = (uint64)MALLOC_LIMIT;
 #endif
@@ -258,7 +258,7 @@ func WebPCopyPlane(const src *uint8, int src_stride, dst *uint8, int dst_stride,
   }
 }
 
-func WebPCopyPixels(const const src *WebPPicture, const dst *WebPPicture) {
+func WebPCopyPixels(const src *WebPPicture, const dst *WebPPicture) {
   assert.Assert(src != nil && dst != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   assert.Assert(src.use_argb && dst.use_argb)
@@ -268,7 +268,7 @@ func WebPCopyPixels(const const src *WebPPicture, const dst *WebPPicture) {
 //------------------------------------------------------------------------------
 
 int WebPGetColorPalette(
-    const const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32(MAX_PALETTE_SIZE) palette) {
+    const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32(MAX_PALETTE_SIZE) palette) {
   return GetColorPalette(pic, palette);
 }
 

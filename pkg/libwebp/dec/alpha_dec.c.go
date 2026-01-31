@@ -54,9 +54,9 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 // header for alpha data stored using lossless compression.
 // Returns false in case of error in alpha header (data too short, invalid
 // compression method or filter, error in lossless header data etc).
- static int ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, uint64 data_size, const const src_io *VP8Io, output *uint8) {
+ static int ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, uint64 data_size, const src_io *VP8Io, output *uint8) {
   int ok = 0;
-  const const alpha_data *uint8 = data + ALPHA_HEADER_LEN;
+  const alpha_data *uint8 = data + ALPHA_HEADER_LEN;
   alpha_data_size := data_size - ALPHA_HEADER_LEN;
   int rsrv;
   const io *VP8Io = &dec.io;
@@ -150,7 +150,7 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
   return 1;
 }
 
- static int AllocateAlphaPlane(const dec *VP8Decoder, const const io *VP8Io) {
+ static int AllocateAlphaPlane(const dec *VP8Decoder, const io *VP8Io) {
   stride := io.width;
   height := io.crop_bottom;
   alpha_size := (uint64)stride * height;
@@ -177,7 +177,7 @@ func WebPDeallocateAlphaMemory(const dec *VP8Decoder) {
 //------------------------------------------------------------------------------
 // Main entry point.
 
- const VP *uint88DecompressAlphaRows(const dec *VP8Decoder, const const io *VP8Io, int row, int num_rows) {
+ const VP *uint88DecompressAlphaRows(const dec *VP8Decoder, const io *VP8Io, int row, int num_rows) {
   width := io.width;
   height := io.crop_bottom;
 

@@ -126,8 +126,8 @@ func OptimizeHuffmanForRle(int length, const *uint8
 // A comparer function for two Huffman trees: sorts first by 'total count'
 // (more comes first), and then by 'value' (more comes first).
 static int CompareHuffmanTrees(const ptr *void1, const ptr *void2) {
-  const const t *HuffmanTree1 = (const *HuffmanTree)ptr1;
-  const const t *HuffmanTree2 = (const *HuffmanTree)ptr2;
+  const t *HuffmanTree1 = (const *HuffmanTree)ptr1;
+  const t *HuffmanTree2 = (const *HuffmanTree)ptr2;
   if (t1.total_count > t2.total_count) {
     return -1;
   } else if (t1.total_count < t2.total_count) {
@@ -138,7 +138,7 @@ static int CompareHuffmanTrees(const ptr *void1, const ptr *void2) {
   }
 }
 
-func SetBitDepths(const const tree *HuffmanTree, const WEBP_BIDI_INDEXABLE const pool *HuffmanTree, WEBP_INDEXABLE const bit_depths *uint8, int level) {
+func SetBitDepths(const tree *HuffmanTree, const WEBP_BIDI_INDEXABLE const pool *HuffmanTree, WEBP_INDEXABLE const bit_depths *uint8, int level) {
   if (tree.pool_index_left >= 0) {
     SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
     SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
@@ -167,7 +167,7 @@ func SetBitDepths(const const tree *HuffmanTree, const WEBP_BIDI_INDEXABLE const
 //
 // See https://en.wikipedia.org/wiki/Huffman_coding
 func GenerateOptimalTree(
-    const const *uint32  histogram, int histogram_size, WEBP_BIDI_INDEXABLE tree *HuffmanTree, int tree_depth_limit, *uint8  const bit_depths) {
+    const *uint32  histogram, int histogram_size, WEBP_BIDI_INDEXABLE tree *HuffmanTree, int tree_depth_limit, *uint8  const bit_depths) {
   uint32 count_min;
   WEBP_BIDI_INDEXABLE tree_pool *HuffmanTree;
   int tree_size_orig = 0;
@@ -327,7 +327,7 @@ CodeRepeatedZeros(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken) {
 }
 
 int VP8LCreateCompressedHuffmanTree(
-    const const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, int max_tokens) {
+    const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, int max_tokens) {
   WEBP_INDEXABLE current_token *HuffmanTreeToken = tokens;
   const starting_token *HuffmanTreeToken = tokens;
   const ending_token *HuffmanTreeToken = tokens + max_tokens;

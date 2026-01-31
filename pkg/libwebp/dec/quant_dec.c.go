@@ -52,7 +52,7 @@ func VP8ParseQuant(const dec *VP8Decoder) {
                           ? VP8GetSignedValue(br, 4, "global-header")
                           : 0;
 
-  const const hdr *VP8SegmentHeader = &dec.segment_hdr;
+  const hdr *VP8SegmentHeader = &dec.segment_hdr;
   int i;
 
   for (i = 0; i < NUM_MB_SEGMENTS; ++i) {

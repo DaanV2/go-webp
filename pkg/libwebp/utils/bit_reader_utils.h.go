@@ -111,9 +111,9 @@ type VP8BitReader struct {
 }
 
 // Initialize the bit reader and the boolean decoder.
-func VP8InitBitReader(const br *VP8BitReader, const const *uint8  start, size uint64 );
+func VP8InitBitReader(const br *VP8BitReader, const *uint8  start, size uint64 );
 // Sets the working read buffer.
-func VP8BitReaderSetBuffer(const br *VP8BitReader, const const *uint8  start, size uint64 );
+func VP8BitReaderSetBuffer(const br *VP8BitReader, const *uint8  start, size uint64 );
 
 // Update internal pointers to displace the byte buffer by the
 // relative offset 'offset'.
@@ -152,10 +152,10 @@ type <Foo> struct {
   int eos;      // true if a bit was read past the end of buffer
 } VP8LBitReader;
 
-func VP8LInitBitReader(const br *VP8LBitReader, const const *uint8  start, uint64 length);
+func VP8LInitBitReader(const br *VP8LBitReader, const *uint8  start, uint64 length);
 
 //  Sets a new data buffer.
-func VP8LBitReaderSetBuffer(const br *VP8LBitReader, const const *uint8  buffer, uint64 length);
+func VP8LBitReaderSetBuffer(const br *VP8LBitReader, const *uint8  buffer, uint64 length);
 
 // Reads the specified number of bits from read buffer.
 // Flags an error in case end_of_stream or n_bits is more than the allowed limit
@@ -170,7 +170,7 @@ static  uint32 VP8LPrefetchBits(const br *VP8LBitReader) {
 
 // Returns true if there was an attempt at reading bit past the end of
 // the buffer. Doesn't set br.eos flag.
-static  int VP8LIsEndOfStream(const const br *VP8LBitReader) {
+static  int VP8LIsEndOfStream(const br *VP8LBitReader) {
   assert.Assert(br.pos <= br.len);
   return br.eos || ((br.pos == br.len) && (br.bit_pos > VP8L_LBITS));
 }

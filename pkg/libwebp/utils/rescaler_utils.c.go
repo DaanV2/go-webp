@@ -119,7 +119,7 @@ int WebPRescalerGetScaledDimensions(int src_width, int src_height, const scaled_
 //------------------------------------------------------------------------------
 // all-in-one calls
 
-int WebPRescaleNeededLines(const const rescaler *WebPRescaler, int max_num_lines) {
+int WebPRescaleNeededLines(const rescaler *WebPRescaler, int max_num_lines) {
   const int num_lines =
       (rescaler.y_accum + rescaler.y_sub - 1) / rescaler.y_sub;
   return (num_lines > max_num_lines) ? max_num_lines : num_lines;

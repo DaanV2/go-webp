@@ -653,7 +653,7 @@ WebPDecodeYUV *uint8(const *uint8  data, uint64 data_size, width *int, height *i
         Decode(MODE_YUV, data, data_size, width, height, &output);
 
     if (out != nil) {
-      const const buf *WebPYUVABuffer = &output.u.YUVA;
+      const buf *WebPYUVABuffer = &output.u.YUVA;
       *u = buf.u;
       *v = buf.v;
       *stride = buf.y_stride;
@@ -830,7 +830,7 @@ int WebPCheckCropDimensions(int image_width, int image_height, int x, int y, int
            y >= image_height || h > image_height || h > image_height - y);
 }
 
-int WebPIoInitFromOptions(const const options *WebPDecoderOptions, const io *VP8Io, WEBP_CSP_MODE src_colorspace) {
+int WebPIoInitFromOptions(const options *WebPDecoderOptions, const io *VP8Io, WEBP_CSP_MODE src_colorspace) {
   const int W = io.width;
   const int H = io.height;
   int x = 0, y = 0, w = W, h = H;

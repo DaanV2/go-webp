@@ -43,7 +43,7 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
 
   // We only sample every other pixels. That's enough.
   for (j = 2; j < height - 1; j += 2) {
-    const const p *uint8 = data + j * width;
+    const p *uint8 = data + j * width;
     int mean = p[0];
     for (i = 2; i < width - 1; i += 2) {
       const int diff0 = SDIFF(p[i], mean);

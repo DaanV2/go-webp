@@ -72,7 +72,7 @@ static  func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +
 // of bit lengths for the remaining symbols, len is the code length of the next
 // processed symbol
 static  int NextTableBitSize(
-    const const WEBP_COUNTED_BY *int(MAX_ALLOWED_CODE_LENGTH + 1) count, int len, int root_bits) {
+    const WEBP_COUNTED_BY *int(MAX_ALLOWED_CODE_LENGTH + 1) count, int len, int root_bits) {
   int left = 1 << (len - root_bits);
   while (len < MAX_ALLOWED_CODE_LENGTH) {
     left -= count[len];

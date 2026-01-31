@@ -59,17 +59,17 @@ func VP8PutSignedBits(const bw *VP8BitWriter, int value, int nb_bits);
 int VP8BitWriterAppend(const bw *VP8BitWriter, const data *uint8, size uint64 );
 
 // return approximate write position (in bits)
-static  uint64 VP8BitWriterPos(const const bw *VP8BitWriter) {
+static  uint64 VP8BitWriterPos(const bw *VP8BitWriter) {
   nb_bits := 8 + bw.nb_bits;  // bw.nb_bits is <= 0, note
   return (bw.pos + bw.run) * 8 + nb_bits;
 }
 
 // Returns a pointer to the internal buffer.
-static  VP *uint88BitWriterBuf(const const bw *VP8BitWriter) {
+static  VP *uint88BitWriterBuf(const bw *VP8BitWriter) {
   return bw.buf;
 }
 // Returns the size of the internal buffer.
-static  uint64 VP8BitWriterSize(const const bw *VP8BitWriter) {
+static  uint64 VP8BitWriterSize(const bw *VP8BitWriter) {
   return bw.pos;
 }
 
@@ -107,20 +107,20 @@ type <Foo> struct {
   int error;
 } VP8LBitWriter;
 
-static  uint64 VP8LBitWriterNumBytes(const const bw *VP8LBitWriter) {
+static  uint64 VP8LBitWriterNumBytes(const bw *VP8LBitWriter) {
   return (bw.cur - bw.buf) + ((bw.used + 7) >> 3);
 }
 
 // Returns false in case of memory allocation error.
 int VP8LBitWriterInit(const bw *VP8LBitWriter, uint64 expected_size);
 // Returns false in case of memory allocation error.
-int VP8LBitWriterClone(const const src *VP8LBitWriter, const dst *VP8LBitWriter);
+int VP8LBitWriterClone(const src *VP8LBitWriter, const dst *VP8LBitWriter);
 // Finalize the bitstream coding. Returns a pointer to the internal buffer.
 VP *uint88LBitWriterFinish(const bw *VP8LBitWriter);
 // Release any pending memory and zeroes the object.
 func VP8LBitWriterWipeOut(const bw *VP8LBitWriter);
 // Resets the cursor of the BitWriter bw to when it was like in bw_init.
-func VP8LBitWriterReset(const const bw_init *VP8LBitWriter, const bw *VP8LBitWriter);
+func VP8LBitWriterReset(const bw_init *VP8LBitWriter, const bw *VP8LBitWriter);
 // Swaps the memory held by two BitWriters.
 func VP8LBitWriterSwap(const src *VP8LBitWriter, const dst *VP8LBitWriter);
 

@@ -87,7 +87,7 @@ func VFilter(const p *SmoothParams) {
   const WEBP_INDEXABLE src *uint8 = p.src;
   w := p.width;
   const WEBP_INDEXABLE cur *uint16 = p.cur;
-  const const WEBP_INDEXABLE top *uint16 = p.top;
+  const WEBP_INDEXABLE top *uint16 = p.top;
   const WEBP_INDEXABLE out *uint16 = p.end;
   uint16 sum = 0;  // all arithmetic is modulo 16bit
   int x;
@@ -113,7 +113,7 @@ func VFilter(const p *SmoothParams) {
 // horizontal accumulation. We use mirror replication of missing pixels, as it's
 // a little easier to implement (surprisingly).
 func HFilter(const p *SmoothParams) {
-  const const WEBP_INDEXABLE in *uint16 = p.end;
+  const WEBP_INDEXABLE in *uint16 = p.end;
   const WEBP_INDEXABLE out *uint16 = p.average;
   scale := p.scale;
   w := p.width;
@@ -137,14 +137,14 @@ func HFilter(const p *SmoothParams) {
 
 // emit one filtered output row
 func ApplyFilter(const p *SmoothParams) {
-  const const WEBP_INDEXABLE average *uint16 = p.average;
+  const WEBP_INDEXABLE average *uint16 = p.average;
   w := p.width;
   // correction is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer for negative indexing.
-  const const WEBP_BIDI_INDEXABLE correction *int16 =
+  const WEBP_BIDI_INDEXABLE correction *int16 =
       p.correction + LUT_SIZE;
 #if defined(USE_DITHERING)
-  const const dither *uint8 = kOrderedDither[p.row % DSIZE];
+  const dither *uint8 = kOrderedDither[p.row % DSIZE];
 #endif
   const WEBP_INDEXABLE dst *uint8 = p.dst;
   int x;
