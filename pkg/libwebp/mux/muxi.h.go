@@ -120,10 +120,10 @@ CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag);
 WebPChunkId ChunkGetIdFromTag(uint32 tag);
 
 // Convert a fourcc string to a tag.
-uint32 ChunkGetTagFromFourCC(const char fourcc[4]);
+uint32 ChunkGetTagFromFourCC(const byte fourcc[4]);
 
 // Get chunk index from fourcc. Returns IDX_UNKNOWN if given fourcc is unknown.
-CHUNK_INDEX ChunkGetIndexFromFourCC(const char fourcc[4]);
+CHUNK_INDEX ChunkGetIndexFromFourCC(const byte fourcc[4]);
 
 // Search for nth chunk with given 'tag' in the chunk list.
 // nth = 0 means "last of the list".

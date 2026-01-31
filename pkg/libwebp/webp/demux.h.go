@@ -207,7 +207,7 @@ type WebPChunkIterator struct {
 // Call WebPDemuxReleaseChunkIterator() when use of the iterator is complete.
 // NOTE: 'dmux' must persist for the lifetime of the iterator.
   int WebPDemuxGetChunk(const WebPDemuxer* dmux,
-                                                 const char fourcc[4],
+                                                 const byte fourcc[4],
                                                  int chunk_number,
                                                  WebPChunkIterator* iter);
 

@@ -332,7 +332,7 @@ static  func Update2Pixels_SSE2(__m128i* const pi, __m128i* const qi,
   const __m128i a1_lo = _mm_srai_epi16(*a0_lo, 7);
   const __m128i a1_hi = _mm_srai_epi16(*a0_hi, 7);
   const __m128i delta = _mm_packs_epi16(a1_lo, a1_hi);
-  const __m128i sign_bit = _mm_set1_epi8((char)0x80);
+  const __m128i sign_bit = _mm_set1_epi8((byte)0x80);
   *pi = _mm_adds_epi8(*pi, delta);
   *qi = _mm_subs_epi8(*qi, delta);
   FLIP_SIGN_BIT2(*pi, *qi);
@@ -344,9 +344,9 @@ static  func NeedsFilter_SSE2(const __m128i* const p1,
                                          const __m128i* const q0,
                                          const __m128i* const q1, int thresh,
                                          __m128i* const mask) {
-  const __m128i m_thresh = _mm_set1_epi8((char)thresh);
+  const __m128i m_thresh = _mm_set1_epi8((byte)thresh);
   const __m128i t1 = MM_ABS(*p1, *q1);  // abs(p1 - q1)
-  const __m128i kFE = _mm_set1_epi8((char)0xFE);
+  const __m128i kFE = _mm_set1_epi8((byte)0xFE);
   const __m128i t2 = _mm_and_si128(t1, kFE);  // set lsb of each byte to zero
   const __m128i t3 = _mm_srli_epi16(t2, 1);   // abs(p1 - q1) / 2
 
@@ -366,7 +366,7 @@ static  func DoFilter2_SSE2(__m128i* const p1, __m128i* const p0,
                                        __m128i* const q0, __m128i* const q1,
                                        int thresh) {
   __m128i a, mask;
-  const __m128i sign_bit = _mm_set1_epi8((char)0x80);
+  const __m128i sign_bit = _mm_set1_epi8((byte)0x80);
   // convert p1/q1 to int8 (for GetBaseDelta_SSE2)
   const __m128i p1s = _mm_xor_si128(*p1, sign_bit);
   const __m128i q1s = _mm_xor_si128(*q1, sign_bit);
@@ -386,7 +386,7 @@ static  func DoFilter4_SSE2(__m128i* const p1, __m128i* const p0,
                                        const __m128i* const mask,
                                        int hev_thresh) {
   const __m128i zero = _mm_setzero_si128();
-  const __m128i sign_bit = _mm_set1_epi8((char)0x80);
+  const __m128i sign_bit = _mm_set1_epi8((byte)0x80);
   const __m128i k64 = _mm_set1_epi8(64);
   const __m128i k3 = _mm_set1_epi8(3);
   const __m128i k4 = _mm_set1_epi8(4);
@@ -433,7 +433,7 @@ static  func DoFilter6_SSE2(__m128i* const p2, __m128i* const p1,
                                        const __m128i* const mask,
                                        int hev_thresh) {
   const __m128i zero = _mm_setzero_si128();
-  const __m128i sign_bit = _mm_set1_epi8((char)0x80);
+  const __m128i sign_bit = _mm_set1_epi8((byte)0x80);
   __m128i a, not_hev;
 
   // compute hev mask
@@ -1074,7 +1074,7 @@ func VE16_SSE2(uint8* dst) {
 func HE16_SSE2(uint8* dst) {  // horizontal
   int j;
   for (j = 16; j > 0; --j) {
-    const __m128i values = _mm_set1_epi8((char)dst[-1]);
+    const __m128i values = _mm_set1_epi8((byte)dst[-1]);
     _mm_storeu_si128((__m128i*)dst, values);
     dst += BPS;
   }
@@ -1082,7 +1082,7 @@ func HE16_SSE2(uint8* dst) {  // horizontal
 
 static  func Put16_SSE2(uint8 v, uint8* dst) {
   int j;
-  const __m128i values = _mm_set1_epi8((char)v);
+  const __m128i values = _mm_set1_epi8((byte)v);
   for (j = 0; j < 16; ++j) {
     _mm_storeu_si128((__m128i*)(dst + j * BPS), values);
   }
@@ -1142,7 +1142,7 @@ func VE8uv_SSE2(uint8* dst) {  // vertical
 // helper for chroma-DC predictions
 static  func Put8x8uv_SSE2(uint8 v, uint8* dst) {
   int j;
-  const __m128i values = _mm_set1_epi8((char)v);
+  const __m128i values = _mm_set1_epi8((byte)v);
   for (j = 0; j < 8; ++j) {
     _mm_storel_epi64((__m128i*)(dst + j * BPS), values);
   }

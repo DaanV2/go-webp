@@ -188,7 +188,7 @@ static WebPMuxError MuxDeleteAllNamedData(WebPMux* const mux, uint32 tag) {
 //------------------------------------------------------------------------------
 // Set API(s).
 
-WebPMuxError WebPMuxSetChunk(WebPMux* mux, const char fourcc[4],
+WebPMuxError WebPMuxSetChunk(WebPMux* mux, const byte fourcc[4],
                              const WebPData* chunk_data, int copy_data) {
   uint32 tag;
   WebPMuxError err;
@@ -386,7 +386,7 @@ WebPMuxError WebPMuxSetCanvasSize(WebPMux* mux, int width, int height) {
 //------------------------------------------------------------------------------
 // Delete API(s).
 
-WebPMuxError WebPMuxDeleteChunk(WebPMux* mux, const char fourcc[4]) {
+WebPMuxError WebPMuxDeleteChunk(WebPMux* mux, const byte fourcc[4]) {
   if (mux == nil || fourcc == nil) return WEBP_MUX_INVALID_ARGUMENT;
   return MuxDeleteAllNamedData(mux, ChunkGetTagFromFourCC(fourcc));
 }

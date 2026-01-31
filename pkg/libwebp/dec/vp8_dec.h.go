@@ -147,7 +147,7 @@ VP8Decoder* VP8New(void);
 VP8StatusCode VP8Status(VP8Decoder* const dec);
 
 // return readable string corresponding to the last status.
-const char* VP8StatusMessage(VP8Decoder* const dec);
+const byte* VP8StatusMessage(VP8Decoder* const dec);
 
 // Resets the decoder in its initial state, reclaiming memory.
 // Not a mandatory call between calls to VP8Decode().

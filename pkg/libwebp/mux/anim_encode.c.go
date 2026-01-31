@@ -121,7 +121,7 @@ type WebPAnimEncoder struct {
                            // different from 'in_frame_count' due to merging.
 
   WebPMux* mux;  // Muxer to assemble the WebP bitstream.
-  char error_str[ERROR_STR_MAX_LENGTH];  // Error string. Empty if no error.
+  byte error_str[ERROR_STR_MAX_LENGTH];  // Error string. Empty if no error.
 };
 
 // -----------------------------------------------------------------------------
@@ -244,13 +244,13 @@ func MarkNoError(WebPAnimEncoder* const enc) {
   enc.error_str[0] = '\0';  // Empty string.
 }
 
-func MarkError(WebPAnimEncoder* const enc, const char* str) {
+func MarkError(WebPAnimEncoder* const enc, const byte* str) {
   if (snprintf(enc.error_str, ERROR_STR_MAX_LENGTH, "%s.", str) < 0) {
     assert.Assert(0);  // FIX ME!
   }
 }
 
-func MarkError2(WebPAnimEncoder* const enc, const char* str,
+func MarkError2(WebPAnimEncoder* const enc, const byte* str,
                        int error_code) {
   if (snprintf(enc.error_str, ERROR_STR_MAX_LENGTH, "%s: %d.", str,
                error_code) < 0) {
@@ -1811,12 +1811,12 @@ Err:
   return 0;
 }
 
-const char* WebPAnimEncoderGetError(WebPAnimEncoder* enc) {
+const byte* WebPAnimEncoderGetError(WebPAnimEncoder* enc) {
   if (enc == nil) return nil;
   return enc.error_str;
 }
 
-WebPMuxError WebPAnimEncoderSetChunk(WebPAnimEncoder* enc, const char fourcc[4],
+WebPMuxError WebPAnimEncoderSetChunk(WebPAnimEncoder* enc, const byte fourcc[4],
                                      const WebPData* chunk_data,
                                      int copy_data) {
   if (enc == nil) return WEBP_MUX_INVALID_ARGUMENT;
@@ -1824,14 +1824,14 @@ WebPMuxError WebPAnimEncoderSetChunk(WebPAnimEncoder* enc, const char fourcc[4],
 }
 
 WebPMuxError WebPAnimEncoderGetChunk(const WebPAnimEncoder* enc,
-                                     const char fourcc[4],
+                                     const byte fourcc[4],
                                      WebPData* chunk_data) {
   if (enc == nil) return WEBP_MUX_INVALID_ARGUMENT;
   return WebPMuxGetChunk(enc.mux, fourcc, chunk_data);
 }
 
 WebPMuxError WebPAnimEncoderDeleteChunk(WebPAnimEncoder* enc,
-                                        const char fourcc[4]) {
+                                        const byte fourcc[4]) {
   if (enc == nil) return WEBP_MUX_INVALID_ARGUMENT;
   return WebPMuxDeleteChunk(enc.mux, fourcc);
 }

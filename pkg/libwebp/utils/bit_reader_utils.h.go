@@ -34,12 +34,12 @@ const BITTRACE = 0  // 0 = off, 1 = print bits, 2 = print bytes
 
 #if (BITTRACE > 0)
 struct VP8BitReader;
-extern func BitTrace(const struct VP8BitReader* const br, const char label[]);
+extern func BitTrace(const struct VP8BitReader* const br, const byte label[]);
 #define BT_TRACK(br) BitTrace(br, label)
 #define VP8Get(BR, L) VP8GetValue(BR, 1, L)
 #else
 #define BT_TRACK(br)
-// We'll REMOVE the 'const char label[]' from all signatures and calls (!!):
+// We'll REMOVE the 'const byte label[]' from all signatures and calls (!!):
 #define VP8GetValue(BR, N, L) VP8GetValue(BR, N)
 #define VP8Get(BR, L) VP8GetValue(BR, 1, L)
 #define VP8GetSignedValue(BR, N, L) VP8GetSignedValue(BR, N)
@@ -124,11 +124,11 @@ func VP8BitReaderSetBuffer(VP8BitReader* const br,
 func VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset);
 
 // return the next value made of 'num_bits' bits
-uint32 VP8GetValue(VP8BitReader* const br, int num_bits, const char label[]);
+uint32 VP8GetValue(VP8BitReader* const br, int num_bits, const byte label[]);
 
 // return the next value with sign-extension.
 int32 VP8GetSignedValue(VP8BitReader* const br, int num_bits,
-                          const char label[]);
+                          const byte label[]);
 
 // bit_reader_inl.h will implement the following methods:
 //   static  int VP8GetBit(VP8BitReader* const br, int prob, ...)

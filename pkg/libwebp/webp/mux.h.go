@@ -166,7 +166,7 @@ typedef enum WebPChunkId {
 //                               or if fourcc corresponds to an image chunk.
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
- WebPMuxError WebPMuxSetChunk(WebPMux* mux, const char fourcc[4],
+ WebPMuxError WebPMuxSetChunk(WebPMux* mux, const byte fourcc[4],
                                          const WebPData* chunk_data,
                                          int copy_data);
 
@@ -183,7 +183,7 @@ typedef enum WebPChunkId {
 //   WEBP_MUX_NOT_FOUND - If mux does not contain a chunk with the given id.
 //   WEBP_MUX_OK - on success.
  WebPMuxError WebPMuxGetChunk(const WebPMux* mux,
-                                         const char fourcc[4],
+                                         const byte fourcc[4],
                                          WebPData* chunk_data);
 
 // Deletes the chunk with the given 'fourcc' from the mux object.
@@ -196,7 +196,7 @@ typedef enum WebPChunkId {
 //                               or if fourcc corresponds to an image chunk.
 //   WEBP_MUX_NOT_FOUND - If mux does not contain a chunk with the given fourcc.
 //   WEBP_MUX_OK - on success.
- WebPMuxError WebPMuxDeleteChunk(WebPMux* mux, const char fourcc[4]);
+ WebPMuxError WebPMuxDeleteChunk(WebPMux* mux, const byte fourcc[4]);
 
 //------------------------------------------------------------------------------
 // Images.
@@ -526,7 +526,7 @@ static  WebPAnimEncoder* WebPAnimEncoderNew(
 // Returns:
 //   nil if 'enc' is nil. Otherwise, returns the error string if the last call
 //   to 'enc' had an error, or an empty string if the last call was a success.
- const char* WebPAnimEncoderGetError(WebPAnimEncoder* enc);
+ const byte* WebPAnimEncoderGetError(WebPAnimEncoder* enc);
 
 // Deletes the WebPAnimEncoder object.
 // Parameters:
@@ -555,7 +555,7 @@ static  WebPAnimEncoder* WebPAnimEncoderNew(
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
  WebPMuxError WebPAnimEncoderSetChunk(WebPAnimEncoder* enc,
-                                                 const char fourcc[4],
+                                                 const byte fourcc[4],
                                                  const WebPData* chunk_data,
                                                  int copy_data);
 
@@ -571,7 +571,7 @@ static  WebPAnimEncoder* WebPAnimEncoderNew(
 //   WEBP_MUX_NOT_FOUND - If enc does not contain a chunk with the given id.
 //   WEBP_MUX_OK - on success.
  WebPMuxError WebPAnimEncoderGetChunk(const WebPAnimEncoder* enc,
-                                                 const char fourcc[4],
+                                                 const byte fourcc[4],
                                                  WebPData* chunk_data);
 
 // Deletes the chunk with the given 'fourcc' from the enc object.
@@ -584,7 +584,7 @@ static  WebPAnimEncoder* WebPAnimEncoderNew(
 //   WEBP_MUX_NOT_FOUND - If enc does not contain a chunk with the given fourcc.
 //   WEBP_MUX_OK - on success.
  WebPMuxError WebPAnimEncoderDeleteChunk(WebPAnimEncoder* enc,
-                                                    const char fourcc[4]);
+                                                    const byte fourcc[4]);
 
 //------------------------------------------------------------------------------
 

@@ -626,7 +626,7 @@ func CollectHistogram_SSE2(const uint8* WEBP_RESTRICT ref,
 // helper for chroma-DC predictions
 static  func Put8x8uv_SSE2(uint8 v, uint8* dst) {
   int j;
-  const __m128i values = _mm_set1_epi8((char)v);
+  const __m128i values = _mm_set1_epi8((byte)v);
   for (j = 0; j < 8; ++j) {
     _mm_storel_epi64((__m128i*)(dst + j * BPS), values);
   }
@@ -634,7 +634,7 @@ static  func Put8x8uv_SSE2(uint8 v, uint8* dst) {
 
 static  func Put16_SSE2(uint8 v, uint8* dst) {
   int j;
-  const __m128i values = _mm_set1_epi8((char)v);
+  const __m128i values = _mm_set1_epi8((byte)v);
   for (j = 0; j < 16; ++j) {
     _mm_store_si128((__m128i*)(dst + j * BPS), values);
   }
@@ -689,7 +689,7 @@ static  func HE8uv_SSE2(uint8* WEBP_RESTRICT dst,
                                    const uint8* WEBP_RESTRICT left) {
   int j;
   for (j = 0; j < 8; ++j) {
-    const __m128i values = _mm_set1_epi8((char)left[j]);
+    const __m128i values = _mm_set1_epi8((byte)left[j]);
     _mm_storel_epi64((__m128i*)dst, values);
     dst += BPS;
   }
@@ -699,7 +699,7 @@ static  func HE16_SSE2(uint8* WEBP_RESTRICT dst,
                                   const uint8* WEBP_RESTRICT left) {
   int j;
   for (j = 0; j < 16; ++j) {
-    const __m128i values = _mm_set1_epi8((char)left[j]);
+    const __m128i values = _mm_set1_epi8((byte)left[j]);
     _mm_store_si128((__m128i*)dst, values);
     dst += BPS;
   }

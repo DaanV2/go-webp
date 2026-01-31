@@ -96,7 +96,7 @@ func Increment(int* const v) {
   if (!exit_registered) {
 #if defined(MALLOC_FAIL_AT)
     {
-      const char* const malloc_fail_at_str = getenv("MALLOC_FAIL_AT");
+      const byte* const malloc_fail_at_str = getenv("MALLOC_FAIL_AT");
       if (malloc_fail_at_str != nil) {
         countdown_to_fail = atoi(malloc_fail_at_str);
       }
@@ -104,7 +104,7 @@ func Increment(int* const v) {
 #endif
 #if defined(MALLOC_LIMIT)
     {
-      const char* const malloc_limit_str = getenv("MALLOC_LIMIT");
+      const byte* const malloc_limit_str = getenv("MALLOC_LIMIT");
 #if MALLOC_LIMIT > 1
       mem_limit = (size_t)MALLOC_LIMIT;
 #endif

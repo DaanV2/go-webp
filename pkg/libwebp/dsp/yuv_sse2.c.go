@@ -133,7 +133,7 @@ static  func PackAndStore4444_SSE2(
   const __m128i rg0 = _mm_packus_epi16(*B, *A);
   const __m128i ba0 = _mm_packus_epi16(*R, *G);
 #endif
-  const __m128i mask_0xf0 = _mm_set1_epi8((char)0xf0);
+  const __m128i mask_0xf0 = _mm_set1_epi8((byte)0xf0);
   const __m128i rb1 = _mm_unpacklo_epi8(rg0, ba0);  // rbrbrbrbrb...
   const __m128i ga1 = _mm_unpackhi_epi8(rg0, ba0);  // gagagagaga...
   const __m128i rb2 = _mm_and_si128(rb1, mask_0xf0);
@@ -150,10 +150,10 @@ static  func PackAndStore565_SSE2(const __m128i* const R,
   const __m128i r0 = _mm_packus_epi16(*R, *R);
   const __m128i g0 = _mm_packus_epi16(*G, *G);
   const __m128i b0 = _mm_packus_epi16(*B, *B);
-  const __m128i r1 = _mm_and_si128(r0, _mm_set1_epi8((char)0xf8));
+  const __m128i r1 = _mm_and_si128(r0, _mm_set1_epi8((byte)0xf8));
   const __m128i b1 = _mm_and_si128(_mm_srli_epi16(b0, 3), _mm_set1_epi8(0x1f));
   const __m128i g1 =
-      _mm_srli_epi16(_mm_and_si128(g0, _mm_set1_epi8((char)0xe0)), 5);
+      _mm_srli_epi16(_mm_and_si128(g0, _mm_set1_epi8((byte)0xe0)), 5);
   const __m128i g2 = _mm_slli_epi16(_mm_and_si128(g0, _mm_set1_epi8(0x1c)), 3);
   const __m128i rg = _mm_or_si128(r1, g1);
   const __m128i gb = _mm_or_si128(g2, b1);
@@ -476,7 +476,7 @@ WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersSSE2(){
 #define STORE_16(V, dst) _mm_storeu_si128((__m128i*)(dst), (V))
 
 // Function that inserts a value of the second half of the in buffer in between
-// every two char of the first half.
+// every two byte of the first half.
 static  func RGB24PackedToPlanarHelper_SSE2(
     const __m128i* const in /*in[6]*/, __m128i* const out /*out[6]*/) {
   out[0] = _mm_unpacklo_epi8(in[0], in[3]);

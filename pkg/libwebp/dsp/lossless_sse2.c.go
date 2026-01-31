@@ -573,7 +573,7 @@ func ConvertBGRAToRGBA4444_SSE2(const uint32* WEBP_RESTRICT src,
                                        int num_pixels,
                                        uint8* WEBP_RESTRICT dst) {
   const __m128i mask_0x0f = _mm_set1_epi8(0x0f);
-  const __m128i mask_0xf0 = _mm_set1_epi8((char)0xf0);
+  const __m128i mask_0xf0 = _mm_set1_epi8((byte)0xf0);
   const __m128i* in = (const __m128i*)src;
   __m128i* out = (__m128i*)dst;
   while (num_pixels >= 8) {
@@ -609,8 +609,8 @@ func ConvertBGRAToRGBA4444_SSE2(const uint32* WEBP_RESTRICT src,
 func ConvertBGRAToRGB565_SSE2(const uint32* WEBP_RESTRICT src,
                                      int num_pixels,
                                      uint8* WEBP_RESTRICT dst) {
-  const __m128i mask_0xe0 = _mm_set1_epi8((char)0xe0);
-  const __m128i mask_0xf8 = _mm_set1_epi8((char)0xf8);
+  const __m128i mask_0xe0 = _mm_set1_epi8((byte)0xe0);
+  const __m128i mask_0xf8 = _mm_set1_epi8((byte)0xf8);
   const __m128i mask_0x07 = _mm_set1_epi8(0x07);
   const __m128i* in = (const __m128i*)src;
   __m128i* out = (__m128i*)dst;

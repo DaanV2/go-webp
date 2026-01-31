@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/emmintrin"
 
 #if 0
 import "github.com/daanv2/go-webp/pkg/stdio"
-static  func PrintReg(const __m128i r, const char* const name,
+static  func PrintReg(const __m128i r, const byte* const name,
                                  int size) {
   int n;
   union {
@@ -104,7 +104,7 @@ static  func VP8Transpose_2_4x4_16b(
 // Channel mixing.
 
 // Function used several times in VP8PlanarTo24b.
-// It samples the in buffer as follows: one every two unsigned char is stored
+// It samples the in buffer as follows: one every two unsigned byte is stored
 // at the beginning of the buffer, while the other half is stored at the end.
 #define VP8PlanarTo24bHelper(IN, OUT)                            \
   do {                                                           \

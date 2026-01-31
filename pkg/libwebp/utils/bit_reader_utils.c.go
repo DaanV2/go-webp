@@ -104,7 +104,7 @@ func VP8LoadFinalBytes(VP8BitReader* const br) {
 //------------------------------------------------------------------------------
 // Higher-level calls
 
-uint32 VP8GetValue(VP8BitReader* const br, int bits, const char label[]) {
+uint32 VP8GetValue(VP8BitReader* const br, int bits, const byte label[]) {
   uint32 v = 0;
   while (bits-- > 0) {
     v |= VP8GetBit(br, 0x80, label) << bits;
@@ -113,7 +113,7 @@ uint32 VP8GetValue(VP8BitReader* const br, int bits, const char label[]) {
 }
 
 int32 VP8GetSignedValue(VP8BitReader* const br, int bits,
-                          const char label[]) {
+                          const byte label[]) {
   const int value = VP8GetValue(br, bits, label);
   return VP8Get(br, label) ? -value : value;
 }
@@ -230,7 +230,7 @@ import "github.com/daanv2/go-webp/pkg/string"
 
 const MAX_NUM_LABELS =32
 static struct {
-  const char* label;
+  const byte* label;
   int size;
   int count;
 } kLabels[MAX_NUM_LABELS];
@@ -244,7 +244,7 @@ func PrintBitTraces(){
   int i;
   int scale = 1;
   int total = 0;
-  const char* units = "bits";
+  const byte* units = "bits";
 #if (BITTRACE == 2)
   scale = 8;
   units = "bytes";
@@ -264,7 +264,7 @@ func PrintBitTraces(){
   printf("Total: %d %s\n", total, units);
 }
 
-func BitTrace(const type VP8BitReader* const br, const char label[]) struct {
+func BitTrace(const type VP8BitReader* const br, const byte label[]) struct {
   int i, pos;
   if (!init_done) {
     WEBP_UNSAFE_MEMSET(kLabels, 0, sizeof(kLabels));

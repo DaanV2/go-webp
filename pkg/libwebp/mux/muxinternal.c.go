@@ -86,11 +86,11 @@ WebPChunkId ChunkGetIdFromTag(uint32 tag) {
   return WEBP_CHUNK_UNKNOWN;
 }
 
-uint32 ChunkGetTagFromFourCC(const char fourcc[4]) {
+uint32 ChunkGetTagFromFourCC(const byte fourcc[4]) {
   return MKFOURCC(fourcc[0], fourcc[1], fourcc[2], fourcc[3]);
 }
 
-CHUNK_INDEX ChunkGetIndexFromFourCC(const char fourcc[4]) {
+CHUNK_INDEX ChunkGetIndexFromFourCC(const byte fourcc[4]) {
   const uint32 tag = ChunkGetTagFromFourCC(fourcc);
   return ChunkGetIndexFromTag(tag);
 }

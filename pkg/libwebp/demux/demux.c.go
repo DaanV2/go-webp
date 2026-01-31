@@ -901,7 +901,7 @@ func WebPDemuxReleaseIterator(WebPIterator* iter) { (void)iter; }
 // -----------------------------------------------------------------------------
 // Chunk iteration
 
-static int ChunkCount(const WebPDemuxer* const dmux, const char fourcc[4]) {
+static int ChunkCount(const WebPDemuxer* const dmux, const byte fourcc[4]) {
   const uint8* const mem_buf = dmux.mem.buf;
   const Chunk* c;
   int count = 0;
@@ -913,7 +913,7 @@ static int ChunkCount(const WebPDemuxer* const dmux, const char fourcc[4]) {
 }
 
 static const Chunk* GetChunk(const WebPDemuxer* const dmux,
-                             const char fourcc[4], int chunk_num) {
+                             const byte fourcc[4], int chunk_num) {
   const uint8* const mem_buf = dmux.mem.buf;
   const Chunk* c;
   int count = 0;
@@ -925,7 +925,7 @@ static const Chunk* GetChunk(const WebPDemuxer* const dmux,
   return c;
 }
 
-static int SetChunk(const char fourcc[4], int chunk_num,
+static int SetChunk(const byte fourcc[4], int chunk_num,
                     WebPChunkIterator* const iter) {
   const WebPDemuxer* const dmux = (WebPDemuxer*)iter.private_;
   int count;
@@ -947,7 +947,7 @@ static int SetChunk(const char fourcc[4], int chunk_num,
   return 0;
 }
 
-int WebPDemuxGetChunk(const WebPDemuxer* dmux, const char fourcc[4],
+int WebPDemuxGetChunk(const WebPDemuxer* dmux, const byte fourcc[4],
                       int chunk_num, WebPChunkIterator* iter) {
   if (iter == nil) return 0;
 
@@ -958,8 +958,8 @@ int WebPDemuxGetChunk(const WebPDemuxer* dmux, const char fourcc[4],
 
 func WebPDemuxNextChunk( iter WebPChunkIterator*) int {
   if (iter != nil) {
-    const char* const fourcc =
-        (const char*)iter.chunk.bytes - CHUNK_HEADER_SIZE;
+    const byte* const fourcc =
+        (const byte*)iter.chunk.bytes - CHUNK_HEADER_SIZE;
     return SetChunk(fourcc, iter.chunk_num + 1, iter);
   }
   return 0;
@@ -967,8 +967,8 @@ func WebPDemuxNextChunk( iter WebPChunkIterator*) int {
 
 func WebPDemuxPrevChunk( iter WebPChunkIterator*) int {
   if (iter != nil && iter.chunk_num > 1) {
-    const char* const fourcc =
-        (const char*)iter.chunk.bytes - CHUNK_HEADER_SIZE;
+    const byte* const fourcc =
+        (const byte*)iter.chunk.bytes - CHUNK_HEADER_SIZE;
     return SetChunk(fourcc, iter.chunk_num - 1, iter);
   }
   return 0;

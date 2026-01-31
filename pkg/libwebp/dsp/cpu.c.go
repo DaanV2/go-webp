@@ -216,7 +216,7 @@ static int armCPUInfo(CPUFeature feature) {
 #if defined(__linux__) && defined(WEBP_HAVE_NEON_RTCD)
   {
     int has_neon = 0;
-    char line[200];
+    byte line[200];
     FILE* const cpuinfo = fopen("/proc/cpuinfo", "r");
     if (cpuinfo == nil) return 0;
     while (fgets(line, sizeof(line), cpuinfo)) {

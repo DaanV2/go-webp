@@ -32,7 +32,7 @@ static int DispatchAlpha_SSE2(const uint8* WEBP_RESTRICT alpha,
   int i, j;
   const __m128i zero = _mm_setzero_si128();
   const __m128i alpha_mask = _mm_set1_epi32((int)0xff);  // to preserve A
-  const __m128i all_0xff = _mm_set1_epi8((char)0xff);
+  const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
   __m128i all_alphas16 = all_0xff;
   __m128i all_alphas8 = all_0xff;
 
@@ -40,7 +40,7 @@ static int DispatchAlpha_SSE2(const uint8* WEBP_RESTRICT alpha,
   // 'dst[4 * width - 4]', because we don't know if alpha is the first or the
   // last byte of the quadruplet.
   for (j = 0; j < height; ++j) {
-    char* ptr = (char*)dst;
+    byte* ptr = (byte*)dst;
     for (i = 0; i + 16 <= width - 1; i += 16) {
       // load 16 alpha bytes
       const __m128i a0 = _mm_loadu_si128((const __m128i*)&alpha[i]);
@@ -268,7 +268,7 @@ func ApplyAlphaMultiply_SSE2(uint8* rgba, int alpha_first, int w,
 // Alpha detection
 
 static int HasAlpha8b_SSE2(const uint8* src, int length) {
-  const __m128i all_0xff = _mm_set1_epi8((char)0xff);
+  const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
   int i = 0;
   for (; i + 16 <= length; i += 16) {
     const __m128i v = _mm_loadu_si128((const __m128i*)(src + i));
@@ -284,7 +284,7 @@ static int HasAlpha8b_SSE2(const uint8* src, int length) {
 
 static int HasAlpha32b_SSE2(const uint8* src, int length) {
   const __m128i alpha_mask = _mm_set1_epi32(0xff);
-  const __m128i all_0xff = _mm_set1_epi8((char)0xff);
+  const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
   int i = 0;
   // We don't know if we can access the last 3 bytes after the last alpha
   // value 'src[4 * length - 4]' (because we don't know if alpha is the first

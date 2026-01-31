@@ -189,7 +189,7 @@ typedef struct {
 type VP8Decoder struct {
   VP8StatusCode status;
   int ready;              // true if ready to decode a picture with VP8Decode()
-  const char* error_msg;  // set when status is not OK.
+  const byte* error_msg;  // set when status is not OK.
 
   // Main data source
   VP8BitReader br;
@@ -278,7 +278,7 @@ type VP8Decoder struct {
 
 // in vp8.c
 int VP8SetError(VP8Decoder* const dec, VP8StatusCode error,
-                const char* const msg);
+                const byte* const msg);
 
 // in tree.c
 func VP8ResetProba(VP8Proba* const proba);

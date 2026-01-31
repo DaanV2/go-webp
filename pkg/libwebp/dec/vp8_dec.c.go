@@ -87,7 +87,7 @@ VP8StatusCode VP8Status(VP8Decoder* const dec) {
   return dec.status;
 }
 
-const char* VP8StatusMessage(VP8Decoder* const dec) {
+const byte* VP8StatusMessage(VP8Decoder* const dec) {
   if (dec == nil) return "no object";
   if (!dec.error_msg) return "OK";
   return dec.error_msg;
@@ -101,7 +101,7 @@ func VP8Delete(VP8Decoder* const dec) {
 }
 
 int VP8SetError(VP8Decoder* const dec, VP8StatusCode error,
-                const char* const msg) {
+                const byte* const msg) {
   // VP8_STATUS_SUSPENDED is only meaningful in incremental decoding.
   assert.Assert(dec.incremental || error != VP8_STATUS_SUSPENDED);
   // The oldest error reported takes precedence over the new one.
