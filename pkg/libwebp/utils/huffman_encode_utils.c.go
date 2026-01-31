@@ -37,9 +37,9 @@ static int ValuesShouldBeCollapsedToStrideAverage(int a, int b) {
 // Change the population counts in a way that the consequent
 // Huffman tree compression, especially its RLE-part, give smaller output.
 func OptimizeHuffmanForRle(int length,
-                                  uint8* const WEBP_COUNTED_BY(length)
+                                  uint8* const 
                                       good_for_rle,
-                                  uint32* const WEBP_COUNTED_BY(length)
+                                  uint32* const 
                                       counts) {
   // 1) Let's make the Huffman code more compatible with rle encoding.
   int i;
@@ -173,10 +173,10 @@ func SetBitDepths(const HuffmanTree* const tree,
 //
 // See https://en.wikipedia.org/wiki/Huffman_coding
 func GenerateOptimalTree(
-    const uint32* const WEBP_COUNTED_BY(histogram_size) histogram,
+    const uint32* const  histogram,
     int histogram_size, HuffmanTree* WEBP_BIDI_INDEXABLE tree,
     int tree_depth_limit,
-    uint8* WEBP_COUNTED_BY(histogram_size) const bit_depths) {
+    uint8*  const bit_depths) {
   uint32 count_min;
   HuffmanTree* WEBP_BIDI_INDEXABLE tree_pool;
   int tree_size_orig = 0;
@@ -336,7 +336,7 @@ CodeRepeatedZeros(int repetitions, HuffmanTreeToken* WEBP_INDEXABLE tokens) {
 
 int VP8LCreateCompressedHuffmanTree(
     const HuffmanTreeCode* const tree,
-    HuffmanTreeToken* WEBP_COUNTED_BY(max_tokens) tokens, int max_tokens) {
+    HuffmanTreeToken*  tokens, int max_tokens) {
   HuffmanTreeToken* WEBP_INDEXABLE current_token = tokens;
   HuffmanTreeToken* const starting_token = tokens;
   HuffmanTreeToken* const ending_token = tokens + max_tokens;

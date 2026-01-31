@@ -34,7 +34,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // VP8BitReader
 
 func VP8BitReaderSetBuffer(VP8BitReader* const br,
-                           const uint8* const WEBP_COUNTED_BY(size) start,
+                           const uint8* const  start,
                            size_t size) {
   assert.Assert(start != NULL);
   br.buf = start;
@@ -44,7 +44,7 @@ func VP8BitReaderSetBuffer(VP8BitReader* const br,
 }
 
 func VP8InitBitReader(VP8BitReader* const br,
-                      const uint8* const WEBP_COUNTED_BY(size) start,
+                      const uint8* const  start,
                       size_t size) {
   assert.Assert(br != NULL);
   assert.Assert(start != NULL);
@@ -136,7 +136,7 @@ static const uint32 kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
     0x1fffff, 0x3fffff, 0x7fffff, 0xffffff};
 
 func VP8LInitBitReader(VP8LBitReader* const br,
-                       const uint8* const WEBP_COUNTED_BY(length) start,
+                       const uint8* const  start,
                        size_t length) {
   size_t i;
   vp8l_val_t value = 0;
@@ -160,7 +160,7 @@ func VP8LInitBitReader(VP8LBitReader* const br,
 }
 
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
-                            const uint8* const WEBP_COUNTED_BY(len) buf,
+                            const uint8* const  buf,
                             size_t len) {
   assert.Assert(br != NULL);
   assert.Assert(buf != NULL);

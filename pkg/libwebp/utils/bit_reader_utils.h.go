@@ -112,11 +112,11 @@ type VP8BitReader struct {
 
 // Initialize the bit reader and the boolean decoder.
 func VP8InitBitReader(VP8BitReader* const br,
-                      const uint8* const WEBP_COUNTED_BY(size) start,
+                      const uint8* const  start,
                       size_t size);
 // Sets the working read buffer.
 func VP8BitReaderSetBuffer(VP8BitReader* const br,
-                           const uint8* const WEBP_COUNTED_BY(size) start,
+                           const uint8* const  start,
                            size_t size);
 
 // Update internal pointers to displace the byte buffer by the
@@ -150,7 +150,7 @@ typedef uint64 vp8l_val_t;  // right now, this bit-reader can only use 64bit.
 
 typedef struct {
   vp8l_val_t val;                           // pre-fetched bits
-  const uint8* WEBP_COUNTED_BY(len) buf;  // input byte buffer
+  const uint8*  buf;  // input byte buffer
   size_t len;                               // buffer length
   size_t pos;                               // byte position in buf
   int bit_pos;  // current bit-reading position in val
@@ -158,12 +158,12 @@ typedef struct {
 } VP8LBitReader;
 
 func VP8LInitBitReader(VP8LBitReader* const br,
-                       const uint8* const WEBP_COUNTED_BY(length) start,
+                       const uint8* const  start,
                        size_t length);
 
 //  Sets a new data buffer.
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
-                            const uint8* const WEBP_COUNTED_BY(length) buffer,
+                            const uint8* const  buffer,
                             size_t length);
 
 // Reads the specified number of bits from read buffer.

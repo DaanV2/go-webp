@@ -67,7 +67,7 @@ static  func SwapColor(uint32* const col1, uint32* const col2) {
   *col2 = tmp;
 }
 
-int SearchColorNoIdx(const uint32 WEBP_COUNTED_BY(num_colors) sorted[],
+int SearchColorNoIdx(const uint32  sorted[],
                      uint32 color, int num_colors) {
   int low = 0, hi = num_colors;
   if (sorted[low] == color) return low;  // loop invariant: sorted[low] != color
@@ -85,10 +85,10 @@ int SearchColorNoIdx(const uint32 WEBP_COUNTED_BY(num_colors) sorted[],
   return 0;
 }
 
-func PrepareMapToPalette(const uint32 WEBP_COUNTED_BY(num_colors) palette[],
+func PrepareMapToPalette(const uint32  palette[],
                          uint32 num_colors,
-                         uint32 WEBP_COUNTED_BY(num_colors) sorted[],
-                         uint32 WEBP_COUNTED_BY(num_colors) idx_map[]) {
+                         uint32  sorted[],
+                         uint32  idx_map[]) {
   uint32 i;
   memcpy(sorted, palette, num_colors * sizeof(*sorted));
   qsort(sorted, num_colors, sizeof(*sorted), PaletteCompareColorsForQsort);
@@ -171,7 +171,7 @@ int GetColorPalette(const WebPPicture* const pic,
 // would be spotted in green-only situations (like lossy alpha) or gray-scale
 // images.
 static int PaletteHasNonMonotonousDeltas(
-    const uint32* const WEBP_COUNTED_BY(num_colors) palette, int num_colors) {
+    const uint32* const  palette, int num_colors) {
   uint32 predict = 0x000000;
   int i;
   uint8 sign_found = 0x00;
@@ -195,8 +195,8 @@ static int PaletteHasNonMonotonousDeltas(
 }
 
 func PaletteSortMinimizeDeltas(
-    const uint32* const WEBP_COUNTED_BY(num_colors) palette_sorted,
-    int num_colors, uint32* const WEBP_COUNTED_BY(num_colors) palette) {
+    const uint32* const  palette_sorted,
+    int num_colors, uint32* const  palette) {
   uint32 predict = 0x00000000;
   int i, k;
   memcpy(palette, palette_sorted, num_colors * sizeof(*palette));
@@ -261,7 +261,7 @@ func CoOccurrenceFindMax(
 
 // Builds the cooccurrence matrix
 static int CoOccurrenceBuild(const WebPPicture* const pic,
-                             const uint32* const WEBP_COUNTED_BY(num_colors)
+                             const uint32* const 
                                  palette,
                              uint32 num_colors,
                              uint32* WEBP_COUNTED_BY(num_colors* num_colors)
@@ -317,8 +317,8 @@ type Sum struct {
 
 static int PaletteSortModifiedZeng(
     const WebPPicture* const pic,
-    const uint32* const WEBP_COUNTED_BY(num_colors) palette_in,
-    uint32 num_colors, uint32* const WEBP_COUNTED_BY(num_colors) palette) {
+    const uint32* const  palette_in,
+    uint32 num_colors, uint32* const  palette) {
   uint32 i, j, ind;
   uint8 remapping[MAX_PALETTE_SIZE];
   uint32* cooccurrence;
@@ -408,10 +408,10 @@ static int PaletteSortModifiedZeng(
 // -----------------------------------------------------------------------------
 
 int PaletteSort(PaletteSorting method, const struct WebPPicture* const pic,
-                const uint32* const WEBP_COUNTED_BY(num_colors)
+                const uint32* const 
                     palette_sorted,
                 uint32 num_colors,
-                uint32* const WEBP_COUNTED_BY(num_colors) palette) {
+                uint32* const  palette) {
   switch (method) {
     case kSortedDefault:
       if (palette_sorted[0] == 0 && num_colors > 17) {

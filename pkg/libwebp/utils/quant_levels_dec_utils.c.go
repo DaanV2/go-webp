@@ -65,7 +65,7 @@ typedef struct {
   uint16* WEBP_INDEXABLE cur;
   uint16* WEBP_BIDI_INDEXABLE end;
   uint16* WEBP_INDEXABLE top;
-  uint16* WEBP_COUNTED_BY(width) average;
+  uint16*  average;
 
   // input levels distribution
   int num_levels;      // number of quantized levels
@@ -168,7 +168,7 @@ func ApplyFilter(SmoothParams* const p) {
 // Initialize correction table
 
 func InitCorrectionLUT(
-    int16* const WEBP_COUNTED_BY(CORRECTION_LUT_SIZE) lut_ptr, int min_dist) {
+    int16* const  lut_ptr, int min_dist) {
   // The correction curve is:
   //   f(x) = x for x <= threshold2
   //   f(x) = 0 for x >= threshold1
@@ -263,7 +263,7 @@ static int InitParams(uint8* WEBP_SIZED_BY((size_t)stride* height) const data,
   // analyze the input distribution so we can best-fit the threshold
   CountLevels(p);
 
-  // correction table. p.correction is WEBP_COUNTED_BY(CORRECTION_LUT_SIZE).
+  // correction table. p.correction is .
   // It points to the start of the buffer.
   p.correction = ((int16*)mem);
   InitCorrectionLUT(p.correction, p.min_level_dist);

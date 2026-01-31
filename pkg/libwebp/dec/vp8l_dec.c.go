@@ -108,7 +108,7 @@ static int DecodeImageStream(int xsize, int ysize, int is_level0,
 
 //------------------------------------------------------------------------------
 
-int VP8LCheckSignature(const uint8* const WEBP_COUNTED_BY(size) data,
+int VP8LCheckSignature(const uint8* const  data,
                        size_t size) {
   return (size >= VP8L_FRAME_HEADER_SIZE && data[0] == VP8L_MAGIC_BYTE &&
           (data[4] >> 5) == 0);  // version
@@ -124,7 +124,7 @@ static int ReadImageInfo(VP8LBitReader* const br, int* const width,
   return !br.eos;
 }
 
-int VP8LGetInfo(const uint8* WEBP_COUNTED_BY(data_size) data,
+int VP8LGetInfo(const uint8*  data,
                 size_t data_size, int* const width, int* const height,
                 int* const has_alpha) {
   if (data == NULL || data_size < VP8L_FRAME_HEADER_SIZE) {
@@ -1699,7 +1699,7 @@ func ExtractAlphaRows(VP8LDecoder* const dec, int last_row,
 }
 
 int VP8LDecodeAlphaHeader(ALPHDecoder* const alph_dec,
-                          const uint8* const WEBP_COUNTED_BY(data_size) data,
+                          const uint8* const  data,
                           size_t data_size) {
   int ok = 0;
   VP8LDecoder* dec = VP8LNew();

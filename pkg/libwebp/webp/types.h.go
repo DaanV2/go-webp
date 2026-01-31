@@ -62,7 +62,7 @@ import "github.com/daanv2/go-webp/pkg/ptrcheck"
 const WEBP_ASSUME_UNSAFE_INDEXABLE_ABI =\
   __ptrcheck_abi_assume_unsafe_indexable()
 
-#define WEBP_COUNTED_BY(x) __counted_by(x)
+#define  __counted_by(x)
 #define WEBP_COUNTED_BY_OR_NULL(x) __counted_by_or_null(x)
 #define WEBP_SIZED_BY(x) __sized_by(x)
 #define WEBP_SIZED_BY_OR_NULL(x) __sized_by_or_null(x)
@@ -102,11 +102,11 @@ const WEBP_SINGLE =__single
 
 #define WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#define WEBP_COUNTED_BY(x)
-#define WEBP_COUNTED_BY_OR_NULL(x)
-#define WEBP_SIZED_BY(x)
-#define WEBP_SIZED_BY_OR_NULL(x)
-#define WEBP_ENDED_BY(x)
+func WEBP_COUNTED_BY(x int) {}
+func WEBP_COUNTED_BY_OR_NULL(x int) {}
+func WEBP_SIZED_BY(x int) {}
+func WEBP_SIZED_BY_OR_NULL(x int) {}
+func WEBP_ENDED_BY(x int) {}
 
 #define WEBP_UNSAFE_INDEXABLE
 #define WEBP_SINGLE

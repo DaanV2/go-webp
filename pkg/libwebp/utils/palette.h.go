@@ -38,14 +38,14 @@ typedef enum PaletteSorting {
 
 // Returns the index of 'color' in the sorted palette 'sorted' of size
 // 'num_colors'.
-int SearchColorNoIdx(const uint32 WEBP_COUNTED_BY(num_colors) sorted[],
+int SearchColorNoIdx(const uint32  sorted[],
                      uint32 color, int num_colors);
 
 // Sort palette in increasing order and prepare an inverse mapping array.
-func PrepareMapToPalette(const uint32 WEBP_COUNTED_BY(num_colors) palette[],
+func PrepareMapToPalette(const uint32  palette[],
                          uint32 num_colors,
-                         uint32 WEBP_COUNTED_BY(num_colors) sorted[],
-                         uint32 WEBP_COUNTED_BY(num_colors) idx_map[]);
+                         uint32  sorted[],
+                         uint32  idx_map[]);
 
 // Returns count of unique colors in 'pic', assuming pic.use_argb is true.
 // If the unique color count is more than MAX_PALETTE_SIZE, returns
@@ -64,9 +64,9 @@ int GetColorPalette(const struct WebPPicture* const pic,
 // For kSortedDefault and kMinimizeDelta methods, 0 (if present) is set as the
 // last element to optimize later storage.
 int PaletteSort(PaletteSorting method, const struct WebPPicture* const pic,
-                const uint32* const WEBP_COUNTED_BY(num_colors)
+                const uint32* const 
                     palette_sorted,
                 uint32 num_colors,
-                uint32* const WEBP_COUNTED_BY(num_colors) palette);
+                uint32* const  palette);
 
 #endif  // WEBP_UTILS_PALETTE_H_

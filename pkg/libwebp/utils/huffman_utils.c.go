@@ -235,7 +235,7 @@ const MAX_CODE_LENGTHS_SIZE =\
 // Cut-off value for switching between heap and stack allocation.
 const SORTED_SIZE_CUTOFF =512
 int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
-                          const int WEBP_COUNTED_BY(code_lengths_size)
+                          const int 
                               code_lengths[],
                           int code_lengths_size) {
   const int total_size =

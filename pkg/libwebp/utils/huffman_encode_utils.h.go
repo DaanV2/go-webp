@@ -33,9 +33,9 @@ typedef struct {
 typedef struct {
   int num_symbols;  // Number of symbols.
   // Code lengths of the symbols.
-  uint8* WEBP_COUNTED_BY(num_symbols) code_lengths;
+  uint8*  code_lengths;
   // Symbol Codes.
-  uint16* WEBP_COUNTED_BY(num_symbols) codes;
+  uint16*  codes;
 } HuffmanTreeCode;
 
 // Struct to represent the Huffman tree.
@@ -50,7 +50,7 @@ typedef struct {
 // Returns the number of tokens used.
 int VP8LCreateCompressedHuffmanTree(
     const HuffmanTreeCode* const tree,
-    HuffmanTreeToken* WEBP_COUNTED_BY(max_tokens) tokens, int max_tokens);
+    HuffmanTreeToken*  tokens, int max_tokens);
 
 // Create an optimized tree, and tokenize it.
 // 'buf_rle' and 'huff_tree' are pre-allocated and the 'tree' is the constructed

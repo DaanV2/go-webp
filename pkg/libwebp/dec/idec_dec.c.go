@@ -690,7 +690,7 @@ WebPIDecoder* WebPINewDecoder(WebPDecBuffer* output_buffer) {
   return NewDecoder(output_buffer, NULL);
 }
 
-WebPIDecoder* WebPIDecode(const uint8* WEBP_COUNTED_BY(data_size) data,
+WebPIDecoder* WebPIDecode(const uint8*  data,
                           size_t data_size, WebPDecoderConfig* config) {
   WebPIDecoder* idec;
   WebPBitstreamFeatures tmp_features;
@@ -741,7 +741,7 @@ func WebPIDelete(WebPIDecoder* idec) {
 // Wrapper toward WebPINewDecoder
 
 WebPIDecoder* WebPINewRGB(WEBP_CSP_MODE csp,
-                          uint8* WEBP_COUNTED_BY(output_buffer_size)
+                          uint8* 
                               output_buffer,
                           size_t output_buffer_size, int output_stride) {
   const int is_external_memory = (output_buffer != NULL) ? 1 : 0;
@@ -767,12 +767,12 @@ WebPIDecoder* WebPINewRGB(WEBP_CSP_MODE csp,
   return idec;
 }
 
-WebPIDecoder* WebPINewYUVA(uint8* WEBP_COUNTED_BY(luma_size) luma,
+WebPIDecoder* WebPINewYUVA(uint8*  luma,
                            size_t luma_size, int luma_stride,
-                           uint8* WEBP_COUNTED_BY(u_size) u, size_t u_size,
-                           int u_stride, uint8* WEBP_COUNTED_BY(v_size) v,
+                           uint8*  u, size_t u_size,
+                           int u_stride, uint8*  v,
                            size_t v_size, int v_stride,
-                           uint8* WEBP_COUNTED_BY(a_size) a, size_t a_size,
+                           uint8*  a, size_t a_size,
                            int a_stride) {
   const int is_external_memory = (luma != NULL) ? 1 : 0;
   WebPIDecoder* idec;
@@ -819,10 +819,10 @@ WebPIDecoder* WebPINewYUVA(uint8* WEBP_COUNTED_BY(luma_size) luma,
   return idec;
 }
 
-WebPIDecoder* WebPINewYUV(uint8* WEBP_COUNTED_BY(luma_size) luma,
+WebPIDecoder* WebPINewYUV(uint8*  luma,
                           size_t luma_size, int luma_stride,
-                          uint8* WEBP_COUNTED_BY(u_size) u, size_t u_size,
-                          int u_stride, uint8* WEBP_COUNTED_BY(v_size) v,
+                          uint8*  u, size_t u_size,
+                          int u_stride, uint8*  v,
                           size_t v_size, int v_stride) {
   return WebPINewYUVA(luma, luma_size, luma_stride, u, u_size, u_stride, v,
                       v_size, v_stride, NULL, 0, 0);
@@ -842,7 +842,7 @@ static VP8StatusCode IDecCheckStatus(const WebPIDecoder* const idec) {
 }
 
 VP8StatusCode WebPIAppend(WebPIDecoder* idec,
-                          const uint8* WEBP_COUNTED_BY(data_size) data,
+                          const uint8*  data,
                           size_t data_size) {
   VP8StatusCode status;
   if (idec == NULL || data == NULL) {
@@ -864,7 +864,7 @@ VP8StatusCode WebPIAppend(WebPIDecoder* idec,
 }
 
 VP8StatusCode WebPIUpdate(WebPIDecoder* idec,
-                          const uint8* WEBP_COUNTED_BY(data_size) data,
+                          const uint8*  data,
                           size_t data_size) {
   VP8StatusCode status;
   if (idec == NULL || data == NULL) {
