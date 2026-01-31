@@ -24,8 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 //------------------------------------------------------------------------------
 // Row import
 
-func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
-                                   const uint8* WEBP_RESTRICT src) {
+func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk, const uint8* WEBP_RESTRICT src) {
   const int x_stride = wrk.num_channels;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const int fx_scale = wrk.fx_scale;
@@ -71,20 +70,14 @@ func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
         "sw     %[temp3],   0(%[frow])                \n\t"
         "addu   %[frow],    %[frow],    %[x_stride1]  \n\t"
         "bgtz   %[loop_c],  1b                        \n\t"
-        : [accum] "=&r"(accum), [src1] "+r"(src1), [temp3] "=&r"(temp3),
-          [sum] "=&r"(sum), [base] "=&r"(base), [frac] "=&r"(frac),
-          [frow] "+r"(frow), [accum1] "=&r"(accum1), [temp2] "=&r"(temp2),
-          [temp1] "=&r"(temp1)
-        : [x_stride] "r"(x_stride), [fx_scale] "r"(fx_scale),
-          [x_sub] "r"(x_sub), [x_add] "r"(x_add), [loop_c] "r"(loop_c),
-          [x_stride1] "r"(x_stride1)
+        : [accum] "=&r"(accum), [src1] "+r"(src1), [temp3] "=&r"(temp3), [sum] "=&r"(sum), [base] "=&r"(base), [frac] "=&r"(frac), [frow] "+r"(frow), [accum1] "=&r"(accum1), [temp2] "=&r"(temp2), [temp1] "=&r"(temp1)
+        : [x_stride] "r"(x_stride), [fx_scale] "r"(fx_scale), [x_sub] "r"(x_sub), [x_add] "r"(x_add), [loop_c] "r"(loop_c), [x_stride1] "r"(x_stride1)
         : "memory", "hi", "lo");
     assert.Assert(accum == 0);
   }
 }
 
-func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
-                                   const uint8* WEBP_RESTRICT src) {
+func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk, const uint8* WEBP_RESTRICT src) {
   const int x_stride = wrk.num_channels;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const int x_add = wrk.x_add;
@@ -133,12 +126,8 @@ func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
         "4:                                               \n\t"
         "b      1b                                      \n\t"
         "2:                                               \n\t"
-        : [src1] "+r"(src1), [accum] "=&r"(accum), [temp1] "=&r"(temp1),
-          [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4),
-          [x_out] "+r"(x_out), [frac] "=&r"(frac), [frow] "+r"(frow)
-        : [x_stride] "r"(x_stride), [x_add] "r"(x_add), [x_sub] "r"(x_sub),
-          [x_stride1] "r"(x_stride1), [src_width] "r"(src_width),
-          [x_out_max] "r"(x_out_max)
+        : [src1] "+r"(src1), [accum] "=&r"(accum), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [x_out] "+r"(x_out), [frac] "=&r"(frac), [frow] "+r"(frow)
+        : [x_stride] "r"(x_stride), [x_add] "r"(x_add), [x_sub] "r"(x_sub), [x_stride1] "r"(x_stride1), [src_width] "r"(src_width), [x_out_max] "r"(x_out_max)
         : "memory", "hi", "lo");
     assert.Assert(wrk.x_sub == 0 /* <- special case for src_width=1 */ || accum == 0);
   }
@@ -173,9 +162,7 @@ func ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
         "mfhi     %[temp5]                                \n\t"
         "sb       %[temp5],    -1(%[dst])                 \n\t"
         "bne      %[frow],     %[loop_end], 1b            \n\t"
-        : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp3] "=&r"(temp3),
-          [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [frow] "+r"(frow),
-          [dst] "+r"(dst), [loop_end] "=&r"(loop_end)
+        : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [frow] "+r"(frow), [dst] "+r"(dst), [loop_end] "=&r"(loop_end)
         : [temp2] "r"(temp2), [temp6] "r"(temp6)
         : "memory", "hi", "lo");
   } else {
@@ -200,9 +187,7 @@ func ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
         "mfhi     %[temp5]                                \n\t"
         "sb       %[temp5],    -1(%[dst])                 \n\t"
         "bne      %[frow],     %[loop_end], 1b            \n\t"
-        : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp3] "=&r"(temp3),
-          [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [frow] "+r"(frow),
-          [irow] "+r"(irow), [dst] "+r"(dst), [loop_end] "=&r"(loop_end)
+        : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [frow] "+r"(frow), [irow] "+r"(irow), [dst] "+r"(dst), [loop_end] "=&r"(loop_end)
         : [temp2] "r"(temp2), [temp6] "r"(temp6), [A] "r"(A), [B] "r"(B)
         : "memory", "hi", "lo");
   }
@@ -244,9 +229,7 @@ func ExportRowShrink_MIPS32(WebPRescaler* const wrk) {
       "sw       %[temp1],    -4(%[irow])                \n\t"
       "sb       %[temp5],    -1(%[dst])                 \n\t"
       "bne      %[frow],     %[loop_end], 1b            \n\t"
-      : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp3]"=&r"(temp3),
-        [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [frow]"+r"(frow),
-        [irow]"+r"(irow), [dst]"+r"(dst), [loop_end]"=&r"(loop_end)
+      : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [frow]"+r"(frow), [irow]"+r"(irow), [dst]"+r"(dst), [loop_end]"=&r"(loop_end)
       : [temp2]"r"(temp2), [yscale]"r"(yscale), [temp6]"r"(temp6)
       : "memory", "hi", "lo"
     );
@@ -265,9 +248,7 @@ func ExportRowShrink_MIPS32(WebPRescaler* const wrk) {
       "sw       $zero,       -4(%[irow])                \n\t"
       "sb       %[temp5],    -1(%[dst])                 \n\t"
       "bne      %[irow],     %[loop_end], 1b            \n\t"
-      : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp3]"=&r"(temp3),
-        [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [irow]"+r"(irow),
-        [dst]"+r"(dst), [loop_end]"=&r"(loop_end)
+      : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [irow]"+r"(irow), [dst]"+r"(dst), [loop_end]"=&r"(loop_end)
       : [temp2]"r"(temp2), [temp6]"r"(temp6)
       : "memory", "hi", "lo"
     );

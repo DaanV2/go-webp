@@ -113,9 +113,7 @@ static const int kC2 = WEBP_TRANSFORM_AC3_C2;
 // clang-format on
 
 // Does one or two inverse transforms.
-static  func ITransformOne_MIPS32(const uint8* WEBP_RESTRICT ref,
-                                             const int16* WEBP_RESTRICT in,
-                                             uint8* WEBP_RESTRICT dst) {
+static  func ITransformOne_MIPS32(const uint8* WEBP_RESTRICT ref, const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   int temp7, temp8, temp9, temp10, temp11, temp12, temp13;
   int temp14, temp15, temp16, temp17, temp18, temp19, temp20;
@@ -133,20 +131,12 @@ static  func ITransformOne_MIPS32(const uint8* WEBP_RESTRICT ref,
       HORIZONTAL_PASS(2, temp2, temp6, temp10, temp14)  //
       HORIZONTAL_PASS(3, temp3, temp7, temp11, temp15)  //
 
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8),
-        [temp9] "=&r"(temp9), [temp10] "=&r"(temp10), [temp11] "=&r"(temp11),
-        [temp12] "=&r"(temp12), [temp13] "=&r"(temp13), [temp14] "=&r"(temp14),
-        [temp15] "=&r"(temp15), [temp16] "=&r"(temp16), [temp17] "=&r"(temp17),
-        [temp18] "=&r"(temp18), [temp19] "=&r"(temp19), [temp20] "=&r"(temp20)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8), [temp9] "=&r"(temp9), [temp10] "=&r"(temp10), [temp11] "=&r"(temp11), [temp12] "=&r"(temp12), [temp13] "=&r"(temp13), [temp14] "=&r"(temp14), [temp15] "=&r"(temp15), [temp16] "=&r"(temp16), [temp17] "=&r"(temp17), [temp18] "=&r"(temp18), [temp19] "=&r"(temp19), [temp20] "=&r"(temp20)
       : [args] "r"(args), [kC1] "r"(kC1), [kC2] "r"(kC2)
       : "memory", "hi", "lo");
 }
 
-func ITransform_MIPS32(const uint8* WEBP_RESTRICT ref,
-                              const int16* WEBP_RESTRICT in,
-                              uint8* WEBP_RESTRICT dst, int do_two) {
+func ITransform_MIPS32(const uint8* WEBP_RESTRICT ref, const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst, int do_two) {
   ITransformOne_MIPS32(ref, in, dst);
   if (do_two) {
     ITransformOne_MIPS32(ref + 4, in + 16, dst + 4);
@@ -190,8 +180,7 @@ func ITransform_MIPS32(const uint8* WEBP_RESTRICT ref,
   "sh           %[level],       " #N "(%[pout])                     \n\t"
 // clang-format on
 
-static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16],
-                                const VP8Matrix* const mtx) {
+static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], const VP8Matrix* const mtx) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   int sign, coeff, level, i;
   int max_level = MAX_LEVEL;
@@ -222,12 +211,8 @@ static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16],
       QUANTIZE_ONE(28, 56, 28)  //
       QUANTIZE_ONE(30, 60, 30)  //
 
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [sign] "=&r"(sign), [coeff] "=&r"(coeff), [level] "=&r"(level)
-      : [pout] "r"(pout), [ppin] "r"(ppin), [ppiq] "r"(ppiq),
-        [max_level] "r"(max_level), [ppbias] "r"(ppbias),
-        [ppzthresh] "r"(ppzthresh), [ppsharpen] "r"(ppsharpen), [ppq] "r"(ppq)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [sign] "=&r"(sign), [coeff] "=&r"(coeff), [level] "=&r"(level)
+      : [pout] "r"(pout), [ppin] "r"(ppin), [ppiq] "r"(ppiq), [max_level] "r"(max_level), [ppbias] "r"(ppbias), [ppzthresh] "r"(ppzthresh), [ppsharpen] "r"(ppsharpen), [ppq] "r"(ppq)
       : "memory", "hi", "lo");
 
   // moved out from macro to increase possibility for earlier breaking
@@ -237,8 +222,7 @@ static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16],
   return 0;
 }
 
-static int Quantize2Blocks_MIPS32(int16 in[32], int16 out[32],
-                                  const VP8Matrix* WEBP_RESTRICT const mtx) {
+static int Quantize2Blocks_MIPS32(int16 in[32], int16 out[32], const VP8Matrix* WEBP_RESTRICT const mtx) {
   int nz;
   nz = QuantizeBlock_MIPS32(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_MIPS32(in + 1 * 16, out + 1 * 16, mtx) << 1;
@@ -362,9 +346,7 @@ static int Quantize2Blocks_MIPS32(int16 in[32], int16 out[32],
   "msub   %[temp7],  %[temp1]                \n\t"
 // clang-format on
 
-static int Disto4x4_MIPS32(const uint8* WEBP_RESTRICT const a,
-                           const uint8* WEBP_RESTRICT const b,
-                           const uint16* WEBP_RESTRICT const w) {
+static int Disto4x4_MIPS32(const uint8* WEBP_RESTRICT const a, const uint8* WEBP_RESTRICT const b, const uint16* WEBP_RESTRICT const w) {
   int tmp[32];
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
 
@@ -385,9 +367,7 @@ static int Disto4x4_MIPS32(const uint8* WEBP_RESTRICT const a,
       "subu   %[temp0],  %[temp0],  %[temp1]    \n\t"
       "sra    %[temp0],  %[temp0],  5           \n\t"
 
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8)
       : [a] "r"(a), [b] "r"(b), [w] "r"(w), [tmp] "r"(tmp)
       : "memory", "hi", "lo");
 
@@ -397,9 +377,7 @@ static int Disto4x4_MIPS32(const uint8* WEBP_RESTRICT const a,
 #undef VERTICAL_PASS
 #undef HORIZONTAL_PASS
 
-static int Disto16x16_MIPS32(const uint8* WEBP_RESTRICT const a,
-                             const uint8* WEBP_RESTRICT const b,
-                             const uint16* WEBP_RESTRICT const w) {
+static int Disto16x16_MIPS32(const uint8* WEBP_RESTRICT const a, const uint8* WEBP_RESTRICT const b, const uint16* WEBP_RESTRICT const w) {
   int D = 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
@@ -482,16 +460,13 @@ static int Disto16x16_MIPS32(const uint8* WEBP_RESTRICT const a,
   "sh     %[" #TEMP12 "], " #B "(%[temp20])              \n\t"
 // clang-format on
 
-func FTransform_MIPS32(const uint8* WEBP_RESTRICT src,
-                              const uint8* WEBP_RESTRICT ref,
-                              int16* WEBP_RESTRICT out) {
+func FTransform_MIPS32(const uint8* WEBP_RESTRICT src, const uint8* WEBP_RESTRICT ref, int16* WEBP_RESTRICT out) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   int temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16;
   int temp17, temp18, temp19, temp20;
   const int c2217 = 2217;
   const int c5352 = 5352;
-  const int* const args[3] = {(const int*)src, (const int*)ref,
-                              (const int*)out};
+  const int* const args[3] = {(const int*)src, (const int*)ref, (const int*)out};
 
   __asm__ volatile(
     HORIZONTAL_PASS(0, temp0,  temp1,  temp2,  temp3)
@@ -504,13 +479,7 @@ func FTransform_MIPS32(const uint8* WEBP_RESTRICT src,
     VERTICAL_PASS(4, 12, 20, 28, temp2, temp6, temp10, temp14)
     VERTICAL_PASS(6, 14, 22, 30, temp3, temp7, temp11, temp15)
 
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [temp9]"=&r"(temp9), [temp10]"=&r"(temp10), [temp11]"=&r"(temp11),
-      [temp12]"=&r"(temp12), [temp13]"=&r"(temp13), [temp14]"=&r"(temp14),
-      [temp15]"=&r"(temp15), [temp16]"=&r"(temp16), [temp17]"=&r"(temp17),
-      [temp18]"=&r"(temp18), [temp19]"=&r"(temp19), [temp20]"=&r"(temp20)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9), [temp10]"=&r"(temp10), [temp11]"=&r"(temp11), [temp12]"=&r"(temp12), [temp13]"=&r"(temp13), [temp14]"=&r"(temp14), [temp15]"=&r"(temp15), [temp16]"=&r"(temp16), [temp17]"=&r"(temp17), [temp18]"=&r"(temp18), [temp19]"=&r"(temp19), [temp20]"=&r"(temp20)
     : [args]"r"(args), [c2217]"r"(c2217), [c5352]"r"(c5352)
     : "memory", "hi", "lo"
   );
@@ -547,8 +516,7 @@ func FTransform_MIPS32(const uint8* WEBP_RESTRICT src,
   GET_SSE_INNER(C, C + 1, C + 2, C + 3) \
   GET_SSE_INNER(D, D + 1, D + 2, D + 3)
 
-static int SSE16x16_MIPS32(const uint8* WEBP_RESTRICT a,
-                           const uint8* WEBP_RESTRICT b) {
+static int SSE16x16_MIPS32(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT b) {
   int count;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
@@ -573,16 +541,13 @@ static int SSE16x16_MIPS32(const uint8* WEBP_RESTRICT a,
       GET_SSE(15 * BPS, 4 + 15 * BPS, 8 + 15 * BPS, 12 + 15 * BPS)  //
 
       "mflo    %[count]                                  \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [count] "=&r"(count)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [count] "=&r"(count)
       : [a] "r"(a), [b] "r"(b)
       : "memory", "hi", "lo");
   return count;
 }
 
-static int SSE16x8_MIPS32(const uint8* WEBP_RESTRICT a,
-                          const uint8* WEBP_RESTRICT b) {
+static int SSE16x8_MIPS32(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT b) {
   int count;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
@@ -599,16 +564,13 @@ static int SSE16x8_MIPS32(const uint8* WEBP_RESTRICT a,
       GET_SSE(7 * BPS, 4 + 7 * BPS, 8 + 7 * BPS, 12 + 7 * BPS)  //
 
       "mflo    %[count]                                  \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [count] "=&r"(count)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [count] "=&r"(count)
       : [a] "r"(a), [b] "r"(b)
       : "memory", "hi", "lo");
   return count;
 }
 
-static int SSE8x8_MIPS32(const uint8* WEBP_RESTRICT a,
-                         const uint8* WEBP_RESTRICT b) {
+static int SSE8x8_MIPS32(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT b) {
   int count;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
@@ -621,16 +583,13 @@ static int SSE8x8_MIPS32(const uint8* WEBP_RESTRICT a,
       GET_SSE(6 * BPS, 4 + 6 * BPS, 7 * BPS, 4 + 7 * BPS)  //
 
       "mflo    %[count]                                  \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [count] "=&r"(count)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [count] "=&r"(count)
       : [a] "r"(a), [b] "r"(b)
       : "memory", "hi", "lo");
   return count;
 }
 
-static int SSE4x4_MIPS32(const uint8* WEBP_RESTRICT a,
-                         const uint8* WEBP_RESTRICT b) {
+static int SSE4x4_MIPS32(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT b) {
   int count;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
@@ -640,9 +599,7 @@ static int SSE4x4_MIPS32(const uint8* WEBP_RESTRICT a,
       GET_SSE(0 * BPS, 1 * BPS, 2 * BPS, 3 * BPS)  //
 
       "mflo    %[count]                                  \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [count] "=&r"(count)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [count] "=&r"(count)
       : [a] "r"(a), [b] "r"(b)
       : "memory", "hi", "lo");
   return count;

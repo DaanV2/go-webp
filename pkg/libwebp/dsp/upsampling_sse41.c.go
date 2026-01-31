@@ -101,9 +101,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample32Pixels_SSE41(const uint8* WEBP_RESTRICT const r1,
-                                   const uint8* WEBP_RESTRICT const r2,
-                                   uint8* WEBP_RESTRICT const out) {
+func Upsample32Pixels_SSE41(const uint8* WEBP_RESTRICT const r1, const uint8* WEBP_RESTRICT const r2, uint8* WEBP_RESTRICT const out) {
   UPSAMPLE_32PIXELS(r1, r2, out);
 }
 

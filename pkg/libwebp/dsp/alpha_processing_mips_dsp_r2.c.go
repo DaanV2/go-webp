@@ -18,9 +18,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-static int DispatchAlpha_MIPSdspR2(const uint8* alpha, int alpha_stride,
-                                   int width, int height, uint8* dst,
-                                   int dst_stride) {
+static int DispatchAlpha_MIPSdspR2(const uint8* alpha, int alpha_stride, int width, int height, uint8* dst, int dst_stride) {
   uint32 alpha_mask = 0xffffffff;
   int i, j, temp0;
 
@@ -42,9 +40,7 @@ static int DispatchAlpha_MIPSdspR2(const uint8* alpha, int alpha_stride,
           "sb     %[temp1],      -12(%[pdst])                \n\t"
           "sb     %[temp2],      -8(%[pdst])                 \n\t"
           "sb     %[temp3],      -4(%[pdst])                 \n\t"
-          : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-            [temp3] "=&r"(temp3), [palpha] "+r"(palpha), [pdst] "+r"(pdst),
-            [alpha_mask] "+r"(alpha_mask)
+          : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [palpha] "+r"(palpha), [pdst] "+r"(pdst), [alpha_mask] "+r"(alpha_mask)
           :
           : "memory");
     }
@@ -56,8 +52,7 @@ static int DispatchAlpha_MIPSdspR2(const uint8* alpha, int alpha_stride,
           "sb     %[temp0],      0(%[pdst])                  \n\t"
           "and    %[alpha_mask], %[alpha_mask], %[temp0]     \n\t"
           "addiu  %[pdst],       %[pdst],       4            \n\t"
-          : [temp0] "=&r"(temp0), [palpha] "+r"(palpha), [pdst] "+r"(pdst),
-            [alpha_mask] "+r"(alpha_mask)
+          : [temp0] "=&r"(temp0), [palpha] "+r"(palpha), [pdst] "+r"(pdst), [alpha_mask] "+r"(alpha_mask)
           :
           : "memory");
     }
@@ -110,11 +105,8 @@ func MultARGBRow_MIPSdspR2(uint32* const ptr, int width, int inverse) {
             "addu         %[temp1],   %[temp1],      %[c_8000080]      \n\t"
             "precrq.ph.w  %[temp3],   %[argb],       %[temp3]          \n\t"
             "precrq.qb.ph %[temp1],   %[temp3],      %[temp1]          \n\t"
-            : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-              [temp3] "=&r"(temp3), [alpha] "=&r"(alpha)
-            : [inverse] "r"(inverse), [c_00ffffff] "r"(c_00ffffff),
-              [c_8000000] "r"(c_8000000), [c_8000080] "r"(c_8000080),
-              [c_ff000000] "r"(c_ff000000), [argb] "r"(argb)
+            : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [alpha] "=&r"(alpha)
+            : [inverse] "r"(inverse), [c_00ffffff] "r"(c_00ffffff), [c_8000000] "r"(c_8000000), [c_8000080] "r"(c_8000080), [c_ff000000] "r"(c_ff000000), [argb] "r"(argb)
             : "memory", "hi", "lo");
         ptr[x] = temp1;
       }
@@ -123,9 +115,7 @@ func MultARGBRow_MIPSdspR2(uint32* const ptr, int width, int inverse) {
 }
 
 #ifdef WORDS_BIGENDIAN
-func PackARGB_MIPSdspR2(const uint8* a, const uint8* r,
-                               const uint8* g, const uint8* b, int len,
-                               uint32* out) {
+func PackARGB_MIPSdspR2(const uint8* a, const uint8* r, const uint8* g, const uint8* b, int len, uint32* out) {
   int temp0, temp1, temp2, temp3, offset;
   const int rest = len & 1;
   const uint32* const loop_end = out + len - rest;
@@ -156,17 +146,13 @@ func PackARGB_MIPSdspR2(const uint8* a, const uint8* r,
       "precr.qb.ph  %[temp0],    %[temp1],  %[temp3]     \n\t"
       "sw           %[temp0],    0(%[out])               \n\t"
       "1:                                                  \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [offset] "=&r"(offset), [out] "+&r"(out)
-      : [a] "r"(a), [r] "r"(r), [g] "r"(g), [b] "r"(b), [step] "r"(step),
-        [loop_end] "r"(loop_end), [rest] "r"(rest)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [offset] "=&r"(offset), [out] "+&r"(out)
+      : [a] "r"(a), [r] "r"(r), [g] "r"(g), [b] "r"(b), [step] "r"(step), [loop_end] "r"(loop_end), [rest] "r"(rest)
       : "memory");
 }
 #endif  // WORDS_BIGENDIAN
 
-func PackRGB_MIPSdspR2(const uint8* r, const uint8* g,
-                              const uint8* b, int len, int step,
-                              uint32* out) {
+func PackRGB_MIPSdspR2(const uint8* r, const uint8* g, const uint8* b, int len, int step, uint32* out) {
   int temp0, temp1, temp2, offset;
   const int rest = len & 1;
   const int a = 0xff;
@@ -195,10 +181,8 @@ func PackRGB_MIPSdspR2(const uint8* r, const uint8* g,
       "precr.qb.ph  %[temp0],    %[temp0],  %[temp2]     \n\t"
       "sw           %[temp0],    0(%[out])               \n\t"
       "1:                                                  \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [offset] "=&r"(offset), [out] "+&r"(out)
-      : [a] "r"(a), [r] "r"(r), [g] "r"(g), [b] "r"(b), [step] "r"(step),
-        [loop_end] "r"(loop_end), [rest] "r"(rest)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [offset] "=&r"(offset), [out] "+&r"(out)
+      : [a] "r"(a), [r] "r"(r), [g] "r"(g), [b] "r"(b), [step] "r"(step), [loop_end] "r"(loop_end), [rest] "r"(rest)
       : "memory");
 }
 

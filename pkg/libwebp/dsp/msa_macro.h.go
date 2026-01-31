@@ -1359,8 +1359,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
   } while (0)
 
 /* Description : Transpose 16x4 block into 4x16 with byte elements in vectors
- * Arguments   : Inputs  - in0, in1, in2, in3, in4, in5, in6, in7,
- *                         in8, in9, in10, in11, in12, in13, in14, in15
+ * Arguments   : Inputs  - in0, in1, in2, in3, in4, in5, in6, in7, *                         in8, in9, in10, in11, in12, in13, in14, in15
  *               Outputs - out0, out1, out2, out3
  *               Return Type - unsigned byte
  */
@@ -1382,8 +1381,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
   } while (0)
 
 /* Description : Transpose 16x8 block into 8x16 with byte elements in vectors
- * Arguments   : Inputs  - in0, in1, in2, in3, in4, in5, in6, in7,
- *                         in8, in9, in10, in11, in12, in13, in14, in15
+ * Arguments   : Inputs  - in0, in1, in2, in3, in4, in5, in6, in7, *                         in8, in9, in10, in11, in12, in13, in14, in15
  *               Outputs - out0, out1, out2, out3, out4, out5, out6, out7
  *               Return Type - unsigned byte
  */
@@ -1464,8 +1462,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
   } while (0)
 
 /* Description : average with rounding (in0 + in1 + 1) / 2.
- * Arguments   : Inputs  - in0, in1, in2, in3,
- *               Outputs - out0, out1
+ * Arguments   : Inputs  - in0, in1, in2, in3, *               Outputs - out0, out1
  *               Return Type - as per RTYPE
  * Details     : Each unsigned byte element from 'in0' vector is added with
  *               each unsigned byte element from 'in1' vector. Then the average

@@ -111,13 +111,9 @@ type VP8BitReader struct {
 };
 
 // Initialize the bit reader and the boolean decoder.
-func VP8InitBitReader(VP8BitReader* const br,
-                      const uint8* const  start,
-                      uint64 size);
+func VP8InitBitReader(VP8BitReader* const br, const uint8* const  start, uint64 size);
 // Sets the working read buffer.
-func VP8BitReaderSetBuffer(VP8BitReader* const br,
-                           const uint8* const  start,
-                           uint64 size);
+func VP8BitReaderSetBuffer(VP8BitReader* const br, const uint8* const  start, uint64 size);
 
 // Update internal pointers to displace the byte buffer by the
 // relative offset 'offset'.
@@ -127,8 +123,7 @@ func VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset);
 uint32 VP8GetValue(VP8BitReader* const br, int num_bits, const byte label[]);
 
 // return the next value with sign-extension.
-int32 VP8GetSignedValue(VP8BitReader* const br, int num_bits,
-                          const byte label[]);
+int32 VP8GetSignedValue(VP8BitReader* const br, int num_bits, const byte label[]);
 
 // bit_reader_inl.h will implement the following methods:
 //   static  int VP8GetBit(VP8BitReader* const br, int prob, ...)
@@ -157,14 +152,10 @@ type <Foo> struct {
   int eos;      // true if a bit was read past the end of buffer
 } VP8LBitReader;
 
-func VP8LInitBitReader(VP8LBitReader* const br,
-                       const uint8* const  start,
-                       uint64 length);
+func VP8LInitBitReader(VP8LBitReader* const br, const uint8* const  start, uint64 length);
 
 //  Sets a new data buffer.
-func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
-                            const uint8* const  buffer,
-                            uint64 length);
+func VP8LBitReaderSetBuffer(VP8LBitReader* const br, const uint8* const  buffer, uint64 length);
 
 // Reads the specified number of bits from read buffer.
 // Flags an error in case end_of_stream or n_bits is more than the allowed limit

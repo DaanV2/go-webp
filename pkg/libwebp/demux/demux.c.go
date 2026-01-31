@@ -96,10 +96,7 @@ static int IsValidSimpleFormat(const WebPDemuxer* const dmux);
 static int IsValidExtendedFormat(const WebPDemuxer* const dmux);
 
 static const ChunkParser kMasterChunks[] = {
-    {{'V', 'P', '8', ' '}, ParseSingleImage, IsValidSimpleFormat},
-    {{'V', 'P', '8', 'L'}, ParseSingleImage, IsValidSimpleFormat},
-    {{'V', 'P', '8', 'X'}, ParseVP8X, IsValidExtendedFormat},
-    {{'0', '0', '0', '0'}, nil, nil},
+    {{'V', 'P', '8', ' '}, ParseSingleImage, IsValidSimpleFormat}, {{'V', 'P', '8', 'L'}, ParseSingleImage, IsValidSimpleFormat}, {{'V', 'P', '8', 'X'}, ParseVP8X, IsValidExtendedFormat}, {{'0', '0', '0', '0'}, nil, nil},
 };
 
 //------------------------------------------------------------------------------
@@ -111,8 +108,7 @@ func WebPGetDemuxVersion() int {
 // -----------------------------------------------------------------------------
 // MemBuffer
 
-func RemapMemBuffer(MemBuffer* const mem, const uint8* data,
-                          uint64 size) int {
+func RemapMemBuffer(MemBuffer* const mem, const uint8* data, uint64 size) int {
   if (size < mem.buf_size) return 0;  // can't remap to a shorter buffer!
 
   mem.buf = data;
@@ -120,8 +116,7 @@ func RemapMemBuffer(MemBuffer* const mem, const uint8* data,
   return 1;
 }
 
-static int InitMemBuffer(MemBuffer* const mem, const uint8* data,
-                         uint64 size) {
+static int InitMemBuffer(MemBuffer* const mem, const uint8* data, uint64 size) {
   WEBP_UNSAFE_MEMSET(mem, 0, sizeof(*mem));
   return RemapMemBuffer(mem, data, size);
 }
@@ -197,10 +192,7 @@ static int AddFrame(WebPDemuxer* const dmux, Frame* const frame) {
   return 1;
 }
 
-func SetFrameInfo(uint64 start_offset, uint64 size, int frame_num,
-                         int complete,
-                         const WebPBitstreamFeatures* const features,
-                         Frame* const frame) {
+func SetFrameInfo(uint64 start_offset, uint64 size, int frame_num, int complete, const WebPBitstreamFeatures* const features, Frame* const frame) {
   frame.img_components[0].offset = start_offset;
   frame.img_components[0].size = size;
   frame.width = features.width;
@@ -212,8 +204,7 @@ func SetFrameInfo(uint64 start_offset, uint64 size, int frame_num,
 
 // Store image bearing chunks to 'frame'. 'min_size' is an optional size
 // requirement, it may be zero.
-static ParseStatus StoreFrame(int frame_num, uint32 min_size,
-                              MemBuffer* const mem, Frame* const frame) {
+static ParseStatus StoreFrame(int frame_num, uint32 min_size, MemBuffer* const mem, Frame* const frame) {
   int alpha_chunks = 0;
   int image_chunks = 0;
   int done =
@@ -271,8 +262,7 @@ static ParseStatus StoreFrame(int frame_num, uint32 min_size,
             return PARSE_ERROR;
           }
           ++image_chunks;
-          SetFrameInfo(chunk_start_offset, chunk_size, frame_num,
-                       status == PARSE_OK, &features, frame);
+          SetFrameInfo(chunk_start_offset, chunk_size, frame_num, status == PARSE_OK, &features, frame);
           Skip(mem, payload_available);
         } else {
           goto Done;
@@ -300,8 +290,7 @@ static ParseStatus StoreFrame(int frame_num, uint32 min_size,
 // enough data ('min_size') to parse the payload.
 // Returns PARSE_OK on success with *frame pointing to the new Frame.
 // Returns PARSE_NEED_MORE_DATA with insufficient data, PARSE_ERROR otherwise.
-static ParseStatus NewFrame(const MemBuffer* const mem, uint32 min_size,
-                            uint32 actual_size, Frame** frame) {
+static ParseStatus NewFrame(const MemBuffer* const mem, uint32 min_size, uint32 actual_size, Frame** frame) {
   if (SizeIsInvalid(mem, min_size)) return PARSE_ERROR;
   if (actual_size < min_size) return PARSE_ERROR;
   if (MemDataSize(mem) < min_size) return PARSE_NEED_MORE_DATA;
@@ -312,8 +301,7 @@ static ParseStatus NewFrame(const MemBuffer* const mem, uint32 min_size,
 
 // Parse a 'ANMF' chunk and any image bearing chunks that immediately follow.
 // 'frame_chunk_size' is the previously validated, padded chunk size.
-static ParseStatus ParseAnimationFrame(WebPDemuxer* const dmux,
-                                       uint32 frame_chunk_size) {
+static ParseStatus ParseAnimationFrame(WebPDemuxer* const dmux, uint32 frame_chunk_size) {
   const int is_animation = !!(dmux.feature_flags & ANIMATION_FLAG);
   const uint32 anmf_payload_size = frame_chunk_size - ANMF_CHUNK_SIZE;
   int added_frame = 0;
@@ -362,8 +350,7 @@ static ParseStatus ParseAnimationFrame(WebPDemuxer* const dmux,
 // the user to request the payload via a fourcc string. 'size' includes the
 // header and the unpadded payload size.
 // Returns true on success, false otherwise.
-static int StoreChunk(WebPDemuxer* const dmux, uint64 start_offset,
-                      uint32 size) {
+static int StoreChunk(WebPDemuxer* const dmux, uint64 start_offset, uint32 size) {
   Chunk* const chunk = (Chunk*)WebPSafeCalloc(1ULL, sizeof(*chunk));
   if (chunk == nil) return 0;
 
@@ -518,8 +505,7 @@ static ParseStatus ParseVP8XChunks(WebPDemuxer* const dmux) {
           if (store_chunk) {
             // Store only the chunk header and unpadded size as only the payload
             // will be returned to the user.
-            if (!StoreChunk(dmux, chunk_start_offset,
-                            CHUNK_HEADER_SIZE + chunk_size)) {
+            if (!StoreChunk(dmux, chunk_start_offset, CHUNK_HEADER_SIZE + chunk_size)) {
               return PARSE_ERROR;
             }
           }
@@ -587,8 +573,7 @@ static int IsValidSimpleFormat(const WebPDemuxer* const dmux) {
 
 // If 'exact' is true, check that the image resolution matches the canvas.
 // If 'exact' is false, check that the x/y offsets do not exceed the canvas.
-static int CheckFrameBounds(const Frame* const frame, int exact,
-                            int canvas_width, int canvas_height) {
+static int CheckFrameBounds(const Frame* const frame, int exact, int canvas_width, int canvas_height) {
   if (exact) {
     if (frame.x_offset != 0 || frame.y_offset != 0) {
       return 0;
@@ -647,8 +632,7 @@ static int IsValidExtendedFormat(const WebPDemuxer* const dmux) {
       }
 
       if (f.width > 0 && f.height > 0 &&
-          !CheckFrameBounds(f, !is_animation, dmux.canvas_width,
-                            dmux.canvas_height)) {
+          !CheckFrameBounds(f, !is_animation, dmux.canvas_width, dmux.canvas_height)) {
         return 0;
       }
     }
@@ -670,8 +654,7 @@ func InitDemux(WebPDemuxer* const dmux, const MemBuffer* const mem) {
   dmux.mem = *mem;
 }
 
-static ParseStatus CreateRawImageDemuxer(MemBuffer* const mem,
-                                         WebPDemuxer** demuxer) {
+static ParseStatus CreateRawImageDemuxer(MemBuffer* const mem, WebPDemuxer** demuxer) {
   WebPBitstreamFeatures features;
   const VP8StatusCode status =
       WebPGetFeatures(mem.buf, mem.buf_size, &features);
@@ -686,8 +669,7 @@ static ParseStatus CreateRawImageDemuxer(MemBuffer* const mem,
     Frame* const frame = (Frame*)WebPSafeCalloc(1ULL, sizeof(*frame));
     if (dmux == nil || frame == nil) goto Error;
     InitDemux(dmux, mem);
-    SetFrameInfo(0, mem.buf_size, 1 /*frame_num*/, 1 /*complete*/, &features,
-                 frame);
+    SetFrameInfo(0, mem.buf_size, 1 /*frame_num*/, 1 /*complete*/, &features, frame);
     if (!AddFrame(dmux, frame)) goto Error;
     dmux.state = WEBP_DEMUX_DONE;
     dmux.canvas_width = frame.width;
@@ -705,8 +687,7 @@ static ParseStatus CreateRawImageDemuxer(MemBuffer* const mem,
   }
 }
 
-WebPDemuxer* WebPDemuxInternal(const WebPData* data, int allow_partial,
-                               WebPDemuxState* state, int version) {
+WebPDemuxer* WebPDemuxInternal(const WebPData* data, int allow_partial, WebPDemuxState* state, int version) {
   const ChunkParser* parser;
   int partial;
   ParseStatus status = PARSE_ERROR;
@@ -815,9 +796,7 @@ static const Frame* GetFrame(const WebPDemuxer* const dmux, int frame_num) {
   return f;
 }
 
-static const uint8* GetFramePayload(const uint8* const mem_buf,
-                                      const Frame* const frame,
-                                      uint64* const data_size) {
+static const uint8* GetFramePayload(const uint8* const mem_buf, const Frame* const frame, uint64* const data_size) {
   *data_size = 0;
   if (frame != nil) {
     const ChunkData* const image = frame.img_components;
@@ -840,8 +819,7 @@ static const uint8* GetFramePayload(const uint8* const mem_buf,
 }
 
 // Create a whole 'frame' from VP8 (+ alpha) or lossless.
-static int SynthesizeFrame(const WebPDemuxer* const dmux,
-                           const Frame* const frame, WebPIterator* const iter) {
+static int SynthesizeFrame(const WebPDemuxer* const dmux, const Frame* const frame, WebPIterator* const iter) {
   const uint8* const mem_buf = dmux.mem.buf;
   uint64 payload_size = 0;
   const uint8* const payload = GetFramePayload(mem_buf, frame, &payload_size);
@@ -912,8 +890,7 @@ static int ChunkCount(const WebPDemuxer* const dmux, const byte fourcc[4]) {
   return count;
 }
 
-static const Chunk* GetChunk(const WebPDemuxer* const dmux,
-                             const byte fourcc[4], int chunk_num) {
+static const Chunk* GetChunk(const WebPDemuxer* const dmux, const byte fourcc[4], int chunk_num) {
   const uint8* const mem_buf = dmux.mem.buf;
   const Chunk* c;
   int count = 0;
@@ -925,8 +902,7 @@ static const Chunk* GetChunk(const WebPDemuxer* const dmux,
   return c;
 }
 
-static int SetChunk(const byte fourcc[4], int chunk_num,
-                    WebPChunkIterator* const iter) {
+static int SetChunk(const byte fourcc[4], int chunk_num, WebPChunkIterator* const iter) {
   const WebPDemuxer* const dmux = (WebPDemuxer*)iter.private_;
   int count;
 
@@ -947,8 +923,7 @@ static int SetChunk(const byte fourcc[4], int chunk_num,
   return 0;
 }
 
-int WebPDemuxGetChunk(const WebPDemuxer* dmux, const byte fourcc[4],
-                      int chunk_num, WebPChunkIterator* iter) {
+int WebPDemuxGetChunk(const WebPDemuxer* dmux, const byte fourcc[4], int chunk_num, WebPChunkIterator* iter) {
   if (iter == nil) return 0;
 
   WEBP_UNSAFE_MEMSET(iter, 0, sizeof(*iter));

@@ -26,8 +26,7 @@ package webp
   WebPIterator iter;
   if (WebPDemuxGetFrame(demux, 1, &iter)) {
     do {
-      // ... (Consume 'iter'; e.g. Decode 'iter.fragment' with WebPDecode(),
-      // ... and get other frame properties like width, height, offsets etc.
+      // ... (Consume 'iter'; e.g. Decode 'iter.fragment' with WebPDecode(), // ... and get other frame properties like width, height, offsets etc.
       // ... see 'struct WebPIterator' below for more info).
     } while (WebPDemuxNextFrame(&iter));
     WebPDemuxReleaseIterator(&iter);
@@ -82,14 +81,12 @@ typedef struct WebPAnimDecoderOptions WebPAnimDecoderOptions;
 typedef enum WebPDemuxState {
   WEBP_DEMUX_PARSE_ERROR = -1,    // An error occurred while parsing.
   WEBP_DEMUX_PARSING_HEADER = 0,  // Not enough data to parse full header.
-  WEBP_DEMUX_PARSED_HEADER = 1,   // Header parsing complete,
-                                  // data may be available.
+  WEBP_DEMUX_PARSED_HEADER = 1,   // Header parsing complete, // data may be available.
   WEBP_DEMUX_DONE = 2             // Entire file has been parsed.
 } WebPDemuxState;
 
 // Internal, version-checked, entry point
-  WebPDemuxer* WebPDemuxInternal(const WebPData*, int,
-                                                          WebPDemuxState*, int);
+  WebPDemuxer* WebPDemuxInternal(const WebPData*, int, WebPDemuxState*, int);
 
 // Parses the full WebP file given by 'data'. For single images the WebP file
 // header alone or the file header and the chunk header may be absent.
@@ -120,9 +117,7 @@ typedef enum WebPDemuxState {
 typedef enum WebPFormatFeature {
   WEBP_FF_FORMAT_FLAGS,  // bit-wise combination of WebPFeatureFlags
                          // corresponding to the 'VP8X' chunk (if present).
-  WEBP_FF_CANVAS_WIDTH,
-  WEBP_FF_CANVAS_HEIGHT,
-  WEBP_FF_LOOP_COUNT,        // only relevant for animated file
+  WEBP_FF_CANVAS_WIDTH, WEBP_FF_CANVAS_HEIGHT, WEBP_FF_LOOP_COUNT,        // only relevant for animated file
   WEBP_FF_BACKGROUND_COLOR,  // idem.
   WEBP_FF_FRAME_COUNT        // Number of frames present in the demux object.
                              // In case of a partial demux, this is the number
@@ -137,8 +132,7 @@ typedef enum WebPFormatFeature {
 // combination of WebPFeatureFlags values.
 // If 'feature' is WEBP_FF_LOOP_COUNT, WEBP_FF_BACKGROUND_COLOR, the returned
 // value is only meaningful if the bitstream is animated.
- uint32 WebPDemuxGetI(const WebPDemuxer* dmux,
-                                   WebPFormatFeature feature);
+ uint32 WebPDemuxGetI(const WebPDemuxer* dmux, WebPFormatFeature feature);
 
 //------------------------------------------------------------------------------
 // Frame iteration.
@@ -167,9 +161,7 @@ type WebPIterator struct {
 // Returns false if 'dmux' is nil or frame 'frame_number' is not present.
 // Call WebPDemuxReleaseIterator() when use of the iterator is complete.
 // NOTE: 'dmux' must persist for the lifetime of 'iter'.
-  int WebPDemuxGetFrame(const WebPDemuxer* dmux,
-                                                 int frame_number,
-                                                 WebPIterator* iter);
+  int WebPDemuxGetFrame(const WebPDemuxer* dmux, int frame_number, WebPIterator* iter);
 
 // Sets 'iter.fragment' to point to the next ('iter.frame_num' + 1) or
 // previous ('iter.frame_num' - 1) frame. These functions do not loop.
@@ -206,10 +198,7 @@ type WebPChunkIterator struct {
 // payloads are accessed through WebPDemuxGetFrame() and related functions.
 // Call WebPDemuxReleaseChunkIterator() when use of the iterator is complete.
 // NOTE: 'dmux' must persist for the lifetime of the iterator.
-  int WebPDemuxGetChunk(const WebPDemuxer* dmux,
-                                                 const byte fourcc[4],
-                                                 int chunk_number,
-                                                 WebPChunkIterator* iter);
+  int WebPDemuxGetChunk(const WebPDemuxer* dmux, const byte fourcc[4], int chunk_number, WebPChunkIterator* iter);
 
 // Sets 'iter.chunk' to point to the next ('iter.chunk_num' + 1) or previous
 // ('iter.chunk_num' - 1) chunk. These functions do not loop.
@@ -271,8 +260,7 @@ type WebPAnimDecoderOptions struct {
 // 'dec_options' object.
  static  int WebPAnimDecoderOptionsInit(
     WebPAnimDecoderOptions* dec_options) {
-  return WebPAnimDecoderOptionsInitInternal(dec_options,
-                                            WEBP_DEMUX_ABI_VERSION);
+  return WebPAnimDecoderOptionsInitInternal(dec_options, WEBP_DEMUX_ABI_VERSION);
 }
 
 // Internal, version-checked, entry point.
@@ -291,8 +279,7 @@ type WebPAnimDecoderOptions struct {
 //   parsing error, invalid option or memory error.
  static  WebPAnimDecoder* WebPAnimDecoderNew(
     const WebPData* webp_data, const WebPAnimDecoderOptions* dec_options) {
-  return WebPAnimDecoderNewInternal(webp_data, dec_options,
-                                    WEBP_DEMUX_ABI_VERSION);
+  return WebPAnimDecoderNewInternal(webp_data, dec_options, WEBP_DEMUX_ABI_VERSION);
 }
 
 // Global information about the animation..
@@ -326,9 +313,7 @@ type WebPAnimInfo struct {
 // Returns:
 //   False if any of the arguments are nil, or if there is a parsing or
 //   decoding error, or if there are no more frames. Otherwise, returns true.
-  int WebPAnimDecoderGetNext(WebPAnimDecoder* dec,
-                                                      uint8** buf,
-                                                      int* timestamp);
+  int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf, int* timestamp);
 
 // Check if there are more frames left to decode.
 // Parameters:

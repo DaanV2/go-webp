@@ -47,8 +47,7 @@ static  uint8 VP8GetAlphaValue(uint32 val) {
 // Misc methods.
 
 // Computes sampled size of 'size' when sampling using 'sampling bits'.
-static  uint32 VP8LSubSampleSize(uint32 size,
-                                              uint32 sampling_bits) {
+static  uint32 VP8LSubSampleSize(uint32 size, uint32 sampling_bits) {
   return (size + (1 << sampling_bits) - 1) >> sampling_bits;
 }
 
@@ -116,17 +115,14 @@ const WEBP_UINT64_MAX =(~0ull)
 // Splitting of distance and length codes into prefixes and
 // extra bits. The prefixes are encoded with an entropy code
 // while the extra bits are stored just as normal bits.
-static  func VP8LPrefixEncodeBitsNoLUT(int distance, int* const code,
-                                                  int* const extra_bits) {
+static  func VP8LPrefixEncodeBitsNoLUT(int distance, int* const code, int* const extra_bits) {
   const int highest_bit = BitsLog2Floor(--distance);
   const int second_highest_bit = (distance >> (highest_bit - 1)) & 1;
   *extra_bits = highest_bit - 1;
   *code = 2 * highest_bit + second_highest_bit;
 }
 
-static  func VP8LPrefixEncodeNoLUT(int distance, int* const code,
-                                              int* const extra_bits,
-                                              int* const extra_bits_value) {
+static  func VP8LPrefixEncodeNoLUT(int distance, int* const code, int* const extra_bits, int* const extra_bits_value) {
   const int highest_bit = BitsLog2Floor(--distance);
   const int second_highest_bit = (distance >> (highest_bit - 1)) & 1;
   *extra_bits = highest_bit - 1;
@@ -143,8 +139,7 @@ type <Foo> struct {
 // These tables are derived using VP8LPrefixEncodeNoLUT.
 extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];
 extern const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
-static  func VP8LPrefixEncodeBits(int distance, int* const code,
-                                             int* const extra_bits) {
+static  func VP8LPrefixEncodeBits(int distance, int* const code, int* const extra_bits) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
     *code = prefix_code.code;
@@ -154,9 +149,7 @@ static  func VP8LPrefixEncodeBits(int distance, int* const code,
   }
 }
 
-static  func VP8LPrefixEncode(int distance, int* const code,
-                                         int* const extra_bits,
-                                         int* const extra_bits_value) {
+static  func VP8LPrefixEncode(int distance, int* const code, int* const extra_bits, int* const extra_bits_value) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
     *code = prefix_code.code;

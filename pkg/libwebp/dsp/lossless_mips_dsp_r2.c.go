@@ -95,8 +95,7 @@ MAP_COLOR_FUNCS(MapAlpha_MIPSdspR2, uint8, VP8GetAlphaIndex, VP8GetAlphaValue)
 
 #undef MAP_COLOR_FUNCS
 
-static  uint32 ClampedAddSubtractFull(uint32 c0, uint32 c1,
-                                                   uint32 c2) {
+static  uint32 ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   __asm__ volatile(
       "preceu.ph.qbr   %[temp1],   %[c0]                 \n\t"
@@ -112,15 +111,13 @@ static  uint32 ClampedAddSubtractFull(uint32 c0, uint32 c1,
       "shll_s.ph       %[temp1],   %[temp1],   7         \n\t"
       "shll_s.ph       %[temp2],   %[temp2],   7         \n\t"
       "precrqu_s.qb.ph %[temp2],   %[temp2],   %[temp1]  \n\t"
-      : [temp0] "=r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5)
+      : [temp0] "=r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5)
       : [c0] "r"(c0), [c1] "r"(c1), [c2] "r"(c2)
       : "memory");
   return temp2;
 }
 
-static  uint32 ClampedAddSubtractHalf(uint32 c0, uint32 c1,
-                                                   uint32 c2) {
+static  uint32 ClampedAddSubtractHalf(uint32 c0, uint32 c1, uint32 c2) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   __asm__ volatile(
       "adduh.qb         %[temp5],   %[c0],      %[c1]       \n\t"
@@ -141,8 +138,7 @@ static  uint32 ClampedAddSubtractHalf(uint32 c0, uint32 c1,
       "shll_s.ph        %[temp1],   %[temp1],   7           \n\t"
       "shll_s.ph        %[temp2],   %[temp2],   7           \n\t"
       "precrqu_s.qb.ph  %[temp1],   %[temp2],   %[temp1]    \n\t"
-      : [temp0] "=r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=r"(temp4), [temp5] "=&r"(temp5)
+      : [temp0] "=r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=r"(temp4), [temp5] "=&r"(temp5)
       : [c0] "r"(c0), [c1] "r"(c1), [c2] "r"(c2)
       : "memory");
   return temp1;
@@ -164,9 +160,7 @@ static  uint32 Select(uint32 a, uint32 b, uint32 c) {
       "subu         %[temp3], %[temp3], %[temp0]         \n\t"
       "slti         %[temp0], %[temp3], 0x1              \n\t"
       "movz         %[a],     %[b],     %[temp0]         \n\t"
-      : [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3),
-        [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp0] "=&r"(temp0),
-        [a] "+&r"(a)
+      : [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp0] "=&r"(temp0), [a] "+&r"(a)
       : [b] "r"(b), [c] "r"(c));
   return a;
 }
@@ -182,62 +176,51 @@ static  uint32 Average3(uint32 a0, uint32 a1, uint32 a2) {
   return Average2(Average2(a0, a2), a1);
 }
 
-static  uint32 Average4(uint32 a0, uint32 a1, uint32 a2,
-                                     uint32 a3) {
+static  uint32 Average4(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
   return Average2(Average2(a0, a1), Average2(a2, a3));
 }
 
-static uint32 Predictor5_MIPSdspR2(const uint32* const left,
-                                     const uint32* const top) {
+static uint32 Predictor5_MIPSdspR2(const uint32* const left, const uint32* const top) {
   return Average3(*left, top[0], top[1]);
 }
 
-static uint32 Predictor6_MIPSdspR2(const uint32* const left,
-                                     const uint32* const top) {
+static uint32 Predictor6_MIPSdspR2(const uint32* const left, const uint32* const top) {
   return Average2(*left, top[-1]);
 }
 
-static uint32 Predictor7_MIPSdspR2(const uint32* const left,
-                                     const uint32* const top) {
+static uint32 Predictor7_MIPSdspR2(const uint32* const left, const uint32* const top) {
   return Average2(*left, top[0]);
 }
 
-static uint32 Predictor8_MIPSdspR2(const uint32* const left,
-                                     const uint32* const top) {
+static uint32 Predictor8_MIPSdspR2(const uint32* const left, const uint32* const top) {
   (void)left;
   return Average2(top[-1], top[0]);
 }
 
-static uint32 Predictor9_MIPSdspR2(const uint32* const left,
-                                     const uint32* const top) {
+static uint32 Predictor9_MIPSdspR2(const uint32* const left, const uint32* const top) {
   (void)left;
   return Average2(top[0], top[1]);
 }
 
-static uint32 Predictor10_MIPSdspR2(const uint32* const left,
-                                      const uint32* const top) {
+static uint32 Predictor10_MIPSdspR2(const uint32* const left, const uint32* const top) {
   return Average4(*left, top[-1], top[0], top[1]);
 }
 
-static uint32 Predictor11_MIPSdspR2(const uint32* const left,
-                                      const uint32* const top) {
+static uint32 Predictor11_MIPSdspR2(const uint32* const left, const uint32* const top) {
   return Select(top[0], *left, top[-1]);
 }
 
-static uint32 Predictor12_MIPSdspR2(const uint32* const left,
-                                      const uint32* const top) {
+static uint32 Predictor12_MIPSdspR2(const uint32* const left, const uint32* const top) {
   return ClampedAddSubtractFull(*left, top[0], top[-1]);
 }
 
-static uint32 Predictor13_MIPSdspR2(const uint32* const left,
-                                      const uint32* const top) {
+static uint32 Predictor13_MIPSdspR2(const uint32* const left, const uint32* const top) {
   return ClampedAddSubtractHalf(*left, top[0], top[-1]);
 }
 
 // Add green to blue and red channels (i.e. perform the inverse transform of
 // 'subtract green').
-func AddGreenToBlueAndRed_MIPSdspR2(const uint32* src, int num_pixels,
-                                           uint32* dst) {
+func AddGreenToBlueAndRed_MIPSdspR2(const uint32* src, int num_pixels, uint32* dst) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   const uint32* const p_loop1_end = src + (num_pixels & ~3);
   const uint32* const p_loop2_end = src + num_pixels;
@@ -284,17 +267,12 @@ func AddGreenToBlueAndRed_MIPSdspR2(const uint32* src, int num_pixels,
       " sw        %[temp0],        -4(%[dst])                   \n\t"
       "2:                                                       \n\t"
       ".set       pop                                           \n\t"
-      : [dst] "+&r"(dst), [src] "+&r"(src), [temp0] "=&r"(temp0),
-        [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3),
-        [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6),
-        [temp7] "=&r"(temp7)
+      : [dst] "+&r"(dst), [src] "+&r"(src), [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7)
       : [p_loop1_end] "r"(p_loop1_end), [p_loop2_end] "r"(p_loop2_end)
       : "memory");
 }
 
-func TransformColorInverse_MIPSdspR2(const VP8LMultipliers* const m,
-                                            const uint32* src, int num_pixels,
-                                            uint32* dst) {
+func TransformColorInverse_MIPSdspR2(const VP8LMultipliers* const m, const uint32* src, int num_pixels, uint32* dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   uint32 argb, argb1, new_red;
   const uint32 G_to_R = m.green_to_red;
@@ -350,20 +328,15 @@ func TransformColorInverse_MIPSdspR2(const VP8LMultipliers* const m,
       " sb             %[temp3],     -8(%[dst])                \n\t"
       "1:                                                      \n\t"
       ".set            pop                                     \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [new_red] "=&r"(new_red), [argb] "=&r"(argb), [argb1] "=&r"(argb1),
-        [dst] "+&r"(dst), [src] "+&r"(src)
-      : [G_to_R] "r"(G_to_R), [R_to_B] "r"(R_to_B), [G_to_B] "r"(G_to_B),
-        [p_loop_end] "r"(p_loop_end)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [new_red] "=&r"(new_red), [argb] "=&r"(argb), [argb1] "=&r"(argb1), [dst] "+&r"(dst), [src] "+&r"(src)
+      : [G_to_R] "r"(G_to_R), [R_to_B] "r"(R_to_B), [G_to_B] "r"(G_to_B), [p_loop_end] "r"(p_loop_end)
       : "memory", "hi", "lo");
 
   // Fall-back to C-version for left-overs.
   if (num_pixels & 1) VP8LTransformColorInverse_C(m, src, 1, dst);
 }
 
-func ConvertBGRAToRGB_MIPSdspR2(const uint32* src, int num_pixels,
-                                       uint8* dst) {
+func ConvertBGRAToRGB_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
   int temp0, temp1, temp2, temp3;
   const uint32* const p_loop1_end = src + (num_pixels & ~3);
   const uint32* const p_loop2_end = src + num_pixels;
@@ -407,14 +380,12 @@ func ConvertBGRAToRGB_MIPSdspR2(const uint32* src, int num_pixels,
       " sb        %[temp0],    -3(%[dst])                    \n\t"
       "2:                                                    \n\t"
       ".set       pop                                        \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [dst] "+&r"(dst), [src] "+&r"(src)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [dst] "+&r"(dst), [src] "+&r"(src)
       : [p_loop1_end] "r"(p_loop1_end), [p_loop2_end] "r"(p_loop2_end)
       : "memory");
 }
 
-func ConvertBGRAToRGBA_MIPSdspR2(const uint32* src, int num_pixels,
-                                        uint8* dst) {
+func ConvertBGRAToRGBA_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
   int temp0, temp1, temp2, temp3;
   const uint32* const p_loop1_end = src + (num_pixels & ~3);
   const uint32* const p_loop2_end = src + num_pixels;
@@ -456,14 +427,12 @@ func ConvertBGRAToRGBA_MIPSdspR2(const uint32* src, int num_pixels,
       " addiu     %[dst],      %[dst],            4          \n\t"
       "2:                                                    \n\t"
       ".set       pop                                        \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [dst] "+&r"(dst), [src] "+&r"(src)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [dst] "+&r"(dst), [src] "+&r"(src)
       : [p_loop1_end] "r"(p_loop1_end), [p_loop2_end] "r"(p_loop2_end)
       : "memory");
 }
 
-func ConvertBGRAToRGBA4444_MIPSdspR2(const uint32* src, int num_pixels,
-                                            uint8* dst) {
+func ConvertBGRAToRGBA4444_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   const uint32* const p_loop1_end = src + (num_pixels & ~3);
   const uint32* const p_loop2_end = src + num_pixels;
@@ -528,15 +497,12 @@ func ConvertBGRAToRGBA4444_MIPSdspR2(const uint32* src, int num_pixels,
       " addiu         %[dst],      %[dst],            2          \n\t"
       "2:                                                        \n\t"
       ".set           pop                                        \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [dst] "+&r"(dst), [src] "+&r"(src)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [dst] "+&r"(dst), [src] "+&r"(src)
       : [p_loop1_end] "r"(p_loop1_end), [p_loop2_end] "r"(p_loop2_end)
       : "memory");
 }
 
-func ConvertBGRAToRGB565_MIPSdspR2(const uint32* src, int num_pixels,
-                                          uint8* dst) {
+func ConvertBGRAToRGB565_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   const uint32* const p_loop1_end = src + (num_pixels & ~3);
   const uint32* const p_loop2_end = src + num_pixels;
@@ -605,15 +571,12 @@ func ConvertBGRAToRGB565_MIPSdspR2(const uint32* src, int num_pixels,
       " addiu         %[dst],      %[dst],            2          \n\t"
       "2:                                                        \n\t"
       ".set           pop                                        \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [dst] "+&r"(dst), [src] "+&r"(src)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [dst] "+&r"(dst), [src] "+&r"(src)
       : [p_loop1_end] "r"(p_loop1_end), [p_loop2_end] "r"(p_loop2_end)
       : "memory");
 }
 
-func ConvertBGRAToBGR_MIPSdspR2(const uint32* src, int num_pixels,
-                                       uint8* dst) {
+func ConvertBGRAToBGR_MIPSdspR2(const uint32* src, int num_pixels, uint8* dst) {
   int temp0, temp1, temp2, temp3;
   const uint32* const p_loop1_end = src + (num_pixels & ~3);
   const uint32* const p_loop2_end = src + num_pixels;
@@ -651,8 +614,7 @@ func ConvertBGRAToBGR_MIPSdspR2(const uint32* src, int num_pixels,
       " sb        %[temp0],    -1(%[dst])                      \n\t"
       "2:                                                      \n\t"
       ".set       pop                                          \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [dst] "+&r"(dst), [src] "+&r"(src)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [dst] "+&r"(dst), [src] "+&r"(src)
       : [p_loop1_end] "r"(p_loop1_end), [p_loop2_end] "r"(p_loop2_end)
       : "memory");
 }

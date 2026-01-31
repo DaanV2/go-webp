@@ -110,8 +110,7 @@ int VP8IteratorProgress(const VP8EncIterator* const it, int delta) {
 
 static  int MinSize(int a, int b) { return (a < b) ? a : b; }
 
-func ImportBlock(const uint8* src, int src_stride, uint8* dst, int w,
-                        int h, int size) {
+func ImportBlock(const uint8* src, int src_stride, uint8* dst, int w, int h, int size) {
   int i;
   for (i = 0; i < h; ++i) {
     memcpy(dst, src, w);
@@ -127,8 +126,7 @@ func ImportBlock(const uint8* src, int src_stride, uint8* dst, int w,
   }
 }
 
-func ImportLine(const uint8* src, int src_stride, uint8* dst,
-                       int len, int total_len) {
+func ImportLine(const uint8* src, int src_stride, uint8* dst, int len, int total_len) {
   int i;
   for (i = 0; i < len; ++i, src += src_stride) dst[i] = *src;
   for (; i < total_len; ++i) dst[i] = dst[len - 1];
@@ -182,8 +180,7 @@ func VP8IteratorImport(VP8EncIterator* const it, uint8* const tmp_32) {
 //------------------------------------------------------------------------------
 // Copy back the compressed samples into user space if requested.
 
-func ExportBlock(const uint8* src, uint8* dst, int dst_stride, int w,
-                        int h) {
+func ExportBlock(const uint8* src, uint8* dst, int dst_stride, int w, int h) {
   while (h-- > 0) {
     memcpy(dst, src, w);
     dst += dst_stride;
@@ -399,8 +396,7 @@ func VP8SetSegment(const VP8EncIterator* const it, int segment) {
 
 // Array to record the position of the top sample to pass to the prediction
 // functions in dsp.c.
-static const uint8 VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25,
-                                         9,  13, 17, 21, 5,  9,  13, 17};
+static const uint8 VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25, 9,  13, 17, 21, 5,  9,  13, 17};
 
 func VP8IteratorStartI4(VP8EncIterator* const it) {
   const VP8Encoder* const enc = it.enc;
@@ -438,8 +434,7 @@ func VP8IteratorStartI4(VP8EncIterator* const it) {
   VP8IteratorNzToBytes(it);  // import the non-zero context
 }
 
-int VP8IteratorRotateI4(VP8EncIterator* const it,
-                        const uint8* const yuv_out) {
+int VP8IteratorRotateI4(VP8EncIterator* const it, const uint8* const yuv_out) {
   const uint8* const blk = yuv_out + VP8Scan[it.i4];
   uint8* const top = it.i4_top;
   int i;

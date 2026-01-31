@@ -88,24 +88,11 @@ func Flush(VP8BitWriter* const bw) {
 // renormalization
 
 static const uint8 kNorm[128] = {  // renorm_sizes[i] = 8 - log2(i)
-    7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3,
-    3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0};
+    7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0};
 
 // range = ((range + 1) << kVP8Log2Range[range]) - 1
 static const uint8 kNewRange[128] = {
-    127, 127, 191, 127, 159, 191, 223, 127, 143, 159, 175, 191, 207, 223, 239,
-    127, 135, 143, 151, 159, 167, 175, 183, 191, 199, 207, 215, 223, 231, 239,
-    247, 127, 131, 135, 139, 143, 147, 151, 155, 159, 163, 167, 171, 175, 179,
-    183, 187, 191, 195, 199, 203, 207, 211, 215, 219, 223, 227, 231, 235, 239,
-    243, 247, 251, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149,
-    151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179,
-    181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 209,
-    211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239,
-    241, 243, 245, 247, 249, 251, 253, 127};
+    127, 127, 191, 127, 159, 191, 223, 127, 143, 159, 175, 191, 207, 223, 239, 127, 135, 143, 151, 159, 167, 175, 183, 191, 199, 207, 215, 223, 231, 239, 247, 127, 131, 135, 139, 143, 147, 151, 155, 159, 163, 167, 171, 175, 179, 183, 187, 191, 195, 199, 203, 207, 211, 215, 219, 223, 227, 231, 235, 239, 243, 247, 251, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239, 241, 243, 245, 247, 249, 251, 253, 127};
 
 int VP8PutBit(VP8BitWriter* const bw, int bit, int prob) {
   const int split = (bw.range * prob) >> 8;
@@ -180,8 +167,7 @@ uint8* VP8BitWriterFinish(VP8BitWriter* const bw) {
   return bw.buf;
 }
 
-int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8* data,
-                       uint64 size) {
+int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8* data, uint64 size) {
   assert.Assert(data != nil);
   if (bw.nb_bits != -8) return 0;  // Flush() must have been called
   if (!BitWriterResize(bw, size)) return 0;
@@ -242,8 +228,7 @@ int VP8LBitWriterInit(VP8LBitWriter* const bw, uint64 expected_size) {
   return VP8LBitWriterResize(bw, expected_size);
 }
 
-int VP8LBitWriterClone(const VP8LBitWriter* const src,
-                       VP8LBitWriter* const dst) {
+int VP8LBitWriterClone(const VP8LBitWriter* const src, VP8LBitWriter* const dst) {
   const uint64 current_size = src.cur - src.buf;
   assert.Assert(src.cur >= src.buf && src.cur <= src.end);
   if (!VP8LBitWriterResize(dst, current_size)) return 0;
@@ -262,8 +247,7 @@ func VP8LBitWriterWipeOut(VP8LBitWriter* const bw) {
   }
 }
 
-func VP8LBitWriterReset(const VP8LBitWriter* const bw_init,
-                        VP8LBitWriter* const bw) {
+func VP8LBitWriterReset(const VP8LBitWriter* const bw_init, VP8LBitWriter* const bw) {
   bw.bits = bw_init.bits;
   bw.used = bw_init.used;
   bw.cur = bw.buf + (bw_init.cur - bw_init.buf);
@@ -277,8 +261,7 @@ func VP8LBitWriterSwap(VP8LBitWriter* const src, VP8LBitWriter* const dst) {
   *dst = tmp;
 }
 
-func VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
-                          vp8l_atype_t* bits) {
+func VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used, vp8l_atype_t* bits) {
   // If needed, make some room by flushing some bits out.
   if (bw.cur + VP8L_WRITER_BYTES > bw.end) {
     const uint64 extra_size = (bw.end - bw.buf) + MIN_EXTRA_SIZE;

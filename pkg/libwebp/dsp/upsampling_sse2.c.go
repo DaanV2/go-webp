@@ -99,9 +99,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample32Pixels_SSE2(const uint8* WEBP_RESTRICT const r1,
-                                  const uint8* WEBP_RESTRICT const r2,
-                                  uint8* WEBP_RESTRICT const out) {
+func Upsample32Pixels_SSE2(const uint8* WEBP_RESTRICT const r1, const uint8* WEBP_RESTRICT const r2, uint8* WEBP_RESTRICT const out) {
   UPSAMPLE_32PIXELS(r1, r2, out);
 }
 
@@ -256,8 +254,7 @@ YUV444_FUNC(Yuv444ToBgra_SSE2, VP8YuvToBgra32_SSE2, WebPYuv444ToBgra_C, 4)
 YUV444_FUNC(Yuv444ToRgb_SSE2, VP8YuvToRgb32_SSE2, WebPYuv444ToRgb_C, 3)
 YUV444_FUNC(Yuv444ToBgr_SSE2, VP8YuvToBgr32_SSE2, WebPYuv444ToBgr_C, 3)
 YUV444_FUNC(Yuv444ToArgb_SSE2, VP8YuvToArgb32_SSE2, WebPYuv444ToArgb_C, 4)
-YUV444_FUNC(Yuv444ToRgba4444_SSE2, VP8YuvToRgba444432_SSE2,
-            WebPYuv444ToRgba4444_C, 2)
+YUV444_FUNC(Yuv444ToRgba4444_SSE2, VP8YuvToRgba444432_SSE2, WebPYuv444ToRgba4444_C, 2)
 YUV444_FUNC(Yuv444ToRgb565_SSE2, VP8YuvToRgb56532_SSE2, WebPYuv444ToRgb565_C, 2)
 #endif  // WEBP_REDUCE_CSP
 

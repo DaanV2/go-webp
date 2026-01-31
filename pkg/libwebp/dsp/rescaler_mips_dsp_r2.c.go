@@ -99,14 +99,9 @@ func ExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
         "sb       %[temp10],   -2(%[dst])                 \n\t"
         "sb       %[temp11],   -1(%[dst])                 \n\t"
         "bne      %[frow],     %[loop_end], 1b            \n\t"
-        : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp3]"=&r"(temp3),
-          [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [frow]"+r"(frow),
-          [irow]"+r"(irow), [dst]"+r"(dst), [loop_end]"=&r"(loop_end),
-          [temp8]"=&r"(temp8), [temp9]"=&r"(temp9), [temp10]"=&r"(temp10),
-          [temp11]"=&r"(temp11), [temp2]"=&r"(temp2)
+        : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [frow]"+r"(frow), [irow]"+r"(irow), [dst]"+r"(dst), [loop_end]"=&r"(loop_end), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9), [temp10]"=&r"(temp10), [temp11]"=&r"(temp11), [temp2]"=&r"(temp2)
         : [temp7]"r"(temp7), [yscale]"r"(yscale), [temp6]"r"(temp6)
-        : "memory", "hi", "lo", "$ac1hi", "$ac1lo",
-          "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo"
+        : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo"
       );
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
@@ -149,12 +144,9 @@ func ExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
         "sb       %[temp2],    -2(%[dst])                 \n\t"
         "sb       %[temp5],    -1(%[dst])                 \n\t"
         "bne      %[irow],     %[loop_end], 1b            \n\t"
-        : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp3]"=&r"(temp3),
-          [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [irow]"+r"(irow),
-          [dst]"+r"(dst), [loop_end]"=&r"(loop_end), [temp2]"=&r"(temp2)
+        : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [irow]"+r"(irow), [dst]"+r"(dst), [loop_end]"=&r"(loop_end), [temp2]"=&r"(temp2)
         : [temp7]"r"(temp7), [temp6]"r"(temp6)
-        : "memory", "hi", "lo", "$ac1hi", "$ac1lo",
-          "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo"
+        : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo"
       );
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
@@ -209,12 +201,9 @@ func ExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
           "sb       %[temp2],    -2(%[dst])                 \n\t"
           "sb       %[temp3],    -1(%[dst])                 \n\t"
           "bne      %[frow],     %[loop_end], 1b            \n\t"
-          : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp3] "=&r"(temp3),
-            [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [frow] "+r"(frow),
-            [dst] "+r"(dst), [loop_end] "=&r"(loop_end), [temp2] "=&r"(temp2)
+          : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [frow] "+r"(frow), [dst] "+r"(dst), [loop_end] "=&r"(loop_end), [temp2] "=&r"(temp2)
           : [temp7] "r"(temp7), [temp6] "r"(temp6)
-          : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo",
-            "$ac3hi", "$ac3lo");
+          : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo");
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const uint32 J = *frow++;
@@ -275,14 +264,9 @@ func ExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
           "sb       %[temp2],    -2(%[dst])                 \n\t"
           "sb       %[temp3],    -1(%[dst])                 \n\t"
           "bne      %[frow],     %[loop_end], 1b            \n\t"
-          : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp3] "=&r"(temp3),
-            [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [frow] "+r"(frow),
-            [irow] "+r"(irow), [dst] "+r"(dst), [loop_end] "=&r"(loop_end),
-            [temp8] "=&r"(temp8), [temp9] "=&r"(temp9), [temp10] "=&r"(temp10),
-            [temp11] "=&r"(temp11), [temp2] "=&r"(temp2)
+          : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [frow] "+r"(frow), [irow] "+r"(irow), [dst] "+r"(dst), [loop_end] "=&r"(loop_end), [temp8] "=&r"(temp8), [temp9] "=&r"(temp9), [temp10] "=&r"(temp10), [temp11] "=&r"(temp11), [temp2] "=&r"(temp2)
           : [temp7] "r"(temp7), [temp6] "r"(temp6), [A] "r"(A), [B] "r"(B)
-          : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo",
-            "$ac3hi", "$ac3lo");
+          : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo");
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const uint64 I = (uint64)A * *frow++ + (uint64)B * *irow++;

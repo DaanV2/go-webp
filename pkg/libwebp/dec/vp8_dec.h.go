@@ -118,9 +118,7 @@ type VP8Io struct {
 // Set the custom IO function pointers and user-data. The setter for IO hooks
 // should be called before initiating incremental decoding. Returns true if
 // WebPIDecoder object is successfully modified, false otherwise.
- int WebPISetIOHooks(WebPIDecoder* const idec, VP8IoPutHook put,
-                                   VP8IoSetupHook setup,
-                                   VP8IoTeardownHook teardown, void* user_data);
+ int WebPISetIOHooks(WebPIDecoder* const idec, VP8IoPutHook put, VP8IoSetupHook setup, VP8IoTeardownHook teardown, void* user_data);
 
 // Main decoding object. This is an opaque structure.
 typedef struct VP8Decoder VP8Decoder;
@@ -167,23 +165,19 @@ func VP8Delete(VP8Decoder* const dec);
 // width and height. Returns 0 in case of formatting error. *width/*height
 // can be passed nil.
  int VP8GetInfo(
-    const uint8*  data,
-    uint64 data_size,   // data available so far
+    const uint8*  data, uint64 data_size,   // data available so far
     uint64 chunk_size,  // total data size expected in the chunk
     int* const width, int* const height);
 
 // Returns true if the next byte(s) in data is a VP8L signature.
  int VP8LCheckSignature(const uint8* const 
-                                       data,
-                                   uint64 size);
+                                       data, uint64 size);
 
 // Validates the VP8L data-header and retrieves basic header information viz
 // width, height and alpha. Returns 0 in case of formatting error.
 // width/height/has_alpha can be passed nil.
- int VP8LGetInfo(const uint8*  data,
-                            uint64 data_size,  // data available so far
-                            int* const width, int* const height,
-                            int* const has_alpha);
+ int VP8LGetInfo(const uint8*  data, uint64 data_size,  // data available so far
+                            int* const width, int* const height, int* const has_alpha);
 
 #ifdef __cplusplus
 }  // extern "C"

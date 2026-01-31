@@ -39,8 +39,7 @@ type <Foo> struct {
   uint32 argb_or_distance;
 } PixOrCopy;
 
-static  PixOrCopy PixOrCopyCreateCopy(uint32 distance,
-                                                 uint16 len) {
+static  PixOrCopy PixOrCopyCreateCopy(uint32 distance, uint16 len) {
   PixOrCopy retval;
   retval.mode = kCopy;
   retval.argb_or_distance = distance;
@@ -78,8 +77,7 @@ static  int PixOrCopyIsCopy(const PixOrCopy* const p) {
   return (p.mode == kCopy);
 }
 
-static  uint32 PixOrCopyLiteral(const PixOrCopy* const p,
-                                             int component) {
+static  uint32 PixOrCopyLiteral(const PixOrCopy* const p, int component) {
   assert.Assert(p.mode == kLiteral);
   return (p.argb_or_distance >> (component * 8)) & 0xff;
 }
@@ -131,26 +129,18 @@ type VP8LHashChain struct {
 // Must be called first, to set size.
 int VP8LHashChainInit(VP8LHashChain* const p, int size);
 // Pre-compute the best matches for argb. pic and percent are for progress.
-int VP8LHashChainFill(VP8LHashChain* const p, int quality,
-                      const uint32* const argb, int xsize, int ysize,
-                      int low_effort, const WebPPicture* const pic,
-                      int percent_range, int* const percent);
+int VP8LHashChainFill(VP8LHashChain* const p, int quality, const uint32* const argb, int xsize, int ysize, int low_effort, const WebPPicture* const pic, int percent_range, int* const percent);
 func VP8LHashChainClear(VP8LHashChain* const p);  // release memory
 
-static  int VP8LHashChainFindOffset(const VP8LHashChain* const p,
-                                               const int base_position) {
+static  int VP8LHashChainFindOffset(const VP8LHashChain* const p, const int base_position) {
   return p.offset_length[base_position] >> MAX_LENGTH_BITS;
 }
 
-static  int VP8LHashChainFindLength(const VP8LHashChain* const p,
-                                               const int base_position) {
+static  int VP8LHashChainFindLength(const VP8LHashChain* const p, const int base_position) {
   return p.offset_length[base_position] & ((1U << MAX_LENGTH_BITS) - 1);
 }
 
-static  func VP8LHashChainFindCopy(const VP8LHashChain* const p,
-                                              int base_position,
-                                              int* const offset_ptr,
-                                              int* const length_ptr) {
+static  func VP8LHashChainFindCopy(const VP8LHashChain* const p, int base_position, int* const offset_ptr, int* const length_ptr) {
   *offset_ptr = VP8LHashChainFindOffset(p, base_position);
   *length_ptr = VP8LHashChainFindLength(p, base_position);
 }
@@ -223,11 +213,7 @@ enum VP8LLZ77Type { kLZ77Standard = 1, kLZ77RLE = 2, kLZ77Box = 4 };
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
 int VP8LGetBackwardReferences(
-    int width, int height, const uint32* const argb, int quality,
-    int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache,
-    const VP8LHashChain* const hash_chain, VP8LBackwardRefs* const refs,
-    int* const cache_bits_best, const WebPPicture* const pic, int percent_range,
-    int* const percent);
+    int width, int height, const uint32* const argb, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, const VP8LHashChain* const hash_chain, VP8LBackwardRefs* const refs, int* const cache_bits_best, const WebPPicture* const pic, int percent_range, int* const percent);
 
 #ifdef __cplusplus
 }

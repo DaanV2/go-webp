@@ -101,8 +101,7 @@ static  func VP8YuvToBgr(int y, int u, int v, uint8* const bgr) {
   bgr[2] = VP8YUVToR(y, v);
 }
 
-static  func VP8YuvToRgb565(int y, int u, int v,
-                                       uint8* const rgb) {
+static  func VP8YuvToRgb565(int y, int u, int v, uint8* const rgb) {
   const int r = VP8YUVToR(y, v);     // 5 usable bits
   const int g = VP8YUVToG(y, u, v);  // 6 usable bits
   const int b = VP8YUVToB(y, u);     // 5 usable bits
@@ -117,8 +116,7 @@ static  func VP8YuvToRgb565(int y, int u, int v,
 #endif
 }
 
-static  func VP8YuvToRgba4444(int y, int u, int v,
-                                         uint8* const argb) {
+static  func VP8YuvToRgba4444(int y, int u, int v, uint8* const argb) {
   const int r = VP8YUVToR(y, v);     // 4 usable bits
   const int g = VP8YUVToG(y, u, v);  // 4 usable bits
   const int b = VP8YUVToB(y, u);     // 4 usable bits
@@ -136,20 +134,17 @@ static  func VP8YuvToRgba4444(int y, int u, int v,
 //-----------------------------------------------------------------------------
 // Alpha handling variants
 
-static  func VP8YuvToArgb(uint8 y, uint8 u, uint8 v,
-                                     uint8* const argb) {
+static  func VP8YuvToArgb(uint8 y, uint8 u, uint8 v, uint8* const argb) {
   argb[0] = 0xff;
   VP8YuvToRgb(y, u, v, argb + 1);
 }
 
-static  func VP8YuvToBgra(uint8 y, uint8 u, uint8 v,
-                                     uint8* const bgra) {
+static  func VP8YuvToBgra(uint8 y, uint8 u, uint8 v, uint8* const bgra) {
   VP8YuvToBgr(y, u, v, bgra);
   bgra[3] = 0xff;
 }
 
-static  func VP8YuvToRgba(uint8 y, uint8 u, uint8 v,
-                                     uint8* const rgba) {
+static  func VP8YuvToRgba(uint8 y, uint8 u, uint8 v, uint8* const rgba) {
   VP8YuvToRgb(y, u, v, rgba);
   rgba[3] = 0xff;
 }
@@ -160,34 +155,13 @@ static  func VP8YuvToRgba(uint8 y, uint8 u, uint8 v,
 #if defined(WEBP_USE_SSE2)
 
 // Process 32 pixels and store the result (16b, 24b or 32b per pixel) in *dst.
-func VP8YuvToRgba32_SSE2(const uint8* WEBP_RESTRICT y,
-                         const uint8* WEBP_RESTRICT u,
-                         const uint8* WEBP_RESTRICT v,
-                         uint8* WEBP_RESTRICT dst);
-func VP8YuvToRgb32_SSE2(const uint8* WEBP_RESTRICT y,
-                        const uint8* WEBP_RESTRICT u,
-                        const uint8* WEBP_RESTRICT v,
-                        uint8* WEBP_RESTRICT dst);
-func VP8YuvToBgra32_SSE2(const uint8* WEBP_RESTRICT y,
-                         const uint8* WEBP_RESTRICT u,
-                         const uint8* WEBP_RESTRICT v,
-                         uint8* WEBP_RESTRICT dst);
-func VP8YuvToBgr32_SSE2(const uint8* WEBP_RESTRICT y,
-                        const uint8* WEBP_RESTRICT u,
-                        const uint8* WEBP_RESTRICT v,
-                        uint8* WEBP_RESTRICT dst);
-func VP8YuvToArgb32_SSE2(const uint8* WEBP_RESTRICT y,
-                         const uint8* WEBP_RESTRICT u,
-                         const uint8* WEBP_RESTRICT v,
-                         uint8* WEBP_RESTRICT dst);
-func VP8YuvToRgba444432_SSE2(const uint8* WEBP_RESTRICT y,
-                             const uint8* WEBP_RESTRICT u,
-                             const uint8* WEBP_RESTRICT v,
-                             uint8* WEBP_RESTRICT dst);
-func VP8YuvToRgb56532_SSE2(const uint8* WEBP_RESTRICT y,
-                           const uint8* WEBP_RESTRICT u,
-                           const uint8* WEBP_RESTRICT v,
-                           uint8* WEBP_RESTRICT dst);
+func VP8YuvToRgba32_SSE2(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
+func VP8YuvToRgb32_SSE2(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
+func VP8YuvToBgra32_SSE2(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
+func VP8YuvToBgr32_SSE2(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
+func VP8YuvToArgb32_SSE2(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
+func VP8YuvToRgba444432_SSE2(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
+func VP8YuvToRgb56532_SSE2(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
 
 #endif  // WEBP_USE_SSE2
 
@@ -197,14 +171,8 @@ func VP8YuvToRgb56532_SSE2(const uint8* WEBP_RESTRICT y,
 #if defined(WEBP_USE_SSE41)
 
 // Process 32 pixels and store the result (16b, 24b or 32b per pixel) in *dst.
-func VP8YuvToRgb32_SSE41(const uint8* WEBP_RESTRICT y,
-                         const uint8* WEBP_RESTRICT u,
-                         const uint8* WEBP_RESTRICT v,
-                         uint8* WEBP_RESTRICT dst);
-func VP8YuvToBgr32_SSE41(const uint8* WEBP_RESTRICT y,
-                         const uint8* WEBP_RESTRICT u,
-                         const uint8* WEBP_RESTRICT v,
-                         uint8* WEBP_RESTRICT dst);
+func VP8YuvToRgb32_SSE41(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
+func VP8YuvToBgr32_SSE41(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst);
 
 #endif  // WEBP_USE_SSE41
 
@@ -234,27 +202,16 @@ static  int VP8RGBToV(int r, int g, int b, int rounding) {
 
 // has_alpha is true if there is an alpha value that is not 0xff.
 extern func (*WebPImportYUVAFromRGBA)(
-    const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr,
-    const uint8* a_ptr,
-    int step,        // bytes per pixel
+    const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr, const uint8* a_ptr, int step,        // bytes per pixel
     int rgb_stride,  // bytes per scanline
-    int has_alpha, int width, int height, uint16* tmp_rgb, int y_stride,
-    int uv_stride, int a_stride, uint8* dst_y, uint8* dst_u, uint8* dst_v,
-    uint8* dst_a);
+    int has_alpha, int width, int height, uint16* tmp_rgb, int y_stride, int uv_stride, int a_stride, uint8* dst_y, uint8* dst_u, uint8* dst_v, uint8* dst_a);
 extern func (*WebPImportYUVAFromRGBALastLine)(
-    const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr,
-    const uint8* a_ptr,
-    int step,  // bytes per pixel
-    int has_alpha, int width, uint16* tmp_rgb, uint8* dst_y, uint8* dst_u,
-    uint8* dst_v, uint8* dst_a);
+    const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr, const uint8* a_ptr, int step,  // bytes per pixel
+    int has_alpha, int width, uint16* tmp_rgb, uint8* dst_y, uint8* dst_u, uint8* dst_v, uint8* dst_a);
 
 // Internal function to WebPImportYUVAFromRGBA* that can be reused.
-func WebPAccumulateRGBA(const uint8* const r_ptr, const uint8* const g_ptr,
-                        const uint8* const b_ptr, const uint8* const a_ptr,
-                        int rgb_stride, uint16* dst, int width);
-func WebPAccumulateRGB(const uint8* const r_ptr, const uint8* const g_ptr,
-                       const uint8* const b_ptr, int step, int rgb_stride,
-                       uint16* dst, int width);
+func WebPAccumulateRGBA(const uint8* const r_ptr, const uint8* const g_ptr, const uint8* const b_ptr, const uint8* const a_ptr, int rgb_stride, uint16* dst, int width);
+func WebPAccumulateRGB(const uint8* const r_ptr, const uint8* const g_ptr, const uint8* const b_ptr, int step, int rgb_stride, uint16* dst, int width);
 // Must be called before calling WebPAccumulateRGB*.
 func WebPInitGammaTables(void);
 

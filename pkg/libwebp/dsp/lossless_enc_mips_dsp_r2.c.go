@@ -20,8 +20,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-func SubtractGreenFromBlueAndRed_MIPSdspR2(uint32* argb_data,
-                                                  int num_pixels) {
+func SubtractGreenFromBlueAndRed_MIPSdspR2(uint32* argb_data, int num_pixels) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   uint32* const p_loop1_end = argb_data + (num_pixels & ~3);
   uint32* const p_loop2_end = p_loop1_end + (num_pixels & 3);
@@ -66,22 +65,17 @@ func SubtractGreenFromBlueAndRed_MIPSdspR2(uint32* argb_data,
       " sw        %[temp0],        -4(%[argb_data])             \n\t"
       "2:                                                       \n\t"
       ".set       pop                                           \n\t"
-      : [argb_data] "+&r"(argb_data), [temp0] "=&r"(temp0),
-        [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3),
-        [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6),
-        [temp7] "=&r"(temp7)
+      : [argb_data] "+&r"(argb_data), [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7)
       : [p_loop1_end] "r"(p_loop1_end), [p_loop2_end] "r"(p_loop2_end)
       : "memory");
 }
 
-static  uint32 ColorTransformDelta(int8 color_pred,
-                                                int8 color) {
+static  uint32 ColorTransformDelta(int8 color_pred, int8 color) {
   return (uint32)((int)(color_pred)*color) >> 5;
 }
 
 func TransformColor_MIPSdspR2(
-    const VP8LMultipliers* WEBP_RESTRICT const m, uint32* WEBP_RESTRICT data,
-    int num_pixels) {
+    const VP8LMultipliers* WEBP_RESTRICT const m, uint32* WEBP_RESTRICT data, int num_pixels) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   uint32 argb, argb1, new_red, new_red1;
   const uint32 G_to_R = m.green_to_red;
@@ -138,12 +132,8 @@ func TransformColor_MIPSdspR2(
       " sb             %[temp3],     -8(%[data])               \n\t"
       "1:                                                      \n\t"
       ".set            pop                                     \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [new_red1] "=&r"(new_red1), [new_red] "=&r"(new_red),
-        [argb] "=&r"(argb), [argb1] "=&r"(argb1), [data] "+&r"(data)
-      : [G_to_R] "r"(G_to_R), [R_to_B] "r"(R_to_B), [G_to_B] "r"(G_to_B),
-        [p_loop_end] "r"(p_loop_end)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [new_red1] "=&r"(new_red1), [new_red] "=&r"(new_red), [argb] "=&r"(argb), [argb1] "=&r"(argb1), [data] "+&r"(data)
+      : [G_to_R] "r"(G_to_R), [R_to_B] "r"(R_to_B), [G_to_B] "r"(G_to_B), [p_loop_end] "r"(p_loop_end)
       : "memory", "hi", "lo");
 
   if (num_pixels & 1) {
@@ -161,9 +151,7 @@ func TransformColor_MIPSdspR2(
   }
 }
 
-static  uint8 TransformColorBlue(uint8 green_to_blue,
-                                              uint8 red_to_blue,
-                                              uint32 argb) {
+static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 argb) {
   const uint32 green = argb >> 8;
   const uint32 red = argb >> 16;
   uint8 new_blue = argb;
@@ -173,8 +161,7 @@ static  uint8 TransformColorBlue(uint8 green_to_blue,
 }
 
 func CollectColorBlueTransforms_MIPSdspR2(
-    const uint32* WEBP_RESTRICT argb, int stride, int tile_width,
-    int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
+    const uint32* WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   const int rtb = (red_to_blue << 16) | (red_to_blue & 0xffff);
   const int gtb = (green_to_blue << 16) | (green_to_blue & 0xffff);
   const uint32 mask = 0xff00ffu;
@@ -199,9 +186,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
           "shra.ph      %[temp6],  %[temp6],  5             \n\t"
           "subu.qb      %[temp2],  %[temp4],  %[temp5]      \n\t"
           "subu.qb      %[temp2],  %[temp2],  %[temp6]      \n\t"
-          : [p_argb] "+&r"(p_argb), [temp0] "=&r"(temp0), [temp1] "=&r"(temp1),
-            [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4),
-            [temp5] "=&r"(temp5), [temp6] "=&r"(temp6)
+          : [p_argb] "+&r"(p_argb), [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6)
           : [rtb] "r"(rtb), [gtb] "r"(gtb), [mask] "r"(mask)
           : "memory", "hi", "lo");
       ++histo[(uint8)(temp2 >> 16)];
@@ -213,8 +198,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
   }
 }
 
-static  uint8 TransformColorRed(uint8 green_to_red,
-                                             uint32 argb) {
+static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
   const uint32 green = argb >> 8;
   uint32 new_red = argb >> 16;
   new_red -= ColorTransformDelta(green_to_red, green);
@@ -222,8 +206,7 @@ static  uint8 TransformColorRed(uint8 green_to_red,
 }
 
 func CollectColorRedTransforms_MIPSdspR2(
-    const uint32* WEBP_RESTRICT argb, int stride, int tile_width,
-    int tile_height, int green_to_red, uint32 histo[]) {
+    const uint32* WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
   const int gtr = (green_to_red << 16) | (green_to_red & 0xffff);
   while (tile_height-- > 0) {
     int x;
@@ -241,8 +224,7 @@ func CollectColorRedTransforms_MIPSdspR2(
           "addiu        %[p_argb], %[p_argb], 8             \n\t"
           "shra.ph      %[temp2],  %[temp2],  5             \n\t"
           "subu.qb      %[temp2],  %[temp4],  %[temp2]      \n\t"
-          : [p_argb] "+&r"(p_argb), [temp0] "=&r"(temp0), [temp1] "=&r"(temp1),
-            [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4)
+          : [p_argb] "+&r"(p_argb), [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4)
           : [gtr] "r"(gtr)
           : "memory", "hi", "lo");
       ++histo[(uint8)(temp2 >> 16)];

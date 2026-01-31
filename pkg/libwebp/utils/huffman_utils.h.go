@@ -40,10 +40,8 @@ type <Foo> struct {
 
 // long version for holding 32b values
 type <Foo> struct {
-  int bits;        // number of bits used for this symbol,
-                   // or an impossible value if not a literal code.
-  uint32 value;  // 32b packed ARGB value if literal,
-                   // or non-literal symbol otherwise
+  int bits;        // number of bits used for this symbol, // or an impossible value if not a literal code.
+  uint32 value;  // 32b packed ARGB value if literal, // or non-literal symbol otherwise
 } HuffmanCode32;
 
 // Contiguous memory segment of HuffmanCodes.
@@ -66,8 +64,7 @@ typedef type HuffmanTables struct {
 
 // Allocates a HuffmanTables with 'size' contiguous HuffmanCodes. Returns 0 on
 // memory allocation error, 1 otherwise.
- int VP8LHuffmanTablesAllocate(int size,
-                                             HuffmanTables* huffman_tables);
+ int VP8LHuffmanTablesAllocate(int size, HuffmanTables* huffman_tables);
 func VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables);
 
 const HUFFMAN_PACKED_BITS =6
@@ -106,9 +103,7 @@ func VP8LHtreeGroupsFree(HTreeGroup* const htree_groups);
 // Returns built table size or 0 in case of error (invalid tree or
 // memory error).
  int VP8LBuildHuffmanTable(
-    HuffmanTables* const root_table, int root_bits,
-    const int  code_lengths[],
-    int code_lengths_size);
+    HuffmanTables* const root_table, int root_bits, const int  code_lengths[], int code_lengths_size);
 
 #ifdef __cplusplus
 }  // extern "C"

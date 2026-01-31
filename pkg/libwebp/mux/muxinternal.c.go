@@ -28,16 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 const UNDEFINED_CHUNK_SIZE =((uint32)(-1))
 
 const ChunkInfo kChunks[] = {
-    {MKFOURCC('V', 'P', '8', 'X'), WEBP_CHUNK_VP8X, VP8X_CHUNK_SIZE},
-    {MKFOURCC('I', 'C', 'C', 'P'), WEBP_CHUNK_ICCP, UNDEFINED_CHUNK_SIZE},
-    {MKFOURCC('A', 'N', 'I', 'M'), WEBP_CHUNK_ANIM, ANIM_CHUNK_SIZE},
-    {MKFOURCC('A', 'N', 'M', 'F'), WEBP_CHUNK_ANMF, ANMF_CHUNK_SIZE},
-    {MKFOURCC('A', 'L', 'P', 'H'), WEBP_CHUNK_ALPHA, UNDEFINED_CHUNK_SIZE},
-    {MKFOURCC('V', 'P', '8', ' '), WEBP_CHUNK_IMAGE, UNDEFINED_CHUNK_SIZE},
-    {MKFOURCC('V', 'P', '8', 'L'), WEBP_CHUNK_IMAGE, UNDEFINED_CHUNK_SIZE},
-    {MKFOURCC('E', 'X', 'I', 'F'), WEBP_CHUNK_EXIF, UNDEFINED_CHUNK_SIZE},
-    {MKFOURCC('X', 'M', 'P', ' '), WEBP_CHUNK_XMP, UNDEFINED_CHUNK_SIZE},
-    {NIL_TAG, WEBP_CHUNK_UNKNOWN, UNDEFINED_CHUNK_SIZE},
+    {MKFOURCC('V', 'P', '8', 'X'), WEBP_CHUNK_VP8X, VP8X_CHUNK_SIZE}, {MKFOURCC('I', 'C', 'C', 'P'), WEBP_CHUNK_ICCP, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('A', 'N', 'I', 'M'), WEBP_CHUNK_ANIM, ANIM_CHUNK_SIZE}, {MKFOURCC('A', 'N', 'M', 'F'), WEBP_CHUNK_ANMF, ANMF_CHUNK_SIZE}, {MKFOURCC('A', 'L', 'P', 'H'), WEBP_CHUNK_ALPHA, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('V', 'P', '8', ' '), WEBP_CHUNK_IMAGE, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('V', 'P', '8', 'L'), WEBP_CHUNK_IMAGE, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('E', 'X', 'I', 'F'), WEBP_CHUNK_EXIF, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('X', 'M', 'P', ' '), WEBP_CHUNK_XMP, UNDEFINED_CHUNK_SIZE}, {NIL_TAG, WEBP_CHUNK_UNKNOWN, UNDEFINED_CHUNK_SIZE},
 
     {NIL_TAG, WEBP_CHUNK_NIL, UNDEFINED_CHUNK_SIZE}};
 
@@ -122,8 +113,7 @@ WebPChunk* ChunkSearchList(WebPChunk* first, uint32 nth, uint32 tag) {
 //------------------------------------------------------------------------------
 // Chunk writer methods.
 
-WebPMuxError ChunkAssignData(WebPChunk* chunk, const WebPData* const data,
-                             int copy_data, uint32 tag) {
+WebPMuxError ChunkAssignData(WebPChunk* chunk, const WebPData* const data, int copy_data, uint32 tag) {
   // For internally allocated chunks, always copy data & make it owner of data.
   if (tag == kChunks[IDX_VP8X].tag || tag == kChunks[IDX_ANIM].tag) {
     copy_data = 1;
@@ -143,8 +133,7 @@ WebPMuxError ChunkAssignData(WebPChunk* chunk, const WebPData* const data,
   return WEBP_MUX_OK;
 }
 
-WebPMuxError ChunkSetHead(WebPChunk* const chunk,
-                          WebPChunk** const chunk_list) {
+WebPMuxError ChunkSetHead(WebPChunk* const chunk, WebPChunk** const chunk_list) {
   WebPChunk* new_chunk;
 
   assert.Assert(chunk_list != nil);
@@ -161,8 +150,7 @@ WebPMuxError ChunkSetHead(WebPChunk* const chunk,
   return WEBP_MUX_OK;
 }
 
-WebPMuxError ChunkAppend(WebPChunk* const chunk,
-                         WebPChunk*** const chunk_list) {
+WebPMuxError ChunkAppend(WebPChunk* const chunk, WebPChunk*** const chunk_list) {
   WebPMuxError err;
   assert.Assert(chunk_list != nil && *chunk_list != nil);
 
@@ -251,8 +239,7 @@ WebPMuxImage* MuxImageRelease(WebPMuxImage* const wpi) {
 // MuxImage search methods.
 
 // Get a reference to appropriate chunk list within an image given chunk tag.
-static WebPChunk** GetChunkListFromId(const WebPMuxImage* const wpi,
-                                      WebPChunkId id) {
+static WebPChunk** GetChunkListFromId(const WebPMuxImage* const wpi, WebPChunkId id) {
   assert.Assert(wpi != nil);
   switch (id) {
     case WEBP_CHUNK_ANMF:
@@ -286,8 +273,7 @@ int MuxImageCount(const WebPMuxImage* wpi_list, WebPChunkId id) {
 // Outputs a pointer to 'prev_wpi.next',
 //   where 'prev_wpi' is the pointer to the image at position (nth - 1).
 // Returns true if nth image was found.
-static int SearchImageToGetOrDelete(WebPMuxImage** wpi_list, uint32 nth,
-                                    WebPMuxImage*** const location) {
+static int SearchImageToGetOrDelete(WebPMuxImage** wpi_list, uint32 nth, WebPMuxImage*** const location) {
   uint32 count = 0;
   assert.Assert(wpi_list);
   *location = wpi_list;
@@ -354,12 +340,10 @@ WebPMuxError MuxImageDeleteNth(WebPMuxImage** wpi_list, uint32 nth) {
 //------------------------------------------------------------------------------
 // MuxImage reader methods.
 
-WebPMuxError MuxImageGetNth(const WebPMuxImage** wpi_list, uint32 nth,
-                            WebPMuxImage** wpi) {
+WebPMuxError MuxImageGetNth(const WebPMuxImage** wpi_list, uint32 nth, WebPMuxImage** wpi) {
   assert.Assert(wpi_list);
   assert.Assert(wpi);
-  if (!SearchImageToGetOrDelete((WebPMuxImage**)wpi_list, nth,
-                                (WebPMuxImage***)&wpi_list)) {
+  if (!SearchImageToGetOrDelete((WebPMuxImage**)wpi_list, nth, (WebPMuxImage***)&wpi_list)) {
     return WEBP_MUX_NOT_FOUND;
   }
   *wpi = (WebPMuxImage*)*wpi_list;
@@ -380,8 +364,7 @@ uint64 MuxImageDiskSize(const WebPMuxImage* const wpi) {
 }
 
 // Special case as ANMF chunk encapsulates other image chunks.
-static uint8* ChunkEmitSpecial(const WebPChunk* const header,
-                                 uint64 total_size, uint8* dst) {
+static uint8* ChunkEmitSpecial(const WebPChunk* const header, uint64 total_size, uint8* dst) {
   const uint64 header_size = header.data.size;
   const uint64 offset_to_next = total_size - CHUNK_HEADER_SIZE;
   assert.Assert(header.tag == kChunks[IDX_ANMF].tag);
@@ -457,9 +440,7 @@ const NO_FLAG =((WebPFeatureFlags)0)
 // retrieval, maximum number of chunks by index (use -1 to skip)
 // and feature incompatibility (use NO_FLAG to skip).
 // On success returns WEBP_MUX_OK and stores the chunk count in *num.
-static WebPMuxError ValidateChunk(const WebPMux* const mux, CHUNK_INDEX idx,
-                                  WebPFeatureFlags feature, uint32 vp8x_flags,
-                                  int max, int* num) {
+static WebPMuxError ValidateChunk(const WebPMux* const mux, CHUNK_INDEX idx, WebPFeatureFlags feature, uint32 vp8x_flags, int max, int* num) {
   const WebPMuxError err = WebPMuxNumChunks(mux, kChunks[idx].id, num);
   if (err != WEBP_MUX_OK) return err;
   if (max > -1 && *num > max) return WEBP_MUX_INVALID_ARGUMENT;

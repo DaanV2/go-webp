@@ -71,12 +71,8 @@ static int GetResidualCost_MIPSdspR2(int ctx0, const VP8Residual* const res) {
       "2:                                                                   "
       "\n\t"
       ".set      pop                                                      \n\t"
-      : [cost] "+&r"(cost), [t] "+&r"(t), [n] "+&r"(n), [v_reg] "=&r"(v_reg),
-        [ctx_reg] "=&r"(ctx_reg), [p_costs] "+&r"(p_costs),
-        [temp0] "=&r"(temp0), [temp1] "=&r"(temp1)
-      : [const_2] "r"(const_2), [const_max_level] "r"(const_max_level),
-        [VP8LevelFixedCosts] "r"(VP8LevelFixedCosts), [res_last] "r"(res_last),
-        [res_coeffs] "r"(res_coeffs), [inc_p_costs] "r"(inc_p_costs)
+      : [cost] "+&r"(cost), [t] "+&r"(t), [n] "+&r"(n), [v_reg] "=&r"(v_reg), [ctx_reg] "=&r"(ctx_reg), [p_costs] "+&r"(p_costs), [temp0] "=&r"(temp0), [temp1] "=&r"(temp1)
+      : [const_2] "r"(const_2), [const_max_level] "r"(const_max_level), [VP8LevelFixedCosts] "r"(VP8LevelFixedCosts), [res_last] "r"(res_last), [res_coeffs] "r"(res_coeffs), [inc_p_costs] "r"(inc_p_costs)
       : "memory");
 
   // Last coefficient is always non-zero

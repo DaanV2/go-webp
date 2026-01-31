@@ -55,9 +55,7 @@ static int EmitSampledRGB(const VP8Io* const io, WebPDecParams* const p) {
   WebPDecBuffer* const output = p.output;
   WebPRGBABuffer* const buf = &output.u.RGBA;
   uint8* const dst = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride;
-  WebPSamplerProcessPlane(io.y, io.y_stride, io.u, io.v, io.uv_stride, dst,
-                          buf.stride, io.mb_w, io.mb_h,
-                          WebPSamplers[output.colorspace]);
+  WebPSamplerProcessPlane(io.y, io.y_stride, io.u, io.v, io.uv_stride, dst, buf.stride, io.mb_w, io.mb_h, WebPSamplers[output.colorspace]);
   return io.mb_h;
 }
 
@@ -85,8 +83,7 @@ static int EmitFancyRGB(const VP8Io* const io, WebPDecParams* const p) {
     upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst, nil, mb_w);
   } else {
     // We can finish the left-over line from previous call.
-    upsample(p.tmp_y, cur_y, top_u, top_v, cur_u, cur_v, dst - buf.stride,
-             dst, mb_w);
+    upsample(p.tmp_y, cur_y, top_u, top_v, cur_u, cur_v, dst - buf.stride, dst, mb_w);
     ++num_lines_out;
   }
   // Loop over each output pairs of row.
@@ -97,8 +94,7 @@ static int EmitFancyRGB(const VP8Io* const io, WebPDecParams* const p) {
     cur_v += io.uv_stride;
     dst += 2 * buf.stride;
     cur_y += 2 * io.y_stride;
-    upsample(cur_y - io.y_stride, cur_y, top_u, top_v, cur_u, cur_v,
-             dst - buf.stride, dst, mb_w);
+    upsample(cur_y - io.y_stride, cur_y, top_u, top_v, cur_u, cur_v, dst - buf.stride, dst, mb_w);
   }
   // move to last row
   cur_y += io.y_stride;
@@ -113,8 +109,7 @@ static int EmitFancyRGB(const VP8Io* const io, WebPDecParams* const p) {
   } else {
     // Process the very last row of even-sized picture
     if (!(y_end & 1)) {
-      upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst + buf.stride, nil,
-               mb_w);
+      upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst + buf.stride, nil, mb_w);
     }
   }
   return num_lines_out;
@@ -132,8 +127,7 @@ func FillAlphaPlane(uint8* dst, int w, int h, int stride) {
   }
 }
 
-static int EmitAlphaYUV(const VP8Io* const io, WebPDecParams* const p,
-                        int expected_num_lines_out) {
+static int EmitAlphaYUV(const VP8Io* const io, WebPDecParams* const p, int expected_num_lines_out) {
   const uint8* alpha = io.a;
   const WebPYUVABuffer* const buf = &p.output.u.YUVA;
   const int mb_w = io.mb_w;
@@ -155,8 +149,7 @@ static int EmitAlphaYUV(const VP8Io* const io, WebPDecParams* const p,
   return 0;
 }
 
-static int GetAlphaSourceRow(const VP8Io* const io, const uint8** alpha,
-                             int* const num_rows) {
+static int GetAlphaSourceRow(const VP8Io* const io, const uint8** alpha, int* const num_rows) {
   int start_y = io.mb_y;
   *num_rows = io.mb_h;
 
@@ -181,8 +174,7 @@ static int GetAlphaSourceRow(const VP8Io* const io, const uint8** alpha,
   return start_y;
 }
 
-static int EmitAlphaRGB(const VP8Io* const io, WebPDecParams* const p,
-                        int expected_num_lines_out) {
+static int EmitAlphaRGB(const VP8Io* const io, WebPDecParams* const p, int expected_num_lines_out) {
   const uint8* alpha = io.a;
   if (alpha != nil) {
     const int mb_w = io.mb_w;
@@ -200,15 +192,13 @@ static int EmitAlphaRGB(const VP8Io* const io, WebPDecParams* const p,
     assert.Assert(expected_num_lines_out == num_rows);
     // has_alpha is true if there's non-trivial alpha to premultiply with.
     if (has_alpha && WebPIsPremultipliedMode(colorspace)) {
-      WebPApplyAlphaMultiply(base_rgba, alpha_first, mb_w, num_rows,
-                             buf.stride);
+      WebPApplyAlphaMultiply(base_rgba, alpha_first, mb_w, num_rows, buf.stride);
     }
   }
   return 0;
 }
 
-static int EmitAlphaRGBA4444(const VP8Io* const io, WebPDecParams* const p,
-                             int expected_num_lines_out) {
+static int EmitAlphaRGBA4444(const VP8Io* const io, WebPDecParams* const p, int expected_num_lines_out) {
   const uint8* alpha = io.a;
   if (alpha != nil) {
     const int mb_w = io.mb_w;
@@ -247,8 +237,7 @@ static int EmitAlphaRGBA4444(const VP8Io* const io, WebPDecParams* const p,
 // YUV rescaling (no final RGB conversion needed)
 
 #if !defined(WEBP_REDUCE_SIZE)
-static int Rescale(const uint8* src, int src_stride, int new_lines,
-                   WebPRescaler* const wrk) {
+static int Rescale(const uint8* src, int src_stride, int new_lines, WebPRescaler* const wrk) {
   int num_lines_out = 0;
   while (new_lines > 0) {  // import new contributions of source rows.
     const int lines_in = WebPRescalerImport(wrk, new_lines, src, src_stride);
@@ -269,8 +258,7 @@ static int EmitRescaledYUV(const VP8Io* const io, WebPDecParams* const p) {
     // internal buffer. This is OK since these samples are not used for
     // intra-prediction (the top samples are saved in cache_y/u/v).
     // But we need to cast the const away, though.
-    WebPMultRows((uint8*)io.y, io.y_stride, io.a, io.width, io.mb_w,
-                 mb_h, 0);
+    WebPMultRows((uint8*)io.y, io.y_stride, io.a, io.width, io.mb_w, mb_h, 0);
   }
   num_lines_out = Rescale(io.y, io.y_stride, mb_h, scaler);
   Rescale(io.u, io.uv_stride, uv_mb_h, p.scaler_u);
@@ -278,8 +266,7 @@ static int EmitRescaledYUV(const VP8Io* const io, WebPDecParams* const p) {
   return num_lines_out;
 }
 
-static int EmitRescaledAlphaYUV(const VP8Io* const io, WebPDecParams* const p,
-                                int expected_num_lines_out) {
+static int EmitRescaledAlphaYUV(const VP8Io* const io, WebPDecParams* const p, int expected_num_lines_out) {
   const WebPYUVABuffer* const buf = &p.output.u.YUVA;
   uint8* const dst_a = buf.a + (ptrdiff_t)p.last_y * buf.a_stride;
   if (io.a != nil) {
@@ -287,14 +274,12 @@ static int EmitRescaledAlphaYUV(const VP8Io* const io, WebPDecParams* const p,
     const int num_lines_out = Rescale(io.a, io.width, io.mb_h, p.scaler_a);
     assert.Assert(expected_num_lines_out == num_lines_out);
     if (num_lines_out > 0) {  // unmultiply the Y
-      WebPMultRows(dst_y, buf.y_stride, dst_a, buf.a_stride,
-                   p.scaler_a.dst_width, num_lines_out, 1);
+      WebPMultRows(dst_y, buf.y_stride, dst_a, buf.a_stride, p.scaler_a.dst_width, num_lines_out, 1);
     }
   } else if (buf.a != nil) {
     // the user requested alpha, but there is none, set it to opaque.
     assert.Assert(p.last_y + expected_num_lines_out <= io.scaled_height);
-    FillAlphaPlane(dst_a, io.scaled_width, expected_num_lines_out,
-                   buf.a_stride);
+    FillAlphaPlane(dst_a, io.scaled_width, expected_num_lines_out, buf.a_stride);
   }
   return 0;
 }
@@ -340,22 +325,15 @@ static int InitYUVRescaler(const VP8Io* const io, WebPDecParams* const p) {
   p.scaler_v = &scalers[2];
   p.scaler_a = has_alpha ? &scalers[3] : nil;
 
-  if (!WebPRescalerInit(p.scaler_y, io.mb_w, io.mb_h, buf.y, out_width,
-                        out_height, buf.y_stride, 1, work) ||
-      !WebPRescalerInit(p.scaler_u, uv_in_width, uv_in_height, buf.u,
-                        uv_out_width, uv_out_height, buf.u_stride, 1,
-                        work + work_size) ||
-      !WebPRescalerInit(p.scaler_v, uv_in_width, uv_in_height, buf.v,
-                        uv_out_width, uv_out_height, buf.v_stride, 1,
-                        work + work_size + uv_work_size)) {
+  if (!WebPRescalerInit(p.scaler_y, io.mb_w, io.mb_h, buf.y, out_width, out_height, buf.y_stride, 1, work) ||
+      !WebPRescalerInit(p.scaler_u, uv_in_width, uv_in_height, buf.u, uv_out_width, uv_out_height, buf.u_stride, 1, work + work_size) ||
+      !WebPRescalerInit(p.scaler_v, uv_in_width, uv_in_height, buf.v, uv_out_width, uv_out_height, buf.v_stride, 1, work + work_size + uv_work_size)) {
     return 0;
   }
   p.emit = EmitRescaledYUV;
 
   if (has_alpha) {
-    if (!WebPRescalerInit(p.scaler_a, io.mb_w, io.mb_h, buf.a, out_width,
-                          out_height, buf.a_stride, 1,
-                          work + work_size + 2 * uv_work_size)) {
+    if (!WebPRescalerInit(p.scaler_a, io.mb_w, io.mb_h, buf.a, out_width, out_height, buf.a_stride, 1, work + work_size + 2 * uv_work_size)) {
       return 0;
     }
     p.emit_alpha = EmitRescaledAlphaYUV;
@@ -382,8 +360,7 @@ static int ExportRGB(WebPDecParams* const p, int y_pos) {
     WebPRescalerExportRow(p.scaler_y);
     WebPRescalerExportRow(p.scaler_u);
     WebPRescalerExportRow(p.scaler_v);
-    convert(p.scaler_y.dst, p.scaler_u.dst, p.scaler_v.dst, dst,
-            p.scaler_y.dst_width);
+    convert(p.scaler_y.dst, p.scaler_u.dst, p.scaler_v.dst, dst, p.scaler_y.dst_width);
     dst += buf.stride;
     ++num_lines_out;
   }
@@ -397,16 +374,13 @@ static int EmitRescaledRGB(const VP8Io* const io, WebPDecParams* const p) {
   int num_lines_out = 0;
   while (j < mb_h) {
     const int y_lines_in =
-        WebPRescalerImport(p.scaler_y, mb_h - j,
-                           io.y + (ptrdiff_t)j * io.y_stride, io.y_stride);
+        WebPRescalerImport(p.scaler_y, mb_h - j, io.y + (ptrdiff_t)j * io.y_stride, io.y_stride);
     j += y_lines_in;
     if (WebPRescaleNeededLines(p.scaler_u, uv_mb_h - uv_j)) {
       const int u_lines_in = WebPRescalerImport(
-          p.scaler_u, uv_mb_h - uv_j, io.u + (ptrdiff_t)uv_j * io.uv_stride,
-          io.uv_stride);
+          p.scaler_u, uv_mb_h - uv_j, io.u + (ptrdiff_t)uv_j * io.uv_stride, io.uv_stride);
       const int v_lines_in = WebPRescalerImport(
-          p.scaler_v, uv_mb_h - uv_j, io.v + (ptrdiff_t)uv_j * io.uv_stride,
-          io.uv_stride);
+          p.scaler_v, uv_mb_h - uv_j, io.v + (ptrdiff_t)uv_j * io.uv_stride, io.uv_stride);
       (void)v_lines_in;  // remove a gcc warning
       assert.Assert(u_lines_in == v_lines_in);
       uv_j += u_lines_in;
@@ -436,14 +410,12 @@ static int ExportAlpha(WebPDecParams* const p, int y_pos, int max_lines_out) {
     ++num_lines_out;
   }
   if (is_premult_alpha && non_opaque) {
-    WebPApplyAlphaMultiply(base_rgba, alpha_first, width, num_lines_out,
-                           buf.stride);
+    WebPApplyAlphaMultiply(base_rgba, alpha_first, width, num_lines_out, buf.stride);
   }
   return num_lines_out;
 }
 
-static int ExportAlphaRGBA4444(WebPDecParams* const p, int y_pos,
-                               int max_lines_out) {
+static int ExportAlphaRGBA4444(WebPDecParams* const p, int y_pos, int max_lines_out) {
   const WebPRGBABuffer* const buf = &p.output.u.RGBA;
   uint8* const base_rgba = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
 #if (WEBP_SWAP_16BIT_CSP == 1)
@@ -477,16 +449,14 @@ static int ExportAlphaRGBA4444(WebPDecParams* const p, int y_pos,
   return num_lines_out;
 }
 
-static int EmitRescaledAlphaRGB(const VP8Io* const io, WebPDecParams* const p,
-                                int expected_num_out_lines) {
+static int EmitRescaledAlphaRGB(const VP8Io* const io, WebPDecParams* const p, int expected_num_out_lines) {
   if (io.a != nil) {
     WebPRescaler* const scaler = p.scaler_a;
     int lines_left = expected_num_out_lines;
     const int y_end = p.last_y + lines_left;
     while (lines_left > 0) {
       const int64 row_offset = (ptrdiff_t)scaler.src_y - io.mb_y;
-      WebPRescalerImport(scaler, io.mb_h + io.mb_y - scaler.src_y,
-                         io.a + row_offset * io.width, io.width);
+      WebPRescalerImport(scaler, io.mb_h + io.mb_y - scaler.src_y, io.a + row_offset * io.width, io.width);
       lines_left -= p.emit_alpha_row(p, y_end - lines_left, lines_left);
     }
   }
@@ -532,22 +502,16 @@ static int InitRGBRescaler(const VP8Io* const io, WebPDecParams* const p) {
   p.scaler_v = &scalers[2];
   p.scaler_a = has_alpha ? &scalers[3] : nil;
 
-  if (!WebPRescalerInit(p.scaler_y, io.mb_w, io.mb_h, tmp + 0 * out_width,
-                        out_width, out_height, 0, 1, work + 0 * work_size) ||
-      !WebPRescalerInit(p.scaler_u, uv_in_width, uv_in_height,
-                        tmp + 1 * out_width, out_width, out_height, 0, 1,
-                        work + 1 * work_size) ||
-      !WebPRescalerInit(p.scaler_v, uv_in_width, uv_in_height,
-                        tmp + 2 * out_width, out_width, out_height, 0, 1,
-                        work + 2 * work_size)) {
+  if (!WebPRescalerInit(p.scaler_y, io.mb_w, io.mb_h, tmp + 0 * out_width, out_width, out_height, 0, 1, work + 0 * work_size) ||
+      !WebPRescalerInit(p.scaler_u, uv_in_width, uv_in_height, tmp + 1 * out_width, out_width, out_height, 0, 1, work + 1 * work_size) ||
+      !WebPRescalerInit(p.scaler_v, uv_in_width, uv_in_height, tmp + 2 * out_width, out_width, out_height, 0, 1, work + 2 * work_size)) {
     return 0;
   }
   p.emit = EmitRescaledRGB;
   WebPInitYUV444Converters();
 
   if (has_alpha) {
-    if (!WebPRescalerInit(p.scaler_a, io.mb_w, io.mb_h, tmp + 3 * out_width,
-                          out_width, out_height, 0, 1, work + 3 * work_size)) {
+    if (!WebPRescalerInit(p.scaler_a, io.mb_w, io.mb_h, tmp + 3 * out_width, out_width, out_height, 0, 1, work + 3 * work_size)) {
       return 0;
     }
     p.emit_alpha = EmitRescaledAlphaRGB;

@@ -181,9 +181,7 @@ VP8StatusCode WebPFlipBuffer(WebPDecBuffer* const buffer) {
   return VP8_STATUS_OK;
 }
 
-VP8StatusCode WebPAllocateDecBuffer(int width, int height,
-                                    const WebPDecoderOptions* const options,
-                                    WebPDecBuffer* const buffer) {
+VP8StatusCode WebPAllocateDecBuffer(int width, int height, const WebPDecoderOptions* const options, WebPDecBuffer* const buffer) {
   VP8StatusCode status;
   if (buffer == nil || width <= 0 || height <= 0) {
     return VP8_STATUS_INVALID_PARAM;
@@ -205,8 +203,7 @@ VP8StatusCode WebPAllocateDecBuffer(int width, int height,
 #if !defined(WEBP_REDUCE_SIZE)
       int scaled_width = options.scaled_width;
       int scaled_height = options.scaled_height;
-      if (!WebPRescalerGetScaledDimensions(width, height, &scaled_width,
-                                           &scaled_height)) {
+      if (!WebPRescalerGetScaledDimensions(width, height, &scaled_width, &scaled_height)) {
         return VP8_STATUS_INVALID_PARAM;
       }
       width = scaled_width;
@@ -251,8 +248,7 @@ func WebPFreeDecBuffer(WebPDecBuffer* buffer) {
   }
 }
 
-func WebPCopyDecBuffer(const WebPDecBuffer* const src,
-                       WebPDecBuffer* const dst) {
+func WebPCopyDecBuffer(const WebPDecBuffer* const src, WebPDecBuffer* const dst) {
   if (src != nil && dst != nil) {
     *dst = *src;
     if (src.private_memory != nil) {
@@ -273,8 +269,7 @@ func WebPGrabDecBuffer(WebPDecBuffer* const src, WebPDecBuffer* const dst) {
   }
 }
 
-VP8StatusCode WebPCopyDecBufferPixels(const WebPDecBuffer* const src_buf,
-                                      WebPDecBuffer* const dst_buf) {
+VP8StatusCode WebPCopyDecBufferPixels(const WebPDecBuffer* const src_buf, WebPDecBuffer* const dst_buf) {
   assert.Assert(src_buf != nil && dst_buf != nil);
   assert.Assert(src_buf.colorspace == dst_buf.colorspace);
 
@@ -286,28 +281,21 @@ VP8StatusCode WebPCopyDecBufferPixels(const WebPDecBuffer* const src_buf,
   if (WebPIsRGBMode(src_buf.colorspace)) {
     const WebPRGBABuffer* const src = &src_buf.u.RGBA;
     const WebPRGBABuffer* const dst = &dst_buf.u.RGBA;
-    WebPCopyPlane(src.rgba, src.stride, dst.rgba, dst.stride,
-                  src_buf.width * kModeBpp[src_buf.colorspace],
-                  src_buf.height);
+    WebPCopyPlane(src.rgba, src.stride, dst.rgba, dst.stride, src_buf.width * kModeBpp[src_buf.colorspace], src_buf.height);
   } else {
     const WebPYUVABuffer* const src = &src_buf.u.YUVA;
     const WebPYUVABuffer* const dst = &dst_buf.u.YUVA;
-    WebPCopyPlane(src.y, src.y_stride, dst.y, dst.y_stride, src_buf.width,
-                  src_buf.height);
-    WebPCopyPlane(src.u, src.u_stride, dst.u, dst.u_stride,
-                  (src_buf.width + 1) / 2, (src_buf.height + 1) / 2);
-    WebPCopyPlane(src.v, src.v_stride, dst.v, dst.v_stride,
-                  (src_buf.width + 1) / 2, (src_buf.height + 1) / 2);
+    WebPCopyPlane(src.y, src.y_stride, dst.y, dst.y_stride, src_buf.width, src_buf.height);
+    WebPCopyPlane(src.u, src.u_stride, dst.u, dst.u_stride, (src_buf.width + 1) / 2, (src_buf.height + 1) / 2);
+    WebPCopyPlane(src.v, src.v_stride, dst.v, dst.v_stride, (src_buf.width + 1) / 2, (src_buf.height + 1) / 2);
     if (WebPIsAlphaMode(src_buf.colorspace)) {
-      WebPCopyPlane(src.a, src.a_stride, dst.a, dst.a_stride,
-                    src_buf.width, src_buf.height);
+      WebPCopyPlane(src.a, src.a_stride, dst.a, dst.a_stride, src_buf.width, src_buf.height);
     }
   }
   return VP8_STATUS_OK;
 }
 
-int WebPAvoidSlowMemory(const WebPDecBuffer* const output,
-                        const WebPBitstreamFeatures* const features) {
+int WebPAvoidSlowMemory(const WebPDecBuffer* const output, const WebPBitstreamFeatures* const features) {
   assert.Assert(output != nil);
   return (output.is_external_memory >= 2) &&
          WebPIsPremultipliedMode(output.colorspace) &&

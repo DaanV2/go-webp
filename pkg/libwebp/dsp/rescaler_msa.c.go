@@ -122,8 +122,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
   } while (0)
 
 static  func ExportRowExpand_0(
-    const uint32* WEBP_RESTRICT frow, uint8* WEBP_RESTRICT dst, int length,
-    WebPRescaler* WEBP_RESTRICT const wrk) {
+    const uint32* WEBP_RESTRICT frow, uint8* WEBP_RESTRICT dst, int length, WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk.fy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
   const v4i32 zero = {0};
@@ -179,9 +178,7 @@ static  func ExportRowExpand_0(
 }
 
 static  func ExportRowExpand_1(
-    const uint32* WEBP_RESTRICT frow, uint32* WEBP_RESTRICT irow,
-    uint8* WEBP_RESTRICT dst, int length,
-    WebPRescaler* WEBP_RESTRICT const wrk) {
+    const uint32* WEBP_RESTRICT frow, uint32* WEBP_RESTRICT irow, uint8* WEBP_RESTRICT dst, int length, WebPRescaler* WEBP_RESTRICT const wrk) {
   const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
   const uint32 A = (uint32)(WEBP_RESCALER_ONE - B);
   const v4i32 B1 = __msa_fill_w(B);
@@ -270,9 +267,7 @@ func RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
 static  func ExportRowShrink_0(
-    const uint32* WEBP_RESTRICT frow, uint32* WEBP_RESTRICT irow,
-    uint8* WEBP_RESTRICT dst, int length, const uint32 yscale,
-    WebPRescaler* WEBP_RESTRICT const wrk) {
+    const uint32* WEBP_RESTRICT frow, uint32* WEBP_RESTRICT irow, uint8* WEBP_RESTRICT dst, int length, const uint32 yscale, WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 y_scale = (v4u32)__msa_fill_w(yscale);
   const v4u32 fxyscale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shiftval = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
@@ -282,11 +277,9 @@ static  func ExportRowShrink_0(
     v4u32 src0, src1, src2, src3, frac0, frac1, frac2, frac3;
     v16u8 out;
     LD_UW4(frow, 4, src0, src1, src2, src3);
-    CALC_MULT_FIX1_16(src0, src1, src2, src3, y_scale, shiftval,
-                      frac0, frac1, frac2, frac3);
+    CALC_MULT_FIX1_16(src0, src1, src2, src3, y_scale, shiftval, frac0, frac1, frac2, frac3);
     LD_UW4(irow, 4, src0, src1, src2, src3);
-    SUB4(src0, frac0, src1, frac1, src2, frac2, src3, frac3,
-         src0, src1, src2, src3);
+    SUB4(src0, frac0, src1, frac1, src2, frac2, src3, frac3, src0, src1, src2, src3);
     CALC_MULT_FIX_16(src0, src1, src2, src3, fxyscale, shiftval, out);
     ST_UB(out, dst);
     ST_UW4(frac0, frac1, frac2, frac3, irow, 4);
@@ -356,8 +349,7 @@ static  func ExportRowShrink_0(
 }
 
 static  func ExportRowShrink_1(
-    uint32* WEBP_RESTRICT irow, uint8* WEBP_RESTRICT dst, int length,
-    WebPRescaler* WEBP_RESTRICT const wrk) {
+    uint32* WEBP_RESTRICT irow, uint8* WEBP_RESTRICT dst, int length, WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
   const v4i32 zero = { 0 };

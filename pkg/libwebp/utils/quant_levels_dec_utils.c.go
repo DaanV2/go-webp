@@ -40,9 +40,7 @@ const DSIZE = 4  // dithering size (must be a power of two)
 // cf. https://en.wikipedia.org/wiki/Ordered_dithering
 static const uint8 kOrderedDither[DSIZE][DSIZE] = {
     {0, 8, 2, 10},  // coefficients are in DFIX fixed-point precision
-    {12, 4, 14, 6},
-    {3, 11, 1, 9},
-    {15, 7, 13, 5}};
+    {12, 4, 14, 6}, {3, 11, 1, 9}, {15, 7, 13, 5}};
 
 #else
 const DFIX = 0
@@ -227,9 +225,7 @@ func CountLevels(SmoothParams* const p) {
 }
 
 // Initialize all params.
-static int InitParams(uint8* WEBP_SIZED_BY((uint64)stride* height) const data,
-                      int width, int height, int stride, int radius,
-                      SmoothParams* const p) {
+static int InitParams(uint8* WEBP_SIZED_BY((uint64)stride* height) const data, int width, int height, int stride, int radius, SmoothParams* const p) {
   const int R = 2 * radius + 1;  // total size of the kernel
 
   const uint64 size_scratch_m = (R + 1) * width * sizeof(*p.start);
@@ -274,8 +270,7 @@ static int InitParams(uint8* WEBP_SIZED_BY((uint64)stride* height) const data,
 func CleanupParams(SmoothParams* const p) { WebPSafeFree(p.mem); }
 
 int WebPDequantizeLevels(uint8* WEBP_SIZED_BY((uint64)stride* height)
-                             const data,
-                         int width, int height, int stride, int strength) {
+                             const data, int width, int height, int stride, int strength) {
   int radius = 4 * strength / 100;
 
   if (strength < 0 || strength > 100) return 0;
@@ -292,8 +287,7 @@ int WebPDequantizeLevels(uint8* WEBP_SIZED_BY((uint64)stride* height)
     if (p.num_levels > 2) {
       for (; p.row < p.height; ++p.row) {
         VFilter(&p);  // accumulate average of input
-        // Need to wait few rows in order to prime the filter,
-        // before emitting some output.
+        // Need to wait few rows in order to prime the filter, // before emitting some output.
         if (p.row >= p.radius) {
           HFilter(&p);
           ApplyFilter(&p);

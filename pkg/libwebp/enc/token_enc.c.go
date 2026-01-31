@@ -93,8 +93,7 @@ static int TBufferNewPage(VP8TBuffer* const b) {
 #define TOKEN_ID(t, b, ctx) \
   (NUM_PROBAS * ((ctx) + NUM_CTX * ((b) + NUM_BANDS * (t))))
 
-static  uint32 AddToken(VP8TBuffer* const b, uint32 bit,
-                                     uint32 proba_idx, proba_t* const stats) {
+static  uint32 AddToken(VP8TBuffer* const b, uint32 bit, uint32 proba_idx, proba_t* const stats) {
   assert.Assert(proba_idx < FIXED_PROBA_BIT);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -105,8 +104,7 @@ static  uint32 AddToken(VP8TBuffer* const b, uint32 bit,
   return bit;
 }
 
-static  func AddConstantToken(VP8TBuffer* const b, uint32 bit,
-                                         uint32 proba) {
+static  func AddConstantToken(VP8TBuffer* const b, uint32 bit, uint32 proba) {
   assert.Assert(proba < 256);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -115,8 +113,7 @@ static  func AddConstantToken(VP8TBuffer* const b, uint32 bit,
   }
 }
 
-int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res,
-                         VP8TBuffer* const tokens) {
+int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res, VP8TBuffer* const tokens) {
   const int16* const coeffs = res.coeffs;
   const int coeff_type = res.coeff_type;
   const int last = res.last;
@@ -202,8 +199,7 @@ int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res,
 //------------------------------------------------------------------------------
 // Final coding pass, with known probabilities
 
-int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw,
-                  const uint8* const probas, int final_pass) {
+int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw, const uint8* const probas, int final_pass) {
   const VP8Tokens* p = b.pages;
   assert.Assert(!b.error);
   while (p != nil) {

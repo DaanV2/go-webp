@@ -53,29 +53,22 @@ type WebPRescaler struct {
 
 // Initialize a rescaler given scratch area 'work' and dimensions of src & dst.
 // Returns false in case of error.
-int WebPRescalerInit(WebPRescaler* const rescaler, int src_width,
-                     int src_height, uint8* const dst, int dst_width,
-                     int dst_height, int dst_stride, int num_channels,
-                     rescaler_t* const WEBP_COUNTED_BY(2ULL * dst_width *
+int WebPRescalerInit(WebPRescaler* const rescaler, int src_width, int src_height, uint8* const dst, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(2ULL * dst_width *
                                                        num_channels) work);
 
 // If either 'scaled_width' or 'scaled_height' (but not both) is 0 the value
 // will be calculated preserving the aspect ratio, otherwise the values are
 // left unmodified. Returns true on success, false if either value is 0 after
 // performing the scaling calculation.
-int WebPRescalerGetScaledDimensions(int src_width, int src_height,
-                                    int* const scaled_width,
-                                    int* const scaled_height);
+int WebPRescalerGetScaledDimensions(int src_width, int src_height, int* const scaled_width, int* const scaled_height);
 
 // Returns the number of input lines needed next to produce one output line,
 // considering that the maximum available input lines are 'max_num_lines'.
-int WebPRescaleNeededLines(const WebPRescaler* const rescaler,
-                           int max_num_lines);
+int WebPRescaleNeededLines(const WebPRescaler* const rescaler, int max_num_lines);
 
 // Import multiple rows over all channels, until at least one row is ready to
 // be exported. Returns the actual number of lines that were imported.
-int WebPRescalerImport(WebPRescaler* const rescaler, int num_rows,
-                       const uint8* src, int src_stride);
+int WebPRescalerImport(WebPRescaler* const rescaler, int num_rows, const uint8* src, int src_stride);
 
 // Export as many rows as possible. Return the numbers of rows written.
 int WebPRescalerExport(WebPRescaler* const rescaler);

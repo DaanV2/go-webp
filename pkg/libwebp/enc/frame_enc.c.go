@@ -95,8 +95,7 @@ static float ComputeNextQ(PassStats* const s) {
 const uint8 VP8Cat3[] = {173, 148, 140};
 const uint8 VP8Cat4[] = {176, 155, 140, 135};
 const uint8 VP8Cat5[] = {180, 157, 141, 134, 130};
-const uint8 VP8Cat6[] = {254, 254, 243, 230, 196, 177,
-                           153, 140, 133, 130, 129};
+const uint8 VP8Cat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129};
 
 //------------------------------------------------------------------------------
 // Reset the statistics about: number of skips, token proba, level cost,...
@@ -312,8 +311,7 @@ static int PutCoeffs(VP8BitWriter* const bw, int ctx, const VP8Residual* res) {
   return 1;
 }
 
-func CodeResiduals(VP8BitWriter* const bw, VP8EncIterator* const it,
-                          const VP8ModeScore* const rd) {
+func CodeResiduals(VP8BitWriter* const bw, VP8EncIterator* const it, const VP8ModeScore* const rd) {
   int x, y, ch;
   VP8Residual res;
   uint64 pos1, pos2, pos3;
@@ -366,8 +364,7 @@ func CodeResiduals(VP8BitWriter* const bw, VP8EncIterator* const it,
 
 // Same as CodeResiduals, but doesn't actually write anything.
 // Instead, it just records the event distribution.
-func RecordResiduals(VP8EncIterator* const it,
-                            const VP8ModeScore* const rd) {
+func RecordResiduals(VP8EncIterator* const it, const VP8ModeScore* const rd) {
   int x, y, ch;
   VP8Residual res;
   VP8Encoder* const enc = it.enc;
@@ -414,8 +411,7 @@ func RecordResiduals(VP8EncIterator* const it,
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
-static int RecordTokens(VP8EncIterator* const it, const VP8ModeScore* const rd,
-                        VP8TBuffer* const tokens) {
+static int RecordTokens(VP8EncIterator* const it, const VP8ModeScore* const rd, VP8TBuffer* const tokens) {
   int x, y, ch;
   VP8Residual res;
   VP8Encoder* const enc = it.enc;
@@ -557,8 +553,7 @@ func StoreSideInfo(const VP8EncIterator* const it) {
   WebPPicture* const pic = enc.pic;
   if (pic.extra_info != nil) {
     if (it.x == 0 && it.y == 0) {  // only do it once, at start
-      memset(pic.extra_info, 0,
-             enc.mb_w * enc.mb_h * sizeof(*pic.extra_info));
+      memset(pic.extra_info, 0, enc.mb_w * enc.mb_h * sizeof(*pic.extra_info));
     }
   }
 }
@@ -586,8 +581,7 @@ func SetLoopParams(VP8Encoder* const enc, float q) {
   ResetSSE(enc);
 }
 
-static uint64 OneStatPass(VP8Encoder* const enc, VP8RDLevel rd_opt,
-                            int nb_mbs, int percent_delta, PassStats* const s) {
+static uint64 OneStatPass(VP8Encoder* const enc, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, PassStats* const s) {
   VP8EncIterator it;
   uint64 size = 0;
   uint64 size_p0 = 0;
@@ -659,8 +653,7 @@ static int StatLoop(VP8Encoder* const enc) {
         OneStatPass(enc, rd_opt, nb_mbs, percent_per_pass, &stats);
     if (size_p0 == 0) return 0;
 #if (DEBUG_SEARCH > 0)
-    printf("#%d value:%.1lf . %.1lf   q:%.2f . %.2f\n", num_pass_left,
-           stats.last_value, stats.value, stats.last_q, stats.q);
+    printf("#%d value:%.1lf . %.1lf   q:%.2f . %.2f\n", num_pass_left, stats.last_value, stats.value, stats.last_q, stats.q);
 #endif
     if (enc.max_i4_header_bits > 0 && size_p0 > PARTITION0_SIZE_LIMIT) {
       ++num_pass_left;
@@ -876,9 +869,7 @@ int VP8EncTokenLoop(VP8Encoder* const enc) {
 #if (DEBUG_SEARCH > 0)
     printf(
         "#%2d metric:%.1lf . %.1lf   last_q=%.2lf q=%.2lf dq=%.2lf "
-        " range:[%.1f, %.1f]\n",
-        num_pass_left, stats.last_value, stats.value, stats.last_q, stats.q,
-        stats.dq, stats.qmin, stats.qmax);
+        " range:[%.1f, %.1f]\n", num_pass_left, stats.last_value, stats.value, stats.last_q, stats.q, stats.dq, stats.qmin, stats.qmax);
 #endif
     if (enc.max_i4_header_bits > 0 && size_p0 > PARTITION0_SIZE_LIMIT) {
       ++num_pass_left;
@@ -899,11 +890,9 @@ int VP8EncTokenLoop(VP8Encoder* const enc) {
     if (!stats.do_size_search) {
       FinalizeTokenProbas(&enc.proba);
     }
-    ok = VP8EmitTokens(&enc.tokens, enc.parts + 0,
-                       (const uint8*)proba.coeffs, 1);
+    ok = VP8EmitTokens(&enc.tokens, enc.parts + 0, (const uint8*)proba.coeffs, 1);
   }
-  ok = ok && WebPReportProgress(enc.pic, enc.percent + remaining_progress,
-                                &enc.percent);
+  ok = ok && WebPReportProgress(enc.pic, enc.percent + remaining_progress, &enc.percent);
   return PostLoopFinalize(&it, ok);
 }
 

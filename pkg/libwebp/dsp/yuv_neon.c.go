@@ -25,8 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 //-----------------------------------------------------------------------------
 
-static uint8x8_t ConvertRGBToYImpl_NEON(const uint8x8_t R, const uint8x8_t G,
-                                        const uint8x8_t B) {
+static uint8x8_t ConvertRGBToYImpl_NEON(const uint8x8_t R, const uint8x8_t G, const uint8x8_t B) {
   const uint16x8_t r = vmovl_u8(R);
   const uint16x8_t g = vmovl_u8(G);
   const uint16x8_t b = vmovl_u8(B);
@@ -48,8 +47,7 @@ static uint8x8_t ConvertRGBToYImpl_NEON(const uint8x8_t R, const uint8x8_t G,
   return vqmovn_u16(Y2);
 }
 
-func ConvertRGBToY_NEON(const uint8* WEBP_RESTRICT rgb,
-                               uint8* WEBP_RESTRICT y, int width, int step) {
+func ConvertRGBToY_NEON(const uint8* WEBP_RESTRICT rgb, uint8* WEBP_RESTRICT y, int width, int step) {
   int i;
   if (step == 3) {
     for (i = 0; i + 8 <= width; i += 8, rgb += 3 * 8) {
@@ -71,8 +69,7 @@ func ConvertRGBToY_NEON(const uint8* WEBP_RESTRICT rgb,
   }
 }
 
-func ConvertBGRToY_NEON(const uint8* WEBP_RESTRICT bgr,
-                               uint8* WEBP_RESTRICT y, int width, int step) {
+func ConvertBGRToY_NEON(const uint8* WEBP_RESTRICT bgr, uint8* WEBP_RESTRICT y, int width, int step) {
   int i;
   if (step == 3) {
     for (i = 0; i + 8 <= width; i += 8, bgr += 3 * 8) {
@@ -94,8 +91,7 @@ func ConvertBGRToY_NEON(const uint8* WEBP_RESTRICT bgr,
   }
 }
 
-func ConvertARGBToY_NEON(const uint32* WEBP_RESTRICT argb,
-                                uint8* WEBP_RESTRICT y, int width) {
+func ConvertARGBToY_NEON(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT y, int width) {
   int i;
   for (i = 0; i + 8 <= width; i += 8) {
     const uint8x8x4_t RGB = vld4_u8((const uint8*)&argb[i]);
@@ -142,9 +138,7 @@ func ConvertARGBToY_NEON(const uint32* WEBP_RESTRICT argb,
     MULTIPLY_16b(28800, -24116, -4684, 128 << SHIFT, V_DST); \
   } while (0)
 
-func ConvertRGBA32ToUV_NEON(const uint16* WEBP_RESTRICT rgb,
-                                   uint8* WEBP_RESTRICT u,
-                                   uint8* WEBP_RESTRICT v, int width) {
+func ConvertRGBA32ToUV_NEON(const uint16* WEBP_RESTRICT rgb, uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int width) {
   int i;
   for (i = 0; i + 8 <= width; i += 8, rgb += 4 * 8) {
     const uint16x8x4_t RGB = vld4q_u16((const uint16*)rgb);
@@ -160,10 +154,7 @@ func ConvertRGBA32ToUV_NEON(const uint16* WEBP_RESTRICT rgb,
   }
 }
 
-func ConvertARGBToUV_NEON(const uint32* WEBP_RESTRICT argb,
-                                 uint8* WEBP_RESTRICT u,
-                                 uint8* WEBP_RESTRICT v, int src_width,
-                                 int do_store) {
+func ConvertARGBToUV_NEON(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int src_width, int do_store) {
   int i;
   for (i = 0; i + 16 <= src_width; i += 16, u += 8, v += 8) {
     const uint8x16x4_t RGB = vld4q_u8((const uint8*)&argb[i]);

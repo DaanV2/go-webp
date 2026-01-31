@@ -28,9 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Predictor Transform
 
-static  func Average2_m256i(const __m256i* const a0,
-                                       const __m256i* const a1,
-                                       __m256i* const avg) {
+static  func Average2_m256i(const __m256i* const a0, const __m256i* const a1, __m256i* const avg) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m256i ones = _mm256_set1_epi8(1);
   const __m256i avg1 = _mm256_avg_epu8(*a0, *a1);
@@ -41,8 +39,7 @@ static  func Average2_m256i(const __m256i* const a0,
 // Batch versions of those functions.
 
 // Predictor0: ARGB_BLACK.
-func PredictorAdd0_AVX2(const uint32* in, const uint32* upper,
-                               int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd0_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   const __m256i black = _mm256_set1_epi32((int)ARGB_BLACK);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
@@ -57,8 +54,7 @@ func PredictorAdd0_AVX2(const uint32* in, const uint32* upper,
 }
 
 // Predictor1: left.
-func PredictorAdd1_AVX2(const uint32* in, const uint32* upper,
-                               int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd1_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   __m256i prev = _mm256_set1_epi32((int)out[-1]);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
@@ -76,8 +72,7 @@ func PredictorAdd1_AVX2(const uint32* in, const uint32* upper,
     // Add a + b + c + d to the upper lane.
     const int32 sum_abcd = _mm256_extract_epi32(sum1, 3);
     const __m256i sum2 = _mm256_add_epi8(
-        sum1,
-        _mm256_set_epi32(sum_abcd, sum_abcd, sum_abcd, sum_abcd, 0, 0, 0, 0));
+        sum1, _mm256_set_epi32(sum_abcd, sum_abcd, sum_abcd, sum_abcd, 0, 0, 0, 0));
 
     const __m256i res = _mm256_add_epi8(sum2, prev);
     _mm256_storeu_si256((__m256i*)&out[i], res);
@@ -161,8 +156,7 @@ const DO_PRED10_SHIFT =                                        \
     src = _mm256_srli_si256(src, 4);                            \
   } while (0)
 
-func PredictorAdd10_AVX2(const uint32* in, const uint32* upper,
-                                int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd10_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
   int i, j;
   __m256i L = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
@@ -219,8 +213,7 @@ const DO_PRED11_SHIFT =                                      \
     pa = _mm256_srli_si256(pa, 4);                            \
   } while (0)
 
-func PredictorAdd11_AVX2(const uint32* in, const uint32* upper,
-                                int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd11_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
   int i, j;
   __m256i pa;
   __m256i L = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
@@ -283,8 +276,7 @@ func PredictorAdd11_AVX2(const uint32* in, const uint32* upper,
     src = _mm256_srli_si256(src, 4);                          \
   } while (0)
 
-func PredictorAdd12_AVX2(const uint32* in, const uint32* upper,
-                                int num_pixels, uint32* WEBP_RESTRICT out) {
+func PredictorAdd12_AVX2(const uint32* in, const uint32* upper, int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   const __m256i zero = _mm256_setzero_si256();
   const __m256i L8 = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
@@ -338,12 +330,10 @@ func PredictorAdd12_AVX2(const uint32* in, const uint32* upper,
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func AddGreenToBlueAndRed_AVX2(const uint32* const src, int num_pixels,
-                                      uint32* dst) {
+func AddGreenToBlueAndRed_AVX2(const uint32* const src, int num_pixels, uint32* dst) {
   int i;
   const __m256i kCstShuffle = _mm256_set_epi8(
-      -1, 29, -1, 29, -1, 25, -1, 25, -1, 21, -1, 21, -1, 17, -1, 17, -1, 13,
-      -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
+      -1, 29, -1, 29, -1, 25, -1, 25, -1, 21, -1, 21, -1, 17, -1, 17, -1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i in = _mm256_loadu_si256((const __m256i*)&src[i]);  // argb
     const __m256i in_0g0g = _mm256_shuffle_epi8(in, kCstShuffle);    // 0g0g
@@ -359,9 +349,7 @@ func AddGreenToBlueAndRed_AVX2(const uint32* const src, int num_pixels,
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColorInverse_AVX2(const VP8LMultipliers* const m,
-                                       const uint32* const src,
-                                       int num_pixels, uint32* dst) {
+func TransformColorInverse_AVX2(const VP8LMultipliers* const m, const uint32* const src, int num_pixels, uint32* dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
 #define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
   const __m256i mults_rb = _mm256_set1_epi32(
@@ -370,11 +358,9 @@ func TransformColorInverse_AVX2(const VP8LMultipliers* const m,
 #undef CST
   const __m256i mask_ag = _mm256_set1_epi32((int)0xff00ff00);
   const __m256i perm1 = _mm256_setr_epi8(
-      -1, 1, -1, 1, -1, 5, -1, 5, -1, 9, -1, 9, -1, 13, -1, 13, -1, 17, -1, 17,
-      -1, 21, -1, 21, -1, 25, -1, 25, -1, 29, -1, 29);
+      -1, 1, -1, 1, -1, 5, -1, 5, -1, 9, -1, 9, -1, 13, -1, 13, -1, 17, -1, 17, -1, 21, -1, 21, -1, 25, -1, 25, -1, 29, -1, 29);
   const __m256i perm2 = _mm256_setr_epi8(
-      -1, 2, -1, -1, -1, 6, -1, -1, -1, 10, -1, -1, -1, 14, -1, -1, -1, 18, -1,
-      -1, -1, 22, -1, -1, -1, 26, -1, -1, -1, 30, -1, -1);
+      -1, 2, -1, -1, -1, 6, -1, -1, -1, 10, -1, -1, -1, 14, -1, -1, -1, 18, -1, -1, -1, 22, -1, -1, -1, 26, -1, -1, -1, 30, -1, -1);
   int i;
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i A = _mm256_loadu_si256((const __m256i*)(src + i));
@@ -396,16 +382,13 @@ func TransformColorInverse_AVX2(const VP8LMultipliers* const m,
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-func ConvertBGRAToRGBA_AVX2(const uint32* WEBP_RESTRICT src,
-                                   int num_pixels, uint8* WEBP_RESTRICT dst) {
+func ConvertBGRAToRGBA_AVX2(const uint32* WEBP_RESTRICT src, int num_pixels, uint8* WEBP_RESTRICT dst) {
   const __m256i* in = (const __m256i*)src;
   __m256i* out = (__m256i*)dst;
   while (num_pixels >= 8) {
     const __m256i A = _mm256_loadu_si256(in++);
     const __m256i B = _mm256_shuffle_epi8(
-        A,
-        _mm256_set_epi8(15, 12, 13, 14, 11, 8, 9, 10, 7, 4, 5, 6, 3, 0, 1, 2,
-                        15, 12, 13, 14, 11, 8, 9, 10, 7, 4, 5, 6, 3, 0, 1, 2));
+        A, _mm256_set_epi8(15, 12, 13, 14, 11, 8, 9, 10, 7, 4, 5, 6, 3, 0, 1, 2, 15, 12, 13, 14, 11, 8, 9, 10, 7, 4, 5, 6, 3, 0, 1, 2));
     _mm256_storeu_si256(out++, B);
     num_pixels -= 8;
   }

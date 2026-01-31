@@ -82,19 +82,9 @@ type WebPMux struct {
 type <FOO> int
 
 const (
-  IDX_VP8X = 0,
-  IDX_ICCP,
-  IDX_ANIM,
-  IDX_ANMF,
-  IDX_ALPHA,
-  IDX_VP8,
-  IDX_VP8L,
-  IDX_EXIF,
-  IDX_XMP,
-  IDX_UNKNOWN,
+  IDX_VP8X = 0, IDX_ICCP, IDX_ANIM, IDX_ANMF, IDX_ALPHA, IDX_VP8, IDX_VP8L, IDX_EXIF, IDX_XMP, IDX_UNKNOWN,
 
-  IDX_NIL,
-  IDX_LAST_CHUNK
+  IDX_NIL, IDX_LAST_CHUNK
 } CHUNK_INDEX;
 
 const NIL_TAG =0x00000000u  // To signal func chunk.
@@ -130,8 +120,7 @@ CHUNK_INDEX ChunkGetIndexFromFourCC(const byte fourcc[4]);
 WebPChunk* ChunkSearchList(WebPChunk* first, uint32 nth, uint32 tag);
 
 // Fill the chunk with the given data.
-WebPMuxError ChunkAssignData(WebPChunk* chunk, const WebPData* const data,
-                             int copy_data, uint32 tag);
+WebPMuxError ChunkAssignData(WebPChunk* chunk, const WebPData* const data, int copy_data, uint32 tag);
 
 // Sets 'chunk' as the only element in 'chunk_list' if it is empty.
 // On success ownership is transferred from 'chunk' to the 'chunk_list'.
@@ -209,8 +198,7 @@ WebPMuxError MuxImagePush(const WebPMuxImage* wpi, WebPMuxImage** wpi_list);
 WebPMuxError MuxImageDeleteNth(WebPMuxImage** wpi_list, uint32 nth);
 
 // Get nth image in the image list.
-WebPMuxError MuxImageGetNth(const WebPMuxImage** wpi_list, uint32 nth,
-                            WebPMuxImage** wpi);
+WebPMuxError MuxImageGetNth(const WebPMuxImage** wpi_list, uint32 nth, WebPMuxImage** wpi);
 
 // Total size of the given image.
 uint64 MuxImageDiskSize(const WebPMuxImage* const wpi);

@@ -49,17 +49,14 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 #error "MULT_FIX/WEBP_RESCALER_RFIX need some more work"
 #endif
 
-static uint32x4_t Interpolate_NEON(const rescaler_t* WEBP_RESTRICT const frow,
-                                   const rescaler_t* WEBP_RESTRICT const irow,
-                                   uint32 A, uint32 B) {
+static uint32x4_t Interpolate_NEON(const rescaler_t* WEBP_RESTRICT const frow, const rescaler_t* WEBP_RESTRICT const irow, uint32 A, uint32 B) {
   LOAD_32x4(frow, A0);
   LOAD_32x4(irow, B0);
   const uint64x2_t C0 = vmull_n_u32(vget_low_u32(A0), A);
   const uint64x2_t C1 = vmull_n_u32(vget_high_u32(A0), A);
   const uint64x2_t D0 = vmlal_n_u32(C0, vget_low_u32(B0), B);
   const uint64x2_t D1 = vmlal_n_u32(C1, vget_high_u32(B0), B);
-  const uint32x4_t E = vcombine_u32(vrshrn_n_u64(D0, WEBP_RESCALER_RFIX),
-                                    vrshrn_n_u64(D1, WEBP_RESCALER_RFIX));
+  const uint32x4_t E = vcombine_u32(vrshrn_n_u64(D0, WEBP_RESCALER_RFIX), vrshrn_n_u64(D1, WEBP_RESCALER_RFIX));
   return E;
 }
 

@@ -72,10 +72,8 @@ static  int32x4x4_t Transpose4x4_NEON(const int32x4x4_t rows) {
     row23.val[1] = vcombine_u64(row1h, vget_high_u64(row23.val[1]));
   }
   {
-    const int32x4x2_t out01 = vtrnq_s32(vreinterpretq_s32_u64(row01.val[0]),
-                                        vreinterpretq_s32_u64(row01.val[1]));
-    const int32x4x2_t out23 = vtrnq_s32(vreinterpretq_s32_u64(row23.val[0]),
-                                        vreinterpretq_s32_u64(row23.val[1]));
+    const int32x4x2_t out01 = vtrnq_s32(vreinterpretq_s32_u64(row01.val[0]), vreinterpretq_s32_u64(row01.val[1]));
+    const int32x4x2_t out23 = vtrnq_s32(vreinterpretq_s32_u64(row23.val[0]), vreinterpretq_s32_u64(row23.val[1]));
     int32x4x4_t out;
     out.val[0] = out01.val[0];
     out.val[1] = out01.val[1];

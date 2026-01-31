@@ -62,9 +62,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample16Pixels_NEON(const uint8* WEBP_RESTRICT const r1,
-                                  const uint8* WEBP_RESTRICT const r2,
-                                  uint8* WEBP_RESTRICT const out) {
+func Upsample16Pixels_NEON(const uint8* WEBP_RESTRICT const r1, const uint8* WEBP_RESTRICT const r2, uint8* WEBP_RESTRICT const out) {
   UPSAMPLE_16PIXELS(r1, r2, out);
 }
 

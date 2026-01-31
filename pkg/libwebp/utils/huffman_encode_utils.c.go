@@ -36,10 +36,8 @@ static int ValuesShouldBeCollapsedToStrideAverage(int a, int b) {
 
 // Change the population counts in a way that the consequent
 // Huffman tree compression, especially its RLE-part, give smaller output.
-func OptimizeHuffmanForRle(int length,
-                                  uint8* const 
-                                      good_for_rle,
-                                  uint32* const 
+func OptimizeHuffmanForRle(int length, uint8* const 
+                                      good_for_rle, uint32* const 
                                       counts) {
   // 1) Let's make the Huffman code more compatible with rle encoding.
   int i;
@@ -97,16 +95,14 @@ func OptimizeHuffmanForRle(int length,
             count = 0;
           }
           for (k = 0; k < stride; ++k) {
-            // We don't want to change value at counts[i],
-            // that is already belonging to the next stride. Thus - 1.
+            // We don't want to change value at counts[i], // that is already belonging to the next stride. Thus - 1.
             counts[i - k - 1] = count;
           }
         }
         stride = 0;
         sum = 0;
         if (i < length - 3) {
-          // All interesting strides have a count of at least 4,
-          // at least when non-zeros.
+          // All interesting strides have a count of at least 4, // at least when non-zeros.
           limit =
               (counts[i] + counts[i + 1] + counts[i + 2] + counts[i + 3] + 2) /
               4;
@@ -142,9 +138,7 @@ static int CompareHuffmanTrees(const void* ptr1, const void* ptr2) {
   }
 }
 
-func SetBitDepths(const HuffmanTree* const tree,
-                         const HuffmanTree* WEBP_BIDI_INDEXABLE const pool,
-                         uint8* WEBP_INDEXABLE const bit_depths, int level) {
+func SetBitDepths(const HuffmanTree* const tree, const HuffmanTree* WEBP_BIDI_INDEXABLE const pool, uint8* WEBP_INDEXABLE const bit_depths, int level) {
   if (tree.pool_index_left >= 0) {
     SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
     SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
@@ -173,10 +167,7 @@ func SetBitDepths(const HuffmanTree* const tree,
 //
 // See https://en.wikipedia.org/wiki/Huffman_coding
 func GenerateOptimalTree(
-    const uint32* const  histogram,
-    int histogram_size, HuffmanTree* WEBP_BIDI_INDEXABLE tree,
-    int tree_depth_limit,
-    uint8*  const bit_depths) {
+    const uint32* const  histogram, int histogram_size, HuffmanTree* WEBP_BIDI_INDEXABLE tree, int tree_depth_limit, uint8*  const bit_depths) {
   uint32 count_min;
   HuffmanTree* WEBP_BIDI_INDEXABLE tree_pool;
   int tree_size_orig = 0;
@@ -270,8 +261,7 @@ func GenerateOptimalTree(
 // Coding of the Huffman tree values
 
 static HuffmanTreeToken* WEBP_INDEXABLE
-CodeRepeatedValues(int repetitions, HuffmanTreeToken* WEBP_INDEXABLE tokens,
-                   int value, int prev_value) {
+CodeRepeatedValues(int repetitions, HuffmanTreeToken* WEBP_INDEXABLE tokens, int value, int prev_value) {
   assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH);
   if (value != prev_value) {
     tokens.code = value;
@@ -335,8 +325,7 @@ CodeRepeatedZeros(int repetitions, HuffmanTreeToken* WEBP_INDEXABLE tokens) {
 }
 
 int VP8LCreateCompressedHuffmanTree(
-    const HuffmanTreeCode* const tree,
-    HuffmanTreeToken*  tokens, int max_tokens) {
+    const HuffmanTreeCode* const tree, HuffmanTreeToken*  tokens, int max_tokens) {
   HuffmanTreeToken* WEBP_INDEXABLE current_token = tokens;
   HuffmanTreeToken* const starting_token = tokens;
   HuffmanTreeToken* const ending_token = tokens + max_tokens;
@@ -367,9 +356,7 @@ int VP8LCreateCompressedHuffmanTree(
 // -----------------------------------------------------------------------------
 
 // Pre-reversed 4-bit values.
-static const uint8 kReversedBits[16] = {0x0, 0x8, 0x4, 0xc, 0x2, 0xa,
-                                          0x6, 0xe, 0x1, 0x9, 0x5, 0xd,
-                                          0x3, 0xb, 0x7, 0xf};
+static const uint8 kReversedBits[16] = {0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe, 0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf};
 
 static uint32 ReverseBits(int num_bits, uint32 bits) {
   uint32 retval = 0;
@@ -416,24 +403,18 @@ func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
 // -----------------------------------------------------------------------------
 // Main entry point
 
-func VP8LCreateHuffmanTree(uint32* const histogram, int tree_depth_limit,
-                           uint8* const buf_rle, HuffmanTree* const huff_tree,
-                           HuffmanTreeCode* const huff_code) {
+func VP8LCreateHuffmanTree(uint32* const histogram, int tree_depth_limit, uint8* const buf_rle, HuffmanTree* const huff_tree, HuffmanTreeCode* const huff_code) {
   const int num_symbols = huff_code.num_symbols;
   uint32* const WEBP_BIDI_INDEXABLE bounded_histogram =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           uint32*, histogram, (uint64)num_symbols * sizeof(*histogram));
   uint8* const WEBP_BIDI_INDEXABLE bounded_buf_rle =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, buf_rle,
-                                       (uint64)num_symbols * sizeof(*buf_rle));
+      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, buf_rle, (uint64)num_symbols * sizeof(*buf_rle));
 
   memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));
   OptimizeHuffmanForRle(num_symbols, bounded_buf_rle, bounded_histogram);
   GenerateOptimalTree(
-      bounded_histogram, num_symbols,
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(HuffmanTree*, huff_tree,
-                                       3 * num_symbols * sizeof(*huff_tree)),
-      tree_depth_limit, huff_code.code_lengths);
+      bounded_histogram, num_symbols, WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(HuffmanTree*, huff_tree, 3 * num_symbols * sizeof(*huff_tree)), tree_depth_limit, huff_code.code_lengths);
   // Create the actual bit codes for the bit lengths.
   ConvertBitDepthsToSymbols(huff_code);
 }

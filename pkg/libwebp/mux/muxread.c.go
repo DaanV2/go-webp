@@ -43,8 +43,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
     }                                                         \
   } while (0)
 
-static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx,
-                           uint32 nth, WebPData* const data) {
+static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx, uint32 nth, WebPData* const data) {
   assert.Assert(mux != nil);
   assert.Assert(idx != IDX_LAST_CHUNK);
   assert.Assert(!IsWPI(kChunks[idx].id));
@@ -62,9 +61,7 @@ static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx,
 
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
-static WebPMuxError ChunkVerifyAndAssign(WebPChunk* chunk, const uint8* data,
-                                         uint64 data_size, uint64 riff_size,
-                                         int copy_data) {
+static WebPMuxError ChunkVerifyAndAssign(WebPChunk* chunk, const uint8* data, uint64 data_size, uint64 riff_size, int copy_data) {
   uint32 chunk_size;
   WebPData chunk_data;
 
@@ -109,8 +106,7 @@ int MuxImageFinalize(WebPMuxImage* const wpi) {
   return ok;
 }
 
-static int MuxImageParse(const WebPChunk* const chunk, int copy_data,
-                         WebPMuxImage* const wpi) {
+static int MuxImageParse(const WebPChunk* const chunk, int copy_data, WebPMuxImage* const wpi) {
   const uint8* bytes = chunk.data.bytes;
   uint64 size = chunk.data.size;
   const uint8* const last = (bytes == nil) ? nil : bytes + size;
@@ -187,8 +183,7 @@ Fail:
 //------------------------------------------------------------------------------
 // Create a mux object from WebP-RIFF data.
 
-WebPMux* WebPMuxCreateInternal(const WebPData* bitstream, int copy_data,
-                               int version) {
+WebPMux* WebPMuxCreateInternal(const WebPData* bitstream, int copy_data, int version) {
   uint64 riff_size;
   uint32 tag;
   const uint8* end;
@@ -339,8 +334,7 @@ static WebPMuxError ValidateForSingleImage(const WebPMux* const mux) {
 
 // Get the canvas width, height and flags after validating that VP8X/VP8/VP8L
 // chunk and canvas size are valid.
-static WebPMuxError MuxGetCanvasInfo(const WebPMux* const mux, int* width,
-                                     int* height, uint32* flags) {
+static WebPMuxError MuxGetCanvasInfo(const WebPMux* const mux, int* width, int* height, uint32* flags) {
   int w, h;
   uint32 f = 0;
   WebPData data;
@@ -387,8 +381,7 @@ WebPMuxError WebPMuxGetFeatures(const WebPMux* mux, uint32* flags) {
   return MuxGetCanvasInfo(mux, nil, nil, flags);
 }
 
-static uint8* EmitVP8XChunk(uint8* const dst, int width, int height,
-                              uint32 flags) {
+static uint8* EmitVP8XChunk(uint8* const dst, int width, int height, uint32 flags) {
   const uint64 vp8x_size = CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   assert.Assert(width >= 1 && height >= 1);
   assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE);
@@ -402,8 +395,7 @@ static uint8* EmitVP8XChunk(uint8* const dst, int width, int height,
 }
 
 // Assemble a single image WebP bitstream from 'wpi'.
-static WebPMuxError SynthesizeBitstream(const WebPMuxImage* const wpi,
-                                        WebPData* const bitstream) {
+static WebPMuxError SynthesizeBitstream(const WebPMuxImage* const wpi, WebPData* const bitstream) {
   uint8* dst;
 
   // Allocate data.

@@ -63,9 +63,7 @@ static int IsNear(uint32 a, uint32 b, int limit) {
   return 1;
 }
 
-static int IsSmooth(const uint32* const prev_row,
-                    const uint32* const curr_row,
-                    const uint32* const next_row, int ix, int limit) {
+static int IsSmooth(const uint32* const prev_row, const uint32* const curr_row, const uint32* const next_row, int ix, int limit) {
   // Check that all pixels in 4-connected neighborhood are smooth.
   return (IsNear(curr_row[ix], curr_row[ix - 1], limit) &&
           IsNear(curr_row[ix], curr_row[ix + 1], limit) &&
@@ -74,9 +72,7 @@ static int IsSmooth(const uint32* const prev_row,
 }
 
 // Adjusts pixel values of image with given maximum error.
-func NearLossless(int xsize, int ysize, const uint32* argb_src,
-                         int stride, int limit_bits, uint32* copy_buffer,
-                         uint32* argb_dst) {
+func NearLossless(int xsize, int ysize, const uint32* argb_src, int stride, int limit_bits, uint32* copy_buffer, uint32* argb_dst) {
   int x, y;
   const int limit = 1 << limit_bits;
   uint32* prev_row = copy_buffer;
@@ -110,8 +106,7 @@ func NearLossless(int xsize, int ysize, const uint32* argb_src,
   }
 }
 
-int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
-                         uint32* const argb_dst) {
+int VP8ApplyNearLossless(const WebPPicture* const picture, int quality, uint32* const argb_dst) {
   int i;
   uint32* copy_buffer;
   const int xsize = picture.width;
@@ -127,8 +122,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
        ysize < MIN_DIM_FOR_NEAR_LOSSLESS) ||
       ysize < 3) {
     for (i = 0; i < ysize; ++i) {
-      memcpy(argb_dst + i * xsize, picture.argb + i * picture.argb_stride,
-             xsize * sizeof(*argb_dst));
+      memcpy(argb_dst + i * xsize, picture.argb + i * picture.argb_stride, xsize * sizeof(*argb_dst));
     }
     return 1;
   }
@@ -138,8 +132,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
     return 0;
   }
 
-  NearLossless(xsize, ysize, picture.argb, stride, limit_bits, copy_buffer,
-               argb_dst);
+  NearLossless(xsize, ysize, picture.argb, stride, limit_bits, copy_buffer, argb_dst);
   for (i = limit_bits - 1; i != 0; --i) {
     NearLossless(xsize, ysize, argb_dst, xsize, i, copy_buffer, argb_dst);
   }

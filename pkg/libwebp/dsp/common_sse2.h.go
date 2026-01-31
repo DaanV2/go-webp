@@ -27,8 +27,7 @@ import "github.com/daanv2/go-webp/pkg/emmintrin"
 
 #if 0
 import "github.com/daanv2/go-webp/pkg/stdio"
-static  func PrintReg(const __m128i r, const byte* const name,
-                                 int size) {
+static  func PrintReg(const __m128i r, const byte* const name, int size) {
   int n;
   union {
     __m128i r;
@@ -66,9 +65,7 @@ static  int VP8HorizontalAdd8b(const __m128i* const a) {
 
 // Transpose two 4x4 16b matrices horizontally stored in registers.
 static  func VP8Transpose_2_4x4_16b(
-    const __m128i* const in0, const __m128i* const in1,
-    const __m128i* const in2, const __m128i* const in3, __m128i* const out0,
-    __m128i* const out1, __m128i* const out2, __m128i* const out3) {
+    const __m128i* const in0, const __m128i* const in1, const __m128i* const in2, const __m128i* const in3, __m128i* const out0, __m128i* const out1, __m128i* const out2, __m128i* const out3) {
   // Transpose the two 4x4.
   // a00 a01 a02 a03   b00 b01 b02 b03
   // a10 a11 a12 a13   b10 b11 b12 b13
@@ -129,10 +126,8 @@ static  func VP8Transpose_2_4x4_16b(
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // triplet by triplet in the output buffer rgb as rgbrgbrgbrgb ...
 static  func VP8PlanarTo24b_SSE2(
-    __m128i* const in0, __m128i* const in1, __m128i* const in2,
-    __m128i* const in3, __m128i* const in4, __m128i* const in5) {
-  // The input is 6 registers of sixteen 8b but for the sake of explanation,
-  // let's take 6 registers of four 8b values.
+    __m128i* const in0, __m128i* const in1, __m128i* const in2, __m128i* const in3, __m128i* const in4, __m128i* const in5) {
+  // The input is 6 registers of sixteen 8b but for the sake of explanation, // let's take 6 registers of four 8b values.
   // To pack, we will keep taking one every two 8b integer and move it
   // around as follows:
   // Input:
@@ -159,10 +154,7 @@ static  func VP8PlanarTo24b_SSE2(
 
 // Convert four packed four-channel buffers like argbargbargbargb... into the
 // split channels aaaaa ... rrrr ... gggg .... bbbbb ......
-static  func VP8L32bToPlanar_SSE2(__m128i* const in0,
-                                             __m128i* const in1,
-                                             __m128i* const in2,
-                                             __m128i* const in3) {
+static  func VP8L32bToPlanar_SSE2(__m128i* const in0, __m128i* const in1, __m128i* const in2, __m128i* const in3) {
   // Column-wise transpose.
   const __m128i A0 = _mm_unpacklo_epi8(*in0, *in1);
   const __m128i A1 = _mm_unpackhi_epi8(*in0, *in1);

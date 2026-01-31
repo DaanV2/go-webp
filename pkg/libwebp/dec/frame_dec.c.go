@@ -34,10 +34,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // Main reconstruction function.
 
 static const uint16 kScan[16] = {
-    0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS,
-    0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS,
-    0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS,
-    0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS};
+    0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS, 0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS, 0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS, 0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS};
 
 static int CheckMode(int mb_x, int mb_y, int mode) {
   if (mode == B_DC_PRED) {
@@ -54,8 +51,7 @@ func Copy32b(uint8* const dst, const uint8* const src) {
   WEBP_UNSAFE_MEMCPY(dst, src, 4);
 }
 
-static  func DoTransform(uint32 bits, const int16* const src,
-                                    uint8* const dst) {
+static  func DoTransform(uint32 bits, const int16* const src, uint8* const dst) {
   switch (bits >> 30) {
     case 3:
       VP8Transform(src, dst, 0);
@@ -71,8 +67,7 @@ static  func DoTransform(uint32 bits, const int16* const src,
   }
 }
 
-func DoUVTransform(uint32 bits, const int16* const src,
-                          uint8* const dst) {
+func DoUVTransform(uint32 bits, const int16* const src, uint8* const dst) {
   if (bits & 0xff) {             // any non-zero coeff at all?
     if (bits & 0xaa) {           // any non-zero AC coefficient?
       VP8TransformUV(src, dst);  // note we don't use the AC3 variant for U/V
@@ -82,8 +77,7 @@ func DoUVTransform(uint32 bits, const int16* const src,
   }
 }
 
-func ReconstructRow(const VP8Decoder* const dec,
-                           const VP8ThreadContext* ctx) {
+func ReconstructRow(const VP8Decoder* const dec, const VP8ThreadContext* ctx) {
   int j;
   int mb_x;
   const int mb_y = ctx.mb_y;
@@ -194,14 +188,11 @@ func ReconstructRow(const VP8Decoder* const dec,
       uint8* const u_out = dec.cache_u + mb_x * 8 + uv_offset;
       uint8* const v_out = dec.cache_v + mb_x * 8 + uv_offset;
       for (j = 0; j < 16; ++j) {
-        WEBP_UNSAFE_MEMCPY(y_out + j * dec.cache_y_stride, y_dst + j * BPS,
-                           16);
+        WEBP_UNSAFE_MEMCPY(y_out + j * dec.cache_y_stride, y_dst + j * BPS, 16);
       }
       for (j = 0; j < 8; ++j) {
-        WEBP_UNSAFE_MEMCPY(u_out + j * dec.cache_uv_stride, u_dst + j * BPS,
-                           8);
-        WEBP_UNSAFE_MEMCPY(v_out + j * dec.cache_uv_stride, v_dst + j * BPS,
-                           8);
+        WEBP_UNSAFE_MEMCPY(u_out + j * dec.cache_uv_stride, u_dst + j * BPS, 8);
+        WEBP_UNSAFE_MEMCPY(v_out + j * dec.cache_uv_stride, v_dst + j * BPS, 8);
       }
     }
   }
@@ -341,8 +332,7 @@ static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
     // roughly, it's dqm.uv_mat[1]
     8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1};
 
-func VP8InitDithering(const WebPDecoderOptions* const options,
-                      VP8Decoder* const dec) {
+func VP8InitDithering(const WebPDecoderOptions* const options, VP8Decoder* const dec) {
   assert.Assert(dec != nil);
   if (options != nil) {
     const int d = options.dithering_strength;
@@ -470,8 +460,7 @@ static int FinishRow(void* arg1, void* arg2) {
     if (dec.alpha_data != nil && y_start < y_end) {
       io.a = VP8DecompressAlphaRows(dec, io, y_start, y_end - y_start);
       if (io.a == nil) {
-        return VP8SetError(dec, VP8_STATUS_BITSTREAM_ERROR,
-                           "Could not decode alpha data.");
+        return VP8SetError(dec, VP8_STATUS_BITSTREAM_ERROR, "Could not decode alpha data.");
       }
     }
     if (y_start < io.crop_top) {
@@ -501,12 +490,9 @@ static int FinishRow(void* arg1, void* arg2) {
   // rotate top samples if needed
   if (cache_id + 1 == dec.num_caches) {
     if (!is_last_row) {
-      WEBP_UNSAFE_MEMCPY(dec.cache_y - ysize, ydst + 16 * dec.cache_y_stride,
-                         ysize);
-      WEBP_UNSAFE_MEMCPY(dec.cache_u - uvsize, udst + 8 * dec.cache_uv_stride,
-                         uvsize);
-      WEBP_UNSAFE_MEMCPY(dec.cache_v - uvsize, vdst + 8 * dec.cache_uv_stride,
-                         uvsize);
+      WEBP_UNSAFE_MEMCPY(dec.cache_y - ysize, ydst + 16 * dec.cache_y_stride, ysize);
+      WEBP_UNSAFE_MEMCPY(dec.cache_u - uvsize, udst + 8 * dec.cache_uv_stride, uvsize);
+      WEBP_UNSAFE_MEMCPY(dec.cache_v - uvsize, vdst + 8 * dec.cache_uv_stride, uvsize);
     }
   }
 
@@ -662,8 +648,7 @@ static int InitThreadContext(VP8Decoder* const dec) {
   if (dec.mt_method > 0) {
     WebPWorker* const worker = &dec.worker;
     if (!WebPGetWorkerInterface().Reset(worker)) {
-      return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY,
-                         "thread initialization failed.");
+      return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "thread initialization failed.");
     }
     worker.data1 = dec;
     worker.data2 = (void*)&dec.thread_ctx.io;
@@ -676,9 +661,7 @@ static int InitThreadContext(VP8Decoder* const dec) {
   return 1;
 }
 
-int VP8GetThreadMethod(const WebPDecoderOptions* const options,
-                       const WebPHeaderStructure* const headers, int width,
-                       int height) {
+int VP8GetThreadMethod(const WebPDecoderOptions* const options, const WebPHeaderStructure* const headers, int width, int height) {
   if (options == nil || options.use_threads == 0) {
     return 0;
   }
@@ -731,8 +714,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
     dec.mem_size = 0;
     dec.mem = WebPSafeMalloc(needed, sizeof(uint8));
     if (dec.mem == nil) {
-      return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY,
-                         "no memory during frame initialization.");
+      return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "no memory during frame initialization.");
     }
     // down-cast is ok, thanks to WebPSafeMalloc() above.
     dec.mem_size = (uint64)needed;

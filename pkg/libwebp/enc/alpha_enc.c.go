@@ -53,10 +53,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int EncodeLossless(const uint8* const data, int width, int height,
-                          int effort_level,  // in [0..6] range
-                          int use_quality_100, VP8LBitWriter* const bw,
-                          WebPAuxStats* const stats) {
+static int EncodeLossless(const uint8* const data, int width, int height, int effort_level,  // in [0..6] range
+                          int use_quality_100, VP8LBitWriter* const bw, WebPAuxStats* const stats) {
   int ok = 0;
   WebPConfig config;
   WebPPicture picture;
@@ -69,8 +67,7 @@ static int EncodeLossless(const uint8* const data, int width, int height,
   if (!WebPPictureAlloc(&picture)) return 0;
 
   // Transfer the alpha values to the green channel.
-  WebPDispatchAlphaToGreen(data, width, picture.width, picture.height,
-                           picture.argb, picture.argb_stride);
+  WebPDispatchAlphaToGreen(data, width, picture.width, picture.height, picture.argb, picture.argb_stride);
 
   if (!WebPConfigInit(&config)) return 0;
   config.lossless = 1;
@@ -109,9 +106,7 @@ type <Foo> struct {
 } FilterTrial;
 
 // This function always returns an initialized 'bw' object, even upon error.
-static int EncodeAlphaInternal(const uint8* const data, int width, int height,
-                               int method, int filter, int reduce_levels,
-                               int effort_level,  // in [0..6] range
+static int EncodeAlphaInternal(const uint8* const data, int width, int height, int method, int filter, int reduce_levels, int effort_level,  // in [0..6] range
                                uint8* const tmp_alpha, FilterTrial* result) {
   int ok = 0;
   const uint8* alpha_src;
@@ -138,8 +133,7 @@ static int EncodeAlphaInternal(const uint8* const data, int width, int height,
 
   if (method != ALPHA_NO_COMPRESSION) {
     ok = VP8LBitWriterInit(&tmp_bw, data_size >> 3);
-    ok = ok && EncodeLossless(alpha_src, width, height, effort_level,
-                              !reduce_levels, &tmp_bw, &result.stats);
+    ok = ok && EncodeLossless(alpha_src, width, height, effort_level, !reduce_levels, &tmp_bw, &result.stats);
     if (ok) {
       output = VP8LBitWriterFinish(&tmp_bw);
       if (tmp_bw.error) {
@@ -184,8 +178,7 @@ static int EncodeAlphaInternal(const uint8* const data, int width, int height,
 
 // -----------------------------------------------------------------------------
 
-static int GetNumColors(const uint8* data, int width, int height,
-                        int stride) {
+static int GetNumColors(const uint8* data, int width, int height, int stride) {
   int j;
   int colors = 0;
   uint8 color[256] = {0};
@@ -207,8 +200,7 @@ const FILTER_TRY_NONE =(1 << WEBP_FILTER_NONE)
 const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
-static uint32 GetFilterMap(const uint8* alpha, int width, int height,
-                             int filter, int effort_level) {
+static uint32 GetFilterMap(const uint8* alpha, int width, int height, int filter, int effort_level) {
   uint32 bit_map = 0U;
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
@@ -239,12 +231,7 @@ func InitFilterTrial(FilterTrial* const score) {
   VP8BitWriterInit(&score.bw, 0);
 }
 
-static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
-                                 uint64 data_size, int method, int filter,
-                                 int reduce_levels, int effort_level,
-                                 uint8** const output,
-                                 uint64* const output_size,
-                                 WebPAuxStats* const stats) {
+static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height, uint64 data_size, int method, int filter, int reduce_levels, int effort_level, uint8** const output, uint64* const output_size, WebPAuxStats* const stats) {
   int ok = 1;
   FilterTrial best;
   uint32 try_map = GetFilterMap(alpha, width, height, filter, effort_level);
@@ -257,9 +244,7 @@ static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
     for (filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1) {
       if (try_map & 1) {
         FilterTrial trial;
-        ok = EncodeAlphaInternal(alpha, width, height, method, filter,
-                                 reduce_levels, effort_level, filtered_alpha,
-                                 &trial);
+        ok = EncodeAlphaInternal(alpha, width, height, method, filter, reduce_levels, effort_level, filtered_alpha, &trial);
         if (ok && trial.score < best.score) {
           VP8BitWriterWipeOut(&best.bw);
           best = trial;
@@ -270,8 +255,7 @@ static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
     }
     WebPSafeFree(filtered_alpha);
   } else {
-    ok = EncodeAlphaInternal(alpha, width, height, method, WEBP_FILTER_NONE,
-                             reduce_levels, effort_level, nil, &best);
+    ok = EncodeAlphaInternal(alpha, width, height, method, WEBP_FILTER_NONE, reduce_levels, effort_level, nil, &best);
   }
   if (ok) {
 #if !defined(WEBP_DISABLE_STATS)
@@ -297,9 +281,7 @@ static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
   return ok;
 }
 
-static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
-                       int filter, int effort_level, uint8** const output,
-                       uint64* const output_size) {
+static int EncodeAlpha(VP8Encoder* const enc, int quality, int method, int filter, int effort_level, uint8** const output, uint64* const output_size) {
   const WebPPicture* const pic = enc.pic;
   const int width = pic.width;
   const int height = pic.height;
@@ -350,9 +332,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
 
   if (ok) {
     VP8FiltersInit();
-    ok = ApplyFiltersAndEncode(quant_alpha, width, height, data_size, method,
-                               filter, reduce_levels, effort_level, output,
-                               output_size, pic.stats);
+    ok = ApplyFiltersAndEncode(quant_alpha, width, height, data_size, method, filter, reduce_levels, effort_level, output, output_size, pic.stats);
     if (!ok) {
       WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);  // imprecise
     }
@@ -381,8 +361,7 @@ static int CompressAlphaJob(void* arg1, void* unused) {
       (config.alpha_filtering == 0)   ? WEBP_FILTER_NONE
       : (config.alpha_filtering == 1) ? WEBP_FILTER_FAST
                                        : WEBP_FILTER_BEST;
-  if (!EncodeAlpha(enc, config.alpha_quality, config.alpha_compression,
-                   filter, effort_level, &alpha_data, &alpha_size)) {
+  if (!EncodeAlpha(enc, config.alpha_quality, config.alpha_compression, filter, effort_level, &alpha_data, &alpha_size)) {
     return 0;
   }
   if (alpha_size != (uint32)alpha_size) {  // Soundness check.

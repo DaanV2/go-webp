@@ -24,9 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-func TransformColorInverse_SSE41(const VP8LMultipliers* const m,
-                                        const uint32* const src,
-                                        int num_pixels, uint32* dst) {
+func TransformColorInverse_SSE41(const VP8LMultipliers* const m, const uint32* const src, int num_pixels, uint32* dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
 #define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
   const __m128i mults_rb = _mm_set1_epi32(
@@ -36,8 +34,7 @@ func TransformColorInverse_SSE41(const VP8LMultipliers* const m,
   const __m128i mask_ag = _mm_set1_epi32((int)0xff00ff00);
   const __m128i perm1 =
       _mm_setr_epi8(-1, 1, -1, 1, -1, 5, -1, 5, -1, 9, -1, 9, -1, 13, -1, 13);
-  const __m128i perm2 = _mm_setr_epi8(-1, 2, -1, -1, -1, 6, -1, -1, -1, 10, -1,
-                                      -1, -1, 14, -1, -1);
+  const __m128i perm2 = _mm_setr_epi8(-1, 2, -1, -1, -1, 6, -1, -1, -1, 10, -1, -1, -1, 14, -1, -1);
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i A = _mm_loadu_si128((const __m128i*)(src + i));
@@ -81,8 +78,7 @@ const ARGB_TO_RGB_SSE41 =                              \
     }                                                   \
   } while (0)
 
-func ConvertBGRAToRGB_SSE41(const uint32* WEBP_RESTRICT src,
-                                   int num_pixels, uint8* WEBP_RESTRICT dst) {
+func ConvertBGRAToRGB_SSE41(const uint32* WEBP_RESTRICT src, int num_pixels, uint8* WEBP_RESTRICT dst) {
   const __m128i* in = (const __m128i*)src;
   __m128i* out = (__m128i*)dst;
   const __m128i perm0 =
@@ -99,8 +95,7 @@ func ConvertBGRAToRGB_SSE41(const uint32* WEBP_RESTRICT src,
   }
 }
 
-func ConvertBGRAToBGR_SSE41(const uint32* WEBP_RESTRICT src,
-                                   int num_pixels, uint8* WEBP_RESTRICT dst) {
+func ConvertBGRAToBGR_SSE41(const uint32* WEBP_RESTRICT src, int num_pixels, uint8* WEBP_RESTRICT dst) {
   const __m128i* in = (const __m128i*)src;
   __m128i* out = (__m128i*)dst;
   const __m128i perm0 =

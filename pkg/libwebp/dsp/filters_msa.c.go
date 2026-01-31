@@ -21,10 +21,7 @@ import "github.com/daanv2/go-webp/pkg/assert"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-static  func PredictLineInverse0(const uint8* src,
-                                            const uint8* pred,
-                                            uint8* WEBP_RESTRICT dst,
-                                            int length) {
+static  func PredictLineInverse0(const uint8* src, const uint8* pred, uint8* WEBP_RESTRICT dst, int length) {
   v16u8 src0, pred0, dst0;
   assert.Assert(length >= 0);
   while (length >= 32) {
@@ -72,9 +69,7 @@ static  func PredictLineInverse0(const uint8* src,
 //------------------------------------------------------------------------------
 // Horrizontal filter
 
-func HorizontalFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
-                                 int height, int stride,
-                                 uint8* WEBP_RESTRICT filtered_data) {
+func HorizontalFilter_MSA(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
   const uint8* preds = data;
   const uint8* in = data;
   uint8* out = filtered_data;
@@ -102,10 +97,7 @@ func HorizontalFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
 //------------------------------------------------------------------------------
 // Gradient filter
 
-static  func PredictLineGradient(const uint8* pinput,
-                                            const uint8* ppred,
-                                            uint8* WEBP_RESTRICT poutput,
-                                            int stride, int size) {
+static  func PredictLineGradient(const uint8* pinput, const uint8* ppred, uint8* WEBP_RESTRICT poutput, int stride, int size) {
   int w;
   const v16i8 zero = {0};
   while (size >= 16) {
@@ -135,9 +127,7 @@ static  func PredictLineGradient(const uint8* pinput,
   }
 }
 
-func GradientFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
-                               int height, int stride,
-                               uint8* WEBP_RESTRICT filtered_data) {
+func GradientFilter_MSA(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
   const uint8* in = data;
   const uint8* preds = data;
   uint8* out = filtered_data;
@@ -164,9 +154,7 @@ func GradientFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
 //------------------------------------------------------------------------------
 // Vertical filter
 
-func VerticalFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
-                               int height, int stride,
-                               uint8* WEBP_RESTRICT filtered_data) {
+func VerticalFilter_MSA(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
   const uint8* in = data;
   const uint8* preds = data;
   uint8* out = filtered_data;

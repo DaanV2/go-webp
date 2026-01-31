@@ -53,8 +53,7 @@ static  func WebPDataClear(WebPData* webp_data) {
 
 // Allocates necessary storage for 'dst' and copies the contents of 'src'.
 // Returns true on success.
- static  int WebPDataCopy(const WebPData* src,
-                                                   WebPData* dst) {
+ static  int WebPDataCopy(const WebPData* src, WebPData* dst) {
   if (src == nil || dst == nil) return 0;
   WebPDataInit(dst);
   if (src.bytes != nil && src.size != 0) {

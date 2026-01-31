@@ -60,10 +60,7 @@ const NUM_TRANSFORMS =4  // Maximum number of allowed transform in a bitstream.
 type <FOO> int
 
 const (
-  PREDICTOR_TRANSFORM = 0,
-  CROSS_COLOR_TRANSFORM = 1,
-  SUBTRACT_GREEN_TRANSFORM = 2,
-  COLOR_INDEXING_TRANSFORM = 3
+  PREDICTOR_TRANSFORM = 0, CROSS_COLOR_TRANSFORM = 1, SUBTRACT_GREEN_TRANSFORM = 2, COLOR_INDEXING_TRANSFORM = 3
 } VP8LImageTransformType;
 
 // Alpha related constants.

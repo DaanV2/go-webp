@@ -59,8 +59,7 @@ func FlattenARGB(uint32* ptr, uint32 v, int stride, int size) {
 
 // Smoothen the luma components of transparent pixels. Return true if the whole
 // block is transparent.
-static int SmoothenBlock(const uint8* a_ptr, int a_stride, uint8* y_ptr,
-                         int y_stride, int width, int height) {
+static int SmoothenBlock(const uint8* a_ptr, int a_stride, uint8* y_ptr, int y_stride, int width, int height) {
   int sum = 0, count = 0;
   int x, y;
   const uint8* alpha_ptr = a_ptr;
@@ -144,8 +143,7 @@ func WebPCleanupTransparentArea(WebPPicture* pic) {
     for (y = 0; y + SIZE <= height; y += SIZE) {
       int need_reset = 1;
       for (x = 0; x + SIZE <= width; x += SIZE) {
-        if (SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, SIZE,
-                          SIZE)) {
+        if (SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, SIZE, SIZE)) {
           if (need_reset) {
             values[0] = y_ptr[x];
             values[1] = u_ptr[x >> 1];
@@ -160,8 +158,7 @@ func WebPCleanupTransparentArea(WebPPicture* pic) {
         }
       }
       if (x < width) {
-        SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, width - x,
-                      SIZE);
+        SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, width - x, SIZE);
       }
       a_ptr += SIZE * a_stride;
       y_ptr += SIZE * y_stride;
@@ -171,12 +168,10 @@ func WebPCleanupTransparentArea(WebPPicture* pic) {
     if (y < height) {
       const int sub_height = height - y;
       for (x = 0; x + SIZE <= width; x += SIZE) {
-        SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, SIZE,
-                      sub_height);
+        SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, SIZE, sub_height);
       }
       if (x < width) {
-        SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, width - x,
-                      sub_height);
+        SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, width - x, sub_height);
       }
     }
   }

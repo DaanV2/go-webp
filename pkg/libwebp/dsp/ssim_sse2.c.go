@@ -26,8 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if !defined(WEBP_DISABLE_STATS)
 
 // Helper function
-static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b,
-                                               __m128i* const sum) {
+static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b, __m128i* const sum) {
   // take abs(a-b) in 8b
   const __m128i a_b = _mm_subs_epu8(a, b);
   const __m128i b_a = _mm_subs_epu8(b, a);
@@ -45,8 +44,7 @@ static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b,
 //------------------------------------------------------------------------------
 // SSIM / PSNR entry point
 
-static uint32 AccumulateSSE_SSE2(const uint8* src1, const uint8* src2,
-                                   int len) {
+static uint32 AccumulateSSE_SSE2(const uint8* src1, const uint8* src2, int len) {
   int i = 0;
   uint32 sse2 = 0;
   if (len >= 16) {
@@ -126,8 +124,7 @@ static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0};
     src2 += stride2;                                          \
   } while (0)
 
-static double SSIMGet_SSE2(const uint8* src1, int stride1,
-                           const uint8* src2, int stride2) {
+static double SSIMGet_SSE2(const uint8* src1, int stride1, const uint8* src2, int stride2) {
   VP8DistoStats stats;
   const __m128i zero = _mm_setzero_si128();
   __m128i xm = zero, ym = zero;                // 16b accums

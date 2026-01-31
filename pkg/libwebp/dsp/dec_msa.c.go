@@ -40,8 +40,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     BUTTERFLY_4(a1_m, b1_m, c1_m, d1_m, out0, out1, out2, out3); \
   }
 
-func TransformOne(const int16* WEBP_RESTRICT in,
-                         uint8* WEBP_RESTRICT dst) {
+func TransformOne(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   v8i16 input0, input1;
   v4i32 in0, in1, in2, in3, hz0, hz1, hz2, hz3, vt0, vt1, vt2, vt3;
   v4i32 res0, res1, res2, res3;
@@ -57,10 +56,8 @@ func TransformOne(const int16* WEBP_RESTRICT in,
   SRARI_W4_SW(vt0, vt1, vt2, vt3, 3);
   TRANSPOSE4x4_SW_SW(vt0, vt1, vt2, vt3, vt0, vt1, vt2, vt3);
   LD_SB4(dst, BPS, dest0, dest1, dest2, dest3);
-  ILVR_B4_SW(zero, dest0, zero, dest1, zero, dest2, zero, dest3, res0, res1,
-             res2, res3);
-  ILVR_H4_SW(zero, res0, zero, res1, zero, res2, zero, res3, res0, res1, res2,
-             res3);
+  ILVR_B4_SW(zero, dest0, zero, dest1, zero, dest2, zero, dest3, res0, res1, res2, res3);
+  ILVR_H4_SW(zero, res0, zero, res1, zero, res2, zero, res3, res0, res1, res2, res3);
   ADD4(res0, vt0, res1, vt1, res2, vt2, res3, vt3, res0, res1, res2, res3);
   CLIP_SW4_0_255(res0, res1, res2, res3);
   PCKEV_B2_SW(res0, res1, res2, res3, vt0, vt1);
@@ -68,16 +65,14 @@ func TransformOne(const int16* WEBP_RESTRICT in,
   ST4x4_UB(res0, res0, 3, 2, 1, 0, dst, BPS);
 }
 
-func TransformTwo(const int16* WEBP_RESTRICT in,
-                         uint8* WEBP_RESTRICT dst, int do_two) {
+func TransformTwo(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst, int do_two) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);
   }
 }
 
-func TransformWHT(const int16* WEBP_RESTRICT in,
-                         int16* WEBP_RESTRICT out) {
+func TransformWHT(const int16* WEBP_RESTRICT in, int16* WEBP_RESTRICT out) {
   v8i16 input0, input1;
   const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11};
   const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15};
@@ -119,15 +114,13 @@ func TransformWHT(const int16* WEBP_RESTRICT in,
   out[240] = __msa_copy_s_h(out1, 7);
 }
 
-func TransformDC(const int16* WEBP_RESTRICT in,
-                        uint8* WEBP_RESTRICT dst) {
+func TransformDC(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   const int DC = (in[0] + 4) >> 3;
   const v8i16 tmp0 = __msa_fill_h(DC);
   ADDBLK_ST4x4_UB(tmp0, tmp0, tmp0, tmp0, dst, BPS);
 }
 
-func TransformAC3(const int16* WEBP_RESTRICT in,
-                         uint8* WEBP_RESTRICT dst) {
+func TransformAC3(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   const int a = in[0] + 4;
   const int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
   const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
@@ -146,10 +139,8 @@ func TransformAC3(const int16* WEBP_RESTRICT in,
   ADD4(out0, tmp0, out1, tmp0, out2, tmp0, out3, tmp0, out0, out1, out2, out3);
   SRAI_W4_SW(out0, out1, out2, out3, 3);
   LD_UB4(dst, BPS, dest0, dest1, dest2, dest3);
-  ILVR_B4_SW(zero, dest0, zero, dest1, zero, dest2, zero, dest3, res0, res1,
-             res2, res3);
-  ILVR_H4_SW(zero, res0, zero, res1, zero, res2, zero, res3, res0, res1, res2,
-             res3);
+  ILVR_B4_SW(zero, dest0, zero, dest1, zero, dest2, zero, dest3, res0, res1, res2, res3);
+  ILVR_H4_SW(zero, res0, zero, res1, zero, res2, zero, res3, res0, res1, res2, res3);
   ADD4(res0, out0, res1, out1, res2, out2, res3, out3, res0, res1, res2, res3);
   CLIP_SW4_0_255(res0, res1, res2, res3);
   PCKEV_B2_SW(res0, res1, res2, res3, out0, out1);
@@ -350,8 +341,7 @@ func TransformAC3(const int16* WEBP_RESTRICT in,
     mask = (mask <= b_limit);                                 \
   } while (0)
 
-func VFilter16(uint8* src, int stride, int b_limit_in, int limit_in,
-                      int thresh_in) {
+func VFilter16(uint8* src, int stride, int b_limit_in, int limit_in, int thresh_in) {
   uint8* ptemp = src - 4 * stride;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 mask, hev;
@@ -360,8 +350,7 @@ func VFilter16(uint8* src, int stride, int b_limit_in, int limit_in,
   const v16u8 b_limit = (v16u8)__msa_fill_b(b_limit_in);
 
   LD_UB8(ptemp, stride, p3, p2, p1, p0, q0, q1, q2, q3);
-  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev,
-               mask);
+  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev, mask);
   LPF_MBFILTER(p2, p1, p0, q0, q1, q2, mask, hev);
   ptemp = src - 3 * stride;
   ST_UB4(p2, p1, p0, q0, ptemp, stride);
@@ -369,8 +358,7 @@ func VFilter16(uint8* src, int stride, int b_limit_in, int limit_in,
   ST_UB2(q1, q2, ptemp, stride);
 }
 
-func HFilter16(uint8* src, int stride, int b_limit_in, int limit_in,
-                      int thresh_in) {
+func HFilter16(uint8* src, int stride, int b_limit_in, int limit_in, int thresh_in) {
   uint8* ptmp = src - 4;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 mask, hev;
@@ -384,11 +372,8 @@ func HFilter16(uint8* src, int stride, int b_limit_in, int limit_in,
   LD_UB8(ptmp, stride, row0, row1, row2, row3, row4, row5, row6, row7);
   ptmp += (8 * stride);
   LD_UB8(ptmp, stride, row8, row9, row10, row11, row12, row13, row14, row15);
-  TRANSPOSE16x8_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8,
-                      row9, row10, row11, row12, row13, row14, row15, p3, p2,
-                      p1, p0, q0, q1, q2, q3);
-  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev,
-               mask);
+  TRANSPOSE16x8_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, p3, p2, p1, p0, q0, q1, q2, q3);
+  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev, mask);
   LPF_MBFILTER(p2, p1, p0, q0, q1, q2, mask, hev);
   ILVR_B2_SH(p1, p2, q0, p0, tmp0, tmp1);
   ILVRL_H2_SH(tmp1, tmp0, tmp3, tmp4);
@@ -430,8 +415,7 @@ func HFilter16(uint8* src, int stride, int b_limit_in, int limit_in,
 }
 
 // on three inner edges
-func VFilterHorEdge16i(uint8* src, int stride, int b_limit, int limit,
-                              int thresh) {
+func VFilterHorEdge16i(uint8* src, int stride, int b_limit, int limit, int thresh) {
   v16u8 mask, hev;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   const v16u8 thresh0 = (v16u8)__msa_fill_b(thresh);
@@ -439,21 +423,18 @@ func VFilterHorEdge16i(uint8* src, int stride, int b_limit, int limit,
   const v16u8 limit0 = (v16u8)__msa_fill_b(limit);
 
   LD_UB8((src - 4 * stride), stride, p3, p2, p1, p0, q0, q1, q2, q3);
-  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit0, b_limit0, thresh0, hev,
-               mask);
+  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit0, b_limit0, thresh0, hev, mask);
   LPF_FILTER4_4W(p1, p0, q0, q1, mask, hev);
   ST_UB4(p1, p0, q0, q1, (src - 2 * stride), stride);
 }
 
-func VFilter16i(uint8* src_y, int stride, int b_limit, int limit,
-                       int thresh) {
+func VFilter16i(uint8* src_y, int stride, int b_limit, int limit, int thresh) {
   VFilterHorEdge16i(src_y + 4 * stride, stride, b_limit, limit, thresh);
   VFilterHorEdge16i(src_y + 8 * stride, stride, b_limit, limit, thresh);
   VFilterHorEdge16i(src_y + 12 * stride, stride, b_limit, limit, thresh);
 }
 
-func HFilterVertEdge16i(uint8* src, int stride, int b_limit, int limit,
-                               int thresh) {
+func HFilterVertEdge16i(uint8* src, int stride, int b_limit, int limit, int thresh) {
   v16u8 mask, hev;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7;
@@ -464,13 +445,9 @@ func HFilterVertEdge16i(uint8* src, int stride, int b_limit, int limit,
   const v16u8 limit0 = (v16u8)__msa_fill_b(limit);
 
   LD_UB8(src - 4, stride, row0, row1, row2, row3, row4, row5, row6, row7);
-  LD_UB8(src - 4 + (8 * stride), stride, row8, row9, row10, row11, row12, row13,
-         row14, row15);
-  TRANSPOSE16x8_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8,
-                      row9, row10, row11, row12, row13, row14, row15, p3, p2,
-                      p1, p0, q0, q1, q2, q3);
-  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit0, b_limit0, thresh0, hev,
-               mask);
+  LD_UB8(src - 4 + (8 * stride), stride, row8, row9, row10, row11, row12, row13, row14, row15);
+  TRANSPOSE16x8_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, p3, p2, p1, p0, q0, q1, q2, q3);
+  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit0, b_limit0, thresh0, hev, mask);
   LPF_FILTER4_4W(p1, p0, q0, q1, mask, hev);
   ILVR_B2_SH(p0, p1, q1, q0, tmp0, tmp1);
   ILVRL_H2_SH(tmp1, tmp0, tmp2, tmp3);
@@ -482,16 +459,14 @@ func HFilterVertEdge16i(uint8* src, int stride, int b_limit, int limit,
   ST4x8_UB(tmp4, tmp5, src, stride);
 }
 
-func HFilter16i(uint8* src_y, int stride, int b_limit, int limit,
-                       int thresh) {
+func HFilter16i(uint8* src_y, int stride, int b_limit, int limit, int thresh) {
   HFilterVertEdge16i(src_y + 4, stride, b_limit, limit, thresh);
   HFilterVertEdge16i(src_y + 8, stride, b_limit, limit, thresh);
   HFilterVertEdge16i(src_y + 12, stride, b_limit, limit, thresh);
 }
 
 // 8-pixels wide variants, for chroma filtering
-func VFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v,
-                     int stride, int b_limit_in, int limit_in, int thresh_in) {
+func VFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
   uint8* ptmp_src_u = src_u - 4 * stride;
   uint8* ptmp_src_v = src_v - 4 * stride;
   uint64 p2_d, p1_d, p0_d, q0_d, q1_d, q2_d;
@@ -506,8 +481,7 @@ func VFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v,
   LD_UB8(ptmp_src_v, stride, p3_v, p2_v, p1_v, p0_v, q0_v, q1_v, q2_v, q3_v);
   ILVR_D4_UB(p3_v, p3_u, p2_v, p2_u, p1_v, p1_u, p0_v, p0_u, p3, p2, p1, p0);
   ILVR_D4_UB(q0_v, q0_u, q1_v, q1_u, q2_v, q2_u, q3_v, q3_u, q0, q1, q2, q3);
-  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev,
-               mask);
+  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev, mask);
   LPF_MBFILTER(p2, p1, p0, q0, q1, q2, mask, hev);
   p2_d = __msa_copy_s_d((v2i64)p2, 0);
   p1_d = __msa_copy_s_d((v2i64)p1, 0);
@@ -535,8 +509,7 @@ func VFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v,
   SD(q2_d, ptmp_src_v);
 }
 
-func HFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v,
-                     int stride, int b_limit_in, int limit_in, int thresh_in) {
+func HFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
   uint8* ptmp_src_u = src_u - 4;
   uint8* ptmp_src_v = src_v - 4;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
@@ -548,13 +521,9 @@ func HFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v,
   const v16u8 thresh = (v16u8)__msa_fill_b(thresh_in);
 
   LD_UB8(ptmp_src_u, stride, row0, row1, row2, row3, row4, row5, row6, row7);
-  LD_UB8(ptmp_src_v, stride, row8, row9, row10, row11, row12, row13, row14,
-         row15);
-  TRANSPOSE16x8_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8,
-                      row9, row10, row11, row12, row13, row14, row15, p3, p2,
-                      p1, p0, q0, q1, q2, q3);
-  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev,
-               mask);
+  LD_UB8(ptmp_src_v, stride, row8, row9, row10, row11, row12, row13, row14, row15);
+  TRANSPOSE16x8_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, p3, p2, p1, p0, q0, q1, q2, q3);
+  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev, mask);
   LPF_MBFILTER(p2, p1, p0, q0, q1, q2, mask, hev);
   ILVR_B2_SH(p1, p2, q0, p0, tmp0, tmp1);
   ILVRL_H2_SH(tmp1, tmp0, tmp3, tmp4);
@@ -571,9 +540,7 @@ func HFilter8(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v,
   ST6x4_UB(tmp7, 0, tmp5, 4, ptmp_src_v, stride);
 }
 
-func VFilter8i(uint8* WEBP_RESTRICT src_u,
-                      uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in,
-                      int limit_in, int thresh_in) {
+func VFilter8i(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
   uint64 p1_d, p0_d, q0_d, q1_d;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 p3_u, p2_u, p1_u, p0_u, q3_u, q2_u, q1_u, q0_u;
@@ -588,8 +555,7 @@ func VFilter8i(uint8* WEBP_RESTRICT src_u,
   src_v += (5 * stride);
   ILVR_D4_UB(p3_v, p3_u, p2_v, p2_u, p1_v, p1_u, p0_v, p0_u, p3, p2, p1, p0);
   ILVR_D4_UB(q0_v, q0_u, q1_v, q1_u, q2_v, q2_u, q3_v, q3_u, q0, q1, q2, q3);
-  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev,
-               mask);
+  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev, mask);
   LPF_FILTER4_4W(p1, p0, q0, q1, mask, hev);
   p1_d = __msa_copy_s_d((v2i64)p1, 0);
   p0_d = __msa_copy_s_d((v2i64)p0, 0);
@@ -603,9 +569,7 @@ func VFilter8i(uint8* WEBP_RESTRICT src_u,
   SD4(q1_d, q0_d, p0_d, p1_d, src_v, -stride);
 }
 
-func HFilter8i(uint8* WEBP_RESTRICT src_u,
-                      uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in,
-                      int limit_in, int thresh_in) {
+func HFilter8i(uint8* WEBP_RESTRICT src_u, uint8* WEBP_RESTRICT src_v, int stride, int b_limit_in, int limit_in, int thresh_in) {
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7, row8;
   v16u8 row9, row10, row11, row12, row13, row14, row15;
@@ -616,11 +580,8 @@ func HFilter8i(uint8* WEBP_RESTRICT src_u,
 
   LD_UB8(src_u, stride, row0, row1, row2, row3, row4, row5, row6, row7);
   LD_UB8(src_v, stride, row8, row9, row10, row11, row12, row13, row14, row15);
-  TRANSPOSE16x8_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8,
-                      row9, row10, row11, row12, row13, row14, row15, p3, p2,
-                      p1, p0, q0, q1, q2, q3);
-  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev,
-               mask);
+  TRANSPOSE16x8_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, p3, p2, p1, p0, q0, q1, q2, q3);
+  LPF_MASK_HEV(p3, p2, p1, p0, q0, q1, q2, q3, limit, b_limit, thresh, hev, mask);
   LPF_FILTER4_4W(p1, p0, q0, q1, mask, hev);
   ILVR_B2_SW(p0, p1, q1, q0, tmp0, tmp1);
   ILVRL_H2_SW(tmp1, tmp0, tmp2, tmp3);
@@ -654,11 +615,8 @@ func SimpleHFilter16(uint8* src, int stride, int b_limit_in) {
   uint8* ptemp_src = src - 2;
 
   LD_UB8(ptemp_src, stride, row0, row1, row2, row3, row4, row5, row6, row7);
-  LD_UB8(ptemp_src + 8 * stride, stride, row8, row9, row10, row11, row12, row13,
-         row14, row15);
-  TRANSPOSE16x4_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8,
-                      row9, row10, row11, row12, row13, row14, row15, p1, p0,
-                      q0, q1);
+  LD_UB8(ptemp_src + 8 * stride, stride, row8, row9, row10, row11, row12, row13, row14, row15);
+  TRANSPOSE16x4_UB_UB(row0, row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, p1, p0, q0, q1);
   LPF_SIMPLE_MASK(p1, p0, q0, q1, b_limit, mask);
   LPF_SIMPLE_FILT(p1, p0, q0, q1, mask);
   ILVRL_B2_SH(q0, p0, tmp1, tmp0);

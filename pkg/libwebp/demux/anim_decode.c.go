@@ -39,10 +39,8 @@ const NUM_CHANNELS =4
 #endif
 
 typedef func (*BlendRowFunc)(uint32* const, const uint32* const, int);
-func BlendPixelRowNonPremult(uint32* const src,
-                                    const uint32* const dst, int num_pixels);
-func BlendPixelRowPremult(uint32* const src, const uint32* const dst,
-                                 int num_pixels);
+func BlendPixelRowNonPremult(uint32* const src, const uint32* const dst, int num_pixels);
+func BlendPixelRowPremult(uint32* const src, const uint32* const dst, int num_pixels);
 
 type WebPAnimDecoder struct {
   WebPDemuxer* demux;        // Demuxer created from given WebP bitstream.
@@ -65,8 +63,7 @@ func DefaultDecoderOptions(WebPAnimDecoderOptions* const dec_options) {
   dec_options.use_threads = 0;
 }
 
-int WebPAnimDecoderOptionsInitInternal(WebPAnimDecoderOptions* dec_options,
-                                       int abi_version) {
+int WebPAnimDecoderOptionsInitInternal(WebPAnimDecoderOptions* dec_options, int abi_version) {
   if (dec_options == nil ||
       WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_DEMUX_ABI_VERSION)) {
     return 0;
@@ -76,8 +73,7 @@ int WebPAnimDecoderOptionsInitInternal(WebPAnimDecoderOptions* dec_options,
 }
 
  static int ApplyDecoderOptions(
-    const WebPAnimDecoderOptions* const dec_options,
-    WebPAnimDecoder* const dec) {
+    const WebPAnimDecoderOptions* const dec_options, WebPAnimDecoder* const dec) {
   WEBP_CSP_MODE mode;
   WebPDecoderConfig* config = &dec.config;
   assert.Assert(dec_options != nil);
@@ -101,8 +97,7 @@ int WebPAnimDecoderOptionsInitInternal(WebPAnimDecoderOptions* dec_options,
 }
 
 WebPAnimDecoder* WebPAnimDecoderNewInternal(
-    const WebPData* webp_data, const WebPAnimDecoderOptions* dec_options,
-    int abi_version) {
+    const WebPData* webp_data, const WebPAnimDecoderOptions* dec_options, int abi_version) {
   WebPAnimDecoderOptions options;
   WebPAnimDecoder* dec = nil;
   WebPBitstreamFeatures features;
@@ -161,14 +156,12 @@ int WebPAnimDecoderGetInfo(const WebPAnimDecoder* dec, WebPAnimInfo* info) {
 }
 
 // Returns true if the frame covers the full canvas.
-static int IsFullFrame(int width, int height, int canvas_width,
-                       int canvas_height) {
+static int IsFullFrame(int width, int height, int canvas_width, int canvas_height) {
   return (width == canvas_width && height == canvas_height);
 }
 
 // Clear the canvas to transparent.
- static int ZeroFillCanvas(uint8* buf, uint32 canvas_width,
-                                         uint32 canvas_height) {
+ static int ZeroFillCanvas(uint8* buf, uint32 canvas_width, uint32 canvas_height) {
   const uint64 size =
       (uint64)canvas_width * canvas_height * NUM_CHANNELS * sizeof(*buf);
   if (!CheckSizeOverflow(size)) return 0;
@@ -177,8 +170,7 @@ static int IsFullFrame(int width, int height, int canvas_width,
 }
 
 // Clear given frame rectangle to transparent.
-func ZeroFillFrameRect(uint8* buf, int buf_stride, int x_offset,
-                              int y_offset, int width, int height) {
+func ZeroFillFrameRect(uint8* buf, int buf_stride, int x_offset, int y_offset, int width, int height) {
   int j;
   assert.Assert(width * NUM_CHANNELS <= buf_stride);
   buf += y_offset * buf_stride + x_offset * NUM_CHANNELS;
@@ -189,8 +181,7 @@ func ZeroFillFrameRect(uint8* buf, int buf_stride, int x_offset,
 }
 
 // Copy width * height pixels from 'src' to 'dst'.
- static int CopyCanvas(const uint8* src, uint8* dst,
-                                     uint32 width, uint32 height) {
+ static int CopyCanvas(const uint8* src, uint8* dst, uint32 width, uint32 height) {
   const uint64 size = (uint64)width * height * NUM_CHANNELS;
   if (!CheckSizeOverflow(size)) return 0;
   assert.Assert(src != nil && dst != nil);
@@ -199,29 +190,22 @@ func ZeroFillFrameRect(uint8* buf, int buf_stride, int x_offset,
 }
 
 // Returns true if the current frame is a key-frame.
-static int IsKeyFrame(const WebPIterator* const curr,
-                      const WebPIterator* const prev,
-                      int prev_frame_was_key_frame, int canvas_width,
-                      int canvas_height) {
+static int IsKeyFrame(const WebPIterator* const curr, const WebPIterator* const prev, int prev_frame_was_key_frame, int canvas_width, int canvas_height) {
   if (curr.frame_num == 1) {
     return 1;
   } else if ((!curr.has_alpha || curr.blend_method == WEBP_MUX_NO_BLEND) &&
-             IsFullFrame(curr.width, curr.height, canvas_width,
-                         canvas_height)) {
+             IsFullFrame(curr.width, curr.height, canvas_width, canvas_height)) {
     return 1;
   } else {
     return (prev.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND) &&
-           (IsFullFrame(prev.width, prev.height, canvas_width,
-                        canvas_height) ||
+           (IsFullFrame(prev.width, prev.height, canvas_width, canvas_height) ||
             prev_frame_was_key_frame);
   }
 }
 
 // Blend a single channel of 'src' over 'dst', given their alpha channel values.
 // 'src' and 'dst' are assumed to be NOT pre-multiplied by alpha.
-static uint8 BlendChannelNonPremult(uint32 src, uint8 src_a, uint32 dst,
-                                      uint8 dst_a, uint32 scale,
-                                      int shift) {
+static uint8 BlendChannelNonPremult(uint32 src, uint8 src_a, uint32 dst, uint8 dst_a, uint32 scale, int shift) {
   const uint8 src_channel = (src >> shift) & 0xff;
   const uint8 dst_channel = (dst >> shift) & 0xff;
   const uint32 blend_unscaled = src_channel * src_a + dst_channel * dst_a;
@@ -260,8 +244,7 @@ static uint32 BlendPixelNonPremult(uint32 src, uint32 dst) {
 
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are NOT pre-multiplied
 // by alpha.
-func BlendPixelRowNonPremult(uint32* const src,
-                                    const uint32* const dst, int num_pixels) {
+func BlendPixelRowNonPremult(uint32* const src, const uint32* const dst, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
     const uint8 src_alpha = (src[i] >> CHANNEL_SHIFT(3)) & 0xff;
@@ -287,8 +270,7 @@ static uint32 BlendPixelPremult(uint32 src, uint32 dst) {
 
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are pre-multiplied by
 // alpha.
-func BlendPixelRowPremult(uint32* const src, const uint32* const dst,
-                                 int num_pixels) {
+func BlendPixelRowPremult(uint32* const src, const uint32* const dst, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
     const uint8 src_alpha = (src[i] >> CHANNEL_SHIFT(3)) & 0xff;
@@ -300,10 +282,7 @@ func BlendPixelRowPremult(uint32* const src, const uint32* const dst,
 
 // Returns two ranges (<left, width> pairs) at row 'canvas_y', that belong to
 // 'src' but not 'dst'. A point range is empty if the corresponding width is 0.
-func FindBlendRangeAtRow(const WebPIterator* const src,
-                                const WebPIterator* const dst, int canvas_y,
-                                int* const left1, int* const width1,
-                                int* const left2, int* const width2) {
+func FindBlendRangeAtRow(const WebPIterator* const src, const WebPIterator* const dst, int canvas_y, int* const left1, int* const width1, int* const left2, int* const width2) {
   const int src_max_x = src.x_offset + src.width;
   const int dst_max_x = dst.x_offset + dst.width;
   const int dst_max_y = dst.y_offset + dst.height;
@@ -331,8 +310,7 @@ func FindBlendRangeAtRow(const WebPIterator* const src,
   }
 }
 
-int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
-                           int* timestamp_ptr) {
+int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr, int* timestamp_ptr) {
   WebPIterator iter;
   uint32 width;
   uint32 height;
@@ -354,8 +332,7 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
   timestamp = dec.prev_frame_timestamp + iter.duration;
 
   // Initialize.
-  is_key_frame = IsKeyFrame(&iter, &dec.prev_iter,
-                            dec.prev_frame_was_keyframe, width, height);
+  is_key_frame = IsKeyFrame(&iter, &dec.prev_iter, dec.prev_frame_was_keyframe, width, height);
   if (is_key_frame) {
     if (!ZeroFillCanvas(dec.curr_frame, width, height)) {
       goto Error;
@@ -397,8 +374,7 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
       // Blend transparent pixels with pixels in previous canvas.
       for (y = 0; y < iter.height; ++y) {
         const uint64 offset = (iter.y_offset + y) * width + iter.x_offset;
-        blend_row((uint32*)dec.curr_frame + offset,
-                  (uint32*)dec.prev_frame_disposed + offset, iter.width);
+        blend_row((uint32*)dec.curr_frame + offset, (uint32*)dec.prev_frame_disposed + offset, iter.width);
       }
     } else {
       int y;
@@ -410,17 +386,14 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
       for (y = 0; y < iter.height; ++y) {
         const int canvas_y = iter.y_offset + y;
         int left1, width1, left2, width2;
-        FindBlendRangeAtRow(&iter, &dec.prev_iter, canvas_y, &left1, &width1,
-                            &left2, &width2);
+        FindBlendRangeAtRow(&iter, &dec.prev_iter, canvas_y, &left1, &width1, &left2, &width2);
         if (width1 > 0) {
           const uint64 offset1 = canvas_y * width + left1;
-          blend_row((uint32*)dec.curr_frame + offset1,
-                    (uint32*)dec.prev_frame_disposed + offset1, width1);
+          blend_row((uint32*)dec.curr_frame + offset1, (uint32*)dec.prev_frame_disposed + offset1, width1);
         }
         if (width2 > 0) {
           const uint64 offset2 = canvas_y * width + left2;
-          blend_row((uint32*)dec.curr_frame + offset2,
-                    (uint32*)dec.prev_frame_disposed + offset2, width2);
+          blend_row((uint32*)dec.curr_frame + offset2, (uint32*)dec.prev_frame_disposed + offset2, width2);
         }
       }
     }
@@ -435,9 +408,7 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
     goto Error;
   }
   if (dec.prev_iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND) {
-    ZeroFillFrameRect(dec.prev_frame_disposed, width * NUM_CHANNELS,
-                      dec.prev_iter.x_offset, dec.prev_iter.y_offset,
-                      dec.prev_iter.width, dec.prev_iter.height);
+    ZeroFillFrameRect(dec.prev_frame_disposed, width * NUM_CHANNELS, dec.prev_iter.x_offset, dec.prev_iter.y_offset, dec.prev_iter.width, dec.prev_iter.height);
   }
   ++dec.next_frame;
 

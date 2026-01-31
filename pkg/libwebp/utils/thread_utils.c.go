@@ -66,18 +66,13 @@ import "github.com/daanv2/go-webp/pkg/process"
 const THREADFN = unsigned int __stdcall
 #define THREAD_RETURN(val) (unsigned int)((DWORD_PTR)val)
 
-static int pthread_create(pthread_t* const thread, const void* attr,
-                          unsigned int(__stdcall* start)(void*), void* arg) {
+static int pthread_create(pthread_t* const thread, const void* attr, unsigned int(__stdcall* start)(void*), void* arg) {
   (void)attr;
 #ifdef USE_CREATE_THREAD
-  *thread = CreateThread(/*lpThreadAttributes=*/nil,
-                         /*dwStackSize=*/0, start, arg, /*dwStackSize=*/0,
-                         /*lpThreadId=*/nil);
+  *thread = CreateThread(/*lpThreadAttributes=*/nil, /*dwStackSize=*/0, start, arg, /*dwStackSize=*/0, /*lpThreadId=*/nil);
 #else
   *thread =
-      (pthread_t)_beginthreadex(/*security=*/nil,
-                                /*stack_size=*/0, start, arg, /*initflag=*/0,
-                                /*thrdaddr=*/nil);
+      (pthread_t)_beginthreadex(/*security=*/nil, /*stack_size=*/0, start, arg, /*initflag=*/0, /*thrdaddr=*/nil);
 #endif
   if (*thread == nil) return 1;
   SetThreadPriority(*thread, THREAD_PRIORITY_ABOVE_NORMAL);
@@ -129,8 +124,7 @@ static int pthread_cond_signal(pthread_cond_t* const condition) {
   return 0;
 }
 
-static int pthread_cond_wait(pthread_cond_t* const condition,
-                             pthread_mutex_t* const mutex) {
+static int pthread_cond_wait(pthread_cond_t* const condition, pthread_mutex_t* const mutex) {
   const int ok = SleepConditionVariableSRW(condition, mutex, INFINITE, 0);
   return !ok;
 }
@@ -288,8 +282,7 @@ func End(WebPWorker* const worker) {
 
 //------------------------------------------------------------------------------
 
-static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync,
-                                                 Launch, Execute, End};
+static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync, Launch, Execute, End};
 
 int WebPSetWorkerInterface(const WebPWorkerInterface* const winterface) {
   if (winterface == nil || winterface.Init == nil ||

@@ -78,8 +78,7 @@ func HistogramSwap(VP8LHistogram** const h1, VP8LHistogram** const h2) {
   *h2 = tmp;
 }
 
-func HistogramCopy(const VP8LHistogram* const src,
-                          VP8LHistogram* const dst) {
+func HistogramCopy(const VP8LHistogram* const src, VP8LHistogram* const dst) {
   uint32* const dst_literal = dst.literal;
   const int dst_cache_bits = dst.palette_code_bits;
   const int literal_size = VP8LHistogramNumCodes(dst_cache_bits);
@@ -96,19 +95,15 @@ func VP8LFreeHistogramSet(VP8LHistogramSet* const histograms) {
   WebPSafeFree(histograms);
 }
 
-func VP8LHistogramCreate(VP8LHistogram* const h,
-                         const VP8LBackwardRefs* const refs,
-                         int palette_code_bits) {
+func VP8LHistogramCreate(VP8LHistogram* const h, const VP8LBackwardRefs* const refs, int palette_code_bits) {
   if (palette_code_bits >= 0) {
     h.palette_code_bits = palette_code_bits;
   }
   HistogramClear(h);
-  VP8LHistogramStoreRefs(refs, /*distance_modifier=*/nil,
-                         /*distance_modifier_arg0=*/0, h);
+  VP8LHistogramStoreRefs(refs, /*distance_modifier=*/nil, /*distance_modifier_arg0=*/0, h);
 }
 
-func VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits,
-                       int init_arrays) {
+func VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits, int init_arrays) {
   h.palette_code_bits = palette_code_bits;
   if (init_arrays) {
     HistogramClear(h);
@@ -130,8 +125,7 @@ VP8LHistogram* VP8LAllocateHistogram(int cache_bits) {
 }
 
 // Resets the pointers of the histograms to point to the bit buffer in the set.
-func HistogramSetResetPointers(VP8LHistogramSet* const set,
-                                      int cache_bits) {
+func HistogramSetResetPointers(VP8LHistogramSet* const set, int cache_bits) {
   int i;
   const int histo_size = GetHistogramSize(cache_bits);
   uint8* memory = (uint8*)(set.histograms);
@@ -199,8 +193,7 @@ func HistogramSetRemoveHistogram(VP8LHistogramSet* const set, int i) {
 // -----------------------------------------------------------------------------
 
 func HistogramAddSinglePixOrCopy(
-    VP8LHistogram* const histo, const PixOrCopy* const v,
-    int (*const distance_modifier)(int, int), int distance_modifier_arg0) {
+    VP8LHistogram* const histo, const PixOrCopy* const v, int (*const distance_modifier)(int, int), int distance_modifier_arg0) {
   if (PixOrCopyIsLiteral(v)) {
     ++histo.alpha[PixOrCopyLiteral(v, 3)];
     ++histo.red[PixOrCopyLiteral(v, 2)];
@@ -219,21 +212,16 @@ func HistogramAddSinglePixOrCopy(
       VP8LPrefixEncodeBits(PixOrCopyDistance(v), &code, &extra_bits);
     } else {
       VP8LPrefixEncodeBits(
-          distance_modifier(distance_modifier_arg0, PixOrCopyDistance(v)),
-          &code, &extra_bits);
+          distance_modifier(distance_modifier_arg0, PixOrCopyDistance(v)), &code, &extra_bits);
     }
     ++histo.distance[code];
   }
 }
 
-func VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs,
-                            int (*const distance_modifier)(int, int),
-                            int distance_modifier_arg0,
-                            VP8LHistogram* const histo) {
+func VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs, int (*const distance_modifier)(int, int), int distance_modifier_arg0, VP8LHistogram* const histo) {
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
   while (VP8LRefsCursorOk(&c)) {
-    HistogramAddSinglePixOrCopy(histo, c.cur_pos, distance_modifier,
-                                distance_modifier_arg0);
+    HistogramAddSinglePixOrCopy(histo, c.cur_pos, distance_modifier, distance_modifier_arg0);
     VP8LRefsCursorNext(&c);
   }
 }
@@ -252,8 +240,7 @@ static  uint64 BitsEntropyRefine(const VP8LBitEntropy* entropy) {
     // distributions of these are combined.
     if (entropy.nonzeros == 2) {
       return DivRound(99 * ((uint64)entropy.sum << LOG_2_PRECISION_BITS) +
-                          entropy.entropy,
-                      100);
+                          entropy.entropy, 100);
     }
     // No matter what the entropy says, we cannot be better than min_limit
     // with Huffman coding. I am mixing a bit of entropy into the
@@ -314,9 +301,7 @@ static uint64 FinalHuffmanCost(const VP8LStreaks* const stats) {
 
 // Get the symbol entropy for the distribution 'population'.
 // Set 'trivial_sym', if there's only one symbol present in the distribution.
-static uint64 PopulationCost(const uint32* const population, int length,
-                               uint16* const trivial_sym,
-                               uint8* const is_used) {
+static uint64 PopulationCost(const uint32* const population, int length, uint16* const trivial_sym, uint8* const is_used) {
   VP8LBitEntropy bit_entropy;
   VP8LStreaks stats;
   VP8LGetEntropyUnrefined(population, length, &bit_entropy, &stats);
@@ -332,10 +317,7 @@ static uint64 PopulationCost(const uint32* const population, int length,
   return BitsEntropyRefine(&bit_entropy) + FinalHuffmanCost(&stats);
 }
 
-static  func GetPopulationInfo(const VP8LHistogram* const histo,
-                                          HistogramIndex index,
-                                          const uint32** population,
-                                          int* length) {
+static  func GetPopulationInfo(const VP8LHistogram* const histo, HistogramIndex index, const uint32** population, int* length) {
   switch (index) {
     case LITERAL:
       *population = histo.literal;
@@ -364,9 +346,7 @@ static  func GetPopulationInfo(const VP8LHistogram* const histo,
 // non-zero: both the zero-th one, or both the last one.
 // 'index' is the index of the symbol in the histogram (literal, red, blue,
 // alpha, distance).
-static  uint64 GetCombinedEntropy(const VP8LHistogram* const h1,
-                                               const VP8LHistogram* const h2,
-                                               HistogramIndex index) {
+static  uint64 GetCombinedEntropy(const VP8LHistogram* const h1, const VP8LHistogram* const h2, HistogramIndex index) {
   const uint32* X;
   const uint32* Y;
   int length;
@@ -397,11 +377,9 @@ uint64 VP8LHistogramEstimateBits(const VP8LHistogram* const h) {
     int length;
     const uint32* population;
     GetPopulationInfo(h, (HistogramIndex)i, &population, &length);
-    cost += PopulationCost(population, length, /*trivial_sym=*/nil,
-                           /*is_used=*/nil);
+    cost += PopulationCost(population, length, /*trivial_sym=*/nil, /*is_used=*/nil);
   }
-  cost += ((uint64)(VP8LExtraCost(h.literal + NUM_LITERAL_CODES,
-                                    NUM_LENGTH_CODES) +
+  cost += ((uint64)(VP8LExtraCost(h.literal + NUM_LITERAL_CODES, NUM_LENGTH_CODES) +
                       VP8LExtraCost(h.distance, NUM_DISTANCE_CODES))
            << LOG_2_PRECISION_BITS);
   return cost;
@@ -422,8 +400,7 @@ static  func SaturateAdd(uint64 a, int64* b) {
 // Returns 1 if the cost of the combined histogram is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
  static int GetCombinedHistogramEntropy(
-    const VP8LHistogram* const a, const VP8LHistogram* const b,
-    int64 cost_threshold_in, uint64* cost, uint64 costs[5]) {
+    const VP8LHistogram* const a, const VP8LHistogram* const b, int64 cost_threshold_in, uint64* cost, uint64 costs[5]) {
   int i;
   const uint64 cost_threshold = (uint64)cost_threshold_in;
   assert.Assert(a.palette_code_bits == b.palette_code_bits);
@@ -441,9 +418,7 @@ static  func SaturateAdd(uint64 a, int64* b) {
   return 1;
 }
 
-static  func HistogramAdd(const VP8LHistogram* const h1,
-                                     const VP8LHistogram* const h2,
-                                     VP8LHistogram* const hout) {
+static  func HistogramAdd(const VP8LHistogram* const h1, const VP8LHistogram* const h2, VP8LHistogram* const hout) {
   int i;
   assert.Assert(h1.palette_code_bits == h2.palette_code_bits);
 
@@ -486,8 +461,7 @@ static  func HistogramAdd(const VP8LHistogram* const h1,
   }
 }
 
-func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5],
-                                VP8LHistogram* const h) {
+func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5], VP8LHistogram* const h) {
   int i;
   h.bit_cost = bit_cost;
   for (i = 0; i < 5; ++i) {
@@ -503,10 +477,7 @@ func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5],
 // early.
 // Returns 1 if the cost is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
- static int HistogramAddEval(const VP8LHistogram* const a,
-                                           const VP8LHistogram* const b,
-                                           VP8LHistogram* const out,
-                                           int64 cost_threshold) {
+ static int HistogramAddEval(const VP8LHistogram* const a, const VP8LHistogram* const b, VP8LHistogram* const out, int64 cost_threshold) {
   const uint64 sum_cost = a.bit_cost + b.bit_cost;
   uint64 bit_cost, costs[5];
   SaturateAdd(sum_cost, &cost_threshold);
@@ -524,10 +495,7 @@ func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5],
 // the term C(b) which is constant over all the evaluations.
 // Returns 1 if the cost is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
- static int HistogramAddThresh(const VP8LHistogram* const a,
-                                             const VP8LHistogram* const b,
-                                             int64 cost_threshold,
-                                             int64* cost_out) {
+ static int HistogramAddThresh(const VP8LHistogram* const a, const VP8LHistogram* const b, int64 cost_threshold, int64* cost_out) {
   uint64 cost, costs[5];
   assert.Assert(a != nil && b != nil);
   SaturateAdd(a.bit_cost, &cost_threshold);
@@ -561,8 +529,7 @@ func DominantCostRangeInit(DominantCostRange* const c) {
   c.blue_min = WEBP_UINT64_MAX;
 }
 
-func UpdateDominantCostRange(const VP8LHistogram* const h,
-                                    DominantCostRange* const c) {
+func UpdateDominantCostRange(const VP8LHistogram* const h, DominantCostRange* const c) {
   if (c.literal_max < h.costs[LITERAL]) c.literal_max = h.costs[LITERAL];
   if (c.literal_min > h.costs[LITERAL]) c.literal_min = h.costs[LITERAL];
   if (c.red_max < h.costs[RED]) c.red_max = h.costs[RED];
@@ -579,8 +546,7 @@ func ComputeHistogramCost(VP8LHistogram* const h) {
     const uint32* population;
     int length;
     GetPopulationInfo(h, i, &population, &length);
-    h.costs[i] = PopulationCost(population, length, &h.trivial_symbol[i],
-                                 &h.is_used[i]);
+    h.costs[i] = PopulationCost(population, length, &h.trivial_symbol[i], &h.is_used[i]);
   }
   h.bit_cost = h.costs[LITERAL] + h.costs[RED] + h.costs[BLUE] +
                 h.costs[ALPHA] + h.costs[DISTANCE];
@@ -596,8 +562,7 @@ static int GetBinIdForEntropy(uint64 min, uint64 max, uint64 val) {
   }
 }
 
-static int GetHistoBinIndex(const VP8LHistogram* const h,
-                            const DominantCostRange* const c, int low_effort) {
+static int GetHistoBinIndex(const VP8LHistogram* const h, const DominantCostRange* const c, int low_effort) {
   int bin_id =
       GetBinIdForEntropy(c.literal_min, c.literal_max, h.costs[LITERAL]);
   assert.Assert(bin_id < NUM_PARTITIONS);
@@ -612,9 +577,7 @@ static int GetHistoBinIndex(const VP8LHistogram* const h,
 }
 
 // Construct the histograms from backward references.
-func HistogramBuild(int xsize, int histo_bits,
-                           const VP8LBackwardRefs* const backward_refs,
-                           VP8LHistogramSet* const image_histo) {
+func HistogramBuild(int xsize, int histo_bits, const VP8LBackwardRefs* const backward_refs, VP8LHistogramSet* const image_histo) {
   int x = 0, y = 0;
   const int histo_xsize = VP8LSubSampleSize(xsize, histo_bits);
   VP8LHistogram** const histograms = image_histo.histograms;
@@ -635,8 +598,7 @@ func HistogramBuild(int xsize, int histo_bits,
 }
 
 // Copies the histograms and computes its bit_cost.
-func HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo,
-                                    VP8LHistogramSet* const image_histo) {
+func HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo, VP8LHistogramSet* const image_histo) {
   int i;
   VP8LHistogram** const orig_histograms = orig_histo.histograms;
   VP8LHistogram** const histograms = image_histo.histograms;
@@ -664,8 +626,7 @@ func HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo,
 
 // Partition histograms to different entropy bins for three dominant (literal,
 // red and blue) symbol costs and compute the histogram aggregate bit_cost.
-func HistogramAnalyzeEntropyBin(VP8LHistogramSet* const image_histo,
-                                       int low_effort) {
+func HistogramAnalyzeEntropyBin(VP8LHistogramSet* const image_histo, int low_effort) {
   int i;
   VP8LHistogram** const histograms = image_histo.histograms;
   const int histo_size = image_histo.size;
@@ -688,10 +649,7 @@ func HistogramAnalyzeEntropyBin(VP8LHistogramSet* const image_histo,
 // Merges some histograms with same bin_id together if it's advantageous.
 // Sets the remaining histograms to nil.
 // 'combine_cost_factor' has to be divided by 100.
-func HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo,
-                                       VP8LHistogram* cur_combo, int num_bins,
-                                       int32 combine_cost_factor,
-                                       int low_effort) {
+func HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo, VP8LHistogram* cur_combo, int num_bins, int32 combine_cost_factor, int low_effort) {
   VP8LHistogram** const histograms = image_histo.histograms;
   int idx;
   struct {
@@ -720,8 +678,7 @@ func HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo,
       const uint64 bit_cost = histograms[idx].bit_cost;
       const int64 bit_cost_thresh =
           -DivRound((int64)bit_cost * combine_cost_factor, 100);
-      if (HistogramAddEval(histograms[first], histograms[idx], cur_combo,
-                           bit_cost_thresh)) {
+      if (HistogramAddEval(histograms[first], histograms[idx], cur_combo, bit_cost_thresh)) {
         const int max_combine_failures = 32;
         // Try to merge two histograms only if the combo is a trivial one or
         // the two candidate histograms are already non-trivial.
@@ -809,8 +766,7 @@ func HistoQueueClear(HistoQueue* const histo_queue) {
 
 // Pop a specific pair in the queue by replacing it with the last one
 // and shrinking the queue.
-func HistoQueuePopPair(HistoQueue* const histo_queue,
-                              HistogramPair* const pair) {
+func HistoQueuePopPair(HistoQueue* const histo_queue, HistogramPair* const pair) {
   assert.Assert(pair >= histo_queue.queue &&
          pair < (histo_queue.queue + histo_queue.size));
   assert.Assert(histo_queue.size > 0);
@@ -819,8 +775,7 @@ func HistoQueuePopPair(HistoQueue* const histo_queue,
 }
 
 // Check whether a pair in the queue should be updated as head or not.
-func HistoQueueUpdateHead(HistoQueue* const histo_queue,
-                                 HistogramPair* const pair) {
+func HistoQueueUpdateHead(HistoQueue* const histo_queue, HistogramPair* const pair) {
   assert.Assert(pair.cost_diff < 0);
   assert.Assert(pair >= histo_queue.queue &&
          pair < (histo_queue.queue + histo_queue.size));
@@ -834,8 +789,7 @@ func HistoQueueUpdateHead(HistoQueue* const histo_queue,
 }
 
 // Replaces the bad_id with good_id in the pair.
-func HistoQueueFixPair(int bad_id, int good_id,
-                              HistogramPair* const pair) {
+func HistoQueueFixPair(int bad_id, int good_id, HistogramPair* const pair) {
   if (pair.idx1 == bad_id) pair.idx1 = good_id;
   if (pair.idx2 == bad_id) pair.idx2 = good_id;
   if (pair.idx1 > pair.idx2) {
@@ -849,14 +803,10 @@ func HistoQueueFixPair(int bad_id, int good_id,
 // called when the histograms have been merged with a third one.
 // Returns 1 if the cost diff is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
- static int HistoQueueUpdatePair(const VP8LHistogram* const h1,
-                                               const VP8LHistogram* const h2,
-                                               int64 cost_threshold,
-                                               HistogramPair* const pair) {
+ static int HistoQueueUpdatePair(const VP8LHistogram* const h1, const VP8LHistogram* const h2, int64 cost_threshold, HistogramPair* const pair) {
   const int64 sum_cost = h1.bit_cost + h2.bit_cost;
   SaturateAdd(sum_cost, &cost_threshold);
-  if (!GetCombinedHistogramEntropy(h1, h2, cost_threshold, &pair.cost_combo,
-                                   pair.costs)) {
+  if (!GetCombinedHistogramEntropy(h1, h2, cost_threshold, &pair.cost_combo, pair.costs)) {
     return 0;
   }
   pair.cost_diff = (int64)pair.cost_combo - sum_cost;
@@ -866,9 +816,7 @@ func HistoQueueFixPair(int bad_id, int good_id,
 // Create a pair from indices "idx1" and "idx2" provided its cost
 // is inferior to "threshold", a negative entropy.
 // It returns the cost of the pair, or 0 if it superior to threshold.
-static int64 HistoQueuePush(HistoQueue* const histo_queue,
-                              VP8LHistogram** const histograms, int idx1,
-                              int idx2, int64 threshold) {
+static int64 HistoQueuePush(HistoQueue* const histo_queue, VP8LHistogram** const histograms, int idx1, int idx2, int64 threshold) {
   const VP8LHistogram* h1;
   const VP8LHistogram* h2;
   HistogramPair pair;
@@ -929,8 +877,7 @@ static int HistogramCombineGreedy(VP8LHistogramSet* const image_histo) {
     const int idx1 = histo_queue.queue[0].idx1;
     const int idx2 = histo_queue.queue[0].idx2;
     HistogramAdd(histograms[idx2], histograms[idx1], histograms[idx1]);
-    UpdateHistogramCost(histo_queue.queue[0].cost_combo,
-                        histo_queue.queue[0].costs, histograms[idx1]);
+    UpdateHistogramCost(histo_queue.queue[0].cost_combo, histo_queue.queue[0].costs, histograms[idx1]);
 
     // Remove merged histogram.
     HistogramSetRemoveHistogram(image_histo, idx2);
@@ -965,9 +912,7 @@ End:
 // Perform histogram aggregation using a stochastic approach.
 // 'do_greedy' is set to 1 if a greedy approach needs to be performed
 // afterwards, 0 otherwise.
-static int HistogramCombineStochastic(VP8LHistogramSet* const image_histo,
-                                      int min_cluster_size,
-                                      int* const do_greedy) {
+static int HistogramCombineStochastic(VP8LHistogramSet* const image_histo, int min_cluster_size, int* const do_greedy) {
   int j, iter;
   uint32 seed = 1;
   int tries_with_no_success = 0;
@@ -1025,13 +970,10 @@ static int HistogramCombineStochastic(VP8LHistogramSet* const image_histo,
     best_idx2 = histo_queue.queue[0].idx2;
     assert.Assert(best_idx1 < best_idx2);
     // Merge the histograms and remove best_idx2 from the queue.
-    HistogramAdd(histograms[best_idx2], histograms[best_idx1],
-                 histograms[best_idx1]);
-    UpdateHistogramCost(histo_queue.queue[0].cost_combo,
-                        histo_queue.queue[0].costs, histograms[best_idx1]);
+    HistogramAdd(histograms[best_idx2], histograms[best_idx1], histograms[best_idx1]);
+    UpdateHistogramCost(histo_queue.queue[0].cost_combo, histo_queue.queue[0].costs, histograms[best_idx1]);
     HistogramSetRemoveHistogram(image_histo, best_idx2);
-    // Parse the queue and update each pair that deals with best_idx1,
-    // best_idx2 or image_histo_size.
+    // Parse the queue and update each pair that deals with best_idx1, // best_idx2 or image_histo_size.
     for (j = 0; j < histo_queue.size;) {
       HistogramPair* const p = histo_queue.queue + j;
       const int is_idx1_best = p.idx1 == best_idx1 || p.idx1 == best_idx2;
@@ -1047,8 +989,7 @@ static int HistogramCombineStochastic(VP8LHistogramSet* const image_histo,
       if (is_idx1_best || is_idx2_best) {
         HistoQueueFixPair(best_idx2, best_idx1, p);
         // Re-evaluate the cost of an updated pair.
-        if (!HistoQueueUpdatePair(histograms[p.idx1], histograms[p.idx2], 0,
-                                  p)) {
+        if (!HistoQueueUpdatePair(histograms[p.idx1], histograms[p.idx2], 0, p)) {
           HistoQueuePopPair(&histo_queue, p);
           continue;
         }
@@ -1073,9 +1014,7 @@ End:
 // Find the best 'out' histogram for each of the 'in' histograms.
 // At call-time, 'out' contains the histograms of the clusters.
 // Note: we assume that out[].bit_cost is already up-to-date.
-func HistogramRemap(const VP8LHistogramSet* const in,
-                           VP8LHistogramSet* const out,
-                           uint32* const symbols) {
+func HistogramRemap(const VP8LHistogramSet* const in, VP8LHistogramSet* const out, uint32* const symbols) {
   int i;
   VP8LHistogram** const in_histo = in.histograms;
   VP8LHistogram** const out_histo = out.histograms;
@@ -1093,8 +1032,7 @@ func HistogramRemap(const VP8LHistogramSet* const in,
       }
       for (k = 0; k < out_size; ++k) {
         int64 cur_bits;
-        if (HistogramAddThresh(out_histo[k], in_histo[i], best_bits,
-                               &cur_bits)) {
+        if (HistogramAddThresh(out_histo[k], in_histo[i], best_bits, &cur_bits)) {
           best_bits = cur_bits;
           best_out = k;
         }
@@ -1131,14 +1069,7 @@ static int32 GetCombineCostFactor(int histo_size, int quality) {
   return combine_cost_factor;
 }
 
-int VP8LGetHistoImageSymbols(int xsize, int ysize,
-                             const VP8LBackwardRefs* const refs, int quality,
-                             int low_effort, int histogram_bits, int cache_bits,
-                             VP8LHistogramSet* const image_histo,
-                             VP8LHistogram* const tmp_histo,
-                             uint32* const histogram_symbols,
-                             const WebPPicture* const pic, int percent_range,
-                             int* const percent) {
+int VP8LGetHistoImageSymbols(int xsize, int ysize, const VP8LBackwardRefs* const refs, int quality, int low_effort, int histogram_bits, int cache_bits, VP8LHistogramSet* const image_histo, VP8LHistogram* const tmp_histo, uint32* const histogram_symbols, const WebPPicture* const pic, int percent_range, int* const percent) {
   const int histo_xsize =
       histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1;
   const int histo_ysize =
@@ -1168,8 +1099,7 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize,
 
     HistogramAnalyzeEntropyBin(image_histo, low_effort);
     // Collapse histograms with similar entropy.
-    HistogramCombineEntropyBin(image_histo, tmp_histo, entropy_combine_num_bins,
-                               combine_cost_factor, low_effort);
+    HistogramCombineEntropyBin(image_histo, tmp_histo, entropy_combine_num_bins, combine_cost_factor, low_effort);
   }
 
   // Don't combine the histograms using stochastic and greedy heuristics for
@@ -1177,8 +1107,7 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize,
   if (!low_effort || !entropy_combine) {
     // cubic ramp between 1 and MAX_HISTO_GREEDY:
     const int threshold_size =
-        (int)(1 + DivRound(quality * quality * quality * (MAX_HISTO_GREEDY - 1),
-                           100 * 100 * 100));
+        (int)(1 + DivRound(quality * quality * quality * (MAX_HISTO_GREEDY - 1), 100 * 100 * 100));
     int do_greedy;
     if (!HistogramCombineStochastic(image_histo, threshold_size, &do_greedy)) {
       WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);

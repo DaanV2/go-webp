@@ -147,8 +147,7 @@ func MapConfigToTools(VP8Encoder* const enc) {
 //              LFStats: 2048
 // Picture size (yuv): 419328
 
-static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
-                                  WebPPicture* const picture) {
+static VP8Encoder* InitVP8Encoder(const WebPConfig* const config, WebPPicture* const picture) {
   VP8Encoder* enc;
   const int use_filter =
       (config.filter_strength > 0) || (config.autofilter > 0);
@@ -190,18 +189,14 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
       "       top diffusion: %ld\n"
       "            non-zero: %ld\n"
       "            lf-stats: %ld\n"
-      "               total: %ld\n",
-      sizeof(*enc) + WEBP_ALIGN_CST, info_size, preds_size, samples_size,
-      top_derr_size, nz_size, lf_stats_size, size);
+      "               total: %ld\n", sizeof(*enc) + WEBP_ALIGN_CST, info_size, preds_size, samples_size, top_derr_size, nz_size, lf_stats_size, size);
   printf(
       "Transient object sizes:\n"
       "      VP8EncIterator: %ld\n"
       "        VP8ModeScore: %ld\n"
       "      VP8SegmentInfo: %ld\n"
       "         VP8EncProba: %ld\n"
-      "             LFStats: %ld\n",
-      sizeof(VP8EncIterator), sizeof(VP8ModeScore), sizeof(VP8SegmentInfo),
-      sizeof(VP8EncProba), sizeof(LFStats));
+      "             LFStats: %ld\n", sizeof(VP8EncIterator), sizeof(VP8ModeScore), sizeof(VP8SegmentInfo), sizeof(VP8EncProba), sizeof(LFStats));
   printf("Picture size (yuv): %ld\n", mb_w * mb_h * 384 * sizeof(uint8));
   printf("===================================\n");
 #endif
@@ -310,8 +305,7 @@ func StoreStats(VP8Encoder* const enc) {
 #endif  // !defined(WEBP_DISABLE_STATS)
 }
 
-int WebPEncodingSetError(const WebPPicture* const pic,
-                         WebPEncodingError error) {
+int WebPEncodingSetError(const WebPPicture* const pic, WebPEncodingError error) {
   assert.Assert((int)error < VP8_ENC_ERROR_LAST);
   assert.Assert((int)error >= VP8_ENC_OK);
   // The oldest error reported takes precedence over the new one.
@@ -321,8 +315,7 @@ int WebPEncodingSetError(const WebPPicture* const pic,
   return 0;
 }
 
-int WebPReportProgress(const WebPPicture* const pic, int percent,
-                       int* const percent_store) {
+int WebPReportProgress(const WebPPicture* const pic, int percent, int* const percent_store) {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
     if (pic.progress_hook && !pic.progress_hook(percent, pic)) {

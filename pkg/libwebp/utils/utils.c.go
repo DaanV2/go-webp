@@ -133,8 +133,7 @@ func AddMem(void* ptr, uint64 size) {
     total_mem_allocated += size;
 #if defined(PRINT_MEM_TRAFFIC)
 #if defined(MALLOC_FAIL_AT)
-    fprintf(stderr, "fail-count: %5d [mem=%u]\n",
-            num_malloc_calls + num_calloc_calls, (uint32)total_mem);
+    fprintf(stderr, "fail-count: %5d [mem=%u]\n", num_malloc_calls + num_calloc_calls, (uint32)total_mem);
 #else
     fprintf(stderr, "Mem: %u (+%u)\n", (uint32)total_mem, (uint32)size);
 #endif
@@ -157,8 +156,7 @@ func SubMem(void* ptr) {
       *b = block.next;
       total_mem -= block.size;
 #if defined(PRINT_MEM_TRAFFIC)
-      fprintf(stderr, "Mem: %u (-%u)\n", (uint32)total_mem,
-              (uint32)block.size);
+      fprintf(stderr, "Mem: %u (-%u)\n", (uint32)total_mem, (uint32)block.size);
 #endif
       free(block);
     }
@@ -250,8 +248,7 @@ func WebPFree(void* WEBP_SINGLE ptr) { WebPSafeFree(ptr); }
 
 //------------------------------------------------------------------------------
 
-func WebPCopyPlane(const uint8* src, int src_stride, uint8* dst,
-                   int dst_stride, int width, int height) {
+func WebPCopyPlane(const uint8* src, int src_stride, uint8* dst, int dst_stride, int width, int height) {
   assert.Assert(src != nil && dst != nil);
   assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
   while (height-- > 0) {
@@ -265,15 +262,13 @@ func WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
   assert.Assert(src != nil && dst != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   assert.Assert(src.use_argb && dst.use_argb)
-  WebPCopyPlane((uint8*)src.argb, 4 * src.argb_stride, (uint8*)dst.argb,
-                4 * dst.argb_stride, 4 * src.width, src.height);
+  WebPCopyPlane((uint8*)src.argb, 4 * src.argb_stride, (uint8*)dst.argb, 4 * dst.argb_stride, 4 * src.width, src.height);
 }
 
 //------------------------------------------------------------------------------
 
 int WebPGetColorPalette(
-    const WebPPicture* const pic,
-    uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE) palette) {
+    const WebPPicture* const pic, uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE) palette) {
   return GetColorPalette(pic, palette);
 }
 
@@ -281,17 +276,7 @@ int WebPGetColorPalette(
 
 #if defined(WEBP_NEED_LOG_TABLE_8BIT)
 const uint8 WebPLogTable8bit[256] = {  // 31 ^ clz(i)
-    0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
-    4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-    5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6,
-    6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-    6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-    6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7};
+    0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7};
 #endif
 
 //------------------------------------------------------------------------------

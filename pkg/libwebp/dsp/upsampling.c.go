@@ -113,10 +113,7 @@ UPSAMPLE_FUNC(UpsampleBgrLinePair_C, VP8YuvToBgr, 3)
 UPSAMPLE_FUNC(UpsampleRgba4444LinePair_C, VP8YuvToRgba4444, 2)
 UPSAMPLE_FUNC(UpsampleRgb565LinePair_C, VP8YuvToRgb565, 2)
 #else
-func EmptyUpsampleFunc(const uint8* top_y, const uint8* bottom_y,
-                              const uint8* top_u, const uint8* top_v,
-                              const uint8* cur_u, const uint8* cur_v,
-                              uint8* top_dst, uint8* bottom_dst, int len) {
+func EmptyUpsampleFunc(const uint8* top_y, const uint8* bottom_y, const uint8* top_u, const uint8* top_v, const uint8* cur_u, const uint8* cur_v, uint8* top_dst, uint8* bottom_dst, int len) {
   (void)top_y;
   (void)bottom_y;
   (void)top_u;
@@ -211,8 +208,7 @@ YUV444_FUNC(WebPYuv444ToArgb_C, VP8YuvToArgb, 4)
 YUV444_FUNC(WebPYuv444ToRgba4444_C, VP8YuvToRgba4444, 2)
 YUV444_FUNC(WebPYuv444ToRgb565_C, VP8YuvToRgb565, 2)
 #else
-func EmptyYuv444Func(const uint8* y, const uint8* u,
-                            const uint8* v, uint8* dst, int len) {
+func EmptyYuv444Func(const uint8* y, const uint8* u, const uint8* v, uint8* dst, int len) {
   (void)y;
   (void)u;
   (void)v;

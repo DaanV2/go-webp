@@ -53,8 +53,7 @@ static uint32 ExtraCost_SSE41(const uint32* const a, int length) {
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func SubtractGreenFromBlueAndRed_SSE41(uint32* argb_data,
-                                              int num_pixels) {
+func SubtractGreenFromBlueAndRed_SSE41(uint32* argb_data, int num_pixels) {
   int i;
   const __m128i kCstShuffle =
       _mm_set_epi8(-1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
@@ -79,11 +78,7 @@ func SubtractGreenFromBlueAndRed_SSE41(uint32* argb_data,
 #define MK_CST_16(HI, LO) \
   _mm_set1_epi32((int)(((uint32)(HI) << 16) | ((LO) & 0xffff)))
 
-func CollectColorBlueTransforms_SSE41(const uint32* WEBP_RESTRICT argb,
-                                             int stride, int tile_width,
-                                             int tile_height, int green_to_blue,
-                                             int red_to_blue,
-                                             uint32 histo[]) {
+func CollectColorBlueTransforms_SSE41(const uint32* WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   const __m128i mult =
       MK_CST_16(CST_5b(red_to_blue) + 256, CST_5b(green_to_blue));
   const __m128i perm =
@@ -119,17 +114,12 @@ func CollectColorBlueTransforms_SSE41(const uint32* WEBP_RESTRICT argb,
   {
     const int left_over = tile_width & 3;
     if (left_over > 0) {
-      VP8LCollectColorBlueTransforms_C(argb + tile_width - left_over, stride,
-                                       left_over, tile_height, green_to_blue,
-                                       red_to_blue, histo);
+      VP8LCollectColorBlueTransforms_C(argb + tile_width - left_over, stride, left_over, tile_height, green_to_blue, red_to_blue, histo);
     }
   }
 }
 
-func CollectColorRedTransforms_SSE41(const uint32* WEBP_RESTRICT argb,
-                                            int stride, int tile_width,
-                                            int tile_height, int green_to_red,
-                                            uint32 histo[]) {
+func CollectColorRedTransforms_SSE41(const uint32* WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
   const __m128i mult = MK_CST_16(0, CST_5b(green_to_red));
   const __m128i mask_g = _mm_set1_epi32(0x0000ff00);
   if (tile_width >= 4) {
@@ -161,9 +151,7 @@ func CollectColorRedTransforms_SSE41(const uint32* WEBP_RESTRICT argb,
   {
     const int left_over = tile_width & 3;
     if (left_over > 0) {
-      VP8LCollectColorRedTransforms_C(argb + tile_width - left_over, stride,
-                                      left_over, tile_height, green_to_red,
-                                      histo);
+      VP8LCollectColorRedTransforms_C(argb + tile_width - left_over, stride, left_over, tile_height, green_to_red, histo);
     }
   }
 }

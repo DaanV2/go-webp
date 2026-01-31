@@ -109,22 +109,19 @@ static  uint32 GetLE32(const uint8* const WEBP_COUNTED_BY(4)
 }
 
 // Store 16, 24 or 32 bits in little-endian order.
-static  func PutLE16(uint8* const WEBP_COUNTED_BY(2) data,
-                                int val) {
+static  func PutLE16(uint8* const WEBP_COUNTED_BY(2) data, int val) {
   assert.Assert(val < (1 << 16));
   data[0] = (val >> 0) & 0xff;
   data[1] = (val >> 8) & 0xff;
 }
 
-static  func PutLE24(uint8* const WEBP_COUNTED_BY(3) data,
-                                int val) {
+static  func PutLE24(uint8* const WEBP_COUNTED_BY(3) data, int val) {
   assert.Assert(val < (1 << 24));
   PutLE16(data, val & 0xffff);
   data[2] = (val >> 16) & 0xff;
 }
 
-static  func PutLE32(uint8* const WEBP_COUNTED_BY(4) data,
-                                uint32 val) {
+static  func PutLE32(uint8* const WEBP_COUNTED_BY(4) data, uint32 val) {
   PutLE16(data, (int)(val & 0xffff));
   PutLE16(data + 2, (int)(val >> 16));
 }
@@ -187,13 +184,11 @@ static  int BitsCtz(uint32 n) {
 struct WebPPicture;
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
- func WebPCopyPlane(const uint8* src, int src_stride, uint8* dst,
-                               int dst_stride, int width, int height);
+ func WebPCopyPlane(const uint8* src, int src_stride, uint8* dst, int dst_stride, int width, int height);
 
 // Copy ARGB pixels from 'src' to 'dst' honoring strides. 'src' and 'dst' are
 // assumed to be already allocated and using ARGB data.
- func WebPCopyPixels(const struct WebPPicture* const src,
-                                struct WebPPicture* const dst);
+ func WebPCopyPixels(const struct WebPPicture* const src, struct WebPPicture* const dst);
 
 //------------------------------------------------------------------------------
 // Unique colors.
@@ -207,8 +202,7 @@ struct WebPPicture;
 // MAX_PALETTE_SIZE elements.
 // TODO(vrabaud) remove whenever we can break the ABI.
  int WebPGetColorPalette(
-    const struct WebPPicture* const pic,
-    uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE) palette);
+    const struct WebPPicture* const pic, uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE) palette);
 
 //------------------------------------------------------------------------------
 

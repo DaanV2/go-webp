@@ -47,8 +47,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // rotate right by N bytes
 #define ROTATE_RIGHT_N(A, N) vext_u8((A), (A), (8 - (N)) % 8)
 
-func PredictLine_NEON(const uint8* src, const uint8* pred,
-                             uint8* WEBP_RESTRICT dst, int length) {
+func PredictLine_NEON(const uint8* src, const uint8* pred, uint8* WEBP_RESTRICT dst, int length) {
   int i;
   assert.Assert(length >= 0);
   for (i = 0; i + 16 <= length; i += 16) {
@@ -61,18 +60,14 @@ func PredictLine_NEON(const uint8* src, const uint8* pred,
 }
 
 // Special case for left-based prediction (when preds==dst-1 or preds==src-1).
-func PredictLineLeft_NEON(const uint8* WEBP_RESTRICT src,
-                                 uint8* WEBP_RESTRICT dst, int length) {
+func PredictLineLeft_NEON(const uint8* WEBP_RESTRICT src, uint8* WEBP_RESTRICT dst, int length) {
   PredictLine_NEON(src, src - 1, dst, length);
 }
 
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static  func DoHorizontalFilter_NEON(const uint8* WEBP_RESTRICT in,
-                                                int width, int height,
-                                                int stride,
-                                                uint8* WEBP_RESTRICT out) {
+static  func DoHorizontalFilter_NEON(const uint8* WEBP_RESTRICT in, int width, int height, int stride, uint8* WEBP_RESTRICT out) {
   int row;
   DCHECK(in, out);
 
@@ -92,18 +87,14 @@ static  func DoHorizontalFilter_NEON(const uint8* WEBP_RESTRICT in,
   }
 }
 
-func HorizontalFilter_NEON(const uint8* WEBP_RESTRICT data, int width,
-                                  int height, int stride,
-                                  uint8* WEBP_RESTRICT filtered_data) {
+func HorizontalFilter_NEON(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
   DoHorizontalFilter_NEON(data, width, height, stride, filtered_data);
 }
 
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static  func DoVerticalFilter_NEON(const uint8* WEBP_RESTRICT in,
-                                              int width, int height, int stride,
-                                              uint8* WEBP_RESTRICT out) {
+static  func DoVerticalFilter_NEON(const uint8* WEBP_RESTRICT in, int width, int height, int stride, uint8* WEBP_RESTRICT out) {
   int row;
   DCHECK(in, out);
 
@@ -122,9 +113,7 @@ static  func DoVerticalFilter_NEON(const uint8* WEBP_RESTRICT in,
   }
 }
 
-func VerticalFilter_NEON(const uint8* WEBP_RESTRICT data, int width,
-                                int height, int stride,
-                                uint8* WEBP_RESTRICT filtered_data) {
+func VerticalFilter_NEON(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
   DoVerticalFilter_NEON(data, width, height, stride, filtered_data);
 }
 
@@ -136,10 +125,7 @@ static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
-func GradientPredictDirect_NEON(const uint8* const row,
-                                       const uint8* const top,
-                                       uint8* WEBP_RESTRICT const out,
-                                       int length) {
+func GradientPredictDirect_NEON(const uint8* const row, const uint8* const top, uint8* WEBP_RESTRICT const out, int length) {
   int i;
   for (i = 0; i + 8 <= length; i += 8) {
     const uint8x8_t A = vld1_u8(&row[i - 1]);
@@ -155,9 +141,7 @@ func GradientPredictDirect_NEON(const uint8* const row,
   }
 }
 
-static  func DoGradientFilter_NEON(const uint8* WEBP_RESTRICT in,
-                                              int width, int height, int stride,
-                                              uint8* WEBP_RESTRICT out) {
+static  func DoGradientFilter_NEON(const uint8* WEBP_RESTRICT in, int width, int height, int stride, uint8* WEBP_RESTRICT out) {
   int row;
   DCHECK(in, out);
 
@@ -176,9 +160,7 @@ static  func DoGradientFilter_NEON(const uint8* WEBP_RESTRICT in,
   }
 }
 
-func GradientFilter_NEON(const uint8* WEBP_RESTRICT data, int width,
-                                int height, int stride,
-                                uint8* WEBP_RESTRICT filtered_data) {
+func GradientFilter_NEON(const uint8* WEBP_RESTRICT data, int width, int height, int stride, uint8* WEBP_RESTRICT filtered_data) {
   DoGradientFilter_NEON(data, width, height, stride, filtered_data);
 }
 
@@ -187,8 +169,7 @@ func GradientFilter_NEON(const uint8* WEBP_RESTRICT data, int width,
 //------------------------------------------------------------------------------
 // Inverse transforms
 
-func HorizontalUnfilter_NEON(const uint8* prev, const uint8* in,
-                                    uint8* out, int width) {
+func HorizontalUnfilter_NEON(const uint8* prev, const uint8* in, uint8* out, int width) {
   int i;
   const uint8x16_t zero = vdupq_n_u8(0);
   uint8x16_t last;
@@ -212,8 +193,7 @@ func HorizontalUnfilter_NEON(const uint8* prev, const uint8* in,
   for (; i < width; ++i) out[i] = in[i] + out[i - 1];
 }
 
-func VerticalUnfilter_NEON(const uint8* prev, const uint8* in,
-                                  uint8* out, int width) {
+func VerticalUnfilter_NEON(const uint8* prev, const uint8* in, uint8* out, int width) {
   if (prev == nil) {
     HorizontalUnfilter_NEON(nil, in, out, width);
   } else {
@@ -246,9 +226,7 @@ const USE_GRADIENT_UNFILTER =0  // ALTERNATE_CODE
     out = vext_u8(out, ROTATE_LEFT_N(pred, (L)), 1);                          \
   } while (0)
 
-func GradientPredictInverse_NEON(const uint8* const in,
-                                        const uint8* const top,
-                                        uint8* const row, int length) {
+func GradientPredictInverse_NEON(const uint8* const in, const uint8* const top, uint8* const row, int length) {
   if (length > 0) {
     int i;
     uint8x8_t pred = vdup_n_u8(row[-1]);  // left sample
@@ -275,8 +253,7 @@ func GradientPredictInverse_NEON(const uint8* const in,
 }
 #undef GRAD_PROCESS_LANE
 
-func GradientUnfilter_NEON(const uint8* prev, const uint8* in,
-                                  uint8* out, int width) {
+func GradientUnfilter_NEON(const uint8* prev, const uint8* in, uint8* out, int width) {
   if (prev == nil) {
     HorizontalUnfilter_NEON(nil, in, out, width);
   } else {

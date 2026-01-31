@@ -26,14 +26,12 @@ static uint32 horizontal_add_uint32x4(const uint32x4_t a) {
   return vaddvq_u32(a);
 #else
   const uint64x2_t b = vpaddlq_u32(a);
-  const uint32x2_t c = vadd_u32(vreinterpret_u32_u64(vget_low_u64(b)),
-                                vreinterpret_u32_u64(vget_high_u64(b)));
+  const uint32x2_t c = vadd_u32(vreinterpret_u32_u64(vget_low_u64(b)), vreinterpret_u32_u64(vget_high_u64(b)));
   return vget_lane_u32(c, 0);
 #endif
 }
 
-static  int IsFlat(const int16* levels, int num_blocks,
-                              int thresh) {
+static  int IsFlat(const int16* levels, int num_blocks, int thresh) {
   const int16x8_t tst_ones = vdupq_n_s16(-1);
   uint32x4_t sum = vdupq_n_u32(0);
   int i;
@@ -58,8 +56,7 @@ static  int IsFlat(const int16* levels, int num_blocks,
 
 const IsFlat = IsFlat_C
 
-static  int IsFlat(const int16* levels, int num_blocks,
-                              int thresh) {
+static  int IsFlat(const int16* levels, int num_blocks, int thresh) {
   int score = 0;
   while (num_blocks-- > 0) {  // TODO(skal): refine positional scoring?
     int i;

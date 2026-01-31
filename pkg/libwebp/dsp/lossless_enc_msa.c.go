@@ -52,16 +52,13 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     dst = VSHF_UB(src, t0, mask1);                        \
   } while (0)
 
-func TransformColor_MSA(const VP8LMultipliers* WEBP_RESTRICT const m,
-                               uint32* WEBP_RESTRICT data, int num_pixels) {
+func TransformColor_MSA(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* WEBP_RESTRICT data, int num_pixels) {
   v16u8 src0, dst0;
   const v16i8 g2br =
       (v16i8)__msa_fill_w(m.green_to_blue | (m.green_to_red << 16));
   const v16i8 r2b = (v16i8)__msa_fill_w(m.red_to_blue);
-  const v16u8 mask0 = {1, 255, 1, 255, 5,  255, 5,  255,
-                       9, 255, 9, 255, 13, 255, 13, 255};
-  const v16u8 mask1 = {16, 1, 18, 3,  20, 5,  22, 7,
-                       24, 9, 26, 11, 28, 13, 30, 15};
+  const v16u8 mask0 = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255};
+  const v16u8 mask1 = {16, 1, 18, 3,  20, 5,  22, 7, 24, 9, 26, 11, 28, 13, 30, 15};
 
   while (num_pixels >= 8) {
     v16u8 src1, dst1;
@@ -98,13 +95,11 @@ func TransformColor_MSA(const VP8LMultipliers* WEBP_RESTRICT const m,
   }
 }
 
-func SubtractGreenFromBlueAndRed_MSA(uint32* argb_data,
-                                            int num_pixels) {
+func SubtractGreenFromBlueAndRed_MSA(uint32* argb_data, int num_pixels) {
   int i;
   uint8* ptemp_data = (uint8*)argb_data;
   v16u8 src0, dst0, tmp0;
-  const v16u8 mask = {1, 255, 1, 255, 5,  255, 5,  255,
-                      9, 255, 9, 255, 13, 255, 13, 255};
+  const v16u8 mask = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255};
 
   while (num_pixels >= 8) {
     v16u8 src1, dst1, tmp1;

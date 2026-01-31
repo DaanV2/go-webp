@@ -42,8 +42,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     (V).val[(OTHER)] = vshrn_n_u16(b3, 8);                   \
   } while (0)
 
-func ApplyAlphaMultiply_NEON(uint8* rgba, int alpha_first, int w,
-                                    int h, int stride) {
+func ApplyAlphaMultiply_NEON(uint8* rgba, int alpha_first, int w, int h, int stride) {
   const uint16x8_t kOne = vdupq_n_u16(1u);
   while (h-- > 0) {
     uint32* const rgbx = (uint32*)rgba;
@@ -83,9 +82,7 @@ func ApplyAlphaMultiply_NEON(uint8* rgba, int alpha_first, int w,
 
 //------------------------------------------------------------------------------
 
-static int DispatchAlpha_NEON(const uint8* WEBP_RESTRICT alpha,
-                              int alpha_stride, int width, int height,
-                              uint8* WEBP_RESTRICT dst, int dst_stride) {
+static int DispatchAlpha_NEON(const uint8* WEBP_RESTRICT alpha, int alpha_stride, int width, int height, uint8* WEBP_RESTRICT dst, int dst_stride) {
   uint32 alpha_mask = 0xffu;
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
@@ -116,10 +113,7 @@ static int DispatchAlpha_NEON(const uint8* WEBP_RESTRICT alpha,
   return (alpha_mask != 0xffffffffu);
 }
 
-func DispatchAlphaToGreen_NEON(const uint8* WEBP_RESTRICT alpha,
-                                      int alpha_stride, int width, int height,
-                                      uint32* WEBP_RESTRICT dst,
-                                      int dst_stride) {
+func DispatchAlphaToGreen_NEON(const uint8* WEBP_RESTRICT alpha, int alpha_stride, int width, int height, uint32* WEBP_RESTRICT dst, int dst_stride) {
   int i, j;
   uint8x8x4_t greens;  // leave A/R/B channels zero'd.
   greens.val[0] = vdup_n_u8(0);
@@ -136,9 +130,7 @@ func DispatchAlphaToGreen_NEON(const uint8* WEBP_RESTRICT alpha,
   }
 }
 
-static int ExtractAlpha_NEON(const uint8* WEBP_RESTRICT argb, int argb_stride,
-                             int width, int height,
-                             uint8* WEBP_RESTRICT alpha, int alpha_stride) {
+static int ExtractAlpha_NEON(const uint8* WEBP_RESTRICT argb, int argb_stride, int width, int height, uint8* WEBP_RESTRICT alpha, int alpha_stride) {
   uint32 alpha_mask = 0xffu;
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
@@ -167,8 +159,7 @@ static int ExtractAlpha_NEON(const uint8* WEBP_RESTRICT argb, int argb_stride,
   return (alpha_mask == 0xffffffffu);
 }
 
-func ExtractGreen_NEON(const uint32* WEBP_RESTRICT argb,
-                              uint8* WEBP_RESTRICT alpha, int size) {
+func ExtractGreen_NEON(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT alpha, int size) {
   int i;
   for (i = 0; i + 16 <= size; i += 16) {
     const uint8x16x4_t rgbX = vld4q_u8((const uint8*)(argb + i));

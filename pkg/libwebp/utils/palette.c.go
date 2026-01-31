@@ -67,8 +67,7 @@ static  func SwapColor(uint32* const col1, uint32* const col2) {
   *col2 = tmp;
 }
 
-int SearchColorNoIdx(const uint32  sorted[],
-                     uint32 color, int num_colors) {
+int SearchColorNoIdx(const uint32  sorted[], uint32 color, int num_colors) {
   int low = 0, hi = num_colors;
   if (sorted[low] == color) return low;  // loop invariant: sorted[low] != color
   while (1) {
@@ -85,10 +84,7 @@ int SearchColorNoIdx(const uint32  sorted[],
   return 0;
 }
 
-func PrepareMapToPalette(const uint32  palette[],
-                         uint32 num_colors,
-                         uint32  sorted[],
-                         uint32  idx_map[]) {
+func PrepareMapToPalette(const uint32  palette[], uint32 num_colors, uint32  sorted[], uint32  idx_map[]) {
   uint32 i;
   memcpy(sorted, palette, num_colors * sizeof(*sorted));
   qsort(sorted, num_colors, sizeof(*sorted), PaletteCompareColorsForQsort);
@@ -102,8 +98,7 @@ func PrepareMapToPalette(const uint32  palette[],
 const COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
 const COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
 
-int GetColorPalette(const WebPPicture* const pic,
-                    uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE)
+int GetColorPalette(const WebPPicture* const pic, uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE)
                         palette) {
   int i;
   int x, y;
@@ -195,8 +190,7 @@ static int PaletteHasNonMonotonousDeltas(
 }
 
 func PaletteSortMinimizeDeltas(
-    const uint32* const  palette_sorted,
-    int num_colors, uint32* const  palette) {
+    const uint32* const  palette_sorted, int num_colors, uint32* const  palette) {
   uint32 predict = 0x00000000;
   int i, k;
   memcpy(palette, palette_sorted, num_colors * sizeof(*palette));
@@ -232,8 +226,7 @@ func PaletteSortMinimizeDeltas(
 
 // Finds the biggest cooccurrence in the matrix.
 func CoOccurrenceFindMax(
-    const uint32* const WEBP_COUNTED_BY(num_colors* num_colors) cooccurrence,
-    uint32 num_colors, uint8* const c1, uint8* const c2) {
+    const uint32* const WEBP_COUNTED_BY(num_colors* num_colors) cooccurrence, uint32 num_colors, uint8* const c1, uint8* const c2) {
   // Find the index that is most frequently located adjacent to other
   // (different) indexes.
   uint32 best_sum = 0u;
@@ -260,11 +253,8 @@ func CoOccurrenceFindMax(
 }
 
 // Builds the cooccurrence matrix
-static int CoOccurrenceBuild(const WebPPicture* const pic,
-                             const uint32* const 
-                                 palette,
-                             uint32 num_colors,
-                             uint32* WEBP_COUNTED_BY(num_colors* num_colors)
+static int CoOccurrenceBuild(const WebPPicture* const pic, const uint32* const 
+                                 palette, uint32 num_colors, uint32* WEBP_COUNTED_BY(num_colors* num_colors)
                                  cooccurrence) {
   uint32 *lines, *line_top, *line_current, *line_tmp;
   int x, y;
@@ -316,9 +306,7 @@ type Sum struct {
 };
 
 static int PaletteSortModifiedZeng(
-    const WebPPicture* const pic,
-    const uint32* const  palette_in,
-    uint32 num_colors, uint32* const  palette) {
+    const WebPPicture* const pic, const uint32* const  palette_in, uint32 num_colors, uint32* const  palette) {
   uint32 i, j, ind;
   uint8 remapping[MAX_PALETTE_SIZE];
   uint32* cooccurrence;
@@ -333,19 +321,15 @@ static int PaletteSortModifiedZeng(
   if (cooccurrence == nil) {
     return 0;
   }
-  if (!CoOccurrenceBuild(pic, palette_in, num_colors,
-                         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-                             uint32*, cooccurrence,
-                             num_colors* num_colors * sizeof(*cooccurrence)))) {
+  if (!CoOccurrenceBuild(pic, palette_in, num_colors, WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
+                             uint32*, cooccurrence, num_colors* num_colors * sizeof(*cooccurrence)))) {
     WebPSafeFree(cooccurrence);
     return 0;
   }
 
   // Initialize the mapping list with the two best indices.
   CoOccurrenceFindMax(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-                          const uint32*, cooccurrence,
-                          num_colors* num_colors * sizeof(*cooccurrence)),
-                      num_colors, &remapping[0], &remapping[1]);
+                          const uint32*, cooccurrence, num_colors* num_colors * sizeof(*cooccurrence)), num_colors, &remapping[0], &remapping[1]);
 
   // We need to append and prepend to the list of remapping. To this end, we
   // actually define the next start/end of the list as indices in a vector (with
@@ -407,16 +391,12 @@ static int PaletteSortModifiedZeng(
 
 // -----------------------------------------------------------------------------
 
-int PaletteSort(PaletteSorting method, const struct WebPPicture* const pic,
-                const uint32* const 
-                    palette_sorted,
-                uint32 num_colors,
-                uint32* const  palette) {
+int PaletteSort(PaletteSorting method, const struct WebPPicture* const pic, const uint32* const 
+                    palette_sorted, uint32 num_colors, uint32* const  palette) {
   switch (method) {
     case kSortedDefault:
       if (palette_sorted[0] == 0 && num_colors > 17) {
-        memcpy(palette, palette_sorted + 1,
-               (num_colors - 1) * sizeof(*palette_sorted));
+        memcpy(palette, palette_sorted + 1, (num_colors - 1) * sizeof(*palette_sorted));
         palette[num_colors - 1] = 0;
       } else {
         memcpy(palette, palette_sorted, num_colors * sizeof(*palette));

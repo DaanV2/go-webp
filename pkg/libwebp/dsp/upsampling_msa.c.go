@@ -341,10 +341,7 @@ func YuvToRgba(uint8 y, uint8 u, uint8 v, uint8* const rgba) {
 }
 
 #if !defined(WEBP_REDUCE_CSP)
-func YuvToRgbLine(const uint8* WEBP_RESTRICT y,
-                         const uint8* WEBP_RESTRICT u,
-                         const uint8* WEBP_RESTRICT v,
-                         uint8* WEBP_RESTRICT dst, int length) {
+func YuvToRgbLine(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int length) {
   v16u8 R, G, B;
   while (length >= 16) {
     CALC_RGB16(y, u, v, R, G, B);
@@ -370,10 +367,7 @@ func YuvToRgbLine(const uint8* WEBP_RESTRICT y,
   }
 }
 
-func YuvToBgrLine(const uint8* WEBP_RESTRICT y,
-                         const uint8* WEBP_RESTRICT u,
-                         const uint8* WEBP_RESTRICT v,
-                         uint8* WEBP_RESTRICT dst, int length) {
+func YuvToBgrLine(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int length) {
   v16u8 R, G, B;
   while (length >= 16) {
     CALC_RGB16(y, u, v, R, G, B);
@@ -400,10 +394,7 @@ func YuvToBgrLine(const uint8* WEBP_RESTRICT y,
 }
 #endif  // WEBP_REDUCE_CSP
 
-func YuvToRgbaLine(const uint8* WEBP_RESTRICT y,
-                          const uint8* WEBP_RESTRICT u,
-                          const uint8* WEBP_RESTRICT v,
-                          uint8* WEBP_RESTRICT dst, int length) {
+func YuvToRgbaLine(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int length) {
   v16u8 R, G, B;
   const v16u8 A = (v16u8)__msa_ldi_b(ALPHAVAL);
   while (length >= 16) {
@@ -430,10 +421,7 @@ func YuvToRgbaLine(const uint8* WEBP_RESTRICT y,
   }
 }
 
-func YuvToBgraLine(const uint8* WEBP_RESTRICT y,
-                          const uint8* WEBP_RESTRICT u,
-                          const uint8* WEBP_RESTRICT v,
-                          uint8* WEBP_RESTRICT dst, int length) {
+func YuvToBgraLine(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int length) {
   v16u8 R, G, B;
   const v16u8 A = (v16u8)__msa_ldi_b(ALPHAVAL);
   while (length >= 16) {
@@ -461,10 +449,7 @@ func YuvToBgraLine(const uint8* WEBP_RESTRICT y,
 }
 
 #if !defined(WEBP_REDUCE_CSP)
-func YuvToArgbLine(const uint8* WEBP_RESTRICT y,
-                          const uint8* WEBP_RESTRICT u,
-                          const uint8* WEBP_RESTRICT v,
-                          uint8* WEBP_RESTRICT dst, int length) {
+func YuvToArgbLine(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int length) {
   v16u8 R, G, B;
   const v16u8 A = (v16u8)__msa_ldi_b(ALPHAVAL);
   while (length >= 16) {
@@ -491,10 +476,7 @@ func YuvToArgbLine(const uint8* WEBP_RESTRICT y,
   }
 }
 
-func YuvToRgba4444Line(const uint8* WEBP_RESTRICT y,
-                              const uint8* WEBP_RESTRICT u,
-                              const uint8* WEBP_RESTRICT v,
-                              uint8* WEBP_RESTRICT dst, int length) {
+func YuvToRgba4444Line(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int length) {
   v16u8 R, G, B, RG, BA, tmp0, tmp1;
   while (length >= 16) {
 #if (WEBP_SWAP_16BIT_CSP == 1)
@@ -529,10 +511,7 @@ func YuvToRgba4444Line(const uint8* WEBP_RESTRICT y,
   }
 }
 
-func YuvToRgb565Line(const uint8* WEBP_RESTRICT y,
-                            const uint8* WEBP_RESTRICT u,
-                            const uint8* WEBP_RESTRICT v,
-                            uint8* WEBP_RESTRICT dst, int length) {
+func YuvToRgb565Line(const uint8* WEBP_RESTRICT y, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, uint8* WEBP_RESTRICT dst, int length) {
   v16u8 R, G, B, RG, GB, tmp0, tmp1;
   while (length >= 16) {
 #if (WEBP_SWAP_16BIT_CSP == 1)

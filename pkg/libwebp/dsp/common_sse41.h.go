@@ -36,8 +36,7 @@ import "github.com/daanv2/go-webp/pkg/smmintrin"
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // triplet by triplet in the output buffer rgb as rgbrgbrgbrgb ...
 static  func VP8PlanarTo24b_SSE41(
-    __m128i* const in0, __m128i* const in1, __m128i* const in2,
-    __m128i* const in3, __m128i* const in4, __m128i* const in5) {
+    __m128i* const in0, __m128i* const in1, __m128i* const in2, __m128i* const in3, __m128i* const in4, __m128i* const in5) {
   __m128i R0, R1, R2, R3, R4, R5;
   __m128i G0, G1, G2, G3, G4, G5;
   __m128i B0, B1, B2, B3, B4, B5;
@@ -46,10 +45,8 @@ static  func VP8PlanarTo24b_SSE41(
   {
     const __m128i shuff0 =
         _mm_set_epi8(5, -1, -1, 4, -1, -1, 3, -1, -1, 2, -1, -1, 1, -1, -1, 0);
-    const __m128i shuff1 = _mm_set_epi8(-1, 10, -1, -1, 9, -1, -1, 8, -1, -1, 7,
-                                        -1, -1, 6, -1, -1);
-    const __m128i shuff2 = _mm_set_epi8(-1, -1, 15, -1, -1, 14, -1, -1, 13, -1,
-                                        -1, 12, -1, -1, 11, -1);
+    const __m128i shuff1 = _mm_set_epi8(-1, 10, -1, -1, 9, -1, -1, 8, -1, -1, 7, -1, -1, 6, -1, -1);
+    const __m128i shuff2 = _mm_set_epi8(-1, -1, 15, -1, -1, 14, -1, -1, 13, -1, -1, 12, -1, -1, 11, -1);
     WEBP_SSE41_SHUFF(R, in0, in1)
   }
 
@@ -61,8 +58,7 @@ static  func VP8PlanarTo24b_SSE41(
         _mm_set_epi8(-1, -1, 4, -1, -1, 3, -1, -1, 2, -1, -1, 1, -1, -1, 0, -1);
     const __m128i shuff1 =
         _mm_set_epi8(10, -1, -1, 9, -1, -1, 8, -1, -1, 7, -1, -1, 6, -1, -1, 5);
-    const __m128i shuff2 = _mm_set_epi8(-1, 15, -1, -1, 14, -1, -1, 13, -1, -1,
-                                        12, -1, -1, 11, -1, -1);
+    const __m128i shuff2 = _mm_set_epi8(-1, 15, -1, -1, 14, -1, -1, 13, -1, -1, 12, -1, -1, 11, -1, -1);
     WEBP_SSE41_SHUFF(G, in2, in3)
   }
 
@@ -72,8 +68,7 @@ static  func VP8PlanarTo24b_SSE41(
         _mm_set_epi8(-1, 4, -1, -1, 3, -1, -1, 2, -1, -1, 1, -1, -1, 0, -1, -1);
     const __m128i shuff1 =
         _mm_set_epi8(-1, -1, 9, -1, -1, 8, -1, -1, 7, -1, -1, 6, -1, -1, 5, -1);
-    const __m128i shuff2 = _mm_set_epi8(15, -1, -1, 14, -1, -1, 13, -1, -1, 12,
-                                        -1, -1, 11, -1, -1, 10);
+    const __m128i shuff2 = _mm_set_epi8(15, -1, -1, 14, -1, -1, 13, -1, -1, 12, -1, -1, 11, -1, -1, 10);
     WEBP_SSE41_SHUFF(B, in4, in5)
   }
 
@@ -98,10 +93,7 @@ static  func VP8PlanarTo24b_SSE41(
 
 // Convert four packed four-channel buffers like argbargbargbargb... into the
 // split channels aaaaa ... rrrr ... gggg .... bbbbb ......
-static  func VP8L32bToPlanar_SSE41(__m128i* const in0,
-                                              __m128i* const in1,
-                                              __m128i* const in2,
-                                              __m128i* const in3) {
+static  func VP8L32bToPlanar_SSE41(__m128i* const in0, __m128i* const in1, __m128i* const in2, __m128i* const in3) {
   // aaaarrrrggggbbbb
   const __m128i shuff0 =
       _mm_set_epi8(15, 11, 7, 3, 14, 10, 6, 2, 13, 9, 5, 1, 12, 8, 4, 0);

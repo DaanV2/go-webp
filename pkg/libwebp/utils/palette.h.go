@@ -24,28 +24,20 @@ struct WebPPicture;
 
 // The different ways a palette can be sorted.
 typedef enum PaletteSorting {
-  kSortedDefault = 0,
-  // Sorts by minimizing L1 deltas between consecutive colors, giving more
+  kSortedDefault = 0, // Sorts by minimizing L1 deltas between consecutive colors, giving more
   // weight to RGB colors.
-  kMinimizeDelta = 1,
-  // Implements the modified Zeng method from "A Survey on Palette Reordering
+  kMinimizeDelta = 1, // Implements the modified Zeng method from "A Survey on Palette Reordering
   // Methods for Improving the Compression of Color-Indexed Images" by Armando
   // J. Pinho and Antonio J. R. Neves.
-  kModifiedZeng = 2,
-  kUnusedPalette = 3,
-  kPaletteSortingNum = 4
+  kModifiedZeng = 2, kUnusedPalette = 3, kPaletteSortingNum = 4
 } PaletteSorting;
 
 // Returns the index of 'color' in the sorted palette 'sorted' of size
 // 'num_colors'.
-int SearchColorNoIdx(const uint32  sorted[],
-                     uint32 color, int num_colors);
+int SearchColorNoIdx(const uint32  sorted[], uint32 color, int num_colors);
 
 // Sort palette in increasing order and prepare an inverse mapping array.
-func PrepareMapToPalette(const uint32  palette[],
-                         uint32 num_colors,
-                         uint32  sorted[],
-                         uint32  idx_map[]);
+func PrepareMapToPalette(const uint32  palette[], uint32 num_colors, uint32  sorted[], uint32  idx_map[]);
 
 // Returns count of unique colors in 'pic', assuming pic.use_argb is true.
 // If the unique color count is more than MAX_PALETTE_SIZE, returns
@@ -54,8 +46,7 @@ func PrepareMapToPalette(const uint32  palette[],
 // equal to MAX_PALETTE_SIZE, also outputs the actual unique colors into
 // 'palette' in a sorted order. Note: 'palette' is assumed to be an array
 // already allocated with at least MAX_PALETTE_SIZE elements.
-int GetColorPalette(const struct WebPPicture* const pic,
-                    uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE)
+int GetColorPalette(const struct WebPPicture* const pic, uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE)
                         palette);
 
 // Sorts the palette according to the criterion defined by 'method'.
@@ -63,10 +54,7 @@ int GetColorPalette(const struct WebPPicture* const pic,
 // PrepareMapToPalette. Returns 0 on memory allocation error.
 // For kSortedDefault and kMinimizeDelta methods, 0 (if present) is set as the
 // last element to optimize later storage.
-int PaletteSort(PaletteSorting method, const struct WebPPicture* const pic,
-                const uint32* const 
-                    palette_sorted,
-                uint32 num_colors,
-                uint32* const  palette);
+int PaletteSort(PaletteSorting method, const struct WebPPicture* const pic, const uint32* const 
+                    palette_sorted, uint32 num_colors, uint32* const  palette);
 
 #endif  // WEBP_UTILS_PALETTE_H_

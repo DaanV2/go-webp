@@ -34,27 +34,21 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #ifdef USE_VTBLQ
 // 255 = byte will be zeroed
-static const uint8 kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255,
-                                          9, 255, 9, 255, 13, 255, 13, 255};
+static const uint8 kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255};
 
-static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
-                                                  const uint8x16_t shuffle) {
-  return vcombine_u8(vtbl1q_u8(argb, vget_low_u8(shuffle)),
-                     vtbl1q_u8(argb, vget_high_u8(shuffle)));
+static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x16_t shuffle) {
+  return vcombine_u8(vtbl1q_u8(argb, vget_low_u8(shuffle)), vtbl1q_u8(argb, vget_high_u8(shuffle)));
 }
 #else   // !USE_VTBLQ
 // 255 = byte will be zeroed
 static const uint8 kGreenShuffle[8] = {1, 255, 1, 255, 5, 255, 5, 255};
 
-static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
-                                                  const uint8x8_t shuffle) {
-  return vcombine_u8(vtbl1_u8(vget_low_u8(argb), shuffle),
-                     vtbl1_u8(vget_high_u8(argb), shuffle));
+static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x8_t shuffle) {
+  return vcombine_u8(vtbl1_u8(vget_low_u8(argb), shuffle), vtbl1_u8(vget_high_u8(argb), shuffle));
 }
 #endif  // USE_VTBLQ
 
-func SubtractGreenFromBlueAndRed_NEON(uint32* argb_data,
-                                             int num_pixels) {
+func SubtractGreenFromBlueAndRed_NEON(uint32* argb_data, int num_pixels) {
   const uint32* const end = argb_data + (num_pixels & ~3);
 #ifdef USE_VTBLQ
   const uint8x16_t shuffle = vld1q_u8(kGreenShuffle);
@@ -73,25 +67,17 @@ func SubtractGreenFromBlueAndRed_NEON(uint32* argb_data,
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColor_NEON(const VP8LMultipliers* WEBP_RESTRICT const m,
-                                uint32* WEBP_RESTRICT argb_data,
-                                int num_pixels) {
+func TransformColor_NEON(const VP8LMultipliers* WEBP_RESTRICT const m, uint32* WEBP_RESTRICT argb_data, int num_pixels) {
   // sign-extended multiplying constants, pre-shifted by 6.
 #define CST(X) (((int16)(m.X << 8)) >> 6)
-  const int16 rb[8] = {CST(green_to_blue), CST(green_to_red),
-                         CST(green_to_blue), CST(green_to_red),
-                         CST(green_to_blue), CST(green_to_red),
-                         CST(green_to_blue), CST(green_to_red)};
+  const int16 rb[8] = {CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red)};
   const int16x8_t mults_rb = vld1q_s16(rb);
   const int16 b2[8] = {
-      0, CST(red_to_blue), 0, CST(red_to_blue),
-      0, CST(red_to_blue), 0, CST(red_to_blue),
-  };
+      0, CST(red_to_blue), 0, CST(red_to_blue), 0, CST(red_to_blue), 0, CST(red_to_blue), };
   const int16x8_t mults_b2 = vld1q_s16(b2);
 #undef CST
 #ifdef USE_VTBLQ
-  static const uint8 kg0g0[16] = {255, 1, 255, 1, 255, 5,  255, 5,
-                                    255, 9, 255, 9, 255, 13, 255, 13};
+  static const uint8 kg0g0[16] = {255, 1, 255, 1, 255, 5,  255, 5, 255, 9, 255, 9, 255, 13, 255, 13};
   const uint8x16_t shuffle = vld1q_u8(kg0g0);
 #else
   static const uint8 k0g0g[8] = {255, 1, 255, 1, 255, 5, 255, 5};

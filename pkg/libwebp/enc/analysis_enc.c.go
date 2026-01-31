@@ -79,8 +79,7 @@ static  int clip(int v, int m, int M) {
   return (v < m) ? m : (v > M) ? M : v;
 }
 
-func SetSegmentAlphas(VP8Encoder* const enc,
-                             const int centers[NUM_MB_SEGMENTS], int mid) {
+func SetSegmentAlphas(VP8Encoder* const enc, const int centers[NUM_MB_SEGMENTS], int mid) {
   const int nb = enc.segment_hdr.num_segments;
   int min = centers[0], max = centers[0];
   int n;
@@ -134,8 +133,7 @@ func InitHistogram(VP8Histogram* const histo) {
 //------------------------------------------------------------------------------
 // Simplified k-Means, to assign Nb segments based on alpha-histogram
 
-func AssignSegments(VP8Encoder* const enc,
-                           const int alphas[MAX_ALPHA + 1]) {
+func AssignSegments(VP8Encoder* const enc, const int alphas[MAX_ALPHA + 1]) {
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
   // explicit check is needed to afunc spurious warning about 'n + 1' exceeding
   // array bounds of 'centers' with some compilers (noticed with gcc-4.9).
@@ -247,8 +245,7 @@ static int MBAnalyzeBestIntra16Mode(VP8EncIterator* const it) {
     int alpha;
 
     InitHistogram(&histo);
-    VP8CollectHistogram(it.yuv_in + Y_OFF_ENC,
-                        it.yuv_p + VP8I16ModeOffsets[mode], 0, 16, &histo);
+    VP8CollectHistogram(it.yuv_in + Y_OFF_ENC, it.yuv_p + VP8I16ModeOffsets[mode], 0, 16, &histo);
     alpha = GetAlpha(&histo);
     if (IS_BETTER_ALPHA(alpha, best_alpha)) {
       best_alpha = alpha;
@@ -299,9 +296,7 @@ static int MBAnalyzeBestUVMode(VP8EncIterator* const it) {
     VP8Histogram histo;
     int alpha;
     InitHistogram(&histo);
-    VP8CollectHistogram(it.yuv_in + U_OFF_ENC,
-                        it.yuv_p + VP8UVModeOffsets[mode], 16, 16 + 4 + 4,
-                        &histo);
+    VP8CollectHistogram(it.yuv_in + U_OFF_ENC, it.yuv_p + VP8UVModeOffsets[mode], 16, 16 + 4 + 4, &histo);
     alpha = GetAlpha(&histo);
     if (IS_BETTER_ALPHA(alpha, best_alpha)) {
       best_alpha = alpha;
@@ -316,8 +311,7 @@ static int MBAnalyzeBestUVMode(VP8EncIterator* const it) {
   return best_alpha;
 }
 
-func MBAnalyze(VP8EncIterator* const it, int alphas[MAX_ALPHA + 1],
-                      int* const alpha, int* const uv_alpha) {
+func MBAnalyze(VP8EncIterator* const it, int alphas[MAX_ALPHA + 1], int* const alpha, int* const uv_alpha) {
   const VP8Encoder* const enc = it.enc;
   int best_alpha, best_uv_alpha;
 
@@ -412,8 +406,7 @@ func MergeJobs(const SegmentJob* const src, SegmentJob* const dst) {
 #endif
 
 // initialize the job struct with some tasks to perform
-func InitSegmentJob(VP8Encoder* const enc, SegmentJob* const job,
-                           int start_row, int end_row) {
+func InitSegmentJob(VP8Encoder* const enc, SegmentJob* const job, int start_row, int end_row) {
   WebPGetWorkerInterface().Init(&job.worker);
   job.worker.data1 = job;
   job.worker.data2 = &job.it;
@@ -486,8 +479,7 @@ int VP8EncAnalyze(VP8Encoder* const enc) {
     ResetAllMBInfo(enc);
   }
   if (!ok) {
-    return WebPEncodingSetError(enc.pic,
-                                VP8_ENC_ERROR_OUT_OF_MEMORY);  // imprecise
+    return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);  // imprecise
   }
   return ok;
 }

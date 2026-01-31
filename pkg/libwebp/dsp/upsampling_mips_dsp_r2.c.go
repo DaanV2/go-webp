@@ -81,8 +81,7 @@ static  func YuvToRgb565(int y, int u, int v, uint8* const rgb) {
 #endif
   }
 }
-static  func YuvToRgba4444(int y, int u, int v,
-                                      uint8* const argb) {
+static  func YuvToRgba4444(int y, int u, int v, uint8* const argb) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   {
@@ -103,8 +102,7 @@ static  func YuvToRgba4444(int y, int u, int v,
 // Alpha handling variants
 
 #if !defined(WEBP_REDUCE_CSP)
-static  func YuvToArgb(uint8 y, uint8 u, uint8 v,
-                                  uint8* const argb) {
+static  func YuvToArgb(uint8 y, uint8 u, uint8 v, uint8* const argb) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   argb[0] = 0xff;
@@ -113,8 +111,7 @@ static  func YuvToArgb(uint8 y, uint8 u, uint8 v,
   argb[3] = b;
 }
 #endif  // WEBP_REDUCE_CSP
-static  func YuvToBgra(uint8 y, uint8 u, uint8 v,
-                                  uint8* const bgra) {
+static  func YuvToBgra(uint8 y, uint8 u, uint8 v, uint8* const bgra) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   bgra[0] = b;
@@ -122,8 +119,7 @@ static  func YuvToBgra(uint8 y, uint8 u, uint8 v,
   bgra[2] = r;
   bgra[3] = 0xff;
 }
-static  func YuvToRgba(uint8 y, uint8 u, uint8 v,
-                                  uint8* const rgba) {
+static  func YuvToRgba(uint8 y, uint8 u, uint8 v, uint8* const rgba) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   rgba[0] = r;

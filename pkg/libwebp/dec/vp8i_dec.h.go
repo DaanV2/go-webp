@@ -277,8 +277,7 @@ type VP8Decoder struct {
 // internal functions. Not public.
 
 // in vp8.c
-int VP8SetError(VP8Decoder* const dec, VP8StatusCode error,
-                const byte* const msg);
+int VP8SetError(VP8Decoder* const dec, VP8StatusCode error, const byte* const msg);
 
 // in tree.c
 func VP8ResetProba(VP8Proba* const proba);
@@ -301,24 +300,18 @@ VP8StatusCode VP8EnterCritical(VP8Decoder* const dec, VP8Io* const io);
  int VP8ExitCritical(VP8Decoder* const dec, VP8Io* const io);
 // Return the multi-threading method to use (0=off), depending
 // on options and bitstream size. Only for lossy decoding.
-int VP8GetThreadMethod(const WebPDecoderOptions* const options,
-                       const WebPHeaderStructure* const headers, int width,
-                       int height);
+int VP8GetThreadMethod(const WebPDecoderOptions* const options, const WebPHeaderStructure* const headers, int width, int height);
 // Initialize dithering post-process if needed.
-func VP8InitDithering(const WebPDecoderOptions* const options,
-                      VP8Decoder* const dec);
+func VP8InitDithering(const WebPDecoderOptions* const options, VP8Decoder* const dec);
 // Process the last decoded row (filtering + output).
  int VP8ProcessRow(VP8Decoder* const dec, VP8Io* const io);
 // To be called at the start of a new scanline, to initialize predictors.
 func VP8InitScanline(VP8Decoder* const dec);
 // Decode one macroblock. Returns false if there is not enough data.
- int VP8DecodeMB(VP8Decoder* const dec,
-                               VP8BitReader* const token_br);
+ int VP8DecodeMB(VP8Decoder* const dec, VP8BitReader* const token_br);
 
 // in alpha.c
-const uint8* VP8DecompressAlphaRows(VP8Decoder* const dec,
-                                      const VP8Io* const io, int row,
-                                      int num_rows);
+const uint8* VP8DecompressAlphaRows(VP8Decoder* const dec, const VP8Io* const io, int row, int num_rows);
 
 //------------------------------------------------------------------------------
 

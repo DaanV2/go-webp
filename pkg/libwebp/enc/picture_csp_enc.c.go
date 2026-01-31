@@ -40,8 +40,7 @@ const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 // Detection of non-trivial transparency
 
 // Returns true if alpha[] has non-0xff values.
-static int CheckNonOpaque(const uint8* alpha, int width, int height,
-                          int x_step, int y_step) {
+static int CheckNonOpaque(const uint8* alpha, int width, int height, int x_step, int y_step) {
   if (alpha == nil) return 0;
   WebPInitAlphaProcessing();
   if (x_step == 1) {
@@ -61,14 +60,11 @@ int WebPPictureHasTransparency(const WebPPicture* picture) {
   if (picture == nil) return 0;
   if (picture.use_argb) {
     if (picture.argb != nil) {
-      return CheckNonOpaque((const uint8*)picture.argb + ALPHA_OFFSET,
-                            picture.width, picture.height, 4,
-                            picture.argb_stride * sizeof(*picture.argb));
+      return CheckNonOpaque((const uint8*)picture.argb + ALPHA_OFFSET, picture.width, picture.height, 4, picture.argb_stride * sizeof(*picture.argb));
     }
     return 0;
   }
-  return CheckNonOpaque(picture.a, picture.width, picture.height, 1,
-                        picture.a_stride);
+  return CheckNonOpaque(picture.a, picture.width, picture.height, 1, picture.a_stride);
 }
 
 extern VP8CPUInfo VP8GetCPUInfo;
@@ -81,25 +77,16 @@ static const int kMinDimensionIterativeConversion = 4;
 //------------------------------------------------------------------------------
 // Main function
 
-static int PreprocessARGB(const uint8* r_ptr, const uint8* g_ptr,
-                          const uint8* b_ptr, int step, int rgb_stride,
-                          WebPPicture* const picture) {
+static int PreprocessARGB(const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr, int step, int rgb_stride, WebPPicture* const picture) {
   const int ok = SharpYuvConvert(
-      r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.y,
-      picture.y_stride, picture.u, picture.uv_stride, picture.v,
-      picture.uv_stride, /*yuv_bit_depth=*/8, picture.width, picture.height,
-      SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
+      r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.y, picture.y_stride, picture.u, picture.uv_stride, picture.v, picture.uv_stride, /*yuv_bit_depth=*/8, picture.width, picture.height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
   return ok;
 }
 
-static  func ConvertRowToY(const uint8* const r_ptr,
-                                      const uint8* const g_ptr,
-                                      const uint8* const b_ptr, int step,
-                                      uint8* const dst_y, int width,
-                                      VP8Random* const rg) {
+static  func ConvertRowToY(const uint8* const r_ptr, const uint8* const g_ptr, const uint8* const b_ptr, int step, uint8* const dst_y, int width, VP8Random* const rg) {
   int i, j;
   for (i = 0, j = 0; i < width; i += 1, j += step) {
     dst_y[i] =
@@ -107,10 +94,7 @@ static  func ConvertRowToY(const uint8* const r_ptr,
   }
 }
 
-static  func ConvertRowsToUV(const uint16* rgb,
-                                        uint8* const dst_u,
-                                        uint8* const dst_v, int width,
-                                        VP8Random* const rg) {
+static  func ConvertRowsToUV(const uint16* rgb, uint8* const dst_u, uint8* const dst_v, int width, VP8Random* const rg) {
   int i;
   for (i = 0; i < width; i += 1, rgb += 4) {
     const int r = rgb[0], g = rgb[1], b = rgb[2];
@@ -121,12 +105,9 @@ static  func ConvertRowsToUV(const uint16* rgb,
 
 extern func SharpYuvInit(VP8CPUInfo cpu_info_func);
 
-static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
-                              const uint8* b_ptr, const uint8* a_ptr,
-                              int step,        // bytes per pixel
+static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr, const uint8* a_ptr, int step,        // bytes per pixel
                               int rgb_stride,  // bytes per scanline
-                              float dithering, int use_iterative_conversion,
-                              WebPPicture* const picture) {
+                              float dithering, int use_iterative_conversion, WebPPicture* const picture) {
   int y;
   const int width = picture.width;
   const int height = picture.height;
@@ -154,8 +135,7 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
       return 0;
     }
     if (has_alpha) {
-      WebPExtractAlpha(a_ptr, rgb_stride, width, height, picture.a,
-                       picture.a_stride);
+      WebPExtractAlpha(a_ptr, rgb_stride, width, height, picture.a, picture.a_stride);
     }
   } else {
     const int uv_width = (width + 1) >> 1;
@@ -182,10 +162,7 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
 
     if (rg == nil) {
       // Downsample Y/U/V planes, two rows at a time
-      WebPImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride,
-                             has_alpha, width, height, tmp_rgb,
-                             picture.y_stride, picture.uv_stride,
-                             picture.a_stride, dst_y, dst_u, dst_v, dst_a);
+      WebPImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, has_alpha, width, height, tmp_rgb, picture.y_stride, picture.uv_stride, picture.a_stride, dst_y, dst_u, dst_v, dst_a);
       if (height & 1) {
         dst_y += (height - 1) * (ptrdiff_t)picture.y_stride;
         dst_u += (height >> 1) * (ptrdiff_t)picture.uv_stride;
@@ -197,32 +174,24 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
           dst_a += (height - 1) * (ptrdiff_t)picture.a_stride;
           a_ptr += (height - 1) * (ptrdiff_t)rgb_stride;
         }
-        WebPImportYUVAFromRGBALastLine(r_ptr, g_ptr, b_ptr, a_ptr, step,
-                                       has_alpha, width, tmp_rgb, dst_y, dst_u,
-                                       dst_v, dst_a);
+        WebPImportYUVAFromRGBALastLine(r_ptr, g_ptr, b_ptr, a_ptr, step, has_alpha, width, tmp_rgb, dst_y, dst_u, dst_v, dst_a);
       }
     } else {
-      // Copy of WebPImportYUVAFromRGBA/WebPImportYUVAFromRGBALastLine,
-      // but with dithering.
+      // Copy of WebPImportYUVAFromRGBA/WebPImportYUVAFromRGBALastLine, // but with dithering.
       for (y = 0; y < (height >> 1); ++y) {
         int rows_have_alpha = has_alpha;
         ConvertRowToY(r_ptr, g_ptr, b_ptr, step, dst_y, width, rg);
-        ConvertRowToY(r_ptr + rgb_stride, g_ptr + rgb_stride,
-                      b_ptr + rgb_stride, step, dst_y + picture.y_stride,
-                      width, rg);
+        ConvertRowToY(r_ptr + rgb_stride, g_ptr + rgb_stride, b_ptr + rgb_stride, step, dst_y + picture.y_stride, width, rg);
         dst_y += 2 * picture.y_stride;
         if (has_alpha) {
-          rows_have_alpha &= !WebPExtractAlpha(a_ptr, rgb_stride, width, 2,
-                                               dst_a, picture.a_stride);
+          rows_have_alpha &= !WebPExtractAlpha(a_ptr, rgb_stride, width, 2, dst_a, picture.a_stride);
           dst_a += 2 * picture.a_stride;
         }
         // Collect averaged R/G/B(/A)
         if (!rows_have_alpha) {
-          WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, rgb_stride, tmp_rgb,
-                            width);
+          WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, rgb_stride, tmp_rgb, width);
         } else {
-          WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, rgb_stride, tmp_rgb,
-                             width);
+          WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, rgb_stride, tmp_rgb, width);
         }
         // Convert to U/V
         ConvertRowsToUV(tmp_rgb, dst_u, dst_v, uv_width, rg);
@@ -242,11 +211,9 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
         // Collect averaged R/G/B(/A)
         if (!row_has_alpha) {
           // Collect averaged R/G/B
-          WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, /*rgb_stride=*/0,
-                            tmp_rgb, width);
+          WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, /*rgb_stride=*/0, tmp_rgb, width);
         } else {
-          WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, /*rgb_stride=*/0,
-                             tmp_rgb, width);
+          WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, /*rgb_stride=*/0, tmp_rgb, width);
         }
         ConvertRowsToUV(tmp_rgb, dst_u, dst_v, uv_width, rg);
       }
@@ -265,8 +232,7 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr,
 //------------------------------------------------------------------------------
 // call for ARGB.YUVA conversion
 
-static int PictureARGBToYUVA(WebPPicture* picture, WebPEncCSP colorspace,
-                             float dithering, int use_iterative_conversion) {
+static int PictureARGBToYUVA(WebPPicture* picture, WebPEncCSP colorspace, float dithering, int use_iterative_conversion) {
   if (picture == nil) return 0;
   if (picture.argb == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
@@ -280,13 +246,11 @@ static int PictureARGBToYUVA(WebPPicture* picture, WebPEncCSP colorspace,
     const uint8* const b = argb + CHANNEL_OFFSET(3);
 
     picture.colorspace = WEBP_YUV420;
-    return ImportYUVAFromRGBA(r, g, b, a, 4, 4 * picture.argb_stride,
-                              dithering, use_iterative_conversion, picture);
+    return ImportYUVAFromRGBA(r, g, b, a, 4, 4 * picture.argb_stride, dithering, use_iterative_conversion, picture);
   }
 }
 
-int WebPPictureARGBToYUVADithered(WebPPicture* picture, WebPEncCSP colorspace,
-                                  float dithering) {
+int WebPPictureARGBToYUVADithered(WebPPicture* picture, WebPEncCSP colorspace, float dithering) {
   return PictureARGBToYUVA(picture, colorspace, dithering, 0);
 }
 
@@ -341,8 +305,7 @@ int WebPPictureYUVAToARGB(WebPPicture* picture) {
       const uint8* const top_v = cur_v;
       cur_u += picture.uv_stride;
       cur_v += picture.uv_stride;
-      upsample(cur_y, cur_y + picture.y_stride, top_u, top_v, cur_u, cur_v,
-               dst, dst + argb_stride, width);
+      upsample(cur_y, cur_y + picture.y_stride, top_u, top_v, cur_u, cur_v, dst, dst + argb_stride, width);
       cur_y += 2 * picture.y_stride;
       dst += 2 * argb_stride;
     }
@@ -368,8 +331,7 @@ int WebPPictureYUVAToARGB(WebPPicture* picture) {
 //------------------------------------------------------------------------------
 // automatic import / conversion
 
-static int Import(WebPPicture* const picture, const uint8* rgb,
-                  int rgb_stride, int step, int swap_rb, int import_alpha) {
+static int Import(WebPPicture* const picture, const uint8* rgb, int rgb_stride, int step, int swap_rb, int import_alpha) {
   int y;
   // swap_rb . b,g,r,a , !swap_rb . r,g,b,a
   const uint8* r_ptr = rgb + (swap_rb ? 2 : 0);
@@ -382,8 +344,7 @@ static int Import(WebPPicture* const picture, const uint8* rgb,
 
   if (!picture.use_argb) {
     const uint8* a_ptr = import_alpha ? rgb + 3 : nil;
-    return ImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride,
-                              0.f /* no dithering */, 0, picture);
+    return ImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, 0.f /* no dithering */, 0, picture);
   }
   if (!WebPPictureAlloc(picture)) return 0;
 
@@ -436,22 +397,19 @@ static int Import(WebPPicture* const picture, const uint8* rgb,
 
 #if !defined(WEBP_REDUCE_CSP)
 
-int WebPPictureImportBGR(WebPPicture* picture, const uint8* bgr,
-                         int bgr_stride) {
+int WebPPictureImportBGR(WebPPicture* picture, const uint8* bgr, int bgr_stride) {
   return (picture != nil && bgr != nil)
              ? Import(picture, bgr, bgr_stride, 3, 1, 0)
              : 0;
 }
 
-int WebPPictureImportBGRA(WebPPicture* picture, const uint8* bgra,
-                          int bgra_stride) {
+int WebPPictureImportBGRA(WebPPicture* picture, const uint8* bgra, int bgra_stride) {
   return (picture != nil && bgra != nil)
              ? Import(picture, bgra, bgra_stride, 4, 1, 1)
              : 0;
 }
 
-int WebPPictureImportBGRX(WebPPicture* picture, const uint8* bgrx,
-                          int bgrx_stride) {
+int WebPPictureImportBGRX(WebPPicture* picture, const uint8* bgrx, int bgrx_stride) {
   return (picture != nil && bgrx != nil)
              ? Import(picture, bgrx, bgrx_stride, 4, 1, 0)
              : 0;
@@ -459,22 +417,19 @@ int WebPPictureImportBGRX(WebPPicture* picture, const uint8* bgrx,
 
 #endif  // WEBP_REDUCE_CSP
 
-int WebPPictureImportRGB(WebPPicture* picture, const uint8* rgb,
-                         int rgb_stride) {
+int WebPPictureImportRGB(WebPPicture* picture, const uint8* rgb, int rgb_stride) {
   return (picture != nil && rgb != nil)
              ? Import(picture, rgb, rgb_stride, 3, 0, 0)
              : 0;
 }
 
-int WebPPictureImportRGBA(WebPPicture* picture, const uint8* rgba,
-                          int rgba_stride) {
+int WebPPictureImportRGBA(WebPPicture* picture, const uint8* rgba, int rgba_stride) {
   return (picture != nil && rgba != nil)
              ? Import(picture, rgba, rgba_stride, 4, 0, 1)
              : 0;
 }
 
-int WebPPictureImportRGBX(WebPPicture* picture, const uint8* rgbx,
-                          int rgbx_stride) {
+int WebPPictureImportRGBX(WebPPicture* picture, const uint8* rgbx, int rgbx_stride) {
   return (picture != nil && rgbx != nil)
              ? Import(picture, rgbx, rgbx_stride, 4, 0, 0)
              : 0;

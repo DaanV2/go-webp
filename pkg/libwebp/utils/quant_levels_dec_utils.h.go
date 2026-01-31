@@ -29,8 +29,7 @@ extern "C" {
 // Returns false in case of error (data is nil, invalid parameters,
 // malloc failure, ...).
 int WebPDequantizeLevels(uint8* WEBP_SIZED_BY((uint64)stride* height)
-                             const data,
-                         int width, int height, int stride, int strength);
+                             const data, int width, int height, int stride, int strength);
 
 #ifdef __cplusplus
 }  // extern "C"

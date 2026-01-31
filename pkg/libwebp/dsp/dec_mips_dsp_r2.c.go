@@ -23,24 +23,17 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 static const int kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int kC2 = WEBP_TRANSFORM_AC3_C2;
 
-func TransformDC(const int16* WEBP_RESTRICT in,
-                        uint8* WEBP_RESTRICT dst) {
+func TransformDC(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10;
 
   __asm__ volatile(
-    LOAD_WITH_OFFSET_X4(temp1, temp2, temp3, temp4, dst,
-                        0, 0, 0, 0,
-                        0, 1, 2, 3,
-                        BPS)
+    LOAD_WITH_OFFSET_X4(temp1, temp2, temp3, temp4, dst, 0, 0, 0, 0, 0, 1, 2, 3, BPS)
     "lh               %[temp5],  0(%[in])               \n\t"
     "addiu            %[temp5],  %[temp5],  4           \n\t"
     "ins              %[temp5],  %[temp5],  16, 16      \n\t"
     "shra.ph          %[temp5],  %[temp5],  3           \n\t"
-    CONVERT_2_BYTES_TO_HALF(temp6, temp7, temp8, temp9, temp10, temp1, temp2,
-                            temp3, temp1, temp2, temp3, temp4)
-    STORE_SAT_SUM_X2(temp6, temp7, temp8, temp9, temp10, temp1, temp2, temp3,
-                     temp5, temp5, temp5, temp5, temp5, temp5, temp5, temp5,
-                     dst, 0, 1, 2, 3, BPS)
+    CONVERT_2_BYTES_TO_HALF(temp6, temp7, temp8, temp9, temp10, temp1, temp2, temp3, temp1, temp2, temp3, temp4)
+    STORE_SAT_SUM_X2(temp6, temp7, temp8, temp9, temp10, temp1, temp2, temp3, temp5, temp5, temp5, temp5, temp5, temp5, temp5, temp5, dst, 0, 1, 2, 3, BPS)
 
     OUTPUT_EARLY_CLOBBER_REGS_10()
     : [in]"r"(in), [dst]"r"(dst)
@@ -48,8 +41,7 @@ func TransformDC(const int16* WEBP_RESTRICT in,
   );
 }
 
-func TransformAC3(const int16* WEBP_RESTRICT in,
-                         uint8* WEBP_RESTRICT dst) {
+func TransformAC3(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   const int a = in[0] + 4;
   int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
   const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
@@ -64,29 +56,19 @@ func TransformAC3(const int16* WEBP_RESTRICT in,
     "replv.ph         %[temp4],   %[d1]                      \n\t"
     ADD_SUB_HALVES(temp2, temp3, temp1, c4)
     "replv.ph         %[temp5],   %[c1]                      \n\t"
-    SHIFT_R_SUM_X2(temp1, temp6, temp7, temp8, temp2, temp9, temp10, temp4,
-                   temp2, temp2, temp3, temp3, temp4, temp5, temp4, temp5)
-    LOAD_WITH_OFFSET_X4(temp3, temp5, temp11, temp12, dst,
-                        0, 0, 0, 0,
-                        0, 1, 2, 3,
-                        BPS)
-    CONVERT_2_BYTES_TO_HALF(temp13, temp14, temp3, temp15, temp5, temp16,
-                            temp11, temp17, temp3, temp5, temp11, temp12)
-    PACK_2_HALVES_TO_WORD(temp12, temp18, temp7, temp6, temp1, temp8, temp2,
-                          temp4, temp7, temp6, temp10, temp9)
-    STORE_SAT_SUM_X2(temp13, temp14, temp3, temp15, temp5, temp16, temp11,
-                     temp17, temp12, temp18, temp1, temp8, temp2, temp4,
-                     temp7, temp6, dst, 0, 1, 2, 3, BPS)
+    SHIFT_R_SUM_X2(temp1, temp6, temp7, temp8, temp2, temp9, temp10, temp4, temp2, temp2, temp3, temp3, temp4, temp5, temp4, temp5)
+    LOAD_WITH_OFFSET_X4(temp3, temp5, temp11, temp12, dst, 0, 0, 0, 0, 0, 1, 2, 3, BPS)
+    CONVERT_2_BYTES_TO_HALF(temp13, temp14, temp3, temp15, temp5, temp16, temp11, temp17, temp3, temp5, temp11, temp12)
+    PACK_2_HALVES_TO_WORD(temp12, temp18, temp7, temp6, temp1, temp8, temp2, temp4, temp7, temp6, temp10, temp9)
+    STORE_SAT_SUM_X2(temp13, temp14, temp3, temp15, temp5, temp16, temp11, temp17, temp12, temp18, temp1, temp8, temp2, temp4, temp7, temp6, dst, 0, 1, 2, 3, BPS)
 
-    OUTPUT_EARLY_CLOBBER_REGS_18(),
-      [c4]"+&r"(c4)
+    OUTPUT_EARLY_CLOBBER_REGS_18(), [c4]"+&r"(c4)
     : [dst]"r"(dst), [a]"r"(a), [d1]"r"(d1), [d4]"r"(d4), [c1]"r"(c1)
     : "memory"
   );
 }
 
-func TransformOne(const int16* WEBP_RESTRICT in,
-                         uint8* WEBP_RESTRICT dst) {
+func TransformOne(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17, temp18;
 
@@ -96,9 +78,7 @@ func TransformOne(const int16* WEBP_RESTRICT in,
     LOAD_IN_X2(temp5, temp6, 24, 26)
     ADD_SUB_HALVES(temp3, temp4, temp1, temp2)
     LOAD_IN_X2(temp1, temp2, 8, 10)
-    MUL_SHIFT_SUM(temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14,
-                  temp10, temp8, temp9, temp7, temp1, temp2, temp5, temp6,
-                  temp13, temp11, temp14, temp12)
+    MUL_SHIFT_SUM(temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp10, temp8, temp9, temp7, temp1, temp2, temp5, temp6, temp13, temp11, temp14, temp12)
     INSERT_HALF_X2(temp8, temp7, temp10, temp9)
     "ulw              %[temp17],  4(%[in])                 \n\t"
     "ulw              %[temp18],  20(%[in])                \n\t"
@@ -107,9 +87,7 @@ func TransformOne(const int16* WEBP_RESTRICT in,
     ADD_SUB_HALVES(temp7, temp8, temp17, temp18)
     LOAD_IN_X2(temp17, temp18, 12, 14)
     LOAD_IN_X2(temp9, temp10, 28, 30)
-    MUL_SHIFT_SUM(temp11, temp12, temp13, temp14, temp15, temp16, temp4, temp17,
-                  temp12, temp14, temp11, temp13, temp17, temp18, temp9, temp10,
-                  temp15, temp4, temp16, temp17)
+    MUL_SHIFT_SUM(temp11, temp12, temp13, temp14, temp15, temp16, temp4, temp17, temp12, temp14, temp11, temp13, temp17, temp18, temp9, temp10, temp15, temp4, temp16, temp17)
     INSERT_HALF_X2(temp11, temp12, temp13, temp14)
     ADD_SUB_HALVES(temp17, temp8, temp8, temp11)
     ADD_SUB_HALVES(temp3, temp4, temp7, temp12)
@@ -124,28 +102,15 @@ func TransformOne(const int16* WEBP_RESTRICT in,
     "addq.ph          %[temp6],   %[temp6],  %[temp2]      \n\t"
     ADD_SUB_HALVES(temp2, temp4, temp1, temp3)
     ADD_SUB_HALVES(temp5, temp7, temp6, temp8)
-    MUL_SHIFT_SUM(temp1, temp3, temp6, temp8, temp9, temp13, temp17, temp18,
-                  temp3, temp13, temp1, temp9, temp9, temp13, temp11, temp15,
-                  temp6, temp17, temp8, temp18)
-    MUL_SHIFT_SUM(temp6, temp8, temp18, temp17, temp11, temp15, temp12, temp16,
-                  temp8, temp15, temp6, temp11, temp12, temp16, temp10, temp14,
-                  temp18, temp12, temp17, temp16)
+    MUL_SHIFT_SUM(temp1, temp3, temp6, temp8, temp9, temp13, temp17, temp18, temp3, temp13, temp1, temp9, temp9, temp13, temp11, temp15, temp6, temp17, temp8, temp18)
+    MUL_SHIFT_SUM(temp6, temp8, temp18, temp17, temp11, temp15, temp12, temp16, temp8, temp15, temp6, temp11, temp12, temp16, temp10, temp14, temp18, temp12, temp17, temp16)
     INSERT_HALF_X2(temp1, temp3, temp9, temp13)
     INSERT_HALF_X2(temp6, temp8, temp11, temp15)
-    SHIFT_R_SUM_X2(temp9, temp10, temp11, temp12, temp13, temp14, temp15,
-                   temp16, temp2, temp4, temp5, temp7, temp3, temp1, temp8,
-                   temp6)
-    PACK_2_HALVES_TO_WORD(temp1, temp2, temp3, temp4, temp9, temp12, temp13,
-                          temp16, temp11, temp10, temp15, temp14)
-    LOAD_WITH_OFFSET_X4(temp10, temp11, temp14, temp15, dst,
-                        0, 0, 0, 0,
-                        0, 1, 2, 3,
-                        BPS)
-    CONVERT_2_BYTES_TO_HALF(temp5, temp6, temp7, temp8, temp17, temp18, temp10,
-                            temp11, temp10, temp11, temp14, temp15)
-    STORE_SAT_SUM_X2(temp5, temp6, temp7, temp8, temp17, temp18, temp10, temp11,
-                     temp9, temp12, temp1, temp2, temp13, temp16, temp3, temp4,
-                     dst, 0, 1, 2, 3, BPS)
+    SHIFT_R_SUM_X2(temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp2, temp4, temp5, temp7, temp3, temp1, temp8, temp6)
+    PACK_2_HALVES_TO_WORD(temp1, temp2, temp3, temp4, temp9, temp12, temp13, temp16, temp11, temp10, temp15, temp14)
+    LOAD_WITH_OFFSET_X4(temp10, temp11, temp14, temp15, dst, 0, 0, 0, 0, 0, 1, 2, 3, BPS)
+    CONVERT_2_BYTES_TO_HALF(temp5, temp6, temp7, temp8, temp17, temp18, temp10, temp11, temp10, temp11, temp14, temp15)
+    STORE_SAT_SUM_X2(temp5, temp6, temp7, temp8, temp17, temp18, temp10, temp11, temp9, temp12, temp1, temp2, temp13, temp16, temp3, temp4, dst, 0, 1, 2, 3, BPS)
 
     OUTPUT_EARLY_CLOBBER_REGS_18()
     : [dst]"r"(dst), [in]"r"(in), [kC1]"r"(kC1), [kC2]"r"(kC2)
@@ -153,17 +118,14 @@ func TransformOne(const int16* WEBP_RESTRICT in,
   );
 }
 
-func TransformTwo(const int16* WEBP_RESTRICT in,
-                         uint8* WEBP_RESTRICT dst, int do_two) {
+func TransformTwo(const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst, int do_two) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);
   }
 }
 
-static  func FilterLoop26(uint8* p, int hstride, int vstride,
-                                     int size, int thresh, int ithresh,
-                                     int hev_thresh) {
+static  func FilterLoop26(uint8* p, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
   const int thresh2 = 2 * thresh + 1;
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15;
@@ -286,21 +248,12 @@ static  func FilterLoop26(uint8* p, int hstride, int vstride,
       "bgtz      %[size],   1b                             \n\t"
       " addu     %[p],      %[p],           %[vstride]     \n\t"
       ".set      pop                                       \n\t"
-      : [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3),
-        [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6),
-        [temp7] "=&r"(temp7), [temp8] "=&r"(temp8), [temp9] "=&r"(temp9),
-        [temp10] "=&r"(temp10), [temp11] "=&r"(temp11), [temp12] "=&r"(temp12),
-        [temp13] "=&r"(temp13), [temp14] "=&r"(temp14), [temp15] "=&r"(temp15),
-        [size] "+&r"(size), [p] "+&r"(p)
-      : [hstride] "r"(hstride), [thresh2] "r"(thresh2), [ithresh] "r"(ithresh),
-        [vstride] "r"(vstride), [hev_thresh] "r"(hev_thresh),
-        [VP8kclip1] "r"(VP8kclip1)
+      : [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8), [temp9] "=&r"(temp9), [temp10] "=&r"(temp10), [temp11] "=&r"(temp11), [temp12] "=&r"(temp12), [temp13] "=&r"(temp13), [temp14] "=&r"(temp14), [temp15] "=&r"(temp15), [size] "+&r"(size), [p] "+&r"(p)
+      : [hstride] "r"(hstride), [thresh2] "r"(thresh2), [ithresh] "r"(ithresh), [vstride] "r"(vstride), [hev_thresh] "r"(hev_thresh), [VP8kclip1] "r"(VP8kclip1)
       : "memory");
 }
 
-static  func FilterLoop24(uint8* p, int hstride, int vstride,
-                                     int size, int thresh, int ithresh,
-                                     int hev_thresh) {
+static  func FilterLoop24(uint8* p, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
   int p0, q0, p1, q1, p2, q2, p3, q3;
   int step1, step2, temp1, temp2, temp3, temp4;
   uint8* pTemp0;
@@ -414,45 +367,33 @@ static  func FilterLoop24(uint8* p, int hstride, int vstride,
       " addu     %[p],       %[p],          %[vstride]  \n\t"
       "3:                                               \n\t"
       ".set      pop                                    \n\t"
-      : [p0] "=&r"(p0), [q0] "=&r"(q0), [p1] "=&r"(p1), [q1] "=&r"(q1),
-        [p2] "=&r"(p2), [q2] "=&r"(q2), [p3] "=&r"(p3), [q3] "=&r"(q3),
-        [step2] "=&r"(step2), [step1] "=&r"(step1), [temp1] "=&r"(temp1),
-        [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4),
-        [pTemp0] "=&r"(pTemp0), [pTemp1] "=&r"(pTemp1), [p] "+&r"(p),
-        [size] "+&r"(size)
-      : [vstride] "r"(vstride), [ithresh] "r"(ithresh),
-        [hev_thresh] "r"(hev_thresh), [hstride] "r"(hstride),
-        [VP8kclip1] "r"(VP8kclip1), [thresh2] "r"(thresh2)
+      : [p0] "=&r"(p0), [q0] "=&r"(q0), [p1] "=&r"(p1), [q1] "=&r"(q1), [p2] "=&r"(p2), [q2] "=&r"(q2), [p3] "=&r"(p3), [q3] "=&r"(q3), [step2] "=&r"(step2), [step1] "=&r"(step1), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [pTemp0] "=&r"(pTemp0), [pTemp1] "=&r"(pTemp1), [p] "+&r"(p), [size] "+&r"(size)
+      : [vstride] "r"(vstride), [ithresh] "r"(ithresh), [hev_thresh] "r"(hev_thresh), [hstride] "r"(hstride), [VP8kclip1] "r"(VP8kclip1), [thresh2] "r"(thresh2)
       : "memory");
 }
 
 // on macroblock edges
-func VFilter16(uint8* p, int stride, int thresh, int ithresh,
-                      int hev_thresh) {
+func VFilter16(uint8* p, int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop26(p, stride, 1, 16, thresh, ithresh, hev_thresh);
 }
 
-func HFilter16(uint8* p, int stride, int thresh, int ithresh,
-                      int hev_thresh) {
+func HFilter16(uint8* p, int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop26(p, 1, stride, 16, thresh, ithresh, hev_thresh);
 }
 
 // 8-pixels wide variant, for chroma filtering
-func VFilter8(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
-                     int stride, int thresh, int ithresh, int hev_thresh) {
+func VFilter8(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop26(u, stride, 1, 8, thresh, ithresh, hev_thresh);
   FilterLoop26(v, stride, 1, 8, thresh, ithresh, hev_thresh);
 }
 
-func HFilter8(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
-                     int stride, int thresh, int ithresh, int hev_thresh) {
+func HFilter8(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop26(u, 1, stride, 8, thresh, ithresh, hev_thresh);
   FilterLoop26(v, 1, stride, 8, thresh, ithresh, hev_thresh);
 }
 
 // on three inner edges
-func VFilter16i(uint8* p, int stride, int thresh, int ithresh,
-                       int hev_thresh) {
+func VFilter16i(uint8* p, int stride, int thresh, int ithresh, int hev_thresh) {
   int k;
   for (k = 3; k > 0; --k) {
     p += 4 * stride;
@@ -460,8 +401,7 @@ func VFilter16i(uint8* p, int stride, int thresh, int ithresh,
   }
 }
 
-func HFilter16i(uint8* p, int stride, int thresh, int ithresh,
-                       int hev_thresh) {
+func HFilter16i(uint8* p, int stride, int thresh, int ithresh, int hev_thresh) {
   int k;
   for (k = 3; k > 0; --k) {
     p += 4;
@@ -469,14 +409,12 @@ func HFilter16i(uint8* p, int stride, int thresh, int ithresh,
   }
 }
 
-func VFilter8i(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
-                      int stride, int thresh, int ithresh, int hev_thresh) {
+func VFilter8i(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop24(u + 4 * stride, stride, 1, 8, thresh, ithresh, hev_thresh);
   FilterLoop24(v + 4 * stride, stride, 1, 8, thresh, ithresh, hev_thresh);
 }
 
-func HFilter8i(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
-                      int stride, int thresh, int ithresh, int hev_thresh) {
+func HFilter8i(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop24(u + 4, 1, stride, 8, thresh, ithresh, hev_thresh);
   FilterLoop24(v + 4, 1, stride, 8, thresh, ithresh, hev_thresh);
 }
@@ -533,10 +471,7 @@ func SimpleVFilter16(uint8* p, int stride, int thresh) {
       "bgtz      %[i],        0b                           \n\t"
       " addiu    %[p],        %[p],           1            \n\t"
       " .set     pop                                       \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8),
-        [p] "+&r"(p), [i] "=&r"(i), [p1] "+&r"(p1)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8), [p] "+&r"(p), [i] "=&r"(i), [p1] "+&r"(p1)
       : [stride] "r"(stride), [VP8kclip1] "r"(VP8kclip1), [thresh2] "r"(thresh2)
       : "memory");
 }
@@ -596,10 +531,7 @@ func SimpleHFilter16(uint8* p, int stride, int thresh) {
     "bgtz      %[i],        0b                          \n\t"
     " addu     %[p],        %[p],           %[stride]   \n\t"
     ".set      pop                                      \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [p]"+&r"(p), [i]"=&r"(i)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [p]"+&r"(p), [i]"=&r"(i)
     : [stride]"r"(stride), [VP8kclip1]"r"(VP8kclip1), [thresh2]"r"(thresh2)
     : "memory"
   );
@@ -651,9 +583,7 @@ func VE4(uint8* dst) {  // vertical
       "precr.qb.ph     %[temp4],   %[temp6],    %[temp2]   \n\t"  //
       STORE_8_BYTES(temp4, temp4, 0, 0, 1, dst)                   //
       STORE_8_BYTES(temp4, temp4, 2, 0, 3, dst)
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6)
       : [top] "r"(top), [dst] "r"(dst)
       : "memory");
 }
@@ -673,8 +603,7 @@ func DC4(uint8* dst) {  // DC
     "replv.qb     %[temp0],   %[temp0]                 \n\t" //
     STORE_8_BYTES(temp0, temp0, 0, 0, 1, dst)  //
     STORE_8_BYTES(temp0, temp0, 2, 0, 3, dst)
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4)
     : [dst]"r"(dst)
     : "memory"
   );
@@ -716,9 +645,7 @@ func RD4(uint8* dst) {  // Down-right
     "prepend        %[temp2],   %[temp8], 8                    \n\t"
     "prepend        %[temp6],   %[temp4], 8                    \n\t" //
     STORE_8_BYTES(temp2, temp6, 2, 0, 0, dst)
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8)
     : [dst]"r"(dst)
     : "memory"
   );
@@ -767,10 +694,7 @@ func LD4(uint8* dst) {  // Down-Left
     "prepend         %[temp9],    %[temp0],    8               \n\t"
     "prepend         %[temp3],    %[temp1],    8               \n\t"
     STORE_8_BYTES(temp9, temp3, 1, 0, 3, dst)
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [temp9]"=&r"(temp9)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9)
     : [dst]"r"(dst)
     : "memory"
   );
@@ -807,10 +731,7 @@ func DC8uv(uint8* dst) {  // DC
     STORE_8_BYTES(temp0, temp0, 5, 4, 5, dst)
     STORE_8_BYTES(temp0, temp0, 6, 4, 6, dst)
     STORE_8_BYTES(temp0, temp0, 7, 4, 7, dst)
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [temp9]"=&r"(temp9)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9)
     : [dst]"r"(dst)
     : "memory"
   );
@@ -862,9 +783,7 @@ func DC8uvNoTop(uint8* dst) {  // DC with no top samples
     STORE_8_BYTES(temp0, temp0, 5, 4, 5, dst)
     STORE_8_BYTES(temp0, temp0, 6, 4, 6, dst)
     STORE_8_BYTES(temp0, temp0, 7, 4, 7, dst)
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8)
     : [dst]"r"(dst)
     : "memory"
   );

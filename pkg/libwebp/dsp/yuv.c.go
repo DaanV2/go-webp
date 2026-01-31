@@ -67,11 +67,7 @@ ROW_FUNC(YuvToRgb565Row, VP8YuvToRgb565, 2)
 #undef ROW_FUNC
 
 // Main call for processing a plane with a WebPSamplerRowFunc function:
-func WebPSamplerProcessPlane(const uint8* WEBP_RESTRICT y, int y_stride,
-                             const uint8* WEBP_RESTRICT u,
-                             const uint8* WEBP_RESTRICT v, int uv_stride,
-                             uint8* WEBP_RESTRICT dst, int dst_stride,
-                             int width, int height, WebPSamplerRowFunc func) {
+func WebPSamplerProcessPlane(const uint8* WEBP_RESTRICT y, int y_stride, const uint8* WEBP_RESTRICT u, const uint8* WEBP_RESTRICT v, int uv_stride, uint8* WEBP_RESTRICT dst, int dst_stride, int width, int height, WebPSamplerRowFunc func) {
   int j;
   for (j = 0; j < height; ++j) {
     func(y, u, v, dst, width);
@@ -136,8 +132,7 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
 //-----------------------------------------------------------------------------
 // ARGB . YUV converters
 
-func ConvertARGBToY_C(const uint32* WEBP_RESTRICT argb,
-                             uint8* WEBP_RESTRICT y, int width) {
+func ConvertARGBToY_C(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT y, int width) {
   int i;
   for (i = 0; i < width; ++i) {
     const uint32 p = argb[i];
@@ -146,9 +141,7 @@ func ConvertARGBToY_C(const uint32* WEBP_RESTRICT argb,
   }
 }
 
-func WebPConvertARGBToUV_C(const uint32* WEBP_RESTRICT argb,
-                           uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
-                           int src_width, int do_store) {
+func WebPConvertARGBToUV_C(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int src_width, int do_store) {
   // No rounding. Last pixel is dealt with separately.
   const int uv_width = src_width >> 1;
   int i;
@@ -190,25 +183,21 @@ func WebPConvertARGBToUV_C(const uint32* WEBP_RESTRICT argb,
 
 //-----------------------------------------------------------------------------
 
-func ConvertRGBToY_C(const uint8* WEBP_RESTRICT rgb,
-                            uint8* WEBP_RESTRICT y, int width, int step) {
+func ConvertRGBToY_C(const uint8* WEBP_RESTRICT rgb, uint8* WEBP_RESTRICT y, int width, int step) {
   int i;
   for (i = 0; i < width; ++i, rgb += step) {
     y[i] = VP8RGBToY(rgb[0], rgb[1], rgb[2], YUV_HALF);
   }
 }
 
-func ConvertBGRToY_C(const uint8* WEBP_RESTRICT bgr,
-                            uint8* WEBP_RESTRICT y, int width, int step) {
+func ConvertBGRToY_C(const uint8* WEBP_RESTRICT bgr, uint8* WEBP_RESTRICT y, int width, int step) {
   int i;
   for (i = 0; i < width; ++i, bgr += step) {
     y[i] = VP8RGBToY(bgr[2], bgr[1], bgr[0], YUV_HALF);
   }
 }
 
-func WebPConvertRGBA32ToUV_C(const uint16* WEBP_RESTRICT rgb,
-                             uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
-                             int width) {
+func WebPConvertRGBA32ToUV_C(const uint16* WEBP_RESTRICT rgb, uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int width) {
   int i;
   for (i = 0; i < width; i += 1, rgb += 4) {
     const int r = rgb[0], g = rgb[1], b = rgb[2];
@@ -319,108 +308,7 @@ static const int kAlphaFix = 19;
 // overflow is: GAMMA_FIX + kAlphaFix <= 31.
 static const uint32 kInvAlpha[4 * 0xff + 1] = {
     0, /* alpha = 0 */
-    524288, 262144, 174762, 131072, 104857, 87381, 74898, 65536, 58254, 52428,
-    47662,  43690,  40329,  37449,  34952,  32768, 30840, 29127, 27594, 26214,
-    24966,  23831,  22795,  21845,  20971,  20164, 19418, 18724, 18078, 17476,
-    16912,  16384,  15887,  15420,  14979,  14563, 14169, 13797, 13443, 13107,
-    12787,  12483,  12192,  11915,  11650,  11397, 11155, 10922, 10699, 10485,
-    10280,  10082,  9892,   9709,   9532,   9362,  9198,  9039,  8886,  8738,
-    8594,   8456,   8322,   8192,   8065,   7943,  7825,  7710,  7598,  7489,
-    7384,   7281,   7182,   7084,   6990,   6898,  6808,  6721,  6636,  6553,
-    6472,   6393,   6316,   6241,   6168,   6096,  6026,  5957,  5890,  5825,
-    5761,   5698,   5637,   5577,   5518,   5461,  5405,  5349,  5295,  5242,
-    5190,   5140,   5090,   5041,   4993,   4946,  4899,  4854,  4809,  4766,
-    4723,   4681,   4639,   4599,   4559,   4519,  4481,  4443,  4405,  4369,
-    4332,   4297,   4262,   4228,   4194,   4161,  4128,  4096,  4064,  4032,
-    4002,   3971,   3942,   3912,   3883,   3855,  3826,  3799,  3771,  3744,
-    3718,   3692,   3666,   3640,   3615,   3591,  3566,  3542,  3518,  3495,
-    3472,   3449,   3426,   3404,   3382,   3360,  3339,  3318,  3297,  3276,
-    3256,   3236,   3216,   3196,   3177,   3158,  3139,  3120,  3102,  3084,
-    3066,   3048,   3030,   3013,   2995,   2978,  2962,  2945,  2928,  2912,
-    2896,   2880,   2864,   2849,   2833,   2818,  2803,  2788,  2774,  2759,
-    2744,   2730,   2716,   2702,   2688,   2674,  2661,  2647,  2634,  2621,
-    2608,   2595,   2582,   2570,   2557,   2545,  2532,  2520,  2508,  2496,
-    2484,   2473,   2461,   2449,   2438,   2427,  2416,  2404,  2394,  2383,
-    2372,   2361,   2351,   2340,   2330,   2319,  2309,  2299,  2289,  2279,
-    2269,   2259,   2250,   2240,   2231,   2221,  2212,  2202,  2193,  2184,
-    2175,   2166,   2157,   2148,   2139,   2131,  2122,  2114,  2105,  2097,
-    2088,   2080,   2072,   2064,   2056,   2048,  2040,  2032,  2024,  2016,
-    2008,   2001,   1993,   1985,   1978,   1971,  1963,  1956,  1949,  1941,
-    1934,   1927,   1920,   1913,   1906,   1899,  1892,  1885,  1879,  1872,
-    1865,   1859,   1852,   1846,   1839,   1833,  1826,  1820,  1814,  1807,
-    1801,   1795,   1789,   1783,   1777,   1771,  1765,  1759,  1753,  1747,
-    1741,   1736,   1730,   1724,   1718,   1713,  1707,  1702,  1696,  1691,
-    1685,   1680,   1675,   1669,   1664,   1659,  1653,  1648,  1643,  1638,
-    1633,   1628,   1623,   1618,   1613,   1608,  1603,  1598,  1593,  1588,
-    1583,   1579,   1574,   1569,   1565,   1560,  1555,  1551,  1546,  1542,
-    1537,   1533,   1528,   1524,   1519,   1515,  1510,  1506,  1502,  1497,
-    1493,   1489,   1485,   1481,   1476,   1472,  1468,  1464,  1460,  1456,
-    1452,   1448,   1444,   1440,   1436,   1432,  1428,  1424,  1420,  1416,
-    1413,   1409,   1405,   1401,   1398,   1394,  1390,  1387,  1383,  1379,
-    1376,   1372,   1368,   1365,   1361,   1358,  1354,  1351,  1347,  1344,
-    1340,   1337,   1334,   1330,   1327,   1323,  1320,  1317,  1314,  1310,
-    1307,   1304,   1300,   1297,   1294,   1291,  1288,  1285,  1281,  1278,
-    1275,   1272,   1269,   1266,   1263,   1260,  1257,  1254,  1251,  1248,
-    1245,   1242,   1239,   1236,   1233,   1230,  1227,  1224,  1222,  1219,
-    1216,   1213,   1210,   1208,   1205,   1202,  1199,  1197,  1194,  1191,
-    1188,   1186,   1183,   1180,   1178,   1175,  1172,  1170,  1167,  1165,
-    1162,   1159,   1157,   1154,   1152,   1149,  1147,  1144,  1142,  1139,
-    1137,   1134,   1132,   1129,   1127,   1125,  1122,  1120,  1117,  1115,
-    1113,   1110,   1108,   1106,   1103,   1101,  1099,  1096,  1094,  1092,
-    1089,   1087,   1085,   1083,   1081,   1078,  1076,  1074,  1072,  1069,
-    1067,   1065,   1063,   1061,   1059,   1057,  1054,  1052,  1050,  1048,
-    1046,   1044,   1042,   1040,   1038,   1036,  1034,  1032,  1030,  1028,
-    1026,   1024,   1022,   1020,   1018,   1016,  1014,  1012,  1010,  1008,
-    1006,   1004,   1002,   1000,   998,    996,   994,   992,   991,   989,
-    987,    985,    983,    981,    979,    978,   976,   974,   972,   970,
-    969,    967,    965,    963,    961,    960,   958,   956,   954,   953,
-    951,    949,    948,    946,    944,    942,   941,   939,   937,   936,
-    934,    932,    931,    929,    927,    926,   924,   923,   921,   919,
-    918,    916,    914,    913,    911,    910,   908,   907,   905,   903,
-    902,    900,    899,    897,    896,    894,   893,   891,   890,   888,
-    887,    885,    884,    882,    881,    879,   878,   876,   875,   873,
-    872,    870,    869,    868,    866,    865,   863,   862,   860,   859,
-    858,    856,    855,    853,    852,    851,   849,   848,   846,   845,
-    844,    842,    841,    840,    838,    837,   836,   834,   833,   832,
-    830,    829,    828,    826,    825,    824,   823,   821,   820,   819,
-    817,    816,    815,    814,    812,    811,   810,   809,   807,   806,
-    805,    804,    802,    801,    800,    799,   798,   796,   795,   794,
-    793,    791,    790,    789,    788,    787,   786,   784,   783,   782,
-    781,    780,    779,    777,    776,    775,   774,   773,   772,   771,
-    769,    768,    767,    766,    765,    764,   763,   762,   760,   759,
-    758,    757,    756,    755,    754,    753,   752,   751,   750,   748,
-    747,    746,    745,    744,    743,    742,   741,   740,   739,   738,
-    737,    736,    735,    734,    733,    732,   731,   730,   729,   728,
-    727,    726,    725,    724,    723,    722,   721,   720,   719,   718,
-    717,    716,    715,    714,    713,    712,   711,   710,   709,   708,
-    707,    706,    705,    704,    703,    702,   701,   700,   699,   699,
-    698,    697,    696,    695,    694,    693,   692,   691,   690,   689,
-    688,    688,    687,    686,    685,    684,   683,   682,   681,   680,
-    680,    679,    678,    677,    676,    675,   674,   673,   673,   672,
-    671,    670,    669,    668,    667,    667,   666,   665,   664,   663,
-    662,    661,    661,    660,    659,    658,   657,   657,   656,   655,
-    654,    653,    652,    652,    651,    650,   649,   648,   648,   647,
-    646,    645,    644,    644,    643,    642,   641,   640,   640,   639,
-    638,    637,    637,    636,    635,    634,   633,   633,   632,   631,
-    630,    630,    629,    628,    627,    627,   626,   625,   624,   624,
-    623,    622,    621,    621,    620,    619,   618,   618,   617,   616,
-    616,    615,    614,    613,    613,    612,   611,   611,   610,   609,
-    608,    608,    607,    606,    606,    605,   604,   604,   603,   602,
-    601,    601,    600,    599,    599,    598,   597,   597,   596,   595,
-    595,    594,    593,    593,    592,    591,   591,   590,   589,   589,
-    588,    587,    587,    586,    585,    585,   584,   583,   583,   582,
-    581,    581,    580,    579,    579,    578,   578,   577,   576,   576,
-    575,    574,    574,    573,    572,    572,   571,   571,   570,   569,
-    569,    568,    568,    567,    566,    566,   565,   564,   564,   563,
-    563,    562,    561,    561,    560,    560,   559,   558,   558,   557,
-    557,    556,    555,    555,    554,    554,   553,   553,   552,   551,
-    551,    550,    550,    549,    548,    548,   547,   547,   546,   546,
-    545,    544,    544,    543,    543,    542,   542,   541,   541,   540,
-    539,    539,    538,    538,    537,    537,   536,   536,   535,   534,
-    534,    533,    533,    532,    532,    531,   531,   530,   530,   529,
-    529,    528,    527,    527,    526,    526,   525,   525,   524,   524,
-    523,    523,    522,    522,    521,    521,   520,   520,   519,   519,
-    518,    518,    517,    517,    516,    516,   515,   515,   514,   514};
+    524288, 262144, 174762, 131072, 104857, 87381, 74898, 65536, 58254, 52428, 47662,  43690,  40329,  37449,  34952,  32768, 30840, 29127, 27594, 26214, 24966,  23831,  22795,  21845,  20971,  20164, 19418, 18724, 18078, 17476, 16912,  16384,  15887,  15420,  14979,  14563, 14169, 13797, 13443, 13107, 12787,  12483,  12192,  11915,  11650,  11397, 11155, 10922, 10699, 10485, 10280,  10082,  9892,   9709,   9532,   9362,  9198,  9039,  8886,  8738, 8594,   8456,   8322,   8192,   8065,   7943,  7825,  7710,  7598,  7489, 7384,   7281,   7182,   7084,   6990,   6898,  6808,  6721,  6636,  6553, 6472,   6393,   6316,   6241,   6168,   6096,  6026,  5957,  5890,  5825, 5761,   5698,   5637,   5577,   5518,   5461,  5405,  5349,  5295,  5242, 5190,   5140,   5090,   5041,   4993,   4946,  4899,  4854,  4809,  4766, 4723,   4681,   4639,   4599,   4559,   4519,  4481,  4443,  4405,  4369, 4332,   4297,   4262,   4228,   4194,   4161,  4128,  4096,  4064,  4032, 4002,   3971,   3942,   3912,   3883,   3855,  3826,  3799,  3771,  3744, 3718,   3692,   3666,   3640,   3615,   3591,  3566,  3542,  3518,  3495, 3472,   3449,   3426,   3404,   3382,   3360,  3339,  3318,  3297,  3276, 3256,   3236,   3216,   3196,   3177,   3158,  3139,  3120,  3102,  3084, 3066,   3048,   3030,   3013,   2995,   2978,  2962,  2945,  2928,  2912, 2896,   2880,   2864,   2849,   2833,   2818,  2803,  2788,  2774,  2759, 2744,   2730,   2716,   2702,   2688,   2674,  2661,  2647,  2634,  2621, 2608,   2595,   2582,   2570,   2557,   2545,  2532,  2520,  2508,  2496, 2484,   2473,   2461,   2449,   2438,   2427,  2416,  2404,  2394,  2383, 2372,   2361,   2351,   2340,   2330,   2319,  2309,  2299,  2289,  2279, 2269,   2259,   2250,   2240,   2231,   2221,  2212,  2202,  2193,  2184, 2175,   2166,   2157,   2148,   2139,   2131,  2122,  2114,  2105,  2097, 2088,   2080,   2072,   2064,   2056,   2048,  2040,  2032,  2024,  2016, 2008,   2001,   1993,   1985,   1978,   1971,  1963,  1956,  1949,  1941, 1934,   1927,   1920,   1913,   1906,   1899,  1892,  1885,  1879,  1872, 1865,   1859,   1852,   1846,   1839,   1833,  1826,  1820,  1814,  1807, 1801,   1795,   1789,   1783,   1777,   1771,  1765,  1759,  1753,  1747, 1741,   1736,   1730,   1724,   1718,   1713,  1707,  1702,  1696,  1691, 1685,   1680,   1675,   1669,   1664,   1659,  1653,  1648,  1643,  1638, 1633,   1628,   1623,   1618,   1613,   1608,  1603,  1598,  1593,  1588, 1583,   1579,   1574,   1569,   1565,   1560,  1555,  1551,  1546,  1542, 1537,   1533,   1528,   1524,   1519,   1515,  1510,  1506,  1502,  1497, 1493,   1489,   1485,   1481,   1476,   1472,  1468,  1464,  1460,  1456, 1452,   1448,   1444,   1440,   1436,   1432,  1428,  1424,  1420,  1416, 1413,   1409,   1405,   1401,   1398,   1394,  1390,  1387,  1383,  1379, 1376,   1372,   1368,   1365,   1361,   1358,  1354,  1351,  1347,  1344, 1340,   1337,   1334,   1330,   1327,   1323,  1320,  1317,  1314,  1310, 1307,   1304,   1300,   1297,   1294,   1291,  1288,  1285,  1281,  1278, 1275,   1272,   1269,   1266,   1263,   1260,  1257,  1254,  1251,  1248, 1245,   1242,   1239,   1236,   1233,   1230,  1227,  1224,  1222,  1219, 1216,   1213,   1210,   1208,   1205,   1202,  1199,  1197,  1194,  1191, 1188,   1186,   1183,   1180,   1178,   1175,  1172,  1170,  1167,  1165, 1162,   1159,   1157,   1154,   1152,   1149,  1147,  1144,  1142,  1139, 1137,   1134,   1132,   1129,   1127,   1125,  1122,  1120,  1117,  1115, 1113,   1110,   1108,   1106,   1103,   1101,  1099,  1096,  1094,  1092, 1089,   1087,   1085,   1083,   1081,   1078,  1076,  1074,  1072,  1069, 1067,   1065,   1063,   1061,   1059,   1057,  1054,  1052,  1050,  1048, 1046,   1044,   1042,   1040,   1038,   1036,  1034,  1032,  1030,  1028, 1026,   1024,   1022,   1020,   1018,   1016,  1014,  1012,  1010,  1008, 1006,   1004,   1002,   1000,   998,    996,   994,   992,   991,   989, 987,    985,    983,    981,    979,    978,   976,   974,   972,   970, 969,    967,    965,    963,    961,    960,   958,   956,   954,   953, 951,    949,    948,    946,    944,    942,   941,   939,   937,   936, 934,    932,    931,    929,    927,    926,   924,   923,   921,   919, 918,    916,    914,    913,    911,    910,   908,   907,   905,   903, 902,    900,    899,    897,    896,    894,   893,   891,   890,   888, 887,    885,    884,    882,    881,    879,   878,   876,   875,   873, 872,    870,    869,    868,    866,    865,   863,   862,   860,   859, 858,    856,    855,    853,    852,    851,   849,   848,   846,   845, 844,    842,    841,    840,    838,    837,   836,   834,   833,   832, 830,    829,    828,    826,    825,    824,   823,   821,   820,   819, 817,    816,    815,    814,    812,    811,   810,   809,   807,   806, 805,    804,    802,    801,    800,    799,   798,   796,   795,   794, 793,    791,    790,    789,    788,    787,   786,   784,   783,   782, 781,    780,    779,    777,    776,    775,   774,   773,   772,   771, 769,    768,    767,    766,    765,    764,   763,   762,   760,   759, 758,    757,    756,    755,    754,    753,   752,   751,   750,   748, 747,    746,    745,    744,    743,    742,   741,   740,   739,   738, 737,    736,    735,    734,    733,    732,   731,   730,   729,   728, 727,    726,    725,    724,    723,    722,   721,   720,   719,   718, 717,    716,    715,    714,    713,    712,   711,   710,   709,   708, 707,    706,    705,    704,    703,    702,   701,   700,   699,   699, 698,    697,    696,    695,    694,    693,   692,   691,   690,   689, 688,    688,    687,    686,    685,    684,   683,   682,   681,   680, 680,    679,    678,    677,    676,    675,   674,   673,   673,   672, 671,    670,    669,    668,    667,    667,   666,   665,   664,   663, 662,    661,    661,    660,    659,    658,   657,   657,   656,   655, 654,    653,    652,    652,    651,    650,   649,   648,   648,   647, 646,    645,    644,    644,    643,    642,   641,   640,   640,   639, 638,    637,    637,    636,    635,    634,   633,   633,   632,   631, 630,    630,    629,    628,    627,    627,   626,   625,   624,   624, 623,    622,    621,    621,    620,    619,   618,   618,   617,   616, 616,    615,    614,    613,    613,    612,   611,   611,   610,   609, 608,    608,    607,    606,    606,    605,   604,   604,   603,   602, 601,    601,    600,    599,    599,    598,   597,   597,   596,   595, 595,    594,    593,    593,    592,    591,   591,   590,   589,   589, 588,    587,    587,    586,    585,    585,   584,   583,   583,   582, 581,    581,    580,    579,    579,    578,   578,   577,   576,   576, 575,    574,    574,    573,    572,    572,   571,   571,   570,   569, 569,    568,    568,    567,    566,    566,   565,   564,   564,   563, 563,    562,    561,    561,    560,    560,   559,   558,   558,   557, 557,    556,    555,    555,    554,    554,   553,   553,   552,   551, 551,    550,    550,    549,    548,    548,   547,   547,   546,   546, 545,    544,    544,    543,    543,    542,   542,   541,   541,   540, 539,    539,    538,    538,    537,    537,   536,   536,   535,   534, 534,    533,    533,    532,    532,    531,   531,   530,   530,   529, 529,    528,    527,    527,    526,    526,   525,   525,   524,   524, 523,    523,    522,    522,    521,    521,   520,   520,   519,   519, 518,    518,    517,    517,    516,    516,   515,   515,   514,   514};
 
 // Note that LinearToGamma() expects the values to be premultiplied by 4,
 // so we incorporate this factor 4 inside the DIVIDE_BY_ALPHA macro directly.
@@ -432,10 +320,7 @@ static const uint32 kInvAlpha[4 * 0xff + 1] = {
 
 #endif  // USE_INVERSE_ALPHA_TABLE
 
-static  int LinearToGammaWeighted(const uint8* src,
-                                             const uint8* a_ptr,
-                                             uint32 total_a, int step,
-                                             int rgb_stride) {
+static  int LinearToGammaWeighted(const uint8* src, const uint8* a_ptr, uint32 total_a, int step, int rgb_stride) {
   const uint32 sum =
       a_ptr[0] * GammaToLinear(src[0]) +
       a_ptr[step] * GammaToLinear(src[step]) +
@@ -448,9 +333,7 @@ static  int LinearToGammaWeighted(const uint8* src,
   return LinearToGamma(DIVIDE_BY_ALPHA(sum, total_a), 0);
 }
 
-func WebPAccumulateRGBA(const uint8* const r_ptr, const uint8* const g_ptr,
-                        const uint8* const b_ptr, const uint8* const a_ptr,
-                        int rgb_stride, uint16* dst, int width) {
+func WebPAccumulateRGBA(const uint8* const r_ptr, const uint8* const g_ptr, const uint8* const b_ptr, const uint8* const a_ptr, int rgb_stride, uint16* dst, int width) {
   int i, j;
   // we loop over 2x2 blocks and produce one R/G/B/A value for each.
   for (i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * 4, dst += 4) {
@@ -489,9 +372,7 @@ func WebPAccumulateRGBA(const uint8* const r_ptr, const uint8* const g_ptr,
   }
 }
 
-func WebPAccumulateRGB(const uint8* const r_ptr, const uint8* const g_ptr,
-                       const uint8* const b_ptr, int step, int rgb_stride,
-                       uint16* dst, int width) {
+func WebPAccumulateRGB(const uint8* const r_ptr, const uint8* const g_ptr, const uint8* const b_ptr, int step, int rgb_stride, uint16* dst, int width) {
   int i, j;
   for (i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * step, dst += 4) {
     dst[0] = SUM4(r_ptr + j, step);
@@ -514,14 +395,9 @@ func WebPAccumulateRGB(const uint8* const r_ptr, const uint8* const g_ptr,
   }
 }
 
-func ImportYUVAFromRGBA_C(const uint8* r_ptr, const uint8* g_ptr,
-                                 const uint8* b_ptr, const uint8* a_ptr,
-                                 int step,        // bytes per pixel
+func ImportYUVAFromRGBA_C(const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr, const uint8* a_ptr, int step,        // bytes per pixel
                                  int rgb_stride,  // bytes per scanline
-                                 int has_alpha, int width, int height,
-                                 uint16* tmp_rgb, int y_stride, int uv_stride,
-                                 int a_stride, uint8* dst_y, uint8* dst_u,
-                                 uint8* dst_v, uint8* dst_a) {
+                                 int has_alpha, int width, int height, uint16* tmp_rgb, int y_stride, int uv_stride, int a_stride, uint8* dst_y, uint8* dst_u, uint8* dst_v, uint8* dst_a) {
   int y;
   const int is_rgb = (r_ptr < b_ptr);  // otherwise it's bgr
   const int uv_width = (width + 1) >> 1;
@@ -561,8 +437,7 @@ func ImportYUVAFromRGBA_C(const uint8* r_ptr, const uint8* g_ptr,
     if (!rows_have_alpha) {
       WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, rgb_stride, tmp_rgb, width);
     } else {
-      WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, rgb_stride, tmp_rgb,
-                         width);
+      WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, rgb_stride, tmp_rgb, width);
     }
     // Convert to U/V
     WebPConvertRGBA32ToUV(tmp_rgb, dst_u, dst_v, uv_width);
@@ -576,11 +451,8 @@ func ImportYUVAFromRGBA_C(const uint8* r_ptr, const uint8* g_ptr,
 }
 
 func ImportYUVAFromRGBALastLine_C(
-    const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr,
-    const uint8* a_ptr,
-    int step,  // bytes per pixel
-    int has_alpha, int width, uint16* tmp_rgb, uint8* dst_y, uint8* dst_u,
-    uint8* dst_v, uint8* dst_a) {
+    const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr, const uint8* a_ptr, int step,  // bytes per pixel
+    int has_alpha, int width, uint16* tmp_rgb, uint8* dst_y, uint8* dst_u, uint8* dst_v, uint8* dst_a) {
   const int is_rgb = (r_ptr < b_ptr);  // otherwise it's bgr
   const int uv_width = (width + 1) >> 1;
   int row_has_alpha = has_alpha && dst_a != nil;
@@ -599,45 +471,28 @@ func ImportYUVAFromRGBALastLine_C(
   // Collect averaged R/G/B(/A)
   if (!row_has_alpha) {
     // Collect averaged R/G/B
-    WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, /*rgb_stride=*/0, tmp_rgb,
-                      width);
+    WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, /*rgb_stride=*/0, tmp_rgb, width);
   } else {
-    WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, /*rgb_stride=*/0, tmp_rgb,
-                       width);
+    WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, /*rgb_stride=*/0, tmp_rgb, width);
   }
   WebPConvertRGBA32ToUV(tmp_rgb, dst_u, dst_v, uv_width);
 }
 
 //-----------------------------------------------------------------------------
 
-func (*WebPConvertRGBToY)(const uint8* WEBP_RESTRICT rgb,
-                          uint8* WEBP_RESTRICT y, int width, int step);
-func (*WebPConvertBGRToY)(const uint8* WEBP_RESTRICT bgr,
-                          uint8* WEBP_RESTRICT y, int width, int step);
-func (*WebPConvertRGBA32ToUV)(const uint16* WEBP_RESTRICT rgb,
-                              uint8* WEBP_RESTRICT u,
-                              uint8* WEBP_RESTRICT v, int width);
+func (*WebPConvertRGBToY)(const uint8* WEBP_RESTRICT rgb, uint8* WEBP_RESTRICT y, int width, int step);
+func (*WebPConvertBGRToY)(const uint8* WEBP_RESTRICT bgr, uint8* WEBP_RESTRICT y, int width, int step);
+func (*WebPConvertRGBA32ToUV)(const uint16* WEBP_RESTRICT rgb, uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int width);
 
-func (*WebPImportYUVAFromRGBA)(const uint8* r_ptr, const uint8* g_ptr,
-                               const uint8* b_ptr, const uint8* a_ptr,
-                               int step,        // bytes per pixel
+func (*WebPImportYUVAFromRGBA)(const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr, const uint8* a_ptr, int step,        // bytes per pixel
                                int rgb_stride,  // bytes per scanline
-                               int has_alpha, int width, int height,
-                               uint16* tmp_rgb, int y_stride, int uv_stride,
-                               int a_stride, uint8* dst_y, uint8* dst_u,
-                               uint8* dst_v, uint8* dst_a);
+                               int has_alpha, int width, int height, uint16* tmp_rgb, int y_stride, int uv_stride, int a_stride, uint8* dst_y, uint8* dst_u, uint8* dst_v, uint8* dst_a);
 func (*WebPImportYUVAFromRGBALastLine)(
-    const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr,
-    const uint8* a_ptr,
-    int step,  // bytes per pixel
-    int has_alpha, int width, uint16* tmp_rgb, uint8* dst_y, uint8* dst_u,
-    uint8* dst_v, uint8* dst_a);
+    const uint8* r_ptr, const uint8* g_ptr, const uint8* b_ptr, const uint8* a_ptr, int step,  // bytes per pixel
+    int has_alpha, int width, uint16* tmp_rgb, uint8* dst_y, uint8* dst_u, uint8* dst_v, uint8* dst_a);
 
-func (*WebPConvertARGBToY)(const uint32* WEBP_RESTRICT argb,
-                           uint8* WEBP_RESTRICT y, int width);
-func (*WebPConvertARGBToUV)(const uint32* WEBP_RESTRICT argb,
-                            uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
-                            int src_width, int do_store);
+func (*WebPConvertARGBToY)(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT y, int width);
+func (*WebPConvertARGBToUV)(const uint32* WEBP_RESTRICT argb, uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v, int src_width, int do_store);
 
 extern func WebPInitConvertARGBToYUVSSE2(void);
 extern func WebPInitConvertARGBToYUVSSE41(void);

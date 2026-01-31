@@ -335,12 +335,10 @@ func VP8TBufferClear(VP8TBuffer* const b);  // de-allocate pages memory
 
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
-int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw,
-                  const uint8* const probas, int final_pass);
+int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw, const uint8* const probas, int final_pass);
 
 // record the coding of coefficients without knowing the probabilities yet
-int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res,
-                         VP8TBuffer* const tokens);
+int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res, VP8TBuffer* const tokens);
 
 // Estimate the final coded size given a set of 'probas'.
 uint64 VP8EstimateTokenSize(VP8TBuffer* const b, const uint8* const probas);
@@ -462,8 +460,7 @@ int VP8EncTokenLoop(VP8Encoder* const enc);
 // in webpenc.c
 // Assign an error code to a picture. Return false for convenience.
 int WebPEncodingSetError(const WebPPicture* const pic, WebPEncodingError error);
-int WebPReportProgress(const WebPPicture* const pic, int percent,
-                       int* const percent_store);
+int WebPReportProgress(const WebPPicture* const pic, int percent, int* const percent_store);
 
 // in analysis.c
 // Main analysis loop. Decides the segmentations and complexity.
@@ -474,8 +471,7 @@ int VP8EncAnalyze(VP8Encoder* const enc);
 // Sets up segment's quantization values, 'base_quant' and filter strengths.
 func VP8SetSegmentParams(VP8Encoder* const enc, float quality);
 // Pick best modes and fills the levels. Returns true if skipped.
-int VP8Decimate(VP8EncIterator* WEBP_RESTRICT const it,
-                VP8ModeScore* WEBP_RESTRICT const rd, VP8RDLevel rd_opt);
+int VP8Decimate(VP8EncIterator* WEBP_RESTRICT const it, VP8ModeScore* WEBP_RESTRICT const rd, VP8RDLevel rd_opt);
 
 // in alpha.c
 func VP8EncInitAlpha(VP8Encoder* const enc);   // initialize alpha compression

@@ -62,22 +62,16 @@ type <Foo> struct {
 // The input data is the PixOrCopy data, which models the literals, stop
 // codes and backward references (both distances and lengths).  Also: if
 // palette_code_bits is >= 0, initialize the histogram with this value.
-func VP8LHistogramCreate(VP8LHistogram* const h,
-                         const VP8LBackwardRefs* const refs,
-                         int palette_code_bits);
+func VP8LHistogramCreate(VP8LHistogram* const h, const VP8LBackwardRefs* const refs, int palette_code_bits);
 
 // Set the palette_code_bits and reset the stats.
 // If init_arrays is true, the arrays are also filled with 0's.
-func VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits,
-                       int init_arrays);
+func VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits, int init_arrays);
 
 // Collect all the references into a histogram (without reset)
 // The distance modifier function is applied to the distance before
 // the histogram is updated. It can be nil.
-func VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs,
-                            int (*const distance_modifier)(int, int),
-                            int distance_modifier_arg0,
-                            VP8LHistogram* const histo);
+func VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs, int (*const distance_modifier)(int, int), int distance_modifier_arg0, VP8LHistogram* const histo);
 
 // Free the memory allocated for the histogram.
 func VP8LFreeHistogram(VP8LHistogram* const histo);
@@ -104,14 +98,7 @@ static  int VP8LHistogramNumCodes(int palette_code_bits) {
 
 // Builds the histogram image. pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
-int VP8LGetHistoImageSymbols(int xsize, int ysize,
-                             const VP8LBackwardRefs* const refs, int quality,
-                             int low_effort, int histogram_bits, int cache_bits,
-                             VP8LHistogramSet* const image_histo,
-                             VP8LHistogram* const tmp_histo,
-                             uint32* const histogram_symbols,
-                             const WebPPicture* const pic, int percent_range,
-                             int* const percent);
+int VP8LGetHistoImageSymbols(int xsize, int ysize, const VP8LBackwardRefs* const refs, int quality, int low_effort, int histogram_bits, int cache_bits, VP8LHistogramSet* const image_histo, VP8LHistogram* const tmp_histo, uint32* const histogram_symbols, const WebPPicture* const pic, int percent_range, int* const percent);
 
 // Returns the entropy for the symbols in the input array.
 uint64 VP8LBitsEntropy(const uint32* const array, int n);

@@ -145,16 +145,13 @@ static const int kC2 = WEBP_TRANSFORM_AC3_C2;
   "sh              %[" #TEMP12 "],  " #B "(%[temp20])               \n\t"
 // clang-format on
 
-func FTransform_MIPSdspR2(const uint8* WEBP_RESTRICT src,
-                                 const uint8* WEBP_RESTRICT ref,
-                                 int16* WEBP_RESTRICT out) {
+func FTransform_MIPSdspR2(const uint8* WEBP_RESTRICT src, const uint8* WEBP_RESTRICT ref, int16* WEBP_RESTRICT out) {
   const int c2217 = 2217;
   const int c5352 = 5352;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   int temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16;
   int temp17, temp18, temp19, temp20;
-  const int* const args[3] = {(const int*)src, (const int*)ref,
-                              (const int*)out};
+  const int* const args[3] = {(const int*)src, (const int*)ref, (const int*)out};
 
   __asm__ volatile(
     HORIZONTAL_PASS(0, temp0,  temp1,  temp2,  temp3)
@@ -166,8 +163,7 @@ func FTransform_MIPSdspR2(const uint8* WEBP_RESTRICT src,
     VERTICAL_PASS(2, 10, 18, 26, temp1, temp5, temp9,  temp13)
     VERTICAL_PASS(4, 12, 20, 28, temp2, temp6, temp10, temp14)
     VERTICAL_PASS(6, 14, 22, 30, temp3, temp7, temp11, temp15)
-    OUTPUT_EARLY_CLOBBER_REGS_18(),
-      [temp0]"=&r"(temp0), [temp19]"=&r"(temp19), [temp20]"=&r"(temp20)
+    OUTPUT_EARLY_CLOBBER_REGS_18(), [temp0]"=&r"(temp0), [temp19]"=&r"(temp19), [temp20]"=&r"(temp20)
     : [args]"r"(args), [c2217]"r"(c2217), [c5352]"r"(c5352)
     : "memory", "hi", "lo"
   );
@@ -176,9 +172,7 @@ func FTransform_MIPSdspR2(const uint8* WEBP_RESTRICT src,
 #undef VERTICAL_PASS
 #undef HORIZONTAL_PASS
 
-static  func ITransformOne(const uint8* WEBP_RESTRICT ref,
-                                      const int16* WEBP_RESTRICT in,
-                                      uint8* WEBP_RESTRICT dst) {
+static  func ITransformOne(const uint8* WEBP_RESTRICT ref, const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17, temp18;
 
@@ -188,9 +182,7 @@ static  func ITransformOne(const uint8* WEBP_RESTRICT ref,
     LOAD_IN_X2(temp5, temp6, 24, 26)
     ADD_SUB_HALVES(temp3, temp4, temp1, temp2)
     LOAD_IN_X2(temp1, temp2, 8, 10)
-    MUL_SHIFT_SUM(temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14,
-                  temp10, temp8, temp9, temp7, temp1, temp2, temp5, temp6,
-                  temp13, temp11, temp14, temp12)
+    MUL_SHIFT_SUM(temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp10, temp8, temp9, temp7, temp1, temp2, temp5, temp6, temp13, temp11, temp14, temp12)
     INSERT_HALF_X2(temp8, temp7, temp10, temp9)
     "ulw              %[temp17],  4(%[in])                 \n\t"
     "ulw              %[temp18],  20(%[in])                \n\t"
@@ -199,9 +191,7 @@ static  func ITransformOne(const uint8* WEBP_RESTRICT ref,
     ADD_SUB_HALVES(temp7, temp8, temp17, temp18)
     LOAD_IN_X2(temp17, temp18, 12, 14)
     LOAD_IN_X2(temp9, temp10, 28, 30)
-    MUL_SHIFT_SUM(temp11, temp12, temp13, temp14, temp15, temp16, temp4, temp17,
-                  temp12, temp14, temp11, temp13, temp17, temp18, temp9, temp10,
-                  temp15, temp4, temp16, temp17)
+    MUL_SHIFT_SUM(temp11, temp12, temp13, temp14, temp15, temp16, temp4, temp17, temp12, temp14, temp11, temp13, temp17, temp18, temp9, temp10, temp15, temp4, temp16, temp17)
     INSERT_HALF_X2(temp11, temp12, temp13, temp14)
     ADD_SUB_HALVES(temp17, temp8, temp8, temp11)
     ADD_SUB_HALVES(temp3, temp4, temp7, temp12)
@@ -216,28 +206,15 @@ static  func ITransformOne(const uint8* WEBP_RESTRICT ref,
     "addq.ph          %[temp6],   %[temp6],  %[temp2]      \n\t"
     ADD_SUB_HALVES(temp2, temp4, temp1, temp3)
     ADD_SUB_HALVES(temp5, temp7, temp6, temp8)
-    MUL_SHIFT_SUM(temp1, temp3, temp6, temp8, temp9, temp13, temp17, temp18,
-                  temp3, temp13, temp1, temp9, temp9, temp13, temp11, temp15,
-                  temp6, temp17, temp8, temp18)
-    MUL_SHIFT_SUM(temp6, temp8, temp18, temp17, temp11, temp15, temp12, temp16,
-                  temp8, temp15, temp6, temp11, temp12, temp16, temp10, temp14,
-                  temp18, temp12, temp17, temp16)
+    MUL_SHIFT_SUM(temp1, temp3, temp6, temp8, temp9, temp13, temp17, temp18, temp3, temp13, temp1, temp9, temp9, temp13, temp11, temp15, temp6, temp17, temp8, temp18)
+    MUL_SHIFT_SUM(temp6, temp8, temp18, temp17, temp11, temp15, temp12, temp16, temp8, temp15, temp6, temp11, temp12, temp16, temp10, temp14, temp18, temp12, temp17, temp16)
     INSERT_HALF_X2(temp1, temp3, temp9, temp13)
     INSERT_HALF_X2(temp6, temp8, temp11, temp15)
-    SHIFT_R_SUM_X2(temp9, temp10, temp11, temp12, temp13, temp14, temp15,
-                   temp16, temp2, temp4, temp5, temp7, temp3, temp1, temp8,
-                   temp6)
-    PACK_2_HALVES_TO_WORD(temp1, temp2, temp3, temp4, temp9, temp12, temp13,
-                          temp16, temp11, temp10, temp15, temp14)
-    LOAD_WITH_OFFSET_X4(temp10, temp11, temp14, temp15, ref,
-                        0, 0, 0, 0,
-                        0, 1, 2, 3,
-                        BPS)
-    CONVERT_2_BYTES_TO_HALF(temp5, temp6, temp7, temp8, temp17, temp18, temp10,
-                            temp11, temp10, temp11, temp14, temp15)
-    STORE_SAT_SUM_X2(temp5, temp6, temp7, temp8, temp17, temp18, temp10, temp11,
-                     temp9, temp12, temp1, temp2, temp13, temp16, temp3, temp4,
-                     dst, 0, 1, 2, 3, BPS)
+    SHIFT_R_SUM_X2(temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp2, temp4, temp5, temp7, temp3, temp1, temp8, temp6)
+    PACK_2_HALVES_TO_WORD(temp1, temp2, temp3, temp4, temp9, temp12, temp13, temp16, temp11, temp10, temp15, temp14)
+    LOAD_WITH_OFFSET_X4(temp10, temp11, temp14, temp15, ref, 0, 0, 0, 0, 0, 1, 2, 3, BPS)
+    CONVERT_2_BYTES_TO_HALF(temp5, temp6, temp7, temp8, temp17, temp18, temp10, temp11, temp10, temp11, temp14, temp15)
+    STORE_SAT_SUM_X2(temp5, temp6, temp7, temp8, temp17, temp18, temp10, temp11, temp9, temp12, temp1, temp2, temp13, temp16, temp3, temp4, dst, 0, 1, 2, 3, BPS)
 
     OUTPUT_EARLY_CLOBBER_REGS_18()
     : [dst]"r"(dst), [in]"r"(in), [kC1]"r"(kC1), [kC2]"r"(kC2), [ref]"r"(ref)
@@ -245,9 +222,7 @@ static  func ITransformOne(const uint8* WEBP_RESTRICT ref,
   );
 }
 
-func ITransform_MIPSdspR2(const uint8* WEBP_RESTRICT ref,
-                                 const int16* WEBP_RESTRICT in,
-                                 uint8* WEBP_RESTRICT dst, int do_two) {
+func ITransform_MIPSdspR2(const uint8* WEBP_RESTRICT ref, const int16* WEBP_RESTRICT in, uint8* WEBP_RESTRICT dst, int do_two) {
   ITransformOne(ref, in, dst);
   if (do_two) {
     ITransformOne(ref + 4, in + 16, dst + 4);
@@ -255,67 +230,33 @@ func ITransform_MIPSdspR2(const uint8* WEBP_RESTRICT ref,
 }
 
 // clang-format off
-static int Disto4x4_MIPSdspR2(const uint8* WEBP_RESTRICT const a,
-                              const uint8* WEBP_RESTRICT const b,
-                              const uint16* WEBP_RESTRICT const w) {
+static int Disto4x4_MIPSdspR2(const uint8* WEBP_RESTRICT const a, const uint8* WEBP_RESTRICT const b, const uint16* WEBP_RESTRICT const w) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17;
 
   __asm__ volatile(
-    LOAD_WITH_OFFSET_X4(temp1, temp2, temp3, temp4, a,
-                        0, 0, 0, 0,
-                        0, 1, 2, 3,
-                        BPS)
-    CONVERT_2_BYTES_TO_HALF(temp5, temp6, temp7, temp8, temp9,temp10, temp11,
-                            temp12, temp1, temp2, temp3, temp4)
-    ADD_SUB_HALVES_X4(temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8,
-                      temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12)
-    PACK_2_HALVES_TO_WORD(temp9, temp10, temp11, temp12, temp1, temp3, temp5,
-                          temp7, temp2, temp4, temp6, temp8)
-    ADD_SUB_HALVES_X4(temp2, temp4, temp6, temp8, temp9, temp1, temp3, temp10,
-                      temp1, temp9, temp3, temp10, temp5, temp11, temp7, temp12)
-    ADD_SUB_HALVES_X4(temp5, temp11, temp7, temp2, temp9, temp3, temp6, temp12,
-                      temp2, temp9, temp6, temp3, temp4, temp1, temp8, temp10)
-    ADD_SUB_HALVES_X4(temp1, temp4, temp10, temp8, temp7, temp11, temp5, temp2,
-                      temp5, temp7, temp11, temp2, temp9, temp6, temp3, temp12)
+    LOAD_WITH_OFFSET_X4(temp1, temp2, temp3, temp4, a, 0, 0, 0, 0, 0, 1, 2, 3, BPS)
+    CONVERT_2_BYTES_TO_HALF(temp5, temp6, temp7, temp8, temp9,temp10, temp11, temp12, temp1, temp2, temp3, temp4)
+    ADD_SUB_HALVES_X4(temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12)
+    PACK_2_HALVES_TO_WORD(temp9, temp10, temp11, temp12, temp1, temp3, temp5, temp7, temp2, temp4, temp6, temp8)
+    ADD_SUB_HALVES_X4(temp2, temp4, temp6, temp8, temp9, temp1, temp3, temp10, temp1, temp9, temp3, temp10, temp5, temp11, temp7, temp12)
+    ADD_SUB_HALVES_X4(temp5, temp11, temp7, temp2, temp9, temp3, temp6, temp12, temp2, temp9, temp6, temp3, temp4, temp1, temp8, temp10)
+    ADD_SUB_HALVES_X4(temp1, temp4, temp10, temp8, temp7, temp11, temp5, temp2, temp5, temp7, temp11, temp2, temp9, temp6, temp3, temp12)
     ABS_X8(temp1, temp4, temp10, temp8, temp7, temp11, temp5, temp2)
-    LOAD_WITH_OFFSET_X4(temp3, temp6, temp9, temp12, w,
-                        0, 4, 8, 12,
-                        0, 0, 0, 0,
-                        0)
-    LOAD_WITH_OFFSET_X4(temp13, temp14, temp15, temp16, w,
-                        0, 4, 8, 12,
-                        1, 1, 1, 1,
-                        16)
-    MUL_HALF(temp17, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8,
-             temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16)
-    LOAD_WITH_OFFSET_X4(temp1, temp2, temp3, temp4, b,
-                        0, 0, 0, 0,
-                        0, 1, 2, 3,
-                        BPS)
-    CONVERT_2_BYTES_TO_HALF(temp5,temp6, temp7, temp8, temp9,temp10, temp11,
-                            temp12, temp1, temp2, temp3, temp4)
-    ADD_SUB_HALVES_X4(temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8,
-                      temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12)
-    PACK_2_HALVES_TO_WORD(temp9, temp10, temp11, temp12, temp1, temp3, temp5,
-                          temp7, temp2, temp4, temp6, temp8)
-    ADD_SUB_HALVES_X4(temp2, temp4, temp6, temp8, temp9, temp1, temp3, temp10,
-                      temp1, temp9, temp3, temp10, temp5, temp11, temp7, temp12)
-    ADD_SUB_HALVES_X4(temp5, temp11, temp7, temp2, temp9, temp3, temp6, temp12,
-                      temp2, temp9, temp6, temp3, temp4, temp1, temp8, temp10)
-    ADD_SUB_HALVES_X4(temp1, temp4, temp10, temp8, temp7, temp11, temp5, temp2,
-                      temp5, temp7, temp11, temp2, temp9, temp6, temp3, temp12)
+    LOAD_WITH_OFFSET_X4(temp3, temp6, temp9, temp12, w, 0, 4, 8, 12, 0, 0, 0, 0, 0)
+    LOAD_WITH_OFFSET_X4(temp13, temp14, temp15, temp16, w, 0, 4, 8, 12, 1, 1, 1, 1, 16)
+    MUL_HALF(temp17, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16)
+    LOAD_WITH_OFFSET_X4(temp1, temp2, temp3, temp4, b, 0, 0, 0, 0, 0, 1, 2, 3, BPS)
+    CONVERT_2_BYTES_TO_HALF(temp5,temp6, temp7, temp8, temp9,temp10, temp11, temp12, temp1, temp2, temp3, temp4)
+    ADD_SUB_HALVES_X4(temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12)
+    PACK_2_HALVES_TO_WORD(temp9, temp10, temp11, temp12, temp1, temp3, temp5, temp7, temp2, temp4, temp6, temp8)
+    ADD_SUB_HALVES_X4(temp2, temp4, temp6, temp8, temp9, temp1, temp3, temp10, temp1, temp9, temp3, temp10, temp5, temp11, temp7, temp12)
+    ADD_SUB_HALVES_X4(temp5, temp11, temp7, temp2, temp9, temp3, temp6, temp12, temp2, temp9, temp6, temp3, temp4, temp1, temp8, temp10)
+    ADD_SUB_HALVES_X4(temp1, temp4, temp10, temp8, temp7, temp11, temp5, temp2, temp5, temp7, temp11, temp2, temp9, temp6, temp3, temp12)
     ABS_X8(temp1, temp4, temp10, temp8, temp7, temp11, temp5, temp2)
-    LOAD_WITH_OFFSET_X4(temp3, temp6, temp9, temp12, w,
-                        0, 4, 8, 12,
-                        0, 0, 0, 0,
-                        0)
-    LOAD_WITH_OFFSET_X4(temp13, temp14, temp15, temp16, w,
-                        0, 4, 8, 12,
-                        1, 1, 1, 1,
-                        16)
-    MUL_HALF(temp3, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8,
-             temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16)
+    LOAD_WITH_OFFSET_X4(temp3, temp6, temp9, temp12, w, 0, 4, 8, 12, 0, 0, 0, 0, 0)
+    LOAD_WITH_OFFSET_X4(temp13, temp14, temp15, temp16, w, 0, 4, 8, 12, 1, 1, 1, 1, 16)
+    MUL_HALF(temp3, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16)
     OUTPUT_EARLY_CLOBBER_REGS_17()
     : [a]"r"(a), [b]"r"(b), [w]"r"(w)
     : "memory", "hi", "lo"
@@ -324,9 +265,7 @@ static int Disto4x4_MIPSdspR2(const uint8* WEBP_RESTRICT const a,
 }
 // clang-format on
 
-static int Disto16x16_MIPSdspR2(const uint8* WEBP_RESTRICT const a,
-                                const uint8* WEBP_RESTRICT const b,
-                                const uint16* WEBP_RESTRICT const w) {
+static int Disto16x16_MIPSdspR2(const uint8* WEBP_RESTRICT const a, const uint8* WEBP_RESTRICT const b, const uint16* WEBP_RESTRICT const w) {
   int D = 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
@@ -500,18 +439,13 @@ TRUE_MOTION(dst, left, top, 16)
 #undef CLIP_8B_TO_DST
 #undef CLIPPING
 
-static  func DCMode16(uint8* WEBP_RESTRICT dst,
-                                 const uint8* WEBP_RESTRICT left,
-                                 const uint8* WEBP_RESTRICT top) {
+static  func DCMode16(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT left, const uint8* WEBP_RESTRICT top) {
   int DC, DC1;
   int temp0, temp1, temp2, temp3;
 
   __asm__ volatile(
     "beqz        %[top],   2f                  \n\t"
-    LOAD_WITH_OFFSET_X4(temp0, temp1, temp2, temp3, top,
-                        0, 4, 8, 12,
-                        0, 0, 0, 0,
-                        0)
+    LOAD_WITH_OFFSET_X4(temp0, temp1, temp2, temp3, top, 0, 4, 8, 12, 0, 0, 0, 0, 0)
     "raddu.w.qb  %[temp0], %[temp0]            \n\t"
     "raddu.w.qb  %[temp1], %[temp1]            \n\t"
     "raddu.w.qb  %[temp2], %[temp2]            \n\t"
@@ -521,10 +455,7 @@ static  func DCMode16(uint8* WEBP_RESTRICT dst,
     "addu        %[DC],    %[temp0], %[temp2]  \n\t"
     "move        %[DC1],   %[DC]               \n\t"
     "beqz        %[left],  1f                  \n\t"
-    LOAD_WITH_OFFSET_X4(temp0, temp1, temp2, temp3, left,
-                        0, 4, 8, 12,
-                        0, 0, 0, 0,
-                        0)
+    LOAD_WITH_OFFSET_X4(temp0, temp1, temp2, temp3, left, 0, 4, 8, 12, 0, 0, 0, 0, 0)
     "raddu.w.qb  %[temp0], %[temp0]            \n\t"
     "raddu.w.qb  %[temp1], %[temp1]            \n\t"
     "raddu.w.qb  %[temp2], %[temp2]            \n\t"
@@ -537,10 +468,7 @@ static  func DCMode16(uint8* WEBP_RESTRICT dst,
     "j           3f                            \n\t"
   "2:                                          \n\t"
     "beqz        %[left],  4f                  \n\t"
-    LOAD_WITH_OFFSET_X4(temp0, temp1, temp2, temp3, left,
-                        0, 4, 8, 12,
-                        0, 0, 0, 0,
-                        0)
+    LOAD_WITH_OFFSET_X4(temp0, temp1, temp2, temp3, left, 0, 4, 8, 12, 0, 0, 0, 0, 0)
     "raddu.w.qb  %[temp0], %[temp0]            \n\t"
     "raddu.w.qb  %[temp1], %[temp1]            \n\t"
     "raddu.w.qb  %[temp2], %[temp2]            \n\t"
@@ -555,8 +483,7 @@ static  func DCMode16(uint8* WEBP_RESTRICT dst,
   "4:                                          \n\t"
     "li          %[DC],    0x80                \n\t"
   "5:                                          \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [DC]"=&r"(DC),
-      [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [DC1]"=&r"(DC1)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [DC]"=&r"(DC), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [DC1]"=&r"(DC1)
     : [left]"r"(left), [top]"r"(top)
     : "memory"
   );
@@ -564,9 +491,7 @@ static  func DCMode16(uint8* WEBP_RESTRICT dst,
   FILL_8_OR_16(dst, DC, 16);
 }
 
-static  func DCMode8(uint8* WEBP_RESTRICT dst,
-                                const uint8* WEBP_RESTRICT left,
-                                const uint8* WEBP_RESTRICT top) {
+static  func DCMode8(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT left, const uint8* WEBP_RESTRICT top) {
   int DC, DC1;
   int temp0, temp1, temp2, temp3;
 
@@ -601,8 +526,7 @@ static  func DCMode8(uint8* WEBP_RESTRICT dst,
       "4:                                          \n\t"
       "li          %[DC], 0x80                   \n\t"
       "5:                                          \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [DC] "=&r"(DC),
-        [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [DC1] "=&r"(DC1)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [DC] "=&r"(DC), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [DC1] "=&r"(DC1)
       : [left] "r"(left), [top] "r"(top)
       : "memory");
 
@@ -677,9 +601,7 @@ func TM4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "usw              %[temp0],  1*" XSTR(BPS) "(%[dst])       \n\t"
     "usw              %[temp3],  2*" XSTR(BPS) "(%[dst])       \n\t"
     "usw              %[temp2],  3*" XSTR(BPS) "(%[dst])       \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [a10]"=&r"(a10), [a32]"=&r"(a32)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [a10]"=&r"(a10), [a32]"=&r"(a32)
     : [c35]"r"(c35), [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -708,9 +630,7 @@ func VE4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "usw             %[temp4],   1*" XSTR(BPS) "(%[dst]) \n\t"
     "usw             %[temp4],   2*" XSTR(BPS) "(%[dst]) \n\t"
     "usw             %[temp4],   3*" XSTR(BPS) "(%[dst]) \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6)
     : [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -744,9 +664,7 @@ func HE4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "usw             %[temp0],   1*" XSTR(BPS) "(%[dst]) \n\t"
     "usw             %[temp2],   2*" XSTR(BPS) "(%[dst]) \n\t"
     "usw             %[temp1],   3*" XSTR(BPS) "(%[dst]) \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6)
     : [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -792,10 +710,7 @@ func RD4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "prepend         %[temp10],   %[temp0],    8           \n\t"
     "usw             %[temp9],    2*" XSTR(BPS) "(%[dst])  \n\t"
     "usw             %[temp10],   0*" XSTR(BPS) "(%[dst])  \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [temp9]"=&r"(temp9), [temp10]"=&r"(temp10), [temp11]"=&r"(temp11)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9), [temp10]"=&r"(temp10), [temp11]"=&r"(temp11)
     : [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -842,10 +757,7 @@ func VR4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "append           %[temp8],   %[temp6],    8          \n\t"
     "usw              %[temp3],   3*" XSTR(BPS) "(%[dst]) \n\t"
     "usw              %[temp8],   2*" XSTR(BPS) "(%[dst]) \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [temp9]"=&r"(temp9)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9)
     : [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -889,10 +801,7 @@ func LD4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "prepend         %[temp10],   %[temp1],    8          \n\t"
     "usw             %[temp9],    1*" XSTR(BPS) "(%[dst]) \n\t"
     "usw             %[temp10],   3*" XSTR(BPS) "(%[dst]) \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [temp9]"=&r"(temp9), [temp10]"=&r"(temp10), [temp11]"=&r"(temp11)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9), [temp10]"=&r"(temp10), [temp11]"=&r"(temp11)
     : [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -938,10 +847,7 @@ func VL4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "prepend          %[temp3],   %[temp6],    8          \n\t"
     "usw              %[temp8],   2*" XSTR(BPS) "(%[dst]) \n\t"
     "usw              %[temp3],   3*" XSTR(BPS) "(%[dst]) \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [temp9]"=&r"(temp9)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9)
     : [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -986,10 +892,7 @@ func HD4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "precr.qb.ph      %[temp4],   %[temp2],    %[temp0]   \n\t"
     "usw              %[temp5],   2*" XSTR(BPS) "(%[dst]) \n\t"
     "usw              %[temp4],   3*" XSTR(BPS) "(%[dst]) \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8),
-      [temp9]"=&r"(temp9)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7), [temp8]"=&r"(temp8), [temp9]"=&r"(temp9)
     : [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -1023,9 +926,7 @@ func HU4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
     "packrl.ph       %[temp2],   %[temp1],    %[temp3]   \n\t"
     "usw             %[temp1],   2*" XSTR(BPS) "(%[dst]) \n\t"
     "usw             %[temp2],   1*" XSTR(BPS) "(%[dst]) \n\t"
-    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2),
-      [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),
-      [temp6]"=&r"(temp6), [temp7]"=&r"(temp7)
+    : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1), [temp2]"=&r"(temp2), [temp3]"=&r"(temp3), [temp4]"=&r"(temp4), [temp5]"=&r"(temp5), [temp6]"=&r"(temp6), [temp7]"=&r"(temp7)
     : [top]"r"(top), [dst]"r"(dst)
     : "memory"
   );
@@ -1034,9 +935,7 @@ func HU4(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
 //------------------------------------------------------------------------------
 // Chroma 8x8 prediction (paragraph 12.2)
 
-func IntraChromaPreds_MIPSdspR2(uint8* WEBP_RESTRICT dst,
-                                       const uint8* WEBP_RESTRICT left,
-                                       const uint8* WEBP_RESTRICT top) {
+func IntraChromaPreds_MIPSdspR2(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT left, const uint8* WEBP_RESTRICT top) {
   // U block
   DCMode8(C8DC8 + dst, left, top);
   VerticalPred8(C8VE8 + dst, top);
@@ -1055,9 +954,7 @@ func IntraChromaPreds_MIPSdspR2(uint8* WEBP_RESTRICT dst,
 //------------------------------------------------------------------------------
 // luma 16x16 prediction (paragraph 12.3)
 
-func Intra16Preds_MIPSdspR2(uint8* WEBP_RESTRICT dst,
-                                   const uint8* WEBP_RESTRICT left,
-                                   const uint8* WEBP_RESTRICT top) {
+func Intra16Preds_MIPSdspR2(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT left, const uint8* WEBP_RESTRICT top) {
   DCMode16(I16DC16 + dst, left, top);
   VerticalPred16(I16VE16 + dst, top);
   HorizontalPred16(I16HE16 + dst, left);
@@ -1066,8 +963,7 @@ func Intra16Preds_MIPSdspR2(uint8* WEBP_RESTRICT dst,
 
 // Left samples are top[-5 .. -2], top_left is top[-1], top are
 // located at top[0..3], and top right is top[4..7]
-func Intra4Preds_MIPSdspR2(uint8* WEBP_RESTRICT dst,
-                                  const uint8* WEBP_RESTRICT top) {
+func Intra4Preds_MIPSdspR2(uint8* WEBP_RESTRICT dst, const uint8* WEBP_RESTRICT top) {
   DC4(I4DC4 + dst, top);
   TM4(I4TM4 + dst, top);
   VE4(I4VE4 + dst, top);
@@ -1105,8 +1001,7 @@ func Intra4Preds_MIPSdspR2(uint8* WEBP_RESTRICT dst,
   GET_SSE_INNER(C)          \
   GET_SSE_INNER(D)
 
-static int SSE16x16_MIPSdspR2(const uint8* WEBP_RESTRICT a,
-                              const uint8* WEBP_RESTRICT b) {
+static int SSE16x16_MIPSdspR2(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT b) {
   int count;
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
@@ -1128,15 +1023,13 @@ static int SSE16x16_MIPSdspR2(const uint8* WEBP_RESTRICT a,
       GET_SSE(14 * BPS, 4 + 14 * BPS, 8 + 14 * BPS, 12 + 14 * BPS)  //
       GET_SSE(15 * BPS, 4 + 15 * BPS, 8 + 15 * BPS, 12 + 15 * BPS)  //
       "mflo   %[count]                                   \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [count] "=&r"(count)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [count] "=&r"(count)
       : [a] "r"(a), [b] "r"(b)
       : "memory", "hi", "lo");
   return count;
 }
 
-static int SSE16x8_MIPSdspR2(const uint8* WEBP_RESTRICT a,
-                             const uint8* WEBP_RESTRICT b) {
+static int SSE16x8_MIPSdspR2(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT b) {
   int count;
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
@@ -1150,15 +1043,13 @@ static int SSE16x8_MIPSdspR2(const uint8* WEBP_RESTRICT a,
       GET_SSE(6 * BPS, 4 + 6 * BPS, 8 + 6 * BPS, 12 + 6 * BPS)  //
       GET_SSE(7 * BPS, 4 + 7 * BPS, 8 + 7 * BPS, 12 + 7 * BPS)  //
       "mflo   %[count]                                   \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [count] "=&r"(count)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [count] "=&r"(count)
       : [a] "r"(a), [b] "r"(b)
       : "memory", "hi", "lo");
   return count;
 }
 
-static int SSE8x8_MIPSdspR2(const uint8* WEBP_RESTRICT a,
-                            const uint8* WEBP_RESTRICT b) {
+static int SSE8x8_MIPSdspR2(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT b) {
   int count;
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
@@ -1168,23 +1059,20 @@ static int SSE8x8_MIPSdspR2(const uint8* WEBP_RESTRICT a,
       GET_SSE(4 * BPS, 4 + 4 * BPS, 5 * BPS, 4 + 5 * BPS)       //
       GET_SSE(6 * BPS, 4 + 6 * BPS, 7 * BPS, 4 + 7 * BPS)       //
       "mflo   %[count]                                   \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [count] "=&r"(count)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [count] "=&r"(count)
       : [a] "r"(a), [b] "r"(b)
       : "memory", "hi", "lo");
   return count;
 }
 
-static int SSE4x4_MIPSdspR2(const uint8* WEBP_RESTRICT a,
-                            const uint8* WEBP_RESTRICT b) {
+static int SSE4x4_MIPSdspR2(const uint8* WEBP_RESTRICT a, const uint8* WEBP_RESTRICT b) {
   int count;
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
       "mult   $zero,    $zero                            \n\t"  //
       GET_SSE(0 * BPS, 1 * BPS, 2 * BPS, 3 * BPS)               //
       "mflo   %[count]                                   \n\t"
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [count] "=&r"(count)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [count] "=&r"(count)
       : [a] "r"(a), [b] "r"(b)
       : "memory", "hi", "lo");
   return count;
@@ -1300,8 +1188,7 @@ static int SSE4x4_MIPSdspR2(const uint8* WEBP_RESTRICT a,
 "3:                                                          \n\t"
 // clang-format on
 
-static int QuantizeBlock_MIPSdspR2(int16 in[16], int16 out[16],
-                                   const VP8Matrix* WEBP_RESTRICT const mtx) {
+static int QuantizeBlock_MIPSdspR2(int16 in[16], int16 out[16], const VP8Matrix* WEBP_RESTRICT const mtx) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   int sign, coeff, level;
   int max_level = MAX_LEVEL;
@@ -1326,20 +1213,14 @@ static int QuantizeBlock_MIPSdspR2(int16 in[16], int16 out[16],
       QUANTIZE_ONE(24, 48, 18, 20)  //
       QUANTIZE_ONE(28, 56, 28, 30)  //
 
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [sign] "=&r"(sign), [coeff] "=&r"(coeff), [level] "=&r"(level),
-        [temp6] "=&r"(temp6), [ret] "+&r"(ret)
-      : [ppin] "r"(ppin), [pout] "r"(pout), [max_level1] "r"(max_level1),
-        [ppiq] "r"(ppiq), [max_level] "r"(max_level), [ppbias] "r"(ppbias),
-        [ppzthresh] "r"(ppzthresh), [ppsharpen] "r"(ppsharpen), [ppq] "r"(ppq)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [sign] "=&r"(sign), [coeff] "=&r"(coeff), [level] "=&r"(level), [temp6] "=&r"(temp6), [ret] "+&r"(ret)
+      : [ppin] "r"(ppin), [pout] "r"(pout), [max_level1] "r"(max_level1), [ppiq] "r"(ppiq), [max_level] "r"(max_level), [ppbias] "r"(ppbias), [ppzthresh] "r"(ppzthresh), [ppsharpen] "r"(ppsharpen), [ppq] "r"(ppq)
       : "memory", "hi", "lo");
 
   return (ret != 0);
 }
 
-static int Quantize2Blocks_MIPSdspR2(int16 in[32], int16 out[32],
-                                     const VP8Matrix* WEBP_RESTRICT const mtx) {
+static int Quantize2Blocks_MIPSdspR2(int16 in[32], int16 out[32], const VP8Matrix* WEBP_RESTRICT const mtx) {
   int nz;
   nz = QuantizeBlock_MIPSdspR2(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_MIPSdspR2(in + 1 * 16, out + 1 * 16, mtx) << 1;
@@ -1387,8 +1268,7 @@ static int Quantize2Blocks_MIPSdspR2(int16 in[32], int16 out[32],
   "usw             %[" #TEMP6 "],  " #D "(%[out])                 \n\t"
 // clang-format on
 
-func FTransformWHT_MIPSdspR2(const int16* WEBP_RESTRICT in,
-                                    int16* WEBP_RESTRICT out) {
+func FTransformWHT_MIPSdspR2(const int16* WEBP_RESTRICT in, int16* WEBP_RESTRICT out) {
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8, temp9;
 
@@ -1399,10 +1279,7 @@ func FTransformWHT_MIPSdspR2(const int16* WEBP_RESTRICT in,
       HORIZONTAL_PASS_WHT(384, 416, 448, 480, temp6, temp7)         //
       VERTICAL_PASS_WHT(0, 8, 16, 24, temp0, temp2, temp4, temp6)   //
       VERTICAL_PASS_WHT(4, 12, 20, 28, temp1, temp3, temp5, temp7)  //
-      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-        [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-        [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8),
-        [temp9] "=&r"(temp9)
+      : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8), [temp9] "=&r"(temp9)
       : [in] "r"(in), [out] "r"(out)
       : "memory");
 }
@@ -1481,9 +1358,7 @@ func FTransformWHT_MIPSdspR2(const int16* WEBP_RESTRICT in,
   "sw         %[temp8],  0(%[temp3])                   \n\t"
 // clang-format on
 
-func CollectHistogram_MIPSdspR2(const uint8* ref, const uint8* pred,
-                                       int start_block, int end_block,
-                                       VP8Histogram* const histo) {
+func CollectHistogram_MIPSdspR2(const uint8* ref, const uint8* pred, int start_block, int end_block, VP8Histogram* const histo) {
   int j;
   int distribution[MAX_COEFF_THRESH + 1] = {0};
   const int max_coeff = (MAX_COEFF_THRESH << 16) + MAX_COEFF_THRESH;
@@ -1497,9 +1372,7 @@ func CollectHistogram_MIPSdspR2(const uint8* ref, const uint8* pred,
     __asm__ volatile(
         CONVERT_COEFFS_TO_BIN(0, 4, 8, 12)     //
         CONVERT_COEFFS_TO_BIN(16, 20, 24, 28)  //
-        : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2),
-          [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5),
-          [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8)
+        : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4), [temp5] "=&r"(temp5), [temp6] "=&r"(temp6), [temp7] "=&r"(temp7), [temp8] "=&r"(temp8)
         : [dist] "r"(distribution), [out] "r"(out), [max_coeff] "r"(max_coeff)
         : "memory");
   }
