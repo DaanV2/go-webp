@@ -16,19 +16,6 @@ package webp
 
 import "github.com/daanv2/go-webp/pkg/stddef"  // IWYU pragma: export for size_t
 
-#ifndef _MSC_VER
-import "github.com/daanv2/go-webp/pkg/inttypes"  // IWYU pragma: export
-#else
-typedef signed char int8_t;
-typedef unsigned char uint8_t;
-typedef signed short int16_t;
-typedef unsigned short uint16_t;
-typedef signed int int32_t;
-typedef unsigned int uint32_t;
-typedef unsigned long long int uint64_t;
-typedef long long int int64_t;
-#define  __forceinline
-#endif /* _MSC_VER */
 
 
 // Macro to check ABI compatibility (same major revision number)
