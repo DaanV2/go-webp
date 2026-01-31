@@ -31,15 +31,15 @@ extern "C" {
 // Decoding
 
 // color mapping related functions.
-static WEBP_INLINE uint32_t VP8GetARGBIndex(uint32_t idx) {
+static  uint32_t VP8GetARGBIndex(uint32_t idx) {
   return (idx >> 8) & 0xff;
 }
 
-static WEBP_INLINE uint8_t VP8GetAlphaIndex(uint8_t idx) { return idx; }
+static  uint8_t VP8GetAlphaIndex(uint8_t idx) { return idx; }
 
-static WEBP_INLINE uint32_t VP8GetARGBValue(uint32_t val) { return val; }
+static  uint32_t VP8GetARGBValue(uint32_t val) { return val; }
 
-static WEBP_INLINE uint8_t VP8GetAlphaValue(uint32_t val) {
+static  uint8_t VP8GetAlphaValue(uint32_t val) {
   return (val >> 8) & 0xff;
 }
 
@@ -47,13 +47,13 @@ static WEBP_INLINE uint8_t VP8GetAlphaValue(uint32_t val) {
 // Misc methods.
 
 // Computes sampled size of 'size' when sampling using 'sampling bits'.
-static WEBP_INLINE uint32_t VP8LSubSampleSize(uint32_t size,
+static  uint32_t VP8LSubSampleSize(uint32_t size,
                                               uint32_t sampling_bits) {
   return (size + (1 << sampling_bits) - 1) >> sampling_bits;
 }
 
 // Converts near lossless quality into max number of bits shaved off.
-static WEBP_INLINE int VP8LNearLosslessBits(int near_lossless_quality) {
+static  int VP8LNearLosslessBits(int near_lossless_quality) {
   //    100 -> 0
   // 80..99 -> 1
   // 60..79 -> 2
@@ -91,19 +91,19 @@ typedef uint64_t (*VP8LFastSLog2SlowFunc)(uint32_t v);
 extern VP8LFastLog2SlowFunc VP8LFastLog2Slow;
 extern VP8LFastSLog2SlowFunc VP8LFastSLog2Slow;
 
-static WEBP_INLINE uint32_t VP8LFastLog2(uint32_t v) {
+static  uint32_t VP8LFastLog2(uint32_t v) {
   return (v < LOG_LOOKUP_IDX_MAX) ? kLog2Table[v] : VP8LFastLog2Slow(v);
 }
 // Fast calculation of v * log2(v) for integer input.
-static WEBP_INLINE uint64_t VP8LFastSLog2(uint32_t v) {
+static  uint64_t VP8LFastSLog2(uint32_t v) {
   return (v < LOG_LOOKUP_IDX_MAX) ? kSLog2Table[v] : VP8LFastSLog2Slow(v);
 }
 
-static WEBP_INLINE uint64_t RightShiftRound(uint64_t v, uint32_t shift) {
+static  uint64_t RightShiftRound(uint64_t v, uint32_t shift) {
   return (v + (1ull << shift >> 1)) >> shift;
 }
 
-static WEBP_INLINE int64_t DivRound(int64_t a, int64_t b) {
+static  int64_t DivRound(int64_t a, int64_t b) {
   return ((a < 0) == (b < 0)) ? ((a + b / 2) / b) : ((a - b / 2) / b);
 }
 
@@ -116,7 +116,7 @@ static WEBP_INLINE int64_t DivRound(int64_t a, int64_t b) {
 // Splitting of distance and length codes into prefixes and
 // extra bits. The prefixes are encoded with an entropy code
 // while the extra bits are stored just as normal bits.
-static WEBP_INLINE func VP8LPrefixEncodeBitsNoLUT(int distance, int* const code,
+static  func VP8LPrefixEncodeBitsNoLUT(int distance, int* const code,
                                                   int* const extra_bits) {
   const int highest_bit = BitsLog2Floor(--distance);
   const int second_highest_bit = (distance >> (highest_bit - 1)) & 1;
@@ -124,7 +124,7 @@ static WEBP_INLINE func VP8LPrefixEncodeBitsNoLUT(int distance, int* const code,
   *code = 2 * highest_bit + second_highest_bit;
 }
 
-static WEBP_INLINE func VP8LPrefixEncodeNoLUT(int distance, int* const code,
+static  func VP8LPrefixEncodeNoLUT(int distance, int* const code,
                                               int* const extra_bits,
                                               int* const extra_bits_value) {
   const int highest_bit = BitsLog2Floor(--distance);
@@ -143,7 +143,7 @@ typedef struct {
 // These tables are derived using VP8LPrefixEncodeNoLUT.
 extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];
 extern const uint8_t kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
-static WEBP_INLINE func VP8LPrefixEncodeBits(int distance, int* const code,
+static  func VP8LPrefixEncodeBits(int distance, int* const code,
                                              int* const extra_bits) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
@@ -154,7 +154,7 @@ static WEBP_INLINE func VP8LPrefixEncodeBits(int distance, int* const code,
   }
 }
 
-static WEBP_INLINE func VP8LPrefixEncode(int distance, int* const code,
+static  func VP8LPrefixEncode(int distance, int* const code,
                                          int* const extra_bits,
                                          int* const extra_bits_value) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
@@ -168,7 +168,7 @@ static WEBP_INLINE func VP8LPrefixEncode(int distance, int* const code,
 }
 
 // Sum of each component, mod 256.
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW WEBP_INLINE uint32_t
+static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32_t
 VP8LAddPixels(uint32_t a, uint32_t b) {
   const uint32_t alpha_and_green = (a & 0xff00ff00u) + (b & 0xff00ff00u);
   const uint32_t red_and_blue = (a & 0x00ff00ffu) + (b & 0x00ff00ffu);
@@ -176,7 +176,7 @@ VP8LAddPixels(uint32_t a, uint32_t b) {
 }
 
 // Difference of each component, mod 256.
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW WEBP_INLINE uint32_t
+static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32_t
 VP8LSubPixels(uint32_t a, uint32_t b) {
   const uint32_t alpha_and_green =
       0x00ff00ffu + (a & 0xff00ff00u) - (b & 0xff00ff00u);

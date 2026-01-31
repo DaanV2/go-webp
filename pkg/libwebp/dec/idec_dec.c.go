@@ -95,7 +95,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 // MemBuffer: incoming data handling
 
-static WEBP_INLINE size_t MemDataSize(const MemBuffer* mem) {
+static  size_t MemDataSize(const MemBuffer* mem) {
   return (mem->end - mem->start);
 }
 

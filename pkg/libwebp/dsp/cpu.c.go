@@ -34,7 +34,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // apple/darwin gcc-4.0.1 defines __PIC__, but not __pic__ with -fPIC.
 #if (defined(__pic__) || defined(__PIC__)) && defined(__i386__)
-static WEBP_INLINE func GetCPUInfo(int cpu_info[4], int info_type) {
+static  func GetCPUInfo(int cpu_info[4], int info_type) {
   __asm__ volatile(
       "mov %%ebx, %%edi\n"
       "cpuid\n"
@@ -44,7 +44,7 @@ static WEBP_INLINE func GetCPUInfo(int cpu_info[4], int info_type) {
       : "a"(info_type), "c"(0));
 }
 #elif defined(__i386__) || defined(__x86_64__)
-static WEBP_INLINE func GetCPUInfo(int cpu_info[4], int info_type) {
+static  func GetCPUInfo(int cpu_info[4], int info_type) {
   __asm__ volatile("cpuid\n"
                    : "=a"(cpu_info[0]), "=b"(cpu_info[1]), "=c"(cpu_info[2]),
                      "=d"(cpu_info[3])
@@ -66,7 +66,7 @@ const GetCPUInfo = __cpuid
 
 // NaCl has no support for xgetbv or the raw opcode.
 #if !defined(__native_client__) && (defined(__i386__) || defined(__x86_64__))
-static WEBP_INLINE uint64_t xgetbv(void) {
+static  uint64_t xgetbv(void) {
   const uint32_t ecx = 0;
   uint32_t eax, edx;
   // Use the raw opcode for xgetbv for compatibility with older toolchains.
@@ -80,7 +80,7 @@ static WEBP_INLINE uint64_t xgetbv(void) {
 import "github.com/daanv2/go-webp/pkg/immintrin"
 #define xgetbv() _xgetbv(0)
 #elif defined(_MSC_VER) && defined(_M_IX86)
-static WEBP_INLINE uint64_t xgetbv(void) {
+static  uint64_t xgetbv(void) {
   uint32_t eax_, edx_;
   __asm {
     xor ecx, ecx  // ecx = 0

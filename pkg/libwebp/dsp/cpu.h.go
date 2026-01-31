@@ -95,10 +95,10 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if defined(WEBP_MSC_AVX2) && _MSC_VER <= 1900
 import "github.com/daanv2/go-webp/pkg/immintrin"
 
-static WEBP_INLINE int _mm256_extract_epi32(__m256i a, const int i) {
+static  int _mm256_extract_epi32(__m256i a, const int i) {
   return a.m256i_i32[i & 7];
 }
-static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
+static  int _mm256_cvtsi256_si32(__m256i a) {
   return _mm256_extract_epi32(a, 0);
 }
 #endif

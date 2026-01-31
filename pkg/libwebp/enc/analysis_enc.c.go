@@ -75,7 +75,7 @@ func SmoothSegmentMap(VP8Encoder* const enc) {
 //------------------------------------------------------------------------------
 // set segment susceptibility 'alpha' / 'beta'
 
-static WEBP_INLINE int clip(int v, int m, int M) {
+static  int clip(int v, int m, int M) {
   return (v < m) ? m : (v > M) ? M : v;
 }
 

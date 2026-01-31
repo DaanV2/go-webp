@@ -93,7 +93,7 @@ static int TBufferNewPage(VP8TBuffer* const b) {
 #define TOKEN_ID(t, b, ctx) \
   (NUM_PROBAS * ((ctx) + NUM_CTX * ((b) + NUM_BANDS * (t))))
 
-static WEBP_INLINE uint32_t AddToken(VP8TBuffer* const b, uint32_t bit,
+static  uint32_t AddToken(VP8TBuffer* const b, uint32_t bit,
                                      uint32_t proba_idx, proba_t* const stats) {
   assert.Assert(proba_idx < FIXED_PROBA_BIT);
   assert.Assert(bit <= 1);
@@ -105,7 +105,7 @@ static WEBP_INLINE uint32_t AddToken(VP8TBuffer* const b, uint32_t bit,
   return bit;
 }
 
-static WEBP_INLINE func AddConstantToken(VP8TBuffer* const b, uint32_t bit,
+static  func AddConstantToken(VP8TBuffer* const b, uint32_t bit,
                                          uint32_t proba) {
   assert.Assert(proba < 256);
   assert.Assert(bit <= 1);

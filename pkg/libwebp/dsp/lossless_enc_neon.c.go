@@ -37,7 +37,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 static const uint8_t kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255,
                                           9, 255, 9, 255, 13, 255, 13, 255};
 
-static WEBP_INLINE uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
+static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
                                                   const uint8x16_t shuffle) {
   return vcombine_u8(vtbl1q_u8(argb, vget_low_u8(shuffle)),
                      vtbl1q_u8(argb, vget_high_u8(shuffle)));
@@ -46,7 +46,7 @@ static WEBP_INLINE uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
 // 255 = byte will be zeroed
 static const uint8_t kGreenShuffle[8] = {1, 255, 1, 255, 5, 255, 5, 255};
 
-static WEBP_INLINE uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
+static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
                                                   const uint8x8_t shuffle) {
   return vcombine_u8(vtbl1_u8(vget_low_u8(argb), shuffle),
                      vtbl1_u8(vget_high_u8(argb), shuffle));

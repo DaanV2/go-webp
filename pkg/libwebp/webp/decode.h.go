@@ -181,18 +181,18 @@ typedef enum WEBP_CSP_MODE {
 } WEBP_CSP_MODE;
 
 // Some useful macros:
-static WEBP_INLINE int WebPIsPremultipliedMode(WEBP_CSP_MODE mode) {
+static  int WebPIsPremultipliedMode(WEBP_CSP_MODE mode) {
   return (mode == MODE_rgbA || mode == MODE_bgrA || mode == MODE_Argb ||
           mode == MODE_rgbA_4444);
 }
 
-static WEBP_INLINE int WebPIsAlphaMode(WEBP_CSP_MODE mode) {
+static  int WebPIsAlphaMode(WEBP_CSP_MODE mode) {
   return (mode == MODE_RGBA || mode == MODE_BGRA || mode == MODE_ARGB ||
           mode == MODE_RGBA_4444 || mode == MODE_YUVA ||
           WebPIsPremultipliedMode(mode));
 }
 
-static WEBP_INLINE int WebPIsRGBMode(WEBP_CSP_MODE mode) {
+static  int WebPIsRGBMode(WEBP_CSP_MODE mode) {
   return (mode < MODE_YUV);
 }
 
@@ -239,7 +239,7 @@ type WebPDecBuffer struct {
 
 // Initialize the structure as empty. Must be called before any other use.
 // Returns false in case of version mismatch
- static WEBP_INLINE int WebPInitDecBuffer(WebPDecBuffer* buffer) {
+ static  int WebPInitDecBuffer(WebPDecBuffer* buffer) {
   return WebPInitDecBufferInternal(buffer, WEBP_DECODER_ABI_VERSION);
 }
 
@@ -387,7 +387,7 @@ typedef enum  VP8StatusCode {
 
 // Deprecated alpha-less version of WebPIDecGetYUVA(): it will ignore the
 // alpha information (if present). Kept for backward compatibility.
- static WEBP_INLINE uint8_t* WebPIDecGetYUV(
+ static  uint8_t* WebPIDecGetYUV(
     const WebPIDecoder* idec, int* last_y, uint8_t** u, uint8_t** v, int* width,
     int* height, int* stride, int* uv_stride) {
   return WebPIDecGetYUVA(idec, last_y, u, v, NULL, width, height, stride,
@@ -463,7 +463,7 @@ WebPGetFeaturesInternal(const uint8_t* WEBP_COUNTED_BY(data_size),
 // RIFF + VP8X + (optional chunks) + VP8(L)
 // ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
-static WEBP_INLINE VP8StatusCode
+static  VP8StatusCode
 WebPGetFeatures(const uint8_t* WEBP_COUNTED_BY(data_size) data,
                 size_t data_size, WebPBitstreamFeatures* features) {
   return WebPGetFeaturesInternal(data, data_size, features,
@@ -504,7 +504,7 @@ type WebPDecoderConfig struct {
 // Initialize the configuration as empty. This function must always be
 // called first, unless WebPGetFeatures() is to be called.
 // Returns false in case of mismatched version.
- static WEBP_INLINE int WebPInitDecoderConfig(
+ static  int WebPInitDecoderConfig(
     WebPDecoderConfig* config) {
   return WebPInitDecoderConfigInternal(config, WEBP_DECODER_ABI_VERSION);
 }

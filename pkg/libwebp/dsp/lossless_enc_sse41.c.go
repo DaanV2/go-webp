@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Cost operations.
 
-static WEBP_INLINE uint32_t HorizontalSum_SSE41(__m128i cost) {
+static  uint32_t HorizontalSum_SSE41(__m128i cost) {
   cost = _mm_add_epi32(cost, _mm_srli_si128(cost, 8));
   cost = _mm_add_epi32(cost, _mm_srli_si128(cost, 4));
   return _mm_cvtsi128_si32(cost);

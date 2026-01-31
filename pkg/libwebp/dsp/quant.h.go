@@ -32,7 +32,7 @@ static uint32_t horizontal_add_uint32x4(const uint32x4_t a) {
 #endif
 }
 
-static WEBP_INLINE int IsFlat(const int16_t* levels, int num_blocks,
+static  int IsFlat(const int16_t* levels, int num_blocks,
                               int thresh) {
   const int16x8_t tst_ones = vdupq_n_s16(-1);
   uint32x4_t sum = vdupq_n_u32(0);
@@ -58,7 +58,7 @@ static WEBP_INLINE int IsFlat(const int16_t* levels, int num_blocks,
 
 const IsFlat = IsFlat_C
 
-static WEBP_INLINE int IsFlat(const int16_t* levels, int num_blocks,
+static  int IsFlat(const int16_t* levels, int num_blocks,
                               int thresh) {
   int score = 0;
   while (num_blocks-- > 0) {  // TODO(skal): refine positional scoring?
@@ -75,7 +75,7 @@ static WEBP_INLINE int IsFlat(const int16_t* levels, int num_blocks,
 #endif  // defined(WEBP_USE_NEON) && !defined(WEBP_ANDROID_NEON) &&
         // !defined(WEBP_HAVE_NEON_RTCD)
 
-static WEBP_INLINE int IsFlatSource16(const uint8_t* src) {
+static  int IsFlatSource16(const uint8_t* src) {
   const uint32_t v = src[0] * 0x01010101u;
   int i;
   for (i = 0; i < 16; ++i) {

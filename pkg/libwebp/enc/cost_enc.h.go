@@ -46,7 +46,7 @@ func VP8InitResidual(int first, int coeff_type, VP8Encoder* const enc,
 int VP8RecordCoeffs(int ctx, const VP8Residual* const res);
 
 // Record proba context used.
-static WEBP_INLINE int VP8RecordStats(int bit, proba_t* const stats) {
+static  int VP8RecordStats(int bit, proba_t* const stats) {
   proba_t p = *stats;
   // An overflow is inbound. Note we handle this at 0xfffe0000u instead of
   // 0xffff0000u to make sure p + 1u does not overflow.
@@ -60,13 +60,13 @@ static WEBP_INLINE int VP8RecordStats(int bit, proba_t* const stats) {
 }
 
 // Cost of coding one event with probability 'proba'.
-static WEBP_INLINE int VP8BitCost(int bit, uint8_t proba) {
+static  int VP8BitCost(int bit, uint8_t proba) {
   return !bit ? VP8EntropyCost[proba] : VP8EntropyCost[255 - proba];
 }
 
 // Level cost calculations
 func VP8CalculateLevelCosts(VP8EncProba* const proba);
-static WEBP_INLINE int VP8LevelCost(const uint16_t* const table, int level) {
+static  int VP8LevelCost(const uint16_t* const table, int level) {
   return VP8LevelFixedCosts[level] +
          table[(level > MAX_VARIABLE_LEVEL) ? MAX_VARIABLE_LEVEL : level];
 }

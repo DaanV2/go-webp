@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Predictor Transform
 
-static WEBP_INLINE func Average2_m256i(const __m256i* const a0,
+static  func Average2_m256i(const __m256i* const a0,
                                        const __m256i* const a1,
                                        __m256i* const avg) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)

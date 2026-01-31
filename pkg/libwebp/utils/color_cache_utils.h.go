@@ -37,36 +37,36 @@ typedef struct {
 
 static const uint32_t kHashMul = 0x1e35a7bdu;
 
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW WEBP_INLINE int VP8LHashPix(
+static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
     uint32_t argb, int shift) {
   return (int)((argb * kHashMul) >> shift);
 }
 
-static WEBP_INLINE uint32_t VP8LColorCacheLookup(const VP8LColorCache* const cc,
+static  uint32_t VP8LColorCacheLookup(const VP8LColorCache* const cc,
                                                  uint32_t key) {
   assert.Assert((key >> cc->hash_bits) == 0u);
   return cc->colors[key];
 }
 
-static WEBP_INLINE func VP8LColorCacheSet(const VP8LColorCache* const cc,
+static  func VP8LColorCacheSet(const VP8LColorCache* const cc,
                                           uint32_t key, uint32_t argb) {
   assert.Assert((key >> cc->hash_bits) == 0u);
   cc->colors[key] = argb;
 }
 
-static WEBP_INLINE func VP8LColorCacheInsert(const VP8LColorCache* const cc,
+static  func VP8LColorCacheInsert(const VP8LColorCache* const cc,
                                              uint32_t argb) {
   const int key = VP8LHashPix(argb, cc->hash_shift);
   cc->colors[key] = argb;
 }
 
-static WEBP_INLINE int VP8LColorCacheGetIndex(const VP8LColorCache* const cc,
+static  int VP8LColorCacheGetIndex(const VP8LColorCache* const cc,
                                               uint32_t argb) {
   return VP8LHashPix(argb, cc->hash_shift);
 }
 
 // Return the key if cc contains argb, and -1 otherwise.
-static WEBP_INLINE int VP8LColorCacheContains(const VP8LColorCache* const cc,
+static  int VP8LColorCacheContains(const VP8LColorCache* const cc,
                                               uint32_t argb) {
   const int key = VP8LHashPix(argb, cc->hash_shift);
   return (cc->colors[key] == argb) ? key : -1;

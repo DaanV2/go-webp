@@ -79,7 +79,7 @@ func PredictLineLeft_SSE2(const uint8_t* WEBP_RESTRICT src,
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static WEBP_INLINE func DoHorizontalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
+static  func DoHorizontalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
                                                 int width, int height,
                                                 int stride,
                                                 uint8_t* WEBP_RESTRICT out) {
@@ -105,7 +105,7 @@ static WEBP_INLINE func DoHorizontalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static WEBP_INLINE func DoVerticalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
+static  func DoVerticalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
                                               int width, int height, int stride,
                                               uint8_t* WEBP_RESTRICT out) {
   int row;
@@ -129,7 +129,7 @@ static WEBP_INLINE func DoVerticalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 // Gradient filter.
 
-static WEBP_INLINE int GradientPredictor_SSE2(uint8_t a, uint8_t b, uint8_t c) {
+static  int GradientPredictor_SSE2(uint8_t a, uint8_t b, uint8_t c) {
   const int g = a + b - c;
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
@@ -161,7 +161,7 @@ func GradientPredictDirect_SSE2(const uint8_t* const row,
   }
 }
 
-static WEBP_INLINE func DoGradientFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
+static  func DoGradientFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
                                               int width, int height, int stride,
                                               uint8_t* WEBP_RESTRICT out) {
   int row;

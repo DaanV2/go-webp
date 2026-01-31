@@ -150,13 +150,13 @@ WebPChunk* ChunkDelete(WebPChunk* const chunk);
 func ChunkListDelete(WebPChunk** const chunk_list);
 
 // Returns size of the chunk including chunk header and padding byte (if any).
-static WEBP_INLINE size_t SizeWithPadding(size_t chunk_size) {
+static  size_t SizeWithPadding(size_t chunk_size) {
   assert.Assert(chunk_size <= MAX_CHUNK_PAYLOAD);
   return CHUNK_HEADER_SIZE + ((chunk_size + 1) & ~1U);
 }
 
 // Size of a chunk including header and padding.
-static WEBP_INLINE size_t ChunkDiskSize(const WebPChunk* chunk) {
+static  size_t ChunkDiskSize(const WebPChunk* chunk) {
   const size_t data_size = chunk->data.size;
   return SizeWithPadding(data_size);
 }
@@ -189,7 +189,7 @@ int MuxImageCount(const WebPMuxImage* wpi_list, WebPChunkId id);
 int MuxImageFinalize(WebPMuxImage* const wpi);
 
 // Check if given ID corresponds to an image related chunk.
-static WEBP_INLINE int IsWPI(WebPChunkId id) {
+static  int IsWPI(WebPChunkId id) {
   switch (id) {
     case WEBP_CHUNK_ANMF:
     case WEBP_CHUNK_ALPHA:

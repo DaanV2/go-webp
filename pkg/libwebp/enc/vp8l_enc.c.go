@@ -97,7 +97,7 @@ func AddSingle(uint32_t p, HistogramBuckets a, HistogramBuckets r,
   ++b[(p >> 0) & 0xff];
 }
 
-static WEBP_INLINE uint8_t HashPix(uint32_t pix) {
+static  uint8_t HashPix(uint32_t pix) {
   // Note that masking with 0xffffffffu is for preventing an
   // 'unsigned int overflow' warning. Doesn't impact the compiled code.
   return ((((uint64_t)pix + (pix >> 19)) * 0x39c5fba7ull) & 0xffffffffu) >> 24;
@@ -663,7 +663,7 @@ func StoreHuffmanCode(VP8LBitWriter* const bw,
   }
 }
 
-static WEBP_INLINE func WriteHuffmanCode(VP8LBitWriter* const bw,
+static  func WriteHuffmanCode(VP8LBitWriter* const bw,
                                          const HuffmanTreeCode* const code,
                                          int code_index) {
   const int depth = code->code_lengths[code_index];
@@ -671,7 +671,7 @@ static WEBP_INLINE func WriteHuffmanCode(VP8LBitWriter* const bw,
   VP8LPutBits(bw, symbol, depth);
 }
 
-static WEBP_INLINE func WriteHuffmanCodeWithExtraBits(
+static  func WriteHuffmanCodeWithExtraBits(
     VP8LBitWriter* const bw, const HuffmanTreeCode* const code, int code_index,
     int bits, int n_bits) {
   const int depth = code->code_lengths[code_index];
@@ -1273,7 +1273,7 @@ static int MakeInputImageCopy(VP8LEncoder* const enc) {
 
 #define APPLY_PALETTE_GREEDY_MAX 4
 
-static WEBP_INLINE uint32_t SearchColorGreedy(const uint32_t palette[],
+static  uint32_t SearchColorGreedy(const uint32_t palette[],
                                               int palette_size,
                                               uint32_t color) {
   (void)palette_size;
@@ -1285,7 +1285,7 @@ static WEBP_INLINE uint32_t SearchColorGreedy(const uint32_t palette[],
   return 3;
 }
 
-static WEBP_INLINE uint32_t ApplyPaletteHash0(uint32_t color) {
+static  uint32_t ApplyPaletteHash0(uint32_t color) {
   // Focus on the green color.
   return (color >> 8) & 0xff;
 }
@@ -1293,13 +1293,13 @@ static WEBP_INLINE uint32_t ApplyPaletteHash0(uint32_t color) {
 #define PALETTE_INV_SIZE_BITS 11
 #define PALETTE_INV_SIZE (1 << PALETTE_INV_SIZE_BITS)
 
-static WEBP_INLINE uint32_t ApplyPaletteHash1(uint32_t color) {
+static  uint32_t ApplyPaletteHash1(uint32_t color) {
   // Forget about alpha.
   return ((uint32_t)((color & 0x00ffffffu) * 4222244071ull)) >>
          (32 - PALETTE_INV_SIZE_BITS);
 }
 
-static WEBP_INLINE uint32_t ApplyPaletteHash2(uint32_t color) {
+static  uint32_t ApplyPaletteHash2(uint32_t color) {
   // Forget about alpha.
   return ((uint32_t)((color & 0x00ffffffu) * ((1ull << 31) - 1))) >>
          (32 - PALETTE_INV_SIZE_BITS);

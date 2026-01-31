@@ -95,7 +95,7 @@ static int PreprocessARGB(const uint8_t* r_ptr, const uint8_t* g_ptr,
   return ok;
 }
 
-static WEBP_INLINE func ConvertRowToY(const uint8_t* const r_ptr,
+static  func ConvertRowToY(const uint8_t* const r_ptr,
                                       const uint8_t* const g_ptr,
                                       const uint8_t* const b_ptr, int step,
                                       uint8_t* const dst_y, int width,
@@ -107,7 +107,7 @@ static WEBP_INLINE func ConvertRowToY(const uint8_t* const r_ptr,
   }
 }
 
-static WEBP_INLINE func ConvertRowsToUV(const uint16_t* rgb,
+static  func ConvertRowsToUV(const uint16_t* rgb,
                                         uint8_t* const dst_u,
                                         uint8_t* const dst_v, int width,
                                         VP8Random* const rg) {

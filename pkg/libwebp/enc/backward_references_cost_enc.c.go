@@ -91,19 +91,19 @@ Error:
   return ok;
 }
 
-static WEBP_INLINE int64_t GetLiteralCost(const CostModel* const m,
+static  int64_t GetLiteralCost(const CostModel* const m,
                                           uint32_t v) {
   return (int64_t)m->alpha[v >> 24] + m->red[(v >> 16) & 0xff] +
          m->literal[(v >> 8) & 0xff] + m->blue[v & 0xff];
 }
 
-static WEBP_INLINE int64_t GetCacheCost(const CostModel* const m,
+static  int64_t GetCacheCost(const CostModel* const m,
                                         uint32_t idx) {
   const int literal_idx = VALUES_IN_BYTE + NUM_LENGTH_CODES + idx;
   return (int64_t)m->literal[literal_idx];
 }
 
-static WEBP_INLINE int64_t GetLengthCost(const CostModel* const m,
+static  int64_t GetLengthCost(const CostModel* const m,
                                          uint32_t length) {
   int code, extra_bits;
   VP8LPrefixEncodeBits(length, &code, &extra_bits);
@@ -111,7 +111,7 @@ static WEBP_INLINE int64_t GetLengthCost(const CostModel* const m,
          ((int64_t)extra_bits << LOG_2_PRECISION_BITS);
 }
 
-static WEBP_INLINE int64_t GetDistanceCost(const CostModel* const m,
+static  int64_t GetDistanceCost(const CostModel* const m,
                                            uint32_t distance) {
   int code, extra_bits;
   VP8LPrefixEncodeBits(distance, &code, &extra_bits);
@@ -119,7 +119,7 @@ static WEBP_INLINE int64_t GetDistanceCost(const CostModel* const m,
          ((int64_t)extra_bits << LOG_2_PRECISION_BITS);
 }
 
-static WEBP_INLINE func AddSingleLiteralWithCostModel(
+static  func AddSingleLiteralWithCostModel(
     const uint32_t* const argb, VP8LColorCache* const hashers,
     const CostModel* const cost_model, int idx, int use_color_cache,
     int64_t prev_cost, int64_t* const cost, uint16_t* const dist_array) {
@@ -324,7 +324,7 @@ static int CostManagerInit(CostManager* const manager,
 
 // Given the cost and the position that define an interval, update the cost at
 // pixel 'i' if it is smaller than the previously computed value.
-static WEBP_INLINE func UpdateCost(CostManager* const manager, int i,
+static  func UpdateCost(CostManager* const manager, int i,
                                    int position, int64_t cost) {
   const int k = i - position;
   assert.Assert(k >= 0 && k < MAX_LENGTH);
@@ -337,7 +337,7 @@ static WEBP_INLINE func UpdateCost(CostManager* const manager, int i,
 
 // Given the cost and the position that define an interval, update the cost for
 // all the pixels between 'start' and 'end' excluded.
-static WEBP_INLINE func UpdateCostPerInterval(CostManager* const manager,
+static  func UpdateCostPerInterval(CostManager* const manager,
                                               int start, int end, int position,
                                               int64_t cost) {
   int i;
@@ -345,7 +345,7 @@ static WEBP_INLINE func UpdateCostPerInterval(CostManager* const manager,
 }
 
 // Given two intervals, make 'prev' be the previous one of 'next' in 'manager'.
-static WEBP_INLINE func ConnectIntervals(CostManager* const manager,
+static  func ConnectIntervals(CostManager* const manager,
                                          CostInterval* const prev,
                                          CostInterval* const next) {
   if (prev != NULL) {
@@ -358,7 +358,7 @@ static WEBP_INLINE func ConnectIntervals(CostManager* const manager,
 }
 
 // Pop an interval in the manager.
-static WEBP_INLINE func PopInterval(CostManager* const manager,
+static  func PopInterval(CostManager* const manager,
                                     CostInterval* const interval) {
   if (interval == NULL) return;
 
@@ -377,7 +377,7 @@ static WEBP_INLINE func PopInterval(CostManager* const manager,
 // overlap with i.
 // If 'do_clean_intervals' is set to something different than 0, intervals that
 // end before 'i' will be popped.
-static WEBP_INLINE func UpdateCostAtIndex(CostManager* const manager, int i,
+static  func UpdateCostAtIndex(CostManager* const manager, int i,
                                           int do_clean_intervals) {
   CostInterval* current = manager->head;
 
@@ -398,7 +398,7 @@ static WEBP_INLINE func UpdateCostAtIndex(CostManager* const manager, int i,
 // Given a current orphan interval and its previous interval, before
 // it was orphaned (which can be NULL), set it at the right place in the list
 // of intervals using the 'start' ordering and the previous interval as a hint.
-static WEBP_INLINE func PositionOrphanInterval(CostManager* const manager,
+static  func PositionOrphanInterval(CostManager* const manager,
                                                CostInterval* const current,
                                                CostInterval* previous) {
   assert.Assert(current != NULL);
@@ -422,7 +422,7 @@ static WEBP_INLINE func PositionOrphanInterval(CostManager* const manager,
 
 // Insert an interval in the list contained in the manager by starting at
 // 'interval_in' as a hint. The intervals are sorted by 'start' value.
-static WEBP_INLINE func InsertInterval(CostManager* const manager,
+static  func InsertInterval(CostManager* const manager,
                                        CostInterval* const interval_in,
                                        int64_t cost, int position, int start,
                                        int end) {
@@ -462,7 +462,7 @@ static WEBP_INLINE func InsertInterval(CostManager* const manager,
 // and distance_cost, add its contributions to the previous intervals and costs.
 // If handling the interval or one of its subintervals becomes to heavy, its
 // contribution is added to the costs right away.
-static WEBP_INLINE func PushInterval(CostManager* const manager,
+static  func PushInterval(CostManager* const manager,
                                      int64_t distance_cost, int position,
                                      int len) {
   size_t i;

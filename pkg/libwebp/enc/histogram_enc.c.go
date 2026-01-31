@@ -239,7 +239,7 @@ func VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs,
 // -----------------------------------------------------------------------------
 // Entropy-related functions.
 
-static WEBP_INLINE uint64_t BitsEntropyRefine(const VP8LBitEntropy* entropy) {
+static  uint64_t BitsEntropyRefine(const VP8LBitEntropy* entropy) {
   uint64_t mix;
   if (entropy->nonzeros < 5) {
     if (entropy->nonzeros <= 1) {
@@ -330,7 +330,7 @@ static uint64_t PopulationCost(const uint32_t* const population, int length,
   return BitsEntropyRefine(&bit_entropy) + FinalHuffmanCost(&stats);
 }
 
-static WEBP_INLINE func GetPopulationInfo(const VP8LHistogram* const histo,
+static  func GetPopulationInfo(const VP8LHistogram* const histo,
                                           HistogramIndex index,
                                           const uint32_t** population,
                                           int* length) {
@@ -362,7 +362,7 @@ static WEBP_INLINE func GetPopulationInfo(const VP8LHistogram* const histo,
 // non-zero: both the zero-th one, or both the last one.
 // 'index' is the index of the symbol in the histogram (literal, red, blue,
 // alpha, distance).
-static WEBP_INLINE uint64_t GetCombinedEntropy(const VP8LHistogram* const h1,
+static  uint64_t GetCombinedEntropy(const VP8LHistogram* const h1,
                                                const VP8LHistogram* const h2,
                                                HistogramIndex index) {
   const uint32_t* X;
@@ -409,7 +409,7 @@ uint64_t VP8LHistogramEstimateBits(const VP8LHistogram* const h) {
 // Various histogram combine/cost-eval functions
 
 // Set a + b in b, saturating at WEBP_INT64_MAX.
-static WEBP_INLINE func SaturateAdd(uint64_t a, int64_t* b) {
+static  func SaturateAdd(uint64_t a, int64_t* b) {
   if (*b < 0 || (int64_t)a <= WEBP_INT64_MAX - *b) {
     *b += (int64_t)a;
   } else {
@@ -439,7 +439,7 @@ static WEBP_INLINE func SaturateAdd(uint64_t a, int64_t* b) {
   return 1;
 }
 
-static WEBP_INLINE func HistogramAdd(const VP8LHistogram* const h1,
+static  func HistogramAdd(const VP8LHistogram* const h1,
                                      const VP8LHistogram* const h2,
                                      VP8LHistogram* const hout) {
   int i;

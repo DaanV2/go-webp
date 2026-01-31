@@ -145,7 +145,7 @@ int VP8LGetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data,
 
 //------------------------------------------------------------------------------
 
-static WEBP_INLINE int GetCopyDistance(int distance_symbol,
+static  int GetCopyDistance(int distance_symbol,
                                        VP8LBitReader* const br) {
   int extra_bits, offset;
   if (distance_symbol < 4) {
@@ -156,13 +156,13 @@ static WEBP_INLINE int GetCopyDistance(int distance_symbol,
   return offset + VP8LReadBits(br, extra_bits) + 1;
 }
 
-static WEBP_INLINE int GetCopyLength(int length_symbol,
+static  int GetCopyLength(int length_symbol,
                                      VP8LBitReader* const br) {
   // Length and distance prefixes are encoded the same way.
   return GetCopyDistance(length_symbol, br);
 }
 
-static WEBP_INLINE int PlaneCodeToDistance(int xsize, int plane_code) {
+static  int PlaneCodeToDistance(int xsize, int plane_code) {
   if (plane_code > CODE_TO_PLANE_CODES) {
     return plane_code - CODE_TO_PLANE_CODES;
   } else {
@@ -178,7 +178,7 @@ static WEBP_INLINE int PlaneCodeToDistance(int xsize, int plane_code) {
 // Decodes the next Huffman code from bit-stream.
 // VP8LFillBitWindow(br) needs to be called at minimum every second call
 // to ReadSymbol, in order to pre-fetch enough bits.
-static WEBP_INLINE int ReadSymbol(const HuffmanCode* table,
+static  int ReadSymbol(const HuffmanCode* table,
                                   VP8LBitReader* const br) {
   int nbits;
   uint32_t val = VP8LPrefetchBits(br);
@@ -197,7 +197,7 @@ static WEBP_INLINE int ReadSymbol(const HuffmanCode* table,
 // Reads packed symbol depending on GREEN channel
 #define BITS_SPECIAL_MARKER 0x100  // something large enough (and a bit-mask)
 #define PACKED_NON_LITERAL_CODE 0  // must be < NUM_LITERAL_CODES
-static WEBP_INLINE int ReadPackedSymbols(const HTreeGroup* group,
+static  int ReadPackedSymbols(const HTreeGroup* group,
                                          VP8LBitReader* const br,
                                          uint32_t* const dst) {
   const uint32_t val = VP8LPrefetchBits(br) & (HUFFMAN_PACKED_TABLE_SIZE - 1);
@@ -821,13 +821,13 @@ static int SetCropWindow(VP8Io* const io, int y_start, int y_end,
 
 //------------------------------------------------------------------------------
 
-static WEBP_INLINE int GetMetaIndex(const uint32_t* const image, int xsize,
+static  int GetMetaIndex(const uint32_t* const image, int xsize,
                                     int bits, int x, int y) {
   if (bits == 0) return 0;
   return image[xsize * (y >> bits) + (x >> bits)];
 }
 
-static WEBP_INLINE HTreeGroup* GetHtreeGroupForPos(VP8LMetadata* const hdr,
+static  HTreeGroup* GetHtreeGroupForPos(VP8LMetadata* const hdr,
                                                    int x, int y) {
   const int meta_index = GetMetaIndex(hdr->huffman_image, hdr->huffman_xsize,
                                       hdr->huffman_subsample_bits, x, y);
@@ -991,7 +991,7 @@ func ExtractPalettedAlphaRows(VP8LDecoder* const dec, int last_row) {
 // Helper functions for fast pattern copy (8b and 32b)
 
 // cyclic rotation of pattern word
-static WEBP_INLINE uint32_t Rotate8b(uint32_t V) {
+static  uint32_t Rotate8b(uint32_t V) {
 #if defined(WORDS_BIGENDIAN)
   return ((V & 0xff000000u) >> 24) | (V << 8);
 #else
@@ -1000,7 +1000,7 @@ static WEBP_INLINE uint32_t Rotate8b(uint32_t V) {
 }
 
 // copy 1, 2 or 4-bytes pattern
-static WEBP_INLINE func CopySmallPattern8b(const uint8_t* src, uint8_t* dst,
+static  func CopySmallPattern8b(const uint8_t* src, uint8_t* dst,
                                            int length, uint32_t pattern) {
   int i;
   // align 'dst' to 4-bytes boundary. Adjust the pattern along the way.
@@ -1020,7 +1020,7 @@ static WEBP_INLINE func CopySmallPattern8b(const uint8_t* src, uint8_t* dst,
   }
 }
 
-static WEBP_INLINE func CopyBlock8b(uint8_t* const dst, int dist, int length) {
+static  func CopyBlock8b(uint8_t* const dst, int dist, int length) {
   const uint8_t* src = dst - dist;
   if (length >= 8) {
     uint32_t pattern = 0;
@@ -1069,7 +1069,7 @@ Copy:
 }
 
 // copy pattern of 1 or 2 uint32_t's
-static WEBP_INLINE func CopySmallPattern32b(const uint32_t* src, uint32_t* dst,
+static  func CopySmallPattern32b(const uint32_t* src, uint32_t* dst,
                                             int length, uint64_t pattern) {
   int i;
   if ((uintptr_t)dst & 4) {  // Align 'dst' to 8-bytes boundary.
@@ -1086,7 +1086,7 @@ static WEBP_INLINE func CopySmallPattern32b(const uint32_t* src, uint32_t* dst,
   }
 }
 
-static WEBP_INLINE func CopyBlock32b(uint32_t* const dst, int dist,
+static  func CopyBlock32b(uint32_t* const dst, int dist,
                                      int length) {
   const uint32_t* const src = dst - dist;
   if (dist <= 2 && length >= 4 && ((uintptr_t)dst & 3) == 0) {

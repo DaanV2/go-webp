@@ -94,7 +94,7 @@ typedef enum WebPDemuxState {
 // Parses the full WebP file given by 'data'. For single images the WebP file
 // header alone or the file header and the chunk header may be absent.
 // Returns a WebPDemuxer object on successful parse, NULL otherwise.
- static WEBP_INLINE WebPDemuxer* WebPDemux(const WebPData* data) {
+ static  WebPDemuxer* WebPDemux(const WebPData* data) {
   return WebPDemuxInternal(data, 0, NULL, WEBP_DEMUX_ABI_VERSION);
 }
 
@@ -106,7 +106,7 @@ typedef enum WebPDemuxState {
 // If this data is volatile, the demuxer object should be deleted (by calling
 // WebPDemuxDelete()) and WebPDemuxPartial() called again on the new data.
 // This is usually an inexpensive operation.
- static WEBP_INLINE WebPDemuxer* WebPDemuxPartial(
+ static  WebPDemuxer* WebPDemuxPartial(
     const WebPData* data, WebPDemuxState* state) {
   return WebPDemuxInternal(data, 1, state, WEBP_DEMUX_ABI_VERSION);
 }
@@ -269,7 +269,7 @@ type WebPAnimDecoderOptions struct {
 // structure before modification. Returns false in case of version mismatch.
 // WebPAnimDecoderOptionsInit() must have succeeded before using the
 // 'dec_options' object.
- static WEBP_INLINE int WebPAnimDecoderOptionsInit(
+ static  int WebPAnimDecoderOptionsInit(
     WebPAnimDecoderOptions* dec_options) {
   return WebPAnimDecoderOptionsInitInternal(dec_options,
                                             WEBP_DEMUX_ABI_VERSION);
@@ -289,7 +289,7 @@ type WebPAnimDecoderOptions struct {
 // Returns:
 //   A pointer to the newly created WebPAnimDecoder object, or NULL in case of
 //   parsing error, invalid option or memory error.
- static WEBP_INLINE WebPAnimDecoder* WebPAnimDecoderNew(
+ static  WebPAnimDecoder* WebPAnimDecoderNew(
     const WebPData* webp_data, const WebPAnimDecoderOptions* dec_options) {
   return WebPAnimDecoderNewInternal(webp_data, dec_options,
                                     WEBP_DEMUX_ABI_VERSION);

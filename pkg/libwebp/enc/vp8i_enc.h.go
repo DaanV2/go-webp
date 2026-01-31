@@ -116,7 +116,7 @@ const QFIX = 17
 #define BIAS(b) ((b) << (QFIX - 8))
 // Fun fact: this is the _only_ line where we're actually being lossy and
 // discarding bits.
-static WEBP_INLINE int QUANTDIV(uint32_t n, uint32_t iQ, uint32_t B) {
+static  int QUANTDIV(uint32_t n, uint32_t iQ, uint32_t B) {
   return (int)((n * iQ + B) >> QFIX);
 }
 

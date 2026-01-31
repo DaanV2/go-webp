@@ -174,7 +174,7 @@ typedef enum WebPPreset {
 // modification. Returns false in case of version mismatch. WebPConfigInit()
 // must have succeeded before using the 'config' object.
 // Note that the default values are lossless=0 and quality=75.
- static WEBP_INLINE int WebPConfigInit(WebPConfig* config) {
+ static  int WebPConfigInit(WebPConfig* config) {
   return WebPConfigInitInternal(config, WEBP_PRESET_DEFAULT, 75.f,
                                 WEBP_ENCODER_ABI_VERSION);
 }
@@ -183,7 +183,7 @@ typedef enum WebPPreset {
 // set of parameters (referred to by 'preset') and a given quality factor.
 // This function can be called as a replacement to WebPConfigInit(). Will
 // return false in case of error.
- static WEBP_INLINE int WebPConfigPreset(WebPConfig* config,
+ static  int WebPConfigPreset(WebPConfig* config,
                                                        WebPPreset preset,
                                                        float quality) {
   return WebPConfigInitInternal(config, preset, quality,
@@ -378,7 +378,7 @@ type WebPPicture struct {
 // of version mismatch. WebPPictureInit() must have succeeded before using the
 // 'picture' object.
 // Note that, by default, use_argb is false and colorspace is WEBP_YUV420.
- static WEBP_INLINE int WebPPictureInit(WebPPicture* picture) {
+ static  int WebPPictureInit(WebPPicture* picture) {
   return WebPPictureInitInternal(picture, WEBP_ENCODER_ABI_VERSION);
 }
 

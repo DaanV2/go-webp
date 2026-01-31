@@ -129,13 +129,13 @@ static const uint32_t kMultTables[2][256] = {
      0x00f6f6f6, 0x00f7f7f7, 0x00f8f8f8, 0x00f9f9f9, 0x00fafafa, 0x00fbfbfb,
      0x00fcfcfc, 0x00fdfdfd, 0x00fefefe, 0x00ffffff}};
 
-static WEBP_INLINE uint32_t GetScale(uint32_t a, int inverse) {
+static  uint32_t GetScale(uint32_t a, int inverse) {
   return kMultTables[!inverse][a];
 }
 
 #else
 
-static WEBP_INLINE uint32_t GetScale(uint32_t a, int inverse) {
+static  uint32_t GetScale(uint32_t a, int inverse) {
   return inverse ? (255u << MFIX) / a : a * KINV_255;
 }
 
@@ -253,19 +253,19 @@ func ApplyAlphaMultiply_C(uint8_t* rgba, int alpha_first, int w, int h,
 
 #define MULTIPLIER(a) ((a) * 0x1111)  // 0x1111 ~= (1 << 16) / 15
 
-static WEBP_INLINE uint8_t dither_hi(uint8_t x) {
+static  uint8_t dither_hi(uint8_t x) {
   return (x & 0xf0) | (x >> 4);
 }
 
-static WEBP_INLINE uint8_t dither_lo(uint8_t x) {
+static  uint8_t dither_lo(uint8_t x) {
   return (x & 0x0f) | (x << 4);
 }
 
-static WEBP_INLINE uint8_t multiply(uint8_t x, uint32_t m) {
+static  uint8_t multiply(uint8_t x, uint32_t m) {
   return (x * m) >> 16;
 }
 
-static WEBP_INLINE func ApplyAlphaMultiply4444_C(uint8_t* rgba4444, int w,
+static  func ApplyAlphaMultiply4444_C(uint8_t* rgba4444, int w,
                                                  int h, int stride,
                                                  int rg_byte_pos /* 0 or 1 */) {
   while (h-- > 0) {
@@ -381,7 +381,7 @@ func AlphaReplace_C(uint32_t* src, int length, uint32_t color) {
 //------------------------------------------------------------------------------
 // Simple channel manipulations.
 
-static WEBP_INLINE uint32_t MakeARGB32(int a, int r, int g, int b) {
+static  uint32_t MakeARGB32(int a, int r, int g, int b) {
   return (((uint32_t)a << 24) | (r << 16) | (g << 8) | b);
 }
 

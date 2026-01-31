@@ -108,7 +108,7 @@ int VP8IteratorProgress(const VP8EncIterator* const it, int delta) {
 // Import the source samples into the cache. Takes care of replicating
 // boundary pixels if necessary.
 
-static WEBP_INLINE int MinSize(int a, int b) { return (a < b) ? a : b; }
+static  int MinSize(int a, int b) { return (a < b) ? a : b; }
 
 func ImportBlock(const uint8_t* src, int src_stride, uint8_t* dst, int w,
                         int h, int size) {

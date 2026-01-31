@@ -193,7 +193,7 @@ func WebPCleanupTransparentArea(WebPPicture* pic) {
 #define BLEND_10BIT(V0, V1, ALPHA) \
   ((((V0) * (1020 - (ALPHA)) + (V1) * (ALPHA)) * 0x101 + 1024) >> 18)
 
-static WEBP_INLINE uint32_t MakeARGB32(int r, int g, int b) {
+static  uint32_t MakeARGB32(int r, int g, int b) {
   return (0xff000000u | (r << 16) | (g << 8) | b);
 }
 

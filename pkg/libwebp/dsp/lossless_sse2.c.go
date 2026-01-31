@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Predictor Transform
 
-static WEBP_INLINE uint32_t ClampedAddSubtractFull_SSE2(uint32_t c0,
+static  uint32_t ClampedAddSubtractFull_SSE2(uint32_t c0,
                                                         uint32_t c1,
                                                         uint32_t c2) {
   const __m128i zero = _mm_setzero_si128();
@@ -43,7 +43,7 @@ static WEBP_INLINE uint32_t ClampedAddSubtractFull_SSE2(uint32_t c0,
   return (uint32_t)_mm_cvtsi128_si32(b);
 }
 
-static WEBP_INLINE uint32_t ClampedAddSubtractHalf_SSE2(uint32_t c0,
+static  uint32_t ClampedAddSubtractHalf_SSE2(uint32_t c0,
                                                         uint32_t c1,
                                                         uint32_t c2) {
   const __m128i zero = _mm_setzero_si128();
@@ -61,7 +61,7 @@ static WEBP_INLINE uint32_t ClampedAddSubtractHalf_SSE2(uint32_t c0,
   return (uint32_t)_mm_cvtsi128_si32(A5);
 }
 
-static WEBP_INLINE uint32_t Select_SSE2(uint32_t a, uint32_t b, uint32_t c) {
+static  uint32_t Select_SSE2(uint32_t a, uint32_t b, uint32_t c) {
   int pa_minus_pb;
   const __m128i zero = _mm_setzero_si128();
   const __m128i A0 = _mm_cvtsi32_si128((int)a);
@@ -84,7 +84,7 @@ static WEBP_INLINE uint32_t Select_SSE2(uint32_t a, uint32_t b, uint32_t c) {
   return (pa_minus_pb <= 0) ? a : b;
 }
 
-static WEBP_INLINE func Average2_m128i(const __m128i* const a0,
+static  func Average2_m128i(const __m128i* const a0,
                                        const __m128i* const a1,
                                        __m128i* const avg) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
@@ -94,7 +94,7 @@ static WEBP_INLINE func Average2_m128i(const __m128i* const a0,
   *avg = _mm_sub_epi8(avg1, one);
 }
 
-static WEBP_INLINE func Average2_uint32_SSE2(const uint32_t a0,
+static  func Average2_uint32_SSE2(const uint32_t a0,
                                              const uint32_t a1,
                                              __m128i* const avg) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
@@ -106,7 +106,7 @@ static WEBP_INLINE func Average2_uint32_SSE2(const uint32_t a0,
   *avg = _mm_sub_epi8(avg1, one);
 }
 
-static WEBP_INLINE __m128i Average2_uint32_16_SSE2(uint32_t a0, uint32_t a1) {
+static  __m128i Average2_uint32_16_SSE2(uint32_t a0, uint32_t a1) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i A0 = _mm_unpacklo_epi8(_mm_cvtsi32_si128((int)a0), zero);
   const __m128i A1 = _mm_unpacklo_epi8(_mm_cvtsi32_si128((int)a1), zero);
@@ -114,13 +114,13 @@ static WEBP_INLINE __m128i Average2_uint32_16_SSE2(uint32_t a0, uint32_t a1) {
   return _mm_srli_epi16(sum, 1);
 }
 
-static WEBP_INLINE uint32_t Average2_SSE2(uint32_t a0, uint32_t a1) {
+static  uint32_t Average2_SSE2(uint32_t a0, uint32_t a1) {
   __m128i output;
   Average2_uint32_SSE2(a0, a1, &output);
   return (uint32_t)_mm_cvtsi128_si32(output);
 }
 
-static WEBP_INLINE uint32_t Average3_SSE2(uint32_t a0, uint32_t a1,
+static  uint32_t Average3_SSE2(uint32_t a0, uint32_t a1,
                                           uint32_t a2) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i avg1 = Average2_uint32_16_SSE2(a0, a2);
@@ -131,7 +131,7 @@ static WEBP_INLINE uint32_t Average3_SSE2(uint32_t a0, uint32_t a1,
   return (uint32_t)_mm_cvtsi128_si32(A2);
 }
 
-static WEBP_INLINE uint32_t Average4_SSE2(uint32_t a0, uint32_t a1, uint32_t a2,
+static  uint32_t Average4_SSE2(uint32_t a0, uint32_t a1, uint32_t a2,
                                           uint32_t a3) {
   const __m128i avg1 = Average2_uint32_16_SSE2(a0, a1);
   const __m128i avg2 = Average2_uint32_16_SSE2(a2, a3);

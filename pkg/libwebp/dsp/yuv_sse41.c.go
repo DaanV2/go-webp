@@ -72,13 +72,13 @@ func ConvertYUV444ToRGB_SSE41(const __m128i* const Y0,
 }
 
 // Load the bytes into the *upper* part of 16b words. That's "<< 8", basically.
-static WEBP_INLINE __m128i Load_HI_16_SSE41(const uint8_t* src) {
+static  __m128i Load_HI_16_SSE41(const uint8_t* src) {
   const __m128i zero = _mm_setzero_si128();
   return _mm_unpacklo_epi8(zero, _mm_loadl_epi64((const __m128i*)src));
 }
 
 // Load and replicate the U/V samples
-static WEBP_INLINE __m128i Load_UV_HI_8_SSE41(const uint8_t* src) {
+static  __m128i Load_UV_HI_8_SSE41(const uint8_t* src) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i tmp0 = _mm_cvtsi32_si128(WebPMemToInt32(src));
   const __m128i tmp1 = _mm_unpacklo_epi8(zero, tmp0);
@@ -110,7 +110,7 @@ func YUV420ToRGB_SSE41(const uint8_t* WEBP_RESTRICT const y,
 // Pack the planar buffers
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // triplet by triplet in the output buffer rgb as rgbrgbrgbrgb ...
-static WEBP_INLINE func PlanarTo24b_SSE41(
+static  func PlanarTo24b_SSE41(
     __m128i* const in0, __m128i* const in1, __m128i* const in2,
     __m128i* const in3, __m128i* const in4, __m128i* const in5,
     uint8_t* WEBP_RESTRICT const rgb) {
@@ -300,7 +300,7 @@ WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersSSE41(void) {
 // Unpack the 8b input rgbrgbrgbrgb ... as contiguous registers:
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // Similar to PlanarTo24bHelper(), but in reverse order.
-static WEBP_INLINE func RGBPackedToPlanar_SSE41(
+static  func RGBPackedToPlanar_SSE41(
     const uint8_t* WEBP_RESTRICT const rgb, __m128i* const out /*out[6]*/) {
   const __m128i A0 = _mm_loadu_si128((const __m128i*)(rgb + 0));
   const __m128i A1 = _mm_loadu_si128((const __m128i*)(rgb + 16));
@@ -343,7 +343,7 @@ static WEBP_INLINE func RGBPackedToPlanar_SSE41(
 
 #undef WEBP_SSE41_SHUFF
 
-static WEBP_INLINE func RGBAPackedToRGBPlanar_SSE41(
+static  func RGBAPackedToRGBPlanar_SSE41(
     const uint8_t* WEBP_RESTRICT const rgba, __m128i* const rgb /*in[6]*/) {
   __m128i a0 = _mm_loadu_si128((const __m128i*)(rgba + 0));
   __m128i a1 = _mm_loadu_si128((const __m128i*)(rgba + 16));
@@ -365,7 +365,7 @@ static WEBP_INLINE func RGBAPackedToRGBPlanar_SSE41(
 
 // Unpack the 8b input argbargbargb... as contiguous registers:
 // 0r0r0r... 0r0r0r... 0g0g0g... 0g0g0g0... 0b0b0b... 0b0b0b....
-static WEBP_INLINE func ARGBPackedToRGBPlanar16_SSE41(
+static  func ARGBPackedToRGBPlanar16_SSE41(
     const uint32_t* WEBP_RESTRICT const argb, __m128i* const rgb /*in[6]*/) {
   const __m128i zero = _mm_setzero_si128();
   __m128i a0 = _mm_loadu_si128((const __m128i*)(argb + 0));
@@ -401,7 +401,7 @@ static WEBP_INLINE func ARGBPackedToRGBPlanar16_SSE41(
   } while (0)
 
 #define MK_CST_16(A, B) _mm_set_epi16((B), (A), (B), (A), (B), (A), (B), (A))
-static WEBP_INLINE func ConvertRGBToYImpl_SSE41(const __m128i* const R,
+static  func ConvertRGBToYImpl_SSE41(const __m128i* const R,
                                                 const __m128i* const G,
                                                 const __m128i* const B,
                                                 __m128i* const Y) {
@@ -416,7 +416,7 @@ static WEBP_INLINE func ConvertRGBToYImpl_SSE41(const __m128i* const R,
   TRANSFORM(RG_lo, RG_hi, GB_lo, GB_hi, kRG_y, kGB_y, kHALF_Y, YUV_FIX, *Y);
 }
 
-static WEBP_INLINE func ConvertRGBToUV_SSE41(const __m128i* const R,
+static  func ConvertRGBToUV_SSE41(const __m128i* const R,
                                              const __m128i* const G,
                                              const __m128i* const B,
                                              __m128i* const U,
@@ -440,7 +440,7 @@ static WEBP_INLINE func ConvertRGBToUV_SSE41(const __m128i* const R,
 #undef MK_CST_16
 #undef TRANSFORM
 
-static WEBP_INLINE func ConvertRGBToYHelper_SSE41(
+static  func ConvertRGBToYHelper_SSE41(
     const __m128i* const rgb_plane /*in[6]*/, int swap_rb, int* i,
     uint8_t* WEBP_RESTRICT y) {
   int j;
@@ -574,7 +574,7 @@ func ConvertARGBToUV_SSE41(const uint32_t* WEBP_RESTRICT argb,
 }
 
 // Convert 16 packed ARGB 16b-values to r[], g[], b[]
-static WEBP_INLINE func RGBA32PackedToPlanar_16b_SSE41(
+static  func RGBA32PackedToPlanar_16b_SSE41(
     const uint16_t* WEBP_RESTRICT const rgbx, __m128i* const r,
     __m128i* const g, __m128i* const b) {
   const __m128i in0 = LOAD_16(rgbx + 0);   // r0 | g0 | b0 |x| r1 | g1 | b1 |x

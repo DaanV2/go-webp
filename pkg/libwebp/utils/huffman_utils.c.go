@@ -48,7 +48,7 @@ func VP8LHtreeGroupsFree(HTreeGroup* const htree_groups) {
 
 // Returns reverse(reverse(key, len) + 1, len), where reverse(key, len) is the
 // bit-wise reversal of the len least significant bits of key.
-static WEBP_INLINE uint32_t GetNextKey(uint32_t key, int len) {
+static  uint32_t GetNextKey(uint32_t key, int len) {
   uint32_t step = 1 << (len - 1);
   while (key & step) {
     step >>= 1;
@@ -58,7 +58,7 @@ static WEBP_INLINE uint32_t GetNextKey(uint32_t key, int len) {
 
 // Stores code in table[0], table[step], table[2*step], ..., table[end-step].
 // Assumes that end is an integer multiple of step.
-static WEBP_INLINE func ReplicateValue(HuffmanCode* WEBP_COUNTED_BY(end - step +
+static  func ReplicateValue(HuffmanCode* WEBP_COUNTED_BY(end - step +
                                                                     1) table,
                                        int step, int end, HuffmanCode code) {
   int current_end = end;
@@ -72,7 +72,7 @@ static WEBP_INLINE func ReplicateValue(HuffmanCode* WEBP_COUNTED_BY(end - step +
 // Returns the table width of the next 2nd level table. count is the histogram
 // of bit lengths for the remaining symbols, len is the code length of the next
 // processed symbol
-static WEBP_INLINE int NextTableBitSize(
+static  int NextTableBitSize(
     const int* const WEBP_COUNTED_BY(MAX_ALLOWED_CODE_LENGTH + 1) count,
     int len, int root_bits) {
   int left = 1 << (len - root_bits);

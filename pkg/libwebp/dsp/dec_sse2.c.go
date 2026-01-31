@@ -254,7 +254,7 @@ func TransformAC3_SSE2(const int16_t* WEBP_RESTRICT in,
   _mm_or_si128(_mm_subs_epu8((q), (p)), _mm_subs_epu8((p), (q)))
 
 // Shift each byte of "x" by 3 bits while preserving by the sign bit.
-static WEBP_INLINE func SignedShift8b_SSE2(__m128i* const x) {
+static  func SignedShift8b_SSE2(__m128i* const x) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i lo_0 = _mm_unpacklo_epi8(zero, *x);
   const __m128i hi_0 = _mm_unpackhi_epi8(zero, *x);
@@ -276,7 +276,7 @@ static WEBP_INLINE func SignedShift8b_SSE2(__m128i* const x) {
   } while (0)
 
 // input/output is uint8_t
-static WEBP_INLINE func GetNotHEV_SSE2(const __m128i* const p1,
+static  func GetNotHEV_SSE2(const __m128i* const p1,
                                        const __m128i* const p0,
                                        const __m128i* const q0,
                                        const __m128i* const q1, int hev_thresh,
@@ -293,7 +293,7 @@ static WEBP_INLINE func GetNotHEV_SSE2(const __m128i* const p1,
 }
 
 // input pixels are int8_t
-static WEBP_INLINE func GetBaseDelta_SSE2(const __m128i* const p1,
+static  func GetBaseDelta_SSE2(const __m128i* const p1,
                                           const __m128i* const p0,
                                           const __m128i* const q0,
                                           const __m128i* const q1,
@@ -308,7 +308,7 @@ static WEBP_INLINE func GetBaseDelta_SSE2(const __m128i* const p1,
 }
 
 // input and output are int8_t
-static WEBP_INLINE func DoSimpleFilter_SSE2(__m128i* const p0,
+static  func DoSimpleFilter_SSE2(__m128i* const p0,
                                             __m128i* const q0,
                                             const __m128i* const fl) {
   const __m128i k3 = _mm_set1_epi8(3);
@@ -326,7 +326,7 @@ static WEBP_INLINE func DoSimpleFilter_SSE2(__m128i* const p0,
 // Update operations:
 // q = q - delta and p = p + delta; where delta = [(a_hi >> 7), (a_lo >> 7)]
 // Pixels 'pi' and 'qi' are int8_t on input, uint8_t on output (sign flip).
-static WEBP_INLINE func Update2Pixels_SSE2(__m128i* const pi, __m128i* const qi,
+static  func Update2Pixels_SSE2(__m128i* const pi, __m128i* const qi,
                                            const __m128i* const a0_lo,
                                            const __m128i* const a0_hi) {
   const __m128i a1_lo = _mm_srai_epi16(*a0_lo, 7);
@@ -339,7 +339,7 @@ static WEBP_INLINE func Update2Pixels_SSE2(__m128i* const pi, __m128i* const qi,
 }
 
 // input pixels are uint8_t
-static WEBP_INLINE func NeedsFilter_SSE2(const __m128i* const p1,
+static  func NeedsFilter_SSE2(const __m128i* const p1,
                                          const __m128i* const p0,
                                          const __m128i* const q0,
                                          const __m128i* const q1, int thresh,
@@ -362,7 +362,7 @@ static WEBP_INLINE func NeedsFilter_SSE2(const __m128i* const p1,
 // Edge filtering functions
 
 // Applies filter on 2 pixels (p0 and q0)
-static WEBP_INLINE func DoFilter2_SSE2(__m128i* const p1, __m128i* const p0,
+static  func DoFilter2_SSE2(__m128i* const p1, __m128i* const p0,
                                        __m128i* const q0, __m128i* const q1,
                                        int thresh) {
   __m128i a, mask;
@@ -381,7 +381,7 @@ static WEBP_INLINE func DoFilter2_SSE2(__m128i* const p1, __m128i* const p0,
 }
 
 // Applies filter on 4 pixels (p1, p0, q0 and q1)
-static WEBP_INLINE func DoFilter4_SSE2(__m128i* const p1, __m128i* const p0,
+static  func DoFilter4_SSE2(__m128i* const p1, __m128i* const p0,
                                        __m128i* const q0, __m128i* const q1,
                                        const __m128i* const mask,
                                        int hev_thresh) {
@@ -427,7 +427,7 @@ static WEBP_INLINE func DoFilter4_SSE2(__m128i* const p1, __m128i* const p0,
 }
 
 // Applies filter on 6 pixels (p2, p1, p0, q0, q1 and q2)
-static WEBP_INLINE func DoFilter6_SSE2(__m128i* const p2, __m128i* const p1,
+static  func DoFilter6_SSE2(__m128i* const p2, __m128i* const p1,
                                        __m128i* const p0, __m128i* const q0,
                                        __m128i* const q1, __m128i* const q2,
                                        const __m128i* const mask,
@@ -478,7 +478,7 @@ static WEBP_INLINE func DoFilter6_SSE2(__m128i* const p2, __m128i* const p1,
 }
 
 // reads 8 rows across a vertical edge.
-static WEBP_INLINE func Load8x4_SSE2(const uint8_t* const b, int stride,
+static  func Load8x4_SSE2(const uint8_t* const b, int stride,
                                      __m128i* const p, __m128i* const q) {
   // A0 = 63 62 61 60 23 22 21 20 43 42 41 40 03 02 01 00
   // A1 = 73 72 71 70 33 32 31 30 53 52 51 50 13 12 11 10
@@ -505,7 +505,7 @@ static WEBP_INLINE func Load8x4_SSE2(const uint8_t* const b, int stride,
   *q = _mm_unpackhi_epi32(C0, C1);
 }
 
-static WEBP_INLINE func Load16x4_SSE2(const uint8_t* const r0,
+static  func Load16x4_SSE2(const uint8_t* const r0,
                                       const uint8_t* const r8, int stride,
                                       __m128i* const p1, __m128i* const p0,
                                       __m128i* const q0, __m128i* const q1) {
@@ -541,7 +541,7 @@ static WEBP_INLINE func Load16x4_SSE2(const uint8_t* const r0,
   }
 }
 
-static WEBP_INLINE func Store4x4_SSE2(__m128i* const x, uint8_t* dst,
+static  func Store4x4_SSE2(__m128i* const x, uint8_t* dst,
                                       int stride) {
   int i;
   for (i = 0; i < 4; ++i, dst += stride) {
@@ -551,7 +551,7 @@ static WEBP_INLINE func Store4x4_SSE2(__m128i* const x, uint8_t* dst,
 }
 
 // Transpose back and store
-static WEBP_INLINE func Store16x4_SSE2(const __m128i* const p1,
+static  func Store16x4_SSE2(const __m128i* const p1,
                                        const __m128i* const p0,
                                        const __m128i* const q0,
                                        const __m128i* const q1, uint8_t* r0,
@@ -681,7 +681,7 @@ func SimpleHFilter16i_SSE2(uint8_t* p, int stride, int thresh) {
     _mm_storel_epi64((__m128i*)&(v)[(stride)], p); \
   } while (0)
 
-static WEBP_INLINE func ComplexMask_SSE2(const __m128i* const p1,
+static  func ComplexMask_SSE2(const __m128i* const p1,
                                          const __m128i* const p0,
                                          const __m128i* const q0,
                                          const __m128i* const q1, int thresh,
@@ -1022,7 +1022,7 @@ func RD4_SSE2(uint8_t* dst) {  // Down-right
 //------------------------------------------------------------------------------
 // Luma 16x16
 
-static WEBP_INLINE func TrueMotion_SSE2(uint8_t* dst, int size) {
+static  func TrueMotion_SSE2(uint8_t* dst, int size) {
   const uint8_t* top = dst - BPS;
   const __m128i zero = _mm_setzero_si128();
   int y;
@@ -1080,7 +1080,7 @@ func HE16_SSE2(uint8_t* dst) {  // horizontal
   }
 }
 
-static WEBP_INLINE func Put16_SSE2(uint8_t v, uint8_t* dst) {
+static  func Put16_SSE2(uint8_t v, uint8_t* dst) {
   int j;
   const __m128i values = _mm_set1_epi8((char)v);
   for (j = 0; j < 16; ++j) {
@@ -1140,7 +1140,7 @@ func VE8uv_SSE2(uint8_t* dst) {  // vertical
 }
 
 // helper for chroma-DC predictions
-static WEBP_INLINE func Put8x8uv_SSE2(uint8_t v, uint8_t* dst) {
+static  func Put8x8uv_SSE2(uint8_t v, uint8_t* dst) {
   int j;
   const __m128i values = _mm_set1_epi8((char)v);
   for (j = 0; j < 8; ++j) {

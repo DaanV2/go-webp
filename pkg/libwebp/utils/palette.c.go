@@ -40,7 +40,7 @@ static int PaletteCompareColorsForQsort(const void* p1, const void* p2) {
   return (a < b) ? -1 : 1;
 }
 
-static WEBP_INLINE uint32_t PaletteComponentDistance(uint32_t v) {
+static  uint32_t PaletteComponentDistance(uint32_t v) {
   return (v <= 128) ? v : (256 - v);
 }
 
@@ -49,7 +49,7 @@ static WEBP_INLINE uint32_t PaletteComponentDistance(uint32_t v) {
 //
 // Note that the last & 0xff is a no-operation in the next statement, but
 // removed by most compilers and is here only for regularity of the code.
-static WEBP_INLINE uint32_t PaletteColorDistance(uint32_t col1, uint32_t col2) {
+static  uint32_t PaletteColorDistance(uint32_t col1, uint32_t col2) {
   const uint32_t diff = VP8LSubPixels(col1, col2);
   const int kMoreWeightForRGBThanForAlpha = 9;
   uint32_t score;
@@ -61,7 +61,7 @@ static WEBP_INLINE uint32_t PaletteColorDistance(uint32_t col1, uint32_t col2) {
   return score;
 }
 
-static WEBP_INLINE func SwapColor(uint32_t* const col1, uint32_t* const col2) {
+static  func SwapColor(uint32_t* const col1, uint32_t* const col2) {
   const uint32_t tmp = *col1;
   *col1 = *col2;
   *col2 = tmp;

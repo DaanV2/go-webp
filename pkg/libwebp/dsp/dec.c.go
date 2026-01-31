@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-static WEBP_INLINE uint8_t clip_8b(int v) {
+static  uint8_t clip_8b(int v) {
   return (!(v & ~0xff)) ? v : (v < 0) ? 0 : 255;
 }
 
@@ -184,7 +184,7 @@ VP8WHT VP8TransformWHT;
 #define DST(x, y) dst[(x) + (y) * BPS]
 
 #if !WEBP_NEON_OMIT_C_CODE
-static WEBP_INLINE func TrueMotion(uint8_t* dst, int size) {
+static  func TrueMotion(uint8_t* dst, int size) {
   const uint8_t* top = dst - BPS;
   const uint8_t* const clip0 = VP8kclip1 - top[-1];
   int y;
@@ -219,7 +219,7 @@ func HE16_C(uint8_t* dst) {  // horizontal
   }
 }
 
-static WEBP_INLINE func Put16(int v, uint8_t* dst) {
+static  func Put16(int v, uint8_t* dst) {
   int j;
   for (j = 0; j < 16; ++j) {
     memset(dst + j * BPS, v, 16);
@@ -448,7 +448,7 @@ func HE8uv_C(uint8_t* dst) {  // horizontal
 }
 
 // helper for chroma-DC predictions
-static WEBP_INLINE func Put8x8uv(uint8_t value, uint8_t* dst) {
+static  func Put8x8uv(uint8_t value, uint8_t* dst) {
   int j;
   for (j = 0; j < 8; ++j) {
     memset(dst + j * BPS, value, 8);
@@ -494,7 +494,7 @@ VP8PredFunc VP8PredChroma8[NUM_B_DC_MODES];
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 // 4 pixels in, 2 pixels out
-static WEBP_INLINE func DoFilter2_C(uint8_t* p, int step) {
+static  func DoFilter2_C(uint8_t* p, int step) {
   const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
   const int a = 3 * (q0 - p0) + VP8ksclip1[p1 - q1];  // in [-893,892]
   const int a1 = VP8ksclip2[(a + 4) >> 3];            // in [-16,15]
@@ -504,7 +504,7 @@ static WEBP_INLINE func DoFilter2_C(uint8_t* p, int step) {
 }
 
 // 4 pixels in, 4 pixels out
-static WEBP_INLINE func DoFilter4_C(uint8_t* p, int step) {
+static  func DoFilter4_C(uint8_t* p, int step) {
   const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
   const int a = 3 * (q0 - p0);
   const int a1 = VP8ksclip2[(a + 4) >> 3];
@@ -517,7 +517,7 @@ static WEBP_INLINE func DoFilter4_C(uint8_t* p, int step) {
 }
 
 // 6 pixels in, 6 pixels out
-static WEBP_INLINE func DoFilter6_C(uint8_t* p, int step) {
+static  func DoFilter6_C(uint8_t* p, int step) {
   const int p2 = p[-3 * step], p1 = p[-2 * step], p0 = p[-step];
   const int q0 = p[0], q1 = p[step], q2 = p[2 * step];
   const int a = VP8ksclip1[3 * (q0 - p0) + VP8ksclip1[p1 - q1]];
@@ -533,21 +533,21 @@ static WEBP_INLINE func DoFilter6_C(uint8_t* p, int step) {
   p[2 * step] = VP8kclip1[q2 - a3];
 }
 
-static WEBP_INLINE int Hev(const uint8_t* p, int step, int thresh) {
+static  int Hev(const uint8_t* p, int step, int thresh) {
   const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
   return (VP8kabs0[p1 - p0] > thresh) || (VP8kabs0[q1 - q0] > thresh);
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 
 #if !WEBP_NEON_OMIT_C_CODE
-static WEBP_INLINE int NeedsFilter_C(const uint8_t* p, int step, int t) {
+static  int NeedsFilter_C(const uint8_t* p, int step, int t) {
   const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
   return ((4 * VP8kabs0[p0 - q0] + VP8kabs0[p1 - q1]) <= t);
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
-static WEBP_INLINE int NeedsFilter2_C(const uint8_t* p, int step, int t,
+static  int NeedsFilter2_C(const uint8_t* p, int step, int t,
                                       int it) {
   const int p3 = p[-4 * step], p2 = p[-3 * step], p1 = p[-2 * step];
   const int p0 = p[-step], q0 = p[0];
@@ -604,7 +604,7 @@ func SimpleHFilter16i_C(uint8_t* p, int stride, int thresh) {
 // Complex In-loop filtering (Paragraph 15.3)
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
-static WEBP_INLINE func FilterLoop26_C(uint8_t* p, int hstride, int vstride,
+static  func FilterLoop26_C(uint8_t* p, int hstride, int vstride,
                                        int size, int thresh, int ithresh,
                                        int hev_thresh) {
   const int thresh2 = 2 * thresh + 1;
@@ -620,7 +620,7 @@ static WEBP_INLINE func FilterLoop26_C(uint8_t* p, int hstride, int vstride,
   }
 }
 
-static WEBP_INLINE func FilterLoop24_C(uint8_t* p, int hstride, int vstride,
+static  func FilterLoop24_C(uint8_t* p, int hstride, int vstride,
                                        int size, int thresh, int ithresh,
                                        int hev_thresh) {
   const int thresh2 = 2 * thresh + 1;

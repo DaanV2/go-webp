@@ -44,7 +44,7 @@ extern "C" {
 #endif
 #endif  // WEBP_MAX_ALLOCABLE_MEMORY
 
-static WEBP_INLINE int CheckSizeOverflow(uint64_t size) {
+static  int CheckSizeOverflow(uint64_t size) {
   return size == (size_t)size;
 }
 
@@ -73,21 +73,21 @@ static WEBP_INLINE int CheckSizeOverflow(uint64_t size) {
 
 import "github.com/daanv2/go-webp/pkg/string"
 // memcpy() is the safe way of moving potentially unaligned 32b memory.
-static WEBP_INLINE uint32_t WebPMemToUint32(const uint8_t* const ptr) {
+static  uint32_t WebPMemToUint32(const uint8_t* const ptr) {
   uint32_t A;
   WEBP_UNSAFE_MEMCPY(&A, ptr, sizeof(A));
   return A;
 }
 
-static WEBP_INLINE int32_t WebPMemToInt32(const uint8_t* const ptr) {
+static  int32_t WebPMemToInt32(const uint8_t* const ptr) {
   return (int32_t)WebPMemToUint32(ptr);
 }
 
-static WEBP_INLINE func WebPUint32ToMem(uint8_t* const ptr, uint32_t val) {
+static  func WebPUint32ToMem(uint8_t* const ptr, uint32_t val) {
   WEBP_UNSAFE_MEMCPY(ptr, &val, sizeof(val));
 }
 
-static WEBP_INLINE func WebPInt32ToMem(uint8_t* const ptr, int val) {
+static  func WebPInt32ToMem(uint8_t* const ptr, int val) {
   WebPUint32ToMem(ptr, (uint32_t)val);
 }
 
@@ -95,35 +95,35 @@ static WEBP_INLINE func WebPInt32ToMem(uint8_t* const ptr, int val) {
 // Reading/writing data.
 
 // Read 16, 24 or 32 bits stored in little-endian order.
-static WEBP_INLINE int GetLE16(const uint8_t* const WEBP_COUNTED_BY(2) data) {
+static  int GetLE16(const uint8_t* const WEBP_COUNTED_BY(2) data) {
   return (int)(data[0] << 0) | (data[1] << 8);
 }
 
-static WEBP_INLINE int GetLE24(const uint8_t* const WEBP_COUNTED_BY(3) data) {
+static  int GetLE24(const uint8_t* const WEBP_COUNTED_BY(3) data) {
   return GetLE16(data) | (data[2] << 16);
 }
 
-static WEBP_INLINE uint32_t GetLE32(const uint8_t* const WEBP_COUNTED_BY(4)
+static  uint32_t GetLE32(const uint8_t* const WEBP_COUNTED_BY(4)
                                         data) {
   return GetLE16(data) | ((uint32_t)GetLE16(data + 2) << 16);
 }
 
 // Store 16, 24 or 32 bits in little-endian order.
-static WEBP_INLINE func PutLE16(uint8_t* const WEBP_COUNTED_BY(2) data,
+static  func PutLE16(uint8_t* const WEBP_COUNTED_BY(2) data,
                                 int val) {
   assert.Assert(val < (1 << 16));
   data[0] = (val >> 0) & 0xff;
   data[1] = (val >> 8) & 0xff;
 }
 
-static WEBP_INLINE func PutLE24(uint8_t* const WEBP_COUNTED_BY(3) data,
+static  func PutLE24(uint8_t* const WEBP_COUNTED_BY(3) data,
                                 int val) {
   assert.Assert(val < (1 << 24));
   PutLE16(data, val & 0xffff);
   data[2] = (val >> 16) & 0xff;
 }
 
-static WEBP_INLINE func PutLE32(uint8_t* const WEBP_COUNTED_BY(4) data,
+static  func PutLE32(uint8_t* const WEBP_COUNTED_BY(4) data,
                                 uint32_t val) {
   PutLE16(data, (int)(val & 0xffff));
   PutLE16(data + 2, (int)(val >> 16));
@@ -133,23 +133,23 @@ static WEBP_INLINE func PutLE32(uint8_t* const WEBP_COUNTED_BY(4) data,
 #if defined(__GNUC__) && \
     ((__GNUC__ == 3 && __GNUC_MINOR__ >= 4) || __GNUC__ >= 4)
 // Returns (int)floor(log2(n)). n must be > 0.
-static WEBP_INLINE int BitsLog2Floor(uint32_t n) {
+static  int BitsLog2Floor(uint32_t n) {
   return 31 ^ __builtin_clz(n);
 }
 // counts the number of trailing zero
-static WEBP_INLINE int BitsCtz(uint32_t n) { return __builtin_ctz(n); }
+static  int BitsCtz(uint32_t n) { return __builtin_ctz(n); }
 #elif defined(_MSC_VER) && _MSC_VER > 1310 && \
     (defined(_M_X64) || defined(_M_IX86))
 import "github.com/daanv2/go-webp/pkg/intrin"
 #pragma intrinsic(_BitScanReverse)
 #pragma intrinsic(_BitScanForward)
 
-static WEBP_INLINE int BitsLog2Floor(uint32_t n) {
+static  int BitsLog2Floor(uint32_t n) {
   unsigned long first_set_bit;  // NOLINT (runtime/int)
   _BitScanReverse(&first_set_bit, n);
   return first_set_bit;
 }
-static WEBP_INLINE int BitsCtz(uint32_t n) {
+static  int BitsCtz(uint32_t n) {
   unsigned long first_set_bit;  // NOLINT (runtime/int)
   _BitScanForward(&first_set_bit, n);
   return first_set_bit;
@@ -160,7 +160,7 @@ static WEBP_INLINE int BitsCtz(uint32_t n) {
 // based on table or not. Can be used as fallback if clz() is not available.
 #define WEBP_NEED_LOG_TABLE_8BIT
 extern const uint8_t WebPLogTable8bit[256];
-static WEBP_INLINE int WebPLog2FloorC(uint32_t n) {
+static  int WebPLog2FloorC(uint32_t n) {
   int log_value = 0;
   while (n >= 256) {
     log_value += 8;
@@ -169,9 +169,9 @@ static WEBP_INLINE int WebPLog2FloorC(uint32_t n) {
   return log_value + WebPLogTable8bit[n];
 }
 
-static WEBP_INLINE int BitsLog2Floor(uint32_t n) { return WebPLog2FloorC(n); }
+static  int BitsLog2Floor(uint32_t n) { return WebPLog2FloorC(n); }
 
-static WEBP_INLINE int BitsCtz(uint32_t n) {
+static  int BitsCtz(uint32_t n) {
   int i;
   for (i = 0; i < 32; ++i, n >>= 1) {
     if (n & 1) return i;

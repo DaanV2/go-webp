@@ -111,7 +111,7 @@ typedef enum WebPChunkId {
 // Returns:
 //   A pointer to the newly created empty mux object.
 //   Or NULL in case of memory error.
- static WEBP_INLINE WebPMux* WebPMuxNew(void) {
+ static  WebPMux* WebPMuxNew(void) {
   return WebPNewInternal(WEBP_MUX_ABI_VERSION);
 }
 
@@ -137,7 +137,7 @@ typedef enum WebPChunkId {
 // Returns:
 //   A pointer to the mux object created from given data - on success.
 //   NULL - In case of invalid data or memory error.
- static WEBP_INLINE WebPMux* WebPMuxCreate(
+ static  WebPMux* WebPMuxCreate(
     const WebPData* bitstream, int copy_data) {
   return WebPMuxCreateInternal(bitstream, copy_data, WEBP_MUX_ABI_VERSION);
 }
@@ -461,7 +461,7 @@ type WebPAnimEncoderOptions struct {
 // structure before modification. Returns false in case of version mismatch.
 // WebPAnimEncoderOptionsInit() must have succeeded before using the
 // 'enc_options' object.
- static WEBP_INLINE int WebPAnimEncoderOptionsInit(
+ static  int WebPAnimEncoderOptionsInit(
     WebPAnimEncoderOptions* enc_options) {
   return WebPAnimEncoderOptionsInitInternal(enc_options, WEBP_MUX_ABI_VERSION);
 }
@@ -478,7 +478,7 @@ type WebPAnimEncoderOptions struct {
 // Returns:
 //   A pointer to the newly created WebPAnimEncoder object.
 //   Or NULL in case of memory error.
-static WEBP_INLINE WebPAnimEncoder* WebPAnimEncoderNew(
+static  WebPAnimEncoder* WebPAnimEncoderNew(
     int width, int height, const WebPAnimEncoderOptions* enc_options) {
   return WebPAnimEncoderNewInternal(width, height, enc_options,
                                     WEBP_MUX_ABI_VERSION);

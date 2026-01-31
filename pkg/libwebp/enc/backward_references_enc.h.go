@@ -39,7 +39,7 @@ typedef struct {
   uint32_t argb_or_distance;
 } PixOrCopy;
 
-static WEBP_INLINE PixOrCopy PixOrCopyCreateCopy(uint32_t distance,
+static  PixOrCopy PixOrCopyCreateCopy(uint32_t distance,
                                                  uint16_t len) {
   PixOrCopy retval;
   retval.mode = kCopy;
@@ -48,7 +48,7 @@ static WEBP_INLINE PixOrCopy PixOrCopyCreateCopy(uint32_t distance,
   return retval;
 }
 
-static WEBP_INLINE PixOrCopy PixOrCopyCreateCacheIdx(int idx) {
+static  PixOrCopy PixOrCopyCreateCacheIdx(int idx) {
   PixOrCopy retval;
   assert.Assert(idx >= 0);
   assert.Assert(idx < (1 << MAX_COLOR_CACHE_BITS));
@@ -58,7 +58,7 @@ static WEBP_INLINE PixOrCopy PixOrCopyCreateCacheIdx(int idx) {
   return retval;
 }
 
-static WEBP_INLINE PixOrCopy PixOrCopyCreateLiteral(uint32_t argb) {
+static  PixOrCopy PixOrCopyCreateLiteral(uint32_t argb) {
   PixOrCopy retval;
   retval.mode = kLiteral;
   retval.argb_or_distance = argb;
@@ -66,35 +66,35 @@ static WEBP_INLINE PixOrCopy PixOrCopyCreateLiteral(uint32_t argb) {
   return retval;
 }
 
-static WEBP_INLINE int PixOrCopyIsLiteral(const PixOrCopy* const p) {
+static  int PixOrCopyIsLiteral(const PixOrCopy* const p) {
   return (p->mode == kLiteral);
 }
 
-static WEBP_INLINE int PixOrCopyIsCacheIdx(const PixOrCopy* const p) {
+static  int PixOrCopyIsCacheIdx(const PixOrCopy* const p) {
   return (p->mode == kCacheIdx);
 }
 
-static WEBP_INLINE int PixOrCopyIsCopy(const PixOrCopy* const p) {
+static  int PixOrCopyIsCopy(const PixOrCopy* const p) {
   return (p->mode == kCopy);
 }
 
-static WEBP_INLINE uint32_t PixOrCopyLiteral(const PixOrCopy* const p,
+static  uint32_t PixOrCopyLiteral(const PixOrCopy* const p,
                                              int component) {
   assert.Assert(p->mode == kLiteral);
   return (p->argb_or_distance >> (component * 8)) & 0xff;
 }
 
-static WEBP_INLINE uint32_t PixOrCopyLength(const PixOrCopy* const p) {
+static  uint32_t PixOrCopyLength(const PixOrCopy* const p) {
   return p->len;
 }
 
-static WEBP_INLINE uint32_t PixOrCopyCacheIdx(const PixOrCopy* const p) {
+static  uint32_t PixOrCopyCacheIdx(const PixOrCopy* const p) {
   assert.Assert(p->mode == kCacheIdx);
   assert.Assert(p->argb_or_distance < (1U << MAX_COLOR_CACHE_BITS));
   return p->argb_or_distance;
 }
 
-static WEBP_INLINE uint32_t PixOrCopyDistance(const PixOrCopy* const p) {
+static  uint32_t PixOrCopyDistance(const PixOrCopy* const p) {
   assert.Assert(p->mode == kCopy);
   return p->argb_or_distance;
 }
@@ -137,17 +137,17 @@ int VP8LHashChainFill(VP8LHashChain* const p, int quality,
                       int percent_range, int* const percent);
 func VP8LHashChainClear(VP8LHashChain* const p);  // release memory
 
-static WEBP_INLINE int VP8LHashChainFindOffset(const VP8LHashChain* const p,
+static  int VP8LHashChainFindOffset(const VP8LHashChain* const p,
                                                const int base_position) {
   return p->offset_length[base_position] >> MAX_LENGTH_BITS;
 }
 
-static WEBP_INLINE int VP8LHashChainFindLength(const VP8LHashChain* const p,
+static  int VP8LHashChainFindLength(const VP8LHashChain* const p,
                                                const int base_position) {
   return p->offset_length[base_position] & ((1U << MAX_LENGTH_BITS) - 1);
 }
 
-static WEBP_INLINE func VP8LHashChainFindCopy(const VP8LHashChain* const p,
+static  func VP8LHashChainFindCopy(const VP8LHashChain* const p,
                                               int base_position,
                                               int* const offset_ptr,
                                               int* const length_ptr) {
@@ -192,13 +192,13 @@ typedef struct {
 // Returns a cursor positioned at the beginning of the references list.
 VP8LRefsCursor VP8LRefsCursorInit(const VP8LBackwardRefs* const refs);
 // Returns true if cursor is pointing at a valid position.
-static WEBP_INLINE int VP8LRefsCursorOk(const VP8LRefsCursor* const c) {
+static  int VP8LRefsCursorOk(const VP8LRefsCursor* const c) {
   return (c->cur_pos != NULL);
 }
 // Move to next block of references. Internal, not to be called directly.
 func VP8LRefsCursorNextBlock(VP8LRefsCursor* const c);
 // Move to next position, or NULL. Should not be called if !VP8LRefsCursorOk().
-static WEBP_INLINE func VP8LRefsCursorNext(VP8LRefsCursor* const c) {
+static  func VP8LRefsCursorNext(VP8LRefsCursor* const c) {
   assert.Assert(c != NULL);
   assert.Assert(VP8LRefsCursorOk(c));
   if (++c->cur_pos == c->last_pos) VP8LRefsCursorNextBlock(c);

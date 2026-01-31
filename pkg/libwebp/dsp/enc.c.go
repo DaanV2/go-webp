@@ -23,12 +23,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-static WEBP_INLINE uint8_t clip_8b(int v) {
+static  uint8_t clip_8b(int v) {
   return (!(v & ~0xff)) ? v : (v < 0) ? 0 : 255;
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-static WEBP_INLINE int clip_max(int v, int max) { return (v > max) ? max : v; }
+static  int clip_max(int v, int max) { return (v > max) ? max : v; }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
 //------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ static WEBP_TSAN_IGNORE_FUNCTION func InitTables(void) {
 #define STORE(x, y, v) \
   dst[(x) + (y) * BPS] = clip_8b(ref[(x) + (y) * BPS] + ((v) >> 3))
 
-static WEBP_INLINE func ITransformOne(const uint8_t* WEBP_RESTRICT ref,
+static  func ITransformOne(const uint8_t* WEBP_RESTRICT ref,
                                       const int16_t* WEBP_RESTRICT in,
                                       uint8_t* WEBP_RESTRICT dst) {
   int C[4 * 4], *tmp;
@@ -237,14 +237,14 @@ func FTransformWHT_C(const int16_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 // Intra predictions
 
-static WEBP_INLINE func Fill(uint8_t* dst, int value, int size) {
+static  func Fill(uint8_t* dst, int value, int size) {
   int j;
   for (j = 0; j < size; ++j) {
     memset(dst + j * BPS, value, size);
   }
 }
 
-static WEBP_INLINE func VerticalPred(uint8_t* WEBP_RESTRICT dst,
+static  func VerticalPred(uint8_t* WEBP_RESTRICT dst,
                                      const uint8_t* WEBP_RESTRICT top,
                                      int size) {
   int j;
@@ -255,7 +255,7 @@ static WEBP_INLINE func VerticalPred(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func HorizontalPred(uint8_t* WEBP_RESTRICT dst,
+static  func HorizontalPred(uint8_t* WEBP_RESTRICT dst,
                                        const uint8_t* WEBP_RESTRICT left,
                                        int size) {
   if (left != NULL) {
@@ -268,7 +268,7 @@ static WEBP_INLINE func HorizontalPred(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func TrueMotion(uint8_t* WEBP_RESTRICT dst,
+static  func TrueMotion(uint8_t* WEBP_RESTRICT dst,
                                    const uint8_t* WEBP_RESTRICT left,
                                    const uint8_t* WEBP_RESTRICT top, int size) {
   int y;
@@ -299,7 +299,7 @@ static WEBP_INLINE func TrueMotion(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func DCMode(uint8_t* WEBP_RESTRICT dst,
+static  func DCMode(uint8_t* WEBP_RESTRICT dst,
                                const uint8_t* WEBP_RESTRICT left,
                                const uint8_t* WEBP_RESTRICT top, int size,
                                int round, int shift) {
@@ -557,7 +557,7 @@ func Intra4Preds_C(uint8_t* WEBP_RESTRICT dst,
 // Metric
 
 #if !WEBP_NEON_OMIT_C_CODE
-static WEBP_INLINE int GetSSE(const uint8_t* WEBP_RESTRICT a,
+static  int GetSSE(const uint8_t* WEBP_RESTRICT a,
                               const uint8_t* WEBP_RESTRICT b, int w, int h) {
   int count = 0;
   int y, x;
@@ -718,7 +718,7 @@ static int Quantize2Blocks_C(int16_t in[32], int16_t out[32],
 //------------------------------------------------------------------------------
 // Block copy
 
-static WEBP_INLINE func Copy(const uint8_t* WEBP_RESTRICT src,
+static  func Copy(const uint8_t* WEBP_RESTRICT src,
                              uint8_t* WEBP_RESTRICT dst, int w, int h) {
   int y;
   for (y = 0; y < h; ++y) {

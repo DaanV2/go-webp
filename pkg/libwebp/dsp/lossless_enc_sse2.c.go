@@ -461,7 +461,7 @@ func BundleColorMap_SSE2(const uint8_t* WEBP_RESTRICT const row,
 //------------------------------------------------------------------------------
 // Batch version of Predictor Transform subtraction
 
-static WEBP_INLINE func Average2_m128i(const __m128i* const a0,
+static  func Average2_m128i(const __m128i* const a0,
                                        const __m128i* const a1,
                                        __m128i* const avg) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)

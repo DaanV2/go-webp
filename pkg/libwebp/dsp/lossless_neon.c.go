@@ -148,13 +148,13 @@ func ConvertBGRAToRGB_NEON(const uint32_t* WEBP_RESTRICT src,
 #define STOREQ_U8_AS_U32P(OUT, IN) vst1q_u32((OUT), vreinterpretq_u32_u8((IN)))
 #define ROTATE32_LEFT(L) vextq_u8((L), (L), 12)  // D|C|B|A -> C|B|A|D
 
-static WEBP_INLINE uint8x8_t Average2_u8_NEON(uint32_t a0, uint32_t a1) {
+static  uint8x8_t Average2_u8_NEON(uint32_t a0, uint32_t a1) {
   const uint8x8_t A0 = LOAD_U32_AS_U8(a0);
   const uint8x8_t A1 = LOAD_U32_AS_U8(a1);
   return vhadd_u8(A0, A1);
 }
 
-static WEBP_INLINE uint32_t ClampedAddSubtractHalf_NEON(uint32_t c0,
+static  uint32_t ClampedAddSubtractHalf_NEON(uint32_t c0,
                                                         uint32_t c1,
                                                         uint32_t c2) {
   const uint8x8_t avg = Average2_u8_NEON(c0, c1);
@@ -171,13 +171,13 @@ static WEBP_INLINE uint32_t ClampedAddSubtractHalf_NEON(uint32_t c0,
   return output;
 }
 
-static WEBP_INLINE uint32_t Average2_NEON(uint32_t a0, uint32_t a1) {
+static  uint32_t Average2_NEON(uint32_t a0, uint32_t a1) {
   const uint8x8_t avg_u8x8 = Average2_u8_NEON(a0, a1);
   const uint32_t avg = GET_U8_AS_U32(avg_u8x8);
   return avg;
 }
 
-static WEBP_INLINE uint32_t Average3_NEON(uint32_t a0, uint32_t a1,
+static  uint32_t Average3_NEON(uint32_t a0, uint32_t a1,
                                           uint32_t a2) {
   const uint8x8_t avg0 = Average2_u8_NEON(a0, a2);
   const uint8x8_t A1 = LOAD_U32_AS_U8(a1);
@@ -512,7 +512,7 @@ func PredictorAdd13_NEON(const uint32_t* in, const uint32_t* upper,
 static const uint8_t kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255,
                                           9, 255, 9, 255, 13, 255, 13, 255};
 
-static WEBP_INLINE uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
+static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
                                                   const uint8x16_t shuffle) {
   return vcombine_u8(vtbl1q_u8(argb, vget_low_u8(shuffle)),
                      vtbl1q_u8(argb, vget_high_u8(shuffle)));
@@ -521,7 +521,7 @@ static WEBP_INLINE uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
 // 255 = byte will be zeroed
 static const uint8_t kGreenShuffle[8] = {1, 255, 1, 255, 5, 255, 5, 255};
 
-static WEBP_INLINE uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
+static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
                                                   const uint8x8_t shuffle) {
   return vcombine_u8(vtbl1_u8(vget_low_u8(argb), shuffle),
                      vtbl1_u8(vget_high_u8(argb), shuffle));

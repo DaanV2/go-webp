@@ -205,7 +205,7 @@ static int Disto16x16_SSE41(const uint8_t* WEBP_RESTRICT const a,
                2 * (D) + 1, 2 * (D) + 0, 2 * (C) + 1, 2 * (C) + 0, \
                2 * (B) + 1, 2 * (B) + 0, 2 * (A) + 1, 2 * (A) + 0)
 
-static WEBP_INLINE int DoQuantizeBlock_SSE41(int16_t in[16], int16_t out[16],
+static  int DoQuantizeBlock_SSE41(int16_t in[16], int16_t out[16],
                                              const uint16_t* const sharpen,
                                              const VP8Matrix* const mtx) {
   const __m128i max_coeff_2047 = _mm_set1_epi16(MAX_LEVEL);

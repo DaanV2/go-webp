@@ -20,9 +20,9 @@ import "github.com/daanv2/go-webp/pkg/stddef"  // IWYU pragma: export for size_t
 import "github.com/daanv2/go-webp/pkg/inttypes"  // IWYU pragma: export
 #if defined(__cplusplus) || !defined(__STRICT_ANSI__) || \
     (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
-#define WEBP_INLINE inline
+#define  inline
 #else
-#define WEBP_INLINE
+#define 
 #endif
 #else
 typedef signed char int8_t;
@@ -33,7 +33,7 @@ typedef signed int int32_t;
 typedef unsigned int uint32_t;
 typedef unsigned long long int uint64_t;
 typedef long long int int64_t;
-#define WEBP_INLINE __forceinline
+#define  __forceinline
 #endif /* _MSC_VER */
 
 

@@ -36,8 +36,8 @@ static const uint32_t kMaskAlpha = 0xff000000;
 static const int kNumPredModes = 14;
 
 // Mostly used to reduce code size + readability
-static WEBP_INLINE int GetMin(int a, int b) { return (a > b) ? b : a; }
-static WEBP_INLINE int GetMax(int a, int b) { return (a < b) ? b : a; }
+static  int GetMin(int a, int b) { return (a > b) ? b : a; }
+static  int GetMax(int a, int b) { return (a < b) ? b : a; }
 
 //------------------------------------------------------------------------------
 // Methods to calculate Entropy (Shannon).
@@ -79,7 +79,7 @@ static int64_t PredictionCostSpatialHistogram(
   return retval;
 }
 
-static WEBP_INLINE func UpdateHisto(uint32_t histo_argb[HISTO_SIZE],
+static  func UpdateHisto(uint32_t histo_argb[HISTO_SIZE],
                                     uint32_t argb) {
   ++histo_argb[0 * 256 + (argb >> 24)];
   ++histo_argb[1 * 256 + ((argb >> 16) & 0xff)];
@@ -90,7 +90,7 @@ static WEBP_INLINE func UpdateHisto(uint32_t histo_argb[HISTO_SIZE],
 //------------------------------------------------------------------------------
 // Spatial transform functions.
 
-static WEBP_INLINE func PredictBatch(int mode, int x_start, int y,
+static  func PredictBatch(int mode, int x_start, int y,
                                      int num_pixels, const uint32_t* current,
                                      const uint32_t* upper, uint32_t* out) {
   if (x_start == 0) {
@@ -200,7 +200,7 @@ static uint8_t NearLosslessComponent(uint8_t value, uint8_t predict,
   }
 }
 
-static WEBP_INLINE uint8_t NearLosslessDiff(uint8_t a, uint8_t b) {
+static  uint8_t NearLosslessDiff(uint8_t a, uint8_t b) {
   return (uint8_t)((((int)(a) - (int)(b))) & 0xff);
 }
 
@@ -253,7 +253,7 @@ static uint32_t NearLossless(uint32_t value, uint32_t predict,
 // In case of a lossy encoding, updates the source image to afunc propagating
 // the deviation further to pixels which depend on the current pixel for their
 // predictions.
-static WEBP_INLINE func GetResidual(
+static  func GetResidual(
     int width, int height, uint32_t* const upper_row,
     uint32_t* const current_row, const uint8_t* const max_diffs, int mode,
     int x_start, int x_end, int y, int max_quantization, int exact,
@@ -314,19 +314,19 @@ static WEBP_INLINE func GetResidual(
 }
 
 // Accessors to residual histograms.
-static WEBP_INLINE uint32_t* GetHistoArgb(uint32_t* const all_histos,
+static  uint32_t* GetHistoArgb(uint32_t* const all_histos,
                                           int subsampling_index, int mode) {
   return &all_histos[(subsampling_index * kNumPredModes + mode) * HISTO_SIZE];
 }
 
-static WEBP_INLINE const uint32_t* GetHistoArgbConst(
+static  const uint32_t* GetHistoArgbConst(
     const uint32_t* const all_histos, int subsampling_index, int mode) {
   return &all_histos[subsampling_index * kNumPredModes * HISTO_SIZE +
                      mode * HISTO_SIZE];
 }
 
 // Accessors to accumulated residual histogram.
-static WEBP_INLINE uint32_t* GetAccumulatedHisto(uint32_t* all_accumulated,
+static  uint32_t* GetAccumulatedHisto(uint32_t* all_accumulated,
                                                  int subsampling_index) {
   return &all_accumulated[subsampling_index * HISTO_SIZE];
 }
@@ -831,20 +831,20 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits,
 //------------------------------------------------------------------------------
 // Color transform functions.
 
-static WEBP_INLINE func MultipliersClear(VP8LMultipliers* const m) {
+static  func MultipliersClear(VP8LMultipliers* const m) {
   m->green_to_red = 0;
   m->green_to_blue = 0;
   m->red_to_blue = 0;
 }
 
-static WEBP_INLINE func ColorCodeToMultipliers(uint32_t color_code,
+static  func ColorCodeToMultipliers(uint32_t color_code,
                                                VP8LMultipliers* const m) {
   m->green_to_red = (color_code >> 0) & 0xff;
   m->green_to_blue = (color_code >> 8) & 0xff;
   m->red_to_blue = (color_code >> 16) & 0xff;
 }
 
-static WEBP_INLINE uint32_t
+static  uint32_t
 MultipliersToColorCode(const VP8LMultipliers* const m) {
   return 0xff000000u | ((uint32_t)(m->red_to_blue) << 16) |
          ((uint32_t)(m->green_to_blue) << 8) | m->green_to_red;

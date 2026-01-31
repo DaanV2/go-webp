@@ -108,7 +108,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 // clang-format on
 
-static WEBP_INLINE func PredictLine_MIPSdspR2(const uint8_t* WEBP_RESTRICT src,
+static  func PredictLine_MIPSdspR2(const uint8_t* WEBP_RESTRICT src,
                                               uint8_t* WEBP_RESTRICT dst,
                                               int length) {
   DO_PREDICT_LINE(src, dst, length, 0);
@@ -204,7 +204,7 @@ static WEBP_INLINE func PredictLine_MIPSdspR2(const uint8_t* WEBP_RESTRICT src,
     }                                                 \
   } while (0)
 
-static WEBP_INLINE func DoHorizontalFilter_MIPSdspR2(
+static  func DoHorizontalFilter_MIPSdspR2(
     const uint8_t* WEBP_RESTRICT in, int width, int height, int stride,
     uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -242,7 +242,7 @@ func HorizontalFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
     }                                                     \
   } while (0)
 
-static WEBP_INLINE func DoVerticalFilter_MIPSdspR2(
+static  func DoVerticalFilter_MIPSdspR2(
     const uint8_t* WEBP_RESTRICT in, int width, int height, int stride,
     uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;

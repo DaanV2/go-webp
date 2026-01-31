@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/smmintrin"
 // Pack the planar buffers
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // triplet by triplet in the output buffer rgb as rgbrgbrgbrgb ...
-static WEBP_INLINE func VP8PlanarTo24b_SSE41(
+static  func VP8PlanarTo24b_SSE41(
     __m128i* const in0, __m128i* const in1, __m128i* const in2,
     __m128i* const in3, __m128i* const in4, __m128i* const in5) {
   __m128i R0, R1, R2, R3, R4, R5;
@@ -98,7 +98,7 @@ static WEBP_INLINE func VP8PlanarTo24b_SSE41(
 
 // Convert four packed four-channel buffers like argbargbargbargb... into the
 // split channels aaaaa ... rrrr ... gggg .... bbbbb ......
-static WEBP_INLINE func VP8L32bToPlanar_SSE41(__m128i* const in0,
+static  func VP8L32bToPlanar_SSE41(__m128i* const in0,
                                               __m128i* const in1,
                                               __m128i* const in2,
                                               __m128i* const in3) {

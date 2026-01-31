@@ -156,7 +156,7 @@ static uint32_t ExtraCost_MIPS32(const uint32_t* const population, int length) {
       : "memory");
 
 // Returns the various RLE counts
-static WEBP_INLINE func GetEntropyUnrefinedHelper(
+static  func GetEntropyUnrefinedHelper(
     uint32_t val, int i, uint32_t* WEBP_RESTRICT const val_prev,
     int* WEBP_RESTRICT const i_prev,
     VP8LBitEntropy* WEBP_RESTRICT const bit_entropy,

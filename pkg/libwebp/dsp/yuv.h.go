@@ -69,39 +69,39 @@ enum {
 //------------------------------------------------------------------------------
 // slower on x86 by ~7-8%, but bit-exact with the SSE2/NEON version
 
-static WEBP_INLINE int MultHi(int v, int coeff) {  // _mm_mulhi_epu16 emulation
+static  int MultHi(int v, int coeff) {  // _mm_mulhi_epu16 emulation
   return (v * coeff) >> 8;
 }
 
-static WEBP_INLINE int VP8Clip8(int v) {
+static  int VP8Clip8(int v) {
   return ((v & ~YUV_MASK2) == 0) ? (v >> YUV_FIX2) : (v < 0) ? 0 : 255;
 }
 
-static WEBP_INLINE int VP8YUVToR(int y, int v) {
+static  int VP8YUVToR(int y, int v) {
   return VP8Clip8(MultHi(y, 19077) + MultHi(v, 26149) - 14234);
 }
 
-static WEBP_INLINE int VP8YUVToG(int y, int u, int v) {
+static  int VP8YUVToG(int y, int u, int v) {
   return VP8Clip8(MultHi(y, 19077) - MultHi(u, 6419) - MultHi(v, 13320) + 8708);
 }
 
-static WEBP_INLINE int VP8YUVToB(int y, int u) {
+static  int VP8YUVToB(int y, int u) {
   return VP8Clip8(MultHi(y, 19077) + MultHi(u, 33050) - 17685);
 }
 
-static WEBP_INLINE func VP8YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
+static  func VP8YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
   rgb[0] = VP8YUVToR(y, v);
   rgb[1] = VP8YUVToG(y, u, v);
   rgb[2] = VP8YUVToB(y, u);
 }
 
-static WEBP_INLINE func VP8YuvToBgr(int y, int u, int v, uint8_t* const bgr) {
+static  func VP8YuvToBgr(int y, int u, int v, uint8_t* const bgr) {
   bgr[0] = VP8YUVToB(y, u);
   bgr[1] = VP8YUVToG(y, u, v);
   bgr[2] = VP8YUVToR(y, v);
 }
 
-static WEBP_INLINE func VP8YuvToRgb565(int y, int u, int v,
+static  func VP8YuvToRgb565(int y, int u, int v,
                                        uint8_t* const rgb) {
   const int r = VP8YUVToR(y, v);     // 5 usable bits
   const int g = VP8YUVToG(y, u, v);  // 6 usable bits
@@ -117,7 +117,7 @@ static WEBP_INLINE func VP8YuvToRgb565(int y, int u, int v,
 #endif
 }
 
-static WEBP_INLINE func VP8YuvToRgba4444(int y, int u, int v,
+static  func VP8YuvToRgba4444(int y, int u, int v,
                                          uint8_t* const argb) {
   const int r = VP8YUVToR(y, v);     // 4 usable bits
   const int g = VP8YUVToG(y, u, v);  // 4 usable bits
@@ -136,19 +136,19 @@ static WEBP_INLINE func VP8YuvToRgba4444(int y, int u, int v,
 //-----------------------------------------------------------------------------
 // Alpha handling variants
 
-static WEBP_INLINE func VP8YuvToArgb(uint8_t y, uint8_t u, uint8_t v,
+static  func VP8YuvToArgb(uint8_t y, uint8_t u, uint8_t v,
                                      uint8_t* const argb) {
   argb[0] = 0xff;
   VP8YuvToRgb(y, u, v, argb + 1);
 }
 
-static WEBP_INLINE func VP8YuvToBgra(uint8_t y, uint8_t u, uint8_t v,
+static  func VP8YuvToBgra(uint8_t y, uint8_t u, uint8_t v,
                                      uint8_t* const bgra) {
   VP8YuvToBgr(y, u, v, bgra);
   bgra[3] = 0xff;
 }
 
-static WEBP_INLINE func VP8YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
+static  func VP8YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
                                      uint8_t* const rgba) {
   VP8YuvToRgb(y, u, v, rgba);
   rgba[3] = 0xff;
@@ -212,22 +212,22 @@ func VP8YuvToBgr32_SSE41(const uint8_t* WEBP_RESTRICT y,
 // RGB -> YUV conversion
 
 // Stub functions that can be called with various rounding values:
-static WEBP_INLINE int VP8ClipUV(int uv, int rounding) {
+static  int VP8ClipUV(int uv, int rounding) {
   uv = (uv + rounding + (128 << (YUV_FIX + 2))) >> (YUV_FIX + 2);
   return ((uv & ~0xff) == 0) ? uv : (uv < 0) ? 0 : 255;
 }
 
-static WEBP_INLINE int VP8RGBToY(int r, int g, int b, int rounding) {
+static  int VP8RGBToY(int r, int g, int b, int rounding) {
   const int luma = 16839 * r + 33059 * g + 6420 * b;
   return (luma + rounding + (16 << YUV_FIX)) >> YUV_FIX;  // no need to clip
 }
 
-static WEBP_INLINE int VP8RGBToU(int r, int g, int b, int rounding) {
+static  int VP8RGBToU(int r, int g, int b, int rounding) {
   const int u = -9719 * r - 19081 * g + 28800 * b;
   return VP8ClipUV(u, rounding);
 }
 
-static WEBP_INLINE int VP8RGBToV(int r, int g, int b, int rounding) {
+static  int VP8RGBToV(int r, int g, int b, int rounding) {
   const int v = +28800 * r - 24116 * g - 4684 * b;
   return VP8ClipUV(v, rounding);
 }

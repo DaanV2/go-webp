@@ -66,7 +66,7 @@ int VP8LDistanceToPlaneCode(int xsize, int dist) {
 // inferior to best_len_match. The current behavior is to return 0 if this index
 // is best_len_match, and the index itself otherwise.
 // If no two elements are the same, it returns max_limit.
-static WEBP_INLINE int FindMatchLength(const uint32_t* const array1,
+static  int FindMatchLength(const uint32_t* const array1,
                                        const uint32_t* const array2,
                                        int best_len_match, int max_limit) {
   // Before 'expensive' linear match, check if the two arrays match at the
@@ -226,7 +226,7 @@ func VP8LHashChainClear(VP8LHashChain* const p) {
 static const uint32_t kHashMultiplierHi = 0xc6a4a793u;
 static const uint32_t kHashMultiplierLo = 0x5bd1e996u;
 
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW WEBP_INLINE uint32_t
+static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32_t
 GetPixPairHash64(const uint32_t* const argb) {
   uint32_t key;
   key = argb[1] * kHashMultiplierHi;
@@ -250,7 +250,7 @@ static int GetWindowSizeForHashChain(int quality, int xsize) {
   return (max_window_size > WINDOW_SIZE) ? WINDOW_SIZE : max_window_size;
 }
 
-static WEBP_INLINE int MaxFindCopyLength(int len) {
+static  int MaxFindCopyLength(int len) {
   return (len < MAX_LENGTH) ? len : MAX_LENGTH;
 }
 
@@ -449,7 +449,7 @@ int VP8LHashChainFill(VP8LHashChain* const p, int quality,
   return WebPReportProgress(pic, percent_start + percent_range, percent);
 }
 
-static WEBP_INLINE func AddSingleLiteral(uint32_t pixel, int use_color_cache,
+static  func AddSingleLiteral(uint32_t pixel, int use_color_cache,
                                          VP8LColorCache* const hashers,
                                          VP8LBackwardRefs* const refs) {
   PixOrCopy v;

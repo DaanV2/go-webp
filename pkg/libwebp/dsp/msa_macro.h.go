@@ -623,7 +623,7 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
  * Details     : 4 signed word elements of 'in' vector are added together and
  *               the resulting integer sum is returned
  */
-static WEBP_INLINE int32_t func_hadd_sw_s32(v4i32 in) {
+static  int32_t func_hadd_sw_s32(v4i32 in) {
   const v2i64 res0_m = __msa_hadd_s_d((v4i32)in, (v4i32)in);
   const v2i64 res1_m = __msa_splati_d(res0_m, 1);
   const v2i64 out = res0_m + res1_m;
@@ -639,7 +639,7 @@ static WEBP_INLINE int32_t func_hadd_sw_s32(v4i32 in) {
  * Details     : 8 signed halfword elements of input vector are added
  *               together and the resulting integer sum is returned
  */
-static WEBP_INLINE int32_t func_hadd_sh_s32(v8i16 in) {
+static  int32_t func_hadd_sh_s32(v8i16 in) {
   const v4i32 res = __msa_hadd_s_w(in, in);
   const v2i64 res0 = __msa_hadd_s_d(res, res);
   const v2i64 res1 = __msa_splati_d(res0, 1);
@@ -656,7 +656,7 @@ static WEBP_INLINE int32_t func_hadd_sh_s32(v8i16 in) {
  * Details     : 8 unsigned halfword elements of input vector are added
  *               together and the resulting integer sum is returned
  */
-static WEBP_INLINE uint32_t func_hadd_uh_u32(v8u16 in) {
+static  uint32_t func_hadd_uh_u32(v8u16 in) {
   uint32_t sum_m;
   const v4u32 res_m = __msa_hadd_u_w(in, in);
   v2u64 res0_m = __msa_hadd_u_d(res_m, res_m);

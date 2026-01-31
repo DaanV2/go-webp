@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/emmintrin"
 
 #if 0
 import "github.com/daanv2/go-webp/pkg/stdio"
-static WEBP_INLINE func PrintReg(const __m128i r, const char* const name,
+static  func PrintReg(const __m128i r, const char* const name,
                                  int size) {
   int n;
   union {
@@ -56,7 +56,7 @@ static WEBP_INLINE func PrintReg(const __m128i r, const char* const name,
 // Math functions.
 
 // Return the sum of all the 8b in the register.
-static WEBP_INLINE int VP8HorizontalAdd8b(const __m128i* const a) {
+static  int VP8HorizontalAdd8b(const __m128i* const a) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i sad8x2 = _mm_sad_epu8(*a, zero);
   // sum the two sads: sad8x2[0:1] + sad8x2[8:9]
@@ -65,7 +65,7 @@ static WEBP_INLINE int VP8HorizontalAdd8b(const __m128i* const a) {
 }
 
 // Transpose two 4x4 16b matrices horizontally stored in registers.
-static WEBP_INLINE func VP8Transpose_2_4x4_16b(
+static  func VP8Transpose_2_4x4_16b(
     const __m128i* const in0, const __m128i* const in1,
     const __m128i* const in2, const __m128i* const in3, __m128i* const out0,
     __m128i* const out1, __m128i* const out2, __m128i* const out3) {
@@ -128,7 +128,7 @@ static WEBP_INLINE func VP8Transpose_2_4x4_16b(
 // Pack the planar buffers
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // triplet by triplet in the output buffer rgb as rgbrgbrgbrgb ...
-static WEBP_INLINE func VP8PlanarTo24b_SSE2(
+static  func VP8PlanarTo24b_SSE2(
     __m128i* const in0, __m128i* const in1, __m128i* const in2,
     __m128i* const in3, __m128i* const in4, __m128i* const in5) {
   // The input is 6 registers of sixteen 8b but for the sake of explanation,
@@ -159,7 +159,7 @@ static WEBP_INLINE func VP8PlanarTo24b_SSE2(
 
 // Convert four packed four-channel buffers like argbargbargbargb... into the
 // split channels aaaaa ... rrrr ... gggg .... bbbbb ......
-static WEBP_INLINE func VP8L32bToPlanar_SSE2(__m128i* const in0,
+static  func VP8L32bToPlanar_SSE2(__m128i* const in0,
                                              __m128i* const in1,
                                              __m128i* const in2,
                                              __m128i* const in3) {

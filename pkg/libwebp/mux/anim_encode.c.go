@@ -382,7 +382,7 @@ typedef int (*ComparePixelsFunc)(const uint32_t*, int, const uint32_t*, int,
 // Returns true if 'length' number of pixels in 'src' and 'dst' are equal,
 // assuming the given step sizes between pixels.
 // 'max_allowed_diff' is unused and only there to allow function pointer use.
-static WEBP_INLINE int ComparePixelsLossless(const uint32_t* src, int src_step,
+static  int ComparePixelsLossless(const uint32_t* src, int src_step,
                                              const uint32_t* dst, int dst_step,
                                              int length, int max_allowed_diff) {
   (void)max_allowed_diff;
@@ -399,7 +399,7 @@ static WEBP_INLINE int ComparePixelsLossless(const uint32_t* src, int src_step,
 
 // Helper to check if each channel in 'src' and 'dst' is at most off by
 // 'max_allowed_diff'.
-static WEBP_INLINE int PixelsAreSimilar(uint32_t src, uint32_t dst,
+static  int PixelsAreSimilar(uint32_t src, uint32_t dst,
                                         int max_allowed_diff) {
   const int src_a = (src >> 24) & 0xff;
   const int src_r = (src >> 16) & 0xff;
@@ -418,7 +418,7 @@ static WEBP_INLINE int PixelsAreSimilar(uint32_t src, uint32_t dst,
 
 // Returns true if 'length' number of pixels in 'src' and 'dst' are within an
 // error bound, assuming the given step sizes between pixels.
-static WEBP_INLINE int ComparePixelsLossy(const uint32_t* src, int src_step,
+static  int ComparePixelsLossy(const uint32_t* src, int src_step,
                                           const uint32_t* dst, int dst_step,
                                           int length, int max_allowed_diff) {
   assert.Assert(length > 0);
@@ -530,7 +530,7 @@ func MinimizeChangeRectangle(const WebPPicture* const src,
 }
 
 // Snap rectangle to even offsets (and adjust dimensions if needed).
-static WEBP_INLINE func SnapToEvenOffsets(FrameRectangle* const rect) {
+static  func SnapToEvenOffsets(FrameRectangle* const rect) {
   rect->width += (rect->x_offset & 1);
   rect->height += (rect->y_offset & 1);
   rect->x_offset &= ~1;
@@ -619,7 +619,7 @@ static int GetSubRects(const WebPPicture* const prev_canvas,
                     &params->sub_frame_lossy);
 }
 
-static WEBP_INLINE int clip(int v, int min_v, int max_v) {
+static  int clip(int v, int min_v, int max_v) {
   return (v < min_v) ? min_v : (v > max_v) ? max_v : v;
 }
 

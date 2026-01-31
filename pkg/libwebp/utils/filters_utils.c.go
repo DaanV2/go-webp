@@ -30,7 +30,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 const SMAX = 16
 #define SDIFF(a, b) (abs((a) - (b)) >> 4)  // Scoring diff, in [0..SMAX)
 
-static WEBP_INLINE int GradientPredictor(uint8_t a, uint8_t b, uint8_t c) {
+static  int GradientPredictor(uint8_t a, uint8_t b, uint8_t c) {
   const int g = a + b - c;
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }

@@ -161,7 +161,7 @@ func TransformTwo(const int16_t* WEBP_RESTRICT in,
   }
 }
 
-static WEBP_INLINE func FilterLoop26(uint8_t* p, int hstride, int vstride,
+static  func FilterLoop26(uint8_t* p, int hstride, int vstride,
                                      int size, int thresh, int ithresh,
                                      int hev_thresh) {
   const int thresh2 = 2 * thresh + 1;
@@ -298,7 +298,7 @@ static WEBP_INLINE func FilterLoop26(uint8_t* p, int hstride, int vstride,
       : "memory");
 }
 
-static WEBP_INLINE func FilterLoop24(uint8_t* p, int hstride, int vstride,
+static  func FilterLoop24(uint8_t* p, int hstride, int vstride,
                                      int size, int thresh, int ithresh,
                                      int hev_thresh) {
   int p0, q0, p1, q1, p2, q2, p3, q3;

@@ -383,7 +383,7 @@ func VP8LBitsEntropyUnrefined(const uint32_t* WEBP_RESTRICT const array, int n,
   entropy->entropy = VP8LFastSLog2(entropy->sum) - entropy->entropy;
 }
 
-static WEBP_INLINE func GetEntropyUnrefinedHelper(
+static  func GetEntropyUnrefinedHelper(
     uint32_t val, int i, uint32_t* WEBP_RESTRICT const val_prev,
     int* WEBP_RESTRICT const i_prev,
     VP8LBitEntropy* WEBP_RESTRICT const bit_entropy,
@@ -466,11 +466,11 @@ func VP8LSubtractGreenFromBlueAndRed_C(uint32_t* argb_data, int num_pixels) {
   }
 }
 
-static WEBP_INLINE int ColorTransformDelta(int8_t color_pred, int8_t color) {
+static  int ColorTransformDelta(int8_t color_pred, int8_t color) {
   return ((int)color_pred * color) >> 5;
 }
 
-static WEBP_INLINE int8_t U32ToS8(uint32_t v) { return (int8_t)(v & 0xff); }
+static  int8_t U32ToS8(uint32_t v) { return (int8_t)(v & 0xff); }
 
 func VP8LTransformColor_C(const VP8LMultipliers* WEBP_RESTRICT const m,
                           uint32_t* WEBP_RESTRICT data, int num_pixels) {
@@ -490,7 +490,7 @@ func VP8LTransformColor_C(const VP8LMultipliers* WEBP_RESTRICT const m,
   }
 }
 
-static WEBP_INLINE uint8_t TransformColorRed(uint8_t green_to_red,
+static  uint8_t TransformColorRed(uint8_t green_to_red,
                                              uint32_t argb) {
   const int8_t green = U32ToS8(argb >> 8);
   int new_red = argb >> 16;
@@ -498,7 +498,7 @@ static WEBP_INLINE uint8_t TransformColorRed(uint8_t green_to_red,
   return (new_red & 0xff);
 }
 
-static WEBP_INLINE uint8_t TransformColorBlue(uint8_t green_to_blue,
+static  uint8_t TransformColorBlue(uint8_t green_to_blue,
                                               uint8_t red_to_blue,
                                               uint32_t argb) {
   const int8_t green = U32ToS8(argb >> 8);

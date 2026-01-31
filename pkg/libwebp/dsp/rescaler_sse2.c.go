@@ -173,7 +173,7 @@ func RescalerImportRowShrink_SSE2(WebPRescaler* WEBP_RESTRICT const wrk,
 // Row export
 
 // load *src as epi64, multiply by mult and store result in [out0 ... out3]
-static WEBP_INLINE func LoadDispatchAndMult_SSE2(
+static  func LoadDispatchAndMult_SSE2(
     const rescaler_t* WEBP_RESTRICT const src, const __m128i* const mult,
     __m128i* const out0, __m128i* const out1, __m128i* const out2,
     __m128i* const out3) {
@@ -194,7 +194,7 @@ static WEBP_INLINE func LoadDispatchAndMult_SSE2(
   }
 }
 
-static WEBP_INLINE func ProcessRow_SSE2(
+static  func ProcessRow_SSE2(
     const __m128i* const A0, const __m128i* const A1, const __m128i* const A2,
     const __m128i* const A3, const __m128i* const mult, uint8_t* const dst) {
   const __m128i rounder = _mm_set_epi32(0, ROUNDER, 0, ROUNDER);

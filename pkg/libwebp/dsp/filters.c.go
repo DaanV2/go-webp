@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 #if !WEBP_NEON_OMIT_C_CODE
-static WEBP_INLINE func PredictLine_C(const uint8_t* WEBP_RESTRICT src,
+static  func PredictLine_C(const uint8_t* WEBP_RESTRICT src,
                                       const uint8_t* WEBP_RESTRICT pred,
                                       uint8_t* WEBP_RESTRICT dst, int length) {
   int i;
@@ -45,7 +45,7 @@ static WEBP_INLINE func PredictLine_C(const uint8_t* WEBP_RESTRICT src,
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static WEBP_INLINE func DoHorizontalFilter_C(const uint8_t* WEBP_RESTRICT in,
+static  func DoHorizontalFilter_C(const uint8_t* WEBP_RESTRICT in,
                                              int width, int height, int stride,
                                              uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -73,7 +73,7 @@ static WEBP_INLINE func DoHorizontalFilter_C(const uint8_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static WEBP_INLINE func DoVerticalFilter_C(const uint8_t* WEBP_RESTRICT in,
+static  func DoVerticalFilter_C(const uint8_t* WEBP_RESTRICT in,
                                            int width, int height, int stride,
                                            uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -100,13 +100,13 @@ static WEBP_INLINE func DoVerticalFilter_C(const uint8_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 // Gradient filter.
 
-static WEBP_INLINE int GradientPredictor_C(uint8_t a, uint8_t b, uint8_t c) {
+static  int GradientPredictor_C(uint8_t a, uint8_t b, uint8_t c) {
   const int g = a + b - c;
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-static WEBP_INLINE func DoGradientFilter_C(const uint8_t* WEBP_RESTRICT in,
+static  func DoGradientFilter_C(const uint8_t* WEBP_RESTRICT in,
                                            int width, int height, int stride,
                                            uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;

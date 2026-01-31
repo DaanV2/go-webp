@@ -113,7 +113,7 @@ static const int kC2 = WEBP_TRANSFORM_AC3_C2;
 // clang-format on
 
 // Does one or two inverse transforms.
-static WEBP_INLINE func ITransformOne_MIPS32(const uint8_t* WEBP_RESTRICT ref,
+static  func ITransformOne_MIPS32(const uint8_t* WEBP_RESTRICT ref,
                                              const int16_t* WEBP_RESTRICT in,
                                              uint8_t* WEBP_RESTRICT dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;

@@ -272,7 +272,7 @@ func BlendPixelRowNonPremult(uint32_t* const src,
 }
 
 // Individually multiply each channel in 'pix' by 'scale'.
-static WEBP_INLINE uint32_t ChannelwiseMultiply(uint32_t pix, uint32_t scale) {
+static  uint32_t ChannelwiseMultiply(uint32_t pix, uint32_t scale) {
   uint32_t mask = 0x00FF00FF;
   uint32_t rb = ((pix & mask) * scale) >> 8;
   uint32_t ag = ((pix >> 8) & mask) * scale;

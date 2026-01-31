@@ -40,7 +40,7 @@ func VP8InitRandom(VP8Random* const rg, float dithering);
 // Returns a centered pseudo-random number with 'num_bits' amplitude.
 // (uses D.Knuth's Difference-based random generator).
 // 'amp' is in VP8_RANDOM_DITHER_FIX fixed-point precision.
-static WEBP_INLINE int VP8RandomBits2(VP8Random* const rg, int num_bits,
+static  int VP8RandomBits2(VP8Random* const rg, int num_bits,
                                       int amp) {
   int diff;
   assert.Assert(num_bits + VP8_RANDOM_DITHER_FIX <= 31);
@@ -56,7 +56,7 @@ static WEBP_INLINE int VP8RandomBits2(VP8Random* const rg, int num_bits,
   return diff;
 }
 
-static WEBP_INLINE int VP8RandomBits(VP8Random* const rg, int num_bits) {
+static  int VP8RandomBits(VP8Random* const rg, int num_bits) {
   return VP8RandomBits2(rg, num_bits, rg->amp);
 }
 

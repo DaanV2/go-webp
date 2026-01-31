@@ -125,49 +125,49 @@ static int InitMemBuffer(MemBuffer* const mem, const uint8_t* data,
 }
 
 // Return the remaining data size available in 'mem'.
-static WEBP_INLINE size_t MemDataSize(const MemBuffer* const mem) {
+static  size_t MemDataSize(const MemBuffer* const mem) {
   return (mem->end - mem->start);
 }
 
 // Return true if 'size' exceeds the end of the RIFF chunk.
-static WEBP_INLINE int SizeIsInvalid(const MemBuffer* const mem, size_t size) {
+static  int SizeIsInvalid(const MemBuffer* const mem, size_t size) {
   return (size > mem->riff_end - mem->start);
 }
 
-static WEBP_INLINE func Skip(MemBuffer* const mem, size_t size) {
+static  func Skip(MemBuffer* const mem, size_t size) {
   mem->start += size;
 }
 
-static WEBP_INLINE func Rewind(MemBuffer* const mem, size_t size) {
+static  func Rewind(MemBuffer* const mem, size_t size) {
   mem->start -= size;
 }
 
-static WEBP_INLINE const uint8_t* GetBuffer(MemBuffer* const mem) {
+static  const uint8_t* GetBuffer(MemBuffer* const mem) {
   return mem->buf + mem->start;
 }
 
 // Read from 'mem' and skip the read bytes.
-static WEBP_INLINE uint8_t ReadByte(MemBuffer* const mem) {
+static  uint8_t ReadByte(MemBuffer* const mem) {
   const uint8_t byte = mem->buf[mem->start];
   Skip(mem, 1);
   return byte;
 }
 
-static WEBP_INLINE int ReadLE16s(MemBuffer* const mem) {
+static  int ReadLE16s(MemBuffer* const mem) {
   const uint8_t* const data = mem->buf + mem->start;
   const int val = GetLE16(data);
   Skip(mem, 2);
   return val;
 }
 
-static WEBP_INLINE int ReadLE24s(MemBuffer* const mem) {
+static  int ReadLE24s(MemBuffer* const mem) {
   const uint8_t* const data = mem->buf + mem->start;
   const int val = GetLE24(data);
   Skip(mem, 3);
   return val;
 }
 
-static WEBP_INLINE uint32_t ReadLE32(MemBuffer* const mem) {
+static  uint32_t ReadLE32(MemBuffer* const mem) {
   const uint8_t* const data = mem->buf + mem->start;
   const uint32_t val = GetLE32(data);
   Skip(mem, 4);

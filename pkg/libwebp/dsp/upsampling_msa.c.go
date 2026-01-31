@@ -263,7 +263,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     STORE2_##N(out0, out1, dst);                 \
   } while (0)
 
-static WEBP_INLINE int Clip8(int v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
+static  int Clip8(int v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
 
 func YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
   const int y1 = MultHi(y, 19077);

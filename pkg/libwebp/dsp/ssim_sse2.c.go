@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if !defined(WEBP_DISABLE_STATS)
 
 // Helper function
-static WEBP_INLINE func SubtractAndSquare_SSE2(const __m128i a, const __m128i b,
+static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b,
                                                __m128i* const sum) {
   // take abs(a-b) in 8b
   const __m128i a_b = _mm_subs_epu8(a, b);

@@ -624,7 +624,7 @@ func CollectHistogram_SSE2(const uint8_t* WEBP_RESTRICT ref,
 // Intra predictions
 
 // helper for chroma-DC predictions
-static WEBP_INLINE func Put8x8uv_SSE2(uint8_t v, uint8_t* dst) {
+static  func Put8x8uv_SSE2(uint8_t v, uint8_t* dst) {
   int j;
   const __m128i values = _mm_set1_epi8((char)v);
   for (j = 0; j < 8; ++j) {
@@ -632,7 +632,7 @@ static WEBP_INLINE func Put8x8uv_SSE2(uint8_t v, uint8_t* dst) {
   }
 }
 
-static WEBP_INLINE func Put16_SSE2(uint8_t v, uint8_t* dst) {
+static  func Put16_SSE2(uint8_t v, uint8_t* dst) {
   int j;
   const __m128i values = _mm_set1_epi8((char)v);
   for (j = 0; j < 16; ++j) {
@@ -640,7 +640,7 @@ static WEBP_INLINE func Put16_SSE2(uint8_t v, uint8_t* dst) {
   }
 }
 
-static WEBP_INLINE func Fill_SSE2(uint8_t* dst, int value, int size) {
+static  func Fill_SSE2(uint8_t* dst, int value, int size) {
   if (size == 4) {
     int j;
     for (j = 0; j < 4; ++j) {
@@ -653,7 +653,7 @@ static WEBP_INLINE func Fill_SSE2(uint8_t* dst, int value, int size) {
   }
 }
 
-static WEBP_INLINE func VE8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func VE8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
                                    const uint8_t* WEBP_RESTRICT top) {
   int j;
   const __m128i top_values = _mm_loadl_epi64((const __m128i*)top);
@@ -662,7 +662,7 @@ static WEBP_INLINE func VE8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func VE16_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func VE16_SSE2(uint8_t* WEBP_RESTRICT dst,
                                   const uint8_t* WEBP_RESTRICT top) {
   const __m128i top_values = _mm_load_si128((const __m128i*)top);
   int j;
@@ -671,7 +671,7 @@ static WEBP_INLINE func VE16_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func VerticalPred_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func VerticalPred_SSE2(uint8_t* WEBP_RESTRICT dst,
                                           const uint8_t* WEBP_RESTRICT top,
                                           int size) {
   if (top != NULL) {
@@ -685,7 +685,7 @@ static WEBP_INLINE func VerticalPred_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func HE8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func HE8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
                                    const uint8_t* WEBP_RESTRICT left) {
   int j;
   for (j = 0; j < 8; ++j) {
@@ -695,7 +695,7 @@ static WEBP_INLINE func HE8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func HE16_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func HE16_SSE2(uint8_t* WEBP_RESTRICT dst,
                                   const uint8_t* WEBP_RESTRICT left) {
   int j;
   for (j = 0; j < 16; ++j) {
@@ -705,7 +705,7 @@ static WEBP_INLINE func HE16_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func HorizontalPred_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func HorizontalPred_SSE2(uint8_t* WEBP_RESTRICT dst,
                                             const uint8_t* WEBP_RESTRICT left,
                                             int size) {
   if (left != NULL) {
@@ -719,7 +719,7 @@ static WEBP_INLINE func HorizontalPred_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func TM_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func TM_SSE2(uint8_t* WEBP_RESTRICT dst,
                                 const uint8_t* WEBP_RESTRICT left,
                                 const uint8_t* WEBP_RESTRICT top, int size) {
   const __m128i zero = _mm_setzero_si128();
@@ -748,7 +748,7 @@ static WEBP_INLINE func TM_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func TrueMotion_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func TrueMotion_SSE2(uint8_t* WEBP_RESTRICT dst,
                                         const uint8_t* WEBP_RESTRICT left,
                                         const uint8_t* WEBP_RESTRICT top,
                                         int size) {
@@ -771,7 +771,7 @@ static WEBP_INLINE func TrueMotion_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func DC8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
                                    const uint8_t* WEBP_RESTRICT left,
                                    const uint8_t* WEBP_RESTRICT top) {
   const __m128i top_values = _mm_loadl_epi64((const __m128i*)top);
@@ -781,7 +781,7 @@ static WEBP_INLINE func DC8uv_SSE2(uint8_t* WEBP_RESTRICT dst,
   Put8x8uv_SSE2(DC >> 4, dst);
 }
 
-static WEBP_INLINE func DC8uvNoLeft_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC8uvNoLeft_SSE2(uint8_t* WEBP_RESTRICT dst,
                                          const uint8_t* WEBP_RESTRICT top) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i top_values = _mm_loadl_epi64((const __m128i*)top);
@@ -790,17 +790,17 @@ static WEBP_INLINE func DC8uvNoLeft_SSE2(uint8_t* WEBP_RESTRICT dst,
   Put8x8uv_SSE2(DC >> 3, dst);
 }
 
-static WEBP_INLINE func DC8uvNoTop_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC8uvNoTop_SSE2(uint8_t* WEBP_RESTRICT dst,
                                         const uint8_t* WEBP_RESTRICT left) {
   // 'left' is contiguous so we can reuse the top summation.
   DC8uvNoLeft_SSE2(dst, left);
 }
 
-static WEBP_INLINE func DC8uvNoTopLeft_SSE2(uint8_t* dst) {
+static  func DC8uvNoTopLeft_SSE2(uint8_t* dst) {
   Put8x8uv_SSE2(0x80, dst);
 }
 
-static WEBP_INLINE func DC8uvMode_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC8uvMode_SSE2(uint8_t* WEBP_RESTRICT dst,
                                        const uint8_t* WEBP_RESTRICT left,
                                        const uint8_t* WEBP_RESTRICT top) {
   if (top != NULL) {
@@ -816,7 +816,7 @@ static WEBP_INLINE func DC8uvMode_SSE2(uint8_t* WEBP_RESTRICT dst,
   }
 }
 
-static WEBP_INLINE func DC16_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC16_SSE2(uint8_t* WEBP_RESTRICT dst,
                                   const uint8_t* WEBP_RESTRICT left,
                                   const uint8_t* WEBP_RESTRICT top) {
   const __m128i top_row = _mm_load_si128((const __m128i*)top);
@@ -826,24 +826,24 @@ static WEBP_INLINE func DC16_SSE2(uint8_t* WEBP_RESTRICT dst,
   Put16_SSE2(DC >> 5, dst);
 }
 
-static WEBP_INLINE func DC16NoLeft_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC16NoLeft_SSE2(uint8_t* WEBP_RESTRICT dst,
                                         const uint8_t* WEBP_RESTRICT top) {
   const __m128i top_row = _mm_load_si128((const __m128i*)top);
   const int DC = VP8HorizontalAdd8b(&top_row) + 8;
   Put16_SSE2(DC >> 4, dst);
 }
 
-static WEBP_INLINE func DC16NoTop_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC16NoTop_SSE2(uint8_t* WEBP_RESTRICT dst,
                                        const uint8_t* WEBP_RESTRICT left) {
   // 'left' is contiguous so we can reuse the top summation.
   DC16NoLeft_SSE2(dst, left);
 }
 
-static WEBP_INLINE func DC16NoTopLeft_SSE2(uint8_t* dst) {
+static  func DC16NoTopLeft_SSE2(uint8_t* dst) {
   Put16_SSE2(0x80, dst);
 }
 
-static WEBP_INLINE func DC16Mode_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC16Mode_SSE2(uint8_t* WEBP_RESTRICT dst,
                                       const uint8_t* WEBP_RESTRICT left,
                                       const uint8_t* WEBP_RESTRICT top) {
   if (top != NULL) {
@@ -875,7 +875,7 @@ static WEBP_INLINE func DC16Mode_SSE2(uint8_t* WEBP_RESTRICT dst,
 //   and ab = a ^ b, bc = b ^ c, lsb = (AC^BC)&1
 
 // vertical
-static WEBP_INLINE func VE4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func VE4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const __m128i one = _mm_set1_epi8(1);
   const __m128i ABCDEFGH = _mm_loadl_epi64((__m128i*)(top - 1));
@@ -893,7 +893,7 @@ static WEBP_INLINE func VE4_SSE2(uint8_t* WEBP_RESTRICT dst,
 }
 
 // horizontal
-static WEBP_INLINE func HE4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func HE4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const int X = top[-1];
   const int I = top[-2];
@@ -906,7 +906,7 @@ static WEBP_INLINE func HE4_SSE2(uint8_t* WEBP_RESTRICT dst,
   WebPUint32ToMem(dst + 3 * BPS, 0x01010101U * AVG3(K, L, L));
 }
 
-static WEBP_INLINE func DC4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func DC4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   uint32_t dc = 4;
   int i;
@@ -915,7 +915,7 @@ static WEBP_INLINE func DC4_SSE2(uint8_t* WEBP_RESTRICT dst,
 }
 
 // Down-Left
-static WEBP_INLINE func LD4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func LD4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const __m128i one = _mm_set1_epi8(1);
   const __m128i ABCDEFGH = _mm_loadl_epi64((const __m128i*)top);
@@ -933,7 +933,7 @@ static WEBP_INLINE func LD4_SSE2(uint8_t* WEBP_RESTRICT dst,
 }
 
 // Vertical-Right
-static WEBP_INLINE func VR4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func VR4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const __m128i one = _mm_set1_epi8(1);
   const int I = top[-2];
@@ -960,7 +960,7 @@ static WEBP_INLINE func VR4_SSE2(uint8_t* WEBP_RESTRICT dst,
 }
 
 // Vertical-Left
-static WEBP_INLINE func VL4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func VL4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const __m128i one = _mm_set1_epi8(1);
   const __m128i ABCDEFGH = _mm_loadl_epi64((const __m128i*)top);
@@ -988,7 +988,7 @@ static WEBP_INLINE func VL4_SSE2(uint8_t* WEBP_RESTRICT dst,
 }
 
 // Down-right
-static WEBP_INLINE func RD4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func RD4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const __m128i one = _mm_set1_epi8(1);
   const __m128i LKJIXABC = _mm_loadl_epi64((const __m128i*)(top - 5));
@@ -1005,7 +1005,7 @@ static WEBP_INLINE func RD4_SSE2(uint8_t* WEBP_RESTRICT dst,
   WebPInt32ToMem(dst + 0 * BPS, _mm_cvtsi128_si32(_mm_srli_si128(abcdefg, 3)));
 }
 
-static WEBP_INLINE func HU4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func HU4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const int I = top[-2];
   const int J = top[-3];
@@ -1020,7 +1020,7 @@ static WEBP_INLINE func HU4_SSE2(uint8_t* WEBP_RESTRICT dst,
   DST(3, 2) = DST(2, 2) = DST(0, 3) = DST(1, 3) = DST(2, 3) = DST(3, 3) = L;
 }
 
-static WEBP_INLINE func HD4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func HD4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const int X = top[-1];
   const int I = top[-2];
@@ -1044,7 +1044,7 @@ static WEBP_INLINE func HD4_SSE2(uint8_t* WEBP_RESTRICT dst,
   DST(1, 3) = AVG3(L, K, J);
 }
 
-static WEBP_INLINE func TM4_SSE2(uint8_t* WEBP_RESTRICT dst,
+static  func TM4_SSE2(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT top) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i top_values = _mm_cvtsi32_si128(WebPMemToInt32(top));
@@ -1117,7 +1117,7 @@ func Intra16Preds_SSE2(uint8_t* WEBP_RESTRICT dst,
 //------------------------------------------------------------------------------
 // Metric
 
-static WEBP_INLINE func SubtractAndAccumulate_SSE2(const __m128i a,
+static  func SubtractAndAccumulate_SSE2(const __m128i a,
                                                    const __m128i b,
                                                    __m128i* const sum) {
   // take abs(a-b) in 8b
@@ -1134,7 +1134,7 @@ static WEBP_INLINE func SubtractAndAccumulate_SSE2(const __m128i a,
   *sum = _mm_add_epi32(sum1, sum2);
 }
 
-static WEBP_INLINE int SSE_16xN_SSE2(const uint8_t* WEBP_RESTRICT a,
+static  int SSE_16xN_SSE2(const uint8_t* WEBP_RESTRICT a,
                                      const uint8_t* WEBP_RESTRICT b,
                                      int num_pairs) {
   __m128i sum = _mm_setzero_si128();
@@ -1400,7 +1400,7 @@ static int Disto16x16_SSE2(const uint8_t* WEBP_RESTRICT const a,
 // Quantization
 //
 
-static WEBP_INLINE int DoQuantizeBlock_SSE2(
+static  int DoQuantizeBlock_SSE2(
     int16_t in[16], int16_t out[16],
     const uint16_t* WEBP_RESTRICT const sharpen,
     const VP8Matrix* WEBP_RESTRICT const mtx) {

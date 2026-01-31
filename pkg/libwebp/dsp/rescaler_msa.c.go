@@ -121,7 +121,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
     dst = __msa_copy_s_w((v4i32)t0, 0);                     \
   } while (0)
 
-static WEBP_INLINE func ExportRowExpand_0(
+static  func ExportRowExpand_0(
     const uint32_t* WEBP_RESTRICT frow, uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk->fy_scale);
@@ -178,7 +178,7 @@ static WEBP_INLINE func ExportRowExpand_0(
   }
 }
 
-static WEBP_INLINE func ExportRowExpand_1(
+static  func ExportRowExpand_1(
     const uint32_t* WEBP_RESTRICT frow, uint32_t* WEBP_RESTRICT irow,
     uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
@@ -269,7 +269,7 @@ func RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
 }
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
-static WEBP_INLINE func ExportRowShrink_0(
+static  func ExportRowShrink_0(
     const uint32_t* WEBP_RESTRICT frow, uint32_t* WEBP_RESTRICT irow,
     uint8_t* WEBP_RESTRICT dst, int length, const uint32_t yscale,
     WebPRescaler* WEBP_RESTRICT const wrk) {
@@ -355,7 +355,7 @@ static WEBP_INLINE func ExportRowShrink_0(
   }
 }
 
-static WEBP_INLINE func ExportRowShrink_1(
+static  func ExportRowShrink_1(
     uint32_t* WEBP_RESTRICT irow, uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk->fxy_scale);

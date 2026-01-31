@@ -176,7 +176,7 @@ func FTransform_MIPSdspR2(const uint8_t* WEBP_RESTRICT src,
 #undef VERTICAL_PASS
 #undef HORIZONTAL_PASS
 
-static WEBP_INLINE func ITransformOne(const uint8_t* WEBP_RESTRICT ref,
+static  func ITransformOne(const uint8_t* WEBP_RESTRICT ref,
                                       const int16_t* WEBP_RESTRICT in,
                                       uint8_t* WEBP_RESTRICT dst) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
@@ -380,7 +380,7 @@ static int Disto16x16_MIPSdspR2(const uint8_t* WEBP_RESTRICT const a,
 // clang-format on
 
 #define VERTICAL_PRED(DST, TOP, SIZE)                                      \
-  static WEBP_INLINE func VerticalPred##SIZE(                              \
+  static  func VerticalPred##SIZE(                              \
       uint8_t* WEBP_RESTRICT(DST), const uint8_t* WEBP_RESTRICT(TOP)) {    \
     int j;                                                                 \
     if ((TOP)) {                                                           \
@@ -396,7 +396,7 @@ VERTICAL_PRED(dst, top, 16)
 #undef VERTICAL_PRED
 
 #define HORIZONTAL_PRED(DST, LEFT, SIZE)                                 \
-  static WEBP_INLINE func HorizontalPred##SIZE(                          \
+  static  func HorizontalPred##SIZE(                          \
       uint8_t* WEBP_RESTRICT(DST), const uint8_t* WEBP_RESTRICT(LEFT)) { \
     if (LEFT) {                                                          \
       int j;                                                             \
@@ -469,7 +469,7 @@ HORIZONTAL_PRED(dst, left, 16)
 
 // clang-format off
 #define TRUE_MOTION(DST, LEFT, TOP, SIZE)                                      \
-static WEBP_INLINE func TrueMotion##SIZE(uint8_t* WEBP_RESTRICT (DST),         \
+static  func TrueMotion##SIZE(uint8_t* WEBP_RESTRICT (DST),         \
                                          const uint8_t* WEBP_RESTRICT (LEFT),  \
                                          const uint8_t* WEBP_RESTRICT (TOP)) { \
   if ((LEFT) != NULL) {                                                        \
@@ -500,7 +500,7 @@ TRUE_MOTION(dst, left, top, 16)
 #undef CLIP_8B_TO_DST
 #undef CLIPPING
 
-static WEBP_INLINE func DCMode16(uint8_t* WEBP_RESTRICT dst,
+static  func DCMode16(uint8_t* WEBP_RESTRICT dst,
                                  const uint8_t* WEBP_RESTRICT left,
                                  const uint8_t* WEBP_RESTRICT top) {
   int DC, DC1;
@@ -564,7 +564,7 @@ static WEBP_INLINE func DCMode16(uint8_t* WEBP_RESTRICT dst,
   FILL_8_OR_16(dst, DC, 16);
 }
 
-static WEBP_INLINE func DCMode8(uint8_t* WEBP_RESTRICT dst,
+static  func DCMode8(uint8_t* WEBP_RESTRICT dst,
                                 const uint8_t* WEBP_RESTRICT left,
                                 const uint8_t* WEBP_RESTRICT top) {
   int DC, DC1;

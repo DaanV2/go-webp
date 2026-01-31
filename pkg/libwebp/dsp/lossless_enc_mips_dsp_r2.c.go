@@ -74,7 +74,7 @@ func SubtractGreenFromBlueAndRed_MIPSdspR2(uint32_t* argb_data,
       : "memory");
 }
 
-static WEBP_INLINE uint32_t ColorTransformDelta(int8_t color_pred,
+static  uint32_t ColorTransformDelta(int8_t color_pred,
                                                 int8_t color) {
   return (uint32_t)((int)(color_pred)*color) >> 5;
 }
@@ -161,7 +161,7 @@ func TransformColor_MIPSdspR2(
   }
 }
 
-static WEBP_INLINE uint8_t TransformColorBlue(uint8_t green_to_blue,
+static  uint8_t TransformColorBlue(uint8_t green_to_blue,
                                               uint8_t red_to_blue,
                                               uint32_t argb) {
   const uint32_t green = argb >> 8;
@@ -213,7 +213,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
   }
 }
 
-static WEBP_INLINE uint8_t TransformColorRed(uint8_t green_to_red,
+static  uint8_t TransformColorRed(uint8_t green_to_red,
                                              uint32_t argb) {
   const uint32_t green = argb >> 8;
   uint32_t new_red = argb >> 16;

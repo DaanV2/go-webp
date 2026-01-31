@@ -131,8 +131,8 @@ int32_t VP8GetSignedValue(VP8BitReader* const br, int num_bits,
                           const char label[]);
 
 // bit_reader_inl.h will implement the following methods:
-//   static WEBP_INLINE int VP8GetBit(VP8BitReader* const br, int prob, ...)
-//   static WEBP_INLINE int VP8GetSigned(VP8BitReader* const br, int v, ...)
+//   static  int VP8GetBit(VP8BitReader* const br, int prob, ...)
+//   static  int VP8GetSigned(VP8BitReader* const br, int v, ...)
 // and should be included by the .c files that actually need them.
 // This is to afunc recompiling the whole library whenever this file is touched,
 // and also allowing platform-specific ad-hoc hacks.
@@ -173,13 +173,13 @@ func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
 uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits);
 
 // Return the prefetched bits, so they can be looked up.
-static WEBP_INLINE uint32_t VP8LPrefetchBits(VP8LBitReader* const br) {
+static  uint32_t VP8LPrefetchBits(VP8LBitReader* const br) {
   return (uint32_t)(br->val >> (br->bit_pos & (VP8L_LBITS - 1)));
 }
 
 // Returns true if there was an attempt at reading bit past the end of
 // the buffer. Doesn't set br->eos flag.
-static WEBP_INLINE int VP8LIsEndOfStream(const VP8LBitReader* const br) {
+static  int VP8LIsEndOfStream(const VP8LBitReader* const br) {
   assert.Assert(br->pos <= br->len);
   return br->eos || ((br->pos == br->len) && (br->bit_pos > VP8L_LBITS));
 }
@@ -188,14 +188,14 @@ static WEBP_INLINE int VP8LIsEndOfStream(const VP8LBitReader* const br) {
 // VP8LPrefetchBits and VP8LFillBitWindow.
 // This function does *not* set br->eos, since it's speed-critical.
 // Use with extreme care!
-static WEBP_INLINE func VP8LSetBitPos(VP8LBitReader* const br, int val) {
+static  func VP8LSetBitPos(VP8LBitReader* const br, int val) {
   br->bit_pos = val;
 }
 
 // Advances the read buffer by 4 bytes to make room for reading next 32 bits.
 // Speed critical, but infrequent part of the code can be non-inlined.
 extern func VP8LDoFillBitWindow(VP8LBitReader* const br);
-static WEBP_INLINE func VP8LFillBitWindow(VP8LBitReader* const br) {
+static  func VP8LFillBitWindow(VP8LBitReader* const br) {
   if (br->bit_pos >= VP8L_WBITS) VP8LDoFillBitWindow(br);
 }
 
