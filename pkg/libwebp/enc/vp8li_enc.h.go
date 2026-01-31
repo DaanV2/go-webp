@@ -38,13 +38,16 @@ extern "C" {
 // maximum value of 'transform_bits' in VP8LEncoder.
 const MAX_TRANSFORM_BITS =(MIN_TRANSFORM_BITS + (1 << NUM_TRANSFORM_BITS) - 1)
 
-type <FOO> int
+type VP8LEncoderARGBContent int
 
 const (
-  kEncoderNone = 0, kEncoderARGB, kEncoderNearLossless, kEncoderPalette
-} VP8LEncoderARGBContent;
+  kEncoderNone  VP8LEncoderARGBContent = iota
+  kEncoderARGB
+  kEncoderNearLossless
+  kEncoderPalette
+)
 
-type <Foo> struct {
+type VP8LEncoder struct {
   const config *WebPConfig;  // user configuration and parameters
   const pic *WebPPicture;    // input picture.
 
@@ -78,7 +81,7 @@ type <Foo> struct {
   struct VP8LBackwardRefs refs[4];  // Backward Refs array for temporaries.
   VP8LHashChain hash_chain;         // HashChain data for constructing
                                     // backward references.
-} VP8LEncoder;
+} ;
 
 //------------------------------------------------------------------------------
 // internal functions. Not public.

@@ -43,14 +43,14 @@ enum {
   MAX_LEVEL = 2047          // max level (note: max codable is 2047 + 67)
 }
 
-type <FOO> int
+type VP8RDLevel int
 
 const (            // Rate-distortion optimization levels
-  RD_OPT_NONE = 0,        // no rd-opt
-  RD_OPT_BASIC = 1,       // basic scoring (no trellis)
-  RD_OPT_TRELLIS = 2,     // perform trellis-quant on the final decision only
-  RD_OPT_TRELLIS_ALL = 3  // trellis-quant for every scoring (much slower)
-} VP8RDLevel;
+  RD_OPT_NONE VP8RDLevel = 0,        // no rd-opt
+  RD_OPT_BASIC VP8RDLevel = 1,       // basic scoring (no trellis)
+  RD_OPT_TRELLIS VP8RDLevel = 2,     // perform trellis-quant on the final decision only
+  RD_OPT_TRELLIS_ALL VP8RDLevel = 3  // trellis-quant for every scoring (much slower)
+)
 
 // YUV-cache parameters. Cache is 32-bytes wide (= one cacheline).
 // The original or reconstructed samples can be accessed using VP8Scan[].
@@ -131,67 +131,66 @@ const ERROR_DIFFUSION_QUALITY =98
 //------------------------------------------------------------------------------
 // Headers
 
-typedef uint32 proba_t;  // 16b + 16b
-typedef uint8 ProbaArray[NUM_CTX][NUM_PROBAS];
-typedef proba_t StatsArray[NUM_CTX][NUM_PROBAS];
-typedef uint16 CostArray[NUM_CTX][MAX_VARIABLE_LEVEL + 1];
-typedef const *uint16 (*CostArrayPtr)[NUM_CTX];  // for easy casting
-typedef const CostArrayMap *uint16[16][NUM_CTX];
-typedef double LFStats[NUM_MB_SEGMENTS][MAX_LF_LEVELS];  // filter stats
-
-typedef struct VP8Encoder VP8Encoder;
+type proba_t uint32  // 16b + 16b
+type ProbaArray [NUM_CTX][NUM_PROBAS]uint8
+type StatsArray [NUM_CTX][NUM_PROBAS]proba_t
+type CostArray [NUM_CTX][MAX_VARIABLE_LEVEL + 1]uint16
+type CostArrayPtr [NUM_CTX]*uint16  // for easy casting
+type CostArrayMap [16][NUM_CTX]*uint16;
+type LFStats [NUM_MB_SEGMENTS][MAX_LF_LEVELS]float64  // filter stats
 
 // segment features
-type <Foo> struct {
-  int num_segments;  // Actual number of segments. 1 segment only = unused.
-  int update_map;    // whether to update the segment map or not.
-                     // must be 0 if there's only 1 segment.
-  int size;          // bit-cost for transmitting the segment map
-} VP8EncSegmentHeader;
+type VP8EncSegmentHeader struct {
+	num_segments int  // Actual number of segments. 1 segment only = unused.
+	// whether to update the segment map or not.
+	// must be 0 if there's only 1 segment.
+	update_map int    
+	size int          // bit-cost for transmitting the segment map
+}
 
 // Struct collecting all frame-persistent probabilities.
-type <Foo> struct {
-  uint8 segments[3];  // probabilities for segment tree
-  uint8 skip_proba;   // final probability of being skipped.
-  ProbaArray coeffs[NUM_TYPES][NUM_BANDS];     // 1056 bytes
-  StatsArray stats[NUM_TYPES][NUM_BANDS];      // 4224 bytes
-  CostArray level_cost[NUM_TYPES][NUM_BANDS];  // 13056 bytes
-  CostArrayMap remapped_costs[NUM_TYPES];      // 1536 bytes
-  int dirty;           // if true, need to call VP8CalculateLevelCosts()
-  int use_skip_proba;  // Note: we always use skip_proba for now.
-  int nb_skip;         // number of skipped blocks
-} VP8EncProba;
+type VP8EncProba struct {
+  segments [3]uint8;  // probabilities for segment tree
+  skip_proba uint8;   // final probability of being skipped.
+  coeffs [NUM_TYPES][NUM_BANDS]ProbaArray;     // 1056 bytes
+  stats [NUM_TYPES][NUM_BANDS]StatsArray;      // 4224 bytes
+  level_cost [NUM_TYPES][NUM_BANDS]CostArray;  // 13056 bytes
+  remapped_costs [NUM_TYPES]CostArrayMap;      // 1536 bytes
+  dirty int            // if true, need to call VP8CalculateLevelCosts()
+  use_skip_proba int   // Note: we always use skip_proba for now.
+  nb_skip int          // number of skipped blocks
+}
 
 // Filter parameters. Not actually used in the code (we don't perform
 // the in-loop filtering), but filled from user's config
-type <Foo> struct {
-  int simple;         // filtering type: 0=complex, 1=simple
-  int level;          // base filter level [0..63]
-  int sharpness;      // [0..7]
-  int i4x4_lf_delta;  // delta filter level for i4x4 relative to i16x16
-} VP8EncFilterHeader;
+type VP8EncFilterHeader struct {
+   simple int         // filtering type: 0=complex, 1=simple
+   level int          // base filter level [0..63]
+   sharpness int      // [0..7]
+   i4x4_lf_delta int  // delta filter level for i4x4 relative to i16x16
+}
 
 //------------------------------------------------------------------------------
 // Informations about the macroblocks.
 
-type <Foo> struct {
+type VP8MBInfo struct {
   // block type
   unsigned int type : 2;  // 0=i4x4, 1=i16x16
   unsigned int uv_mode : 2;
   unsigned int skip : 1;
   unsigned int segment : 2;
   uint8 alpha;  // quantization-susceptibility
-} VP8MBInfo;
+} ;
 
-typedef type VP8Matrix struct {
+type VP8Matrix struct {
   uint16 q[16];        // quantizer steps
   uint16 iq[16];       // reciprocals, fixed point.
   uint32 bias[16];     // rounding bias
   uint32 zthresh[16];  // value below which a coefficient is zeroed
   uint16 sharpen[16];  // frequency boosters for slight sharpening
-} VP8Matrix;
+} ;
 
-type <Foo> struct {
+type VP8SegmentInfo struct {
   VP8Matrix y1, y2, uv;  // quantization matrices
   int alpha;      // quant-susceptibility, range [-127,127]. Zero is neutral.
                   // Lower values indicate a lower risk of blurriness.
@@ -207,13 +206,13 @@ type <Foo> struct {
 
   // lambda values for distortion-based evaluation
   score_t i4_penalty;  // penalty for using Intra4
-} VP8SegmentInfo;
+} ;
 
-typedef int8 DError[2 /* u/v */][2 /* top or left */];
+type DError [2 /* u/v */][2 /* top or left */]int8
 
 // Handy transient struct to accumulate score and info during RD-optimization
 // and mode evaluation.
-type <Foo> struct {
+type VP8ModeScore struct {
   score_t D, SD;            // Distortion, spectral distortion
   score_t H, R, score;      // header bits, rate, score.
   int16 y_dc_levels[16];  // Quantized levels for luma-DC, luma-AC, chroma.
@@ -224,11 +223,11 @@ type <Foo> struct {
   int mode_uv;           // mode number of chroma prediction
   uint32 nz;           // non-zero blocks
   int8 derr[2][3];     // DC diffusion errors for U/V for blocks #1/2/3
-} VP8ModeScore;
+} ;
 
 // Iterator structure to iterate through macroblocks, pointing to the
 // right neighbouring data (samples, predictions, contexts, ...)
-type <Foo> struct {
+type VP8EncIterator struct {
   int x, y;           // current macroblock
   yuv_in *uint8;    // input samples
   yuv_out *uint8;   // output samples
@@ -271,7 +270,7 @@ type <Foo> struct {
   uint8 yuv_left_mem[17 + 16 + 16 + 8 + WEBP_ALIGN_CST];
   // memory for *yuv
   uint8 yuv_mem[3 * YUV_SIZE_ENC + PRED_SIZE_ENC + WEBP_ALIGN_CST];
-} VP8EncIterator;
+} ;
 
 // in iterator.c
 // must be called first
@@ -316,7 +315,7 @@ func VP8SetSegment(const it *VP8EncIterator, int segment);
 
 typedef struct VP8Tokens VP8Tokens;  // struct details in token.c
 
-type <Foo> struct {
+type VP8TBuffer struct {
 #if !defined(DISABLE_TOKEN_BUFFER)
   pages *VP8Tokens;       // first page
   *VP8Tokens* last_page;  // last page
@@ -325,7 +324,7 @@ type <Foo> struct {
   int page_size;          // number of tokens per page
 #endif
   int error;  // true in case of malloc error
-} VP8TBuffer;
+} ;
 
 // initialize an empty buffer
 func VP8TBufferInit(const b *VP8TBuffer, int page_size);

@@ -496,17 +496,17 @@ func AddScore(WEBP_RESTRICT const dst *VP8ModeScore, const WEBP_RESTRICT const s
 // Performs trellis-optimized quantization.
 
 // Trellis node
-type <Foo> struct {
-  int8 prev;    // best previous node
-  int8 sign;    // sign of coeff_i
-  int16 level;  // level
-} Node;
+type Node struct {
+   prev int8    // best previous node
+   sign int8    // sign of coeff_i
+   level int16  // level
+} ;
 
 // Score state
-type <Foo> struct {
+type ScoreState struct {
   score_t score;          // partial RD score
-  const costs *uint16;  // shortcut to cost tables
-} ScoreState;
+  costs *uint16;  // shortcut to cost tables
+} ;
 
 // If a coefficient was quantized to a value Q (using a neutral bias),
 // we test all alternate possibilities between [Q-MIN_DELTA, Q+MAX_DELTA]

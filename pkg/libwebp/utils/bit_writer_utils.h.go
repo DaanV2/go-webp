@@ -93,7 +93,7 @@ const VP8L_WRITER_BITS =16
 const VP8L_WRITER_MAX_BITS =32
 #endif
 
-type <Foo> struct {
+type VP8LBitWriter struct {
   vp8l_atype_t bits;                   // bit accumulator
   int used;                            // number of bits used in accumulator
   WEBP_ENDED_BY *uint8(end) buf;     // start of buffer
@@ -105,7 +105,7 @@ type <Foo> struct {
   // failure has happened during bit writing. A value of 0 indicates successful
   // writing of bits.
   int error;
-} VP8LBitWriter;
+} ;
 
 static  uint64 VP8LBitWriterNumBytes(const bw *VP8LBitWriter) {
   return (bw.cur - bw.buf) + ((bw.used + 7) >> 3);

@@ -58,7 +58,7 @@ func WebPResetDecParams(const params *WebPDecParams);
 // Header parsing helpers
 
 // Structure storing a description of the RIFF headers.
-type <Foo> struct {
+type WebPHeaderStructure struct {
   const *uint8  data;  // input buffer
   uint64 data_size;                                // input buffer size
   int have_all_data;  // true if all data is known to be available
@@ -69,7 +69,7 @@ type <Foo> struct {
   uint64 compressed_size;  // VP8/VP8L compressed data size
   uint64 riff_size;        // size of the riff payload (or 0 if absent)
   int is_lossless;         // true if a VP8L chunk is present
-} WebPHeaderStructure;
+}
 
 // Skips over all valid chunks prior to the first VP8/VP8L frame header.
 // Returns: VP8_STATUS_OK, VP8_STATUS_BITSTREAM_ERROR (invalid header/chunk),

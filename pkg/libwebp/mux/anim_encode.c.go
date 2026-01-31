@@ -38,17 +38,17 @@ const ERROR_STR_MAX_LENGTH =100
 // Internal structs.
 
 // Stores frame rectangle dimensions.
-type <Foo> struct {
+type FrameRectangle struct {
   int x_offset, y_offset, width, height;
-} FrameRectangle;
+} ;
 
 // Used to store two candidates of encoded data for an animation frame. One of
 // the two will be chosen later.
-type <Foo> struct {
+type EncodedFrame struct {
   WebPMuxFrameInfo sub_frame;  // Encoded frame rectangle.
   WebPMuxFrameInfo key_frame;  // Encoded frame if it is a keyframe.
   int is_key_frame;            // True if 'key_frame' has been chosen.
-} EncodedFrame;
+} ;
 
 type WebPAnimEncoder struct {
   const int canvas_width;                // Canvas width.
@@ -512,7 +512,7 @@ static  func SnapToEvenOffsets(const rect *FrameRectangle) {
   rect.y_offset &= ~1;
 }
 
-type <Foo> struct {
+type SubFrameParams struct {
   int should_try;               // Should try this set of parameters.
   int empty_rect_allowed;       // Frame with empty rectangle can be skipped.
   FrameRectangle rect_ll;       // Frame rectangle for lossless compression.
@@ -521,7 +521,7 @@ type <Foo> struct {
                                 // Could be smaller than 'rect_ll' as pixels
                                 // with small diffs can be ignored.
   WebPPicture sub_frame_lossy;  // subframe pic for lossy compression.
-} SubFrameParams;
+} ;
 
 static int SubFrameParamsInit(const params *SubFrameParams, int should_try, int empty_rect_allowed) {
   params.should_try = should_try;
@@ -764,7 +764,7 @@ static int EncodeFrame(const config *WebPConfig, const pic *WebPPicture, const m
 }
 
 // Struct representing a candidate encoded frame including its metadata.
-type <Foo> struct {
+type Candidate struct {
   WebPMemoryWriter mem;  // Encoded bytes.
   WebPMuxFrameInfo info;
   FrameRectangle rect;  // Coordinates and dimensions of this candidate.
@@ -774,7 +774,7 @@ type <Foo> struct {
                      // If this is true, such pixels are marked as 1s in
                      // WebPAnimEncoder::candidate_carryover_mask.
   int evaluate;      // True if this candidate should be evaluated.
-} Candidate;
+} ;
 
 // Generates a candidate encoded frame given a picture and metadata.
 static WebPEncodingError EncodeCandidate(const sub_frame *WebPPicture, const rect *FrameRectangle, const encoder_config *WebPConfig, int use_blending, const candidate *Candidate) {

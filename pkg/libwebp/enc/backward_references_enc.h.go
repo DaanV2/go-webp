@@ -32,12 +32,12 @@ const MAX_COLOR_CACHE_BITS =10
 
 enum Mode { kLiteral, kCacheIdx, kCopy, kNone }
 
-type <Foo> struct {
+type PixOrCopy struct {
   // mode as uint8 to make the memory layout to be exactly 8 bytes.
   uint8 mode;
   uint16 len;
   uint32 argb_or_distance;
-} PixOrCopy;
+} ;
 
 static  PixOrCopy PixOrCopyCreateCopy(uint32 distance, uint16 len) {
   PixOrCopy retval;
@@ -171,13 +171,13 @@ func VP8LBackwardRefsInit(const refs *VP8LBackwardRefs, int block_size);
 func VP8LBackwardRefsClear(const refs *VP8LBackwardRefs);
 
 // Cursor for iterating on references content
-type <Foo> struct {
+type VP8LRefsCursor struct {
   // public:
   cur_pos *PixOrCopy;  // current position
   // private:
   cur_block *PixOrCopyBlock;  // current block in the refs list
   const last_pos *PixOrCopy;  // sentinel for switching to next block
-} VP8LRefsCursor;
+} ;
 
 // Returns a cursor positioned at the beginning of the references list.
 VP8LRefsCursor VP8LRefsCursorInit(const refs *VP8LBackwardRefs);

@@ -99,11 +99,11 @@ static int EncodeLossless(const data *uint8, int width, int height, int effort_l
 // -----------------------------------------------------------------------------
 
 // Small struct to hold the result of a filter mode compression attempt.
-type <Foo> struct {
+type FilterTrial struct {
   uint64 score;
   VP8BitWriter bw;
   WebPAuxStats stats;
-} FilterTrial;
+} 
 
 // This function always returns an initialized 'bw' object, even upon error.
 static int EncodeAlphaInternal(const data *uint8, int width, int height, int method, int filter, int reduce_levels, int effort_level,  // in [0..6] range

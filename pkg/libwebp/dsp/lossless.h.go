@@ -54,13 +54,13 @@ typedef func (*VP8LProcessDecBlueAndRedFunc)(const src *uint32, int num_pixels, 
 extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed;
 extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed_SSE;
 
-type <Foo> struct {
+type VP8LMultipliers struct {
   // Note: the members are uint8, so that any negative values are
   // automatically converted to "mod 256" values.
   uint8 green_to_red;
   uint8 green_to_blue;
   uint8 red_to_blue;
-} VP8LMultipliers;
+} ;
 typedef func (*VP8LTransformColorInverseFunc)(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32);
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse;
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse_SSE;
@@ -152,18 +152,18 @@ extern VP8LCostFunc VP8LExtraCost;
 extern VP8LCombinedShannonEntropyFunc VP8LCombinedShannonEntropy;
 extern VP8LShannonEntropyFunc VP8LShannonEntropy;
 
-type <Foo> struct {      // small struct to hold counters
+type VP8LStreaks struct {      // small struct to hold counters
   int counts[2];      // index: 0=zero streak, 1=non-zero streak
   int streaks[2][2];  // [zero/non-zero][streak<3 / streak>=3]
-} VP8LStreaks;
+} ;
 
-type <Foo> struct {          // small struct to hold bit entropy results
+type VP8LBitEntropy struct {          // small struct to hold bit entropy results
   uint64 entropy;       // entropy
   uint32 sum;           // sum of the population
   int nonzeros;           // number of non-zero elements in the population
   uint32 max_val;       // maximum value in the population
   uint32 nonzero_code;  // index of the last non-zero in the population
-} VP8LBitEntropy;
+} ;
 
 func VP8LBitEntropyInit(const entropy *VP8LBitEntropy);
 

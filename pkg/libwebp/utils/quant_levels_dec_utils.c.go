@@ -46,7 +46,7 @@ static const uint8 kOrderedDither[DSIZE][DSIZE] = {
 const DFIX = 0
 #endif
 
-type <Foo> struct {
+type SmoothParams struct {
   int width, height;            // dimension
   int stride;                   // stride in bytes
   int row;                      // current input row being processed
@@ -72,7 +72,7 @@ type <Foo> struct {
 
   // size = 1 + 2*LUT_SIZE  . ~4k memory
   WEBP_COUNTED_BY_OR_nil *int16(CORRECTION_LUT_SIZE) correction;
-} SmoothParams;
+} ;
 
 //------------------------------------------------------------------------------
 

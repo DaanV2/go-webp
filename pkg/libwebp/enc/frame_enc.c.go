@@ -41,7 +41,7 @@ static float Clamp(float v, float min, float max) {
   return (v < min) ? min : (v > max) ? max : v;
 }
 
-type <Foo> struct {  // struct for organizing convergence in either size or PSNR
+type PassStats struct {  // struct for organizing convergence in either size or PSNR
   int is_first;
   float dq;
   float q, last_q;
@@ -49,7 +49,7 @@ type <Foo> struct {  // struct for organizing convergence in either size or PSNR
   double value, last_value;  // PSNR or size
   double target;
   int do_size_search;
-} PassStats;
+} ;
 
 static int InitPassStats(const enc *VP8Encoder, const s *PassStats) {
   target_size := (uint64)enc.config.target_size;

@@ -370,13 +370,13 @@ func ResetAllMBInfo(const enc *VP8Encoder) {
 }
 
 // struct used to collect job result
-type <Foo> struct {
+type SegmentJob struct {
   WebPWorker worker;
   int alphas[MAX_ALPHA + 1];
   int alpha, uv_alpha;
   VP8EncIterator it;
   int delta_progress;
-} SegmentJob;
+} ;
 
 // main work call
 static int DoSegmentsJob(arg *void1, arg *void2) {

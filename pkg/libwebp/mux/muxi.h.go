@@ -79,21 +79,30 @@ type WebPMux struct {
 // Note: the reason for having two enums ('WebPChunkId' and 'CHUNK_INDEX') is to
 // allow two different chunks to have the same id (e.g. WebPChunkId
 // 'WEBP_CHUNK_IMAGE' can correspond to CHUNK_INDEX 'IDX_VP8' or 'IDX_VP8L').
-type <FOO> int
+type CHUNK_INDEX int
 
 const (
-  IDX_VP8X = 0, IDX_ICCP, IDX_ANIM, IDX_ANMF, IDX_ALPHA, IDX_VP8, IDX_VP8L, IDX_EXIF, IDX_XMP, IDX_UNKNOWN,
-
-  IDX_NIL, IDX_LAST_CHUNK
-} CHUNK_INDEX;
+	IDX_VP8X CHUNK_INDEX = iota
+	IDX_ICCP
+	IDX_ANIM
+	IDX_ANMF
+	IDX_ALPHA
+	IDX_VP8
+	IDX_VP8L
+	IDX_EXIF
+	IDX_XMP
+	IDX_UNKNOWN
+	IDX_NIL 
+	IDX_LAST_CHUNK
+)
 
 const NIL_TAG =uint(0x00000000)  // To signal func chunk.
 
-type <Foo> struct {
+type ChunkInfo struct {
   uint32 tag;
   WebPChunkId id;
   uint32 size;
-} ChunkInfo;
+} ;
 
 extern const ChunkInfo kChunks[IDX_LAST_CHUNK];
 

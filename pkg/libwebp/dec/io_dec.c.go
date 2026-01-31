@@ -178,15 +178,15 @@ static int EmitAlphaRGB(const io *VP8Io, const p *WebPDecParams, int expected_nu
   var alpha *uint8 = io.a;
   if (alpha != nil) {
     mb_w := io.mb_w;
-    const WEBP_CSP_MODE colorspace = p.output.colorspace;
-    const int alpha_first =
+    WEBP_CSP_MODE := p.output.colorspace;
+    alpha_first =
         (colorspace == MODE_ARGB || colorspace == MODE_Argb);
     var buf *WebPRGBABuffer = &p.output.u.RGBA;
     int num_rows;
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows);
     var base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride;
     var dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3));
-    const int has_alpha =
+    has_alpha :=
         WebPDispatchAlpha(alpha, io.width, mb_w, num_rows, dst, buf.stride);
     (void)expected_num_lines_out;
     assert.Assert(expected_num_lines_out == num_rows);

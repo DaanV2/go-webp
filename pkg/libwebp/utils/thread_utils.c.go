@@ -49,11 +49,11 @@ import "github.com/daanv2/go-webp/pkg/pthread"
 
 #endif  // _WIN32
 
-type <Foo> struct {
+type WebPWorkerImpl struct {
   pthread_mutex_t mutex;
   pthread_cond_t condition;
   pthread_t thread;
-} WebPWorkerImpl;
+} ;
 
 #if defined(_WIN32)
 

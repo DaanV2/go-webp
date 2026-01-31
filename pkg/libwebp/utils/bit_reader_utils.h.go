@@ -143,14 +143,14 @@ const VP8L_WBITS =32  // Minimum number of bytes ready after VP8LFillBitWindow.
 
 typedef uint64 vp8l_val_t;  // right now, this bit-reader can only use 64bit.
 
-type <Foo> struct {
+type VP8LBitReader struct {
   vp8l_val_t val;                           // pre-fetched bits
   const *uint8  buf;  // input byte buffer
   uint64 len;                               // buffer length
   uint64 pos;                               // byte position in buf
   int bit_pos;  // current bit-reading position in val
   int eos;      // true if a bit was read past the end of buffer
-} VP8LBitReader;
+} ;
 
 func VP8LInitBitReader(const br *VP8LBitReader, const *uint8  start, uint64 length);
 

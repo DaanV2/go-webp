@@ -36,14 +36,13 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 const NUM_ARGB_CACHE_ROWS =16
 
-static const int kCodeLengthLiterals = 16;
-static const int kCodeLengthRepeatCode = 16;
-static const uint8 kCodeLengthExtraBits[3] = {2, 3, 7}
-static const uint8 kCodeLengthRepeatOffsets[3] = {3, 3, 11}
+const int kCodeLengthLiterals = 16
+const int kCodeLengthRepeatCode = 16
+var kCodeLengthExtraBits  = [3]uint8{2, 3, 7}
+var kCodeLengthRepeatOffsets  = [3]uint8{3, 3, 11}
 
 // -----------------------------------------------------------------------------
 //  Five Huffman codes are used at each meta code:
@@ -52,21 +51,29 @@ static const uint8 kCodeLengthRepeatOffsets[3] = {3, 3, 11}
 //  3. red,
 //  4. blue, and,
 //  5. distance prefix codes.
-type <FOO> int
+type HuffIndex int
 
-const ( GREEN = 0, RED = 1, BLUE = 2, ALPHA = 3, DIST = 4 } HuffIndex;
+const ( 
+	GREEN HuffIndex = 0
+	RED HuffIndex = 1
+	BLUE HuffIndex = 2
+	ALPHA HuffIndex = 3
+	DIST HuffIndex = 4
+)
 
-static const uint16 kAlphabetSize[HUFFMAN_CODES_PER_META_CODE] = {
-    NUM_LITERAL_CODES + NUM_LENGTH_CODES, NUM_LITERAL_CODES, NUM_LITERAL_CODES, NUM_LITERAL_CODES, NUM_DISTANCE_CODES}
+const kAlphabetSize = [HUFFMAN_CODES_PER_META_CODE]uint16{
+    NUM_LITERAL_CODES + NUM_LENGTH_CODES, NUM_LITERAL_CODES, NUM_LITERAL_CODES, NUM_LITERAL_CODES, NUM_DISTANCE_CODES,
+}
 
-static const uint8 kLiteralMap[HUFFMAN_CODES_PER_META_CODE] = {0, 1, 1, 1, 0}
+const kLiteralMap = [HUFFMAN_CODES_PER_META_CODE]uint8{0, 1, 1, 1, 0}
 
-const NUM_CODE_LENGTH_CODES =19
-static const uint8 kCodeLengthCodeOrder[NUM_CODE_LENGTH_CODES] = {
+const NUM_CODE_LENGTH_CODES = 19
+const CODE_TO_PLANE_CODES =120
+
+const kCodeLengthCodeOrder = [NUM_CODE_LENGTH_CODES]uint8{
     17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
 
-const CODE_TO_PLANE_CODES =120
-static const uint8 kCodeToPlane[CODE_TO_PLANE_CODES] = {
+const kCodeToPlane = [CODE_TO_PLANE_CODES]uint8{
     0x18, 0x07, 0x17, 0x19, 0x28, 0x06, 0x27, 0x29, 0x16, 0x1a, 0x26, 0x2a, 0x38, 0x05, 0x37, 0x39, 0x15, 0x1b, 0x36, 0x3a, 0x25, 0x2b, 0x48, 0x04, 0x47, 0x49, 0x14, 0x1c, 0x35, 0x3b, 0x46, 0x4a, 0x24, 0x2c, 0x58, 0x45, 0x4b, 0x34, 0x3c, 0x03, 0x57, 0x59, 0x13, 0x1d, 0x56, 0x5a, 0x23, 0x2d, 0x44, 0x4c, 0x55, 0x5b, 0x33, 0x3d, 0x68, 0x02, 0x67, 0x69, 0x12, 0x1e, 0x66, 0x6a, 0x22, 0x2e, 0x54, 0x5c, 0x43, 0x4d, 0x65, 0x6b, 0x32, 0x3e, 0x78, 0x01, 0x77, 0x79, 0x53, 0x5d, 0x11, 0x1f, 0x64, 0x6c, 0x42, 0x4e, 0x76, 0x7a, 0x21, 0x2f, 0x75, 0x7b, 0x31, 0x3f, 0x63, 0x6d, 0x52, 0x5e, 0x00, 0x74, 0x7c, 0x41, 0x4f, 0x10, 0x20, 0x62, 0x6e, 0x30, 0x73, 0x7d, 0x51, 0x5f, 0x40, 0x72, 0x7e, 0x61, 0x6f, 0x50, 0x71, 0x7f, 0x60, 0x70}
 
 // Memory needed for lookup tables of one Huffman tree group. Red, blue, alpha
@@ -78,10 +85,10 @@ static const uint8 kCodeToPlane[CODE_TO_PLANE_CODES] = {
 // All values computed for 8-bit first level lookup with Mark Adler's tool:
 // https://github.com/madler/zlib/blob/v1.2.5/examples/enough.c
 const FIXED_TABLE_SIZE =(630 * 3 + 410)
-static const uint16 kTableSize[12] = {
+const  kTableSize = [12]uint16{
     FIXED_TABLE_SIZE + 654,  FIXED_TABLE_SIZE + 656,  FIXED_TABLE_SIZE + 658, FIXED_TABLE_SIZE + 662,  FIXED_TABLE_SIZE + 670,  FIXED_TABLE_SIZE + 686, FIXED_TABLE_SIZE + 718,  FIXED_TABLE_SIZE + 782,  FIXED_TABLE_SIZE + 912, FIXED_TABLE_SIZE + 1168, FIXED_TABLE_SIZE + 1680, FIXED_TABLE_SIZE + 2704}
 
-static int VP8LSetError(const dec *VP8LDecoder, VP8StatusCode error) {
+func VP8LSetError(/* const */ dec *VP8LDecoder, error VP8StatusCode) int {
   // The oldest error reported takes precedence over the new one.
   if (dec.status == VP8_STATUS_OK || dec.status == VP8_STATUS_SUSPENDED) {
     dec.status = error;
@@ -89,47 +96,48 @@ static int VP8LSetError(const dec *VP8LDecoder, VP8StatusCode error) {
   return 0;
 }
 
-static int DecodeImageStream(int xsize, int ysize, int is_level0, const dec *VP8LDecoder, *uint32* const decoded_data);
+func DecodeImageStream(xsize int , ysize int , is_level0 int, /* const */ dec *VP8LDecoder, decoded_data *uint32) int {
+	// TODO: implementation
+	return 0
+}
 
 //------------------------------------------------------------------------------
 
-int VP8LCheckSignature(const *uint8  data, size uint64 ) {
+func VP8LCheckSignature(/* const */  data *uint8 , size uint64) int {
   return (size >= VP8L_FRAME_HEADER_SIZE && data[0] == VP8L_MAGIC_BYTE &&
           (data[4] >> 5) == 0);  // version
 }
 
-static int ReadImageInfo(const br *VP8LBitReader, const width *int, const height *int, const has_alpha *int) {
-  if (VP8LReadBits(br, 8) != VP8L_MAGIC_BYTE) return 0;
+func ReadImageInfo(/* const */ br *VP8LBitReader, /* const */ width *int, /* const */ height *int, /* const */ has_alpha *int) int {
+  if (VP8LReadBits(br, 8) != VP8L_MAGIC_BYTE) {return 0}
   *width = VP8LReadBits(br, VP8L_IMAGE_SIZE_BITS) + 1;
   *height = VP8LReadBits(br, VP8L_IMAGE_SIZE_BITS) + 1;
   *has_alpha = VP8LReadBits(br, 1);
-  if (VP8LReadBits(br, VP8L_VERSION_BITS) != 0) return 0;
+  if (VP8LReadBits(br, VP8L_VERSION_BITS) != 0) {return 0}
   return !br.eos;
 }
 
-int VP8LGetInfo(const *uint8  data, uint64 data_size, const width *int, const height *int, const has_alpha *int) {
+func VP8LGetInfo(/* const */ data *uint8, data_size uint64 , /* const */ width *int, /* const */ height *int, /* const */ has_alpha *int) int {
   if (data == nil || data_size < VP8L_FRAME_HEADER_SIZE) {
     return 0;  // not enough data
   } else if (!VP8LCheckSignature(data, data_size)) {
     return 0;  // bad signature
   } else {
-    int w, h, a;
-    VP8LBitReader br;
+    var w, h, a int
+    var br VP8LBitReader
     VP8LInitBitReader(&br, data, data_size);
     if (!ReadImageInfo(&br, &w, &h, &a)) {
       return 0;
     }
-    if (width != nil) *width = w;
-    if (height != nil) *height = h;
-    if (has_alpha != nil) *has_alpha = a;
+    if (width != nil) {*width = w;}
+    if (height != nil) {*height = h;}
+    if (has_alpha != nil) {*has_alpha = a;}
     return 1;
   }
 }
 
-//------------------------------------------------------------------------------
-
-static  int GetCopyDistance(int distance_symbol, const br *VP8LBitReader) {
-  int extra_bits, offset;
+func GetCopyDistance(distance_symbol int, /* const */ br *VP8LBitReader) int {
+  var extra_bits, offset int
   if (distance_symbol < 4) {
     return distance_symbol + 1;
   }
@@ -138,12 +146,12 @@ static  int GetCopyDistance(int distance_symbol, const br *VP8LBitReader) {
   return offset + VP8LReadBits(br, extra_bits) + 1;
 }
 
-static  int GetCopyLength(int length_symbol, const br *VP8LBitReader) {
+func GetCopyLength( length_symbol int, br *VP8LBitReader) int {
   // Length and distance prefixes are encoded the same way.
   return GetCopyDistance(length_symbol, br);
 }
 
-static  int PlaneCodeToDistance(int xsize, int plane_code) {
+func PlaneCodeToDistance(xsize, plane_code int ) int {
   if (plane_code > CODE_TO_PLANE_CODES) {
     return plane_code - CODE_TO_PLANE_CODES;
   } else {
@@ -151,7 +159,7 @@ static  int PlaneCodeToDistance(int xsize, int plane_code) {
     yoffset := dist_code >> 4;
     xoffset := 8 - (dist_code & 0xf);
     dist := yoffset * xsize + xoffset;
-    return (dist >= 1) ? dist : 1;  // dist<1 can happen if xsize is very small
+    return tenary.If(dist >= 1, dist, 1);  // dist<1 can happen if xsize is very small
   }
 }
 

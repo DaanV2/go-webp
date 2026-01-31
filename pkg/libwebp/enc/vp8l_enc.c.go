@@ -44,40 +44,59 @@ const MAX_PREDICTOR_IMAGE_SIZE =(1 << 14)
 // Palette
 
 // These five modes are evaluated and their respective entropy is computed.
-type <FOO> int
+type EntropyIx int
 
 const (
-  kDirect = 0, kSpatial = 1, kSubGreen = 2, kSpatialSubGreen = 3, kPalette = 4, kPaletteAndSpatial = 5, kNumEntropyIx = 6
-} EntropyIx;
+	kDirect EntropyIx = 0
+	kSpatial EntropyIx = 1
+	kSubGreen EntropyIx = 2
+	kSpatialSubGreen EntropyIx = 3
+	kPalette EntropyIx = 4
+	kPaletteAndSpatial EntropyIx = 5
+	kNumEntropyIx EntropyIx = 6
+)
 
-type <FOO> int
+type HistoIx int
 
 const (
-  kHistoAlpha = 0, kHistoAlphaPred, kHistoGreen, kHistoGreenPred, kHistoRed, kHistoRedPred, kHistoBlue, kHistoBluePred, kHistoRedSubGreen, kHistoRedPredSubGreen, kHistoBlueSubGreen, kHistoBluePredSubGreen, kHistoPalette, kHistoTotal  // Must be last.
-} HistoIx;
+  kHistoAlpha HistoIx = iota
+  kHistoAlphaPred
+  kHistoGreen
+  kHistoGreenPred
+  kHistoRed
+  kHistoRedPred
+  kHistoBlue
+  kHistoBluePred
+  kHistoRedSubGreen
+  kHistoRedPredSubGreen
+  kHistoBlueSubGreen
+  kHistoBluePredSubGreen
+  kHistoPalette
+  kHistoTotal  // Must be last.
+)
 
 const NUM_BUCKETS =256
 
-typedef uint32 HistogramBuckets[NUM_BUCKETS];
+type HistogramBuckets [NUM_BUCKETS]uint32
 
 // Keeping track of histograms, indexed by HistoIx.
 // Ideally, this would just be a struct with meaningful fields, but the
 // calculation of `entropy_comp` uses the index. One refactoring at a time :)
-type <Foo> struct {
-  HistogramBuckets category[kHistoTotal];
-} Histograms;
-
-func AddSingleSubGreen(uint32 p, HistogramBuckets r, HistogramBuckets b) {
-  green := (int)p >> 8;  // The upper bits are masked away later.
-  ++r[(((int)p >> 16) - green) & 0xff];
-  ++b[(((int)p >> 0) - green) & 0xff];
+type Histograms struct {
+  category [kHistoTotal]HistogramBuckets;
 }
 
-func AddSingle(uint32 p, HistogramBuckets a, HistogramBuckets r, HistogramBuckets g, HistogramBuckets b) {
-  ++a[(p >> 24) & 0xff];
-  ++r[(p >> 16) & 0xff];
-  ++g[(p >> 8) & 0xff];
-  ++b[(p >> 0) & 0xff];
+func AddSingleSubGreen(p uint32, r, b HistogramBuckets) {
+  green := p >> 8;  // The upper bits are masked away later.
+  r[((p >> 16) - green) & 0xff]++
+  b[((p >> 0) - green) & 0xff]++
+}
+
+func AddSingle(p uint32, a, r, g, b HistogramBuckets) {
+  a[(p >> 24) & 0xff]++
+  r[(p >> 16) & 0xff]++
+  g[(p >> 8) & 0xff]++
+  b[(p >> 0) & 0xff]++
 }
 
 static  uint8 HashPix(uint32 pix) {
@@ -243,16 +262,16 @@ static int GetTransformBits(int method, int histo_bits) {
 
 // Set of parameters to be used in each iteration of the cruncher.
 const CRUNCH_SUBCONFIGS_MAX =2
-type <Foo> struct {
+type CrunchSubConfig struct {
   int lz77;
   int do_no_cache;
-} CrunchSubConfig;
-type <Foo> struct {
+} ;
+type CrunchConfig struct {
   int entropy_idx;
   PaletteSorting palette_sorting_type;
   CrunchSubConfig sub_configs[CRUNCH_SUBCONFIGS_MAX];
   int sub_configs_size;
-} CrunchConfig;
+} ;
 
 // +2 because we add a palette sorting configuration for kPalette and
 // kPaletteAndSpatial.
@@ -1352,7 +1371,7 @@ func VP8LEncoderDelete(enc *VP8LEncoder) {
 // -----------------------------------------------------------------------------
 // Main call
 
-type <Foo> struct {
+type StreamEncodeContext struct {
   const config *WebPConfig;
   const picture *WebPPicture;
   bw *VP8LBitWriter;
@@ -1361,7 +1380,7 @@ type <Foo> struct {
   int num_crunch_configs;
   int red_and_blue_always_zero;
   stats *WebPAuxStats;
-} StreamEncodeContext;
+} ;
 
 static int EncodeStreamHook(input *void, data *void2) {
   var params *StreamEncodeContext = (*StreamEncodeContext)input;

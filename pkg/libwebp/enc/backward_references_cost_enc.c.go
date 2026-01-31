@@ -33,13 +33,13 @@ extern func VP8LClearBackwardRefs(const refs *VP8LBackwardRefs);
 extern int VP8LDistanceToPlaneCode(int xsize, int dist);
 extern func VP8LBackwardRefsCursorAdd(const refs *VP8LBackwardRefs, const PixOrCopy v);
 
-type <Foo> struct {
+type CostModel struct {
   uint32 alpha[VALUES_IN_BYTE];
   uint32 red[VALUES_IN_BYTE];
   uint32 blue[VALUES_IN_BYTE];
   uint32 distance[NUM_DISTANCE_CODES];
   literal *uint32;
-} CostModel;
+}
 
 func ConvertPopulationCountTableToBitEstimates(
     int num_symbols, const uint32 population_counts[], uint32 output[]) {
@@ -158,18 +158,18 @@ type CostInterval struct {
 }
 
 // The GetLengthCost(cost_model, k) are cached in a CostCacheInterval.
-type <Foo> struct {
+type CostCacheInterval struct {
   int64 cost;
   int start;
   int end;  // Exclusive.
-} CostCacheInterval;
+} ;
 
 // This structure is in charge of managing intervals and costs.
 // It caches the different CostCacheInterval, caches the different
 // GetLengthCost(cost_model, k) in cost_cache and the CostInterval's (whose
 // 'count' is limited by COST_CACHE_INTERVAL_SIZE_MAX).
 const COST_MANAGER_MAX_FREE_LIST =10
-type <Foo> struct {
+type CostManager struct {
   head *CostInterval;
   int count;  // The number of stored intervals.
   cache_intervals *CostCacheInterval;
@@ -185,7 +185,7 @@ type <Foo> struct {
   // These are regularly malloc'd remains. This list can't grow larger than than
   // size COST_CACHE_INTERVAL_SIZE_MAX - COST_MANAGER_MAX_FREE_LIST, note.
   recycled_intervals *CostInterval;
-} CostManager;
+} ;
 
 func CostIntervalAddToFreeList(const manager *CostManager, const interval *CostInterval) {
   interval.next = manager.free_intervals;

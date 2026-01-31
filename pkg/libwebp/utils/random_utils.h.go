@@ -19,20 +19,15 @@ import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 const VP8_RANDOM_DITHER_FIX =8  // fixed-point precision for dithering
 const VP8_RANDOM_TABLE_SIZE =55
 
-type <Foo> struct {
+type VP8Random struct {
   int index1, index2;
   uint32 tab[VP8_RANDOM_TABLE_SIZE];
   int amp;
-} VP8Random;
+} ;
 
 // Initializes random generator with an amplitude 'dithering' in range [0..1].
 func VP8InitRandom(const rg *VP8Random, float dithering);
@@ -59,8 +54,3 @@ static  int VP8RandomBits(const rg *VP8Random, int num_bits) {
   return VP8RandomBits2(rg, num_bits, rg.amp);
 }
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
-
-#endif  // WEBP_UTILS_RANDOM_UTILS_H_

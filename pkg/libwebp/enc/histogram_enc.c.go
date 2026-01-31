@@ -11,9 +11,8 @@ package enc
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
 //
-#ifdef HAVE_CONFIG_H
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-#endif
+
 
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stdlib"
@@ -38,15 +37,22 @@ const BIN_SIZE =(NUM_PARTITIONS * NUM_PARTITIONS * NUM_PARTITIONS)
 const MAX_HISTO_GREEDY =100
 
 // Enum to meaningfully access the elements of the Histogram arrays.
-type <FOO> int
+type HistogramIndex int
 
-const ( LITERAL = 0, RED, BLUE, ALPHA, DISTANCE } HistogramIndex;
+const ( 
+	LITERAL HistogramIndex = iota
+	RED
+	BLUE
+	ALPHA
+	DISTANCE
+)
 
 // Return the size of the histogram for a given cache_bits.
-static int GetHistogramSize(int cache_bits) {
+GetHistogramSize(int cache_bits) int  {
   literal_size := VP8LHistogramNumCodes(cache_bits);
   total_size := sizeof(VP8LHistogram) + sizeof(int) * literal_size;
   assert.Assert(total_size <= (uint64)0x7fffffff);
+
   return (int)total_size;
 }
 
@@ -511,14 +517,14 @@ func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5], const h *VP8LHistogra
 
 // The structure to keep track of cost range for the three dominant entropy
 // symbols.
-type <Foo> struct {
-  uint64 literal_max;
-  uint64 literal_min;
-  uint64 red_max;
-  uint64 red_min;
-  uint64 blue_max;
-  uint64 blue_min;
-} DominantCostRange;
+type DominantCostRange struct {
+   literal_max uint64
+   literal_min uint64
+   red_max uint64
+   red_min uint64
+   blue_max uint64
+   blue_min uint64
+}
 
 func DominantCostRangeInit(const c *DominantCostRange) {
   c.literal_max = 0;
@@ -733,19 +739,19 @@ static uint32 MyRand(const seed *uint32) {
 // Histogram pairs priority queue
 
 // Pair of histograms. Negative idx1 value means that pair is out-of-date.
-type <Foo> struct {
+type HistogramPair struct {
   int idx1;
   int idx2;
   int64 cost_diff;
   uint64 cost_combo;
   uint64 costs[5];
-} HistogramPair;
+} ;
 
-type <Foo> struct {
+type HistoQueue struct {
   queue *HistogramPair;
   int size;
   int max_size;
-} HistoQueue;
+} ;
 
 static int HistoQueueInit(const histo_queue *HistoQueue, const int max_size) {
   histo_queue.size = 0;

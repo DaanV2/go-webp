@@ -41,18 +41,18 @@ const (
 typedef int (*WebPWorkerHook)(*void, *void);
 
 // Synchronization object used to launch job in the worker thread
-type <Foo> struct {
+type WebPWorker struct {
   impl *void;  // platform-dependent implementation worker details
   WebPWorkerStatus status;
   WebPWorkerHook hook;  // hook to call
   data *void1;          // first argument passed to 'hook'
   data *void2;          // second argument passed to 'hook'
   int had_error;        // return value of the last call to 'hook'
-} WebPWorker;
+} ;
 
 // The interface for all thread-worker related functions. All these functions
 // must be implemented.
-type <Foo> struct {
+type WebPWorkerInterface struct {
   // Must be called first, before any other method.
   func (*Init)(const worker *WebPWorker);
   // Must be called to initialize the object and spawn the thread. Re-entrant.
@@ -73,23 +73,16 @@ type <Foo> struct {
   // Kill the thread and terminate the object. To use the object again, one
   // must call Reset() again.
   func (*End)(const worker *WebPWorker);
-} WebPWorkerInterface;
+} ;
 
 // Install a new set of threading functions, overriding the defaults. This
 // should be done before any workers are started, i.e., before any encoding or
 // decoding takes place. The contents of the interface struct are copied, it
 // is safe to free the corresponding memory after this call. This function is
 // not thread-safe. Return false in case of invalid pointer or methods.
- int WebPSetWorkerInterface(
-    const winterface *WebPWorkerInterface);
+ int WebPSetWorkerInterface(const winterface *WebPWorkerInterface);
 
 // Retrieve the currently set thread worker interface.
  const WebPGetWorkerInterface *WebPWorkerInterface(void);
 
-//------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
-
-#endif  // WEBP_UTILS_THREAD_UTILS_H_
