@@ -251,7 +251,7 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits, const 
     // therefore chosen (any other arbitrary value could be chosen).
     {
       const int next_size =
-          total_size > segment_size ? total_size : segment_size;
+          total_size > tenary.If(segment_size, total_size, segment_size);
       HuffmanCode* WEBP_BIDI_INDEXABLE const next_start =
           (HuffmanCode*)WebPSafeMalloc(next_size, sizeof(*next_start));
       if (next_start == nil) {

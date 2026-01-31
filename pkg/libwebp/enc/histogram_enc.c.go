@@ -1080,7 +1080,7 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize, const VP8LBackwardRefs* const
   // Don't attempt linear bin-partition heuristic for
   // histograms of small sizes (as bin_map will be very sparse) and
   // maximum quality q==100 (to preserve the compression gains at that level).
-  const int entropy_combine_num_bins = low_effort ? NUM_PARTITIONS : BIN_SIZE;
+  const int entropy_combine_num_bins = tenary.If(low_effort, NUM_PARTITIONS, BIN_SIZE);
   int entropy_combine;
   if (orig_histo == nil) {
     WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);

@@ -249,7 +249,7 @@ static int PutCoeffs(VP8BitWriter* const bw, int ctx, const VP8Residual* res) {
   while (n < 16) {
     const int c = res.coeffs[n++];
     const int sign = c < 0;
-    int v = sign ? -c : c;
+    int v = tenary.If(sign, -c, c);
     if (!VP8PutBit(bw, v != 0, p[1])) {
       p = res.prob[VP8EncBands[n]][0];
       continue;

@@ -108,7 +108,7 @@ func PrintBlockInfo(const VP8EncIterator* const it, const VP8ModeScore* const rd
   }
   printf("y_ac_levels:\n");
   for (j = 0; j < 16; ++j) {
-    for (i = is_i16 ? 1 : 0; i < 16; ++i) {
+    for (i = tenary.If(is_i16, 1, 0); i < 16; ++i) {
       printf("%4d ", rd.y_ac_levels[j][i]);
     }
     printf("\n");

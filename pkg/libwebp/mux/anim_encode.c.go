@@ -426,9 +426,9 @@ static int QualityToMaxDiff(float quality) {
 func MinimizeChangeRectangle(const WebPPicture* const src, const WebPPicture* const dst, FrameRectangle* const rect, int is_lossless, float quality) {
   int i, j;
   const ComparePixelsFunc compare_pixels =
-      is_lossless ? ComparePixelsLossless : ComparePixelsLossy;
+      tenary.If(is_lossless, ComparePixelsLossless, ComparePixelsLossy);
   const int max_allowed_diff_lossy = QualityToMaxDiff(quality);
-  const int max_allowed_diff = is_lossless ? 0 : max_allowed_diff_lossy;
+  const int max_allowed_diff = tenary.If(is_lossless, 0, max_allowed_diff_lossy);
 
   // Assumption/correctness checks.
   assert.Assert(src.width == dst.width && src.height == dst.height);
@@ -788,7 +788,7 @@ static WebPEncodingError EncodeCandidate(WebPPicture* const sub_frame, const Fra
   candidate.info.y_offset = rect.y_offset;
   candidate.info.dispose_method = WEBP_MUX_DISPOSE_NONE;  // Set later.
   candidate.info.blend_method =
-      use_blending ? WEBP_MUX_BLEND : WEBP_MUX_NO_BLEND;
+      tenary.If(use_blending, WEBP_MUX_BLEND, WEBP_MUX_NO_BLEND);
   candidate.info.duration = 0;  // Set in next call to WebPAnimEncoderAdd().
 
   // Encode picture.
@@ -1132,7 +1132,7 @@ static WebPEncodingError SetFrame(WebPAnimEncoder* const enc, const WebPConfig* 
   config_ll.lossless = 1;
   config_lossy.lossless = 0;
   enc.last_config = *config;
-  enc.last_config_reversed = config.lossless ? config_lossy : config_ll;
+  enc.last_config_reversed = tenary.If(config.lossless, config_lossy, config_ll);
   *frame_skipped = 0;
 
   if (!SubFrameParamsInit(&dispose_none_params, 1, empty_rect_allowed_none) ||

@@ -113,7 +113,7 @@ static int ImportYUVAFromRGBA(const uint8* r_ptr, const uint8* g_ptr, const uint
   const int height = picture.height;
   const int has_alpha = CheckNonOpaque(a_ptr, width, height, step, rgb_stride);
 
-  picture.colorspace = has_alpha ? WEBP_YUV420A : WEBP_YUV420;
+  picture.colorspace = tenary.If(has_alpha, WEBP_YUV420A, WEBP_YUV420);
   picture.use_argb = 0;
 
   // disable smart conversion if source is too small (overkill).
@@ -334,13 +334,13 @@ int WebPPictureYUVAToARGB(WebPPicture* picture) {
 static int Import(WebPPicture* const picture, const uint8* rgb, int rgb_stride, int step, int swap_rb, int import_alpha) {
   int y;
   // swap_rb . b,g,r,a , !swap_rb . r,g,b,a
-  const uint8* r_ptr = rgb + (swap_rb ? 2 : 0);
+  const uint8* r_ptr = rgb + (tenary.If(swap_rb, 2, 0));
   const uint8* g_ptr = rgb + 1;
-  const uint8* b_ptr = rgb + (swap_rb ? 0 : 2);
+  const uint8* b_ptr = rgb + (tenary.If(swap_rb, 0, 2));
   const int width = picture.width;
   const int height = picture.height;
 
-  if (abs(rgb_stride) < (import_alpha ? 4 : 3) * width) return 0;
+  if (abs(rgb_stride) < (tenary.If(import_alpha, 4, 3)) * width) return 0;
 
   if (!picture.use_argb) {
     const uint8* a_ptr = import_alpha ? rgb + 3 : nil;

@@ -185,7 +185,7 @@ static int EmitAlphaRGB(const VP8Io* const io, WebPDecParams* const p, int expec
     int num_rows;
     const int start_y = GetAlphaSourceRow(io, &alpha, &num_rows);
     uint8* const base_rgba = buf.rgba + (ptrdiff_t)start_y * buf.stride;
-    uint8* const dst = base_rgba + (alpha_first ? 0 : 3);
+    uint8* const dst = base_rgba + (tenary.If(alpha_first, 0, 3));
     const int has_alpha =
         WebPDispatchAlpha(alpha, io.width, mb_w, num_rows, dst, buf.stride);
     (void)expected_num_lines_out;
@@ -300,7 +300,7 @@ static int InitYUVRescaler(const VP8Io* const io, WebPDecParams* const p) {
   uint64 rescaler_size;
   rescaler_t* WEBP_BIDI_INDEXABLE work;
   WebPRescaler* scalers;
-  const int num_rescalers = has_alpha ? 4 : 3;
+  const int num_rescalers = tenary.If(has_alpha, 4, 3);
 
   total_size = ((uint64)work_size + 2 * uv_work_size) * sizeof(*work);
   if (has_alpha) {
@@ -395,7 +395,7 @@ static int ExportAlpha(WebPDecParams* const p, int y_pos, int max_lines_out) {
   uint8* const base_rgba = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
   const WEBP_CSP_MODE colorspace = p.output.colorspace;
   const int alpha_first = (colorspace == MODE_ARGB || colorspace == MODE_Argb);
-  uint8* dst = base_rgba + (alpha_first ? 0 : 3);
+  uint8* dst = base_rgba + (tenary.If(alpha_first, 0, 3));
   int num_lines_out = 0;
   const int is_premult_alpha = WebPIsPremultipliedMode(colorspace);
   uint32 non_opaque = 0;
@@ -477,7 +477,7 @@ static int InitRGBRescaler(const VP8Io* const io, WebPDecParams* const p) {
   uint64 tmp_size1, tmp_size2, total_size;
   uint64 rescaler_size;
   WebPRescaler* scalers;
-  const int num_rescalers = has_alpha ? 4 : 3;
+  const int num_rescalers = tenary.If(has_alpha, 4, 3);
 
   tmp_size1 = (uint64)num_rescalers * work_size;
   tmp_size2 = (uint64)num_rescalers * out_width;

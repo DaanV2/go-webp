@@ -362,7 +362,7 @@ static VP8StatusCode ParseHeadersInternal(
   }
 
   if (format != nil && !animation_present) {
-    *format = hdrs.is_lossless ? 2 : 1;
+    *format = tenary.If(hdrs.is_lossless, 2, 1);
   }
 
   if (!hdrs.is_lossless) {

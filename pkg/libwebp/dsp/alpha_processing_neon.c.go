@@ -63,8 +63,8 @@ func ApplyAlphaMultiply_NEON(uint8* rgba, int alpha_first, int w, int h, int str
     }
     // Finish with left-overs.
     for (; i < w; ++i) {
-      uint8* const rgb = rgba + (alpha_first ? 1 : 0);
-      const uint8* const alpha = rgba + (alpha_first ? 0 : 3);
+      uint8* const rgb = rgba + (tenary.If(alpha_first, 1, 0));
+      const uint8* const alpha = rgba + (tenary.If(alpha_first, 0, 3));
       const uint32 a = alpha[4 * i];
       if (a != 0xff) {
         const uint32 mult = MULTIPLIER(a);

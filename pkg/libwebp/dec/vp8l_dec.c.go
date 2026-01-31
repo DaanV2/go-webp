@@ -1109,7 +1109,7 @@ End:
   br.eos = VP8LIsEndOfStream(br);
   if (!ok || (br.eos && pos < end)) {
     return VP8LSetError(
-        dec, br.eos ? VP8_STATUS_SUSPENDED : VP8_STATUS_BITSTREAM_ERROR);
+        dec, tenary.If(br.eos, VP8_STATUS_SUSPENDED, VP8_STATUS_BITSTREAM_ERROR));
   }
   dec.last_pixel = pos;
   return ok;

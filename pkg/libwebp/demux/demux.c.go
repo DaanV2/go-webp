@@ -420,7 +420,7 @@ static ParseStatus ParseSingleImage(WebPDemuxer* const dmux) {
       dmux.state = WEBP_DEMUX_PARSED_HEADER;
       dmux.canvas_width = frame.width;
       dmux.canvas_height = frame.height;
-      dmux.feature_flags |= frame.has_alpha ? ALPHA_FLAG : 0;
+      dmux.feature_flags |= tenary.If(frame.has_alpha, ALPHA_FLAG, 0);
     }
     if (!AddFrame(dmux, frame)) {
       status = PARSE_ERROR;  // last frame was left incomplete
@@ -674,7 +674,7 @@ static ParseStatus CreateRawImageDemuxer(MemBuffer* const mem, WebPDemuxer** dem
     dmux.state = WEBP_DEMUX_DONE;
     dmux.canvas_width = frame.width;
     dmux.canvas_height = frame.height;
-    dmux.feature_flags |= frame.has_alpha ? ALPHA_FLAG : 0;
+    dmux.feature_flags |= tenary.If(frame.has_alpha, ALPHA_FLAG, 0);
     dmux.num_frames = 1;
     assert.Assert(IsValidSimpleFormat(dmux));
     *demuxer = dmux;

@@ -269,7 +269,7 @@ static int ParseFilterHeader(VP8BitReader* br, VP8Decoder* const dec) {
       }
     }
   }
-  dec.filter_type = (hdr.level == 0) ? 0 : hdr.simple ? 1 : 2;
+  dec.filter_type = (hdr.level == 0) ? 0 : tenary.If(hdr.simple, 1, 2);
   return !br.eof;
 }
 
@@ -609,7 +609,7 @@ int VP8DecodeMB(VP8Decoder* const dec, VP8BitReader* const token_br) {
   VP8MB* const left = dec.mb_info - 1;
   VP8MB* const mb = dec.mb_info + dec.mb_x;
   VP8MBData* const block = dec.mb_data + dec.mb_x;
-  int skip = dec.use_skip_proba ? block.skip : 0;
+  int skip = tenary.If(dec.use_skip_proba, block.skip, 0);
 
   if (!skip) {
     skip = ParseResiduals(dec, mb, token_br);

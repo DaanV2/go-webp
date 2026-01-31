@@ -21,7 +21,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-static  int clip(int v, int M) { return v < 0 ? 0 : v > M ? M : v; }
+func clip(v int , M int) int { return v < 0 ? 0 : v > M ? M : v; }
 
 // Paragraph 14.1
 static const uint8 kDcTable[128] = {

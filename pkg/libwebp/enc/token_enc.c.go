@@ -128,7 +128,7 @@ int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res, VP8TBuffe
   while (n < 16) {
     const int c = coeffs[n++];
     const int sign = c < 0;
-    const uint32 v = sign ? -c : c;
+    const uint32 v = tenary.If(sign, -c, c);
     if (!AddToken(tokens, v != 0, base_id + 1, s + 1)) {
       base_id = TOKEN_ID(coeff_type, VP8EncBands[n], 0);  // ctx=0
       s = res.stats[VP8EncBands[n]][0];

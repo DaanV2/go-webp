@@ -120,7 +120,7 @@ int WebPPictureAllocYUVA(WebPPicture* const picture) {
   WebPPictureResetBufferYUVA(picture);
 
   // alpha
-  a_width = has_alpha ? width : 0;
+  a_width = tenary.If(has_alpha, width, 0);
   a_stride = a_width;
   y_size = (uint64)y_stride * height;
   uv_size = (uint64)uv_stride * uv_height;

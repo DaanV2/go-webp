@@ -198,7 +198,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
   const uint8* const old_start =
       (mem.buf == nil) ? nil : mem.buf + mem.start;
   const uint8* const old_base =
-      need_compressed_alpha ? dec.alpha_data : old_start;
+      tenary.If(need_compressed_alpha, dec.alpha_data, old_start);
   assert.Assert(mem.buf != nil || mem.start == 0);
   assert.Assert(mem.mode == MEM_MODE_APPEND);
   if (data_size > MAX_CHUNK_PAYLOAD) {

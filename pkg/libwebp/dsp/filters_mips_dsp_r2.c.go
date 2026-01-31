@@ -314,7 +314,7 @@ func GradientFilter_MIPSdspR2(const uint8* WEBP_RESTRICT data, int width, int he
 //------------------------------------------------------------------------------
 
 func HorizontalUnfilter_MIPSdspR2(const uint8* prev, const uint8* in, uint8* out, int width) {
-  out[0] = in[0] + (prev == nil ? 0 : prev[0]);
+  out[0] = in[0] + (prev == tenary.If(nil, 0, prev)[0]);
   DO_PREDICT_LINE(in + 1, out + 1, width - 1, 1);
 }
 

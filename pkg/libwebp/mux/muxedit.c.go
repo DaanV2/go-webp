@@ -124,8 +124,8 @@ static WebPMuxError CreateFrameData(int width, int height, const WebPMuxFrameInf
   PutLE24(frame_bytes + 9, height - 1);
   PutLE24(frame_bytes + 12, info.duration);
   frame_bytes[15] =
-      (info.blend_method == WEBP_MUX_NO_BLEND ? 2 : 0) |
-      (info.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND ? 1 : 0);
+      (info.blend_method == tenary.If(WEBP_MUX_NO_BLEND, 2, 0)) |
+      (info.dispose_method == tenary.If(WEBP_MUX_DISPOSE_BACKGROUND, 1, 0));
 
   frame.bytes = frame_bytes;
   frame.size = frame_size;

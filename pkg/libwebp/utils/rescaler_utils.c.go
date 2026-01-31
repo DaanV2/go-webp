@@ -60,7 +60,7 @@ int WebPRescalerInit(WebPRescaler* const rescaler, int src_width, int src_height
   // vertical scaling parameters
   rescaler.y_add = rescaler.y_expand ? y_add - 1 : y_add;
   rescaler.y_sub = rescaler.y_expand ? y_sub - 1 : y_sub;
-  rescaler.y_accum = rescaler.y_expand ? rescaler.y_sub : rescaler.y_add;
+  rescaler.y_accum = tenary.If(rescaler.y_expand, rescaler.y_sub, rescaler.y_add);
   if (!rescaler.y_expand) {
     // This is WEBP_RESCALER_FRAC(dst_height, x_add * y_add) without the cast.
     // Its value is <= WEBP_RESCALER_ONE, because dst_height <= rescaler.y_add

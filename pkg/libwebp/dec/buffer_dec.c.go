@@ -87,7 +87,7 @@ static VP8StatusCode CheckDecBuffer(const WebPDecBuffer* const buffer) {
     ok &= (stride >= width * kModeBpp[mode]);
     ok &= (buf.rgba != nil);
   }
-  return ok ? VP8_STATUS_OK : VP8_STATUS_INVALID_PARAM;
+  return tenary.If(ok, VP8_STATUS_OK, VP8_STATUS_INVALID_PARAM);
 }
 #undef MIN_BUFFER_SIZE
 
