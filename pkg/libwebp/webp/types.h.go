@@ -13,13 +13,12 @@ package webp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+// IWYU pragma: export for uint64
 
-import "github.com/daanv2/go-webp/pkg/stddef"  // IWYU pragma: export for uint64
-
-
+// For memcpy and friends
 
 // Macro to check ABI compatibility (same major revision number)
-func WEBP_ABI_IS_INCOMPATIBLE(a, b int) int {
+func WEBP_ABI_IS_INCOMPATIBLE(a, b int) bool {
 	return (((a) >> 8) != ((b) >> 8))
 }
 
@@ -34,14 +33,10 @@ func WebPMalloc(size uint64) {
 
 // Releases memory returned by the WebPDecode*() functions (from decode.h).
 // Deprecated: Not needed in Go, use built-in memory management.
-func WebPFree(void* ptr) {
+func WebPFree(ptr any) {
 	panic("not implemented")
 }
 
-
-import "github.com/daanv2/go-webp/pkg/string"  // For memcpy and friends
-
-#ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 
 // As explained in src/utils/bounds_safety.h, the below macros are defined
 // somewhat delicately to handle a three-state setup:
@@ -57,72 +52,46 @@ import "github.com/daanv2/go-webp/pkg/string"  // For memcpy and friends
 // Currently, we only allow non-ABI changing annotations in this file to ensure
 // we don't accidentally change the ABI for public functions.
 
-import "github.com/daanv2/go-webp/pkg/ptrcheck"
+ // Deprecated: Does nothing.
+const WEBP_ASSUME_UNSAFE_INDEXABLE_ABI = 0
 
-const WEBP_ASSUME_UNSAFE_INDEXABLE_ABI =\
-  __ptrcheck_abi_assume_unsafe_indexable()
+// Deprecated: Use golang std code
+const WEBP_UNSAFE_INDEXABLE = 0
 
-#define  __counted_by(x)
-#define WEBP_COUNTED_BY_OR_nil(x) __counted_by_or_nil(x)
-#define WEBP_SIZED_BY(x) __sized_by(x)
-#define WEBP_SIZED_BY_OR_nil(x) __sized_by_or_nil(x)
-#define WEBP_ENDED_BY(x) __ended_by(x)
+// Deprecated: Use golang std code
+const WEBP_SINGLE = 0
 
-const WEBP_UNSAFE_INDEXABLE =__unsafe_indexable
-const WEBP_SINGLE =__single
 
-#define WEBP_UNSAFE_FORGE_SINGLE(typ, ptr) __unsafe_forge_single(typ, ptr)
+// Deprecated: Use golang std code
+func WEBP_COUNTED_BY(x any) {}
+// Deprecated: Use golang std code
+func WEBP_COUNTED_BY_OR_nil(x any) {}
+// Deprecated: Use golang std code
+func WEBP_SIZED_BY(x any) {}
+// Deprecated: Use golang std code
+func WEBP_SIZED_BY_OR_nil(x any) {}
+// Deprecated: Use golang std code
+func WEBP_ENDED_BY(x any) {}
 
-#define WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(typ, ptr, size) \
-  __unsafe_forge_bidi_indexable(typ, ptr, size)
+// Deprecated: Use golang std code
+func WEBP_UNSAFE_MEMCPY(dst, src, size any) {}
 
-// Provide memcpy/memset/memmove wrappers to make migration easier.
-#define WEBP_UNSAFE_MEMCPY(dst, src, size)                               \
-  do {                                                                   \
-    memcpy(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, dst, size),        \
-           WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, src, size), size); \
-  } while (0)
+// Deprecated: Use golang std code
+func WEBP_UNSAFE_MEMSET(dst, c, size any) {/* memset(dst, c, size) */}
 
-#define WEBP_UNSAFE_MEMSET(dst, c, size)                                    \
-  do {                                                                      \
-    memset(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, dst, size), c, size); \
-  } while (0)
+// Deprecated: Use golang std code
+func  WEBP_UNSAFE_MEMMOVE(dst, src, size any) {/* memmove(dst, src, size) */}
 
-#define WEBP_UNSAFE_MEMMOVE(dst, src, size)                               \
-  do {                                                                    \
-    memmove(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, dst, size),        \
-            WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, src, size), size); \
-  } while (0)
+// Deprecated: Use golang std code
+func WEBP_UNSAFE_MEMCMP(s1, s2, size any) {/* memcmp(s1, s2, size) */}
 
-#define WEBP_UNSAFE_MEMCMP(s1, s2, size)                       \
-  memcmp(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, s1, size), \
-         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, s2, size), size)
+// Deprecated: Use golang std code
+func WEBP_UNSAFE_FORGE_SINGLE(typ, ptr any) {/* ((typ)(ptr)) */}
 
-#else  // WEBP_SUPPORT_FBOUNDS_SAFETY
-
-#define WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
-
-func WEBP_COUNTED_BY(x int) {}
-func WEBP_COUNTED_BY_OR_nil(x int) {}
-func WEBP_SIZED_BY(x int) {}
-func WEBP_SIZED_BY_OR_nil(x int) {}
-func WEBP_ENDED_BY(x int) {}
-
-#define WEBP_UNSAFE_INDEXABLE
-#define WEBP_SINGLE
-
-#define WEBP_UNSAFE_MEMCPY(dst, src, size) memcpy(dst, src, size)
-#define WEBP_UNSAFE_MEMSET(dst, c, size) memset(dst, c, size)
-#define WEBP_UNSAFE_MEMMOVE(dst, src, size) memmove(dst, src, size)
-#define WEBP_UNSAFE_MEMCMP(s1, s2, size) memcmp(s1, s2, size)
-
-#define WEBP_UNSAFE_FORGE_SINGLE(typ, ptr) ((typ)(ptr))
-#define WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(typ, ptr, size) ((typ)(ptr))
-
-#endif  // WEBP_SUPPORT_FBOUNDS_SAFETY
+// Deprecated: Use golang std code
+func WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(typ, ptr, size any) {/* ((typ)(ptr)) */}
 
 // This macro exists to indicate intentionality with self-assignments and
 // silence -Wself-assign compiler warnings.
-#define WEBP_SELF_ASSIGN(x) x = x
-
-#endif  // WEBP_WEBP_TYPES_H_
+// Deprecated: Not needed in Go.
+func WEBP_SELF_ASSIGN(x any) {/*x = x*/}
