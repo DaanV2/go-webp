@@ -161,7 +161,7 @@ int WebPPlaneDistortion(const *uint8 src, uint64 src_stride, const *uint8 ref, u
   return 1;
 }
 
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
 const BLUE_OFFSET =3  // uint32 0x000000ff is 0x00,00,00,ff in memory
 #else
 const BLUE_OFFSET =0  // uint32 0x000000ff is 0xff,00,00,00 in memory

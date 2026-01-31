@@ -32,7 +32,7 @@ const NUM_CHANNELS =4
 
 // Channel extraction from a uint32 representation of a uint8 RGBA/BGRA
 // buffer.
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
 #define CHANNEL_SHIFT(i) (24 - (i) * 8)
 #else
 #define CHANNEL_SHIFT(i) ((i) * 8)

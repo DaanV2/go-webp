@@ -40,10 +40,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // Macros to give the offset of each channel in a uint32 containing ARGB.
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
 // uint32 0xff000000 is 0xff,00,00,00 in memory
 #define CHANNEL_OFFSET(i) (i)
 #else

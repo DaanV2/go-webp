@@ -114,7 +114,7 @@ func MultARGBRow_MIPSdspR2(*uint32 const ptr, int width, int inverse) {
   }
 }
 
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
 func PackARGB_MIPSdspR2(const *uint8 a, const *uint8 r, const *uint8 g, const *uint8 b, int len, *uint32 out) {
   int temp0, temp1, temp2, temp3, offset;
   const int rest = len & 1;
@@ -150,7 +150,7 @@ func PackARGB_MIPSdspR2(const *uint8 a, const *uint8 r, const *uint8 g, const *u
       : [a] "r"(a), [r] "r"(r), [g] "r"(g), [b] "r"(b), [step] "r"(step), [loop_end] "r"(loop_end), [rest] "r"(rest)
       : "memory");
 }
-#endif  // WORDS_BIGENDIAN
+#endif  // constants.WORDS_BIGENDIAN
 
 func PackRGB_MIPSdspR2(const *uint8 r, const *uint8 g, const *uint8 b, int len, int step, *uint32 out) {
   int temp0, temp1, temp2, offset;
@@ -194,7 +194,7 @@ extern func WebPInitAlphaProcessingMIPSdspR2(void);
 WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingMIPSdspR2(){
   WebPDispatchAlpha = DispatchAlpha_MIPSdspR2;
   WebPMultARGBRow = MultARGBRow_MIPSdspR2;
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
   WebPPackARGB = PackARGB_MIPSdspR2;
 #endif
   WebPPackRGB = PackRGB_MIPSdspR2;

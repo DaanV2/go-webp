@@ -399,7 +399,7 @@ func WebPMultRows(*uint8 WEBP_RESTRICT ptr, int stride, const *uint8 WEBP_RESTRI
 func WebPMultRow_C(*uint8 WEBP_RESTRICT const ptr, const *uint8 WEBP_RESTRICT const alpha, int width, int inverse);
 func WebPMultARGBRow_C(*uint32 const ptr, int width, int inverse);
 
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
 // ARGB packing function: a/r/g/b input is rgba or bgra order.
 extern func (*WebPPackARGB)(const *uint8 WEBP_RESTRICT a, const *uint8 WEBP_RESTRICT r, const *uint8 WEBP_RESTRICT g, const *uint8 WEBP_RESTRICT b, int len, *uint32 WEBP_RESTRICT out);
 #endif

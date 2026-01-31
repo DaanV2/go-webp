@@ -364,7 +364,7 @@ static int Import(*WebPPicture const picture, const *uint8 rgb, int rgb_stride, 
       }
     } else {
       for (y = 0; y < height; ++y) {
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
         // BGRA or RGBA input order.
         const *uint8 a_ptr = rgb + 3;
         WebPPackARGB(a_ptr, r_ptr, g_ptr, b_ptr, width, dst);

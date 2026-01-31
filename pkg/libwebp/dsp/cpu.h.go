@@ -292,19 +292,22 @@ const WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW =\
 const WEBP_SWAP_16BIT_CSP =0
 #endif
 
-// some endian fix (e.g.: mips-gcc doesn't define __BIG_ENDIAN__)
-#if !defined(WORDS_BIGENDIAN) &&                   \
-    (defined(__BIG_ENDIAN__) || defined(_M_PPC) || \
-     (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)))
-#define WORDS_BIGENDIAN
-#endif
 
-type <FOO> int
+type CPUFeature int
 
 const (
-  kSSE2, kSSE3, kSlowSSSE3,  // special feature for slow SSSE3 architectures
-  kSSE4_1, kAVX, kAVX2, kNEON, kMIPS32, kMIPSdspR2, kMSA
-} CPUFeature;
+  kSSE2 CPUFeature = iota
+  kSSE3
+  kSlowSSSE3
+  // special feature for slow SSSE3 architectures
+  kSSE4_1 
+  kAVX
+	kAVX2
+	kNEON
+		kMIPS32
+		kMIPSdspR2
+		kMSA
+)
 
 // returns true if the CPU supports the feature.
 typedef int (*VP8CPUInfo)(CPUFeature feature);

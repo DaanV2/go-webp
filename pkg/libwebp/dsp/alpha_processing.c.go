@@ -281,7 +281,7 @@ static  uint32 MakeARGB32(int a, int r, int g, int b) {
   return (((uint32)a << 24) | (r << 16) | (g << 8) | b);
 }
 
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
 func PackARGB_C(const *uint8 WEBP_RESTRICT a, const *uint8 WEBP_RESTRICT r, const *uint8 WEBP_RESTRICT g, const *uint8 WEBP_RESTRICT b, int len, *uint32 WEBP_RESTRICT out) {
   int i;
   for (i = 0; i < len; ++i) {
@@ -304,7 +304,7 @@ int (*WebPDispatchAlpha)(const *uint8 WEBP_RESTRICT, int, int, int, *uint8 WEBP_
 func (*WebPDispatchAlphaToGreen)(const *uint8 WEBP_RESTRICT, int, int, int, *uint32 WEBP_RESTRICT, int);
 int (*WebPExtractAlpha)(const *uint8 WEBP_RESTRICT, int, int, int, *uint8 WEBP_RESTRICT, int);
 func (*WebPExtractGreen)(const *uint32 WEBP_RESTRICT argb, *uint8 WEBP_RESTRICT alpha, int size);
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
 func (*WebPPackARGB)(const *uint8 a, const *uint8 r, const *uint8 g, const *uint8 b, int, *uint32);
 #endif
 func (*WebPPackRGB)(const *uint8 WEBP_RESTRICT r, const *uint8 WEBP_RESTRICT g, const *uint8 WEBP_RESTRICT b, int len, int step, *uint32 WEBP_RESTRICT out);
@@ -327,7 +327,7 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
   WebPMultRow = WebPMultRow_C;
   WebPApplyAlphaMultiply4444 = ApplyAlphaMultiply_16b_C;
 
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
   WebPPackARGB = PackARGB_C;
 #endif
   WebPPackRGB = PackRGB_C;
@@ -377,7 +377,7 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
   assert.Assert(WebPDispatchAlphaToGreen != nil);
   assert.Assert(WebPExtractAlpha != nil);
   assert.Assert(WebPExtractGreen != nil);
-#ifdef WORDS_BIGENDIAN
+#ifdef constants.WORDS_BIGENDIAN
   assert.Assert(WebPPackARGB != nil);
 #endif
   assert.Assert(WebPPackRGB != nil);

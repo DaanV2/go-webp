@@ -627,11 +627,11 @@ func ConvertToYUVA(const *uint32 const src, int width, int y_pos, const *WebPDec
   // Lastly, store alpha if needed.
   if (buf.a != nil) {
     *uint8 const a = buf.a + (ptrdiff_t)y_pos * buf.a_stride;
-#if defined(WORDS_BIGENDIAN)
+if constants.WORDS_BIGENDIAN {
     WebPExtractAlpha((*uint8)src + 0, 0, width, 1, a, 0);
-#else
+} else {
     WebPExtractAlpha((*uint8)src + 3, 0, width, 1, a, 0);
-#endif
+}
   }
 }
 
@@ -921,11 +921,11 @@ func ExtractPalettedAlphaRows(*VP8LDecoder const dec, int last_row) {
 
 // cyclic rotation of pattern word
 static  uint32 Rotate8b(uint32 V) {
-#if defined(WORDS_BIGENDIAN)
-  return ((V & 0xff000000u) >> 24) | (V << 8);
-#else
-  return ((V & 0xffu) << 24) | (V >> 8);
-#endif
+	if constants.WORDS_BIGENDIAN {
+	return ((V & 0xff000000u) >> 24) | (V << 8);
+	} else {
+	return ((V & 0xffu) << 24) | (V >> 8);
+	}
 }
 
 // copy 1, 2 or 4-bytes pattern
@@ -964,11 +964,11 @@ static  func CopyBlock8b(*uint8 const dst, int dist, int length) {
 #endif
         break;
       case 2:
-#if !defined(WORDS_BIGENDIAN)
+if !constants.WORDS_BIGENDIAN {
         WEBP_UNSAFE_MEMCPY(&pattern, src, sizeof(uint16));
-#else
+} else {
         pattern = ((uint32)src[0] << 8) | src[1];
-#endif
+	  }
 #if defined(__arm__) || defined(_M_ARM)
         pattern |= pattern << 16;
 #elif defined(WEBP_USE_MIPS_DSP_R2)
