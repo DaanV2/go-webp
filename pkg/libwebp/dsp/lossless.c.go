@@ -175,7 +175,7 @@ func PredictorAdd0_C(const in *uint32, const upper *uint32, int num_pixels, WEBP
 }
 func PredictorAdd1_C(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
-  uint32 left = out[-1];
+  left := out[-1];
   (void)upper;
   for (i = 0; i < num_pixels; ++i) {
     out[i] = left = VP8LAddPixels(in[i], left);
@@ -208,7 +208,7 @@ func PredictorInverseTransform_C(const transform *VP8LTransform, int y_start, in
   }
 
   {
-    int y = y_start;
+    y := y_start;
     tile_width := 1 << transform.bits;
     mask := tile_width - 1;
     tiles_per_row := VP8LSubSampleSize(width, transform.bits);
@@ -217,14 +217,14 @@ func PredictorInverseTransform_C(const transform *VP8LTransform, int y_start, in
 
     while (y < y_end) {
       var pred_mode_src *uint32 = pred_mode_base;
-      int x = 1;
+      x := 1;
       // First pixel follows the T (mode=2) mode.
       PredictorAdd2_C(in, out - width, 1, out);
       // .. the rest:
       while (x < width) {
         const VP8LPredictorAddSubFunc pred_func =
             VP8LPredictorsAdd[((*pred_mode_src++) >> 8) & 0xf];
-        int x_end = (x & ~mask) + tile_width;
+        x_end := (x & ~mask) + tile_width;
         if (x_end > width) x_end = width;
         pred_func(in + x, out + x - width, x_end - x, out + x);
         x = x_end;
@@ -246,7 +246,7 @@ func VP8LAddGreenToBlueAndRed_C(const src *uint32, int num_pixels, dst *uint32) 
   for (i = 0; i < num_pixels; ++i) {
     argb := src[i];
     green := ((argb >> 8) & 0xff);
-    uint32 red_blue = (argb & uint(0x00ff00ff));
+    red_blue := (argb & uint(0x00ff00ff));
     red_blue += (green << 16) | green;
     red_blue &= uint(0x00ff00ff);
     dst[i] = (argb & uint(0xff00ff00)) | red_blue;
@@ -269,8 +269,8 @@ func VP8LTransformColorInverse_C(const m *VP8LMultipliers, const src *uint32, in
     argb := src[i];
     green := (int8)(argb >> 8);
     red := argb >> 16;
-    int new_red = red & 0xff;
-    int new_blue = argb & 0xff;
+    new_red := red & 0xff;
+    new_blue := argb & 0xff;
     new_red += ColorTransformDelta((int8)m.green_to_red, green);
     new_red &= 0xff;
     new_blue += ColorTransformDelta((int8)m.green_to_blue, green);
@@ -288,7 +288,7 @@ func ColorSpaceInverseTransform_C(const transform *VP8LTransform, int y_start, i
   safe_width := width & ~mask;
   remaining_width := width - safe_width;
   tiles_per_row := VP8LSubSampleSize(width, transform.bits);
-  int y = y_start;
+  y := y_start;
   const pred_row *uint32 =
       transform.data + (y >> transform.bits) * tiles_per_row;
 
@@ -341,7 +341,7 @@ STATIC_DECL func FUNC_NAME(const transform *VP8LTransform,               \
     count_mask := pixels_per_byte - 1;                                \
     bit_mask := (1 << bits_per_pixel) - 1;                       \
     for (y = y_start; y < y_end; ++y) {                                        \
-      uint32 packed_pixels = 0;                                              \
+      packed_pixels := 0;                                              \
       int x;                                                                   \
       for (x = 0; x < width; ++x) {                                            \
         /* We need to load fresh 'packed_pixels' once every                */  \

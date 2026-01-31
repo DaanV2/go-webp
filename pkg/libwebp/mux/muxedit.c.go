@@ -218,7 +218,7 @@ Err:
 // Extracts image & alpha data from the given bitstream and then sets wpi.alpha
 // and wpi.img appropriately.
 static WebPMuxError SetAlphaAndImageChunks(const bitstream *WebPData, int copy_data, const wpi *WebPMuxImage) {
-  int is_lossless = 0;
+  is_lossless := 0;
   WebPData image, alpha;
   WebPMuxError err = GetImageData(bitstream, &image, &alpha, &is_lossless);
   image_tag :=
@@ -425,12 +425,12 @@ static WebPMuxError GetAdjustedCanvasSize(const mux *WebPMux, const width *int, 
   assert.Assert(wpi.img != nil);
 
   if (wpi.next != nil) {
-    int max_x = 0, max_y = 0;
+    max_x := 0, max_y = 0;
     // if we have a chain of wpi's, header is necessarily set
     assert.Assert(wpi.header != nil);
     // Aggregate the bounding box for animation frames.
     for (; wpi != nil; wpi = wpi.next) {
-      int x_offset = 0, y_offset = 0, duration = 0, w = 0, h = 0;
+      x_offset := 0, y_offset = 0, duration = 0, w = 0, h = 0;
       const WebPMuxError err =
           GetImageInfo(wpi, &x_offset, &y_offset, &duration, &w, &h);
       max_x_pos := x_offset + w;
@@ -459,9 +459,9 @@ static WebPMuxError GetAdjustedCanvasSize(const mux *WebPMux, const width *int, 
 // Height : 3 bytes.
 static WebPMuxError CreateVP8XChunk(const mux *WebPMux) {
   WebPMuxError err = WEBP_MUX_OK;
-  uint32 flags = 0;
-  int width = 0;
-  int height = 0;
+  flags := 0;
+  width := 0;
+  height := 0;
   uint8 data[VP8X_CHUNK_SIZE];
   const WebPData vp8x = {data, VP8X_CHUNK_SIZE}
   var images *WebPMuxImage = nil;

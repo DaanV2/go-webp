@@ -58,10 +58,10 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/stdio"
 
-var int num_malloc_calls = 0;
-var int num_calloc_calls = 0;
-var int num_free_calls = 0;
-var int countdown_to_fail = 0;  // 0 = off
+var num_malloc_calls := 0;
+var num_calloc_calls := 0;
+var num_free_calls := 0;
+var countdown_to_fail := 0;  // 0 = off
 
 type MemBlock struct {
   ptr *void;
@@ -70,12 +70,12 @@ type MemBlock struct {
 }
 
 var all_blocks *MemBlock = nil;
-var uint64 total_mem = 0;
-var uint64 total_mem_allocated = 0;
-var uint64 high_water_mark = 0;
-var uint64 mem_limit = 0;
+var total_mem := 0;
+var total_mem_allocated := 0;
+var high_water_mark := 0;
+var mem_limit := 0;
 
-var int exit_registered = 0;
+var exit_registered := 0;
 
 func PrintMemInfo(){
   fprintf(stderr, "\nMEMORY INFO:\n");

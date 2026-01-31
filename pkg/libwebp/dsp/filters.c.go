@@ -154,7 +154,7 @@ func NoneUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int width) {
 }
 
 func HorizontalUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int width) {
-  uint8 pred = (prev == nil) ? 0 : prev[0];
+  pred := (prev == nil) ? 0 : prev[0];
   int i;
   for (i = 0; i < width; ++i) {
     out[i] = (uint8)(pred + in[i]);
@@ -177,7 +177,7 @@ func GradientUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int widt
   if (prev == nil) {
     HorizontalUnfilter_C(nil, in, out, width);
   } else {
-    uint8 top = prev[0], top_left = top, left = top;
+    top := prev[0], top_left = top, left = top;
     int i;
     for (i = 0; i < width; ++i) {
       top = prev[i];  // need to read this first, in case prev==out

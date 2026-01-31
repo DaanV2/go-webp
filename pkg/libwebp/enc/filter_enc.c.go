@@ -185,7 +185,7 @@ func VP8AdjustFilterStrength(const it *VP8EncIterator) {
   }
 #endif  // !defined(WEBP_REDUCE_SIZE)
   if (enc.config.filter_strength > 0) {
-    int max_level = 0;
+    max_level := 0;
     int s;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
       var dqm *VP8SegmentInfo = &enc.dqm[s];

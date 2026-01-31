@@ -157,7 +157,7 @@ int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) 
 
 static int RescalePlane(const src *uint8, int src_width, int src_height, int src_stride, dst *uint8, int dst_width, int dst_height, int dst_stride, rescaler_t* const work, int num_channels) {
   WebPRescaler rescaler;
-  int y = 0;
+  y := 0;
   if (!WebPRescalerInit(&rescaler, src_width, src_height, dst, dst_width, dst_height, dst_stride, num_channels, work)) {
     return 0;
   }
@@ -183,7 +183,7 @@ int WebPPictureRescale(picture *WebPPicture, int width, int height) {
   WebPPicture tmp;
   int prev_width, prev_height;
   rescaler_t* work;
-  int status = VP8_ENC_OK;
+  status := VP8_ENC_OK;
 
   if (picture == nil) return 0;
   prev_width = picture.width;

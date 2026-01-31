@@ -55,7 +55,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
 static int EncodeLossless(const data *uint8, int width, int height, int effort_level,  // in [0..6] range
                           int use_quality_100, const bw *VP8LBitWriter, const stats *WebPAuxStats) {
-  int ok = 0;
+  ok := 0;
   WebPConfig config;
   WebPPicture picture;
 
@@ -108,13 +108,13 @@ type FilterTrial struct {
 // This function always returns an initialized 'bw' object, even upon error.
 static int EncodeAlphaInternal(const data *uint8, int width, int height, int method, int filter, int reduce_levels, int effort_level,  // in [0..6] range
                                const tmp_alpha *uint8, result *FilterTrial) {
-  int ok = 0;
+  ok := 0;
   const alpha_src *uint8;
   WebPFilterFunc filter_func;
   uint8 header;
   data_size := width * height;
   var output *uint8 = nil;
-  uint64 output_size = 0;
+  output_size := 0;
   VP8LBitWriter tmp_bw;
 
   assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
@@ -180,7 +180,7 @@ static int EncodeAlphaInternal(const data *uint8, int width, int height, int met
 
 static int GetNumColors(const data *uint8, int width, int height, int stride) {
   int j;
-  int colors = 0;
+  colors := 0;
   uint8 color[256] = {0}
 
   for (j = 0; j < height; ++j) {
@@ -201,10 +201,10 @@ const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
 static uint32 GetFilterMap(const alpha *uint8, int width, int height, int filter, int effort_level) {
-  uint32 bit_map = uint(0);
+  bit_map := uint(0);
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
-    int try_filter_none = (effort_level > 3);
+    try_filter_none := (effort_level > 3);
     kMinColorsForFilterNone := 16;
     kMaxColorsForFilterNone := 192;
     num_colors := GetNumColors(alpha, width, height, width);
@@ -232,9 +232,9 @@ func InitFilterTrial(const score *FilterTrial) {
 }
 
 static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, uint64 data_size, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, const output_size *uint64, const stats *WebPAuxStats) {
-  int ok = 1;
+  ok := 1;
   FilterTrial best;
-  uint32 try_map = GetFilterMap(alpha, width, height, filter, effort_level);
+  try_map := GetFilterMap(alpha, width, height, filter, effort_level);
   InitFilterTrial(&best);
 
   if (try_map != FILTER_TRY_NONE) {
@@ -288,8 +288,8 @@ static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filte
 
   quant_alpha *uint8 = nil;
   data_size := width * height;
-  uint64 sse = 0;
-  int ok = 1;
+  sse := 0;
+  ok := 1;
   reduce_levels := (quality < 100);
 
   // quick correctness checks
@@ -355,7 +355,7 @@ static int CompressAlphaJob(arg *void1, unused *void) {
   var enc *VP8Encoder = (*VP8Encoder)arg1;
   var config *WebPConfig = enc.config;
   alpha_data *uint8 = nil;
-  uint64 alpha_size = 0;
+  alpha_size := 0;
   effort_level := config.method;  // maps to [0..6]
   const WEBP_FILTER_TYPE filter =
       (config.alpha_filtering == 0)   ? WEBP_FILTER_NONE
@@ -418,7 +418,7 @@ int VP8EncFinishAlpha(const enc *VP8Encoder) {
 }
 
 int VP8EncDeleteAlpha(const enc *VP8Encoder) {
-  int ok = 1;
+  ok := 1;
   if (enc.thread_level > 0) {
     var worker *WebPWorker = &enc.alpha_worker;
     // finish anything left in flight

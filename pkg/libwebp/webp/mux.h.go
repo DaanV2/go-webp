@@ -25,7 +25,7 @@ const WEBP_MUX_ABI_VERSION = 0x0109  // MAJOR(8b) + MINOR(8b)
 // Code Example#1: Create a WebPMux object with image data, color profile and
 // XMP metadata.
 /*
-  int copy_data = 0;
+  copy_data := 0;
   *WebPMux mux = WebPMuxNew();
   // ... (Prepare image data).
   WebPMuxSetImage(mux, &image, copy_data);
@@ -42,7 +42,7 @@ const WEBP_MUX_ABI_VERSION = 0x0109  // MAJOR(8b) + MINOR(8b)
 
 // Code Example#2: Get image and color profile data from a WebP file.
 /*
-  int copy_data = 0;
+  copy_data := 0;
   // ... (Read data from file).
   *WebPMux mux = WebPMuxCreate(&data, copy_data);
   WebPMuxGetFrame(mux, 1, &image);

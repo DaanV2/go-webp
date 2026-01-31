@@ -72,7 +72,7 @@ extern VP8CPUInfo VP8GetCPUInfo;
 //------------------------------------------------------------------------------
 // Sharp RGB.YUV conversion
 
-static const int kMinDimensionIterativeConversion = 4;
+static const kMinDimensionIterativeConversion := 4;
 
 //------------------------------------------------------------------------------
 // Main function
@@ -179,7 +179,7 @@ static int ImportYUVAFromRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_pt
     } else {
       // Copy of WebPImportYUVAFromRGBA/WebPImportYUVAFromRGBALastLine, // but with dithering.
       for (y = 0; y < (height >> 1); ++y) {
-        int rows_have_alpha = has_alpha;
+        rows_have_alpha := has_alpha;
         ConvertRowToY(r_ptr, g_ptr, b_ptr, step, dst_y, width, rg);
         ConvertRowToY(r_ptr + rgb_stride, g_ptr + rgb_stride, b_ptr + rgb_stride, step, dst_y + picture.y_stride, width, rg);
         dst_y += 2 * picture.y_stride;
@@ -203,7 +203,7 @@ static int ImportYUVAFromRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_pt
         if (has_alpha) a_ptr += 2 * rgb_stride;
       }
       if (height & 1) {  // extra last row
-        int row_has_alpha = has_alpha;
+        row_has_alpha := has_alpha;
         ConvertRowToY(r_ptr, g_ptr, b_ptr, step, dst_y, width, rg);
         if (row_has_alpha) {
           row_has_alpha &= !WebPExtractAlpha(a_ptr, 0, width, 1, dst_a, 0);

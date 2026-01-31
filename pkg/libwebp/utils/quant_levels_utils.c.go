@@ -36,7 +36,7 @@ int QuantizeLevels(const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int
   int freq[NUM_SYMBOLS] = {0}
   int q_level[NUM_SYMBOLS] = {0}
   double inv_q_level[NUM_SYMBOLS] = {0}
-  int min_s = 255, max_s = 0;
+  min_s := 255, max_s = 0;
   data_size := height * width;
   int i, num_levels_in, iter;
   double last_err = 1.e38, err = 0.;

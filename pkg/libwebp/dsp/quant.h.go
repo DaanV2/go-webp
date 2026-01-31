@@ -57,7 +57,7 @@ static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
 const IsFlat = IsFlat_C
 
 static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
-  int score = 0;
+  score := 0;
   while (num_blocks-- > 0) {  // TODO(skal): refine positional scoring?
     int i;
     for (i = 1; i < 16; ++i) {  // omit DC, we're only interested in AC

@@ -220,7 +220,7 @@ static  func Put16(int v, dst *uint8) {
 }
 
 func DC16_C(dst *uint8) {  // DC
-  int DC = 16;
+  DC := 16;
   int j;
   for (j = 0; j < 16; ++j) {
     DC += dst[-1 + j * BPS] + dst[j - BPS];
@@ -229,7 +229,7 @@ func DC16_C(dst *uint8) {  // DC
 }
 
 func DC16NoTop_C(dst *uint8) {  // DC with top samples not available
-  int DC = 8;
+  DC := 8;
   int j;
   for (j = 0; j < 16; ++j) {
     DC += dst[-1 + j * BPS];
@@ -238,7 +238,7 @@ func DC16NoTop_C(dst *uint8) {  // DC with top samples not available
 }
 
 func DC16NoLeft_C(dst *uint8) {  // DC with left samples not available
-  int DC = 8;
+  DC := 8;
   int i;
   for (i = 0; i < 16; ++i) {
     DC += dst[i - BPS];
@@ -285,7 +285,7 @@ func HE4_C(dst *uint8) {  // horizontal
 
 #if !WEBP_NEON_OMIT_C_CODE
 func DC4_C(dst *uint8) {  // DC
-  uint32 dc = 4;
+  dc := 4;
   int i;
   for (i = 0; i < 4; ++i) dc += dst[i - BPS] + dst[-1 + i * BPS];
   dc >>= 3;

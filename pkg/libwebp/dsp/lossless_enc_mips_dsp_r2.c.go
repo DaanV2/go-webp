@@ -140,7 +140,7 @@ func TransformColor_MIPSdspR2(
     argb_ := data[0];
     green := argb_ >> 8;
     red := argb_ >> 16;
-    uint32 new_blue = argb_;
+    new_blue := argb_;
     new_red = red;
     new_red -= ColorTransformDelta(m.green_to_red, green);
     new_red &= 0xff;
@@ -154,7 +154,7 @@ func TransformColor_MIPSdspR2(
 static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 argb) {
   green := argb >> 8;
   red := argb >> 16;
-  uint8 new_blue = argb;
+  new_blue := argb;
   new_blue -= ColorTransformDelta(green_to_blue, green);
   new_blue -= ColorTransformDelta(red_to_blue, red);
   return (new_blue & 0xff);
@@ -200,7 +200,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
 
 static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
   green := argb >> 8;
-  uint32 new_red = argb >> 16;
+  new_red := argb >> 16;
   new_red -= ColorTransformDelta(green_to_red, green);
   return (new_red & 0xff);
 }

@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint8, int dst_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
-  uint32 alpha_and = 0xff;
+  alpha_and := 0xff;
   int i, j;
   const __m128i zero = _mm_setzero_si128();
   const __m128i alpha_mask = _mm_set1_epi32((int)0xff);  // to preserve A
@@ -109,7 +109,7 @@ func DispatchAlphaToGreen_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_strid
 static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, int width, int height, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
-  uint32 alpha_and = 0xff;
+  alpha_and := 0xff;
   int i, j;
   const __m128i a_mask = _mm_set1_epi32(0xff);  // to preserve alpha
   const __m128i all_0xff = _mm_set_epi32(0, 0, ~0, ~0);
@@ -260,7 +260,7 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
 
 static int HasAlpha8b_SSE2(const src *uint8, int length) {
   const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
-  int i = 0;
+  i := 0;
   for (; i + 16 <= length; i += 16) {
     const __m128i v = _mm_loadu_si128((const __*m128i)(src + i));
     const __m128i bits = _mm_cmpeq_epi8(v, all_0xff);
@@ -276,7 +276,7 @@ static int HasAlpha8b_SSE2(const src *uint8, int length) {
 static int HasAlpha32b_SSE2(const src *uint8, int length) {
   const __m128i alpha_mask = _mm_set1_epi32(0xff);
   const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
-  int i = 0;
+  i := 0;
   // We don't know if we can access the last 3 bytes after the last alpha
   // value 'src[4 * length - 4]' (because we don't know if alpha is the first
   // or the last byte of the quadruplet). Hence the '-3' protection below.
@@ -317,7 +317,7 @@ static int HasAlpha32b_SSE2(const src *uint8, int length) {
 func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
   const __m128i m_color = _mm_set1_epi32((int)color);
   const __m128i zero = _mm_setzero_si128();
-  int i = 0;
+  i := 0;
   for (; i + 8 <= length; i += 8) {
     const __m128i a0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
     const __m128i a1 = _mm_loadu_si128((const __*m128i)(src + i + 4));
@@ -341,7 +341,7 @@ func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
 // Apply alpha value to rows
 
 func MultARGBRow_SSE2(const ptr *uint32, int width, int inverse) {
-  int x = 0;
+  x := 0;
   if (!inverse) {
     kSpan := 2;
     const __m128i zero = _mm_setzero_si128();
@@ -369,7 +369,7 @@ func MultARGBRow_SSE2(const ptr *uint32, int width, int inverse) {
 }
 
 func MultRow_SSE2(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alpha *uint8, int width, int inverse) {
-  int x = 0;
+  x := 0;
   if (!inverse) {
     const __m128i zero = _mm_setzero_si128();
     const __m128i k128 = _mm_set1_epi16(128);

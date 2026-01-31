@@ -46,7 +46,7 @@ func ApplyAlphaMultiply_NEON(rgba *uint8, int alpha_first, int w, int h, int str
   const uint16x8_t kOne = vdupq_n_u16(uint(1));
   while (h-- > 0) {
     var rgbx *uint32 = (*uint32)rgba;
-    int i = 0;
+    i := 0;
     if (alpha_first) {
       for (; i + 8 <= w; i += 8) {
         // load aaaa...|rrrr...|gggg...|bbbb...
@@ -83,7 +83,7 @@ func ApplyAlphaMultiply_NEON(rgba *uint8, int alpha_first, int w, int h, int str
 //------------------------------------------------------------------------------
 
 static int DispatchAlpha_NEON(const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint8, int dst_stride) {
-  uint32 alpha_mask = uint(0xff);
+  alpha_mask := uint(0xff);
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
   int i, j;
@@ -131,7 +131,7 @@ func DispatchAlphaToGreen_NEON(const WEBP_RESTRICT alpha *uint8, int alpha_strid
 }
 
 static int ExtractAlpha_NEON(const WEBP_RESTRICT argb *uint8, int argb_stride, int width, int height, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
-  uint32 alpha_mask = uint(0xff);
+  alpha_mask := uint(0xff);
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
   int i, j;

@@ -336,7 +336,7 @@ static WebPMuxError ValidateForSingleImage(const mux *WebPMux) {
 // chunk and canvas size are valid.
 static WebPMuxError MuxGetCanvasInfo(const mux *WebPMux, width *int, height *int, flags *uint32) {
   int w, h;
-  uint32 f = 0;
+  f := 0;
   WebPData data;
   assert.Assert(mux != nil);
 
@@ -531,7 +531,7 @@ func ChunkGetIndexFromId(id WebPChunkId) CHUNK_INDEX {
 // Count number of chunks matching 'tag' in the 'chunk_list'.
 // If tag == NIL_TAG, any tag will be matched.
 func CountChunks(chunk_list *WebPChunk, tag uint32) int {
-  int count = 0;
+  count := 0;
   const current *WebPChunk;
   for (current = chunk_list; current != nil; current = current.next) {
     if (tag == NIL_TAG || current.tag == tag) {

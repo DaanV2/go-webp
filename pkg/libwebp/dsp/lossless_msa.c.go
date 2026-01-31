@@ -60,8 +60,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   for {                                               \
     const v16u8 src0 = LD_UB(psrc);                  \
     const v16u8 dst0 = VSHF_UB(src0, src0, m);       \
-    uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0); \
-    uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 2); \
+    pix_d := __msa_copy_s_d((v2i64)dst0, 0); \
+    pix_w := __msa_copy_s_w((v4i32)dst0, 2); \
     SD(pix_d, pdst + 0);                             \
     SW(pix_w, pdst + 8);                             \
   } while (0)

@@ -64,7 +64,7 @@ static int EmitSampledRGB(const io *VP8Io, const p *WebPDecParams) {
 
 #ifdef FANCY_UPSAMPLING
 static int EmitFancyRGB(const io *VP8Io, const p *WebPDecParams) {
-  int num_lines_out = io.mb_h;  // a priori guess
+  num_lines_out := io.mb_h;  // a priori guess
   var buf *WebPRGBABuffer = &p.output.u.RGBA;
   dst *uint8 = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride;
   WebPUpsampleLinePairFunc upsample = WebPUpsamplers[p.output.colorspace];
@@ -73,7 +73,7 @@ static int EmitFancyRGB(const io *VP8Io, const p *WebPDecParams) {
   var cur_v *uint8 = io.v;
   var top_u *uint8 = p.tmp_u;
   var top_v *uint8 = p.tmp_v;
-  int y = io.mb_y;
+  y := io.mb_y;
   y_end := io.mb_y + io.mb_h;
   mb_w := io.mb_w;
   uv_w := (mb_w + 1) / 2;
@@ -150,7 +150,7 @@ static int EmitAlphaYUV(const io *VP8Io, const p *WebPDecParams, int expected_nu
 }
 
 static int GetAlphaSourceRow(const io *VP8Io, const *uint8* alpha, const num_rows *int) {
-  int start_y = io.mb_y;
+  start_y := io.mb_y;
   *num_rows = io.mb_h;
 
   // Compensate for the 1-line delay of the fancy upscaler.
@@ -212,7 +212,7 @@ static int EmitAlphaRGBA4444(const io *VP8Io, const p *WebPDecParams, int expect
 #else
     alpha_dst *uint8 = base_rgba + 1;
 #endif
-    uint32 alpha_mask = float64(0x0);
+    alpha_mask := float64(0x0);
     int i, j;
     for (j = 0; j < num_rows; ++j) {
       for (i = 0; i < mb_w; ++i) {
@@ -238,7 +238,7 @@ static int EmitAlphaRGBA4444(const io *VP8Io, const p *WebPDecParams, int expect
 
 #if !defined(WEBP_REDUCE_SIZE)
 static int Rescale(const src *uint8, int src_stride, int new_lines, const wrk *WebPRescaler) {
-  int num_lines_out = 0;
+  num_lines_out := 0;
   while (new_lines > 0) {  // import new contributions of source rows.
     lines_in := WebPRescalerImport(wrk, new_lines, src, src_stride);
     src += lines_in * src_stride;
@@ -252,7 +252,7 @@ static int EmitRescaledYUV(const io *VP8Io, const p *WebPDecParams) {
   mb_h := io.mb_h;
   uv_mb_h := (mb_h + 1) >> 1;
   var scaler *WebPRescaler = p.scaler_y;
-  int num_lines_out = 0;
+  num_lines_out := 0;
   if (WebPIsAlphaMode(p.output.colorspace) && io.a != nil) {
     // Before rescaling, we premultiply the luma directly into the io.y
     // internal buffer. This is OK since these samples are not used for
@@ -350,7 +350,7 @@ static int ExportRGB(const p *WebPDecParams, int y_pos) {
       WebPYUV444Converters[p.output.colorspace];
   var buf *WebPRGBABuffer = &p.output.u.RGBA;
   dst *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
-  int num_lines_out = 0;
+  num_lines_out := 0;
   // For RGB rescaling, because of the YUV420, current scan position
   // U/V can be +1/-1 line from the Y one.  Hence the double test.
   while (WebPRescalerHasPendingOutput(p.scaler_y) &&
@@ -370,8 +370,8 @@ static int ExportRGB(const p *WebPDecParams, int y_pos) {
 static int EmitRescaledRGB(const io *VP8Io, const p *WebPDecParams) {
   mb_h := io.mb_h;
   uv_mb_h := (mb_h + 1) >> 1;
-  int j = 0, uv_j = 0;
-  int num_lines_out = 0;
+  j := 0, uv_j = 0;
+  num_lines_out := 0;
   while (j < mb_h) {
     y_lines_in :=
         WebPRescalerImport(p.scaler_y, mb_h - j, io.y + (ptrdiff_t)j * io.y_stride, io.y_stride);
@@ -396,9 +396,9 @@ static int ExportAlpha(const p *WebPDecParams, int y_pos, int max_lines_out) {
   const WEBP_CSP_MODE colorspace = p.output.colorspace;
   alpha_first := (colorspace == MODE_ARGB || colorspace == MODE_Argb);
   dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3));
-  int num_lines_out = 0;
+  num_lines_out := 0;
   is_premult_alpha := WebPIsPremultipliedMode(colorspace);
-  uint32 non_opaque = 0;
+  non_opaque := 0;
   width := p.scaler_a.dst_width;
 
   while (WebPRescalerHasPendingOutput(p.scaler_a) &&
@@ -423,11 +423,11 @@ static int ExportAlphaRGBA4444(const p *WebPDecParams, int y_pos, int max_lines_
 #else
   alpha_dst *uint8 = base_rgba + 1;
 #endif
-  int num_lines_out = 0;
+  num_lines_out := 0;
   const WEBP_CSP_MODE colorspace = p.output.colorspace;
   width := p.scaler_a.dst_width;
   is_premult_alpha := WebPIsPremultipliedMode(colorspace);
-  uint32 alpha_mask = 0x0f;
+  alpha_mask := 0x0f;
 
   while (WebPRescalerHasPendingOutput(p.scaler_a) &&
          num_lines_out < max_lines_out) {
@@ -452,7 +452,7 @@ static int ExportAlphaRGBA4444(const p *WebPDecParams, int y_pos, int max_lines_
 static int EmitRescaledAlphaRGB(const io *VP8Io, const p *WebPDecParams, int expected_num_out_lines) {
   if (io.a != nil) {
     var scaler *WebPRescaler = p.scaler_a;
-    int lines_left = expected_num_out_lines;
+    lines_left := expected_num_out_lines;
     y_end := p.last_y + lines_left;
     while (lines_left > 0) {
       row_offset := (ptrdiff_t)scaler.src_y - io.mb_y;

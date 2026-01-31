@@ -91,8 +91,8 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
 }
 
 // C version of this function:
-//   int i = 0;
-//   int64 cost = 0;
+//   i := 0;
+//   cost := 0;
 //   var pop *uint32 = &population[4];
 //   var LoopEnd *uint32 = &population[length];
 //   while (pop != LoopEnd) {
@@ -185,8 +185,8 @@ static  func GetEntropyUnrefinedHelper(
 func GetEntropyUnrefined_MIPS32(
     const uint32 X[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
   int i;
-  int i_prev = 0;
-  uint32 x_prev = X[0];
+  i_prev := 0;
+  x_prev := X[0];
 
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
@@ -204,9 +204,9 @@ func GetEntropyUnrefined_MIPS32(
 
 func GetCombinedEntropyUnrefined_MIPS32(
     const uint32 X[], const uint32 Y[], int length, WEBP_RESTRICT const entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
-  int i = 1;
-  int i_prev = 0;
-  uint32 xy_prev = X[0] + Y[0];
+  i := 1;
+  i_prev := 0;
+  xy_prev := X[0] + Y[0];
 
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(entropy);

@@ -262,7 +262,7 @@ static  uint64 BitsEntropyRefine(const entropy *VP8LBitEntropy) {
   }
 
   {
-    uint64 min_limit = (uint64)(2 * entropy.sum - entropy.max_val)
+    min_limit := (uint64)(2 * entropy.sum - entropy.max_val)
                          << LOG_2_PRECISION_BITS;
     min_limit =
         DivRound(mix * min_limit + (1000 - mix) * entropy.entropy, 1000);
@@ -280,7 +280,7 @@ uint64 VP8LBitsEntropy(const array *uint32, int n) {
 static uint64 InitialHuffmanCost(){
   // Small bias because Huffman code length is typically not stored in
   // full length.
-  static const uint64 kHuffmanCodeOfHuffmanCodeSize = CODE_LENGTH_CODES * 3;
+  static const kHuffmanCodeOfHuffmanCodeSize := CODE_LENGTH_CODES * 3;
   // Subtract a bias of 9.1.
   return (kHuffmanCodeOfHuffmanCodeSize << LOG_2_PRECISION_BITS) -
          DivRound(91ll << LOG_2_PRECISION_BITS, 10);
@@ -290,10 +290,10 @@ static uint64 InitialHuffmanCost(){
 static uint64 FinalHuffmanCost(const stats *VP8LStreaks) {
   // The constants in this function are empirical and got rounded from
   // their original values in 1/8 when switched to 1/1024.
-  uint64 retval = InitialHuffmanCost();
+  retval := InitialHuffmanCost();
   // Second coefficient: Many zeros in the histogram are covered efficiently
   // by a run-length encode. Originally 2/8.
-  uint32 retval_extra = stats.counts[0] * 1600 + 240 * stats.streaks[0][1];
+  retval_extra := stats.counts[0] * 1600 + 240 * stats.streaks[0][1];
   // Second coefficient: Constant values are encoded less efficiently, but still
   // RLE'ed. Originally 6/8.
   retval_extra += stats.counts[1] * 2640 + 720 * stats.streaks[1][1];
@@ -378,7 +378,7 @@ static  uint64 GetCombinedEntropy(const h *VP8LHistogram1, const h *VP8LHistogra
 // Estimates the Entropy + Huffman + other block overhead size cost.
 uint64 VP8LHistogramEstimateBits(const h *VP8LHistogram) {
   int i;
-  uint64 cost = 0;
+  cost := 0;
   for (i = 0; i < 5; ++i) {
     int length;
     const population *uint32;
@@ -584,7 +584,7 @@ static int GetHistoBinIndex(const h *VP8LHistogram, const c *DominantCostRange, 
 
 // Construct the histograms from backward references.
 func HistogramBuild(int xsize, int histo_bits, const backward_refs *VP8LBackwardRefs, const image_histo *VP8LHistogramSet) {
-  int x = 0, y = 0;
+  x := 0, y = 0;
   histo_xsize := VP8LSubSampleSize(xsize, histo_bits);
   *VP8LHistogram* const histograms = image_histo.histograms;
   VP8LRefsCursor c = VP8LRefsCursorInit(backward_refs);
@@ -855,7 +855,7 @@ static int64 HistoQueuePush(const histo_queue *HistoQueue, *VP8LHistogram* const
 // Combines histograms by continuously choosing the one with the highest cost
 // reduction.
 static int HistogramCombineGreedy(const image_histo *VP8LHistogramSet) {
-  int ok = 0;
+  ok := 0;
   image_histo_size := image_histo.size;
   int i, j;
   *VP8LHistogram* const histograms = image_histo.histograms;
@@ -921,8 +921,8 @@ End:
 // afterwards, 0 otherwise.
 static int HistogramCombineStochastic(const image_histo *VP8LHistogramSet, int min_cluster_size, const do_greedy *int) {
   int j, iter;
-  uint32 seed = 1;
-  int tries_with_no_success = 0;
+  seed := 1;
+  tries_with_no_success := 0;
   outer_iters := image_histo.size;
   num_tries_no_success := outer_iters / 2;
   *VP8LHistogram* const histograms = image_histo.histograms;
@@ -931,7 +931,7 @@ static int HistogramCombineStochastic(const image_histo *VP8LHistogramSet, int m
   // faster but the worse for the compression.
   HistoQueue histo_queue;
   kHistoQueueSize := 9;
-  int ok = 0;
+  ok := 0;
 
   if (image_histo.size < min_cluster_size) {
     *do_greedy = 1;
@@ -1029,8 +1029,8 @@ func HistogramRemap(const in *VP8LHistogramSet, const out *VP8LHistogramSet, con
   out_size := out.size;
   if (out_size > 1) {
     for (i = 0; i < in_size; ++i) {
-      int best_out = 0;
-      int64 best_bits = WEBP_INT64_MAX;
+      best_out := 0;
+      best_bits := WEBP_INT64_MAX;
       int k;
       if (in_histo[i] == nil) {
         // Arbitrarily set to the previous value if unused to help future LZ77.
@@ -1066,7 +1066,7 @@ func HistogramRemap(const in *VP8LHistogramSet, const out *VP8LHistogramSet, con
 }
 
 static int32 GetCombineCostFactor(int histo_size, int quality) {
-  int32 combine_cost_factor = 16;
+  combine_cost_factor := 16;
   if (quality < 90) {
     if (histo_size > 256) combine_cost_factor /= 2;
     if (histo_size > 512) combine_cost_factor /= 2;

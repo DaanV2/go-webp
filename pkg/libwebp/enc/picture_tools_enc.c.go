@@ -60,7 +60,7 @@ func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
 // Smoothen the luma components of transparent pixels. Return true if the whole
 // block is transparent.
 static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_stride, int width, int height) {
-  int sum = 0, count = 0;
+  sum := 0, count = 0;
   int x, y;
   var alpha_ptr *uint8 = a_ptr;
   luma_ptr *uint8 = y_ptr;
@@ -91,7 +91,7 @@ static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_s
 
 func WebPReplaceTransparentPixels(const pic *WebPPicture, uint32 color) {
   if (pic != nil && pic.use_argb) {
-    int y = pic.height;
+    y := pic.height;
     argb *uint32 = pic.argb;
     color &= uint(0xffffff);  // force alpha=0
     WebPInitAlphaProcessing();
@@ -110,9 +110,9 @@ func WebPCleanupTransparentArea(pic *WebPPicture) {
 
   // note: we ignore the left-overs on right/bottom, except for SmoothenBlock().
   if (pic.use_argb) {
-    uint32 argb_value = 0;
+    argb_value := 0;
     for (y = 0; y < h; ++y) {
-      int need_reset = 1;
+      need_reset := 1;
       for (x = 0; x < w; ++x) {
         off := (y * pic.argb_stride + x) * SIZE;
         if (IsTransparentARGBArea(pic.argb + off, pic.argb_stride, SIZE)) {
@@ -141,7 +141,7 @@ func WebPCleanupTransparentArea(pic *WebPPicture) {
       return;
     }
     for (y = 0; y + SIZE <= height; y += SIZE) {
-      int need_reset = 1;
+      need_reset := 1;
       for (x = 0; x + SIZE <= width; x += SIZE) {
         if (SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, SIZE, SIZE)) {
           if (need_reset) {
@@ -252,9 +252,9 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
         alpha := (argb[x] >> 24) & 0xff;
         if (alpha != 0xff) {
           if (alpha > 0) {
-            int r = (argb[x] >> 16) & 0xff;
-            int g = (argb[x] >> 8) & 0xff;
-            int b = (argb[x] >> 0) & 0xff;
+            r := (argb[x] >> 16) & 0xff;
+            g := (argb[x] >> 8) & 0xff;
+            b := (argb[x] >> 0) & 0xff;
             r = BLEND(red, r, alpha);
             g = BLEND(green, g, alpha);
             b = BLEND(blue, b, alpha);

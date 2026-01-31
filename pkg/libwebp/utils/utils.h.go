@@ -155,7 +155,7 @@ const WEBP_HAVE_SLOW_CLZ_CTZ = // signal that the Clz/Ctz function are slow
 #define WEBP_NEED_LOG_TABLE_8BIT
 extern const uint8 WebPLogTable8bit[256];
 static  int WebPLog2FloorC(uint32 n) {
-  int log_value = 0;
+  log_value := 0;
   while (n >= 256) {
     log_value += 8;
     n >>= 8;

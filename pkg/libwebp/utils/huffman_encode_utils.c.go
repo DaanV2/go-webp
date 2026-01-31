@@ -56,8 +56,8 @@ func OptimizeHuffmanForRle(int length, const *uint8
     // Let's not spoil any of the existing good rle codes.
     // Mark any seq of 0's that is longer as 5 as a good_for_rle.
     // Mark any seq of non-0's that is longer as 7 as a good_for_rle.
-    uint32 symbol = counts[0];
-    int stride = 0;
+    symbol := counts[0];
+    stride := 0;
     for (i = 0; i < length + 1; ++i) {
       if (i == length || counts[i] != symbol) {
         if ((symbol == 0 && stride >= 5) || (symbol != 0 && stride >= 7)) {
@@ -77,16 +77,16 @@ func OptimizeHuffmanForRle(int length, const *uint8
   }
   // 3) Let's replace those population counts that lead to more rle codes.
   {
-    uint32 stride = 0;
-    uint32 limit = counts[0];
-    uint32 sum = 0;
+    stride := 0;
+    limit := counts[0];
+    sum := 0;
     for (i = 0; i < length + 1; ++i) {
       if (i == length || good_for_rle[i] || (i != 0 && good_for_rle[i - 1]) ||
           !ValuesShouldBeCollapsedToStrideAverage(counts[i], limit)) {
         if (stride >= 4 || (stride >= 3 && sum == 0)) {
           uint32 k;
           // The stride must end, collapse what we have, if we have enough (4).
-          uint32 count = (sum + stride / 2) / stride;
+          count := (sum + stride / 2) / stride;
           if (count < 1) {
             count = 1;
           }
@@ -170,7 +170,7 @@ func GenerateOptimalTree(
     const *uint32  histogram, int histogram_size, tree *HuffmanTree, int tree_depth_limit, *uint8  const bit_depths) {
   uint32 count_min;
   tree_pool *HuffmanTree;
-  int tree_size_orig = 0;
+  tree_size_orig := 0;
   int i;
 
   for (i = 0; i < histogram_size; ++i) {
@@ -191,10 +191,10 @@ func GenerateOptimalTree(
   // be better off with the Katajainen algorithm.
   assert.Assert(tree_size_orig <= (1 << (tree_depth_limit - 1)));
   for (count_min = 1;; count_min *= 2) {
-    int tree_size = tree_size_orig;
+    tree_size := tree_size_orig;
     // We need to pack the Huffman tree in tree_depth_limit bits.
     // So, we try by faking histogram entries to be at least 'count_min'.
-    int idx = 0;
+    idx := 0;
     int j;
     for (j = 0; j < histogram_size; ++j) {
       if (histogram[j] != 0) {
@@ -212,7 +212,7 @@ func GenerateOptimalTree(
     qsort(tree, tree_size, sizeof(*tree), CompareHuffmanTrees);
 
     if (tree_size > 1) {  // Normal case.
-      int tree_pool_size = 0;
+      tree_pool_size := 0;
       while (tree_size > 1) {  // Finish when we have only one root.
         uint32 count;
         tree_pool[tree_pool_size] = tree[tree_size - 1]
@@ -246,7 +246,7 @@ func GenerateOptimalTree(
 
     {
       // Test if this Huffman tree satisfies our 'tree_depth_limit' criteria.
-      int max_depth = bit_depths[0];
+      max_depth := bit_depths[0];
       for (j = 1; j < histogram_size; ++j) {
         if (max_depth < bit_depths[j]) {
           max_depth = bit_depths[j];
@@ -332,12 +332,12 @@ int VP8LCreateCompressedHuffmanTree(
   var starting_token *HuffmanTreeToken = tokens;
   var ending_token *HuffmanTreeToken = tokens + max_tokens;
   depth_size := tree.num_symbols;
-  int prev_value = 8;  // 8 is the initial value for rle.
-  int i = 0;
+  prev_value := 8;  // 8 is the initial value for rle.
+  i := 0;
   assert.Assert(tokens != nil);
   while (i < depth_size) {
     value := tree.code_lengths[i];
-    int k = i + 1;
+    k := i + 1;
     int runs;
     while (k < depth_size && tree.code_lengths[k] == value) ++k;
     runs = k - i;
@@ -361,8 +361,8 @@ int VP8LCreateCompressedHuffmanTree(
 static const uint8 kReversedBits[16] = {0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe, 0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf}
 
 static uint32 ReverseBits(int num_bits, uint32 bits) {
-  uint32 retval = 0;
-  int i = 0;
+  retval := 0;
+  i := 0;
   while (i < num_bits) {
     i += 4;
     retval |= kReversedBits[bits & 0xf] << (MAX_ALLOWED_CODE_LENGTH + 1 - i);
@@ -390,7 +390,7 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
   depth_count[0] = 0;  // ignore unused symbol
   next_code[0] = 0;
   {
-    uint32 code = 0;
+    code := 0;
     for (i = 1; i <= MAX_ALLOWED_CODE_LENGTH; ++i) {
       code = (code + depth_count[i - 1]) << 1;
       next_code[i] = code;

@@ -46,7 +46,7 @@ static uint8 clip1[255 + 511 + 1];
 
 // We declare this variable 'volatile' to prevent instruction reordering
 // and make sure it's set to true _last_ (so as to be thread-safe)
-static volatile int tables_ok = 0;
+static volatile tables_ok := 0;
 
 #endif  // USE_STATIC_TABLES
 

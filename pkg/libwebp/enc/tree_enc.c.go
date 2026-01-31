@@ -104,7 +104,7 @@ func VP8CodeIntraModes(const enc *VP8Encoder) {
       var top_pred *uint8 = preds - preds_w;
       int x, y;
       for (y = 0; y < 4; ++y) {
-        int left = preds[-1];
+        left := preds[-1];
         for (x = 0; x < 4; ++x) {
           var probas *uint8 = kBModesProba[top_pred[x]][left];
           left = PutI4Mode(bw, preds[x], probas);

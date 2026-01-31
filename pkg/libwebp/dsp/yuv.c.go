@@ -216,13 +216,13 @@ const GAMMA_FIX =12     // fixed-point precision for linear values
 const GAMMA_TAB_FIX =7  // fixed-point fractional bits precision
 const GAMMA_TAB_SIZE =(1 << (GAMMA_FIX - GAMMA_TAB_FIX))
 static const double kGamma = 0.80;
-static const int kGammaScale = ((1 << GAMMA_FIX) - 1);
-static const int kGammaTabScale = (1 << GAMMA_TAB_FIX);
-static const int kGammaTabRounder = (1 << GAMMA_TAB_FIX >> 1);
+static const kGammaScale := ((1 << GAMMA_FIX) - 1);
+static const kGammaTabScale := (1 << GAMMA_TAB_FIX);
+static const kGammaTabRounder := (1 << GAMMA_TAB_FIX >> 1);
 
 static int kLinearToGammaTab[GAMMA_TAB_SIZE + 1];
 static uint16 kGammaToLinearTab[256];
-static volatile int kGammaTablesOk = 0;
+static volatile kGammaTablesOk := 0;
 extern VP8CPUInfo VP8GetCPUInfo;
 
 WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
@@ -298,7 +298,7 @@ static  int LinearToGamma(uint32 base_value, int shift) {
 
 #if defined(USE_INVERSE_ALPHA_TABLE)
 
-static const int kAlphaFix = 19;
+static const kAlphaFix := 19;
 // Following table is (1 << kAlphaFix) / a. The (v * kInvAlpha[a]) >> kAlphaFix
 // formula is then equal to v / a in most (99.6%) cases. Note that this table
 // and constant are adjusted very tightly to fit 32b arithmetic.
@@ -413,7 +413,7 @@ func ImportYUVAFromRGBA_C(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
 
   // Downsample Y/U/V planes, two rows at a time
   for (y = 0; y < (height >> 1); ++y) {
-    int rows_have_alpha = has_alpha;
+    rows_have_alpha := has_alpha;
     if (is_rgb) {
       WebPConvertRGBToY(r_ptr, dst_y, width, step);
       WebPConvertRGBToY(r_ptr + rgb_stride, dst_y + y_stride, width, step);
@@ -455,7 +455,7 @@ func ImportYUVAFromRGBALastLine_C(
     int has_alpha, int width, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
   is_rgb := (r_ptr < b_ptr);  // otherwise it's bgr
   uv_width := (width + 1) >> 1;
-  int row_has_alpha = has_alpha && dst_a != nil;
+  row_has_alpha := has_alpha && dst_a != nil;
 
   if (is_rgb) {
     WebPConvertRGBToY(r_ptr, dst_y, width, step);

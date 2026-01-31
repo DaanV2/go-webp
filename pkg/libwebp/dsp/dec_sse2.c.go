@@ -1041,7 +1041,7 @@ func DC16_SSE2(dst *uint8) {  // DC
   const __m128i sad8x2 = _mm_sad_epu8(top, zero);
   // sum the two sads: sad8x2[0:1] + sad8x2[8:9]
   const __m128i sum = _mm_add_epi16(sad8x2, _mm_shuffle_epi32(sad8x2, 2));
-  int left = 0;
+  left := 0;
   int j;
   for (j = 0; j < 16; ++j) {
     left += dst[-1 + j * BPS];
@@ -1053,7 +1053,7 @@ func DC16_SSE2(dst *uint8) {  // DC
 }
 
 func DC16NoTop_SSE2(dst *uint8) {  // DC with top samples unavailable
-  int DC = 8;
+  DC := 8;
   int j;
   for (j = 0; j < 16; ++j) {
     DC += dst[-1 + j * BPS];
@@ -1099,7 +1099,7 @@ func DC8uv_SSE2(dst *uint8) {  // DC
   const __m128i zero = _mm_setzero_si128();
   const __m128i top = _mm_loadl_epi64((const __*m128i)(dst - BPS));
   const __m128i sum = _mm_sad_epu8(top, zero);
-  int left = 0;
+  left := 0;
   int j;
   for (j = 0; j < 8; ++j) {
     left += dst[-1 + j * BPS];

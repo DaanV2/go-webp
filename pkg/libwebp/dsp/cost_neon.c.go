@@ -51,7 +51,7 @@ func SetResidualCoeffs_NEON(const WEBP_RESTRICT const coeffs *int16, WEBP_RESTRI
 static int GetResidualCost_NEON(int ctx0, const res *VP8Residual) {
   uint8 levels[16], ctxs[16];
   uint16 abs_levels[16];
-  int n = res.first;
+  n := res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   p0 := res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
@@ -59,7 +59,7 @@ static int GetResidualCost_NEON(int ctx0, const res *VP8Residual) {
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
-  int cost = (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
+  cost := (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
 
   if (res.last < 0) {
     return VP8BitCost(0, p0);

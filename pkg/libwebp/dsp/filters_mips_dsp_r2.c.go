@@ -330,7 +330,7 @@ func GradientUnfilter_MIPSdspR2(const prev *uint8, const in *uint8, out *uint8, 
   if (prev == nil) {
     HorizontalUnfilter_MIPSdspR2(nil, in, out, width);
   } else {
-    uint8 top = prev[0], top_left = top, left = top;
+    top := prev[0], top_left = top, left = top;
     int i;
     for (i = 0; i < width; ++i) {
       top = prev[i];  // need to read this first, in case prev==dst

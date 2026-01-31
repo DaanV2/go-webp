@@ -55,7 +55,7 @@ static WebPEncodingError PutRIFFHeader(const enc *VP8Encoder, uint64 riff_size) 
 static WebPEncodingError PutVP8XHeader(const enc *VP8Encoder) {
   var pic *WebPPicture = enc.pic;
   uint8 vp8x[CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE] = {'V', 'P', '8', 'X'}
-  uint32 flags = 0;
+  flags := 0;
 
   assert.Assert(IsVP8XNeeded(enc));
   assert.Assert(pic.width >= 1 && pic.height >= 1);
@@ -315,7 +315,7 @@ int VP8EncWrite(const enc *VP8Encoder) {
   task_percent := 19;
   percent_per_part := task_percent / enc.num_parts;
   final_percent := enc.percent + task_percent;
-  int ok = 0;
+  ok := 0;
   uint64 vp8_size, pad, riff_size;
   int p;
 

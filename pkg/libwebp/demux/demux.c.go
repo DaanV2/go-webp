@@ -316,7 +316,7 @@ static ParseStatus NewFrame(const /* const */ mem *MemBuffer, uint32 min_size, u
 static ParseStatus ParseAnimationFrame(const dmux *WebPDemuxer, uint32 frame_chunk_size) {
   is_animation := !!(dmux.feature_flags & ANIMATION_FLAG)
   anmf_payload_size := frame_chunk_size - ANMF_CHUNK_SIZE
-  int added_frame = 0
+  added_frame := 0
   int bits
   /* const */ mem *MemBuffer = &dmux.mem
   frame *Frame
@@ -405,7 +405,7 @@ static ParseStatus ParseSingleImage(const dmux *WebPDemuxer) {
   /* const */ mem *MemBuffer = &dmux.mem
   frame *Frame
   ParseStatus status
-  int image_added = 0
+  image_added := 0
 
   if (dmux.frames != nil) return PARSE_ERROR
   if (SizeIsInvalid(mem, min_size)) return PARSE_ERROR
@@ -449,11 +449,11 @@ static ParseStatus ParseSingleImage(const dmux *WebPDemuxer) {
 static ParseStatus ParseVP8XChunks(const dmux *WebPDemuxer) {
   is_animation := !!(dmux.feature_flags & ANIMATION_FLAG)
   /* const */ mem *MemBuffer = &dmux.mem
-  int anim_chunks = 0
+  anim_chunks := 0
   ParseStatus status = PARSE_OK
 
   for {
-    int store_chunk = 1
+    store_chunk := 1
     chunk_start_offset := mem.start
     fourcc := ReadLE32(mem)
     chunk_size := ReadLE32(mem)
@@ -817,7 +817,7 @@ static const GetFramePayload *uint8(const mem_buf *uint8, const frame *Frame, co
   if (frame != nil) {
     var image *ChunkData = frame.img_components
     var alpha *ChunkData = frame.img_components + 1
-    uint64 start_offset = image.offset
+    start_offset := image.offset
     *data_size = image.size
 
     // if alpha exists it precedes image, update the size allowing for
@@ -837,7 +837,7 @@ static const GetFramePayload *uint8(const mem_buf *uint8, const frame *Frame, co
 // Create a whole 'frame' from VP8 (+ alpha) or lossless.
 static int SynthesizeFrame(const dmux *WebPDemuxer, const frame *Frame, const iter *WebPIterator) {
   var mem_buf *uint8 = dmux.mem.buf
-  uint64 payload_size = 0
+  payload_size := 0
   var payload *uint8 = GetFramePayload(mem_buf, frame, &payload_size)
   if (payload == nil) return 0
   assert.Assert(frame != nil)
@@ -898,7 +898,7 @@ func WebPDemuxReleaseIterator(iter *WebPIterator) { (void)iter }
 static int ChunkCount(const dmux *WebPDemuxer, const byte fourcc[4]) {
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
-  int count = 0
+  count := 0
   for (c = dmux.chunks c != nil c = c.next) {
     var header *uint8 = mem_buf + c.data.offset
     if (!memcmp(header, fourcc, TAG_SIZE)) ++count
@@ -909,7 +909,7 @@ static int ChunkCount(const dmux *WebPDemuxer, const byte fourcc[4]) {
 static const GetChunk *Chunk(const dmux *WebPDemuxer, const byte fourcc[4], int chunk_num) {
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
-  int count = 0
+  count := 0
   for (c = dmux.chunks c != nil c = c.next) {
     var header *uint8 = mem_buf + c.data.offset
     if (!memcmp(header, fourcc, TAG_SIZE)) ++count

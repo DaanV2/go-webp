@@ -199,8 +199,8 @@ func VP8IteratorExport(const it *VP8EncIterator) {
     var ydst *uint8 = pic.y + (y * pic.y_stride + x) * 16;
     var udst *uint8 = pic.u + (y * pic.uv_stride + x) * 8;
     var vdst *uint8 = pic.v + (y * pic.uv_stride + x) * 8;
-    int w = (pic.width - x * 16);
-    int h = (pic.height - y * 16);
+    w := (pic.width - x * 16);
+    h := (pic.height - y * 16);
 
     if (w > 16) w = 16;
     if (h > 16) h = 16;
@@ -268,7 +268,7 @@ func VP8IteratorNzToBytes(const it *VP8EncIterator) {
 }
 
 func VP8IteratorBytesToNz(const it *VP8EncIterator) {
-  uint32 nz = 0;
+  nz := 0;
   var top_nz *int = it.top_nz;
   var left_nz *int = it.left_nz;
   // top

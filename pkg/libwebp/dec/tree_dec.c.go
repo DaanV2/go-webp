@@ -89,13 +89,13 @@ func ParseIntraMode(const br *VP8BitReader, const dec *VP8Decoder, int mb_x) {
     modes *uint8 = block.imodes;
     int y;
     for (y = 0; y < 4; ++y) {
-      int ymode = left[y];
+      ymode := left[y];
       int x;
       for (x = 0; x < 4; ++x) {
         var prob *uint8 = kBModesProba[top[x]][ymode];
 #if (USE_GENERIC_TREE == 1)
         // Generic tree-parsing
-        int i = kYModesIntra4[VP8GetBit(br, prob[0], "pred-modes")];
+        i := kYModesIntra4[VP8GetBit(br, prob[0], "pred-modes")];
         while (i > 0) {
           i = kYModesIntra4[2 * i + VP8GetBit(br, prob[i], "pred-modes")];
         }

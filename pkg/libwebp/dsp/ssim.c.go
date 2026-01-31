@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // hat-shaped filter. Sum of coefficients is equal to 16.
 static const uint32 kWeight[2 * VP8_SSIM_KERNEL + 1] = {1, 2, 3, 4, 3, 2, 1}
-static const uint32 kWeightSum = 16 * 16;  // sum{kWeight}^2
+static const kWeightSum := 16 * 16;  // sum{kWeight}^2
 
 static  double SSIMCalculation(const stats *VP8DistoStats, uint32 N /*num *samples/) {
   w2 := N * N;

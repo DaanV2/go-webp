@@ -49,7 +49,7 @@ func VP8LHtreeGroupsFree(const htree_groups *HTreeGroup) {
 // Returns reverse(reverse(key, len) + 1, len), where reverse(key, len) is the
 // bit-wise reversal of the len least significant bits of key.
 static  uint32 GetNextKey(uint32 key, int len) {
-  uint32 step = 1 << (len - 1);
+  step := 1 << (len - 1);
   while (key & step) {
     step >>= 1;
   }
@@ -60,7 +60,7 @@ static  uint32 GetNextKey(uint32 key, int len) {
 // Assumes that end is an integer multiple of step.
 static  func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +
                                                                     1) table, int step, int end, HuffmanCode code) {
-  int current_end = end;
+  current_end := end;
   assert.Assert(current_end % step == 0);
   for {
     current_end -= step;
@@ -73,7 +73,7 @@ static  func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +
 // processed symbol
 static  int NextTableBitSize(
     const WEBP_COUNTED_BY *int(MAX_ALLOWED_CODE_LENGTH + 1) count, int len, int root_bits) {
-  int left = 1 << (len - root_bits);
+  left := 1 << (len - root_bits);
   while (len < MAX_ALLOWED_CODE_LENGTH) {
     left -= count[len];
     if (left <= 0) break;
@@ -89,7 +89,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
                                  sorted[]) {
   // next available space in table
   table *HuffmanCode = root_table;
-  int total_size = 1 << root_bits;  // total size root table + 2nd level table
+  total_size := 1 << root_bits;  // total size root table + 2nd level table
   int len;                          // current code length
   int symbol;                       // symbol index in original or sorted table
   // number of codes of each length:
@@ -158,13 +158,13 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
 
   {
     int step;  // step size to replicate values in current table
-    uint32 low = uint32(0xffffffff);      // low bits for current root entry
-    uint32 mask = total_size - 1;  // mask for low bits
-    uint32 key = 0;                // reversed prefix code
-    int num_nodes = 1;               // number of Huffman tree nodes
-    int num_open = 1;  // number of open branches in current tree level
-    int table_bits = root_bits;        // key length of current table
-    int table_size = 1 << table_bits;  // size of current table
+    low := uint32(0xffffffff);      // low bits for current root entry
+    mask := total_size - 1;  // mask for low bits
+    key := 0;                // reversed prefix code
+    num_nodes := 1;               // number of Huffman tree nodes
+    num_open := 1;  // number of open branches in current tree level
+    table_bits := root_bits;        // key length of current table
+    table_size := 1 << table_bits;  // size of current table
     symbol = 0;
     // Fill in root table.
     for (len = 1, step = 2; len <= root_bits; ++len, step <<= 1) {

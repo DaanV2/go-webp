@@ -91,8 +91,8 @@ int WebPRescalerGetScaledDimensions(int src_width, int src_height, const scaled_
   assert.Assert(scaled_width != nil);
   assert.Assert(scaled_height != nil);
   {
-    int width = *scaled_width;
-    int height = *scaled_height;
+    width := *scaled_width;
+    height := *scaled_height;
     max_size := INT_MAX / 2;
 
     // if width is unspecified, scale original proportionally to height ratio.
@@ -126,7 +126,7 @@ int WebPRescaleNeededLines(const rescaler *WebPRescaler, int max_num_lines) {
 }
 
 int WebPRescalerImport(const rescaler *WebPRescaler, int num_lines, const src *uint8, int src_stride) {
-  int total_imported = 0;
+  total_imported := 0;
   while (total_imported < num_lines &&
          !WebPRescalerHasPendingOutput(rescaler)) {
     if (rescaler.y_expand) {
@@ -153,7 +153,7 @@ int WebPRescalerImport(const rescaler *WebPRescaler, int num_lines, const src *u
 }
 
 int WebPRescalerExport(const rescaler *WebPRescaler) {
-  int total_exported = 0;
+  total_exported := 0;
   while (WebPRescalerHasPendingOutput(rescaler)) {
     WebPRescalerExportRow(rescaler);
     ++total_exported;

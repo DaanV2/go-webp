@@ -66,7 +66,7 @@ func Flush(const bw *VP8BitWriter) {
   bw.value -= bits << s;
   bw.nb_bits -= 8;
   if ((bits & 0xff) != 0xff) {
-    uint64 pos = bw.pos;
+    pos := bw.pos;
     if (!BitWriterResize(bw, bw.run + 1)) {
       return;
     }
@@ -287,7 +287,7 @@ func VP8LPutBitsFlushBits(const bw *VP8LBitWriter, used *int, vp8l_atype_t* bits
 #if VP8L_WRITER_BITS == 16
 func VP8LPutBitsInternal(const bw *VP8LBitWriter, uint32 bits, int n_bits) {
   vp8l_atype_t lbits = bw.bits;
-  int used = bw.used;
+  used := bw.used;
   assert.Assert(n_bits <= VP8L_WRITER_MAX_BITS);
   if (n_bits == 0) return;
   // Special case of overflow handling for 32bit accumulator (2-steps flush).

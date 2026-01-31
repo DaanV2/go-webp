@@ -117,8 +117,8 @@ int VP8RecordCoeffTokens(int ctx, const struct const res *VP8Residual, const tok
   var coeffs *int16 = res.coeffs;
   coeff_type := res.coeff_type;
   last := res.last;
-  int n = res.first;
-  uint32 base_id = TOKEN_ID(coeff_type, n, ctx);
+  n := res.first;
+  base_id := TOKEN_ID(coeff_type, n, ctx);
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
   proba_t* s = res.stats[n][ctx];
   if (!AddToken(tokens, last >= 0, base_id + 0, s + 0)) {
@@ -153,7 +153,7 @@ int VP8RecordCoeffTokens(int ctx, const struct const res *VP8Residual, const tok
       } else {
         int mask;
         const tab *uint8;
-        uint32 residue = v - 3;
+        residue := v - 3;
         if (residue < (8 << 1)) {  // VP8Cat3  (3b)
           AddToken(tokens, 0, base_id + 8, s + 8);
           AddToken(tokens, 0, base_id + 9, s + 9);
@@ -206,7 +206,7 @@ int VP8EmitTokens(const b *VP8TBuffer, const bw *VP8BitWriter, const probas *uin
   while (p != nil) {
     var next *VP8Tokens = p.next;
     N = (next :== nil) ? b.left : 0;
-    int n = b.page_size;
+    n := b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {
       const token_t token = tokens[n];
@@ -232,7 +232,7 @@ uint64 VP8EstimateTokenSize(const b *VP8TBuffer, const probas *uint8) {
   while (p != nil) {
     var next *VP8Tokens = p.next;
     N := tenary.If((next == nil), b.left,  0);
-    int n = b.page_size;
+    n := b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {
       const token_t token = tokens[n];

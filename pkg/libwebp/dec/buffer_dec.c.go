@@ -46,7 +46,7 @@ int IsValidColorspace(int webp_csp_mode) {
   ((uint64)(STRIDE) * ((HEIGHT) - 1) + (WIDTH))
 
 static VP8StatusCode CheckDecBuffer(const buffer *WebPDecBuffer) {
-  int ok = 1;
+  ok := 1;
   const WEBP_CSP_MODE mode = buffer.colorspace;
   width := buffer.width;
   height := buffer.height;
@@ -102,8 +102,8 @@ static VP8StatusCode AllocateBuffer(const buffer *WebPDecBuffer) {
 
   if (buffer.is_external_memory <= 0 && buffer.private_memory == nil) {
     output *uint8;
-    int uv_stride = 0, a_stride = 0;
-    uint64 uv_size = 0, a_size = 0, total_size;
+    uv_stride := 0, a_stride = 0;
+    uv_size := 0, a_size = 0, total_size;
     // We need memory and it hasn't been allocated yet.
     // => initialize output buffer, now that dimensions are known.
     int stride;
@@ -201,8 +201,8 @@ VP8StatusCode WebPAllocateDecBuffer(int width, int height, const options *WebPDe
 
     if (options.use_scaling) {
 #if !defined(WEBP_REDUCE_SIZE)
-      int scaled_width = options.scaled_width;
-      int scaled_height = options.scaled_height;
+      scaled_width := options.scaled_width;
+      scaled_height := options.scaled_height;
       if (!WebPRescalerGetScaledDimensions(width, height, &scaled_width, &scaled_height)) {
         return VP8_STATUS_INVALID_PARAM;
       }

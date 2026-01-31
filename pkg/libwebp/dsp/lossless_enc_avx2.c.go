@@ -164,8 +164,8 @@ func CollectColorRedTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int stride
 // But that's ok since the histogram values are less than 1<<28 (max picture
 // size).
 func AddVector_AVX2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
-  int i = 0;
-  int aligned_size = size & ~31;
+  i := 0;
+  aligned_size := size & ~31;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
   // NUM_LITERAL_CODES (256) + NUM_LENGTH_CODES (24) + (0 or a non-zero power of
   // 2). See the usage in VP8LHistogramAdd().
@@ -211,8 +211,8 @@ func AddVector_AVX2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32
 }
 
 func AddVectorEq_AVX2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int size) {
-  int i = 0;
-  int aligned_size = size & ~31;
+  i := 0;
+  aligned_size := size & ~31;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
   // NUM_LITERAL_CODES (256) + NUM_LENGTH_CODES (24) + (0 or a non-zero power of
   // 2). See the usage in VP8LHistogramAdd().
@@ -264,8 +264,8 @@ func AddVectorEq_AVX2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, 
 
 static uint64 CombinedShannonEntropy_AVX2(const uint32 X[256], const uint32 Y[256]) {
   int i;
-  uint64 retval = 0;
-  uint32 sumX = 0, sumXY = 0;
+  retval := 0;
+  sumX := 0, sumXY = 0;
   const __m256i zero = _mm256_setzero_si256();
 
   for (i = 0; i < 256; i += 32) {
@@ -363,7 +363,7 @@ static int VectorMismatch_AVX2(const array *uint321, const array *uint322, int l
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
 func BundleColorMap_AVX2(const WEBP_RESTRICT const row *uint8, int width, int xbits, WEBP_RESTRICT dst *uint32) {
-  int x = 0;
+  x := 0;
   assert.Assert(xbits >= 0);
   assert.Assert(xbits <= 3);
   switch (xbits) {

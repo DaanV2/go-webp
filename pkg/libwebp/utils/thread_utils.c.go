@@ -131,7 +131,7 @@ const THREADFN = *void
 static THREADFN ThreadLoop(ptr *void) {
   var worker *WebPWorker = (*WebPWorker)ptr;
   var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
-  int done = 0;
+  done := 0;
   while (!done) {
     pthread_mutex_lock(&impl.mutex);
     while (worker.status == OK) {  // wait in idling mode
@@ -201,7 +201,7 @@ static int Sync(const worker *WebPWorker) {
 }
 
 static int Reset(const worker *WebPWorker) {
-  int ok = 1;
+  ok := 1;
   worker.had_error = 0;
   if (worker.status < OK) {
 #ifdef WEBP_USE_THREAD

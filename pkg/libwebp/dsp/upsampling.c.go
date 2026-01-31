@@ -50,8 +50,8 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
       int len) {                                                              \
     int x;                                                                    \
     last_pixel_pair := (len - 1) >> 1;                               \
-    uint32 tl_uv = LOAD_UV(top_u[0], top_v[0]); /* top-left sample */       \
-    uint32 l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
+    tl_uv := LOAD_UV(top_u[0], top_v[0]); /* top-left sample */       \
+    l_uv := LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
     assert.Assert(top_y != nil);                                                    \
     {                                                                         \
       uv0 := (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;             \

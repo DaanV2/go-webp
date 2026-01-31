@@ -206,7 +206,7 @@ static int Disto4x4_MSA(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT 
 }
 
 static int Disto16x16_MSA(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  int D = 0;
+  D := 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
     for (x = 0; x < 16; x += 4) {
@@ -282,7 +282,7 @@ static  func HE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 static  func DC4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  uint32 dc = 4;
+  dc := 4;
   int i;
   for (i = 0; i < 4; ++i) dc += top[i] + top[-5 + i];
   dc >>= 3;
@@ -773,7 +773,7 @@ static int SSE8x8_MSA(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8
 }
 
 static int SSE4x4_MSA(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
-  uint32 sum = 0;
+  sum := 0;
   uint32 src0, src1, src2, src3, ref0, ref1, ref2, ref3;
   v16u8 src = {0}, ref = {0}, tmp0, tmp1;
   v8i16 diff0, diff1;

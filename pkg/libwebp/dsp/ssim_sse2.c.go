@@ -45,7 +45,7 @@ static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b, __const su
 // SSIM / PSNR entry point
 
 static uint32 AccumulateSSE_SSE2(const src *uint81, const src *uint82, int len) {
-  int i = 0;
+  i := 0;
   uint32 sse2 = 0;
   if (len >= 16) {
     limit := len - 32;

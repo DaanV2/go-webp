@@ -266,7 +266,7 @@ static int Disto4x4_MIPSdspR2(const WEBP_RESTRICT const a *uint8, const WEBP_RES
 // clang-format on
 
 static int Disto16x16_MIPSdspR2(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  int D = 0;
+  D := 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
     for (x = 0; x < 16; x += 4) {
@@ -290,7 +290,7 @@ static int Disto16x16_MIPSdspR2(const WEBP_RESTRICT const a *uint8, const WEBP_R
 
 #define FILL_8_OR_16(DST, VALUE, SIZE)                                \
   for {                                                                \
-    int value = (VALUE);                                              \
+    value := (VALUE);                                              \
     __asm__ volatile(                                                 \
       "replv.qb   %[value],  %[value]                      \n\t"      \
       FILL_PART( 0, SIZE)                                             \
@@ -1191,9 +1191,9 @@ static int SSE4x4_MIPSdspR2(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b 
 static int QuantizeBlock_MIPSdspR2(int16 in[16], int16 out[16], const WEBP_RESTRICT const mtx *VP8Matrix) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   int sign, coeff, level;
-  int max_level = MAX_LEVEL;
+  max_level := MAX_LEVEL;
   int max_level1 = max_level << 16 | max_level;
-  int ret = 0;
+  ret := 0;
 
   ppin *int16 = &in[0];
   pout *int16 = &out[0];

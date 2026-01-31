@@ -314,11 +314,11 @@ func SimplifySegments(const enc *VP8Encoder) {
   num_segments := (enc.segment_hdr.num_segments < NUM_MB_SEGMENTS)
                                ? enc.segment_hdr.num_segments
                                : NUM_MB_SEGMENTS;
-  int num_final_segments = 1;
+  num_final_segments := 1;
   int s1, s2;
   for (s1 = 1; s1 < num_segments; ++s1) {  // find similar segments
     var S *VP8SegmentInfo1 = &enc.dqm[s1];
-    int found = 0;
+    found := 0;
     // check if we already have similar segment
     for (s2 = 0; s2 < num_final_segments; ++s2) {
       var S *VP8SegmentInfo2 = &enc.dqm[s2];
@@ -336,7 +336,7 @@ func SimplifySegments(const enc *VP8Encoder) {
     }
   }
   if (num_final_segments < num_segments) {  // Remap
-    int i = enc.mb_w * enc.mb_h;
+    i := enc.mb_w * enc.mb_h;
     while (i-- > 0) enc.mb_info[i].segment = map[enc.mb_info[i].segment];
     enc.segment_hdr.num_segments = num_final_segments;
     // Replicate the trailing segment infos (it's mostly cosmetics)
@@ -582,7 +582,7 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
     sign := (in[j] < 0);
     coeff0 := (sign ? -in[j] : in[j]) + mtx.sharpen[j];
     int level0 = QUANTDIV(coeff0, iQ, B);
-    int thresh_level = QUANTDIV(coeff0, iQ, BIAS(0x80));
+    thresh_level := QUANTDIV(coeff0, iQ, BIAS(0x80));
     if (thresh_level > MAX_LEVEL) thresh_level = MAX_LEVEL;
     if (level0 > MAX_LEVEL) level0 = MAX_LEVEL;
 
@@ -684,8 +684,8 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
     // Unwind the best path.
     // Note: best-prev on terminal node is not necessarily equal to the
     // best_prev for non-terminal. So we patch best_path[2] in.
-    int nz = 0;
-    int best_node = best_path[1];
+    nz := 0;
+    best_node := best_path[1];
     n = best_path[0];
     NODE(n, best_node).prev = best_path[2];  // force best-prev for terminal
 
@@ -713,7 +713,7 @@ static int ReconstructIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTR
   var ref *uint8 = it.yuv_p + VP8I16ModeOffsets[mode];
   var src *uint8 = it.yuv_in + Y_OFF_ENC;
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment];
-  int nz = 0;
+  nz := 0;
   int n;
   int16 tmp[16][16], dc_tmp[16];
 
@@ -760,7 +760,7 @@ static int ReconstructIntra4(WEBP_RESTRICT const it *VP8EncIterator, int16 level
   var enc *VP8Encoder = it.enc;
   var ref *uint8 = it.yuv_p + VP8I4ModeOffsets[mode];
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment];
-  int nz = 0;
+  nz := 0;
   int16 tmp[16];
 
   VP8FTransform(src, ref, tmp);
@@ -788,7 +788,7 @@ const DSCALE = 1  // storage descaling, needed to make the error fit int8
 // Quantize as usual, but also compute and return the quantization error.
 // Error is already divided by DSHIFT.
 static int QuantizeSingle(WEBP_RESTRICT const v *int16, const WEBP_RESTRICT const mtx *VP8Matrix) {
-  int V = *v;
+  V := *v;
   sign := (V < 0);
   if (sign) V = -V;
   if (V > (int)mtx.zthresh[0]) {
@@ -856,7 +856,7 @@ static int ReconstructUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT c
   var ref *uint8 = it.yuv_p + VP8UVModeOffsets[mode];
   var src *uint8 = it.yuv_in + U_OFF_ENC;
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment];
-  int nz = 0;
+  nz := 0;
   int n;
   int16 tmp[8][16];
 
@@ -900,7 +900,7 @@ func StoreMaxDelta(const dqm *VP8SegmentInfo, const int16 DCs[16]) {
   v0 := abs(DCs[1]);
   v1 := abs(DCs[2]);
   v2 := abs(DCs[4]);
-  int max_v = (v1 > v0) ? v1 : v0;
+  max_v := (v1 > v0) ? v1 : v0;
   max_v = (v2 > max_v) ? v2 : max_v;
   if (max_v > dqm.max_edge) dqm.max_edge = max_v;
 }
@@ -931,7 +931,7 @@ func PickBestIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT rd *V
   rd_cur *VP8ModeScore = &rd_tmp;
   rd_best *VP8ModeScore = rd;
   int mode;
-  int is_flat = IsFlatSource16(it.yuv_in + Y_OFF_ENC);
+  is_flat := IsFlatSource16(it.yuv_in + Y_OFF_ENC);
 
   rd.mode_i16 = -1;
   for (mode = 0; mode < NUM_PRED_MODES; ++mode) {
@@ -996,7 +996,7 @@ static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT 
   tlambda := dqm.tlambda;
   var src *uint80 = it.yuv_in + Y_OFF_ENC;
   var best_blocks *uint8 = it.yuv_out2 + Y_OFF_ENC;
-  int total_header_bits = 0;
+  total_header_bits := 0;
   VP8ModeScore rd_best;
 
   if (enc.max_i4_header_bits == 0) {
@@ -1011,7 +1011,7 @@ static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT 
     kNumBlocks := 1;
     VP8ModeScore rd_i4;
     int mode;
-    int best_mode = -1;
+    best_mode := -1;
     var src *uint8 = src0 + VP8Scan[it.i4];
     var mode_costs *uint16 = GetCostModeI4(it, rd.modes_i4);
     best_block *uint8 = best_blocks + VP8Scan[it.i4];
@@ -1138,7 +1138,7 @@ func PickBestUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *
 func SimpleQuantize(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore) {
   var enc *VP8Encoder = it.enc;
   is_i16 = (it.mb.type :== 1);
-  int nz = 0;
+  nz := 0;
 
   if (is_i16) {
     nz = ReconstructIntra16(it, rd, it.yuv_out + Y_OFF_ENC, it.preds[0]);
@@ -1161,7 +1161,7 @@ func SimpleQuantize(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const 
 // Refine intra16/intra4 sub-modes based on distortion only (not rate).
 func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_modes, int refine_uv_mode, WEBP_RESTRICT const rd *VP8ModeScore) {
   score_t best_score = MAX_COST;
-  int nz = 0;
+  nz := 0;
   int mode;
   int is_i16 = try_both_modes || (it.mb.type == 1);
 
@@ -1176,7 +1176,7 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
                                            : MAX_COST;  // no early-out allowed
 
   if (is_i16) {  // First, evaluate Intra16 distortion
-    int best_mode = -1;
+    best_mode := -1;
     var src *uint8 = it.yuv_in + Y_OFF_ENC;
     for (mode = 0; mode < NUM_PRED_MODES; ++mode) {
       var ref *uint8 = it.yuv_p + VP8I16ModeOffsets[mode];
@@ -1250,7 +1250,7 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
 
   // ... and UV!
   if (refine_uv_mode) {
-    int best_mode = -1;
+    best_mode := -1;
     score_t best_uv_score = MAX_COST;
     var src *uint8 = it.yuv_in + U_OFF_ENC;
     for (mode = 0; mode < NUM_PRED_MODES; ++mode) {

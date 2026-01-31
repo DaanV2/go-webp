@@ -38,10 +38,10 @@ func WebPRescalerImportRowExpand_C(WEBP_RESTRICT const wrk *WebPRescaler, const 
   assert.Assert(!WebPRescalerInputDone(wrk));
   assert.Assert(wrk.x_expand);
   for (channel = 0; channel < x_stride; ++channel) {
-    int x_in = channel;
-    int x_out = channel;
+    x_in := channel;
+    x_out := channel;
     // simple bilinear interpolation
-    int accum = wrk.x_add;
+    accum := wrk.x_add;
     rescaler_t left = (rescaler_t)src[x_in];
     rescaler_t right =
         (wrk.src_width > 1) ? (rescaler_t)src[x_in + x_stride] : left;
@@ -70,12 +70,12 @@ func WebPRescalerImportRowShrink_C(WEBP_RESTRICT const wrk *WebPRescaler, const 
   assert.Assert(!WebPRescalerInputDone(wrk));
   assert.Assert(!wrk.x_expand);
   for (channel = 0; channel < x_stride; ++channel) {
-    int x_in = channel;
-    int x_out = channel;
-    uint32 sum = 0;
-    int accum = 0;
+    x_in := channel;
+    x_out := channel;
+    sum := 0;
+    accum := 0;
     while (x_out < x_out_max) {
-      uint32 base = 0;
+      base := 0;
       accum += wrk.x_add;
       while (accum > 0) {
         accum -= wrk.x_sub;

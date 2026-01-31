@@ -201,7 +201,7 @@ int WebPMemoryWrite(const data *uint8, uint64 data_size, const picture *WebPPict
   next_size = (uint64)w.size + data_size;
   if (next_size > w.max_size) {
     new_mem *uint8;
-    uint64 next_max_size = uint64(2) * w.max_size;
+    next_max_size := uint64(2) * w.max_size;
     if (next_max_size < next_size) next_max_size = next_size;
     if (next_max_size < uint64(8192)) next_max_size = uint64(8192);
     new_mem = (*uint8)WebPSafeMalloc(next_max_size, 1);

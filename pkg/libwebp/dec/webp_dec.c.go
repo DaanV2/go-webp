@@ -155,7 +155,7 @@ static VP8StatusCode ParseOptionalChunks(
     const WEBP_COUNTED_BY *uint8(*data_size) * WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, uint64 const riff_size, const WEBP_COUNTED_BY *uint8(*alpha_size) * WEBP_SINGLE const alpha_data, WEBP_SINGLE const alpha_size *uint64) {
   uint64 buf_size;
   const *uint8  buf;
-  uint32 total_size = TAG_SIZE +           // "WEBP".
+  total_size := TAG_SIZE +           // "WEBP".
                         CHUNK_HEADER_SIZE +  // "VP8Xnnnn".
                         VP8X_CHUNK_SIZE;     // data.
   assert.Assert(data != nil);
@@ -280,15 +280,15 @@ static VP8StatusCode ParseVP8Header(const WEBP_COUNTED_BY *uint8(*data_size) *
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
 static VP8StatusCode ParseHeadersInternal(
     const *uint8  data_param, uint64 data_size_param, const width *int, const height *int, const has_alpha *int, const has_animation *int, const format *int, const headers *WebPHeaderStructure) {
-  uint64 data_size = data_size_param;
+  data_size := data_size_param;
   const *uint8  data = data_param;
-  int canvas_width = 0;
-  int canvas_height = 0;
-  int image_width = 0;
-  int image_height = 0;
-  int found_riff = 0;
+  canvas_width := 0;
+  canvas_height := 0;
+  image_width := 0;
+  image_height := 0;
+  found_riff := 0;
   int found_vp8x = 0;
-  int animation_present = 0;
+  animation_present := 0;
   have_all_data := (headers != nil) ? headers.have_all_data : 0;
 
   VP8StatusCode status;
@@ -310,7 +310,7 @@ static VP8StatusCode ParseHeadersInternal(
 
   // Skip over VP8X.
   {
-    uint32 flags = 0;
+    flags := 0;
     status = ParseVP8X(&data, &data_size, &found_vp8x, &canvas_width, &canvas_height, &flags);
     if (status != VP8_STATUS_OK) {
       return status;  // Wrong VP8X / insufficient data.
@@ -341,7 +341,7 @@ static VP8StatusCode ParseHeadersInternal(
   // Skip over optional chunks if data started with "RIFF + VP8X" or "ALPH".
   if ((found_riff && found_vp8x) ||
       (!found_riff && !found_vp8x && !memcmp(data, "ALPH", TAG_SIZE))) {
-    uint64 local_alpha_data_size = 0;
+    local_alpha_data_size := 0;
     const *uint8  local_alpha_data =
         nil;
     status = ParseOptionalChunks(&data, &data_size, hdrs.riff_size, &local_alpha_data, &local_alpha_data_size);
@@ -415,7 +415,7 @@ ReturnWidthHeight:
 VP8StatusCode WebPParseHeaders(const headers *WebPHeaderStructure) {
   // status is marked volatile as a workaround for a clang-3.8 (aarch64) bug
   volatile VP8StatusCode status;
-  int has_animation = 0;
+  has_animation := 0;
   assert.Assert(headers != nil);
   // fill out headers, ignore width/height/has_alpha.
   {
@@ -747,8 +747,8 @@ int WebPValidateDecoderConfig(const config *WebPDecoderConfig) {
 
   // In case the WebPBitstreamFeatures has been filled in, check further.
   if (config.input.width > 0 || config.input.height > 0) {
-    int scaled_width = options.scaled_width;
-    int scaled_height = options.scaled_height;
+    scaled_width := options.scaled_width;
+    scaled_height := options.scaled_height;
     if (options.use_cropping &&
         !WebPCheckCropDimensions(config.input.width, config.input.height, options.crop_left, options.crop_top, options.crop_width, options.crop_height)) {
       return 0;
@@ -833,7 +833,7 @@ int WebPCheckCropDimensions(int image_width, int image_height, int x, int y, int
 int WebPIoInitFromOptions(const options *WebPDecoderOptions, const io *VP8Io, WEBP_CSP_MODE src_colorspace) {
   W := io.width;
   H := io.height;
-  int x = 0, y = 0, w = W, h = H;
+  x := 0, y = 0, w = W, h = H;
 
   // Cropping
   io.use_cropping = (options != nil) && options.use_cropping;
@@ -860,8 +860,8 @@ int WebPIoInitFromOptions(const options *WebPDecoderOptions, const io *VP8Io, WE
   // Scaling
   io.use_scaling = (options != nil) && options.use_scaling;
   if (io.use_scaling) {
-    int scaled_width = options.scaled_width;
-    int scaled_height = options.scaled_height;
+    scaled_width := options.scaled_width;
+    scaled_height := options.scaled_height;
     if (!WebPRescalerGetScaledDimensions(w, h, &scaled_width, &scaled_height)) {
       return 0;
     }

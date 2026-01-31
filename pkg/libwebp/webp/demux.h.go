@@ -17,10 +17,10 @@ package webp
 /*
   demux *WebPDemuxer = WebPDemux(&webp_data);
 
-  uint32 width = WebPDemuxGetI(demux, WEBP_FF_CANVAS_WIDTH);
-  uint32 height = WebPDemuxGetI(demux, WEBP_FF_CANVAS_HEIGHT);
+  width := WebPDemuxGetI(demux, WEBP_FF_CANVAS_WIDTH);
+  height := WebPDemuxGetI(demux, WEBP_FF_CANVAS_HEIGHT);
   // ... (Get information about the features present in the WebP file).
-  uint32 flags = WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
+  flags := WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
 
   // ... (Iterate over all frames).
   WebPIterator iter;
@@ -221,7 +221,7 @@ type WebPChunkIterator struct {
   dec *WebPAnimDecoder = WebPAnimDecoderNew(webp_data, &dec_options);
   WebPAnimInfo anim_info;
   WebPAnimDecoderGetInfo(dec, &anim_info);
-  for (uint32 i = 0; i < anim_info.loop_count; ++i) {
+  for (i := 0; i < anim_info.loop_count; ++i) {
     while (WebPAnimDecoderHasMoreFrames(dec)) {
       buf *uint8;
       int timestamp;

@@ -183,7 +183,7 @@ func ITransform_MIPS32(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *i
 static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], const mtx *VP8Matrix) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   int sign, coeff, level, i;
-  int max_level = MAX_LEVEL;
+  max_level := MAX_LEVEL;
 
   ppin *int16 = &in[0];
   pout *int16 = &out[0];
@@ -378,7 +378,7 @@ static int Disto4x4_MIPS32(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRI
 #undef HORIZONTAL_PASS
 
 static int Disto16x16_MIPS32(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  int D = 0;
+  D := 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
     for (x = 0; x < 16; x += 4) {

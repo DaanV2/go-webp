@@ -125,7 +125,7 @@ func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
       // bring top samples into the cache
       var top_yuv *VP8TopSamples = dec.yuv_t + mb_x;
       var coeffs *int16 = block.coeffs;
-      uint32 bits = block.non_zero_y;
+      bits := block.non_zero_y;
       int n;
 
       if (mb_y > 0) {
@@ -288,7 +288,7 @@ func PrecomputeFilterStrengths(const dec *VP8Decoder) {
       }
       for (i4x4 = 0; i4x4 <= 1; ++i4x4) {
         var info *VP8FInfo = &dec.fstrengths[s][i4x4];
-        int level = base_level;
+        level := base_level;
         if (hdr.use_lf_delta) {
           level += hdr.ref_lf_delta[0];
           if (i4x4) {
@@ -297,7 +297,7 @@ func PrecomputeFilterStrengths(const dec *VP8Decoder) {
         }
         level = (level < 0) ? 0 : (level > 63) ? 63 : level;
         if (level > 0) {
-          int ilevel = level;
+          ilevel := level;
           if (hdr.sharpness > 0) {
             if (hdr.sharpness > 4) {
               ilevel >>= 2;
@@ -340,7 +340,7 @@ func VP8InitDithering(const options *WebPDecoderOptions, const dec *VP8Decoder) 
     f := (d < 0) ? 0 : (d > 100) ? max_amp : (d * max_amp / 100);
     if (f > 0) {
       int s;
-      int all_amp = 0;
+      all_amp := 0;
       for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
         var dqm *VP8QuantMatrix = &dec.dqm[s];
         if (dqm.uv_quant < DITHER_AMP_TAB_SIZE) {
@@ -408,7 +408,7 @@ func DitherRow(const dec *VP8Decoder) {
 static int FinishRow(arg *void1, arg *void2) {
   var dec *VP8Decoder = (*VP8Decoder)arg1;
   var io *VP8Io = (*VP8Io)arg2;
-  int ok = 1;
+  ok := 1;
   var ctx *VP8ThreadContext = &dec.thread_ctx;
   cache_id := ctx.id;
   extra_y_rows := kFilterExtraRows[dec.filter_type];
@@ -436,8 +436,8 @@ static int FinishRow(arg *void1, arg *void2) {
   }
 
   if (io.put != nil) {
-    int y_start = MACROBLOCK_VPOS(mb_y);
-    int y_end = MACROBLOCK_VPOS(mb_y + 1);
+    y_start := MACROBLOCK_VPOS(mb_y);
+    y_end := MACROBLOCK_VPOS(mb_y + 1);
     if (!is_first_row) {
       y_start -= extra_y_rows;
       io.y = ydst;
@@ -504,7 +504,7 @@ static int FinishRow(arg *void1, arg *void2) {
 //------------------------------------------------------------------------------
 
 int VP8ProcessRow(const dec *VP8Decoder, const io *VP8Io) {
-  int ok = 1;
+  ok := 1;
   var ctx *VP8ThreadContext = &dec.thread_ctx;
   filter_row := (dec.filter_type > 0) &&
                          (dec.mb_y >= dec.tl_mb_y) &&
@@ -604,7 +604,7 @@ VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, const io *VP8Io) {
 }
 
 int VP8ExitCritical(const dec *VP8Decoder, const io *VP8Io) {
-  int ok = 1;
+  ok := 1;
   if (dec.mt_method > 0) {
     ok = WebPGetWorkerInterface().Sync(&dec.worker);
   }

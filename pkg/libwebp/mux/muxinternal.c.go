@@ -98,7 +98,7 @@ static ChunkSearchNextInList *WebPChunk(chunk *WebPChunk, uint32 tag) {
 }
 
 ChunkSearchList *WebPChunk(first *WebPChunk, uint32 nth, uint32 tag) {
-  uint32 iter = nth;
+  iter := nth;
   first = ChunkSearchNextInList(first, tag);
   if (first == nil) return nil;
 
@@ -254,7 +254,7 @@ static *WebPChunk* GetChunkListFromId(const wpi *WebPMuxImage, WebPChunkId id) {
 }
 
 int MuxImageCount(const wpi_list *WebPMuxImage, WebPChunkId id) {
-  int count = 0;
+  count := 0;
   const current *WebPMuxImage;
   for (current = wpi_list; current != nil; current = current.next) {
     if (id == WEBP_CHUNK_NIL) {
@@ -274,7 +274,7 @@ int MuxImageCount(const wpi_list *WebPMuxImage, WebPChunkId id) {
 //   where 'prev_wpi' is the pointer to the image at position (nth - 1).
 // Returns true if nth image was found.
 static int SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage** const location) {
-  uint32 count = 0;
+  count := 0;
   assert.Assert(wpi_list);
   *location = wpi_list;
 

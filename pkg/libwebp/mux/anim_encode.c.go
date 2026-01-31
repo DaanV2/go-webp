@@ -149,7 +149,7 @@ func DisableKeyframes(const enc_options *WebPAnimEncoderOptions) {
 const MAX_CACHED_FRAMES =30
 
 func SanitizeEncoderOptions(const enc_options *WebPAnimEncoderOptions) {
-  int print_warning = enc_options.verbose;
+  print_warning := enc_options.verbose;
 
   if (enc_options.minimize_size) {
     DisableKeyframes(enc_options);
@@ -668,7 +668,7 @@ static int IsLossyBlendingPossible(const src *WebPPicture, const dst *WebPPictur
 // Remember the modified pixel locations as 1s in carryover_mask.
 static int IncreaseTransparency(const src *WebPPicture, const rect *FrameRectangle, const dst *WebPPicture, const carryover_mask *uint8) {
   int i, j;
-  int modified = 0;
+  modified := 0;
   // carryover_mask spans over the rect part of the canvas.
   carryover_row *uint8 = carryover_mask;
   assert.Assert(src != nil && dst != nil && rect != nil);
@@ -698,7 +698,7 @@ static int IncreaseTransparency(const src *WebPPicture, const rect *FrameRectang
 static int FlattenSimilarBlocks(const src *WebPPicture, const rect *FrameRectangle, const dst *WebPPicture, float quality, const carryover_mask *uint8) {
   max_allowed_diff_lossy := QualityToMaxDiff(quality);
   int i, j;
-  int modified = 0;
+  modified := 0;
   block_size := 8;
   y_start := (rect.y_offset + block_size) & ~(block_size - 1);
   y_end := (rect.y_offset + rect.height) & ~(block_size - 1);
@@ -715,8 +715,8 @@ static int FlattenSimilarBlocks(const src *WebPPicture, const rect *FrameRectang
   for (j = y_start; j < y_end; j += block_size) {
     carryover_mask_block *uint8 = carryover_mask_row;
     for (i = x_start; i < x_end; i += block_size) {
-      int cnt = 0;
-      int avg_r = 0, avg_g = 0, avg_b = 0;
+      cnt := 0;
+      avg_r := 0, avg_g = 0, avg_b = 0;
       int x, y;
       var psrc *uint32 = src.argb + j * src.argb_stride + i;
       var pdst *uint32 = dst.argb + j * dst.argb_stride + i;
@@ -1227,8 +1227,8 @@ static int64 KeyFramePenalty(const encoded_frame *EncodedFrame) {
 }
 
 static int CacheFrame(const enc *WebPAnimEncoder, const config *WebPConfig) {
-  int ok = 0;
-  int frame_skipped = 0;
+  ok := 0;
+  frame_skipped := 0;
   WebPEncodingError error_code = VP8_ENC_OK;
   position := enc.count;
   var encoded_frame *EncodedFrame = GetFrame(enc, position);

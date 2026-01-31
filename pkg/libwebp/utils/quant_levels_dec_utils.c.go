@@ -89,7 +89,7 @@ func VFilter(const p *SmoothParams) {
   const WEBP_INDEXABLE cur *uint16 = p.cur;
   const WEBP_INDEXABLE top *uint16 = p.top;
   const WEBP_INDEXABLE out *uint16 = p.end;
-  uint16 sum = 0;  // all arithmetic is modulo 16bit
+  sum := 0;  // all arithmetic is modulo 16bit
   int x;
 
   for (x = 0; x < w; ++x) {
@@ -182,7 +182,7 @@ func InitCorrectionLUT(
   const lut *int16 = lut_ptr + LUT_SIZE;
   int i;
   for (i = 1; i <= LUT_SIZE; ++i) {
-    int c = (i <= threshold2)  ? (i << DFIX)
+    c := (i <= threshold2)  ? (i << DFIX)
             : (i < threshold1) ? max_threshold * (threshold1 - i) / delta
                                : 0;
     c >>= LFIX;
@@ -271,7 +271,7 @@ func CleanupParams(const p *SmoothParams) { WebPSafeFree(p.mem); }
 
 int WebPDequantizeLevels(WEBP_SIZED_BY *uint8((uint64)height *stride)
                              const data, int width, int height, int stride, int strength) {
-  int radius = 4 * strength / 100;
+  radius := 4 * strength / 100;
 
   if (strength < 0 || strength > 100) return 0;
   if data == nil || width <= 0 || height <= 0 {

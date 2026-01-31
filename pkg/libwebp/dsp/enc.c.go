@@ -45,7 +45,7 @@ const int VP8DspScan[16 + 4 + 4] = {
 
 // general-purpose util function
 func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], const histo *VP8Histogram) {
-  int max_value = 0, last_non_zero = 1;
+  max_value := 0, last_non_zero = 1;
   int k;
   for (k = 0; k <= MAX_COEFF_THRESH; ++k) {
     value := distribution[k];
@@ -86,7 +86,7 @@ static uint8 clip1[255 + 510 + 1];  // clips [-255,510] to [0,255]
 
 // We declare this variable 'volatile' to prevent instruction reordering
 // and make sure it's set to true _last_ (so as to be thread-safe)
-static volatile int tables_ok = 0;
+static volatile tables_ok := 0;
 
 static WEBP_TSAN_IGNORE_FUNCTION func InitTables(){
   if (!tables_ok) {
@@ -278,7 +278,7 @@ static  func TrueMotion(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint
 }
 
 static  func DCMode(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, const WEBP_RESTRICT top *uint8, int size, int round, int shift) {
-  int DC = 0;
+  DC := 0;
   int j;
   if (top != nil) {
     for (j = 0; j < size; ++j) DC += top[j];
@@ -362,7 +362,7 @@ func HE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 func DC4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  uint32 dc = 4;
+  dc := 4;
   int i;
   for (i = 0; i < 4; ++i) dc += top[i] + top[-5 + i];
   Fill(dst, dc >> 3, 4);
@@ -524,7 +524,7 @@ func Intra4Preds_C(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 #if !WEBP_NEON_OMIT_C_CODE
 static  int GetSSE(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8, int w, int h) {
-  int count = 0;
+  count := 0;
   int y, x;
   for (y = 0; y < h; ++y) {
     for (x = 0; x < w; ++x) {
@@ -554,7 +554,7 @@ static int SSE4x4_C(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) 
 func Mean16x4_C(const WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
   int k, x, y;
   for (k = 0; k < 4; ++k) {
-    uint32 avg = 0;
+    avg := 0;
     for (y = 0; y < 4; ++y) {
       for (x = 0; x < 4; ++x) {
         avg += ref[x + y * BPS];
@@ -576,7 +576,7 @@ func Mean16x4_C(const WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
 static int TTransform(const WEBP_RESTRICT in *uint8, const WEBP_RESTRICT w *uint16) {
-  int sum = 0;
+  sum := 0;
   int tmp[16];
   int i;
   // horizontal pass
@@ -616,7 +616,7 @@ static int Disto4x4_C(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT co
 }
 
 static int Disto16x16_C(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  int D = 0;
+  D := 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
     for (x = 0; x < 16; x += 4) {
@@ -636,7 +636,7 @@ static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7,
 
 // Simple quantization
 static int QuantizeBlock_C(int16 in[16], int16 out[16], const WEBP_RESTRICT const mtx *VP8Matrix) {
-  int last = -1;
+  last := -1;
   int n;
   for (n = 0; n < 16; ++n) {
     j := kZigzag[n];
@@ -646,7 +646,7 @@ static int QuantizeBlock_C(int16 in[16], int16 out[16], const WEBP_RESTRICT cons
       Q := mtx.q[j];
       iQ := mtx.iq[j];
       B := mtx.bias[j];
-      int level = QUANTDIV(coeff, iQ, B);
+      level := QUANTDIV(coeff, iQ, B);
       if (level > MAX_LEVEL) level = MAX_LEVEL;
       if (sign) level = -level;
       in[j] = level * (int)Q;

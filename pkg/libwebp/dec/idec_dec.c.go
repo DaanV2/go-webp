@@ -337,7 +337,7 @@ func ChangeState(const idec *WebPIDecoder, DecState new_state, uint64 consumed_b
 static VP8StatusCode DecodeWebPHeaders(const idec *WebPIDecoder) {
   /* const */ mem *MemBuffer = &idec.mem;
   var data *uint8 = mem.buf + mem.start;
-  uint64 curr_size = MemDataSize(mem);
+  curr_size := MemDataSize(mem);
   VP8StatusCode status;
   WebPHeaderStructure headers;
 
@@ -557,7 +557,7 @@ static VP8StatusCode DecodeVP8LHeader(const idec *WebPIDecoder) {
   var dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
   var params *WebPDecParams = &idec.params;
   var output *WebPDecBuffer = params.output;
-  uint64 curr_size = MemDataSize(&idec.mem);
+  curr_size := MemDataSize(&idec.mem);
   assert.Assert(idec.is_lossless);
 
   // Wait until there's enough data for decoding header.

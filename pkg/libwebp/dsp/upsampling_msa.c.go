@@ -585,7 +585,7 @@ func YuvToRgb565Line(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,
       const WEBP_RESTRICT cur_u *uint8, const WEBP_RESTRICT cur_v *uint8, \
       WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bot_dst *uint8,         \
       int len) {                                                              \
-    int size = (len - 1) >> 1;                                                \
+    size := (len - 1) >> 1;                                                \
     uint8 temp_u[64];                                                       \
     uint8 temp_v[64];                                                       \
     tl_uv := ((top_u[0]) | ((top_v[0]) << 16));                 \

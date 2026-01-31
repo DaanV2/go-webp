@@ -169,8 +169,8 @@ func CollectColorRedTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int stride
 // Note we are adding uint32's as *int *signed32's (using _mm_add_epi32). But
 // that's ok since the histogram values are less than 1<<28 (max picture size).
 func AddVector_SSE2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
-  int i = 0;
-  int aligned_size = size & ~15;
+  i := 0;
+  aligned_size := size & ~15;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
   // NUM_LITERAL_CODES (256) + NUM_LENGTH_CODES (24) + (0 or a non-zero power of
   // 2). See the usage in VP8LHistogramAdd().
@@ -216,8 +216,8 @@ func AddVector_SSE2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32
 }
 
 func AddVectorEq_SSE2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int size) {
-  int i = 0;
-  int aligned_size = size & ~15;
+  i := 0;
+  aligned_size := size & ~15;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
   // NUM_LITERAL_CODES (256) + NUM_LENGTH_CODES (24) + (0 or a non-zero power of
   // 2). See the usage in VP8LHistogramAdd().
@@ -269,8 +269,8 @@ func AddVectorEq_SSE2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, 
 
 static uint64 CombinedShannonEntropy_SSE2(const uint32 X[256], const uint32 Y[256]) {
   int i;
-  uint64 retval = 0;
-  uint32 sumX = 0, sumXY = 0;
+  retval := 0;
+  sumX := 0, sumXY = 0;
   const __m128i zero = _mm_setzero_si128();
 
   for (i = 0; i < 256; i += 16) {
@@ -287,7 +287,7 @@ static uint64 CombinedShannonEntropy_SSE2(const uint32 X[256], const uint32 Y[25
     const __m128i y4 =
         _mm_packs_epi16(_mm_packs_epi32(y0, y1), _mm_packs_epi32(y2, y3));
     mx := _mm_movemask_epi8(_mm_cmpgt_epi8(x4, zero));
-    int32 my = _mm_movemask_epi8(_mm_cmpgt_epi8(y4, zero)) | mx;
+    my := _mm_movemask_epi8(_mm_cmpgt_epi8(y4, zero)) | mx;
     while (my) {
       j := BitsCtz(my);
       uint32 xy;

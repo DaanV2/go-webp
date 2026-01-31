@@ -121,7 +121,7 @@ static int AnalyzeEntropy(const argb *uint32, int width, int height, int argb_st
     int i, x, y;
     var prev_row *uint32 = nil;
     var curr_row *uint32 = argb;
-    uint32 pix_prev = argb[0];  // Skip the first pixel.
+    pix_prev := argb[0];  // Skip the first pixel.
     for (y = 0; y < height; ++y) {
       for (x = 0; x < width; ++x) {
         pix := curr_row[x];
@@ -147,7 +147,7 @@ static int AnalyzeEntropy(const argb *uint32, int width, int height, int argb_st
       uint64 entropy_comp[kHistoTotal];
       uint64 entropy[kNumEntropyIx];
       int k;
-      int last_mode_to_analyze = use_palette ? kPalette : kSpatialSubGreen;
+      last_mode_to_analyze := use_palette ? kPalette : kSpatialSubGreen;
       int j;
       // Let's add one zero to the predicted histograms. The zeros are removed
       // too efficiently by the pix_diff == 0 comparison, at least one of the
@@ -289,7 +289,7 @@ static int EncoderAnalyze(const enc *VP8LEncoder, CrunchConfig crunch_configs[CR
   int n_lz77s;
   // If set to 0, analyze the cache with the computed cache value. If 1, also
   // analyze with no-cache.
-  int do_no_cache = 0;
+  do_no_cache := 0;
   assert.Assert(pic != nil && pic.argb != nil);
 
   // Check whether a palette is possible.
@@ -406,11 +406,11 @@ static int EncoderInit(const enc *VP8LEncoder) {
 static int GetHuffBitLengthsAndCodes(
     const histogram_image *VP8LHistogramSet, const huffman_codes *HuffmanTreeCode) {
   int i, k;
-  int ok = 0;
-  uint64 total_length_size = 0;
+  ok := 0;
+  total_length_size := 0;
   mem_buf *uint8 = nil;
   histogram_image_size := histogram_image.size;
-  int max_num_symbols = 0;
+  max_num_symbols := 0;
   buf_rle *uint8 = nil;
   huff_tree *HuffmanTree = nil;
 
@@ -484,7 +484,7 @@ func StoreHuffmanTreeOfHuffmanTreeToBitMask(
       17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
   int i;
   // Throw away trailing zeros:
-  int codes_to_store = CODE_LENGTH_CODES;
+  codes_to_store := CODE_LENGTH_CODES;
   for (; codes_to_store > 4; --codes_to_store) {
     if (code_length_bitdepth[kStorageOrder[codes_to_store - 1]] != 0) {
       break;
@@ -499,7 +499,7 @@ func StoreHuffmanTreeOfHuffmanTreeToBitMask(
 func ClearHuffmanTreeIfOnlyOneSymbol(
     const huffman_code *HuffmanTreeCode) {
   int k;
-  int count = 0;
+  count := 0;
   for (k = 0; k < huffman_code.num_symbols; ++k) {
     if (huffman_code.code_lengths[k] != 0) {
       ++count;
@@ -560,11 +560,11 @@ func StoreFullHuffmanCode(const bw *VP8LBitWriter, const huff_tree *HuffmanTree,
   StoreHuffmanTreeOfHuffmanTreeToBitMask(bw, code_length_bitdepth);
   ClearHuffmanTreeIfOnlyOneSymbol(&huffman_code);
   {
-    int trailing_zero_bits = 0;
-    int trimmed_length = num_tokens;
+    trailing_zero_bits := 0;
+    trimmed_length := num_tokens;
     int write_trimmed_length;
     int length;
-    int i = num_tokens;
+    i := num_tokens;
     while (i-- > 0) {
       ix := tokens[i].code;
       if (ix == 0 || ix == 17 || ix == 18) {
@@ -601,7 +601,7 @@ func StoreFullHuffmanCode(const bw *VP8LBitWriter, const huff_tree *HuffmanTree,
 // 'huff_tree' and 'tokens' are pre-alloacted buffers.
 func StoreHuffmanCode(const bw *VP8LBitWriter, const huff_tree *HuffmanTree, const tokens *HuffmanTreeToken, const huffman_code *HuffmanTreeCode) {
   int i;
-  int count = 0;
+  count := 0;
   int symbols[2] = {0, 0}
   kMaxBits := 8;
   kMaxSymbol := 1 << kMaxBits;
@@ -652,11 +652,11 @@ static int StoreImageToBitMask(const bw *VP8LBitWriter, int width, int histo_bit
   histo_xsize := histo_bits ? VP8LSubSampleSize(width, histo_bits) : 1;
   tile_mask := (histo_bits == 0) ? 0 : -(1 << histo_bits);
   // x and y trace the position in the image.
-  int x = 0;
-  int y = 0;
-  int tile_x = x & tile_mask;
-  int tile_y = y & tile_mask;
-  int histogram_ix = (histogram_symbols[0] >> 8) & 0xffff;
+  x := 0;
+  y := 0;
+  tile_x := x & tile_mask;
+  tile_y := y & tile_mask;
+  histogram_ix := (histogram_symbols[0] >> 8) & 0xffff;
   var codes *HuffmanTreeCode = huffman_codes + 5 * histogram_ix;
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
   while (VP8LRefsCursorOk(&c)) {
@@ -713,12 +713,12 @@ static int StoreImageToBitMask(const bw *VP8LBitWriter, int width, int histo_bit
 // pic and percent are for progress.
 static int EncodeImageNoHuffman(const bw *VP8LBitWriter, const argb *uint32, const hash_chain *VP8LHashChain, const refs_array *VP8LBackwardRefs, int width, int height, int quality, int low_effort, const pic *WebPPicture, int percent_range, const percent *int) {
   int i;
-  int max_tokens = 0;
+  max_tokens := 0;
   refs *VP8LBackwardRefs;
   tokens *HuffmanTreeToken = nil;
   HuffmanTreeCode huffman_codes[5] = {{0, nil, nil}}
   histogram_symbols[1] := {0}  // only one tree, one symbol
-  int cache_bits = 0;
+  cache_bits := 0;
   histogram_image *VP8LHistogramSet = nil;
   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(
       uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
@@ -795,12 +795,12 @@ static int EncodeImageInternal(
   histogram_image_xysize :=
       VP8LSubSampleSize(width, histogram_bits_in) *
       VP8LSubSampleSize(height, histogram_bits_in);
-  int remaining_percent = percent_range;
-  int percent_start = *percent;
+  remaining_percent := percent_range;
+  percent_start := *percent;
   histogram_image *VP8LHistogramSet = nil;
   tmp_histo *VP8LHistogram = nil;
   uint32 i, histogram_image_size = 0;
-  uint64 bit_array_size = 0;
+  bit_array_size := 0;
   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(
       uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
   tokens *HuffmanTreeToken = nil;
@@ -812,7 +812,7 @@ static int EncodeImageInternal(
   VP8LBitWriter bw_init = *bw, bw_best;
   int hdr_size_tmp;
   VP8LHashChain hash_chain_histogram;  // histogram image hash chain
-  uint64 bw_size_best = ~(uint64)0;
+  bw_size_best := ~(uint64)0;
   assert.Assert(histogram_bits_in >= MIN_HUFFMAN_BITS);
   assert.Assert(histogram_bits_in <= MAX_HUFFMAN_BITS);
   assert.Assert(hdr_size != nil);
@@ -853,8 +853,8 @@ static int EncodeImageInternal(
     const sub_config *CrunchSubConfig =
         &config.sub_configs[sub_configs_idx];
     int cache_bits_best, i_cache;
-    int i_remaining_percent = remaining_percent / config.sub_configs_size;
-    int i_percent_range = i_remaining_percent / 4;
+    i_remaining_percent := remaining_percent / config.sub_configs_size;
+    i_percent_range := i_remaining_percent / 4;
     i_remaining_percent -= i_percent_range;
 
     if (!VP8LGetBackwardReferences(
@@ -864,7 +864,7 @@ static int EncodeImageInternal(
 
     for (i_cache = 0; i_cache < (sub_config.do_no_cache ? 2 : 1); ++i_cache) {
       cache_bits_tmp := (i_cache == 0) ? cache_bits_best : 0;
-      int histogram_bits = histogram_bits_in;
+      histogram_bits := histogram_bits_in;
       // Speed-up: no need to study the no-cache case if it was already studied
       // in i_cache == 0.
       if (i_cache == 1 && cache_bits_best == 0) break;
@@ -939,7 +939,7 @@ static int EncodeImageInternal(
 
       // Store Huffman codes.
       {
-        int max_tokens = 0;
+        max_tokens := 0;
         // Find maximum number of symbols for the huffman tree-set.
         for (i = 0; i < 5 * histogram_image_size; ++i) {
           var codes *HuffmanTreeCode = &huffman_codes[i];
@@ -1209,8 +1209,8 @@ static  uint32 ApplyPaletteHash2(uint32 color) {
 // Use 1 pixel cache for ARGB pixels.
 #define APPLY_PALETTE_FOR(COLOR_INDEX)                \
   for {                                                \
-    uint32 prev_pix = palette[0];                   \
-    uint32 prev_idx = 0;                            \
+    prev_pix := palette[0];                   \
+    prev_idx := 0;                            \
     for (y = 0; y < height; ++y) {                    \
       for (x = 0; x < width; ++x) {                   \
         pix := src[x];                  \
@@ -1252,7 +1252,7 @@ static int ApplyPalette(const src *uint32, uint32 src_stride, dst *uint32, uint3
     // within 1 << PALETTE_INV_SIZE_BITS in order to build a hash map to go
     // from color to index in palette.
     for (i = 0; i < 3; ++i) {
-      int use_LUT = 1;
+      use_LUT := 1;
       // Set each element in buffer to max uint16.
       memset(buffer, 0xff, sizeof(buffer));
       for (j = 0; j < palette_size; ++j) {
@@ -1401,14 +1401,14 @@ static int EncodeStreamHook(input *void, data *void2) {
 #endif
   height := picture.height;
   byte_position := VP8LBitWriterNumBytes(bw);
-  int percent = 2;  // for WebPProgressHook
+  percent := 2;  // for WebPProgressHook
 #if (WEBP_NEAR_LOSSLESS == 1)
-  int use_near_lossless = 0;
+  use_near_lossless := 0;
 #endif
-  int hdr_size = 0;
-  int data_size = 0;
+  hdr_size := 0;
+  data_size := 0;
   int idx;
-  uint64 best_size = ~(uint64)0;
+  best_size := ~(uint64)0;
   VP8LBitWriter bw_init = *bw, bw_best;
   (void)data2;
 
@@ -1420,8 +1420,8 @@ static int EncodeStreamHook(input *void, data *void2) {
 
   for (idx = 0; idx < num_crunch_configs; ++idx) {
     entropy_idx := crunch_configs[idx].entropy_idx;
-    int remaining_percent = 97 / num_crunch_configs, percent_range;
-    int predictor_transform_bits = 0, cross_color_transform_bits = 0;
+    remaining_percent := 97 / num_crunch_configs, percent_range;
+    predictor_transform_bits := 0, cross_color_transform_bits = 0;
     enc.use_palette =
         (entropy_idx == kPalette) || (entropy_idx == kPaletteAndSpatial);
     enc.use_subtract_green =
@@ -1556,7 +1556,7 @@ int VP8LEncodeStream(const config *WebPConfig, const picture *WebPPicture, const
   CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX];
   int num_crunch_configs_main, num_crunch_configs_side = 0;
   int idx;
-  int red_and_blue_always_zero = 0;
+  red_and_blue_always_zero := 0;
   WebPWorker worker_main, worker_side;
   StreamEncodeContext params_main, params_side;
   // The main thread uses picture.stats, the side thread uses stats_side.
@@ -1707,7 +1707,7 @@ int VP8LEncodeImage(const config *WebPConfig, const picture *WebPPicture) {
   int width, height;
   int has_alpha;
   uint64 coded_size;
-  int percent = 0;
+  percent := 0;
   int initial_size;
   VP8LBitWriter bw;
 

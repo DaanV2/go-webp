@@ -35,7 +35,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //   /* customize io's functions (setup()/put()/teardown()) if needed. */
 //
 //   dec *VP8Decoder = VP8New();
-//   int ok = VP8Decode(dec, &io);
+//   ok := VP8Decode(dec, &io);
 //   if (!ok) printf("Error: %s\n", VP8StatusMessage(dec));
 //   VP8Delete(dec);
 //   return ok;

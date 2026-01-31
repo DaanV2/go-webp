@@ -254,7 +254,7 @@ static InitVP *VP8Encoder8Encoder(const config *WebPConfig, const picture *WebPP
 }
 
 static int DeleteVP8Encoder(enc *VP8Encoder) {
-  int ok = 1;
+  ok := 1;
   if (enc != nil) {
     ok = VP8EncDeleteAlpha(enc);
     VP8TBufferClear(&enc.tokens);
@@ -328,7 +328,7 @@ int WebPReportProgress(const pic *WebPPicture, int percent, const percent_store 
 //------------------------------------------------------------------------------
 
 int WebPEncode(const config *WebPConfig, pic *WebPPicture) {
-  int ok = 0;
+  ok := 0;
   if (pic == nil) return 0;
 
   pic.error_code = VP8_ENC_OK;  // all ok so far

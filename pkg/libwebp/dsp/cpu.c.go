@@ -118,7 +118,7 @@ static int CheckSlowModel(int info) {
 static int x86CPUInfo(CPUFeature feature) {
   int max_cpuid_value;
   int cpu_info[4];
-  int is_intel = 0;
+  is_intel := 0;
 
   // get the highest feature value cpuid supports
   GetCPUInfo(cpu_info, 0);
@@ -213,7 +213,7 @@ static int armCPUInfo(CPUFeature feature) {
   if (feature != kNEON) return 0;
 #if defined(__linux__) && defined(WEBP_HAVE_NEON_RTCD)
   {
-    int has_neon = 0;
+    has_neon := 0;
     byte line[200];
     var cpuinfo *FILE = fopen("/proc/cpuinfo", "r");
     if (cpuinfo == nil) return 0;

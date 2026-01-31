@@ -650,7 +650,7 @@ func SimpleHFilter16i(src_y *uint8, int stride, int b_limit_in) {
 // 4x4
 
 func DC4(dst *uint8) {  // DC
-  uint32 dc = 4;
+  dc := 4;
   int i;
   for (i = 0; i < 4; ++i) dc += dst[i - BPS] + dst[-1 + i * BPS];
   dc >>= 3;
@@ -748,7 +748,7 @@ func LD4(dst *uint8) {  // Down-Left
 // 16x16
 
 func DC16(dst *uint8) {  // DC
-  uint32 dc = 16;
+  dc := 16;
   int i;
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 dctop = __msa_hadd_u_h(rtop, rtop);
@@ -809,7 +809,7 @@ func HE16(dst *uint8) {  // horizontal
 
 func DC16NoTop(dst *uint8) {  // DC with top samples not available
   int j;
-  uint32 dc = 8;
+  dc := 8;
   v16u8 out;
 
   for (j = 0; j < 16; ++j) {
@@ -821,7 +821,7 @@ func DC16NoTop(dst *uint8) {  // DC with top samples not available
 }
 
 func DC16NoLeft(dst *uint8) {  // DC with left samples not available
-  uint32 dc = 8;
+  dc := 8;
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 dctop = __msa_hadd_u_h(rtop, rtop);
   v16u8 out;
@@ -847,7 +847,7 @@ func DC16NoTopLeft(dst *uint8) {  // DC with nothing
   } while (0)
 
 func DC8uv(dst *uint8) {  // DC
-  uint32 dc = 8;
+  dc := 8;
   int i;
   uint64 out;
   const v16u8 rtop = LD_UB(dst - BPS);
@@ -923,7 +923,7 @@ func DC8uvNoLeft(dst *uint8) {  // DC with no left samples
 }
 
 func DC8uvNoTop(dst *uint8) {  // DC with no top samples
-  uint32 dc = 4;
+  dc := 4;
   int i;
   uint64 out;
   v16u8 dctemp;

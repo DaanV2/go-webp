@@ -67,8 +67,8 @@ static uint64 FastSLog2Slow_C(uint32 v) {
     y := 1 << log_cnt;
     v >>= log_cnt;
 #else
-    uint64 log_cnt = 0;
-    uint32 y = 1;
+    log_cnt := 0;
+    y := 1;
     for {
       ++log_cnt;
       v = v >> 1;
@@ -99,8 +99,8 @@ static uint32 FastLog2Slow_C(uint32 v) {
     y := 1 << log_cnt;
     v >>= log_cnt;
 #else
-    uint32 log_cnt = 0;
-    uint32 y = 1;
+    log_cnt := 0;
+    y := 1;
     for {
       ++log_cnt;
       v = v >> 1;
@@ -126,8 +126,8 @@ static uint32 FastLog2Slow_C(uint32 v) {
 // Compute the combined Shanon's entropy for distribution {X} and {X+Y}
 static uint64 CombinedShannonEntropy_C(const uint32 X[256], const uint32 Y[256]) {
   int i;
-  uint64 retval = 0;
-  uint32 sumX = 0, sumXY = 0;
+  retval := 0;
+  sumX := 0, sumXY = 0;
   for (i = 0; i < 256; ++i) {
     x := X[i];
     if (x != 0) {
@@ -147,8 +147,8 @@ static uint64 CombinedShannonEntropy_C(const uint32 X[256], const uint32 Y[256])
 
 static uint64 ShannonEntropy_C(const X *uint32, int n) {
   int i;
-  uint64 retval = 0;
-  uint32 sumX = 0;
+  retval := 0;
+  sumX := 0;
   for (i = 0; i < n; ++i) {
     x := X[i];
     if (x != 0) {
@@ -213,8 +213,8 @@ static  func GetEntropyUnrefinedHelper(
 func GetEntropyUnrefined_C(
     const uint32 X[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
   int i;
-  int i_prev = 0;
-  uint32 x_prev = X[0];
+  i_prev := 0;
+  x_prev := X[0];
 
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
@@ -232,9 +232,9 @@ func GetEntropyUnrefined_C(
 
 func GetCombinedEntropyUnrefined_C(
     const uint32 X[], const uint32 Y[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
-  int i = 1;
-  int i_prev = 0;
-  uint32 xy_prev = X[0] + Y[0];
+  i := 1;
+  i_prev := 0;
+  xy_prev := X[0] + Y[0];
 
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
@@ -275,8 +275,8 @@ func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RES
     argb := data[i];
     green := U32ToS8(argb >> 8);
     red := U32ToS8(argb >> 16);
-    int new_red = red & 0xff;
-    int new_blue = argb & 0xff;
+    new_red := red & 0xff;
+    new_blue := argb & 0xff;
     new_red -= ColorTransformDelta((int8)m.green_to_red, green);
     new_red &= 0xff;
     new_blue -= ColorTransformDelta((int8)m.green_to_blue, green);
@@ -288,7 +288,7 @@ func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RES
 
 static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
   green := U32ToS8(argb >> 8);
-  int new_red = argb >> 16;
+  new_red := argb >> 16;
   new_red -= ColorTransformDelta((int8)green_to_red, green);
   return (new_red & 0xff);
 }
@@ -296,7 +296,7 @@ static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
 static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 argb) {
   green := U32ToS8(argb >> 8);
   red := U32ToS8(argb >> 16);
-  int new_blue = argb & 0xff;
+  new_blue := argb & 0xff;
   new_blue -= ColorTransformDelta((int8)green_to_blue, green);
   new_blue -= ColorTransformDelta((int8)red_to_blue, red);
   return (new_blue & 0xff);
@@ -325,7 +325,7 @@ func VP8LCollectColorBlueTransforms_C(const WEBP_RESTRICT argb *uint32, int stri
 //------------------------------------------------------------------------------
 
 static int VectorMismatch_C(const array *uint321, const array *uint322, int length) {
-  int match_len = 0;
+  match_len := 0;
 
   while (match_len < length && array1[match_len] == array2[match_len]) {
     ++match_len;
@@ -339,7 +339,7 @@ func VP8LBundleColorMap_C(const WEBP_RESTRICT const row *uint8, int width, int x
   if (xbits > 0) {
     bit_depth := 1 << (3 - xbits);
     mask := (1 << xbits) - 1;
-    uint32 code = 0xff000000;
+    code := 0xff000000;
     for (x = 0; x < width; ++x) {
       xsub := x & mask;
       if (xsub == 0) {
@@ -357,7 +357,7 @@ func VP8LBundleColorMap_C(const WEBP_RESTRICT const row *uint8, int width, int x
 
 static uint32 ExtraCost_C(const population *uint32, int length) {
   int i;
-  uint32 cost = population[4] + population[5];
+  cost := population[4] + population[5];
   assert.Assert(length % 2 == 0);
   for (i = 2; i < length / 2 - 1; ++i) {
     cost += i * (population[2 * i + 2] + population[2 * i + 3]);

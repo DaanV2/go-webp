@@ -169,7 +169,7 @@ const BLUE_OFFSET =0  // uint32 0x000000ff is 0xff,00,00,00 in memory
 
 int WebPPictureDistortion(const src *WebPPicture, const ref *WebPPicture, int type, float results[5]) {
   int w, h, c;
-  int ok = 0;
+  ok := 0;
   WebPPicture p0, p1;
   double total_size = 0., total_distortion = 0.;
   if (src == nil || ref == nil || src.width != ref.width ||

@@ -19,7 +19,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
 static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int width, int height, dst *uint8, int dst_stride) {
-  uint32 alpha_mask = 0xffffffff;
+  alpha_mask := 0xffffffff;
   int i, j, temp0;
 
   for (j = 0; j < height; ++j) {

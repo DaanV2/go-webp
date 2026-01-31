@@ -860,7 +860,7 @@ static  func HE4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
 }
 
 static  func DC4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  uint32 dc = 4;
+  dc := 4;
   int i;
   for (i = 0; i < 4; ++i) dc += top[i] + top[-5 + i];
   Fill_SSE2(dst, dc >> 3, 4);
@@ -1106,7 +1106,7 @@ static int SSE16x8_SSE2(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uin
 
 static int SSE8x8_SSE2(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   const __m128i zero = _mm_setzero_si128();
-  int num_pairs = 4;
+  num_pairs := 4;
   __m128i sum = zero;
   int32 tmp[4];
   while (num_pairs-- > 0) {
@@ -1311,7 +1311,7 @@ static int Disto4x4_SSE2(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT
 }
 
 static int Disto16x16_SSE2(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  int D = 0;
+  D := 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
     for (x = 0; x < 16; x += 4) {

@@ -66,7 +66,7 @@ func WebPMultARGBRow_C(const ptr *uint32, int width, int inverse) {
       } else {
         alpha := (argb >> 24) & 0xff;
         scale := GetScale(alpha, inverse);
-        uint32 out = argb & uint(0xff000000);
+        out := argb & uint(0xff000000);
         out |= Mult(argb >> 0, scale) << 0;
         out |= Mult(argb >> 8, scale) << 8;
         out |= Mult(argb >> 16, scale) << 16;
@@ -201,7 +201,7 @@ func ApplyAlphaMultiply_16b_C(rgba *uint84444, int w, int h, int stride) {
 
 #if !WEBP_NEON_OMIT_C_CODE
 static int DispatchAlpha_C(const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint8, int dst_stride) {
-  uint32 alpha_mask = 0xff;
+  alpha_mask := 0xff;
   int i, j;
 
   for (j = 0; j < height; ++j) {
@@ -229,7 +229,7 @@ func DispatchAlphaToGreen_C(const WEBP_RESTRICT alpha *uint8, int alpha_stride, 
 }
 
 static int ExtractAlpha_C(const WEBP_RESTRICT argb *uint8, int argb_stride, int width, int height, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
-  uint8 alpha_mask = 0xff;
+  alpha_mask := 0xff;
   int i, j;
 
   for (j = 0; j < height; ++j) {

@@ -52,7 +52,7 @@ func RescalerImportRowExpand_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, const W
   rescaler_t* frow = wrk.frow;
   const rescaler_t* const frow_end = frow + wrk.dst_width * wrk.num_channels;
   x_add := wrk.x_add;
-  int accum = x_add;
+  accum := x_add;
   __m128i cur_pixels;
 
   // SSE2 implementation only works with 16b signed arithmetic at max.
@@ -115,7 +115,7 @@ func RescalerImportRowExpand_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, const W
 
 func RescalerImportRowShrink_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RESTRICT src *uint8) {
   x_sub := wrk.x_sub;
-  int accum = 0;
+  accum := 0;
   const __m128i zero = _mm_setzero_si128();
   const __m128i mult0 = _mm_set1_epi16(x_sub);
   const __m128i mult1 = _mm_set1_epi32(wrk.fx_scale);

@@ -44,7 +44,7 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
     for (x = 1; x < w - 1; ++x) {
       int cnt[NUM_MB_SEGMENTS] = {0}
       var mb *VP8MBInfo = &enc.mb_info[x + w * y];
-      int majority_seg = mb.segment;
+      majority_seg := mb.segment;
       // Check the 8 neighbouring segment values.
       cnt[mb[-w - 1].segment]++;  // top-left
       cnt[mb[-w + 0].segment]++;  // top
@@ -81,7 +81,7 @@ static  int clip(int v, int m, int M) {
 
 func SetSegmentAlphas(const enc *VP8Encoder, const int centers[NUM_MB_SEGMENTS], int mid) {
   nb := enc.segment_hdr.num_segments;
-  int min = centers[0], max = centers[0];
+  min := centers[0], max = centers[0];
   int n;
 
   if (nb > 1) {
@@ -141,10 +141,10 @@ func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
                      ? enc.segment_hdr.num_segments
                      : NUM_MB_SEGMENTS;
   int centers[NUM_MB_SEGMENTS];
-  int weighted_average = 0;
+  weighted_average := 0;
   int map[MAX_ALPHA + 1];
   int a, n, k;
-  int min_a = 0, max_a = MAX_ALPHA, range_a;
+  min_a := 0, max_a = MAX_ALPHA, range_a;
   // 'int' type is ok for histo, and won't overflow
   int accum[NUM_MB_SEGMENTS], dist_accum[NUM_MB_SEGMENTS];
 
@@ -236,8 +236,8 @@ const MAX_UV_MODE =2
 static int MBAnalyzeBestIntra16Mode(const it *VP8EncIterator) {
   max_mode := MAX_INTRA16_MODE;
   int mode;
-  int best_alpha = DEFAULT_ALPHA;
-  int best_mode = 0;
+  best_alpha := DEFAULT_ALPHA;
+  best_mode := 0;
 
   VP8MakeLuma16Preds(it);
   for (mode = 0; mode < max_mode; ++mode) {
@@ -285,9 +285,9 @@ static int FastMBAnalyze(const it *VP8EncIterator) {
 }
 
 static int MBAnalyzeBestUVMode(const it *VP8EncIterator) {
-  int best_alpha = DEFAULT_ALPHA;
-  int smallest_alpha = 0;
-  int best_mode = 0;
+  best_alpha := DEFAULT_ALPHA;
+  smallest_alpha := 0;
+  best_mode := 0;
   max_mode := MAX_UV_MODE;
   int mode;
 
@@ -382,7 +382,7 @@ type SegmentJob struct {
 static int DoSegmentsJob(arg *void1, arg *void2) {
   var job *SegmentJob = (*SegmentJob)arg1;
   var it *VP8EncIterator = (*VP8EncIterator)arg2;
-  int ok = 1;
+  ok := 1;
   if (!VP8IteratorIsDone(it)) {
     uint8 tmp[32 + WEBP_ALIGN_CST];
     var scratch *uint8 = (*uint8)WEBP_ALIGN(tmp);
@@ -424,7 +424,7 @@ func InitSegmentJob(const enc *VP8Encoder, const job *SegmentJob, int start_row,
 
 // main entry point
 int VP8EncAnalyze(const enc *VP8Encoder) {
-  int ok = 1;
+  ok := 1;
   do_segments :=
       enc.config.emulate_jpeg_size ||  // We need the complexity evaluation.
       (enc.segment_hdr.num_segments > 1) ||

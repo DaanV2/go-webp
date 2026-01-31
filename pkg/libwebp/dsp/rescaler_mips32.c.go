@@ -41,7 +41,7 @@ func ImportRowShrink_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RE
     int temp1, temp2, temp3;
     int base, frac, sum;
     int accum, accum1;
-    int loop_c = x_out_max - channel;
+    loop_c := x_out_max - channel;
 
     __asm__ volatile(
         "li     %[temp1],   0x8000                    \n\t"
@@ -94,7 +94,7 @@ func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RE
     int temp1, temp2, temp3, temp4;
     int frac;
     int accum;
-    int x_out = channel;
+    x_out := channel;
 
     __asm__ volatile(
         "addiu  %[temp3],   %[src_width], -1            \n\t"

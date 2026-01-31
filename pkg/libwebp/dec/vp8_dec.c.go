@@ -220,7 +220,7 @@ static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, s
   const sz *uint8 = buf;
   var buf_end *uint8 = buf + size;
   const part_start *uint8;
-  uint64 size_left = size;
+  size_left := size;
   uint64 last_part;
   uint64 p;
 
@@ -233,7 +233,7 @@ static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, s
   part_start = buf + last_part * 3;
   size_left -= last_part * 3;
   for (p = 0; p < last_part; ++p) {
-    uint64 psize = sz[0] | (sz[1] << 8) | (sz[2] << 16);
+    psize := sz[0] | (sz[1] << 8) | (sz[2] << 16);
     if (psize > size_left) psize = size_left;
     VP8InitBitReader(dec.parts + p, part_start, psize);
     part_start += psize;
@@ -522,8 +522,8 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
   dst *int16 = block.coeffs;
   var left_mb *VP8MB = dec.mb_info - 1;
   uint8 tnz, lnz;
-  uint32 non_zero_y = 0;
-  uint32 non_zero_uv = 0;
+  non_zero_y := 0;
+  non_zero_uv := 0;
   int x, y, ch;
   uint32 out_t_nz, out_l_nz;
   int first;
@@ -551,8 +551,8 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
   tnz = mb.nz & float64(0x0f);
   lnz = left_mb.nz & float64(0x0f);
   for (y = 0; y < 4; ++y) {
-    int l = lnz & 1;
-    uint32 nz_coeffs = 0;
+    l := lnz & 1;
+    nz_coeffs := 0;
     for (x = 0; x < 4; ++x) {
       ctx := l + (tnz & 1);
       nz := GetCoeffs(token_br, ac_proba, ctx, q.y1_mat, first, dst);
@@ -569,11 +569,11 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
   out_l_nz = lnz >> 4;
 
   for (ch = 0; ch < 4; ch += 2) {
-    uint32 nz_coeffs = 0;
+    nz_coeffs := 0;
     tnz = mb.nz >> (4 + ch);
     lnz = left_mb.nz >> (4 + ch);
     for (y = 0; y < 2; ++y) {
-      int l = lnz & 1;
+      l := lnz & 1;
       for (x = 0; x < 2; ++x) {
         ctx := l + (tnz & 1);
         nz := GetCoeffs(token_br, bands[2], ctx, q.uv_mat, 0, dst);
@@ -611,7 +611,7 @@ int VP8DecodeMB(const dec *VP8Decoder, const token_br *VP8BitReader) {
   var left *VP8MB = dec.mb_info - 1;
   var mb *VP8MB = dec.mb_info + dec.mb_x;
   var block *VP8MBData = dec.mb_data + dec.mb_x;
-  int skip = tenary.If(dec.use_skip_proba, block.skip, 0);
+  skip := tenary.If(dec.use_skip_proba, block.skip, 0);
 
   if (!skip) {
     skip = ParseResiduals(dec, mb, token_br);
@@ -671,7 +671,7 @@ static int ParseFrame(const dec *VP8Decoder, io *VP8Io) {
 
 // Main entry point
 int VP8Decode(const dec *VP8Decoder, const io *VP8Io) {
-  int ok = 0;
+  ok := 0;
   if (dec == nil) {
     return 0;
   }

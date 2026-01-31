@@ -73,7 +73,7 @@ func HorizontalFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height
   var preds *uint8 = data;
   var in *uint8 = data;
   out *uint8 = filtered_data;
-  int row = 1;
+  row := 1;
   DCHECK(in, out);
 
   // Leftmost pixel is the same as input for topmost scanline.
@@ -131,7 +131,7 @@ func GradientFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height, 
   var in *uint8 = data;
   var preds *uint8 = data;
   out *uint8 = filtered_data;
-  int row = 1;
+  row := 1;
   DCHECK(in, out);
 
   // left prediction for top scan-line
@@ -158,7 +158,7 @@ func VerticalFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height, 
   var in *uint8 = data;
   var preds *uint8 = data;
   out *uint8 = filtered_data;
-  int row = 1;
+  row := 1;
   DCHECK(in, out);
 
   // Very first top-left pixel is copied.

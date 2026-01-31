@@ -32,9 +32,9 @@ static const uint16 VP8LevelCodes[MAX_VARIABLE_LEVEL][2] = {
     {0x001, 0x000}, {0x007, 0x001}, {0x00f, 0x005}, {0x00f, 0x00d}, {0x033, 0x003}, {0x033, 0x003}, {0x033, 0x023}, {0x033, 0x023}, {0x033, 0x023}, {0x033, 0x023}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x153}}
 
 static int VariableLevelCost(int level, const uint8 probas[NUM_PROBAS]) {
-  int pattern = VP8LevelCodes[level - 1][0];
-  int bits = VP8LevelCodes[level - 1][1];
-  int cost = 0;
+  pattern := VP8LevelCodes[level - 1][0];
+  bits := VP8LevelCodes[level - 1][1];
+  cost := 0;
   int i;
   for (i = 2; pattern; ++i) {
     if (pattern & 1) {
@@ -110,7 +110,7 @@ int VP8GetCostLuma4(const it *VP8EncIterator, const int16 levels[16]) {
   x := (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
-  int R = 0;
+  R := 0;
   int ctx;
 
   VP8InitResidual(0, 3, enc, &res);
@@ -124,7 +124,7 @@ int VP8GetCostLuma16(const it *VP8EncIterator, const rd *VP8ModeScore) {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   int x, y;
-  int R = 0;
+  R := 0;
 
   VP8IteratorNzToBytes(it);  // re-import the non-zero context
 
@@ -150,7 +150,7 @@ int VP8GetCostUV(const it *VP8EncIterator, const rd *VP8ModeScore) {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   int ch, x, y;
-  int R = 0;
+  R := 0;
 
   VP8IteratorNzToBytes(it);  // re-import the non-zero context
 
@@ -177,7 +177,7 @@ int VP8GetCostUV(const it *VP8EncIterator, const rd *VP8ModeScore) {
 // Simulate block coding, but only record statistics.
 // Note: no need to record the fixed probas.
 int VP8RecordCoeffs(int ctx, const res *VP8Residual) {
-  int n = res.first;
+  n := res.first;
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
   proba_t* s = res.stats[n][ctx];
   if (res.last < 0) {
@@ -220,7 +220,7 @@ int VP8RecordCoeffs(int ctx, const res *VP8Residual) {
 
       {
         bits := VP8LevelCodes[v - 1][1];
-        int pattern = VP8LevelCodes[v - 1][0];
+        pattern := VP8LevelCodes[v - 1][0];
         int i;
         for (i = 0; (pattern >>= 1) != 0; ++i) {
           mask := 2 << i;

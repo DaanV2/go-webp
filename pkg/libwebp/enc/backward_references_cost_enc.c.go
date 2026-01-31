@@ -43,8 +43,8 @@ type CostModel struct {
 
 func ConvertPopulationCountTableToBitEstimates(
     int num_symbols, const uint32 population_counts[], uint32 output[]) {
-  uint32 sum = 0;
-  int nonzeros = 0;
+  sum := 0;
+  nonzeros := 0;
   int i;
   for (i = 0; i < num_symbols; ++i) {
     sum += population_counts[i];
@@ -63,7 +63,7 @@ func ConvertPopulationCountTableToBitEstimates(
 }
 
 static int CostModelBuild(const m *CostModel, int xsize, int cache_bits, const refs *VP8LBackwardRefs) {
-  int ok = 0;
+  ok := 0;
   var histo *VP8LHistogram = VP8LAllocateHistogram(cache_bits);
   if (histo == nil) goto Error;
 
@@ -111,7 +111,7 @@ static  int64 GetDistanceCost(const m *CostModel, uint32 distance) {
 
 static  func AddSingleLiteralWithCostModel(
     const argb *uint32, const hashers *VP8LColorCache, const cost_model *CostModel, int idx, int use_color_cache, int64 prev_cost, const cost *int64, const dist_array *uint16) {
-  int64 cost_val = prev_cost;
+  cost_val := prev_cost;
   color := argb[idx];
   ix := use_color_cache ? VP8LColorCacheContains(hashers, color) : -1;
   if (ix >= 0) {
@@ -463,7 +463,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
        i < manager.cache_intervals_size && cost_cache_intervals[i].start < len;
        ++i) {
     // Define the intersection of the ith interval with the new one.
-    int start = position + cost_cache_intervals[i].start;
+    start := position + cost_cache_intervals[i].start;
     end :=
         position +
         (cost_cache_intervals[i].end > len ? len : cost_cache_intervals[i].end);
@@ -536,8 +536,8 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
 static int BackwardReferencesHashChainDistanceOnly(
     int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs, const dist_array *uint16) {
   int i;
-  int ok = 0;
-  int cc_init = 0;
+  ok := 0;
+  cc_init := 0;
   pix_count := xsize * ysize;
   use_color_cache := (cache_bits > 0);
   literal_array_size :=
@@ -548,10 +548,10 @@ static int BackwardReferencesHashChainDistanceOnly(
   VP8LColorCache hashers;
   cost_manager *CostManager =
       (*CostManager)WebPSafeCalloc(uint64(1), sizeof(*cost_manager));
-  int offset_prev = -1, len_prev = -1;
-  int64 offset_cost = -1;
-  int first_offset_is_constant = -1;  // initialized with 'impossible' value
-  int reach = 0;
+  offset_prev := -1, len_prev = -1;
+  offset_cost := -1;
+  first_offset_is_constant := -1;  // initialized with 'impossible' value
+  reach := 0;
 
   if (cost_model == nil || cost_manager == nil) goto Error;
 
@@ -669,9 +669,9 @@ static int BackwardReferencesHashChainFollowChosenPath(
     const argb *uint32, int cache_bits, const chosen_path *uint16, int chosen_path_size, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs) {
   use_color_cache := (cache_bits > 0);
   int ix;
-  int i = 0;
-  int ok = 0;
-  int cc_init = 0;
+  i := 0;
+  ok := 0;
+  cc_init := 0;
   VP8LColorCache hashers;
 
   if (use_color_cache) {
@@ -718,10 +718,10 @@ Error:
 extern int VP8LBackwardReferencesTraceBackwards(
     int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs_src *VP8LBackwardRefs, const refs_dst *VP8LBackwardRefs);
 int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs_src *VP8LBackwardRefs, const refs_dst *VP8LBackwardRefs) {
-  int ok = 0;
+  ok := 0;
   dist_array_size := xsize * ysize;
   chosen_path *uint16 = nil;
-  int chosen_path_size = 0;
+  chosen_path_size := 0;
   dist_array *uint16 =
       (*uint16)WebPSafeMalloc(dist_array_size, sizeof(*dist_array));
 

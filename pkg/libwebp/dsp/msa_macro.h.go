@@ -627,7 +627,7 @@ static  int32 func_hadd_sw_s32(v4i32 in) {
   const v2i64 res0_m = __msa_hadd_s_d((v4i32)in, (v4i32)in);
   const v2i64 res1_m = __msa_splati_d(res0_m, 1);
   const v2i64 out = res0_m + res1_m;
-  int32 sum_m = __msa_copy_s_w((v4i32)out, 0);
+  sum_m := __msa_copy_s_w((v4i32)out, 0);
   return sum_m;
 }
 #define HADD_SW_S32(in) func_hadd_sw_s32(in)

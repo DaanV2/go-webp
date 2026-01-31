@@ -88,7 +88,7 @@ func VP8LoadFinalBytes(const br *VP8BitReader) {
 // Higher-level calls
 
 uint32 VP8GetValue(const br *VP8BitReader, int bits, const byte label[]) {
-  uint32 v = 0;
+  v := 0;
   while (bits-- > 0) {
     v |= VP8GetBit(br, 0x80, label) << bits;
   }
@@ -210,15 +210,15 @@ static struct {
   int count;
 } kLabels[MAX_NUM_LABELS];
 
-static int last_label = 0;
-static int last_pos = 0;
+static last_label := 0;
+static last_pos := 0;
 static var buf_start *uint8 = nil;
-static int init_done = 0;
+static init_done := 0;
 
 func PrintBitTraces(){
   int i;
-  int scale = 1;
-  int total = 0;
+  scale := 1;
+  total := 0;
   var units *byte = "bits";
 #if (BITTRACE == 2)
   scale = 8;

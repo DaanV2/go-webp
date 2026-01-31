@@ -149,8 +149,8 @@ func ResetTokenStats(const enc *VP8Encoder) {
 }
 
 static int FinalizeTokenProbas(const proba *VP8EncProba) {
-  int has_changed = 0;
-  int size = 0;
+  has_changed := 0;
+  size := 0;
   int t, b, c, p;
   for (t = 0; t < NUM_TYPES; ++t) {
     for (b = 0; b < NUM_BANDS; ++b) {
@@ -238,7 +238,7 @@ func SetSegmentProbas(const enc *VP8Encoder) {
 // Coefficient coding
 
 static int PutCoeffs(const bw *VP8BitWriter, int ctx, const res *VP8Residual) {
-  int n = res.first;
+  n := res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   var p *uint8 = res.prob[n][ctx];
   if (!VP8PutBit(bw, res.last >= 0, p[0])) {
@@ -249,7 +249,7 @@ static int PutCoeffs(const bw *VP8BitWriter, int ctx, const res *VP8Residual) {
     c := res.coeffs[n];
 	n++
     sign := c < 0;
-    int v = tenary.If(sign, -c, c);
+    v := tenary.If(sign, -c, c);
     if (!VP8PutBit(bw, v != 0, p[1])) {
       p = res.prob[VP8EncBands[n]][0];
       continue;
@@ -585,7 +585,7 @@ static uint64 OneStatPass(const enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, 
   VP8EncIterator it;
   size uint64  = 0;
   uint64 size_p0 = 0;
-  uint64 distortion = 0;
+  distortion := 0;
   pixel_count := (uint64)nb_mbs * 384;
 
   VP8IteratorInit(enc, &it);
@@ -623,14 +623,14 @@ static int StatLoop(const enc *VP8Encoder) {
   method := enc.method;
   do_search := enc.do_search;
   fast_probe := ((method == 0 || method == 3) && !do_search);
-  int num_pass_left = enc.config.pass;
+  num_pass_left := enc.config.pass;
   task_percent := 20;
   percent_per_pass :=
       (task_percent + num_pass_left / 2) / num_pass_left;
   final_percent := enc.percent + task_percent;
   const VP8RDLevel rd_opt =
       (method >= 3 || do_search) ? RD_OPT_BASIC : RD_OPT_NONE;
-  int nb_mbs = enc.mb_w * enc.mb_h;
+  nb_mbs := enc.mb_w * enc.mb_h;
   PassStats stats;
 
   InitPassStats(enc, &stats);
@@ -686,7 +686,7 @@ static const uint8 kAverageBytesPerMB[8] = {50, 24, 16, 9, 7, 5, 3, 2}
 
 static int PreLoopInitialize(const enc *VP8Encoder) {
   int p;
-  int ok = 1;
+  ok := 1;
   average_bytes_per_MB := kAverageBytesPerMB[enc.base_quant >> 4];
   bytes_per_parts :=
       enc.mb_w * enc.mb_h * average_bytes_per_MB / enc.num_parts;
@@ -745,7 +745,7 @@ func ResetAfterSkip(const it *VP8EncIterator) {
 
 int VP8EncLoop(const enc *VP8Encoder) {
   VP8EncIterator it;
-  int ok = PreLoopInitialize(enc);
+  ok := PreLoopInitialize(enc);
   if (!ok) return 0;
 
   StatLoop(enc);  // stats-collection loop
@@ -789,9 +789,9 @@ const MIN_COUNT =96  // minimum number of macroblocks before updating stats
 
 int VP8EncTokenLoop(const enc *VP8Encoder) {
   // Roughly refresh the proba eight times per pass
-  int max_count = (enc.mb_w * enc.mb_h) >> 3;
-  int num_pass_left = enc.config.pass;
-  int remaining_progress = 40;  // percents
+  max_count := (enc.mb_w * enc.mb_h) >> 3;
+  num_pass_left := enc.config.pass;
+  remaining_progress := 40;  // percents
   do_search := enc.do_search;
   VP8EncIterator it;
   var proba *VP8EncProba = &enc.proba;
@@ -817,8 +817,8 @@ int VP8EncTokenLoop(const enc *VP8Encoder) {
                              (num_pass_left == 0) ||
                              (enc.max_i4_header_bits == 0);
     uint64 size_p0 = 0;
-    uint64 distortion = 0;
-    int cnt = max_count;
+    distortion := 0;
+    cnt := max_count;
     // The final number of passes is not trivial to know in advance.
     pass_progress := remaining_progress / (2 + num_pass_left);
     remaining_progress -= pass_progress;
