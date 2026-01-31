@@ -19,8 +19,6 @@ import "github.com/daanv2/go-webp/pkg/stddef"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
-
 
 //------------------------------------------------------------------------------
 // Lower-level API
@@ -40,74 +38,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //   VP8Delete(dec);
 //   return ok;
 
-// Input / Output
-typedef struct VP8Io VP8Io;
-typedef int (*VP8IoPutHook)(const io *VP8Io);
-typedef int (*VP8IoSetupHook)(io *VP8Io);
-typedef func (*VP8IoTeardownHook)(const io *VP8Io);
 
-type VP8Io struct {
-  // set by VP8GetHeaders()
-  int width, height;  // picture dimensions, in pixels (invariable).
-                      // These are the original, uncropped dimensions.
-                      // The actual area passed to put() is stored
-                      // in mb_w / mb_h fields.
-
-  // set before calling put()
-  int mb_y;                  // position of the current rows (in pixels)
-  int mb_w;                  // number of columns in the sample
-  int mb_h;                  // number of rows in the sample
-  const uint8 *y, *u, *v;  // rows to copy (in yuv420 format)
-  int y_stride;              // row stride for luma
-  int uv_stride;             // row stride for chroma
-
-  opaque *void;  // user data
-
-  // called when fresh samples are available. Currently, samples are in
-  // YUV420 format, and can be up to width x 24 in size (depending on the
-  // in-loop filtering level, e.g.). Should return false in case of error
-  // or abort request. The actual size of the area to update is mb_w x mb_h
-  // in size, taking cropping into account.
-  VP8IoPutHook put;
-
-  // called just before starting to decode the blocks.
-  // Must return false in case of setup error, true otherwise. If false is
-  // returned, teardown() will NOT be called. But if the setup succeeded
-  // and true is returned, then teardown() will always be called afterward.
-  VP8IoSetupHook setup;
-
-  // Called just after block decoding is finished (or when an error occurred
-  // during put()). Is NOT called if setup() failed.
-  VP8IoTeardownHook teardown;
-
-  // this is a recommendation for the user-side yuv.rgb converter. This flag
-  // is set when calling setup() hook and can be overwritten by it. It then
-  // can be taken into consideration during the put() method.
-  int fancy_upsampling;
-
-  // Input buffer.
-  uint64 data_size;
-  const data *uint8;
-
-  // If true, in-loop filtering will not be performed even if present in the
-  // bitstream. Switching off filtering may speed up decoding at the expense
-  // of more visible blocking. Note that output will also be non-compliant
-  // with the VP8 specifications.
-  int bypass_filtering;
-
-  // Cropping parameters.
-  int use_cropping;
-  int crop_left, crop_right, crop_top, crop_bottom;
-
-  // Scaling parameters.
-  int use_scaling;
-  int scaled_width, scaled_height;
-
-  // If non nil, pointer to the alpha data (if present) corresponding to the
-  // start of the current row (That is: it is pre-offset by mb_y and takes
-  // cropping into account).
-  const a *uint8;
-}
 
 // Internal, version-checked, entry point
  int VP8InitIoInternal(const *VP8Io, int);

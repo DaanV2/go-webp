@@ -35,8 +35,7 @@ const WEBP_DECODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 // Return the decoder's version number, packed in hexadecimal using 8bits for
 // each of major/minor/revision. E.g: v2.5.7 is 0x020507.
 func WebPGetDecoderVersion() int {
-	// TODO: implement
-	return 0
+	return dec.WebPGetDecoderVersion()
 }
 
 // Retrieve basic header information: width, height.
