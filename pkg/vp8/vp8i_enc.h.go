@@ -1,4 +1,4 @@
-package enc
+package vp8
 
 // Copyright 2011 Google Inc. All Rights Reserved.
 //

@@ -1,4 +1,4 @@
-package enc
+package vp8
 
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
@@ -16,9 +16,6 @@ package enc
 
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/stddef"
-
-
-
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
@@ -40,11 +37,11 @@ const (
 )
 
 type VP8LEncoder struct {
-  const config *WebPConfig;  // user configuration and parameters
-  const pic *WebPPicture;    // input picture.
+  config *WebPConfig;  // user configuration and parameters
+  pic *WebPPicture;    // input picture.
 
   argb *uint32;                       // Transformed argb image data.
-  VP8LEncoderARGBContent argb_content;  // Content type of the argb buffer.
+  argb_content VP8LEncoderARGBContent;  // Content type of the argb buffer.
   argb_scratch *uint32;               // Scratch memory for argb rows
                                         // (used for prediction).
   transform_data *uint32;             // Scratch memory for transform data.

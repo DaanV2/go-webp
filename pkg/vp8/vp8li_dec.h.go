@@ -1,4 +1,4 @@
-package dec
+package vp8
 
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
