@@ -26,9 +26,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 const BPS = 32  // this is the common stride for enc/dec
 
@@ -448,8 +445,6 @@ extern WebPUnfilterFunc WebPUnfilters[WEBP_FILTER_LAST];
 // To be called first before using the above.
 func VP8FiltersInit(void);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_DSP_DSP_H_

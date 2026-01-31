@@ -22,9 +22,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 const HUFFMAN_TABLE_BITS =8
 const HUFFMAN_TABLE_MASK =((1 << HUFFMAN_TABLE_BITS) - 1)
@@ -105,8 +102,6 @@ func VP8LHtreeGroupsFree(const htree_groups *HTreeGroup);
  int VP8LBuildHuffmanTable(
     const root_table *HuffmanTables, int root_bits, const int  code_lengths[], int code_lengths_size);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_UTILS_HUFFMAN_UTILS_H_

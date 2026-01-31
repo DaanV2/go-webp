@@ -19,9 +19,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Apply post-processing to input 'data' of size 'width'x'height' assuming that
 // the source was quantized to a reduced number of levels. 'stride' is in bytes.
@@ -31,8 +28,6 @@ extern "C" {
 int WebPDequantizeLevels(WEBP_SIZED_BY *uint8((uint64)height *stride)
                              const data, int width, int height, int stride, int strength);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_UTILS_QUANT_LEVELS_DEC_UTILS_H_

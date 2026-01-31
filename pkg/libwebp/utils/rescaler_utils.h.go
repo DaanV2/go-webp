@@ -14,9 +14,6 @@ package utils
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
@@ -92,8 +89,6 @@ static  int WebPRescalerHasPendingOutput(
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_UTILS_RESCALER_UTILS_H_

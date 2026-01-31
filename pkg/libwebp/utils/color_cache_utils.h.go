@@ -24,9 +24,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Main color cache struct.
 type VP8LColorCache struct {

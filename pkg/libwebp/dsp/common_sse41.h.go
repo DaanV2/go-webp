@@ -14,9 +14,6 @@ package dsp
 // Author: Vincent Rabaud (vrabaud@google.com)
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #if defined(WEBP_USE_SSE41)
 import "github.com/daanv2/go-webp/pkg/smmintrin"
@@ -117,8 +114,6 @@ static  func VP8L32bToPlanar_SSE41(__const in *m128i0, __const in *m128i1, __con
 
 #endif  // WEBP_USE_SSE41
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_DSP_COMMON_SSE41_H_

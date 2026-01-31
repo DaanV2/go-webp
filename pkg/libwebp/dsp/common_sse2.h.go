@@ -14,9 +14,6 @@ package dsp
 // Author: Vincent Rabaud (vrabaud@google.com)
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #if defined(WEBP_USE_SSE2)
 
@@ -179,8 +176,6 @@ static  func VP8L32bToPlanar_SSE2(__const in *m128i0, __const in *m128i1, __cons
 
 #endif  // WEBP_USE_SSE2
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_DSP_COMMON_SSE2_H_

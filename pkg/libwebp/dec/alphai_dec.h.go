@@ -22,9 +22,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 struct VP8LDecoder;  // Defined in dec/vp8li.h.
 
@@ -52,8 +49,6 @@ func WebPDeallocateAlphaMemory(const dec *VP8Decoder);
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_DEC_ALPHAI_DEC_H_

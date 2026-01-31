@@ -21,9 +21,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //------------------------------------------------------------------------------
 // Lower-level API
@@ -179,8 +176,6 @@ func VP8Delete(const dec *VP8Decoder);
  int VP8LGetInfo(const *uint8  data, uint64 data_size,  // data available so far
                             const width *int, const height *int, const has_alpha *int);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_DEC_VP8_DEC_H_

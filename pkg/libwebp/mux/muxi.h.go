@@ -24,9 +24,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //------------------------------------------------------------------------------
 // Defines and constants.
@@ -232,8 +229,6 @@ WebPMuxError MuxValidate(const mux *WebPMux);
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_MUX_MUXI_H_

@@ -20,9 +20,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // The maximum allowed limit is 11.
 const MAX_COLOR_CACHE_BITS =10

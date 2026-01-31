@@ -22,9 +22,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //------------------------------------------------------------------------------
 // Bit-writing
@@ -153,8 +150,6 @@ static  func VP8LPutBits(const bw *VP8LBitWriter, uint32 bits, int n_bits) {
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_UTILS_BIT_WRITER_UTILS_H_

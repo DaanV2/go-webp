@@ -14,9 +14,6 @@ package dec
 // Author: somnath@google.com (Somnath Banerjee)
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 import "github.com/daanv2/go-webp/pkg/stddef"
 
@@ -129,8 +126,6 @@ int WebPAvoidSlowMemory(const output *WebPDecBuffer, const features *WebPBitstre
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_DEC_WEBPI_DEC_H_

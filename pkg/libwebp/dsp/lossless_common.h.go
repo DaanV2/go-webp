@@ -23,9 +23,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //------------------------------------------------------------------------------
 // Decoding
@@ -197,8 +194,6 @@ VP8LSubPixels(uint32 a, uint32 b) {
     }                                                                      \
   }
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_DSP_LOSSLESS_COMMON_H_

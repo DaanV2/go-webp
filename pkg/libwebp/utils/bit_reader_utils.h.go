@@ -48,9 +48,6 @@ extern func BitTrace(const struct const br *VP8BitReader, const byte label[]);
 #define VP8GetSigned(BR, V, L) VP8GetSigned(BR, V)
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // The Boolean decoder needs to maintain infinite precision on the 'value'
 // field. However, since 'range' is only 8bit, we only need an active window of
@@ -190,8 +187,6 @@ static  func VP8LFillBitWindow(const br *VP8LBitReader) {
   if (br.bit_pos >= VP8L_WBITS) VP8LDoFillBitWindow(br);
 }
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_UTILS_BIT_READER_UTILS_H_

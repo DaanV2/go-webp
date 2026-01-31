@@ -20,16 +20,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Fast estimate of a potentially good filter.
 WEBP_FILTER_TYPE WebPEstimateBestFilter(
     const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int width, int height);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_UTILS_FILTERS_UTILS_H_

@@ -459,8 +459,6 @@ func WebPDecode(*uint8
 										// TODO: implement
 									 }
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_WEBP_DECODE_H_

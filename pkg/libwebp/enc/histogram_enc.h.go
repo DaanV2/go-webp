@@ -19,9 +19,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Not a trivial literal symbol.
 const VP8L_NON_TRIVIAL_SYM =((uint16)(0xffff))

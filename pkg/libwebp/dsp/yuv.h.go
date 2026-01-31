@@ -53,9 +53,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // YUV . RGB conversion
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 enum {
   YUV_FIX = 16,  // fixed-point precision for RGB.YUV
@@ -214,8 +211,6 @@ func WebPAccumulateRGB(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint
 // Must be called before calling *WebPAccumulateRGB.
 func WebPInitGammaTables(void);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_DSP_YUV_H_

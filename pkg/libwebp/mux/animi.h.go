@@ -16,9 +16,6 @@ package mux
 
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Picks the optimal rectangle between two pictures, starting with initial
 // values of offsets and dimensions that are passed in. The initial
@@ -32,8 +29,6 @@ extern "C" {
 // Returns true on success.
 int WebPAnimEncoderRefineRect(const struct const prev_canvas *WebPPicture, const struct const curr_canvas *WebPPicture, int is_lossless, float quality, const x_offset *int, const y_offset *int, const width *int, const height *int);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_MUX_ANIMI_H_

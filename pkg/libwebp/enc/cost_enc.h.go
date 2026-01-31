@@ -22,9 +22,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // On-the-fly info about the current set of residuals. Handy to avoid
 // passing zillions of params.
@@ -77,8 +74,6 @@ extern const uint16 VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES];
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_ENC_COST_ENC_H_

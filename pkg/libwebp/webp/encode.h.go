@@ -18,9 +18,6 @@ import "github.com/daanv2/go-webp/pkg/stddef"
 
 import "."
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 
@@ -510,8 +507,6 @@ type WebPPicture struct {
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_WEBP_ENCODE_H_

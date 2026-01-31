@@ -18,9 +18,6 @@ import "github.com/daanv2/go-webp/pkg/string"  // memset()
 
 import "."
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Note: forward declaring enumerations is not allowed in (strict) C and C++,
 // the types are left here for reference.
@@ -65,8 +62,6 @@ static  func WebPDataClear(webp_data *WebPData) {
   return 1;
 }
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_WEBP_MUX_TYPES_H_

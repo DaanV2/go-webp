@@ -14,15 +14,10 @@ package enc
 // Author: Vikas Arora (vikaas.arora@gmail.com)
 
 
-#ifdef HAVE_CONFIG_H
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-#endif
-
 import "github.com/daanv2/go-webp/pkg/stddef"
 
-// Either WEBP_NEAR_LOSSLESS is defined as 0 in config.h when compiling to
-// disable near-lossless, or it is enabled by default.
-#endif
+
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
@@ -31,9 +26,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // maximum value of 'transform_bits' in VP8LEncoder.
 const MAX_TRANSFORM_BITS =(MIN_TRANSFORM_BITS + (1 << NUM_TRANSFORM_BITS) - 1)
@@ -114,8 +106,6 @@ func VP8LOptimizeSampling(const image *uint32, int full_width, int full_height, 
 
 //------------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_ENC_VP8LI_ENC_H_

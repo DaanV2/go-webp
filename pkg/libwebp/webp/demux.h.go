@@ -53,9 +53,6 @@ import "."  // for WEBP_CSP_MODE
 import "."
 import "."
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 const WEBP_DEMUX_ABI_VERSION =0x0107  // MAJOR(8b) + MINOR(8b)
 
@@ -348,8 +345,6 @@ type WebPAnimInfo struct {
 //   dec - (in/out) decoder instance to be deleted
  func WebPAnimDecoderDelete(dec *WebPAnimDecoder);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_WEBP_DEMUX_H_

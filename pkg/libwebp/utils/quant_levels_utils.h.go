@@ -21,9 +21,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Replace the input 'data' of size 'width'x'height' with 'num-levels'
 // quantized values. If not nil, 'sse' will contain the sum of squared error.
@@ -31,8 +28,6 @@ extern "C" {
 // Returns false in case of error (data is nil, or parameters are invalid).
 int QuantizeLevels(const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int width, int height, int num_levels, const sse *uint64);
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_UTILS_QUANT_LEVELS_UTILS_H_

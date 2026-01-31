@@ -33,9 +33,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //------------------------------------------------------------------------------
 // Derived type lbit_t = natural type for memory I/O
@@ -192,8 +189,6 @@ static  int VP8GetBitAlt(WEBP_RESTRICT const br *VP8BitReader, int prob, const b
   }
 }
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
+
 
 #endif  // WEBP_UTILS_BIT_READER_INL_UTILS_H_
