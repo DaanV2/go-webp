@@ -61,7 +61,7 @@ static WEBP_INLINE uint32_t PaletteColorDistance(uint32_t col1, uint32_t col2) {
   return score;
 }
 
-static WEBP_INLINE void SwapColor(uint32_t* const col1, uint32_t* const col2) {
+static WEBP_INLINE func SwapColor(uint32_t* const col1, uint32_t* const col2) {
   const uint32_t tmp = *col1;
   *col1 = *col2;
   *col2 = tmp;
@@ -85,7 +85,7 @@ int SearchColorNoIdx(const uint32_t WEBP_COUNTED_BY(num_colors) sorted[],
   return 0;
 }
 
-void PrepareMapToPalette(const uint32_t WEBP_COUNTED_BY(num_colors) palette[],
+func PrepareMapToPalette(const uint32_t WEBP_COUNTED_BY(num_colors) palette[],
                          uint32_t num_colors,
                          uint32_t WEBP_COUNTED_BY(num_colors) sorted[],
                          uint32_t WEBP_COUNTED_BY(num_colors) idx_map[]) {
@@ -194,7 +194,7 @@ static int PaletteHasNonMonotonousDeltas(
   return (sign_found & (sign_found << 1)) != 0;  // two consequent signs.
 }
 
-static void PaletteSortMinimizeDeltas(
+func PaletteSortMinimizeDeltas(
     const uint32_t* const WEBP_COUNTED_BY(num_colors) palette_sorted,
     int num_colors, uint32_t* const WEBP_COUNTED_BY(num_colors) palette) {
   uint32_t predict = 0x00000000;
@@ -231,7 +231,7 @@ static void PaletteSortMinimizeDeltas(
 // Pinho and Antonio J. R. Neves.
 
 // Finds the biggest cooccurrence in the matrix.
-static void CoOccurrenceFindMax(
+func CoOccurrenceFindMax(
     const uint32_t* const WEBP_COUNTED_BY(num_colors* num_colors) cooccurrence,
     uint32_t num_colors, uint8_t* const c1, uint8_t* const c2) {
   // Find the index that is most frequently located adjacent to other

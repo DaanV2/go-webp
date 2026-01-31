@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if !defined(WORK_AROUND_GCC)
 // gcc 4.6.0 had some trouble (NDK-r9) with this code. We only use it for
 // gcc-4.8.x at least.
-static void ConvertBGRAToRGBA_NEON(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToRGBA_NEON(const uint32_t* WEBP_RESTRICT src,
                                    int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const end = src + (num_pixels & ~15);
   for (; src < end; src += 16) {
@@ -44,7 +44,7 @@ static void ConvertBGRAToRGBA_NEON(const uint32_t* WEBP_RESTRICT src,
   VP8LConvertBGRAToRGBA_C(src, num_pixels & 15, dst);  // left-overs
 }
 
-static void ConvertBGRAToBGR_NEON(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToBGR_NEON(const uint32_t* WEBP_RESTRICT src,
                                   int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const end = src + (num_pixels & ~15);
   for (; src < end; src += 16) {
@@ -56,7 +56,7 @@ static void ConvertBGRAToBGR_NEON(const uint32_t* WEBP_RESTRICT src,
   VP8LConvertBGRAToBGR_C(src, num_pixels & 15, dst);  // left-overs
 }
 
-static void ConvertBGRAToRGB_NEON(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToRGB_NEON(const uint32_t* WEBP_RESTRICT src,
                                   int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const end = src + (num_pixels & ~15);
   for (; src < end; src += 16) {
@@ -74,7 +74,7 @@ static void ConvertBGRAToRGB_NEON(const uint32_t* WEBP_RESTRICT src,
 
 static const uint8_t kRGBAShuffle[8] = {2, 1, 0, 3, 6, 5, 4, 7};
 
-static void ConvertBGRAToRGBA_NEON(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToRGBA_NEON(const uint32_t* WEBP_RESTRICT src,
                                    int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const end = src + (num_pixels & ~1);
   const uint8x8_t shuffle = vld1_u8(kRGBAShuffle);
@@ -90,7 +90,7 @@ static const uint8_t kBGRShuffle[3][8] = {{0, 1, 2, 4, 5, 6, 8, 9},
                                           {10, 12, 13, 14, 16, 17, 18, 20},
                                           {21, 22, 24, 25, 26, 28, 29, 30}};
 
-static void ConvertBGRAToBGR_NEON(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToBGR_NEON(const uint32_t* WEBP_RESTRICT src,
                                   int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const end = src + (num_pixels & ~7);
   const uint8x8_t shuffle0 = vld1_u8(kBGRShuffle[0]);
@@ -114,7 +114,7 @@ static const uint8_t kRGBShuffle[3][8] = {{2, 1, 0, 6, 5, 4, 10, 9},
                                           {8, 14, 13, 12, 18, 17, 16, 22},
                                           {21, 20, 26, 25, 24, 30, 29, 28}};
 
-static void ConvertBGRAToRGB_NEON(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToRGB_NEON(const uint32_t* WEBP_RESTRICT src,
                                   int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const end = src + (num_pixels & ~7);
   const uint8x8_t shuffle0 = vld1_u8(kRGBShuffle[0]);
@@ -205,7 +205,7 @@ static uint32_t Predictor13_NEON(const uint32_t* const left,
 // Batch versions of those functions.
 
 // Predictor0: ARGB_BLACK.
-static void PredictorAdd0_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd0_NEON(const uint32_t* in, const uint32_t* upper,
                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   const uint8x16_t black = vreinterpretq_u8_u32(vdupq_n_u32(ARGB_BLACK));
@@ -218,7 +218,7 @@ static void PredictorAdd0_NEON(const uint32_t* in, const uint32_t* upper,
 }
 
 // Predictor1: left.
-static void PredictorAdd1_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd1_NEON(const uint32_t* in, const uint32_t* upper,
                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   const uint8x16_t zero = LOADQ_U32_AS_U8(0);
@@ -243,7 +243,7 @@ static void PredictorAdd1_NEON(const uint32_t* in, const uint32_t* upper,
 // Macro that adds 32-bit integers from IN using mod 256 arithmetic
 // per 8 bit channel.
 #define GENERATE_PREDICTOR_1(X, IN)                                         \
-  static void PredictorAdd##X##_NEON(const uint32_t* in,                    \
+  func PredictorAdd##X##_NEON(const uint32_t* in,                    \
                                      const uint32_t* upper, int num_pixels, \
                                      uint32_t* WEBP_RESTRICT out) {         \
     int i;                                                                  \
@@ -273,7 +273,7 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])
     L = ROTATE32_LEFT(res);                                              \
   } while (0)
 
-static void PredictorAdd5_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd5_NEON(const uint32_t* in, const uint32_t* upper,
                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
@@ -299,7 +299,7 @@ static void PredictorAdd5_NEON(const uint32_t* in, const uint32_t* upper,
   } while (0)
 
 // Predictor6: average(left, TL)
-static void PredictorAdd6_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd6_NEON(const uint32_t* in, const uint32_t* upper,
                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
@@ -315,7 +315,7 @@ static void PredictorAdd6_NEON(const uint32_t* in, const uint32_t* upper,
 }
 
 // Predictor7: average(left, T)
-static void PredictorAdd7_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd7_NEON(const uint32_t* in, const uint32_t* upper,
                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
@@ -332,7 +332,7 @@ static void PredictorAdd7_NEON(const uint32_t* in, const uint32_t* upper,
 #undef DO_PRED67
 
 #define GENERATE_PREDICTOR_2(X, IN)                                         \
-  static void PredictorAdd##X##_NEON(const uint32_t* in,                    \
+  func PredictorAdd##X##_NEON(const uint32_t* in,                    \
                                      const uint32_t* upper, int num_pixels, \
                                      uint32_t* WEBP_RESTRICT out) {         \
     int i;                                                                  \
@@ -362,7 +362,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
     L = ROTATE32_LEFT(res);                                              \
   } while (0)
 
-static void PredictorAdd10_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd10_NEON(const uint32_t* in, const uint32_t* upper,
                                 int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
@@ -395,7 +395,7 @@ static void PredictorAdd10_NEON(const uint32_t* in, const uint32_t* upper,
     L = ROTATE32_LEFT(res);                                              \
   } while (0)
 
-static void PredictorAdd11_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd11_NEON(const uint32_t* in, const uint32_t* upper,
                                 int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
@@ -429,7 +429,7 @@ static void PredictorAdd11_NEON(const uint32_t* in, const uint32_t* upper,
     L = vextq_u16(res16, res16, 4);                                        \
   } while (0)
 
-static void PredictorAdd12_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd12_NEON(const uint32_t* in, const uint32_t* upper,
                                 int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   uint16x8_t L = vmovl_u8(LOAD_U32_AS_U8(out[-1]));
@@ -471,7 +471,7 @@ static void PredictorAdd12_NEON(const uint32_t* in, const uint32_t* upper,
     L = ROTATE32_LEFT(res2);                                                  \
   } while (0)
 
-static void PredictorAdd13_NEON(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd13_NEON(const uint32_t* in, const uint32_t* upper,
                                 int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
@@ -528,7 +528,7 @@ static WEBP_INLINE uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb,
 }
 #endif  // USE_VTBLQ
 
-static void AddGreenToBlueAndRed_NEON(const uint32_t* src, int num_pixels,
+func AddGreenToBlueAndRed_NEON(const uint32_t* src, int num_pixels,
                                       uint32_t* dst) {
   const uint32_t* const end = src + (num_pixels & ~3);
 #ifdef USE_VTBLQ
@@ -548,7 +548,7 @@ static void AddGreenToBlueAndRed_NEON(const uint32_t* src, int num_pixels,
 //------------------------------------------------------------------------------
 // Color Transform
 
-static void TransformColorInverse_NEON(const VP8LMultipliers* const m,
+func TransformColorInverse_NEON(const VP8LMultipliers* const m,
                                        const uint32_t* const src,
                                        int num_pixels, uint32_t* dst) {
 // sign-extended multiplying constants, pre-shifted by 6.
@@ -607,9 +607,9 @@ static void TransformColorInverse_NEON(const VP8LMultipliers* const m,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8LDspInitNEON(void);
+extern func VP8LDspInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8LDspInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitNEON(void) {
   VP8LPredictors[5] = Predictor5_NEON;
   VP8LPredictors[6] = Predictor6_NEON;
   VP8LPredictors[7] = Predictor7_NEON;

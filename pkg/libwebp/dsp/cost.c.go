@@ -272,7 +272,7 @@ static int GetResidualCost_C(int ctx0, const VP8Residual* const res) {
   return cost;
 }
 
-static void SetResidualCoeffs_C(const int16_t* WEBP_RESTRICT const coeffs,
+func SetResidualCoeffs_C(const int16_t* WEBP_RESTRICT const coeffs,
                                 VP8Residual* WEBP_RESTRICT const res) {
   int n;
   res->last = -1;
@@ -293,10 +293,10 @@ VP8GetResidualCostFunc VP8GetResidualCost;
 VP8SetResidualCoeffsFunc VP8SetResidualCoeffs;
 
 extern VP8CPUInfo VP8GetCPUInfo;
-extern void VP8EncDspCostInitMIPS32(void);
-extern void VP8EncDspCostInitMIPSdspR2(void);
-extern void VP8EncDspCostInitSSE2(void);
-extern void VP8EncDspCostInitNEON(void);
+extern func VP8EncDspCostInitMIPS32(void);
+extern func VP8EncDspCostInitMIPSdspR2(void);
+extern func VP8EncDspCostInitSSE2(void);
+extern func VP8EncDspCostInitNEON(void);
 
 WEBP_DSP_INIT_FUNC(VP8EncDspCostInit) {
   VP8GetResidualCost = GetResidualCost_C;

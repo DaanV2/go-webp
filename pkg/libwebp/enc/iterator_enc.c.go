@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // VP8Iterator
 //------------------------------------------------------------------------------
 
-static void InitLeft(VP8EncIterator* const it) {
+func InitLeft(VP8EncIterator* const it) {
   it->y_left[-1] = it->u_left[-1] = it->v_left[-1] = (it->y > 0) ? 129 : 127;
   memset(it->y_left, 129, 16);
   memset(it->u_left, 129, 8);
@@ -36,7 +36,7 @@ static void InitLeft(VP8EncIterator* const it) {
   }
 }
 
-static void InitTop(VP8EncIterator* const it) {
+func InitTop(VP8EncIterator* const it) {
   const VP8Encoder* const enc = it->enc;
   const size_t top_size = enc->mb_w * 16;
   memset(enc->y_top, 127, 2 * top_size);
@@ -46,7 +46,7 @@ static void InitTop(VP8EncIterator* const it) {
   }
 }
 
-void VP8IteratorSetRow(VP8EncIterator* const it, int y) {
+func VP8IteratorSetRow(VP8EncIterator* const it, int y) {
   VP8Encoder* const enc = it->enc;
   it->x = 0;
   it->y = y;
@@ -60,7 +60,7 @@ void VP8IteratorSetRow(VP8EncIterator* const it, int y) {
 }
 
 // restart a scan
-static void VP8IteratorReset(VP8EncIterator* const it) {
+func VP8IteratorReset(VP8EncIterator* const it) {
   VP8Encoder* const enc = it->enc;
   VP8IteratorSetRow(it, 0);
   VP8IteratorSetCountDown(it, enc->mb_w * enc->mb_h);  // default
@@ -69,7 +69,7 @@ static void VP8IteratorReset(VP8EncIterator* const it) {
   it->do_trellis = 0;
 }
 
-void VP8IteratorSetCountDown(VP8EncIterator* const it, int count_down) {
+func VP8IteratorSetCountDown(VP8EncIterator* const it, int count_down) {
   it->count_down = it->count_down0 = count_down;
 }
 
@@ -77,7 +77,7 @@ int VP8IteratorIsDone(const VP8EncIterator* const it) {
   return (it->count_down <= 0);
 }
 
-void VP8IteratorInit(VP8Encoder* const enc, VP8EncIterator* const it) {
+func VP8IteratorInit(VP8Encoder* const enc, VP8EncIterator* const it) {
   it->enc = enc;
   it->yuv_in = (uint8_t*)WEBP_ALIGN(it->yuv_mem);
   it->yuv_out = it->yuv_in + YUV_SIZE_ENC;
@@ -110,7 +110,7 @@ int VP8IteratorProgress(const VP8EncIterator* const it, int delta) {
 
 static WEBP_INLINE int MinSize(int a, int b) { return (a < b) ? a : b; }
 
-static void ImportBlock(const uint8_t* src, int src_stride, uint8_t* dst, int w,
+func ImportBlock(const uint8_t* src, int src_stride, uint8_t* dst, int w,
                         int h, int size) {
   int i;
   for (i = 0; i < h; ++i) {
@@ -127,14 +127,14 @@ static void ImportBlock(const uint8_t* src, int src_stride, uint8_t* dst, int w,
   }
 }
 
-static void ImportLine(const uint8_t* src, int src_stride, uint8_t* dst,
+func ImportLine(const uint8_t* src, int src_stride, uint8_t* dst,
                        int len, int total_len) {
   int i;
   for (i = 0; i < len; ++i, src += src_stride) dst[i] = *src;
   for (; i < total_len; ++i) dst[i] = dst[len - 1];
 }
 
-void VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32) {
+func VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32) {
   const VP8Encoder* const enc = it->enc;
   const int x = it->x, y = it->y;
   const WebPPicture* const pic = enc->pic;
@@ -182,7 +182,7 @@ void VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32) {
 //------------------------------------------------------------------------------
 // Copy back the compressed samples into user space if requested.
 
-static void ExportBlock(const uint8_t* src, uint8_t* dst, int dst_stride, int w,
+func ExportBlock(const uint8_t* src, uint8_t* dst, int dst_stride, int w,
                         int h) {
   while (h-- > 0) {
     memcpy(dst, src, w);
@@ -191,7 +191,7 @@ static void ExportBlock(const uint8_t* src, uint8_t* dst, int dst_stride, int w,
   }
 }
 
-void VP8IteratorExport(const VP8EncIterator* const it) {
+func VP8IteratorExport(const VP8EncIterator* const it) {
   const VP8Encoder* const enc = it->enc;
   if (enc->config->show_compressed) {
     const int x = it->x, y = it->y;
@@ -237,7 +237,7 @@ void VP8IteratorExport(const VP8EncIterator* const it) {
 // Convert packed context to byte array
 #define BIT(nz, n) (!!((nz) & (1 << (n))))
 
-void VP8IteratorNzToBytes(VP8EncIterator* const it) {
+func VP8IteratorNzToBytes(VP8EncIterator* const it) {
   const int tnz = it->nz[0], lnz = it->nz[-1];
   int* const top_nz = it->top_nz;
   int* const left_nz = it->left_nz;
@@ -270,7 +270,7 @@ void VP8IteratorNzToBytes(VP8EncIterator* const it) {
   // left-DC is special, iterated separately
 }
 
-void VP8IteratorBytesToNz(VP8EncIterator* const it) {
+func VP8IteratorBytesToNz(VP8EncIterator* const it) {
   uint32_t nz = 0;
   const int* const top_nz = it->top_nz;
   const int* const left_nz = it->left_nz;
@@ -293,7 +293,7 @@ void VP8IteratorBytesToNz(VP8EncIterator* const it) {
 //------------------------------------------------------------------------------
 // Advance to the next position, doing the bookkeeping.
 
-void VP8IteratorSaveBoundary(VP8EncIterator* const it) {
+func VP8IteratorSaveBoundary(VP8EncIterator* const it) {
   VP8Encoder* const enc = it->enc;
   const int x = it->x, y = it->y;
   const uint8_t* const ysrc = it->yuv_out + Y_OFF_ENC;
@@ -334,7 +334,7 @@ int VP8IteratorNext(VP8EncIterator* const it) {
 //------------------------------------------------------------------------------
 // Helper function to set mode properties
 
-void VP8SetIntra16Mode(const VP8EncIterator* const it, int mode) {
+func VP8SetIntra16Mode(const VP8EncIterator* const it, int mode) {
   uint8_t* preds = it->preds;
   int y;
   for (y = 0; y < 4; ++y) {
@@ -344,7 +344,7 @@ void VP8SetIntra16Mode(const VP8EncIterator* const it, int mode) {
   it->mb->type = 1;
 }
 
-void VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8_t* modes) {
+func VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8_t* modes) {
   uint8_t* preds = it->preds;
   int y;
   for (y = 4; y > 0; --y) {
@@ -355,15 +355,15 @@ void VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8_t* modes) {
   it->mb->type = 0;
 }
 
-void VP8SetIntraUVMode(const VP8EncIterator* const it, int mode) {
+func VP8SetIntraUVMode(const VP8EncIterator* const it, int mode) {
   it->mb->uv_mode = mode;
 }
 
-void VP8SetSkip(const VP8EncIterator* const it, int skip) {
+func VP8SetSkip(const VP8EncIterator* const it, int skip) {
   it->mb->skip = skip;
 }
 
-void VP8SetSegment(const VP8EncIterator* const it, int segment) {
+func VP8SetSegment(const VP8EncIterator* const it, int segment) {
   it->mb->segment = segment;
 }
 
@@ -402,7 +402,7 @@ void VP8SetSegment(const VP8EncIterator* const it, int segment) {
 static const uint8_t VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25,
                                          9,  13, 17, 21, 5,  9,  13, 17};
 
-void VP8IteratorStartI4(VP8EncIterator* const it) {
+func VP8IteratorStartI4(VP8EncIterator* const it) {
   const VP8Encoder* const enc = it->enc;
   int i;
 

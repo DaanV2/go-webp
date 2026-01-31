@@ -41,7 +41,7 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
 #define LOAD_UV(u, v) ((u) | ((v) << 16))
 
 #define UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                                 \
-  static void FUNC_NAME(                                                      \
+  func FUNC_NAME(                                                      \
       const uint8_t* WEBP_RESTRICT top_y,                                     \
       const uint8_t* WEBP_RESTRICT bottom_y,                                  \
       const uint8_t* WEBP_RESTRICT top_u, const uint8_t* WEBP_RESTRICT top_v, \
@@ -113,7 +113,7 @@ UPSAMPLE_FUNC(UpsampleBgrLinePair_C, VP8YuvToBgr, 3)
 UPSAMPLE_FUNC(UpsampleRgba4444LinePair_C, VP8YuvToRgba4444, 2)
 UPSAMPLE_FUNC(UpsampleRgb565LinePair_C, VP8YuvToRgb565, 2)
 #else
-static void EmptyUpsampleFunc(const uint8_t* top_y, const uint8_t* bottom_y,
+func EmptyUpsampleFunc(const uint8_t* top_y, const uint8_t* bottom_y,
                               const uint8_t* top_u, const uint8_t* top_v,
                               const uint8_t* cur_u, const uint8_t* cur_v,
                               uint8_t* top_dst, uint8_t* bottom_dst, int len) {
@@ -146,7 +146,7 @@ static void EmptyUpsampleFunc(const uint8_t* top_y, const uint8_t* bottom_y,
 
 #if !defined(FANCY_UPSAMPLING)
 #define DUAL_SAMPLE_FUNC(FUNC_NAME, FUNC)                                     \
-  static void FUNC_NAME(                                                      \
+  func FUNC_NAME(                                                      \
       const uint8_t* WEBP_RESTRICT top_y, const uint8_t* WEBP_RESTRICT bot_y, \
       const uint8_t* WEBP_RESTRICT top_u, const uint8_t* WEBP_RESTRICT top_v, \
       const uint8_t* WEBP_RESTRICT bot_u, const uint8_t* WEBP_RESTRICT bot_v, \
@@ -192,10 +192,10 @@ WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last) {
 // YUV444 converter
 
 #define YUV444_FUNC(FUNC_NAME, FUNC, XSTEP)                                  \
-  extern void FUNC_NAME(                                                     \
+  extern func FUNC_NAME(                                                     \
       const uint8_t* WEBP_RESTRICT y, const uint8_t* WEBP_RESTRICT u,        \
       const uint8_t* WEBP_RESTRICT v, uint8_t* WEBP_RESTRICT dst, int len);  \
-  void FUNC_NAME(                                                            \
+  func FUNC_NAME(                                                            \
       const uint8_t* WEBP_RESTRICT y, const uint8_t* WEBP_RESTRICT u,        \
       const uint8_t* WEBP_RESTRICT v, uint8_t* WEBP_RESTRICT dst, int len) { \
     int i;                                                                   \
@@ -211,7 +211,7 @@ YUV444_FUNC(WebPYuv444ToArgb_C, VP8YuvToArgb, 4)
 YUV444_FUNC(WebPYuv444ToRgba4444_C, VP8YuvToRgba4444, 2)
 YUV444_FUNC(WebPYuv444ToRgb565_C, VP8YuvToRgb565, 2)
 #else
-static void EmptyYuv444Func(const uint8_t* y, const uint8_t* u,
+func EmptyYuv444Func(const uint8_t* y, const uint8_t* u,
                             const uint8_t* v, uint8_t* dst, int len) {
   (void)y;
   (void)u;
@@ -231,9 +231,9 @@ static void EmptyYuv444Func(const uint8_t* y, const uint8_t* u,
 WebPYUV444Converter WebPYUV444Converters[MODE_LAST];
 
 extern VP8CPUInfo VP8GetCPUInfo;
-extern void WebPInitYUV444ConvertersMIPSdspR2(void);
-extern void WebPInitYUV444ConvertersSSE2(void);
-extern void WebPInitYUV444ConvertersSSE41(void);
+extern func WebPInitYUV444ConvertersMIPSdspR2(void);
+extern func WebPInitYUV444ConvertersSSE2(void);
+extern func WebPInitYUV444ConvertersSSE41(void);
 
 WEBP_DSP_INIT_FUNC(WebPInitYUV444Converters) {
   WebPYUV444Converters[MODE_RGBA] = WebPYuv444ToRgba_C;
@@ -270,11 +270,11 @@ WEBP_DSP_INIT_FUNC(WebPInitYUV444Converters) {
 //------------------------------------------------------------------------------
 // Main calls
 
-extern void WebPInitUpsamplersSSE2(void);
-extern void WebPInitUpsamplersSSE41(void);
-extern void WebPInitUpsamplersNEON(void);
-extern void WebPInitUpsamplersMIPSdspR2(void);
-extern void WebPInitUpsamplersMSA(void);
+extern func WebPInitUpsamplersSSE2(void);
+extern func WebPInitUpsamplersSSE41(void);
+extern func WebPInitUpsamplersNEON(void);
+extern func WebPInitUpsamplersMIPSdspR2(void);
+extern func WebPInitUpsamplersMSA(void);
 
 WEBP_DSP_INIT_FUNC(WebPInitUpsamplers) {
 #ifdef FANCY_UPSAMPLING

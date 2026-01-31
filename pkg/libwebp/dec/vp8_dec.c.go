@@ -50,12 +50,12 @@ typedef int (*GetCoeffsFunc)(VP8BitReader* const br,
                              const quant_t dq, int n, int16_t* out);
 static volatile GetCoeffsFunc GetCoeffs = NULL;
 
-static void InitGetCoeffs(void);
+func InitGetCoeffs(void);
 
 //------------------------------------------------------------------------------
 // VP8Decoder
 
-static void SetOk(VP8Decoder* const dec) {
+func SetOk(VP8Decoder* const dec) {
   dec->status = VP8_STATUS_OK;
   dec->error_msg = "OK";
 }
@@ -93,7 +93,7 @@ const char* VP8StatusMessage(VP8Decoder* const dec) {
   return dec->error_msg;
 }
 
-void VP8Delete(VP8Decoder* const dec) {
+func VP8Delete(VP8Decoder* const dec) {
   if (dec != NULL) {
     VP8Clear(dec);
     WebPSafeFree(dec);
@@ -166,7 +166,7 @@ int VP8GetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
 //------------------------------------------------------------------------------
 // Header parsing
 
-static void ResetSegmentHeader(VP8SegmentHeader* const hdr) {
+func ResetSegmentHeader(VP8SegmentHeader* const hdr) {
   assert(hdr != NULL);
   hdr->use_segment = 0;
   hdr->update_map = 0;
@@ -616,7 +616,7 @@ static int ParseResiduals(VP8Decoder* const dec, VP8MB* const mb,
   block->non_zero_uv = non_zero_uv;
 
   // We look at the mode-code of each block and check if some blocks have less
-  // than three non-zero coeffs (code < 2). This is to avoid dithering flat and
+  // than three non-zero coeffs (code < 2). This is to afunc dithering flat and
   // empty blocks.
   block->dither = (non_zero_uv & 0xaaaa) ? 0 : q->dither;
 
@@ -653,7 +653,7 @@ int VP8DecodeMB(VP8Decoder* const dec, VP8BitReader* const token_br) {
   return !token_br->eof;
 }
 
-void VP8InitScanline(VP8Decoder* const dec) {
+func VP8InitScanline(VP8Decoder* const dec) {
   VP8MB* const left = dec->mb_info - 1;
   left->nz = 0;
   left->nz_dc = 0;
@@ -730,7 +730,7 @@ int VP8Decode(VP8Decoder* const dec, VP8Io* const io) {
   return ok;
 }
 
-void VP8Clear(VP8Decoder* const dec) {
+func VP8Clear(VP8Decoder* const dec) {
   if (dec == NULL) {
     return;
   }

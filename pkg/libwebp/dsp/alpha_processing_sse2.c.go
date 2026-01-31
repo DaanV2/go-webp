@@ -84,7 +84,7 @@ static int DispatchAlpha_SSE2(const uint8_t* WEBP_RESTRICT alpha,
           _mm_movemask_epi8(_mm_cmpeq_epi8(all_alphas16, all_0xff)) != 0xffff);
 }
 
-static void DispatchAlphaToGreen_SSE2(const uint8_t* WEBP_RESTRICT alpha,
+func DispatchAlphaToGreen_SSE2(const uint8_t* WEBP_RESTRICT alpha,
                                       int alpha_stride, int width, int height,
                                       uint32_t* WEBP_RESTRICT dst,
                                       int dst_stride) {
@@ -156,7 +156,7 @@ static int ExtractAlpha_SSE2(const uint8_t* WEBP_RESTRICT argb, int argb_stride,
   return (alpha_and == 0xff);
 }
 
-static void ExtractGreen_SSE2(const uint32_t* WEBP_RESTRICT argb,
+func ExtractGreen_SSE2(const uint32_t* WEBP_RESTRICT argb,
                               uint8_t* WEBP_RESTRICT alpha, int size) {
   int i;
   const __m128i mask = _mm_set1_epi32(0xff);
@@ -228,7 +228,7 @@ static void ExtractGreen_SSE2(const uint32_t* WEBP_RESTRICT argb,
     _mm_storeu_si128((__m128i*)&(RGBX), A3);                           \
   } while (0)
 
-static void ApplyAlphaMultiply_SSE2(uint8_t* rgba, int alpha_first, int w,
+func ApplyAlphaMultiply_SSE2(uint8_t* rgba, int alpha_first, int w,
                                     int h, int stride) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i kMult = _mm_set1_epi16((short)0x8081);
@@ -323,7 +323,7 @@ static int HasAlpha32b_SSE2(const uint8_t* src, int length) {
   return 0;
 }
 
-static void AlphaReplace_SSE2(uint32_t* src, int length, uint32_t color) {
+func AlphaReplace_SSE2(uint32_t* src, int length, uint32_t color) {
   const __m128i m_color = _mm_set1_epi32((int)color);
   const __m128i zero = _mm_setzero_si128();
   int i = 0;
@@ -349,7 +349,7 @@ static void AlphaReplace_SSE2(uint32_t* src, int length, uint32_t color) {
 // -----------------------------------------------------------------------------
 // Apply alpha value to rows
 
-static void MultARGBRow_SSE2(uint32_t* const ptr, int width, int inverse) {
+func MultARGBRow_SSE2(uint32_t* const ptr, int width, int inverse) {
   int x = 0;
   if (!inverse) {
     const int kSpan = 2;
@@ -377,7 +377,7 @@ static void MultARGBRow_SSE2(uint32_t* const ptr, int width, int inverse) {
   if (width > 0) WebPMultARGBRow_C(ptr + x, width, inverse);
 }
 
-static void MultRow_SSE2(uint8_t* WEBP_RESTRICT const ptr,
+func MultRow_SSE2(uint8_t* WEBP_RESTRICT const ptr,
                          const uint8_t* WEBP_RESTRICT const alpha, int width,
                          int inverse) {
   int x = 0;
@@ -404,9 +404,9 @@ static void MultRow_SSE2(uint8_t* WEBP_RESTRICT const ptr,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void WebPInitAlphaProcessingSSE2(void);
+extern func WebPInitAlphaProcessingSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitAlphaProcessingSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingSSE2(void) {
   WebPMultARGBRow = MultARGBRow_SSE2;
   WebPMultRow = MultRow_SSE2;
   WebPApplyAlphaMultiply = ApplyAlphaMultiply_SSE2;

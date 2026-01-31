@@ -40,7 +40,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 }
 
 // Clears and deallocates an alpha decoder instance.
-static void ALPHDelete(ALPHDecoder* const dec) {
+func ALPHDelete(ALPHDecoder* const dec) {
   if (dec != NULL) {
     VP8LDelete(dec->vp8l_dec);
     dec->vp8l_dec = NULL;
@@ -172,7 +172,7 @@ static void ALPHDelete(ALPHDecoder* const dec) {
   return 1;
 }
 
-void WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
+func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
   assert(dec != NULL);
   WebPSafeFree(dec->alpha_plane_mem);
   dec->alpha_plane_mem = NULL;

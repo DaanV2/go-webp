@@ -265,7 +265,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 static WEBP_INLINE int Clip8(int v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
 
-static void YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
+func YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
   const int y1 = MultHi(y, 19077);
   const int r1 = y1 + MultHi(v, 26149) - 14234;
   const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
@@ -275,7 +275,7 @@ static void YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
   rgb[2] = Clip8(b1 >> 6);
 }
 
-static void YuvToBgr(int y, int u, int v, uint8_t* const bgr) {
+func YuvToBgr(int y, int u, int v, uint8_t* const bgr) {
   const int y1 = MultHi(y, 19077);
   const int r1 = y1 + MultHi(v, 26149) - 14234;
   const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
@@ -286,7 +286,7 @@ static void YuvToBgr(int y, int u, int v, uint8_t* const bgr) {
 }
 
 #if !defined(WEBP_REDUCE_CSP)
-static void YuvToRgb565(int y, int u, int v, uint8_t* const rgb) {
+func YuvToRgb565(int y, int u, int v, uint8_t* const rgb) {
   const int y1 = MultHi(y, 19077);
   const int r1 = y1 + MultHi(v, 26149) - 14234;
   const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
@@ -305,7 +305,7 @@ static void YuvToRgb565(int y, int u, int v, uint8_t* const rgb) {
 #endif
 }
 
-static void YuvToRgba4444(int y, int u, int v, uint8_t* const argb) {
+func YuvToRgba4444(int y, int u, int v, uint8_t* const argb) {
   const int y1 = MultHi(y, 19077);
   const int r1 = y1 + MultHi(v, 26149) - 14234;
   const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
@@ -324,24 +324,24 @@ static void YuvToRgba4444(int y, int u, int v, uint8_t* const argb) {
 #endif
 }
 
-static void YuvToArgb(uint8_t y, uint8_t u, uint8_t v, uint8_t* const argb) {
+func YuvToArgb(uint8_t y, uint8_t u, uint8_t v, uint8_t* const argb) {
   argb[0] = 0xff;
   YuvToRgb(y, u, v, argb + 1);
 }
 #endif  // WEBP_REDUCE_CSP
 
-static void YuvToBgra(uint8_t y, uint8_t u, uint8_t v, uint8_t* const bgra) {
+func YuvToBgra(uint8_t y, uint8_t u, uint8_t v, uint8_t* const bgra) {
   YuvToBgr(y, u, v, bgra);
   bgra[3] = 0xff;
 }
 
-static void YuvToRgba(uint8_t y, uint8_t u, uint8_t v, uint8_t* const rgba) {
+func YuvToRgba(uint8_t y, uint8_t u, uint8_t v, uint8_t* const rgba) {
   YuvToRgb(y, u, v, rgba);
   rgba[3] = 0xff;
 }
 
 #if !defined(WEBP_REDUCE_CSP)
-static void YuvToRgbLine(const uint8_t* WEBP_RESTRICT y,
+func YuvToRgbLine(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst, int length) {
@@ -370,7 +370,7 @@ static void YuvToRgbLine(const uint8_t* WEBP_RESTRICT y,
   }
 }
 
-static void YuvToBgrLine(const uint8_t* WEBP_RESTRICT y,
+func YuvToBgrLine(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst, int length) {
@@ -400,7 +400,7 @@ static void YuvToBgrLine(const uint8_t* WEBP_RESTRICT y,
 }
 #endif  // WEBP_REDUCE_CSP
 
-static void YuvToRgbaLine(const uint8_t* WEBP_RESTRICT y,
+func YuvToRgbaLine(const uint8_t* WEBP_RESTRICT y,
                           const uint8_t* WEBP_RESTRICT u,
                           const uint8_t* WEBP_RESTRICT v,
                           uint8_t* WEBP_RESTRICT dst, int length) {
@@ -430,7 +430,7 @@ static void YuvToRgbaLine(const uint8_t* WEBP_RESTRICT y,
   }
 }
 
-static void YuvToBgraLine(const uint8_t* WEBP_RESTRICT y,
+func YuvToBgraLine(const uint8_t* WEBP_RESTRICT y,
                           const uint8_t* WEBP_RESTRICT u,
                           const uint8_t* WEBP_RESTRICT v,
                           uint8_t* WEBP_RESTRICT dst, int length) {
@@ -461,7 +461,7 @@ static void YuvToBgraLine(const uint8_t* WEBP_RESTRICT y,
 }
 
 #if !defined(WEBP_REDUCE_CSP)
-static void YuvToArgbLine(const uint8_t* WEBP_RESTRICT y,
+func YuvToArgbLine(const uint8_t* WEBP_RESTRICT y,
                           const uint8_t* WEBP_RESTRICT u,
                           const uint8_t* WEBP_RESTRICT v,
                           uint8_t* WEBP_RESTRICT dst, int length) {
@@ -491,7 +491,7 @@ static void YuvToArgbLine(const uint8_t* WEBP_RESTRICT y,
   }
 }
 
-static void YuvToRgba4444Line(const uint8_t* WEBP_RESTRICT y,
+func YuvToRgba4444Line(const uint8_t* WEBP_RESTRICT y,
                               const uint8_t* WEBP_RESTRICT u,
                               const uint8_t* WEBP_RESTRICT v,
                               uint8_t* WEBP_RESTRICT dst, int length) {
@@ -529,7 +529,7 @@ static void YuvToRgba4444Line(const uint8_t* WEBP_RESTRICT y,
   }
 }
 
-static void YuvToRgb565Line(const uint8_t* WEBP_RESTRICT y,
+func YuvToRgb565Line(const uint8_t* WEBP_RESTRICT y,
                             const uint8_t* WEBP_RESTRICT u,
                             const uint8_t* WEBP_RESTRICT v,
                             uint8_t* WEBP_RESTRICT dst, int length) {
@@ -600,7 +600,7 @@ static void YuvToRgb565Line(const uint8_t* WEBP_RESTRICT y,
   } while (0)
 
 #define UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                                 \
-  static void FUNC_NAME(                                                      \
+  func FUNC_NAME(                                                      \
       const uint8_t* WEBP_RESTRICT top_y, const uint8_t* WEBP_RESTRICT bot_y, \
       const uint8_t* WEBP_RESTRICT top_u, const uint8_t* WEBP_RESTRICT top_v, \
       const uint8_t* WEBP_RESTRICT cur_u, const uint8_t* WEBP_RESTRICT cur_v, \
@@ -698,9 +698,9 @@ UPSAMPLE_FUNC(UpsampleRgb565LinePair, YuvToRgb565, 2)
 
 extern WebPUpsampleLinePairFunc WebPUpsamplers[/* MODE_LAST */];
 
-extern void WebPInitUpsamplersMSA(void);
+extern func WebPInitUpsamplersMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersMSA(void) {
   WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair;
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair;

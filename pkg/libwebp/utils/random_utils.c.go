@@ -37,7 +37,7 @@ static const uint32_t kRandomTable[VP8_RANDOM_TABLE_SIZE] = {
     0x35db3b68, 0x2b081e83, 0x77ce6b95, 0x5181e5f0, 0x78853bbc, 0x009f9494,
     0x27e5ed3c};
 
-void VP8InitRandom(VP8Random* const rg, float dithering) {
+func VP8InitRandom(VP8Random* const rg, float dithering) {
   WEBP_UNSAFE_MEMCPY(rg->tab, kRandomTable, sizeof(rg->tab));
   rg->index1 = 0;
   rg->index2 = 31;

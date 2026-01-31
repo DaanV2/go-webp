@@ -112,7 +112,7 @@ typedef enum WebPDemuxState {
 }
 
 // Frees memory associated with 'dmux'.
- void WebPDemuxDelete(WebPDemuxer* dmux);
+ func WebPDemuxDelete(WebPDemuxer* dmux);
 
 //------------------------------------------------------------------------------
 // Data/information extraction.
@@ -181,7 +181,7 @@ struct WebPIterator {
 // Must be called before any subsequent calls to WebPDemuxGetChunk() on the same
 // iter. Also, must be called before destroying the associated WebPDemuxer with
 // WebPDemuxDelete().
- void WebPDemuxReleaseIterator(WebPIterator* iter);
+ func WebPDemuxReleaseIterator(WebPIterator* iter);
 
 //------------------------------------------------------------------------------
 // Chunk iteration.
@@ -220,7 +220,7 @@ struct WebPChunkIterator {
 // Releases any memory associated with 'iter'.
 // Must be called before destroying the associated WebPDemuxer with
 // WebPDemuxDelete().
- void WebPDemuxReleaseChunkIterator(WebPChunkIterator* iter);
+ func WebPDemuxReleaseChunkIterator(WebPChunkIterator* iter);
 
 //------------------------------------------------------------------------------
 // WebPAnimDecoder API
@@ -345,7 +345,7 @@ struct WebPAnimInfo {
 // info.loop_count times) without destroying and recreating the 'dec' object.
 // Parameters:
 //   dec - (in/out) decoder instance to be reset
- void WebPAnimDecoderReset(WebPAnimDecoder* dec);
+ func WebPAnimDecoderReset(WebPAnimDecoder* dec);
 
 // Grab the internal demuxer object.
 // Getting the demuxer object can be useful if one wants to use operations only
@@ -361,7 +361,7 @@ struct WebPAnimInfo {
 // Deletes the WebPAnimDecoder object.
 // Parameters:
 //   dec - (in/out) decoder instance to be deleted
- void WebPAnimDecoderDelete(WebPAnimDecoder* dec);
+ func WebPAnimDecoderDelete(WebPAnimDecoder* dec);
 
 #ifdef __cplusplus
 }  // extern "C"

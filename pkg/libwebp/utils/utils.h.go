@@ -39,7 +39,7 @@ extern "C" {
 #if SIZE_MAX > (1ULL << 34)
 #define WEBP_MAX_ALLOCABLE_MEMORY (1ULL << 34)
 #else
-// For 32-bit targets keep this below INT_MAX to avoid valgrind warnings.
+// For 32-bit targets keep this below INT_MAX to afunc valgrind warnings.
 #define WEBP_MAX_ALLOCABLE_MEMORY ((1ULL << 31) - (1 << 16))
 #endif
 #endif  // WEBP_MAX_ALLOCABLE_MEMORY
@@ -62,7 +62,7 @@ static WEBP_INLINE int CheckSizeOverflow(uint64_t size) {
     WebPSafeCalloc(uint64_t nmemb, size_t size);
 
 // Companion deallocation function to the above allocations.
- void WebPSafeFree(void* const ptr);
+ func WebPSafeFree(void* const ptr);
 
 //------------------------------------------------------------------------------
 // Alignment
@@ -83,11 +83,11 @@ static WEBP_INLINE int32_t WebPMemToInt32(const uint8_t* const ptr) {
   return (int32_t)WebPMemToUint32(ptr);
 }
 
-static WEBP_INLINE void WebPUint32ToMem(uint8_t* const ptr, uint32_t val) {
+static WEBP_INLINE func WebPUint32ToMem(uint8_t* const ptr, uint32_t val) {
   WEBP_UNSAFE_MEMCPY(ptr, &val, sizeof(val));
 }
 
-static WEBP_INLINE void WebPInt32ToMem(uint8_t* const ptr, int val) {
+static WEBP_INLINE func WebPInt32ToMem(uint8_t* const ptr, int val) {
   WebPUint32ToMem(ptr, (uint32_t)val);
 }
 
@@ -109,21 +109,21 @@ static WEBP_INLINE uint32_t GetLE32(const uint8_t* const WEBP_COUNTED_BY(4)
 }
 
 // Store 16, 24 or 32 bits in little-endian order.
-static WEBP_INLINE void PutLE16(uint8_t* const WEBP_COUNTED_BY(2) data,
+static WEBP_INLINE func PutLE16(uint8_t* const WEBP_COUNTED_BY(2) data,
                                 int val) {
   assert(val < (1 << 16));
   data[0] = (val >> 0) & 0xff;
   data[1] = (val >> 8) & 0xff;
 }
 
-static WEBP_INLINE void PutLE24(uint8_t* const WEBP_COUNTED_BY(3) data,
+static WEBP_INLINE func PutLE24(uint8_t* const WEBP_COUNTED_BY(3) data,
                                 int val) {
   assert(val < (1 << 24));
   PutLE16(data, val & 0xffff);
   data[2] = (val >> 16) & 0xff;
 }
 
-static WEBP_INLINE void PutLE32(uint8_t* const WEBP_COUNTED_BY(4) data,
+static WEBP_INLINE func PutLE32(uint8_t* const WEBP_COUNTED_BY(4) data,
                                 uint32_t val) {
   PutLE16(data, (int)(val & 0xffff));
   PutLE16(data + 2, (int)(val >> 16));
@@ -187,12 +187,12 @@ static WEBP_INLINE int BitsCtz(uint32_t n) {
 struct WebPPicture;
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
- void WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
+ func WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
                                int dst_stride, int width, int height);
 
 // Copy ARGB pixels from 'src' to 'dst' honoring strides. 'src' and 'dst' are
 // assumed to be already allocated and using ARGB data.
- void WebPCopyPixels(const struct WebPPicture* const src,
+ func WebPCopyPixels(const struct WebPPicture* const src,
                                 struct WebPPicture* const dst);
 
 //------------------------------------------------------------------------------

@@ -126,7 +126,7 @@ const uint8_t VP8CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
       {244, 1, 255, 128, 128, 128, 128, 128, 128, 128, 128},
       {238, 1, 255, 128, 128, 128, 128, 128, 128, 128, 128}}}};
 
-void VP8DefaultProbas(VP8Encoder* const enc) {
+func VP8DefaultProbas(VP8Encoder* const enc) {
   VP8EncProba* const probas = &enc->proba;
   probas->use_skip_proba = 0;
   memset(probas->segments, 255u, sizeof(probas->segments));
@@ -261,7 +261,7 @@ static int PutI4Mode(VP8BitWriter* const bw, int mode,
   return mode;
 }
 
-static void PutI16Mode(VP8BitWriter* const bw, int mode) {
+func PutI16Mode(VP8BitWriter* const bw, int mode) {
   if (VP8PutBit(bw, (mode == TM_PRED || mode == H_PRED), 156)) {
     VP8PutBit(bw, mode == TM_PRED, 128);  // TM or HE
   } else {
@@ -269,7 +269,7 @@ static void PutI16Mode(VP8BitWriter* const bw, int mode) {
   }
 }
 
-static void PutUVMode(VP8BitWriter* const bw, int uv_mode) {
+func PutUVMode(VP8BitWriter* const bw, int uv_mode) {
   if (VP8PutBit(bw, uv_mode != DC_PRED, 142)) {
     if (VP8PutBit(bw, uv_mode != V_PRED, 114)) {
       VP8PutBit(bw, uv_mode != H_PRED, 183);  // else: TM_PRED
@@ -277,12 +277,12 @@ static void PutUVMode(VP8BitWriter* const bw, int uv_mode) {
   }
 }
 
-static void PutSegment(VP8BitWriter* const bw, int s, const uint8_t* p) {
+func PutSegment(VP8BitWriter* const bw, int s, const uint8_t* p) {
   if (VP8PutBit(bw, s >= 2, p[0])) p += 1;
   VP8PutBit(bw, s & 1, p[1]);
 }
 
-void VP8CodeIntraModes(VP8Encoder* const enc) {
+func VP8CodeIntraModes(VP8Encoder* const enc) {
   VP8BitWriter* const bw = &enc->bw;
   VP8EncIterator it;
   VP8IteratorInit(enc, &it);
@@ -416,7 +416,7 @@ const uint8_t VP8CoeffsUpdateProba[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] =
        {254, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
        {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255}}}};
 
-void VP8WriteProbas(VP8BitWriter* const bw, const VP8EncProba* const probas) {
+func VP8WriteProbas(VP8BitWriter* const bw, const VP8EncProba* const probas) {
   int t, b, c, p;
   for (t = 0; t < NUM_TYPES; ++t) {
     for (b = 0; b < NUM_BANDS; ++b) {

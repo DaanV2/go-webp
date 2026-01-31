@@ -54,13 +54,13 @@ extern const uint8_t kVP8Log2Range[128];
 extern const uint8_t kVP8NewRange[128];
 
 // special case for the tail byte-reading
-void VP8LoadFinalBytes(VP8BitReader* const br);
+func VP8LoadFinalBytes(VP8BitReader* const br);
 
 //------------------------------------------------------------------------------
 // Inlined critical functions
 
 // makes sure br->value has at least BITS bits worth of data
-static WEBP_UBSAN_IGNORE_UNDEF WEBP_INLINE void VP8LoadNewBytes(
+static WEBP_UBSAN_IGNORE_UNDEF WEBP_INLINE func VP8LoadNewBytes(
     VP8BitReader* WEBP_RESTRICT const br) {
   assert(br != NULL && br->buf != NULL);
   // Read 'BITS' bits at a time if possible.

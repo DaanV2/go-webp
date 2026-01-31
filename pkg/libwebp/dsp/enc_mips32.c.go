@@ -113,7 +113,7 @@ static const int kC2 = WEBP_TRANSFORM_AC3_C2;
 // clang-format on
 
 // Does one or two inverse transforms.
-static WEBP_INLINE void ITransformOne_MIPS32(const uint8_t* WEBP_RESTRICT ref,
+static WEBP_INLINE func ITransformOne_MIPS32(const uint8_t* WEBP_RESTRICT ref,
                                              const int16_t* WEBP_RESTRICT in,
                                              uint8_t* WEBP_RESTRICT dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
@@ -144,7 +144,7 @@ static WEBP_INLINE void ITransformOne_MIPS32(const uint8_t* WEBP_RESTRICT ref,
       : "memory", "hi", "lo");
 }
 
-static void ITransform_MIPS32(const uint8_t* WEBP_RESTRICT ref,
+func ITransform_MIPS32(const uint8_t* WEBP_RESTRICT ref,
                               const int16_t* WEBP_RESTRICT in,
                               uint8_t* WEBP_RESTRICT dst, int do_two) {
   ITransformOne_MIPS32(ref, in, dst);
@@ -482,7 +482,7 @@ static int Disto16x16_MIPS32(const uint8_t* WEBP_RESTRICT const a,
   "sh     %[" #TEMP12 "], " #B "(%[temp20])              \n\t"
 // clang-format on
 
-static void FTransform_MIPS32(const uint8_t* WEBP_RESTRICT src,
+func FTransform_MIPS32(const uint8_t* WEBP_RESTRICT src,
                               const uint8_t* WEBP_RESTRICT ref,
                               int16_t* WEBP_RESTRICT out) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
@@ -656,9 +656,9 @@ static int SSE4x4_MIPS32(const uint8_t* WEBP_RESTRICT a,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8EncDspInitMIPS32(void);
+extern func VP8EncDspInitMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8EncDspInitMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitMIPS32(void) {
   VP8ITransform = ITransform_MIPS32;
   VP8FTransform = FTransform_MIPS32;
 

@@ -85,7 +85,7 @@ static WEBP_INLINE uint8_t clip_8b(int v) {
 #undef CLIP_8b_MASK
 
 // vertical accumulation
-static void VFilter(SmoothParams* const p) {
+func VFilter(SmoothParams* const p) {
   const uint8_t* WEBP_INDEXABLE src = p->src;
   const int w = p->width;
   uint16_t* const WEBP_INDEXABLE cur = p->cur;
@@ -114,7 +114,7 @@ static void VFilter(SmoothParams* const p) {
 
 // horizontal accumulation. We use mirror replication of missing pixels, as it's
 // a little easier to implement (surprisingly).
-static void HFilter(SmoothParams* const p) {
+func HFilter(SmoothParams* const p) {
   const uint16_t* const WEBP_INDEXABLE in = p->end;
   uint16_t* const WEBP_INDEXABLE out = p->average;
   const uint32_t scale = p->scale;
@@ -138,7 +138,7 @@ static void HFilter(SmoothParams* const p) {
 }
 
 // emit one filtered output row
-static void ApplyFilter(SmoothParams* const p) {
+func ApplyFilter(SmoothParams* const p) {
   const uint16_t* const WEBP_INDEXABLE average = p->average;
   const int w = p->width;
   // correction is WEBP_COUNTED_BY, pointing to the start of the LUT.
@@ -167,7 +167,7 @@ static void ApplyFilter(SmoothParams* const p) {
 //------------------------------------------------------------------------------
 // Initialize correction table
 
-static void InitCorrectionLUT(
+func InitCorrectionLUT(
     int16_t* const WEBP_COUNTED_BY(CORRECTION_LUT_SIZE) lut_ptr, int min_dist) {
   // The correction curve is:
   //   f(x) = x for x <= threshold2
@@ -194,7 +194,7 @@ static void InitCorrectionLUT(
   lut[0] = 0;
 }
 
-static void CountLevels(SmoothParams* const p) {
+func CountLevels(SmoothParams* const p) {
   int i, j, last_level;
   uint8_t used_levels[256] = {0};
   const uint8_t* WEBP_INDEXABLE data = p->src;
@@ -271,7 +271,7 @@ static int InitParams(uint8_t* WEBP_SIZED_BY((size_t)stride* height) const data,
   return 1;
 }
 
-static void CleanupParams(SmoothParams* const p) { WebPSafeFree(p->mem); }
+func CleanupParams(SmoothParams* const p) { WebPSafeFree(p->mem); }
 
 int WebPDequantizeLevels(uint8_t* WEBP_SIZED_BY((size_t)stride* height)
                              const data,

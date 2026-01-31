@@ -47,7 +47,7 @@ extern "C" {
 typedef struct VP8Io VP8Io;
 typedef int (*VP8IoPutHook)(const VP8Io* io);
 typedef int (*VP8IoSetupHook)(VP8Io* io);
-typedef void (*VP8IoTeardownHook)(const VP8Io* io);
+typedef func (*VP8IoTeardownHook)(const VP8Io* io);
 
 struct VP8Io {
   // set by VP8GetHeaders()
@@ -151,10 +151,10 @@ const char* VP8StatusMessage(VP8Decoder* const dec);
 
 // Resets the decoder in its initial state, reclaiming memory.
 // Not a mandatory call between calls to VP8Decode().
-void VP8Clear(VP8Decoder* const dec);
+func VP8Clear(VP8Decoder* const dec);
 
 // Destroy the decoder object.
-void VP8Delete(VP8Decoder* const dec);
+func VP8Delete(VP8Decoder* const dec);
 
 //------------------------------------------------------------------------------
 // Miscellaneous VP8/VP8L bitstream probing functions.

@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Life of a mux object.
 
-static void MuxInit(WebPMux* const mux) {
+func MuxInit(WebPMux* const mux) {
   assert(mux != NULL);
   memset(mux, 0, sizeof(*mux));
   mux->canvas_width = 0;  // just to be explicit
@@ -47,13 +47,13 @@ WebPMux* WebPNewInternal(int version) {
 }
 
 // Delete all images in 'wpi_list'.
-static void DeleteAllImages(WebPMuxImage** const wpi_list) {
+func DeleteAllImages(WebPMuxImage** const wpi_list) {
   while (*wpi_list != NULL) {
     *wpi_list = MuxImageDelete(*wpi_list);
   }
 }
 
-static void MuxRelease(WebPMux* const mux) {
+func MuxRelease(WebPMux* const mux) {
   assert(mux != NULL);
   DeleteAllImages(&mux->images);
   ChunkListDelete(&mux->vp8x);
@@ -64,7 +64,7 @@ static void MuxRelease(WebPMux* const mux) {
   ChunkListDelete(&mux->unknown);
 }
 
-void WebPMuxDelete(WebPMux* mux) {
+func WebPMuxDelete(WebPMux* mux) {
   if (mux != NULL) {
     MuxRelease(mux);
     WebPSafeFree(mux);
@@ -562,7 +562,7 @@ static WebPMuxError MuxCleanup(WebPMux* const mux) {
 
   // If we have an image with a single frame, and its rectangle
   // covers the whole canvas, convert it to a non-animated image
-  // (to avoid writing ANMF chunk unnecessarily).
+  // (to afunc writing ANMF chunk unnecessarily).
   WebPMuxError err = WebPMuxNumChunks(mux, kChunks[IDX_ANMF].id, &num_frames);
   if (err != WEBP_MUX_OK) return err;
   if (num_frames == 1) {

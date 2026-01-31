@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // simple point-sampling
 
 #define ROW_FUNC(FUNC_NAME, XSTEP, R, G, B, A)                               \
-  static void FUNC_NAME(                                                     \
+  func FUNC_NAME(                                                     \
       const uint8_t* WEBP_RESTRICT y, const uint8_t* WEBP_RESTRICT u,        \
       const uint8_t* WEBP_RESTRICT v, uint8_t* WEBP_RESTRICT dst, int len) { \
     int i, r, g, b;                                                          \
@@ -89,9 +89,9 @@ ROW_FUNC(YuvToBgraRow_MIPS32, 4, 2, 1, 0, 3)
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void WebPInitSamplersMIPS32(void);
+extern func WebPInitSamplersMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitSamplersMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersMIPS32(void) {
   WebPSamplers[MODE_RGB] = YuvToRgbRow_MIPS32;
   WebPSamplers[MODE_RGBA] = YuvToRgbaRow_MIPS32;
   WebPSamplers[MODE_BGR] = YuvToBgrRow_MIPS32;

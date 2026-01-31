@@ -63,20 +63,20 @@ int WebPValidatePicture(const WebPPicture* const picture) {
   return 1;
 }
 
-static void WebPPictureResetBufferARGB(WebPPicture* const picture) {
+func WebPPictureResetBufferARGB(WebPPicture* const picture) {
   picture->memory_argb_ = NULL;
   picture->argb = NULL;
   picture->argb_stride = 0;
 }
 
-static void WebPPictureResetBufferYUVA(WebPPicture* const picture) {
+func WebPPictureResetBufferYUVA(WebPPicture* const picture) {
   picture->memory_ = NULL;
   picture->y = picture->u = picture->v = picture->a = NULL;
   picture->y_stride = picture->uv_stride = 0;
   picture->a_stride = 0;
 }
 
-void WebPPictureResetBuffers(WebPPicture* const picture) {
+func WebPPictureResetBuffers(WebPPicture* const picture) {
   WebPPictureResetBufferARGB(picture);
   WebPPictureResetBufferYUVA(picture);
 }
@@ -176,7 +176,7 @@ int WebPPictureAlloc(WebPPicture* picture) {
   return 1;
 }
 
-void WebPPictureFree(WebPPicture* picture) {
+func WebPPictureFree(WebPPicture* picture) {
   if (picture != NULL) {
     WebPSafeFree(picture->memory_);
     WebPSafeFree(picture->memory_argb_);
@@ -187,7 +187,7 @@ void WebPPictureFree(WebPPicture* picture) {
 //------------------------------------------------------------------------------
 // WebPMemoryWriter: Write-to-memory
 
-void WebPMemoryWriterInit(WebPMemoryWriter* writer) {
+func WebPMemoryWriterInit(WebPMemoryWriter* writer) {
   writer->mem = NULL;
   writer->size = 0;
   writer->max_size = 0;
@@ -225,7 +225,7 @@ int WebPMemoryWrite(const uint8_t* data, size_t data_size,
   return 1;
 }
 
-void WebPMemoryWriterClear(WebPMemoryWriter* writer) {
+func WebPMemoryWriterClear(WebPMemoryWriter* writer) {
   if (writer != NULL) {
     WebPSafeFree(writer->mem);
     WebPMemoryWriterInit(writer);

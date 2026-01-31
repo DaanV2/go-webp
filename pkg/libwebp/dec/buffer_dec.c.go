@@ -242,7 +242,7 @@ int WebPInitDecBufferInternal(WebPDecBuffer* buffer, int version) {
   return 1;
 }
 
-void WebPFreeDecBuffer(WebPDecBuffer* buffer) {
+func WebPFreeDecBuffer(WebPDecBuffer* buffer) {
   if (buffer != NULL) {
     if (buffer->is_external_memory <= 0) {
       WebPSafeFree(buffer->private_memory);
@@ -251,7 +251,7 @@ void WebPFreeDecBuffer(WebPDecBuffer* buffer) {
   }
 }
 
-void WebPCopyDecBuffer(const WebPDecBuffer* const src,
+func WebPCopyDecBuffer(const WebPDecBuffer* const src,
                        WebPDecBuffer* const dst) {
   if (src != NULL && dst != NULL) {
     *dst = *src;
@@ -263,7 +263,7 @@ void WebPCopyDecBuffer(const WebPDecBuffer* const src,
 }
 
 // Copy and transfer ownership from src to dst (beware of parameter order!)
-void WebPGrabDecBuffer(WebPDecBuffer* const src, WebPDecBuffer* const dst) {
+func WebPGrabDecBuffer(WebPDecBuffer* const src, WebPDecBuffer* const dst) {
   if (src != NULL && dst != NULL) {
     *dst = *src;
     if (src->private_memory != NULL) {

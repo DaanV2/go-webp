@@ -48,13 +48,13 @@ static WEBP_INLINE uint32_t VP8LColorCacheLookup(const VP8LColorCache* const cc,
   return cc->colors[key];
 }
 
-static WEBP_INLINE void VP8LColorCacheSet(const VP8LColorCache* const cc,
+static WEBP_INLINE func VP8LColorCacheSet(const VP8LColorCache* const cc,
                                           uint32_t key, uint32_t argb) {
   assert((key >> cc->hash_bits) == 0u);
   cc->colors[key] = argb;
 }
 
-static WEBP_INLINE void VP8LColorCacheInsert(const VP8LColorCache* const cc,
+static WEBP_INLINE func VP8LColorCacheInsert(const VP8LColorCache* const cc,
                                              uint32_t argb) {
   const int key = VP8LHashPix(argb, cc->hash_shift);
   cc->colors[key] = argb;
@@ -78,11 +78,11 @@ static WEBP_INLINE int VP8LColorCacheContains(const VP8LColorCache* const cc,
 // Returns false in case of memory error.
 int VP8LColorCacheInit(VP8LColorCache* const color_cache, int hash_bits);
 
-void VP8LColorCacheCopy(const VP8LColorCache* const src,
+func VP8LColorCacheCopy(const VP8LColorCache* const src,
                         VP8LColorCache* const dst);
 
 // Delete the memory associated to color cache.
-void VP8LColorCacheClear(VP8LColorCache* const color_cache);
+func VP8LColorCacheClear(VP8LColorCache* const color_cache);
 
 //------------------------------------------------------------------------------
 

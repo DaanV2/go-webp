@@ -78,7 +78,7 @@ static int DispatchAlpha_MIPSdspR2(const uint8_t* alpha, int alpha_stride,
   return (alpha_mask != 0xff);
 }
 
-static void MultARGBRow_MIPSdspR2(uint32_t* const ptr, int width, int inverse) {
+func MultARGBRow_MIPSdspR2(uint32_t* const ptr, int width, int inverse) {
   int x;
   const uint32_t c_00ffffff = 0x00ffffffu;
   const uint32_t c_ff000000 = 0xff000000u;
@@ -123,7 +123,7 @@ static void MultARGBRow_MIPSdspR2(uint32_t* const ptr, int width, int inverse) {
 }
 
 #ifdef WORDS_BIGENDIAN
-static void PackARGB_MIPSdspR2(const uint8_t* a, const uint8_t* r,
+func PackARGB_MIPSdspR2(const uint8_t* a, const uint8_t* r,
                                const uint8_t* g, const uint8_t* b, int len,
                                uint32_t* out) {
   int temp0, temp1, temp2, temp3, offset;
@@ -164,7 +164,7 @@ static void PackARGB_MIPSdspR2(const uint8_t* a, const uint8_t* r,
 }
 #endif  // WORDS_BIGENDIAN
 
-static void PackRGB_MIPSdspR2(const uint8_t* r, const uint8_t* g,
+func PackRGB_MIPSdspR2(const uint8_t* r, const uint8_t* g,
                               const uint8_t* b, int len, int step,
                               uint32_t* out) {
   int temp0, temp1, temp2, offset;
@@ -205,9 +205,9 @@ static void PackRGB_MIPSdspR2(const uint8_t* r, const uint8_t* g,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void WebPInitAlphaProcessingMIPSdspR2(void);
+extern func WebPInitAlphaProcessingMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitAlphaProcessingMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingMIPSdspR2(void) {
   WebPDispatchAlpha = DispatchAlpha_MIPSdspR2;
   WebPMultARGBRow = MultARGBRow_MIPSdspR2;
 #ifdef WORDS_BIGENDIAN

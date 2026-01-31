@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if !defined(WEBP_DISABLE_STATS)
 
 // Helper function
-static WEBP_INLINE void SubtractAndSquare_SSE2(const __m128i a, const __m128i b,
+static WEBP_INLINE func SubtractAndSquare_SSE2(const __m128i a, const __m128i b,
                                                __m128i* const sum) {
   // take abs(a-b) in 8b
   const __m128i a_b = _mm_subs_epu8(a, b);
@@ -151,9 +151,9 @@ static double SSIMGet_SSE2(const uint8_t* src1, int stride1,
 
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
-extern void VP8SSIMDspInitSSE2(void);
+extern func VP8SSIMDspInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8SSIMDspInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8SSIMDspInitSSE2(void) {
 #if !defined(WEBP_DISABLE_STATS)
   VP8AccumulateSSE = AccumulateSSE_SSE2;
 #endif

@@ -121,7 +121,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
     dst = __msa_copy_s_w((v4i32)t0, 0);                     \
   } while (0)
 
-static WEBP_INLINE void ExportRowExpand_0(
+static WEBP_INLINE func ExportRowExpand_0(
     const uint32_t* WEBP_RESTRICT frow, uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk->fy_scale);
@@ -178,7 +178,7 @@ static WEBP_INLINE void ExportRowExpand_0(
   }
 }
 
-static WEBP_INLINE void ExportRowExpand_1(
+static WEBP_INLINE func ExportRowExpand_1(
     const uint32_t* WEBP_RESTRICT frow, uint32_t* WEBP_RESTRICT irow,
     uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
@@ -252,7 +252,7 @@ static WEBP_INLINE void ExportRowExpand_1(
   }
 }
 
-static void RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
+func RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
   uint8_t* dst = wrk->dst;
   rescaler_t* irow = wrk->irow;
   const int x_out_max = wrk->dst_width * wrk->num_channels;
@@ -269,7 +269,7 @@ static void RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
 }
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
-static WEBP_INLINE void ExportRowShrink_0(
+static WEBP_INLINE func ExportRowShrink_0(
     const uint32_t* WEBP_RESTRICT frow, uint32_t* WEBP_RESTRICT irow,
     uint8_t* WEBP_RESTRICT dst, int length, const uint32_t yscale,
     WebPRescaler* WEBP_RESTRICT const wrk) {
@@ -355,7 +355,7 @@ static WEBP_INLINE void ExportRowShrink_0(
   }
 }
 
-static WEBP_INLINE void ExportRowShrink_1(
+static WEBP_INLINE func ExportRowShrink_1(
     uint32_t* WEBP_RESTRICT irow, uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk->fxy_scale);
@@ -416,7 +416,7 @@ static WEBP_INLINE void ExportRowShrink_1(
   }
 }
 
-static void RescalerExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
+func RescalerExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
   uint8_t* dst = wrk->dst;
   rescaler_t* irow = wrk->irow;
   const int x_out_max = wrk->dst_width * wrk->num_channels;
@@ -436,9 +436,9 @@ static void RescalerExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void WebPRescalerDspInitMSA(void);
+extern func WebPRescalerDspInitMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPRescalerDspInitMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitMSA(void) {
   WebPRescalerExportRowExpand = RescalerExportRowExpand_MIPSdspR2;
   //  WebPRescalerExportRowShrink = RescalerExportRowShrink_MIPSdspR2;
 }

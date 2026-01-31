@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 //------------------------------------------------------------------------------
 // Row import
 
-static void ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
+func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
                                    const uint8_t* WEBP_RESTRICT src) {
   const int x_stride = wrk->num_channels;
   const int x_out_max = wrk->dst_width * wrk->num_channels;
@@ -83,7 +83,7 @@ static void ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
   }
 }
 
-static void ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
+func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
                                    const uint8_t* WEBP_RESTRICT src) {
   const int x_stride = wrk->num_channels;
   const int x_out_max = wrk->dst_width * wrk->num_channels;
@@ -147,7 +147,7 @@ static void ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
 //------------------------------------------------------------------------------
 // Row export
 
-static void ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
+func ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
   uint8_t* dst = wrk->dst;
   rescaler_t* irow = wrk->irow;
   const int x_out_max = wrk->dst_width * wrk->num_channels;
@@ -209,7 +209,7 @@ static void ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
 }
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
-static void ExportRowShrink_MIPS32(WebPRescaler* const wrk) {
+func ExportRowShrink_MIPS32(WebPRescaler* const wrk) {
   const int x_out_max = wrk->dst_width * wrk->num_channels;
   uint8_t* dst = wrk->dst;
   rescaler_t* irow = wrk->irow;
@@ -278,9 +278,9 @@ static void ExportRowShrink_MIPS32(WebPRescaler* const wrk) {
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void WebPRescalerDspInitMIPS32(void);
+extern func WebPRescalerDspInitMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPRescalerDspInitMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitMIPS32(void) {
   WebPRescalerImportRowExpand = ImportRowExpand_MIPS32;
   WebPRescalerImportRowShrink = ImportRowShrink_MIPS32;
   WebPRescalerExportRowExpand = ExportRowExpand_MIPS32;

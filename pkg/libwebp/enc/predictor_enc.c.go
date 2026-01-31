@@ -79,7 +79,7 @@ static int64_t PredictionCostSpatialHistogram(
   return retval;
 }
 
-static WEBP_INLINE void UpdateHisto(uint32_t histo_argb[HISTO_SIZE],
+static WEBP_INLINE func UpdateHisto(uint32_t histo_argb[HISTO_SIZE],
                                     uint32_t argb) {
   ++histo_argb[0 * 256 + (argb >> 24)];
   ++histo_argb[1 * 256 + ((argb >> 16) & 0xff)];
@@ -90,7 +90,7 @@ static WEBP_INLINE void UpdateHisto(uint32_t histo_argb[HISTO_SIZE],
 //------------------------------------------------------------------------------
 // Spatial transform functions.
 
-static WEBP_INLINE void PredictBatch(int mode, int x_start, int y,
+static WEBP_INLINE func PredictBatch(int mode, int x_start, int y,
                                      int num_pixels, const uint32_t* current,
                                      const uint32_t* upper, uint32_t* out) {
   if (x_start == 0) {
@@ -140,7 +140,7 @@ static uint32_t AddGreenToBlueAndRed(uint32_t argb) {
   return (argb & 0xff00ff00u) | red_blue;
 }
 
-static void MaxDiffsForRow(int width, int stride, const uint32_t* const argb,
+func MaxDiffsForRow(int width, int stride, const uint32_t* const argb,
                            uint8_t* const max_diffs, int used_subtract_green) {
   uint32_t current, up, down, left, right;
   int x;
@@ -182,7 +182,7 @@ static uint8_t NearLosslessComponent(uint8_t value, uint8_t predict,
   if (residual - lower < upper - residual + bias) {
     // lower is closer to residual than upper.
     if (residual > boundary_residual && lower <= boundary_residual) {
-      // Halve quantization step to avoid crossing boundary. This midpoint is
+      // Halve quantization step to afunc crossing boundary. This midpoint is
       // on the same side of boundary as residual because midpoint >= residual
       // (since lower is closer than upper) and residual is above the boundary.
       return lower + (quantization >> 1);
@@ -191,7 +191,7 @@ static uint8_t NearLosslessComponent(uint8_t value, uint8_t predict,
   } else {
     // upper is closer to residual than lower.
     if (residual <= boundary_residual && upper > boundary_residual) {
-      // Halve quantization step to avoid crossing boundary. This midpoint is
+      // Halve quantization step to afunc crossing boundary. This midpoint is
       // on the same side of boundary as residual because midpoint <= residual
       // (since upper is closer than lower) and residual is below the boundary.
       return lower + (quantization >> 1);
@@ -236,7 +236,7 @@ static uint32_t NearLossless(uint32_t value, uint32_t predict,
     // to obtain the actual red and blue values.
     new_green = ((predict >> 8) + g) & 0xff;
     // The amount by which green has been adjusted during quantization. It is
-    // subtracted from red and blue for compensation, to avoid accumulating two
+    // subtracted from red and blue for compensation, to afunc accumulating two
     // quantization errors in them.
     green_diff = NearLosslessDiff(new_green, (value >> 8) & 0xff);
   }
@@ -250,10 +250,10 @@ static uint32_t NearLossless(uint32_t value, uint32_t predict,
 #endif  // (WEBP_NEAR_LOSSLESS == 1)
 
 // Stores the difference between the pixel and its prediction in "out".
-// In case of a lossy encoding, updates the source image to avoid propagating
+// In case of a lossy encoding, updates the source image to afunc propagating
 // the deviation further to pixels which depend on the current pixel for their
 // predictions.
-static WEBP_INLINE void GetResidual(
+static WEBP_INLINE func GetResidual(
     int width, int height, uint32_t* const upper_row,
     uint32_t* const current_row, const uint8_t* const max_diffs, int mode,
     int x_start, int x_end, int y, int max_quantization, int exact,
@@ -333,7 +333,7 @@ static WEBP_INLINE uint32_t* GetAccumulatedHisto(uint32_t* all_accumulated,
 
 // Find and store the best predictor for a tile at subsampling
 // 'subsampling_index'.
-static void GetBestPredictorForTile(const uint32_t* const all_argb,
+func GetBestPredictorForTile(const uint32_t* const all_argb,
                                     int subsampling_index, int tile_x,
                                     int tile_y, int tiles_per_row,
                                     uint32_t* all_accumulated_argb,
@@ -379,7 +379,7 @@ static void GetBestPredictorForTile(const uint32_t* const all_argb,
 // applied, quantizing residuals to multiples of quantization levels up to
 // max_quantization (the actual quantization level depends on smoothness near
 // the given pixel).
-static void ComputeResidualsForTile(
+func ComputeResidualsForTile(
     int width, int height, int tile_x, int tile_y, int min_bits,
     uint32_t update_up_to_index, uint32_t* const all_argb,
     uint32_t* const argb_scratch, const uint32_t* const argb,
@@ -464,7 +464,7 @@ static void ComputeResidualsForTile(
 // If max_quantization > 1, applies near lossless processing, quantizing
 // residuals to multiples of quantization levels up to max_quantization
 // (the actual quantization level depends on smoothness near the given pixel).
-static void CopyImageWithPrediction(int width, int height, int bits,
+func CopyImageWithPrediction(int width, int height, int bits,
                                     const uint32_t* const modes,
                                     uint32_t* const argb_scratch,
                                     uint32_t* const argb, int low_effort,
@@ -524,7 +524,7 @@ static void CopyImageWithPrediction(int width, int height, int bits,
 
 // Checks whether 'image' can be subsampled by finding the biggest power of 2
 // squares (defined by 'best_bits') of uniform value it is made out of.
-void VP8LOptimizeSampling(uint32_t* const image, int full_width,
+func VP8LOptimizeSampling(uint32_t* const image, int full_width,
                           int full_height, int bits, int max_bits,
                           int* best_bits_out) {
   int width = VP8LSubSampleSize(full_width, bits);
@@ -613,7 +613,7 @@ void VP8LOptimizeSampling(uint32_t* const image, int full_width,
 // When computing the residuals for a tile, the histogram of the above
 // super-tile is updated. If this super-tile is finished, its histogram is used
 // to update the histogram of the next super-tile and so on up to the max-tile.
-static void GetBestPredictorsAndSubSampling(
+func GetBestPredictorsAndSubSampling(
     int width, int height, const int min_bits, const int max_bits,
     uint32_t* const argb_scratch, const uint32_t* const argb,
     int max_quantization, int exact, int used_subtract_green,
@@ -831,13 +831,13 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits,
 //------------------------------------------------------------------------------
 // Color transform functions.
 
-static WEBP_INLINE void MultipliersClear(VP8LMultipliers* const m) {
+static WEBP_INLINE func MultipliersClear(VP8LMultipliers* const m) {
   m->green_to_red = 0;
   m->green_to_blue = 0;
   m->red_to_blue = 0;
 }
 
-static WEBP_INLINE void ColorCodeToMultipliers(uint32_t color_code,
+static WEBP_INLINE func ColorCodeToMultipliers(uint32_t color_code,
                                                VP8LMultipliers* const m) {
   m->green_to_red = (color_code >> 0) & 0xff;
   m->green_to_blue = (color_code >> 8) & 0xff;
@@ -884,7 +884,7 @@ static int64_t GetPredictionCostCrossColorRed(
   return cur_diff;
 }
 
-static void GetBestGreenToRed(const uint32_t* argb, int stride, int tile_width,
+func GetBestGreenToRed(const uint32_t* argb, int stride, int tile_width,
                               int tile_height, VP8LMultipliers prev_x,
                               VP8LMultipliers prev_y, int quality,
                               const uint32_t accumulated_red_histo[256],
@@ -953,7 +953,7 @@ static int64_t GetPredictionCostCrossColorBlue(
 
 const kGreenRedToBlueNumAxis = 8
 const kGreenRedToBlueMaxIters = 7
-static void GetBestGreenRedToBlue(const uint32_t* argb, int stride,
+func GetBestGreenRedToBlue(const uint32_t* argb, int stride,
                                   int tile_width, int tile_height,
                                   VP8LMultipliers prev_x,
                                   VP8LMultipliers prev_y, int quality,
@@ -1027,7 +1027,7 @@ static VP8LMultipliers GetBestColorTransformForTile(
   return best_tx;
 }
 
-static void CopyTileWithColorTransform(int xsize, int ysize, int tile_x,
+func CopyTileWithColorTransform(int xsize, int ysize, int tile_x,
                                        int tile_y, int max_tile_size,
                                        VP8LMultipliers color_transform,
                                        uint32_t* argb) {

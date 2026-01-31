@@ -85,8 +85,8 @@ struct PixOrCopyBlock {
   int size;              // currently used size
 };
 
-extern void VP8LClearBackwardRefs(VP8LBackwardRefs* const refs);
-void VP8LClearBackwardRefs(VP8LBackwardRefs* const refs) {
+extern func VP8LClearBackwardRefs(VP8LBackwardRefs* const refs);
+func VP8LClearBackwardRefs(VP8LBackwardRefs* const refs) {
   assert(refs != NULL);
   if (refs->tail != NULL) {
     *refs->tail = refs->free_blocks;  // recycle all blocks at once
@@ -97,7 +97,7 @@ void VP8LClearBackwardRefs(VP8LBackwardRefs* const refs) {
   refs->refs = NULL;
 }
 
-void VP8LBackwardRefsClear(VP8LBackwardRefs* const refs) {
+func VP8LBackwardRefsClear(VP8LBackwardRefs* const refs) {
   assert(refs != NULL);
   VP8LClearBackwardRefs(refs);
   while (refs->free_blocks != NULL) {
@@ -108,7 +108,7 @@ void VP8LBackwardRefsClear(VP8LBackwardRefs* const refs) {
 }
 
 // Swaps the content of two VP8LBackwardRefs.
-static void BackwardRefsSwap(VP8LBackwardRefs* const refs1,
+func BackwardRefsSwap(VP8LBackwardRefs* const refs1,
                              VP8LBackwardRefs* const refs2) {
   const int point_to_refs1 =
       (refs1->tail != NULL && refs1->tail == &refs1->refs);
@@ -121,7 +121,7 @@ static void BackwardRefsSwap(VP8LBackwardRefs* const refs1,
   if (point_to_refs1) refs2->tail = &refs2->refs;
 }
 
-void VP8LBackwardRefsInit(VP8LBackwardRefs* const refs, int block_size) {
+func VP8LBackwardRefsInit(VP8LBackwardRefs* const refs, int block_size) {
   assert(refs != NULL);
   memset(refs, 0, sizeof(*refs));
   refs->tail = &refs->refs;
@@ -142,7 +142,7 @@ VP8LRefsCursor VP8LRefsCursorInit(const VP8LBackwardRefs* const refs) {
   return c;
 }
 
-void VP8LRefsCursorNextBlock(VP8LRefsCursor* const c) {
+func VP8LRefsCursorNextBlock(VP8LRefsCursor* const c) {
   PixOrCopyBlock* const b = c->cur_block->next;
   c->cur_pos = (b == NULL) ? NULL : b->start;
   c->last_pos = (b == NULL) ? NULL : b->start + b->size;
@@ -187,9 +187,9 @@ static int BackwardRefsClone(const VP8LBackwardRefs* const from,
   return 1;
 }
 
-extern void VP8LBackwardRefsCursorAdd(VP8LBackwardRefs* const refs,
+extern func VP8LBackwardRefsCursorAdd(VP8LBackwardRefs* const refs,
                                       const PixOrCopy v);
-void VP8LBackwardRefsCursorAdd(VP8LBackwardRefs* const refs,
+func VP8LBackwardRefsCursorAdd(VP8LBackwardRefs* const refs,
                                const PixOrCopy v) {
   PixOrCopyBlock* b = refs->last_block;
   if (b == NULL || b->size == refs->block_size) {
@@ -213,7 +213,7 @@ int VP8LHashChainInit(VP8LHashChain* const p, int size) {
   return 1;
 }
 
-void VP8LHashChainClear(VP8LHashChain* const p) {
+func VP8LHashChainClear(VP8LHashChain* const p) {
   assert(p != NULL);
   WebPSafeFree(p->offset_length);
 
@@ -449,7 +449,7 @@ int VP8LHashChainFill(VP8LHashChain* const p, int quality,
   return WebPReportProgress(pic, percent_start + percent_range, percent);
 }
 
-static WEBP_INLINE void AddSingleLiteral(uint32_t pixel, int use_color_cache,
+static WEBP_INLINE func AddSingleLiteral(uint32_t pixel, int use_color_cache,
                                          VP8LColorCache* const hashers,
                                          VP8LBackwardRefs* const refs) {
   PixOrCopy v;
@@ -734,7 +734,7 @@ static int BackwardReferencesLz77Box(int xsize, int ysize,
 
 // -----------------------------------------------------------------------------
 
-static void BackwardReferences2DLocality(int xsize,
+func BackwardReferences2DLocality(int xsize,
                                          const VP8LBackwardRefs* const refs) {
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
   while (VP8LRefsCursorOk(&c)) {

@@ -245,7 +245,7 @@ struct WebPDecBuffer {
 
 // Free any memory associated with the buffer. Must always be called last.
 // Note: doesn't free the 'buffer' structure itself.
- void WebPFreeDecBuffer(WebPDecBuffer* buffer);
+ func WebPFreeDecBuffer(WebPDecBuffer* buffer);
 
 //------------------------------------------------------------------------------
 // Enumeration of the status codes
@@ -344,7 +344,7 @@ typedef enum  VP8StatusCode {
 
 // Deletes the WebPIDecoder object and associated memory. Must always be called
 // if WebPINewDecoder, WebPINewRGB or WebPINewYUV succeeded.
- void WebPIDelete(WebPIDecoder* idec);
+ func WebPIDelete(WebPIDecoder* idec);
 
 // Copies and decodes the next available data. Returns VP8_STATUS_OK when
 // the image is successfully decoded. Returns VP8_STATUS_SUSPENDED when more

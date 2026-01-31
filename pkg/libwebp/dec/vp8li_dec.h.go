@@ -127,7 +127,7 @@ struct ALPHDecoder;  // Defined in dec/alphai.h.
  int VP8LDecodeImage(VP8LDecoder* const dec);
 
 // Clears and deallocate a lossless decoder instance.
-void VP8LDelete(VP8LDecoder* const dec);
+func VP8LDelete(VP8LDecoder* const dec);
 
 // Helper function for reading the different Huffman codes and storing them in
 // 'huffman_tables' and 'htree_groups'.

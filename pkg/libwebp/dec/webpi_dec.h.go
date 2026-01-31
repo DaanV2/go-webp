@@ -54,7 +54,7 @@ struct WebPDecParams {
 };
 
 // Should be called first, before any use of the WebPDecParams object.
-void WebPResetDecParams(WebPDecParams* const params);
+func WebPResetDecParams(WebPDecParams* const params);
 
 //------------------------------------------------------------------------------
 // Header parsing helpers
@@ -90,7 +90,7 @@ int WebPCheckCropDimensions(int image_width, int image_height, int x, int y,
 
 // Initializes VP8Io with custom setup, io and teardown functions. The default
 // hooks will use the supplied 'params' as io->opaque handle.
-void WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io);
+func WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io);
 
 // Setup crop_xxx fields, mb_w and mb_h in io. 'src_colorspace' refers
 // to the *compressed* format, not the output one.
@@ -120,11 +120,11 @@ VP8StatusCode WebPFlipBuffer(WebPDecBuffer* const buffer);
 
 // Copy 'src' into 'dst' buffer, making sure 'dst' is not marked as owner of the
 // memory (still held by 'src'). No pixels are copied.
-void WebPCopyDecBuffer(const WebPDecBuffer* const src,
+func WebPCopyDecBuffer(const WebPDecBuffer* const src,
                        WebPDecBuffer* const dst);
 
 // Copy and transfer ownership from src to dst (beware of parameter order!)
-void WebPGrabDecBuffer(WebPDecBuffer* const src, WebPDecBuffer* const dst);
+func WebPGrabDecBuffer(WebPDecBuffer* const src, WebPDecBuffer* const dst);
 
 // Copy pixels from 'src' into a *preallocated* 'dst' buffer. Returns
 // VP8_STATUS_INVALID_PARAM if the 'dst' is not set up correctly for the copy.

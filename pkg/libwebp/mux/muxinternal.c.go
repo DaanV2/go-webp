@@ -50,7 +50,7 @@ int WebPGetMuxVersion(void) {
 //------------------------------------------------------------------------------
 // Life of a chunk object.
 
-void ChunkInit(WebPChunk* const chunk) {
+func ChunkInit(WebPChunk* const chunk) {
   assert(chunk);
   memset(chunk, 0, sizeof(*chunk));
   chunk->tag = NIL_TAG;
@@ -186,7 +186,7 @@ WebPChunk* ChunkDelete(WebPChunk* const chunk) {
   return next;
 }
 
-void ChunkListDelete(WebPChunk** const chunk_list) {
+func ChunkListDelete(WebPChunk** const chunk_list) {
   while (*chunk_list != NULL) {
     *chunk_list = ChunkDelete(*chunk_list);
   }
@@ -227,7 +227,7 @@ size_t ChunkListDiskSize(const WebPChunk* chunk_list) {
 //------------------------------------------------------------------------------
 // Life of a MuxImage object.
 
-void MuxImageInit(WebPMuxImage* const wpi) {
+func MuxImageInit(WebPMuxImage* const wpi) {
   assert(wpi);
   memset(wpi, 0, sizeof(*wpi));
 }

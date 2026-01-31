@@ -135,7 +135,7 @@ int VP8LHashChainFill(VP8LHashChain* const p, int quality,
                       const uint32_t* const argb, int xsize, int ysize,
                       int low_effort, const WebPPicture* const pic,
                       int percent_range, int* const percent);
-void VP8LHashChainClear(VP8LHashChain* const p);  // release memory
+func VP8LHashChainClear(VP8LHashChain* const p);  // release memory
 
 static WEBP_INLINE int VP8LHashChainFindOffset(const VP8LHashChain* const p,
                                                const int base_position) {
@@ -147,7 +147,7 @@ static WEBP_INLINE int VP8LHashChainFindLength(const VP8LHashChain* const p,
   return p->offset_length[base_position] & ((1U << MAX_LENGTH_BITS) - 1);
 }
 
-static WEBP_INLINE void VP8LHashChainFindCopy(const VP8LHashChain* const p,
+static WEBP_INLINE func VP8LHashChainFindCopy(const VP8LHashChain* const p,
                                               int base_position,
                                               int* const offset_ptr,
                                               int* const length_ptr) {
@@ -176,9 +176,9 @@ struct VP8LBackwardRefs {
 
 // Initialize the object. 'block_size' is the common block size to store
 // references (typically, width * height / MAX_REFS_BLOCK_PER_IMAGE).
-void VP8LBackwardRefsInit(VP8LBackwardRefs* const refs, int block_size);
+func VP8LBackwardRefsInit(VP8LBackwardRefs* const refs, int block_size);
 // Release memory for backward references.
-void VP8LBackwardRefsClear(VP8LBackwardRefs* const refs);
+func VP8LBackwardRefsClear(VP8LBackwardRefs* const refs);
 
 // Cursor for iterating on references content
 typedef struct {
@@ -196,9 +196,9 @@ static WEBP_INLINE int VP8LRefsCursorOk(const VP8LRefsCursor* const c) {
   return (c->cur_pos != NULL);
 }
 // Move to next block of references. Internal, not to be called directly.
-void VP8LRefsCursorNextBlock(VP8LRefsCursor* const c);
+func VP8LRefsCursorNextBlock(VP8LRefsCursor* const c);
 // Move to next position, or NULL. Should not be called if !VP8LRefsCursorOk().
-static WEBP_INLINE void VP8LRefsCursorNext(VP8LRefsCursor* const c) {
+static WEBP_INLINE func VP8LRefsCursorNext(VP8LRefsCursor* const c) {
   assert(c != NULL);
   assert(VP8LRefsCursorOk(c));
   if (++c->cur_pos == c->last_pos) VP8LRefsCursorNextBlock(c);

@@ -31,7 +31,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Smooth the segment map by replacing isolated block by the majority of its
 // neighbours.
 
-static void SmoothSegmentMap(VP8Encoder* const enc) {
+func SmoothSegmentMap(VP8Encoder* const enc) {
   int n, x, y;
   const int w = enc->mb_w;
   const int h = enc->mb_h;
@@ -79,7 +79,7 @@ static WEBP_INLINE int clip(int v, int m, int M) {
   return (v < m) ? m : (v > M) ? M : v;
 }
 
-static void SetSegmentAlphas(VP8Encoder* const enc,
+func SetSegmentAlphas(VP8Encoder* const enc,
                              const int centers[NUM_MB_SEGMENTS], int mid) {
   const int nb = enc->segment_hdr.num_segments;
   int min = centers[0], max = centers[0];
@@ -126,7 +126,7 @@ static int GetAlpha(const VP8Histogram* const histo) {
   return alpha;
 }
 
-static void InitHistogram(VP8Histogram* const histo) {
+func InitHistogram(VP8Histogram* const histo) {
   histo->max_value = 0;
   histo->last_non_zero = 1;
 }
@@ -134,10 +134,10 @@ static void InitHistogram(VP8Histogram* const histo) {
 //------------------------------------------------------------------------------
 // Simplified k-Means, to assign Nb segments based on alpha-histogram
 
-static void AssignSegments(VP8Encoder* const enc,
+func AssignSegments(VP8Encoder* const enc,
                            const int alphas[MAX_ALPHA + 1]) {
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
-  // explicit check is needed to avoid spurious warning about 'n + 1' exceeding
+  // explicit check is needed to afunc spurious warning about 'n + 1' exceeding
   // array bounds of 'centers' with some compilers (noticed with gcc-4.9).
   const int nb = (enc->segment_hdr.num_segments < NUM_MB_SEGMENTS)
                      ? enc->segment_hdr.num_segments
@@ -316,7 +316,7 @@ static int MBAnalyzeBestUVMode(VP8EncIterator* const it) {
   return best_alpha;
 }
 
-static void MBAnalyze(VP8EncIterator* const it, int alphas[MAX_ALPHA + 1],
+func MBAnalyze(VP8EncIterator* const it, int alphas[MAX_ALPHA + 1],
                       int* const alpha, int* const uv_alpha) {
   const VP8Encoder* const enc = it->enc;
   int best_alpha, best_uv_alpha;
@@ -343,7 +343,7 @@ static void MBAnalyze(VP8EncIterator* const it, int alphas[MAX_ALPHA + 1],
   *uv_alpha += best_uv_alpha;
 }
 
-static void DefaultMBInfo(VP8MBInfo* const mb) {
+func DefaultMBInfo(VP8MBInfo* const mb) {
   mb->type = 1;  // I16x16
   mb->uv_mode = 0;
   mb->skip = 0;     // not skipped
@@ -361,7 +361,7 @@ static void DefaultMBInfo(VP8MBInfo* const mb) {
 // and decide intra4/intra16, but that's usually almost always a bad choice at
 // this stage.
 
-static void ResetAllMBInfo(VP8Encoder* const enc) {
+func ResetAllMBInfo(VP8Encoder* const enc) {
   int n;
   for (n = 0; n < enc->mb_w * enc->mb_h; ++n) {
     DefaultMBInfo(&enc->mb_info[n]);
@@ -403,7 +403,7 @@ static int DoSegmentsJob(void* arg1, void* arg2) {
 }
 
 #ifdef WEBP_USE_THREAD
-static void MergeJobs(const SegmentJob* const src, SegmentJob* const dst) {
+func MergeJobs(const SegmentJob* const src, SegmentJob* const dst) {
   int i;
   for (i = 0; i <= MAX_ALPHA; ++i) dst->alphas[i] += src->alphas[i];
   dst->alpha += src->alpha;
@@ -412,7 +412,7 @@ static void MergeJobs(const SegmentJob* const src, SegmentJob* const dst) {
 #endif
 
 // initialize the job struct with some tasks to perform
-static void InitSegmentJob(VP8Encoder* const enc, SegmentJob* const job,
+func InitSegmentJob(VP8Encoder* const enc, SegmentJob* const job,
                            int start_row, int end_row) {
   WebPGetWorkerInterface()->Init(&job->worker);
   job->worker.data1 = job;

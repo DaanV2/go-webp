@@ -21,7 +21,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 static const uint8_t position[16] = {1, 2,  3,  4,  5,  6,  7,  8,
                                      9, 10, 11, 12, 13, 14, 15, 16};
 
-static void SetResidualCoeffs_NEON(const int16_t* WEBP_RESTRICT const coeffs,
+func SetResidualCoeffs_NEON(const int16_t* WEBP_RESTRICT const coeffs,
                                    VP8Residual* WEBP_RESTRICT const res) {
   const int16x8_t minus_one = vdupq_n_s16(-1);
   const int16x8_t coeffs_0 = vld1q_s16(coeffs);
@@ -110,9 +110,9 @@ static int GetResidualCost_NEON(int ctx0, const VP8Residual* const res) {
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8EncDspCostInitNEON(void);
+extern func VP8EncDspCostInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8EncDspCostInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitNEON(void) {
   VP8SetResidualCoeffs = SetResidualCoeffs_NEON;
   VP8GetResidualCost = GetResidualCost_NEON;
 }

@@ -95,7 +95,7 @@ typedef enum {
   IDX_LAST_CHUNK
 } CHUNK_INDEX;
 
-#define NIL_TAG 0x00000000u  // To signal void chunk.
+#define NIL_TAG 0x00000000u  // To signal func chunk.
 
 typedef struct {
   uint32_t tag;
@@ -109,7 +109,7 @@ extern const ChunkInfo kChunks[IDX_LAST_CHUNK];
 // Chunk object management.
 
 // Initialize.
-void ChunkInit(WebPChunk* const chunk);
+func ChunkInit(WebPChunk* const chunk);
 
 // Get chunk index from chunk tag. Returns IDX_UNKNOWN if not found.
 CHUNK_INDEX ChunkGetIndexFromTag(uint32_t tag);
@@ -147,7 +147,7 @@ WebPChunk* ChunkRelease(WebPChunk* const chunk);
 WebPChunk* ChunkDelete(WebPChunk* const chunk);
 
 // Deletes all chunks in the given chunk list.
-void ChunkListDelete(WebPChunk** const chunk_list);
+func ChunkListDelete(WebPChunk** const chunk_list);
 
 // Returns size of the chunk including chunk header and padding byte (if any).
 static WEBP_INLINE size_t SizeWithPadding(size_t chunk_size) {
@@ -171,7 +171,7 @@ uint8_t* ChunkListEmit(const WebPChunk* chunk_list, uint8_t* dst);
 // MuxImage object management.
 
 // Initialize.
-void MuxImageInit(WebPMuxImage* const wpi);
+func MuxImageInit(WebPMuxImage* const wpi);
 
 // Releases image 'wpi' and returns wpi->next.
 WebPMuxImage* MuxImageRelease(WebPMuxImage* const wpi);

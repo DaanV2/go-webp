@@ -68,7 +68,7 @@ typedef struct HuffmanTables {
 // memory allocation error, 1 otherwise.
  int VP8LHuffmanTablesAllocate(int size,
                                              HuffmanTables* huffman_tables);
-void VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables);
+func VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables);
 
 #define HUFFMAN_PACKED_BITS 6
 #define HUFFMAN_PACKED_TABLE_SIZE (1u << HUFFMAN_PACKED_BITS)
@@ -98,7 +98,7 @@ struct HTreeGroup {
  HTreeGroup* VP8LHtreeGroupsNew(int num_htree_groups);
 
 // Releases the memory allocated for HTreeGroup.
-void VP8LHtreeGroupsFree(HTreeGroup* const htree_groups);
+func VP8LHtreeGroupsFree(HTreeGroup* const htree_groups);
 
 // Builds Huffman lookup table assuming code lengths are in symbol order.
 // The 'code_lengths' is pre-allocated temporary memory buffer used for creating

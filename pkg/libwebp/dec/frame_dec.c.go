@@ -50,11 +50,11 @@ static int CheckMode(int mb_x, int mb_y, int mode) {
   return mode;
 }
 
-static void Copy32b(uint8_t* const dst, const uint8_t* const src) {
+func Copy32b(uint8_t* const dst, const uint8_t* const src) {
   WEBP_UNSAFE_MEMCPY(dst, src, 4);
 }
 
-static WEBP_INLINE void DoTransform(uint32_t bits, const int16_t* const src,
+static WEBP_INLINE func DoTransform(uint32_t bits, const int16_t* const src,
                                     uint8_t* const dst) {
   switch (bits >> 30) {
     case 3:
@@ -71,7 +71,7 @@ static WEBP_INLINE void DoTransform(uint32_t bits, const int16_t* const src,
   }
 }
 
-static void DoUVTransform(uint32_t bits, const int16_t* const src,
+func DoUVTransform(uint32_t bits, const int16_t* const src,
                           uint8_t* const dst) {
   if (bits & 0xff) {             // any non-zero coeff at all?
     if (bits & 0xaa) {           // any non-zero AC coefficient?
@@ -82,7 +82,7 @@ static void DoUVTransform(uint32_t bits, const int16_t* const src,
   }
 }
 
-static void ReconstructRow(const VP8Decoder* const dec,
+func ReconstructRow(const VP8Decoder* const dec,
                            const VP8ThreadContext* ctx) {
   int j;
   int mb_x;
@@ -217,7 +217,7 @@ static void ReconstructRow(const VP8Decoder* const dec,
 //                 U/V, so it's 8 samples total (because of the 2x upsampling).
 static const uint8_t kFilterExtraRows[3] = {0, 2, 8};
 
-static void DoFilter(const VP8Decoder* const dec, int mb_x, int mb_y) {
+func DoFilter(const VP8Decoder* const dec, int mb_x, int mb_y) {
   const VP8ThreadContext* const ctx = &dec->thread_ctx;
   const int cache_id = ctx->id;
   const int y_bps = dec->cache_y_stride;
@@ -267,7 +267,7 @@ static void DoFilter(const VP8Decoder* const dec, int mb_x, int mb_y) {
 }
 
 // Filter the decoded macroblock row (if needed)
-static void FilterRow(const VP8Decoder* const dec) {
+func FilterRow(const VP8Decoder* const dec) {
   int mb_x;
   const int mb_y = dec->thread_ctx.mb_y;
   assert(dec->thread_ctx.filter_row);
@@ -279,7 +279,7 @@ static void FilterRow(const VP8Decoder* const dec) {
 //------------------------------------------------------------------------------
 // Precompute the filtering strength for each segment and each i4x4/i16x16 mode.
 
-static void PrecomputeFilterStrengths(VP8Decoder* const dec) {
+func PrecomputeFilterStrengths(VP8Decoder* const dec) {
   if (dec->filter_type > 0) {
     int s;
     const VP8FilterHeader* const hdr = &dec->filter_hdr;
@@ -341,7 +341,7 @@ static const uint8_t kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
     // roughly, it's dqm->uv_mat[1]
     8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1};
 
-void VP8InitDithering(const WebPDecoderOptions* const options,
+func VP8InitDithering(const WebPDecoderOptions* const options,
                       VP8Decoder* const dec) {
   assert(dec != NULL);
   if (options != NULL) {
@@ -375,7 +375,7 @@ void VP8InitDithering(const WebPDecoderOptions* const options,
 }
 
 // Convert to range: [-2,2] for dither=50, [-4,4] for dither=100
-static void Dither8x8(VP8Random* const rg, uint8_t* dst, int bps, int amp) {
+func Dither8x8(VP8Random* const rg, uint8_t* dst, int bps, int amp) {
   uint8_t dither[64];
   int i;
   for (i = 0; i < 8 * 8; ++i) {
@@ -384,7 +384,7 @@ static void Dither8x8(VP8Random* const rg, uint8_t* dst, int bps, int amp) {
   VP8DitherCombine8x8(dither, dst, bps);
 }
 
-static void DitherRow(VP8Decoder* const dec) {
+func DitherRow(VP8Decoder* const dec) {
   int mb_x;
   assert(dec->dither);
   for (mb_x = dec->tl_mb_x; mb_x < dec->br_mb_x; ++mb_x) {
@@ -582,7 +582,7 @@ VP8StatusCode VP8EnterCritical(VP8Decoder* const dec, VP8Io* const io) {
   //
   // 'Simple' filter reads two luma samples outside of the macroblock
   // and filters one. It doesn't filter the chroma samples. Hence, we can
-  // avoid doing the in-loop filtering before crop_top/crop_left position.
+  // afunc doing the in-loop filtering before crop_top/crop_left position.
   // For the 'Complex' filter, 3 samples are read and up to 3 are filtered.
   // Means: there's a dependency chain that goes all the way up to the
   // top-left corner of the picture (MB #0). We must filter all the previous
@@ -801,7 +801,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
   return 1;
 }
 
-static void InitIo(VP8Decoder* const dec, VP8Io* io) {
+func InitIo(VP8Decoder* const dec, VP8Io* io) {
   // prepare 'io'
   io->mb_y = 0;
   io->y = dec->cache_y;

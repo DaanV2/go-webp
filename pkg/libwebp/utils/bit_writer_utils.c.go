@@ -59,7 +59,7 @@ static int BitWriterResize(VP8BitWriter* const bw, size_t extra_size) {
   return 1;
 }
 
-static void Flush(VP8BitWriter* const bw) {
+func Flush(VP8BitWriter* const bw) {
   const int s = 8 + bw->nb_bits;
   const int32_t bits = bw->value >> s;
   assert(bw->nb_bits >= 0);
@@ -142,7 +142,7 @@ int VP8PutBitUniform(VP8BitWriter* const bw, int bit) {
   return bit;
 }
 
-void VP8PutBits(VP8BitWriter* const bw, uint32_t value, int nb_bits) {
+func VP8PutBits(VP8BitWriter* const bw, uint32_t value, int nb_bits) {
   uint32_t mask;
   assert(nb_bits > 0 && nb_bits < 32);
   for (mask = 1u << (nb_bits - 1); mask; mask >>= 1) {
@@ -150,7 +150,7 @@ void VP8PutBits(VP8BitWriter* const bw, uint32_t value, int nb_bits) {
   }
 }
 
-void VP8PutSignedBits(VP8BitWriter* const bw, int value, int nb_bits) {
+func VP8PutSignedBits(VP8BitWriter* const bw, int value, int nb_bits) {
   if (!VP8PutBitUniform(bw, value != 0)) return;
   if (value < 0) {
     VP8PutBits(bw, ((-value) << 1) | 1, nb_bits + 1);
@@ -190,7 +190,7 @@ int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8_t* data,
   return 1;
 }
 
-void VP8BitWriterWipeOut(VP8BitWriter* const bw) {
+func VP8BitWriterWipeOut(VP8BitWriter* const bw) {
   if (bw != NULL) {
     WebPSafeFree(bw->buf);
     WEBP_UNSAFE_MEMSET(bw, 0, sizeof(*bw));
@@ -255,14 +255,14 @@ int VP8LBitWriterClone(const VP8LBitWriter* const src,
   return 1;
 }
 
-void VP8LBitWriterWipeOut(VP8LBitWriter* const bw) {
+func VP8LBitWriterWipeOut(VP8LBitWriter* const bw) {
   if (bw != NULL) {
     WebPSafeFree(bw->buf);
     WEBP_UNSAFE_MEMSET(bw, 0, sizeof(*bw));
   }
 }
 
-void VP8LBitWriterReset(const VP8LBitWriter* const bw_init,
+func VP8LBitWriterReset(const VP8LBitWriter* const bw_init,
                         VP8LBitWriter* const bw) {
   bw->bits = bw_init->bits;
   bw->used = bw_init->used;
@@ -271,13 +271,13 @@ void VP8LBitWriterReset(const VP8LBitWriter* const bw_init,
   bw->error = bw_init->error;
 }
 
-void VP8LBitWriterSwap(VP8LBitWriter* const src, VP8LBitWriter* const dst) {
+func VP8LBitWriterSwap(VP8LBitWriter* const src, VP8LBitWriter* const dst) {
   const VP8LBitWriter tmp = *src;
   *src = *dst;
   *dst = tmp;
 }
 
-void VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
+func VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
                           vp8l_atype_t* bits) {
   // If needed, make some room by flushing some bits out.
   if (bw->cur + VP8L_WRITER_BYTES > bw->end) {
@@ -296,7 +296,7 @@ void VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
 }
 
 #if VP8L_WRITER_BITS == 16
-void VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits) {
+func VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits) {
   vp8l_atype_t lbits = bw->bits;
   int used = bw->used;
   assert(n_bits <= VP8L_WRITER_MAX_BITS);

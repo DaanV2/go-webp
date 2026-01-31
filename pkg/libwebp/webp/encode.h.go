@@ -67,7 +67,7 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // Note these functions, like the lossy versions, use the library's default
 // settings. For lossless this means 'exact' is disabled. RGB values in fully
 // transparent areas (that is, areas with alpha values equal to 0) will be
-// modified to improve compression. To avoid this, use WebPEncode() and set
+// modified to improve compression. To afunc this, use WebPEncode() and set
 // WebPConfig::exact to 1.
  size_t WebPEncodeLosslessRGB(const uint8_t* rgb, int width,
                                          int height, int stride,
@@ -254,11 +254,11 @@ struct WebPMemoryWriter {
 };
 
 // The following must be called first before any use.
- void WebPMemoryWriterInit(WebPMemoryWriter* writer);
+ func WebPMemoryWriterInit(WebPMemoryWriter* writer);
 
 // The following must be called to deallocate writer->mem memory. The 'writer'
 // object itself is not deallocated.
- void WebPMemoryWriterClear(WebPMemoryWriter* writer);
+ func WebPMemoryWriterClear(WebPMemoryWriter* writer);
 // The custom writer to be used with WebPMemoryWriter as custom_ptr. Upon
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
@@ -396,7 +396,7 @@ struct WebPPicture {
 // object itself.
 // Besides memory (which is reclaimed) all other fields of 'picture' are
 // preserved.
- void WebPPictureFree(WebPPicture* picture);
+ func WebPPictureFree(WebPPicture* picture);
 
 // Copy the pixels of *src into *dst, using WebPPictureAlloc. Upon return, *dst
 // will fully own the copied pixels (this is not a view). The 'dst' picture need
@@ -531,7 +531,7 @@ struct WebPPicture {
 // Helper function: given a width x height plane of RGBA or YUV(A) samples
 // clean-up or smoothen the YUV or RGB samples under fully transparent area,
 // to help compressibility (no guarantee, though).
- void WebPCleanupTransparentArea(WebPPicture* picture);
+ func WebPCleanupTransparentArea(WebPPicture* picture);
 
 // Scan the picture 'picture' for the presence of non fully opaque alpha values.
 // Returns true in such case. Otherwise returns false (indicating that the
@@ -541,7 +541,7 @@ struct WebPPicture {
 // Remove the transparency information (if present) by blending the color with
 // the background color 'background_rgb' (specified as 24bit RGB triplet).
 // After this call, all alpha values are reset to 0xff.
- void WebPBlendAlpha(WebPPicture* picture, uint32_t background_rgb);
+ func WebPBlendAlpha(WebPPicture* picture, uint32_t background_rgb);
 
 //------------------------------------------------------------------------------
 // Main call

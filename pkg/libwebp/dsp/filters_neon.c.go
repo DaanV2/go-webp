@@ -47,7 +47,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // rotate right by N bytes
 #define ROTATE_RIGHT_N(A, N) vext_u8((A), (A), (8 - (N)) % 8)
 
-static void PredictLine_NEON(const uint8_t* src, const uint8_t* pred,
+func PredictLine_NEON(const uint8_t* src, const uint8_t* pred,
                              uint8_t* WEBP_RESTRICT dst, int length) {
   int i;
   assert(length >= 0);
@@ -61,7 +61,7 @@ static void PredictLine_NEON(const uint8_t* src, const uint8_t* pred,
 }
 
 // Special case for left-based prediction (when preds==dst-1 or preds==src-1).
-static void PredictLineLeft_NEON(const uint8_t* WEBP_RESTRICT src,
+func PredictLineLeft_NEON(const uint8_t* WEBP_RESTRICT src,
                                  uint8_t* WEBP_RESTRICT dst, int length) {
   PredictLine_NEON(src, src - 1, dst, length);
 }
@@ -69,7 +69,7 @@ static void PredictLineLeft_NEON(const uint8_t* WEBP_RESTRICT src,
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static WEBP_INLINE void DoHorizontalFilter_NEON(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoHorizontalFilter_NEON(const uint8_t* WEBP_RESTRICT in,
                                                 int width, int height,
                                                 int stride,
                                                 uint8_t* WEBP_RESTRICT out) {
@@ -92,7 +92,7 @@ static WEBP_INLINE void DoHorizontalFilter_NEON(const uint8_t* WEBP_RESTRICT in,
   }
 }
 
-static void HorizontalFilter_NEON(const uint8_t* WEBP_RESTRICT data, int width,
+func HorizontalFilter_NEON(const uint8_t* WEBP_RESTRICT data, int width,
                                   int height, int stride,
                                   uint8_t* WEBP_RESTRICT filtered_data) {
   DoHorizontalFilter_NEON(data, width, height, stride, filtered_data);
@@ -101,7 +101,7 @@ static void HorizontalFilter_NEON(const uint8_t* WEBP_RESTRICT data, int width,
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static WEBP_INLINE void DoVerticalFilter_NEON(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoVerticalFilter_NEON(const uint8_t* WEBP_RESTRICT in,
                                               int width, int height, int stride,
                                               uint8_t* WEBP_RESTRICT out) {
   int row;
@@ -122,7 +122,7 @@ static WEBP_INLINE void DoVerticalFilter_NEON(const uint8_t* WEBP_RESTRICT in,
   }
 }
 
-static void VerticalFilter_NEON(const uint8_t* WEBP_RESTRICT data, int width,
+func VerticalFilter_NEON(const uint8_t* WEBP_RESTRICT data, int width,
                                 int height, int stride,
                                 uint8_t* WEBP_RESTRICT filtered_data) {
   DoVerticalFilter_NEON(data, width, height, stride, filtered_data);
@@ -136,7 +136,7 @@ static WEBP_INLINE int GradientPredictor_C(uint8_t a, uint8_t b, uint8_t c) {
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
-static void GradientPredictDirect_NEON(const uint8_t* const row,
+func GradientPredictDirect_NEON(const uint8_t* const row,
                                        const uint8_t* const top,
                                        uint8_t* WEBP_RESTRICT const out,
                                        int length) {
@@ -155,7 +155,7 @@ static void GradientPredictDirect_NEON(const uint8_t* const row,
   }
 }
 
-static WEBP_INLINE void DoGradientFilter_NEON(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoGradientFilter_NEON(const uint8_t* WEBP_RESTRICT in,
                                               int width, int height, int stride,
                                               uint8_t* WEBP_RESTRICT out) {
   int row;
@@ -176,7 +176,7 @@ static WEBP_INLINE void DoGradientFilter_NEON(const uint8_t* WEBP_RESTRICT in,
   }
 }
 
-static void GradientFilter_NEON(const uint8_t* WEBP_RESTRICT data, int width,
+func GradientFilter_NEON(const uint8_t* WEBP_RESTRICT data, int width,
                                 int height, int stride,
                                 uint8_t* WEBP_RESTRICT filtered_data) {
   DoGradientFilter_NEON(data, width, height, stride, filtered_data);
@@ -187,7 +187,7 @@ static void GradientFilter_NEON(const uint8_t* WEBP_RESTRICT data, int width,
 //------------------------------------------------------------------------------
 // Inverse transforms
 
-static void HorizontalUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
+func HorizontalUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
                                     uint8_t* out, int width) {
   int i;
   const uint8x16_t zero = vdupq_n_u8(0);
@@ -212,7 +212,7 @@ static void HorizontalUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
   for (; i < width; ++i) out[i] = in[i] + out[i - 1];
 }
 
-static void VerticalUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
+func VerticalUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
                                   uint8_t* out, int width) {
   if (prev == NULL) {
     HorizontalUnfilter_NEON(NULL, in, out, width);
@@ -246,7 +246,7 @@ static void VerticalUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
     out = vext_u8(out, ROTATE_LEFT_N(pred, (L)), 1);                          \
   } while (0)
 
-static void GradientPredictInverse_NEON(const uint8_t* const in,
+func GradientPredictInverse_NEON(const uint8_t* const in,
                                         const uint8_t* const top,
                                         uint8_t* const row, int length) {
   if (length > 0) {
@@ -275,7 +275,7 @@ static void GradientPredictInverse_NEON(const uint8_t* const in,
 }
 #undef GRAD_PROCESS_LANE
 
-static void GradientUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
+func GradientUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
                                   uint8_t* out, int width) {
   if (prev == NULL) {
     HorizontalUnfilter_NEON(NULL, in, out, width);
@@ -290,9 +290,9 @@ static void GradientUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8FiltersInitNEON(void);
+extern func VP8FiltersInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8FiltersInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitNEON(void) {
   WebPUnfilters[WEBP_FILTER_HORIZONTAL] = HorizontalUnfilter_NEON;
   WebPUnfilters[WEBP_FILTER_VERTICAL] = VerticalUnfilter_NEON;
 #if (USE_GRADIENT_UNFILTER == 1)

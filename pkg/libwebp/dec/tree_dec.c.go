@@ -250,12 +250,12 @@ static const uint8_t kBModesProba[NUM_BMODES][NUM_BMODES][NUM_BMODES - 1] = {
      {32, 41, 20, 117, 151, 142, 20, 21, 163},
      {112, 19, 12, 61, 195, 128, 48, 4, 24}}};
 
-void VP8ResetProba(VP8Proba* const proba) {
+func VP8ResetProba(VP8Proba* const proba) {
   WEBP_UNSAFE_MEMSET(proba->segments, 255u, sizeof(proba->segments));
   // proba->bands[][] is initialized later
 }
 
-static void ParseIntraMode(VP8BitReader* const br, VP8Decoder* const dec,
+func ParseIntraMode(VP8BitReader* const br, VP8Decoder* const dec,
                            int mb_x) {
   uint8_t* const top = dec->intra_t + 4 * mb_x;
   uint8_t* const left = dec->intra_l;
@@ -449,7 +449,7 @@ static const uint8_t kBands[16 + 1] = {
     0  // extra entry as sentinel
 };
 
-void VP8ParseProba(VP8BitReader* const br, VP8Decoder* const dec) {
+func VP8ParseProba(VP8BitReader* const br, VP8Decoder* const dec) {
   VP8Proba* const proba = &dec->proba;
   int t, b, c, p;
   for (t = 0; t < NUM_TYPES; ++t) {

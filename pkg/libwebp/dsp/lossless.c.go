@@ -187,13 +187,13 @@ uint32_t VP8LPredictor13_C(const uint32_t* const left,
   return pred;
 }
 
-static void PredictorAdd0_C(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd0_C(const uint32_t* in, const uint32_t* upper,
                             int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int x;
   (void)upper;
   for (x = 0; x < num_pixels; ++x) out[x] = VP8LAddPixels(in[x], ARGB_BLACK);
 }
-static void PredictorAdd1_C(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd1_C(const uint32_t* in, const uint32_t* upper,
                             int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   uint32_t left = out[-1];
@@ -218,7 +218,7 @@ GENERATE_PREDICTOR_ADD(VP8LPredictor13_C, PredictorAdd13_C)
 //------------------------------------------------------------------------------
 
 // Inverse prediction.
-static void PredictorInverseTransform_C(const VP8LTransform* const transform,
+func PredictorInverseTransform_C(const VP8LTransform* const transform,
                                         int y_start, int y_end,
                                         const uint32_t* in, uint32_t* out) {
   const int width = transform->xsize;
@@ -264,7 +264,7 @@ static void PredictorInverseTransform_C(const VP8LTransform* const transform,
 
 // Add green to blue and red channels (i.e. perform the inverse transform of
 // 'subtract green').
-void VP8LAddGreenToBlueAndRed_C(const uint32_t* src, int num_pixels,
+func VP8LAddGreenToBlueAndRed_C(const uint32_t* src, int num_pixels,
                                 uint32_t* dst) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
@@ -281,14 +281,14 @@ static WEBP_INLINE int ColorTransformDelta(int8_t color_pred, int8_t color) {
   return ((int)color_pred * color) >> 5;
 }
 
-static WEBP_INLINE void ColorCodeToMultipliers(uint32_t color_code,
+static WEBP_INLINE func ColorCodeToMultipliers(uint32_t color_code,
                                                VP8LMultipliers* const m) {
   m->green_to_red = (color_code >> 0) & 0xff;
   m->green_to_blue = (color_code >> 8) & 0xff;
   m->red_to_blue = (color_code >> 16) & 0xff;
 }
 
-void VP8LTransformColorInverse_C(const VP8LMultipliers* const m,
+func VP8LTransformColorInverse_C(const VP8LMultipliers* const m,
                                  const uint32_t* src, int num_pixels,
                                  uint32_t* dst) {
   int i;
@@ -308,7 +308,7 @@ void VP8LTransformColorInverse_C(const VP8LMultipliers* const m,
 }
 
 // Color space inverse transform.
-static void ColorSpaceInverseTransform_C(const VP8LTransform* const transform,
+func ColorSpaceInverseTransform_C(const VP8LTransform* const transform,
                                          int y_start, int y_end,
                                          const uint32_t* src, uint32_t* dst) {
   const int width = transform->xsize;
@@ -348,7 +348,7 @@ static void ColorSpaceInverseTransform_C(const VP8LTransform* const transform,
 // clang-format off
 #define COLOR_INDEX_INVERSE(FUNC_NAME, F_NAME, STATIC_DECL, TYPE, BIT_SUFFIX,  \
                             GET_INDEX, GET_VALUE)                              \
-static void F_NAME(const TYPE* src, const uint32_t* const color_map,           \
+func F_NAME(const TYPE* src, const uint32_t* const color_map,           \
                    TYPE* dst, int y_start, int y_end, int width) {             \
   int y;                                                                       \
   for (y = y_start; y < y_end; ++y) {                                          \
@@ -358,7 +358,7 @@ static void F_NAME(const TYPE* src, const uint32_t* const color_map,           \
     }                                                                          \
   }                                                                            \
 }                                                                              \
-STATIC_DECL void FUNC_NAME(const VP8LTransform* const transform,               \
+STATIC_DECL func FUNC_NAME(const VP8LTransform* const transform,               \
                            int y_start, int y_end, const TYPE* src,            \
                            TYPE* dst) {                                        \
   int y;                                                                       \
@@ -395,7 +395,7 @@ COLOR_INDEX_INVERSE(VP8LColorIndexInverseTransformAlpha, MapAlpha_C, , uint8_t,
 
 #undef COLOR_INDEX_INVERSE
 
-void VP8LInverseTransform(const VP8LTransform* const transform, int row_start,
+func VP8LInverseTransform(const VP8LTransform* const transform, int row_start,
                           int row_end, const uint32_t* const in,
                           uint32_t* const out) {
   const int width = transform->xsize;
@@ -449,7 +449,7 @@ static int is_big_endian(void) {
   return (tmp.b[0] != 1);
 }
 
-void VP8LConvertBGRAToRGB_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
+func VP8LConvertBGRAToRGB_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
                             uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const src_end = src + num_pixels;
   while (src < src_end) {
@@ -460,7 +460,7 @@ void VP8LConvertBGRAToRGB_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
   }
 }
 
-void VP8LConvertBGRAToRGBA_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
+func VP8LConvertBGRAToRGBA_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
                              uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const src_end = src + num_pixels;
   while (src < src_end) {
@@ -472,7 +472,7 @@ void VP8LConvertBGRAToRGBA_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
   }
 }
 
-void VP8LConvertBGRAToRGBA4444_C(const uint32_t* WEBP_RESTRICT src,
+func VP8LConvertBGRAToRGBA4444_C(const uint32_t* WEBP_RESTRICT src,
                                  int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const src_end = src + num_pixels;
   while (src < src_end) {
@@ -489,7 +489,7 @@ void VP8LConvertBGRAToRGBA4444_C(const uint32_t* WEBP_RESTRICT src,
   }
 }
 
-void VP8LConvertBGRAToRGB565_C(const uint32_t* WEBP_RESTRICT src,
+func VP8LConvertBGRAToRGB565_C(const uint32_t* WEBP_RESTRICT src,
                                int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const src_end = src + num_pixels;
   while (src < src_end) {
@@ -506,7 +506,7 @@ void VP8LConvertBGRAToRGB565_C(const uint32_t* WEBP_RESTRICT src,
   }
 }
 
-void VP8LConvertBGRAToBGR_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
+func VP8LConvertBGRAToBGR_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
                             uint8_t* WEBP_RESTRICT dst) {
   const uint32_t* const src_end = src + num_pixels;
   while (src < src_end) {
@@ -517,7 +517,7 @@ void VP8LConvertBGRAToBGR_C(const uint32_t* WEBP_RESTRICT src, int num_pixels,
   }
 }
 
-static void CopyOrSwap(const uint32_t* WEBP_RESTRICT src, int num_pixels,
+func CopyOrSwap(const uint32_t* WEBP_RESTRICT src, int num_pixels,
                        uint8_t* WEBP_RESTRICT dst, int swap_on_big_endian) {
   if (is_big_endian() == swap_on_big_endian) {
     const uint32_t* const src_end = src + num_pixels;
@@ -531,7 +531,7 @@ static void CopyOrSwap(const uint32_t* WEBP_RESTRICT src, int num_pixels,
   }
 }
 
-void VP8LConvertFromBGRA(const uint32_t* const in_data, int num_pixels,
+func VP8LConvertFromBGRA(const uint32_t* const in_data, int num_pixels,
                          WEBP_CSP_MODE out_colorspace, uint8_t* const rgba) {
   switch (out_colorspace) {
     case MODE_RGB:
@@ -602,12 +602,12 @@ VP8LMapARGBFunc VP8LMapColor32b;
 VP8LMapAlphaFunc VP8LMapColor8b;
 
 extern VP8CPUInfo VP8GetCPUInfo;
-extern void VP8LDspInitSSE2(void);
-extern void VP8LDspInitSSE41(void);
-extern void VP8LDspInitAVX2(void);
-extern void VP8LDspInitNEON(void);
-extern void VP8LDspInitMIPSdspR2(void);
-extern void VP8LDspInitMSA(void);
+extern func VP8LDspInitSSE2(void);
+extern func VP8LDspInitSSE41(void);
+extern func VP8LDspInitAVX2(void);
+extern func VP8LDspInitNEON(void);
+extern func VP8LDspInitMIPSdspR2(void);
+extern func VP8LDspInitMSA(void);
 
 #define COPY_PREDICTOR_ARRAY(IN, OUT)                       \
   do {                                                      \

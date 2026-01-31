@@ -116,7 +116,7 @@ static WEBP_INLINE int64_t DivRound(int64_t a, int64_t b) {
 // Splitting of distance and length codes into prefixes and
 // extra bits. The prefixes are encoded with an entropy code
 // while the extra bits are stored just as normal bits.
-static WEBP_INLINE void VP8LPrefixEncodeBitsNoLUT(int distance, int* const code,
+static WEBP_INLINE func VP8LPrefixEncodeBitsNoLUT(int distance, int* const code,
                                                   int* const extra_bits) {
   const int highest_bit = BitsLog2Floor(--distance);
   const int second_highest_bit = (distance >> (highest_bit - 1)) & 1;
@@ -124,7 +124,7 @@ static WEBP_INLINE void VP8LPrefixEncodeBitsNoLUT(int distance, int* const code,
   *code = 2 * highest_bit + second_highest_bit;
 }
 
-static WEBP_INLINE void VP8LPrefixEncodeNoLUT(int distance, int* const code,
+static WEBP_INLINE func VP8LPrefixEncodeNoLUT(int distance, int* const code,
                                               int* const extra_bits,
                                               int* const extra_bits_value) {
   const int highest_bit = BitsLog2Floor(--distance);
@@ -143,7 +143,7 @@ typedef struct {
 // These tables are derived using VP8LPrefixEncodeNoLUT.
 extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];
 extern const uint8_t kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
-static WEBP_INLINE void VP8LPrefixEncodeBits(int distance, int* const code,
+static WEBP_INLINE func VP8LPrefixEncodeBits(int distance, int* const code,
                                              int* const extra_bits) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
@@ -154,7 +154,7 @@ static WEBP_INLINE void VP8LPrefixEncodeBits(int distance, int* const code,
   }
 }
 
-static WEBP_INLINE void VP8LPrefixEncode(int distance, int* const code,
+static WEBP_INLINE func VP8LPrefixEncode(int distance, int* const code,
                                          int* const extra_bits,
                                          int* const extra_bits_value) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
@@ -194,7 +194,7 @@ VP8LSubPixels(uint32_t a, uint32_t b) {
 // The predictor is added to the output pixel (which
 // is therefore considered as a residual) to get the final prediction.
 #define GENERATE_PREDICTOR_ADD(PREDICTOR, PREDICTOR_ADD)                   \
-  static void PREDICTOR_ADD(const uint32_t* in, const uint32_t* upper,     \
+  func PREDICTOR_ADD(const uint32_t* in, const uint32_t* upper,     \
                             int num_pixels, uint32_t* WEBP_RESTRICT out) { \
     int x;                                                                 \
     assert(upper != NULL);                                                 \

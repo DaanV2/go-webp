@@ -48,7 +48,7 @@ struct VP8Tokens {
 
 //------------------------------------------------------------------------------
 
-void VP8TBufferInit(VP8TBuffer* const b, int page_size) {
+func VP8TBufferInit(VP8TBuffer* const b, int page_size) {
   b->tokens = NULL;
   b->pages = NULL;
   b->last_page = &b->pages;
@@ -57,7 +57,7 @@ void VP8TBufferInit(VP8TBuffer* const b, int page_size) {
   b->error = 0;
 }
 
-void VP8TBufferClear(VP8TBuffer* const b) {
+func VP8TBufferClear(VP8TBuffer* const b) {
   if (b != NULL) {
     VP8Tokens* p = b->pages;
     while (p != NULL) {
@@ -105,7 +105,7 @@ static WEBP_INLINE uint32_t AddToken(VP8TBuffer* const b, uint32_t bit,
   return bit;
 }
 
-static WEBP_INLINE void AddConstantToken(VP8TBuffer* const b, uint32_t bit,
+static WEBP_INLINE func AddConstantToken(VP8TBuffer* const b, uint32_t bit,
                                          uint32_t proba) {
   assert(proba < 256);
   assert(bit <= 1);
@@ -255,10 +255,10 @@ size_t VP8EstimateTokenSize(VP8TBuffer* const b, const uint8_t* const probas) {
 
 #else  // DISABLE_TOKEN_BUFFER
 
-void VP8TBufferInit(VP8TBuffer* const b, int page_size) {
+func VP8TBufferInit(VP8TBuffer* const b, int page_size) {
   (void)b;
   (void)page_size;
 }
-void VP8TBufferClear(VP8TBuffer* const b) { (void)b; }
+func VP8TBufferClear(VP8TBuffer* const b) { (void)b; }
 
 #endif  // !DISABLE_TOKEN_BUFFER

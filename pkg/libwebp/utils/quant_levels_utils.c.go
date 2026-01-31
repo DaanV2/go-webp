@@ -126,7 +126,7 @@ int QuantizeLevels(uint8_t* const WEBP_COUNTED_BY((size_t)width* height) data,
   {
     // double->int rounding operation can be costly, so we do it
     // once for all before remapping. We also perform the data[] -> slot
-    // mapping, while at it (avoid one indirection in the final loop).
+    // mapping, while at it (afunc one indirection in the final loop).
     uint8_t map[NUM_SYMBOLS];
     int s;
     size_t n;

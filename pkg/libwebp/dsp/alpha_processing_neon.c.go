@@ -42,7 +42,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     (V).val[(OTHER)] = vshrn_n_u16(b3, 8);                   \
   } while (0)
 
-static void ApplyAlphaMultiply_NEON(uint8_t* rgba, int alpha_first, int w,
+func ApplyAlphaMultiply_NEON(uint8_t* rgba, int alpha_first, int w,
                                     int h, int stride) {
   const uint16x8_t kOne = vdupq_n_u16(1u);
   while (h-- > 0) {
@@ -116,7 +116,7 @@ static int DispatchAlpha_NEON(const uint8_t* WEBP_RESTRICT alpha,
   return (alpha_mask != 0xffffffffu);
 }
 
-static void DispatchAlphaToGreen_NEON(const uint8_t* WEBP_RESTRICT alpha,
+func DispatchAlphaToGreen_NEON(const uint8_t* WEBP_RESTRICT alpha,
                                       int alpha_stride, int width, int height,
                                       uint32_t* WEBP_RESTRICT dst,
                                       int dst_stride) {
@@ -167,7 +167,7 @@ static int ExtractAlpha_NEON(const uint8_t* WEBP_RESTRICT argb, int argb_stride,
   return (alpha_mask == 0xffffffffu);
 }
 
-static void ExtractGreen_NEON(const uint32_t* WEBP_RESTRICT argb,
+func ExtractGreen_NEON(const uint32_t* WEBP_RESTRICT argb,
                               uint8_t* WEBP_RESTRICT alpha, int size) {
   int i;
   for (i = 0; i + 16 <= size; i += 16) {
@@ -180,9 +180,9 @@ static void ExtractGreen_NEON(const uint32_t* WEBP_RESTRICT argb,
 
 //------------------------------------------------------------------------------
 
-extern void WebPInitAlphaProcessingNEON(void);
+extern func WebPInitAlphaProcessingNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitAlphaProcessingNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingNEON(void) {
   WebPApplyAlphaMultiply = ApplyAlphaMultiply_NEON;
   WebPDispatchAlpha = DispatchAlpha_NEON;
   WebPDispatchAlphaToGreen = DispatchAlphaToGreen_NEON;

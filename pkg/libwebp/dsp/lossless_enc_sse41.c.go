@@ -53,7 +53,7 @@ static uint32_t ExtraCost_SSE41(const uint32_t* const a, int length) {
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-static void SubtractGreenFromBlueAndRed_SSE41(uint32_t* argb_data,
+func SubtractGreenFromBlueAndRed_SSE41(uint32_t* argb_data,
                                               int num_pixels) {
   int i;
   const __m128i kCstShuffle =
@@ -79,7 +79,7 @@ static void SubtractGreenFromBlueAndRed_SSE41(uint32_t* argb_data,
 #define MK_CST_16(HI, LO) \
   _mm_set1_epi32((int)(((uint32_t)(HI) << 16) | ((LO) & 0xffff)))
 
-static void CollectColorBlueTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
+func CollectColorBlueTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
                                              int stride, int tile_width,
                                              int tile_height, int green_to_blue,
                                              int red_to_blue,
@@ -126,7 +126,7 @@ static void CollectColorBlueTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
   }
 }
 
-static void CollectColorRedTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
+func CollectColorRedTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
                                             int stride, int tile_width,
                                             int tile_height, int green_to_red,
                                             uint32_t histo[]) {
@@ -173,9 +173,9 @@ static void CollectColorRedTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8LEncDspInitSSE41(void);
+extern func VP8LEncDspInitSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8LEncDspInitSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitSSE41(void) {
   VP8LExtraCost = ExtraCost_SSE41;
 
   // SSE exports for AVX and above.

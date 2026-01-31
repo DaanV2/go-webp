@@ -58,7 +58,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/stdio"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 
-static void PrintBlockInfo(const VP8EncIterator* const it,
+func PrintBlockInfo(const VP8EncIterator* const it,
                            const VP8ModeScore* const rd) {
   int i, j;
   const int is_i16 = (it->mb->type == 1);
@@ -213,11 +213,11 @@ static int ExpandMatrix(VP8Matrix* const m, int type) {
   return (sum + 8) >> 4;
 }
 
-static void CheckLambdaValue(int* const v) {
+func CheckLambdaValue(int* const v) {
   if (*v < 1) *v = 1;
 }
 
-static void SetupMatrices(VP8Encoder* enc) {
+func SetupMatrices(VP8Encoder* enc) {
   int i;
   const int tlambda_scale = (enc->method >= 4) ? enc->config->sns_strength : 0;
   const int num_segments = enc->segment_hdr.num_segments;
@@ -271,7 +271,7 @@ static void SetupMatrices(VP8Encoder* enc) {
 // save a little decoding-CPU by turning filtering off for these.
 #define FSTRENGTH_CUTOFF 2
 
-static void SetupFilterStrength(VP8Encoder* const enc) {
+func SetupFilterStrength(VP8Encoder* const enc) {
   int i;
   // level0 is in [0..500]. Using '-f 50' as filter_strength is mid-filtering.
   const int level0 = 5 * enc->config->filter_strength;
@@ -337,10 +337,10 @@ static int SegmentsAreEquivalent(const VP8SegmentInfo* const S1,
   return (S1->quant == S2->quant) && (S1->fstrength == S2->fstrength);
 }
 
-static void SimplifySegments(VP8Encoder* const enc) {
+func SimplifySegments(VP8Encoder* const enc) {
   int map[NUM_MB_SEGMENTS] = {0, 1, 2, 3};
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
-  // explicit check is needed to avoid a spurious warning about 'i' exceeding
+  // explicit check is needed to afunc a spurious warning about 'i' exceeding
   // array bounds of 'dqm' with some compilers (noticed with gcc-4.9).
   const int num_segments = (enc->segment_hdr.num_segments < NUM_MB_SEGMENTS)
                                ? enc->segment_hdr.num_segments
@@ -377,7 +377,7 @@ static void SimplifySegments(VP8Encoder* const enc) {
   }
 }
 
-void VP8SetSegmentParams(VP8Encoder* const enc, float quality) {
+func VP8SetSegmentParams(VP8Encoder* const enc, float quality) {
   int i;
   int dq_uv_ac, dq_uv_dc;
   const int num_segments = enc->segment_hdr.num_segments;
@@ -443,13 +443,13 @@ const uint16_t VP8UVModeOffsets[4] = {C8DC8, C8TM8, C8VE8, C8HE8};
 static const uint16_t VP8I4ModeOffsets[NUM_BMODES] = {
     I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4};
 
-void VP8MakeLuma16Preds(const VP8EncIterator* const it) {
+func VP8MakeLuma16Preds(const VP8EncIterator* const it) {
   const uint8_t* const left = it->x ? it->y_left : NULL;
   const uint8_t* const top = it->y ? it->y_top : NULL;
   VP8EncPredLuma16(it->yuv_p, left, top);
 }
 
-void VP8MakeChroma8Preds(const VP8EncIterator* const it) {
+func VP8MakeChroma8Preds(const VP8EncIterator* const it) {
   const uint8_t* const left = it->x ? it->u_left : NULL;
   const uint8_t* const top = it->y ? it->uv_top : NULL;
   VP8EncPredChroma8(it->yuv_p, left, top);
@@ -457,7 +457,7 @@ void VP8MakeChroma8Preds(const VP8EncIterator* const it) {
 
 // Form all the ten Intra4x4 predictions in the 'yuv_p' cache
 // for the 4x4 block it->i4
-static void MakeIntra4Preds(const VP8EncIterator* const it) {
+func MakeIntra4Preds(const VP8EncIterator* const it) {
   VP8EncPredLuma4(it->yuv_p, it->i4_top);
 }
 
@@ -502,7 +502,7 @@ static const uint16_t kWeightTrellis[16] = {
 };
 
 // Init/Copy the common fields in score.
-static void InitScore(VP8ModeScore* const rd) {
+func InitScore(VP8ModeScore* const rd) {
   rd->D = 0;
   rd->SD = 0;
   rd->R = 0;
@@ -511,7 +511,7 @@ static void InitScore(VP8ModeScore* const rd) {
   rd->score = MAX_COST;
 }
 
-static void CopyScore(VP8ModeScore* WEBP_RESTRICT const dst,
+func CopyScore(VP8ModeScore* WEBP_RESTRICT const dst,
                       const VP8ModeScore* WEBP_RESTRICT const src) {
   dst->D = src->D;
   dst->SD = src->SD;
@@ -521,7 +521,7 @@ static void CopyScore(VP8ModeScore* WEBP_RESTRICT const dst,
   dst->score = src->score;
 }
 
-static void AddScore(VP8ModeScore* WEBP_RESTRICT const dst,
+func AddScore(VP8ModeScore* WEBP_RESTRICT const dst,
                      const VP8ModeScore* WEBP_RESTRICT const src) {
   dst->D += src->D;
   dst->SD += src->SD;
@@ -556,7 +556,7 @@ typedef struct {
 #define NODE(n, l) (nodes[(n)][(l) + MIN_DELTA])
 #define SCORE_STATE(n, l) (score_states[n][(l) + MIN_DELTA])
 
-static WEBP_INLINE void SetRDScore(int lambda, VP8ModeScore* const rd) {
+static WEBP_INLINE func SetRDScore(int lambda, VP8ModeScore* const rd) {
   rd->score = (rd->R + rd->H) * lambda + RD_DISTO_MULT * (rd->D + rd->SD);
 }
 
@@ -831,7 +831,7 @@ static int ReconstructIntra4(VP8EncIterator* WEBP_RESTRICT const it,
 // DC-error diffusion
 
 // Diffusion weights. We under-correct a bit (15/16th of the error is actually
-// diffused) to avoid 'rainbow' chessboard pattern of blocks at q~=0.
+// diffused) to afunc 'rainbow' chessboard pattern of blocks at q~=0.
 const C1 = 7  // fraction of error sent to the 4x4 block below
 const C2 = 8  // fraction of error sent to the 4x4 block on the right
 const DSHIFT = 4
@@ -854,7 +854,7 @@ static int QuantizeSingle(int16_t* WEBP_RESTRICT const v,
   return (sign ? -V : V) >> DSCALE;
 }
 
-static void CorrectDCValues(const VP8EncIterator* WEBP_RESTRICT const it,
+func CorrectDCValues(const VP8EncIterator* WEBP_RESTRICT const it,
                             const VP8Matrix* WEBP_RESTRICT const mtx,
                             int16_t tmp[][16],
                             VP8ModeScore* WEBP_RESTRICT const rd) {
@@ -888,7 +888,7 @@ static void CorrectDCValues(const VP8EncIterator* WEBP_RESTRICT const it,
   }
 }
 
-static void StoreDiffusionErrors(VP8EncIterator* WEBP_RESTRICT const it,
+func StoreDiffusionErrors(VP8EncIterator* WEBP_RESTRICT const it,
                                  const VP8ModeScore* WEBP_RESTRICT const rd) {
   int ch;
   for (ch = 0; ch <= 1; ++ch) {
@@ -954,7 +954,7 @@ static int ReconstructUV(VP8EncIterator* WEBP_RESTRICT const it,
 // RD-opt decision. Reconstruct each modes, evalue distortion and bit-cost.
 // Pick the mode is lower RD-cost = Rate + lambda * Distortion.
 
-static void StoreMaxDelta(VP8SegmentInfo* const dqm, const int16_t DCs[16]) {
+func StoreMaxDelta(VP8SegmentInfo* const dqm, const int16_t DCs[16]) {
   // We look at the first three AC coefficients to determine what is the average
   // delta between each sub-4x4 block.
   const int v0 = abs(DCs[1]);
@@ -965,23 +965,23 @@ static void StoreMaxDelta(VP8SegmentInfo* const dqm, const int16_t DCs[16]) {
   if (max_v > dqm->max_edge) dqm->max_edge = max_v;
 }
 
-static void SwapModeScore(VP8ModeScore** a, VP8ModeScore** b) {
+func SwapModeScore(VP8ModeScore** a, VP8ModeScore** b) {
   VP8ModeScore* const tmp = *a;
   *a = *b;
   *b = tmp;
 }
 
-static void SwapPtr(uint8_t** a, uint8_t** b) {
+func SwapPtr(uint8_t** a, uint8_t** b) {
   uint8_t* const tmp = *a;
   *a = *b;
   *b = tmp;
 }
 
-static void SwapOut(VP8EncIterator* const it) {
+func SwapOut(VP8EncIterator* const it) {
   SwapPtr(&it->yuv_out, &it->yuv_out2);
 }
 
-static void PickBestIntra16(VP8EncIterator* WEBP_RESTRICT const it,
+func PickBestIntra16(VP8EncIterator* WEBP_RESTRICT const it,
                             VP8ModeScore* WEBP_RESTRICT rd) {
   const int kNumBlocks = 16;
   VP8SegmentInfo* const dqm = &it->enc->dqm[it->mb->segment];
@@ -1096,7 +1096,7 @@ static int PickBestIntra4(VP8EncIterator* WEBP_RESTRICT const it,
           tlambda ? MULT_8B(tlambda, VP8TDisto4x4(src, tmp_dst, kWeightY)) : 0;
       rd_tmp.H = mode_costs[mode];
 
-      // Add flatness penalty, to avoid flat area to be mispredicted
+      // Add flatness penalty, to afunc flat area to be mispredicted
       // by a complex mode.
       if (mode > 0 && IsFlat(tmp_levels, kNumBlocks, FLATNESS_LIMIT_I4)) {
         rd_tmp.R = FLATNESS_PENALTY * kNumBlocks;
@@ -1147,7 +1147,7 @@ static int PickBestIntra4(VP8EncIterator* WEBP_RESTRICT const it,
 
 //------------------------------------------------------------------------------
 
-static void PickBestUV(VP8EncIterator* WEBP_RESTRICT const it,
+func PickBestUV(VP8EncIterator* WEBP_RESTRICT const it,
                        VP8ModeScore* WEBP_RESTRICT const rd) {
   const int kNumBlocks = 8;
   const VP8SegmentInfo* const dqm = &it->enc->dqm[it->mb->segment];
@@ -1200,7 +1200,7 @@ static void PickBestUV(VP8EncIterator* WEBP_RESTRICT const it,
 //------------------------------------------------------------------------------
 // Final reconstruction and quantization.
 
-static void SimpleQuantize(VP8EncIterator* WEBP_RESTRICT const it,
+func SimpleQuantize(VP8EncIterator* WEBP_RESTRICT const it,
                            VP8ModeScore* WEBP_RESTRICT const rd) {
   const VP8Encoder* const enc = it->enc;
   const int is_i16 = (it->mb->type == 1);
@@ -1225,7 +1225,7 @@ static void SimpleQuantize(VP8EncIterator* WEBP_RESTRICT const it,
 }
 
 // Refine intra16/intra4 sub-modes based on distortion only (not rate).
-static void RefineUsingDistortion(VP8EncIterator* WEBP_RESTRICT const it,
+func RefineUsingDistortion(VP8EncIterator* WEBP_RESTRICT const it,
                                   int try_both_modes, int refine_uv_mode,
                                   VP8ModeScore* WEBP_RESTRICT const rd) {
   score_t best_score = MAX_COST;
@@ -1260,7 +1260,7 @@ static void RefineUsingDistortion(VP8EncIterator* WEBP_RESTRICT const it,
       }
     }
     if (it->x == 0 || it->y == 0) {
-      // avoid starting a checkerboard resonance from the border. See bug #432.
+      // afunc starting a checkerboard resonance from the border. See bug #432.
       if (IsFlatSource16(src)) {
         best_mode = (it->x == 0) ? 0 : 2;
         try_both_modes = 0;  // stick to i16

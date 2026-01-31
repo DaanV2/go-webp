@@ -63,7 +63,7 @@ static uint32x4_t Interpolate_NEON(const rescaler_t* WEBP_RESTRICT const frow,
   return E;
 }
 
-static void RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
+func RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
   int x_out;
   uint8_t* const dst = wrk->dst;
   rescaler_t* const irow = wrk->irow;
@@ -116,7 +116,7 @@ static void RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
   }
 }
 
-static void RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
+func RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
   int x_out;
   uint8_t* const dst = wrk->dst;
   rescaler_t* const irow = wrk->irow;
@@ -180,9 +180,9 @@ static void RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
 
 //------------------------------------------------------------------------------
 
-extern void WebPRescalerDspInitNEON(void);
+extern func WebPRescalerDspInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPRescalerDspInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitNEON(void) {
   WebPRescalerExportRowExpand = RescalerExportRowExpand_NEON;
   WebPRescalerExportRowShrink = RescalerExportRowShrink_NEON;
 }

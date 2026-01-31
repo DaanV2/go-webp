@@ -134,11 +134,11 @@ static WEBP_INLINE int SizeIsInvalid(const MemBuffer* const mem, size_t size) {
   return (size > mem->riff_end - mem->start);
 }
 
-static WEBP_INLINE void Skip(MemBuffer* const mem, size_t size) {
+static WEBP_INLINE func Skip(MemBuffer* const mem, size_t size) {
   mem->start += size;
 }
 
-static WEBP_INLINE void Rewind(MemBuffer* const mem, size_t size) {
+static WEBP_INLINE func Rewind(MemBuffer* const mem, size_t size) {
   mem->start -= size;
 }
 
@@ -177,7 +177,7 @@ static WEBP_INLINE uint32_t ReadLE32(MemBuffer* const mem) {
 // -----------------------------------------------------------------------------
 // Secondary chunk parsing
 
-static void AddChunk(WebPDemuxer* const dmux, Chunk* const chunk) {
+func AddChunk(WebPDemuxer* const dmux, Chunk* const chunk) {
   *dmux->chunks_tail = chunk;
   chunk->next = NULL;
   dmux->chunks_tail = &chunk->next;
@@ -195,7 +195,7 @@ static int AddFrame(WebPDemuxer* const dmux, Frame* const frame) {
   return 1;
 }
 
-static void SetFrameInfo(size_t start_offset, size_t size, int frame_num,
+func SetFrameInfo(size_t start_offset, size_t size, int frame_num,
                          int complete,
                          const WebPBitstreamFeatures* const features,
                          Frame* const frame) {
@@ -657,7 +657,7 @@ static int IsValidExtendedFormat(const WebPDemuxer* const dmux) {
 // -----------------------------------------------------------------------------
 // WebPDemuxer object
 
-static void InitDemux(WebPDemuxer* const dmux, const MemBuffer* const mem) {
+func InitDemux(WebPDemuxer* const dmux, const MemBuffer* const mem) {
   dmux->state = WEBP_DEMUX_PARSING_HEADER;
   dmux->loop_count = 1;
   dmux->bgcolor = 0xFFFFFFFF;  // White background by default.
@@ -762,7 +762,7 @@ WebPDemuxer* WebPDemuxInternal(const WebPData* data, int allow_partial,
   return dmux;
 }
 
-void WebPDemuxDelete(WebPDemuxer* dmux) {
+func WebPDemuxDelete(WebPDemuxer* dmux) {
   Chunk* c;
   Frame* f;
   if (dmux == NULL) return;
@@ -894,7 +894,7 @@ int WebPDemuxPrevFrame(WebPIterator* iter) {
   return SetFrame(iter->frame_num - 1, iter);
 }
 
-void WebPDemuxReleaseIterator(WebPIterator* iter) { (void)iter; }
+func WebPDemuxReleaseIterator(WebPIterator* iter) { (void)iter; }
 
 // -----------------------------------------------------------------------------
 // Chunk iteration
@@ -972,4 +972,4 @@ int WebPDemuxPrevChunk(WebPChunkIterator* iter) {
   return 0;
 }
 
-void WebPDemuxReleaseChunkIterator(WebPChunkIterator* iter) { (void)iter; }
+func WebPDemuxReleaseChunkIterator(WebPChunkIterator* iter) { (void)iter; }

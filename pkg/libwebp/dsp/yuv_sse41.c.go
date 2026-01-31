@@ -34,7 +34,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // R = (19077 * y             + 26149 * v - 14234) >> 6
 // G = (19077 * y -  6419 * u - 13320 * v +  8708) >> 6
 // B = (19077 * y + 33050 * u             - 17685) >> 6
-static void ConvertYUV444ToRGB_SSE41(const __m128i* const Y0,
+func ConvertYUV444ToRGB_SSE41(const __m128i* const Y0,
                                      const __m128i* const U0,
                                      const __m128i* const V0, __m128i* const R,
                                      __m128i* const G, __m128i* const B) {
@@ -86,7 +86,7 @@ static WEBP_INLINE __m128i Load_UV_HI_8_SSE41(const uint8_t* src) {
 }
 
 // Convert 32 samples of YUV444 to R/G/B
-static void YUV444ToRGB_SSE41(const uint8_t* WEBP_RESTRICT const y,
+func YUV444ToRGB_SSE41(const uint8_t* WEBP_RESTRICT const y,
                               const uint8_t* WEBP_RESTRICT const u,
                               const uint8_t* WEBP_RESTRICT const v,
                               __m128i* const R, __m128i* const G,
@@ -97,7 +97,7 @@ static void YUV444ToRGB_SSE41(const uint8_t* WEBP_RESTRICT const y,
 }
 
 // Convert 32 samples of YUV420 to R/G/B
-static void YUV420ToRGB_SSE41(const uint8_t* WEBP_RESTRICT const y,
+func YUV420ToRGB_SSE41(const uint8_t* WEBP_RESTRICT const y,
                               const uint8_t* WEBP_RESTRICT const u,
                               const uint8_t* WEBP_RESTRICT const v,
                               __m128i* const R, __m128i* const G,
@@ -110,7 +110,7 @@ static void YUV420ToRGB_SSE41(const uint8_t* WEBP_RESTRICT const y,
 // Pack the planar buffers
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // triplet by triplet in the output buffer rgb as rgbrgbrgbrgb ...
-static WEBP_INLINE void PlanarTo24b_SSE41(
+static WEBP_INLINE func PlanarTo24b_SSE41(
     __m128i* const in0, __m128i* const in1, __m128i* const in2,
     __m128i* const in3, __m128i* const in4, __m128i* const in5,
     uint8_t* WEBP_RESTRICT const rgb) {
@@ -136,7 +136,7 @@ static WEBP_INLINE void PlanarTo24b_SSE41(
   _mm_storeu_si128((__m128i*)(rgb + 80), *in5);
 }
 
-void VP8YuvToRgb32_SSE41(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToRgb32_SSE41(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst) {
@@ -160,7 +160,7 @@ void VP8YuvToRgb32_SSE41(const uint8_t* WEBP_RESTRICT y,
   PlanarTo24b_SSE41(&rgb0, &rgb1, &rgb2, &rgb3, &rgb4, &rgb5, dst);
 }
 
-void VP8YuvToBgr32_SSE41(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToBgr32_SSE41(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst) {
@@ -187,7 +187,7 @@ void VP8YuvToBgr32_SSE41(const uint8_t* WEBP_RESTRICT y,
 //-----------------------------------------------------------------------------
 // Arbitrary-length row conversion functions
 
-static void YuvToRgbRow_SSE41(const uint8_t* WEBP_RESTRICT y,
+func YuvToRgbRow_SSE41(const uint8_t* WEBP_RESTRICT y,
                               const uint8_t* WEBP_RESTRICT u,
                               const uint8_t* WEBP_RESTRICT v,
                               uint8_t* WEBP_RESTRICT dst, int len) {
@@ -225,7 +225,7 @@ static void YuvToRgbRow_SSE41(const uint8_t* WEBP_RESTRICT y,
   }
 }
 
-static void YuvToBgrRow_SSE41(const uint8_t* WEBP_RESTRICT y,
+func YuvToBgrRow_SSE41(const uint8_t* WEBP_RESTRICT y,
                               const uint8_t* WEBP_RESTRICT u,
                               const uint8_t* WEBP_RESTRICT v,
                               uint8_t* WEBP_RESTRICT dst, int len) {
@@ -266,9 +266,9 @@ static void YuvToBgrRow_SSE41(const uint8_t* WEBP_RESTRICT y,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void WebPInitSamplersSSE41(void);
+extern func WebPInitSamplersSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitSamplersSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersSSE41(void) {
   WebPSamplers[MODE_RGB] = YuvToRgbRow_SSE41;
   WebPSamplers[MODE_BGR] = YuvToBgrRow_SSE41;
 }
@@ -300,7 +300,7 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitSamplersSSE41(void) {
 // Unpack the 8b input rgbrgbrgbrgb ... as contiguous registers:
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // Similar to PlanarTo24bHelper(), but in reverse order.
-static WEBP_INLINE void RGBPackedToPlanar_SSE41(
+static WEBP_INLINE func RGBPackedToPlanar_SSE41(
     const uint8_t* WEBP_RESTRICT const rgb, __m128i* const out /*out[6]*/) {
   const __m128i A0 = _mm_loadu_si128((const __m128i*)(rgb + 0));
   const __m128i A1 = _mm_loadu_si128((const __m128i*)(rgb + 16));
@@ -343,7 +343,7 @@ static WEBP_INLINE void RGBPackedToPlanar_SSE41(
 
 #undef WEBP_SSE41_SHUFF
 
-static WEBP_INLINE void RGBAPackedToRGBPlanar_SSE41(
+static WEBP_INLINE func RGBAPackedToRGBPlanar_SSE41(
     const uint8_t* WEBP_RESTRICT const rgba, __m128i* const rgb /*in[6]*/) {
   __m128i a0 = _mm_loadu_si128((const __m128i*)(rgba + 0));
   __m128i a1 = _mm_loadu_si128((const __m128i*)(rgba + 16));
@@ -365,7 +365,7 @@ static WEBP_INLINE void RGBAPackedToRGBPlanar_SSE41(
 
 // Unpack the 8b input argbargbargb... as contiguous registers:
 // 0r0r0r... 0r0r0r... 0g0g0g... 0g0g0g0... 0b0b0b... 0b0b0b....
-static WEBP_INLINE void ARGBPackedToRGBPlanar16_SSE41(
+static WEBP_INLINE func ARGBPackedToRGBPlanar16_SSE41(
     const uint32_t* WEBP_RESTRICT const argb, __m128i* const rgb /*in[6]*/) {
   const __m128i zero = _mm_setzero_si128();
   __m128i a0 = _mm_loadu_si128((const __m128i*)(argb + 0));
@@ -401,7 +401,7 @@ static WEBP_INLINE void ARGBPackedToRGBPlanar16_SSE41(
   } while (0)
 
 #define MK_CST_16(A, B) _mm_set_epi16((B), (A), (B), (A), (B), (A), (B), (A))
-static WEBP_INLINE void ConvertRGBToYImpl_SSE41(const __m128i* const R,
+static WEBP_INLINE func ConvertRGBToYImpl_SSE41(const __m128i* const R,
                                                 const __m128i* const G,
                                                 const __m128i* const B,
                                                 __m128i* const Y) {
@@ -416,7 +416,7 @@ static WEBP_INLINE void ConvertRGBToYImpl_SSE41(const __m128i* const R,
   TRANSFORM(RG_lo, RG_hi, GB_lo, GB_hi, kRG_y, kGB_y, kHALF_Y, YUV_FIX, *Y);
 }
 
-static WEBP_INLINE void ConvertRGBToUV_SSE41(const __m128i* const R,
+static WEBP_INLINE func ConvertRGBToUV_SSE41(const __m128i* const R,
                                              const __m128i* const G,
                                              const __m128i* const B,
                                              __m128i* const U,
@@ -440,7 +440,7 @@ static WEBP_INLINE void ConvertRGBToUV_SSE41(const __m128i* const R,
 #undef MK_CST_16
 #undef TRANSFORM
 
-static WEBP_INLINE void ConvertRGBToYHelper_SSE41(
+static WEBP_INLINE func ConvertRGBToYHelper_SSE41(
     const __m128i* const rgb_plane /*in[6]*/, int swap_rb, int* i,
     uint8_t* WEBP_RESTRICT y) {
   int j;
@@ -466,7 +466,7 @@ static WEBP_INLINE void ConvertRGBToYHelper_SSE41(
   }
 }
 
-static void ConvertRGBToY_SSE41(const uint8_t* WEBP_RESTRICT rgb,
+func ConvertRGBToY_SSE41(const uint8_t* WEBP_RESTRICT rgb,
                                 uint8_t* WEBP_RESTRICT y, int width, int step) {
   const int max_width = width & ~31;
   int i;
@@ -487,7 +487,7 @@ static void ConvertRGBToY_SSE41(const uint8_t* WEBP_RESTRICT rgb,
   }
 }
 
-static void ConvertBGRToY_SSE41(const uint8_t* WEBP_RESTRICT bgr,
+func ConvertBGRToY_SSE41(const uint8_t* WEBP_RESTRICT bgr,
                                 uint8_t* WEBP_RESTRICT y, int width, int step) {
   const int max_width = width & ~31;
   int i;
@@ -508,7 +508,7 @@ static void ConvertBGRToY_SSE41(const uint8_t* WEBP_RESTRICT bgr,
   }
 }
 
-static void ConvertARGBToY_SSE41(const uint32_t* WEBP_RESTRICT argb,
+func ConvertARGBToY_SSE41(const uint32_t* WEBP_RESTRICT argb,
                                  uint8_t* WEBP_RESTRICT y, int width) {
   const int max_width = width & ~15;
   int i;
@@ -528,7 +528,7 @@ static void ConvertARGBToY_SSE41(const uint32_t* WEBP_RESTRICT argb,
 
 // Horizontal add (doubled) of two 16b values, result is 16b.
 // in: A | B | C | D | ... -> out: 2*(A+B) | 2*(C+D) | ...
-static void HorizontalAddPack_SSE41(const __m128i* const A,
+func HorizontalAddPack_SSE41(const __m128i* const A,
                                     const __m128i* const B,
                                     __m128i* const out) {
   const __m128i k2 = _mm_set1_epi16(2);
@@ -537,7 +537,7 @@ static void HorizontalAddPack_SSE41(const __m128i* const A,
   *out = _mm_packs_epi32(C, D);
 }
 
-static void ConvertARGBToUV_SSE41(const uint32_t* WEBP_RESTRICT argb,
+func ConvertARGBToUV_SSE41(const uint32_t* WEBP_RESTRICT argb,
                                   uint8_t* WEBP_RESTRICT u,
                                   uint8_t* WEBP_RESTRICT v, int src_width,
                                   int do_store) {
@@ -574,7 +574,7 @@ static void ConvertARGBToUV_SSE41(const uint32_t* WEBP_RESTRICT argb,
 }
 
 // Convert 16 packed ARGB 16b-values to r[], g[], b[]
-static WEBP_INLINE void RGBA32PackedToPlanar_16b_SSE41(
+static WEBP_INLINE func RGBA32PackedToPlanar_16b_SSE41(
     const uint16_t* WEBP_RESTRICT const rgbx, __m128i* const r,
     __m128i* const g, __m128i* const b) {
   const __m128i in0 = LOAD_16(rgbx + 0);   // r0 | g0 | b0 |x| r1 | g1 | b1 |x
@@ -605,7 +605,7 @@ static WEBP_INLINE void RGBA32PackedToPlanar_16b_SSE41(
   *b = _mm_unpackhi_epi64(B1, B3);
 }
 
-static void ConvertRGBA32ToUV_SSE41(const uint16_t* WEBP_RESTRICT rgb,
+func ConvertRGBA32ToUV_SSE41(const uint16_t* WEBP_RESTRICT rgb,
                                     uint8_t* WEBP_RESTRICT u,
                                     uint8_t* WEBP_RESTRICT v, int width) {
   const int max_width = width & ~15;
@@ -629,9 +629,9 @@ static void ConvertRGBA32ToUV_SSE41(const uint16_t* WEBP_RESTRICT rgb,
 
 //------------------------------------------------------------------------------
 
-extern void WebPInitConvertARGBToYUVSSE41(void);
+extern func WebPInitConvertARGBToYUVSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitConvertARGBToYUVSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitConvertARGBToYUVSSE41(void) {
   WebPConvertARGBToY = ConvertARGBToY_SSE41;
   WebPConvertARGBToUV = ConvertARGBToUV_SSE41;
 

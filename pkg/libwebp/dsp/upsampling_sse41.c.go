@@ -101,7 +101,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-static void Upsample32Pixels_SSE41(const uint8_t* WEBP_RESTRICT const r1,
+func Upsample32Pixels_SSE41(const uint8_t* WEBP_RESTRICT const r1,
                                    const uint8_t* WEBP_RESTRICT const r2,
                                    uint8_t* WEBP_RESTRICT const out) {
   UPSAMPLE_32PIXELS(r1, r2, out);
@@ -131,7 +131,7 @@ static void Upsample32Pixels_SSE41(const uint8_t* WEBP_RESTRICT const r1,
   } while (0)
 
 #define SSE4_UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                            \
-  static void FUNC_NAME(                                                      \
+  func FUNC_NAME(                                                      \
       const uint8_t* WEBP_RESTRICT top_y,                                     \
       const uint8_t* WEBP_RESTRICT bottom_y,                                  \
       const uint8_t* WEBP_RESTRICT top_u, const uint8_t* WEBP_RESTRICT top_v, \
@@ -205,9 +205,9 @@ SSE4_UPSAMPLE_FUNC(UpsampleBgrLinePair_SSE41, VP8YuvToBgr, 3)
 
 extern WebPUpsampleLinePairFunc WebPUpsamplers[/* MODE_LAST */];
 
-extern void WebPInitUpsamplersSSE41(void);
+extern func WebPInitUpsamplersSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersSSE41(void) {
 #if !defined(WEBP_REDUCE_CSP)
   WebPUpsamplers[MODE_RGB] = UpsampleRgbLinePair_SSE41;
   WebPUpsamplers[MODE_BGR] = UpsampleBgrLinePair_SSE41;
@@ -219,13 +219,13 @@ WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersSSE41(void) {
 //------------------------------------------------------------------------------
 
 extern WebPYUV444Converter WebPYUV444Converters[/* MODE_LAST */];
-extern void WebPInitYUV444ConvertersSSE41(void);
+extern func WebPInitYUV444ConvertersSSE41(void);
 
 #define YUV444_FUNC(FUNC_NAME, CALL, CALL_C, XSTEP)                          \
-  extern void CALL_C(                                                        \
+  extern func CALL_C(                                                        \
       const uint8_t* WEBP_RESTRICT y, const uint8_t* WEBP_RESTRICT u,        \
       const uint8_t* WEBP_RESTRICT v, uint8_t* WEBP_RESTRICT dst, int len);  \
-  static void FUNC_NAME(                                                     \
+  func FUNC_NAME(                                                     \
       const uint8_t* WEBP_RESTRICT y, const uint8_t* WEBP_RESTRICT u,        \
       const uint8_t* WEBP_RESTRICT v, uint8_t* WEBP_RESTRICT dst, int len) { \
     int i;                                                                   \
@@ -243,7 +243,7 @@ YUV444_FUNC(Yuv444ToRgb_SSE41, VP8YuvToRgb32_SSE41, WebPYuv444ToRgb_C, 3)
 YUV444_FUNC(Yuv444ToBgr_SSE41, VP8YuvToBgr32_SSE41, WebPYuv444ToBgr_C, 3)
 #endif  // WEBP_REDUCE_CSP
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitYUV444ConvertersSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitYUV444ConvertersSSE41(void) {
 #if !defined(WEBP_REDUCE_CSP)
   WebPYUV444Converters[MODE_RGB] = Yuv444ToRgb_SSE41;
   WebPYUV444Converters[MODE_BGR] = Yuv444ToBgr_SSE41;

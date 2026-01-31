@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-static void TransformColorInverse_SSE41(const VP8LMultipliers* const m,
+func TransformColorInverse_SSE41(const VP8LMultipliers* const m,
                                         const uint32_t* const src,
                                         int num_pixels, uint32_t* dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
@@ -81,7 +81,7 @@ static void TransformColorInverse_SSE41(const VP8LMultipliers* const m,
     }                                                   \
   } while (0)
 
-static void ConvertBGRAToRGB_SSE41(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToRGB_SSE41(const uint32_t* WEBP_RESTRICT src,
                                    int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const __m128i* in = (const __m128i*)src;
   __m128i* out = (__m128i*)dst;
@@ -99,7 +99,7 @@ static void ConvertBGRAToRGB_SSE41(const uint32_t* WEBP_RESTRICT src,
   }
 }
 
-static void ConvertBGRAToBGR_SSE41(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToBGR_SSE41(const uint32_t* WEBP_RESTRICT src,
                                    int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const __m128i* in = (const __m128i*)src;
   __m128i* out = (__m128i*)dst;
@@ -122,9 +122,9 @@ static void ConvertBGRAToBGR_SSE41(const uint32_t* WEBP_RESTRICT src,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8LDspInitSSE41(void);
+extern func VP8LDspInitSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8LDspInitSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitSSE41(void) {
   VP8LTransformColorInverse = TransformColorInverse_SSE41;
   VP8LConvertBGRAToRGB = ConvertBGRAToRGB_SSE41;
   VP8LConvertBGRAToBGR = ConvertBGRAToBGR_SSE41;

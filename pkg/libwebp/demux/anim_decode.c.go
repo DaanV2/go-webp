@@ -38,10 +38,10 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 #define CHANNEL_SHIFT(i) ((i) * 8)
 #endif
 
-typedef void (*BlendRowFunc)(uint32_t* const, const uint32_t* const, int);
-static void BlendPixelRowNonPremult(uint32_t* const src,
+typedef func (*BlendRowFunc)(uint32_t* const, const uint32_t* const, int);
+func BlendPixelRowNonPremult(uint32_t* const src,
                                     const uint32_t* const dst, int num_pixels);
-static void BlendPixelRowPremult(uint32_t* const src, const uint32_t* const dst,
+func BlendPixelRowPremult(uint32_t* const src, const uint32_t* const dst,
                                  int num_pixels);
 
 struct WebPAnimDecoder {
@@ -60,7 +60,7 @@ struct WebPAnimDecoder {
                                  // (starting from 1).
 };
 
-static void DefaultDecoderOptions(WebPAnimDecoderOptions* const dec_options) {
+func DefaultDecoderOptions(WebPAnimDecoderOptions* const dec_options) {
   dec_options->color_mode = MODE_RGBA;
   dec_options->use_threads = 0;
 }
@@ -177,7 +177,7 @@ static int IsFullFrame(int width, int height, int canvas_width,
 }
 
 // Clear given frame rectangle to transparent.
-static void ZeroFillFrameRect(uint8_t* buf, int buf_stride, int x_offset,
+func ZeroFillFrameRect(uint8_t* buf, int buf_stride, int x_offset,
                               int y_offset, int width, int height) {
   int j;
   assert(width * NUM_CHANNELS <= buf_stride);
@@ -260,7 +260,7 @@ static uint32_t BlendPixelNonPremult(uint32_t src, uint32_t dst) {
 
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are NOT pre-multiplied
 // by alpha.
-static void BlendPixelRowNonPremult(uint32_t* const src,
+func BlendPixelRowNonPremult(uint32_t* const src,
                                     const uint32_t* const dst, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
@@ -287,7 +287,7 @@ static uint32_t BlendPixelPremult(uint32_t src, uint32_t dst) {
 
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are pre-multiplied by
 // alpha.
-static void BlendPixelRowPremult(uint32_t* const src, const uint32_t* const dst,
+func BlendPixelRowPremult(uint32_t* const src, const uint32_t* const dst,
                                  int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
@@ -300,7 +300,7 @@ static void BlendPixelRowPremult(uint32_t* const src, const uint32_t* const dst,
 
 // Returns two ranges (<left, width> pairs) at row 'canvas_y', that belong to
 // 'src' but not 'dst'. A point range is empty if the corresponding width is 0.
-static void FindBlendRangeAtRow(const WebPIterator* const src,
+func FindBlendRangeAtRow(const WebPIterator* const src,
                                 const WebPIterator* const dst, int canvas_y,
                                 int* const left1, int* const width1,
                                 int* const left2, int* const width2) {
@@ -456,7 +456,7 @@ int WebPAnimDecoderHasMoreFrames(const WebPAnimDecoder* dec) {
   return (dec->next_frame <= (int)dec->info.frame_count);
 }
 
-void WebPAnimDecoderReset(WebPAnimDecoder* dec) {
+func WebPAnimDecoderReset(WebPAnimDecoder* dec) {
   if (dec != NULL) {
     dec->prev_frame_timestamp = 0;
     WebPDemuxReleaseIterator(&dec->prev_iter);
@@ -471,7 +471,7 @@ const WebPDemuxer* WebPAnimDecoderGetDemuxer(const WebPAnimDecoder* dec) {
   return dec->demux;
 }
 
-void WebPAnimDecoderDelete(WebPAnimDecoder* dec) {
+func WebPAnimDecoderDelete(WebPAnimDecoder* dec) {
   if (dec != NULL) {
     WebPDemuxReleaseIterator(&dec->prev_iter);
     WebPDemuxDelete(dec->demux);

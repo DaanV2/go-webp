@@ -116,7 +116,7 @@ static int NeedCompressedAlpha(const WebPIDecoder* const idec) {
   }
 }
 
-static void DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
+func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
   MemBuffer* const mem = &idec->mem;
   const uint8_t* const new_base = mem->buf + mem->start;
   // note: for VP8, setting up idec->io is only really needed at the beginning
@@ -249,7 +249,7 @@ static void DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
   return 1;
 }
 
-static void InitMemBuffer(MemBuffer* const mem) {
+func InitMemBuffer(MemBuffer* const mem) {
   mem->mode = MEM_MODE_NONE;
   mem->buf = NULL;
   mem->buf_size = 0;
@@ -257,7 +257,7 @@ static void InitMemBuffer(MemBuffer* const mem) {
   mem->part0_size = 0;
 }
 
-static void ClearMemBuffer(MemBuffer* const mem) {
+func ClearMemBuffer(MemBuffer* const mem) {
   assert(mem);
   if (mem->mode == MEM_MODE_APPEND) {
     WebPSafeFree(mem->buf);
@@ -300,14 +300,14 @@ static void ClearMemBuffer(MemBuffer* const mem) {
 //------------------------------------------------------------------------------
 // Macroblock-decoding contexts
 
-static void SaveContext(const VP8Decoder* dec, const VP8BitReader* token_br,
+func SaveContext(const VP8Decoder* dec, const VP8BitReader* token_br,
                         MBContext* const context) {
   context->left = dec->mb_info[-1];
   context->info = dec->mb_info[dec->mb_x];
   context->token_br = *token_br;
 }
 
-static void RestoreContext(const MBContext* context, VP8Decoder* const dec,
+func RestoreContext(const MBContext* context, VP8Decoder* const dec,
                            VP8BitReader* const token_br) {
   dec->mb_info[-1] = context->left;
   dec->mb_info[dec->mb_x] = context->info;
@@ -325,7 +325,7 @@ static VP8StatusCode IDecError(WebPIDecoder* const idec, VP8StatusCode error) {
   return error;
 }
 
-static void ChangeState(WebPIDecoder* const idec, DecState new_state,
+func ChangeState(WebPIDecoder* const idec, DecState new_state,
                         size_t consumed_bytes) {
   MemBuffer* const mem = &idec->mem;
   idec->state = new_state;
@@ -710,7 +710,7 @@ WebPIDecoder* WebPIDecode(const uint8_t* WEBP_COUNTED_BY(data_size) data,
   return idec;
 }
 
-void WebPIDelete(WebPIDecoder* idec) {
+func WebPIDelete(WebPIDecoder* idec) {
   if (idec == NULL) return;
   if (idec->dec != NULL) {
     if (!idec->is_lossless) {

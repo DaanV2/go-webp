@@ -234,7 +234,7 @@ static uint32_t GetFilterMap(const uint8_t* alpha, int width, int height,
   return bit_map;
 }
 
-static void InitFilterTrial(FilterTrial* const score) {
+func InitFilterTrial(FilterTrial* const score) {
   score->score = (size_t)~0U;
   VP8BitWriterInit(&score->bw, 0);
 }
@@ -395,7 +395,7 @@ static int CompressAlphaJob(void* arg1, void* unused) {
   return 1;
 }
 
-void VP8EncInitAlpha(VP8Encoder* const enc) {
+func VP8EncInitAlpha(VP8Encoder* const enc) {
   WebPInitAlphaProcessing();
   enc->has_alpha = WebPPictureHasTransparency(enc->pic);
   enc->alpha_data = NULL;

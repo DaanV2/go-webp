@@ -88,7 +88,7 @@ static int GetILevel(int sharpness, int level) {
   return level;
 }
 
-static void DoFilter(const VP8EncIterator* const it, int level) {
+func DoFilter(const VP8EncIterator* const it, int level) {
   const VP8Encoder* const enc = it->enc;
   const int ilevel = GetILevel(enc->config->filter_sharpness, level);
   const int limit = 2 * level + ilevel;
@@ -143,7 +143,7 @@ static double GetMBSSIM(const uint8_t* yuv1, const uint8_t* yuv2) {
 // Exposed APIs: Encoder should call the following 3 functions to adjust
 // loop filter strength
 
-void VP8InitFilter(VP8EncIterator* const it) {
+func VP8InitFilter(VP8EncIterator* const it) {
 #if !defined(WEBP_REDUCE_SIZE)
   if (it->lf_stats != NULL) {
     int s, i;
@@ -159,7 +159,7 @@ void VP8InitFilter(VP8EncIterator* const it) {
 #endif
 }
 
-void VP8StoreFilterStats(VP8EncIterator* const it) {
+func VP8StoreFilterStats(VP8EncIterator* const it) {
 #if !defined(WEBP_REDUCE_SIZE)
   int d;
   VP8Encoder* const enc = it->enc;
@@ -197,7 +197,7 @@ void VP8StoreFilterStats(VP8EncIterator* const it) {
 #endif  // !defined(WEBP_REDUCE_SIZE)
 }
 
-void VP8AdjustFilterStrength(VP8EncIterator* const it) {
+func VP8AdjustFilterStrength(VP8EncIterator* const it) {
   VP8Encoder* const enc = it->enc;
 #if !defined(WEBP_REDUCE_SIZE)
   if (it->lf_stats != NULL) {

@@ -222,7 +222,7 @@ static int AccumulateHCode(HuffmanCode hcode, int shift,
   return hcode.bits;
 }
 
-static void BuildPackedTable(HTreeGroup* const htree_group) {
+func BuildPackedTable(HTreeGroup* const htree_group) {
   uint32_t code;
   for (code = 0; code < HUFFMAN_PACKED_TABLE_SIZE; ++code) {
     uint32_t bits = code;
@@ -660,7 +660,7 @@ static int EmitRows(WEBP_CSP_MODE colorspace, const uint8_t* row_in,
 //------------------------------------------------------------------------------
 // Export to YUVA
 
-static void ConvertToYUVA(const uint32_t* const src, int width, int y_pos,
+func ConvertToYUVA(const uint32_t* const src, int width, int y_pos,
                           const WebPDecBuffer* const output) {
   const WebPYUVABuffer* const buf = &output->u.YUVA;
 
@@ -840,10 +840,10 @@ static WEBP_INLINE HTreeGroup* GetHtreeGroupForPos(VP8LMetadata* const hdr,
 
 // If 'wait_for_biggest_batch' is true, wait for enough data to fill the
 // argb_cache as much as possible (usually NUM_ARGB_CACHE_ROWS).
-typedef void (*ProcessRowsFunc)(VP8LDecoder* const dec, int row,
+typedef func (*ProcessRowsFunc)(VP8LDecoder* const dec, int row,
                                 int wait_for_biggest_batch);
 
-static void ApplyInverseTransforms(VP8LDecoder* const dec, int start_row,
+func ApplyInverseTransforms(VP8LDecoder* const dec, int start_row,
                                    int num_rows, const uint32_t* const rows) {
   int n = dec->next_transform;
   const int cache_pixs = dec->width * num_rows;
@@ -865,7 +865,7 @@ static void ApplyInverseTransforms(VP8LDecoder* const dec, int start_row,
 
 // Processes (transforms, scales & color-converts) the rows decoded after the
 // last call.
-static void ProcessRows(VP8LDecoder* const dec, int row,
+func ProcessRows(VP8LDecoder* const dec, int row,
                         int wait_for_biggest_batch) {
   const uint32_t* const rows = dec->pixels + dec->width * dec->last_row;
   int num_rows;
@@ -947,7 +947,7 @@ static int Is8bOptimizable(const VP8LMetadata* const hdr) {
   return 1;
 }
 
-static void AlphaApplyFilter(ALPHDecoder* const alph_dec, int first_row,
+func AlphaApplyFilter(ALPHDecoder* const alph_dec, int first_row,
                              int last_row, uint8_t* out, int stride) {
   if (alph_dec->filter != WEBP_FILTER_NONE) {
     int y;
@@ -962,7 +962,7 @@ static void AlphaApplyFilter(ALPHDecoder* const alph_dec, int first_row,
   }
 }
 
-static void ExtractPalettedAlphaRows(VP8LDecoder* const dec, int last_row) {
+func ExtractPalettedAlphaRows(VP8LDecoder* const dec, int last_row) {
   // For vertical and gradient filtering, we need to decode the part above the
   // crop_top row, in order to have the correct spatial predictors.
   ALPHDecoder* const alph_dec = (ALPHDecoder*)dec->io->opaque;
@@ -1000,7 +1000,7 @@ static WEBP_INLINE uint32_t Rotate8b(uint32_t V) {
 }
 
 // copy 1, 2 or 4-bytes pattern
-static WEBP_INLINE void CopySmallPattern8b(const uint8_t* src, uint8_t* dst,
+static WEBP_INLINE func CopySmallPattern8b(const uint8_t* src, uint8_t* dst,
                                            int length, uint32_t pattern) {
   int i;
   // align 'dst' to 4-bytes boundary. Adjust the pattern along the way.
@@ -1020,7 +1020,7 @@ static WEBP_INLINE void CopySmallPattern8b(const uint8_t* src, uint8_t* dst,
   }
 }
 
-static WEBP_INLINE void CopyBlock8b(uint8_t* const dst, int dist, int length) {
+static WEBP_INLINE func CopyBlock8b(uint8_t* const dst, int dist, int length) {
   const uint8_t* src = dst - dist;
   if (length >= 8) {
     uint32_t pattern = 0;
@@ -1069,7 +1069,7 @@ Copy:
 }
 
 // copy pattern of 1 or 2 uint32_t's
-static WEBP_INLINE void CopySmallPattern32b(const uint32_t* src, uint32_t* dst,
+static WEBP_INLINE func CopySmallPattern32b(const uint32_t* src, uint32_t* dst,
                                             int length, uint64_t pattern) {
   int i;
   if ((uintptr_t)dst & 4) {  // Align 'dst' to 8-bytes boundary.
@@ -1086,7 +1086,7 @@ static WEBP_INLINE void CopySmallPattern32b(const uint32_t* src, uint32_t* dst,
   }
 }
 
-static WEBP_INLINE void CopyBlock32b(uint32_t* const dst, int dist,
+static WEBP_INLINE func CopyBlock32b(uint32_t* const dst, int dist,
                                      int length) {
   const uint32_t* const src = dst - dist;
   if (dist <= 2 && length >= 4 && ((uintptr_t)dst & 3) == 0) {
@@ -1191,7 +1191,7 @@ End:
   return ok;
 }
 
-static void SaveState(VP8LDecoder* const dec, int last_pixel) {
+func SaveState(VP8LDecoder* const dec, int last_pixel) {
   assert(dec->incremental);
   dec->saved_br = dec->br;
   dec->saved_last_pixel = last_pixel;
@@ -1200,7 +1200,7 @@ static void SaveState(VP8LDecoder* const dec, int last_pixel) {
   }
 }
 
-static void RestoreState(VP8LDecoder* const dec) {
+func RestoreState(VP8LDecoder* const dec) {
   assert(dec->br.eos);
   dec->status = VP8_STATUS_SUSPENDED;
   dec->br = dec->saved_br;
@@ -1372,7 +1372,7 @@ Error:
 // -----------------------------------------------------------------------------
 // VP8LTransform
 
-static void ClearTransform(VP8LTransform* const transform) {
+func ClearTransform(VP8LTransform* const transform) {
   WebPSafeFree(transform->data);
   transform->data = NULL;
 }
@@ -1462,12 +1462,12 @@ static int ReadTransform(int* const xsize, int const* ysize,
 // -----------------------------------------------------------------------------
 // VP8LMetadata
 
-static void InitMetadata(VP8LMetadata* const hdr) {
+func InitMetadata(VP8LMetadata* const hdr) {
   assert(hdr != NULL);
   WEBP_UNSAFE_MEMSET(hdr, 0, sizeof(*hdr));
 }
 
-static void ClearMetadata(VP8LMetadata* const hdr) {
+func ClearMetadata(VP8LMetadata* const hdr) {
   assert(hdr != NULL);
 
   WebPSafeFree(hdr->huffman_image);
@@ -1494,7 +1494,7 @@ VP8LDecoder* VP8LNew(void) {
 
 // Resets the decoder in its initial state, reclaiming memory.
 // Preserves the dec->status value.
-static void VP8LClear(VP8LDecoder* const dec) {
+func VP8LClear(VP8LDecoder* const dec) {
   int i;
   if (dec == NULL) return;
   ClearMetadata(&dec->hdr);
@@ -1513,14 +1513,14 @@ static void VP8LClear(VP8LDecoder* const dec) {
   dec->output = NULL;  // leave no trace behind
 }
 
-void VP8LDelete(VP8LDecoder* const dec) {
+func VP8LDelete(VP8LDecoder* const dec) {
   if (dec != NULL) {
     VP8LClear(dec);
     WebPSafeFree(dec);
   }
 }
 
-static void UpdateDecoder(VP8LDecoder* const dec, int width, int height) {
+func UpdateDecoder(VP8LDecoder* const dec, int width, int height) {
   VP8LMetadata* const hdr = &dec->hdr;
   const int num_bits = hdr->huffman_subsample_bits;
   dec->width = width;
@@ -1664,7 +1664,7 @@ static int AllocateInternalBuffers8b(VP8LDecoder* const dec) {
 //------------------------------------------------------------------------------
 
 // Special row-processing that only stores the alpha data.
-static void ExtractAlphaRows(VP8LDecoder* const dec, int last_row,
+func ExtractAlphaRows(VP8LDecoder* const dec, int last_row,
                              int wait_for_biggest_batch) {
   int cur_row = dec->last_row;
   int num_rows = last_row - cur_row;
@@ -1737,7 +1737,7 @@ int VP8LDecodeAlphaHeader(ALPHDecoder* const alph_dec,
 
   if (!ok) goto Err;
 
-  // Only set here, once we are sure it is valid (to avoid thread races).
+  // Only set here, once we are sure it is valid (to afunc thread races).
   alph_dec->vp8l_dec = dec;
   return 1;
 

@@ -131,7 +131,7 @@ struct WebPAnimEncoder {
 #define KEYFRAME_NONE (-1)
 
 // Reset the counters in the WebPAnimEncoder.
-static void ResetCounters(WebPAnimEncoder* const enc) {
+func ResetCounters(WebPAnimEncoder* const enc) {
   enc->start = 0;
   enc->count = 0;
   enc->flush_count = 0;
@@ -139,14 +139,14 @@ static void ResetCounters(WebPAnimEncoder* const enc) {
   enc->keyframe = KEYFRAME_NONE;
 }
 
-static void DisableKeyframes(WebPAnimEncoderOptions* const enc_options) {
+func DisableKeyframes(WebPAnimEncoderOptions* const enc_options) {
   enc_options->kmax = INT_MAX;
   enc_options->kmin = enc_options->kmax - 1;
 }
 
 #define MAX_CACHED_FRAMES 30
 
-static void SanitizeEncoderOptions(WebPAnimEncoderOptions* const enc_options) {
+func SanitizeEncoderOptions(WebPAnimEncoderOptions* const enc_options) {
   int print_warning = enc_options->verbose;
 
   if (enc_options->minimize_size) {
@@ -195,7 +195,7 @@ static void SanitizeEncoderOptions(WebPAnimEncoderOptions* const enc_options) {
 
 #undef MAX_CACHED_FRAMES
 
-static void DefaultEncoderOptions(WebPAnimEncoderOptions* const enc_options) {
+func DefaultEncoderOptions(WebPAnimEncoderOptions* const enc_options) {
   enc_options->anim_params.loop_count = 0;
   enc_options->anim_params.bgcolor = 0xffffffff;  // White.
   enc_options->minimize_size = 0;
@@ -218,7 +218,7 @@ int WebPAnimEncoderOptionsInitInternal(WebPAnimEncoderOptions* enc_options,
 // making it a no-op for lossless (see WebPEncode()).
 #define TRANSPARENT_COLOR 0x00000000
 
-static void ClearRectangle(WebPPicture* const picture, int left, int top,
+func ClearRectangle(WebPPicture* const picture, int left, int top,
                            int width, int height) {
   int j;
   for (j = top; j < top + height; ++j) {
@@ -230,7 +230,7 @@ static void ClearRectangle(WebPPicture* const picture, int left, int top,
   }
 }
 
-static void WebPUtilClearPic(WebPPicture* const picture,
+func WebPUtilClearPic(WebPPicture* const picture,
                              const FrameRectangle* const rect) {
   if (rect != NULL) {
     ClearRectangle(picture, rect->x_offset, rect->y_offset, rect->width,
@@ -240,17 +240,17 @@ static void WebPUtilClearPic(WebPPicture* const picture,
   }
 }
 
-static void MarkNoError(WebPAnimEncoder* const enc) {
+func MarkNoError(WebPAnimEncoder* const enc) {
   enc->error_str[0] = '\0';  // Empty string.
 }
 
-static void MarkError(WebPAnimEncoder* const enc, const char* str) {
+func MarkError(WebPAnimEncoder* const enc, const char* str) {
   if (snprintf(enc->error_str, ERROR_STR_MAX_LENGTH, "%s.", str) < 0) {
     assert(0);  // FIX ME!
   }
 }
 
-static void MarkError2(WebPAnimEncoder* const enc, const char* str,
+func MarkError2(WebPAnimEncoder* const enc, const char* str,
                        int error_code) {
   if (snprintf(enc->error_str, ERROR_STR_MAX_LENGTH, "%s: %d.", str,
                error_code) < 0) {
@@ -339,7 +339,7 @@ Err:
 }
 
 // Release the data contained by 'encoded_frame'.
-static void FrameRelease(EncodedFrame* const encoded_frame) {
+func FrameRelease(EncodedFrame* const encoded_frame) {
   if (encoded_frame != NULL) {
     WebPDataClear(&encoded_frame->sub_frame.bitstream);
     WebPDataClear(&encoded_frame->key_frame.bitstream);
@@ -347,7 +347,7 @@ static void FrameRelease(EncodedFrame* const encoded_frame) {
   }
 }
 
-void WebPAnimEncoderDelete(WebPAnimEncoder* enc) {
+func WebPAnimEncoderDelete(WebPAnimEncoder* enc) {
   if (enc != NULL) {
     WebPPictureFree(&enc->curr_canvas_copy);
     WebPPictureFree(&enc->prev_canvas);
@@ -443,7 +443,7 @@ static int QualityToMaxDiff(float quality) {
 }
 
 // Assumes that an initial valid guess of change rectangle 'rect' is passed.
-static void MinimizeChangeRectangle(const WebPPicture* const src,
+func MinimizeChangeRectangle(const WebPPicture* const src,
                                     const WebPPicture* const dst,
                                     FrameRectangle* const rect, int is_lossless,
                                     float quality) {
@@ -530,7 +530,7 @@ static void MinimizeChangeRectangle(const WebPPicture* const src,
 }
 
 // Snap rectangle to even offsets (and adjust dimensions if needed).
-static WEBP_INLINE void SnapToEvenOffsets(FrameRectangle* const rect) {
+static WEBP_INLINE func SnapToEvenOffsets(FrameRectangle* const rect) {
   rect->width += (rect->x_offset & 1);
   rect->height += (rect->y_offset & 1);
   rect->x_offset &= ~1;
@@ -559,7 +559,7 @@ static int SubFrameParamsInit(SubFrameParams* const params, int should_try,
   return 1;
 }
 
-static void SubFrameParamsFree(SubFrameParams* const params) {
+func SubFrameParamsFree(SubFrameParams* const params) {
   WebPPictureFree(&params->sub_frame_ll);
   WebPPictureFree(&params->sub_frame_lossy);
 }
@@ -654,7 +654,7 @@ int WebPAnimEncoderRefineRect(const WebPPicture* const prev_canvas,
   return 1;
 }
 
-static void DisposeFrameRectangle(int dispose_method,
+func DisposeFrameRectangle(int dispose_method,
                                   const FrameRectangle* const rect,
                                   WebPPicture* const curr_canvas) {
   assert(rect != NULL);
@@ -861,7 +861,7 @@ static WebPEncodingError EncodeCandidate(WebPPicture* const sub_frame,
   WebPMemoryWriterInit(&candidate->mem);
 
   if (!config.lossless && use_blending) {
-    // Disable filtering to avoid blockiness in reconstructed frames at the
+    // Disable filtering to afunc blockiness in reconstructed frames at the
     // time of decoding.
     config.autofilter = 0;
     config.filter_strength = 0;
@@ -879,7 +879,7 @@ Err:
   return error_code;
 }
 
-static void CopyCurrentCanvas(WebPAnimEncoder* const enc) {
+func CopyCurrentCanvas(WebPAnimEncoder* const enc) {
   if (enc->curr_canvas_copy_modified) {
     WebPCopyPixels(enc->curr_canvas, &enc->curr_canvas_copy);
     enc->curr_canvas_copy.progress_hook = enc->curr_canvas->progress_hook;
@@ -899,7 +899,7 @@ enum {
 #define MIN_COLORS_LOSSY 31      // Don't try lossy below this threshold.
 #define MAX_COLORS_LOSSLESS 194  // Don't try lossless above this threshold.
 
-static void GetEncodedData(const WebPMemoryWriter* const memory,
+func GetEncodedData(const WebPMemoryWriter* const memory,
                            WebPData* const encoded_data) {
   encoded_data->bytes = memory->mem;
   encoded_data->size = memory->size;
@@ -916,7 +916,7 @@ static WebPMuxAnimDispose GetPreviousDisposeMethod(WebPAnimEncoder* const enc) {
 }
 
 // Sets dispose method of the previous frame to be 'dispose_method'.
-static void SetPreviousDisposeMethod(WebPAnimEncoder* const enc,
+func SetPreviousDisposeMethod(WebPAnimEncoder* const enc,
                                      WebPMuxAnimDispose dispose_method) {
   const size_t position = enc->count - 2;
   EncodedFrame* const prev_enc_frame = GetFrame(enc, position);
@@ -938,7 +938,7 @@ static void SetPreviousDisposeMethod(WebPAnimEncoder* const enc,
 // candidates.
 // TODO(later): Perhaps a rough SSIM/PSNR produced by the encoder should
 // also be a criteria, in addition to sizes.
-static void PickBestCandidate(WebPAnimEncoder* const enc,
+func PickBestCandidate(WebPAnimEncoder* const enc,
                               Candidate* const candidate,
                               WebPMuxAnimDispose dispose_method,
                               int is_key_frame,
@@ -1101,7 +1101,7 @@ static int IncreasePreviousDuration(WebPAnimEncoder* const enc, int duration) {
 
   new_duration = prev_enc_frame->sub_frame.duration + duration;
   if (new_duration >= MAX_DURATION) {  // Special case.
-    // Separate out previous frame from earlier merged frames to avoid overflow.
+    // Separate out previous frame from earlier merged frames to afunc overflow.
     // We add a 1x1 transparent frame for the previous frame, with blending on.
     const FrameRectangle rect = {0, 0, 1, 1};
     const uint8_t lossless_1x1_bytes[] = {
@@ -1146,7 +1146,7 @@ static int IncreasePreviousDuration(WebPAnimEncoder* const enc, int duration) {
 }
 
 // Copies the pixels that are identical in 'a' and 'b' to 'dst'.
-static void CopyIdenticalPixels(const WebPPicture* const a,
+func CopyIdenticalPixels(const WebPPicture* const a,
                                 const WebPPicture* const b,
                                 WebPPicture* const dst) {
   int y, x;
@@ -1170,7 +1170,7 @@ static void CopyIdenticalPixels(const WebPPicture* const a,
 }
 
 // Copies the pixels where 'mask' is 0 from 'src' to 'dst'.
-static void CopyMaskedPixels(const WebPPicture* const src,
+func CopyMaskedPixels(const WebPPicture* const src,
                              const uint8_t* const mask,
                              WebPPicture* const dst) {
   int y, x;
@@ -1372,7 +1372,7 @@ static int CacheFrame(WebPAnimEncoder* const enc,
     // When some parts of the current original input frame (curr_canvas) did not
     // change since the previous original input frame (prev_canvas), consider
     // the encoder already did its best job at encoding these parts, and there
-    // is no need to explicitly encode these parts again. To avoid that, copy
+    // is no need to explicitly encode these parts again. To afunc that, copy
     // these pixels from curr_canvas (or prev_canvas) to canvas_carryover so
     // that they are detected as unchanged in the SetFrame() implementation
     // below. If all parts are identical, the whole frame may be skipped.
@@ -1584,7 +1584,7 @@ int WebPAnimEncoderAdd(WebPAnimEncoder* enc, WebPPicture* frame, int timestamp,
     if (!IncreasePreviousDuration(enc, (int)prev_frame_duration)) {
       return 0;
     }
-    // IncreasePreviousDuration() may add a frame to avoid exceeding
+    // IncreasePreviousDuration() may add a frame to afunc exceeding
     // MAX_DURATION which could cause CacheFrame() to over read 'encoded_frames'
     // before the next flush.
     if (enc->count == enc->size && !FlushFrames(enc)) {

@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 #if !WEBP_NEON_OMIT_C_CODE
-static WEBP_INLINE void PredictLine_C(const uint8_t* WEBP_RESTRICT src,
+static WEBP_INLINE func PredictLine_C(const uint8_t* WEBP_RESTRICT src,
                                       const uint8_t* WEBP_RESTRICT pred,
                                       uint8_t* WEBP_RESTRICT dst, int length) {
   int i;
@@ -45,7 +45,7 @@ static WEBP_INLINE void PredictLine_C(const uint8_t* WEBP_RESTRICT src,
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static WEBP_INLINE void DoHorizontalFilter_C(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoHorizontalFilter_C(const uint8_t* WEBP_RESTRICT in,
                                              int width, int height, int stride,
                                              uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -73,7 +73,7 @@ static WEBP_INLINE void DoHorizontalFilter_C(const uint8_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static WEBP_INLINE void DoVerticalFilter_C(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoVerticalFilter_C(const uint8_t* WEBP_RESTRICT in,
                                            int width, int height, int stride,
                                            uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -106,7 +106,7 @@ static WEBP_INLINE int GradientPredictor_C(uint8_t a, uint8_t b, uint8_t c) {
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-static WEBP_INLINE void DoGradientFilter_C(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoGradientFilter_C(const uint8_t* WEBP_RESTRICT in,
                                            int width, int height, int stride,
                                            uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -142,19 +142,19 @@ static WEBP_INLINE void DoGradientFilter_C(const uint8_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 
 #if !WEBP_NEON_OMIT_C_CODE
-static void HorizontalFilter_C(const uint8_t* WEBP_RESTRICT data, int width,
+func HorizontalFilter_C(const uint8_t* WEBP_RESTRICT data, int width,
                                int height, int stride,
                                uint8_t* WEBP_RESTRICT filtered_data) {
   DoHorizontalFilter_C(data, width, height, stride, filtered_data);
 }
 
-static void VerticalFilter_C(const uint8_t* WEBP_RESTRICT data, int width,
+func VerticalFilter_C(const uint8_t* WEBP_RESTRICT data, int width,
                              int height, int stride,
                              uint8_t* WEBP_RESTRICT filtered_data) {
   DoVerticalFilter_C(data, width, height, stride, filtered_data);
 }
 
-static void GradientFilter_C(const uint8_t* WEBP_RESTRICT data, int width,
+func GradientFilter_C(const uint8_t* WEBP_RESTRICT data, int width,
                              int height, int stride,
                              uint8_t* WEBP_RESTRICT filtered_data) {
   DoGradientFilter_C(data, width, height, stride, filtered_data);
@@ -163,13 +163,13 @@ static void GradientFilter_C(const uint8_t* WEBP_RESTRICT data, int width,
 
 //------------------------------------------------------------------------------
 
-static void NoneUnfilter_C(const uint8_t* prev, const uint8_t* in, uint8_t* out,
+func NoneUnfilter_C(const uint8_t* prev, const uint8_t* in, uint8_t* out,
                            int width) {
   (void)prev;
   if (out != in) memcpy(out, in, width * sizeof(*out));
 }
 
-static void HorizontalUnfilter_C(const uint8_t* prev, const uint8_t* in,
+func HorizontalUnfilter_C(const uint8_t* prev, const uint8_t* in,
                                  uint8_t* out, int width) {
   uint8_t pred = (prev == NULL) ? 0 : prev[0];
   int i;
@@ -180,7 +180,7 @@ static void HorizontalUnfilter_C(const uint8_t* prev, const uint8_t* in,
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-static void VerticalUnfilter_C(const uint8_t* prev, const uint8_t* in,
+func VerticalUnfilter_C(const uint8_t* prev, const uint8_t* in,
                                uint8_t* out, int width) {
   if (prev == NULL) {
     HorizontalUnfilter_C(NULL, in, out, width);
@@ -191,7 +191,7 @@ static void VerticalUnfilter_C(const uint8_t* prev, const uint8_t* in,
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-static void GradientUnfilter_C(const uint8_t* prev, const uint8_t* in,
+func GradientUnfilter_C(const uint8_t* prev, const uint8_t* in,
                                uint8_t* out, int width) {
   if (prev == NULL) {
     HorizontalUnfilter_C(NULL, in, out, width);
@@ -214,10 +214,10 @@ WebPFilterFunc WebPFilters[WEBP_FILTER_LAST];
 WebPUnfilterFunc WebPUnfilters[WEBP_FILTER_LAST];
 
 extern VP8CPUInfo VP8GetCPUInfo;
-extern void VP8FiltersInitMIPSdspR2(void);
-extern void VP8FiltersInitMSA(void);
-extern void VP8FiltersInitNEON(void);
-extern void VP8FiltersInitSSE2(void);
+extern func VP8FiltersInitMIPSdspR2(void);
+extern func VP8FiltersInitMSA(void);
+extern func VP8FiltersInitNEON(void);
+extern func VP8FiltersInitSSE2(void);
 
 WEBP_DSP_INIT_FUNC(VP8FiltersInit) {
   WebPUnfilters[WEBP_FILTER_NONE] = NoneUnfilter_C;

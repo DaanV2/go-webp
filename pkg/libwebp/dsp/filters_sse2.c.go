@@ -38,7 +38,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
     assert(stride >= width); \
   } while (0)
 
-static void PredictLineTop_SSE2(const uint8_t* WEBP_RESTRICT src,
+func PredictLineTop_SSE2(const uint8_t* WEBP_RESTRICT src,
                                 const uint8_t* WEBP_RESTRICT pred,
                                 uint8_t* WEBP_RESTRICT dst, int length) {
   int i;
@@ -58,7 +58,7 @@ static void PredictLineTop_SSE2(const uint8_t* WEBP_RESTRICT src,
 }
 
 // Special case for left-based prediction (when preds==dst-1 or preds==src-1).
-static void PredictLineLeft_SSE2(const uint8_t* WEBP_RESTRICT src,
+func PredictLineLeft_SSE2(const uint8_t* WEBP_RESTRICT src,
                                  uint8_t* WEBP_RESTRICT dst, int length) {
   int i;
   const int max_pos = length & ~31;
@@ -79,7 +79,7 @@ static void PredictLineLeft_SSE2(const uint8_t* WEBP_RESTRICT src,
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static WEBP_INLINE void DoHorizontalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoHorizontalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
                                                 int width, int height,
                                                 int stride,
                                                 uint8_t* WEBP_RESTRICT out) {
@@ -105,7 +105,7 @@ static WEBP_INLINE void DoHorizontalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static WEBP_INLINE void DoVerticalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoVerticalFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
                                               int width, int height, int stride,
                                               uint8_t* WEBP_RESTRICT out) {
   int row;
@@ -134,7 +134,7 @@ static WEBP_INLINE int GradientPredictor_SSE2(uint8_t a, uint8_t b, uint8_t c) {
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
-static void GradientPredictDirect_SSE2(const uint8_t* const row,
+func GradientPredictDirect_SSE2(const uint8_t* const row,
                                        const uint8_t* const top,
                                        uint8_t* WEBP_RESTRICT const out,
                                        int length) {
@@ -161,7 +161,7 @@ static void GradientPredictDirect_SSE2(const uint8_t* const row,
   }
 }
 
-static WEBP_INLINE void DoGradientFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
+static WEBP_INLINE func DoGradientFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
                                               int width, int height, int stride,
                                               uint8_t* WEBP_RESTRICT out) {
   int row;
@@ -186,19 +186,19 @@ static WEBP_INLINE void DoGradientFilter_SSE2(const uint8_t* WEBP_RESTRICT in,
 
 //------------------------------------------------------------------------------
 
-static void HorizontalFilter_SSE2(const uint8_t* WEBP_RESTRICT data, int width,
+func HorizontalFilter_SSE2(const uint8_t* WEBP_RESTRICT data, int width,
                                   int height, int stride,
                                   uint8_t* WEBP_RESTRICT filtered_data) {
   DoHorizontalFilter_SSE2(data, width, height, stride, filtered_data);
 }
 
-static void VerticalFilter_SSE2(const uint8_t* WEBP_RESTRICT data, int width,
+func VerticalFilter_SSE2(const uint8_t* WEBP_RESTRICT data, int width,
                                 int height, int stride,
                                 uint8_t* WEBP_RESTRICT filtered_data) {
   DoVerticalFilter_SSE2(data, width, height, stride, filtered_data);
 }
 
-static void GradientFilter_SSE2(const uint8_t* WEBP_RESTRICT data, int width,
+func GradientFilter_SSE2(const uint8_t* WEBP_RESTRICT data, int width,
                                 int height, int stride,
                                 uint8_t* WEBP_RESTRICT filtered_data) {
   DoGradientFilter_SSE2(data, width, height, stride, filtered_data);
@@ -207,7 +207,7 @@ static void GradientFilter_SSE2(const uint8_t* WEBP_RESTRICT data, int width,
 //------------------------------------------------------------------------------
 // Inverse transforms
 
-static void HorizontalUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
+func HorizontalUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
                                     uint8_t* out, int width) {
   int i;
   __m128i last;
@@ -229,7 +229,7 @@ static void HorizontalUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
   for (; i < width; ++i) out[i] = (uint8_t)(in[i] + out[i - 1]);
 }
 
-static void VerticalUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
+func VerticalUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
                                   uint8_t* out, int width) {
   if (prev == NULL) {
     HorizontalUnfilter_SSE2(NULL, in, out, width);
@@ -251,7 +251,7 @@ static void VerticalUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
   }
 }
 
-static void GradientPredictInverse_SSE2(const uint8_t* const in,
+func GradientPredictInverse_SSE2(const uint8_t* const in,
                                         const uint8_t* const top,
                                         uint8_t* const row, int length) {
   if (length > 0) {
@@ -290,7 +290,7 @@ static void GradientPredictInverse_SSE2(const uint8_t* const in,
   }
 }
 
-static void GradientUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
+func GradientUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
                                   uint8_t* out, int width) {
   if (prev == NULL) {
     HorizontalUnfilter_SSE2(NULL, in, out, width);
@@ -303,9 +303,9 @@ static void GradientUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8FiltersInitSSE2(void);
+extern func VP8FiltersInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8FiltersInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitSSE2(void) {
   WebPUnfilters[WEBP_FILTER_HORIZONTAL] = HorizontalUnfilter_SSE2;
 #if defined(CHROMIUM)
   // TODO(crbug.com/654974)

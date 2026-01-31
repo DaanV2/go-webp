@@ -20,7 +20,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-static void SubtractGreenFromBlueAndRed_MIPSdspR2(uint32_t* argb_data,
+func SubtractGreenFromBlueAndRed_MIPSdspR2(uint32_t* argb_data,
                                                   int num_pixels) {
   uint32_t temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   uint32_t* const p_loop1_end = argb_data + (num_pixels & ~3);
@@ -79,7 +79,7 @@ static WEBP_INLINE uint32_t ColorTransformDelta(int8_t color_pred,
   return (uint32_t)((int)(color_pred)*color) >> 5;
 }
 
-static void TransformColor_MIPSdspR2(
+func TransformColor_MIPSdspR2(
     const VP8LMultipliers* WEBP_RESTRICT const m, uint32_t* WEBP_RESTRICT data,
     int num_pixels) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
@@ -172,7 +172,7 @@ static WEBP_INLINE uint8_t TransformColorBlue(uint8_t green_to_blue,
   return (new_blue & 0xff);
 }
 
-static void CollectColorBlueTransforms_MIPSdspR2(
+func CollectColorBlueTransforms_MIPSdspR2(
     const uint32_t* WEBP_RESTRICT argb, int stride, int tile_width,
     int tile_height, int green_to_blue, int red_to_blue, uint32_t histo[]) {
   const int rtb = (red_to_blue << 16) | (red_to_blue & 0xffff);
@@ -221,7 +221,7 @@ static WEBP_INLINE uint8_t TransformColorRed(uint8_t green_to_red,
   return (new_red & 0xff);
 }
 
-static void CollectColorRedTransforms_MIPSdspR2(
+func CollectColorRedTransforms_MIPSdspR2(
     const uint32_t* WEBP_RESTRICT argb, int stride, int tile_width,
     int tile_height, int green_to_red, uint32_t histo[]) {
   const int gtr = (green_to_red << 16) | (green_to_red & 0xffff);
@@ -257,9 +257,9 @@ static void CollectColorRedTransforms_MIPSdspR2(
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8LEncDspInitMIPSdspR2(void);
+extern func VP8LEncDspInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8LEncDspInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitMIPSdspR2(void) {
   VP8LSubtractGreenFromBlueAndRed = SubtractGreenFromBlueAndRed_MIPSdspR2;
   VP8LTransformColor = TransformColor_MIPSdspR2;
   VP8LCollectColorBlueTransforms = CollectColorBlueTransforms_MIPSdspR2;

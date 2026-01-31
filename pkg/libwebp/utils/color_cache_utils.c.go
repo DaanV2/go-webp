@@ -46,7 +46,7 @@ int VP8LColorCacheInit(VP8LColorCache* const color_cache, int hash_bits) {
   return 1;
 }
 
-void VP8LColorCacheClear(VP8LColorCache* const color_cache) {
+func VP8LColorCacheClear(VP8LColorCache* const color_cache) {
   if (color_cache != NULL) {
     WebPSafeFree(color_cache->colors);
     color_cache->colors = NULL;
@@ -54,7 +54,7 @@ void VP8LColorCacheClear(VP8LColorCache* const color_cache) {
   }
 }
 
-void VP8LColorCacheCopy(const VP8LColorCache* const src,
+func VP8LColorCacheCopy(const VP8LColorCache* const src,
                         VP8LColorCache* const dst) {
   assert(src != NULL);
   assert(dst != NULL);

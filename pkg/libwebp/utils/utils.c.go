@@ -77,7 +77,7 @@ var size_t mem_limit = 0;
 
 var int exit_registered = 0;
 
-static void PrintMemInfo(void) {
+func PrintMemInfo(void) {
   fprintf(stderr, "\nMEMORY INFO:\n");
   fprintf(stderr, "num calls to: malloc = %4d\n", num_malloc_calls);
   fprintf(stderr, "              calloc = %4d\n", num_calloc_calls);
@@ -92,7 +92,7 @@ static void PrintMemInfo(void) {
   }
 }
 
-static void Increment(int* const v) {
+func Increment(int* const v) {
   if (!exit_registered) {
 #if defined(MALLOC_FAIL_AT)
     {
@@ -121,7 +121,7 @@ static void Increment(int* const v) {
   ++*v;
 }
 
-static void AddMem(void* ptr, size_t size) {
+func AddMem(void* ptr, size_t size) {
   if (ptr != NULL) {
     MemBlock* const b = (MemBlock*)malloc(sizeof(*b));
     if (b == NULL) abort();
@@ -143,7 +143,7 @@ static void AddMem(void* ptr, size_t size) {
   }
 }
 
-static void SubMem(void* ptr) {
+func SubMem(void* ptr) {
   if (ptr != NULL) {
     MemBlock** b = &all_blocks;
     // Inefficient search, but that's just for debugging.
@@ -222,7 +222,7 @@ void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
   return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(void*, ptr, (size_t)(nmemb * size));
 }
 
-void WebPSafeFree(void* const ptr) {
+func WebPSafeFree(void* const ptr) {
   if (ptr != NULL) {
     Increment(&num_free_calls);
     SubMem(ptr);
@@ -246,11 +246,11 @@ void* WEBP_SINGLE WebPMalloc(size_t size) {
   return WEBP_UNSAFE_FORGE_SINGLE(void*, WebPSafeMalloc(1, size));
 }
 
-void WebPFree(void* WEBP_SINGLE ptr) { WebPSafeFree(ptr); }
+func WebPFree(void* WEBP_SINGLE ptr) { WebPSafeFree(ptr); }
 
 //------------------------------------------------------------------------------
 
-void WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
+func WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
                    int dst_stride, int width, int height) {
   assert(src != NULL && dst != NULL);
   assert(abs(src_stride) >= width && abs(dst_stride) >= width);
@@ -261,7 +261,7 @@ void WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
   }
 }
 
-void WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
+func WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
   assert(src != NULL && dst != NULL);
   assert(src->width == dst->width && src->height == dst->height);
   assert(src->use_argb && dst->use_argb);

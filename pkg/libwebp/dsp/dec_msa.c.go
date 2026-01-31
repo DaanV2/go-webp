@@ -40,7 +40,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     BUTTERFLY_4(a1_m, b1_m, c1_m, d1_m, out0, out1, out2, out3); \
   }
 
-static void TransformOne(const int16_t* WEBP_RESTRICT in,
+func TransformOne(const int16_t* WEBP_RESTRICT in,
                          uint8_t* WEBP_RESTRICT dst) {
   v8i16 input0, input1;
   v4i32 in0, in1, in2, in3, hz0, hz1, hz2, hz3, vt0, vt1, vt2, vt3;
@@ -68,7 +68,7 @@ static void TransformOne(const int16_t* WEBP_RESTRICT in,
   ST4x4_UB(res0, res0, 3, 2, 1, 0, dst, BPS);
 }
 
-static void TransformTwo(const int16_t* WEBP_RESTRICT in,
+func TransformTwo(const int16_t* WEBP_RESTRICT in,
                          uint8_t* WEBP_RESTRICT dst, int do_two) {
   TransformOne(in, dst);
   if (do_two) {
@@ -76,7 +76,7 @@ static void TransformTwo(const int16_t* WEBP_RESTRICT in,
   }
 }
 
-static void TransformWHT(const int16_t* WEBP_RESTRICT in,
+func TransformWHT(const int16_t* WEBP_RESTRICT in,
                          int16_t* WEBP_RESTRICT out) {
   v8i16 input0, input1;
   const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11};
@@ -119,14 +119,14 @@ static void TransformWHT(const int16_t* WEBP_RESTRICT in,
   out[240] = __msa_copy_s_h(out1, 7);
 }
 
-static void TransformDC(const int16_t* WEBP_RESTRICT in,
+func TransformDC(const int16_t* WEBP_RESTRICT in,
                         uint8_t* WEBP_RESTRICT dst) {
   const int DC = (in[0] + 4) >> 3;
   const v8i16 tmp0 = __msa_fill_h(DC);
   ADDBLK_ST4x4_UB(tmp0, tmp0, tmp0, tmp0, dst, BPS);
 }
 
-static void TransformAC3(const int16_t* WEBP_RESTRICT in,
+func TransformAC3(const int16_t* WEBP_RESTRICT in,
                          uint8_t* WEBP_RESTRICT dst) {
   const int a = in[0] + 4;
   const int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
@@ -350,7 +350,7 @@ static void TransformAC3(const int16_t* WEBP_RESTRICT in,
     mask = (mask <= b_limit);                                 \
   } while (0)
 
-static void VFilter16(uint8_t* src, int stride, int b_limit_in, int limit_in,
+func VFilter16(uint8_t* src, int stride, int b_limit_in, int limit_in,
                       int thresh_in) {
   uint8_t* ptemp = src - 4 * stride;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
@@ -369,7 +369,7 @@ static void VFilter16(uint8_t* src, int stride, int b_limit_in, int limit_in,
   ST_UB2(q1, q2, ptemp, stride);
 }
 
-static void HFilter16(uint8_t* src, int stride, int b_limit_in, int limit_in,
+func HFilter16(uint8_t* src, int stride, int b_limit_in, int limit_in,
                       int thresh_in) {
   uint8_t* ptmp = src - 4;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
@@ -430,7 +430,7 @@ static void HFilter16(uint8_t* src, int stride, int b_limit_in, int limit_in,
 }
 
 // on three inner edges
-static void VFilterHorEdge16i(uint8_t* src, int stride, int b_limit, int limit,
+func VFilterHorEdge16i(uint8_t* src, int stride, int b_limit, int limit,
                               int thresh) {
   v16u8 mask, hev;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
@@ -445,14 +445,14 @@ static void VFilterHorEdge16i(uint8_t* src, int stride, int b_limit, int limit,
   ST_UB4(p1, p0, q0, q1, (src - 2 * stride), stride);
 }
 
-static void VFilter16i(uint8_t* src_y, int stride, int b_limit, int limit,
+func VFilter16i(uint8_t* src_y, int stride, int b_limit, int limit,
                        int thresh) {
   VFilterHorEdge16i(src_y + 4 * stride, stride, b_limit, limit, thresh);
   VFilterHorEdge16i(src_y + 8 * stride, stride, b_limit, limit, thresh);
   VFilterHorEdge16i(src_y + 12 * stride, stride, b_limit, limit, thresh);
 }
 
-static void HFilterVertEdge16i(uint8_t* src, int stride, int b_limit, int limit,
+func HFilterVertEdge16i(uint8_t* src, int stride, int b_limit, int limit,
                                int thresh) {
   v16u8 mask, hev;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
@@ -482,7 +482,7 @@ static void HFilterVertEdge16i(uint8_t* src, int stride, int b_limit, int limit,
   ST4x8_UB(tmp4, tmp5, src, stride);
 }
 
-static void HFilter16i(uint8_t* src_y, int stride, int b_limit, int limit,
+func HFilter16i(uint8_t* src_y, int stride, int b_limit, int limit,
                        int thresh) {
   HFilterVertEdge16i(src_y + 4, stride, b_limit, limit, thresh);
   HFilterVertEdge16i(src_y + 8, stride, b_limit, limit, thresh);
@@ -490,7 +490,7 @@ static void HFilter16i(uint8_t* src_y, int stride, int b_limit, int limit,
 }
 
 // 8-pixels wide variants, for chroma filtering
-static void VFilter8(uint8_t* WEBP_RESTRICT src_u, uint8_t* WEBP_RESTRICT src_v,
+func VFilter8(uint8_t* WEBP_RESTRICT src_u, uint8_t* WEBP_RESTRICT src_v,
                      int stride, int b_limit_in, int limit_in, int thresh_in) {
   uint8_t* ptmp_src_u = src_u - 4 * stride;
   uint8_t* ptmp_src_v = src_v - 4 * stride;
@@ -535,7 +535,7 @@ static void VFilter8(uint8_t* WEBP_RESTRICT src_u, uint8_t* WEBP_RESTRICT src_v,
   SD(q2_d, ptmp_src_v);
 }
 
-static void HFilter8(uint8_t* WEBP_RESTRICT src_u, uint8_t* WEBP_RESTRICT src_v,
+func HFilter8(uint8_t* WEBP_RESTRICT src_u, uint8_t* WEBP_RESTRICT src_v,
                      int stride, int b_limit_in, int limit_in, int thresh_in) {
   uint8_t* ptmp_src_u = src_u - 4;
   uint8_t* ptmp_src_v = src_v - 4;
@@ -571,7 +571,7 @@ static void HFilter8(uint8_t* WEBP_RESTRICT src_u, uint8_t* WEBP_RESTRICT src_v,
   ST6x4_UB(tmp7, 0, tmp5, 4, ptmp_src_v, stride);
 }
 
-static void VFilter8i(uint8_t* WEBP_RESTRICT src_u,
+func VFilter8i(uint8_t* WEBP_RESTRICT src_u,
                       uint8_t* WEBP_RESTRICT src_v, int stride, int b_limit_in,
                       int limit_in, int thresh_in) {
   uint64_t p1_d, p0_d, q0_d, q1_d;
@@ -603,7 +603,7 @@ static void VFilter8i(uint8_t* WEBP_RESTRICT src_u,
   SD4(q1_d, q0_d, p0_d, p1_d, src_v, -stride);
 }
 
-static void HFilter8i(uint8_t* WEBP_RESTRICT src_u,
+func HFilter8i(uint8_t* WEBP_RESTRICT src_u,
                       uint8_t* WEBP_RESTRICT src_v, int stride, int b_limit_in,
                       int limit_in, int thresh_in) {
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
@@ -636,7 +636,7 @@ static void HFilter8i(uint8_t* WEBP_RESTRICT src_u,
   ST4x4_UB(tmp5, tmp5, 0, 1, 2, 3, src_v, stride);
 }
 
-static void SimpleVFilter16(uint8_t* src, int stride, int b_limit_in) {
+func SimpleVFilter16(uint8_t* src, int stride, int b_limit_in) {
   v16u8 p1, p0, q1, q0, mask;
   const v16u8 b_limit = (v16u8)__msa_fill_b(b_limit_in);
 
@@ -646,7 +646,7 @@ static void SimpleVFilter16(uint8_t* src, int stride, int b_limit_in) {
   ST_UB2(p0, q0, src - stride, stride);
 }
 
-static void SimpleHFilter16(uint8_t* src, int stride, int b_limit_in) {
+func SimpleHFilter16(uint8_t* src, int stride, int b_limit_in) {
   v16u8 p1, p0, q1, q0, mask, row0, row1, row2, row3, row4, row5, row6, row7;
   v16u8 row8, row9, row10, row11, row12, row13, row14, row15;
   v8i16 tmp0, tmp1;
@@ -673,13 +673,13 @@ static void SimpleHFilter16(uint8_t* src, int stride, int b_limit_in) {
   ptemp_src += 4 * stride;
 }
 
-static void SimpleVFilter16i(uint8_t* src_y, int stride, int b_limit_in) {
+func SimpleVFilter16i(uint8_t* src_y, int stride, int b_limit_in) {
   SimpleVFilter16(src_y + 4 * stride, stride, b_limit_in);
   SimpleVFilter16(src_y + 8 * stride, stride, b_limit_in);
   SimpleVFilter16(src_y + 12 * stride, stride, b_limit_in);
 }
 
-static void SimpleHFilter16i(uint8_t* src_y, int stride, int b_limit_in) {
+func SimpleHFilter16i(uint8_t* src_y, int stride, int b_limit_in) {
   SimpleHFilter16(src_y + 4, stride, b_limit_in);
   SimpleHFilter16(src_y + 8, stride, b_limit_in);
   SimpleHFilter16(src_y + 12, stride, b_limit_in);
@@ -691,7 +691,7 @@ static void SimpleHFilter16i(uint8_t* src_y, int stride, int b_limit_in) {
 
 // 4x4
 
-static void DC4(uint8_t* dst) {  // DC
+func DC4(uint8_t* dst) {  // DC
   uint32_t dc = 4;
   int i;
   for (i = 0; i < 4; ++i) dc += dst[i - BPS] + dst[-1 + i * BPS];
@@ -700,7 +700,7 @@ static void DC4(uint8_t* dst) {  // DC
   SW4(dc, dc, dc, dc, dst, BPS);
 }
 
-static void TM4(uint8_t* dst) {
+func TM4(uint8_t* dst) {
   const uint8_t* const ptemp = dst - BPS - 1;
   v8i16 T, d, r0, r1, r2, r3;
   const v16i8 zero = {0};
@@ -718,7 +718,7 @@ static void TM4(uint8_t* dst) {
   PCKEV_ST4x4_UB(r0, r1, r2, r3, dst, BPS);
 }
 
-static void VE4(uint8_t* dst) {  // vertical
+func VE4(uint8_t* dst) {  // vertical
   const uint8_t* const ptop = dst - BPS - 1;
   const uint32_t val0 = LW(ptop + 0);
   const uint32_t val1 = LW(ptop + 4);
@@ -735,7 +735,7 @@ static void VE4(uint8_t* dst) {  // vertical
   SW4(out, out, out, out, dst, BPS);
 }
 
-static void RD4(uint8_t* dst) {  // Down-right
+func RD4(uint8_t* dst) {  // Down-right
   const uint8_t* const ptop = dst - 1 - BPS;
   uint32_t val0 = LW(ptop + 0);
   uint32_t val1 = LW(ptop + 4);
@@ -763,7 +763,7 @@ static void RD4(uint8_t* dst) {  // Down-right
   SW4(val0, val1, val2, val3, dst, BPS);
 }
 
-static void LD4(uint8_t* dst) {  // Down-Left
+func LD4(uint8_t* dst) {  // Down-Left
   const uint8_t* const ptop = dst - BPS;
   uint32_t val0 = LW(ptop + 0);
   uint32_t val1 = LW(ptop + 4);
@@ -789,7 +789,7 @@ static void LD4(uint8_t* dst) {  // Down-Left
 
 // 16x16
 
-static void DC16(uint8_t* dst) {  // DC
+func DC16(uint8_t* dst) {  // DC
   uint32_t dc = 16;
   int i;
   const v16u8 rtop = LD_UB(dst - BPS);
@@ -805,7 +805,7 @@ static void DC16(uint8_t* dst) {  // DC
   ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS);
 }
 
-static void TM16(uint8_t* dst) {
+func TM16(uint8_t* dst) {
   int j;
   v8i16 d1, d2;
   const v16i8 zero = {0};
@@ -831,13 +831,13 @@ static void TM16(uint8_t* dst) {
   }
 }
 
-static void VE16(uint8_t* dst) {  // vertical
+func VE16(uint8_t* dst) {  // vertical
   const v16u8 rtop = LD_UB(dst - BPS);
   ST_UB8(rtop, rtop, rtop, rtop, rtop, rtop, rtop, rtop, dst, BPS);
   ST_UB8(rtop, rtop, rtop, rtop, rtop, rtop, rtop, rtop, dst + 8 * BPS, BPS);
 }
 
-static void HE16(uint8_t* dst) {  // horizontal
+func HE16(uint8_t* dst) {  // horizontal
   int j;
   for (j = 16; j > 0; j -= 4) {
     const v16u8 L0 = (v16u8)__msa_fill_b(dst[-1 + 0 * BPS]);
@@ -849,7 +849,7 @@ static void HE16(uint8_t* dst) {  // horizontal
   }
 }
 
-static void DC16NoTop(uint8_t* dst) {  // DC with top samples not available
+func DC16NoTop(uint8_t* dst) {  // DC with top samples not available
   int j;
   uint32_t dc = 8;
   v16u8 out;
@@ -862,7 +862,7 @@ static void DC16NoTop(uint8_t* dst) {  // DC with top samples not available
   ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS);
 }
 
-static void DC16NoLeft(uint8_t* dst) {  // DC with left samples not available
+func DC16NoLeft(uint8_t* dst) {  // DC with left samples not available
   uint32_t dc = 8;
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 dctop = __msa_hadd_u_h(rtop, rtop);
@@ -874,7 +874,7 @@ static void DC16NoLeft(uint8_t* dst) {  // DC with left samples not available
   ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS);
 }
 
-static void DC16NoTopLeft(uint8_t* dst) {  // DC with nothing
+func DC16NoTopLeft(uint8_t* dst) {  // DC with nothing
   const v16u8 out = (v16u8)__msa_fill_b(0x80);
   ST_UB8(out, out, out, out, out, out, out, out, dst, BPS);
   ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS);
@@ -888,7 +888,7 @@ static void DC16NoTopLeft(uint8_t* dst) {  // DC with nothing
     SD4(out, out, out, out, dst + 4 * BPS, BPS); \
   } while (0)
 
-static void DC8uv(uint8_t* dst) {  // DC
+func DC8uv(uint8_t* dst) {  // DC
   uint32_t dc = 8;
   int i;
   uint64_t out;
@@ -907,7 +907,7 @@ static void DC8uv(uint8_t* dst) {  // DC
   STORE8x8(out, dst);
 }
 
-static void TM8uv(uint8_t* dst) {
+func TM8uv(uint8_t* dst) {
   int j;
   const v16i8 T1 = LD_SB(dst - BPS);
   const v16i8 zero = {0};
@@ -930,13 +930,13 @@ static void TM8uv(uint8_t* dst) {
   }
 }
 
-static void VE8uv(uint8_t* dst) {  // vertical
+func VE8uv(uint8_t* dst) {  // vertical
   const v16u8 rtop = LD_UB(dst - BPS);
   const uint64_t out = __msa_copy_s_d((v2i64)rtop, 0);
   STORE8x8(out, dst);
 }
 
-static void HE8uv(uint8_t* dst) {  // horizontal
+func HE8uv(uint8_t* dst) {  // horizontal
   int j;
   for (j = 0; j < 8; j += 4) {
     const v16u8 L0 = (v16u8)__msa_fill_b(dst[-1 + 0 * BPS]);
@@ -952,7 +952,7 @@ static void HE8uv(uint8_t* dst) {  // horizontal
   }
 }
 
-static void DC8uvNoLeft(uint8_t* dst) {  // DC with no left samples
+func DC8uvNoLeft(uint8_t* dst) {  // DC with no left samples
   const uint32_t dc = 4;
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 temp0 = __msa_hadd_u_h(rtop, rtop);
@@ -964,7 +964,7 @@ static void DC8uvNoLeft(uint8_t* dst) {  // DC with no left samples
   STORE8x8(out, dst);
 }
 
-static void DC8uvNoTop(uint8_t* dst) {  // DC with no top samples
+func DC8uvNoTop(uint8_t* dst) {  // DC with no top samples
   uint32_t dc = 4;
   int i;
   uint64_t out;
@@ -978,7 +978,7 @@ static void DC8uvNoTop(uint8_t* dst) {  // DC with no top samples
   STORE8x8(out, dst);
 }
 
-static void DC8uvNoTopLeft(uint8_t* dst) {  // DC with nothing
+func DC8uvNoTopLeft(uint8_t* dst) {  // DC with nothing
   const uint64_t out = 0x8080808080808080ULL;
   STORE8x8(out, dst);
 }
@@ -986,9 +986,9 @@ static void DC8uvNoTopLeft(uint8_t* dst) {  // DC with nothing
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8DspInitMSA(void);
+extern func VP8DspInitMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8DspInitMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitMSA(void) {
   VP8TransformWHT = TransformWHT;
   VP8Transform = TransformTwo;
   VP8TransformDC = TransformDC;

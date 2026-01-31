@@ -82,14 +82,14 @@ typedef struct {
   HistogramBuckets category[kHistoTotal];
 } Histograms;
 
-static void AddSingleSubGreen(uint32_t p, HistogramBuckets r,
+func AddSingleSubGreen(uint32_t p, HistogramBuckets r,
                               HistogramBuckets b) {
   const int green = (int)p >> 8;  // The upper bits are masked away later.
   ++r[(((int)p >> 16) - green) & 0xff];
   ++b[(((int)p >> 0) - green) & 0xff];
 }
 
-static void AddSingle(uint32_t p, HistogramBuckets a, HistogramBuckets r,
+func AddSingle(uint32_t p, HistogramBuckets a, HistogramBuckets r,
                       HistogramBuckets g, HistogramBuckets b) {
   ++a[(p >> 24) & 0xff];
   ++r[(p >> 16) & 0xff];
@@ -496,7 +496,7 @@ End:
   return ok;
 }
 
-static void StoreHuffmanTreeOfHuffmanTreeToBitMask(
+func StoreHuffmanTreeOfHuffmanTreeToBitMask(
     VP8LBitWriter* const bw, const uint8_t* code_length_bitdepth) {
   // RFC 1951 will calm you down if you are worried about this funny sequence.
   // This sequence is tuned from that, but more weighted for lower symbol count,
@@ -517,7 +517,7 @@ static void StoreHuffmanTreeOfHuffmanTreeToBitMask(
   }
 }
 
-static void ClearHuffmanTreeIfOnlyOneSymbol(
+func ClearHuffmanTreeIfOnlyOneSymbol(
     HuffmanTreeCode* const huffman_code) {
   int k;
   int count = 0;
@@ -533,7 +533,7 @@ static void ClearHuffmanTreeIfOnlyOneSymbol(
   }
 }
 
-static void StoreHuffmanTreeToBitMask(
+func StoreHuffmanTreeToBitMask(
     VP8LBitWriter* const bw, const HuffmanTreeToken* const tokens,
     const int num_tokens, const HuffmanTreeCode* const huffman_code) {
   int i;
@@ -556,7 +556,7 @@ static void StoreHuffmanTreeToBitMask(
 }
 
 // 'huff_tree' and 'tokens' are pre-alloacted buffers.
-static void StoreFullHuffmanCode(VP8LBitWriter* const bw,
+func StoreFullHuffmanCode(VP8LBitWriter* const bw,
                                  HuffmanTree* const huff_tree,
                                  HuffmanTreeToken* const tokens,
                                  const HuffmanTreeCode* const tree) {
@@ -624,7 +624,7 @@ static void StoreFullHuffmanCode(VP8LBitWriter* const bw,
 }
 
 // 'huff_tree' and 'tokens' are pre-alloacted buffers.
-static void StoreHuffmanCode(VP8LBitWriter* const bw,
+func StoreHuffmanCode(VP8LBitWriter* const bw,
                              HuffmanTree* const huff_tree,
                              HuffmanTreeToken* const tokens,
                              const HuffmanTreeCode* const huffman_code) {
@@ -663,7 +663,7 @@ static void StoreHuffmanCode(VP8LBitWriter* const bw,
   }
 }
 
-static WEBP_INLINE void WriteHuffmanCode(VP8LBitWriter* const bw,
+static WEBP_INLINE func WriteHuffmanCode(VP8LBitWriter* const bw,
                                          const HuffmanTreeCode* const code,
                                          int code_index) {
   const int depth = code->code_lengths[code_index];
@@ -671,7 +671,7 @@ static WEBP_INLINE void WriteHuffmanCode(VP8LBitWriter* const bw,
   VP8LPutBits(bw, symbol, depth);
 }
 
-static WEBP_INLINE void WriteHuffmanCodeWithExtraBits(
+static WEBP_INLINE func WriteHuffmanCodeWithExtraBits(
     VP8LBitWriter* const bw, const HuffmanTreeCode* const code, int code_index,
     int bits, int n_bits) {
   const int depth = code->code_lengths[code_index];
@@ -1071,7 +1071,7 @@ Error:
 // -----------------------------------------------------------------------------
 // Transforms
 
-static void ApplySubtractGreen(VP8LEncoder* const enc, int width, int height,
+func ApplySubtractGreen(VP8LEncoder* const enc, int width, int height,
                                VP8LBitWriter* const bw) {
   VP8LPutBits(bw, TRANSFORM_PRESENT, 1);
   VP8LPutBits(bw, SUBTRACT_GREEN_TRANSFORM, 2);
@@ -1194,7 +1194,7 @@ static int WriteImage(const WebPPicture* const pic, VP8LBitWriter* const bw,
 
 // -----------------------------------------------------------------------------
 
-static void ClearTransformBuffer(VP8LEncoder* const enc) {
+func ClearTransformBuffer(VP8LEncoder* const enc) {
   WebPSafeFree(enc->transform_mem);
   enc->transform_mem = NULL;
   enc->transform_mem_size = 0;
@@ -1466,7 +1466,7 @@ static VP8LEncoder* VP8LEncoderNew(const WebPConfig* const config,
   return enc;
 }
 
-static void VP8LEncoderDelete(VP8LEncoder* enc) {
+func VP8LEncoderDelete(VP8LEncoder* enc) {
   if (enc != NULL) {
     int i;
     VP8LHashChainClear(&enc->hash_chain);
@@ -1690,7 +1690,7 @@ int VP8LEncodeStream(const WebPConfig* const config,
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
 
-  // Avoid "garbage value" error from Clang's static analysis tool.
+  // Afunc "garbage value" error from Clang's static analysis tool.
   if (!WebPPictureInit(&picture_side)) {
     goto Error;
   }

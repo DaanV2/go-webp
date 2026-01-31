@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 // Grab the 'specs' (writer, *opaque, width, height...) from 'src' and copy them
 // into 'dst'. Mark 'dst' as not owning any memory.
-static void PictureGrabSpecs(const WebPPicture* const src,
+func PictureGrabSpecs(const WebPPicture* const src,
                              WebPPicture* const dst) {
   assert(src != NULL && dst != NULL);
   *dst = *src;
@@ -40,7 +40,7 @@ static void PictureGrabSpecs(const WebPPicture* const src,
 //------------------------------------------------------------------------------
 
 // Adjust top-left corner to chroma sample position.
-static void SnapTopLeftPosition(const WebPPicture* const pic, int* const left,
+func SnapTopLeftPosition(const WebPPicture* const pic, int* const left,
                                 int* const top) {
   if (!pic->use_argb) {
     *left &= ~1;
@@ -190,13 +190,13 @@ static int RescalePlane(const uint8_t* src, int src_width, int src_height,
   return 1;
 }
 
-static void AlphaMultiplyARGB(WebPPicture* const pic, int inverse) {
+func AlphaMultiplyARGB(WebPPicture* const pic, int inverse) {
   assert(pic->argb != NULL);
   WebPMultARGBRows((uint8_t*)pic->argb, pic->argb_stride * sizeof(*pic->argb),
                    pic->width, pic->height, inverse);
 }
 
-static void AlphaMultiplyY(WebPPicture* const pic, int inverse) {
+func AlphaMultiplyY(WebPPicture* const pic, int inverse) {
   if (pic->a != NULL) {
     WebPMultRows(pic->y, pic->y_stride, pic->a, pic->a_stride, pic->width,
                  pic->height, inverse);

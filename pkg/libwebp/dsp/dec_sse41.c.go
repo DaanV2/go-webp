@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-static void HE16_SSE41(uint8_t* dst) {  // horizontal
+func HE16_SSE41(uint8_t* dst) {  // horizontal
   int j;
   const __m128i kShuffle3 = _mm_set1_epi8(3);
   for (j = 16; j > 0; --j) {
@@ -38,9 +38,9 @@ static void HE16_SSE41(uint8_t* dst) {  // horizontal
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8DspInitSSE41(void);
+extern func VP8DspInitSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8DspInitSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitSSE41(void) {
   VP8PredLuma16[3] = HE16_SSE41;
 }
 

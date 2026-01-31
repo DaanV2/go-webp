@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Predictor Transform
 
-static WEBP_INLINE void Average2_m256i(const __m256i* const a0,
+static WEBP_INLINE func Average2_m256i(const __m256i* const a0,
                                        const __m256i* const a1,
                                        __m256i* const avg) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
@@ -41,7 +41,7 @@ static WEBP_INLINE void Average2_m256i(const __m256i* const a0,
 // Batch versions of those functions.
 
 // Predictor0: ARGB_BLACK.
-static void PredictorAdd0_AVX2(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd0_AVX2(const uint32_t* in, const uint32_t* upper,
                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   const __m256i black = _mm256_set1_epi32((int)ARGB_BLACK);
@@ -57,7 +57,7 @@ static void PredictorAdd0_AVX2(const uint32_t* in, const uint32_t* upper,
 }
 
 // Predictor1: left.
-static void PredictorAdd1_AVX2(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd1_AVX2(const uint32_t* in, const uint32_t* upper,
                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   __m256i prev = _mm256_set1_epi32((int)out[-1]);
@@ -93,7 +93,7 @@ static void PredictorAdd1_AVX2(const uint32_t* in, const uint32_t* upper,
 // Macro that adds 32-bit integers from IN using mod 256 arithmetic
 // per 8 bit channel.
 #define GENERATE_PREDICTOR_1(X, IN)                                           \
-  static void PredictorAdd##X##_AVX2(const uint32_t* in,                      \
+  func PredictorAdd##X##_AVX2(const uint32_t* in,                      \
                                      const uint32_t* upper, int num_pixels,   \
                                      uint32_t* WEBP_RESTRICT out) {           \
     int i;                                                                    \
@@ -120,7 +120,7 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])
 // predictors 5 to 7.
 
 #define GENERATE_PREDICTOR_2(X, IN)                                           \
-  static void PredictorAdd##X##_AVX2(const uint32_t* in,                      \
+  func PredictorAdd##X##_AVX2(const uint32_t* in,                      \
                                      const uint32_t* upper, int num_pixels,   \
                                      uint32_t* WEBP_RESTRICT out) {           \
     int i;                                                                    \
@@ -161,7 +161,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
     src = _mm256_srli_si256(src, 4);                            \
   } while (0)
 
-static void PredictorAdd10_AVX2(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd10_AVX2(const uint32_t* in, const uint32_t* upper,
                                 int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i, j;
   __m256i L = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
@@ -219,7 +219,7 @@ static void PredictorAdd10_AVX2(const uint32_t* in, const uint32_t* upper,
     pa = _mm256_srli_si256(pa, 4);                            \
   } while (0)
 
-static void PredictorAdd11_AVX2(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd11_AVX2(const uint32_t* in, const uint32_t* upper,
                                 int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i, j;
   __m256i pa;
@@ -283,7 +283,7 @@ static void PredictorAdd11_AVX2(const uint32_t* in, const uint32_t* upper,
     src = _mm256_srli_si256(src, 4);                          \
   } while (0)
 
-static void PredictorAdd12_AVX2(const uint32_t* in, const uint32_t* upper,
+func PredictorAdd12_AVX2(const uint32_t* in, const uint32_t* upper,
                                 int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   const __m256i zero = _mm256_setzero_si256();
@@ -338,7 +338,7 @@ static void PredictorAdd12_AVX2(const uint32_t* in, const uint32_t* upper,
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-static void AddGreenToBlueAndRed_AVX2(const uint32_t* const src, int num_pixels,
+func AddGreenToBlueAndRed_AVX2(const uint32_t* const src, int num_pixels,
                                       uint32_t* dst) {
   int i;
   const __m256i kCstShuffle = _mm256_set_epi8(
@@ -359,7 +359,7 @@ static void AddGreenToBlueAndRed_AVX2(const uint32_t* const src, int num_pixels,
 //------------------------------------------------------------------------------
 // Color Transform
 
-static void TransformColorInverse_AVX2(const VP8LMultipliers* const m,
+func TransformColorInverse_AVX2(const VP8LMultipliers* const m,
                                        const uint32_t* const src,
                                        int num_pixels, uint32_t* dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
@@ -396,7 +396,7 @@ static void TransformColorInverse_AVX2(const VP8LMultipliers* const m,
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-static void ConvertBGRAToRGBA_AVX2(const uint32_t* WEBP_RESTRICT src,
+func ConvertBGRAToRGBA_AVX2(const uint32_t* WEBP_RESTRICT src,
                                    int num_pixels, uint8_t* WEBP_RESTRICT dst) {
   const __m256i* in = (const __m256i*)src;
   __m256i* out = (__m256i*)dst;
@@ -418,9 +418,9 @@ static void ConvertBGRAToRGBA_AVX2(const uint32_t* WEBP_RESTRICT src,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8LDspInitAVX2(void);
+extern func VP8LDspInitAVX2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8LDspInitAVX2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitAVX2(void) {
   VP8LPredictorsAdd[0] = PredictorAdd0_AVX2;
   VP8LPredictorsAdd[1] = PredictorAdd1_AVX2;
   VP8LPredictorsAdd[2] = PredictorAdd2_AVX2;

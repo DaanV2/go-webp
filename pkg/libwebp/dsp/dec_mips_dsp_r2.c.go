@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 static const int kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int kC2 = WEBP_TRANSFORM_AC3_C2;
 
-static void TransformDC(const int16_t* WEBP_RESTRICT in,
+func TransformDC(const int16_t* WEBP_RESTRICT in,
                         uint8_t* WEBP_RESTRICT dst) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10;
 
@@ -48,7 +48,7 @@ static void TransformDC(const int16_t* WEBP_RESTRICT in,
   );
 }
 
-static void TransformAC3(const int16_t* WEBP_RESTRICT in,
+func TransformAC3(const int16_t* WEBP_RESTRICT in,
                          uint8_t* WEBP_RESTRICT dst) {
   const int a = in[0] + 4;
   int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
@@ -85,7 +85,7 @@ static void TransformAC3(const int16_t* WEBP_RESTRICT in,
   );
 }
 
-static void TransformOne(const int16_t* WEBP_RESTRICT in,
+func TransformOne(const int16_t* WEBP_RESTRICT in,
                          uint8_t* WEBP_RESTRICT dst) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17, temp18;
@@ -153,7 +153,7 @@ static void TransformOne(const int16_t* WEBP_RESTRICT in,
   );
 }
 
-static void TransformTwo(const int16_t* WEBP_RESTRICT in,
+func TransformTwo(const int16_t* WEBP_RESTRICT in,
                          uint8_t* WEBP_RESTRICT dst, int do_two) {
   TransformOne(in, dst);
   if (do_two) {
@@ -161,7 +161,7 @@ static void TransformTwo(const int16_t* WEBP_RESTRICT in,
   }
 }
 
-static WEBP_INLINE void FilterLoop26(uint8_t* p, int hstride, int vstride,
+static WEBP_INLINE func FilterLoop26(uint8_t* p, int hstride, int vstride,
                                      int size, int thresh, int ithresh,
                                      int hev_thresh) {
   const int thresh2 = 2 * thresh + 1;
@@ -298,7 +298,7 @@ static WEBP_INLINE void FilterLoop26(uint8_t* p, int hstride, int vstride,
       : "memory");
 }
 
-static WEBP_INLINE void FilterLoop24(uint8_t* p, int hstride, int vstride,
+static WEBP_INLINE func FilterLoop24(uint8_t* p, int hstride, int vstride,
                                      int size, int thresh, int ithresh,
                                      int hev_thresh) {
   int p0, q0, p1, q1, p2, q2, p3, q3;
@@ -427,31 +427,31 @@ static WEBP_INLINE void FilterLoop24(uint8_t* p, int hstride, int vstride,
 }
 
 // on macroblock edges
-static void VFilter16(uint8_t* p, int stride, int thresh, int ithresh,
+func VFilter16(uint8_t* p, int stride, int thresh, int ithresh,
                       int hev_thresh) {
   FilterLoop26(p, stride, 1, 16, thresh, ithresh, hev_thresh);
 }
 
-static void HFilter16(uint8_t* p, int stride, int thresh, int ithresh,
+func HFilter16(uint8_t* p, int stride, int thresh, int ithresh,
                       int hev_thresh) {
   FilterLoop26(p, 1, stride, 16, thresh, ithresh, hev_thresh);
 }
 
 // 8-pixels wide variant, for chroma filtering
-static void VFilter8(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func VFilter8(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                      int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop26(u, stride, 1, 8, thresh, ithresh, hev_thresh);
   FilterLoop26(v, stride, 1, 8, thresh, ithresh, hev_thresh);
 }
 
-static void HFilter8(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func HFilter8(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                      int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop26(u, 1, stride, 8, thresh, ithresh, hev_thresh);
   FilterLoop26(v, 1, stride, 8, thresh, ithresh, hev_thresh);
 }
 
 // on three inner edges
-static void VFilter16i(uint8_t* p, int stride, int thresh, int ithresh,
+func VFilter16i(uint8_t* p, int stride, int thresh, int ithresh,
                        int hev_thresh) {
   int k;
   for (k = 3; k > 0; --k) {
@@ -460,7 +460,7 @@ static void VFilter16i(uint8_t* p, int stride, int thresh, int ithresh,
   }
 }
 
-static void HFilter16i(uint8_t* p, int stride, int thresh, int ithresh,
+func HFilter16i(uint8_t* p, int stride, int thresh, int ithresh,
                        int hev_thresh) {
   int k;
   for (k = 3; k > 0; --k) {
@@ -469,13 +469,13 @@ static void HFilter16i(uint8_t* p, int stride, int thresh, int ithresh,
   }
 }
 
-static void VFilter8i(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func VFilter8i(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                       int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop24(u + 4 * stride, stride, 1, 8, thresh, ithresh, hev_thresh);
   FilterLoop24(v + 4 * stride, stride, 1, 8, thresh, ithresh, hev_thresh);
 }
 
-static void HFilter8i(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func HFilter8i(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                       int stride, int thresh, int ithresh, int hev_thresh) {
   FilterLoop24(u + 4, 1, stride, 8, thresh, ithresh, hev_thresh);
   FilterLoop24(v + 4, 1, stride, 8, thresh, ithresh, hev_thresh);
@@ -484,7 +484,7 @@ static void HFilter8i(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
 //------------------------------------------------------------------------------
 // Simple In-loop filtering (Paragraph 15.2)
 
-static void SimpleVFilter16(uint8_t* p, int stride, int thresh) {
+func SimpleVFilter16(uint8_t* p, int stride, int thresh) {
   int i;
   const int thresh2 = 2 * thresh + 1;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
@@ -554,7 +554,7 @@ static void SimpleVFilter16(uint8_t* p, int stride, int thresh) {
   "lbu      %[" #TEMP3 "],   " #D "+" #D1 "*" XSTR(BPS) "(%[" #SRC "]) \n\t"
 // clang-format on
 
-static void SimpleHFilter16(uint8_t* p, int stride, int thresh) {
+func SimpleHFilter16(uint8_t* p, int stride, int thresh) {
   int i;
   const int thresh2 = 2 * thresh + 1;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
@@ -605,7 +605,7 @@ static void SimpleHFilter16(uint8_t* p, int stride, int thresh) {
   );
 }
 
-static void SimpleVFilter16i(uint8_t* p, int stride, int thresh) {
+func SimpleVFilter16i(uint8_t* p, int stride, int thresh) {
   int k;
   for (k = 3; k > 0; --k) {
     p += 4 * stride;
@@ -613,7 +613,7 @@ static void SimpleVFilter16i(uint8_t* p, int stride, int thresh) {
   }
 }
 
-static void SimpleHFilter16i(uint8_t* p, int stride, int thresh) {
+func SimpleHFilter16i(uint8_t* p, int stride, int thresh) {
   int k;
   for (k = 3; k > 0; --k) {
     p += 4;
@@ -629,7 +629,7 @@ static void SimpleHFilter16i(uint8_t* p, int stride, int thresh) {
   "usw    %[" #TEMP1 "],   " #B "+" #C "*" XSTR(BPS) "(%[" #DST "])  \n\t"
 // clang-format on
 
-static void VE4(uint8_t* dst) {  // vertical
+func VE4(uint8_t* dst) {  // vertical
   const uint8_t* top = dst - BPS;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   __asm__ volatile(
@@ -658,7 +658,7 @@ static void VE4(uint8_t* dst) {  // vertical
       : "memory");
 }
 
-static void DC4(uint8_t* dst) {  // DC
+func DC4(uint8_t* dst) {  // DC
   int temp0, temp1, temp2, temp3, temp4;
   __asm__ volatile(
     "ulw          %[temp0],   -1*" XSTR(BPS) "(%[dst]) \n\t"
@@ -680,7 +680,7 @@ static void DC4(uint8_t* dst) {  // DC
   );
 }
 
-static void RD4(uint8_t* dst) {  // Down-right
+func RD4(uint8_t* dst) {  // Down-right
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8;
   __asm__ volatile(
@@ -732,7 +732,7 @@ static void RD4(uint8_t* dst) {  // Down-right
   "ulw    %[" #TEMP1 "],   " #B "+" #C "*" XSTR(BPS) "(%[" #SRC "])  \n\t"
 // clang-format on
 
-static void LD4(uint8_t* dst) {  // Down-Left
+func LD4(uint8_t* dst) {  // Down-Left
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8, temp9;
   __asm__ volatile(
@@ -779,7 +779,7 @@ static void LD4(uint8_t* dst) {  // Down-Left
 //------------------------------------------------------------------------------
 // Chroma
 
-static void DC8uv(uint8_t* dst) {  // DC
+func DC8uv(uint8_t* dst) {  // DC
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8, temp9;
   __asm__ volatile(
@@ -816,7 +816,7 @@ static void DC8uv(uint8_t* dst) {  // DC
   );
 }
 
-static void DC8uvNoLeft(uint8_t* dst) {  // DC with no left samples
+func DC8uvNoLeft(uint8_t* dst) {  // DC with no left samples
   int temp0, temp1;
   __asm__ volatile(
     LOAD_8_BYTES(temp0, temp1, -1, 4, -1, dst)
@@ -839,7 +839,7 @@ static void DC8uvNoLeft(uint8_t* dst) {  // DC with no left samples
   );
 }
 
-static void DC8uvNoTop(uint8_t* dst) {  // DC with no top samples
+func DC8uvNoTop(uint8_t* dst) {  // DC with no top samples
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8;
   __asm__ volatile(
@@ -944,7 +944,7 @@ static void DC8uvNoTop(uint8_t* dst) {  // DC with no top samples
   } while (0)
 
 #define TRUE_MOTION(DST, SIZE) \
-  static void TrueMotion##SIZE(uint8_t*(DST)) { CLIP_TO_DST((DST), (SIZE)); }
+  func TrueMotion##SIZE(uint8_t*(DST)) { CLIP_TO_DST((DST), (SIZE)); }
 
 TRUE_MOTION(dst, 4)
 TRUE_MOTION(dst, 8)
@@ -958,9 +958,9 @@ TRUE_MOTION(dst, 16)
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8DspInitMIPSdspR2(void);
+extern func VP8DspInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8DspInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitMIPSdspR2(void) {
   VP8TransformDC = TransformDC;
   VP8TransformAC3 = TransformAC3;
   VP8Transform = TransformTwo;

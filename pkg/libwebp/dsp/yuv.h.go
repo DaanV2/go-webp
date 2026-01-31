@@ -89,19 +89,19 @@ static WEBP_INLINE int VP8YUVToB(int y, int u) {
   return VP8Clip8(MultHi(y, 19077) + MultHi(u, 33050) - 17685);
 }
 
-static WEBP_INLINE void VP8YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
+static WEBP_INLINE func VP8YuvToRgb(int y, int u, int v, uint8_t* const rgb) {
   rgb[0] = VP8YUVToR(y, v);
   rgb[1] = VP8YUVToG(y, u, v);
   rgb[2] = VP8YUVToB(y, u);
 }
 
-static WEBP_INLINE void VP8YuvToBgr(int y, int u, int v, uint8_t* const bgr) {
+static WEBP_INLINE func VP8YuvToBgr(int y, int u, int v, uint8_t* const bgr) {
   bgr[0] = VP8YUVToB(y, u);
   bgr[1] = VP8YUVToG(y, u, v);
   bgr[2] = VP8YUVToR(y, v);
 }
 
-static WEBP_INLINE void VP8YuvToRgb565(int y, int u, int v,
+static WEBP_INLINE func VP8YuvToRgb565(int y, int u, int v,
                                        uint8_t* const rgb) {
   const int r = VP8YUVToR(y, v);     // 5 usable bits
   const int g = VP8YUVToG(y, u, v);  // 6 usable bits
@@ -117,7 +117,7 @@ static WEBP_INLINE void VP8YuvToRgb565(int y, int u, int v,
 #endif
 }
 
-static WEBP_INLINE void VP8YuvToRgba4444(int y, int u, int v,
+static WEBP_INLINE func VP8YuvToRgba4444(int y, int u, int v,
                                          uint8_t* const argb) {
   const int r = VP8YUVToR(y, v);     // 4 usable bits
   const int g = VP8YUVToG(y, u, v);  // 4 usable bits
@@ -136,19 +136,19 @@ static WEBP_INLINE void VP8YuvToRgba4444(int y, int u, int v,
 //-----------------------------------------------------------------------------
 // Alpha handling variants
 
-static WEBP_INLINE void VP8YuvToArgb(uint8_t y, uint8_t u, uint8_t v,
+static WEBP_INLINE func VP8YuvToArgb(uint8_t y, uint8_t u, uint8_t v,
                                      uint8_t* const argb) {
   argb[0] = 0xff;
   VP8YuvToRgb(y, u, v, argb + 1);
 }
 
-static WEBP_INLINE void VP8YuvToBgra(uint8_t y, uint8_t u, uint8_t v,
+static WEBP_INLINE func VP8YuvToBgra(uint8_t y, uint8_t u, uint8_t v,
                                      uint8_t* const bgra) {
   VP8YuvToBgr(y, u, v, bgra);
   bgra[3] = 0xff;
 }
 
-static WEBP_INLINE void VP8YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
+static WEBP_INLINE func VP8YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
                                      uint8_t* const rgba) {
   VP8YuvToRgb(y, u, v, rgba);
   rgba[3] = 0xff;
@@ -160,31 +160,31 @@ static WEBP_INLINE void VP8YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
 #if defined(WEBP_USE_SSE2)
 
 // Process 32 pixels and store the result (16b, 24b or 32b per pixel) in *dst.
-void VP8YuvToRgba32_SSE2(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToRgba32_SSE2(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst);
-void VP8YuvToRgb32_SSE2(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToRgb32_SSE2(const uint8_t* WEBP_RESTRICT y,
                         const uint8_t* WEBP_RESTRICT u,
                         const uint8_t* WEBP_RESTRICT v,
                         uint8_t* WEBP_RESTRICT dst);
-void VP8YuvToBgra32_SSE2(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToBgra32_SSE2(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst);
-void VP8YuvToBgr32_SSE2(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToBgr32_SSE2(const uint8_t* WEBP_RESTRICT y,
                         const uint8_t* WEBP_RESTRICT u,
                         const uint8_t* WEBP_RESTRICT v,
                         uint8_t* WEBP_RESTRICT dst);
-void VP8YuvToArgb32_SSE2(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToArgb32_SSE2(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst);
-void VP8YuvToRgba444432_SSE2(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToRgba444432_SSE2(const uint8_t* WEBP_RESTRICT y,
                              const uint8_t* WEBP_RESTRICT u,
                              const uint8_t* WEBP_RESTRICT v,
                              uint8_t* WEBP_RESTRICT dst);
-void VP8YuvToRgb56532_SSE2(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToRgb56532_SSE2(const uint8_t* WEBP_RESTRICT y,
                            const uint8_t* WEBP_RESTRICT u,
                            const uint8_t* WEBP_RESTRICT v,
                            uint8_t* WEBP_RESTRICT dst);
@@ -197,11 +197,11 @@ void VP8YuvToRgb56532_SSE2(const uint8_t* WEBP_RESTRICT y,
 #if defined(WEBP_USE_SSE41)
 
 // Process 32 pixels and store the result (16b, 24b or 32b per pixel) in *dst.
-void VP8YuvToRgb32_SSE41(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToRgb32_SSE41(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst);
-void VP8YuvToBgr32_SSE41(const uint8_t* WEBP_RESTRICT y,
+func VP8YuvToBgr32_SSE41(const uint8_t* WEBP_RESTRICT y,
                          const uint8_t* WEBP_RESTRICT u,
                          const uint8_t* WEBP_RESTRICT v,
                          uint8_t* WEBP_RESTRICT dst);
@@ -233,7 +233,7 @@ static WEBP_INLINE int VP8RGBToV(int r, int g, int b, int rounding) {
 }
 
 // has_alpha is true if there is an alpha value that is not 0xff.
-extern void (*WebPImportYUVAFromRGBA)(
+extern func (*WebPImportYUVAFromRGBA)(
     const uint8_t* r_ptr, const uint8_t* g_ptr, const uint8_t* b_ptr,
     const uint8_t* a_ptr,
     int step,        // bytes per pixel
@@ -241,7 +241,7 @@ extern void (*WebPImportYUVAFromRGBA)(
     int has_alpha, int width, int height, uint16_t* tmp_rgb, int y_stride,
     int uv_stride, int a_stride, uint8_t* dst_y, uint8_t* dst_u, uint8_t* dst_v,
     uint8_t* dst_a);
-extern void (*WebPImportYUVAFromRGBALastLine)(
+extern func (*WebPImportYUVAFromRGBALastLine)(
     const uint8_t* r_ptr, const uint8_t* g_ptr, const uint8_t* b_ptr,
     const uint8_t* a_ptr,
     int step,  // bytes per pixel
@@ -249,14 +249,14 @@ extern void (*WebPImportYUVAFromRGBALastLine)(
     uint8_t* dst_v, uint8_t* dst_a);
 
 // Internal function to WebPImportYUVAFromRGBA* that can be reused.
-void WebPAccumulateRGBA(const uint8_t* const r_ptr, const uint8_t* const g_ptr,
+func WebPAccumulateRGBA(const uint8_t* const r_ptr, const uint8_t* const g_ptr,
                         const uint8_t* const b_ptr, const uint8_t* const a_ptr,
                         int rgb_stride, uint16_t* dst, int width);
-void WebPAccumulateRGB(const uint8_t* const r_ptr, const uint8_t* const g_ptr,
+func WebPAccumulateRGB(const uint8_t* const r_ptr, const uint8_t* const g_ptr,
                        const uint8_t* const b_ptr, int step, int rgb_stride,
                        uint16_t* dst, int width);
 // Must be called before calling WebPAccumulateRGB*.
-void WebPInitGammaTables(void);
+func WebPInitGammaTables(void);
 
 #ifdef __cplusplus
 }  // extern "C"

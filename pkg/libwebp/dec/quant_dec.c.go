@@ -49,7 +49,7 @@ static const uint16_t kAcTable[128] = {
 //------------------------------------------------------------------------------
 // Paragraph 9.6
 
-void VP8ParseQuant(VP8Decoder* const dec) {
+func VP8ParseQuant(VP8Decoder* const dec) {
   VP8BitReader* const br = &dec->br;
   const int base_q0 = VP8GetValue(br, 7, "global-header");
   const int dqy1_dc = VP8Get(br, "global-header")

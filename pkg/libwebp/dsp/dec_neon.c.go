@@ -45,7 +45,7 @@ static WEBP_INLINE uint8x8x4_t Load4x8_NEON(const uint8_t* const src,
   return out;
 }
 
-static WEBP_INLINE void Load4x16_NEON(const uint8_t* const src, int stride,
+static WEBP_INLINE func Load4x16_NEON(const uint8_t* const src, int stride,
                                       uint8x16_t* const p1,
                                       uint8x16_t* const p0,
                                       uint8x16_t* const q0,
@@ -68,7 +68,7 @@ static WEBP_INLINE void Load4x16_NEON(const uint8_t* const src, int stride,
     src += stride;                                                   \
   } while (0)
 
-static WEBP_INLINE void Load4x16_NEON(const uint8_t* src, int stride,
+static WEBP_INLINE func Load4x16_NEON(const uint8_t* src, int stride,
                                       uint8x16_t* const p1,
                                       uint8x16_t* const p0,
                                       uint8x16_t* const q0,
@@ -113,7 +113,7 @@ static WEBP_INLINE void Load4x16_NEON(const uint8_t* src, int stride,
 
 #endif  // !WORK_AROUND_GCC
 
-static WEBP_INLINE void Load8x16_NEON(
+static WEBP_INLINE func Load8x16_NEON(
     const uint8_t* const src, int stride, uint8x16_t* const p3,
     uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0,
     uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2,
@@ -122,7 +122,7 @@ static WEBP_INLINE void Load8x16_NEON(
   Load4x16_NEON(src + 2, stride, q0, q1, q2, q3);
 }
 
-static WEBP_INLINE void Load16x4_NEON(const uint8_t* const src, int stride,
+static WEBP_INLINE func Load16x4_NEON(const uint8_t* const src, int stride,
                                       uint8x16_t* const p1,
                                       uint8x16_t* const p0,
                                       uint8x16_t* const q0,
@@ -133,7 +133,7 @@ static WEBP_INLINE void Load16x4_NEON(const uint8_t* const src, int stride,
   *q1 = vld1q_u8(src + 1 * stride);
 }
 
-static WEBP_INLINE void Load16x8_NEON(
+static WEBP_INLINE func Load16x8_NEON(
     const uint8_t* const src, int stride, uint8x16_t* const p3,
     uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0,
     uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2,
@@ -142,7 +142,7 @@ static WEBP_INLINE void Load16x8_NEON(
   Load16x4_NEON(src + 2 * stride, stride, q0, q1, q2, q3);
 }
 
-static WEBP_INLINE void Load8x8x2_NEON(
+static WEBP_INLINE func Load8x8x2_NEON(
     const uint8_t* const u, const uint8_t* const v, int stride,
     uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1,
     uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1,
@@ -164,7 +164,7 @@ static WEBP_INLINE void Load8x8x2_NEON(
 #define LOAD_UV_8(ROW) \
   vcombine_u8(vld1_u8(u - 4 + (ROW) * stride), vld1_u8(v - 4 + (ROW) * stride))
 
-static WEBP_INLINE void Load8x8x2T_NEON(
+static WEBP_INLINE func Load8x8x2T_NEON(
     const uint8_t* const u, const uint8_t* const v, int stride,
     uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1,
     uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1,
@@ -223,7 +223,7 @@ static WEBP_INLINE void Load8x8x2T_NEON(
 
 #endif  // !WORK_AROUND_GCC
 
-static WEBP_INLINE void Store2x8_NEON(const uint8x8x2_t v, uint8_t* const dst,
+static WEBP_INLINE func Store2x8_NEON(const uint8x8x2_t v, uint8_t* const dst,
                                       int stride) {
   vst2_lane_u8(dst + 0 * stride, v, 0);
   vst2_lane_u8(dst + 1 * stride, v, 1);
@@ -235,7 +235,7 @@ static WEBP_INLINE void Store2x8_NEON(const uint8x8x2_t v, uint8_t* const dst,
   vst2_lane_u8(dst + 7 * stride, v, 7);
 }
 
-static WEBP_INLINE void Store2x16_NEON(const uint8x16_t p0, const uint8x16_t q0,
+static WEBP_INLINE func Store2x16_NEON(const uint8x16_t p0, const uint8x16_t q0,
                                        uint8_t* const dst, int stride) {
   uint8x8x2_t lo, hi;
   lo.val[0] = vget_low_u8(p0);
@@ -247,7 +247,7 @@ static WEBP_INLINE void Store2x16_NEON(const uint8x16_t p0, const uint8x16_t q0,
 }
 
 #if !defined(WORK_AROUND_GCC)
-static WEBP_INLINE void Store4x8_NEON(const uint8x8x4_t v, uint8_t* const dst,
+static WEBP_INLINE func Store4x8_NEON(const uint8x8x4_t v, uint8_t* const dst,
                                       int stride) {
   vst4_lane_u8(dst + 0 * stride, v, 0);
   vst4_lane_u8(dst + 1 * stride, v, 1);
@@ -259,7 +259,7 @@ static WEBP_INLINE void Store4x8_NEON(const uint8x8x4_t v, uint8_t* const dst,
   vst4_lane_u8(dst + 7 * stride, v, 7);
 }
 
-static WEBP_INLINE void Store4x16_NEON(const uint8x16_t p1, const uint8x16_t p0,
+static WEBP_INLINE func Store4x16_NEON(const uint8x16_t p1, const uint8x16_t p0,
                                        const uint8x16_t q0, const uint8x16_t q1,
                                        uint8_t* const dst, int stride) {
   uint8x8x4_t lo, hi;
@@ -272,20 +272,20 @@ static WEBP_INLINE void Store4x16_NEON(const uint8x16_t p1, const uint8x16_t p0,
 }
 #endif  // !WORK_AROUND_GCC
 
-static WEBP_INLINE void Store16x2_NEON(const uint8x16_t p0, const uint8x16_t q0,
+static WEBP_INLINE func Store16x2_NEON(const uint8x16_t p0, const uint8x16_t q0,
                                        uint8_t* const dst, int stride) {
   vst1q_u8(dst - stride, p0);
   vst1q_u8(dst, q0);
 }
 
-static WEBP_INLINE void Store16x4_NEON(const uint8x16_t p1, const uint8x16_t p0,
+static WEBP_INLINE func Store16x4_NEON(const uint8x16_t p1, const uint8x16_t p0,
                                        const uint8x16_t q0, const uint8x16_t q1,
                                        uint8_t* const dst, int stride) {
   Store16x2_NEON(p1, p0, dst - stride, stride);
   Store16x2_NEON(q0, q1, dst + stride, stride);
 }
 
-static WEBP_INLINE void Store8x2x2_NEON(const uint8x16_t p0,
+static WEBP_INLINE func Store8x2x2_NEON(const uint8x16_t p0,
                                         const uint8x16_t q0, uint8_t* const u,
                                         uint8_t* const v, int stride) {
   // p0 and q0 contain the u+v samples packed in low/high halves.
@@ -295,7 +295,7 @@ static WEBP_INLINE void Store8x2x2_NEON(const uint8x16_t p0,
   vst1_u8(v, vget_high_u8(q0));
 }
 
-static WEBP_INLINE void Store8x4x2_NEON(const uint8x16_t p1,
+static WEBP_INLINE func Store8x4x2_NEON(const uint8x16_t p1,
                                         const uint8x16_t p0,
                                         const uint8x16_t q0,
                                         const uint8x16_t q1, uint8_t* const u,
@@ -314,7 +314,7 @@ static WEBP_INLINE void Store8x4x2_NEON(const uint8x16_t p1,
     (DST) += stride;                         \
   } while (0)
 
-static WEBP_INLINE void Store6x8x2_NEON(
+static WEBP_INLINE func Store6x8x2_NEON(
     const uint8x16_t p2, const uint8x16_t p1, const uint8x16_t p0,
     const uint8x16_t q0, const uint8x16_t q1, const uint8x16_t q2, uint8_t* u,
     uint8_t* v, int stride) {
@@ -342,7 +342,7 @@ static WEBP_INLINE void Store6x8x2_NEON(
 }
 #undef STORE6_LANE
 
-static WEBP_INLINE void Store4x8x2_NEON(const uint8x16_t p1,
+static WEBP_INLINE func Store4x8x2_NEON(const uint8x16_t p1,
                                         const uint8x16_t p0,
                                         const uint8x16_t q0,
                                         const uint8x16_t q1, uint8_t* const u,
@@ -379,7 +379,7 @@ static WEBP_INLINE int16x8_t ConvertU8ToS16_NEON(uint8x8_t v) {
 
 // Performs unsigned 8b saturation on 'dst01' and 'dst23' storing the result
 // to the corresponding rows of 'dst'.
-static WEBP_INLINE void SaturateAndStore4x4_NEON(uint8_t* const dst,
+static WEBP_INLINE func SaturateAndStore4x4_NEON(uint8_t* const dst,
                                                  const int16x8_t dst01,
                                                  const int16x8_t dst23) {
   // Unsigned saturate to 8b.
@@ -393,7 +393,7 @@ static WEBP_INLINE void SaturateAndStore4x4_NEON(uint8_t* const dst,
   vst1_lane_u32((uint32_t*)(dst + 3 * BPS), vreinterpret_u32_u8(dst23_u8), 1);
 }
 
-static WEBP_INLINE void Add4x4_NEON(const int16x8_t row01,
+static WEBP_INLINE func Add4x4_NEON(const int16x8_t row01,
                                     const int16x8_t row23, uint8_t* const dst) {
   uint32x2_t dst01 = vdup_n_u32(0);
   uint32x2_t dst23 = vdup_n_u32(0);
@@ -462,7 +462,7 @@ static int8x16_t GetBaseDelta0_NEON(const int8x16_t p0, const int8x16_t q0) {
 
 //------------------------------------------------------------------------------
 
-static void ApplyFilter2NoFlip_NEON(const int8x16_t p0s, const int8x16_t q0s,
+func ApplyFilter2NoFlip_NEON(const int8x16_t p0s, const int8x16_t q0s,
                                     const int8x16_t delta, int8x16_t* const op0,
                                     int8x16_t* const oq0) {
   const int8x16_t kCst3 = vdupq_n_s8(0x03);
@@ -477,7 +477,7 @@ static void ApplyFilter2NoFlip_NEON(const int8x16_t p0s, const int8x16_t q0s,
 
 #if defined(WEBP_USE_INTRINSICS)
 
-static void ApplyFilter2_NEON(const int8x16_t p0s, const int8x16_t q0s,
+func ApplyFilter2_NEON(const int8x16_t p0s, const int8x16_t q0s,
                               const int8x16_t delta, uint8x16_t* const op0,
                               uint8x16_t* const oq0) {
   const int8x16_t kCst3 = vdupq_n_s8(0x03);
@@ -492,7 +492,7 @@ static void ApplyFilter2_NEON(const int8x16_t p0s, const int8x16_t q0s,
   *oq0 = FlipSignBack_NEON(sq0);
 }
 
-static void DoFilter2_NEON(const uint8x16_t p1, const uint8x16_t p0,
+func DoFilter2_NEON(const uint8x16_t p1, const uint8x16_t p0,
                            const uint8x16_t q0, const uint8x16_t q1,
                            const uint8x16_t mask, uint8x16_t* const op0,
                            uint8x16_t* const oq0) {
@@ -505,7 +505,7 @@ static void DoFilter2_NEON(const uint8x16_t p1, const uint8x16_t p0,
   ApplyFilter2_NEON(p0s, q0s, delta1, op0, oq0);
 }
 
-static void SimpleVFilter16_NEON(uint8_t* p, int stride, int thresh) {
+func SimpleVFilter16_NEON(uint8_t* p, int stride, int thresh) {
   uint8x16_t p1, p0, q0, q1, op0, oq0;
   Load16x4_NEON(p, stride, &p1, &p0, &q0, &q1);
   {
@@ -515,7 +515,7 @@ static void SimpleVFilter16_NEON(uint8_t* p, int stride, int thresh) {
   Store16x2_NEON(op0, oq0, p, stride);
 }
 
-static void SimpleHFilter16_NEON(uint8_t* p, int stride, int thresh) {
+func SimpleHFilter16_NEON(uint8_t* p, int stride, int thresh) {
   uint8x16_t p1, p0, q0, q1, oq0, op0;
   Load4x16_NEON(p, stride, &p1, &p0, &q0, &q1);
   {
@@ -598,7 +598,7 @@ const QRegs = "q0", "q1", "q2", "q3",                                          \
   FLIP_SIGN_BIT2(p0, q0, q10)
 // clang-format on
 
-static void SimpleVFilter16_NEON(uint8_t* p, int stride, int thresh) {
+func SimpleVFilter16_NEON(uint8_t* p, int stride, int thresh) {
   __asm__ volatile(
       "sub        %[p], %[p], %[stride], lsl #1  \n"  // p -= 2 * stride
 
@@ -618,7 +618,7 @@ static void SimpleVFilter16_NEON(uint8_t* p, int stride, int thresh) {
       : "memory", QRegs);
 }
 
-static void SimpleHFilter16_NEON(uint8_t* p, int stride, int thresh) {
+func SimpleHFilter16_NEON(uint8_t* p, int stride, int thresh) {
   __asm__ volatile(
     "sub        r4, %[p], #2                   \n"  // base1 = p - 2
     "lsl        r6, %[stride], #1              \n"  // r6 = 2 * stride
@@ -649,7 +649,7 @@ static void SimpleHFilter16_NEON(uint8_t* p, int stride, int thresh) {
 
 #endif  // WEBP_USE_INTRINSICS
 
-static void SimpleVFilter16i_NEON(uint8_t* p, int stride, int thresh) {
+func SimpleVFilter16i_NEON(uint8_t* p, int stride, int thresh) {
   uint32_t k;
   for (k = 3; k != 0; --k) {
     p += 4 * stride;
@@ -657,7 +657,7 @@ static void SimpleVFilter16i_NEON(uint8_t* p, int stride, int thresh) {
   }
 }
 
-static void SimpleHFilter16i_NEON(uint8_t* p, int stride, int thresh) {
+func SimpleHFilter16i_NEON(uint8_t* p, int stride, int thresh) {
   uint32_t k;
   for (k = 3; k != 0; --k) {
     p += 4;
@@ -704,7 +704,7 @@ static uint8x16_t NeedsFilter2_NEON(const uint8x16_t p3, const uint8x16_t p2,
 
 //  4-points filter
 
-static void ApplyFilter4_NEON(const int8x16_t p1, const int8x16_t p0,
+func ApplyFilter4_NEON(const int8x16_t p1, const int8x16_t p0,
                               const int8x16_t q0, const int8x16_t q1,
                               const int8x16_t delta0, uint8x16_t* const op1,
                               uint8x16_t* const op0, uint8x16_t* const oq0,
@@ -722,7 +722,7 @@ static void ApplyFilter4_NEON(const int8x16_t p1, const int8x16_t p0,
   *oq1 = FlipSignBack_NEON(vqsubq_s8(q1, a3));  // clip(q1 - a3)
 }
 
-static void DoFilter4_NEON(const uint8x16_t p1, const uint8x16_t p0,
+func DoFilter4_NEON(const uint8x16_t p1, const uint8x16_t p0,
                            const uint8x16_t q0, const uint8x16_t q1,
                            const uint8x16_t mask, const uint8x16_t hev_mask,
                            uint8x16_t* const op1, uint8x16_t* const op0,
@@ -755,7 +755,7 @@ static void DoFilter4_NEON(const uint8x16_t p1, const uint8x16_t p0,
 
 //  6-points filter
 
-static void ApplyFilter6_NEON(const int8x16_t p2, const int8x16_t p1,
+func ApplyFilter6_NEON(const int8x16_t p2, const int8x16_t p1,
                               const int8x16_t p0, const int8x16_t q0,
                               const int8x16_t q1, const int8x16_t q2,
                               const int8x16_t delta, uint8x16_t* const op2,
@@ -793,7 +793,7 @@ static void ApplyFilter6_NEON(const int8x16_t p2, const int8x16_t p1,
   *op2 = FlipSignBack_NEON(vqaddq_s8(p2, a3));  // clip(p2 + a3)
 }
 
-static void DoFilter6_NEON(const uint8x16_t p2, const uint8x16_t p1,
+func DoFilter6_NEON(const uint8x16_t p2, const uint8x16_t p1,
                            const uint8x16_t p0, const uint8x16_t q0,
                            const uint8x16_t q1, const uint8x16_t q2,
                            const uint8x16_t mask, const uint8x16_t hev_mask,
@@ -830,7 +830,7 @@ static void DoFilter6_NEON(const uint8x16_t p2, const uint8x16_t p1,
 
 // on macroblock edges
 
-static void VFilter16_NEON(uint8_t* p, int stride, int thresh, int ithresh,
+func VFilter16_NEON(uint8_t* p, int stride, int thresh, int ithresh,
                            int hev_thresh) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
   Load16x8_NEON(p, stride, &p3, &p2, &p1, &p0, &q0, &q1, &q2, &q3);
@@ -847,7 +847,7 @@ static void VFilter16_NEON(uint8_t* p, int stride, int thresh, int ithresh,
   }
 }
 
-static void HFilter16_NEON(uint8_t* p, int stride, int thresh, int ithresh,
+func HFilter16_NEON(uint8_t* p, int stride, int thresh, int ithresh,
                            int hev_thresh) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
   Load8x16_NEON(p, stride, &p3, &p2, &p1, &p0, &q0, &q1, &q2, &q3);
@@ -865,7 +865,7 @@ static void HFilter16_NEON(uint8_t* p, int stride, int thresh, int ithresh,
 }
 
 // on three inner edges
-static void VFilter16i_NEON(uint8_t* p, int stride, int thresh, int ithresh,
+func VFilter16i_NEON(uint8_t* p, int stride, int thresh, int ithresh,
                             int hev_thresh) {
   uint32_t k;
   uint8x16_t p3, p2, p1, p0;
@@ -889,7 +889,7 @@ static void VFilter16i_NEON(uint8_t* p, int stride, int thresh, int ithresh,
 }
 
 #if !defined(WORK_AROUND_GCC)
-static void HFilter16i_NEON(uint8_t* p, int stride, int thresh, int ithresh,
+func HFilter16i_NEON(uint8_t* p, int stride, int thresh, int ithresh,
                             int hev_thresh) {
   uint32_t k;
   uint8x16_t p3, p2, p1, p0;
@@ -912,7 +912,7 @@ static void HFilter16i_NEON(uint8_t* p, int stride, int thresh, int ithresh,
 #endif  // !WORK_AROUND_GCC
 
 // 8-pixels wide variant, for chroma filtering
-static void VFilter8_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func VFilter8_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                           int stride, int thresh, int ithresh, int hev_thresh) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
   Load8x8x2_NEON(u, v, stride, &p3, &p2, &p1, &p0, &q0, &q1, &q2, &q3);
@@ -928,7 +928,7 @@ static void VFilter8_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
     Store8x2x2_NEON(oq1, oq2, u + 2 * stride, v + 2 * stride, stride);
   }
 }
-static void VFilter8i_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func VFilter8i_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                            int stride, int thresh, int ithresh,
                            int hev_thresh) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
@@ -946,7 +946,7 @@ static void VFilter8i_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
 }
 
 #if !defined(WORK_AROUND_GCC)
-static void HFilter8_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func HFilter8_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                           int stride, int thresh, int ithresh, int hev_thresh) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
   Load8x8x2T_NEON(u, v, stride, &p3, &p2, &p1, &p0, &q0, &q1, &q2, &q3);
@@ -961,7 +961,7 @@ static void HFilter8_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
   }
 }
 
-static void HFilter8i_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func HFilter8i_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
                            int stride, int thresh, int ithresh,
                            int hev_thresh) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
@@ -987,12 +987,12 @@ static void HFilter8i_NEON(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
 // changing the >> 16 to >> 15 and requiring an additional >> 1.
 // We use this to our advantage with kC2. The canonical value is 35468.
 // However, the high bit is set so treating it as signed will give incorrect
-// results. We avoid this by down shifting by 1 here to clear the highest bit.
+// results. We afunc this by down shifting by 1 here to clear the highest bit.
 // Combined with the doubling effect of vqdmulh we get >> 16.
 // This can not be applied to kC1 because the lowest bit is set. Down shifting
 // the constant would reduce precision.
 
-// libwebp uses a trick to avoid some extra addition that libvpx does.
+// libwebp uses a trick to afunc some extra addition that libvpx does.
 // Instead of:
 // temp2 = ip[12] + ((ip[12] * cospi8sqrt2minus1) >> 16);
 // libwebp adds 1 << 16 to cospi8sqrt2minus1 (kC1). However, this causes the
@@ -1003,7 +1003,7 @@ static const int16_t kC2 =
     WEBP_TRANSFORM_AC3_C2 / 2;  // half of kC2, actually. See comment above.
 
 #if defined(WEBP_USE_INTRINSICS)
-static WEBP_INLINE void Transpose8x2_NEON(const int16x8_t in0,
+static WEBP_INLINE func Transpose8x2_NEON(const int16x8_t in0,
                                           const int16x8_t in1,
                                           int16x8x2_t* const out) {
   // a0 a1 a2 a3 | b0 b1 b2 b3   => a0 b0 c0 d0 | a1 b1 c1 d1
@@ -1013,7 +1013,7 @@ static WEBP_INLINE void Transpose8x2_NEON(const int16x8_t in0,
   *out = vzipq_s16(tmp0.val[0], tmp0.val[1]);
 }
 
-static WEBP_INLINE void TransformPass_NEON(int16x8x2_t* const rows) {
+static WEBP_INLINE func TransformPass_NEON(int16x8x2_t* const rows) {
   // {rows} = in0 | in4
   //          in8 | in12
   // B1 = in4 | in12
@@ -1039,7 +1039,7 @@ static WEBP_INLINE void TransformPass_NEON(int16x8x2_t* const rows) {
   Transpose8x2_NEON(E0, E1, rows);
 }
 
-static void TransformOne_NEON(const int16_t* WEBP_RESTRICT in,
+func TransformOne_NEON(const int16_t* WEBP_RESTRICT in,
                               uint8_t* WEBP_RESTRICT dst) {
   int16x8x2_t rows;
   INIT_VECTOR2(rows, vld1q_s16(in + 0), vld1q_s16(in + 8));
@@ -1050,7 +1050,7 @@ static void TransformOne_NEON(const int16_t* WEBP_RESTRICT in,
 
 #else
 
-static void TransformOne_NEON(const int16_t* WEBP_RESTRICT in,
+func TransformOne_NEON(const int16_t* WEBP_RESTRICT in,
                               uint8_t* WEBP_RESTRICT dst) {
   const int kBPS = BPS;
   // kC1, kC2. Padded because vld1.16 loads 8 bytes
@@ -1184,7 +1184,7 @@ static void TransformOne_NEON(const int16_t* WEBP_RESTRICT in,
 
 #endif  // WEBP_USE_INTRINSICS
 
-static void TransformTwo_NEON(const int16_t* WEBP_RESTRICT in,
+func TransformTwo_NEON(const int16_t* WEBP_RESTRICT in,
                               uint8_t* WEBP_RESTRICT dst, int do_two) {
   TransformOne_NEON(in, dst);
   if (do_two) {
@@ -1192,7 +1192,7 @@ static void TransformTwo_NEON(const int16_t* WEBP_RESTRICT in,
   }
 }
 
-static void TransformDC_NEON(const int16_t* WEBP_RESTRICT in,
+func TransformDC_NEON(const int16_t* WEBP_RESTRICT in,
                              uint8_t* WEBP_RESTRICT dst) {
   const int16x8_t DC = vdupq_n_s16(in[0]);
   Add4x4_NEON(DC, DC, dst);
@@ -1212,7 +1212,7 @@ static void TransformDC_NEON(const int16_t* WEBP_RESTRICT in,
     (dst) += 16;                             \
   } while (0)
 
-static void TransformWHT_NEON(const int16_t* WEBP_RESTRICT in,
+func TransformWHT_NEON(const int16_t* WEBP_RESTRICT in,
                               int16_t* WEBP_RESTRICT out) {
   int32x4x4_t tmp;
 
@@ -1264,7 +1264,7 @@ static void TransformWHT_NEON(const int16_t* WEBP_RESTRICT in,
 
 //------------------------------------------------------------------------------
 
-static void TransformAC3_NEON(const int16_t* WEBP_RESTRICT in,
+func TransformAC3_NEON(const int16_t* WEBP_RESTRICT in,
                               uint8_t* WEBP_RESTRICT dst) {
   const int16x4_t A = vld1_dup_s16(in);
   const int16x4_t c4 = vdup_n_s16(WEBP_TRANSFORM_AC3_MUL2(in[4]));
@@ -1284,7 +1284,7 @@ static void TransformAC3_NEON(const int16_t* WEBP_RESTRICT in,
 //------------------------------------------------------------------------------
 // 4x4
 
-static void DC4_NEON(uint8_t* dst) {       // DC
+func DC4_NEON(uint8_t* dst) {       // DC
   const uint8x8_t A = vld1_u8(dst - BPS);  // top row
   const uint16x4_t p0 = vpaddl_u8(A);      // cascading summation of the top
   const uint16x4_t p1 = vpadd_u16(p0, p0);
@@ -1305,7 +1305,7 @@ static void DC4_NEON(uint8_t* dst) {       // DC
 }
 
 // TrueMotion (4x4 + 8x8)
-static WEBP_INLINE void TrueMotion_NEON(uint8_t* dst, int size) {
+static WEBP_INLINE func TrueMotion_NEON(uint8_t* dst, int size) {
   const uint8x8_t TL = vld1_dup_u8(dst - BPS - 1);  // top-left pixel 'A[-1]'
   const uint8x8_t T = vld1_u8(dst - BPS);           // top row 'A[0..3]'
   const uint16x8_t d = vsubl_u8(T, TL);             // A[c] - A[-1]
@@ -1341,10 +1341,10 @@ static WEBP_INLINE void TrueMotion_NEON(uint8_t* dst, int size) {
   }
 }
 
-static void TM4_NEON(uint8_t* dst) { TrueMotion_NEON(dst, 4); }
+func TM4_NEON(uint8_t* dst) { TrueMotion_NEON(dst, 4); }
 
-static void VE4_NEON(uint8_t* dst) {  // vertical
-  // NB: avoid vld1_u64 here as an alignment hint may be added -> SIGBUS.
+func VE4_NEON(uint8_t* dst) {  // vertical
+  // NB: afunc vld1_u64 here as an alignment hint may be added -> SIGBUS.
   const uint64x1_t A0 = vreinterpret_u64_u8(vld1_u8(dst - BPS - 1));  // top row
   const uint64x1_t A1 = vshr_n_u64(A0, 8);
   const uint64x1_t A2 = vshr_n_u64(A0, 16);
@@ -1359,7 +1359,7 @@ static void VE4_NEON(uint8_t* dst) {  // vertical
   }
 }
 
-static void RD4_NEON(uint8_t* dst) {  // Down-right
+func RD4_NEON(uint8_t* dst) {  // Down-right
   const uint8x8_t XABCD_u8 = vld1_u8(dst - BPS - 1);
   const uint64x1_t XABCD = vreinterpret_u64_u8(XABCD_u8);
   const uint64x1_t ____XABC = vshl_n_u64(XABCD, 32);
@@ -1388,7 +1388,7 @@ static void RD4_NEON(uint8_t* dst) {  // Down-right
   vst1_lane_u32((uint32_t*)(dst + 3 * BPS), r3, 0);
 }
 
-static void LD4_NEON(uint8_t* dst) {  // Down-left
+func LD4_NEON(uint8_t* dst) {  // Down-left
   // Note using the same shift trick as VE4() is slower here.
   const uint8x8_t ABCDEFGH = vld1_u8(dst - BPS + 0);
   const uint8x8_t BCDEFGH0 = vld1_u8(dst - BPS + 1);
@@ -1410,7 +1410,7 @@ static void LD4_NEON(uint8_t* dst) {  // Down-left
 //------------------------------------------------------------------------------
 // Chroma
 
-static void VE8uv_NEON(uint8_t* dst) {  // vertical
+func VE8uv_NEON(uint8_t* dst) {  // vertical
   const uint8x8_t top = vld1_u8(dst - BPS);
   int j;
   for (j = 0; j < 8; ++j) {
@@ -1418,7 +1418,7 @@ static void VE8uv_NEON(uint8_t* dst) {  // vertical
   }
 }
 
-static void HE8uv_NEON(uint8_t* dst) {  // horizontal
+func HE8uv_NEON(uint8_t* dst) {  // horizontal
   int j;
   for (j = 0; j < 8; ++j) {
     const uint8x8_t left = vld1_dup_u8(dst - 1);
@@ -1427,7 +1427,7 @@ static void HE8uv_NEON(uint8_t* dst) {  // horizontal
   }
 }
 
-static WEBP_INLINE void DC8_NEON(uint8_t* dst, int do_top, int do_left) {
+static WEBP_INLINE func DC8_NEON(uint8_t* dst, int do_top, int do_left) {
   uint16x8_t sum_top;
   uint16x8_t sum_left;
   uint8x8_t dc0;
@@ -1483,17 +1483,17 @@ static WEBP_INLINE void DC8_NEON(uint8_t* dst, int do_top, int do_left) {
   }
 }
 
-static void DC8uv_NEON(uint8_t* dst) { DC8_NEON(dst, 1, 1); }
-static void DC8uvNoTop_NEON(uint8_t* dst) { DC8_NEON(dst, 0, 1); }
-static void DC8uvNoLeft_NEON(uint8_t* dst) { DC8_NEON(dst, 1, 0); }
-static void DC8uvNoTopLeft_NEON(uint8_t* dst) { DC8_NEON(dst, 0, 0); }
+func DC8uv_NEON(uint8_t* dst) { DC8_NEON(dst, 1, 1); }
+func DC8uvNoTop_NEON(uint8_t* dst) { DC8_NEON(dst, 0, 1); }
+func DC8uvNoLeft_NEON(uint8_t* dst) { DC8_NEON(dst, 1, 0); }
+func DC8uvNoTopLeft_NEON(uint8_t* dst) { DC8_NEON(dst, 0, 0); }
 
-static void TM8uv_NEON(uint8_t* dst) { TrueMotion_NEON(dst, 8); }
+func TM8uv_NEON(uint8_t* dst) { TrueMotion_NEON(dst, 8); }
 
 //------------------------------------------------------------------------------
 // 16x16
 
-static void VE16_NEON(uint8_t* dst) {  // vertical
+func VE16_NEON(uint8_t* dst) {  // vertical
   const uint8x16_t top = vld1q_u8(dst - BPS);
   int j;
   for (j = 0; j < 16; ++j) {
@@ -1501,7 +1501,7 @@ static void VE16_NEON(uint8_t* dst) {  // vertical
   }
 }
 
-static void HE16_NEON(uint8_t* dst) {  // horizontal
+func HE16_NEON(uint8_t* dst) {  // horizontal
   int j;
   for (j = 0; j < 16; ++j) {
     const uint8x16_t left = vld1q_dup_u8(dst - 1);
@@ -1510,7 +1510,7 @@ static void HE16_NEON(uint8_t* dst) {  // horizontal
   }
 }
 
-static WEBP_INLINE void DC16_NEON(uint8_t* dst, int do_top, int do_left) {
+static WEBP_INLINE func DC16_NEON(uint8_t* dst, int do_top, int do_left) {
   uint16x8_t sum_top;
   uint16x8_t sum_left;
   uint8x8_t dc0;
@@ -1572,12 +1572,12 @@ static WEBP_INLINE void DC16_NEON(uint8_t* dst, int do_top, int do_left) {
   }
 }
 
-static void DC16TopLeft_NEON(uint8_t* dst) { DC16_NEON(dst, 1, 1); }
-static void DC16NoTop_NEON(uint8_t* dst) { DC16_NEON(dst, 0, 1); }
-static void DC16NoLeft_NEON(uint8_t* dst) { DC16_NEON(dst, 1, 0); }
-static void DC16NoTopLeft_NEON(uint8_t* dst) { DC16_NEON(dst, 0, 0); }
+func DC16TopLeft_NEON(uint8_t* dst) { DC16_NEON(dst, 1, 1); }
+func DC16NoTop_NEON(uint8_t* dst) { DC16_NEON(dst, 0, 1); }
+func DC16NoLeft_NEON(uint8_t* dst) { DC16_NEON(dst, 1, 0); }
+func DC16NoTopLeft_NEON(uint8_t* dst) { DC16_NEON(dst, 0, 0); }
 
-static void TM16_NEON(uint8_t* dst) {
+func TM16_NEON(uint8_t* dst) {
   const uint8x8_t TL = vld1_dup_u8(dst - BPS - 1);  // top-left pixel 'A[-1]'
   const uint8x16_t T = vld1q_u8(dst - BPS);         // top row 'A[0..15]'
   // A[c] - A[-1]
@@ -1615,9 +1615,9 @@ static void TM16_NEON(uint8_t* dst) {
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8DspInitNEON(void);
+extern func VP8DspInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8DspInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitNEON(void) {
   VP8Transform = TransformTwo_NEON;
   VP8TransformAC3 = TransformAC3_NEON;
   VP8TransformDC = TransformDC_NEON;

@@ -33,7 +33,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 // VP8BitReader
 
-void VP8BitReaderSetBuffer(VP8BitReader* const br,
+func VP8BitReaderSetBuffer(VP8BitReader* const br,
                            const uint8_t* const WEBP_COUNTED_BY(size) start,
                            size_t size) {
   assert(start != NULL);
@@ -43,7 +43,7 @@ void VP8BitReaderSetBuffer(VP8BitReader* const br,
       (size >= sizeof(lbit_t)) ? start + size - sizeof(lbit_t) + 1 : start;
 }
 
-void VP8InitBitReader(VP8BitReader* const br,
+func VP8InitBitReader(VP8BitReader* const br,
                       const uint8_t* const WEBP_COUNTED_BY(size) start,
                       size_t size) {
   assert(br != NULL);
@@ -57,7 +57,7 @@ void VP8InitBitReader(VP8BitReader* const br,
   VP8LoadNewBytes(br);
 }
 
-void VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset) {
+func VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset) {
   if (br->buf != NULL) {
     br->buf += offset;
     br->buf_end += offset;
@@ -85,7 +85,7 @@ const uint8_t kVP8NewRange[128] = {
     211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239,
     241, 243, 245, 247, 249, 251, 253, 127};
 
-void VP8LoadFinalBytes(VP8BitReader* const br) {
+func VP8LoadFinalBytes(VP8BitReader* const br) {
   assert(br != NULL && br->buf != NULL);
   // Only read 8bits at a time
   if (br->buf < br->buf_end) {
@@ -97,7 +97,7 @@ void VP8LoadFinalBytes(VP8BitReader* const br) {
     br->bits += 8;
     br->eof = 1;
   } else {
-    br->bits = 0;  // This is to avoid undefined behaviour with shifts.
+    br->bits = 0;  // This is to afunc undefined behaviour with shifts.
   }
 }
 
@@ -135,7 +135,7 @@ static const uint32_t kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
     0x003fff, 0x007fff, 0x00ffff, 0x01ffff, 0x03ffff, 0x07ffff, 0x0fffff,
     0x1fffff, 0x3fffff, 0x7fffff, 0xffffff};
 
-void VP8LInitBitReader(VP8LBitReader* const br,
+func VP8LInitBitReader(VP8LBitReader* const br,
                        const uint8_t* const WEBP_COUNTED_BY(length) start,
                        size_t length) {
   size_t i;
@@ -159,7 +159,7 @@ void VP8LInitBitReader(VP8LBitReader* const br,
   br->pos = length;
 }
 
-void VP8LBitReaderSetBuffer(VP8LBitReader* const br,
+func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
                             const uint8_t* const WEBP_COUNTED_BY(len) buf,
                             size_t len) {
   assert(br != NULL);
@@ -171,13 +171,13 @@ void VP8LBitReaderSetBuffer(VP8LBitReader* const br,
   br->eos = (br->pos > br->len) || VP8LIsEndOfStream(br);
 }
 
-static void VP8LSetEndOfStream(VP8LBitReader* const br) {
+func VP8LSetEndOfStream(VP8LBitReader* const br) {
   br->eos = 1;
-  br->bit_pos = 0;  // To avoid undefined behaviour with shifts.
+  br->bit_pos = 0;  // To afunc undefined behaviour with shifts.
 }
 
 // If not at EOS, reload up to VP8L_LBITS byte-by-byte
-static void ShiftBytes(VP8LBitReader* const br) {
+func ShiftBytes(VP8LBitReader* const br) {
   while (br->bit_pos >= 8 && br->pos < br->len) {
     br->val >>= 8;
     br->val |= ((vp8l_val_t)br->buf[br->pos]) << (VP8L_LBITS - 8);
@@ -189,7 +189,7 @@ static void ShiftBytes(VP8LBitReader* const br) {
   }
 }
 
-void VP8LDoFillBitWindow(VP8LBitReader* const br) {
+func VP8LDoFillBitWindow(VP8LBitReader* const br) {
   assert(br->bit_pos >= VP8L_WBITS);
 #if defined(VP8L_USE_FAST_LOAD)
   if (br->pos + sizeof(br->val) < br->len) {
@@ -240,7 +240,7 @@ static int last_pos = 0;
 static const uint8_t* buf_start = NULL;
 static int init_done = 0;
 
-static void PrintBitTraces(void) {
+func PrintBitTraces(void) {
   int i;
   int scale = 1;
   int total = 0;
@@ -250,7 +250,7 @@ static void PrintBitTraces(void) {
   units = "bytes";
 #endif
   for (i = 0; i < last_label; ++i) total += kLabels[i].size;
-  if (total < 1) total = 1;  // avoid rounding errors
+  if (total < 1) total = 1;  // afunc rounding errors
   printf("=== Bit traces ===\n");
   for (i = 0; i < last_label; ++i) {
     const int skip = 16 - (int)strlen(kLabels[i].label);
@@ -264,7 +264,7 @@ static void PrintBitTraces(void) {
   printf("Total: %d %s\n", total, units);
 }
 
-void BitTrace(const struct VP8BitReader* const br, const char label[]) {
+func BitTrace(const struct VP8BitReader* const br, const char label[]) {
   int i, pos;
   if (!init_done) {
     WEBP_UNSAFE_MEMSET(kLabels, 0, sizeof(kLabels));

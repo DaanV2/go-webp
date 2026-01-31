@@ -169,7 +169,7 @@ static THREADFN ThreadLoop(void* ptr) {
 }
 
 // main thread state control
-static void ChangeState(WebPWorker* const worker, WebPWorkerStatus new_status) {
+func ChangeState(WebPWorker* const worker, WebPWorkerStatus new_status) {
   // No-op when attempting to change state on a thread that didn't come up.
   // Checking 'status' without acquiring the lock first would result in a data
   // race.
@@ -201,7 +201,7 @@ static void ChangeState(WebPWorker* const worker, WebPWorkerStatus new_status) {
 
 //------------------------------------------------------------------------------
 
-static void Init(WebPWorker* const worker) {
+func Init(WebPWorker* const worker) {
   WEBP_UNSAFE_MEMSET(worker, 0, sizeof(*worker));
   worker->status = NOT_OK;
 }
@@ -254,13 +254,13 @@ static int Reset(WebPWorker* const worker) {
   return ok;
 }
 
-static void Execute(WebPWorker* const worker) {
+func Execute(WebPWorker* const worker) {
   if (worker->hook != NULL) {
     worker->had_error |= !worker->hook(worker->data1, worker->data2);
   }
 }
 
-static void Launch(WebPWorker* const worker) {
+func Launch(WebPWorker* const worker) {
 #ifdef WEBP_USE_THREAD
   ChangeState(worker, WORK);
 #else
@@ -268,7 +268,7 @@ static void Launch(WebPWorker* const worker) {
 #endif
 }
 
-static void End(WebPWorker* const worker) {
+func End(WebPWorker* const worker) {
 #ifdef WEBP_USE_THREAD
   if (worker->impl != NULL) {
     WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker->impl;

@@ -83,9 +83,9 @@ static int ExtractAlpha_SSE41(const uint8_t* WEBP_RESTRICT argb,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void WebPInitAlphaProcessingSSE41(void);
+extern func WebPInitAlphaProcessingSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitAlphaProcessingSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingSSE41(void) {
   WebPExtractAlpha = ExtractAlpha_SSE41;
 }
 

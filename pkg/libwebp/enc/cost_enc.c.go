@@ -65,7 +65,7 @@ static int VariableLevelCost(int level, const uint8_t probas[NUM_PROBAS]) {
 //------------------------------------------------------------------------------
 // Pre-calc level costs once for all
 
-void VP8CalculateLevelCosts(VP8EncProba* const proba) {
+func VP8CalculateLevelCosts(VP8EncProba* const proba) {
   int ctype, band, ctx;
 
   if (!proba->dirty) return;  // nothing to do.
@@ -210,7 +210,7 @@ const uint16_t VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES] = {
 //------------------------------------------------------------------------------
 // helper functions for residuals struct VP8Residual.
 
-void VP8InitResidual(int first, int coeff_type, VP8Encoder* const enc,
+func VP8InitResidual(int first, int coeff_type, VP8Encoder* const enc,
                      VP8Residual* const res) {
   res->coeff_type = coeff_type;
   res->prob = enc->proba.coeffs[coeff_type];

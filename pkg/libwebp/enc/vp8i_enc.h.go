@@ -273,41 +273,41 @@ typedef struct {
 
 // in iterator.c
 // must be called first
-void VP8IteratorInit(VP8Encoder* const enc, VP8EncIterator* const it);
+func VP8IteratorInit(VP8Encoder* const enc, VP8EncIterator* const it);
 // reset iterator position to row 'y'
-void VP8IteratorSetRow(VP8EncIterator* const it, int y);
+func VP8IteratorSetRow(VP8EncIterator* const it, int y);
 // set count down (=number of iterations to go)
-void VP8IteratorSetCountDown(VP8EncIterator* const it, int count_down);
+func VP8IteratorSetCountDown(VP8EncIterator* const it, int count_down);
 // return true if iteration is finished
 int VP8IteratorIsDone(const VP8EncIterator* const it);
 // Import uncompressed samples from source.
 // If tmp_32 is not NULL, import boundary samples too.
 // tmp_32 is a 32-bytes scratch buffer that must be aligned in memory.
-void VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32);
+func VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32);
 // export decimated samples
-void VP8IteratorExport(const VP8EncIterator* const it);
+func VP8IteratorExport(const VP8EncIterator* const it);
 // go to next macroblock. Returns false if not finished.
 int VP8IteratorNext(VP8EncIterator* const it);
 // save the 'yuv_out' boundary values to 'top'/'left' arrays for next
 // iterations.
-void VP8IteratorSaveBoundary(VP8EncIterator* const it);
+func VP8IteratorSaveBoundary(VP8EncIterator* const it);
 // Report progression based on macroblock rows. Return 0 for user-abort request.
 int VP8IteratorProgress(const VP8EncIterator* const it, int delta);
 // Intra4x4 iterations
-void VP8IteratorStartI4(VP8EncIterator* const it);
+func VP8IteratorStartI4(VP8EncIterator* const it);
 // returns true if not done.
 int VP8IteratorRotateI4(VP8EncIterator* const it, const uint8_t* const yuv_out);
 
 // Non-zero context setup/teardown
-void VP8IteratorNzToBytes(VP8EncIterator* const it);
-void VP8IteratorBytesToNz(VP8EncIterator* const it);
+func VP8IteratorNzToBytes(VP8EncIterator* const it);
+func VP8IteratorBytesToNz(VP8EncIterator* const it);
 
 // Helper functions to set mode properties
-void VP8SetIntra16Mode(const VP8EncIterator* const it, int mode);
-void VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8_t* modes);
-void VP8SetIntraUVMode(const VP8EncIterator* const it, int mode);
-void VP8SetSkip(const VP8EncIterator* const it, int skip);
-void VP8SetSegment(const VP8EncIterator* const it, int segment);
+func VP8SetIntra16Mode(const VP8EncIterator* const it, int mode);
+func VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8_t* modes);
+func VP8SetIntraUVMode(const VP8EncIterator* const it, int mode);
+func VP8SetSkip(const VP8EncIterator* const it, int skip);
+func VP8SetSegment(const VP8EncIterator* const it, int segment);
 
 //------------------------------------------------------------------------------
 // Paginated token buffer
@@ -326,8 +326,8 @@ typedef struct {
 } VP8TBuffer;
 
 // initialize an empty buffer
-void VP8TBufferInit(VP8TBuffer* const b, int page_size);
-void VP8TBufferClear(VP8TBuffer* const b);  // de-allocate pages memory
+func VP8TBufferInit(VP8TBuffer* const b, int page_size);
+func VP8TBufferClear(VP8TBuffer* const b);  // de-allocate pages memory
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
@@ -425,11 +425,11 @@ extern const uint8_t VP8CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS];
 extern const uint8_t VP8CoeffsUpdateProba[NUM_TYPES][NUM_BANDS][NUM_CTX]
                                          [NUM_PROBAS];
 // Reset the token probabilities to their initial (default) values
-void VP8DefaultProbas(VP8Encoder* const enc);
+func VP8DefaultProbas(VP8Encoder* const enc);
 // Write the token probabilities
-void VP8WriteProbas(VP8BitWriter* const bw, const VP8EncProba* const probas);
+func VP8WriteProbas(VP8BitWriter* const bw, const VP8EncProba* const probas);
 // Writes the partition #0 modes (that is: all intra modes)
-void VP8CodeIntraModes(VP8Encoder* const enc);
+func VP8CodeIntraModes(VP8Encoder* const enc);
 
 // in syntax.c
 // Generates the final bitstream by coding the partition0 and headers,
@@ -437,7 +437,7 @@ void VP8CodeIntraModes(VP8Encoder* const enc);
 // Return true if everything is ok.
 int VP8EncWrite(VP8Encoder* const enc);
 // Release memory allocated for bit-writing in VP8EncLoop & seq.
-void VP8EncFreeBitWriters(VP8Encoder* const enc);
+func VP8EncFreeBitWriters(VP8Encoder* const enc);
 
 // in frame.c
 extern const uint8_t VP8Cat3[];
@@ -446,9 +446,9 @@ extern const uint8_t VP8Cat5[];
 extern const uint8_t VP8Cat6[];
 
 // Form all the four Intra16x16 predictions in the 'yuv_p' cache
-void VP8MakeLuma16Preds(const VP8EncIterator* const it);
+func VP8MakeLuma16Preds(const VP8EncIterator* const it);
 // Form all the four Chroma8x8 predictions in the 'yuv_p' cache
-void VP8MakeChroma8Preds(const VP8EncIterator* const it);
+func VP8MakeChroma8Preds(const VP8EncIterator* const it);
 // Rate calculation
 int VP8GetCostLuma16(VP8EncIterator* const it, const VP8ModeScore* const rd);
 int VP8GetCostLuma4(VP8EncIterator* const it, const int16_t levels[16]);
@@ -470,21 +470,21 @@ int VP8EncAnalyze(VP8Encoder* const enc);
 
 // in quant.c
 // Sets up segment's quantization values, 'base_quant' and filter strengths.
-void VP8SetSegmentParams(VP8Encoder* const enc, float quality);
+func VP8SetSegmentParams(VP8Encoder* const enc, float quality);
 // Pick best modes and fills the levels. Returns true if skipped.
 int VP8Decimate(VP8EncIterator* WEBP_RESTRICT const it,
                 VP8ModeScore* WEBP_RESTRICT const rd, VP8RDLevel rd_opt);
 
 // in alpha.c
-void VP8EncInitAlpha(VP8Encoder* const enc);   // initialize alpha compression
+func VP8EncInitAlpha(VP8Encoder* const enc);   // initialize alpha compression
 int VP8EncStartAlpha(VP8Encoder* const enc);   // start alpha coding process
 int VP8EncFinishAlpha(VP8Encoder* const enc);  // finalize compressed data
 int VP8EncDeleteAlpha(VP8Encoder* const enc);  // delete compressed data
 
 // autofilter
-void VP8InitFilter(VP8EncIterator* const it);
-void VP8StoreFilterStats(VP8EncIterator* const it);
-void VP8AdjustFilterStrength(VP8EncIterator* const it);
+func VP8InitFilter(VP8EncIterator* const it);
+func VP8StoreFilterStats(VP8EncIterator* const it);
+func VP8AdjustFilterStrength(VP8EncIterator* const it);
 
 // returns the approximate filtering strength needed to smooth a edge
 // step of 'delta', given a sharpness parameter 'sharpness'.
@@ -498,7 +498,7 @@ int VP8FilterStrengthFromDelta(int sharpness, int delta);
 int WebPValidatePicture(const WebPPicture* const picture);
 
 // Remove reference to the ARGB/YUVA buffer (doesn't free anything).
-void WebPPictureResetBuffers(WebPPicture* const picture);
+func WebPPictureResetBuffers(WebPPicture* const picture);
 
 // Allocates ARGB buffer according to set width/height (previous one is
 // always free'd). Preserves the YUV(A) buffer. Returns false in case of error
@@ -513,7 +513,7 @@ int WebPPictureAllocYUVA(WebPPicture* const picture);
 
 // Replace samples that are fully transparent by 'color' to help compressibility
 // (no guarantee, though). Assumes pic->use_argb is true.
-void WebPReplaceTransparentPixels(WebPPicture* const pic, uint32_t color);
+func WebPReplaceTransparentPixels(WebPPicture* const pic, uint32_t color);
 
 //------------------------------------------------------------------------------
 

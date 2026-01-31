@@ -281,13 +281,13 @@ int VP8SetError(VP8Decoder* const dec, VP8StatusCode error,
                 const char* const msg);
 
 // in tree.c
-void VP8ResetProba(VP8Proba* const proba);
-void VP8ParseProba(VP8BitReader* const br, VP8Decoder* const dec);
+func VP8ResetProba(VP8Proba* const proba);
+func VP8ParseProba(VP8BitReader* const br, VP8Decoder* const dec);
 // parses one row of intra mode data in partition 0, returns !eof
 int VP8ParseIntraModeRow(VP8BitReader* const br, VP8Decoder* const dec);
 
 // in quant.c
-void VP8ParseQuant(VP8Decoder* const dec);
+func VP8ParseQuant(VP8Decoder* const dec);
 
 // in frame.c
  int VP8InitFrame(VP8Decoder* const dec, VP8Io* const io);
@@ -305,12 +305,12 @@ int VP8GetThreadMethod(const WebPDecoderOptions* const options,
                        const WebPHeaderStructure* const headers, int width,
                        int height);
 // Initialize dithering post-process if needed.
-void VP8InitDithering(const WebPDecoderOptions* const options,
+func VP8InitDithering(const WebPDecoderOptions* const options,
                       VP8Decoder* const dec);
 // Process the last decoded row (filtering + output).
  int VP8ProcessRow(VP8Decoder* const dec, VP8Io* const io);
 // To be called at the start of a new scanline, to initialize predictors.
-void VP8InitScanline(VP8Decoder* const dec);
+func VP8InitScanline(VP8Decoder* const dec);
 // Decode one macroblock. Returns false if there is not enough data.
  int VP8DecodeMB(VP8Decoder* const dec,
                                VP8BitReader* const token_br);

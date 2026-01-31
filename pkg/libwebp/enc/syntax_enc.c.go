@@ -184,7 +184,7 @@ Error:
 }
 
 // Segmentation header
-static void PutSegmentHeader(VP8BitWriter* const bw,
+func PutSegmentHeader(VP8BitWriter* const bw,
                              const VP8Encoder* const enc) {
   const VP8EncSegmentHeader* const hdr = &enc->segment_hdr;
   const VP8EncProba* const proba = &enc->proba;
@@ -214,7 +214,7 @@ static void PutSegmentHeader(VP8BitWriter* const bw,
 }
 
 // Filtering parameters header
-static void PutFilterHeader(VP8BitWriter* const bw,
+func PutFilterHeader(VP8BitWriter* const bw,
                             const VP8EncFilterHeader* const hdr) {
   const int use_lf_delta = (hdr->i4x4_lf_delta != 0);
   VP8PutBitUniform(bw, hdr->simple);
@@ -234,7 +234,7 @@ static void PutFilterHeader(VP8BitWriter* const bw,
 }
 
 // Nominal quantization parameters
-static void PutQuant(VP8BitWriter* const bw, const VP8Encoder* const enc) {
+func PutQuant(VP8BitWriter* const bw, const VP8Encoder* const enc) {
   VP8PutBits(bw, enc->base_quant, 7);
   VP8PutSignedBits(bw, enc->dq_y1_dc, 4);
   VP8PutSignedBits(bw, enc->dq_y2_dc, 4);
@@ -311,7 +311,7 @@ static int GeneratePartition0(VP8Encoder* const enc) {
   return 1;
 }
 
-void VP8EncFreeBitWriters(VP8Encoder* const enc) {
+func VP8EncFreeBitWriters(VP8Encoder* const enc) {
   int p;
   VP8BitWriterWipeOut(&enc->bw);
   for (p = 0; p < enc->num_parts; ++p) {

@@ -31,7 +31,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 //------------------------------------------------------------------------------
 // Row import
 
-void WebPRescalerImportRowExpand_C(WebPRescaler* WEBP_RESTRICT const wrk,
+func WebPRescalerImportRowExpand_C(WebPRescaler* WEBP_RESTRICT const wrk,
                                    const uint8_t* WEBP_RESTRICT src) {
   const int x_stride = wrk->num_channels;
   const int x_out_max = wrk->dst_width * wrk->num_channels;
@@ -64,7 +64,7 @@ void WebPRescalerImportRowExpand_C(WebPRescaler* WEBP_RESTRICT const wrk,
   }
 }
 
-void WebPRescalerImportRowShrink_C(WebPRescaler* WEBP_RESTRICT const wrk,
+func WebPRescalerImportRowShrink_C(WebPRescaler* WEBP_RESTRICT const wrk,
                                    const uint8_t* WEBP_RESTRICT src) {
   const int x_stride = wrk->num_channels;
   const int x_out_max = wrk->dst_width * wrk->num_channels;
@@ -101,7 +101,7 @@ void WebPRescalerImportRowShrink_C(WebPRescaler* WEBP_RESTRICT const wrk,
 //------------------------------------------------------------------------------
 // Row export
 
-void WebPRescalerExportRowExpand_C(WebPRescaler* const wrk) {
+func WebPRescalerExportRowExpand_C(WebPRescaler* const wrk) {
   int x_out;
   uint8_t* const dst = wrk->dst;
   rescaler_t* const irow = wrk->irow;
@@ -129,7 +129,7 @@ void WebPRescalerExportRowExpand_C(WebPRescaler* const wrk) {
   }
 }
 
-void WebPRescalerExportRowShrink_C(WebPRescaler* const wrk) {
+func WebPRescalerExportRowShrink_C(WebPRescaler* const wrk) {
   int x_out;
   uint8_t* const dst = wrk->dst;
   rescaler_t* const irow = wrk->irow;
@@ -162,7 +162,7 @@ void WebPRescalerExportRowShrink_C(WebPRescaler* const wrk) {
 //------------------------------------------------------------------------------
 // Main entry calls
 
-void WebPRescalerImportRow(WebPRescaler* WEBP_RESTRICT const wrk,
+func WebPRescalerImportRow(WebPRescaler* WEBP_RESTRICT const wrk,
                            const uint8_t* WEBP_RESTRICT src) {
   assert(!WebPRescalerInputDone(wrk));
   if (!wrk->x_expand) {
@@ -172,7 +172,7 @@ void WebPRescalerImportRow(WebPRescaler* WEBP_RESTRICT const wrk,
   }
 }
 
-void WebPRescalerExportRow(WebPRescaler* const wrk) {
+func WebPRescalerExportRow(WebPRescaler* const wrk) {
   if (wrk->y_accum <= 0) {
     assert(!WebPRescalerOutputDone(wrk));
     if (wrk->y_expand) {
@@ -203,11 +203,11 @@ WebPRescalerExportRowFunc WebPRescalerExportRowExpand;
 WebPRescalerExportRowFunc WebPRescalerExportRowShrink;
 
 extern VP8CPUInfo VP8GetCPUInfo;
-extern void WebPRescalerDspInitSSE2(void);
-extern void WebPRescalerDspInitMIPS32(void);
-extern void WebPRescalerDspInitMIPSdspR2(void);
-extern void WebPRescalerDspInitMSA(void);
-extern void WebPRescalerDspInitNEON(void);
+extern func WebPRescalerDspInitSSE2(void);
+extern func WebPRescalerDspInitMIPS32(void);
+extern func WebPRescalerDspInitMIPSdspR2(void);
+extern func WebPRescalerDspInitMSA(void);
+extern func WebPRescalerDspInitNEON(void);
 
 WEBP_DSP_INIT_FUNC(WebPRescalerDspInit) {
 #if !defined(WEBP_REDUCE_SIZE)

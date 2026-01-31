@@ -62,35 +62,35 @@ typedef struct {
 // The input data is the PixOrCopy data, which models the literals, stop
 // codes and backward references (both distances and lengths).  Also: if
 // palette_code_bits is >= 0, initialize the histogram with this value.
-void VP8LHistogramCreate(VP8LHistogram* const h,
+func VP8LHistogramCreate(VP8LHistogram* const h,
                          const VP8LBackwardRefs* const refs,
                          int palette_code_bits);
 
 // Set the palette_code_bits and reset the stats.
 // If init_arrays is true, the arrays are also filled with 0's.
-void VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits,
+func VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits,
                        int init_arrays);
 
 // Collect all the references into a histogram (without reset)
 // The distance modifier function is applied to the distance before
 // the histogram is updated. It can be NULL.
-void VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs,
+func VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs,
                             int (*const distance_modifier)(int, int),
                             int distance_modifier_arg0,
                             VP8LHistogram* const histo);
 
 // Free the memory allocated for the histogram.
-void VP8LFreeHistogram(VP8LHistogram* const histo);
+func VP8LFreeHistogram(VP8LHistogram* const histo);
 
 // Free the memory allocated for the histogram set.
-void VP8LFreeHistogramSet(VP8LHistogramSet* const histo);
+func VP8LFreeHistogramSet(VP8LHistogramSet* const histo);
 
 // Allocate an array of pointer to histograms, allocated and initialized
 // using 'cache_bits'. Return NULL in case of memory error.
 VP8LHistogramSet* VP8LAllocateHistogramSet(int size, int cache_bits);
 
 // Set the histograms in set to 0.
-void VP8LHistogramSetClear(VP8LHistogramSet* const set);
+func VP8LHistogramSetClear(VP8LHistogramSet* const set);
 
 // Allocate and initialize histogram object with specified 'cache_bits'.
 // Returns NULL in case of memory error.

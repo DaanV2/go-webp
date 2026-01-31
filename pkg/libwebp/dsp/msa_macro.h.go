@@ -86,7 +86,7 @@ const ALPHAVAL = (0xff)
 #define MSA_LOAD(psrc, FUNC_NAME) FUNC_NAME(psrc)
 
 #define MSA_STORE_FUNC(TYPE, INSTR, FUNC_NAME)                 \
-  static inline void FUNC_NAME(TYPE val, void* const pdst) {   \
+  static inline func FUNC_NAME(TYPE val, void* const pdst) {   \
     uint8_t* const pdst_m = (uint8_t*)pdst;                    \
     TYPE val_m = val;                                          \
     __asm__ volatile(" " #INSTR "  %[val_m],  %[pdst_m]  \n\t" \

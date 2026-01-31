@@ -43,14 +43,14 @@ int WebPGetEncoderVersion(void) {
 // VP8Encoder
 //------------------------------------------------------------------------------
 
-static void ResetSegmentHeader(VP8Encoder* const enc) {
+func ResetSegmentHeader(VP8Encoder* const enc) {
   VP8EncSegmentHeader* const hdr = &enc->segment_hdr;
   hdr->num_segments = enc->config->segments;
   hdr->update_map = (hdr->num_segments > 1);
   hdr->size = 0;
 }
 
-static void ResetFilterHeader(VP8Encoder* const enc) {
+func ResetFilterHeader(VP8Encoder* const enc) {
   VP8EncFilterHeader* const hdr = &enc->filter_hdr;
   hdr->simple = 1;
   hdr->level = 0;
@@ -58,7 +58,7 @@ static void ResetFilterHeader(VP8Encoder* const enc) {
   hdr->i4x4_lf_delta = 0;
 }
 
-static void ResetBoundaryPredictions(VP8Encoder* const enc) {
+func ResetBoundaryPredictions(VP8Encoder* const enc) {
   // init boundary values once for all
   // Note: actually, initializing the 'preds[]' is only needed for intra4.
   int i;
@@ -98,7 +98,7 @@ static void ResetBoundaryPredictions(VP8Encoder* const enc) {
 // full-SNS          |   |   |   |   | x | x | x |
 //-------------------+---+---+---+---+---+---+---+
 
-static void MapConfigToTools(VP8Encoder* const enc) {
+func MapConfigToTools(VP8Encoder* const enc) {
   const WebPConfig* const config = enc->config;
   const int method = config->method;
   const int limit = 100 - config->partition_limit;
@@ -275,7 +275,7 @@ static double GetPSNR(uint64_t err, uint64_t size) {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
 
-static void FinalizePSNR(const VP8Encoder* const enc) {
+func FinalizePSNR(const VP8Encoder* const enc) {
   WebPAuxStats* stats = enc->pic->stats;
   const uint64_t size = enc->sse_count;
   const uint64_t* const sse = enc->sse;
@@ -287,7 +287,7 @@ static void FinalizePSNR(const VP8Encoder* const enc) {
 }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
-static void StoreStats(VP8Encoder* const enc) {
+func StoreStats(VP8Encoder* const enc) {
 #if !defined(WEBP_DISABLE_STATS)
   WebPAuxStats* const stats = enc->pic->stats;
   if (stats != NULL) {

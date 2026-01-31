@@ -29,9 +29,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define VALUES_IN_BYTE 256
 
-extern void VP8LClearBackwardRefs(VP8LBackwardRefs* const refs);
+extern func VP8LClearBackwardRefs(VP8LBackwardRefs* const refs);
 extern int VP8LDistanceToPlaneCode(int xsize, int dist);
-extern void VP8LBackwardRefsCursorAdd(VP8LBackwardRefs* const refs,
+extern func VP8LBackwardRefsCursorAdd(VP8LBackwardRefs* const refs,
                                       const PixOrCopy v);
 
 typedef struct {
@@ -42,7 +42,7 @@ typedef struct {
   uint32_t* literal;
 } CostModel;
 
-static void ConvertPopulationCountTableToBitEstimates(
+func ConvertPopulationCountTableToBitEstimates(
     int num_symbols, const uint32_t population_counts[], uint32_t output[]) {
   uint32_t sum = 0;
   int nonzeros = 0;
@@ -119,7 +119,7 @@ static WEBP_INLINE int64_t GetDistanceCost(const CostModel* const m,
          ((int64_t)extra_bits << LOG_2_PRECISION_BITS);
 }
 
-static WEBP_INLINE void AddSingleLiteralWithCostModel(
+static WEBP_INLINE func AddSingleLiteralWithCostModel(
     const uint32_t* const argb, VP8LColorCache* const hashers,
     const CostModel* const cost_model, int idx, int use_color_cache,
     int64_t prev_cost, int64_t* const cost, uint16_t* const dist_array) {
@@ -142,7 +142,7 @@ static WEBP_INLINE void AddSingleLiteralWithCostModel(
 // -----------------------------------------------------------------------------
 // CostManager and interval handling
 
-// Empirical value to avoid high memory consumption but good for performance.
+// Empirical value to afunc high memory consumption but good for performance.
 #define COST_CACHE_INTERVAL_SIZE_MAX 500
 
 // To perform backward reference every pixel at index 'index' is considered and
@@ -199,7 +199,7 @@ typedef struct {
   CostInterval* recycled_intervals;
 } CostManager;
 
-static void CostIntervalAddToFreeList(CostManager* const manager,
+func CostIntervalAddToFreeList(CostManager* const manager,
                                       CostInterval* const interval) {
   interval->next = manager->free_intervals;
   manager->free_intervals = interval;
@@ -211,7 +211,7 @@ static int CostIntervalIsInFreeList(const CostManager* const manager,
           interval <= &manager->intervals[COST_MANAGER_MAX_FREE_LIST - 1]);
 }
 
-static void CostManagerInitFreeList(CostManager* const manager) {
+func CostManagerInitFreeList(CostManager* const manager) {
   int i;
   manager->free_intervals = NULL;
   for (i = 0; i < COST_MANAGER_MAX_FREE_LIST; ++i) {
@@ -219,7 +219,7 @@ static void CostManagerInitFreeList(CostManager* const manager) {
   }
 }
 
-static void DeleteIntervalList(CostManager* const manager,
+func DeleteIntervalList(CostManager* const manager,
                                const CostInterval* interval) {
   while (interval != NULL) {
     const CostInterval* const next = interval->next;
@@ -230,7 +230,7 @@ static void DeleteIntervalList(CostManager* const manager,
   }
 }
 
-static void CostManagerClear(CostManager* const manager) {
+func CostManagerClear(CostManager* const manager) {
   if (manager == NULL) return;
 
   WebPSafeFree(manager->costs);
@@ -324,7 +324,7 @@ static int CostManagerInit(CostManager* const manager,
 
 // Given the cost and the position that define an interval, update the cost at
 // pixel 'i' if it is smaller than the previously computed value.
-static WEBP_INLINE void UpdateCost(CostManager* const manager, int i,
+static WEBP_INLINE func UpdateCost(CostManager* const manager, int i,
                                    int position, int64_t cost) {
   const int k = i - position;
   assert(k >= 0 && k < MAX_LENGTH);
@@ -337,7 +337,7 @@ static WEBP_INLINE void UpdateCost(CostManager* const manager, int i,
 
 // Given the cost and the position that define an interval, update the cost for
 // all the pixels between 'start' and 'end' excluded.
-static WEBP_INLINE void UpdateCostPerInterval(CostManager* const manager,
+static WEBP_INLINE func UpdateCostPerInterval(CostManager* const manager,
                                               int start, int end, int position,
                                               int64_t cost) {
   int i;
@@ -345,7 +345,7 @@ static WEBP_INLINE void UpdateCostPerInterval(CostManager* const manager,
 }
 
 // Given two intervals, make 'prev' be the previous one of 'next' in 'manager'.
-static WEBP_INLINE void ConnectIntervals(CostManager* const manager,
+static WEBP_INLINE func ConnectIntervals(CostManager* const manager,
                                          CostInterval* const prev,
                                          CostInterval* const next) {
   if (prev != NULL) {
@@ -358,7 +358,7 @@ static WEBP_INLINE void ConnectIntervals(CostManager* const manager,
 }
 
 // Pop an interval in the manager.
-static WEBP_INLINE void PopInterval(CostManager* const manager,
+static WEBP_INLINE func PopInterval(CostManager* const manager,
                                     CostInterval* const interval) {
   if (interval == NULL) return;
 
@@ -377,7 +377,7 @@ static WEBP_INLINE void PopInterval(CostManager* const manager,
 // overlap with i.
 // If 'do_clean_intervals' is set to something different than 0, intervals that
 // end before 'i' will be popped.
-static WEBP_INLINE void UpdateCostAtIndex(CostManager* const manager, int i,
+static WEBP_INLINE func UpdateCostAtIndex(CostManager* const manager, int i,
                                           int do_clean_intervals) {
   CostInterval* current = manager->head;
 
@@ -398,7 +398,7 @@ static WEBP_INLINE void UpdateCostAtIndex(CostManager* const manager, int i,
 // Given a current orphan interval and its previous interval, before
 // it was orphaned (which can be NULL), set it at the right place in the list
 // of intervals using the 'start' ordering and the previous interval as a hint.
-static WEBP_INLINE void PositionOrphanInterval(CostManager* const manager,
+static WEBP_INLINE func PositionOrphanInterval(CostManager* const manager,
                                                CostInterval* const current,
                                                CostInterval* previous) {
   assert(current != NULL);
@@ -422,7 +422,7 @@ static WEBP_INLINE void PositionOrphanInterval(CostManager* const manager,
 
 // Insert an interval in the list contained in the manager by starting at
 // 'interval_in' as a hint. The intervals are sorted by 'start' value.
-static WEBP_INLINE void InsertInterval(CostManager* const manager,
+static WEBP_INLINE func InsertInterval(CostManager* const manager,
                                        CostInterval* const interval_in,
                                        int64_t cost, int position, int start,
                                        int end) {
@@ -462,7 +462,7 @@ static WEBP_INLINE void InsertInterval(CostManager* const manager,
 // and distance_cost, add its contributions to the previous intervals and costs.
 // If handling the interval or one of its subintervals becomes to heavy, its
 // contribution is added to the costs right away.
-static WEBP_INLINE void PushInterval(CostManager* const manager,
+static WEBP_INLINE func PushInterval(CostManager* const manager,
                                      int64_t distance_cost, int position,
                                      int len) {
   size_t i;
@@ -692,7 +692,7 @@ Error:
 // We pack the path at the end of *dist_array and return
 // a pointer to this part of the array. Example:
 // dist_array = [1x2xx3x2] => packed [1x2x1232], chosen_path = [1232]
-static void TraceBackwards(uint16_t* const dist_array, int dist_array_size,
+func TraceBackwards(uint16_t* const dist_array, int dist_array_size,
                            uint16_t** const chosen_path,
                            int* const chosen_path_size) {
   uint16_t* path = dist_array + dist_array_size;

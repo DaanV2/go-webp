@@ -33,7 +33,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX_FLOOR(x, y) (((uint64_t)(x) * (y)) >> WEBP_RESCALER_RFIX)
 
 // input: 8 bytes ABCDEFGH -> output: A0E0B0F0C0G0D0H0
-static void LoadTwoPixels_SSE2(const uint8_t* const src, __m128i* out) {
+func LoadTwoPixels_SSE2(const uint8_t* const src, __m128i* out) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i A = _mm_loadl_epi64((const __m128i*)(src));  // ABCDEFGH
   const __m128i B = _mm_unpacklo_epi8(A, zero);              // A0B0C0D0E0F0G0H0
@@ -42,13 +42,13 @@ static void LoadTwoPixels_SSE2(const uint8_t* const src, __m128i* out) {
 }
 
 // input: 8 bytes ABCDEFGH -> output: A0B0C0D0E0F0G0H0
-static void LoadEightPixels_SSE2(const uint8_t* const src, __m128i* out) {
+func LoadEightPixels_SSE2(const uint8_t* const src, __m128i* out) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i A = _mm_loadl_epi64((const __m128i*)(src));  // ABCDEFGH
   *out = _mm_unpacklo_epi8(A, zero);
 }
 
-static void RescalerImportRowExpand_SSE2(WebPRescaler* WEBP_RESTRICT const wrk,
+func RescalerImportRowExpand_SSE2(WebPRescaler* WEBP_RESTRICT const wrk,
                                          const uint8_t* WEBP_RESTRICT src) {
   rescaler_t* frow = wrk->frow;
   const rescaler_t* const frow_end = frow + wrk->dst_width * wrk->num_channels;
@@ -114,7 +114,7 @@ static void RescalerImportRowExpand_SSE2(WebPRescaler* WEBP_RESTRICT const wrk,
   assert(accum == 0);
 }
 
-static void RescalerImportRowShrink_SSE2(WebPRescaler* WEBP_RESTRICT const wrk,
+func RescalerImportRowShrink_SSE2(WebPRescaler* WEBP_RESTRICT const wrk,
                                          const uint8_t* WEBP_RESTRICT src) {
   const int x_sub = wrk->x_sub;
   int accum = 0;
@@ -140,7 +140,7 @@ static void RescalerImportRowShrink_SSE2(WebPRescaler* WEBP_RESTRICT const wrk,
       const __m128i A = _mm_cvtsi32_si128(WebPMemToInt32(src));
       src += 4;
       base = _mm_unpacklo_epi8(A, zero);
-      // To avoid overflow, we need: base * x_add / x_sub < 32768
+      // To afunc overflow, we need: base * x_add / x_sub < 32768
       // => x_add < x_sub << 7. That's a 1/128 reduction ratio limit.
       sum = _mm_add_epi16(sum, base);
       accum -= x_sub;
@@ -173,7 +173,7 @@ static void RescalerImportRowShrink_SSE2(WebPRescaler* WEBP_RESTRICT const wrk,
 // Row export
 
 // load *src as epi64, multiply by mult and store result in [out0 ... out3]
-static WEBP_INLINE void LoadDispatchAndMult_SSE2(
+static WEBP_INLINE func LoadDispatchAndMult_SSE2(
     const rescaler_t* WEBP_RESTRICT const src, const __m128i* const mult,
     __m128i* const out0, __m128i* const out1, __m128i* const out2,
     __m128i* const out3) {
@@ -194,7 +194,7 @@ static WEBP_INLINE void LoadDispatchAndMult_SSE2(
   }
 }
 
-static WEBP_INLINE void ProcessRow_SSE2(
+static WEBP_INLINE func ProcessRow_SSE2(
     const __m128i* const A0, const __m128i* const A1, const __m128i* const A2,
     const __m128i* const A3, const __m128i* const mult, uint8_t* const dst) {
   const __m128i rounder = _mm_set_epi32(0, ROUNDER, 0, ROUNDER);
@@ -225,7 +225,7 @@ static WEBP_INLINE void ProcessRow_SSE2(
   _mm_storel_epi64((__m128i*)dst, G);
 }
 
-static void RescalerExportRowExpand_SSE2(WebPRescaler* const wrk) {
+func RescalerExportRowExpand_SSE2(WebPRescaler* const wrk) {
   int x_out;
   uint8_t* const dst = wrk->dst;
   rescaler_t* const irow = wrk->irow;
@@ -282,7 +282,7 @@ static void RescalerExportRowExpand_SSE2(WebPRescaler* const wrk) {
   }
 }
 
-static void RescalerExportRowShrink_SSE2(WebPRescaler* const wrk) {
+func RescalerExportRowShrink_SSE2(WebPRescaler* const wrk) {
   int x_out;
   uint8_t* const dst = wrk->dst;
   rescaler_t* const irow = wrk->irow;
@@ -349,9 +349,9 @@ static void RescalerExportRowShrink_SSE2(WebPRescaler* const wrk) {
 
 //------------------------------------------------------------------------------
 
-extern void WebPRescalerDspInitSSE2(void);
+extern func WebPRescalerDspInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPRescalerDspInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitSSE2(void) {
   WebPRescalerImportRowExpand = RescalerImportRowExpand_SSE2;
   WebPRescalerImportRowShrink = RescalerImportRowShrink_SSE2;
   WebPRescalerExportRowExpand = RescalerExportRowExpand_SSE2;

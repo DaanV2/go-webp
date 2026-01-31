@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // clang-format off
 #define MAP_COLOR_FUNCS(FUNC_NAME, TYPE, GET_INDEX, GET_VALUE)                 \
-static void FUNC_NAME(const TYPE* src,                                         \
+func FUNC_NAME(const TYPE* src,                                         \
                       const uint32_t* const color_map,                         \
                       TYPE* dst, int y_start, int y_end,                       \
                       int width) {                                             \
@@ -236,7 +236,7 @@ static uint32_t Predictor13_MIPSdspR2(const uint32_t* const left,
 
 // Add green to blue and red channels (i.e. perform the inverse transform of
 // 'subtract green').
-static void AddGreenToBlueAndRed_MIPSdspR2(const uint32_t* src, int num_pixels,
+func AddGreenToBlueAndRed_MIPSdspR2(const uint32_t* src, int num_pixels,
                                            uint32_t* dst) {
   uint32_t temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   const uint32_t* const p_loop1_end = src + (num_pixels & ~3);
@@ -292,7 +292,7 @@ static void AddGreenToBlueAndRed_MIPSdspR2(const uint32_t* src, int num_pixels,
       : "memory");
 }
 
-static void TransformColorInverse_MIPSdspR2(const VP8LMultipliers* const m,
+func TransformColorInverse_MIPSdspR2(const VP8LMultipliers* const m,
                                             const uint32_t* src, int num_pixels,
                                             uint32_t* dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
@@ -362,7 +362,7 @@ static void TransformColorInverse_MIPSdspR2(const VP8LMultipliers* const m,
   if (num_pixels & 1) VP8LTransformColorInverse_C(m, src, 1, dst);
 }
 
-static void ConvertBGRAToRGB_MIPSdspR2(const uint32_t* src, int num_pixels,
+func ConvertBGRAToRGB_MIPSdspR2(const uint32_t* src, int num_pixels,
                                        uint8_t* dst) {
   int temp0, temp1, temp2, temp3;
   const uint32_t* const p_loop1_end = src + (num_pixels & ~3);
@@ -413,7 +413,7 @@ static void ConvertBGRAToRGB_MIPSdspR2(const uint32_t* src, int num_pixels,
       : "memory");
 }
 
-static void ConvertBGRAToRGBA_MIPSdspR2(const uint32_t* src, int num_pixels,
+func ConvertBGRAToRGBA_MIPSdspR2(const uint32_t* src, int num_pixels,
                                         uint8_t* dst) {
   int temp0, temp1, temp2, temp3;
   const uint32_t* const p_loop1_end = src + (num_pixels & ~3);
@@ -462,7 +462,7 @@ static void ConvertBGRAToRGBA_MIPSdspR2(const uint32_t* src, int num_pixels,
       : "memory");
 }
 
-static void ConvertBGRAToRGBA4444_MIPSdspR2(const uint32_t* src, int num_pixels,
+func ConvertBGRAToRGBA4444_MIPSdspR2(const uint32_t* src, int num_pixels,
                                             uint8_t* dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   const uint32_t* const p_loop1_end = src + (num_pixels & ~3);
@@ -535,7 +535,7 @@ static void ConvertBGRAToRGBA4444_MIPSdspR2(const uint32_t* src, int num_pixels,
       : "memory");
 }
 
-static void ConvertBGRAToRGB565_MIPSdspR2(const uint32_t* src, int num_pixels,
+func ConvertBGRAToRGB565_MIPSdspR2(const uint32_t* src, int num_pixels,
                                           uint8_t* dst) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   const uint32_t* const p_loop1_end = src + (num_pixels & ~3);
@@ -612,7 +612,7 @@ static void ConvertBGRAToRGB565_MIPSdspR2(const uint32_t* src, int num_pixels,
       : "memory");
 }
 
-static void ConvertBGRAToBGR_MIPSdspR2(const uint32_t* src, int num_pixels,
+func ConvertBGRAToBGR_MIPSdspR2(const uint32_t* src, int num_pixels,
                                        uint8_t* dst) {
   int temp0, temp1, temp2, temp3;
   const uint32_t* const p_loop1_end = src + (num_pixels & ~3);
@@ -660,9 +660,9 @@ static void ConvertBGRAToBGR_MIPSdspR2(const uint32_t* src, int num_pixels,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8LDspInitMIPSdspR2(void);
+extern func VP8LDspInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8LDspInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitMIPSdspR2(void) {
   VP8LMapColor32b = MapARGB_MIPSdspR2;
   VP8LMapColor8b = MapAlpha_MIPSdspR2;
 

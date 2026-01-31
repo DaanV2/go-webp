@@ -40,7 +40,7 @@ HTreeGroup* VP8LHtreeGroupsNew(int num_htree_groups) {
   return htree_groups;
 }
 
-void VP8LHtreeGroupsFree(HTreeGroup* const htree_groups) {
+func VP8LHtreeGroupsFree(HTreeGroup* const htree_groups) {
   if (htree_groups != NULL) {
     WebPSafeFree(htree_groups);
   }
@@ -58,7 +58,7 @@ static WEBP_INLINE uint32_t GetNextKey(uint32_t key, int len) {
 
 // Stores code in table[0], table[step], table[2*step], ..., table[end-step].
 // Assumes that end is an integer multiple of step.
-static WEBP_INLINE void ReplicateValue(HuffmanCode* WEBP_COUNTED_BY(end - step +
+static WEBP_INLINE func ReplicateValue(HuffmanCode* WEBP_COUNTED_BY(end - step +
                                                                     1) table,
                                        int step, int end, HuffmanCode code) {
   int current_end = end;
@@ -319,7 +319,7 @@ int VP8LHuffmanTablesAllocate(int size, HuffmanTables* huffman_tables) {
   return 1;
 }
 
-void VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables) {
+func VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables) {
   HuffmanTablesSegment *current, *next;
   if (huffman_tables == NULL) return;
   // Free the root node.

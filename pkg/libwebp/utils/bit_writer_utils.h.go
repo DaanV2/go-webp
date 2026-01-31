@@ -48,12 +48,12 @@ int VP8BitWriterInit(VP8BitWriter* const bw, size_t expected_size);
 uint8_t* VP8BitWriterFinish(VP8BitWriter* const bw);
 // Release any pending memory and zeroes the object. Not a mandatory call.
 // Only useful in case of error, when the internal buffer hasn't been grabbed!
-void VP8BitWriterWipeOut(VP8BitWriter* const bw);
+func VP8BitWriterWipeOut(VP8BitWriter* const bw);
 
 int VP8PutBit(VP8BitWriter* const bw, int bit, int prob);
 int VP8PutBitUniform(VP8BitWriter* const bw, int bit);
-void VP8PutBits(VP8BitWriter* const bw, uint32_t value, int nb_bits);
-void VP8PutSignedBits(VP8BitWriter* const bw, int value, int nb_bits);
+func VP8PutBits(VP8BitWriter* const bw, uint32_t value, int nb_bits);
+func VP8PutSignedBits(VP8BitWriter* const bw, int value, int nb_bits);
 
 // Appends some bytes to the internal buffer. Data is copied.
 int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8_t* data,
@@ -120,21 +120,21 @@ int VP8LBitWriterClone(const VP8LBitWriter* const src,
 // Finalize the bitstream coding. Returns a pointer to the internal buffer.
 uint8_t* VP8LBitWriterFinish(VP8LBitWriter* const bw);
 // Release any pending memory and zeroes the object.
-void VP8LBitWriterWipeOut(VP8LBitWriter* const bw);
+func VP8LBitWriterWipeOut(VP8LBitWriter* const bw);
 // Resets the cursor of the BitWriter bw to when it was like in bw_init.
-void VP8LBitWriterReset(const VP8LBitWriter* const bw_init,
+func VP8LBitWriterReset(const VP8LBitWriter* const bw_init,
                         VP8LBitWriter* const bw);
 // Swaps the memory held by two BitWriters.
-void VP8LBitWriterSwap(VP8LBitWriter* const src, VP8LBitWriter* const dst);
+func VP8LBitWriterSwap(VP8LBitWriter* const src, VP8LBitWriter* const dst);
 
 // Internal function for VP8LPutBits flushing VP8L_WRITER_BITS bits from the
 // written state.
-void VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
+func VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
                           vp8l_atype_t* bits);
 
 #if VP8L_WRITER_BITS == 16
 // PutBits internal function used in the 16 bit vp8l_wtype_t case.
-void VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits);
+func VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits);
 #endif
 
 // This function writes bits into bytes in increasing addresses (little endian),
@@ -142,7 +142,7 @@ void VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits);
 // This function can write up to VP8L_WRITER_MAX_BITS bits in one go, but
 // VP8LBitReader can only read 24 bits max (VP8L_MAX_NUM_BIT_READ).
 // VP8LBitWriter's 'error' flag is set in case of memory allocation error.
-static WEBP_INLINE void VP8LPutBits(VP8LBitWriter* const bw, uint32_t bits,
+static WEBP_INLINE func VP8LPutBits(VP8LBitWriter* const bw, uint32_t bits,
                                     int n_bits) {
 #if VP8L_WRITER_BYTES == 4
   if (n_bits == 0) return;

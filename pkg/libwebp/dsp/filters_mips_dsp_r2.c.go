@@ -108,7 +108,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 // clang-format on
 
-static WEBP_INLINE void PredictLine_MIPSdspR2(const uint8_t* WEBP_RESTRICT src,
+static WEBP_INLINE func PredictLine_MIPSdspR2(const uint8_t* WEBP_RESTRICT src,
                                               uint8_t* WEBP_RESTRICT dst,
                                               int length) {
   DO_PREDICT_LINE(src, dst, length, 0);
@@ -204,7 +204,7 @@ static WEBP_INLINE void PredictLine_MIPSdspR2(const uint8_t* WEBP_RESTRICT src,
     }                                                 \
   } while (0)
 
-static WEBP_INLINE void DoHorizontalFilter_MIPSdspR2(
+static WEBP_INLINE func DoHorizontalFilter_MIPSdspR2(
     const uint8_t* WEBP_RESTRICT in, int width, int height, int stride,
     uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -223,7 +223,7 @@ static WEBP_INLINE void DoHorizontalFilter_MIPSdspR2(
 }
 #undef FILTER_LINE_BY_LINE
 
-static void HorizontalFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
+func HorizontalFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
                                        int width, int height, int stride,
                                        uint8_t* WEBP_RESTRICT filtered_data) {
   DoHorizontalFilter_MIPSdspR2(data, width, height, stride, filtered_data);
@@ -242,7 +242,7 @@ static void HorizontalFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
     }                                                     \
   } while (0)
 
-static WEBP_INLINE void DoVerticalFilter_MIPSdspR2(
+static WEBP_INLINE func DoVerticalFilter_MIPSdspR2(
     const uint8_t* WEBP_RESTRICT in, int width, int height, int stride,
     uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -261,7 +261,7 @@ static WEBP_INLINE void DoVerticalFilter_MIPSdspR2(
 }
 #undef FILTER_LINE_BY_LINE
 
-static void VerticalFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
+func VerticalFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
                                      int width, int height, int stride,
                                      uint8_t* WEBP_RESTRICT filtered_data) {
   DoVerticalFilter_MIPSdspR2(data, width, height, stride, filtered_data);
@@ -298,7 +298,7 @@ static int GradientPredictor_MIPSdspR2(uint8_t a, uint8_t b, uint8_t c) {
     }                                                                \
   } while (0)
 
-static void DoGradientFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT in,
+func DoGradientFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT in,
                                        int width, int height, int stride,
                                        uint8_t* WEBP_RESTRICT out) {
   const uint8_t* preds = in;
@@ -317,7 +317,7 @@ static void DoGradientFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT in,
 }
 #undef FILTER_LINE_BY_LINE
 
-static void GradientFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
+func GradientFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
                                      int width, int height, int stride,
                                      uint8_t* WEBP_RESTRICT filtered_data) {
   DoGradientFilter_MIPSdspR2(data, width, height, stride, filtered_data);
@@ -325,13 +325,13 @@ static void GradientFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
 
 //------------------------------------------------------------------------------
 
-static void HorizontalUnfilter_MIPSdspR2(const uint8_t* prev, const uint8_t* in,
+func HorizontalUnfilter_MIPSdspR2(const uint8_t* prev, const uint8_t* in,
                                          uint8_t* out, int width) {
   out[0] = in[0] + (prev == NULL ? 0 : prev[0]);
   DO_PREDICT_LINE(in + 1, out + 1, width - 1, 1);
 }
 
-static void VerticalUnfilter_MIPSdspR2(const uint8_t* prev, const uint8_t* in,
+func VerticalUnfilter_MIPSdspR2(const uint8_t* prev, const uint8_t* in,
                                        uint8_t* out, int width) {
   if (prev == NULL) {
     HorizontalUnfilter_MIPSdspR2(NULL, in, out, width);
@@ -340,7 +340,7 @@ static void VerticalUnfilter_MIPSdspR2(const uint8_t* prev, const uint8_t* in,
   }
 }
 
-static void GradientUnfilter_MIPSdspR2(const uint8_t* prev, const uint8_t* in,
+func GradientUnfilter_MIPSdspR2(const uint8_t* prev, const uint8_t* in,
                                        uint8_t* out, int width) {
   if (prev == NULL) {
     HorizontalUnfilter_MIPSdspR2(NULL, in, out, width);
@@ -364,9 +364,9 @@ static void GradientUnfilter_MIPSdspR2(const uint8_t* prev, const uint8_t* in,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8FiltersInitMIPSdspR2(void);
+extern func VP8FiltersInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8FiltersInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitMIPSdspR2(void) {
   WebPUnfilters[WEBP_FILTER_HORIZONTAL] = HorizontalUnfilter_MIPSdspR2;
   WebPUnfilters[WEBP_FILTER_VERTICAL] = VerticalUnfilter_MIPSdspR2;
   WebPUnfilters[WEBP_FILTER_GRADIENT] = GradientUnfilter_MIPSdspR2;

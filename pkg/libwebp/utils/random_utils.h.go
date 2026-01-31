@@ -35,7 +35,7 @@ typedef struct {
 } VP8Random;
 
 // Initializes random generator with an amplitude 'dithering' in range [0..1].
-void VP8InitRandom(VP8Random* const rg, float dithering);
+func VP8InitRandom(VP8Random* const rg, float dithering);
 
 // Returns a centered pseudo-random number with 'num_bits' amplitude.
 // (uses D.Knuth's Difference-based random generator).

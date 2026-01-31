@@ -118,7 +118,7 @@ typedef enum WebPChunkId {
 // Deletes the mux object.
 // Parameters:
 //   mux - (in/out) object to be deleted
- void WebPMuxDelete(WebPMux* mux);
+ func WebPMuxDelete(WebPMux* mux);
 
 //------------------------------------------------------------------------------
 // Mux creation.
@@ -531,7 +531,7 @@ static WEBP_INLINE WebPAnimEncoder* WebPAnimEncoderNew(
 // Deletes the WebPAnimEncoder object.
 // Parameters:
 //   enc - (in/out) object to be deleted
- void WebPAnimEncoderDelete(WebPAnimEncoder* enc);
+ func WebPAnimEncoderDelete(WebPAnimEncoder* enc);
 
 //------------------------------------------------------------------------------
 // Non-image chunks.

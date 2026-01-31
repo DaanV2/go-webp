@@ -355,7 +355,7 @@ static uint64_t ShannonEntropy_C(const uint32_t* X, int n) {
   return retval;
 }
 
-void VP8LBitEntropyInit(VP8LBitEntropy* const entropy) {
+func VP8LBitEntropyInit(VP8LBitEntropy* const entropy) {
   entropy->entropy = 0;
   entropy->sum = 0;
   entropy->nonzeros = 0;
@@ -363,7 +363,7 @@ void VP8LBitEntropyInit(VP8LBitEntropy* const entropy) {
   entropy->nonzero_code = VP8L_NON_TRIVIAL_SYM;
 }
 
-void VP8LBitsEntropyUnrefined(const uint32_t* WEBP_RESTRICT const array, int n,
+func VP8LBitsEntropyUnrefined(const uint32_t* WEBP_RESTRICT const array, int n,
                               VP8LBitEntropy* WEBP_RESTRICT const entropy) {
   int i;
 
@@ -383,7 +383,7 @@ void VP8LBitsEntropyUnrefined(const uint32_t* WEBP_RESTRICT const array, int n,
   entropy->entropy = VP8LFastSLog2(entropy->sum) - entropy->entropy;
 }
 
-static WEBP_INLINE void GetEntropyUnrefinedHelper(
+static WEBP_INLINE func GetEntropyUnrefinedHelper(
     uint32_t val, int i, uint32_t* WEBP_RESTRICT const val_prev,
     int* WEBP_RESTRICT const i_prev,
     VP8LBitEntropy* WEBP_RESTRICT const bit_entropy,
@@ -409,7 +409,7 @@ static WEBP_INLINE void GetEntropyUnrefinedHelper(
   *i_prev = i;
 }
 
-static void GetEntropyUnrefined_C(
+func GetEntropyUnrefined_C(
     const uint32_t X[], int length,
     VP8LBitEntropy* WEBP_RESTRICT const bit_entropy,
     VP8LStreaks* WEBP_RESTRICT const stats) {
@@ -431,7 +431,7 @@ static void GetEntropyUnrefined_C(
   bit_entropy->entropy = VP8LFastSLog2(bit_entropy->sum) - bit_entropy->entropy;
 }
 
-static void GetCombinedEntropyUnrefined_C(
+func GetCombinedEntropyUnrefined_C(
     const uint32_t X[], const uint32_t Y[], int length,
     VP8LBitEntropy* WEBP_RESTRICT const bit_entropy,
     VP8LStreaks* WEBP_RESTRICT const stats) {
@@ -455,7 +455,7 @@ static void GetCombinedEntropyUnrefined_C(
 
 //------------------------------------------------------------------------------
 
-void VP8LSubtractGreenFromBlueAndRed_C(uint32_t* argb_data, int num_pixels) {
+func VP8LSubtractGreenFromBlueAndRed_C(uint32_t* argb_data, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
     const int argb = (int)argb_data[i];
@@ -472,7 +472,7 @@ static WEBP_INLINE int ColorTransformDelta(int8_t color_pred, int8_t color) {
 
 static WEBP_INLINE int8_t U32ToS8(uint32_t v) { return (int8_t)(v & 0xff); }
 
-void VP8LTransformColor_C(const VP8LMultipliers* WEBP_RESTRICT const m,
+func VP8LTransformColor_C(const VP8LMultipliers* WEBP_RESTRICT const m,
                           uint32_t* WEBP_RESTRICT data, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
@@ -509,7 +509,7 @@ static WEBP_INLINE uint8_t TransformColorBlue(uint8_t green_to_blue,
   return (new_blue & 0xff);
 }
 
-void VP8LCollectColorRedTransforms_C(const uint32_t* WEBP_RESTRICT argb,
+func VP8LCollectColorRedTransforms_C(const uint32_t* WEBP_RESTRICT argb,
                                      int stride, int tile_width,
                                      int tile_height, int green_to_red,
                                      uint32_t histo[]) {
@@ -522,7 +522,7 @@ void VP8LCollectColorRedTransforms_C(const uint32_t* WEBP_RESTRICT argb,
   }
 }
 
-void VP8LCollectColorBlueTransforms_C(const uint32_t* WEBP_RESTRICT argb,
+func VP8LCollectColorBlueTransforms_C(const uint32_t* WEBP_RESTRICT argb,
                                       int stride, int tile_width,
                                       int tile_height, int green_to_blue,
                                       int red_to_blue, uint32_t histo[]) {
@@ -549,7 +549,7 @@ static int VectorMismatch_C(const uint32_t* const array1,
 }
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
-void VP8LBundleColorMap_C(const uint8_t* WEBP_RESTRICT const row, int width,
+func VP8LBundleColorMap_C(const uint8_t* WEBP_RESTRICT const row, int width,
                           int xbits, uint32_t* WEBP_RESTRICT dst) {
   int x;
   if (xbits > 0) {
@@ -583,14 +583,14 @@ static uint32_t ExtraCost_C(const uint32_t* population, int length) {
 
 //------------------------------------------------------------------------------
 
-static void AddVector_C(const uint32_t* WEBP_RESTRICT a,
+func AddVector_C(const uint32_t* WEBP_RESTRICT a,
                         const uint32_t* WEBP_RESTRICT b,
                         uint32_t* WEBP_RESTRICT out, int size) {
   int i;
   for (i = 0; i < size; ++i) out[i] = a[i] + b[i];
 }
 
-static void AddVectorEq_C(const uint32_t* WEBP_RESTRICT a,
+func AddVectorEq_C(const uint32_t* WEBP_RESTRICT a,
                           uint32_t* WEBP_RESTRICT out, int size) {
   int i;
   for (i = 0; i < size; ++i) out[i] += a[i];
@@ -599,14 +599,14 @@ static void AddVectorEq_C(const uint32_t* WEBP_RESTRICT a,
 //------------------------------------------------------------------------------
 // Image transforms.
 
-static void PredictorSub0_C(const uint32_t* in, const uint32_t* upper,
+func PredictorSub0_C(const uint32_t* in, const uint32_t* upper,
                             int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], ARGB_BLACK);
   (void)upper;
 }
 
-static void PredictorSub1_C(const uint32_t* in, const uint32_t* upper,
+func PredictorSub1_C(const uint32_t* in, const uint32_t* upper,
                             int num_pixels, uint32_t* WEBP_RESTRICT out) {
   int i;
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], in[i - 1]);
@@ -616,7 +616,7 @@ static void PredictorSub1_C(const uint32_t* in, const uint32_t* upper,
 // It subtracts the prediction from the input pixel and stores the residual
 // in the output pixel.
 #define GENERATE_PREDICTOR_SUB(PREDICTOR_I)                      \
-  static void PredictorSub##PREDICTOR_I##_C(                     \
+  func PredictorSub##PREDICTOR_I##_C(                     \
       const uint32_t* in, const uint32_t* upper, int num_pixels, \
       uint32_t* WEBP_RESTRICT out) {                             \
     int x;                                                       \
@@ -676,13 +676,13 @@ VP8LPredictorAddSubFunc VP8LPredictorsSub_C[16];
 VP8LPredictorAddSubFunc VP8LPredictorsSub_SSE[16];
 
 extern VP8CPUInfo VP8GetCPUInfo;
-extern void VP8LEncDspInitSSE2(void);
-extern void VP8LEncDspInitSSE41(void);
-extern void VP8LEncDspInitAVX2(void);
-extern void VP8LEncDspInitNEON(void);
-extern void VP8LEncDspInitMIPS32(void);
-extern void VP8LEncDspInitMIPSdspR2(void);
-extern void VP8LEncDspInitMSA(void);
+extern func VP8LEncDspInitSSE2(void);
+extern func VP8LEncDspInitSSE41(void);
+extern func VP8LEncDspInitAVX2(void);
+extern func VP8LEncDspInitNEON(void);
+extern func VP8LEncDspInitMIPS32(void);
+extern func VP8LEncDspInitMIPSdspR2(void);
+extern func VP8LEncDspInitMSA(void);
 
 WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
   VP8LDspInit();

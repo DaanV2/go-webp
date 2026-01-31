@@ -48,7 +48,7 @@ static uint8x8_t ConvertRGBToYImpl_NEON(const uint8x8_t R, const uint8x8_t G,
   return vqmovn_u16(Y2);
 }
 
-static void ConvertRGBToY_NEON(const uint8_t* WEBP_RESTRICT rgb,
+func ConvertRGBToY_NEON(const uint8_t* WEBP_RESTRICT rgb,
                                uint8_t* WEBP_RESTRICT y, int width, int step) {
   int i;
   if (step == 3) {
@@ -71,7 +71,7 @@ static void ConvertRGBToY_NEON(const uint8_t* WEBP_RESTRICT rgb,
   }
 }
 
-static void ConvertBGRToY_NEON(const uint8_t* WEBP_RESTRICT bgr,
+func ConvertBGRToY_NEON(const uint8_t* WEBP_RESTRICT bgr,
                                uint8_t* WEBP_RESTRICT y, int width, int step) {
   int i;
   if (step == 3) {
@@ -94,7 +94,7 @@ static void ConvertBGRToY_NEON(const uint8_t* WEBP_RESTRICT bgr,
   }
 }
 
-static void ConvertARGBToY_NEON(const uint32_t* WEBP_RESTRICT argb,
+func ConvertARGBToY_NEON(const uint32_t* WEBP_RESTRICT argb,
                                 uint8_t* WEBP_RESTRICT y, int width) {
   int i;
   for (i = 0; i + 8 <= width; i += 8) {
@@ -142,7 +142,7 @@ static void ConvertARGBToY_NEON(const uint32_t* WEBP_RESTRICT argb,
     MULTIPLY_16b(28800, -24116, -4684, 128 << SHIFT, V_DST); \
   } while (0)
 
-static void ConvertRGBA32ToUV_NEON(const uint16_t* WEBP_RESTRICT rgb,
+func ConvertRGBA32ToUV_NEON(const uint16_t* WEBP_RESTRICT rgb,
                                    uint8_t* WEBP_RESTRICT u,
                                    uint8_t* WEBP_RESTRICT v, int width) {
   int i;
@@ -160,7 +160,7 @@ static void ConvertRGBA32ToUV_NEON(const uint16_t* WEBP_RESTRICT rgb,
   }
 }
 
-static void ConvertARGBToUV_NEON(const uint32_t* WEBP_RESTRICT argb,
+func ConvertARGBToUV_NEON(const uint32_t* WEBP_RESTRICT argb,
                                  uint8_t* WEBP_RESTRICT u,
                                  uint8_t* WEBP_RESTRICT v, int src_width,
                                  int do_store) {
@@ -193,9 +193,9 @@ static void ConvertARGBToUV_NEON(const uint32_t* WEBP_RESTRICT argb,
 
 //------------------------------------------------------------------------------
 
-extern void WebPInitConvertARGBToYUVNEON(void);
+extern func WebPInitConvertARGBToYUVNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitConvertARGBToYUVNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitConvertARGBToYUVNEON(void) {
   WebPConvertRGBToY = ConvertRGBToY_NEON;
   WebPConvertBGRToY = ConvertBGRToY_NEON;
   WebPConvertARGBToY = ConvertARGBToY_NEON;

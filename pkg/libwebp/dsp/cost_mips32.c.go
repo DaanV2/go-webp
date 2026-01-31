@@ -98,7 +98,7 @@ static int GetResidualCost_MIPS32(int ctx0, const VP8Residual* const res) {
   return cost;
 }
 
-static void SetResidualCoeffs_MIPS32(const int16_t* WEBP_RESTRICT const coeffs,
+func SetResidualCoeffs_MIPS32(const int16_t* WEBP_RESTRICT const coeffs,
                                      VP8Residual* WEBP_RESTRICT const res) {
   const int16_t* p_coeffs = (int16_t*)coeffs;
   int temp0, temp1, temp2, n, n1;
@@ -140,9 +140,9 @@ static void SetResidualCoeffs_MIPS32(const int16_t* WEBP_RESTRICT const coeffs,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8EncDspCostInitMIPS32(void);
+extern func VP8EncDspCostInitMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8EncDspCostInitMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitMIPS32(void) {
   VP8GetResidualCost = GetResidualCost_MIPS32;
   VP8SetResidualCoeffs = SetResidualCoeffs_MIPS32;
 }

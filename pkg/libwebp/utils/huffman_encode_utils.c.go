@@ -36,7 +36,7 @@ static int ValuesShouldBeCollapsedToStrideAverage(int a, int b) {
 
 // Change the population counts in a way that the consequent
 // Huffman tree compression, especially its RLE-part, give smaller output.
-static void OptimizeHuffmanForRle(int length,
+func OptimizeHuffmanForRle(int length,
                                   uint8_t* const WEBP_COUNTED_BY(length)
                                       good_for_rle,
                                   uint32_t* const WEBP_COUNTED_BY(length)
@@ -142,7 +142,7 @@ static int CompareHuffmanTrees(const void* ptr1, const void* ptr2) {
   }
 }
 
-static void SetBitDepths(const HuffmanTree* const tree,
+func SetBitDepths(const HuffmanTree* const tree,
                          const HuffmanTree* WEBP_BIDI_INDEXABLE const pool,
                          uint8_t* WEBP_INDEXABLE const bit_depths, int level) {
   if (tree->pool_index_left >= 0) {
@@ -172,7 +172,7 @@ static void SetBitDepths(const HuffmanTree* const tree,
 // we are not planning to use this with extremely long blocks.
 //
 // See https://en.wikipedia.org/wiki/Huffman_coding
-static void GenerateOptimalTree(
+func GenerateOptimalTree(
     const uint32_t* const WEBP_COUNTED_BY(histogram_size) histogram,
     int histogram_size, HuffmanTree* WEBP_BIDI_INDEXABLE tree,
     int tree_depth_limit,
@@ -384,7 +384,7 @@ static uint32_t ReverseBits(int num_bits, uint32_t bits) {
 }
 
 // Get the actual bit values for a tree of bit depths.
-static void ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
+func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
   // 0 bit-depth means that the symbol does not exist.
   int i;
   int len;
@@ -416,7 +416,7 @@ static void ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
 // -----------------------------------------------------------------------------
 // Main entry point
 
-void VP8LCreateHuffmanTree(uint32_t* const histogram, int tree_depth_limit,
+func VP8LCreateHuffmanTree(uint32_t* const histogram, int tree_depth_limit,
                            uint8_t* const buf_rle, HuffmanTree* const huff_tree,
                            HuffmanTreeCode* const huff_code) {
   const int num_symbols = huff_code->num_symbols;

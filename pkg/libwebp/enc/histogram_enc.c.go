@@ -48,7 +48,7 @@ static int GetHistogramSize(int cache_bits) {
   return (int)total_size;
 }
 
-static void HistogramStatsClear(VP8LHistogram* const h) {
+func HistogramStatsClear(VP8LHistogram* const h) {
   int i;
   for (i = 0; i < 5; ++i) {
     h->trivial_symbol[i] = VP8L_NON_TRIVIAL_SYM;
@@ -59,7 +59,7 @@ static void HistogramStatsClear(VP8LHistogram* const h) {
   memset(h->costs, 0, sizeof(h->costs));
 }
 
-static void HistogramClear(VP8LHistogram* const h) {
+func HistogramClear(VP8LHistogram* const h) {
   uint32_t* const literal = h->literal;
   const int cache_bits = h->palette_code_bits;
   const int histo_size = GetHistogramSize(cache_bits);
@@ -70,13 +70,13 @@ static void HistogramClear(VP8LHistogram* const h) {
 }
 
 // Swap two histogram pointers.
-static void HistogramSwap(VP8LHistogram** const h1, VP8LHistogram** const h2) {
+func HistogramSwap(VP8LHistogram** const h1, VP8LHistogram** const h2) {
   VP8LHistogram* const tmp = *h1;
   *h1 = *h2;
   *h2 = tmp;
 }
 
-static void HistogramCopy(const VP8LHistogram* const src,
+func HistogramCopy(const VP8LHistogram* const src,
                           VP8LHistogram* const dst) {
   uint32_t* const dst_literal = dst->literal;
   const int dst_cache_bits = dst->palette_code_bits;
@@ -88,13 +88,13 @@ static void HistogramCopy(const VP8LHistogram* const src,
   memcpy(dst->literal, src->literal, literal_size * sizeof(*dst->literal));
 }
 
-void VP8LFreeHistogram(VP8LHistogram* const h) { WebPSafeFree(h); }
+func VP8LFreeHistogram(VP8LHistogram* const h) { WebPSafeFree(h); }
 
-void VP8LFreeHistogramSet(VP8LHistogramSet* const histograms) {
+func VP8LFreeHistogramSet(VP8LHistogramSet* const histograms) {
   WebPSafeFree(histograms);
 }
 
-void VP8LHistogramCreate(VP8LHistogram* const h,
+func VP8LHistogramCreate(VP8LHistogram* const h,
                          const VP8LBackwardRefs* const refs,
                          int palette_code_bits) {
   if (palette_code_bits >= 0) {
@@ -105,7 +105,7 @@ void VP8LHistogramCreate(VP8LHistogram* const h,
                          /*distance_modifier_arg0=*/0, h);
 }
 
-void VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits,
+func VP8LHistogramInit(VP8LHistogram* const h, int palette_code_bits,
                        int init_arrays) {
   h->palette_code_bits = palette_code_bits;
   if (init_arrays) {
@@ -128,7 +128,7 @@ VP8LHistogram* VP8LAllocateHistogram(int cache_bits) {
 }
 
 // Resets the pointers of the histograms to point to the bit buffer in the set.
-static void HistogramSetResetPointers(VP8LHistogramSet* const set,
+func HistogramSetResetPointers(VP8LHistogramSet* const set,
                                       int cache_bits) {
   int i;
   const int histo_size = GetHistogramSize(cache_bits);
@@ -169,7 +169,7 @@ VP8LHistogramSet* VP8LAllocateHistogramSet(int size, int cache_bits) {
   return set;
 }
 
-void VP8LHistogramSetClear(VP8LHistogramSet* const set) {
+func VP8LHistogramSetClear(VP8LHistogramSet* const set) {
   int i;
   const int cache_bits = set->histograms[0]->palette_code_bits;
   const int size = set->max_size;
@@ -188,7 +188,7 @@ void VP8LHistogramSetClear(VP8LHistogramSet* const set) {
 }
 
 // Removes the histogram 'i' from 'set'.
-static void HistogramSetRemoveHistogram(VP8LHistogramSet* const set, int i) {
+func HistogramSetRemoveHistogram(VP8LHistogramSet* const set, int i) {
   set->histograms[i] = set->histograms[set->size - 1];
   --set->size;
   assert(set->size > 0);
@@ -196,7 +196,7 @@ static void HistogramSetRemoveHistogram(VP8LHistogramSet* const set, int i) {
 
 // -----------------------------------------------------------------------------
 
-static void HistogramAddSinglePixOrCopy(
+func HistogramAddSinglePixOrCopy(
     VP8LHistogram* const histo, const PixOrCopy* const v,
     int (*const distance_modifier)(int, int), int distance_modifier_arg0) {
   if (PixOrCopyIsLiteral(v)) {
@@ -224,7 +224,7 @@ static void HistogramAddSinglePixOrCopy(
   }
 }
 
-void VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs,
+func VP8LHistogramStoreRefs(const VP8LBackwardRefs* const refs,
                             int (*const distance_modifier)(int, int),
                             int distance_modifier_arg0,
                             VP8LHistogram* const histo) {
@@ -330,7 +330,7 @@ static uint64_t PopulationCost(const uint32_t* const population, int length,
   return BitsEntropyRefine(&bit_entropy) + FinalHuffmanCost(&stats);
 }
 
-static WEBP_INLINE void GetPopulationInfo(const VP8LHistogram* const histo,
+static WEBP_INLINE func GetPopulationInfo(const VP8LHistogram* const histo,
                                           HistogramIndex index,
                                           const uint32_t** population,
                                           int* length) {
@@ -409,7 +409,7 @@ uint64_t VP8LHistogramEstimateBits(const VP8LHistogram* const h) {
 // Various histogram combine/cost-eval functions
 
 // Set a + b in b, saturating at WEBP_INT64_MAX.
-static WEBP_INLINE void SaturateAdd(uint64_t a, int64_t* b) {
+static WEBP_INLINE func SaturateAdd(uint64_t a, int64_t* b) {
   if (*b < 0 || (int64_t)a <= WEBP_INT64_MAX - *b) {
     *b += (int64_t)a;
   } else {
@@ -439,7 +439,7 @@ static WEBP_INLINE void SaturateAdd(uint64_t a, int64_t* b) {
   return 1;
 }
 
-static WEBP_INLINE void HistogramAdd(const VP8LHistogram* const h1,
+static WEBP_INLINE func HistogramAdd(const VP8LHistogram* const h1,
                                      const VP8LHistogram* const h2,
                                      VP8LHistogram* const hout) {
   int i;
@@ -484,7 +484,7 @@ static WEBP_INLINE void HistogramAdd(const VP8LHistogram* const h1,
   }
 }
 
-static void UpdateHistogramCost(uint64_t bit_cost, uint64_t costs[5],
+func UpdateHistogramCost(uint64_t bit_cost, uint64_t costs[5],
                                 VP8LHistogram* const h) {
   int i;
   h->bit_cost = bit_cost;
@@ -550,7 +550,7 @@ typedef struct {
   uint64_t blue_min;
 } DominantCostRange;
 
-static void DominantCostRangeInit(DominantCostRange* const c) {
+func DominantCostRangeInit(DominantCostRange* const c) {
   c->literal_max = 0;
   c->literal_min = WEBP_UINT64_MAX;
   c->red_max = 0;
@@ -559,7 +559,7 @@ static void DominantCostRangeInit(DominantCostRange* const c) {
   c->blue_min = WEBP_UINT64_MAX;
 }
 
-static void UpdateDominantCostRange(const VP8LHistogram* const h,
+func UpdateDominantCostRange(const VP8LHistogram* const h,
                                     DominantCostRange* const c) {
   if (c->literal_max < h->costs[LITERAL]) c->literal_max = h->costs[LITERAL];
   if (c->literal_min > h->costs[LITERAL]) c->literal_min = h->costs[LITERAL];
@@ -569,7 +569,7 @@ static void UpdateDominantCostRange(const VP8LHistogram* const h,
   if (c->blue_min > h->costs[BLUE]) c->blue_min = h->costs[BLUE];
 }
 
-static void ComputeHistogramCost(VP8LHistogram* const h) {
+func ComputeHistogramCost(VP8LHistogram* const h) {
   int i;
   // No need to add the extra cost for length and distance as it is a constant
   // that does not influence the histograms.
@@ -610,7 +610,7 @@ static int GetHistoBinIndex(const VP8LHistogram* const h,
 }
 
 // Construct the histograms from backward references.
-static void HistogramBuild(int xsize, int histo_bits,
+func HistogramBuild(int xsize, int histo_bits,
                            const VP8LBackwardRefs* const backward_refs,
                            VP8LHistogramSet* const image_histo) {
   int x = 0, y = 0;
@@ -633,7 +633,7 @@ static void HistogramBuild(int xsize, int histo_bits,
 }
 
 // Copies the histograms and computes its bit_cost.
-static void HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo,
+func HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo,
                                     VP8LHistogramSet* const image_histo) {
   int i;
   VP8LHistogram** const orig_histograms = orig_histo->histograms;
@@ -662,7 +662,7 @@ static void HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo,
 
 // Partition histograms to different entropy bins for three dominant (literal,
 // red and blue) symbol costs and compute the histogram aggregate bit_cost.
-static void HistogramAnalyzeEntropyBin(VP8LHistogramSet* const image_histo,
+func HistogramAnalyzeEntropyBin(VP8LHistogramSet* const image_histo,
                                        int low_effort) {
   int i;
   VP8LHistogram** const histograms = image_histo->histograms;
@@ -686,7 +686,7 @@ static void HistogramAnalyzeEntropyBin(VP8LHistogramSet* const image_histo,
 // Merges some histograms with same bin_id together if it's advantageous.
 // Sets the remaining histograms to NULL.
 // 'combine_cost_factor' has to be divided by 100.
-static void HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo,
+func HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo,
                                        VP8LHistogram* cur_combo, int num_bins,
                                        int32_t combine_cost_factor,
                                        int low_effort) {
@@ -725,7 +725,7 @@ static void HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo,
         // the two candidate histograms are already non-trivial.
         // For some images, 'try_combine' turns out to be false for a lot of
         // histogram pairs. In that case, we fallback to combining
-        // histograms as usual to avoid increasing the header size.
+        // histograms as usual to afunc increasing the header size.
         int try_combine =
             cur_combo->trivial_symbol[RED] != VP8L_NON_TRIVIAL_SYM &&
             cur_combo->trivial_symbol[BLUE] != VP8L_NON_TRIVIAL_SYM &&
@@ -798,7 +798,7 @@ static int HistoQueueInit(HistoQueue* const histo_queue, const int max_size) {
   return histo_queue->queue != NULL;
 }
 
-static void HistoQueueClear(HistoQueue* const histo_queue) {
+func HistoQueueClear(HistoQueue* const histo_queue) {
   assert(histo_queue != NULL);
   WebPSafeFree(histo_queue->queue);
   histo_queue->size = 0;
@@ -807,7 +807,7 @@ static void HistoQueueClear(HistoQueue* const histo_queue) {
 
 // Pop a specific pair in the queue by replacing it with the last one
 // and shrinking the queue.
-static void HistoQueuePopPair(HistoQueue* const histo_queue,
+func HistoQueuePopPair(HistoQueue* const histo_queue,
                               HistogramPair* const pair) {
   assert(pair >= histo_queue->queue &&
          pair < (histo_queue->queue + histo_queue->size));
@@ -817,7 +817,7 @@ static void HistoQueuePopPair(HistoQueue* const histo_queue,
 }
 
 // Check whether a pair in the queue should be updated as head or not.
-static void HistoQueueUpdateHead(HistoQueue* const histo_queue,
+func HistoQueueUpdateHead(HistoQueue* const histo_queue,
                                  HistogramPair* const pair) {
   assert(pair->cost_diff < 0);
   assert(pair >= histo_queue->queue &&
@@ -832,7 +832,7 @@ static void HistoQueueUpdateHead(HistoQueue* const histo_queue,
 }
 
 // Replaces the bad_id with good_id in the pair.
-static void HistoQueueFixPair(int bad_id, int good_id,
+func HistoQueueFixPair(int bad_id, int good_id,
                               HistogramPair* const pair) {
   if (pair->idx1 == bad_id) pair->idx1 = good_id;
   if (pair->idx2 == bad_id) pair->idx2 = good_id;
@@ -1071,7 +1071,7 @@ End:
 // Find the best 'out' histogram for each of the 'in' histograms.
 // At call-time, 'out' contains the histograms of the clusters.
 // Note: we assume that out[]->bit_cost is already up-to-date.
-static void HistogramRemap(const VP8LHistogramSet* const in,
+func HistogramRemap(const VP8LHistogramSet* const in,
                            VP8LHistogramSet* const out,
                            uint32_t* const symbols) {
   int i;

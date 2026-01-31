@@ -74,7 +74,7 @@ static int IsSmooth(const uint32_t* const prev_row,
 }
 
 // Adjusts pixel values of image with given maximum error.
-static void NearLossless(int xsize, int ysize, const uint32_t* argb_src,
+func NearLossless(int xsize, int ysize, const uint32_t* argb_src,
                          int stride, int limit_bits, uint32_t* copy_buffer,
                          uint32_t* argb_dst) {
   int x, y;
@@ -149,7 +149,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
 #else  // (WEBP_NEAR_LOSSLESS == 1)
 
 // Define a stub to suppress compiler warnings.
-extern void VP8LNearLosslessStub(void);
-void VP8LNearLosslessStub(void) {}
+extern func VP8LNearLosslessStub(void);
+func VP8LNearLosslessStub(void) {}
 
 #endif  // (WEBP_NEAR_LOSSLESS == 1)

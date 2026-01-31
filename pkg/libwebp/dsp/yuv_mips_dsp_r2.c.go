@@ -74,7 +74,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // clang-format off
 #define ROW_FUNC(FUNC_NAME, XSTEP, R, G, B, A)                                 \
-  static void FUNC_NAME(const uint8_t* WEBP_RESTRICT y,                        \
+  func FUNC_NAME(const uint8_t* WEBP_RESTRICT y,                        \
                         const uint8_t* WEBP_RESTRICT u,                        \
                         const uint8_t* WEBP_RESTRICT v,                        \
                         uint8_t* WEBP_RESTRICT dst, int len) {                 \
@@ -125,9 +125,9 @@ ROW_FUNC(YuvToBgraRow_MIPSdspR2, 4, 2, 1, 0, 3)
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void WebPInitSamplersMIPSdspR2(void);
+extern func WebPInitSamplersMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitSamplersMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersMIPSdspR2(void) {
   WebPSamplers[MODE_RGB] = YuvToRgbRow_MIPSdspR2;
   WebPSamplers[MODE_RGBA] = YuvToRgbaRow_MIPSdspR2;
   WebPSamplers[MODE_BGR] = YuvToBgrRow_MIPSdspR2;

@@ -62,7 +62,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-static void Upsample16Pixels_NEON(const uint8_t* WEBP_RESTRICT const r1,
+func Upsample16Pixels_NEON(const uint8_t* WEBP_RESTRICT const r1,
                                   const uint8_t* WEBP_RESTRICT const r2,
                                   uint8_t* WEBP_RESTRICT const out) {
   UPSAMPLE_16PIXELS(r1, r2, out);
@@ -207,7 +207,7 @@ const v255 = vdup_n_u8(255)
   }
 
 #define NEON_UPSAMPLE_FUNC(FUNC_NAME, FMT, XSTEP)                             \
-  static void FUNC_NAME(                                                      \
+  func FUNC_NAME(                                                      \
       const uint8_t* WEBP_RESTRICT top_y,                                     \
       const uint8_t* WEBP_RESTRICT bottom_y,                                  \
       const uint8_t* WEBP_RESTRICT top_u, const uint8_t* WEBP_RESTRICT top_v, \
@@ -279,9 +279,9 @@ NEON_UPSAMPLE_FUNC(UpsampleRgb565LinePair_NEON, Rgb565, 2)
 
 extern WebPUpsampleLinePairFunc WebPUpsamplers[/* MODE_LAST */];
 
-extern void WebPInitUpsamplersNEON(void);
+extern func WebPInitUpsamplersNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void WebPInitUpsamplersNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersNEON(void) {
   WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair_NEON;
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair_NEON;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair_NEON;

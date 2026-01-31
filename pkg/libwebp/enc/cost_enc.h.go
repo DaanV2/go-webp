@@ -40,7 +40,7 @@ struct VP8Residual {
   CostArrayPtr costs;
 };
 
-void VP8InitResidual(int first, int coeff_type, VP8Encoder* const enc,
+func VP8InitResidual(int first, int coeff_type, VP8Encoder* const enc,
                      VP8Residual* const res);
 
 int VP8RecordCoeffs(int ctx, const VP8Residual* const res);
@@ -65,7 +65,7 @@ static WEBP_INLINE int VP8BitCost(int bit, uint8_t proba) {
 }
 
 // Level cost calculations
-void VP8CalculateLevelCosts(VP8EncProba* const proba);
+func VP8CalculateLevelCosts(VP8EncProba* const proba);
 static WEBP_INLINE int VP8LevelCost(const uint16_t* const table, int level) {
   return VP8LevelFixedCosts[level] +
          table[(level > MAX_VARIABLE_LEVEL) ? MAX_VARIABLE_LEVEL : level];

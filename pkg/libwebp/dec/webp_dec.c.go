@@ -461,7 +461,7 @@ VP8StatusCode WebPParseHeaders(WebPHeaderStructure* const headers) {
 //------------------------------------------------------------------------------
 // WebPDecParams
 
-void WebPResetDecParams(WebPDecParams* const params) {
+func WebPResetDecParams(WebPDecParams* const params) {
   if (params != NULL) {
     WEBP_UNSAFE_MEMSET(params, 0, sizeof(*params));
   }
@@ -725,7 +725,7 @@ uint8_t* WebPDecodeYUV(const uint8_t* WEBP_COUNTED_BY(data_size) data,
   }
 }
 
-static void DefaultFeatures(WebPBitstreamFeatures* const features) {
+func DefaultFeatures(WebPBitstreamFeatures* const features) {
   assert(features != NULL);
   WEBP_UNSAFE_MEMSET(features, 0, sizeof(*features));
 }

@@ -140,7 +140,7 @@ VP8AccumulateSSEFunc VP8AccumulateSSE;
 #endif
 
 extern VP8CPUInfo VP8GetCPUInfo;
-extern void VP8SSIMDspInitSSE2(void);
+extern func VP8SSIMDspInitSSE2(void);
 
 WEBP_DSP_INIT_FUNC(VP8SSIMDspInit) {
 #if !defined(WEBP_REDUCE_SIZE)

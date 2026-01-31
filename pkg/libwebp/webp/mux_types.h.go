@@ -63,7 +63,7 @@ struct WebPData {
 };
 
 // Initializes the contents of the 'webp_data' object with default values.
-static WEBP_INLINE void WebPDataInit(WebPData* webp_data) {
+static WEBP_INLINE func WebPDataInit(WebPData* webp_data) {
   if (webp_data != NULL) {
     WEBP_UNSAFE_MEMSET(webp_data, 0, sizeof(*webp_data));
   }
@@ -71,7 +71,7 @@ static WEBP_INLINE void WebPDataInit(WebPData* webp_data) {
 
 // Clears the contents of the 'webp_data' object by calling WebPFree().
 // Does not deallocate the object itself.
-static WEBP_INLINE void WebPDataClear(WebPData* webp_data) {
+static WEBP_INLINE func WebPDataClear(WebPData* webp_data) {
   if (webp_data != NULL) {
     WebPFree((void*)webp_data->bytes);
     WebPDataInit(webp_data);

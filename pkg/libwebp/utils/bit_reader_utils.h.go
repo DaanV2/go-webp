@@ -34,7 +34,7 @@ const BITTRACE = 0  // 0 = off, 1 = print bits, 2 = print bytes
 
 #if (BITTRACE > 0)
 struct VP8BitReader;
-extern void BitTrace(const struct VP8BitReader* const br, const char label[]);
+extern func BitTrace(const struct VP8BitReader* const br, const char label[]);
 #define BT_TRACK(br) BitTrace(br, label)
 #define VP8Get(BR, L) VP8GetValue(BR, 1, L)
 #else
@@ -56,7 +56,7 @@ extern "C" {
 // field. However, since 'range' is only 8bit, we only need an active window of
 // 8 bits for 'value". Left bits (MSB) gets zeroed and shifted away when
 // 'value' falls below 128, 'range' is updated, and fresh bits read from the
-// bitstream are brought in as LSB. To avoid reading the fresh bits one by one
+// bitstream are brought in as LSB. To afunc reading the fresh bits one by one
 // (slow), we cache BITS of them ahead. The total of (BITS + 8) bits must fit
 // into a natural register (with type bit_t). To fetch BITS bits from bitstream
 // we use a type lbit_t.
@@ -111,17 +111,17 @@ struct VP8BitReader {
 };
 
 // Initialize the bit reader and the boolean decoder.
-void VP8InitBitReader(VP8BitReader* const br,
+func VP8InitBitReader(VP8BitReader* const br,
                       const uint8_t* const WEBP_COUNTED_BY(size) start,
                       size_t size);
 // Sets the working read buffer.
-void VP8BitReaderSetBuffer(VP8BitReader* const br,
+func VP8BitReaderSetBuffer(VP8BitReader* const br,
                            const uint8_t* const WEBP_COUNTED_BY(size) start,
                            size_t size);
 
 // Update internal pointers to displace the byte buffer by the
 // relative offset 'offset'.
-void VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset);
+func VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset);
 
 // return the next value made of 'num_bits' bits
 uint32_t VP8GetValue(VP8BitReader* const br, int num_bits, const char label[]);
@@ -134,7 +134,7 @@ int32_t VP8GetSignedValue(VP8BitReader* const br, int num_bits,
 //   static WEBP_INLINE int VP8GetBit(VP8BitReader* const br, int prob, ...)
 //   static WEBP_INLINE int VP8GetSigned(VP8BitReader* const br, int v, ...)
 // and should be included by the .c files that actually need them.
-// This is to avoid recompiling the whole library whenever this file is touched,
+// This is to afunc recompiling the whole library whenever this file is touched,
 // and also allowing platform-specific ad-hoc hacks.
 
 // -----------------------------------------------------------------------------
@@ -157,12 +157,12 @@ typedef struct {
   int eos;      // true if a bit was read past the end of buffer
 } VP8LBitReader;
 
-void VP8LInitBitReader(VP8LBitReader* const br,
+func VP8LInitBitReader(VP8LBitReader* const br,
                        const uint8_t* const WEBP_COUNTED_BY(length) start,
                        size_t length);
 
 //  Sets a new data buffer.
-void VP8LBitReaderSetBuffer(VP8LBitReader* const br,
+func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
                             const uint8_t* const WEBP_COUNTED_BY(length) buffer,
                             size_t length);
 
@@ -188,14 +188,14 @@ static WEBP_INLINE int VP8LIsEndOfStream(const VP8LBitReader* const br) {
 // VP8LPrefetchBits and VP8LFillBitWindow.
 // This function does *not* set br->eos, since it's speed-critical.
 // Use with extreme care!
-static WEBP_INLINE void VP8LSetBitPos(VP8LBitReader* const br, int val) {
+static WEBP_INLINE func VP8LSetBitPos(VP8LBitReader* const br, int val) {
   br->bit_pos = val;
 }
 
 // Advances the read buffer by 4 bytes to make room for reading next 32 bits.
 // Speed critical, but infrequent part of the code can be non-inlined.
-extern void VP8LDoFillBitWindow(VP8LBitReader* const br);
-static WEBP_INLINE void VP8LFillBitWindow(VP8LBitReader* const br) {
+extern func VP8LDoFillBitWindow(VP8LBitReader* const br);
+static WEBP_INLINE func VP8LFillBitWindow(VP8LBitReader* const br) {
   if (br->bit_pos >= VP8L_WBITS) VP8LDoFillBitWindow(br);
 }
 

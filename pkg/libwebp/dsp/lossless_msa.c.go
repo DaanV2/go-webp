@@ -119,7 +119,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     dst = VSHF_UB(src, t0, mask1);                                \
   } while (0)
 
-static void ConvertBGRAToRGBA_MSA(const uint32_t* src, int num_pixels,
+func ConvertBGRAToRGBA_MSA(const uint32_t* src, int num_pixels,
                                   uint8_t* dst) {
   int i;
   const uint8_t* ptemp_src = (const uint8_t*)src;
@@ -160,7 +160,7 @@ static void ConvertBGRAToRGBA_MSA(const uint32_t* src, int num_pixels,
   }
 }
 
-static void ConvertBGRAToBGR_MSA(const uint32_t* src, int num_pixels,
+func ConvertBGRAToBGR_MSA(const uint32_t* src, int num_pixels,
                                  uint8_t* dst) {
   const uint8_t* ptemp_src = (const uint8_t*)src;
   uint8_t* ptemp_dst = (uint8_t*)dst;
@@ -206,7 +206,7 @@ static void ConvertBGRAToBGR_MSA(const uint32_t* src, int num_pixels,
   }
 }
 
-static void ConvertBGRAToRGB_MSA(const uint32_t* src, int num_pixels,
+func ConvertBGRAToRGB_MSA(const uint32_t* src, int num_pixels,
                                  uint8_t* dst) {
   const uint8_t* ptemp_src = (const uint8_t*)src;
   uint8_t* ptemp_dst = (uint8_t*)dst;
@@ -252,7 +252,7 @@ static void ConvertBGRAToRGB_MSA(const uint32_t* src, int num_pixels,
   }
 }
 
-static void AddGreenToBlueAndRed_MSA(const uint32_t* const src, int num_pixels,
+func AddGreenToBlueAndRed_MSA(const uint32_t* const src, int num_pixels,
                                      uint32_t* dst) {
   int i;
   const uint8_t* in = (const uint8_t*)src;
@@ -294,7 +294,7 @@ static void AddGreenToBlueAndRed_MSA(const uint32_t* const src, int num_pixels,
   }
 }
 
-static void TransformColorInverse_MSA(const VP8LMultipliers* const m,
+func TransformColorInverse_MSA(const VP8LMultipliers* const m,
                                       const uint32_t* src, int num_pixels,
                                       uint32_t* dst) {
   v16u8 src0, dst0;
@@ -346,9 +346,9 @@ static void TransformColorInverse_MSA(const VP8LMultipliers* const m,
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8LDspInitMSA(void);
+extern func VP8LDspInitMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8LDspInitMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitMSA(void) {
   VP8LConvertBGRAToRGBA = ConvertBGRAToRGBA_MSA;
   VP8LConvertBGRAToBGR = ConvertBGRAToBGR_MSA;
   VP8LConvertBGRAToRGB = ConvertBGRAToRGB_MSA;

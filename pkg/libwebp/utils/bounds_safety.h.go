@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/ptrcheck"
 //
 // == Safe.h, where Safe.c is always compiled with -fbounds-safety ==
 // Forward declare my_function, implemented in Safe.c
-// void my_function(char *__bidi_indexable ptr);
+// func my_function(char *__bidi_indexable ptr);
 //
 // If we have a project that does not use -fbounds-safety, and we want to call
 // my_function that was pre-built with -fbounds-safety, this annotation cannot

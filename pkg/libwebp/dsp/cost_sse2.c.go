@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-static void SetResidualCoeffs_SSE2(const int16_t* WEBP_RESTRICT const coeffs,
+func SetResidualCoeffs_SSE2(const int16_t* WEBP_RESTRICT const coeffs,
                                    VP8Residual* WEBP_RESTRICT const res) {
   const __m128i c0 = _mm_loadu_si128((const __m128i*)(coeffs + 0));
   const __m128i c1 = _mm_loadu_si128((const __m128i*)(coeffs + 8));
@@ -110,9 +110,9 @@ static int GetResidualCost_SSE2(int ctx0, const VP8Residual* const res) {
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8EncDspCostInitSSE2(void);
+extern func VP8EncDspCostInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION void VP8EncDspCostInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitSSE2(void) {
   VP8SetResidualCoeffs = SetResidualCoeffs_SSE2;
   VP8GetResidualCost = GetResidualCost_SSE2;
 }

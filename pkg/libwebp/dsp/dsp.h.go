@@ -55,8 +55,8 @@ const BPS = 32  // this is the common stride for enc/dec
 // Defines an init function stub to ensure each module exposes a symbol,
 // avoiding a compiler warning.
 #define WEBP_DSP_INIT_STUB(func) \
-  extern void func(void);        \
-  void func(void) {}
+  extern func func(void);        \
+  func func(void) {}
 
 //------------------------------------------------------------------------------
 // Encoding
@@ -64,13 +64,13 @@ const BPS = 32  // this is the common stride for enc/dec
 // Transforms
 // VP8Idct: Does one of two inverse transforms. If do_two is set, the transforms
 //          will be done for (ref, in, dst) and (ref + 4, in + 16, dst + 4).
-typedef void (*VP8Idct)(const uint8_t* WEBP_RESTRICT ref,
+typedef func (*VP8Idct)(const uint8_t* WEBP_RESTRICT ref,
                         const int16_t* WEBP_RESTRICT in,
                         uint8_t* WEBP_RESTRICT dst, int do_two);
-typedef void (*VP8Fdct)(const uint8_t* WEBP_RESTRICT src,
+typedef func (*VP8Fdct)(const uint8_t* WEBP_RESTRICT src,
                         const uint8_t* WEBP_RESTRICT ref,
                         int16_t* WEBP_RESTRICT out);
-typedef void (*VP8WHT)(const int16_t* WEBP_RESTRICT in,
+typedef func (*VP8WHT)(const int16_t* WEBP_RESTRICT in,
                        int16_t* WEBP_RESTRICT out);
 extern VP8Idct VP8ITransform;
 extern VP8Fdct VP8FTransform;
@@ -78,10 +78,10 @@ extern VP8Fdct VP8FTransform2;  // performs two transforms at a time
 extern VP8WHT VP8FTransformWHT;
 // Predictions
 // *dst is the destination block. *top and *left can be NULL.
-typedef void (*VP8IntraPreds)(uint8_t* WEBP_RESTRICT dst,
+typedef func (*VP8IntraPreds)(uint8_t* WEBP_RESTRICT dst,
                               const uint8_t* WEBP_RESTRICT left,
                               const uint8_t* WEBP_RESTRICT top);
-typedef void (*VP8Intra4Preds)(uint8_t* WEBP_RESTRICT dst,
+typedef func (*VP8Intra4Preds)(uint8_t* WEBP_RESTRICT dst,
                                const uint8_t* WEBP_RESTRICT top);
 extern VP8Intra4Preds VP8EncPredLuma4;
 extern VP8IntraPreds VP8EncPredLuma16;
@@ -99,10 +99,10 @@ extern VP8WMetric VP8TDisto4x4, VP8TDisto16x16;
 
 // Compute the average (DC) of four 4x4 blocks.
 // Each sub-4x4 block #i sum is stored in dc[i].
-typedef void (*VP8MeanMetric)(const uint8_t* WEBP_RESTRICT ref, uint32_t dc[4]);
+typedef func (*VP8MeanMetric)(const uint8_t* WEBP_RESTRICT ref, uint32_t dc[4]);
 extern VP8MeanMetric VP8Mean16x4;
 
-typedef void (*VP8BlockCopy)(const uint8_t* WEBP_RESTRICT src,
+typedef func (*VP8BlockCopy)(const uint8_t* WEBP_RESTRICT src,
                              uint8_t* WEBP_RESTRICT dst);
 extern VP8BlockCopy VP8Copy4x4;
 extern VP8BlockCopy VP8Copy16x8;
@@ -134,17 +134,17 @@ typedef struct {
   int max_value;
   int last_non_zero;
 } VP8Histogram;
-typedef void (*VP8CHisto)(const uint8_t* WEBP_RESTRICT ref,
+typedef func (*VP8CHisto)(const uint8_t* WEBP_RESTRICT ref,
                           const uint8_t* WEBP_RESTRICT pred, int start_block,
                           int end_block,
                           VP8Histogram* WEBP_RESTRICT const histo);
 extern VP8CHisto VP8CollectHistogram;
 // General-purpose util function to help VP8CollectHistogram().
-void VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1],
+func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1],
                          VP8Histogram* const histo);
 
 // must be called before using any of the above
-void VP8EncDspInit(void);
+func VP8EncDspInit(void);
 
 //------------------------------------------------------------------------------
 // cost functions (encoding)
@@ -155,7 +155,7 @@ extern const uint16_t VP8LevelFixedCosts[2047 /*MAX_LEVEL*/ + 1];
 extern const uint8_t VP8EncBands[16 + 1];
 
 struct VP8Residual;
-typedef void (*VP8SetResidualCoeffsFunc)(
+typedef func (*VP8SetResidualCoeffsFunc)(
     const int16_t* WEBP_RESTRICT const coeffs,
     struct VP8Residual* WEBP_RESTRICT const res);
 extern VP8SetResidualCoeffsFunc VP8SetResidualCoeffs;
@@ -166,7 +166,7 @@ typedef int (*VP8GetResidualCostFunc)(int ctx0,
 extern VP8GetResidualCostFunc VP8GetResidualCost;
 
 // must be called before anything using the above
-void VP8EncDspCostInit(void);
+func VP8EncDspCostInit(void);
 
 //------------------------------------------------------------------------------
 // SSIM / PSNR utils
@@ -206,15 +206,15 @@ extern VP8AccumulateSSEFunc VP8AccumulateSSE;
 #endif
 
 // must be called before using any of the above directly
-void VP8SSIMDspInit(void);
+func VP8SSIMDspInit(void);
 
 //------------------------------------------------------------------------------
 // Decoding
 
-typedef void (*VP8DecIdct)(const int16_t* WEBP_RESTRICT coeffs,
+typedef func (*VP8DecIdct)(const int16_t* WEBP_RESTRICT coeffs,
                            uint8_t* WEBP_RESTRICT dst);
 // when doing two transforms, coeffs is actually int16_t[2][16].
-typedef void (*VP8DecIdct2)(const int16_t* WEBP_RESTRICT coeffs,
+typedef func (*VP8DecIdct2)(const int16_t* WEBP_RESTRICT coeffs,
                             uint8_t* WEBP_RESTRICT dst, int do_two);
 extern VP8DecIdct2 VP8Transform;
 extern VP8DecIdct VP8TransformAC3;
@@ -230,7 +230,7 @@ extern VP8WHT VP8TransformWHT;
 
 // *dst is the destination block, with stride BPS. Boundary samples are
 // assumed accessible when needed.
-typedef void (*VP8PredFunc)(uint8_t* dst);
+typedef func (*VP8PredFunc)(uint8_t* dst);
 extern VP8PredFunc VP8PredLuma16[NUM_B_DC_MODES];
 extern VP8PredFunc VP8PredChroma8[NUM_B_DC_MODES];
 extern VP8PredFunc VP8PredLuma4[NUM_BMODES];
@@ -241,19 +241,19 @@ extern const int8_t* const VP8ksclip2;  // clips [-112, 112] to [-16, 15]
 extern const uint8_t* const VP8kclip1;  // clips [-255,511] to [0,255]
 extern const uint8_t* const VP8kabs0;   // abs(x) for x in [-255,255]
 // must be called first
-void VP8InitClipTables(void);
+func VP8InitClipTables(void);
 
 // simple filter (only for luma)
-typedef void (*VP8SimpleFilterFunc)(uint8_t* p, int stride, int thresh);
+typedef func (*VP8SimpleFilterFunc)(uint8_t* p, int stride, int thresh);
 extern VP8SimpleFilterFunc VP8SimpleVFilter16;
 extern VP8SimpleFilterFunc VP8SimpleHFilter16;
 extern VP8SimpleFilterFunc VP8SimpleVFilter16i;  // filter 3 inner edges
 extern VP8SimpleFilterFunc VP8SimpleHFilter16i;
 
 // regular filter (on both macroblock edges and inner edges)
-typedef void (*VP8LumaFilterFunc)(uint8_t* luma, int stride, int thresh,
+typedef func (*VP8LumaFilterFunc)(uint8_t* luma, int stride, int thresh,
                                   int ithresh, int hev_t);
-typedef void (*VP8ChromaFilterFunc)(uint8_t* WEBP_RESTRICT u,
+typedef func (*VP8ChromaFilterFunc)(uint8_t* WEBP_RESTRICT u,
                                     uint8_t* WEBP_RESTRICT v, int stride,
                                     int thresh, int ithresh, int hev_t);
 // on outer edge
@@ -274,11 +274,11 @@ extern VP8ChromaFilterFunc VP8HFilter8i;
 #define VP8_DITHER_DESCALE_ROUNDER (1 << (VP8_DITHER_DESCALE - 1))
 #define VP8_DITHER_AMP_BITS 7
 #define VP8_DITHER_AMP_CENTER (1 << VP8_DITHER_AMP_BITS)
-extern void (*VP8DitherCombine8x8)(const uint8_t* WEBP_RESTRICT dither,
+extern func (*VP8DitherCombine8x8)(const uint8_t* WEBP_RESTRICT dither,
                                    uint8_t* WEBP_RESTRICT dst, int dst_stride);
 
 // must be called before anything using the above
-void VP8DspInit(void);
+func VP8DspInit(void);
 
 //------------------------------------------------------------------------------
 // WebP I/O
@@ -287,7 +287,7 @@ void VP8DspInit(void);
 
 // Convert a pair of y/u/v lines together to the output rgb/a colorspace.
 // bottom_y can be NULL if only one line of output is needed (at top/bottom).
-typedef void (*WebPUpsampleLinePairFunc)(
+typedef func (*WebPUpsampleLinePairFunc)(
     const uint8_t* WEBP_RESTRICT top_y, const uint8_t* WEBP_RESTRICT bottom_y,
     const uint8_t* WEBP_RESTRICT top_u, const uint8_t* WEBP_RESTRICT top_v,
     const uint8_t* WEBP_RESTRICT cur_u, const uint8_t* WEBP_RESTRICT cur_v,
@@ -301,12 +301,12 @@ extern WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
 #endif  // FANCY_UPSAMPLING
 
 // Per-row point-sampling methods.
-typedef void (*WebPSamplerRowFunc)(const uint8_t* WEBP_RESTRICT y,
+typedef func (*WebPSamplerRowFunc)(const uint8_t* WEBP_RESTRICT y,
                                    const uint8_t* WEBP_RESTRICT u,
                                    const uint8_t* WEBP_RESTRICT v,
                                    uint8_t* WEBP_RESTRICT dst, int len);
 // Generic function to apply 'WebPSamplerRowFunc' to the whole plane:
-void WebPSamplerProcessPlane(const uint8_t* WEBP_RESTRICT y, int y_stride,
+func WebPSamplerProcessPlane(const uint8_t* WEBP_RESTRICT y, int y_stride,
                              const uint8_t* WEBP_RESTRICT u,
                              const uint8_t* WEBP_RESTRICT v, int uv_stride,
                              uint8_t* WEBP_RESTRICT dst, int dst_stride,
@@ -321,7 +321,7 @@ extern WebPSamplerRowFunc WebPSamplers[MODE_LAST];
 WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last);
 
 // YUV444->RGB converters
-typedef void (*WebPYUV444Converter)(const uint8_t* WEBP_RESTRICT y,
+typedef func (*WebPYUV444Converter)(const uint8_t* WEBP_RESTRICT y,
                                     const uint8_t* WEBP_RESTRICT u,
                                     const uint8_t* WEBP_RESTRICT v,
                                     uint8_t* WEBP_RESTRICT dst, int len);
@@ -330,48 +330,48 @@ extern WebPYUV444Converter WebPYUV444Converters[MODE_LAST];
 
 // Must be called before using the WebPUpsamplers[] (and for premultiplied
 // colorspaces like rgbA, rgbA4444, etc)
-void WebPInitUpsamplers(void);
+func WebPInitUpsamplers(void);
 // Must be called before using WebPSamplers[]
-void WebPInitSamplers(void);
+func WebPInitSamplers(void);
 // Must be called before using WebPYUV444Converters[]
-void WebPInitYUV444Converters(void);
+func WebPInitYUV444Converters(void);
 
 //------------------------------------------------------------------------------
 // ARGB -> YUV converters
 
 // Convert ARGB samples to luma Y.
-extern void (*WebPConvertARGBToY)(const uint32_t* WEBP_RESTRICT argb,
+extern func (*WebPConvertARGBToY)(const uint32_t* WEBP_RESTRICT argb,
                                   uint8_t* WEBP_RESTRICT y, int width);
 // Convert ARGB samples to U/V with downsampling. do_store should be '1' for
 // even lines and '0' for odd ones. 'src_width' is the original width, not
 // the U/V one.
-extern void (*WebPConvertARGBToUV)(const uint32_t* WEBP_RESTRICT argb,
+extern func (*WebPConvertARGBToUV)(const uint32_t* WEBP_RESTRICT argb,
                                    uint8_t* WEBP_RESTRICT u,
                                    uint8_t* WEBP_RESTRICT v, int src_width,
                                    int do_store);
 
 // Convert a row of accumulated (four-values) of rgba32 toward U/V
-extern void (*WebPConvertRGBA32ToUV)(const uint16_t* WEBP_RESTRICT rgb,
+extern func (*WebPConvertRGBA32ToUV)(const uint16_t* WEBP_RESTRICT rgb,
                                      uint8_t* WEBP_RESTRICT u,
                                      uint8_t* WEBP_RESTRICT v, int width);
 
 // Convert RGB or BGR to Y. Step is 3 or 4. If step is 4, data is RGBA or BGRA.
-extern void (*WebPConvertRGBToY)(const uint8_t* WEBP_RESTRICT rgb,
+extern func (*WebPConvertRGBToY)(const uint8_t* WEBP_RESTRICT rgb,
                                  uint8_t* WEBP_RESTRICT y, int width, int step);
-extern void (*WebPConvertBGRToY)(const uint8_t* WEBP_RESTRICT bgr,
+extern func (*WebPConvertBGRToY)(const uint8_t* WEBP_RESTRICT bgr,
                                  uint8_t* WEBP_RESTRICT y, int width, int step);
 
 // used for plain-C fallback.
-extern void WebPConvertARGBToUV_C(const uint32_t* WEBP_RESTRICT argb,
+extern func WebPConvertARGBToUV_C(const uint32_t* WEBP_RESTRICT argb,
                                   uint8_t* WEBP_RESTRICT u,
                                   uint8_t* WEBP_RESTRICT v, int src_width,
                                   int do_store);
-extern void WebPConvertRGBA32ToUV_C(const uint16_t* WEBP_RESTRICT rgb,
+extern func WebPConvertRGBA32ToUV_C(const uint16_t* WEBP_RESTRICT rgb,
                                     uint8_t* WEBP_RESTRICT u,
                                     uint8_t* WEBP_RESTRICT v, int width);
 
 // Must be called before using the above.
-void WebPInitConvertARGBToYUV(void);
+func WebPInitConvertARGBToYUV(void);
 
 //------------------------------------------------------------------------------
 // Rescaler
@@ -381,7 +381,7 @@ struct WebPRescaler;
 // Import a row of data and save its contribution in the rescaler.
 // 'channel' denotes the channel number to be imported. 'Expand' corresponds to
 // the wrk->x_expand case. Otherwise, 'Shrink' is to be used.
-typedef void (*WebPRescalerImportRowFunc)(
+typedef func (*WebPRescalerImportRowFunc)(
     struct WebPRescaler* WEBP_RESTRICT const wrk,
     const uint8_t* WEBP_RESTRICT src);
 
@@ -391,39 +391,39 @@ extern WebPRescalerImportRowFunc WebPRescalerImportRowShrink;
 // Export one row (starting at x_out position) from rescaler.
 // 'Expand' corresponds to the wrk->y_expand case.
 // Otherwise 'Shrink' is to be used
-typedef void (*WebPRescalerExportRowFunc)(struct WebPRescaler* const wrk);
+typedef func (*WebPRescalerExportRowFunc)(struct WebPRescaler* const wrk);
 extern WebPRescalerExportRowFunc WebPRescalerExportRowExpand;
 extern WebPRescalerExportRowFunc WebPRescalerExportRowShrink;
 
 // Plain-C implementation, as fall-back.
-extern void WebPRescalerImportRowExpand_C(
+extern func WebPRescalerImportRowExpand_C(
     struct WebPRescaler* WEBP_RESTRICT const wrk,
     const uint8_t* WEBP_RESTRICT src);
-extern void WebPRescalerImportRowShrink_C(
+extern func WebPRescalerImportRowShrink_C(
     struct WebPRescaler* WEBP_RESTRICT const wrk,
     const uint8_t* WEBP_RESTRICT src);
-extern void WebPRescalerExportRowExpand_C(struct WebPRescaler* const wrk);
-extern void WebPRescalerExportRowShrink_C(struct WebPRescaler* const wrk);
+extern func WebPRescalerExportRowExpand_C(struct WebPRescaler* const wrk);
+extern func WebPRescalerExportRowShrink_C(struct WebPRescaler* const wrk);
 
 // Main entry calls:
-extern void WebPRescalerImportRow(struct WebPRescaler* WEBP_RESTRICT const wrk,
+extern func WebPRescalerImportRow(struct WebPRescaler* WEBP_RESTRICT const wrk,
                                   const uint8_t* WEBP_RESTRICT src);
 // Export one row (starting at x_out position) from rescaler.
-extern void WebPRescalerExportRow(struct WebPRescaler* const wrk);
+extern func WebPRescalerExportRow(struct WebPRescaler* const wrk);
 
 // Must be called first before using the above.
-void WebPRescalerDspInit(void);
+func WebPRescalerDspInit(void);
 
 //------------------------------------------------------------------------------
 // Utilities for processing transparent channel.
 
 // Apply alpha pre-multiply on an rgba, bgra or argb plane of size w * h.
 // alpha_first should be 0 for argb, 1 for rgba or bgra (where alpha is last).
-extern void (*WebPApplyAlphaMultiply)(uint8_t* rgba, int alpha_first, int w,
+extern func (*WebPApplyAlphaMultiply)(uint8_t* rgba, int alpha_first, int w,
                                       int h, int stride);
 
 // Same, buf specifically for RGBA4444 format
-extern void (*WebPApplyAlphaMultiply4444)(uint8_t* rgba4444, int w, int h,
+extern func (*WebPApplyAlphaMultiply4444)(uint8_t* rgba4444, int w, int h,
                                           int stride);
 
 // Dispatch the values from alpha[] plane to the ARGB destination 'dst'.
@@ -434,7 +434,7 @@ extern int (*WebPDispatchAlpha)(const uint8_t* WEBP_RESTRICT alpha,
 
 // Transfer packed 8b alpha[] values to green channel in dst[], zero'ing the
 // A/R/B values. 'dst_stride' is the stride for dst[] in uint32_t units.
-extern void (*WebPDispatchAlphaToGreen)(const uint8_t* WEBP_RESTRICT alpha,
+extern func (*WebPDispatchAlphaToGreen)(const uint8_t* WEBP_RESTRICT alpha,
                                         int alpha_stride, int width, int height,
                                         uint32_t* WEBP_RESTRICT dst,
                                         int dst_stride);
@@ -448,38 +448,38 @@ extern int (*WebPExtractAlpha)(const uint8_t* WEBP_RESTRICT argb,
 
 // Extract the green values from 32b values in argb[] and pack them into alpha[]
 // (this is the opposite of WebPDispatchAlphaToGreen).
-extern void (*WebPExtractGreen)(const uint32_t* WEBP_RESTRICT argb,
+extern func (*WebPExtractGreen)(const uint32_t* WEBP_RESTRICT argb,
                                 uint8_t* WEBP_RESTRICT alpha, int size);
 
 // Pre-Multiply operation transforms x into x * A / 255  (where x=Y,R,G or B).
 // Un-Multiply operation transforms x into x * 255 / A.
 
 // Pre-Multiply or Un-Multiply (if 'inverse' is true) argb values in a row.
-extern void (*WebPMultARGBRow)(uint32_t* const ptr, int width, int inverse);
+extern func (*WebPMultARGBRow)(uint32_t* const ptr, int width, int inverse);
 
 // Same a WebPMultARGBRow(), but for several rows.
-void WebPMultARGBRows(uint8_t* ptr, int stride, int width, int num_rows,
+func WebPMultARGBRows(uint8_t* ptr, int stride, int width, int num_rows,
                       int inverse);
 
 // Same for a row of single values, with side alpha values.
-extern void (*WebPMultRow)(uint8_t* WEBP_RESTRICT const ptr,
+extern func (*WebPMultRow)(uint8_t* WEBP_RESTRICT const ptr,
                            const uint8_t* WEBP_RESTRICT const alpha, int width,
                            int inverse);
 
 // Same a WebPMultRow(), but for several 'num_rows' rows.
-void WebPMultRows(uint8_t* WEBP_RESTRICT ptr, int stride,
+func WebPMultRows(uint8_t* WEBP_RESTRICT ptr, int stride,
                   const uint8_t* WEBP_RESTRICT alpha, int alpha_stride,
                   int width, int num_rows, int inverse);
 
 // Plain-C versions, used as fallback by some implementations.
-void WebPMultRow_C(uint8_t* WEBP_RESTRICT const ptr,
+func WebPMultRow_C(uint8_t* WEBP_RESTRICT const ptr,
                    const uint8_t* WEBP_RESTRICT const alpha, int width,
                    int inverse);
-void WebPMultARGBRow_C(uint32_t* const ptr, int width, int inverse);
+func WebPMultARGBRow_C(uint32_t* const ptr, int width, int inverse);
 
 #ifdef WORDS_BIGENDIAN
 // ARGB packing function: a/r/g/b input is rgba or bgra order.
-extern void (*WebPPackARGB)(const uint8_t* WEBP_RESTRICT a,
+extern func (*WebPPackARGB)(const uint8_t* WEBP_RESTRICT a,
                             const uint8_t* WEBP_RESTRICT r,
                             const uint8_t* WEBP_RESTRICT g,
                             const uint8_t* WEBP_RESTRICT b, int len,
@@ -487,7 +487,7 @@ extern void (*WebPPackARGB)(const uint8_t* WEBP_RESTRICT a,
 #endif
 
 // RGB packing function. 'step' can be 3 or 4. r/g/b input is rgb or bgr order.
-extern void (*WebPPackRGB)(const uint8_t* WEBP_RESTRICT r,
+extern func (*WebPPackRGB)(const uint8_t* WEBP_RESTRICT r,
                            const uint8_t* WEBP_RESTRICT g,
                            const uint8_t* WEBP_RESTRICT b, int len, int step,
                            uint32_t* WEBP_RESTRICT out);
@@ -497,10 +497,10 @@ extern int (*WebPHasAlpha8b)(const uint8_t* src, int length);
 // This function returns true if src[4*i] contains a value different from 0xff.
 extern int (*WebPHasAlpha32b)(const uint8_t* src, int length);
 // replaces transparent values in src[] by 'color'.
-extern void (*WebPAlphaReplace)(uint32_t* src, int length, uint32_t color);
+extern func (*WebPAlphaReplace)(uint32_t* src, int length, uint32_t color);
 
 // To be called first before using the above.
-void WebPInitAlphaProcessing(void);
+func WebPInitAlphaProcessing(void);
 
 //------------------------------------------------------------------------------
 // Filter functions
@@ -515,12 +515,12 @@ typedef enum {  // Filter types.
   WEBP_FILTER_FAST
 } WEBP_FILTER_TYPE;
 
-typedef void (*WebPFilterFunc)(const uint8_t* WEBP_RESTRICT in, int width,
+typedef func (*WebPFilterFunc)(const uint8_t* WEBP_RESTRICT in, int width,
                                int height, int stride,
                                uint8_t* WEBP_RESTRICT out);
 // In-place un-filtering.
 // Warning! 'prev_line' pointer can be equal to 'cur_line' or 'preds'.
-typedef void (*WebPUnfilterFunc)(const uint8_t* prev_line, const uint8_t* preds,
+typedef func (*WebPUnfilterFunc)(const uint8_t* prev_line, const uint8_t* preds,
                                  uint8_t* cur_line, int width);
 
 // Filter the given data using the given predictor.
@@ -536,7 +536,7 @@ extern WebPFilterFunc WebPFilters[WEBP_FILTER_LAST];
 extern WebPUnfilterFunc WebPUnfilters[WEBP_FILTER_LAST];
 
 // To be called first before using the above.
-void VP8FiltersInit(void);
+func VP8FiltersInit(void);
 
 #ifdef __cplusplus
 }  // extern "C"

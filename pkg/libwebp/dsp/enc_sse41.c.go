@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Compute susceptibility based on DCT-coeff histograms.
 
-static void CollectHistogram_SSE41(const uint8_t* WEBP_RESTRICT ref,
+func CollectHistogram_SSE41(const uint8_t* WEBP_RESTRICT ref,
                                    const uint8_t* WEBP_RESTRICT pred,
                                    int start_block, int end_block,
                                    VP8Histogram* WEBP_RESTRICT const histo) {
@@ -111,7 +111,7 @@ static int TTransform_SSE41(const uint8_t* inA, const uint8_t* inB,
     // a30 a31 a32 a33   b30 b31 b32 b33
   }
 
-  // Vertical pass first to avoid a transpose (vertical and horizontal passes
+  // Vertical pass first to afunc a transpose (vertical and horizontal passes
   // are commutative because w/kWeightY is symmetric) and subsequent transpose.
   {
     // Calculate a and b (two 4x4 at once).
@@ -330,8 +330,8 @@ static int Quantize2Blocks_SSE41(int16_t in[32], int16_t out[32],
 //------------------------------------------------------------------------------
 // Entry point
 
-extern void VP8EncDspInitSSE41(void);
-WEBP_TSAN_IGNORE_FUNCTION void VP8EncDspInitSSE41(void) {
+extern func VP8EncDspInitSSE41(void);
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitSSE41(void) {
   VP8CollectHistogram = CollectHistogram_SSE41;
   VP8EncQuantizeBlock = QuantizeBlock_SSE41;
   VP8EncQuantize2Blocks = Quantize2Blocks_SSE41;

@@ -124,7 +124,7 @@ static int EmitFancyRGB(const VP8Io* const io, WebPDecParams* const p) {
 
 //------------------------------------------------------------------------------
 
-static void FillAlphaPlane(uint8_t* dst, int w, int h, int stride) {
+func FillAlphaPlane(uint8_t* dst, int w, int h, int stride) {
   int j;
   for (j = 0; j < h; ++j) {
     WEBP_UNSAFE_MEMSET(dst, 0xff, w * sizeof(*dst));
@@ -652,7 +652,7 @@ static int CustomPut(const VP8Io* io) {
 
 //------------------------------------------------------------------------------
 
-static void CustomTeardown(const VP8Io* io) {
+func CustomTeardown(const VP8Io* io) {
   WebPDecParams* const p = (WebPDecParams*)io->opaque;
   WebPSafeFree(p->memory);
   p->memory = NULL;
@@ -661,7 +661,7 @@ static void CustomTeardown(const VP8Io* io) {
 //------------------------------------------------------------------------------
 // Main entry point
 
-void WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io) {
+func WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io) {
   io->put = CustomPut;
   io->setup = CustomSetup;
   io->teardown = CustomTeardown;

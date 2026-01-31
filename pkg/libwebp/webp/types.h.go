@@ -50,7 +50,7 @@ extern "C" {
   void* WebPMalloc(size_t size);
 
 // Releases memory returned by the WebPDecode*() functions (from decode.h).
- void WebPFree(void* ptr);
+ func WebPFree(void* ptr);
 
 #ifdef __cplusplus
 }  // extern "C"

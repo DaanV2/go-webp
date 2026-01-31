@@ -41,7 +41,7 @@ static int IsTransparentARGBArea(const uint32_t* ptr, int stride, int size) {
   return 1;
 }
 
-static void Flatten(uint8_t* ptr, int v, int stride, int size) {
+func Flatten(uint8_t* ptr, int v, int stride, int size) {
   int y;
   for (y = 0; y < size; ++y) {
     memset(ptr, v, size);
@@ -49,7 +49,7 @@ static void Flatten(uint8_t* ptr, int v, int stride, int size) {
   }
 }
 
-static void FlattenARGB(uint32_t* ptr, uint32_t v, int stride, int size) {
+func FlattenARGB(uint32_t* ptr, uint32_t v, int stride, int size) {
   int x, y;
   for (y = 0; y < size; ++y) {
     for (x = 0; x < size; ++x) ptr[x] = v;
@@ -90,7 +90,7 @@ static int SmoothenBlock(const uint8_t* a_ptr, int a_stride, uint8_t* y_ptr,
   return (count == 0);
 }
 
-void WebPReplaceTransparentPixels(WebPPicture* const pic, uint32_t color) {
+func WebPReplaceTransparentPixels(WebPPicture* const pic, uint32_t color) {
   if (pic != NULL && pic->use_argb) {
     int y = pic->height;
     uint32_t* argb = pic->argb;
@@ -103,7 +103,7 @@ void WebPReplaceTransparentPixels(WebPPicture* const pic, uint32_t color) {
   }
 }
 
-void WebPCleanupTransparentArea(WebPPicture* pic) {
+func WebPCleanupTransparentArea(WebPPicture* pic) {
   int x, y, w, h;
   if (pic == NULL) return;
   w = pic->width / SIZE;
@@ -197,7 +197,7 @@ static WEBP_INLINE uint32_t MakeARGB32(int r, int g, int b) {
   return (0xff000000u | (r << 16) | (g << 8) | b);
 }
 
-void WebPBlendAlpha(WebPPicture* picture, uint32_t background_rgb) {
+func WebPBlendAlpha(WebPPicture* picture, uint32_t background_rgb) {
   const int red = (background_rgb >> 16) & 0xff;
   const int green = (background_rgb >> 8) & 0xff;
   const int blue = (background_rgb >> 0) & 0xff;

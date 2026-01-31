@@ -52,7 +52,7 @@ typedef struct {
 // must be implemented.
 typedef struct {
   // Must be called first, before any other method.
-  void (*Init)(WebPWorker* const worker);
+  func (*Init)(WebPWorker* const worker);
   // Must be called to initialize the object and spawn the thread. Re-entrant.
   // Will potentially launch the thread. Returns false in case of error.
   int (*Reset)(WebPWorker* const worker);
@@ -62,15 +62,15 @@ typedef struct {
   // Triggers the thread to call hook() with data1 and data2 arguments. These
   // hook/data1/data2 values can be changed at any time before calling this
   // function, but not be changed afterward until the next call to Sync().
-  void (*Launch)(WebPWorker* const worker);
+  func (*Launch)(WebPWorker* const worker);
   // This function is similar to Launch() except that it calls the
   // hook directly instead of using a thread. Convenient to bypass the thread
   // mechanism while still using the WebPWorker structs. Sync() must
   // still be called afterward (for error reporting).
-  void (*Execute)(WebPWorker* const worker);
+  func (*Execute)(WebPWorker* const worker);
   // Kill the thread and terminate the object. To use the object again, one
   // must call Reset() again.
-  void (*End)(WebPWorker* const worker);
+  func (*End)(WebPWorker* const worker);
 } WebPWorkerInterface;
 
 // Install a new set of threading functions, overriding the defaults. This
