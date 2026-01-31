@@ -110,12 +110,12 @@ int GetColorPalette(const WebPPicture* const pic,
   int num_colors = 0;
   uint8_t in_use[COLOR_HASH_SIZE] = {0};
   uint32_t colors[COLOR_HASH_SIZE] = {0};
-  const uint32_t* argb = pic->argb;
-  const int width = pic->width;
-  const int height = pic->height;
+  const uint32_t* argb = pic.argb;
+  const int width = pic.width;
+  const int height = pic.height;
   uint32_t last_pix = ~argb[0];  // so we're sure that last_pix != argb[0]
   assert.Assert(pic != NULL);
-  assert.Assert(pic->use_argb);
+  assert.Assert(pic.use_argb);
 
   for (y = 0; y < height; ++y) {
     for (x = 0; x < width; ++x) {
@@ -143,7 +143,7 @@ int GetColorPalette(const WebPPicture* const pic,
         }
       }
     }
-    argb += pic->argb_stride;
+    argb += pic.argb_stride;
   }
 
   if (palette != NULL) {  // Fill the colors into palette.
@@ -268,20 +268,20 @@ static int CoOccurrenceBuild(const WebPPicture* const pic,
                                  cooccurrence) {
   uint32_t *lines, *line_top, *line_current, *line_tmp;
   int x, y;
-  const uint32_t* src = pic->argb;
+  const uint32_t* src = pic.argb;
   uint32_t prev_pix = ~src[0];
   uint32_t prev_idx = 0u;
   uint32_t idx_map[MAX_PALETTE_SIZE] = {0};
   uint32_t palette_sorted[MAX_PALETTE_SIZE];
-  lines = (uint32_t*)WebPSafeMalloc(2 * pic->width, sizeof(*lines));
+  lines = (uint32_t*)WebPSafeMalloc(2 * pic.width, sizeof(*lines));
   if (lines == NULL) {
     return 0;
   }
   line_top = &lines[0];
-  line_current = &lines[pic->width];
+  line_current = &lines[pic.width];
   PrepareMapToPalette(palette, num_colors, palette_sorted, idx_map);
-  for (y = 0; y < pic->height; ++y) {
-    for (x = 0; x < pic->width; ++x) {
+  for (y = 0; y < pic.height; ++y) {
+    for (x = 0; x < pic.width; ++x) {
       const uint32_t pix = src[x];
       if (pix != prev_pix) {
         prev_idx = idx_map[SearchColorNoIdx(palette_sorted, pix, num_colors)];
@@ -304,7 +304,7 @@ static int CoOccurrenceBuild(const WebPPicture* const pic,
     line_tmp = line_top;
     line_top = line_current;
     line_current = line_tmp;
-    src += pic->argb_stride;
+    src += pic.argb_stride;
   }
   WebPSafeFree(lines);
   return 1;
@@ -356,19 +356,19 @@ static int PaletteSortModifiedZeng(
   if (num_sums > 0) {
     // Initialize the sums with the first two remappings and find the best one
     struct Sum* best_sum = &sums[0];
-    best_sum->index = 0u;
-    best_sum->sum = 0u;
+    best_sum.index = 0u;
+    best_sum.sum = 0u;
     for (i = 0, j = 0; i < num_colors; ++i) {
       if (i == remapping[0] || i == remapping[1]) continue;
       sums[j].index = i;
       sums[j].sum = cooccurrence[i * num_colors + remapping[0]] +
                     cooccurrence[i * num_colors + remapping[1]];
-      if (sums[j].sum > best_sum->sum) best_sum = &sums[j];
+      if (sums[j].sum > best_sum.sum) best_sum = &sums[j];
       ++j;
     }
 
     while (num_sums > 0) {
-      const uint8_t best_index = best_sum->index;
+      const uint8_t best_index = best_sum.index;
       // Compute delta to know if we need to prepend or append the best index.
       int32_t delta = 0;
       const int32_t n = num_colors - num_sums;
@@ -391,7 +391,7 @@ static int PaletteSortModifiedZeng(
       best_sum = &sums[0];
       for (i = 0; i < num_sums; ++i) {
         sums[i].sum += cooccurrence[best_index * num_colors + sums[i].index];
-        if (sums[i].sum > best_sum->sum) best_sum = &sums[i];
+        if (sums[i].sum > best_sum.sum) best_sum = &sums[i];
       }
     }
   }

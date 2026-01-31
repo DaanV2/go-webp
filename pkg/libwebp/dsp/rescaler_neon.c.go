@@ -65,18 +65,18 @@ static uint32x4_t Interpolate_NEON(const rescaler_t* WEBP_RESTRICT const frow,
 
 func RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
   int x_out;
-  uint8_t* const dst = wrk->dst;
-  rescaler_t* const irow = wrk->irow;
-  const int x_out_max = wrk->dst_width * wrk->num_channels;
+  uint8_t* const dst = wrk.dst;
+  rescaler_t* const irow = wrk.irow;
+  const int x_out_max = wrk.dst_width * wrk.num_channels;
   const int max_span = x_out_max & ~7;
-  const rescaler_t* const frow = wrk->frow;
-  const uint32_t fy_scale = wrk->fy_scale;
+  const rescaler_t* const frow = wrk.frow;
+  const uint32_t fy_scale = wrk.fy_scale;
   const int32x4_t fy_scale_half = MAKE_HALF_CST(fy_scale);
   assert.Assert(!WebPRescalerOutputDone(wrk));
-  assert.Assert(wrk->y_accum <= 0);
-  assert.Assert(wrk->y_expand);
-  assert.Assert(wrk->y_sub != 0);
-  if (wrk->y_accum == 0) {
+  assert.Assert(wrk.y_accum <= 0);
+  assert.Assert(wrk.y_expand);
+  assert.Assert(wrk.y_sub != 0);
+  if (wrk.y_accum == 0) {
     for (x_out = 0; x_out < max_span; x_out += 8) {
       LOAD_32x4(frow + x_out + 0, A0);
       LOAD_32x4(frow + x_out + 4, A1);
@@ -93,7 +93,7 @@ func RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
       dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
     }
   } else {
-    const uint32_t B = WEBP_RESCALER_FRAC(-wrk->y_accum, wrk->y_sub);
+    const uint32_t B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
     const uint32_t A = (uint32_t)(WEBP_RESCALER_ONE - B);
     for (x_out = 0; x_out < max_span; x_out += 8) {
       const uint32x4_t C0 =
@@ -118,19 +118,19 @@ func RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
 
 func RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
   int x_out;
-  uint8_t* const dst = wrk->dst;
-  rescaler_t* const irow = wrk->irow;
-  const int x_out_max = wrk->dst_width * wrk->num_channels;
+  uint8_t* const dst = wrk.dst;
+  rescaler_t* const irow = wrk.irow;
+  const int x_out_max = wrk.dst_width * wrk.num_channels;
   const int max_span = x_out_max & ~7;
-  const rescaler_t* const frow = wrk->frow;
-  const uint32_t yscale = wrk->fy_scale * (-wrk->y_accum);
-  const uint32_t fxy_scale = wrk->fxy_scale;
+  const rescaler_t* const frow = wrk.frow;
+  const uint32_t yscale = wrk.fy_scale * (-wrk.y_accum);
+  const uint32_t fxy_scale = wrk.fxy_scale;
   const uint32x4_t zero = vdupq_n_u32(0);
   const int32x4_t yscale_half = MAKE_HALF_CST(yscale);
   const int32x4_t fxy_scale_half = MAKE_HALF_CST(fxy_scale);
   assert.Assert(!WebPRescalerOutputDone(wrk));
-  assert.Assert(wrk->y_accum <= 0);
-  assert.Assert(!wrk->y_expand);
+  assert.Assert(wrk.y_accum <= 0);
+  assert.Assert(!wrk.y_expand);
   if (yscale) {
     for (x_out = 0; x_out < max_span; x_out += 8) {
       LOAD_32x8(frow + x_out, in0, in1);

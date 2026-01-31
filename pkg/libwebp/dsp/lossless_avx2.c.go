@@ -363,7 +363,7 @@ func TransformColorInverse_AVX2(const VP8LMultipliers* const m,
                                        const uint32_t* const src,
                                        int num_pixels, uint32_t* dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
-#define CST(X) (((int16_t)(m->X << 8)) >> 5)  // sign-extend
+#define CST(X) (((int16_t)(m.X << 8)) >> 5)  // sign-extend
   const __m256i mults_rb = _mm256_set1_epi32(
       (int)((uint32_t)CST(green_to_red) << 16 | (CST(green_to_blue) & 0xffff)));
   const __m256i mults_b2 = _mm256_set1_epi32(CST(red_to_blue));
@@ -378,7 +378,7 @@ func TransformColorInverse_AVX2(const VP8LMultipliers* const m,
   int i;
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i A = _mm256_loadu_si256((const __m256i*)(src + i));
-    const __m256i B = _mm256_shuffle_epi8(A, perm1);  // argb -> g0g0
+    const __m256i B = _mm256_shuffle_epi8(A, perm1);  // argb . g0g0
     const __m256i C = _mm256_mulhi_epi16(B, mults_rb);
     const __m256i D = _mm256_add_epi8(A, C);
     const __m256i E = _mm256_shuffle_epi8(D, perm2);

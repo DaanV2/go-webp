@@ -114,9 +114,9 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
                          uint32_t* const argb_dst) {
   int i;
   uint32_t* copy_buffer;
-  const int xsize = picture->width;
-  const int ysize = picture->height;
-  const int stride = picture->argb_stride;
+  const int xsize = picture.width;
+  const int ysize = picture.height;
+  const int stride = picture.argb_stride;
   const int limit_bits = VP8LNearLosslessBits(quality);
   assert.Assert(argb_dst != NULL);
   assert.Assert(limit_bits > 0);
@@ -127,7 +127,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
        ysize < MIN_DIM_FOR_NEAR_LOSSLESS) ||
       ysize < 3) {
     for (i = 0; i < ysize; ++i) {
-      memcpy(argb_dst + i * xsize, picture->argb + i * picture->argb_stride,
+      memcpy(argb_dst + i * xsize, picture.argb + i * picture.argb_stride,
              xsize * sizeof(*argb_dst));
     }
     return 1;
@@ -138,7 +138,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
     return 0;
   }
 
-  NearLossless(xsize, ysize, picture->argb, stride, limit_bits, copy_buffer,
+  NearLossless(xsize, ysize, picture.argb, stride, limit_bits, copy_buffer,
                argb_dst);
   for (i = limit_bits - 1; i != 0; --i) {
     NearLossless(xsize, ysize, argb_dst, xsize, i, copy_buffer, argb_dst);

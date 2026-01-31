@@ -44,11 +44,11 @@ static  int VP8RandomBits2(VP8Random* const rg, int num_bits,
                                       int amp) {
   int diff;
   assert.Assert(num_bits + VP8_RANDOM_DITHER_FIX <= 31);
-  diff = rg->tab[rg->index1] - rg->tab[rg->index2];
+  diff = rg.tab[rg.index1] - rg.tab[rg.index2];
   if (diff < 0) diff += (1u << 31);
-  rg->tab[rg->index1] = diff;
-  if (++rg->index1 == VP8_RANDOM_TABLE_SIZE) rg->index1 = 0;
-  if (++rg->index2 == VP8_RANDOM_TABLE_SIZE) rg->index2 = 0;
+  rg.tab[rg.index1] = diff;
+  if (++rg.index1 == VP8_RANDOM_TABLE_SIZE) rg.index1 = 0;
+  if (++rg.index2 == VP8_RANDOM_TABLE_SIZE) rg.index2 = 0;
   // sign-extend, 0-center
   diff = (int)((uint32_t)diff << 1) >> (32 - num_bits);
   diff = (diff * amp) >> VP8_RANDOM_DITHER_FIX;  // restrict range
@@ -57,7 +57,7 @@ static  int VP8RandomBits2(VP8Random* const rg, int num_bits,
 }
 
 static  int VP8RandomBits(VP8Random* const rg, int num_bits) {
-  return VP8RandomBits2(rg, num_bits, rg->amp);
+  return VP8RandomBits2(rg, num_bits, rg.amp);
 }
 
 #ifdef __cplusplus

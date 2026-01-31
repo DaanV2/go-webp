@@ -162,7 +162,7 @@ type WebPIterator struct {
 };
 
 // Retrieves frame 'frame_number' from 'dmux'.
-// 'iter->fragment' points to the frame on return from this function.
+// 'iter.fragment' points to the frame on return from this function.
 // Setting 'frame_number' equal to 0 will return the last frame of the image.
 // Returns false if 'dmux' is NULL or frame 'frame_number' is not present.
 // Call WebPDemuxReleaseIterator() when use of the iterator is complete.
@@ -171,8 +171,8 @@ type WebPIterator struct {
                                                  int frame_number,
                                                  WebPIterator* iter);
 
-// Sets 'iter->fragment' to point to the next ('iter->frame_num' + 1) or
-// previous ('iter->frame_num' - 1) frame. These functions do not loop.
+// Sets 'iter.fragment' to point to the next ('iter.frame_num' + 1) or
+// previous ('iter.frame_num' - 1) frame. These functions do not loop.
 // Returns true on success, false otherwise.
   int WebPDemuxNextFrame(WebPIterator* iter);
   int WebPDemuxPrevFrame(WebPIterator* iter);
@@ -211,8 +211,8 @@ type WebPChunkIterator struct {
                                                  int chunk_number,
                                                  WebPChunkIterator* iter);
 
-// Sets 'iter->chunk' to point to the next ('iter->chunk_num' + 1) or previous
-// ('iter->chunk_num' - 1) chunk. These functions do not loop.
+// Sets 'iter.chunk' to point to the next ('iter.chunk_num' + 1) or previous
+// ('iter.chunk_num' - 1) chunk. These functions do not loop.
 // Returns true on success, false otherwise.
   int WebPDemuxNextChunk(WebPChunkIterator* iter);
   int WebPDemuxPrevChunk(WebPChunkIterator* iter);

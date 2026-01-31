@@ -47,7 +47,7 @@ func PrepareMapToPalette(const uint32_t WEBP_COUNTED_BY(num_colors) palette[],
                          uint32_t WEBP_COUNTED_BY(num_colors) sorted[],
                          uint32_t WEBP_COUNTED_BY(num_colors) idx_map[]);
 
-// Returns count of unique colors in 'pic', assuming pic->use_argb is true.
+// Returns count of unique colors in 'pic', assuming pic.use_argb is true.
 // If the unique color count is more than MAX_PALETTE_SIZE, returns
 // MAX_PALETTE_SIZE+1.
 // If 'palette' is not NULL and the number of unique colors is less than or

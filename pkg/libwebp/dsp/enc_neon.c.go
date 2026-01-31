@@ -101,15 +101,15 @@ static  func TransformPass_NEON(int16x8x2_t* const rows) {
   //          in8 | in12
   // B1 = in4 | in12
   const int16x8_t B1 =
-      vcombine_s16(vget_high_s16(rows->val[0]), vget_high_s16(rows->val[1]));
+      vcombine_s16(vget_high_s16(rows.val[0]), vget_high_s16(rows.val[1]));
   // C0 = kC1 * in4 | kC1 * in12
   // C1 = kC2 * in4 | kC2 * in12
   const int16x8_t C0 = vsraq_n_s16(B1, vqdmulhq_n_s16(B1, kC1), 1);
   const int16x8_t C1 = vqdmulhq_n_s16(B1, kC2);
-  const int16x4_t a = vqadd_s16(vget_low_s16(rows->val[0]),
-                                vget_low_s16(rows->val[1]));  // in0 + in8
-  const int16x4_t b = vqsub_s16(vget_low_s16(rows->val[0]),
-                                vget_low_s16(rows->val[1]));  // in0 - in8
+  const int16x4_t a = vqadd_s16(vget_low_s16(rows.val[0]),
+                                vget_low_s16(rows.val[1]));  // in0 + in8
+  const int16x4_t b = vqsub_s16(vget_low_s16(rows.val[0]),
+                                vget_low_s16(rows.val[1]));  // in0 - in8
   // c = kC2 * in4 - kC1 * in12
   // d = kC1 * in4 + kC2 * in12
   const int16x4_t c = vqsub_s16(vget_low_s16(C1), vget_high_s16(C0));
@@ -328,7 +328,7 @@ func FTransform_NEON(const uint8_t* WEBP_RESTRICT src,
     Transpose4x4_S16_NEON(tmp0, tmp1, tmp2, tmp3, &d0d1, &d3d2);
   }
   {  // 2nd pass
-    // the (1<<16) addition is for the replacement: a3!=0  <-> 1-(a3==0)
+    // the (1<<16) addition is for the replacement: a3!=0  <. 1-(a3==0)
     const int32x4_t kCst12000 = vdupq_n_s32(12000 + (1 << 16));
     const int32x4_t kCst51000 = vdupq_n_s32(51000);
     const int16x8_t a0a1 = vaddq_s16(d0d1, d3d2);  // d0+d3 | d1+d2   (=a0|a1)
@@ -835,11 +835,11 @@ static int SSE4x4_NEON(const uint8_t* WEBP_RESTRICT a,
 static int16x8_t Quantize_NEON(int16_t* WEBP_RESTRICT const in,
                                const VP8Matrix* WEBP_RESTRICT const mtx,
                                int offset) {
-  const uint16x8_t sharp = vld1q_u16(&mtx->sharpen[offset]);
-  const uint16x8_t q = vld1q_u16(&mtx->q[offset]);
-  const uint16x8_t iq = vld1q_u16(&mtx->iq[offset]);
-  const uint32x4_t bias0 = vld1q_u32(&mtx->bias[offset + 0]);
-  const uint32x4_t bias1 = vld1q_u32(&mtx->bias[offset + 4]);
+  const uint16x8_t sharp = vld1q_u16(&mtx.sharpen[offset]);
+  const uint16x8_t q = vld1q_u16(&mtx.q[offset]);
+  const uint16x8_t iq = vld1q_u16(&mtx.iq[offset]);
+  const uint32x4_t bias0 = vld1q_u32(&mtx.bias[offset + 0]);
+  const uint32x4_t bias1 = vld1q_u32(&mtx.bias[offset + 4]);
 
   const int16x8_t a = vld1q_s16(in + offset);                // in
   const uint16x8_t b = vreinterpretq_u16_s16(vabsq_s16(a));  // coeff = abs(in)

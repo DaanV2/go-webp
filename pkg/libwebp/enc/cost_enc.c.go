@@ -68,14 +68,14 @@ static int VariableLevelCost(int level, const uint8_t probas[NUM_PROBAS]) {
 func VP8CalculateLevelCosts(VP8EncProba* const proba) {
   int ctype, band, ctx;
 
-  if (!proba->dirty) return;  // nothing to do.
+  if (!proba.dirty) return;  // nothing to do.
 
   for (ctype = 0; ctype < NUM_TYPES; ++ctype) {
     int n;
     for (band = 0; band < NUM_BANDS; ++band) {
       for (ctx = 0; ctx < NUM_CTX; ++ctx) {
-        const uint8_t* const p = proba->coeffs[ctype][band][ctx];
-        uint16_t* const table = proba->level_cost[ctype][band][ctx];
+        const uint8_t* const p = proba.coeffs[ctype][band][ctx];
+        uint16_t* const table = proba.level_cost[ctype][band][ctx];
         const int cost0 = (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
         const int cost_base = VP8BitCost(1, p[1]) + cost0;
         int v;
@@ -89,12 +89,12 @@ func VP8CalculateLevelCosts(VP8EncProba* const proba) {
     }
     for (n = 0; n < 16; ++n) {  // replicate bands. We don't need to sentinel.
       for (ctx = 0; ctx < NUM_CTX; ++ctx) {
-        proba->remapped_costs[ctype][n][ctx] =
-            proba->level_cost[ctype][VP8EncBands[n]][ctx];
+        proba.remapped_costs[ctype][n][ctx] =
+            proba.level_cost[ctype][VP8EncBands[n]][ctx];
       }
     }
   }
-  proba->dirty = 0;
+  proba.dirty = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -212,25 +212,25 @@ const uint16_t VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES] = {
 
 func VP8InitResidual(int first, int coeff_type, VP8Encoder* const enc,
                      VP8Residual* const res) {
-  res->coeff_type = coeff_type;
-  res->prob = enc->proba.coeffs[coeff_type];
-  res->stats = enc->proba.stats[coeff_type];
-  res->costs = enc->proba.remapped_costs[coeff_type];
-  res->first = first;
+  res.coeff_type = coeff_type;
+  res.prob = enc.proba.coeffs[coeff_type];
+  res.stats = enc.proba.stats[coeff_type];
+  res.costs = enc.proba.remapped_costs[coeff_type];
+  res.first = first;
 }
 
 //------------------------------------------------------------------------------
 // Mode costs
 
 int VP8GetCostLuma4(VP8EncIterator* const it, const int16_t levels[16]) {
-  const int x = (it->i4 & 3), y = (it->i4 >> 2);
+  const int x = (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
-  VP8Encoder* const enc = it->enc;
+  VP8Encoder* const enc = it.enc;
   int R = 0;
   int ctx;
 
   VP8InitResidual(0, 3, enc, &res);
-  ctx = it->top_nz[x] + it->left_nz[y];
+  ctx = it.top_nz[x] + it.left_nz[y];
   VP8SetResidualCoeffs(levels, &res);
   R += VP8GetResidualCost(ctx, &res);
   return R;
@@ -238,7 +238,7 @@ int VP8GetCostLuma4(VP8EncIterator* const it, const int16_t levels[16]) {
 
 int VP8GetCostLuma16(VP8EncIterator* const it, const VP8ModeScore* const rd) {
   VP8Residual res;
-  VP8Encoder* const enc = it->enc;
+  VP8Encoder* const enc = it.enc;
   int x, y;
   int R = 0;
 
@@ -246,17 +246,17 @@ int VP8GetCostLuma16(VP8EncIterator* const it, const VP8ModeScore* const rd) {
 
   // DC
   VP8InitResidual(0, 1, enc, &res);
-  VP8SetResidualCoeffs(rd->y_dc_levels, &res);
-  R += VP8GetResidualCost(it->top_nz[8] + it->left_nz[8], &res);
+  VP8SetResidualCoeffs(rd.y_dc_levels, &res);
+  R += VP8GetResidualCost(it.top_nz[8] + it.left_nz[8], &res);
 
   // AC
   VP8InitResidual(1, 0, enc, &res);
   for (y = 0; y < 4; ++y) {
     for (x = 0; x < 4; ++x) {
-      const int ctx = it->top_nz[x] + it->left_nz[y];
-      VP8SetResidualCoeffs(rd->y_ac_levels[x + y * 4], &res);
+      const int ctx = it.top_nz[x] + it.left_nz[y];
+      VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       R += VP8GetResidualCost(ctx, &res);
-      it->top_nz[x] = it->left_nz[y] = (res.last >= 0);
+      it.top_nz[x] = it.left_nz[y] = (res.last >= 0);
     }
   }
   return R;
@@ -264,7 +264,7 @@ int VP8GetCostLuma16(VP8EncIterator* const it, const VP8ModeScore* const rd) {
 
 int VP8GetCostUV(VP8EncIterator* const it, const VP8ModeScore* const rd) {
   VP8Residual res;
-  VP8Encoder* const enc = it->enc;
+  VP8Encoder* const enc = it.enc;
   int ch, x, y;
   int R = 0;
 
@@ -274,10 +274,10 @@ int VP8GetCostUV(VP8EncIterator* const it, const VP8ModeScore* const rd) {
   for (ch = 0; ch <= 2; ch += 2) {
     for (y = 0; y < 2; ++y) {
       for (x = 0; x < 2; ++x) {
-        const int ctx = it->top_nz[4 + ch + x] + it->left_nz[4 + ch + y];
-        VP8SetResidualCoeffs(rd->uv_levels[ch * 2 + x + y * 2], &res);
+        const int ctx = it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
+        VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         R += VP8GetResidualCost(ctx, &res);
-        it->top_nz[4 + ch + x] = it->left_nz[4 + ch + y] = (res.last >= 0);
+        it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] = (res.last >= 0);
       }
     }
   }
@@ -293,23 +293,23 @@ int VP8GetCostUV(VP8EncIterator* const it, const VP8ModeScore* const rd) {
 // Simulate block coding, but only record statistics.
 // Note: no need to record the fixed probas.
 int VP8RecordCoeffs(int ctx, const VP8Residual* const res) {
-  int n = res->first;
+  int n = res.first;
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
-  proba_t* s = res->stats[n][ctx];
-  if (res->last < 0) {
+  proba_t* s = res.stats[n][ctx];
+  if (res.last < 0) {
     VP8RecordStats(0, s + 0);
     return 0;
   }
-  while (n <= res->last) {
+  while (n <= res.last) {
     int v;
     VP8RecordStats(1, s + 0);  // order of record doesn't matter
-    while ((v = res->coeffs[n++]) == 0) {
+    while ((v = res.coeffs[n++]) == 0) {
       VP8RecordStats(0, s + 1);
-      s = res->stats[VP8EncBands[n]][0];
+      s = res.stats[VP8EncBands[n]][0];
     }
     VP8RecordStats(1, s + 1);
     if (!VP8RecordStats(2u < (unsigned int)(v + 1), s + 2)) {  // v = -1 or 1
-      s = res->stats[VP8EncBands[n]][1];
+      s = res.stats[VP8EncBands[n]][1];
     } else {
       v = abs(v);
 #if !defined(USE_LEVEL_CODE_TABLE)
@@ -337,7 +337,7 @@ int VP8RecordCoeffs(int ctx, const VP8Residual* const res) {
         }
       }
 #endif
-      s = res->stats[VP8EncBands[n]][2];
+      s = res.stats[VP8EncBands[n]][2];
     }
   }
   if (n < 16) VP8RecordStats(0, s + 0);

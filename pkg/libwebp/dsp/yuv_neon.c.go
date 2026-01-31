@@ -9,7 +9,7 @@ package dsp
 // be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 //
-// YUV->RGB conversion functions
+// YUV.RGB conversion functions
 //
 // Author: Skal (pascal.massimino@gmail.com)
 

@@ -37,9 +37,9 @@ func VP8BitReaderSetBuffer(VP8BitReader* const br,
                            const uint8_t* const WEBP_COUNTED_BY(size) start,
                            size_t size) {
   assert.Assert(start != NULL);
-  br->buf = start;
-  br->buf_end = start + size;
-  br->buf_max =
+  br.buf = start;
+  br.buf_end = start + size;
+  br.buf_max =
       (size >= sizeof(lbit_t)) ? start + size - sizeof(lbit_t) + 1 : start;
 }
 
@@ -49,19 +49,19 @@ func VP8InitBitReader(VP8BitReader* const br,
   assert.Assert(br != NULL);
   assert.Assert(start != NULL);
   assert.Assert(size < (1u << 31));  // limit ensured by format and upstream checks
-  br->range = 255 - 1;
-  br->value = 0;
-  br->bits = -8;  // to load the very first 8bits
-  br->eof = 0;
+  br.range = 255 - 1;
+  br.value = 0;
+  br.bits = -8;  // to load the very first 8bits
+  br.eof = 0;
   VP8BitReaderSetBuffer(br, start, size);
   VP8LoadNewBytes(br);
 }
 
 func VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset) {
-  if (br->buf != NULL) {
-    br->buf += offset;
-    br->buf_end += offset;
-    br->buf_max += offset;
+  if (br.buf != NULL) {
+    br.buf += offset;
+    br.buf_end += offset;
+    br.buf_max += offset;
   }
 }
 
@@ -86,18 +86,18 @@ const uint8_t kVP8NewRange[128] = {
     241, 243, 245, 247, 249, 251, 253, 127};
 
 func VP8LoadFinalBytes(VP8BitReader* const br) {
-  assert.Assert(br != NULL && br->buf != NULL);
+  assert.Assert(br != NULL && br.buf != NULL);
   // Only read 8bits at a time
-  if (br->buf < br->buf_end) {
-    br->bits += 8;
-    br->value = (bit_t)(*br->buf++) | (br->value << 8);
-    WEBP_SELF_ASSIGN(br->buf_end);
-  } else if (!br->eof) {
-    br->value <<= 8;
-    br->bits += 8;
-    br->eof = 1;
+  if (br.buf < br.buf_end) {
+    br.bits += 8;
+    br.value = (bit_t)(*br.buf++) | (br.value << 8);
+    WEBP_SELF_ASSIGN(br.buf_end);
+  } else if (!br.eof) {
+    br.value <<= 8;
+    br.bits += 8;
+    br.eof = 1;
   } else {
-    br->bits = 0;  // This is to afunc undefined behaviour with shifts.
+    br.bits = 0;  // This is to afunc undefined behaviour with shifts.
   }
 }
 
@@ -144,19 +144,19 @@ func VP8LInitBitReader(VP8LBitReader* const br,
   assert.Assert(start != NULL);
   assert.Assert(length < 0xfffffff8u);  // can't happen with a RIFF chunk.
 
-  br->buf = start;
-  br->len = length;
-  br->bit_pos = 0;
-  br->eos = 0;
+  br.buf = start;
+  br.len = length;
+  br.bit_pos = 0;
+  br.eos = 0;
 
-  if (length > sizeof(br->val)) {
-    length = sizeof(br->val);
+  if (length > sizeof(br.val)) {
+    length = sizeof(br.val);
   }
   for (i = 0; i < length; ++i) {
     value |= (vp8l_val_t)start[i] << (8 * i);
   }
-  br->val = value;
-  br->pos = length;
+  br.val = value;
+  br.pos = length;
 }
 
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
@@ -165,24 +165,24 @@ func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
   assert.Assert(br != NULL);
   assert.Assert(buf != NULL);
   assert.Assert(len < 0xfffffff8u);  // can't happen with a RIFF chunk.
-  br->buf = buf;
-  br->len = len;
+  br.buf = buf;
+  br.len = len;
   // 'pos' > 'len' should be considered a param error.
-  br->eos = (br->pos > br->len) || VP8LIsEndOfStream(br);
+  br.eos = (br.pos > br.len) || VP8LIsEndOfStream(br);
 }
 
 func VP8LSetEndOfStream(VP8LBitReader* const br) {
-  br->eos = 1;
-  br->bit_pos = 0;  // To afunc undefined behaviour with shifts.
+  br.eos = 1;
+  br.bit_pos = 0;  // To afunc undefined behaviour with shifts.
 }
 
 // If not at EOS, reload up to VP8L_LBITS byte-by-byte
 func ShiftBytes(VP8LBitReader* const br) {
-  while (br->bit_pos >= 8 && br->pos < br->len) {
-    br->val >>= 8;
-    br->val |= ((vp8l_val_t)br->buf[br->pos]) << (VP8L_LBITS - 8);
-    ++br->pos;
-    br->bit_pos -= 8;
+  while (br.bit_pos >= 8 && br.pos < br.len) {
+    br.val >>= 8;
+    br.val |= ((vp8l_val_t)br.buf[br.pos]) << (VP8L_LBITS - 8);
+    ++br.pos;
+    br.bit_pos -= 8;
   }
   if (VP8LIsEndOfStream(br)) {
     VP8LSetEndOfStream(br);
@@ -190,14 +190,14 @@ func ShiftBytes(VP8LBitReader* const br) {
 }
 
 func VP8LDoFillBitWindow(VP8LBitReader* const br) {
-  assert.Assert(br->bit_pos >= VP8L_WBITS);
+  assert.Assert(br.bit_pos >= VP8L_WBITS);
 #if defined(VP8L_USE_FAST_LOAD)
-  if (br->pos + sizeof(br->val) < br->len) {
-    br->val >>= VP8L_WBITS;
-    br->bit_pos -= VP8L_WBITS;
-    br->val |= (vp8l_val_t)HToLE32(WebPMemToUint32(br->buf + br->pos))
+  if (br.pos + sizeof(br.val) < br.len) {
+    br.val >>= VP8L_WBITS;
+    br.bit_pos -= VP8L_WBITS;
+    br.val |= (vp8l_val_t)HToLE32(WebPMemToUint32(br.buf + br.pos))
                << (VP8L_LBITS - VP8L_WBITS);
-    br->pos += VP8L_LOG8_WBITS;
+    br.pos += VP8L_LOG8_WBITS;
     return;
   }
 #endif
@@ -207,10 +207,10 @@ func VP8LDoFillBitWindow(VP8LBitReader* const br) {
 uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits) {
   assert.Assert(n_bits >= 0);
   // Flag an error if end_of_stream or n_bits is more than allowed limit.
-  if (!br->eos && n_bits <= VP8L_MAX_NUM_BIT_READ) {
+  if (!br.eos && n_bits <= VP8L_MAX_NUM_BIT_READ) {
     const uint32_t val = VP8LPrefetchBits(br) & kBitMask[n_bits];
-    const int new_bits = br->bit_pos + n_bits;
-    br->bit_pos = new_bits;
+    const int new_bits = br.bit_pos + n_bits;
+    br.bit_pos = new_bits;
     ShiftBytes(br);
     return val;
   } else {
@@ -269,17 +269,17 @@ func BitTrace(const type VP8BitReader* const br, const char label[]) struct {
   if (!init_done) {
     WEBP_UNSAFE_MEMSET(kLabels, 0, sizeof(kLabels));
     atexit(PrintBitTraces);
-    buf_start = br->buf;
+    buf_start = br.buf;
     init_done = 1;
   }
-  pos = (int)(br->buf - buf_start) * 8 - br->bits;
-  // if there's a too large jump, we've changed partition -> reset counter
+  pos = (int)(br.buf - buf_start) * 8 - br.bits;
+  // if there's a too large jump, we've changed partition . reset counter
   if (abs(pos - last_pos) > 32) {
-    buf_start = br->buf;
+    buf_start = br.buf;
     pos = 0;
     last_pos = 0;
   }
-  if (br->range >= 0x7f) pos += kVP8Log2Range[br->range - 0x7f];
+  if (br.range >= 0x7f) pos += kVP8Log2Range[br.range - 0x7f];
   for (i = 0; i < last_label; ++i) {
     if (!strcmp(label, kLabels[i].label)) break;
   }

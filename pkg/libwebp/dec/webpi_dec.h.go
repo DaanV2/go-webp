@@ -89,7 +89,7 @@ int WebPCheckCropDimensions(int image_width, int image_height, int x, int y,
                             int w, int h);
 
 // Initializes VP8Io with custom setup, io and teardown functions. The default
-// hooks will use the supplied 'params' as io->opaque handle.
+// hooks will use the supplied 'params' as io.opaque handle.
 func WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io);
 
 // Setup crop_xxx fields, mb_w and mb_h in io. 'src_colorspace' refers
@@ -109,7 +109,7 @@ func WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io);
 // dimension / etc.). If *options is not NULL, also verify that the options'
 // parameters are valid and apply them to the width/height dimensions of the
 // output buffer. This takes cropping / scaling / rotation into account.
-// Also incorporates the options->flip flag to flip the buffer parameters if
+// Also incorporates the options.flip flag to flip the buffer parameters if
 // needed.
 VP8StatusCode WebPAllocateDecBuffer(int width, int height,
                                     const WebPDecoderOptions* const options,

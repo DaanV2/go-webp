@@ -149,7 +149,7 @@ type WebPConfig struct {
                       // value is 0.
 
   int use_delta_palette;  // reserved
-  int use_sharp_yuv;      // if needed, use sharp (and slow) RGB->YUV conversion
+  int use_sharp_yuv;      // if needed, use sharp (and slow) RGB.YUV conversion
 
   int qmin;  // minimum permissible quality factor
   int qmax;  // maximum permissible quality factor
@@ -240,7 +240,7 @@ type WebPAuxStats struct {
 
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
-// reference (and so one can make use of picture->custom_ptr).
+// reference (and so one can make use of picture.custom_ptr).
 typedef int (*WebPWriterFunction)(const uint8_t* data, size_t data_size,
                                   const WebPPicture* picture);
 
@@ -256,7 +256,7 @@ type WebPMemoryWriter struct {
 // The following must be called first before any use.
  func WebPMemoryWriterInit(WebPMemoryWriter* writer);
 
-// The following must be called to deallocate writer->mem memory. The 'writer'
+// The following must be called to deallocate writer.mem memory. The 'writer'
 // object itself is not deallocated.
  func WebPMemoryWriterClear(WebPMemoryWriter* writer);
 // The custom writer to be used with WebPMemoryWriter as custom_ptr. Upon
@@ -385,7 +385,7 @@ type WebPPicture struct {
 //------------------------------------------------------------------------------
 // WebPPicture utils
 
-// Convenience allocation / deallocation based on picture->width/height:
+// Convenience allocation / deallocation based on picture.width/height:
 // Allocate y/u/v buffers as per colorspace/width/height specification.
 // Note! This function will free the previous buffer if needed.
 // Returns false in case of memory error.
@@ -495,9 +495,9 @@ type WebPPicture struct {
                                                      const uint8_t* bgrx,
                                                      int bgrx_stride);
 
-// Converts picture->argb data to the YUV420A format. The 'colorspace'
+// Converts picture.argb data to the YUV420A format. The 'colorspace'
 // parameter is deprecated and should be equal to WEBP_YUV420.
-// Upon return, picture->use_argb is set to false. The presence of real
+// Upon return, picture.use_argb is set to false. The presence of real
 // non-opaque transparent values is detected, and 'colorspace' will be
 // adjusted accordingly. Note that this method is lossy.
 // Returns false in case of error.
@@ -511,7 +511,7 @@ type WebPPicture struct {
   int WebPPictureARGBToYUVADithered(
     WebPPicture* picture, WebPEncCSP colorspace, float dithering);
 
-// Performs 'sharp' RGBA->YUVA420 downsampling and colorspace conversion
+// Performs 'sharp' RGBA.YUVA420 downsampling and colorspace conversion
 // Downsampling is handled with extra care in case of color clipping. This
 // method is roughly 2x slower than WebPPictureARGBToYUVA() but produces better
 // and sharper YUV representation.
@@ -520,7 +520,7 @@ type WebPPicture struct {
 // kept for backward compatibility:
   int WebPPictureSmartARGBToYUVA(WebPPicture* picture);
 
-// Converts picture->yuv to picture->argb and sets picture->use_argb to true.
+// Converts picture.yuv to picture.argb and sets picture.use_argb to true.
 // The input format must be YUV_420 or YUV_420A. The conversion from YUV420 to
 // ARGB incurs a small loss too.
 // Note that the use of this colorspace is discouraged if one has access to the
@@ -550,9 +550,9 @@ type WebPPicture struct {
 // 'picture' must be less than 16384x16384 in dimension (cf WEBP_MAX_DIMENSION),
 // and the 'config' object must be a valid one.
 // Returns false in case of error, true otherwise.
-// In case of error, picture->error_code is updated accordingly.
+// In case of error, picture.error_code is updated accordingly.
 // 'picture' can hold the source samples in both YUV(A) or ARGB input, depending
-// on the value of 'picture->use_argb'. It is highly recommended to use
+// on the value of 'picture.use_argb'. It is highly recommended to use
 // the former for lossy encoding, and the latter for lossless encoding
 // (when config.lossless is true). Automatic conversion from one format to
 // another is provided but they both incur some loss.

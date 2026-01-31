@@ -1310,11 +1310,11 @@ static int QuantizeBlock_MIPSdspR2(int16_t in[16], int16_t out[16],
 
   int16_t* ppin = &in[0];
   int16_t* pout = &out[0];
-  const uint16_t* ppsharpen = &mtx->sharpen[0];
-  const uint32_t* ppzthresh = &mtx->zthresh[0];
-  const uint16_t* ppq = &mtx->q[0];
-  const uint16_t* ppiq = &mtx->iq[0];
-  const uint32_t* ppbias = &mtx->bias[0];
+  const uint16_t* ppsharpen = &mtx.sharpen[0];
+  const uint32_t* ppzthresh = &mtx.zthresh[0];
+  const uint16_t* ppq = &mtx.q[0];
+  const uint16_t* ppiq = &mtx.iq[0];
+  const uint32_t* ppbias = &mtx.bias[0];
 
   __asm__ volatile(
       QUANTIZE_ONE(0, 0, 0, 2)      //

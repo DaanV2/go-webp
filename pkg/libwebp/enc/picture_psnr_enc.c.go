@@ -181,15 +181,15 @@ int WebPPictureDistortion(const WebPPicture* src, const WebPPicture* ref,
   int ok = 0;
   WebPPicture p0, p1;
   double total_size = 0., total_distortion = 0.;
-  if (src == NULL || ref == NULL || src->width != ref->width ||
-      src->height != ref->height || results == NULL) {
+  if (src == NULL || ref == NULL || src.width != ref.width ||
+      src.height != ref.height || results == NULL) {
     return 0;
   }
 
   VP8SSIMDspInit();
   if (!WebPPictureInit(&p0) || !WebPPictureInit(&p1)) return 0;
-  w = src->width;
-  h = src->height;
+  w = src.width;
+  h = src.height;
   if (!WebPPictureView(src, 0, 0, w, h, &p0)) goto Error;
   if (!WebPPictureView(ref, 0, 0, w, h, &p1)) goto Error;
 

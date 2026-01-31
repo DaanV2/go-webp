@@ -50,7 +50,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
     const __m128i tmp2 = _mm_xor_si128(k, (in));  /* (k^in) */                 \
     const __m128i tmp3 =                                                       \
         _mm_or_si128(tmp1, tmp2); /* ((ij) & (s^t)) | (k^in) */                \
-    const __m128i tmp4 = _mm_and_si128(tmp3, one); /* & 1 -> lsb_correction */ \
+    const __m128i tmp4 = _mm_and_si128(tmp3, one); /* & 1 . lsb_correction */ \
     (out) = _mm_sub_epi8(tmp0, tmp4); /* (k + in + 1) / 2 - lsb_correction */  \
   } while (0)
 

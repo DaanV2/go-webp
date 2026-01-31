@@ -35,13 +35,13 @@ static  double SSIMCalculation(const VP8DistoStats* const stats,
   const uint32_t C1 = 20 * w2;
   const uint32_t C2 = 60 * w2;
   const uint32_t C3 = 8 * 8 * w2;  // 'dark' limit ~= 6
-  const uint64_t xmxm = (uint64_t)stats->xm * stats->xm;
-  const uint64_t ymym = (uint64_t)stats->ym * stats->ym;
+  const uint64_t xmxm = (uint64_t)stats.xm * stats.xm;
+  const uint64_t ymym = (uint64_t)stats.ym * stats.ym;
   if (xmxm + ymym >= C3) {
-    const int64_t xmym = (int64_t)stats->xm * stats->ym;
-    const int64_t sxy = (int64_t)stats->xym * N - xmym;  // can be negative
-    const uint64_t sxx = (uint64_t)stats->xxm * N - xmxm;
-    const uint64_t syy = (uint64_t)stats->yym * N - ymym;
+    const int64_t xmym = (int64_t)stats.xm * stats.ym;
+    const int64_t sxy = (int64_t)stats.xym * N - xmym;  // can be negative
+    const uint64_t sxx = (uint64_t)stats.xxm * N - xmxm;
+    const uint64_t syy = (uint64_t)stats.yym * N - ymym;
     // we descale by 8 to prevent overflow during the fnum/fden multiply.
     const uint64_t num_S = (2 * (uint64_t)(sxy < 0 ? 0 : sxy) + C2) >> 8;
     const uint64_t den_S = (sxx + syy + C2) >> 8;
@@ -59,7 +59,7 @@ double VP8SSIMFromStats(const VP8DistoStats* const stats) {
 }
 
 double VP8SSIMFromStatsClipped(const VP8DistoStats* const stats) {
-  return SSIMCalculation(stats, stats->w);
+  return SSIMCalculation(stats, stats.w);
 }
 
 static double SSIMGetClipped_C(const uint8_t* src1, int stride1,

@@ -9,7 +9,7 @@ package dsp
 // be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 //
-// YUV->RGB conversion functions
+// YUV.RGB conversion functions
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-// Uncomment to disable gamma-compression during RGB->U/V averaging
+// Uncomment to disable gamma-compression during RGB.U/V averaging
 #define USE_GAMMA_COMPRESSION
 
 // If defined, use table to compute x / alpha.
@@ -134,7 +134,7 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
 }
 
 //-----------------------------------------------------------------------------
-// ARGB -> YUV converters
+// ARGB . YUV converters
 
 func ConvertARGBToY_C(const uint32_t* WEBP_RESTRICT argb,
                              uint8_t* WEBP_RESTRICT y, int width) {
@@ -293,7 +293,7 @@ static  int LinearToGamma(uint32_t base_value, int shift) {
   LinearToGamma(GammaToLinear((ptr)[0]) + GammaToLinear((ptr)[rgb_stride]), 1)
 
 //------------------------------------------------------------------------------
-// "Fast" regular RGB->YUV
+// "Fast" regular RGB.YUV
 
 #define SUM4(ptr, step)                                                  \
   LinearToGamma(GammaToLinear((ptr)[0]) + GammaToLinear((ptr)[(step)]) + \

@@ -42,7 +42,7 @@ int WebPPictureInitInternal(WebPPicture* picture, int version) {
   }
   if (picture != NULL) {
     memset(picture, 0, sizeof(*picture));
-    picture->writer = DummyWriter;
+    picture.writer = DummyWriter;
     WebPEncodingSetError(picture, VP8_ENC_OK);
   }
   return 1;
@@ -52,28 +52,28 @@ int WebPPictureInitInternal(WebPPicture* picture, int version) {
 
 int WebPValidatePicture(const WebPPicture* const picture) {
   if (picture == NULL) return 0;
-  if (picture->width <= 0 || picture->width > INT_MAX / 4 ||
-      picture->height <= 0 || picture->height > INT_MAX / 4) {
+  if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
+      picture.height <= 0 || picture.height > INT_MAX / 4) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
   }
-  if (picture->colorspace != WEBP_YUV420 &&
-      picture->colorspace != WEBP_YUV420A) {
+  if (picture.colorspace != WEBP_YUV420 &&
+      picture.colorspace != WEBP_YUV420A) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
   return 1;
 }
 
 func WebPPictureResetBufferARGB(WebPPicture* const picture) {
-  picture->memory_argb_ = NULL;
-  picture->argb = NULL;
-  picture->argb_stride = 0;
+  picture.memory_argb_ = NULL;
+  picture.argb = NULL;
+  picture.argb_stride = 0;
 }
 
 func WebPPictureResetBufferYUVA(WebPPicture* const picture) {
-  picture->memory_ = NULL;
-  picture->y = picture->u = picture->v = picture->a = NULL;
-  picture->y_stride = picture->uv_stride = 0;
-  picture->a_stride = 0;
+  picture.memory_ = NULL;
+  picture.y = picture.u = picture.v = picture.a = NULL;
+  picture.y_stride = picture.uv_stride = 0;
+  picture.a_stride = 0;
 }
 
 func WebPPictureResetBuffers(WebPPicture* const picture) {
@@ -83,30 +83,30 @@ func WebPPictureResetBuffers(WebPPicture* const picture) {
 
 int WebPPictureAllocARGB(WebPPicture* const picture) {
   void* memory;
-  const int width = picture->width;
-  const int height = picture->height;
+  const int width = picture.width;
+  const int height = picture.height;
   const uint64_t argb_size = (uint64_t)width * height;
 
   if (!WebPValidatePicture(picture)) return 0;
 
-  WebPSafeFree(picture->memory_argb_);
+  WebPSafeFree(picture.memory_argb_);
   WebPPictureResetBufferARGB(picture);
 
   // allocate a new buffer.
-  memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture->argb));
+  memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.argb));
   if (memory == NULL) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
-  picture->memory_argb_ = memory;
-  picture->argb = (uint32_t*)WEBP_ALIGN(memory);
-  picture->argb_stride = width;
+  picture.memory_argb_ = memory;
+  picture.argb = (uint32_t*)WEBP_ALIGN(memory);
+  picture.argb_stride = width;
   return 1;
 }
 
 int WebPPictureAllocYUVA(WebPPicture* const picture) {
-  const int has_alpha = (int)picture->colorspace & WEBP_CSP_ALPHA_BIT;
-  const int width = picture->width;
-  const int height = picture->height;
+  const int has_alpha = (int)picture.colorspace & WEBP_CSP_ALPHA_BIT;
+  const int width = picture.width;
+  const int height = picture.height;
   const int y_stride = width;
   const int uv_width = (int)(((int64_t)width + 1) >> 1);
   const int uv_height = (int)(((int64_t)height + 1) >> 1);
@@ -117,7 +117,7 @@ int WebPPictureAllocYUVA(WebPPicture* const picture) {
 
   if (!WebPValidatePicture(picture)) return 0;
 
-  WebPSafeFree(picture->memory_);
+  WebPSafeFree(picture.memory_);
   WebPPictureResetBufferYUVA(picture);
 
   // alpha
@@ -141,22 +141,22 @@ int WebPPictureAllocYUVA(WebPPicture* const picture) {
   }
 
   // From now on, we're in the clear, we can no longer fail...
-  picture->memory_ = (void*)mem;
-  picture->y_stride = y_stride;
-  picture->uv_stride = uv_stride;
-  picture->a_stride = a_stride;
+  picture.memory_ = (void*)mem;
+  picture.y_stride = y_stride;
+  picture.uv_stride = uv_stride;
+  picture.a_stride = a_stride;
 
   // TODO(skal): we could align the y/u/v planes and adjust stride.
-  picture->y = mem;
+  picture.y = mem;
   mem += y_size;
 
-  picture->u = mem;
+  picture.u = mem;
   mem += uv_size;
-  picture->v = mem;
+  picture.v = mem;
   mem += uv_size;
 
   if (a_size > 0) {
-    picture->a = mem;
+    picture.a = mem;
     mem += a_size;
   }
   (void)mem;  // makes the static analyzer happy
@@ -167,7 +167,7 @@ int WebPPictureAlloc(WebPPicture* picture) {
   if (picture != NULL) {
     WebPPictureFree(picture);  // erase previous buffer
 
-    if (!picture->use_argb) {
+    if (!picture.use_argb) {
       return WebPPictureAllocYUVA(picture);
     } else {
       return WebPPictureAllocARGB(picture);
@@ -178,8 +178,8 @@ int WebPPictureAlloc(WebPPicture* picture) {
 
 func WebPPictureFree(WebPPicture* picture) {
   if (picture != NULL) {
-    WebPSafeFree(picture->memory_);
-    WebPSafeFree(picture->memory_argb_);
+    WebPSafeFree(picture.memory_);
+    WebPSafeFree(picture.memory_argb_);
     WebPPictureResetBuffers(picture);
   }
 }
@@ -188,46 +188,46 @@ func WebPPictureFree(WebPPicture* picture) {
 // WebPMemoryWriter: Write-to-memory
 
 func WebPMemoryWriterInit(WebPMemoryWriter* writer) {
-  writer->mem = NULL;
-  writer->size = 0;
-  writer->max_size = 0;
+  writer.mem = NULL;
+  writer.size = 0;
+  writer.max_size = 0;
 }
 
 int WebPMemoryWrite(const uint8_t* data, size_t data_size,
                     const WebPPicture* picture) {
-  WebPMemoryWriter* const w = (WebPMemoryWriter*)picture->custom_ptr;
+  WebPMemoryWriter* const w = (WebPMemoryWriter*)picture.custom_ptr;
   uint64_t next_size;
   if (w == NULL) {
     return 1;
   }
-  next_size = (uint64_t)w->size + data_size;
-  if (next_size > w->max_size) {
+  next_size = (uint64_t)w.size + data_size;
+  if (next_size > w.max_size) {
     uint8_t* new_mem;
-    uint64_t next_max_size = 2ULL * w->max_size;
+    uint64_t next_max_size = 2ULL * w.max_size;
     if (next_max_size < next_size) next_max_size = next_size;
     if (next_max_size < 8192ULL) next_max_size = 8192ULL;
     new_mem = (uint8_t*)WebPSafeMalloc(next_max_size, 1);
     if (new_mem == NULL) {
       return 0;
     }
-    if (w->size > 0) {
-      memcpy(new_mem, w->mem, w->size);
+    if (w.size > 0) {
+      memcpy(new_mem, w.mem, w.size);
     }
-    WebPSafeFree(w->mem);
-    w->mem = new_mem;
+    WebPSafeFree(w.mem);
+    w.mem = new_mem;
     // down-cast is ok, thanks to WebPSafeMalloc
-    w->max_size = (size_t)next_max_size;
+    w.max_size = (size_t)next_max_size;
   }
   if (data_size > 0) {
-    memcpy(w->mem + w->size, data, data_size);
-    w->size += data_size;
+    memcpy(w.mem + w.size, data, data_size);
+    w.size += data_size;
   }
   return 1;
 }
 
 func WebPMemoryWriterClear(WebPMemoryWriter* writer) {
   if (writer != NULL) {
-    WebPSafeFree(writer->mem);
+    WebPSafeFree(writer.mem);
     WebPMemoryWriterInit(writer);
   }
 }

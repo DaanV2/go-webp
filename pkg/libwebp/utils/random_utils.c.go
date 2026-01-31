@@ -38,10 +38,10 @@ static const uint32_t kRandomTable[VP8_RANDOM_TABLE_SIZE] = {
     0x27e5ed3c};
 
 func VP8InitRandom(VP8Random* const rg, float dithering) {
-  WEBP_UNSAFE_MEMCPY(rg->tab, kRandomTable, sizeof(rg->tab));
-  rg->index1 = 0;
-  rg->index2 = 31;
-  rg->amp = (dithering < 0.0) ? 0
+  WEBP_UNSAFE_MEMCPY(rg.tab, kRandomTable, sizeof(rg.tab));
+  rg.index1 = 0;
+  rg.index2 = 31;
+  rg.amp = (dithering < 0.0) ? 0
             : (dithering > 1.0)
                 ? (1 << VP8_RANDOM_DITHER_FIX)
                 : (uint32_t)((1 << VP8_RANDOM_DITHER_FIX) * dithering);

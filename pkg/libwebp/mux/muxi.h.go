@@ -140,10 +140,10 @@ WebPMuxError ChunkSetHead(WebPChunk* const chunk, WebPChunk** const chunk_list);
 // *chunk_list.
 WebPMuxError ChunkAppend(WebPChunk* const chunk, WebPChunk*** const chunk_list);
 
-// Releases chunk and returns chunk->next.
+// Releases chunk and returns chunk.next.
 WebPChunk* ChunkRelease(WebPChunk* const chunk);
 
-// Deletes given chunk & returns chunk->next.
+// Deletes given chunk & returns chunk.next.
 WebPChunk* ChunkDelete(WebPChunk* const chunk);
 
 // Deletes all chunks in the given chunk list.
@@ -157,7 +157,7 @@ static  size_t SizeWithPadding(size_t chunk_size) {
 
 // Size of a chunk including header and padding.
 static  size_t ChunkDiskSize(const WebPChunk* chunk) {
-  const size_t data_size = chunk->data.size;
+  const size_t data_size = chunk.data.size;
   return SizeWithPadding(data_size);
 }
 
@@ -173,7 +173,7 @@ uint8_t* ChunkListEmit(const WebPChunk* chunk_list, uint8_t* dst);
 // Initialize.
 func MuxImageInit(WebPMuxImage* const wpi);
 
-// Releases image 'wpi' and returns wpi->next.
+// Releases image 'wpi' and returns wpi.next.
 WebPMuxImage* MuxImageRelease(WebPMuxImage* const wpi);
 
 // Delete image 'wpi' and return the next image in the list or NULL.

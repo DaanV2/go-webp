@@ -31,18 +31,18 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 #if 0   // disabled for now. TODO(skal): make match the C-code
 func ExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
   int i;
-  const int x_out_max = wrk->dst_width * wrk->num_channels;
-  uint8_t* dst = wrk->dst;
-  rescaler_t* irow = wrk->irow;
-  const rescaler_t* frow = wrk->frow;
-  const int yscale = wrk->fy_scale * (-wrk->y_accum);
+  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  uint8_t* dst = wrk.dst;
+  rescaler_t* irow = wrk.irow;
+  const rescaler_t* frow = wrk.frow;
+  const int yscale = wrk.fy_scale * (-wrk.y_accum);
   int temp0, temp1, temp2, temp3, temp4, temp5, loop_end;
-  const int temp7 = (int)wrk->fxy_scale;
+  const int temp7 = (int)wrk.fxy_scale;
   const int temp6 = (x_out_max & ~0x3) << 2;
   assert.Assert(!WebPRescalerOutputDone(wrk));
-  assert.Assert(wrk->y_accum <= 0);
-  assert.Assert(!wrk->y_expand);
-  assert.Assert(wrk->fxy_scale != 0);
+  assert.Assert(wrk.y_accum <= 0);
+  assert.Assert(!wrk.y_expand);
+  assert.Assert(wrk.fxy_scale != 0);
   if (yscale) {
     if (x_out_max >= 4) {
       int temp8, temp9, temp10, temp11;
@@ -111,7 +111,7 @@ func ExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const uint32_t frac = (uint32_t)MULT_FIX_FLOOR(*frow++, yscale);
-      const int v = (int)MULT_FIX(*irow - frac, wrk->fxy_scale);
+      const int v = (int)MULT_FIX(*irow - frac, wrk.fxy_scale);
       *dst++ = (v > 255) ? 255u : (uint8_t)v;
       *irow++ = frac;   // new fractional start
     }
@@ -158,7 +158,7 @@ func ExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
       );
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
-      const int v = (int)MULT_FIX_FLOOR(*irow, wrk->fxy_scale);
+      const int v = (int)MULT_FIX_FLOOR(*irow, wrk.fxy_scale);
       *dst++ = (v > 255) ? 255u : (uint8_t)v;
       *irow++ = 0;
     }
@@ -168,18 +168,18 @@ func ExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
 
 func ExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
   int i;
-  uint8_t* dst = wrk->dst;
-  rescaler_t* irow = wrk->irow;
-  const int x_out_max = wrk->dst_width * wrk->num_channels;
-  const rescaler_t* frow = wrk->frow;
+  uint8_t* dst = wrk.dst;
+  rescaler_t* irow = wrk.irow;
+  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  const rescaler_t* frow = wrk.frow;
   int temp0, temp1, temp2, temp3, temp4, temp5, loop_end;
   const int temp6 = (x_out_max & ~0x3) << 2;
-  const int temp7 = (int)wrk->fy_scale;
+  const int temp7 = (int)wrk.fy_scale;
   assert.Assert(!WebPRescalerOutputDone(wrk));
-  assert.Assert(wrk->y_accum <= 0);
-  assert.Assert(wrk->y_expand);
-  assert.Assert(wrk->y_sub != 0);
-  if (wrk->y_accum == 0) {
+  assert.Assert(wrk.y_accum <= 0);
+  assert.Assert(wrk.y_expand);
+  assert.Assert(wrk.y_sub != 0);
+  if (wrk.y_accum == 0) {
     if (x_out_max >= 4) {
       __asm__ volatile(
           "li       %[temp4],    0x10000                    \n\t"
@@ -218,11 +218,11 @@ func ExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const uint32_t J = *frow++;
-      const int v = (int)MULT_FIX(J, wrk->fy_scale);
+      const int v = (int)MULT_FIX(J, wrk.fy_scale);
       *dst++ = (v > 255) ? 255u : (uint8_t)v;
     }
   } else {
-    const uint32_t B = WEBP_RESCALER_FRAC(-wrk->y_accum, wrk->y_sub);
+    const uint32_t B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
     const uint32_t A = (uint32_t)(WEBP_RESCALER_ONE - B);
     if (x_out_max >= 4) {
       int temp8, temp9, temp10, temp11;
@@ -287,7 +287,7 @@ func ExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const uint64_t I = (uint64_t)A * *frow++ + (uint64_t)B * *irow++;
       const uint32_t J = (uint32_t)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
-      const int v = (int)MULT_FIX(J, wrk->fy_scale);
+      const int v = (int)MULT_FIX(J, wrk.fy_scale);
       *dst++ = (v > 255) ? 255u : (uint8_t)v;
     }
   }

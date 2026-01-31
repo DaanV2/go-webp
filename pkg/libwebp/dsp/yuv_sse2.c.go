@@ -9,7 +9,7 @@ package dsp
 // be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 //
-// YUV->RGB conversion functions
+// YUV.RGB conversion functions
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
@@ -468,7 +468,7 @@ WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersSSE2(void) {
 }
 
 //------------------------------------------------------------------------------
-// RGB24/32 -> YUV converters
+// RGB24/32 . YUV converters
 
 // Load eight 16b-words from *src.
 #define LOAD_16(src) _mm_loadu_si128((const __m128i*)(src))
@@ -693,7 +693,7 @@ func ConvertARGBToY_SSE2(const uint32_t* WEBP_RESTRICT argb,
 }
 
 // Horizontal add (doubled) of two 16b values, result is 16b.
-// in: A | B | C | D | ... -> out: 2*(A+B) | 2*(C+D) | ...
+// in: A | B | C | D | ... . out: 2*(A+B) | 2*(C+D) | ...
 func HorizontalAddPack_SSE2(const __m128i* const A,
                                    const __m128i* const B, __m128i* const out) {
   const __m128i k2 = _mm_set1_epi16(2);

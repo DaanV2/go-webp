@@ -28,7 +28,7 @@ func TransformColorInverse_SSE41(const VP8LMultipliers* const m,
                                         const uint32_t* const src,
                                         int num_pixels, uint32_t* dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
-#define CST(X) (((int16_t)(m->X << 8)) >> 5)  // sign-extend
+#define CST(X) (((int16_t)(m.X << 8)) >> 5)  // sign-extend
   const __m128i mults_rb = _mm_set1_epi32(
       (int)((uint32_t)CST(green_to_red) << 16 | (CST(green_to_blue) & 0xffff)));
   const __m128i mults_b2 = _mm_set1_epi32(CST(red_to_blue));
@@ -41,7 +41,7 @@ func TransformColorInverse_SSE41(const VP8LMultipliers* const m,
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i A = _mm_loadu_si128((const __m128i*)(src + i));
-    const __m128i B = _mm_shuffle_epi8(A, perm1);  // argb -> g0g0
+    const __m128i B = _mm_shuffle_epi8(A, perm1);  // argb . g0g0
     const __m128i C = _mm_mulhi_epi16(B, mults_rb);
     const __m128i D = _mm_add_epi8(A, C);
     const __m128i E = _mm_shuffle_epi8(D, perm2);

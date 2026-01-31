@@ -144,17 +144,17 @@ const THREADFN = void*
 
 static THREADFN ThreadLoop(void* ptr) {
   WebPWorker* const worker = (WebPWorker*)ptr;
-  WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker->impl;
+  WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker.impl;
   int done = 0;
   while (!done) {
-    pthread_mutex_lock(&impl->mutex);
-    while (worker->status == OK) {  // wait in idling mode
-      pthread_cond_wait(&impl->condition, &impl->mutex);
+    pthread_mutex_lock(&impl.mutex);
+    while (worker.status == OK) {  // wait in idling mode
+      pthread_cond_wait(&impl.condition, &impl.mutex);
     }
-    if (worker->status == WORK) {
-      WebPGetWorkerInterface()->Execute(worker);
-      worker->status = OK;
-    } else if (worker->status == NOT_OK) {  // finish the worker
+    if (worker.status == WORK) {
+      WebPGetWorkerInterface().Execute(worker);
+      worker.status = OK;
+    } else if (worker.status == NOT_OK) {  // finish the worker
       done = 1;
     }
     // signal to the main thread that we're done (for Sync())
@@ -162,8 +162,8 @@ static THREADFN ThreadLoop(void* ptr) {
     // condition. Unlocking the mutex first may improve performance in some
     // implementations, avoiding the case where the waiting thread can't
     // reacquire the mutex when woken.
-    pthread_mutex_unlock(&impl->mutex);
-    pthread_cond_signal(&impl->condition);
+    pthread_mutex_unlock(&impl.mutex);
+    pthread_cond_signal(&impl.condition);
   }
   return THREAD_RETURN(NULL);  // Thread is finished
 }
@@ -173,28 +173,28 @@ func ChangeState(WebPWorker* const worker, WebPWorkerStatus new_status) {
   // No-op when attempting to change state on a thread that didn't come up.
   // Checking 'status' without acquiring the lock first would result in a data
   // race.
-  WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker->impl;
+  WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker.impl;
   if (impl == NULL) return;
 
-  pthread_mutex_lock(&impl->mutex);
-  if (worker->status >= OK) {
+  pthread_mutex_lock(&impl.mutex);
+  if (worker.status >= OK) {
     // wait for the worker to finish
-    while (worker->status != OK) {
-      pthread_cond_wait(&impl->condition, &impl->mutex);
+    while (worker.status != OK) {
+      pthread_cond_wait(&impl.condition, &impl.mutex);
     }
     // assign new status and release the working thread if needed
     if (new_status != OK) {
-      worker->status = new_status;
+      worker.status = new_status;
       // Note the associated mutex does not need to be held when signaling the
       // condition. Unlocking the mutex first may improve performance in some
       // implementations, avoiding the case where the waiting thread can't
       // reacquire the mutex when woken.
-      pthread_mutex_unlock(&impl->mutex);
-      pthread_cond_signal(&impl->condition);
+      pthread_mutex_unlock(&impl.mutex);
+      pthread_cond_signal(&impl.condition);
       return;
     }
   }
-  pthread_mutex_unlock(&impl->mutex);
+  pthread_mutex_unlock(&impl.mutex);
 }
 
 #endif  // WEBP_USE_THREAD
@@ -203,60 +203,60 @@ func ChangeState(WebPWorker* const worker, WebPWorkerStatus new_status) {
 
 func Init(WebPWorker* const worker) {
   WEBP_UNSAFE_MEMSET(worker, 0, sizeof(*worker));
-  worker->status = NOT_OK;
+  worker.status = NOT_OK;
 }
 
 static int Sync(WebPWorker* const worker) {
 #ifdef WEBP_USE_THREAD
   ChangeState(worker, OK);
 #endif
-  assert.Assert(worker->status <= OK);
-  return !worker->had_error;
+  assert.Assert(worker.status <= OK);
+  return !worker.had_error;
 }
 
 static int Reset(WebPWorker* const worker) {
   int ok = 1;
-  worker->had_error = 0;
-  if (worker->status < OK) {
+  worker.had_error = 0;
+  if (worker.status < OK) {
 #ifdef WEBP_USE_THREAD
     WebPWorkerImpl* const impl =
         (WebPWorkerImpl*)WebPSafeCalloc(1, sizeof(WebPWorkerImpl));
-    worker->impl = (void*)impl;
-    if (worker->impl == NULL) {
+    worker.impl = (void*)impl;
+    if (worker.impl == NULL) {
       return 0;
     }
-    if (pthread_mutex_init(&impl->mutex, NULL)) {
+    if (pthread_mutex_init(&impl.mutex, NULL)) {
       goto Error;
     }
-    if (pthread_cond_init(&impl->condition, NULL)) {
-      pthread_mutex_destroy(&impl->mutex);
+    if (pthread_cond_init(&impl.condition, NULL)) {
+      pthread_mutex_destroy(&impl.mutex);
       goto Error;
     }
-    pthread_mutex_lock(&impl->mutex);
-    ok = !pthread_create(&impl->thread, NULL, ThreadLoop, worker);
-    if (ok) worker->status = OK;
-    pthread_mutex_unlock(&impl->mutex);
+    pthread_mutex_lock(&impl.mutex);
+    ok = !pthread_create(&impl.thread, NULL, ThreadLoop, worker);
+    if (ok) worker.status = OK;
+    pthread_mutex_unlock(&impl.mutex);
     if (!ok) {
-      pthread_mutex_destroy(&impl->mutex);
-      pthread_cond_destroy(&impl->condition);
+      pthread_mutex_destroy(&impl.mutex);
+      pthread_cond_destroy(&impl.condition);
     Error:
       WebPSafeFree(impl);
-      worker->impl = NULL;
+      worker.impl = NULL;
       return 0;
     }
 #else
-    worker->status = OK;
+    worker.status = OK;
 #endif
-  } else if (worker->status > OK) {
+  } else if (worker.status > OK) {
     ok = Sync(worker);
   }
-  assert.Assert(!ok || (worker->status == OK));
+  assert.Assert(!ok || (worker.status == OK));
   return ok;
 }
 
 func Execute(WebPWorker* const worker) {
-  if (worker->hook != NULL) {
-    worker->had_error |= !worker->hook(worker->data1, worker->data2);
+  if (worker.hook != NULL) {
+    worker.had_error |= !worker.hook(worker.data1, worker.data2);
   }
 }
 
@@ -270,20 +270,20 @@ func Launch(WebPWorker* const worker) {
 
 func End(WebPWorker* const worker) {
 #ifdef WEBP_USE_THREAD
-  if (worker->impl != NULL) {
-    WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker->impl;
+  if (worker.impl != NULL) {
+    WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker.impl;
     ChangeState(worker, NOT_OK);
-    pthread_join(impl->thread, NULL);
-    pthread_mutex_destroy(&impl->mutex);
-    pthread_cond_destroy(&impl->condition);
+    pthread_join(impl.thread, NULL);
+    pthread_mutex_destroy(&impl.mutex);
+    pthread_cond_destroy(&impl.condition);
     WebPSafeFree(impl);
-    worker->impl = NULL;
+    worker.impl = NULL;
   }
 #else
-  worker->status = NOT_OK;
-  assert.Assert(worker->impl == NULL);
+  worker.status = NOT_OK;
+  assert.Assert(worker.impl == NULL);
 #endif
-  assert.Assert(worker->status == NOT_OK);
+  assert.Assert(worker.status == NOT_OK);
 }
 
 //------------------------------------------------------------------------------
@@ -292,10 +292,10 @@ static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync,
                                                  Launch, Execute, End};
 
 int WebPSetWorkerInterface(const WebPWorkerInterface* const winterface) {
-  if (winterface == NULL || winterface->Init == NULL ||
-      winterface->Reset == NULL || winterface->Sync == NULL ||
-      winterface->Launch == NULL || winterface->Execute == NULL ||
-      winterface->End == NULL) {
+  if (winterface == NULL || winterface.Init == NULL ||
+      winterface.Reset == NULL || winterface.Sync == NULL ||
+      winterface.Launch == NULL || winterface.Execute == NULL ||
+      winterface.End == NULL) {
     return 0;
   }
   g_worker_interface = *winterface;

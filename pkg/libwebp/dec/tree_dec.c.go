@@ -251,41 +251,41 @@ static const uint8_t kBModesProba[NUM_BMODES][NUM_BMODES][NUM_BMODES - 1] = {
      {112, 19, 12, 61, 195, 128, 48, 4, 24}}};
 
 func VP8ResetProba(VP8Proba* const proba) {
-  WEBP_UNSAFE_MEMSET(proba->segments, 255u, sizeof(proba->segments));
-  // proba->bands[][] is initialized later
+  WEBP_UNSAFE_MEMSET(proba.segments, 255u, sizeof(proba.segments));
+  // proba.bands[][] is initialized later
 }
 
 func ParseIntraMode(VP8BitReader* const br, VP8Decoder* const dec,
                            int mb_x) {
-  uint8_t* const top = dec->intra_t + 4 * mb_x;
-  uint8_t* const left = dec->intra_l;
-  VP8MBData* const block = dec->mb_data + mb_x;
+  uint8_t* const top = dec.intra_t + 4 * mb_x;
+  uint8_t* const left = dec.intra_l;
+  VP8MBData* const block = dec.mb_data + mb_x;
 
   // Note: we don't save segment map (yet), as we don't expect
   // to decode more than 1 keyframe.
-  if (dec->segment_hdr.update_map) {
+  if (dec.segment_hdr.update_map) {
     // Hardcoded tree parsing
-    block->segment =
-        !VP8GetBit(br, dec->proba.segments[0], "segments")
-            ? VP8GetBit(br, dec->proba.segments[1], "segments")
-            : VP8GetBit(br, dec->proba.segments[2], "segments") + 2;
+    block.segment =
+        !VP8GetBit(br, dec.proba.segments[0], "segments")
+            ? VP8GetBit(br, dec.proba.segments[1], "segments")
+            : VP8GetBit(br, dec.proba.segments[2], "segments") + 2;
   } else {
-    block->segment = 0;  // default for intra
+    block.segment = 0;  // default for intra
   }
-  if (dec->use_skip_proba) block->skip = VP8GetBit(br, dec->skip_p, "skip");
+  if (dec.use_skip_proba) block.skip = VP8GetBit(br, dec.skip_p, "skip");
 
-  block->is_i4x4 = !VP8GetBit(br, 145, "block-size");
-  if (!block->is_i4x4) {
+  block.is_i4x4 = !VP8GetBit(br, 145, "block-size");
+  if (!block.is_i4x4) {
     // Hardcoded 16x16 intra-mode decision tree.
     const int ymode =
         VP8GetBit(br, 156, "pred-modes")
             ? (VP8GetBit(br, 128, "pred-modes") ? TM_PRED : H_PRED)
             : (VP8GetBit(br, 163, "pred-modes") ? V_PRED : DC_PRED);
-    block->imodes[0] = ymode;
+    block.imodes[0] = ymode;
     WEBP_UNSAFE_MEMSET(top, ymode, 4 * sizeof(*top));
     WEBP_UNSAFE_MEMSET(left, ymode, 4 * sizeof(*left));
   } else {
-    uint8_t* modes = block->imodes;
+    uint8_t* modes = block.imodes;
     int y;
     for (y = 0; y < 4; ++y) {
       int ymode = left[y];
@@ -326,7 +326,7 @@ func ParseIntraMode(VP8BitReader* const br, VP8Decoder* const dec,
     }
   }
   // Hardcoded UVMode decision tree
-  block->uvmode = !VP8GetBit(br, 142, "pred-modes-uv")   ? DC_PRED
+  block.uvmode = !VP8GetBit(br, 142, "pred-modes-uv")   ? DC_PRED
                   : !VP8GetBit(br, 114, "pred-modes-uv") ? V_PRED
                   : VP8GetBit(br, 183, "pred-modes-uv")  ? TM_PRED
                                                          : H_PRED;
@@ -334,10 +334,10 @@ func ParseIntraMode(VP8BitReader* const br, VP8Decoder* const dec,
 
 int VP8ParseIntraModeRow(VP8BitReader* const br, VP8Decoder* const dec) {
   int mb_x;
-  for (mb_x = 0; mb_x < dec->mb_w; ++mb_x) {
+  for (mb_x = 0; mb_x < dec.mb_w; ++mb_x) {
     ParseIntraMode(br, dec, mb_x);
   }
-  return !dec->br.eof;
+  return !dec.br.eof;
 }
 
 //------------------------------------------------------------------------------
@@ -450,7 +450,7 @@ static const uint8_t kBands[16 + 1] = {
 };
 
 func VP8ParseProba(VP8BitReader* const br, VP8Decoder* const dec) {
-  VP8Proba* const proba = &dec->proba;
+  VP8Proba* const proba = &dec.proba;
   int t, b, c, p;
   for (t = 0; t < NUM_TYPES; ++t) {
     for (b = 0; b < NUM_BANDS; ++b) {
@@ -460,16 +460,16 @@ func VP8ParseProba(VP8BitReader* const br, VP8Decoder* const dec) {
               VP8GetBit(br, CoeffsUpdateProba[t][b][c][p], "global-header")
                   ? VP8GetValue(br, 8, "global-header")
                   : CoeffsProba0[t][b][c][p];
-          proba->bands[t][b].probas[c][p] = v;
+          proba.bands[t][b].probas[c][p] = v;
         }
       }
     }
     for (b = 0; b < 16 + 1; ++b) {
-      proba->bands_ptr[t][b] = &proba->bands[t][kBands[b]];
+      proba.bands_ptr[t][b] = &proba.bands[t][kBands[b]];
     }
   }
-  dec->use_skip_proba = VP8Get(br, "global-header");
-  if (dec->use_skip_proba) {
-    dec->skip_p = VP8GetValue(br, 8, "global-header");
+  dec.use_skip_proba = VP8Get(br, "global-header");
+  if (dec.use_skip_proba) {
+    dec.skip_p = VP8GetValue(br, 8, "global-header");
   }
 }

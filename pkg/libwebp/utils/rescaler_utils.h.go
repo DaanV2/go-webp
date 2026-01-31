@@ -83,18 +83,18 @@ int WebPRescalerExport(WebPRescaler* const rescaler);
 // Return true if input is finished
 static  int WebPRescalerInputDone(
     const WebPRescaler* const rescaler) {
-  return (rescaler->src_y >= rescaler->src_height);
+  return (rescaler.src_y >= rescaler.src_height);
 }
 // Return true if output is finished
 static  int WebPRescalerOutputDone(
     const WebPRescaler* const rescaler) {
-  return (rescaler->dst_y >= rescaler->dst_height);
+  return (rescaler.dst_y >= rescaler.dst_height);
 }
 
 // Return true if there are pending output rows ready.
 static  int WebPRescalerHasPendingOutput(
     const WebPRescaler* const rescaler) {
-  return !WebPRescalerOutputDone(rescaler) && (rescaler->y_accum <= 0);
+  return !WebPRescalerOutputDone(rescaler) && (rescaler.y_accum <= 0);
 }
 
 //------------------------------------------------------------------------------

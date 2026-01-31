@@ -56,7 +56,7 @@ typedef struct {
   // Must be called to initialize the object and spawn the thread. Re-entrant.
   // Will potentially launch the thread. Returns false in case of error.
   int (*Reset)(WebPWorker* const worker);
-  // Makes sure the previous work is finished. Returns true if worker->had_error
+  // Makes sure the previous work is finished. Returns true if worker.had_error
   // was not set and no error condition was triggered by the working thread.
   int (*Sync)(WebPWorker* const worker);
   // Triggers the thread to call hook() with data1 and data2 arguments. These

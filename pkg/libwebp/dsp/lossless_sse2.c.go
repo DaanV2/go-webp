@@ -472,7 +472,7 @@ func TransformColorInverse_SSE2(const VP8LMultipliers* const m,
                                        const uint32_t* const src,
                                        int num_pixels, uint32_t* dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
-#define CST(X) (((int16_t)(m->X << 8)) >> 5)  // sign-extend
+#define CST(X) (((int16_t)(m.X << 8)) >> 5)  // sign-extend
 #define MK_CST_16(HI, LO) \
   _mm_set1_epi32((int)(((uint32_t)(HI) << 16) | ((LO) & 0xffff)))
   const __m128i mults_rb = MK_CST_16(CST(green_to_red), CST(green_to_blue));

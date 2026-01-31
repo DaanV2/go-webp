@@ -47,7 +47,7 @@ type ALPHDecoder struct {
 //------------------------------------------------------------------------------
 // internal functions. Not public.
 
-// Deallocate memory associated to dec->alpha_plane decoding
+// Deallocate memory associated to dec.alpha_plane decoding
 func WebPDeallocateAlphaMemory(VP8Decoder* const dec);
 
 //------------------------------------------------------------------------------

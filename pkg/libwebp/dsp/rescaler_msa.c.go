@@ -124,7 +124,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 static  func ExportRowExpand_0(
     const uint32_t* WEBP_RESTRICT frow, uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
-  const v4u32 scale = (v4u32)__msa_fill_w(wrk->fy_scale);
+  const v4u32 scale = (v4u32)__msa_fill_w(wrk.fy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
   const v4i32 zero = {0};
 
@@ -172,7 +172,7 @@ static  func ExportRowExpand_0(
     }
     for (x_out = 0; x_out < length; ++x_out) {
       const uint32_t J = frow[x_out];
-      const int v = (int)MULT_FIX(J, wrk->fy_scale);
+      const int v = (int)MULT_FIX(J, wrk.fy_scale);
       dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
     }
   }
@@ -182,12 +182,12 @@ static  func ExportRowExpand_1(
     const uint32_t* WEBP_RESTRICT frow, uint32_t* WEBP_RESTRICT irow,
     uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
-  const uint32_t B = WEBP_RESCALER_FRAC(-wrk->y_accum, wrk->y_sub);
+  const uint32_t B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
   const uint32_t A = (uint32_t)(WEBP_RESCALER_ONE - B);
   const v4i32 B1 = __msa_fill_w(B);
   const v4i32 A1 = __msa_fill_w(A);
   const v4i32 AB = __msa_ilvr_w(A1, B1);
-  const v4u32 scale = (v4u32)__msa_fill_w(wrk->fy_scale);
+  const v4u32 scale = (v4u32)__msa_fill_w(wrk.fy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
 
   while (length >= 16) {
@@ -246,22 +246,22 @@ static  func ExportRowExpand_1(
     for (x_out = 0; x_out < length; ++x_out) {
       const uint64_t I = (uint64_t)A * frow[x_out] + (uint64_t)B * irow[x_out];
       const uint32_t J = (uint32_t)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
-      const int v = (int)MULT_FIX(J, wrk->fy_scale);
+      const int v = (int)MULT_FIX(J, wrk.fy_scale);
       dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
     }
   }
 }
 
 func RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
-  uint8_t* dst = wrk->dst;
-  rescaler_t* irow = wrk->irow;
-  const int x_out_max = wrk->dst_width * wrk->num_channels;
-  const rescaler_t* frow = wrk->frow;
+  uint8_t* dst = wrk.dst;
+  rescaler_t* irow = wrk.irow;
+  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  const rescaler_t* frow = wrk.frow;
   assert.Assert(!WebPRescalerOutputDone(wrk));
-  assert.Assert(wrk->y_accum <= 0);
-  assert.Assert(wrk->y_expand);
-  assert.Assert(wrk->y_sub != 0);
-  if (wrk->y_accum == 0) {
+  assert.Assert(wrk.y_accum <= 0);
+  assert.Assert(wrk.y_expand);
+  assert.Assert(wrk.y_sub != 0);
+  if (wrk.y_accum == 0) {
     ExportRowExpand_0(frow, dst, x_out_max, wrk);
   } else {
     ExportRowExpand_1(frow, irow, dst, x_out_max, wrk);
@@ -274,7 +274,7 @@ static  func ExportRowShrink_0(
     uint8_t* WEBP_RESTRICT dst, int length, const uint32_t yscale,
     WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 y_scale = (v4u32)__msa_fill_w(yscale);
-  const v4u32 fxyscale = (v4u32)__msa_fill_w(wrk->fxy_scale);
+  const v4u32 fxyscale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shiftval = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
   const v4i32 zero = { 0 };
 
@@ -348,7 +348,7 @@ static  func ExportRowShrink_0(
     }
     for (x_out = 0; x_out < length; ++x_out) {
       const uint32_t frac = (uint32_t)MULT_FIX_FLOOR(frow[x_out], yscale);
-      const int v = (int)MULT_FIX(irow[x_out] - frac, wrk->fxy_scale);
+      const int v = (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale);
       dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
       irow[x_out] = frac;
     }
@@ -358,7 +358,7 @@ static  func ExportRowShrink_0(
 static  func ExportRowShrink_1(
     uint32_t* WEBP_RESTRICT irow, uint8_t* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
-  const v4u32 scale = (v4u32)__msa_fill_w(wrk->fxy_scale);
+  const v4u32 scale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
   const v4i32 zero = { 0 };
 
@@ -409,7 +409,7 @@ static  func ExportRowShrink_1(
       dst    += 4;
     }
     for (x_out = 0; x_out < length; ++x_out) {
-      const int v = (int)MULT_FIX(irow[x_out], wrk->fxy_scale);
+      const int v = (int)MULT_FIX(irow[x_out], wrk.fxy_scale);
       dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
       irow[x_out] = 0;
     }
@@ -417,14 +417,14 @@ static  func ExportRowShrink_1(
 }
 
 func RescalerExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
-  uint8_t* dst = wrk->dst;
-  rescaler_t* irow = wrk->irow;
-  const int x_out_max = wrk->dst_width * wrk->num_channels;
-  const rescaler_t* frow = wrk->frow;
-  const uint32_t yscale = wrk->fy_scale * (-wrk->y_accum);
+  uint8_t* dst = wrk.dst;
+  rescaler_t* irow = wrk.irow;
+  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  const rescaler_t* frow = wrk.frow;
+  const uint32_t yscale = wrk.fy_scale * (-wrk.y_accum);
   assert.Assert(!WebPRescalerOutputDone(wrk));
-  assert.Assert(wrk->y_accum <= 0);
-  assert.Assert(!wrk->y_expand);
+  assert.Assert(wrk.y_accum <= 0);
+  assert.Assert(!wrk.y_expand);
   if (yscale) {
     ExportRowShrink_0(frow, irow, dst, x_out_max, yscale, wrk);
   } else {

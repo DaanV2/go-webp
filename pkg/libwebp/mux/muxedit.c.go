@@ -32,8 +32,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 func MuxInit(WebPMux* const mux) {
   assert.Assert(mux != NULL);
   memset(mux, 0, sizeof(*mux));
-  mux->canvas_width = 0;  // just to be explicit
-  mux->canvas_height = 0;
+  mux.canvas_width = 0;  // just to be explicit
+  mux.canvas_height = 0;
 }
 
 WebPMux* WebPNewInternal(int version) {
@@ -55,13 +55,13 @@ func DeleteAllImages(WebPMuxImage** const wpi_list) {
 
 func MuxRelease(WebPMux* const mux) {
   assert.Assert(mux != NULL);
-  DeleteAllImages(&mux->images);
-  ChunkListDelete(&mux->vp8x);
-  ChunkListDelete(&mux->iccp);
-  ChunkListDelete(&mux->anim);
-  ChunkListDelete(&mux->exif);
-  ChunkListDelete(&mux->xmp);
-  ChunkListDelete(&mux->unknown);
+  DeleteAllImages(&mux.images);
+  ChunkListDelete(&mux.vp8x);
+  ChunkListDelete(&mux.iccp);
+  ChunkListDelete(&mux.anim);
+  ChunkListDelete(&mux.exif);
+  ChunkListDelete(&mux.xmp);
+  ChunkListDelete(&mux.unknown);
 }
 
 func WebPMuxDelete(WebPMux* mux) {
@@ -96,12 +96,12 @@ static WebPMuxError MuxSet(WebPMux* const mux, uint32_t tag,
   assert.Assert(!IsWPI(kChunks[idx].id));
 
   ChunkInit(&chunk);
-  SWITCH_ID_LIST(IDX_VP8X, &mux->vp8x);
-  SWITCH_ID_LIST(IDX_ICCP, &mux->iccp);
-  SWITCH_ID_LIST(IDX_ANIM, &mux->anim);
-  SWITCH_ID_LIST(IDX_EXIF, &mux->exif);
-  SWITCH_ID_LIST(IDX_XMP, &mux->xmp);
-  SWITCH_ID_LIST(IDX_UNKNOWN, &mux->unknown);
+  SWITCH_ID_LIST(IDX_VP8X, &mux.vp8x);
+  SWITCH_ID_LIST(IDX_ICCP, &mux.iccp);
+  SWITCH_ID_LIST(IDX_ANIM, &mux.anim);
+  SWITCH_ID_LIST(IDX_EXIF, &mux.exif);
+  SWITCH_ID_LIST(IDX_XMP, &mux.xmp);
+  SWITCH_ID_LIST(IDX_UNKNOWN, &mux.unknown);
   return err;
 }
 #undef SWITCH_ID_LIST
@@ -113,25 +113,25 @@ static WebPMuxError CreateFrameData(int width, int height,
   uint8_t* frame_bytes;
   const size_t frame_size = kChunks[IDX_ANMF].size;
 
-  assert.Assert(width > 0 && height > 0 && info->duration >= 0);
-  assert.Assert(info->dispose_method == (info->dispose_method & 1));
+  assert.Assert(width > 0 && height > 0 && info.duration >= 0);
+  assert.Assert(info.dispose_method == (info.dispose_method & 1));
   // Note: assertion on upper bounds is done in PutLE24().
 
   frame_bytes = (uint8_t*)WebPSafeMalloc(1ULL, frame_size);
   if (frame_bytes == NULL) return WEBP_MUX_MEMORY_ERROR;
 
-  PutLE24(frame_bytes + 0, info->x_offset / 2);
-  PutLE24(frame_bytes + 3, info->y_offset / 2);
+  PutLE24(frame_bytes + 0, info.x_offset / 2);
+  PutLE24(frame_bytes + 3, info.y_offset / 2);
 
   PutLE24(frame_bytes + 6, width - 1);
   PutLE24(frame_bytes + 9, height - 1);
-  PutLE24(frame_bytes + 12, info->duration);
+  PutLE24(frame_bytes + 12, info.duration);
   frame_bytes[15] =
-      (info->blend_method == WEBP_MUX_NO_BLEND ? 2 : 0) |
-      (info->dispose_method == WEBP_MUX_DISPOSE_BACKGROUND ? 1 : 0);
+      (info.blend_method == WEBP_MUX_NO_BLEND ? 2 : 0) |
+      (info.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND ? 1 : 0);
 
-  frame->bytes = frame_bytes;
-  frame->size = frame_size;
+  frame.bytes = frame_bytes;
+  frame.size = frame_size;
   return WEBP_MUX_OK;
 }
 
@@ -142,8 +142,8 @@ static WebPMuxError GetImageData(const WebPData* const bitstream,
                                  WebPData* const image, WebPData* const alpha,
                                  int* const is_lossless) {
   WebPDataInit(alpha);  // Default: no alpha.
-  if (bitstream->size < TAG_SIZE ||
-      memcmp(bitstream->bytes, "RIFF", TAG_SIZE)) {
+  if (bitstream.size < TAG_SIZE ||
+      memcmp(bitstream.bytes, "RIFF", TAG_SIZE)) {
     // It is NOT webp file data. Return input data as is.
     *image = *bitstream;
   } else {
@@ -151,15 +151,15 @@ static WebPMuxError GetImageData(const WebPData* const bitstream,
     const WebPMuxImage* wpi;
     WebPMux* const mux = WebPMuxCreate(bitstream, 0);
     if (mux == NULL) return WEBP_MUX_BAD_DATA;
-    wpi = mux->images;
-    assert.Assert(wpi != NULL && wpi->img != NULL);
-    *image = wpi->img->data;
-    if (wpi->alpha != NULL) {
-      *alpha = wpi->alpha->data;
+    wpi = mux.images;
+    assert.Assert(wpi != NULL && wpi.img != NULL);
+    *image = wpi.img.data;
+    if (wpi.alpha != NULL) {
+      *alpha = wpi.alpha.data;
     }
     WebPMuxDelete(mux);
   }
-  *is_lossless = VP8LCheckSignature(image->bytes, image->size);
+  *is_lossless = VP8LCheckSignature(image.bytes, image.size);
   return WEBP_MUX_OK;
 }
 
@@ -168,11 +168,11 @@ static WebPMuxError DeleteChunks(WebPChunk** chunk_list, uint32_t tag) {
   assert.Assert(chunk_list);
   while (*chunk_list) {
     WebPChunk* const chunk = *chunk_list;
-    if (chunk->tag == tag) {
+    if (chunk.tag == tag) {
       *chunk_list = ChunkDelete(chunk);
       err = WEBP_MUX_OK;
     } else {
-      chunk_list = &chunk->next;
+      chunk_list = &chunk.next;
     }
   }
   return err;
@@ -193,7 +193,7 @@ WebPMuxError WebPMuxSetChunk(WebPMux* mux, const char fourcc[4],
   uint32_t tag;
   WebPMuxError err;
   if (mux == NULL || fourcc == NULL || chunk_data == NULL ||
-      chunk_data->bytes == NULL || chunk_data->size > MAX_CHUNK_PAYLOAD) {
+      chunk_data.bytes == NULL || chunk_data.size > MAX_CHUNK_PAYLOAD) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
   tag = ChunkGetTagFromFourCC(fourcc);
@@ -236,10 +236,10 @@ static WebPMuxError SetAlphaAndImageChunks(const WebPData* const bitstream,
   if (err != WEBP_MUX_OK) return err;
   if (alpha.bytes != NULL) {
     err = AddDataToChunkList(&alpha, copy_data, kChunks[IDX_ALPHA].tag,
-                             &wpi->alpha);
+                             &wpi.alpha);
     if (err != WEBP_MUX_OK) return err;
   }
-  err = AddDataToChunkList(&image, copy_data, image_tag, &wpi->img);
+  err = AddDataToChunkList(&image, copy_data, image_tag, &wpi.img);
   if (err != WEBP_MUX_OK) return err;
   return MuxImageFinalize(wpi) ? WEBP_MUX_OK : WEBP_MUX_INVALID_ARGUMENT;
 }
@@ -249,14 +249,14 @@ WebPMuxError WebPMuxSetImage(WebPMux* mux, const WebPData* bitstream,
   WebPMuxImage wpi;
   WebPMuxError err;
 
-  if (mux == NULL || bitstream == NULL || bitstream->bytes == NULL ||
-      bitstream->size > MAX_CHUNK_PAYLOAD) {
+  if (mux == NULL || bitstream == NULL || bitstream.bytes == NULL ||
+      bitstream.size > MAX_CHUNK_PAYLOAD) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
 
-  if (mux->images != NULL) {
+  if (mux.images != NULL) {
     // Only one 'simple image' can be added in mux. So, remove present images.
-    DeleteAllImages(&mux->images);
+    DeleteAllImages(&mux.images);
   }
 
   MuxImageInit(&wpi);
@@ -264,7 +264,7 @@ WebPMuxError WebPMuxSetImage(WebPMux* mux, const WebPData* bitstream,
   if (err != WEBP_MUX_OK) goto Err;
 
   // Add this WebPMuxImage to mux.
-  err = MuxImagePush(&wpi, &mux->images);
+  err = MuxImagePush(&wpi, &mux.images);
   if (err != WEBP_MUX_OK) goto Err;
 
   // All is well.
@@ -282,25 +282,25 @@ WebPMuxError WebPMuxPushFrame(WebPMux* mux, const WebPMuxFrameInfo* info,
 
   if (mux == NULL || info == NULL) return WEBP_MUX_INVALID_ARGUMENT;
 
-  if (info->id != WEBP_CHUNK_ANMF) return WEBP_MUX_INVALID_ARGUMENT;
+  if (info.id != WEBP_CHUNK_ANMF) return WEBP_MUX_INVALID_ARGUMENT;
 
-  if (info->bitstream.bytes == NULL ||
-      info->bitstream.size > MAX_CHUNK_PAYLOAD) {
+  if (info.bitstream.bytes == NULL ||
+      info.bitstream.size > MAX_CHUNK_PAYLOAD) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
 
-  if (mux->images != NULL) {
-    const WebPMuxImage* const image = mux->images;
-    const uint32_t image_id = (image->header != NULL)
-                                  ? ChunkGetIdFromTag(image->header->tag)
+  if (mux.images != NULL) {
+    const WebPMuxImage* const image = mux.images;
+    const uint32_t image_id = (image.header != NULL)
+                                  ? ChunkGetIdFromTag(image.header.tag)
                                   : WEBP_CHUNK_IMAGE;
-    if (image_id != info->id) {
+    if (image_id != info.id) {
       return WEBP_MUX_INVALID_ARGUMENT;  // Conflicting frame types.
     }
   }
 
   MuxImageInit(&wpi);
-  err = SetAlphaAndImageChunks(&info->bitstream, copy_data, &wpi);
+  err = SetAlphaAndImageChunks(&info.bitstream, copy_data, &wpi);
   if (err != WEBP_MUX_OK) goto Err;
   assert.Assert(wpi.img != NULL);  // As SetAlphaAndImageChunks() was successful.
 
@@ -326,7 +326,7 @@ WebPMuxError WebPMuxPushFrame(WebPMux* mux, const WebPMuxFrameInfo* info,
   }
 
   // Add this WebPMuxImage to mux.
-  err = MuxImagePush(&wpi, &mux->images);
+  err = MuxImagePush(&wpi, &mux.images);
   if (err != WEBP_MUX_OK) goto Err;
 
   // All is well.
@@ -344,7 +344,7 @@ WebPMuxError WebPMuxSetAnimationParams(WebPMux* mux,
   const WebPData anim = {data, ANIM_CHUNK_SIZE};
 
   if (mux == NULL || params == NULL) return WEBP_MUX_INVALID_ARGUMENT;
-  if (params->loop_count < 0 || params->loop_count >= MAX_LOOP_COUNT) {
+  if (params.loop_count < 0 || params.loop_count >= MAX_LOOP_COUNT) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
 
@@ -353,8 +353,8 @@ WebPMuxError WebPMuxSetAnimationParams(WebPMux* mux,
   if (err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND) return err;
 
   // Set the animation parameters.
-  PutLE32(data, params->bgcolor);
-  PutLE16(data + 4, params->loop_count);
+  PutLE32(data, params.bgcolor);
+  PutLE16(data + 4, params.loop_count);
   return MuxSet(mux, kChunks[IDX_ANIM].tag, &anim, 1);
 }
 
@@ -371,15 +371,15 @@ WebPMuxError WebPMuxSetCanvasSize(WebPMux* mux, int width, int height) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
   if ((width * height) == 0 && (width | height) != 0) {
-    // one of width / height is zero, but not both -> invalid!
+    // one of width / height is zero, but not both . invalid!
     return WEBP_MUX_INVALID_ARGUMENT;
   }
   // If we already assembled a VP8X chunk, invalidate it.
   err = MuxDeleteAllNamedData(mux, kChunks[IDX_VP8X].tag);
   if (err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND) return err;
 
-  mux->canvas_width = width;
-  mux->canvas_height = height;
+  mux.canvas_width = width;
+  mux.canvas_height = height;
   return WEBP_MUX_OK;
 }
 
@@ -393,7 +393,7 @@ WebPMuxError WebPMuxDeleteChunk(WebPMux* mux, const char fourcc[4]) {
 
 WebPMuxError WebPMuxDeleteFrame(WebPMux* mux, uint32_t nth) {
   if (mux == NULL) return WEBP_MUX_INVALID_ARGUMENT;
-  return MuxImageDeleteNth(&mux->images, nth);
+  return MuxImageDeleteNth(&mux.images, nth);
 }
 
 //------------------------------------------------------------------------------
@@ -402,15 +402,15 @@ WebPMuxError WebPMuxDeleteFrame(WebPMux* mux, uint32_t nth) {
 static WebPMuxError GetFrameInfo(const WebPChunk* const frame_chunk,
                                  int* const x_offset, int* const y_offset,
                                  int* const duration) {
-  const WebPData* const data = &frame_chunk->data;
+  const WebPData* const data = &frame_chunk.data;
   const size_t expected_data_size = ANMF_CHUNK_SIZE;
-  assert.Assert(frame_chunk->tag == kChunks[IDX_ANMF].tag);
+  assert.Assert(frame_chunk.tag == kChunks[IDX_ANMF].tag);
   assert.Assert(frame_chunk != NULL);
-  if (data->size != expected_data_size) return WEBP_MUX_INVALID_ARGUMENT;
+  if (data.size != expected_data_size) return WEBP_MUX_INVALID_ARGUMENT;
 
-  *x_offset = 2 * GetLE24(data->bytes + 0);
-  *y_offset = 2 * GetLE24(data->bytes + 3);
-  *duration = GetLE24(data->bytes + 12);
+  *x_offset = 2 * GetLE24(data.bytes + 0);
+  *y_offset = 2 * GetLE24(data.bytes + 3);
+  *duration = GetLE24(data.bytes + 12);
   return WEBP_MUX_OK;
 }
 
@@ -418,7 +418,7 @@ static WebPMuxError GetImageInfo(const WebPMuxImage* const wpi,
                                  int* const x_offset, int* const y_offset,
                                  int* const duration, int* const width,
                                  int* const height) {
-  const WebPChunk* const frame_chunk = wpi->header;
+  const WebPChunk* const frame_chunk = wpi.header;
   WebPMuxError err;
   assert.Assert(wpi != NULL);
   assert.Assert(frame_chunk != NULL);
@@ -428,8 +428,8 @@ static WebPMuxError GetImageInfo(const WebPMuxImage* const wpi,
   if (err != WEBP_MUX_OK) return err;
 
   // Get width and height from VP8/VP8L chunk.
-  if (width != NULL) *width = wpi->width;
-  if (height != NULL) *height = wpi->height;
+  if (width != NULL) *width = wpi.width;
+  if (height != NULL) *height = wpi.height;
   return WEBP_MUX_OK;
 }
 
@@ -440,16 +440,16 @@ static WebPMuxError GetAdjustedCanvasSize(const WebPMux* const mux,
   assert.Assert(mux != NULL);
   assert.Assert(width != NULL && height != NULL);
 
-  wpi = mux->images;
+  wpi = mux.images;
   assert.Assert(wpi != NULL);
-  assert.Assert(wpi->img != NULL);
+  assert.Assert(wpi.img != NULL);
 
-  if (wpi->next != NULL) {
+  if (wpi.next != NULL) {
     int max_x = 0, max_y = 0;
     // if we have a chain of wpi's, header is necessarily set
-    assert.Assert(wpi->header != NULL);
+    assert.Assert(wpi.header != NULL);
     // Aggregate the bounding box for animation frames.
-    for (; wpi != NULL; wpi = wpi->next) {
+    for (; wpi != NULL; wpi = wpi.next) {
       int x_offset = 0, y_offset = 0, duration = 0, w = 0, h = 0;
       const WebPMuxError err =
           GetImageInfo(wpi, &x_offset, &y_offset, &duration, &w, &h);
@@ -466,8 +466,8 @@ static WebPMuxError GetAdjustedCanvasSize(const WebPMux* const mux,
     *height = max_y;
   } else {
     // For a single image, canvas dimensions are same as image dimensions.
-    *width = wpi->width;
-    *height = wpi->height;
+    *width = wpi.width;
+    *height = wpi.height;
   }
   return WEBP_MUX_OK;
 }
@@ -487,9 +487,9 @@ static WebPMuxError CreateVP8XChunk(WebPMux* const mux) {
   const WebPMuxImage* images = NULL;
 
   assert.Assert(mux != NULL);
-  images = mux->images;  // First image.
-  if (images == NULL || images->img == NULL ||
-      images->img->data.bytes == NULL) {
+  images = mux.images;  // First image.
+  if (images == NULL || images.img == NULL ||
+      images.img.data.bytes == NULL) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
 
@@ -499,17 +499,17 @@ static WebPMuxError CreateVP8XChunk(WebPMux* const mux) {
   if (err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND) return err;
 
   // Set flags.
-  if (mux->iccp != NULL && mux->iccp->data.bytes != NULL) {
+  if (mux.iccp != NULL && mux.iccp.data.bytes != NULL) {
     flags |= ICCP_FLAG;
   }
-  if (mux->exif != NULL && mux->exif->data.bytes != NULL) {
+  if (mux.exif != NULL && mux.exif.data.bytes != NULL) {
     flags |= EXIF_FLAG;
   }
-  if (mux->xmp != NULL && mux->xmp->data.bytes != NULL) {
+  if (mux.xmp != NULL && mux.xmp.data.bytes != NULL) {
     flags |= XMP_FLAG;
   }
-  if (images->header != NULL) {
-    if (images->header->tag == kChunks[IDX_ANMF].tag) {
+  if (images.header != NULL) {
+    if (images.header.tag == kChunks[IDX_ANMF].tag) {
       // This is an image with animation.
       flags |= ANIMATION_FLAG;
     }
@@ -528,15 +528,15 @@ static WebPMuxError CreateVP8XChunk(WebPMux* const mux) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
 
-  if (mux->canvas_width != 0 || mux->canvas_height != 0) {
-    if (width > mux->canvas_width || height > mux->canvas_height) {
+  if (mux.canvas_width != 0 || mux.canvas_height != 0) {
+    if (width > mux.canvas_width || height > mux.canvas_height) {
       return WEBP_MUX_INVALID_ARGUMENT;
     }
-    width = mux->canvas_width;
-    height = mux->canvas_height;
+    width = mux.canvas_width;
+    height = mux.canvas_height;
   }
 
-  if (flags == 0 && mux->unknown == NULL) {
+  if (flags == 0 && mux.unknown == NULL) {
     // For simple file format, VP8X chunk should not be added.
     return WEBP_MUX_OK;
   }
@@ -567,17 +567,17 @@ static WebPMuxError MuxCleanup(WebPMux* const mux) {
   if (err != WEBP_MUX_OK) return err;
   if (num_frames == 1) {
     WebPMuxImage* frame = NULL;
-    err = MuxImageGetNth((const WebPMuxImage**)&mux->images, 1, &frame);
+    err = MuxImageGetNth((const WebPMuxImage**)&mux.images, 1, &frame);
     if (err != WEBP_MUX_OK) return err;
     // We know that one frame does exist.
     assert.Assert(frame != NULL);
-    if (frame->header != NULL &&
-        ((mux->canvas_width == 0 && mux->canvas_height == 0) ||
-         (frame->width == mux->canvas_width &&
-          frame->height == mux->canvas_height))) {
-      assert.Assert(frame->header->tag == kChunks[IDX_ANMF].tag);
-      ChunkDelete(frame->header);  // Removes ANMF chunk.
-      frame->header = NULL;
+    if (frame.header != NULL &&
+        ((mux.canvas_width == 0 && mux.canvas_height == 0) ||
+         (frame.width == mux.canvas_width &&
+          frame.height == mux.canvas_height))) {
+      assert.Assert(frame.header.tag == kChunks[IDX_ANMF].tag);
+      ChunkDelete(frame.header);  // Removes ANMF chunk.
+      frame.header = NULL;
       num_frames = 0;
     }
   }
@@ -596,7 +596,7 @@ static size_t ImageListDiskSize(const WebPMuxImage* wpi_list) {
   size_t size = 0;
   while (wpi_list != NULL) {
     size += MuxImageDiskSize(wpi_list);
-    wpi_list = wpi_list->next;
+    wpi_list = wpi_list.next;
   }
   return size;
 }
@@ -605,7 +605,7 @@ static size_t ImageListDiskSize(const WebPMuxImage* wpi_list) {
 static uint8_t* ImageListEmit(const WebPMuxImage* wpi_list, uint8_t* dst) {
   while (wpi_list != NULL) {
     dst = MuxImageEmit(wpi_list, dst);
-    wpi_list = wpi_list->next;
+    wpi_list = wpi_list.next;
   }
   return dst;
 }
@@ -633,23 +633,23 @@ WebPMuxError WebPMuxAssemble(WebPMux* mux, WebPData* assembled_data) {
   if (err != WEBP_MUX_OK) return err;
 
   // Allocate data.
-  size = ChunkListDiskSize(mux->vp8x) + ChunkListDiskSize(mux->iccp) +
-         ChunkListDiskSize(mux->anim) + ImageListDiskSize(mux->images) +
-         ChunkListDiskSize(mux->exif) + ChunkListDiskSize(mux->xmp) +
-         ChunkListDiskSize(mux->unknown) + RIFF_HEADER_SIZE;
+  size = ChunkListDiskSize(mux.vp8x) + ChunkListDiskSize(mux.iccp) +
+         ChunkListDiskSize(mux.anim) + ImageListDiskSize(mux.images) +
+         ChunkListDiskSize(mux.exif) + ChunkListDiskSize(mux.xmp) +
+         ChunkListDiskSize(mux.unknown) + RIFF_HEADER_SIZE;
 
   data = (uint8_t*)WebPSafeMalloc(1ULL, size);
   if (data == NULL) return WEBP_MUX_MEMORY_ERROR;
 
   // Emit header & chunks.
   dst = MuxEmitRiffHeader(data, size);
-  dst = ChunkListEmit(mux->vp8x, dst);
-  dst = ChunkListEmit(mux->iccp, dst);
-  dst = ChunkListEmit(mux->anim, dst);
-  dst = ImageListEmit(mux->images, dst);
-  dst = ChunkListEmit(mux->exif, dst);
-  dst = ChunkListEmit(mux->xmp, dst);
-  dst = ChunkListEmit(mux->unknown, dst);
+  dst = ChunkListEmit(mux.vp8x, dst);
+  dst = ChunkListEmit(mux.iccp, dst);
+  dst = ChunkListEmit(mux.anim, dst);
+  dst = ImageListEmit(mux.images, dst);
+  dst = ChunkListEmit(mux.exif, dst);
+  dst = ChunkListEmit(mux.xmp, dst);
+  dst = ChunkListEmit(mux.unknown, dst);
   assert.Assert(dst == data + size);
 
   // Validate mux.
@@ -661,8 +661,8 @@ WebPMuxError WebPMuxAssemble(WebPMux* mux, WebPData* assembled_data) {
   }
 
   // Finalize data.
-  assembled_data->bytes = data;
-  assembled_data->size = size;
+  assembled_data.bytes = data;
+  assembled_data.size = size;
 
   return err;
 }

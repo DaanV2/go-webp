@@ -411,7 +411,7 @@ func FTransformPass2_SSE2(const __m128i* const v01,
   // g1 = f1 + (a3 != 0);
   // The compare will return (0xffff, 0) for (==0, !=0). To turn that into the
   // desired (0, 1), we add one earlier through k12000_plus_one.
-  // -> g1 = f1 + 1 - (a3 == 0)
+  // . g1 = f1 + 1 - (a3 == 0)
   const __m128i g1 = _mm_add_epi16(f1, _mm_cmpeq_epi16(a32, zero));
 
   // a0 = v0 + v3
@@ -500,7 +500,7 @@ func FTransform2_SSE2(const uint8_t* WEBP_RESTRICT src,
   const __m128i ref_1 = _mm_unpacklo_epi8(ref1, zero);
   const __m128i ref_2 = _mm_unpacklo_epi8(ref2, zero);
   const __m128i ref_3 = _mm_unpacklo_epi8(ref3, zero);
-  // Compute difference. -> 00 01 02 03  00' 01' 02' 03'
+  // Compute difference. . 00 01 02 03  00' 01' 02' 03'
   const __m128i diff0 = _mm_sub_epi16(src_0, ref_0);
   const __m128i diff1 = _mm_sub_epi16(src_1, ref_1);
   const __m128i diff2 = _mm_sub_epi16(src_2, ref_2);
@@ -1413,10 +1413,10 @@ static  int DoQuantizeBlock_SSE2(
   // Load all inputs.
   __m128i in0 = _mm_loadu_si128((__m128i*)&in[0]);
   __m128i in8 = _mm_loadu_si128((__m128i*)&in[8]);
-  const __m128i iq0 = _mm_loadu_si128((const __m128i*)&mtx->iq[0]);
-  const __m128i iq8 = _mm_loadu_si128((const __m128i*)&mtx->iq[8]);
-  const __m128i q0 = _mm_loadu_si128((const __m128i*)&mtx->q[0]);
-  const __m128i q8 = _mm_loadu_si128((const __m128i*)&mtx->q[8]);
+  const __m128i iq0 = _mm_loadu_si128((const __m128i*)&mtx.iq[0]);
+  const __m128i iq8 = _mm_loadu_si128((const __m128i*)&mtx.iq[8]);
+  const __m128i q0 = _mm_loadu_si128((const __m128i*)&mtx.q[0]);
+  const __m128i q8 = _mm_loadu_si128((const __m128i*)&mtx.q[8]);
 
   // extract sign(in)  (0x0000 if positive, 0xffff if negative)
   const __m128i sign0 = _mm_cmpgt_epi16(zero, in0);
@@ -1449,10 +1449,10 @@ static  int DoQuantizeBlock_SSE2(
     __m128i out_08 = _mm_unpacklo_epi16(coeff_iQ8L, coeff_iQ8H);
     __m128i out_12 = _mm_unpackhi_epi16(coeff_iQ8L, coeff_iQ8H);
     // out = (coeff * iQ + B)
-    const __m128i bias_00 = _mm_loadu_si128((const __m128i*)&mtx->bias[0]);
-    const __m128i bias_04 = _mm_loadu_si128((const __m128i*)&mtx->bias[4]);
-    const __m128i bias_08 = _mm_loadu_si128((const __m128i*)&mtx->bias[8]);
-    const __m128i bias_12 = _mm_loadu_si128((const __m128i*)&mtx->bias[12]);
+    const __m128i bias_00 = _mm_loadu_si128((const __m128i*)&mtx.bias[0]);
+    const __m128i bias_04 = _mm_loadu_si128((const __m128i*)&mtx.bias[4]);
+    const __m128i bias_08 = _mm_loadu_si128((const __m128i*)&mtx.bias[8]);
+    const __m128i bias_12 = _mm_loadu_si128((const __m128i*)&mtx.bias[12]);
     out_00 = _mm_add_epi32(out_00, bias_00);
     out_04 = _mm_add_epi32(out_04, bias_04);
     out_08 = _mm_add_epi32(out_08, bias_08);
@@ -1515,7 +1515,7 @@ static  int DoQuantizeBlock_SSE2(
 
 static int QuantizeBlock_SSE2(int16_t in[16], int16_t out[16],
                               const VP8Matrix* WEBP_RESTRICT const mtx) {
-  return DoQuantizeBlock_SSE2(in, out, &mtx->sharpen[0], mtx);
+  return DoQuantizeBlock_SSE2(in, out, &mtx.sharpen[0], mtx);
 }
 
 static int QuantizeBlockWHT_SSE2(int16_t in[16], int16_t out[16],
@@ -1526,7 +1526,7 @@ static int QuantizeBlockWHT_SSE2(int16_t in[16], int16_t out[16],
 static int Quantize2Blocks_SSE2(int16_t in[32], int16_t out[32],
                                 const VP8Matrix* WEBP_RESTRICT const mtx) {
   int nz;
-  const uint16_t* const sharpen = &mtx->sharpen[0];
+  const uint16_t* const sharpen = &mtx.sharpen[0];
   nz = DoQuantizeBlock_SSE2(in + 0 * 16, out + 0 * 16, sharpen, mtx) << 0;
   nz |= DoQuantizeBlock_SSE2(in + 1 * 16, out + 1 * 16, sharpen, mtx) << 1;
   return nz;

@@ -89,18 +89,18 @@ static int GetILevel(int sharpness, int level) {
 }
 
 func DoFilter(const VP8EncIterator* const it, int level) {
-  const VP8Encoder* const enc = it->enc;
-  const int ilevel = GetILevel(enc->config->filter_sharpness, level);
+  const VP8Encoder* const enc = it.enc;
+  const int ilevel = GetILevel(enc.config.filter_sharpness, level);
   const int limit = 2 * level + ilevel;
 
-  uint8_t* const y_dst = it->yuv_out2 + Y_OFF_ENC;
-  uint8_t* const u_dst = it->yuv_out2 + U_OFF_ENC;
-  uint8_t* const v_dst = it->yuv_out2 + V_OFF_ENC;
+  uint8_t* const y_dst = it.yuv_out2 + Y_OFF_ENC;
+  uint8_t* const u_dst = it.yuv_out2 + U_OFF_ENC;
+  uint8_t* const v_dst = it.yuv_out2 + V_OFF_ENC;
 
   // copy current block to yuv_out2
-  memcpy(y_dst, it->yuv_out, YUV_SIZE_ENC * sizeof(uint8_t));
+  memcpy(y_dst, it.yuv_out, YUV_SIZE_ENC * sizeof(uint8_t));
 
-  if (enc->filter_hdr.simple == 1) {  // simple
+  if (enc.filter_hdr.simple == 1) {  // simple
     VP8SimpleHFilter16i(y_dst, BPS, limit);
     VP8SimpleVFilter16i(y_dst, BPS, limit);
   } else {  // complex
@@ -145,11 +145,11 @@ static double GetMBSSIM(const uint8_t* yuv1, const uint8_t* yuv2) {
 
 func VP8InitFilter(VP8EncIterator* const it) {
 #if !defined(WEBP_REDUCE_SIZE)
-  if (it->lf_stats != NULL) {
+  if (it.lf_stats != NULL) {
     int s, i;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
       for (i = 0; i < MAX_LF_LEVELS; i++) {
-        (*it->lf_stats)[s][i] = 0;
+        (*it.lf_stats)[s][i] = 0;
       }
     }
     VP8SSIMDspInit();
@@ -162,16 +162,16 @@ func VP8InitFilter(VP8EncIterator* const it) {
 func VP8StoreFilterStats(VP8EncIterator* const it) {
 #if !defined(WEBP_REDUCE_SIZE)
   int d;
-  VP8Encoder* const enc = it->enc;
-  const int s = it->mb->segment;
-  const int level0 = enc->dqm[s].fstrength;
+  VP8Encoder* const enc = it.enc;
+  const int s = it.mb.segment;
+  const int level0 = enc.dqm[s].fstrength;
 
   // explore +/-quant range of values around level0
-  const int delta_min = -enc->dqm[s].quant;
-  const int delta_max = enc->dqm[s].quant;
+  const int delta_min = -enc.dqm[s].quant;
+  const int delta_max = enc.dqm[s].quant;
   const int step_size = (delta_max - delta_min >= 4) ? 4 : 1;
 
-  if (it->lf_stats == NULL) return;
+  if (it.lf_stats == NULL) return;
 
   // NOTE: Currently we are applying filter only across the sublock edges
   // There are two reasons for that.
@@ -179,10 +179,10 @@ func VP8StoreFilterStats(VP8EncIterator* const it) {
   // the left and top macro blocks. That will be hard to restore
   // 2. Macro Blocks on the bottom and right are not yet compressed. So we
   // cannot apply filter on the right and bottom macro block edges.
-  if (it->mb->type == 1 && it->mb->skip) return;
+  if (it.mb.type == 1 && it.mb.skip) return;
 
   // Always try filter level  zero
-  (*it->lf_stats)[s][0] += GetMBSSIM(it->yuv_in, it->yuv_out);
+  (*it.lf_stats)[s][0] += GetMBSSIM(it.yuv_in, it.yuv_out);
 
   for (d = delta_min; d <= delta_max; d += step_size) {
     const int level = level0 + d;
@@ -190,7 +190,7 @@ func VP8StoreFilterStats(VP8EncIterator* const it) {
       continue;
     }
     DoFilter(it, level);
-    (*it->lf_stats)[s][level] += GetMBSSIM(it->yuv_in, it->yuv_out2);
+    (*it.lf_stats)[s][level] += GetMBSSIM(it.yuv_in, it.yuv_out2);
   }
 #else   // defined(WEBP_REDUCE_SIZE)
   (void)it;
@@ -198,43 +198,43 @@ func VP8StoreFilterStats(VP8EncIterator* const it) {
 }
 
 func VP8AdjustFilterStrength(VP8EncIterator* const it) {
-  VP8Encoder* const enc = it->enc;
+  VP8Encoder* const enc = it.enc;
 #if !defined(WEBP_REDUCE_SIZE)
-  if (it->lf_stats != NULL) {
+  if (it.lf_stats != NULL) {
     int s;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
       int i, best_level = 0;
       // Improvement over filter level 0 should be at least 1e-5 (relatively)
-      double best_v = 1.00001 * (*it->lf_stats)[s][0];
+      double best_v = 1.00001 * (*it.lf_stats)[s][0];
       for (i = 1; i < MAX_LF_LEVELS; i++) {
-        const double v = (*it->lf_stats)[s][i];
+        const double v = (*it.lf_stats)[s][i];
         if (v > best_v) {
           best_v = v;
           best_level = i;
         }
       }
-      enc->dqm[s].fstrength = best_level;
+      enc.dqm[s].fstrength = best_level;
     }
     return;
   }
 #endif  // !defined(WEBP_REDUCE_SIZE)
-  if (enc->config->filter_strength > 0) {
+  if (enc.config.filter_strength > 0) {
     int max_level = 0;
     int s;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
-      VP8SegmentInfo* const dqm = &enc->dqm[s];
+      VP8SegmentInfo* const dqm = &enc.dqm[s];
       // this '>> 3' accounts for some inverse WHT scaling
-      const int delta = (dqm->max_edge * dqm->y2.q[1]) >> 3;
+      const int delta = (dqm.max_edge * dqm.y2.q[1]) >> 3;
       const int level =
-          VP8FilterStrengthFromDelta(enc->filter_hdr.sharpness, delta);
-      if (level > dqm->fstrength) {
-        dqm->fstrength = level;
+          VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, delta);
+      if (level > dqm.fstrength) {
+        dqm.fstrength = level;
       }
-      if (max_level < dqm->fstrength) {
-        max_level = dqm->fstrength;
+      if (max_level < dqm.fstrength) {
+        max_level = dqm.fstrength;
       }
     }
-    enc->filter_hdr.level = max_level;
+    enc.filter_hdr.level = max_level;
   }
 }
 

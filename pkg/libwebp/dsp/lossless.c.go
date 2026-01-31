@@ -221,7 +221,7 @@ GENERATE_PREDICTOR_ADD(VP8LPredictor13_C, PredictorAdd13_C)
 func PredictorInverseTransform_C(const VP8LTransform* const transform,
                                         int y_start, int y_end,
                                         const uint32_t* in, uint32_t* out) {
-  const int width = transform->xsize;
+  const int width = transform.xsize;
   if (y_start == 0) {  // First Row follows the L (mode=1) mode.
     PredictorAdd0_C(in, NULL, 1, out);
     PredictorAdd1_C(in + 1, NULL, width - 1, out + 1);
@@ -232,11 +232,11 @@ func PredictorInverseTransform_C(const VP8LTransform* const transform,
 
   {
     int y = y_start;
-    const int tile_width = 1 << transform->bits;
+    const int tile_width = 1 << transform.bits;
     const int mask = tile_width - 1;
-    const int tiles_per_row = VP8LSubSampleSize(width, transform->bits);
+    const int tiles_per_row = VP8LSubSampleSize(width, transform.bits);
     const uint32_t* pred_mode_base =
-        transform->data + (y >> transform->bits) * tiles_per_row;
+        transform.data + (y >> transform.bits) * tiles_per_row;
 
     while (y < y_end) {
       const uint32_t* pred_mode_src = pred_mode_base;
@@ -283,9 +283,9 @@ static  int ColorTransformDelta(int8_t color_pred, int8_t color) {
 
 static  func ColorCodeToMultipliers(uint32_t color_code,
                                                VP8LMultipliers* const m) {
-  m->green_to_red = (color_code >> 0) & 0xff;
-  m->green_to_blue = (color_code >> 8) & 0xff;
-  m->red_to_blue = (color_code >> 16) & 0xff;
+  m.green_to_red = (color_code >> 0) & 0xff;
+  m.green_to_blue = (color_code >> 8) & 0xff;
+  m.red_to_blue = (color_code >> 16) & 0xff;
 }
 
 func VP8LTransformColorInverse_C(const VP8LMultipliers* const m,
@@ -298,10 +298,10 @@ func VP8LTransformColorInverse_C(const VP8LMultipliers* const m,
     const uint32_t red = argb >> 16;
     int new_red = red & 0xff;
     int new_blue = argb & 0xff;
-    new_red += ColorTransformDelta((int8_t)m->green_to_red, green);
+    new_red += ColorTransformDelta((int8_t)m.green_to_red, green);
     new_red &= 0xff;
-    new_blue += ColorTransformDelta((int8_t)m->green_to_blue, green);
-    new_blue += ColorTransformDelta((int8_t)m->red_to_blue, (int8_t)new_red);
+    new_blue += ColorTransformDelta((int8_t)m.green_to_blue, green);
+    new_blue += ColorTransformDelta((int8_t)m.red_to_blue, (int8_t)new_red);
     new_blue &= 0xff;
     dst[i] = (argb & 0xff00ff00u) | (new_red << 16) | (new_blue);
   }
@@ -311,15 +311,15 @@ func VP8LTransformColorInverse_C(const VP8LMultipliers* const m,
 func ColorSpaceInverseTransform_C(const VP8LTransform* const transform,
                                          int y_start, int y_end,
                                          const uint32_t* src, uint32_t* dst) {
-  const int width = transform->xsize;
-  const int tile_width = 1 << transform->bits;
+  const int width = transform.xsize;
+  const int tile_width = 1 << transform.bits;
   const int mask = tile_width - 1;
   const int safe_width = width & ~mask;
   const int remaining_width = width - safe_width;
-  const int tiles_per_row = VP8LSubSampleSize(width, transform->bits);
+  const int tiles_per_row = VP8LSubSampleSize(width, transform.bits);
   int y = y_start;
   const uint32_t* pred_row =
-      transform->data + (y >> transform->bits) * tiles_per_row;
+      transform.data + (y >> transform.bits) * tiles_per_row;
 
   while (y < y_end) {
     const uint32_t* pred = pred_row;
@@ -362,11 +362,11 @@ STATIC_DECL func FUNC_NAME(const VP8LTransform* const transform,               \
                            int y_start, int y_end, const TYPE* src,            \
                            TYPE* dst) {                                        \
   int y;                                                                       \
-  const int bits_per_pixel = 8 >> transform->bits;                             \
-  const int width = transform->xsize;                                          \
-  const uint32_t* const color_map = transform->data;                           \
+  const int bits_per_pixel = 8 >> transform.bits;                             \
+  const int width = transform.xsize;                                          \
+  const uint32_t* const color_map = transform.data;                           \
   if (bits_per_pixel < 8) {                                                    \
-    const int pixels_per_byte = 1 << transform->bits;                          \
+    const int pixels_per_byte = 1 << transform.bits;                          \
     const int count_mask = pixels_per_byte - 1;                                \
     const uint32_t bit_mask = (1 << bits_per_pixel) - 1;                       \
     for (y = y_start; y < y_end; ++y) {                                        \
@@ -398,16 +398,16 @@ COLOR_INDEX_INVERSE(VP8LColorIndexInverseTransformAlpha, MapAlpha_C, , uint8_t,
 func VP8LInverseTransform(const VP8LTransform* const transform, int row_start,
                           int row_end, const uint32_t* const in,
                           uint32_t* const out) {
-  const int width = transform->xsize;
+  const int width = transform.xsize;
   assert.Assert(row_start < row_end);
-  assert.Assert(row_end <= transform->ysize);
-  switch (transform->type) {
+  assert.Assert(row_end <= transform.ysize);
+  switch (transform.type) {
     case SUBTRACT_GREEN_TRANSFORM:
       VP8LAddGreenToBlueAndRed(in, (row_end - row_start) * width, out);
       break;
     case PREDICTOR_TRANSFORM:
       PredictorInverseTransform_C(transform, row_start, row_end, in, out);
-      if (row_end != transform->ysize) {
+      if (row_end != transform.ysize) {
         // The last predicted row in this iteration will be the top-pred row
         // for the first row in next iteration.
         memcpy(out - width, out + (row_end - row_start - 1) * width,
@@ -418,7 +418,7 @@ func VP8LInverseTransform(const VP8LTransform* const transform, int row_start,
       ColorSpaceInverseTransform_C(transform, row_start, row_end, in, out);
       break;
     case COLOR_INDEXING_TRANSFORM:
-      if (in == out && transform->bits > 0) {
+      if (in == out && transform.bits > 0) {
         // Move packed pixels to the end of unpacked region, so that unpacking
         // can occur seamlessly.
         // Also, note that this is the only transform that applies on
@@ -427,7 +427,7 @@ func VP8LInverseTransform(const VP8LTransform* const transform, int row_start,
         const int out_stride = (row_end - row_start) * width;
         const int in_stride =
             (row_end - row_start) *
-            VP8LSubSampleSize(transform->xsize, transform->bits);
+            VP8LSubSampleSize(transform.xsize, transform.bits);
         uint32_t* const src = out + out_stride - in_stride;
         memmove(src, out, in_stride * sizeof(*src));
         ColorIndexInverseTransform_C(transform, row_start, row_end, src, out);

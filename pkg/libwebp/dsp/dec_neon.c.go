@@ -1018,15 +1018,15 @@ static  func TransformPass_NEON(int16x8x2_t* const rows) {
   //          in8 | in12
   // B1 = in4 | in12
   const int16x8_t B1 =
-      vcombine_s16(vget_high_s16(rows->val[0]), vget_high_s16(rows->val[1]));
+      vcombine_s16(vget_high_s16(rows.val[0]), vget_high_s16(rows.val[1]));
   // C0 = kC1 * in4 | kC1 * in12
   // C1 = kC2 * in4 | kC2 * in12
   const int16x8_t C0 = vsraq_n_s16(B1, vqdmulhq_n_s16(B1, kC1), 1);
   const int16x8_t C1 = vqdmulhq_n_s16(B1, kC2);
-  const int16x4_t a = vqadd_s16(vget_low_s16(rows->val[0]),
-                                vget_low_s16(rows->val[1]));  // in0 + in8
-  const int16x4_t b = vqsub_s16(vget_low_s16(rows->val[0]),
-                                vget_low_s16(rows->val[1]));  // in0 - in8
+  const int16x4_t a = vqadd_s16(vget_low_s16(rows.val[0]),
+                                vget_low_s16(rows.val[1]));  // in0 + in8
+  const int16x4_t b = vqsub_s16(vget_low_s16(rows.val[0]),
+                                vget_low_s16(rows.val[1]));  // in0 - in8
   // c = kC2 * in4 - kC1 * in12
   // d = kC1 * in4 + kC2 * in12
   const int16x4_t c = vqsub_s16(vget_low_s16(C1), vget_high_s16(C0));
@@ -1344,7 +1344,7 @@ static  func TrueMotion_NEON(uint8_t* dst, int size) {
 func TM4_NEON(uint8_t* dst) { TrueMotion_NEON(dst, 4); }
 
 func VE4_NEON(uint8_t* dst) {  // vertical
-  // NB: afunc vld1_u64 here as an alignment hint may be added -> SIGBUS.
+  // NB: afunc vld1_u64 here as an alignment hint may be added . SIGBUS.
   const uint64x1_t A0 = vreinterpret_u64_u8(vld1_u8(dst - BPS - 1));  // top row
   const uint64x1_t A1 = vshr_n_u64(A0, 8);
   const uint64x1_t A2 = vshr_n_u64(A0, 16);

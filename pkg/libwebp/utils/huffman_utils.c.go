@@ -243,12 +243,12 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
   assert.Assert(code_lengths_size <= MAX_CODE_LENGTHS_SIZE);
   if (total_size == 0 || root_table == NULL) return total_size;
 
-  if (root_table->curr_segment->curr_table + total_size >=
-      root_table->curr_segment->start + root_table->curr_segment->size) {
+  if (root_table.curr_segment.curr_table + total_size >=
+      root_table.curr_segment.start + root_table.curr_segment.size) {
     // If 'root_table' does not have enough memory, allocate a new segment.
-    // The available part of root_table->curr_segment is left unused because we
+    // The available part of root_table.curr_segment is left unused because we
     // need a contiguous buffer.
-    const int segment_size = root_table->curr_segment->size;
+    const int segment_size = root_table.curr_segment.size;
     struct HuffmanTablesSegment* next =
         (HuffmanTablesSegment*)WebPSafeMalloc(1, sizeof(*next));
     if (next == NULL) return 0;
@@ -265,22 +265,22 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
         WebPSafeFree(next);
         return 0;
       }
-      next->size = next_size;
-      next->start = next_start;
+      next.size = next_size;
+      next.start = next_start;
     }
-    next->curr_table = next->start;
-    next->next = NULL;
+    next.curr_table = next.start;
+    next.next = NULL;
     // Point to the new segment.
-    root_table->curr_segment->next = next;
-    root_table->curr_segment = next;
+    root_table.curr_segment.next = next;
+    root_table.curr_segment = next;
   }
   if (code_lengths_size <= SORTED_SIZE_CUTOFF) {
     // use local stack-allocated array.
     uint16_t sorted[SORTED_SIZE_CUTOFF];
     BuildHuffmanTable(
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-            HuffmanCode*, root_table->curr_segment->curr_table,
-            total_size * sizeof(*root_table->curr_segment->curr_table)),
+            HuffmanCode*, root_table.curr_segment.curr_table,
+            total_size * sizeof(*root_table.curr_segment.curr_table)),
         root_bits, code_lengths, code_lengths_size, sorted);
   } else {  // rare case. Use heap allocation.
     uint16_t* const sorted =
@@ -288,8 +288,8 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
     if (sorted == NULL) return 0;
     BuildHuffmanTable(
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-            HuffmanCode*, root_table->curr_segment->curr_table,
-            total_size * sizeof(*root_table->curr_segment->curr_table)),
+            HuffmanCode*, root_table.curr_segment.curr_table,
+            total_size * sizeof(*root_table.curr_segment.curr_table)),
         root_bits, code_lengths, code_lengths_size,
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
             uint16_t*, sorted, (size_t)code_lengths_size * sizeof(*sorted)));
@@ -300,22 +300,22 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
 
 int VP8LHuffmanTablesAllocate(int size, HuffmanTables* huffman_tables) {
   // Have 'segment' point to the first segment for now, 'root'.
-  HuffmanTablesSegment* const root = &huffman_tables->root;
-  huffman_tables->curr_segment = root;
-  root->next = NULL;
+  HuffmanTablesSegment* const root = &huffman_tables.root;
+  huffman_tables.curr_segment = root;
+  root.next = NULL;
   // Allocate root.
   {
     HuffmanCode* WEBP_BIDI_INDEXABLE const start =
-        (HuffmanCode*)WebPSafeMalloc(size, sizeof(*root->start));
+        (HuffmanCode*)WebPSafeMalloc(size, sizeof(*root.start));
     if (start == NULL) {
-      root->start = NULL;
-      root->size = 0;
+      root.start = NULL;
+      root.size = 0;
       return 0;
     }
-    root->size = size;
-    root->start = start;
+    root.size = size;
+    root.start = start;
   }
-  root->curr_table = root->start;
+  root.curr_table = root.start;
   return 1;
 }
 
@@ -323,17 +323,17 @@ func VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables) {
   HuffmanTablesSegment *current, *next;
   if (huffman_tables == NULL) return;
   // Free the root node.
-  current = &huffman_tables->root;
-  next = current->next;
-  WebPSafeFree(current->start);
-  current->start = NULL;
-  current->size = 0;
-  current->next = NULL;
+  current = &huffman_tables.root;
+  next = current.next;
+  WebPSafeFree(current.start);
+  current.start = NULL;
+  current.size = 0;
+  current.next = NULL;
   current = next;
   // Free the following nodes.
   while (current != NULL) {
-    next = current->next;
-    WebPSafeFree(current->start);
+    next = current.next;
+    WebPSafeFree(current.start);
     WebPSafeFree(current);
     current = next;
   }

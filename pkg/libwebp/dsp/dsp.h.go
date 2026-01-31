@@ -179,7 +179,7 @@ typedef struct {
 } VP8DistoStats;
 
 // Compute the final SSIM value
-// The non-clipped version assumes stats->w = (2 * VP8_SSIM_KERNEL + 1)^2.
+// The non-clipped version assumes stats.w = (2 * VP8_SSIM_KERNEL + 1)^2.
 double VP8SSIMFromStats(const VP8DistoStats* const stats);
 double VP8SSIMFromStatsClipped(const VP8DistoStats* const stats);
 
@@ -320,7 +320,7 @@ extern WebPSamplerRowFunc WebPSamplers[MODE_LAST];
 // as 0x00, 0x00, 0x00, 0xff (little endian).
 WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last);
 
-// YUV444->RGB converters
+// YUV444.RGB converters
 typedef func (*WebPYUV444Converter)(const uint8_t* WEBP_RESTRICT y,
                                     const uint8_t* WEBP_RESTRICT u,
                                     const uint8_t* WEBP_RESTRICT v,
@@ -337,7 +337,7 @@ func WebPInitSamplers(void);
 func WebPInitYUV444Converters(void);
 
 //------------------------------------------------------------------------------
-// ARGB -> YUV converters
+// ARGB . YUV converters
 
 // Convert ARGB samples to luma Y.
 extern func (*WebPConvertARGBToY)(const uint32_t* WEBP_RESTRICT argb,
@@ -380,7 +380,7 @@ struct WebPRescaler;
 
 // Import a row of data and save its contribution in the rescaler.
 // 'channel' denotes the channel number to be imported. 'Expand' corresponds to
-// the wrk->x_expand case. Otherwise, 'Shrink' is to be used.
+// the wrk.x_expand case. Otherwise, 'Shrink' is to be used.
 typedef func (*WebPRescalerImportRowFunc)(
     struct WebPRescaler* WEBP_RESTRICT const wrk,
     const uint8_t* WEBP_RESTRICT src);
@@ -389,7 +389,7 @@ extern WebPRescalerImportRowFunc WebPRescalerImportRowExpand;
 extern WebPRescalerImportRowFunc WebPRescalerImportRowShrink;
 
 // Export one row (starting at x_out position) from rescaler.
-// 'Expand' corresponds to the wrk->y_expand case.
+// 'Expand' corresponds to the wrk.y_expand case.
 // Otherwise 'Shrink' is to be used
 typedef func (*WebPRescalerExportRowFunc)(struct WebPRescaler* const wrk);
 extern WebPRescalerExportRowFunc WebPRescalerExportRowExpand;

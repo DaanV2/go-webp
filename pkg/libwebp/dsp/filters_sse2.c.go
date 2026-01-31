@@ -278,7 +278,7 @@ func GradientPredictInverse_SSE2(const uint8_t* const in,
         if (--k == 0) break;
         A = _mm_slli_si128(A, 1);              // rotate left sample
         mask_hi = _mm_slli_si128(mask_hi, 1);  // rotate mask
-        A = _mm_unpacklo_epi8(A, zero);        // convert 8b->16b
+        A = _mm_unpacklo_epi8(A, zero);        // convert 8b.16b
       }
       A = _mm_srli_si128(A, 7);  // prepare left sample for next iteration
       _mm_storel_epi64((__m128i*)&row[i], out);

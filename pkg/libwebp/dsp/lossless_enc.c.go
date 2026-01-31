@@ -356,11 +356,11 @@ static uint64_t ShannonEntropy_C(const uint32_t* X, int n) {
 }
 
 func VP8LBitEntropyInit(VP8LBitEntropy* const entropy) {
-  entropy->entropy = 0;
-  entropy->sum = 0;
-  entropy->nonzeros = 0;
-  entropy->max_val = 0;
-  entropy->nonzero_code = VP8L_NON_TRIVIAL_SYM;
+  entropy.entropy = 0;
+  entropy.sum = 0;
+  entropy.nonzeros = 0;
+  entropy.max_val = 0;
+  entropy.nonzero_code = VP8L_NON_TRIVIAL_SYM;
 }
 
 func VP8LBitsEntropyUnrefined(const uint32_t* WEBP_RESTRICT const array, int n,
@@ -371,16 +371,16 @@ func VP8LBitsEntropyUnrefined(const uint32_t* WEBP_RESTRICT const array, int n,
 
   for (i = 0; i < n; ++i) {
     if (array[i] != 0) {
-      entropy->sum += array[i];
-      entropy->nonzero_code = i;
-      ++entropy->nonzeros;
-      entropy->entropy += VP8LFastSLog2(array[i]);
-      if (entropy->max_val < array[i]) {
-        entropy->max_val = array[i];
+      entropy.sum += array[i];
+      entropy.nonzero_code = i;
+      ++entropy.nonzeros;
+      entropy.entropy += VP8LFastSLog2(array[i]);
+      if (entropy.max_val < array[i]) {
+        entropy.max_val = array[i];
       }
     }
   }
-  entropy->entropy = VP8LFastSLog2(entropy->sum) - entropy->entropy;
+  entropy.entropy = VP8LFastSLog2(entropy.sum) - entropy.entropy;
 }
 
 static  func GetEntropyUnrefinedHelper(
@@ -392,18 +392,18 @@ static  func GetEntropyUnrefinedHelper(
 
   // Gather info for the bit entropy.
   if (*val_prev != 0) {
-    bit_entropy->sum += (*val_prev) * streak;
-    bit_entropy->nonzeros += streak;
-    bit_entropy->nonzero_code = *i_prev;
-    bit_entropy->entropy += VP8LFastSLog2(*val_prev) * streak;
-    if (bit_entropy->max_val < *val_prev) {
-      bit_entropy->max_val = *val_prev;
+    bit_entropy.sum += (*val_prev) * streak;
+    bit_entropy.nonzeros += streak;
+    bit_entropy.nonzero_code = *i_prev;
+    bit_entropy.entropy += VP8LFastSLog2(*val_prev) * streak;
+    if (bit_entropy.max_val < *val_prev) {
+      bit_entropy.max_val = *val_prev;
     }
   }
 
   // Gather info for the Huffman cost.
-  stats->counts[*val_prev != 0] += (streak > 3);
-  stats->streaks[*val_prev != 0][(streak > 3)] += streak;
+  stats.counts[*val_prev != 0] += (streak > 3);
+  stats.streaks[*val_prev != 0][(streak > 3)] += streak;
 
   *val_prev = val;
   *i_prev = i;
@@ -428,7 +428,7 @@ func GetEntropyUnrefined_C(
   }
   GetEntropyUnrefinedHelper(0, i, &x_prev, &i_prev, bit_entropy, stats);
 
-  bit_entropy->entropy = VP8LFastSLog2(bit_entropy->sum) - bit_entropy->entropy;
+  bit_entropy.entropy = VP8LFastSLog2(bit_entropy.sum) - bit_entropy.entropy;
 }
 
 func GetCombinedEntropyUnrefined_C(
@@ -450,7 +450,7 @@ func GetCombinedEntropyUnrefined_C(
   }
   GetEntropyUnrefinedHelper(0, i, &xy_prev, &i_prev, bit_entropy, stats);
 
-  bit_entropy->entropy = VP8LFastSLog2(bit_entropy->sum) - bit_entropy->entropy;
+  bit_entropy.entropy = VP8LFastSLog2(bit_entropy.sum) - bit_entropy.entropy;
 }
 
 //------------------------------------------------------------------------------
@@ -481,10 +481,10 @@ func VP8LTransformColor_C(const VP8LMultipliers* WEBP_RESTRICT const m,
     const int8_t red = U32ToS8(argb >> 16);
     int new_red = red & 0xff;
     int new_blue = argb & 0xff;
-    new_red -= ColorTransformDelta((int8_t)m->green_to_red, green);
+    new_red -= ColorTransformDelta((int8_t)m.green_to_red, green);
     new_red &= 0xff;
-    new_blue -= ColorTransformDelta((int8_t)m->green_to_blue, green);
-    new_blue -= ColorTransformDelta((int8_t)m->red_to_blue, red);
+    new_blue -= ColorTransformDelta((int8_t)m.green_to_blue, green);
+    new_blue -= ColorTransformDelta((int8_t)m.red_to_blue, red);
     new_blue &= 0xff;
     data[i] = (argb & 0xff00ff00u) | (new_red << 16) | (new_blue);
   }

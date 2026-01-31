@@ -103,7 +103,7 @@ static  int VP8LHistogramNumCodes(int palette_code_bits) {
 }
 
 // Builds the histogram image. pic and percent are for progress.
-// Returns false in case of error (stored in pic->error_code).
+// Returns false in case of error (stored in pic.error_code).
 int VP8LGetHistoImageSymbols(int xsize, int ysize,
                              const VP8LBackwardRefs* const refs, int quality,
                              int low_effort, int histogram_bits, int cache_bits,

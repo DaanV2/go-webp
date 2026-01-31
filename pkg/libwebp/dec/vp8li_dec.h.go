@@ -64,7 +64,7 @@ type VP8LDecoder struct {
   VP8LDecodeState state;
   VP8Io* io;
 
-  const WebPDecBuffer* output;  // shortcut to io->opaque->output
+  const WebPDecBuffer* output;  // shortcut to io.opaque.output
 
   uint32_t* pixels;      // Internal data: either uint8_t* for alpha
                          // or uint32_t* for BGRA.
@@ -123,7 +123,7 @@ struct ALPHDecoder;  // Defined in dec/alphai.h.
  int VP8LDecodeHeader(VP8LDecoder* const dec, VP8Io* const io);
 
 // Decodes an image. It's required to decode the lossless header before calling
-// this function. Returns false in case of error, with updated dec->status.
+// this function. Returns false in case of error, with updated dec.status.
  int VP8LDecodeImage(VP8LDecoder* const dec);
 
 // Clears and deallocate a lossless decoder instance.

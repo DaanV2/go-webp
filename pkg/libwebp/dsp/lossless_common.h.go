@@ -54,12 +54,12 @@ static  uint32_t VP8LSubSampleSize(uint32_t size,
 
 // Converts near lossless quality into max number of bits shaved off.
 static  int VP8LNearLosslessBits(int near_lossless_quality) {
-  //    100 -> 0
-  // 80..99 -> 1
-  // 60..79 -> 2
-  // 40..59 -> 3
-  // 20..39 -> 4
-  //  0..19 -> 5
+  //    100 . 0
+  // 80..99 . 1
+  // 60..79 . 2
+  // 40..59 . 3
+  // 20..39 . 4
+  //  0..19 . 5
   return 5 - near_lossless_quality / 20;
 }
 

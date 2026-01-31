@@ -87,7 +87,7 @@ func PrintMemInfo(void) {
   fprintf(stderr, "high-water mark: %u\n", (uint32_t)high_water_mark);
   while (all_blocks != NULL) {
     MemBlock* b = all_blocks;
-    all_blocks = b->next;
+    all_blocks = b.next;
     free(b);
   }
 }
@@ -125,10 +125,10 @@ func AddMem(void* ptr, size_t size) {
   if (ptr != NULL) {
     MemBlock* const b = (MemBlock*)malloc(sizeof(*b));
     if (b == NULL) abort();
-    b->next = all_blocks;
+    b.next = all_blocks;
     all_blocks = b;
-    b->ptr = ptr;
-    b->size = size;
+    b.ptr = ptr;
+    b.size = size;
     total_mem += size;
     total_mem_allocated += size;
 #if defined(PRINT_MEM_TRAFFIC)
@@ -147,18 +147,18 @@ func SubMem(void* ptr) {
   if (ptr != NULL) {
     MemBlock** b = &all_blocks;
     // Inefficient search, but that's just for debugging.
-    while (*b != NULL && (*b)->ptr != ptr) b = &(*b)->next;
+    while (*b != NULL && (*b).ptr != ptr) b = &(*b).next;
     if (*b == NULL) {
       fprintf(stderr, "Invalid pointer free! (%p)\n", ptr);
       abort();
     }
     {
       MemBlock* const block = *b;
-      *b = block->next;
-      total_mem -= block->size;
+      *b = block.next;
+      total_mem -= block.size;
 #if defined(PRINT_MEM_TRAFFIC)
       fprintf(stderr, "Mem: %u (-%u)\n", (uint32_t)total_mem,
-              (uint32_t)block->size);
+              (uint32_t)block.size);
 #endif
       free(block);
     }
@@ -263,10 +263,10 @@ func WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
 
 func WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
   assert.Assert(src != NULL && dst != NULL)
-  assert.Assert(src->width == dst->width && src->height == dst->height)
-  assert.Assert(src->use_argb && dst->use_argb)
-  WebPCopyPlane((uint8_t*)src->argb, 4 * src->argb_stride, (uint8_t*)dst->argb,
-                4 * dst->argb_stride, 4 * src->width, src->height);
+  assert.Assert(src.width == dst.width && src.height == dst.height)
+  assert.Assert(src.use_argb && dst.use_argb)
+  WebPCopyPlane((uint8_t*)src.argb, 4 * src.argb_stride, (uint8_t*)dst.argb,
+                4 * dst.argb_stride, 4 * src.width, src.height);
 }
 
 //------------------------------------------------------------------------------

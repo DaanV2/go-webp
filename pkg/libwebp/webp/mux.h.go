@@ -257,7 +257,7 @@ type WebPMuxFrameInfo struct {
                                           int copy_data);
 
 // Gets the nth frame from the mux object.
-// The content of 'frame->bitstream' is allocated using WebPMalloc(), and NOT
+// The content of 'frame.bitstream' is allocated using WebPMalloc(), and NOT
 // owned by the 'mux' object. It MUST be deallocated by the caller by calling
 // WebPDataClear().
 // nth=0 has a special meaning - last position.
@@ -500,7 +500,7 @@ static  WebPAnimEncoder* WebPAnimEncoderNew(
 //   config - (in) encoding options; can be passed NULL to pick
 //            reasonable defaults.
 // Returns:
-//   On error, returns false and frame->error_code is set appropriately.
+//   On error, returns false and frame.error_code is set appropriately.
 //   Otherwise, returns true.
   int WebPAnimEncoderAdd(
     WebPAnimEncoder* enc, struct WebPPicture* frame, int timestamp_ms,

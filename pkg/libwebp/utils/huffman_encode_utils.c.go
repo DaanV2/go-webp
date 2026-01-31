@@ -132,24 +132,24 @@ func OptimizeHuffmanForRle(int length,
 static int CompareHuffmanTrees(const void* ptr1, const void* ptr2) {
   const HuffmanTree* const t1 = (const HuffmanTree*)ptr1;
   const HuffmanTree* const t2 = (const HuffmanTree*)ptr2;
-  if (t1->total_count > t2->total_count) {
+  if (t1.total_count > t2.total_count) {
     return -1;
-  } else if (t1->total_count < t2->total_count) {
+  } else if (t1.total_count < t2.total_count) {
     return 1;
   } else {
-    assert.Assert(t1->value != t2->value);
-    return (t1->value < t2->value) ? -1 : 1;
+    assert.Assert(t1.value != t2.value);
+    return (t1.value < t2.value) ? -1 : 1;
   }
 }
 
 func SetBitDepths(const HuffmanTree* const tree,
                          const HuffmanTree* WEBP_BIDI_INDEXABLE const pool,
                          uint8_t* WEBP_INDEXABLE const bit_depths, int level) {
-  if (tree->pool_index_left >= 0) {
-    SetBitDepths(&pool[tree->pool_index_left], pool, bit_depths, level + 1);
-    SetBitDepths(&pool[tree->pool_index_right], pool, bit_depths, level + 1);
+  if (tree.pool_index_left >= 0) {
+    SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
+    SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
   } else {
-    bit_depths[tree->value] = level;
+    bit_depths[tree.value] = level;
   }
 }
 
@@ -274,8 +274,8 @@ CodeRepeatedValues(int repetitions, HuffmanTreeToken* WEBP_INDEXABLE tokens,
                    int value, int prev_value) {
   assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH);
   if (value != prev_value) {
-    tokens->code = value;
-    tokens->extra_bits = 0;
+    tokens.code = value;
+    tokens.extra_bits = 0;
     ++tokens;
     --repetitions;
   }
@@ -283,19 +283,19 @@ CodeRepeatedValues(int repetitions, HuffmanTreeToken* WEBP_INDEXABLE tokens,
     if (repetitions < 3) {
       int i;
       for (i = 0; i < repetitions; ++i) {
-        tokens->code = value;
-        tokens->extra_bits = 0;
+        tokens.code = value;
+        tokens.extra_bits = 0;
         ++tokens;
       }
       break;
     } else if (repetitions < 7) {
-      tokens->code = 16;
-      tokens->extra_bits = repetitions - 3;
+      tokens.code = 16;
+      tokens.extra_bits = repetitions - 3;
       ++tokens;
       break;
     } else {
-      tokens->code = 16;
-      tokens->extra_bits = 3;
+      tokens.code = 16;
+      tokens.extra_bits = 3;
       ++tokens;
       repetitions -= 6;
     }
@@ -309,24 +309,24 @@ CodeRepeatedZeros(int repetitions, HuffmanTreeToken* WEBP_INDEXABLE tokens) {
     if (repetitions < 3) {
       int i;
       for (i = 0; i < repetitions; ++i) {
-        tokens->code = 0;  // 0-value
-        tokens->extra_bits = 0;
+        tokens.code = 0;  // 0-value
+        tokens.extra_bits = 0;
         ++tokens;
       }
       break;
     } else if (repetitions < 11) {
-      tokens->code = 17;
-      tokens->extra_bits = repetitions - 3;
+      tokens.code = 17;
+      tokens.extra_bits = repetitions - 3;
       ++tokens;
       break;
     } else if (repetitions < 139) {
-      tokens->code = 18;
-      tokens->extra_bits = repetitions - 11;
+      tokens.code = 18;
+      tokens.extra_bits = repetitions - 11;
       ++tokens;
       break;
     } else {
-      tokens->code = 18;
-      tokens->extra_bits = 0x7f;  // 138 repeated 0s
+      tokens.code = 18;
+      tokens.extra_bits = 0x7f;  // 138 repeated 0s
       ++tokens;
       repetitions -= 138;
     }
@@ -340,15 +340,15 @@ int VP8LCreateCompressedHuffmanTree(
   HuffmanTreeToken* WEBP_INDEXABLE current_token = tokens;
   HuffmanTreeToken* const starting_token = tokens;
   HuffmanTreeToken* const ending_token = tokens + max_tokens;
-  const int depth_size = tree->num_symbols;
+  const int depth_size = tree.num_symbols;
   int prev_value = 8;  // 8 is the initial value for rle.
   int i = 0;
   assert.Assert(tokens != NULL);
   while (i < depth_size) {
-    const int value = tree->code_lengths[i];
+    const int value = tree.code_lengths[i];
     int k = i + 1;
     int runs;
-    while (k < depth_size && tree->code_lengths[k] == value) ++k;
+    while (k < depth_size && tree.code_lengths[k] == value) ++k;
     runs = k - i;
     if (value == 0) {
       current_token = CodeRepeatedZeros(runs, current_token);
@@ -392,9 +392,9 @@ func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
   int depth_count[MAX_ALLOWED_CODE_LENGTH + 1] = {0};
 
   assert.Assert(tree != NULL);
-  len = tree->num_symbols;
+  len = tree.num_symbols;
   for (i = 0; i < len; ++i) {
-    const int code_length = tree->code_lengths[i];
+    const int code_length = tree.code_lengths[i];
     assert.Assert(code_length <= MAX_ALLOWED_CODE_LENGTH);
     ++depth_count[code_length];
   }
@@ -408,8 +408,8 @@ func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
     }
   }
   for (i = 0; i < len; ++i) {
-    const int code_length = tree->code_lengths[i];
-    tree->codes[i] = ReverseBits(code_length, next_code[code_length]++);
+    const int code_length = tree.code_lengths[i];
+    tree.codes[i] = ReverseBits(code_length, next_code[code_length]++);
   }
 }
 
@@ -419,7 +419,7 @@ func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
 func VP8LCreateHuffmanTree(uint32_t* const histogram, int tree_depth_limit,
                            uint8_t* const buf_rle, HuffmanTree* const huff_tree,
                            HuffmanTreeCode* const huff_code) {
-  const int num_symbols = huff_code->num_symbols;
+  const int num_symbols = huff_code.num_symbols;
   uint32_t* const WEBP_BIDI_INDEXABLE bounded_histogram =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           uint32_t*, histogram, (size_t)num_symbols * sizeof(*histogram));
@@ -433,7 +433,7 @@ func VP8LCreateHuffmanTree(uint32_t* const histogram, int tree_depth_limit,
       bounded_histogram, num_symbols,
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(HuffmanTree*, huff_tree,
                                        3 * num_symbols * sizeof(*huff_tree)),
-      tree_depth_limit, huff_code->code_lengths);
+      tree_depth_limit, huff_code.code_lengths);
   // Create the actual bit codes for the bit lengths.
   ConvertBitDepthsToSymbols(huff_code);
 }

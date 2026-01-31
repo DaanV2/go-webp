@@ -83,7 +83,7 @@ type VP8Io struct {
   // during put()). Is NOT called if setup() failed.
   VP8IoTeardownHook teardown;
 
-  // this is a recommendation for the user-side yuv->rgb converter. This flag
+  // this is a recommendation for the user-side yuv.rgb converter. This flag
   // is set when calling setup() hook and can be overwritten by it. It then
   // can be taken into consideration during the put() method.
   int fancy_upsampling;
@@ -136,7 +136,7 @@ VP8Decoder* VP8New(void);
 }
 
 // Decode the VP8 frame header. Returns true if ok.
-// Note: 'io->data' must be pointing to the start of the VP8 frame header.
+// Note: 'io.data' must be pointing to the start of the VP8 frame header.
  int VP8GetHeaders(VP8Decoder* const dec, VP8Io* const io);
 
 // Decode a picture. Will call VP8GetHeaders() if it wasn't done already.

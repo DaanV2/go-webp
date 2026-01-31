@@ -161,19 +161,19 @@ static  func GetEntropyUnrefinedHelper(
     int* WEBP_RESTRICT const i_prev,
     VP8LBitEntropy* WEBP_RESTRICT const bit_entropy,
     VP8LStreaks* WEBP_RESTRICT const stats) {
-  int* const pstreaks = &stats->streaks[0][0];
-  int* const pcnts = &stats->counts[0];
+  int* const pstreaks = &stats.streaks[0][0];
+  int* const pcnts = &stats.counts[0];
   int temp0, temp1, temp2, temp3;
   const int streak = i - *i_prev;
 
   // Gather info for the bit entropy.
   if (*val_prev != 0) {
-    bit_entropy->sum += (*val_prev) * streak;
-    bit_entropy->nonzeros += streak;
-    bit_entropy->nonzero_code = *i_prev;
-    bit_entropy->entropy += VP8LFastSLog2(*val_prev) * streak;
-    if (bit_entropy->max_val < *val_prev) {
-      bit_entropy->max_val = *val_prev;
+    bit_entropy.sum += (*val_prev) * streak;
+    bit_entropy.nonzeros += streak;
+    bit_entropy.nonzero_code = *i_prev;
+    bit_entropy.entropy += VP8LFastSLog2(*val_prev) * streak;
+    if (bit_entropy.max_val < *val_prev) {
+      bit_entropy.max_val = *val_prev;
     }
   }
 
@@ -204,7 +204,7 @@ func GetEntropyUnrefined_MIPS32(
   }
   GetEntropyUnrefinedHelper(0, i, &x_prev, &i_prev, bit_entropy, stats);
 
-  bit_entropy->entropy = VP8LFastSLog2(bit_entropy->sum) - bit_entropy->entropy;
+  bit_entropy.entropy = VP8LFastSLog2(bit_entropy.sum) - bit_entropy.entropy;
 }
 
 func GetCombinedEntropyUnrefined_MIPS32(
@@ -226,7 +226,7 @@ func GetCombinedEntropyUnrefined_MIPS32(
   }
   GetEntropyUnrefinedHelper(0, i, &xy_prev, &i_prev, entropy, stats);
 
-  entropy->entropy = VP8LFastSLog2(entropy->sum) - entropy->entropy;
+  entropy.entropy = VP8LFastSLog2(entropy.sum) - entropy.entropy;
 }
 
 const ASM_START =                                \

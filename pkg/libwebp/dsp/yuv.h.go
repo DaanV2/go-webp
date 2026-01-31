@@ -9,14 +9,14 @@ package dsp
 // be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 //
-// inline YUV<->RGB conversion function
+// inline YUV<.RGB conversion function
 //
 // The exact naming is Y'CbCr, following the ITU-R BT.601 standard.
 // More information at: https://en.wikipedia.org/wiki/YCbCr
 // Y = 0.2568 * R + 0.5041 * G + 0.0979 * B + 16
 // U = -0.1482 * R - 0.2910 * G + 0.4392 * B + 128
 // V = 0.4392 * R - 0.3678 * G - 0.0714 * B + 128
-// We use 16bit fixed point operations for RGB->YUV conversion (YUV_FIX).
+// We use 16bit fixed point operations for RGB.YUV conversion (YUV_FIX).
 //
 // For the Y'CbCr to RGB conversion, the BT.601 specification reads:
 //   R = 1.164 * (Y-16) + 1.596 * (V-128)
@@ -52,17 +52,17 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 #endif
 
 //------------------------------------------------------------------------------
-// YUV -> RGB conversion
+// YUV . RGB conversion
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 enum {
-  YUV_FIX = 16,  // fixed-point precision for RGB->YUV
+  YUV_FIX = 16,  // fixed-point precision for RGB.YUV
   YUV_HALF = 1 << (YUV_FIX - 1),
 
-  YUV_FIX2 = 6,  // fixed-point precision for YUV->RGB
+  YUV_FIX2 = 6,  // fixed-point precision for YUV.RGB
   YUV_MASK2 = (256 << YUV_FIX2) - 1
 };
 
@@ -209,7 +209,7 @@ func VP8YuvToBgr32_SSE41(const uint8_t* WEBP_RESTRICT y,
 #endif  // WEBP_USE_SSE41
 
 //------------------------------------------------------------------------------
-// RGB -> YUV conversion
+// RGB . YUV conversion
 
 // Stub functions that can be called with various rounding values:
 static  int VP8ClipUV(int uv, int rounding) {

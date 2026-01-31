@@ -80,7 +80,7 @@ func Upsample16Pixels_NEON(const uint8_t* WEBP_RESTRICT const r1,
   }
 
 //-----------------------------------------------------------------------------
-// YUV->RGB conversion
+// YUV.RGB conversion
 
 // note: we represent the 33050 large constant as 32768 + 282
 static const int16_t kCoeffs1[4] = {19077, 26149, 6419, 13320};

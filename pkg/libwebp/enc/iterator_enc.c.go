@@ -26,80 +26,80 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 
 func InitLeft(VP8EncIterator* const it) {
-  it->y_left[-1] = it->u_left[-1] = it->v_left[-1] = (it->y > 0) ? 129 : 127;
-  memset(it->y_left, 129, 16);
-  memset(it->u_left, 129, 8);
-  memset(it->v_left, 129, 8);
-  it->left_nz[8] = 0;
-  if (it->top_derr != NULL) {
-    memset(&it->left_derr, 0, sizeof(it->left_derr));
+  it.y_left[-1] = it.u_left[-1] = it.v_left[-1] = (it.y > 0) ? 129 : 127;
+  memset(it.y_left, 129, 16);
+  memset(it.u_left, 129, 8);
+  memset(it.v_left, 129, 8);
+  it.left_nz[8] = 0;
+  if (it.top_derr != NULL) {
+    memset(&it.left_derr, 0, sizeof(it.left_derr));
   }
 }
 
 func InitTop(VP8EncIterator* const it) {
-  const VP8Encoder* const enc = it->enc;
-  const size_t top_size = enc->mb_w * 16;
-  memset(enc->y_top, 127, 2 * top_size);
-  memset(enc->nz, 0, enc->mb_w * sizeof(*enc->nz));
-  if (enc->top_derr != NULL) {
-    memset(enc->top_derr, 0, enc->mb_w * sizeof(*enc->top_derr));
+  const VP8Encoder* const enc = it.enc;
+  const size_t top_size = enc.mb_w * 16;
+  memset(enc.y_top, 127, 2 * top_size);
+  memset(enc.nz, 0, enc.mb_w * sizeof(*enc.nz));
+  if (enc.top_derr != NULL) {
+    memset(enc.top_derr, 0, enc.mb_w * sizeof(*enc.top_derr));
   }
 }
 
 func VP8IteratorSetRow(VP8EncIterator* const it, int y) {
-  VP8Encoder* const enc = it->enc;
-  it->x = 0;
-  it->y = y;
-  it->bw = &enc->parts[y & (enc->num_parts - 1)];
-  it->preds = enc->preds + y * 4 * enc->preds_w;
-  it->nz = enc->nz;
-  it->mb = enc->mb_info + y * enc->mb_w;
-  it->y_top = enc->y_top;
-  it->uv_top = enc->uv_top;
+  VP8Encoder* const enc = it.enc;
+  it.x = 0;
+  it.y = y;
+  it.bw = &enc.parts[y & (enc.num_parts - 1)];
+  it.preds = enc.preds + y * 4 * enc.preds_w;
+  it.nz = enc.nz;
+  it.mb = enc.mb_info + y * enc.mb_w;
+  it.y_top = enc.y_top;
+  it.uv_top = enc.uv_top;
   InitLeft(it);
 }
 
 // restart a scan
 func VP8IteratorReset(VP8EncIterator* const it) {
-  VP8Encoder* const enc = it->enc;
+  VP8Encoder* const enc = it.enc;
   VP8IteratorSetRow(it, 0);
-  VP8IteratorSetCountDown(it, enc->mb_w * enc->mb_h);  // default
+  VP8IteratorSetCountDown(it, enc.mb_w * enc.mb_h);  // default
   InitTop(it);
-  memset(it->bit_count, 0, sizeof(it->bit_count));
-  it->do_trellis = 0;
+  memset(it.bit_count, 0, sizeof(it.bit_count));
+  it.do_trellis = 0;
 }
 
 func VP8IteratorSetCountDown(VP8EncIterator* const it, int count_down) {
-  it->count_down = it->count_down0 = count_down;
+  it.count_down = it.count_down0 = count_down;
 }
 
 int VP8IteratorIsDone(const VP8EncIterator* const it) {
-  return (it->count_down <= 0);
+  return (it.count_down <= 0);
 }
 
 func VP8IteratorInit(VP8Encoder* const enc, VP8EncIterator* const it) {
-  it->enc = enc;
-  it->yuv_in = (uint8_t*)WEBP_ALIGN(it->yuv_mem);
-  it->yuv_out = it->yuv_in + YUV_SIZE_ENC;
-  it->yuv_out2 = it->yuv_out + YUV_SIZE_ENC;
-  it->yuv_p = it->yuv_out2 + YUV_SIZE_ENC;
-  it->lf_stats = enc->lf_stats;
-  it->percent0 = enc->percent;
-  it->y_left = (uint8_t*)WEBP_ALIGN(it->yuv_left_mem + 1);
-  it->u_left = it->y_left + 16 + 16;
-  it->v_left = it->u_left + 16;
-  it->top_derr = enc->top_derr;
+  it.enc = enc;
+  it.yuv_in = (uint8_t*)WEBP_ALIGN(it.yuv_mem);
+  it.yuv_out = it.yuv_in + YUV_SIZE_ENC;
+  it.yuv_out2 = it.yuv_out + YUV_SIZE_ENC;
+  it.yuv_p = it.yuv_out2 + YUV_SIZE_ENC;
+  it.lf_stats = enc.lf_stats;
+  it.percent0 = enc.percent;
+  it.y_left = (uint8_t*)WEBP_ALIGN(it.yuv_left_mem + 1);
+  it.u_left = it.y_left + 16 + 16;
+  it.v_left = it.u_left + 16;
+  it.top_derr = enc.top_derr;
   VP8IteratorReset(it);
 }
 
 int VP8IteratorProgress(const VP8EncIterator* const it, int delta) {
-  VP8Encoder* const enc = it->enc;
-  if (delta && enc->pic->progress_hook != NULL) {
-    const int done = it->count_down0 - it->count_down;
-    const int percent = (it->count_down0 <= 0)
-                            ? it->percent0
-                            : it->percent0 + delta * done / it->count_down0;
-    return WebPReportProgress(enc->pic, percent, &enc->percent);
+  VP8Encoder* const enc = it.enc;
+  if (delta && enc.pic.progress_hook != NULL) {
+    const int done = it.count_down0 - it.count_down;
+    const int percent = (it.count_down0 <= 0)
+                            ? it.percent0
+                            : it.percent0 + delta * done / it.count_down0;
+    return WebPReportProgress(enc.pic, percent, &enc.percent);
   }
   return 1;
 }
@@ -135,20 +135,20 @@ func ImportLine(const uint8_t* src, int src_stride, uint8_t* dst,
 }
 
 func VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32) {
-  const VP8Encoder* const enc = it->enc;
-  const int x = it->x, y = it->y;
-  const WebPPicture* const pic = enc->pic;
-  const uint8_t* const ysrc = pic->y + (y * pic->y_stride + x) * 16;
-  const uint8_t* const usrc = pic->u + (y * pic->uv_stride + x) * 8;
-  const uint8_t* const vsrc = pic->v + (y * pic->uv_stride + x) * 8;
-  const int w = MinSize(pic->width - x * 16, 16);
-  const int h = MinSize(pic->height - y * 16, 16);
+  const VP8Encoder* const enc = it.enc;
+  const int x = it.x, y = it.y;
+  const WebPPicture* const pic = enc.pic;
+  const uint8_t* const ysrc = pic.y + (y * pic.y_stride + x) * 16;
+  const uint8_t* const usrc = pic.u + (y * pic.uv_stride + x) * 8;
+  const uint8_t* const vsrc = pic.v + (y * pic.uv_stride + x) * 8;
+  const int w = MinSize(pic.width - x * 16, 16);
+  const int h = MinSize(pic.height - y * 16, 16);
   const int uv_w = (w + 1) >> 1;
   const int uv_h = (h + 1) >> 1;
 
-  ImportBlock(ysrc, pic->y_stride, it->yuv_in + Y_OFF_ENC, w, h, 16);
-  ImportBlock(usrc, pic->uv_stride, it->yuv_in + U_OFF_ENC, uv_w, uv_h, 8);
-  ImportBlock(vsrc, pic->uv_stride, it->yuv_in + V_OFF_ENC, uv_w, uv_h, 8);
+  ImportBlock(ysrc, pic.y_stride, it.yuv_in + Y_OFF_ENC, w, h, 16);
+  ImportBlock(usrc, pic.uv_stride, it.yuv_in + U_OFF_ENC, uv_w, uv_h, 8);
+  ImportBlock(vsrc, pic.uv_stride, it.yuv_in + V_OFF_ENC, uv_w, uv_h, 8);
 
   if (tmp_32 == NULL) return;
 
@@ -157,25 +157,25 @@ func VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32) {
     InitLeft(it);
   } else {
     if (y == 0) {
-      it->y_left[-1] = it->u_left[-1] = it->v_left[-1] = 127;
+      it.y_left[-1] = it.u_left[-1] = it.v_left[-1] = 127;
     } else {
-      it->y_left[-1] = ysrc[-1 - pic->y_stride];
-      it->u_left[-1] = usrc[-1 - pic->uv_stride];
-      it->v_left[-1] = vsrc[-1 - pic->uv_stride];
+      it.y_left[-1] = ysrc[-1 - pic.y_stride];
+      it.u_left[-1] = usrc[-1 - pic.uv_stride];
+      it.v_left[-1] = vsrc[-1 - pic.uv_stride];
     }
-    ImportLine(ysrc - 1, pic->y_stride, it->y_left, h, 16);
-    ImportLine(usrc - 1, pic->uv_stride, it->u_left, uv_h, 8);
-    ImportLine(vsrc - 1, pic->uv_stride, it->v_left, uv_h, 8);
+    ImportLine(ysrc - 1, pic.y_stride, it.y_left, h, 16);
+    ImportLine(usrc - 1, pic.uv_stride, it.u_left, uv_h, 8);
+    ImportLine(vsrc - 1, pic.uv_stride, it.v_left, uv_h, 8);
   }
 
-  it->y_top = tmp_32 + 0;
-  it->uv_top = tmp_32 + 16;
+  it.y_top = tmp_32 + 0;
+  it.uv_top = tmp_32 + 16;
   if (y == 0) {
     memset(tmp_32, 127, 32 * sizeof(*tmp_32));
   } else {
-    ImportLine(ysrc - pic->y_stride, 1, tmp_32, w, 16);
-    ImportLine(usrc - pic->uv_stride, 1, tmp_32 + 16, uv_w, 8);
-    ImportLine(vsrc - pic->uv_stride, 1, tmp_32 + 16 + 8, uv_w, 8);
+    ImportLine(ysrc - pic.y_stride, 1, tmp_32, w, 16);
+    ImportLine(usrc - pic.uv_stride, 1, tmp_32 + 16, uv_w, 8);
+    ImportLine(vsrc - pic.uv_stride, 1, tmp_32 + 16 + 8, uv_w, 8);
   }
 }
 
@@ -192,30 +192,30 @@ func ExportBlock(const uint8_t* src, uint8_t* dst, int dst_stride, int w,
 }
 
 func VP8IteratorExport(const VP8EncIterator* const it) {
-  const VP8Encoder* const enc = it->enc;
-  if (enc->config->show_compressed) {
-    const int x = it->x, y = it->y;
-    const uint8_t* const ysrc = it->yuv_out + Y_OFF_ENC;
-    const uint8_t* const usrc = it->yuv_out + U_OFF_ENC;
-    const uint8_t* const vsrc = it->yuv_out + V_OFF_ENC;
-    const WebPPicture* const pic = enc->pic;
-    uint8_t* const ydst = pic->y + (y * pic->y_stride + x) * 16;
-    uint8_t* const udst = pic->u + (y * pic->uv_stride + x) * 8;
-    uint8_t* const vdst = pic->v + (y * pic->uv_stride + x) * 8;
-    int w = (pic->width - x * 16);
-    int h = (pic->height - y * 16);
+  const VP8Encoder* const enc = it.enc;
+  if (enc.config.show_compressed) {
+    const int x = it.x, y = it.y;
+    const uint8_t* const ysrc = it.yuv_out + Y_OFF_ENC;
+    const uint8_t* const usrc = it.yuv_out + U_OFF_ENC;
+    const uint8_t* const vsrc = it.yuv_out + V_OFF_ENC;
+    const WebPPicture* const pic = enc.pic;
+    uint8_t* const ydst = pic.y + (y * pic.y_stride + x) * 16;
+    uint8_t* const udst = pic.u + (y * pic.uv_stride + x) * 8;
+    uint8_t* const vdst = pic.v + (y * pic.uv_stride + x) * 8;
+    int w = (pic.width - x * 16);
+    int h = (pic.height - y * 16);
 
     if (w > 16) w = 16;
     if (h > 16) h = 16;
 
     // Luma plane
-    ExportBlock(ysrc, ydst, pic->y_stride, w, h);
+    ExportBlock(ysrc, ydst, pic.y_stride, w, h);
 
     {  // U/V planes
       const int uv_w = (w + 1) >> 1;
       const int uv_h = (h + 1) >> 1;
-      ExportBlock(usrc, udst, pic->uv_stride, uv_w, uv_h);
-      ExportBlock(vsrc, vdst, pic->uv_stride, uv_w, uv_h);
+      ExportBlock(usrc, udst, pic.uv_stride, uv_w, uv_h);
+      ExportBlock(vsrc, vdst, pic.uv_stride, uv_w, uv_h);
     }
   }
 }
@@ -238,9 +238,9 @@ func VP8IteratorExport(const VP8EncIterator* const it) {
 #define BIT(nz, n) (!!((nz) & (1 << (n))))
 
 func VP8IteratorNzToBytes(VP8EncIterator* const it) {
-  const int tnz = it->nz[0], lnz = it->nz[-1];
-  int* const top_nz = it->top_nz;
-  int* const left_nz = it->left_nz;
+  const int tnz = it.nz[0], lnz = it.nz[-1];
+  int* const top_nz = it.top_nz;
+  int* const left_nz = it.left_nz;
 
   // Top-Y
   top_nz[0] = BIT(tnz, 12);
@@ -272,8 +272,8 @@ func VP8IteratorNzToBytes(VP8EncIterator* const it) {
 
 func VP8IteratorBytesToNz(VP8EncIterator* const it) {
   uint32_t nz = 0;
-  const int* const top_nz = it->top_nz;
-  const int* const left_nz = it->left_nz;
+  const int* const top_nz = it.top_nz;
+  const int* const left_nz = it.left_nz;
   // top
   nz |= (top_nz[0] << 12) | (top_nz[1] << 13);
   nz |= (top_nz[2] << 14) | (top_nz[3] << 15);
@@ -285,7 +285,7 @@ func VP8IteratorBytesToNz(VP8EncIterator* const it) {
   nz |= (left_nz[2] << 11);
   nz |= (left_nz[4] << 17) | (left_nz[6] << 21);
 
-  *it->nz = nz;
+  *it.nz = nz;
 }
 
 #undef BIT
@@ -294,77 +294,77 @@ func VP8IteratorBytesToNz(VP8EncIterator* const it) {
 // Advance to the next position, doing the bookkeeping.
 
 func VP8IteratorSaveBoundary(VP8EncIterator* const it) {
-  VP8Encoder* const enc = it->enc;
-  const int x = it->x, y = it->y;
-  const uint8_t* const ysrc = it->yuv_out + Y_OFF_ENC;
-  const uint8_t* const uvsrc = it->yuv_out + U_OFF_ENC;
-  if (x < enc->mb_w - 1) {  // left
+  VP8Encoder* const enc = it.enc;
+  const int x = it.x, y = it.y;
+  const uint8_t* const ysrc = it.yuv_out + Y_OFF_ENC;
+  const uint8_t* const uvsrc = it.yuv_out + U_OFF_ENC;
+  if (x < enc.mb_w - 1) {  // left
     int i;
     for (i = 0; i < 16; ++i) {
-      it->y_left[i] = ysrc[15 + i * BPS];
+      it.y_left[i] = ysrc[15 + i * BPS];
     }
     for (i = 0; i < 8; ++i) {
-      it->u_left[i] = uvsrc[7 + i * BPS];
-      it->v_left[i] = uvsrc[15 + i * BPS];
+      it.u_left[i] = uvsrc[7 + i * BPS];
+      it.v_left[i] = uvsrc[15 + i * BPS];
     }
     // top-left (before 'top'!)
-    it->y_left[-1] = it->y_top[15];
-    it->u_left[-1] = it->uv_top[0 + 7];
-    it->v_left[-1] = it->uv_top[8 + 7];
+    it.y_left[-1] = it.y_top[15];
+    it.u_left[-1] = it.uv_top[0 + 7];
+    it.v_left[-1] = it.uv_top[8 + 7];
   }
-  if (y < enc->mb_h - 1) {  // top
-    memcpy(it->y_top, ysrc + 15 * BPS, 16);
-    memcpy(it->uv_top, uvsrc + 7 * BPS, 8 + 8);
+  if (y < enc.mb_h - 1) {  // top
+    memcpy(it.y_top, ysrc + 15 * BPS, 16);
+    memcpy(it.uv_top, uvsrc + 7 * BPS, 8 + 8);
   }
 }
 
 int VP8IteratorNext(VP8EncIterator* const it) {
-  if (++it->x == it->enc->mb_w) {
-    VP8IteratorSetRow(it, ++it->y);
+  if (++it.x == it.enc.mb_w) {
+    VP8IteratorSetRow(it, ++it.y);
   } else {
-    it->preds += 4;
-    it->mb += 1;
-    it->nz += 1;
-    it->y_top += 16;
-    it->uv_top += 16;
+    it.preds += 4;
+    it.mb += 1;
+    it.nz += 1;
+    it.y_top += 16;
+    it.uv_top += 16;
   }
-  return (0 < --it->count_down);
+  return (0 < --it.count_down);
 }
 
 //------------------------------------------------------------------------------
 // Helper function to set mode properties
 
 func VP8SetIntra16Mode(const VP8EncIterator* const it, int mode) {
-  uint8_t* preds = it->preds;
+  uint8_t* preds = it.preds;
   int y;
   for (y = 0; y < 4; ++y) {
     memset(preds, mode, 4);
-    preds += it->enc->preds_w;
+    preds += it.enc.preds_w;
   }
-  it->mb->type = 1;
+  it.mb.type = 1;
 }
 
 func VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8_t* modes) {
-  uint8_t* preds = it->preds;
+  uint8_t* preds = it.preds;
   int y;
   for (y = 4; y > 0; --y) {
     memcpy(preds, modes, 4 * sizeof(*modes));
-    preds += it->enc->preds_w;
+    preds += it.enc.preds_w;
     modes += 4;
   }
-  it->mb->type = 0;
+  it.mb.type = 0;
 }
 
 func VP8SetIntraUVMode(const VP8EncIterator* const it, int mode) {
-  it->mb->uv_mode = mode;
+  it.mb.uv_mode = mode;
 }
 
 func VP8SetSkip(const VP8EncIterator* const it, int skip) {
-  it->mb->skip = skip;
+  it.mb.skip = skip;
 }
 
 func VP8SetSegment(const VP8EncIterator* const it, int segment) {
-  it->mb->segment = segment;
+  it.mb.segment = segment;
 }
 
 //------------------------------------------------------------------------------
@@ -403,27 +403,27 @@ static const uint8_t VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25,
                                          9,  13, 17, 21, 5,  9,  13, 17};
 
 func VP8IteratorStartI4(VP8EncIterator* const it) {
-  const VP8Encoder* const enc = it->enc;
+  const VP8Encoder* const enc = it.enc;
   int i;
 
-  it->i4 = 0;  // first 4x4 sub-block
-  it->i4_top = it->i4_boundary + VP8TopLeftI4[0];
+  it.i4 = 0;  // first 4x4 sub-block
+  it.i4_top = it.i4_boundary + VP8TopLeftI4[0];
 
   // Import the boundary samples
   for (i = 0; i < 17; ++i) {  // left
-    it->i4_boundary[i] = it->y_left[15 - i];
+    it.i4_boundary[i] = it.y_left[15 - i];
   }
   for (i = 0; i < 16; ++i) {  // top
-    it->i4_boundary[17 + i] = it->y_top[i];
+    it.i4_boundary[17 + i] = it.y_top[i];
   }
   // top-right samples have a special case on the far right of the picture
-  if (it->x < enc->mb_w - 1) {
+  if (it.x < enc.mb_w - 1) {
     for (i = 16; i < 16 + 4; ++i) {
-      it->i4_boundary[17 + i] = it->y_top[i];
+      it.i4_boundary[17 + i] = it.y_top[i];
     }
   } else {  // else, replicate the last valid pixel four times
     for (i = 16; i < 16 + 4; ++i) {
-      it->i4_boundary[17 + i] = it->i4_boundary[17 + 15];
+      it.i4_boundary[17 + i] = it.i4_boundary[17 + 15];
     }
   }
 #if WEBP_AARCH64 && BPS == 32 && defined(WEBP_MSAN)
@@ -433,22 +433,22 @@ func VP8IteratorStartI4(VP8EncIterator* const it) {
   // modeling of tbl instructions, a warning will be issued. This can be
   // removed if MSan is updated to support the instructions. See
   // https://issues.webmproject.org/372109644.
-  memset(it->i4_boundary + sizeof(it->i4_boundary) - 3, 0xaa, 3);
+  memset(it.i4_boundary + sizeof(it.i4_boundary) - 3, 0xaa, 3);
 #endif
   VP8IteratorNzToBytes(it);  // import the non-zero context
 }
 
 int VP8IteratorRotateI4(VP8EncIterator* const it,
                         const uint8_t* const yuv_out) {
-  const uint8_t* const blk = yuv_out + VP8Scan[it->i4];
-  uint8_t* const top = it->i4_top;
+  const uint8_t* const blk = yuv_out + VP8Scan[it.i4];
+  uint8_t* const top = it.i4_top;
   int i;
 
   // Update the cache with 7 fresh samples
   for (i = 0; i <= 3; ++i) {
     top[-4 + i] = blk[i + 3 * BPS];  // store future top samples
   }
-  if ((it->i4 & 3) != 3) {  // if not on the right sub-blocks #3, #7, #11, #15
+  if ((it.i4 & 3) != 3) {  // if not on the right sub-blocks #3, #7, #11, #15
     for (i = 0; i <= 2; ++i) {  // store future left samples
       top[i] = blk[3 + (2 - i) * BPS];
     }
@@ -458,12 +458,12 @@ int VP8IteratorRotateI4(VP8EncIterator* const it,
     }
   }
   // move pointers to next sub-block
-  ++it->i4;
-  if (it->i4 == 16) {  // we're done
+  ++it.i4;
+  if (it.i4 == 16) {  // we're done
     return 0;
   }
 
-  it->i4_top = it->i4_boundary + VP8TopLeftI4[it->i4];
+  it.i4_top = it.i4_boundary + VP8TopLeftI4[it.i4];
   return 1;
 }
 

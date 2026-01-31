@@ -32,7 +32,7 @@ func SetResidualCoeffs_NEON(const int16_t* WEBP_RESTRICT const coeffs,
   const uint8x16_t masked = vandq_u8(eob, vld1q_u8(position));
 
 #if WEBP_AARCH64
-  res->last = vmaxvq_u8(masked) - 1;
+  res.last = vmaxvq_u8(masked) - 1;
 #else
   const uint8x8_t eob_8x8 = vmax_u8(vget_low_u8(masked), vget_high_u8(masked));
   const uint16x8_t eob_16x8 = vmovl_u8(eob_8x8);
@@ -43,35 +43,35 @@ func SetResidualCoeffs_NEON(const int16_t* WEBP_RESTRICT const coeffs,
       vmax_u32(vget_low_u32(eob_32x4), vget_high_u32(eob_32x4));
   eob_32x2 = vpmax_u32(eob_32x2, eob_32x2);
 
-  vst1_lane_s32(&res->last, vreinterpret_s32_u32(eob_32x2), 0);
-  --res->last;
+  vst1_lane_s32(&res.last, vreinterpret_s32_u32(eob_32x2), 0);
+  --res.last;
 #endif  // WEBP_AARCH64
 
-  res->coeffs = coeffs;
+  res.coeffs = coeffs;
 }
 
 static int GetResidualCost_NEON(int ctx0, const VP8Residual* const res) {
   uint8_t levels[16], ctxs[16];
   uint16_t abs_levels[16];
-  int n = res->first;
+  int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
-  const int p0 = res->prob[n][ctx0][0];
-  CostArrayPtr const costs = res->costs;
+  const int p0 = res.prob[n][ctx0][0];
+  CostArrayPtr const costs = res.costs;
   const uint16_t* t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
   int cost = (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
 
-  if (res->last < 0) {
+  if (res.last < 0) {
     return VP8BitCost(0, p0);
   }
 
   {  // precompute clamped levels and contexts, packed to 8b.
     const uint8x16_t kCst2 = vdupq_n_u8(2);
     const uint8x16_t kCst67 = vdupq_n_u8(MAX_VARIABLE_LEVEL);
-    const int16x8_t c0 = vld1q_s16(res->coeffs);
-    const int16x8_t c1 = vld1q_s16(res->coeffs + 8);
+    const int16x8_t c0 = vld1q_s16(res.coeffs);
+    const int16x8_t c1 = vld1q_s16(res.coeffs + 8);
     const uint16x8_t E0 = vreinterpretq_u16_s16(vabsq_s16(c0));
     const uint16x8_t E1 = vreinterpretq_u16_s16(vabsq_s16(c1));
     const uint8x16_t F = vcombine_u8(vqmovn_u16(E0), vqmovn_u16(E1));
@@ -84,7 +84,7 @@ static int GetResidualCost_NEON(int ctx0, const VP8Residual* const res) {
     vst1q_u16(abs_levels, E0);
     vst1q_u16(abs_levels + 8, E1);
   }
-  for (; n < res->last; ++n) {
+  for (; n < res.last; ++n) {
     const int ctx = ctxs[n];
     const int level = levels[n];
     const int flevel = abs_levels[n];               // full level
@@ -100,7 +100,7 @@ static int GetResidualCost_NEON(int ctx0, const VP8Residual* const res) {
     if (n < 15) {
       const int b = VP8EncBands[n + 1];
       const int ctx = ctxs[n];
-      const int last_p0 = res->prob[b][ctx][0];
+      const int last_p0 = res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }
   }

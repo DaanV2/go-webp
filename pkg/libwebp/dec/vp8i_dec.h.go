@@ -156,10 +156,10 @@ typedef struct {
   uint8_t uvmode;       // chroma prediction mode
   // bit-wise info about the content of each sub-4x4 blocks (in decoding order).
   // Each of the 4x4 blocks for y/u/v is associated with a 2b code according to:
-  //   code=0 -> no coefficient
-  //   code=1 -> only DC
-  //   code=2 -> first three coefficients are non-zero
-  //   code=3 -> more than three coefficients are non-zero
+  //   code=0 . no coefficient
+  //   code=1 . only DC
+  //   code=2 . first three coefficients are non-zero
+  //   code=3 . more than three coefficients are non-zero
   // This allows to call specialized transform functions.
   uint32_t non_zero_y;
   uint32_t non_zero_uv;
@@ -173,8 +173,8 @@ typedef struct {
   int id;              // cache row to process (in [0..2])
   int mb_y;            // macroblock position of the row
   int filter_row;      // true if row-filtering is needed
-  VP8FInfo* f_info;    // filter strengths (swapped with dec->f_info)
-  VP8MBData* mb_data;  // reconstruction data (swapped with dec->mb_data)
+  VP8FInfo* f_info;    // filter strengths (swapped with dec.f_info)
+  VP8MBData* mb_data;  // reconstruction data (swapped with dec.mb_data)
   VP8Io io;            // copy of the VP8Io to pass to put()
 } VP8ThreadContext;
 
@@ -291,7 +291,7 @@ func VP8ParseQuant(VP8Decoder* const dec);
 
 // in frame.c
  int VP8InitFrame(VP8Decoder* const dec, VP8Io* const io);
-// Call io->setup() and finish setting up scan parameters.
+// Call io.setup() and finish setting up scan parameters.
 // After this call returns, one must always call VP8ExitCritical() with the
 // same parameters. Both functions should be used in pair. Returns VP8_STATUS_OK
 // if ok, otherwise sets and returns the error status on *dec.

@@ -198,7 +198,7 @@ struct WebPPicture;
 //------------------------------------------------------------------------------
 // Unique colors.
 
-// Returns count of unique colors in 'pic', assuming pic->use_argb is true.
+// Returns count of unique colors in 'pic', assuming pic.use_argb is true.
 // If the unique color count is more than MAX_PALETTE_SIZE, returns
 // MAX_PALETTE_SIZE+1.
 // If 'palette' is not NULL and number of unique colors is less than or equal to

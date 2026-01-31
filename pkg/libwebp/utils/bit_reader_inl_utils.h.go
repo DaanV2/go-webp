@@ -59,18 +59,18 @@ func VP8LoadFinalBytes(VP8BitReader* const br);
 //------------------------------------------------------------------------------
 // Inlined critical functions
 
-// makes sure br->value has at least BITS bits worth of data
+// makes sure br.value has at least BITS bits worth of data
 static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
     VP8BitReader* WEBP_RESTRICT const br) {
-  assert.Assert(br != NULL && br->buf != NULL);
+  assert.Assert(br != NULL && br.buf != NULL);
   // Read 'BITS' bits at a time if possible.
-  if (br->buf < br->buf_max) {
+  if (br.buf < br.buf_max) {
     // convert memory type to register type (with some zero'ing!)
     bit_t bits;
 #if defined(WEBP_USE_MIPS32)
     // This is needed because of un-aligned read.
     lbit_t in_bits;
-    lbit_t* p_buf = (lbit_t*)br->buf;
+    lbit_t* p_buf = (lbit_t*)br.buf;
     __asm__ volatile(
         ".set   push                             \n\t"
         ".set   at                               \n\t"
@@ -82,10 +82,10 @@ static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
         : "memory", "at");
 #else
     lbit_t in_bits;
-    WEBP_UNSAFE_MEMCPY(&in_bits, br->buf, sizeof(in_bits));
+    WEBP_UNSAFE_MEMCPY(&in_bits, br.buf, sizeof(in_bits));
 #endif
-    br->buf += BITS >> 3;
-    WEBP_SELF_ASSIGN(br->buf_end);
+    br.buf += BITS >> 3;
+    WEBP_SELF_ASSIGN(br.buf_end);
 #if !defined(WORDS_BIGENDIAN)
 #if (BITS > 32)
     bits = BSwap64(in_bits);
@@ -102,8 +102,8 @@ static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
     bits = (bit_t)in_bits;
     if (BITS != 8 * sizeof(bit_t)) bits >>= (8 * sizeof(bit_t) - BITS);
 #endif
-    br->value = bits | (br->value << BITS);
-    br->bits += BITS;
+    br.value = bits | (br.value << BITS);
+    br.bits += BITS;
   } else {
     VP8LoadFinalBytes(br);  // no need to be inlined
   }
@@ -114,28 +114,28 @@ static  int VP8GetBit(VP8BitReader* WEBP_RESTRICT const br, int prob,
                                  const char label[]) {
   // Don't move this declaration! It makes a big speed difference to store
   // 'range' *before* calling VP8LoadNewBytes(), even if this function doesn't
-  // alter br->range value.
-  range_t range = br->range;
-  if (br->bits < 0) {
+  // alter br.range value.
+  range_t range = br.range;
+  if (br.bits < 0) {
     VP8LoadNewBytes(br);
   }
   {
-    const int pos = br->bits;
+    const int pos = br.bits;
     const range_t split = (range * prob) >> 8;
-    const range_t value = (range_t)(br->value >> pos);
+    const range_t value = (range_t)(br.value >> pos);
     const int bit = (value > split);
     if (bit) {
       range -= split;
-      br->value -= (bit_t)(split + 1) << pos;
+      br.value -= (bit_t)(split + 1) << pos;
     } else {
       range = split + 1;
     }
     {
       const int shift = 7 ^ BitsLog2Floor(range);
       range <<= shift;
-      br->bits -= shift;
+      br.bits -= shift;
     }
-    br->range = range - 1;
+    br.range = range - 1;
     BT_TRACK(br);
     return bit;
   }
@@ -144,18 +144,18 @@ static  int VP8GetBit(VP8BitReader* WEBP_RESTRICT const br, int prob,
 // simplified version of VP8GetBit() for prob=0x80 (note shift is always 1 here)
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8GetSigned(
     VP8BitReader* WEBP_RESTRICT const br, int v, const char label[]) {
-  if (br->bits < 0) {
+  if (br.bits < 0) {
     VP8LoadNewBytes(br);
   }
   {
-    const int pos = br->bits;
-    const range_t split = br->range >> 1;
-    const range_t value = (range_t)(br->value >> pos);
+    const int pos = br.bits;
+    const range_t split = br.range >> 1;
+    const range_t value = (range_t)(br.value >> pos);
     const int32_t mask = (int32_t)(split - value) >> 31;  // -1 or 0
-    br->bits -= 1;
-    br->range += (range_t)mask;
-    br->range |= 1;
-    br->value -= (bit_t)((split + 1) & (uint32_t)mask) << pos;
+    br.bits -= 1;
+    br.range += (range_t)mask;
+    br.range |= 1;
+    br.value -= (bit_t)((split + 1) & (uint32_t)mask) << pos;
     BT_TRACK(br);
     return (v ^ mask) - mask;
   }
@@ -165,19 +165,19 @@ static  int VP8GetBitAlt(VP8BitReader* WEBP_RESTRICT const br,
                                     int prob, const char label[]) {
   // Don't move this declaration! It makes a big speed difference to store
   // 'range' *before* calling VP8LoadNewBytes(), even if this function doesn't
-  // alter br->range value.
-  range_t range = br->range;
-  if (br->bits < 0) {
+  // alter br.range value.
+  range_t range = br.range;
+  if (br.bits < 0) {
     VP8LoadNewBytes(br);
   }
   {
-    const int pos = br->bits;
+    const int pos = br.bits;
     const range_t split = (range * prob) >> 8;
-    const range_t value = (range_t)(br->value >> pos);
+    const range_t value = (range_t)(br.value >> pos);
     int bit;  // Don't use 'const int bit = (value > split);", it's slower.
     if (value > split) {
       range -= split + 1;
-      br->value -= (bit_t)(split + 1) << pos;
+      br.value -= (bit_t)(split + 1) << pos;
       bit = 1;
     } else {
       range = split;
@@ -186,9 +186,9 @@ static  int VP8GetBitAlt(VP8BitReader* WEBP_RESTRICT const br,
     if (range <= (range_t)0x7e) {
       const int shift = kVP8Log2Range[range];
       range = kVP8NewRange[range];
-      br->bits -= shift;
+      br.bits -= shift;
     }
-    br->range = range;
+    br.range = range;
     BT_TRACK(br);
     return bit;
   }

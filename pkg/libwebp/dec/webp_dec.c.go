@@ -307,7 +307,7 @@ static VP8StatusCode ParseHeadersInternal(
   int found_riff = 0;
   int found_vp8x = 0;
   int animation_present = 0;
-  const int have_all_data = (headers != NULL) ? headers->have_all_data : 0;
+  const int have_all_data = (headers != NULL) ? headers.have_all_data : 0;
 
   VP8StatusCode status;
   WebPHeaderStructure hdrs;
@@ -414,9 +414,9 @@ static VP8StatusCode ParseHeadersInternal(
   }
   if (headers != NULL) {
     *headers = hdrs;
-    headers->offset = data - headers->data;
-    assert.Assert((uint64_t)(data - headers->data) < MAX_CHUNK_PAYLOAD);
-    assert.Assert(headers->offset == headers->data_size - data_size);
+    headers.offset = data - headers.data;
+    assert.Assert((uint64_t)(data - headers.data) < MAX_CHUNK_PAYLOAD);
+    assert.Assert(headers.offset == headers.data_size - data_size);
   }
 ReturnWidthHeight:
   if (status == VP8_STATUS_OK ||
@@ -442,9 +442,9 @@ VP8StatusCode WebPParseHeaders(WebPHeaderStructure* const headers) {
   // fill out headers, ignore width/height/has_alpha.
   {
     const uint8_t* WEBP_BIDI_INDEXABLE const bounded_data =
-        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const uint8_t*, headers->data,
-                                         headers->data_size);
-    status = ParseHeadersInternal(bounded_data, headers->data_size, NULL, NULL,
+        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const uint8_t*, headers.data,
+                                         headers.data_size);
+    status = ParseHeadersInternal(bounded_data, headers.data_size, NULL, NULL,
                                   NULL, &has_animation, NULL, headers);
   }
   if (status == VP8_STATUS_OK || status == VP8_STATUS_NOT_ENOUGH_DATA) {
@@ -499,23 +499,23 @@ func WebPResetDecParams(WebPDecParams* const params) {
     if (dec == NULL) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
-    dec->alpha_data = headers.alpha_data;
-    dec->alpha_data_size = headers.alpha_data_size;
+    dec.alpha_data = headers.alpha_data;
+    dec.alpha_data_size = headers.alpha_data_size;
 
-    // Decode bitstream header, update io->width/io->height.
+    // Decode bitstream header, update io.width/io.height.
     if (!VP8GetHeaders(dec, &io)) {
-      status = dec->status;  // An error occurred. Grab error status.
+      status = dec.status;  // An error occurred. Grab error status.
     } else {
       // Allocate/check output buffers.
-      status = WebPAllocateDecBuffer(io.width, io.height, params->options,
-                                     params->output);
+      status = WebPAllocateDecBuffer(io.width, io.height, params.options,
+                                     params.output);
       if (status == VP8_STATUS_OK) {  // Decode
         // This change must be done before calling VP8Decode()
-        dec->mt_method =
-            VP8GetThreadMethod(params->options, &headers, io.width, io.height);
-        VP8InitDithering(params->options, dec);
+        dec.mt_method =
+            VP8GetThreadMethod(params.options, &headers, io.width, io.height);
+        VP8InitDithering(params.options, dec);
         if (!VP8Decode(dec, &io)) {
-          status = dec->status;
+          status = dec.status;
         }
       }
     }
@@ -526,14 +526,14 @@ func WebPResetDecParams(WebPDecParams* const params) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
     if (!VP8LDecodeHeader(dec, &io)) {
-      status = dec->status;  // An error occurred. Grab error status.
+      status = dec.status;  // An error occurred. Grab error status.
     } else {
       // Allocate/check output buffers.
-      status = WebPAllocateDecBuffer(io.width, io.height, params->options,
-                                     params->output);
+      status = WebPAllocateDecBuffer(io.width, io.height, params.options,
+                                     params.output);
       if (status == VP8_STATUS_OK) {  // Decode
         if (!VP8LDecodeImage(dec)) {
-          status = dec->status;
+          status = dec.status;
         }
       }
     }
@@ -541,12 +541,12 @@ func WebPResetDecParams(WebPDecParams* const params) {
   }
 
   if (status != VP8_STATUS_OK) {
-    WebPFreeDecBuffer(params->output);
+    WebPFreeDecBuffer(params.output);
   } else {
-    if (params->options != NULL && params->options->flip) {
-      // This restores the original stride values if options->flip was used
+    if (params.options != NULL && params.options.flip) {
+      // This restores the original stride values if options.flip was used
       // during the call to WebPAllocateDecBuffer above.
-      status = WebPFlipBuffer(params->output);
+      status = WebPFlipBuffer(params.output);
     }
   }
   return status;
@@ -715,11 +715,11 @@ uint8_t* WebPDecodeYUV(const uint8_t* WEBP_COUNTED_BY(data_size) data,
 
     if (out != NULL) {
       const WebPYUVABuffer* const buf = &output.u.YUVA;
-      *u = buf->u;
-      *v = buf->v;
-      *stride = buf->y_stride;
-      *uv_stride = buf->u_stride;
-      assert.Assert(buf->u_stride == buf->v_stride);
+      *u = buf.u;
+      *v = buf.v;
+      *stride = buf.y_stride;
+      *uv_stride = buf.u_stride;
+      assert.Assert(buf.u_stride == buf.v_stride);
     }
     return out;
   }
@@ -741,8 +741,8 @@ static VP8StatusCode GetFeatures(const uint8_t* WEBP_COUNTED_BY(data_size)
 
   // Only parse enough of the data to retrieve the features.
   return ParseHeadersInternal(
-      data, data_size, &features->width, &features->height,
-      &features->has_alpha, &features->has_animation, &features->format, NULL);
+      data, data_size, &features.width, &features.height,
+      &features.has_alpha, &features.has_animation, &features.format, NULL);
 }
 
 //------------------------------------------------------------------------------
@@ -777,8 +777,8 @@ int WebPInitDecoderConfigInternal(WebPDecoderConfig* config, int version) {
     return 0;
   }
   WEBP_UNSAFE_MEMSET(config, 0, sizeof(*config));
-  DefaultFeatures(&config->input);
-  if (!WebPInitDecBuffer(&config->output)) {
+  DefaultFeatures(&config.input);
+  if (!WebPInitDecBuffer(&config.output)) {
     return 0;
   }
   return 1;
@@ -791,48 +791,48 @@ static int WebPCheckCropDimensionsBasic(int x, int y, int w, int h) {
 int WebPValidateDecoderConfig(const WebPDecoderConfig* config) {
   const WebPDecoderOptions* options;
   if (config == NULL) return 0;
-  if (!IsValidColorspace(config->output.colorspace)) {
+  if (!IsValidColorspace(config.output.colorspace)) {
     return 0;
   }
 
-  options = &config->options;
+  options = &config.options;
   // bypass_filtering, no_fancy_upsampling, use_cropping, use_scaling,
   // use_threads, flip can be any integer and are interpreted as boolean.
 
   // Check for cropping.
-  if (options->use_cropping && !WebPCheckCropDimensionsBasic(
-                                   options->crop_left, options->crop_top,
-                                   options->crop_width, options->crop_height)) {
+  if (options.use_cropping && !WebPCheckCropDimensionsBasic(
+                                   options.crop_left, options.crop_top,
+                                   options.crop_width, options.crop_height)) {
     return 0;
   }
   // Check for scaling.
-  if (options->use_scaling &&
-      (options->scaled_width < 0 || options->scaled_height < 0 ||
-       (options->scaled_width == 0 && options->scaled_height == 0))) {
+  if (options.use_scaling &&
+      (options.scaled_width < 0 || options.scaled_height < 0 ||
+       (options.scaled_width == 0 && options.scaled_height == 0))) {
     return 0;
   }
 
   // In case the WebPBitstreamFeatures has been filled in, check further.
-  if (config->input.width > 0 || config->input.height > 0) {
-    int scaled_width = options->scaled_width;
-    int scaled_height = options->scaled_height;
-    if (options->use_cropping &&
-        !WebPCheckCropDimensions(config->input.width, config->input.height,
-                                 options->crop_left, options->crop_top,
-                                 options->crop_width, options->crop_height)) {
+  if (config.input.width > 0 || config.input.height > 0) {
+    int scaled_width = options.scaled_width;
+    int scaled_height = options.scaled_height;
+    if (options.use_cropping &&
+        !WebPCheckCropDimensions(config.input.width, config.input.height,
+                                 options.crop_left, options.crop_top,
+                                 options.crop_width, options.crop_height)) {
       return 0;
     }
-    if (options->use_scaling && !WebPRescalerGetScaledDimensions(
-                                    config->input.width, config->input.height,
+    if (options.use_scaling && !WebPRescalerGetScaledDimensions(
+                                    config.input.width, config.input.height,
                                     &scaled_width, &scaled_height)) {
       return 0;
     }
   }
 
   // Check for dithering.
-  if (options->dithering_strength < 0 || options->dithering_strength > 100 ||
-      options->alpha_dithering_strength < 0 ||
-      options->alpha_dithering_strength > 100) {
+  if (options.dithering_strength < 0 || options.dithering_strength > 100 ||
+      options.alpha_dithering_strength < 0 ||
+      options.alpha_dithering_strength > 100) {
     return 0;
   }
 
@@ -862,7 +862,7 @@ VP8StatusCode WebPDecode(const uint8_t* WEBP_COUNTED_BY(data_size) data,
     return VP8_STATUS_INVALID_PARAM;
   }
 
-  status = GetFeatures(data, data_size, &config->input);
+  status = GetFeatures(data, data_size, &config.input);
   if (status != VP8_STATUS_OK) {
     if (status == VP8_STATUS_NOT_ENOUGH_DATA) {
       return VP8_STATUS_BITSTREAM_ERROR;  // Not-enough-data treated as error.
@@ -871,21 +871,21 @@ VP8StatusCode WebPDecode(const uint8_t* WEBP_COUNTED_BY(data_size) data,
   }
 
   WebPResetDecParams(&params);
-  params.options = &config->options;
-  params.output = &config->output;
-  if (WebPAvoidSlowMemory(params.output, &config->input)) {
+  params.options = &config.options;
+  params.output = &config.output;
+  if (WebPAvoidSlowMemory(params.output, &config.input)) {
     // decoding to slow memory: use a temporary in-mem buffer to decode into.
     WebPDecBuffer in_mem_buffer;
     if (!WebPInitDecBuffer(&in_mem_buffer)) {
       return VP8_STATUS_INVALID_PARAM;
     }
-    in_mem_buffer.colorspace = config->output.colorspace;
-    in_mem_buffer.width = config->input.width;
-    in_mem_buffer.height = config->input.height;
+    in_mem_buffer.colorspace = config.output.colorspace;
+    in_mem_buffer.width = config.input.width;
+    in_mem_buffer.height = config.input.height;
     params.output = &in_mem_buffer;
     status = DecodeInto(data, data_size, &params);
     if (status == VP8_STATUS_OK) {  // do the slow-copy
-      status = WebPCopyDecBufferPixels(&in_mem_buffer, &config->output);
+      status = WebPCopyDecBufferPixels(&in_mem_buffer, &config.output);
     }
     WebPFreeDecBuffer(&in_mem_buffer);
   } else {
@@ -907,17 +907,17 @@ int WebPCheckCropDimensions(int image_width, int image_height, int x, int y,
 
 int WebPIoInitFromOptions(const WebPDecoderOptions* const options,
                           VP8Io* const io, WEBP_CSP_MODE src_colorspace) {
-  const int W = io->width;
-  const int H = io->height;
+  const int W = io.width;
+  const int H = io.height;
   int x = 0, y = 0, w = W, h = H;
 
   // Cropping
-  io->use_cropping = (options != NULL) && options->use_cropping;
-  if (io->use_cropping) {
-    w = options->crop_width;
-    h = options->crop_height;
-    x = options->crop_left;
-    y = options->crop_top;
+  io.use_cropping = (options != NULL) && options.use_cropping;
+  if (io.use_cropping) {
+    w = options.crop_width;
+    h = options.crop_height;
+    x = options.crop_left;
+    y = options.crop_top;
     if (!WebPIsRGBMode(src_colorspace)) {  // only snap for YUV420
       x &= ~1;
       y &= ~1;
@@ -926,38 +926,38 @@ int WebPIoInitFromOptions(const WebPDecoderOptions* const options,
       return 0;  // out of frame boundary error
     }
   }
-  io->crop_left = x;
-  io->crop_top = y;
-  io->crop_right = x + w;
-  io->crop_bottom = y + h;
-  io->mb_w = w;
-  io->mb_h = h;
+  io.crop_left = x;
+  io.crop_top = y;
+  io.crop_right = x + w;
+  io.crop_bottom = y + h;
+  io.mb_w = w;
+  io.mb_h = h;
 
   // Scaling
-  io->use_scaling = (options != NULL) && options->use_scaling;
-  if (io->use_scaling) {
-    int scaled_width = options->scaled_width;
-    int scaled_height = options->scaled_height;
+  io.use_scaling = (options != NULL) && options.use_scaling;
+  if (io.use_scaling) {
+    int scaled_width = options.scaled_width;
+    int scaled_height = options.scaled_height;
     if (!WebPRescalerGetScaledDimensions(w, h, &scaled_width, &scaled_height)) {
       return 0;
     }
-    io->scaled_width = scaled_width;
-    io->scaled_height = scaled_height;
+    io.scaled_width = scaled_width;
+    io.scaled_height = scaled_height;
   }
 
   // Filter
-  io->bypass_filtering = (options != NULL) && options->bypass_filtering;
+  io.bypass_filtering = (options != NULL) && options.bypass_filtering;
 
   // Fancy upsampler
 #ifdef FANCY_UPSAMPLING
-  io->fancy_upsampling = (options == NULL) || (!options->no_fancy_upsampling);
+  io.fancy_upsampling = (options == NULL) || (!options.no_fancy_upsampling);
 #endif
 
-  if (io->use_scaling) {
+  if (io.use_scaling) {
     // disable filter (only for large downscaling ratio).
-    io->bypass_filtering |=
-        (io->scaled_width < W * 3 / 4) && (io->scaled_height < H * 3 / 4);
-    io->fancy_upsampling = 0;
+    io.bypass_filtering |=
+        (io.scaled_width < W * 3 / 4) && (io.scaled_height < H * 3 / 4);
+    io.fancy_upsampling = 0;
   }
   return 1;
 }

@@ -832,22 +832,22 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits,
 // Color transform functions.
 
 static  func MultipliersClear(VP8LMultipliers* const m) {
-  m->green_to_red = 0;
-  m->green_to_blue = 0;
-  m->red_to_blue = 0;
+  m.green_to_red = 0;
+  m.green_to_blue = 0;
+  m.red_to_blue = 0;
 }
 
 static  func ColorCodeToMultipliers(uint32_t color_code,
                                                VP8LMultipliers* const m) {
-  m->green_to_red = (color_code >> 0) & 0xff;
-  m->green_to_blue = (color_code >> 8) & 0xff;
-  m->red_to_blue = (color_code >> 16) & 0xff;
+  m.green_to_red = (color_code >> 0) & 0xff;
+  m.green_to_blue = (color_code >> 8) & 0xff;
+  m.red_to_blue = (color_code >> 16) & 0xff;
 }
 
 static  uint32_t
 MultipliersToColorCode(const VP8LMultipliers* const m) {
-  return 0xff000000u | ((uint32_t)(m->red_to_blue) << 16) |
-         ((uint32_t)(m->green_to_blue) << 8) | m->green_to_red;
+  return 0xff000000u | ((uint32_t)(m.red_to_blue) << 16) |
+         ((uint32_t)(m.green_to_blue) << 8) | m.green_to_red;
 }
 
 static int64_t PredictionCostCrossColor(const uint32_t accumulated[256],
@@ -912,7 +912,7 @@ func GetBestGreenToRed(const uint32_t* argb, int stride, int tile_width,
       }
     }
   }
-  best_tx->green_to_red = (green_to_red_best & 0xff);
+  best_tx.green_to_red = (green_to_red_best & 0xff);
 }
 
 static int64_t GetPredictionCostCrossColorBlue(
@@ -997,8 +997,8 @@ func GetBestGreenRedToBlue(const uint32_t* argb, int stride,
       break;  // out of iter-loop.
     }
   }
-  best_tx->green_to_blue = green_to_blue_best & 0xff;
-  best_tx->red_to_blue = red_to_blue_best & 0xff;
+  best_tx.green_to_blue = green_to_blue_best & 0xff;
+  best_tx.red_to_blue = red_to_blue_best & 0xff;
 }
 #undef kGreenRedToBlueMaxIters
 #undef kGreenRedToBlueNumAxis

@@ -238,34 +238,34 @@ const uint8_t VP8EncBands[16 + 1] = {
 // Mode costs
 
 static int GetResidualCost_C(int ctx0, const VP8Residual* const res) {
-  int n = res->first;
+  int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
-  const int p0 = res->prob[n][ctx0][0];
-  CostArrayPtr const costs = res->costs;
+  const int p0 = res.prob[n][ctx0][0];
+  CostArrayPtr const costs = res.costs;
   const uint16_t* t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
   int cost = (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
 
-  if (res->last < 0) {
+  if (res.last < 0) {
     return VP8BitCost(0, p0);
   }
-  for (; n < res->last; ++n) {
-    const int v = abs(res->coeffs[n]);
+  for (; n < res.last; ++n) {
+    const int v = abs(res.coeffs[n]);
     const int ctx = (v >= 2) ? 2 : v;
     cost += VP8LevelCost(t, v);
     t = costs[n + 1][ctx];
   }
   // Last coefficient is always non-zero
   {
-    const int v = abs(res->coeffs[n]);
+    const int v = abs(res.coeffs[n]);
     assert.Assert(v != 0);
     cost += VP8LevelCost(t, v);
     if (n < 15) {
       const int b = VP8EncBands[n + 1];
       const int ctx = (v == 1) ? 1 : 2;
-      const int last_p0 = res->prob[b][ctx][0];
+      const int last_p0 = res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }
   }
@@ -275,15 +275,15 @@ static int GetResidualCost_C(int ctx0, const VP8Residual* const res) {
 func SetResidualCoeffs_C(const int16_t* WEBP_RESTRICT const coeffs,
                                 VP8Residual* WEBP_RESTRICT const res) {
   int n;
-  res->last = -1;
-  assert.Assert(res->first == 0 || coeffs[0] == 0);
+  res.last = -1;
+  assert.Assert(res.first == 0 || coeffs[0] == 0);
   for (n = 15; n >= 0; --n) {
     if (coeffs[n]) {
-      res->last = n;
+      res.last = n;
       break;
     }
   }
-  res->coeffs = coeffs;
+  res.coeffs = coeffs;
 }
 
 //------------------------------------------------------------------------------

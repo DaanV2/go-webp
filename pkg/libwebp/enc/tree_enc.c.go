@@ -127,13 +127,13 @@ const uint8_t VP8CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
       {238, 1, 255, 128, 128, 128, 128, 128, 128, 128, 128}}}};
 
 func VP8DefaultProbas(VP8Encoder* const enc) {
-  VP8EncProba* const probas = &enc->proba;
-  probas->use_skip_proba = 0;
-  memset(probas->segments, 255u, sizeof(probas->segments));
-  memcpy(probas->coeffs, VP8CoeffsProba0, sizeof(VP8CoeffsProba0));
+  VP8EncProba* const probas = &enc.proba;
+  probas.use_skip_proba = 0;
+  memset(probas.segments, 255u, sizeof(probas.segments));
+  memcpy(probas.coeffs, VP8CoeffsProba0, sizeof(VP8CoeffsProba0));
   // Note: we could hard-code the level_costs corresponding to VP8CoeffsProba0,
   // but that's ~11k of static data. Better call VP8CalculateLevelCosts() later.
-  probas->dirty = 1;
+  probas.dirty = 1;
 }
 
 // Paragraph 11.5.  900bytes.
@@ -283,22 +283,22 @@ func PutSegment(VP8BitWriter* const bw, int s, const uint8_t* p) {
 }
 
 func VP8CodeIntraModes(VP8Encoder* const enc) {
-  VP8BitWriter* const bw = &enc->bw;
+  VP8BitWriter* const bw = &enc.bw;
   VP8EncIterator it;
   VP8IteratorInit(enc, &it);
   do {
     const VP8MBInfo* const mb = it.mb;
     const uint8_t* preds = it.preds;
-    if (enc->segment_hdr.update_map) {
-      PutSegment(bw, mb->segment, enc->proba.segments);
+    if (enc.segment_hdr.update_map) {
+      PutSegment(bw, mb.segment, enc.proba.segments);
     }
-    if (enc->proba.use_skip_proba) {
-      VP8PutBit(bw, mb->skip, enc->proba.skip_proba);
+    if (enc.proba.use_skip_proba) {
+      VP8PutBit(bw, mb.skip, enc.proba.skip_proba);
     }
-    if (VP8PutBit(bw, (mb->type != 0), 145)) {  // i16x16
+    if (VP8PutBit(bw, (mb.type != 0), 145)) {  // i16x16
       PutI16Mode(bw, preds[0]);
     } else {
-      const int preds_w = enc->preds_w;
+      const int preds_w = enc.preds_w;
       const uint8_t* top_pred = preds - preds_w;
       int x, y;
       for (y = 0; y < 4; ++y) {
@@ -311,7 +311,7 @@ func VP8CodeIntraModes(VP8Encoder* const enc) {
         preds += preds_w;
       }
     }
-    PutUVMode(bw, mb->uv_mode);
+    PutUVMode(bw, mb.uv_mode);
   } while (VP8IteratorNext(&it));
 }
 
@@ -422,7 +422,7 @@ func VP8WriteProbas(VP8BitWriter* const bw, const VP8EncProba* const probas) {
     for (b = 0; b < NUM_BANDS; ++b) {
       for (c = 0; c < NUM_CTX; ++c) {
         for (p = 0; p < NUM_PROBAS; ++p) {
-          const uint8_t p0 = probas->coeffs[t][b][c][p];
+          const uint8_t p0 = probas.coeffs[t][b][c][p];
           const int update = (p0 != VP8CoeffsProba0[t][b][c][p]);
           if (VP8PutBit(bw, update, VP8CoeffsUpdateProba[t][b][c][p])) {
             VP8PutBits(bw, p0, 8);
@@ -431,7 +431,7 @@ func VP8WriteProbas(VP8BitWriter* const bw, const VP8EncProba* const probas) {
       }
     }
   }
-  if (VP8PutBitUniform(bw, probas->use_skip_proba)) {
-    VP8PutBits(bw, probas->skip_proba, 8);
+  if (VP8PutBitUniform(bw, probas.use_skip_proba)) {
+    VP8PutBits(bw, probas.skip_proba, 8);
   }
 }

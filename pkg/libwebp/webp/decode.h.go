@@ -517,13 +517,13 @@ type WebPDecoderConfig struct {
 // Instantiate a new incremental decoder object with the requested
 // configuration. The bitstream can be passed using 'data' and 'data_size'
 // parameter, in which case the features will be parsed and stored into
-// config->input. Otherwise, 'data' can be NULL and no parsing will occur.
+// config.input. Otherwise, 'data' can be NULL and no parsing will occur.
 // Note that 'config' can be NULL too, in which case a default configuration
 // is used. If 'config' is not NULL, it must outlive the WebPIDecoder object
 // as some references to its fields will be used. No internal copy of 'config'
 // is made.
 // The return WebPIDecoder object must always be deleted calling WebPIDelete().
-// Returns NULL in case of error (and config->status will then reflect
+// Returns NULL in case of error (and config.status will then reflect
 // the error condition, if available).
   WebPIDecoder* WebPIDecode(
     const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,

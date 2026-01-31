@@ -91,7 +91,7 @@ int VP8LEncodeImage(const WebPConfig* const config,
                     const WebPPicture* const picture);
 
 // Encodes the main image stream using the supplied bit writer.
-// Returns false in case of error (stored in picture->error_code).
+// Returns false in case of error (stored in picture.error_code).
 int VP8LEncodeStream(const WebPConfig* const config,
                      const WebPPicture* const picture, VP8LBitWriter* const bw);
 
@@ -106,7 +106,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
 // Image transforms in predictor.c.
 
 // pic and percent are for progress.
-// Returns false in case of error (stored in pic->error_code).
+// Returns false in case of error (stored in pic.error_code).
 int VP8LResidualImage(int width, int height, int min_bits, int max_bits,
                       int low_effort, uint32_t* const argb,
                       uint32_t* const argb_scratch, uint32_t* const image,

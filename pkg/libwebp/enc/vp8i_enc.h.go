@@ -318,7 +318,7 @@ typedef struct {
 #if !defined(DISABLE_TOKEN_BUFFER)
   VP8Tokens* pages;       // first page
   VP8Tokens** last_page;  // last page
-  uint16_t* tokens;       // set to (*last_page)->tokens
+  uint16_t* tokens;       // set to (*last_page).tokens
   int left;               // how many free tokens left before the page is full
   int page_size;          // number of tokens per page
 #endif
@@ -402,8 +402,8 @@ type VP8Encoder struct {
   VP8RDLevel rd_opt_level;  // Deduced from method.
   int max_i4_header_bits;   // partition #0 safeness factor
   int mb_header_limit;      // rough limit for header bits per MB
-  int thread_level;         // derived from config->thread_level
-  int do_search;            // derived from config->target_XXX
+  int thread_level;         // derived from config.thread_level
+  int do_search;            // derived from config.target_XXX
   int use_tokens;           // if true, use token buffer
 
   // Memory
@@ -506,13 +506,13 @@ func WebPPictureResetBuffers(WebPPicture* const picture);
 int WebPPictureAllocARGB(WebPPicture* const picture);
 
 // Allocates YUVA buffer according to set width/height (previous one is always
-// free'd). Uses picture->csp to determine whether an alpha buffer is needed.
+// free'd). Uses picture.csp to determine whether an alpha buffer is needed.
 // Preserves the ARGB buffer.
 // Returns false in case of error (invalid param, out-of-memory).
 int WebPPictureAllocYUVA(WebPPicture* const picture);
 
 // Replace samples that are fully transparent by 'color' to help compressibility
-// (no guarantee, though). Assumes pic->use_argb is true.
+// (no guarantee, though). Assumes pic.use_argb is true.
 func WebPReplaceTransparentPixels(WebPPicture* const pic, uint32_t color);
 
 //------------------------------------------------------------------------------

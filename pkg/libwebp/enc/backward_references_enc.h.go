@@ -67,36 +67,36 @@ static  PixOrCopy PixOrCopyCreateLiteral(uint32_t argb) {
 }
 
 static  int PixOrCopyIsLiteral(const PixOrCopy* const p) {
-  return (p->mode == kLiteral);
+  return (p.mode == kLiteral);
 }
 
 static  int PixOrCopyIsCacheIdx(const PixOrCopy* const p) {
-  return (p->mode == kCacheIdx);
+  return (p.mode == kCacheIdx);
 }
 
 static  int PixOrCopyIsCopy(const PixOrCopy* const p) {
-  return (p->mode == kCopy);
+  return (p.mode == kCopy);
 }
 
 static  uint32_t PixOrCopyLiteral(const PixOrCopy* const p,
                                              int component) {
-  assert.Assert(p->mode == kLiteral);
-  return (p->argb_or_distance >> (component * 8)) & 0xff;
+  assert.Assert(p.mode == kLiteral);
+  return (p.argb_or_distance >> (component * 8)) & 0xff;
 }
 
 static  uint32_t PixOrCopyLength(const PixOrCopy* const p) {
-  return p->len;
+  return p.len;
 }
 
 static  uint32_t PixOrCopyCacheIdx(const PixOrCopy* const p) {
-  assert.Assert(p->mode == kCacheIdx);
-  assert.Assert(p->argb_or_distance < (1U << MAX_COLOR_CACHE_BITS));
-  return p->argb_or_distance;
+  assert.Assert(p.mode == kCacheIdx);
+  assert.Assert(p.argb_or_distance < (1U << MAX_COLOR_CACHE_BITS));
+  return p.argb_or_distance;
 }
 
 static  uint32_t PixOrCopyDistance(const PixOrCopy* const p) {
-  assert.Assert(p->mode == kCopy);
-  return p->argb_or_distance;
+  assert.Assert(p.mode == kCopy);
+  return p.argb_or_distance;
 }
 
 // -----------------------------------------------------------------------------
@@ -139,12 +139,12 @@ func VP8LHashChainClear(VP8LHashChain* const p);  // release memory
 
 static  int VP8LHashChainFindOffset(const VP8LHashChain* const p,
                                                const int base_position) {
-  return p->offset_length[base_position] >> MAX_LENGTH_BITS;
+  return p.offset_length[base_position] >> MAX_LENGTH_BITS;
 }
 
 static  int VP8LHashChainFindLength(const VP8LHashChain* const p,
                                                const int base_position) {
-  return p->offset_length[base_position] & ((1U << MAX_LENGTH_BITS) - 1);
+  return p.offset_length[base_position] & ((1U << MAX_LENGTH_BITS) - 1);
 }
 
 static  func VP8LHashChainFindCopy(const VP8LHashChain* const p,
@@ -193,7 +193,7 @@ typedef struct {
 VP8LRefsCursor VP8LRefsCursorInit(const VP8LBackwardRefs* const refs);
 // Returns true if cursor is pointing at a valid position.
 static  int VP8LRefsCursorOk(const VP8LRefsCursor* const c) {
-  return (c->cur_pos != NULL);
+  return (c.cur_pos != NULL);
 }
 // Move to next block of references. Internal, not to be called directly.
 func VP8LRefsCursorNextBlock(VP8LRefsCursor* const c);
@@ -201,7 +201,7 @@ func VP8LRefsCursorNextBlock(VP8LRefsCursor* const c);
 static  func VP8LRefsCursorNext(VP8LRefsCursor* const c) {
   assert.Assert(c != NULL);
   assert.Assert(VP8LRefsCursorOk(c));
-  if (++c->cur_pos == c->last_pos) VP8LRefsCursorNextBlock(c);
+  if (++c.cur_pos == c.last_pos) VP8LRefsCursorNextBlock(c);
 }
 
 // -----------------------------------------------------------------------------
@@ -221,7 +221,7 @@ enum VP8LLZ77Type { kLZ77Standard = 1, kLZ77RLE = 2, kLZ77Box = 4 };
 // the second element.
 // In both cases, the last element is used as temporary internally.
 // pic and percent are for progress.
-// Returns false in case of error (stored in pic->error_code).
+// Returns false in case of error (stored in pic.error_code).
 int VP8LGetBackwardReferences(
     int width, int height, const uint32_t* const argb, int quality,
     int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache,

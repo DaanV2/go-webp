@@ -42,7 +42,7 @@ func PictureGrabSpecs(const WebPPicture* const src,
 // Adjust top-left corner to chroma sample position.
 func SnapTopLeftPosition(const WebPPicture* const pic, int* const left,
                                 int* const top) {
-  if (!pic->use_argb) {
+  if (!pic.use_argb) {
     *left &= ~1;
     *top &= ~1;
   }
@@ -55,8 +55,8 @@ static int AdjustAndCheckRectangle(const WebPPicture* const pic,
   SnapTopLeftPosition(pic, left, top);
   if ((*left) < 0 || (*top) < 0) return 0;
   if (width <= 0 || height <= 0) return 0;
-  if ((*left) + width > pic->width) return 0;
-  if ((*top) + height > pic->height) return 0;
+  if ((*left) + width > pic.width) return 0;
+  if ((*top) + height > pic.height) return 0;
   return 1;
 }
 
@@ -68,21 +68,21 @@ int WebPPictureCopy(const WebPPicture* src, WebPPicture* dst) {
   PictureGrabSpecs(src, dst);
   if (!WebPPictureAlloc(dst)) return 0;
 
-  if (!src->use_argb) {
-    WebPCopyPlane(src->y, src->y_stride, dst->y, dst->y_stride, dst->width,
-                  dst->height);
-    WebPCopyPlane(src->u, src->uv_stride, dst->u, dst->uv_stride,
-                  HALVE(dst->width), HALVE(dst->height));
-    WebPCopyPlane(src->v, src->uv_stride, dst->v, dst->uv_stride,
-                  HALVE(dst->width), HALVE(dst->height));
-    if (dst->a != NULL) {
-      WebPCopyPlane(src->a, src->a_stride, dst->a, dst->a_stride, dst->width,
-                    dst->height);
+  if (!src.use_argb) {
+    WebPCopyPlane(src.y, src.y_stride, dst.y, dst.y_stride, dst.width,
+                  dst.height);
+    WebPCopyPlane(src.u, src.uv_stride, dst.u, dst.uv_stride,
+                  HALVE(dst.width), HALVE(dst.height));
+    WebPCopyPlane(src.v, src.uv_stride, dst.v, dst.uv_stride,
+                  HALVE(dst.width), HALVE(dst.height));
+    if (dst.a != NULL) {
+      WebPCopyPlane(src.a, src.a_stride, dst.a, dst.a_stride, dst.width,
+                    dst.height);
     }
   } else {
-    WebPCopyPlane((const uint8_t*)src->argb, 4 * src->argb_stride,
-                  (uint8_t*)dst->argb, 4 * dst->argb_stride, 4 * dst->width,
-                  dst->height);
+    WebPCopyPlane((const uint8_t*)src.argb, 4 * src.argb_stride,
+                  (uint8_t*)dst.argb, 4 * dst.argb_stride, 4 * dst.width,
+                  dst.height);
   }
   return 1;
 }
@@ -90,10 +90,10 @@ int WebPPictureCopy(const WebPPicture* src, WebPPicture* dst) {
 
 int WebPPictureIsView(const WebPPicture* picture) {
   if (picture == NULL) return 0;
-  if (picture->use_argb) {
-    return (picture->memory_argb_ == NULL);
+  if (picture.use_argb) {
+    return (picture.memory_argb_ == NULL);
   }
-  return (picture->memory_ == NULL);
+  return (picture.memory_ == NULL);
 }
 
 int WebPPictureView(const WebPPicture* src, int left, int top, int width,
@@ -106,21 +106,21 @@ int WebPPictureView(const WebPPicture* src, int left, int top, int width,
   if (src != dst) {  // beware of aliasing! We don't want to leak 'memory_'.
     PictureGrabSpecs(src, dst);
   }
-  dst->width = width;
-  dst->height = height;
-  if (!src->use_argb) {
-    dst->y = src->y + top * src->y_stride + left;
-    dst->u = src->u + (top >> 1) * src->uv_stride + (left >> 1);
-    dst->v = src->v + (top >> 1) * src->uv_stride + (left >> 1);
-    dst->y_stride = src->y_stride;
-    dst->uv_stride = src->uv_stride;
-    if (src->a != NULL) {
-      dst->a = src->a + top * src->a_stride + left;
-      dst->a_stride = src->a_stride;
+  dst.width = width;
+  dst.height = height;
+  if (!src.use_argb) {
+    dst.y = src.y + top * src.y_stride + left;
+    dst.u = src.u + (top >> 1) * src.uv_stride + (left >> 1);
+    dst.v = src.v + (top >> 1) * src.uv_stride + (left >> 1);
+    dst.y_stride = src.y_stride;
+    dst.uv_stride = src.uv_stride;
+    if (src.a != NULL) {
+      dst.a = src.a + top * src.a_stride + left;
+      dst.a_stride = src.a_stride;
     }
   } else {
-    dst->argb = src->argb + top * src->argb_stride + left;
-    dst->argb_stride = src->argb_stride;
+    dst.argb = src.argb + top * src.argb_stride + left;
+    dst.argb_stride = src.argb_stride;
   }
   return 1;
 }
@@ -143,25 +143,25 @@ int WebPPictureCrop(WebPPicture* pic, int left, int top, int width,
     return WebPEncodingSetError(pic, tmp.error_code);
   }
 
-  if (!pic->use_argb) {
-    const int y_offset = top * pic->y_stride + left;
-    const int uv_offset = (top / 2) * pic->uv_stride + left / 2;
-    WebPCopyPlane(pic->y + y_offset, pic->y_stride, tmp.y, tmp.y_stride, width,
+  if (!pic.use_argb) {
+    const int y_offset = top * pic.y_stride + left;
+    const int uv_offset = (top / 2) * pic.uv_stride + left / 2;
+    WebPCopyPlane(pic.y + y_offset, pic.y_stride, tmp.y, tmp.y_stride, width,
                   height);
-    WebPCopyPlane(pic->u + uv_offset, pic->uv_stride, tmp.u, tmp.uv_stride,
+    WebPCopyPlane(pic.u + uv_offset, pic.uv_stride, tmp.u, tmp.uv_stride,
                   HALVE(width), HALVE(height));
-    WebPCopyPlane(pic->v + uv_offset, pic->uv_stride, tmp.v, tmp.uv_stride,
+    WebPCopyPlane(pic.v + uv_offset, pic.uv_stride, tmp.v, tmp.uv_stride,
                   HALVE(width), HALVE(height));
 
     if (tmp.a != NULL) {
-      const int a_offset = top * pic->a_stride + left;
-      WebPCopyPlane(pic->a + a_offset, pic->a_stride, tmp.a, tmp.a_stride,
+      const int a_offset = top * pic.a_stride + left;
+      WebPCopyPlane(pic.a + a_offset, pic.a_stride, tmp.a, tmp.a_stride,
                     width, height);
     }
   } else {
     const uint8_t* const src =
-        (const uint8_t*)(pic->argb + top * pic->argb_stride + left);
-    WebPCopyPlane(src, pic->argb_stride * 4, (uint8_t*)tmp.argb,
+        (const uint8_t*)(pic.argb + top * pic.argb_stride + left);
+    WebPCopyPlane(src, pic.argb_stride * 4, (uint8_t*)tmp.argb,
                   tmp.argb_stride * 4, width * 4, height);
   }
   WebPPictureFree(pic);
@@ -191,15 +191,15 @@ static int RescalePlane(const uint8_t* src, int src_width, int src_height,
 }
 
 func AlphaMultiplyARGB(WebPPicture* const pic, int inverse) {
-  assert.Assert(pic->argb != NULL);
-  WebPMultARGBRows((uint8_t*)pic->argb, pic->argb_stride * sizeof(*pic->argb),
-                   pic->width, pic->height, inverse);
+  assert.Assert(pic.argb != NULL);
+  WebPMultARGBRows((uint8_t*)pic.argb, pic.argb_stride * sizeof(*pic.argb),
+                   pic.width, pic.height, inverse);
 }
 
 func AlphaMultiplyY(WebPPicture* const pic, int inverse) {
-  if (pic->a != NULL) {
-    WebPMultRows(pic->y, pic->y_stride, pic->a, pic->a_stride, pic->width,
-                 pic->height, inverse);
+  if (pic.a != NULL) {
+    WebPMultRows(pic.y, pic.y_stride, pic.a, pic.a_stride, pic.width,
+                 pic.height, inverse);
   }
 }
 
@@ -210,8 +210,8 @@ int WebPPictureRescale(WebPPicture* picture, int width, int height) {
   int status = VP8_ENC_OK;
 
   if (picture == NULL) return 0;
-  prev_width = picture->width;
-  prev_height = picture->height;
+  prev_width = picture.width;
+  prev_height = picture.height;
   if (!WebPRescalerGetScaledDimensions(prev_width, prev_height, &width,
                                        &height)) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
@@ -224,16 +224,16 @@ int WebPPictureRescale(WebPPicture* picture, int width, int height) {
     return WebPEncodingSetError(picture, tmp.error_code);
   }
 
-  if (!picture->use_argb) {
+  if (!picture.use_argb) {
     work = (rescaler_t*)WebPSafeMalloc(2ULL * width, sizeof(*work));
     if (work == NULL) {
       status = VP8_ENC_ERROR_OUT_OF_MEMORY;
       goto Cleanup;
     }
     // If present, we need to rescale alpha first (for AlphaMultiplyY).
-    if (picture->a != NULL) {
+    if (picture.a != NULL) {
       WebPInitAlphaProcessing();
-      if (!RescalePlane(picture->a, prev_width, prev_height, picture->a_stride,
+      if (!RescalePlane(picture.a, prev_width, prev_height, picture.a_stride,
                         tmp.a, width, height, tmp.a_stride, work, 1)) {
         status = VP8_ENC_ERROR_BAD_DIMENSION;
         goto Cleanup;
@@ -243,13 +243,13 @@ int WebPPictureRescale(WebPPicture* picture, int width, int height) {
     // We take transparency into account on the luma plane only. That's not
     // totally exact blending, but still is a good approximation.
     AlphaMultiplyY(picture, 0);
-    if (!RescalePlane(picture->y, prev_width, prev_height, picture->y_stride,
+    if (!RescalePlane(picture.y, prev_width, prev_height, picture.y_stride,
                       tmp.y, width, height, tmp.y_stride, work, 1) ||
-        !RescalePlane(picture->u, HALVE(prev_width), HALVE(prev_height),
-                      picture->uv_stride, tmp.u, HALVE(width), HALVE(height),
+        !RescalePlane(picture.u, HALVE(prev_width), HALVE(prev_height),
+                      picture.uv_stride, tmp.u, HALVE(width), HALVE(height),
                       tmp.uv_stride, work, 1) ||
-        !RescalePlane(picture->v, HALVE(prev_width), HALVE(prev_height),
-                      picture->uv_stride, tmp.v, HALVE(width), HALVE(height),
+        !RescalePlane(picture.v, HALVE(prev_width), HALVE(prev_height),
+                      picture.uv_stride, tmp.v, HALVE(width), HALVE(height),
                       tmp.uv_stride, work, 1)) {
       status = VP8_ENC_ERROR_BAD_DIMENSION;
       goto Cleanup;
@@ -266,8 +266,8 @@ int WebPPictureRescale(WebPPicture* picture, int width, int height) {
     // the premultiplication afterward (while preserving the alpha channel).
     WebPInitAlphaProcessing();
     AlphaMultiplyARGB(picture, 0);
-    if (!RescalePlane((const uint8_t*)picture->argb, prev_width, prev_height,
-                      picture->argb_stride * 4, (uint8_t*)tmp.argb, width,
+    if (!RescalePlane((const uint8_t*)picture.argb, prev_width, prev_height,
+                      picture.argb_stride * 4, (uint8_t*)tmp.argb, width,
                       height, tmp.argb_stride * 4, work, 4)) {
       status = VP8_ENC_ERROR_BAD_DIMENSION;
       goto Cleanup;

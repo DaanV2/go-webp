@@ -46,7 +46,7 @@ static  func WebPDataInit(WebPData* webp_data) {
 // Does not deallocate the object itself.
 static  func WebPDataClear(WebPData* webp_data) {
   if (webp_data != NULL) {
-    WebPFree((void*)webp_data->bytes);
+    WebPFree((void*)webp_data.bytes);
     WebPDataInit(webp_data);
   }
 }
@@ -57,11 +57,11 @@ static  func WebPDataClear(WebPData* webp_data) {
                                                    WebPData* dst) {
   if (src == NULL || dst == NULL) return 0;
   WebPDataInit(dst);
-  if (src->bytes != NULL && src->size != 0) {
-    dst->bytes = (uint8_t*)WebPMalloc(src->size);
-    if (dst->bytes == NULL) return 0;
-    WEBP_UNSAFE_MEMCPY((void*)dst->bytes, src->bytes, src->size);
-    dst->size = src->size;
+  if (src.bytes != NULL && src.size != 0) {
+    dst.bytes = (uint8_t*)WebPMalloc(src.size);
+    if (dst.bytes == NULL) return 0;
+    WEBP_UNSAFE_MEMCPY((void*)dst.bytes, src.bytes, src.size);
+    dst.size = src.size;
   }
   return 1;
 }

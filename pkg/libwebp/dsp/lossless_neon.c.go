@@ -146,7 +146,7 @@ func ConvertBGRAToRGB_NEON(const uint32_t* WEBP_RESTRICT src,
 #define GET_U8_AS_U32(IN) vget_lane_u32(vreinterpret_u32_u8((IN)), 0)
 #define GETQ_U8_AS_U32(IN) vgetq_lane_u32(vreinterpretq_u32_u8((IN)), 0)
 #define STOREQ_U8_AS_U32P(OUT, IN) vst1q_u32((OUT), vreinterpretq_u32_u8((IN)))
-#define ROTATE32_LEFT(L) vextq_u8((L), (L), 12)  // D|C|B|A -> C|B|A|D
+#define ROTATE32_LEFT(L) vextq_u8((L), (L), 12)  // D|C|B|A . C|B|A|D
 
 static  uint8x8_t Average2_u8_NEON(uint32_t a0, uint32_t a1) {
   const uint8x8_t A0 = LOAD_U32_AS_U8(a0);
@@ -552,7 +552,7 @@ func TransformColorInverse_NEON(const VP8LMultipliers* const m,
                                        const uint32_t* const src,
                                        int num_pixels, uint32_t* dst) {
 // sign-extended multiplying constants, pre-shifted by 6.
-#define CST(X) (((int16_t)(m->X << 8)) >> 6)
+#define CST(X) (((int16_t)(m.X << 8)) >> 6)
   const int16_t rb[8] = {CST(green_to_blue), CST(green_to_red),
                          CST(green_to_blue), CST(green_to_red),
                          CST(green_to_blue), CST(green_to_red),

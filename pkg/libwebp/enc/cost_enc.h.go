@@ -51,7 +51,7 @@ static  int VP8RecordStats(int bit, proba_t* const stats) {
   // An overflow is inbound. Note we handle this at 0xfffe0000u instead of
   // 0xffff0000u to make sure p + 1u does not overflow.
   if (p >= 0xfffe0000u) {
-    p = ((p + 1u) >> 1) & 0x7fff7fffu;  // -> divide the stats by 2.
+    p = ((p + 1u) >> 1) & 0x7fff7fffu;  // . divide the stats by 2.
   }
   // record bit count (lower 16 bits) and increment total count (upper 16 bits).
   p += 0x00010000u + bit;

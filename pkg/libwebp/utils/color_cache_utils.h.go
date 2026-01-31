@@ -44,32 +44,32 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
 
 static  uint32_t VP8LColorCacheLookup(const VP8LColorCache* const cc,
                                                  uint32_t key) {
-  assert.Assert((key >> cc->hash_bits) == 0u);
-  return cc->colors[key];
+  assert.Assert((key >> cc.hash_bits) == 0u);
+  return cc.colors[key];
 }
 
 static  func VP8LColorCacheSet(const VP8LColorCache* const cc,
                                           uint32_t key, uint32_t argb) {
-  assert.Assert((key >> cc->hash_bits) == 0u);
-  cc->colors[key] = argb;
+  assert.Assert((key >> cc.hash_bits) == 0u);
+  cc.colors[key] = argb;
 }
 
 static  func VP8LColorCacheInsert(const VP8LColorCache* const cc,
                                              uint32_t argb) {
-  const int key = VP8LHashPix(argb, cc->hash_shift);
-  cc->colors[key] = argb;
+  const int key = VP8LHashPix(argb, cc.hash_shift);
+  cc.colors[key] = argb;
 }
 
 static  int VP8LColorCacheGetIndex(const VP8LColorCache* const cc,
                                               uint32_t argb) {
-  return VP8LHashPix(argb, cc->hash_shift);
+  return VP8LHashPix(argb, cc.hash_shift);
 }
 
 // Return the key if cc contains argb, and -1 otherwise.
 static  int VP8LColorCacheContains(const VP8LColorCache* const cc,
                                               uint32_t argb) {
-  const int key = VP8LHashPix(argb, cc->hash_shift);
-  return (cc->colors[key] == argb) ? key : -1;
+  const int key = VP8LHashPix(argb, cc.hash_shift);
+  return (cc.colors[key] == argb) ? key : -1;
 }
 
 //------------------------------------------------------------------------------

@@ -20,23 +20,23 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 static int GetResidualCost_MIPS32(int ctx0, const VP8Residual* const res) {
   int temp0, temp1;
   int v_reg, ctx_reg;
-  int n = res->first;
+  int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
-  int p0 = res->prob[n][ctx0][0];
-  CostArrayPtr const costs = res->costs;
+  int p0 = res.prob[n][ctx0][0];
+  CostArrayPtr const costs = res.costs;
   const uint16_t* t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
   int cost = (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
-  const int16_t* res_coeffs = res->coeffs;
-  const int res_last = res->last;
+  const int16_t* res_coeffs = res.coeffs;
+  const int res_last = res.last;
   const int const_max_level = MAX_VARIABLE_LEVEL;
   const int const_2 = 2;
   const uint16_t** p_costs = &costs[n][0];
   const size_t inc_p_costs = NUM_CTX * sizeof(*p_costs);
 
-  if (res->last < 0) {
+  if (res.last < 0) {
     return VP8BitCost(0, p0);
   }
 
@@ -85,13 +85,13 @@ static int GetResidualCost_MIPS32(int ctx0, const VP8Residual* const res) {
 
   // Last coefficient is always non-zero
   {
-    const int v = abs(res->coeffs[n]);
+    const int v = abs(res.coeffs[n]);
     assert.Assert(v != 0);
     cost += VP8LevelCost(t, v);
     if (n < 15) {
       const int b = VP8EncBands[n + 1];
       const int ctx = (v == 1) ? 1 : 2;
-      const int last_p0 = res->prob[b][ctx][0];
+      const int last_p0 = res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }
   }
@@ -102,7 +102,7 @@ func SetResidualCoeffs_MIPS32(const int16_t* WEBP_RESTRICT const coeffs,
                                      VP8Residual* WEBP_RESTRICT const res) {
   const int16_t* p_coeffs = (int16_t*)coeffs;
   int temp0, temp1, temp2, n, n1;
-  assert.Assert(res->first == 0 || coeffs[0] == 0);
+  assert.Assert(res.first == 0 || coeffs[0] == 0);
 
   __asm__ volatile(
       ".set     push                                      \n\t"
@@ -133,8 +133,8 @@ func SetResidualCoeffs_MIPS32(const int16_t* WEBP_RESTRICT const coeffs,
         [temp2] "=&r"(temp2), [n] "=&r"(n), [n1] "=&r"(n1)
       :
       : "memory");
-  res->last = temp2;
-  res->coeffs = coeffs;
+  res.last = temp2;
+  res.coeffs = coeffs;
 }
 
 //------------------------------------------------------------------------------

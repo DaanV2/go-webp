@@ -61,17 +61,17 @@ int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8_t* data,
 
 // return approximate write position (in bits)
 static  uint64_t VP8BitWriterPos(const VP8BitWriter* const bw) {
-  const uint64_t nb_bits = 8 + bw->nb_bits;  // bw->nb_bits is <= 0, note
-  return (bw->pos + bw->run) * 8 + nb_bits;
+  const uint64_t nb_bits = 8 + bw.nb_bits;  // bw.nb_bits is <= 0, note
+  return (bw.pos + bw.run) * 8 + nb_bits;
 }
 
 // Returns a pointer to the internal buffer.
 static  uint8_t* VP8BitWriterBuf(const VP8BitWriter* const bw) {
-  return bw->buf;
+  return bw.buf;
 }
 // Returns the size of the internal buffer.
 static  size_t VP8BitWriterSize(const VP8BitWriter* const bw) {
-  return bw->pos;
+  return bw.pos;
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ typedef struct {
 } VP8LBitWriter;
 
 static  size_t VP8LBitWriterNumBytes(const VP8LBitWriter* const bw) {
-  return (bw->cur - bw->buf) + ((bw->used + 7) >> 3);
+  return (bw.cur - bw.buf) + ((bw.used + 7) >> 3);
 }
 
 // Returns false in case of memory allocation error.
@@ -146,11 +146,11 @@ static  func VP8LPutBits(VP8LBitWriter* const bw, uint32_t bits,
                                     int n_bits) {
 #if VP8L_WRITER_BYTES == 4
   if (n_bits == 0) return;
-  if (bw->used >= VP8L_WRITER_BITS) {
-    VP8LPutBitsFlushBits(bw, &bw->used, &bw->bits);
+  if (bw.used >= VP8L_WRITER_BITS) {
+    VP8LPutBitsFlushBits(bw, &bw.used, &bw.bits);
   }
-  bw->bits |= (vp8l_atype_t)bits << bw->used;
-  bw->used += n_bits;
+  bw.bits |= (vp8l_atype_t)bits << bw.used;
+  bw.used += n_bits;
 #else
   VP8LPutBitsInternal(bw, bits, n_bits);
 #endif

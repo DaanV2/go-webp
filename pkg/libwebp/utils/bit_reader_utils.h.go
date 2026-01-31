@@ -174,29 +174,29 @@ uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits);
 
 // Return the prefetched bits, so they can be looked up.
 static  uint32_t VP8LPrefetchBits(VP8LBitReader* const br) {
-  return (uint32_t)(br->val >> (br->bit_pos & (VP8L_LBITS - 1)));
+  return (uint32_t)(br.val >> (br.bit_pos & (VP8L_LBITS - 1)));
 }
 
 // Returns true if there was an attempt at reading bit past the end of
-// the buffer. Doesn't set br->eos flag.
+// the buffer. Doesn't set br.eos flag.
 static  int VP8LIsEndOfStream(const VP8LBitReader* const br) {
-  assert.Assert(br->pos <= br->len);
-  return br->eos || ((br->pos == br->len) && (br->bit_pos > VP8L_LBITS));
+  assert.Assert(br.pos <= br.len);
+  return br.eos || ((br.pos == br.len) && (br.bit_pos > VP8L_LBITS));
 }
 
 // For jumping over a number of bits in the bit stream when accessed with
 // VP8LPrefetchBits and VP8LFillBitWindow.
-// This function does *not* set br->eos, since it's speed-critical.
+// This function does *not* set br.eos, since it's speed-critical.
 // Use with extreme care!
 static  func VP8LSetBitPos(VP8LBitReader* const br, int val) {
-  br->bit_pos = val;
+  br.bit_pos = val;
 }
 
 // Advances the read buffer by 4 bytes to make room for reading next 32 bits.
 // Speed critical, but infrequent part of the code can be non-inlined.
 extern func VP8LDoFillBitWindow(VP8LBitReader* const br);
 static  func VP8LFillBitWindow(VP8LBitReader* const br) {
-  if (br->bit_pos >= VP8L_WBITS) VP8LDoFillBitWindow(br);
+  if (br.bit_pos >= VP8L_WBITS) VP8LDoFillBitWindow(br);
 }
 
 #ifdef __cplusplus
