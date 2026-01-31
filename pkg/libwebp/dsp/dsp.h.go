@@ -505,7 +505,9 @@ func WebPInitAlphaProcessing(void);
 //------------------------------------------------------------------------------
 // Filter functions
 
-typedef enum {  // Filter types.
+type <FOO> int
+
+const (  // Filter types.
   WEBP_FILTER_NONE = 0,
   WEBP_FILTER_HORIZONTAL,
   WEBP_FILTER_VERTICAL,

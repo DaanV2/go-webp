@@ -299,7 +299,9 @@ const WEBP_SWAP_16BIT_CSP =0
 #define WORDS_BIGENDIAN
 #endif
 
-typedef enum {
+type <FOO> int
+
+const (
   kSSE2,
   kSSE3,
   kSlowSSSE3,  // special feature for slow SSSE3 architectures

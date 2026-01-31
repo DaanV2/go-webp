@@ -15,7 +15,9 @@ package webp
 
 
 // Create fourcc of the chunk from the chunk tag characters.
-#define MKFOURCC(a, b, c, d) ((a) | (b) << 8 | (c) << 16 | (uint32_t)(d) << 24)
+func MKFOURCC(a, b, c, d uint32) uint32 {
+	return ((a) | (b) << 8 | (c) << 16 | (uint32)(d) << 24)
+}
 
 // VP8 related constants.
 const VP8_SIGNATURE =0x9d012a             // Signature in VP8 data.
@@ -26,8 +28,7 @@ const VP8_FRAME_HEADER_SIZE =10  // Size of the frame header within VP8 data.
 // VP8L related constants.
 const VP8L_SIGNATURE_SIZE =1  // VP8L signature size.
 const VP8L_MAGIC_BYTE =0x2f   // VP8L signature byte.
-const VP8L_IMAGE_SIZE_BITS =\
-  14                         // Number of bits used to store width and height.
+const VP8L_IMAGE_SIZE_BITS = 14                         // Number of bits used to store width and height.
 const VP8L_VERSION_BITS =3  // 3 bits reserved for version.
 const VP8L_VERSION =0       // version 0
 const VP8L_FRAME_HEADER_SIZE =5  // Size of the VP8L frame header.
@@ -56,7 +57,9 @@ const NUM_TRANSFORM_BITS =3
 const TRANSFORM_PRESENT =\
   1  // The bit to be written when next data to be read is a transform.
 const NUM_TRANSFORMS =4  // Maximum number of allowed transform in a bitstream.
-typedef enum {
+type <FOO> int
+
+const (
   PREDICTOR_TRANSFORM = 0,
   CROSS_COLOR_TRANSFORM = 1,
   SUBTRACT_GREEN_TRANSFORM = 2,

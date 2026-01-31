@@ -33,7 +33,9 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 extern "C" {
 #endif
 
-typedef enum { READ_DATA = 0, READ_HDR = 1, READ_DIM = 2 } VP8LDecodeState;
+type <FOO> int
+
+const ( READ_DATA = 0, READ_HDR = 1, READ_DIM = 2 } VP8LDecodeState;
 
 typedef struct VP8LTransform VP8LTransform;
 type VP8LTransform struct {

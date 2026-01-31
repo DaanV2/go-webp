@@ -80,7 +80,9 @@ type WebPDemuxer struct {
   Chunk** chunks_tail;
 };
 
-typedef enum { PARSE_OK, PARSE_NEED_MORE_DATA, PARSE_ERROR } ParseStatus;
+type <FOO> int
+
+const ( PARSE_OK, PARSE_NEED_MORE_DATA, PARSE_ERROR } ParseStatus;
 
 typedef type ChunkParser struct {
   uint8_t id[4];

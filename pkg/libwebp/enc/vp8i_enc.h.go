@@ -43,7 +43,9 @@ enum {
   MAX_LEVEL = 2047          // max level (note: max codable is 2047 + 67)
 };
 
-typedef enum {            // Rate-distortion optimization levels
+type <FOO> int
+
+const (            // Rate-distortion optimization levels
   RD_OPT_NONE = 0,        // no rd-opt
   RD_OPT_BASIC = 1,       // basic scoring (no trellis)
   RD_OPT_TRELLIS = 2,     // perform trellis-quant on the final decision only

@@ -43,22 +43,30 @@ const MAX_MB_SIZE =4096
 // WEBP_HEADER.VP8_HEADER.VP8_PARTS0.VP8_DATA.DONE for a lossy image, and
 // WEBP_HEADER.VP8L_HEADER.VP8L_DATA.DONE for a lossless image.
 // If there is any error the decoder goes into state ERROR.
-typedef enum {
-  STATE_WEBP_HEADER,  // All the data before that of the VP8/VP8L chunk.
-  STATE_VP8_HEADER,   // The VP8 Frame header (within the VP8 chunk).
-  STATE_VP8_PARTS0,
-  STATE_VP8_DATA,
-  STATE_VP8L_HEADER,
-  STATE_VP8L_DATA,
-  STATE_DONE,
+type DecState int
+
+const (
+  STATE_WEBP_HEADER DecState = iota  // All the data before that of the VP8/VP8L chunk.
+  STATE_VP8_HEADER   // The VP8 Frame header (within the VP8 chunk).
+  STATE_VP8_PARTS0
+  STATE_VP8_DATA
+  STATE_VP8L_HEADER
+  STATE_VP8L_DATA
+  STATE_DONE
   STATE_ERROR
-} DecState;
+)
 
 // Operating state for the MemBuffer
-typedef enum { MEM_MODE_NONE = 0, MEM_MODE_APPEND, MEM_MODE_MAP } MemBufferMode;
+type MemBufferMode int
+
+const ( 
+	MEM_MODE_NONE MemBufferMode = iota
+	MEM_MODE_APPEND
+	MEM_MODE_MAP 
+	)
 
 // storage for partition #0 and partial data (in a rolling fashion)
-typedef struct {
+type MemBuffer struct {
   MemBufferMode mode;  // Operation mode
   size_t start;        // start location of the data to be decoded
   size_t end;          // end location
@@ -67,7 +75,7 @@ typedef struct {
 
   size_t part0_size;         // size of partition #0
   const uint8_t* part0_buf;  // buffer to store partition #0
-} MemBuffer;
+}
 
 type WebPIDecoder struct {
   DecState state;        // current decoding state

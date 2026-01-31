@@ -28,11 +28,13 @@ extern "C" {
 #endif
 
 // State of the worker thread object
-typedef enum {
-  NOT_OK = 0,  // object is unusable
-  OK,          // ready to work
+type WebPWorkerStatus int
+
+const (
+  NOT_OK WebPWorkerStatus = iota  // object is unusable
+  OK          // ready to work
   WORK         // busy finishing the current task
-} WebPWorkerStatus;
+}
 
 // Function to be called by the worker thread. Takes two opaque pointers as
 // arguments (data1 and data2), and should return false in case of error.

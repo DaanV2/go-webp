@@ -79,7 +79,9 @@ type WebPMux struct {
 // Note: the reason for having two enums ('WebPChunkId' and 'CHUNK_INDEX') is to
 // allow two different chunks to have the same id (e.g. WebPChunkId
 // 'WEBP_CHUNK_IMAGE' can correspond to CHUNK_INDEX 'IDX_VP8' or 'IDX_VP8L').
-typedef enum {
+type <FOO> int
+
+const (
   IDX_VP8X = 0,
   IDX_ICCP,
   IDX_ANIM,

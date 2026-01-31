@@ -38,7 +38,9 @@ extern "C" {
 // maximum value of 'transform_bits' in VP8LEncoder.
 const MAX_TRANSFORM_BITS =(MIN_TRANSFORM_BITS + (1 << NUM_TRANSFORM_BITS) - 1)
 
-typedef enum {
+type <FOO> int
+
+const (
   kEncoderNone = 0,
   kEncoderARGB,
   kEncoderNearLossless,

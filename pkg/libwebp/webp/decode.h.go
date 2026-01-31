@@ -218,19 +218,7 @@ type WebPDecBuffer struct {
 // Note: doesn't free the 'buffer' structure itself.
  func WebPFreeDecBuffer(WebPDecBuffer* buffer);
 
-//------------------------------------------------------------------------------
-// Enumeration of the status codes
 
-typedef enum  VP8StatusCode {
-  VP8_STATUS_OK = 0,
-  VP8_STATUS_OUT_OF_MEMORY,
-  VP8_STATUS_INVALID_PARAM,
-  VP8_STATUS_BITSTREAM_ERROR,
-  VP8_STATUS_UNSUPPORTED_FEATURE,
-  VP8_STATUS_SUSPENDED,
-  VP8_STATUS_USER_ABORT,
-  VP8_STATUS_NOT_ENOUGH_DATA
-} VP8StatusCode;
 
 //------------------------------------------------------------------------------
 // Incremental decoding

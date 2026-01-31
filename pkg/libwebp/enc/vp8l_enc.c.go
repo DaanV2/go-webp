@@ -44,7 +44,9 @@ const MAX_PREDICTOR_IMAGE_SIZE =(1 << 14)
 // Palette
 
 // These five modes are evaluated and their respective entropy is computed.
-typedef enum {
+type <FOO> int
+
+const (
   kDirect = 0,
   kSpatial = 1,
   kSubGreen = 2,
@@ -54,7 +56,9 @@ typedef enum {
   kNumEntropyIx = 6
 } EntropyIx;
 
-typedef enum {
+type <FOO> int
+
+const (
   kHistoAlpha = 0,
   kHistoAlphaPred,
   kHistoGreen,

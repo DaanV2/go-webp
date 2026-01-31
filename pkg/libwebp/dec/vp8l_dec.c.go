@@ -52,7 +52,9 @@ static const uint8_t kCodeLengthRepeatOffsets[3] = {3, 3, 11};
 //  3. red,
 //  4. blue, and,
 //  5. distance prefix codes.
-typedef enum { GREEN = 0, RED = 1, BLUE = 2, ALPHA = 3, DIST = 4 } HuffIndex;
+type <FOO> int
+
+const ( GREEN = 0, RED = 1, BLUE = 2, ALPHA = 3, DIST = 4 } HuffIndex;
 
 static const uint16_t kAlphabetSize[HUFFMAN_CODES_PER_META_CODE] = {
     NUM_LITERAL_CODES + NUM_LENGTH_CODES, NUM_LITERAL_CODES, NUM_LITERAL_CODES,

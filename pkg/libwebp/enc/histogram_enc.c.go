@@ -38,7 +38,9 @@ const BIN_SIZE =(NUM_PARTITIONS * NUM_PARTITIONS * NUM_PARTITIONS)
 const MAX_HISTO_GREEDY =100
 
 // Enum to meaningfully access the elements of the Histogram arrays.
-typedef enum { LITERAL = 0, RED, BLUE, ALPHA, DISTANCE } HistogramIndex;
+type <FOO> int
+
+const ( LITERAL = 0, RED, BLUE, ALPHA, DISTANCE } HistogramIndex;
 
 // Return the size of the histogram for a given cache_bits.
 static int GetHistogramSize(int cache_bits) {
