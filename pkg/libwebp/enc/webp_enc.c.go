@@ -13,24 +13,24 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <math.h>
-import <stdlib.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/math"
+import "github.com/daanv2/go-webp/pkg/stdlib"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dec/common_dec.h"
-import "src/dsp/dsp.h"
-import "src/enc/cost_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/enc/vp8li_enc.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // #define PRINT_MEMORY_INFO
 
 #ifdef PRINT_MEMORY_INFO
-import <stdio.h>
+import "github.com/daanv2/go-webp/pkg/stdio"
 #endif
 
 //------------------------------------------------------------------------------

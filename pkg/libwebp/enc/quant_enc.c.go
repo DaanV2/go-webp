@@ -13,17 +13,17 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <math.h>
-import <stdlib.h>  // for abs()
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/math"
+import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dec/common_dec.h"
-import "src/dsp/dsp.h"
-import "src/dsp/quant.h"
-import "src/enc/cost_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define DO_TRELLIS_I4 1
 #define DO_TRELLIS_I16 1  // not a huge gain, but ok at low bitrate.
@@ -55,8 +55,8 @@ import "src/webp/types.h"
 
 #if defined(DEBUG_BLOCK)
 
-import <stdio.h>
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/stdio"
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
 static void PrintBlockInfo(const VP8EncIterator* const it,
                            const VP8ModeScore* const rd) {

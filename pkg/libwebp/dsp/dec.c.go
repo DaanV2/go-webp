@@ -13,16 +13,16 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <stddef.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dec/common_dec.h"
-import "src/dec/vp8i_dec.h"
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 

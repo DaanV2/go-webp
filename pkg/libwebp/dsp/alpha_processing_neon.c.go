@@ -13,11 +13,11 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_NEON)
 
-import "src/dsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 //------------------------------------------------------------------------------
 

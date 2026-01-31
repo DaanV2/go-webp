@@ -13,14 +13,14 @@ package dsp
 //
 // Author: Prashant Patil (prashant.patil@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MSA) && !defined(WEBP_REDUCE_SIZE)
 
-import <assert.h>
+import "github.com/daanv2/go-webp/pkg/assert"
 
-import "src/dsp/msa_macro.h"
-import "src/utils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 #define ROUNDER (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)

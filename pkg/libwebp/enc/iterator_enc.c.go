@@ -13,13 +13,13 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // VP8Iterator

@@ -13,20 +13,20 @@ package dec
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
-import "src/dec/alphai_dec.h"
-import "src/dec/vp8_dec.h"
-import "src/dec/vp8i_dec.h"
-import "src/dec/vp8li_dec.h"
-import "src/dec/webpi_dec.h"
-import "src/dsp/dsp.h"
-import "src/utils/quant_levels_dec_utils.h"
-import "src/utils/utils.h"
-import "src/webp/decode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

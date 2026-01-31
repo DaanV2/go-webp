@@ -14,12 +14,12 @@ package dsp
 // Authors: Somnath Banerjee (somnath@google.com)
 //          Johann Koenig (johannkoenig@google.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_NEON)
 
-import "src/dec/vp8i_dec.h"
-import "src/dsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 //------------------------------------------------------------------------------
 // NxM Loading functions

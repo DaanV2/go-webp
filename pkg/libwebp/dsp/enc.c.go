@@ -13,15 +13,15 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <stdlib.h>  // for abs()
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 static WEBP_INLINE uint8_t clip_8b(int v) {
   return (!(v & ~0xff)) ? v : (v < 0) ? 0 : 255;

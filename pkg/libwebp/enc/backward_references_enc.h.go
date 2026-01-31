@@ -13,12 +13,12 @@ package enc
 //
 
 
-import <assert.h>
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #ifdef __cplusplus
 extern "C" {

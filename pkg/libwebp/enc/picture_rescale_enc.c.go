@@ -13,17 +13,17 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if !defined(WEBP_REDUCE_SIZE)
-import "src/utils/rescaler_utils.h"
-import "src/utils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
 #define HALVE(x) (((x) + 1) >> 1)

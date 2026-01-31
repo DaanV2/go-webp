@@ -14,10 +14,10 @@ package enc
 // Models the histograms of literal and distance codes.
 
 
-import "src/enc/backward_references_enc.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #ifdef __cplusplus
 extern "C" {

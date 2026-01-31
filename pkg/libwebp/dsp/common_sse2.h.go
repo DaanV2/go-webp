@@ -20,13 +20,13 @@ extern "C" {
 
 #if defined(WEBP_USE_SSE2)
 
-import <emmintrin.h>
+import "github.com/daanv2/go-webp/pkg/emmintrin"
 
 //------------------------------------------------------------------------------
 // Quite useful macro for debugging. Left here for convenience.
 
 #if 0
-import <stdio.h>
+import "github.com/daanv2/go-webp/pkg/stdio"
 static WEBP_INLINE void PrintReg(const __m128i r, const char* const name,
                                  int size) {
   int n;

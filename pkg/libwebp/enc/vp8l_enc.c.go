@@ -14,24 +14,24 @@ package enc
 // Author: Vikas Arora (vikaas.arora@gmail.com)
 //
 
-import <assert.h>
-import <stdlib.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/lossless.h"
-import "src/dsp/lossless_common.h"
-import "src/enc/backward_references_enc.h"
-import "src/enc/histogram_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/enc/vp8li_enc.h"
-import "src/utils/bit_writer_utils.h"
-import "src/utils/huffman_encode_utils.h"
-import "src/utils/palette.h"
-import "src/utils/thread_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Maximum number of histogram images (sub-blocks).
 #define MAX_HUFF_IMAGE_SIZE 2600

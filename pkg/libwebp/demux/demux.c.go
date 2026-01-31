@@ -13,20 +13,20 @@
 package demux
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #endif
 
-import <assert.h>
-import <stdlib.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/utils/utils.h"
-import "src/webp/decode.h"  // WebPGetFeatures
-import "src/webp/demux.h"
-import "src/webp/format_constants.h"
-import "src/webp/mux.h"
-import "src/webp/mux_types.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"  // WebPGetFeatures
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

@@ -13,17 +13,17 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/dec/common_dec.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/bit_writer_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"  // RIFF constants
-import "src/webp/mux_types.h"         // ALPHA_FLAG
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"  // RIFF constants
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"         // ALPHA_FLAG
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Helper functions

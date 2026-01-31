@@ -13,17 +13,17 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_SSE41)
-import <emmintrin.h>
-import <smmintrin.h>
-import <stdlib.h>  // for abs()
+import "github.com/daanv2/go-webp/pkg/emmintrin"
+import "github.com/daanv2/go-webp/pkg/smmintrin"
+import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
 
-import "src/dsp/common_sse2.h"
-import "src/dsp/cpu.h"
-import "src/enc/vp8i_enc.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Compute susceptibility based on DCT-coeff histograms.

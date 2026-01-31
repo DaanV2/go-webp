@@ -14,16 +14,16 @@ package mux
 // Authors: Urvang (urvang@google.com)
 //          Vikas (vikasa@google.com)
 
-import <assert.h>
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/dec/vp8_dec.h"
-import "src/mux/muxi.h"
-import "src/utils/utils.h"
-import "src/webp/format_constants.h"
-import "src/webp/mux.h"
-import "src/webp/mux_types.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/mux"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Helper method(s).

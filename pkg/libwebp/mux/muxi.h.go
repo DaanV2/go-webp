@@ -14,15 +14,15 @@ package mux
 // Author: Urvang (urvang@google.com)
 
 
-import <assert.h>
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
-import "src/dec/vp8i_dec.h"
-import "src/dec/vp8li_dec.h"
-import "src/webp/format_constants.h"
-import "src/webp/mux.h"
-import "src/webp/mux_types.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #ifdef __cplusplus
 extern "C" {

@@ -14,7 +14,7 @@ package utils
 
 #ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 
-import <ptrcheck.h>
+import "github.com/daanv2/go-webp/pkg/ptrcheck"
 //
 // There's some inherent complexity here due to the way -fbounds-safety works.
 // Some annotations (notably __indexable and __bidi_indexable) change the ABI

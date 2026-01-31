@@ -14,16 +14,16 @@ package enc
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-import <string.h>  // for memcpy()
+import "github.com/daanv2/go-webp/pkg/string"  // for memcpy()
 
-import "src/dec/common_dec.h"
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/utils/bit_writer_utils.h"
-import "src/utils/thread_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #ifdef __cplusplus
 extern "C" {

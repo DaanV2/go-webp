@@ -13,12 +13,12 @@ package dsp
 //
 // Author: Prashant Patil (prashant.patil@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MSA)
 
-import "src/dsp/lossless.h"
-import "src/dsp/msa_macro.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 //------------------------------------------------------------------------------
 // Colorspace conversion functions

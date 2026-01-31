@@ -14,13 +14,13 @@ package dsp
 // Author(s): Branimir Vasic (branimir.vasic@imgtec.com)
 //            Djordje Pesut  (djordje.pesut@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-import <assert.h>
+import "github.com/daanv2/go-webp/pkg/assert"
 
-import "src/dsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // clang-format off
 #define YUV_TO_RGB(Y, U, V, R, G, B) do {                                      \

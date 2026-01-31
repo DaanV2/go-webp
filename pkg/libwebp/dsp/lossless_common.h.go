@@ -16,12 +16,12 @@ package dsp
 //          Vincent Rabaud (vrabaud@google.com)
 
 
-import <assert.h>
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/dsp/cpu.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #ifdef __cplusplus
 extern "C" {

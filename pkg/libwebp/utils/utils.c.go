@@ -13,16 +13,16 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/utils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
-import <assert.h>
-import <stdlib.h>
-import <string.h>  // for memcpy()
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"
+import "github.com/daanv2/go-webp/pkg/string"  // for memcpy()
 
-import "src/utils/bounds_safety.h"
-import "src/utils/palette.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -58,7 +58,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 #if defined(PRINT_MEM_INFO)
 
-import <stdio.h>
+import "github.com/daanv2/go-webp/pkg/stdio"
 
 static int num_malloc_calls = 0;
 static int num_calloc_calls = 0;

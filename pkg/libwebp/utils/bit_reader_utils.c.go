@@ -14,19 +14,19 @@ package utils
 // Author: Skal (pascal.massimino@gmail.com)
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #endif
 
-import <assert.h>
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/dsp/cpu.h"
-import "src/utils/bit_reader_inl_utils.h"
-import "src/utils/bit_reader_utils.h"
-import "src/utils/bounds_safety.h"
-import "src/utils/endian_inl_utils.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -224,9 +224,9 @@ uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits) {
 
 #if (BITTRACE > 0)
 
-import <stdio.h>
-import <stdlib.h>  // for atexit()
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/stdio"
+import "github.com/daanv2/go-webp/pkg/stdlib"  // for atexit()
+import "github.com/daanv2/go-webp/pkg/string"
 
 #define MAX_NUM_LABELS 32
 static struct {

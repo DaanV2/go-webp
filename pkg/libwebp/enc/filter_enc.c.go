@@ -13,14 +13,14 @@ package enc
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
-import <assert.h>
-import <stddef.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dec/common_dec.h"
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // This table gives, for a given sharpness, the filtering strength to be
 // used (at least) in order to filter a given edge step delta.

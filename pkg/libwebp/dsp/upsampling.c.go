@@ -13,14 +13,14 @@ package dsp
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
-import <assert.h>
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/dsp/yuv.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Fancy upsampler

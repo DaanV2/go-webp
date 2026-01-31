@@ -11,15 +11,15 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <stddef.h>
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/enc/cost_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Boolean-cost cost table

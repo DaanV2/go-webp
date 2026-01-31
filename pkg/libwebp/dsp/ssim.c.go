@@ -13,12 +13,12 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <stdlib.h>  // for abs()
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if !defined(WEBP_REDUCE_SIZE)
 

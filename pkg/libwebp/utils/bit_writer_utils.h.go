@@ -14,11 +14,11 @@ package utils
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/dsp/cpu.h"
-import "src/utils/bounds_safety.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

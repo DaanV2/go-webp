@@ -13,14 +13,14 @@ package dsp
 //
 // adapted from libvpx (https://www.webmproject.org/code/)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_NEON)
 
-import <assert.h>
+import "github.com/daanv2/go-webp/pkg/assert"
 
-import "src/dsp/neon.h"
-import "src/enc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)

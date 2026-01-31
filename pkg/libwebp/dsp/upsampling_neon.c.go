@@ -14,16 +14,16 @@ package dsp
 // Author: mans@mansr.com (Mans Rullgard)
 // Based on SSE code by: somnath@google.com (Somnath Banerjee)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_NEON)
 
-import <arm_neon.h>
-import <assert.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/arm_neon"
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/neon.h"
-import "src/dsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #ifdef FANCY_UPSAMPLING
 

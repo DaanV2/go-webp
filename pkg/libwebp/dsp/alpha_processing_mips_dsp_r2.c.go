@@ -14,7 +14,7 @@ package dsp
 // Author(s): Branimir Vasic (branimir.vasic@imgtec.com)
 //            Djordje Pesut  (djordje.pesut@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 

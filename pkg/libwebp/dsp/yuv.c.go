@@ -13,16 +13,16 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/dsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-import <assert.h>
-import <stdlib.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stdlib"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Uncomment to disable gamma-compression during RGB->U/V averaging
 #define USE_GAMMA_COMPRESSION
@@ -31,7 +31,7 @@ import "src/webp/types.h"
 #define USE_INVERSE_ALPHA_TABLE
 
 #ifdef USE_GAMMA_COMPRESSION
-import <math.h>
+import "github.com/daanv2/go-webp/pkg/math"
 #endif
 
 //-----------------------------------------------------------------------------

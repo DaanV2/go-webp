@@ -16,14 +16,14 @@ package utils
 
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #endif
 
-import <assert.h>
+import "github.com/daanv2/go-webp/pkg/assert"
 
-import "src/utils/bounds_safety.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -71,7 +71,7 @@ WEBP_EXTERN void WebPSafeFree(void* const ptr);
 #define WEBP_ALIGN(PTR) \
   (((uintptr_t)(PTR) + WEBP_ALIGN_CST) & ~(uintptr_t)WEBP_ALIGN_CST)
 
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/string"
 // memcpy() is the safe way of moving potentially unaligned 32b memory.
 static WEBP_INLINE uint32_t WebPMemToUint32(const uint8_t* const ptr) {
   uint32_t A;
@@ -140,7 +140,7 @@ static WEBP_INLINE int BitsLog2Floor(uint32_t n) {
 static WEBP_INLINE int BitsCtz(uint32_t n) { return __builtin_ctz(n); }
 #elif defined(_MSC_VER) && _MSC_VER > 1310 && \
     (defined(_M_X64) || defined(_M_IX86))
-import <intrin.h>
+import "github.com/daanv2/go-webp/pkg/intrin"
 #pragma intrinsic(_BitScanReverse)
 #pragma intrinsic(_BitScanForward)
 

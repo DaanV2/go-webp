@@ -10,14 +10,14 @@ package dsp
 // -----------------------------------------------------------------------------
 
 
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/dsp.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if defined(WEBP_USE_NEON) && !defined(WEBP_ANDROID_NEON) && \
     !defined(WEBP_HAVE_NEON_RTCD)
-import <arm_neon.h>
+import "github.com/daanv2/go-webp/pkg/arm_neon"
 
 #define IsFlat IsFlat_NEON
 

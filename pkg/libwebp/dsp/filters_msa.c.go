@@ -13,13 +13,13 @@ package dsp
 //
 // Author: Prashant Patil (prashant.patil@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MSA)
 
-import <assert.h>
+import "github.com/daanv2/go-webp/pkg/assert"
 
-import "src/dsp/msa_macro.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 static WEBP_INLINE void PredictLineInverse0(const uint8_t* src,
                                             const uint8_t* pred,

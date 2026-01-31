@@ -15,13 +15,13 @@ package dsp
 //            Jovan Zelincevic (jovan.zelincevic@imgtec.com)
 //            Slobodan Prijic  (slobodan.prijic@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS32)
 
-import "src/dsp/mips_macro.h"
-import "src/enc/cost_enc.h"
-import "src/enc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
 static const int kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int kC2 = WEBP_TRANSFORM_AC3_C2;

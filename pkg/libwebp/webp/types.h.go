@@ -14,10 +14,10 @@ package webp
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-import <stddef.h>  // IWYU pragma: export for size_t
+import "github.com/daanv2/go-webp/pkg/stddef"  // IWYU pragma: export for size_t
 
 #ifndef _MSC_VER
-import <inttypes.h>  // IWYU pragma: export
+import "github.com/daanv2/go-webp/pkg/inttypes"  // IWYU pragma: export
 #if defined(__cplusplus) || !defined(__STRICT_ANSI__) || \
     (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define WEBP_INLINE inline
@@ -90,7 +90,7 @@ WEBP_EXTERN void WebPFree(void* ptr);
 }  // extern "C"
 #endif
 
-import <string.h>  // For memcpy and friends
+import "github.com/daanv2/go-webp/pkg/string"  // For memcpy and friends
 
 #ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 
@@ -108,7 +108,7 @@ import <string.h>  // For memcpy and friends
 // Currently, we only allow non-ABI changing annotations in this file to ensure
 // we don't accidentally change the ABI for public functions.
 
-import <ptrcheck.h>
+import "github.com/daanv2/go-webp/pkg/ptrcheck"
 
 #define WEBP_ASSUME_UNSAFE_INDEXABLE_ABI \
   __ptrcheck_abi_assume_unsafe_indexable()

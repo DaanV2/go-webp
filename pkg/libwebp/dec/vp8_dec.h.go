@@ -14,10 +14,10 @@ package dec
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

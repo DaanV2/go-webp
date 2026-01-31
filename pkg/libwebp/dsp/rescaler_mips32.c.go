@@ -13,13 +13,13 @@ package dsp
 //
 // Author(s): Djordje Pesut (djordje.pesut@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS32) && !defined(WEBP_REDUCE_SIZE)
 
-import <assert.h>
+import "github.com/daanv2/go-webp/pkg/assert"
 
-import "src/utils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 //------------------------------------------------------------------------------
 // Row import

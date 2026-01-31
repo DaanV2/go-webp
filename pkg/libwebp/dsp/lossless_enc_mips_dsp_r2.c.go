@@ -14,11 +14,11 @@ package dsp
 // Author(s):  Djordje Pesut    (djordje.pesut@imgtec.com)
 //             Jovan Zelincevic (jovan.zelincevic@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-import "src/dsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 static void SubtractGreenFromBlueAndRed_MIPSdspR2(uint32_t* argb_data,
                                                   int num_pixels) {

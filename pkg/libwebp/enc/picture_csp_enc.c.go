@@ -13,25 +13,25 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <assert.h>
-import <math.h>
-import <stdlib.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/math"
+import "github.com/daanv2/go-webp/pkg/stdlib"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "sharpyuv/sharpyuv.h"
-import "sharpyuv/sharpyuv_csp.h"
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/dsp/lossless.h"
-import "src/dsp/yuv.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/random_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "sharpyuv"
+import "sharpyuv"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if defined(WEBP_USE_THREAD) && !defined(_WIN32)
-import <pthread.h>
+import "github.com/daanv2/go-webp/pkg/pthread"
 #endif
 
 #define ALPHA_OFFSET CHANNEL_OFFSET(0)

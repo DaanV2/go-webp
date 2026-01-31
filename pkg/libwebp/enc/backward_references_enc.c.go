@@ -12,21 +12,21 @@ package enc
 // Author: Jyrki Alakuijala (jyrki@google.com)
 //
 
-import "src/enc/backward_references_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-import <assert.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/cpu.h"
-import "src/dsp/lossless.h"
-import "src/dsp/lossless_common.h"
-import "src/enc/histogram_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/color_cache_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define MIN_BLOCK_SIZE 256  // minimum block size for backward references
 

@@ -14,9 +14,9 @@ package webp
 // Author: Urvang (urvang@google.com)
 
 
-import <string.h>  // memset()
+import "github.com/daanv2/go-webp/pkg/string"  // memset()
 
-import "./types.h"
+import "."
 
 #ifdef __cplusplus
 extern "C" {

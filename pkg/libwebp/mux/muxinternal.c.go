@@ -14,16 +14,16 @@ package mux
 // Authors: Urvang (urvang@google.com)
 //          Vikas (vikasa@google.com)
 
-import <assert.h>
-import <stddef.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/mux/muxi.h"
-import "src/utils/utils.h"
-import "src/webp/format_constants.h"
-import "src/webp/mux.h"
-import "src/webp/mux_types.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/mux"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define UNDEFINED_CHUNK_SIZE ((uint32_t)(-1))
 

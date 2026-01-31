@@ -15,21 +15,21 @@ package enc
 
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #endif
 
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/stddef"
 
 // Either WEBP_NEAR_LOSSLESS is defined as 0 in config.h when compiling to
 // disable near-lossless, or it is enabled by default.
 #endif
 
-import "src/enc/backward_references_enc.h"
-import "src/enc/histogram_enc.h"
-import "src/utils/bit_writer_utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #ifdef __cplusplus
 extern "C" {

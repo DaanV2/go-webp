@@ -11,12 +11,12 @@ package dsp
 //
 // ARM NEON version of cost functions
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_NEON)
 
-import "src/dsp/neon.h"
-import "src/enc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
 static const uint8_t position[16] = {1, 2,  3,  4,  5,  6,  7,  8,
                                      9, 10, 11, 12, 13, 14, 15, 16};

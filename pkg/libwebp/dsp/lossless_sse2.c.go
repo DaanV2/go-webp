@@ -13,19 +13,19 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_SSE2)
 
-import <emmintrin.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/emmintrin"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/common_sse2.h"
-import "src/dsp/cpu.h"
-import "src/dsp/lossless.h"
-import "src/dsp/lossless_common.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Predictor Transform

@@ -13,17 +13,17 @@ package dsp
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_SSE2)
-import <assert.h>
-import <emmintrin.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/emmintrin"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/cpu.h"
-import "src/dsp/yuv.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #ifdef FANCY_UPSAMPLING
 

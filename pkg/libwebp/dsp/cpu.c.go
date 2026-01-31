@@ -13,20 +13,20 @@ package dsp
 //
 // Author: Christian Duvivier (cduvivier@google.com)
 
-import "src/dsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_HAVE_NEON_RTCD)
-import <stdio.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/stdio"
+import "github.com/daanv2/go-webp/pkg/string"
 #endif
 
 #if defined(WEBP_ANDROID_NEON)
-import <cpu-features.h>
+import "github.com/daanv2/go-webp/pkg/cpu-features"
 #endif
 
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // SSE2 detection.
@@ -53,11 +53,11 @@ static WEBP_INLINE void GetCPUInfo(int cpu_info[4], int info_type) {
 #elif defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
 
 #if defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 150030729  // >= VS2008 SP1
-import <intrin.h>
+import "github.com/daanv2/go-webp/pkg/intrin"
 #define GetCPUInfo(info, type) __cpuidex(info, type, 0)  // set ecx=0
 #define WEBP_HAVE_MSC_CPUID
 #elif _MSC_VER > 1310
-import <intrin.h>
+import "github.com/daanv2/go-webp/pkg/intrin"
 #define GetCPUInfo __cpuid
 #define WEBP_HAVE_MSC_CPUID
 #endif
@@ -77,7 +77,7 @@ static WEBP_INLINE uint64_t xgetbv(void) {
 }
 #elif (defined(_M_X64) || defined(_M_IX86)) && defined(_MSC_FULL_VER) && \
     _MSC_FULL_VER >= 160040219  // >= VS2010 SP1
-import <immintrin.h>
+import "github.com/daanv2/go-webp/pkg/immintrin"
 #define xgetbv() _xgetbv(0)
 #elif defined(_MSC_VER) && defined(_M_IX86)
 static WEBP_INLINE uint64_t xgetbv(void) {

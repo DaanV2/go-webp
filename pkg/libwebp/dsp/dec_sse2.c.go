@@ -14,7 +14,7 @@ package dsp
 // Author: somnath@google.com (Somnath Banerjee)
 //         cduvivier@google.com (Christian Duvivier)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_SSE2)
 
@@ -24,13 +24,13 @@ import "src/dsp/dsp.h"
 #define USE_TRANSFORM_AC3 0  // ALTERNATE_CODE
 #endif
 
-import <emmintrin.h>
+import "github.com/daanv2/go-webp/pkg/emmintrin"
 
-import "src/dec/vp8i_dec.h"
-import "src/dsp/common_sse2.h"
-import "src/dsp/cpu.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)

@@ -14,13 +14,13 @@ package dsp
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/stddef"
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #endif
 
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if defined(__GNUC__)
 #define LOCAL_GCC_VERSION ((__GNUC__ << 8) | __GNUC_MINOR__)
@@ -93,7 +93,7 @@ import "src/webp/types.h"
 #endif
 
 #if defined(WEBP_MSC_AVX2) && _MSC_VER <= 1900
-import <immintrin.h>
+import "github.com/daanv2/go-webp/pkg/immintrin"
 
 static WEBP_INLINE int _mm256_extract_epi32(__m256i a, const int i) {
   return a.m256i_i32[i & 7];
@@ -199,7 +199,7 @@ static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
 
 #if defined(WEBP_USE_THREAD)
 #if defined(_WIN32)
-import <windows.h>
+import "github.com/daanv2/go-webp/pkg/windows"
 
 #if _WIN32_WINNT < 0x0600
 #error _WIN32_WINNT must target Windows Vista / Server 2008 or newer.
@@ -219,7 +219,7 @@ import <windows.h>
 // clang-format on
 #else  // !defined(_WIN32)
 // NOLINTNEXTLINE
-import <pthread.h>
+import "github.com/daanv2/go-webp/pkg/pthread"
 
 // clang-format off
 #define WEBP_DSP_INIT_VARS(func)               \

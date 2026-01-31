@@ -13,15 +13,15 @@ package dec
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dec/common_dec.h"
-import "src/dec/vp8_dec.h"
-import "src/dec/vp8i_dec.h"
-import "src/dsp/cpu.h"
-import "src/utils/bit_reader_inl_utils.h"
-import "src/utils/bit_reader_utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

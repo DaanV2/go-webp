@@ -13,14 +13,14 @@ package dsp
 //
 // Author:  Prashant Patil   (prashant.patil@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MSA)
 
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
-import "src/dsp/msa_macro.h"
-import "src/enc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
 //------------------------------------------------------------------------------
 // Transforms

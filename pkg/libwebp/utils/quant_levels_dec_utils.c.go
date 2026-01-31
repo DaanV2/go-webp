@@ -16,13 +16,13 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/utils/quant_levels_dec_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
-import <string.h>  // for memset
+import "github.com/daanv2/go-webp/pkg/string"  // for memset
 
-import "src/utils/bounds_safety.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

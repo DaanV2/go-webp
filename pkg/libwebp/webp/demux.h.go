@@ -48,11 +48,11 @@ package webp
 */
 
 
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "./decode.h"  // for WEBP_CSP_MODE
-import "./mux_types.h"
-import "./types.h"
+import "."  // for WEBP_CSP_MODE
+import "."
+import "."
 
 #ifdef __cplusplus
 extern "C" {

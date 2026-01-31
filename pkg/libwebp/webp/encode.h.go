@@ -14,9 +14,9 @@ package webp
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "./types.h"
+import "."
 
 #ifdef __cplusplus
 extern "C" {

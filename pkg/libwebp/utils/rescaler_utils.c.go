@@ -13,17 +13,17 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/utils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
-import <assert.h>
-import <limits.h>
-import <stdlib.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/limits"
+import "github.com/daanv2/go-webp/pkg/stdlib"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/dsp.h"
-import "src/utils/bounds_safety.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

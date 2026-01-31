@@ -18,12 +18,12 @@ package dec
 extern "C" {
 #endif
 
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "src/dec/vp8_dec.h"
-import "src/utils/rescaler_utils.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

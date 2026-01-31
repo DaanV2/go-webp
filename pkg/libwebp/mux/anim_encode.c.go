@@ -12,21 +12,21 @@ package mux
 //  AnimEncoder implementation.
 //
 
-import <assert.h>
-import <limits.h>
-import <math.h>  // for pow()
-import <stdio.h>
-import <stdlib.h>  // for abs()
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/limits"
+import "github.com/daanv2/go-webp/pkg/math"  // for pow()
+import "github.com/daanv2/go-webp/pkg/stdio"
+import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/mux/animi.h"
-import "src/utils/utils.h"
-import "src/webp/decode.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/mux.h"
-import "src/webp/mux_types.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/mux"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if defined(_MSC_VER) && _MSC_VER < 1900
 #define snprintf _snprintf

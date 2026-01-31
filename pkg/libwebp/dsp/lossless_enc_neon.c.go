@@ -13,14 +13,14 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_NEON)
 
-import <arm_neon.h>
+import "github.com/daanv2/go-webp/pkg/arm_neon"
 
-import "src/dsp/lossless.h"
-import "src/dsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 //------------------------------------------------------------------------------
 // Subtract-Green Transform

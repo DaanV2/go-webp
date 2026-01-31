@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 #if defined(WEBP_USE_SSE41)
-import <smmintrin.h>
+import "github.com/daanv2/go-webp/pkg/smmintrin"
 
 //------------------------------------------------------------------------------
 // Channel mixing.

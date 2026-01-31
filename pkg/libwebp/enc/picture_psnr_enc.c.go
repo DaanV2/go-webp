@@ -13,17 +13,17 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/webp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if !(defined(WEBP_DISABLE_STATS) || defined(WEBP_REDUCE_SIZE))
 
-import <math.h>
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/math"
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 typedef double (*AccumulateFunc)(const uint8_t* src, int src_stride,
                                  const uint8_t* ref, int ref_stride, int w,

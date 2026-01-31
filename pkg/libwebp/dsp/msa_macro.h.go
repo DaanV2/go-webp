@@ -14,12 +14,12 @@ package dsp
 // Author(s):  Prashant Patil   (prashant.patil@imgtec.com)
 
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MSA)
 
-import <msa.h>
-import <stdint.h>
+import "github.com/daanv2/go-webp/pkg/msa"
+import "github.com/daanv2/go-webp/pkg/stdint"
 
 #if defined(__clang__)
 #define CLANG_BUILD

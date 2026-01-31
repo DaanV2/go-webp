@@ -11,15 +11,15 @@ package dsp
 //
 // SSE41 variant of methods for lossless decoder
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_SSE41)
-import <emmintrin.h>
-import <smmintrin.h>
+import "github.com/daanv2/go-webp/pkg/emmintrin"
+import "github.com/daanv2/go-webp/pkg/smmintrin"
 
-import "src/dsp/cpu.h"
-import "src/dsp/lossless.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Color-space conversion functions

@@ -13,14 +13,14 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/enc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-import <stdlib.h>
+import "github.com/daanv2/go-webp/pkg/stdlib"
 
-import "src/dec/common_dec.h"
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Level cost tables

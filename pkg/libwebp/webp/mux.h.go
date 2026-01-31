@@ -15,8 +15,8 @@ package webp
 //          Vikas (vikasa@google.com)
 
 
-import "./mux_types.h"
-import "./types.h"
+import "."
+import "."
 
 #ifdef __cplusplus
 extern "C" {

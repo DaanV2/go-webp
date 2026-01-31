@@ -11,11 +11,11 @@ package dsp
 //
 // Author: Djordje Pesut (djordje.pesut@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-import "src/enc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
 static int GetResidualCost_MIPSdspR2(int ctx0, const VP8Residual* const res) {
   int temp0, temp1;

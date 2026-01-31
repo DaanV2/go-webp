@@ -16,16 +16,16 @@ package enc
 // Author: Vincent Rabaud (vrabaud@google.com)
 //
 
-import <assert.h>
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dsp/lossless_common.h"
-import "src/enc/backward_references_enc.h"
-import "src/enc/histogram_enc.h"
-import "src/utils/color_cache_utils.h"
-import "src/utils/utils.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define VALUES_IN_BYTE 256
 

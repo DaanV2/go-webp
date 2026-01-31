@@ -18,8 +18,8 @@ package utils
 extern "C" {
 #endif
 
-import "src/utils/bounds_safety.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

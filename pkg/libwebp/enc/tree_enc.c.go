@@ -13,12 +13,12 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import <string.h>
+import "github.com/daanv2/go-webp/pkg/string"
 
-import "src/dec/common_dec.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/bit_writer_utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/enc"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 // Default probabilities

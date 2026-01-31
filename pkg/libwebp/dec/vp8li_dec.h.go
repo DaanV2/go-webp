@@ -15,17 +15,17 @@ package dec
 //         Vikas Arora(vikaas.arora@gmail.com)
 
 
-import <string.h>  // for memcpy()
+import "github.com/daanv2/go-webp/pkg/string"  // for memcpy()
 
-import "src/dec/vp8_dec.h"
-import "src/dec/webpi_dec.h"
-import "src/utils/bit_reader_utils.h"
-import "src/utils/color_cache_utils.h"
-import "src/utils/huffman_utils.h"
-import "src/utils/rescaler_utils.h"
-import "src/webp/decode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

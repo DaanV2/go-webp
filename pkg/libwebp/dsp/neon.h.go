@@ -12,11 +12,11 @@ package dsp
 //  NEON common code.
 
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_NEON)
 
-import <arm_neon.h>
+import "github.com/daanv2/go-webp/pkg/arm_neon"
 
 // Right now, some intrinsics functions seem slower, so we disable them
 // everywhere except newer clang/gcc or aarch64 where the inline assembly is
@@ -86,7 +86,7 @@ static WEBP_INLINE int32x4x4_t Transpose4x4_NEON(const int32x4x4_t rows) {
 }
 
 #if 0  // Useful debug macro.
-import <stdio.h>
+import "github.com/daanv2/go-webp/pkg/stdio"
 #define PRINT_REG(REG, SIZE)                            \
   do {                                                  \
     int i;                                              \

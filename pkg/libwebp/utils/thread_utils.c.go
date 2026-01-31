@@ -13,13 +13,13 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/utils/thread_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
-import <assert.h>
-import <string.h>  // for memset()
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/string"  // for memset()
 
-import "src/utils/bounds_safety.h"
-import "src/utils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
@@ -27,7 +27,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 #if defined(_WIN32)
 
-import <windows.h>
+import "github.com/daanv2/go-webp/pkg/windows"
 typedef HANDLE pthread_t;
 
 #if _WIN32_WINNT < 0x0600
@@ -45,7 +45,7 @@ typedef CONDITION_VARIABLE pthread_cond_t;
 
 #else  // !_WIN32
 
-import <pthread.h>
+import "github.com/daanv2/go-webp/pkg/pthread"
 
 #endif  // _WIN32
 
@@ -60,7 +60,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 // simplistic pthread emulation layer
 
-import <process.h>
+import "github.com/daanv2/go-webp/pkg/process"
 
 // _beginthreadex requires __stdcall
 #define THREADFN unsigned int __stdcall

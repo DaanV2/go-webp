@@ -15,15 +15,15 @@ package utils
 //         Vikas Arora (vikaas.arora@gmail.com)
 
 
-import <assert.h>
-import <stddef.h>
+import "github.com/daanv2/go-webp/pkg/assert"
+import "github.com/daanv2/go-webp/pkg/stddef"
 
 #ifdef _MSC_VER
-import <stdlib.h>  // _byteswap_ulong
+import "github.com/daanv2/go-webp/pkg/stdlib"  // _byteswap_ulong
 #endif
-import "src/dsp/cpu.h"
-import "src/utils/bounds_safety.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

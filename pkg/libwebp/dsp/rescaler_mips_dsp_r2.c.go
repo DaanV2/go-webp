@@ -13,13 +13,13 @@ package dsp
 //
 // Author(s): Djordje Pesut (djordje.pesut@imgtec.com)
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2) && !defined(WEBP_REDUCE_SIZE)
 
-import <assert.h>
+import "github.com/daanv2/go-webp/pkg/assert"
 
-import "src/utils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 #define ROUNDER (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
