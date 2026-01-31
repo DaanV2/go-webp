@@ -109,7 +109,7 @@ struct ALPHDecoder;  // Defined in dec/alphai.h.
 // Returns false in case of error.
  int VP8LDecodeAlphaHeader(
     struct ALPHDecoder* const alph_dec,
-    const uint8* const  data, size_t data_size);
+    const uint8* const  data, uint64 data_size);
 
 // Decodes *at least* 'last_row' rows of alpha. If some of the initial rows are
 // already decoded in previous call(s), it will resume decoding from where it

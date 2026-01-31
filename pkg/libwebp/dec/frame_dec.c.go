@@ -701,20 +701,20 @@ int VP8GetThreadMethod(const WebPDecoderOptions* const options,
 static int AllocateMemory(VP8Decoder* const dec) {
   const int num_caches = dec.num_caches;
   const int mb_w = dec.mb_w;
-  // Note: we use 'size_t' when there's no overflow risk, uint64 otherwise.
-  const size_t intra_pred_mode_size = 4 * mb_w * sizeof(uint8);
-  const size_t top_size = sizeof(VP8TopSamples) * mb_w;
-  const size_t mb_info_size = (mb_w + 1) * sizeof(VP8MB);
-  const size_t f_info_size =
+  // Note: we use 'uint64' when there's no overflow risk, uint64 otherwise.
+  const uint64 intra_pred_mode_size = 4 * mb_w * sizeof(uint8);
+  const uint64 top_size = sizeof(VP8TopSamples) * mb_w;
+  const uint64 mb_info_size = (mb_w + 1) * sizeof(VP8MB);
+  const uint64 f_info_size =
       (dec.filter_type > 0)
           ? mb_w * (dec.mt_method > 0 ? 2 : 1) * sizeof(VP8FInfo)
           : 0;
-  const size_t yuv_size = YUV_SIZE * sizeof(*dec.yuv_b);
-  const size_t mb_data_size =
+  const uint64 yuv_size = YUV_SIZE * sizeof(*dec.yuv_b);
+  const uint64 mb_data_size =
       (dec.mt_method == 2 ? 2 : 1) * mb_w * sizeof(*dec.mb_data);
-  const size_t cache_height =
+  const uint64 cache_height =
       (16 * num_caches + kFilterExtraRows[dec.filter_type]) * 3 / 2;
-  const size_t cache_size = top_size * cache_height;
+  const uint64 cache_size = top_size * cache_height;
   // alpha_size is the only one that scales as width x height.
   const uint64 alpha_size =
       (dec.alpha_data != nil)
@@ -735,7 +735,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
                          "no memory during frame initialization.");
     }
     // down-cast is ok, thanks to WebPSafeMalloc() above.
-    dec.mem_size = (size_t)needed;
+    dec.mem_size = (uint64)needed;
   }
 
   mem = (uint8*)dec.mem;

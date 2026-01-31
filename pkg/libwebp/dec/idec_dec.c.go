@@ -68,12 +68,12 @@ const (
 // storage for partition #0 and partial data (in a rolling fashion)
 type MemBuffer struct {
    mode MemBufferMode;  // Operation mode
-   start size_t;        // start location of the data to be decoded
-   end size_t;          // end location
-   buf_size size_t;     // size of the allocated buffer
+   start uint64;        // start location of the data to be decoded
+   end uint64;          // end location
+   buf_size uint64;     // size of the allocated buffer
    buf uint8*;        // We don't own this buffer in case WebPIUpdate()
 
-   part0_size size_t;         // size of partition #0
+   part0_size uint64;         // size of partition #0
   part0_buf uint8*;  // buffer to store partition #0
 }
 
@@ -88,7 +88,7 @@ type WebPIDecoder struct {
   WebPDecBuffer output;  // output buffer (when no external one is supplied,
                          // or if the external one has slow-memory)
   WebPDecBuffer* final_output;  // Slow-memory output to copy to eventually.
-  size_t chunk_size;  // Compressed VP8/VP8L size extracted from Header.
+  uint64 chunk_size;  // Compressed VP8/VP8L size extracted from Header.
 
   int last_mb_y;  // last row reached for intra-mode decoding
 };
@@ -103,7 +103,7 @@ type MBContext struct {
 //------------------------------------------------------------------------------
 // MemBuffer: incoming data handling
 
-static  size_t MemDataSize(const MemBuffer* mem) {
+static  uint64 MemDataSize(const MemBuffer* mem) {
   return (mem.end - mem.start);
 }
 
@@ -154,7 +154,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
         // parse the partitions). The bitreader is only used meaningfully when
         // there is enough data to begin parsing partition 0.
         if (last_start != nil) {
-          const size_t part_size = mem.buf + mem.end - last_start;
+          const uint64 part_size = mem.buf + mem.end - last_start;
           const uint8* WEBP_BIDI_INDEXABLE const bounded_last_start =
               WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const uint8*, last_start,
                                                part_size);
@@ -169,7 +169,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
         if (alph_dec != nil && alph_dec.vp8l_dec != nil) {
           if (alph_dec.method == ALPHA_LOSSLESS_COMPRESSION) {
             VP8LDecoder* const alph_vp8l_dec = alph_dec.vp8l_dec;
-            size_t data_size;
+            uint64 data_size;
             const uint8* WEBP_BIDI_INDEXABLE bounded_alpha_data;
 
             assert.Assert(dec.alpha_data_size >= ALPHA_HEADER_LEN);
@@ -185,7 +185,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
       }
     } else {  // Resize lossless bitreader
       VP8LDecoder* const dec = (VP8LDecoder*)idec.dec;
-      const size_t data_size = MemDataSize(mem);
+      const uint64 data_size = MemDataSize(mem);
       const uint8* WEBP_BIDI_INDEXABLE const bounded_new_base =
           WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const uint8*, new_base, data_size);
       VP8LBitReaderSetBuffer(&dec.br, bounded_new_base, data_size);
@@ -197,7 +197,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
 // size if required and also updates VP8BitReader's if new memory is allocated.
  static int AppendToMemBuffer(WebPIDecoder* const idec,
                                             const uint8* const data,
-                                            size_t data_size) {
+                                            uint64 data_size) {
   VP8Decoder* const dec = (VP8Decoder*)idec.dec;
   MemBuffer* const mem = &idec.mem;
   const int need_compressed_alpha = NeedCompressedAlpha(idec);
@@ -214,8 +214,8 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
   }
 
   if (mem.end + data_size > mem.buf_size) {  // Need some free memory
-    const size_t new_mem_start = old_start - old_base;
-    const size_t current_size = MemDataSize(mem) + new_mem_start;
+    const uint64 new_mem_start = old_start - old_base;
+    const uint64 current_size = MemDataSize(mem) + new_mem_start;
     const uint64 new_size = (uint64)current_size + data_size;
     const uint64 extra_size = (new_size + CHUNK_SIZE - 1) & ~(CHUNK_SIZE - 1);
     uint8* const new_buf =
@@ -224,7 +224,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
     if (old_base != nil) WEBP_UNSAFE_MEMCPY(new_buf, old_base, current_size);
     WebPSafeFree(mem.buf);
     mem.buf = new_buf;
-    mem.buf_size = (size_t)extra_size;
+    mem.buf_size = (uint64)extra_size;
     mem.start = new_mem_start;
     mem.end = current_size;
   }
@@ -240,7 +240,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
 
  static int RemapMemBuffer(WebPIDecoder* const idec,
                                          const uint8* const data,
-                                         size_t data_size) {
+                                         uint64 data_size) {
   MemBuffer* const mem = &idec.mem;
   const uint8* const old_buf = mem.buf;
   const uint8* const old_start =
@@ -334,7 +334,7 @@ static VP8StatusCode IDecError(WebPIDecoder* const idec, VP8StatusCode error) {
 }
 
 func ChangeState(WebPIDecoder* const idec, DecState new_state,
-                        size_t consumed_bytes) {
+                        uint64 consumed_bytes) {
   MemBuffer* const mem = &idec.mem;
   idec.state = new_state;
   mem.start += consumed_bytes;
@@ -347,7 +347,7 @@ func ChangeState(WebPIDecoder* const idec, DecState new_state,
 static VP8StatusCode DecodeWebPHeaders(WebPIDecoder* const idec) {
   MemBuffer* const mem = &idec.mem;
   const uint8* data = mem.buf + mem.start;
-  size_t curr_size = MemDataSize(mem);
+  uint64 curr_size = MemDataSize(mem);
   VP8StatusCode status;
   WebPHeaderStructure headers;
 
@@ -387,7 +387,7 @@ static VP8StatusCode DecodeWebPHeaders(WebPIDecoder* const idec) {
 
 static VP8StatusCode DecodeVP8FrameHeader(WebPIDecoder* const idec) {
   const uint8* data = idec.mem.buf + idec.mem.start;
-  const size_t curr_size = MemDataSize(&idec.mem);
+  const uint64 curr_size = MemDataSize(&idec.mem);
   int width, height;
   uint32 bits;
 
@@ -417,7 +417,7 @@ static VP8StatusCode DecodeVP8FrameHeader(WebPIDecoder* const idec) {
 static VP8StatusCode CopyParts0Data(WebPIDecoder* const idec) {
   VP8Decoder* const dec = (VP8Decoder*)idec.dec;
   VP8BitReader* const br = &dec.br;
-  const size_t part_size = br.buf_end - br.buf;
+  const uint64 part_size = br.buf_end - br.buf;
   MemBuffer* const mem = &idec.mem;
   assert.Assert(!idec.is_lossless);
   assert.Assert(mem.part0_buf == nil);
@@ -569,7 +569,7 @@ static VP8StatusCode DecodeVP8LHeader(WebPIDecoder* const idec) {
   VP8LDecoder* const dec = (VP8LDecoder*)idec.dec;
   const WebPDecParams* const params = &idec.params;
   WebPDecBuffer* const output = params.output;
-  size_t curr_size = MemDataSize(&idec.mem);
+  uint64 curr_size = MemDataSize(&idec.mem);
   assert.Assert(idec.is_lossless);
 
   // Wait until there's enough data for decoding header.
@@ -598,7 +598,7 @@ static VP8StatusCode DecodeVP8LHeader(WebPIDecoder* const idec) {
 
 static VP8StatusCode DecodeVP8LData(WebPIDecoder* const idec) {
   VP8LDecoder* const dec = (VP8LDecoder*)idec.dec;
-  const size_t curr_size = MemDataSize(&idec.mem);
+  const uint64 curr_size = MemDataSize(&idec.mem);
   assert.Assert(idec.is_lossless);
 
   // Switch to incremental decoding if we don't have all the bytes available.
@@ -691,7 +691,7 @@ WebPIDecoder* WebPINewDecoder(WebPDecBuffer* output_buffer) {
 }
 
 WebPIDecoder* WebPIDecode(const uint8*  data,
-                          size_t data_size, WebPDecoderConfig* config) {
+                          uint64 data_size, WebPDecoderConfig* config) {
   WebPIDecoder* idec;
   WebPBitstreamFeatures tmp_features;
   WebPBitstreamFeatures* const features =
@@ -743,7 +743,7 @@ func WebPIDelete(WebPIDecoder* idec) {
 WebPIDecoder* WebPINewRGB(WEBP_CSP_MODE csp,
                           uint8* 
                               output_buffer,
-                          size_t output_buffer_size, int output_stride) {
+                          uint64 output_buffer_size, int output_stride) {
   const int is_external_memory = (output_buffer != nil) ? 1 : 0;
   WebPIDecoder* idec;
 
@@ -768,11 +768,11 @@ WebPIDecoder* WebPINewRGB(WEBP_CSP_MODE csp,
 }
 
 WebPIDecoder* WebPINewYUVA(uint8*  luma,
-                           size_t luma_size, int luma_stride,
-                           uint8*  u, size_t u_size,
+                           uint64 luma_size, int luma_stride,
+                           uint8*  u, uint64 u_size,
                            int u_stride, uint8*  v,
-                           size_t v_size, int v_stride,
-                           uint8*  a, size_t a_size,
+                           uint64 v_size, int v_stride,
+                           uint8*  a, uint64 a_size,
                            int a_stride) {
   const int is_external_memory = (luma != nil) ? 1 : 0;
   WebPIDecoder* idec;
@@ -820,10 +820,10 @@ WebPIDecoder* WebPINewYUVA(uint8*  luma,
 }
 
 WebPIDecoder* WebPINewYUV(uint8*  luma,
-                          size_t luma_size, int luma_stride,
-                          uint8*  u, size_t u_size,
+                          uint64 luma_size, int luma_stride,
+                          uint8*  u, uint64 u_size,
                           int u_stride, uint8*  v,
-                          size_t v_size, int v_stride) {
+                          uint64 v_size, int v_stride) {
   return WebPINewYUVA(luma, luma_size, luma_stride, u, u_size, u_stride, v,
                       v_size, v_stride, nil, 0, 0);
 }
@@ -843,7 +843,7 @@ static VP8StatusCode IDecCheckStatus(const WebPIDecoder* const idec) {
 
 VP8StatusCode WebPIAppend(WebPIDecoder* idec,
                           const uint8*  data,
-                          size_t data_size) {
+                          uint64 data_size) {
   VP8StatusCode status;
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
@@ -865,7 +865,7 @@ VP8StatusCode WebPIAppend(WebPIDecoder* idec,
 
 VP8StatusCode WebPIUpdate(WebPIDecoder* idec,
                           const uint8*  data,
-                          size_t data_size) {
+                          uint64 data_size) {
   VP8StatusCode status;
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;

@@ -116,13 +116,13 @@ int VP8SetError(VP8Decoder* const dec, VP8StatusCode error,
 //------------------------------------------------------------------------------
 
 int VP8CheckSignature(const uint8* const  data,
-                      size_t data_size) {
+                      uint64 data_size) {
   return (data_size >= 3 && data[0] == 0x9d && data[1] == 0x01 &&
           data[2] == 0x2a);
 }
 
-int VP8GetInfo(const uint8*  data, size_t data_size,
-               size_t chunk_size, int* const width, int* const height) {
+int VP8GetInfo(const uint8*  data, uint64 data_size,
+               uint64 chunk_size, int* const width, int* const height) {
   if (data == nil || data_size < VP8_FRAME_HEADER_SIZE) {
     return 0;  // not enough data
   }
@@ -223,14 +223,14 @@ static int ParseSegmentHeader(VP8BitReader* br, VP8SegmentHeader* hdr,
 // If the partitions were positioned ok, VP8_STATUS_OK is returned.
 static VP8StatusCode ParsePartitions(VP8Decoder* const dec,
                                      const uint8*  buf,
-                                     size_t size) {
+                                     uint64 size) {
   VP8BitReader* const br = &dec.br;
   const uint8* WEBP_BIDI_INDEXABLE sz = buf;
   const uint8* buf_end = buf + size;
   const uint8* WEBP_BIDI_INDEXABLE part_start;
-  size_t size_left = size;
-  size_t last_part;
-  size_t p;
+  uint64 size_left = size;
+  uint64 last_part;
+  uint64 p;
 
   dec.num_parts_minus_one = (1 << VP8GetValue(br, 2, "global-header")) - 1;
   last_part = dec.num_parts_minus_one;
@@ -241,7 +241,7 @@ static VP8StatusCode ParsePartitions(VP8Decoder* const dec,
   part_start = buf + last_part * 3;
   size_left -= last_part * 3;
   for (p = 0; p < last_part; ++p) {
-    size_t psize = sz[0] | (sz[1] << 8) | (sz[2] << 16);
+    uint64 psize = sz[0] | (sz[1] << 8) | (sz[2] << 16);
     if (psize > size_left) psize = size_left;
     VP8InitBitReader(dec.parts + p, part_start, psize);
     part_start += psize;
@@ -283,7 +283,7 @@ static int ParseFilterHeader(VP8BitReader* br, VP8Decoder* const dec) {
 
 // Topmost call
 int VP8GetHeaders(VP8Decoder* const dec, VP8Io* const io) {
-  size_t buf_size;
+  uint64 buf_size;
   const uint8*  buf;
   VP8FrameHeader* frm_hdr;
   VP8PictureHeader* pic_hdr;

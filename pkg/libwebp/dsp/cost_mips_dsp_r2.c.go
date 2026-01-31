@@ -34,7 +34,7 @@ static int GetResidualCost_MIPSdspR2(int ctx0, const VP8Residual* const res) {
   const int const_max_level = MAX_VARIABLE_LEVEL;
   const int const_2 = 2;
   const uint16** p_costs = &costs[n][0];
-  const size_t inc_p_costs = NUM_CTX * sizeof(*p_costs);
+  const uint64 inc_p_costs = NUM_CTX * sizeof(*p_costs);
 
   if (res.last < 0) {
     return VP8BitCost(0, p0);

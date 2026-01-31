@@ -292,7 +292,7 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
             total_size * sizeof(*root_table.curr_segment.curr_table)),
         root_bits, code_lengths, code_lengths_size,
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-            uint16*, sorted, (size_t)code_lengths_size * sizeof(*sorted)));
+            uint16*, sorted, (uint64)code_lengths_size * sizeof(*sorted)));
     WebPSafeFree(sorted);
   }
   return total_size;

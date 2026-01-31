@@ -55,11 +55,11 @@ func ALPHDelete(ALPHDecoder* const dec) {
 // Returns false in case of error in alpha header (data too short, invalid
 // compression method or filter, error in lossless header data etc).
  static int ALPHInit(ALPHDecoder* const dec, const uint8* data,
-                                   size_t data_size, const VP8Io* const src_io,
+                                   uint64 data_size, const VP8Io* const src_io,
                                    uint8* output) {
   int ok = 0;
   const uint8* const alpha_data = data + ALPHA_HEADER_LEN;
-  const size_t alpha_data_size = data_size - ALPHA_HEADER_LEN;
+  const uint64 alpha_data_size = data_size - ALPHA_HEADER_LEN;
   int rsrv;
   VP8Io* const io = &dec.io;
 
@@ -103,7 +103,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
   // No need to copy the scaling parameters.
 
   if (dec.method == ALPHA_NO_COMPRESSION) {
-    const size_t alpha_decoded_size = dec.width * dec.height;
+    const uint64 alpha_decoded_size = dec.width * dec.height;
     ok = (alpha_data_size >= alpha_decoded_size);
   } else {
     assert.Assert(dec.method == ALPHA_LOSSLESS_COMPRESSION);
@@ -234,7 +234,7 @@ func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
         uint8* WEBP_BIDI_INDEXABLE const bounded_alpha =
             WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
                 uint8*, alpha,
-                (size_t)width*(io.crop_bottom - io.crop_top));
+                (uint64)width*(io.crop_bottom - io.crop_top));
         if (!WebPDequantizeLevels(bounded_alpha, io.crop_right - io.crop_left,
                                   io.crop_bottom - io.crop_top, width,
                                   dec.alpha_dithering)) {

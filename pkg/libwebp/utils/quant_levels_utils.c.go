@@ -32,13 +32,13 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // -----------------------------------------------------------------------------
 // Quantize levels.
 
-int QuantizeLevels(uint8* const WEBP_COUNTED_BY((size_t)width* height) data,
+int QuantizeLevels(uint8* const WEBP_COUNTED_BY((uint64)width* height) data,
                    int width, int height, int num_levels, uint64* const sse) {
   int freq[NUM_SYMBOLS] = {0};
   int q_level[NUM_SYMBOLS] = {0};
   double inv_q_level[NUM_SYMBOLS] = {0};
   int min_s = 255, max_s = 0;
-  const size_t data_size = height * width;
+  const uint64 data_size = height * width;
   int i, num_levels_in, iter;
   double last_err = 1.e38, err = 0.;
   const double err_threshold = ERROR_THRESHOLD * data_size;
@@ -56,7 +56,7 @@ int QuantizeLevels(uint8* const WEBP_COUNTED_BY((size_t)width* height) data,
   }
 
   {
-    size_t n;
+    uint64 n;
     num_levels_in = 0;
     for (n = 0; n < data_size; ++n) {
       num_levels_in += (freq[data[n]] == 0);
@@ -129,7 +129,7 @@ int QuantizeLevels(uint8* const WEBP_COUNTED_BY((size_t)width* height) data,
     // mapping, while at it (afunc one indirection in the final loop).
     uint8 map[NUM_SYMBOLS];
     int s;
-    size_t n;
+    uint64 n;
     for (s = min_s; s <= max_s; ++s) {
       const int slot = q_level[s];
       map[s] = (uint8)(inv_q_level[slot] + .5);

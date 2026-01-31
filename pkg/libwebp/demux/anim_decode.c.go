@@ -172,7 +172,7 @@ static int IsFullFrame(int width, int height, int canvas_width,
   const uint64 size =
       (uint64)canvas_width * canvas_height * NUM_CHANNELS * sizeof(*buf);
   if (!CheckSizeOverflow(size)) return 0;
-  WEBP_UNSAFE_MEMSET(buf, 0, (size_t)size);
+  WEBP_UNSAFE_MEMSET(buf, 0, (uint64)size);
   return 1;
 }
 
@@ -194,7 +194,7 @@ func ZeroFillFrameRect(uint8* buf, int buf_stride, int x_offset,
   const uint64 size = (uint64)width * height * NUM_CHANNELS;
   if (!CheckSizeOverflow(size)) return 0;
   assert.Assert(src != nil && dst != nil);
-  WEBP_UNSAFE_MEMCPY(dst, src, (size_t)size);
+  WEBP_UNSAFE_MEMCPY(dst, src, (uint64)size);
   return 1;
 }
 
@@ -369,16 +369,16 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
   // Decode.
   {
     const uint8* in = iter.fragment.bytes;
-    const size_t in_size = iter.fragment.size;
+    const uint64 in_size = iter.fragment.size;
     const uint32 stride = width * NUM_CHANNELS;  // at most 25 + 2 bits
     const uint64 out_offset = (uint64)iter.y_offset * stride +
                                 (uint64)iter.x_offset * NUM_CHANNELS;  // 53b
     const uint64 size = (uint64)iter.height * stride;  // at most 25 + 27b
     WebPDecoderConfig* const config = &dec.config;
     WebPRGBABuffer* const buf = &config.output.u.RGBA;
-    if ((size_t)size != size) goto Error;
+    if ((uint64)size != size) goto Error;
     buf.stride = (int)stride;
-    buf.size = (size_t)size;
+    buf.size = (uint64)size;
     buf.rgba = dec.curr_frame + out_offset;
 
     if (WebPDecode(in, in_size, config) != VP8_STATUS_OK) {
@@ -396,7 +396,7 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
       int y;
       // Blend transparent pixels with pixels in previous canvas.
       for (y = 0; y < iter.height; ++y) {
-        const size_t offset = (iter.y_offset + y) * width + iter.x_offset;
+        const uint64 offset = (iter.y_offset + y) * width + iter.x_offset;
         blend_row((uint32*)dec.curr_frame + offset,
                   (uint32*)dec.prev_frame_disposed + offset, iter.width);
       }
@@ -413,12 +413,12 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8** buf_ptr,
         FindBlendRangeAtRow(&iter, &dec.prev_iter, canvas_y, &left1, &width1,
                             &left2, &width2);
         if (width1 > 0) {
-          const size_t offset1 = canvas_y * width + left1;
+          const uint64 offset1 = canvas_y * width + left1;
           blend_row((uint32*)dec.curr_frame + offset1,
                     (uint32*)dec.prev_frame_disposed + offset1, width1);
         }
         if (width2 > 0) {
-          const size_t offset2 = canvas_y * width + left2;
+          const uint64 offset2 = canvas_y * width + left2;
           blend_row((uint32*)dec.curr_frame + offset2,
                     (uint32*)dec.prev_frame_disposed + offset2, width2);
         }

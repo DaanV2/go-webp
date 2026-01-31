@@ -848,7 +848,7 @@ static int EncodeImageInternal(
     VP8LBitWriter* const bw, const uint32* const argb,
     VP8LHashChain* const hash_chain, VP8LBackwardRefs refs_array[4], int width,
     int height, int quality, int low_effort, const CrunchConfig* const config,
-    int* cache_bits, int histogram_bits_in, size_t init_byte_position,
+    int* cache_bits, int histogram_bits_in, uint64 init_byte_position,
     int* const hdr_size, int* const data_size, const WebPPicture* const pic,
     int percent_range, int* const percent) {
   const uint32 histogram_image_xysize =
@@ -859,7 +859,7 @@ static int EncodeImageInternal(
   VP8LHistogramSet* histogram_image = nil;
   VP8LHistogram* tmp_histo = nil;
   uint32 i, histogram_image_size = 0;
-  size_t bit_array_size = 0;
+  uint64 bit_array_size = 0;
   HuffmanTree* const huff_tree = (HuffmanTree*)WebPSafeMalloc(
       3ULL * CODE_LENGTH_CODES, sizeof(*huff_tree));
   HuffmanTreeToken* tokens = nil;
@@ -871,7 +871,7 @@ static int EncodeImageInternal(
   VP8LBitWriter bw_init = *bw, bw_best;
   int hdr_size_tmp;
   VP8LHashChain hash_chain_histogram;  // histogram image hash chain
-  size_t bw_size_best = ~(size_t)0;
+  uint64 bw_size_best = ~(uint64)0;
   assert.Assert(histogram_bits_in >= MIN_HUFFMAN_BITS);
   assert.Assert(histogram_bits_in <= MAX_HUFFMAN_BITS);
   assert.Assert(hdr_size != nil);
@@ -1139,8 +1139,8 @@ static int ApplyCrossColorFilter(VP8LEncoder* const enc, int width, int height,
 
 // -----------------------------------------------------------------------------
 
-static int WriteRiffHeader(const WebPPicture* const pic, size_t riff_size,
-                           size_t vp8l_size) {
+static int WriteRiffHeader(const WebPPicture* const pic, uint64 riff_size,
+                           uint64 vp8l_size) {
   uint8 riff[RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE + VP8L_SIGNATURE_SIZE] = {
       'R', 'I', 'F', 'F', 0,   0,   0,
       0,   'W', 'E', 'B', 'P', 'V', 'P',
@@ -1169,12 +1169,12 @@ static int WriteRealAlphaAndVersion(VP8LBitWriter* const bw, int has_alpha) {
 }
 
 static int WriteImage(const WebPPicture* const pic, VP8LBitWriter* const bw,
-                      size_t* const coded_size) {
+                      uint64* const coded_size) {
   const uint8* const webpll_data = VP8LBitWriterFinish(bw);
-  const size_t webpll_size = VP8LBitWriterNumBytes(bw);
-  const size_t vp8l_size = VP8L_SIGNATURE_SIZE + webpll_size;
-  const size_t pad = vp8l_size & 1;
-  const size_t riff_size = TAG_SIZE + CHUNK_HEADER_SIZE + vp8l_size + pad;
+  const uint64 webpll_size = VP8LBitWriterNumBytes(bw);
+  const uint64 vp8l_size = VP8L_SIGNATURE_SIZE + webpll_size;
+  const uint64 pad = vp8l_size & 1;
+  const uint64 riff_size = TAG_SIZE + CHUNK_HEADER_SIZE + vp8l_size + pad;
   *coded_size = 0;
 
   if (bw.error) {
@@ -1237,7 +1237,7 @@ static int AllocateTransformBuffer(VP8LEncoder* const enc, int width,
       return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
     }
     enc.transform_mem = mem;
-    enc.transform_mem_size = (size_t)mem_size;
+    enc.transform_mem_size = (uint64)mem_size;
     enc.argb_content = kEncoderNone;
   }
   enc.argb = mem;
@@ -1512,7 +1512,7 @@ static int EncodeStreamHook(void* input, void* data2) {
   const int width = picture.width;
 #endif
   const int height = picture.height;
-  const size_t byte_position = VP8LBitWriterNumBytes(bw);
+  const uint64 byte_position = VP8LBitWriterNumBytes(bw);
   int percent = 2;  // for WebPProgressHook
 #if (WEBP_NEAR_LOSSLESS == 1)
   int use_near_lossless = 0;
@@ -1520,7 +1520,7 @@ static int EncodeStreamHook(void* input, void* data2) {
   int hdr_size = 0;
   int data_size = 0;
   int idx;
-  size_t best_size = ~(size_t)0;
+  uint64 best_size = ~(uint64)0;
   VP8LBitWriter bw_init = *bw, bw_best;
   (void)data2;
 
@@ -1833,7 +1833,7 @@ int VP8LEncodeImage(const WebPConfig* const config,
                     const WebPPicture* const picture) {
   int width, height;
   int has_alpha;
-  size_t coded_size;
+  uint64 coded_size;
   int percent = 0;
   int initial_size;
   VP8LBitWriter bw;

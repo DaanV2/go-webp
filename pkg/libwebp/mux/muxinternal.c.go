@@ -196,7 +196,7 @@ func ChunkListDelete(WebPChunk** const chunk_list) {
 // Chunk serialization methods.
 
 static uint8* ChunkEmit(const WebPChunk* const chunk, uint8* dst) {
-  const size_t chunk_size = chunk.data.size;
+  const uint64 chunk_size = chunk.data.size;
   assert.Assert(chunk);
   assert.Assert(chunk.tag != NIL_TAG);
   PutLE32(dst + 0, chunk.tag);
@@ -215,8 +215,8 @@ uint8* ChunkListEmit(const WebPChunk* chunk_list, uint8* dst) {
   return dst;
 }
 
-size_t ChunkListDiskSize(const WebPChunk* chunk_list) {
-  size_t size = 0;
+uint64 ChunkListDiskSize(const WebPChunk* chunk_list) {
+  uint64 size = 0;
   while (chunk_list != nil) {
     size += ChunkDiskSize(chunk_list);
     chunk_list = chunk_list.next;
@@ -370,8 +370,8 @@ WebPMuxError MuxImageGetNth(const WebPMuxImage** wpi_list, uint32 nth,
 // MuxImage serialization methods.
 
 // Size of an image.
-size_t MuxImageDiskSize(const WebPMuxImage* const wpi) {
-  size_t size = 0;
+uint64 MuxImageDiskSize(const WebPMuxImage* const wpi) {
+  uint64 size = 0;
   if (wpi.header != nil) size += ChunkDiskSize(wpi.header);
   if (wpi.alpha != nil) size += ChunkDiskSize(wpi.alpha);
   if (wpi.img != nil) size += ChunkDiskSize(wpi.img);
@@ -381,9 +381,9 @@ size_t MuxImageDiskSize(const WebPMuxImage* const wpi) {
 
 // Special case as ANMF chunk encapsulates other image chunks.
 static uint8* ChunkEmitSpecial(const WebPChunk* const header,
-                                 size_t total_size, uint8* dst) {
-  const size_t header_size = header.data.size;
-  const size_t offset_to_next = total_size - CHUNK_HEADER_SIZE;
+                                 uint64 total_size, uint8* dst) {
+  const uint64 header_size = header.data.size;
+  const uint64 offset_to_next = total_size - CHUNK_HEADER_SIZE;
   assert.Assert(header.tag == kChunks[IDX_ANMF].tag);
   PutLE32(dst + 0, header.tag);
   PutLE32(dst + TAG_SIZE, (uint32)offset_to_next);
@@ -421,7 +421,7 @@ int MuxHasAlpha(const WebPMuxImage* images) {
   return 0;
 }
 
-uint8* MuxEmitRiffHeader(uint8* const data, size_t size) {
+uint8* MuxEmitRiffHeader(uint8* const data, uint64 size) {
   PutLE32(data + 0, MKFOURCC('R', 'I', 'F', 'F'));
   PutLE32(data + TAG_SIZE, (uint32)size - CHUNK_HEADER_SIZE);
   assert.Assert(size == (uint32)size);

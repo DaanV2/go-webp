@@ -227,15 +227,15 @@ func CountLevels(SmoothParams* const p) {
 }
 
 // Initialize all params.
-static int InitParams(uint8* WEBP_SIZED_BY((size_t)stride* height) const data,
+static int InitParams(uint8* WEBP_SIZED_BY((uint64)stride* height) const data,
                       int width, int height, int stride, int radius,
                       SmoothParams* const p) {
   const int R = 2 * radius + 1;  // total size of the kernel
 
-  const size_t size_scratch_m = (R + 1) * width * sizeof(*p.start);
-  const size_t size_m = width * sizeof(*p.average);
-  const size_t size_lut = CORRECTION_LUT_SIZE * sizeof(*p.correction);
-  const size_t total_size = size_scratch_m + size_m + size_lut;
+  const uint64 size_scratch_m = (R + 1) * width * sizeof(*p.start);
+  const uint64 size_m = width * sizeof(*p.average);
+  const uint64 size_lut = CORRECTION_LUT_SIZE * sizeof(*p.correction);
+  const uint64 total_size = size_scratch_m + size_m + size_lut;
   uint8* WEBP_BIDI_INDEXABLE mem = (uint8*)WebPSafeMalloc(1U, total_size);
 
   if (mem == nil) return 0;
@@ -273,7 +273,7 @@ static int InitParams(uint8* WEBP_SIZED_BY((size_t)stride* height) const data,
 
 func CleanupParams(SmoothParams* const p) { WebPSafeFree(p.mem); }
 
-int WebPDequantizeLevels(uint8* WEBP_SIZED_BY((size_t)stride* height)
+int WebPDequantizeLevels(uint8* WEBP_SIZED_BY((uint64)stride* height)
                              const data,
                          int width, int height, int stride, int strength) {
   int radius = 4 * strength / 100;

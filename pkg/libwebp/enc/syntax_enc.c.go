@@ -42,7 +42,7 @@ static int PutPaddingByte(const WebPPicture* const pic) {
 // Writers for header's various pieces (in order of appearance)
 
 static WebPEncodingError PutRIFFHeader(const VP8Encoder* const enc,
-                                       size_t riff_size) {
+                                       uint64 riff_size) {
   const WebPPicture* const pic = enc.pic;
   uint8 riff[RIFF_HEADER_SIZE] = {'R', 'I', 'F', 'F', 0,   0,
                                     0,   0,   'W', 'E', 'B', 'P'};
@@ -102,7 +102,7 @@ static WebPEncodingError PutAlphaChunk(const VP8Encoder* const enc) {
 }
 
 static WebPEncodingError PutVP8Header(const WebPPicture* const pic,
-                                      size_t vp8_size) {
+                                      uint64 vp8_size) {
   uint8 vp8_chunk_hdr[CHUNK_HEADER_SIZE] = {'V', 'P', '8', ' '};
   assert.Assert(vp8_size == (uint32)vp8_size);
   PutLE32(vp8_chunk_hdr + TAG_SIZE, (uint32)vp8_size);
@@ -113,7 +113,7 @@ static WebPEncodingError PutVP8Header(const WebPPicture* const pic,
 }
 
 static WebPEncodingError PutVP8FrameHeader(const WebPPicture* const pic,
-                                           int profile, size_t size0) {
+                                           int profile, uint64 size0) {
   uint8 vp8_frm_hdr[VP8_FRAME_HEADER_SIZE];
   uint32 bits;
 
@@ -146,8 +146,8 @@ static WebPEncodingError PutVP8FrameHeader(const WebPPicture* const pic,
 }
 
 // WebP Headers.
-static int PutWebPHeaders(const VP8Encoder* const enc, size_t size0,
-                          size_t vp8_size, size_t riff_size) {
+static int PutWebPHeaders(const VP8Encoder* const enc, uint64 size0,
+                          uint64 vp8_size, uint64 riff_size) {
   WebPPicture* const pic = enc.pic;
   WebPEncodingError err = VP8_ENC_OK;
 
@@ -249,7 +249,7 @@ static int EmitPartitionsSize(const VP8Encoder* const enc,
   uint8 buf[3 * (MAX_NUM_PARTITIONS - 1)];
   int p;
   for (p = 0; p < enc.num_parts - 1; ++p) {
-    const size_t part_size = VP8BitWriterSize(enc.parts + p);
+    const uint64 part_size = VP8BitWriterSize(enc.parts + p);
     if (part_size >= VP8_MAX_PARTITION_SIZE) {
       return WebPEncodingSetError(pic, VP8_ENC_ERROR_PARTITION_OVERFLOW);
     }
@@ -326,7 +326,7 @@ int VP8EncWrite(VP8Encoder* const enc) {
   const int percent_per_part = task_percent / enc.num_parts;
   const int final_percent = enc.percent + task_percent;
   int ok = 0;
-  size_t vp8_size, pad, riff_size;
+  uint64 vp8_size, pad, riff_size;
   int p;
 
   // Partition #0 with header and partition sizes
@@ -361,7 +361,7 @@ int VP8EncWrite(VP8Encoder* const enc) {
   // Emit headers and partition #0
   {
     const uint8* const part0 = VP8BitWriterBuf(bw);
-    const size_t size0 = VP8BitWriterSize(bw);
+    const uint64 size0 = VP8BitWriterSize(bw);
     ok = ok && PutWebPHeaders(enc, size0, vp8_size, riff_size) &&
          pic.writer(part0, size0, pic) && EmitPartitionsSize(enc, pic);
     VP8BitWriterWipeOut(bw);  // will free the internal buffer.
@@ -370,7 +370,7 @@ int VP8EncWrite(VP8Encoder* const enc) {
   // Token partitions
   for (p = 0; p < enc.num_parts; ++p) {
     const uint8* const buf = VP8BitWriterBuf(enc.parts + p);
-    const size_t size = VP8BitWriterSize(enc.parts + p);
+    const uint64 size = VP8BitWriterSize(enc.parts + p);
     if (size) ok = ok && pic.writer(buf, size, pic);
     VP8BitWriterWipeOut(enc.parts + p);  // will free the internal buffer.
     ok = ok && WebPReportProgress(pic, enc.percent + percent_per_part,

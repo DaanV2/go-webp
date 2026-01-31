@@ -37,13 +37,13 @@ type VP8BitWriter struct {
   int nb_bits;  // number of pending bits
   // internal buffer. Re-allocated regularly. Not owned.
   uint8* WEBP_SIZED_BY_OR_nil(max_pos) buf;
-  size_t pos;
-  size_t max_pos;
+  uint64 pos;
+  uint64 max_pos;
   int error;  // true in case of error
 };
 
 // Initialize the object. Allocates some initial memory based on expected_size.
-int VP8BitWriterInit(VP8BitWriter* const bw, size_t expected_size);
+int VP8BitWriterInit(VP8BitWriter* const bw, uint64 expected_size);
 // Finalize the bitstream coding. Returns a pointer to the internal buffer.
 uint8* VP8BitWriterFinish(VP8BitWriter* const bw);
 // Release any pending memory and zeroes the object. Not a mandatory call.
@@ -57,7 +57,7 @@ func VP8PutSignedBits(VP8BitWriter* const bw, int value, int nb_bits);
 
 // Appends some bytes to the internal buffer. Data is copied.
 int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8* data,
-                       size_t size);
+                       uint64 size);
 
 // return approximate write position (in bits)
 static  uint64 VP8BitWriterPos(const VP8BitWriter* const bw) {
@@ -70,7 +70,7 @@ static  uint8* VP8BitWriterBuf(const VP8BitWriter* const bw) {
   return bw.buf;
 }
 // Returns the size of the internal buffer.
-static  size_t VP8BitWriterSize(const VP8BitWriter* const bw) {
+static  uint64 VP8BitWriterSize(const VP8BitWriter* const bw) {
   return bw.pos;
 }
 
@@ -108,12 +108,12 @@ type <Foo> struct {
   int error;
 } VP8LBitWriter;
 
-static  size_t VP8LBitWriterNumBytes(const VP8LBitWriter* const bw) {
+static  uint64 VP8LBitWriterNumBytes(const VP8LBitWriter* const bw) {
   return (bw.cur - bw.buf) + ((bw.used + 7) >> 3);
 }
 
 // Returns false in case of memory allocation error.
-int VP8LBitWriterInit(VP8LBitWriter* const bw, size_t expected_size);
+int VP8LBitWriterInit(VP8LBitWriter* const bw, uint64 expected_size);
 // Returns false in case of memory allocation error.
 int VP8LBitWriterClone(const VP8LBitWriter* const src,
                        VP8LBitWriter* const dst);

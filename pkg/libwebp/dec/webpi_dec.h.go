@@ -62,14 +62,14 @@ func WebPResetDecParams(WebPDecParams* const params);
 // Structure storing a description of the RIFF headers.
 type <Foo> struct {
   const uint8*  data;  // input buffer
-  size_t data_size;                                // input buffer size
+  uint64 data_size;                                // input buffer size
   int have_all_data;  // true if all data is known to be available
-  size_t offset;      // offset to main data chunk (VP8 or VP8L)
+  uint64 offset;      // offset to main data chunk (VP8 or VP8L)
   const uint8* 
       alpha_data;          // points to alpha chunk (if present)
-  size_t alpha_data_size;  // alpha chunk size
-  size_t compressed_size;  // VP8/VP8L compressed data size
-  size_t riff_size;        // size of the riff payload (or 0 if absent)
+  uint64 alpha_data_size;  // alpha chunk size
+  uint64 compressed_size;  // VP8/VP8L compressed data size
+  uint64 riff_size;        // size of the riff payload (or 0 if absent)
   int is_lossless;         // true if a VP8L chunk is present
 } WebPHeaderStructure;
 

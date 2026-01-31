@@ -35,7 +35,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 func VP8BitReaderSetBuffer(VP8BitReader* const br,
                            const uint8* const  start,
-                           size_t size) {
+                           uint64 size) {
   assert.Assert(start != nil);
   br.buf = start;
   br.buf_end = start + size;
@@ -45,7 +45,7 @@ func VP8BitReaderSetBuffer(VP8BitReader* const br,
 
 func VP8InitBitReader(VP8BitReader* const br,
                       const uint8* const  start,
-                      size_t size) {
+                      uint64 size) {
   assert.Assert(br != nil);
   assert.Assert(start != nil);
   assert.Assert(size < (1u << 31));  // limit ensured by format and upstream checks
@@ -137,8 +137,8 @@ static const uint32 kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
 
 func VP8LInitBitReader(VP8LBitReader* const br,
                        const uint8* const  start,
-                       size_t length) {
-  size_t i;
+                       uint64 length) {
+  uint64 i;
   vp8l_val_t value = 0;
   assert.Assert(br != nil);
   assert.Assert(start != nil);
@@ -161,7 +161,7 @@ func VP8LInitBitReader(VP8LBitReader* const br,
 
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
                             const uint8* const  buf,
-                            size_t len) {
+                            uint64 len) {
   assert.Assert(br != nil);
   assert.Assert(buf != nil);
   assert.Assert(len < 0xfffffff8u);  // can't happen with a RIFF chunk.

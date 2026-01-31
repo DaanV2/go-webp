@@ -38,7 +38,7 @@ func InitLeft(VP8EncIterator* const it) {
 
 func InitTop(VP8EncIterator* const it) {
   const VP8Encoder* const enc = it.enc;
-  const size_t top_size = enc.mb_w * 16;
+  const uint64 top_size = enc.mb_w * 16;
   memset(enc.y_top, 127, 2 * top_size);
   memset(enc.nz, 0, enc.mb_w * sizeof(*enc.nz));
   if (enc.top_derr != nil) {

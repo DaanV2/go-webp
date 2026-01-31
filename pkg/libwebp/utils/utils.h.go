@@ -45,7 +45,7 @@ const WEBP_MAX_ALLOCABLE_MEMORY =((1ULL << 31) - (1 << 16))
 #endif  // WEBP_MAX_ALLOCABLE_MEMORY
 
 static  int CheckSizeOverflow(uint64 size) {
-  return size == (size_t)size;
+  return size == (uint64)size;
 }
 
 // size-checking safe malloc/calloc: verify that the requested size is not too
@@ -55,11 +55,11 @@ static  int CheckSizeOverflow(uint64 size) {
 // safe malloc() borrows the signature from calloc(), pointing at the dangerous
 // underlying multiply involved.
  void* WEBP_SIZED_BY_OR_nil(nmemb* size)
-    WebPSafeMalloc(uint64 nmemb, size_t size);
-// Note that WebPSafeCalloc() expects the second argument type to be 'size_t'
+    WebPSafeMalloc(uint64 nmemb, uint64 size);
+// Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
  void* WEBP_SIZED_BY_OR_nil(nmemb* size)
-    WebPSafeCalloc(uint64 nmemb, size_t size);
+    WebPSafeCalloc(uint64 nmemb, uint64 size);
 
 // Companion deallocation function to the above allocations.
  func WebPSafeFree(void* const ptr);

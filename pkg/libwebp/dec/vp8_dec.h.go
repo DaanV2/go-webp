@@ -89,7 +89,7 @@ type VP8Io struct {
   int fancy_upsampling;
 
   // Input buffer.
-  size_t data_size;
+  uint64 data_size;
   const uint8* data;
 
   // If true, in-loop filtering will not be performed even if present in the
@@ -161,27 +161,27 @@ func VP8Delete(VP8Decoder* const dec);
 
 // Returns true if the next 3 bytes in data contain the VP8 signature.
  int VP8CheckSignature(
-    const uint8* const  data, size_t data_size);
+    const uint8* const  data, uint64 data_size);
 
 // Validates the VP8 data-header and retrieves basic header information viz
 // width and height. Returns 0 in case of formatting error. *width/*height
 // can be passed nil.
  int VP8GetInfo(
     const uint8*  data,
-    size_t data_size,   // data available so far
-    size_t chunk_size,  // total data size expected in the chunk
+    uint64 data_size,   // data available so far
+    uint64 chunk_size,  // total data size expected in the chunk
     int* const width, int* const height);
 
 // Returns true if the next byte(s) in data is a VP8L signature.
  int VP8LCheckSignature(const uint8* const 
                                        data,
-                                   size_t size);
+                                   uint64 size);
 
 // Validates the VP8L data-header and retrieves basic header information viz
 // width, height and alpha. Returns 0 in case of formatting error.
 // width/height/has_alpha can be passed nil.
  int VP8LGetInfo(const uint8*  data,
-                            size_t data_size,  // data available so far
+                            uint64 data_size,  // data available so far
                             int* const width, int* const height,
                             int* const has_alpha);
 

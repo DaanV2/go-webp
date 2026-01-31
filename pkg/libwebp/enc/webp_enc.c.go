@@ -156,16 +156,16 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
   const int mb_h = (picture.height + 15) >> 4;
   const int preds_w = 4 * mb_w + 1;
   const int preds_h = 4 * mb_h + 1;
-  const size_t preds_size = preds_w * preds_h * sizeof(*enc.preds);
+  const uint64 preds_size = preds_w * preds_h * sizeof(*enc.preds);
   const int top_stride = mb_w * 16;
-  const size_t nz_size = (mb_w + 1) * sizeof(*enc.nz) + WEBP_ALIGN_CST;
-  const size_t info_size = mb_w * mb_h * sizeof(*enc.mb_info);
-  const size_t samples_size =
+  const uint64 nz_size = (mb_w + 1) * sizeof(*enc.nz) + WEBP_ALIGN_CST;
+  const uint64 info_size = mb_w * mb_h * sizeof(*enc.mb_info);
+  const uint64 samples_size =
       2 * top_stride * sizeof(*enc.y_top)  // top-luma/u/v
       + WEBP_ALIGN_CST;                     // align all
-  const size_t lf_stats_size =
+  const uint64 lf_stats_size =
       config.autofilter ? sizeof(*enc.lf_stats) + WEBP_ALIGN_CST : 0;
-  const size_t top_derr_size =
+  const uint64 top_derr_size =
       (config.quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1)
           ? mb_w * sizeof(*enc.top_derr)
           : 0;

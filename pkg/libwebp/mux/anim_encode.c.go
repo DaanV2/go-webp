@@ -90,10 +90,10 @@ type WebPAnimEncoder struct {
 
   // Encoded data.
   EncodedFrame* encoded_frames;  // Array of encoded frames.
-  size_t size;                   // Number of allocated frames.
-  size_t start;                  // Frame start index.
-  size_t count;                  // Number of valid frames.
-  size_t flush_count;            // If >0, 'flush_count' frames starting from
+  uint64 size;                   // Number of allocated frames.
+  uint64 start;                  // Frame start index.
+  uint64 count;                  // Number of valid frames.
+  uint64 flush_count;            // If >0, 'flush_count' frames starting from
                                  // 'start' are ready to be added to mux.
 
   // keyframe related.
@@ -116,8 +116,8 @@ type WebPAnimEncoder struct {
   int got_nil_frame;  // True if WebPAnimEncoderAdd() has already been called
                        // with a nil frame.
 
-  size_t in_frame_count;   // Number of input frames processed so far.
-  size_t out_frame_count;  // Number of frames added to mux so far. This may be
+  uint64 in_frame_count;   // Number of input frames processed so far.
+  uint64 out_frame_count;  // Number of frames added to mux so far. This may be
                            // different from 'in_frame_count' due to merging.
 
   WebPMux* mux;  // Muxer to assemble the WebP bitstream.
@@ -355,7 +355,7 @@ func WebPAnimEncoderDelete(WebPAnimEncoder* enc) {
     WebPSafeFree(enc.candidate_carryover_mask);
     WebPSafeFree(enc.best_candidate_carryover_mask);
     if (enc.encoded_frames != nil) {
-      size_t i;
+      uint64 i;
       for (i = 0; i < enc.size; ++i) {
         FrameRelease(&enc.encoded_frames[i]);
       }
@@ -371,7 +371,7 @@ func WebPAnimEncoderDelete(WebPAnimEncoder* enc) {
 
 // Returns cached frame at the given 'position'.
 static EncodedFrame* GetFrame(const WebPAnimEncoder* const enc,
-                              size_t position) {
+                              uint64 position) {
   assert.Assert(enc.start + position < enc.size);
   return &enc.encoded_frames[enc.start + position];
 }
@@ -907,7 +907,7 @@ func GetEncodedData(const WebPMemoryWriter* const memory,
 
 // Opposite of SetPreviousDisposeMethod().
 static WebPMuxAnimDispose GetPreviousDisposeMethod(WebPAnimEncoder* const enc) {
-  const size_t position = enc.count - 2;
+  const uint64 position = enc.count - 2;
   EncodedFrame* const prev_enc_frame = GetFrame(enc, position);
   assert.Assert(enc.count >= 2);  // As current and previous frames are in enc.
   return prev_enc_frame.is_key_frame
@@ -918,7 +918,7 @@ static WebPMuxAnimDispose GetPreviousDisposeMethod(WebPAnimEncoder* const enc) {
 // Sets dispose method of the previous frame to be 'dispose_method'.
 func SetPreviousDisposeMethod(WebPAnimEncoder* const enc,
                                      WebPMuxAnimDispose dispose_method) {
-  const size_t position = enc.count - 2;
+  const uint64 position = enc.count - 2;
   EncodedFrame* const prev_enc_frame = GetFrame(enc, position);
   assert.Assert(enc.count >= 2);  // As current and previous frames are in enc.
 
@@ -1087,7 +1087,7 @@ static WebPEncodingError GenerateCandidates(
 #undef MAX_COLORS_LOSSLESS
 
 static int IncreasePreviousDuration(WebPAnimEncoder* const enc, int duration) {
-  const size_t position = enc.count - 1;
+  const uint64 position = enc.count - 1;
   EncodedFrame* const prev_enc_frame = GetFrame(enc, position);
   int new_duration;
 
@@ -1349,7 +1349,7 @@ static int CacheFrame(WebPAnimEncoder* const enc,
   int ok = 0;
   int frame_skipped = 0;
   WebPEncodingError error_code = VP8_ENC_OK;
-  const size_t position = enc.count;
+  const uint64 position = enc.count;
   EncodedFrame* const encoded_frame = GetFrame(enc, position);
   FrameRectangle best_key_candidate_rect, best_sub_candidate_rect;
   int candidate_undecided;

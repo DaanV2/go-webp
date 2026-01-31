@@ -14,7 +14,7 @@ package webp
 // Author: Skal (pascal.massimino@gmail.com)
 
 
-import "github.com/daanv2/go-webp/pkg/stddef"  // IWYU pragma: export for size_t
+import "github.com/daanv2/go-webp/pkg/stddef"  // IWYU pragma: export for uint64
 
 
 
@@ -28,7 +28,7 @@ func WEBP_ABI_IS_INCOMPATIBLE(a, b int) int {
 // must be deallocated by calling WebPFree(). This function is made available
 // by the core 'libwebp' library.
 // Deprecated: Not needed in Go, use built-in memory management.
-func WebPMalloc(size size_t) {
+func WebPMalloc(size uint64) {
 	panic("not implemented")
 }
 

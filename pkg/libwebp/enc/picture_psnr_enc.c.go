@@ -129,9 +129,9 @@ static double GetLogSSIM(double v, double size) {
   return (v < 1.) ? -10.0 * log10(1. - v) : kMinDistortion_dB;
 }
 
-int WebPPlaneDistortion(const uint8* src, size_t src_stride,
-                        const uint8* ref, size_t ref_stride, int width,
-                        int height, size_t x_step, int type, float* distortion,
+int WebPPlaneDistortion(const uint8* src, uint64 src_stride,
+                        const uint8* ref, uint64 ref_stride, int width,
+                        int height, uint64 x_step, int type, float* distortion,
                         float* result) {
   uint8* allocated = nil;
   const AccumulateFunc metric = (type == 0)   ? AccumulateSSE
@@ -151,7 +151,7 @@ int WebPPlaneDistortion(const uint8* src, size_t src_stride,
         (uint8*)WebPSafeMalloc(2ULL * width * height, sizeof(*allocated));
     if (allocated == nil) return 0;
     tmp1 = allocated;
-    tmp2 = tmp1 + (size_t)width * height;
+    tmp2 = tmp1 + (uint64)width * height;
     for (y = 0; y < height; ++y) {
       for (x = 0; x < width; ++x) {
         tmp1[x + y * width] = src[x * x_step + y * src_stride];
@@ -198,8 +198,8 @@ int WebPPictureDistortion(const WebPPicture* src, const WebPPicture* ref,
   if (p1.use_argb == 0 && !WebPPictureYUVAToARGB(&p1)) goto Error;
   for (c = 0; c < 4; ++c) {
     float distortion;
-    const size_t stride0 = 4 * (size_t)p0.argb_stride;
-    const size_t stride1 = 4 * (size_t)p1.argb_stride;
+    const uint64 stride0 = 4 * (uint64)p0.argb_stride;
+    const uint64 stride1 = 4 * (uint64)p1.argb_stride;
     // results are reported as BGRA
     const int offset = c ^ BLUE_OFFSET;
     if (!WebPPlaneDistortion((const uint8*)p0.argb + offset, stride0,
@@ -224,9 +224,9 @@ Error:
 #undef BLUE_OFFSET
 
 #else  // defined(WEBP_DISABLE_STATS)
-int WebPPlaneDistortion(const uint8* src, size_t src_stride,
-                        const uint8* ref, size_t ref_stride, int width,
-                        int height, size_t x_step, int type, float* distortion,
+int WebPPlaneDistortion(const uint8* src, uint64 src_stride,
+                        const uint8* ref, uint64 ref_stride, int width,
+                        int height, uint64 x_step, int type, float* distortion,
                         float* result) {
   (void)src;
   (void)src_stride;

@@ -48,16 +48,16 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // These functions compress using the lossy format, and the quality_factor
 // can go from 0 (smaller output, lower quality) to 100 (best quality,
 // larger output).
- size_t WebPEncodeRGB(const uint8* rgb, int width, int height,
+ uint64 WebPEncodeRGB(const uint8* rgb, int width, int height,
                                  int stride, float quality_factor,
                                  uint8** output);
- size_t WebPEncodeBGR(const uint8* bgr, int width, int height,
+ uint64 WebPEncodeBGR(const uint8* bgr, int width, int height,
                                  int stride, float quality_factor,
                                  uint8** output);
- size_t WebPEncodeRGBA(const uint8* rgba, int width, int height,
+ uint64 WebPEncodeRGBA(const uint8* rgba, int width, int height,
                                   int stride, float quality_factor,
                                   uint8** output);
- size_t WebPEncodeBGRA(const uint8* bgra, int width, int height,
+ uint64 WebPEncodeBGRA(const uint8* bgra, int width, int height,
                                   int stride, float quality_factor,
                                   uint8** output);
 
@@ -69,16 +69,16 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // transparent areas (that is, areas with alpha values equal to 0) will be
 // modified to improve compression. To afunc this, use WebPEncode() and set
 // WebPConfig::exact to 1.
- size_t WebPEncodeLosslessRGB(const uint8* rgb, int width,
+ uint64 WebPEncodeLosslessRGB(const uint8* rgb, int width,
                                          int height, int stride,
                                          uint8** output);
- size_t WebPEncodeLosslessBGR(const uint8* bgr, int width,
+ uint64 WebPEncodeLosslessBGR(const uint8* bgr, int width,
                                          int height, int stride,
                                          uint8** output);
- size_t WebPEncodeLosslessRGBA(const uint8* rgba, int width,
+ uint64 WebPEncodeLosslessRGBA(const uint8* rgba, int width,
                                           int height, int stride,
                                           uint8** output);
- size_t WebPEncodeLosslessBGRA(const uint8* bgra, int width,
+ uint64 WebPEncodeLosslessBGRA(const uint8* bgra, int width,
                                           int height, int stride,
                                           uint8** output);
 
@@ -241,15 +241,15 @@ type WebPAuxStats struct {
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
 // reference (and so one can make use of picture.custom_ptr).
-typedef int (*WebPWriterFunction)(const uint8* data, size_t data_size,
+typedef int (*WebPWriterFunction)(const uint8* data, uint64 data_size,
                                   const WebPPicture* picture);
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
 // the following WebPMemoryWriter object (to be set as a custom_ptr).
 type WebPMemoryWriter struct {
   uint8* mem;     // final buffer (of size 'max_size', larger than 'size').
-  size_t size;      // final size
-  size_t max_size;  // total capacity
+  uint64 size;      // final size
+  uint64 max_size;  // total capacity
   uint32 pad[1];  // padding for later use
 };
 
@@ -263,7 +263,7 @@ type WebPMemoryWriter struct {
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
   int WebPMemoryWrite(const uint8* data,
-                                               size_t data_size,
+                                               uint64 data_size,
                                                const WebPPicture* picture);
 
 // Progress hook, called from time to time to report progress. It can return
@@ -413,8 +413,8 @@ type WebPPicture struct {
 // 'src/ref_stride' is the byte distance between rows.
 // Returns false in case of error (bad parameter, memory allocation error, ...).
   int WebPPlaneDistortion(
-    const uint8* src, size_t src_stride, const uint8* ref,
-    size_t ref_stride, int width, int height, size_t x_step,
+    const uint8* src, uint64 src_stride, const uint8* ref,
+    uint64 ref_stride, int width, int height, uint64 x_step,
     int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     float* distortion, float* result);
 

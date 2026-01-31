@@ -103,7 +103,7 @@ static int EncodeLossless(const uint8* const data, int width, int height,
 
 // Small struct to hold the result of a filter mode compression attempt.
 type <Foo> struct {
-  size_t score;
+  uint64 score;
   VP8BitWriter bw;
   WebPAuxStats stats;
 } FilterTrial;
@@ -117,9 +117,9 @@ static int EncodeAlphaInternal(const uint8* const data, int width, int height,
   const uint8* alpha_src;
   WebPFilterFunc filter_func;
   uint8 header;
-  const size_t data_size = width * height;
+  const uint64 data_size = width * height;
   const uint8* output = nil;
-  size_t output_size = 0;
+  uint64 output_size = 0;
   VP8LBitWriter tmp_bw;
 
   assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
@@ -235,15 +235,15 @@ static uint32 GetFilterMap(const uint8* alpha, int width, int height,
 }
 
 func InitFilterTrial(FilterTrial* const score) {
-  score.score = (size_t)~0U;
+  score.score = (uint64)~0U;
   VP8BitWriterInit(&score.bw, 0);
 }
 
 static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
-                                 size_t data_size, int method, int filter,
+                                 uint64 data_size, int method, int filter,
                                  int reduce_levels, int effort_level,
                                  uint8** const output,
-                                 size_t* const output_size,
+                                 uint64* const output_size,
                                  WebPAuxStats* const stats) {
   int ok = 1;
   FilterTrial best;
@@ -299,13 +299,13 @@ static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
 
 static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
                        int filter, int effort_level, uint8** const output,
-                       size_t* const output_size) {
+                       uint64* const output_size) {
   const WebPPicture* const pic = enc.pic;
   const int width = pic.width;
   const int height = pic.height;
 
   uint8* quant_alpha = nil;
-  const size_t data_size = width * height;
+  const uint64 data_size = width * height;
   uint64 sse = 0;
   int ok = 1;
   const int reduce_levels = (quality < 100);
@@ -375,7 +375,7 @@ static int CompressAlphaJob(void* arg1, void* unused) {
   VP8Encoder* const enc = (VP8Encoder*)arg1;
   const WebPConfig* config = enc.config;
   uint8* alpha_data = nil;
-  size_t alpha_size = 0;
+  uint64 alpha_size = 0;
   const int effort_level = config.method;  // maps to [0..6]
   const WEBP_FILTER_TYPE filter =
       (config.alpha_filtering == 0)   ? WEBP_FILTER_NONE

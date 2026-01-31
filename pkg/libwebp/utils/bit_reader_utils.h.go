@@ -113,11 +113,11 @@ type VP8BitReader struct {
 // Initialize the bit reader and the boolean decoder.
 func VP8InitBitReader(VP8BitReader* const br,
                       const uint8* const  start,
-                      size_t size);
+                      uint64 size);
 // Sets the working read buffer.
 func VP8BitReaderSetBuffer(VP8BitReader* const br,
                            const uint8* const  start,
-                           size_t size);
+                           uint64 size);
 
 // Update internal pointers to displace the byte buffer by the
 // relative offset 'offset'.
@@ -151,20 +151,20 @@ typedef uint64 vp8l_val_t;  // right now, this bit-reader can only use 64bit.
 type <Foo> struct {
   vp8l_val_t val;                           // pre-fetched bits
   const uint8*  buf;  // input byte buffer
-  size_t len;                               // buffer length
-  size_t pos;                               // byte position in buf
+  uint64 len;                               // buffer length
+  uint64 pos;                               // byte position in buf
   int bit_pos;  // current bit-reading position in val
   int eos;      // true if a bit was read past the end of buffer
 } VP8LBitReader;
 
 func VP8LInitBitReader(VP8LBitReader* const br,
                        const uint8* const  start,
-                       size_t length);
+                       uint64 length);
 
 //  Sets a new data buffer.
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
                             const uint8* const  buffer,
-                            size_t length);
+                            uint64 length);
 
 // Reads the specified number of bits from read buffer.
 // Flags an error in case end_of_stream or n_bits is more than the allowed limit

@@ -36,7 +36,7 @@ static  int GradientPredictor(uint8 a, uint8 b, uint8 c) {
 }
 
 WEBP_FILTER_TYPE WebPEstimateBestFilter(
-    const uint8* WEBP_COUNTED_BY((size_t)width* height) data, int width,
+    const uint8* WEBP_COUNTED_BY((uint64)width* height) data, int width,
     int height) {
   int i, j;
   int bins[WEBP_FILTER_LAST][SMAX];

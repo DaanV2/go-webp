@@ -29,7 +29,7 @@ extern "C" {
 // quantized values. If not nil, 'sse' will contain the sum of squared error.
 // Valid range for 'num_levels' is [2, 256].
 // Returns false in case of error (data is nil, or parameters are invalid).
-int QuantizeLevels(uint8* const WEBP_COUNTED_BY((size_t)width* height) data,
+int QuantizeLevels(uint8* const WEBP_COUNTED_BY((uint64)width* height) data,
                    int width, int height, int num_levels, uint64* const sse);
 
 #ifdef __cplusplus
