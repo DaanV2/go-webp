@@ -1,5 +1,8 @@
 # Go Webp
 
+A Go implementation for encoding and decoding WebP images, translation then optimized / adapted from the original C library provided by Google.
+
+still WIP
 
 ## License
 
