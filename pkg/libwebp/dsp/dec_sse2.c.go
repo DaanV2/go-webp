@@ -681,7 +681,7 @@ func HFilter16_SSE2(p *uint8, int stride, int thresh, int ithresh, int hev_thres
   __m128i mask;
   __m128i p3, p2, p1, p0, q0, q1, q2, q3;
 
-  const b *uint8 = p - 4;
+  var b *uint8 = p - 4;
   Load16x4_SSE2(b, b + 8 * stride, stride, &p3, &p2, &p1, &p0);
   MAX_DIFF1(p3, p2, p1, p0, mask);
 
@@ -704,7 +704,7 @@ func VFilter16i_SSE2(p *uint8, int stride, int thresh, int ithresh, int hev_thre
 
   for (k = 3; k > 0; --k) {
     __m128i mask, tmp1, tmp2;
-    const b *uint8 = p + 2 * stride;  // beginning of p1
+    var b *uint8 = p + 2 * stride;  // beginning of p1
     p += 4 * stride;
 
     MAX_DIFF1(p3, p2, p1, p0, mask);  // compute partial mask
@@ -736,7 +736,7 @@ func HFilter16i_SSE2(p *uint8, int stride, int thresh, int ithresh, int hev_thre
 
   for (k = 3; k > 0; --k) {
     __m128i mask, tmp1, tmp2;
-    const b *uint8 = p + 2;  // beginning of p1
+    var b *uint8 = p + 2;  // beginning of p1
 
     p += 4;  // beginning of q0 (and next span)
 
@@ -784,8 +784,8 @@ func HFilter8_SSE2(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, i
   __m128i mask;
   __m128i p3, p2, p1, p0, q0, q1, q2, q3;
 
-  const tu *uint8 = u - 4;
-  const tv *uint8 = v - 4;
+  var tu *uint8 = u - 4;
+  var tv *uint8 = v - 4;
   Load16x4_SSE2(tu, tv, stride, &p3, &p2, &p1, &p0);
   MAX_DIFF1(p3, p2, p1, p0, mask);
 
@@ -970,7 +970,7 @@ func RD4_SSE2(dst *uint8) {  // Down-right
 // Luma 16x16
 
 static  func TrueMotion_SSE2(dst *uint8, int size) {
-  const top *uint8 = dst - BPS;
+  var top *uint8 = dst - BPS;
   const __m128i zero = _mm_setzero_si128();
   int y;
   if (size == 4) {

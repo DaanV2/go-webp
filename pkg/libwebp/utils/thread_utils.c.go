@@ -137,8 +137,8 @@ const THREADFN = *void
 //------------------------------------------------------------------------------
 
 static THREADFN ThreadLoop(ptr *void) {
-  const worker *WebPWorker = (*WebPWorker)ptr;
-  const impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
+  var worker *WebPWorker = (*WebPWorker)ptr;
+  var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
   int done = 0;
   while (!done) {
     pthread_mutex_lock(&impl.mutex);
@@ -167,7 +167,7 @@ func ChangeState(const worker *WebPWorker, WebPWorkerStatus new_status) {
   // No-op when attempting to change state on a thread that didn't come up.
   // Checking 'status' without acquiring the lock first would result in a data
   // race.
-  const impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
+  var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
   if (impl == nil) return;
 
   pthread_mutex_lock(&impl.mutex);
@@ -265,7 +265,7 @@ func Launch(const worker *WebPWorker) {
 func End(const worker *WebPWorker) {
 #ifdef WEBP_USE_THREAD
   if (worker.impl != nil) {
-    const impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
+    var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
     ChangeState(worker, NOT_OK);
     pthread_join(impl.thread, nil);
     pthread_mutex_destroy(&impl.mutex);

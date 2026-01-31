@@ -683,7 +683,7 @@ static  func RGBA32PackedToPlanar_16b_SSE2(
 
 func ConvertRGBA32ToUV_SSE2(const WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width) {
   max_width := width & ~15;
-  const last_rgb *uint16 = rgb + 4 * max_width;
+  var last_rgb *uint16 = rgb + 4 * max_width;
   while (rgb < last_rgb) {
     __m128i r, g, b, U0, V0, U1, V1;
     RGBA32PackedToPlanar_16b_SSE2(rgb + 0, &r, &g, &b);

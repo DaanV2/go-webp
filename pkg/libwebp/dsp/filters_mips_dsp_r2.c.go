@@ -40,7 +40,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // clang-format off
 #define DO_PREDICT_LINE(SRC, DST, LENGTH, INVERSE)                             \
   for {                                                                         \
-    const psrc *uint8 = (*uint8)(SRC);                                     \
+    var psrc *uint8 = (*uint8)(SRC);                                     \
     pdst *uint8 = (*uint8)(DST);                                           \
     ilength := (int)(LENGTH);                                         \
     int temp0, temp1, temp2, temp3, temp4, temp5, temp6;                       \
@@ -115,8 +115,8 @@ static  func PredictLine_MIPSdspR2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT
 // clang-format off
 #define DO_PREDICT_LINE_VERTICAL(SRC, PRED, DST, LENGTH, INVERSE)              \
   for {                                                                         \
-    const psrc *uint8 = (*uint8)(SRC);                                     \
-    const ppred *uint8 = (*uint8)(PRED);                                   \
+    var psrc *uint8 = (*uint8)(SRC);                                     \
+    var ppred *uint8 = (*uint8)(PRED);                                   \
     pdst *uint8 = (*uint8)(DST);                                           \
     ilength := (int)(LENGTH);                                         \
     int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;                \
@@ -204,7 +204,7 @@ const FILTER_LINE_BY_LINE =                          \
 
 static  func DoHorizontalFilter_MIPSdspR2(
     const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  const preds *uint8 = in;
+  var preds *uint8 = in;
   int row;
   DCHECK(in, out);
 
@@ -239,7 +239,7 @@ const FILTER_LINE_BY_LINE =                              \
 
 static  func DoVerticalFilter_MIPSdspR2(
     const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  const preds *uint8 = in;
+  var preds *uint8 = in;
   int row;
   DCHECK(in, out);
 
@@ -291,7 +291,7 @@ static int GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) {
   } while (0)
 
 func DoGradientFilter_MIPSdspR2(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  const preds *uint8 = in;
+  var preds *uint8 = in;
   int row;
   DCHECK(in, out);
 

@@ -55,7 +55,7 @@ static int GetResidualCost_NEON(int ctx0, const res *VP8Residual) {
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   const int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const t *uint16 = costs[n][ctx0];
+  var t *uint16 = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.

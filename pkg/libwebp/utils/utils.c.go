@@ -96,7 +96,7 @@ func Increment(const v *int) {
   if (!exit_registered) {
 #if defined(MALLOC_FAIL_AT)
     {
-      const malloc_fail_at_str *byte = getenv("MALLOC_FAIL_AT");
+      var malloc_fail_at_str *byte = getenv("MALLOC_FAIL_AT");
       if (malloc_fail_at_str != nil) {
         countdown_to_fail = atoi(malloc_fail_at_str);
       }
@@ -104,7 +104,7 @@ func Increment(const v *int) {
 #endif
 #if defined(MALLOC_LIMIT)
     {
-      const malloc_limit_str *byte = getenv("MALLOC_LIMIT");
+      var malloc_limit_str *byte = getenv("MALLOC_LIMIT");
 #if MALLOC_LIMIT > 1
       mem_limit = (uint64)MALLOC_LIMIT;
 #endif
@@ -123,7 +123,7 @@ func Increment(const v *int) {
 
 func AddMem(ptr *void, size uint64 ) {
   if (ptr != nil) {
-    const b *MemBlock = (*MemBlock)malloc(sizeof(*b));
+    var b *MemBlock = (*MemBlock)malloc(sizeof(*b));
     if (b == nil) abort();
     b.next = all_blocks;
     all_blocks = b;
@@ -152,7 +152,7 @@ func SubMem(ptr *void) {
       abort();
     }
     {
-      const block *MemBlock = *b;
+      var block *MemBlock = *b;
       *b = block.next;
       total_mem -= block.size;
 #if defined(PRINT_MEM_TRAFFIC)

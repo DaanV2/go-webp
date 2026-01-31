@@ -22,8 +22,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 func SubtractGreenFromBlueAndRed_MIPSdspR2(argb_data *uint32, int num_pixels) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
-  const p_loop *uint321_end = argb_data + (num_pixels & ~3);
-  const p_loop *uint322_end = p_loop1_end + (num_pixels & 3);
+  var p_loop *uint321_end = argb_data + (num_pixels & ~3);
+  var p_loop *uint322_end = p_loop1_end + (num_pixels & 3);
   __asm__ volatile(
       ".set       push                                          \n\t"
       ".set       noreorder                                     \n\t"
@@ -81,7 +81,7 @@ func TransformColor_MIPSdspR2(
   const uint32 G_to_R = m.green_to_red;
   const uint32 G_to_B = m.green_to_blue;
   const uint32 R_to_B = m.red_to_blue;
-  const p_loop_end *uint32 = data + (num_pixels & ~1);
+  var p_loop_end *uint32 = data + (num_pixels & ~1);
   __asm__ volatile(
       ".set            push                                    \n\t"
       ".set            noreorder                               \n\t"
@@ -167,7 +167,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
   mask := uint(0xff00ff);
   while (tile_height-- > 0) {
     int x;
-    const p_argb *uint32 = argb;
+    var p_argb *uint32 = argb;
     argb += stride;
     for (x = 0; x < (tile_width >> 1); ++x) {
       int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
@@ -210,7 +210,7 @@ func CollectColorRedTransforms_MIPSdspR2(
   gtr := (green_to_red << 16) | (green_to_red & 0xffff);
   while (tile_height-- > 0) {
     int x;
-    const p_argb *uint32 = argb;
+    var p_argb *uint32 = argb;
     argb += stride;
     for (x = 0; x < (tile_width >> 1); ++x) {
       int temp0, temp1, temp2, temp3, temp4;

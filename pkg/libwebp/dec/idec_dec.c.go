@@ -117,7 +117,7 @@ static int NeedCompressedAlpha(const idec *WebPIDecoder) {
   if (idec.is_lossless) {
     return 0;  // ALPH chunk is not present for lossless images.
   } else {
-    const dec *VP8Decoder = (*VP8Decoder)idec.dec;
+    var dec *VP8Decoder = (*VP8Decoder)idec.dec;
     assert.Assert(dec != nil);  // Must be true as idec.state != STATE_WEBP_HEADER.
     return (dec.alpha_data != nil) && !dec.is_alpha_decoded;
   }
@@ -125,7 +125,7 @@ static int NeedCompressedAlpha(const idec *WebPIDecoder) {
 
 func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
   /* const */ mem *MemBuffer = &idec.mem;
-  const new_base *uint8 = mem.buf + mem.start;
+  var new_base *uint8 = mem.buf + mem.start;
   // note: for VP8, setting up idec.io is only really needed at the beginning
   // of the decoding, till partition #0 is complete.
   idec.io.data = new_base;
@@ -133,7 +133,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
 
   if (idec.dec != nil) {
     if (!idec.is_lossless) {
-      const dec *VP8Decoder = (*VP8Decoder)idec.dec;
+      var dec *VP8Decoder = (*VP8Decoder)idec.dec;
       last_part := dec.num_parts_minus_one;
       if (offset != 0) {
         uint32 p;
@@ -147,7 +147,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
         }
       }
       {
-        const last_start *uint8 = dec.parts[last_part].buf;
+        var last_start *uint8 = dec.parts[last_part].buf;
         // 'last_start' will be nil when 'idec.state' is < STATE_VP8_PARTS0
         // and through a portion of that state (when there isn't enough data to
         // parse the partitions). The bitreader is only used meaningfully when
@@ -160,12 +160,12 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
         }
       }
       if (NeedCompressedAlpha(idec)) {
-        const alph_dec *ALPHDecoder = dec.alph_dec;
+        var alph_dec *ALPHDecoder = dec.alph_dec;
         dec.alpha_data += offset;
         WEBP_SELF_ASSIGN(dec.alpha_data_size);
         if (alph_dec != nil && alph_dec.vp8l_dec != nil) {
           if (alph_dec.method == ALPHA_LOSSLESS_COMPRESSION) {
-            const alph_vp *VP8LDecoder8l_dec = alph_dec.vp8l_dec;
+            var alph_vp *VP8LDecoder8l_dec = alph_dec.vp8l_dec;
             uint64 data_size;
             const WEBP_BIDI_INDEXABLE bounded_alpha_data *uint8;
 
@@ -180,7 +180,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
         }
       }
     } else {  // Resize lossless bitreader
-      const dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
+      var dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
       data_size := MemDataSize(mem);
       const WEBP_BIDI_INDEXABLE const bounded_new_base *uint8 =
           WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, new_base, data_size);
@@ -192,7 +192,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
 // Appends data to the end of MemBuffer.buf. It expands the allocated memory
 // size if required and also updates VP8BitReader's if new memory is allocated.
  static int AppendToMemBuffer(const idec *WebPIDecoder, const data *uint8, uint64 data_size) {
-  const dec *VP8Decoder = (*VP8Decoder)idec.dec;
+  var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   /* const */ mem *MemBuffer = &idec.mem;
   need_compressed_alpha := NeedCompressedAlpha(idec);
   const old_start *uint8 =
@@ -234,7 +234,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
 
  static int RemapMemBuffer(const idec *WebPIDecoder, const data *uint8, uint64 data_size) {
   /* const */ mem *MemBuffer = &idec.mem;
-  const old_buf *uint8 = mem.buf;
+  var old_buf *uint8 = mem.buf;
   const old_start *uint8 =
       (old_buf == nil) ? nil : old_buf + mem.start;
   assert.Assert(old_buf != nil || mem.start == 0);
@@ -279,8 +279,8 @@ func ClearMemBuffer(/* const */ mem *MemBuffer) {
 
 // To be called last.
  static VP8StatusCode FinishDecoding(const idec *WebPIDecoder) {
-  const options *WebPDecoderOptions = idec.params.options;
-  const output *WebPDecBuffer = idec.params.output;
+  var options *WebPDecoderOptions = idec.params.options;
+  var output *WebPDecBuffer = idec.params.output;
 
   idec.state = STATE_DONE;
   if (options != nil && options.flip) {
@@ -336,7 +336,7 @@ func ChangeState(const idec *WebPIDecoder, DecState new_state, uint64 consumed_b
 // Headers
 static VP8StatusCode DecodeWebPHeaders(const idec *WebPIDecoder) {
   /* const */ mem *MemBuffer = &idec.mem;
-  const data *uint8 = mem.buf + mem.start;
+  var data *uint8 = mem.buf + mem.start;
   uint64 curr_size = MemDataSize(mem);
   VP8StatusCode status;
   WebPHeaderStructure headers;
@@ -355,7 +355,7 @@ static VP8StatusCode DecodeWebPHeaders(const idec *WebPIDecoder) {
   idec.chunk_size = headers.compressed_size;
   idec.is_lossless = headers.is_lossless;
   if (!idec.is_lossless) {
-    const dec *VP8Decoder = VP8New();
+    var dec *VP8Decoder = VP8New();
     if (dec == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
@@ -365,7 +365,7 @@ static VP8StatusCode DecodeWebPHeaders(const idec *WebPIDecoder) {
     dec.alpha_data_size = headers.alpha_data_size;
     ChangeState(idec, STATE_VP8_HEADER, headers.offset);
   } else {
-    const dec *VP8LDecoder = VP8LNew();
+    var dec *VP8LDecoder = VP8LNew();
     if (dec == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
@@ -376,7 +376,7 @@ static VP8StatusCode DecodeWebPHeaders(const idec *WebPIDecoder) {
 }
 
 static VP8StatusCode DecodeVP8FrameHeader(const idec *WebPIDecoder) {
-  const data *uint8 = idec.mem.buf + idec.mem.start;
+  var data *uint8 = idec.mem.buf + idec.mem.start;
   curr_size := MemDataSize(&idec.mem);
   int width, height;
   uint32 bits;
@@ -404,8 +404,8 @@ static VP8StatusCode DecodeVP8FrameHeader(const idec *WebPIDecoder) {
 
 // Partition #0
 static VP8StatusCode CopyParts0Data(const idec *WebPIDecoder) {
-  const dec *VP8Decoder = (*VP8Decoder)idec.dec;
-  const br *VP8BitReader = &dec.br;
+  var dec *VP8Decoder = (*VP8Decoder)idec.dec;
+  var br *VP8BitReader = &dec.br;
   part_size := br.buf_end - br.buf;
   /* const */ mem *MemBuffer = &idec.mem;
   assert.Assert(!idec.is_lossless);
@@ -433,10 +433,10 @@ static VP8StatusCode CopyParts0Data(const idec *WebPIDecoder) {
 }
 
 static VP8StatusCode DecodePartition0(const idec *WebPIDecoder) {
-  const dec *VP8Decoder = (*VP8Decoder)idec.dec;
-  const io *VP8Io = &idec.io;
-  const params *WebPDecParams = &idec.params;
-  const output *WebPDecBuffer = params.output;
+  var dec *VP8Decoder = (*VP8Decoder)idec.dec;
+  var io *VP8Io = &idec.io;
+  var params *WebPDecParams = &idec.params;
+  var output *WebPDecBuffer = params.output;
 
   // Wait till we have enough data for the whole partition #0
   if (MemDataSize(&idec.mem) < idec.mem.part0_size) {
@@ -486,8 +486,8 @@ static VP8StatusCode DecodePartition0(const idec *WebPIDecoder) {
 
 // Remaining partitions
 static VP8StatusCode DecodeRemaining(const idec *WebPIDecoder) {
-  const dec *VP8Decoder = (*VP8Decoder)idec.dec;
-  const io *VP8Io = &idec.io;
+  var dec *VP8Decoder = (*VP8Decoder)idec.dec;
+  var io *VP8Io = &idec.io;
 
   // Make sure partition #0 has been read before, to set dec to ready.
   if (!dec.ready) {
@@ -553,10 +553,10 @@ static VP8StatusCode ErrorStatusLossless(const idec *WebPIDecoder, VP8StatusCode
 }
 
 static VP8StatusCode DecodeVP8LHeader(const idec *WebPIDecoder) {
-  const io *VP8Io = &idec.io;
-  const dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
-  const params *WebPDecParams = &idec.params;
-  const output *WebPDecBuffer = params.output;
+  var io *VP8Io = &idec.io;
+  var dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
+  var params *WebPDecParams = &idec.params;
+  var output *WebPDecBuffer = params.output;
   uint64 curr_size = MemDataSize(&idec.mem);
   assert.Assert(idec.is_lossless);
 
@@ -585,7 +585,7 @@ static VP8StatusCode DecodeVP8LHeader(const idec *WebPIDecoder) {
 }
 
 static VP8StatusCode DecodeVP8LData(const idec *WebPIDecoder) {
-  const dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
+  var dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
   curr_size := MemDataSize(&idec.mem);
   assert.Assert(idec.is_lossless);
 
@@ -618,7 +618,7 @@ static VP8StatusCode IDecode(idec *WebPIDecoder) {
     status = DecodePartition0(idec);
   }
   if (idec.state == STATE_VP8_DATA) {
-    const dec *VP8Decoder = (*VP8Decoder)idec.dec;
+    var dec *VP8Decoder = (*VP8Decoder)idec.dec;
     if (dec == nil) {
       return VP8_STATUS_SUSPENDED;  // can't continue if we have no decoder.
     }
@@ -870,7 +870,7 @@ static const GetOutputBuffer *WebPDecBuffer(const idec *WebPIDecoder) {
 }
 
 const WebPIDecodedArea *WebPDecBuffer(const idec *WebPIDecoder, left *int, top *int, width *int, height *int) {
-  const src *WebPDecBuffer = GetOutputBuffer(idec);
+  var src *WebPDecBuffer = GetOutputBuffer(idec);
   if (left != nil) *left = 0;
   if (top != nil) *top = 0;
   if (src != nil) {
@@ -884,7 +884,7 @@ const WebPIDecodedArea *WebPDecBuffer(const idec *WebPIDecoder, left *int, top *
 }
 
  WebPIDecGetRGB *uint8(const idec *WebPIDecoder, last_y *int, width *int, height *int, stride *int) {
-  const src *WebPDecBuffer = GetOutputBuffer(idec);
+  var src *WebPDecBuffer = GetOutputBuffer(idec);
   if (src == nil) return nil;
   if (src.colorspace >= MODE_YUV) {
     return nil;
@@ -899,7 +899,7 @@ const WebPIDecodedArea *WebPDecBuffer(const idec *WebPIDecoder, left *int, top *
 }
 
  WebPIDecGetYUVA *uint8(const idec *WebPIDecoder, last_y *int, *uint8* u, *uint8* v, *uint8* a, width *int, height *int, stride *int, uv_stride *int, a_stride *int) {
-  const src *WebPDecBuffer = GetOutputBuffer(idec);
+  var src *WebPDecBuffer = GetOutputBuffer(idec);
   if (src == nil) return nil;
   if (src.colorspace < MODE_YUV) {
     return nil;

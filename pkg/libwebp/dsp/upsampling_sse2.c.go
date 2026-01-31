@@ -136,9 +136,9 @@ func Upsample32Pixels_SSE2(const WEBP_RESTRICT const r *uint81, const WEBP_RESTR
     int uv_pos, pos;                                                          \
     /* 16byte-aligned array to cache reconstructed u and v */                 \
     uint8 uv_buf[14 * 32 + 15] = {0}                                       \
-    const r_u *uint8 =                                                      \
+    var r_u *uint8 =                                                      \
         (*uint8)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
-    const r_v *uint8 = r_u + 32;                                            \
+    var r_v *uint8 = r_u + 32;                                            \
                                                                               \
     assert.Assert(top_y != nil);                                                    \
     { /* Treat the first pixel in regular way */                              \
@@ -162,10 +162,10 @@ func Upsample32Pixels_SSE2(const WEBP_RESTRICT const r *uint81, const WEBP_RESTR
     }                                                                         \
     if (len > 1) {                                                            \
       left_over := ((len + 1) >> 1) - (pos >> 1);                    \
-      const tmp_top_dst *uint8 = r_u + 4 * 32;                              \
-      const tmp_bottom_dst *uint8 = tmp_top_dst + 4 * 32;                   \
-      const tmp_top *uint8 = tmp_bottom_dst + 4 * 32;                       \
-      const tmp_bottom *uint8 = (bottom_y == nil) ? nil : tmp_top + 32;   \
+      var tmp_top_dst *uint8 = r_u + 4 * 32;                              \
+      var tmp_bottom_dst *uint8 = tmp_top_dst + 4 * 32;                   \
+      var tmp_top *uint8 = tmp_bottom_dst + 4 * 32;                       \
+      var tmp_bottom *uint8 = (bottom_y == nil) ? nil : tmp_top + 32;   \
       assert.Assert(left_over > 0);                                                  \
       UPSAMPLE_LAST_BLOCK(top_u + uv_pos, cur_u + uv_pos, left_over, r_u);    \
       UPSAMPLE_LAST_BLOCK(top_v + uv_pos, cur_v + uv_pos, left_over, r_v);    \

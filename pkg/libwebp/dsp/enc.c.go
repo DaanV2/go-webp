@@ -252,9 +252,9 @@ static  func TrueMotion(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint
   int y;
   if (left != nil) {
     if (top != nil) {
-      const clip *uint8 = clip1 + 255 - left[-1];
+      var clip *uint8 = clip1 + 255 - left[-1];
       for (y = 0; y < size; ++y) {
-        const clip_table *uint8 = clip + left[y];
+        var clip_table *uint8 = clip + left[y];
         int x;
         for (x = 0; x < size; ++x) {
           dst[x] = clip_table[top[x]];
@@ -488,9 +488,9 @@ func HD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 func TM4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   int x, y;
-  const clip *uint8 = clip1 + 255 - top[-1];
+  var clip *uint8 = clip1 + 255 - top[-1];
   for (y = 0; y < 4; ++y) {
-    const clip_table *uint8 = clip + top[-2 - y];
+    var clip_table *uint8 = clip + top[-2 - y];
     for (x = 0; x < 4; ++x) {
       dst[x] = clip_table[top[x]];
     }

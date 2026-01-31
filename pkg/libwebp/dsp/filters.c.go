@@ -44,7 +44,7 @@ static  func PredictLine_C(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT p
 // Horizontal filter.
 
 static  func DoHorizontalFilter_C(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  const preds *uint8 = in;
+  var preds *uint8 = in;
   int row;
   DCHECK(in, out);
 
@@ -70,7 +70,7 @@ static  func DoHorizontalFilter_C(const WEBP_RESTRICT in *uint8, int width, int 
 // Vertical filter.
 
 static  func DoVerticalFilter_C(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  const preds *uint8 = in;
+  var preds *uint8 = in;
   int row;
   DCHECK(in, out);
 
@@ -101,7 +101,7 @@ static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
 
 #if !WEBP_NEON_OMIT_C_CODE
 static  func DoGradientFilter_C(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  const preds *uint8 = in;
+  var preds *uint8 = in;
   int row;
   DCHECK(in, out);
 

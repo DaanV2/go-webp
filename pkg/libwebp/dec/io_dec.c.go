@@ -36,10 +36,10 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 static int EmitYUV(const io *VP8Io, const p *WebPDecParams) {
   output *WebPDecBuffer = p.output;
-  const buf *WebPYUVABuffer = &output.u.YUVA;
-  const y_dst *uint8 = buf.y + (ptrdiff_t)io.mb_y * buf.y_stride;
-  const u_dst *uint8 = buf.u + (ptrdiff_t)(io.mb_y >> 1) * buf.u_stride;
-  const v_dst *uint8 = buf.v + (ptrdiff_t)(io.mb_y >> 1) * buf.v_stride;
+  var buf *WebPYUVABuffer = &output.u.YUVA;
+  var y_dst *uint8 = buf.y + (ptrdiff_t)io.mb_y * buf.y_stride;
+  var u_dst *uint8 = buf.u + (ptrdiff_t)(io.mb_y >> 1) * buf.u_stride;
+  var v_dst *uint8 = buf.v + (ptrdiff_t)(io.mb_y >> 1) * buf.v_stride;
   mb_w := io.mb_w;
   mb_h := io.mb_h;
   uv_w := (mb_w + 1) / 2;
@@ -52,9 +52,9 @@ static int EmitYUV(const io *VP8Io, const p *WebPDecParams) {
 
 // Point-sampling U/V sampler.
 static int EmitSampledRGB(const io *VP8Io, const p *WebPDecParams) {
-  const output *WebPDecBuffer = p.output;
-  const buf *WebPRGBABuffer = &output.u.RGBA;
-  const dst *uint8 = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride;
+  var output *WebPDecBuffer = p.output;
+  var buf *WebPRGBABuffer = &output.u.RGBA;
+  var dst *uint8 = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride;
   WebPSamplerProcessPlane(io.y, io.y_stride, io.u, io.v, io.uv_stride, dst, buf.stride, io.mb_w, io.mb_h, WebPSamplers[output.colorspace]);
   return io.mb_h;
 }
@@ -65,14 +65,14 @@ static int EmitSampledRGB(const io *VP8Io, const p *WebPDecParams) {
 #ifdef FANCY_UPSAMPLING
 static int EmitFancyRGB(const io *VP8Io, const p *WebPDecParams) {
   int num_lines_out = io.mb_h;  // a priori guess
-  const buf *WebPRGBABuffer = &p.output.u.RGBA;
+  var buf *WebPRGBABuffer = &p.output.u.RGBA;
   dst *uint8 = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride;
   WebPUpsampleLinePairFunc upsample = WebPUpsamplers[p.output.colorspace];
-  const cur_y *uint8 = io.y;
-  const cur_u *uint8 = io.u;
-  const cur_v *uint8 = io.v;
-  const top_u *uint8 = p.tmp_u;
-  const top_v *uint8 = p.tmp_v;
+  var cur_y *uint8 = io.y;
+  var cur_u *uint8 = io.u;
+  var cur_v *uint8 = io.v;
+  var top_u *uint8 = p.tmp_u;
+  var top_v *uint8 = p.tmp_v;
   int y = io.mb_y;
   y_end := io.mb_y + io.mb_h;
   mb_w := io.mb_w;
@@ -128,8 +128,8 @@ func FillAlphaPlane(dst *uint8, int w, int h, int stride) {
 }
 
 static int EmitAlphaYUV(const io *VP8Io, const p *WebPDecParams, int expected_num_lines_out) {
-  const alpha *uint8 = io.a;
-  const buf *WebPYUVABuffer = &p.output.u.YUVA;
+  var alpha *uint8 = io.a;
+  var buf *WebPYUVABuffer = &p.output.u.YUVA;
   mb_w := io.mb_w;
   mb_h := io.mb_h;
   dst *uint8 = buf.a + (ptrdiff_t)io.mb_y * buf.a_stride;
@@ -175,17 +175,17 @@ static int GetAlphaSourceRow(const io *VP8Io, const *uint8* alpha, const num_row
 }
 
 static int EmitAlphaRGB(const io *VP8Io, const p *WebPDecParams, int expected_num_lines_out) {
-  const alpha *uint8 = io.a;
+  var alpha *uint8 = io.a;
   if (alpha != nil) {
     mb_w := io.mb_w;
     const WEBP_CSP_MODE colorspace = p.output.colorspace;
     const int alpha_first =
         (colorspace == MODE_ARGB || colorspace == MODE_Argb);
-    const buf *WebPRGBABuffer = &p.output.u.RGBA;
+    var buf *WebPRGBABuffer = &p.output.u.RGBA;
     int num_rows;
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows);
-    const base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride;
-    const dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3));
+    var base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride;
+    var dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3));
     const int has_alpha =
         WebPDispatchAlpha(alpha, io.width, mb_w, num_rows, dst, buf.stride);
     (void)expected_num_lines_out;
@@ -199,14 +199,14 @@ static int EmitAlphaRGB(const io *VP8Io, const p *WebPDecParams, int expected_nu
 }
 
 static int EmitAlphaRGBA4444(const io *VP8Io, const p *WebPDecParams, int expected_num_lines_out) {
-  const alpha *uint8 = io.a;
+  var alpha *uint8 = io.a;
   if (alpha != nil) {
     mb_w := io.mb_w;
     const WEBP_CSP_MODE colorspace = p.output.colorspace;
-    const buf *WebPRGBABuffer = &p.output.u.RGBA;
+    var buf *WebPRGBABuffer = &p.output.u.RGBA;
     int num_rows;
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows);
-    const base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride;
+    var base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride;
 #if (WEBP_SWAP_16BIT_CSP == 1)
     alpha_dst *uint8 = base_rgba;
 #else
@@ -251,7 +251,7 @@ static int Rescale(const src *uint8, int src_stride, int new_lines, const wrk *W
 static int EmitRescaledYUV(const io *VP8Io, const p *WebPDecParams) {
   mb_h := io.mb_h;
   uv_mb_h := (mb_h + 1) >> 1;
-  const scaler *WebPRescaler = p.scaler_y;
+  var scaler *WebPRescaler = p.scaler_y;
   int num_lines_out = 0;
   if (WebPIsAlphaMode(p.output.colorspace) && io.a != nil) {
     // Before rescaling, we premultiply the luma directly into the io.y
@@ -267,10 +267,10 @@ static int EmitRescaledYUV(const io *VP8Io, const p *WebPDecParams) {
 }
 
 static int EmitRescaledAlphaYUV(const io *VP8Io, const p *WebPDecParams, int expected_num_lines_out) {
-  const buf *WebPYUVABuffer = &p.output.u.YUVA;
-  const dst_a *uint8 = buf.a + (ptrdiff_t)p.last_y * buf.a_stride;
+  var buf *WebPYUVABuffer = &p.output.u.YUVA;
+  var dst_a *uint8 = buf.a + (ptrdiff_t)p.last_y * buf.a_stride;
   if (io.a != nil) {
-    const dst_y *uint8 = buf.y + (ptrdiff_t)p.last_y * buf.y_stride;
+    var dst_y *uint8 = buf.y + (ptrdiff_t)p.last_y * buf.y_stride;
     num_lines_out := Rescale(io.a, io.width, io.mb_h, p.scaler_a);
     assert.Assert(expected_num_lines_out == num_lines_out);
     if (num_lines_out > 0) {  // unmultiply the Y
@@ -286,7 +286,7 @@ static int EmitRescaledAlphaYUV(const io *VP8Io, const p *WebPDecParams, int exp
 
 static int InitYUVRescaler(const io *VP8Io, const p *WebPDecParams) {
   has_alpha := WebPIsAlphaMode(p.output.colorspace);
-  const buf *WebPYUVABuffer = &p.output.u.YUVA;
+  var buf *WebPYUVABuffer = &p.output.u.YUVA;
   out_width := io.scaled_width;
   out_height := io.scaled_height;
   uv_out_width := (out_width + 1) >> 1;
@@ -348,7 +348,7 @@ static int InitYUVRescaler(const io *VP8Io, const p *WebPDecParams) {
 static int ExportRGB(const p *WebPDecParams, int y_pos) {
   const WebPYUV444Converter convert =
       WebPYUV444Converters[p.output.colorspace];
-  const buf *WebPRGBABuffer = &p.output.u.RGBA;
+  var buf *WebPRGBABuffer = &p.output.u.RGBA;
   dst *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
   int num_lines_out = 0;
   // For RGB rescaling, because of the YUV420, current scan position
@@ -391,8 +391,8 @@ static int EmitRescaledRGB(const io *VP8Io, const p *WebPDecParams) {
 }
 
 static int ExportAlpha(const p *WebPDecParams, int y_pos, int max_lines_out) {
-  const buf *WebPRGBABuffer = &p.output.u.RGBA;
-  const base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
+  var buf *WebPRGBABuffer = &p.output.u.RGBA;
+  var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
   const WEBP_CSP_MODE colorspace = p.output.colorspace;
   alpha_first := (colorspace == MODE_ARGB || colorspace == MODE_Argb);
   dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3));
@@ -416,8 +416,8 @@ static int ExportAlpha(const p *WebPDecParams, int y_pos, int max_lines_out) {
 }
 
 static int ExportAlphaRGBA4444(const p *WebPDecParams, int y_pos, int max_lines_out) {
-  const buf *WebPRGBABuffer = &p.output.u.RGBA;
-  const base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
+  var buf *WebPRGBABuffer = &p.output.u.RGBA;
+  var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
 #if (WEBP_SWAP_16BIT_CSP == 1)
   alpha_dst *uint8 = base_rgba;
 #else
@@ -451,7 +451,7 @@ static int ExportAlphaRGBA4444(const p *WebPDecParams, int y_pos, int max_lines_
 
 static int EmitRescaledAlphaRGB(const io *VP8Io, const p *WebPDecParams, int expected_num_out_lines) {
   if (io.a != nil) {
-    const scaler *WebPRescaler = p.scaler_a;
+    var scaler *WebPRescaler = p.scaler_a;
     int lines_left = expected_num_out_lines;
     y_end := p.last_y + lines_left;
     while (lines_left > 0) {
@@ -532,7 +532,7 @@ static int InitRGBRescaler(const io *VP8Io, const p *WebPDecParams) {
 // Default custom functions
 
 static int CustomSetup(io *VP8Io) {
-  const p *WebPDecParams = (*WebPDecParams)io.opaque;
+  var p *WebPDecParams = (*WebPDecParams)io.opaque;
   const WEBP_CSP_MODE colorspace = p.output.colorspace;
   is_rgb := WebPIsRGBMode(colorspace);
   is_alpha := WebPIsAlphaMode(colorspace);
@@ -597,7 +597,7 @@ static int CustomSetup(io *VP8Io) {
 //------------------------------------------------------------------------------
 
 static int CustomPut(const io *VP8Io) {
-  const p *WebPDecParams = (*WebPDecParams)io.opaque;
+  var p *WebPDecParams = (*WebPDecParams)io.opaque;
   mb_w := io.mb_w;
   mb_h := io.mb_h;
   int num_lines_out;
@@ -617,7 +617,7 @@ static int CustomPut(const io *VP8Io) {
 //------------------------------------------------------------------------------
 
 func CustomTeardown(const io *VP8Io) {
-  const p *WebPDecParams = (*WebPDecParams)io.opaque;
+  var p *WebPDecParams = (*WebPDecParams)io.opaque;
   WebPSafeFree(p.memory);
   p.memory = nil;
 }

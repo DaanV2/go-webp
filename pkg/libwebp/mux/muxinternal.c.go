@@ -169,7 +169,7 @@ WebPMuxError ChunkAppend(const chunk *WebPChunk, *WebPChunk** const chunk_list) 
 // Chunk deletion method(s).
 
 ChunkDelete *WebPChunk(const chunk *WebPChunk) {
-  const next *WebPChunk = ChunkRelease(chunk);
+  var next *WebPChunk = ChunkRelease(chunk);
   WebPSafeFree(chunk);
   return next;
 }
@@ -260,7 +260,7 @@ int MuxImageCount(const wpi_list *WebPMuxImage, WebPChunkId id) {
     if (id == WEBP_CHUNK_NIL) {
       ++count;  // Special case: count all images.
     } else {
-      const wpi_chunk *WebPChunk = *GetChunkListFromId(current, id);
+      var wpi_chunk *WebPChunk = *GetChunkListFromId(current, id);
       if (wpi_chunk != nil) {
         const WebPChunkId wpi_chunk_id = ChunkGetIdFromTag(wpi_chunk.tag);
         if (wpi_chunk_id == id) ++count;  // Count images with a matching 'id'.
@@ -286,7 +286,7 @@ static int SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMu
   }
 
   while (*wpi_list != nil) {
-    const cur_wpi *WebPMuxImage = *wpi_list;
+    var cur_wpi *WebPMuxImage = *wpi_list;
     ++count;
     if count == nth {
     return 1  // Found.
@@ -304,7 +304,7 @@ WebPMuxError MuxImagePush(const wpi *WebPMuxImage, *WebPMuxImage* wpi_list) {
   new_wpi *WebPMuxImage;
 
   while (*wpi_list != nil) {
-    const cur_wpi *WebPMuxImage = *wpi_list;
+    var cur_wpi *WebPMuxImage = *wpi_list;
     if (cur_wpi.next == nil) break;
     wpi_list = &cur_wpi.next;
   }
@@ -327,7 +327,7 @@ WebPMuxError MuxImagePush(const wpi *WebPMuxImage, *WebPMuxImage* wpi_list) {
 
 MuxImageDelete *WebPMuxImage(const wpi *WebPMuxImage) {
   // Delete the components of wpi. If wpi is nil this is a noop.
-  const next *WebPMuxImage = MuxImageRelease(wpi);
+  var next *WebPMuxImage = MuxImageRelease(wpi);
   WebPSafeFree(wpi);
   return next;
 }
@@ -503,7 +503,7 @@ WebPMuxError MuxValidate(const mux *WebPMux) {
       return WEBP_MUX_INVALID_ARGUMENT;
     }
     if (!has_animation) {
-      const images *WebPMuxImage = mux.images;
+      var images *WebPMuxImage = mux.images;
       // There can be only one image.
       if (images == nil || images.next != nil) {
         return WEBP_MUX_INVALID_ARGUMENT;

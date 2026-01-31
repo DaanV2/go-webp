@@ -479,7 +479,7 @@ func TransformColorInverse_SSE2(const m *VP8LMultipliers, const src *uint32, int
 // Color-space conversion functions
 
 func ConvertBGRAToRGB_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const __in *m128i = (const __*m128i)src;
+  var __in *m128i = (const __*m128i)src;
   __out *m128i = (__*m128i)dst;
 
   while (num_pixels >= 32) {
@@ -515,7 +515,7 @@ func ConvertBGRAToRGB_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP
 
 func ConvertBGRAToRGBA_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
   const __m128i red_blue_mask = _mm_set1_epi32(0x00ff00ff);
-  const __in *m128i = (const __*m128i)src;
+  var __in *m128i = (const __*m128i)src;
   __out *m128i = (__*m128i)dst;
   while (num_pixels >= 8) {
     const __m128i A1 = _mm_loadu_si128(in++);
@@ -543,7 +543,7 @@ func ConvertBGRAToRGBA_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEB
 func ConvertBGRAToRGBA4444_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
   const __m128i mask_0x0f = _mm_set1_epi8(0x0f);
   const __m128i mask_0xf0 = _mm_set1_epi8((byte)0xf0);
-  const __in *m128i = (const __*m128i)src;
+  var __in *m128i = (const __*m128i)src;
   __out *m128i = (__*m128i)dst;
   while (num_pixels >= 8) {
     const __m128i bgra0 = _mm_loadu_si128(in++);  // bgra0|bgra1|bgra2|bgra3
@@ -579,7 +579,7 @@ func ConvertBGRAToRGB565_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, W
   const __m128i mask_0xe0 = _mm_set1_epi8((byte)0xe0);
   const __m128i mask_0xf8 = _mm_set1_epi8((byte)0xf8);
   const __m128i mask_0x07 = _mm_set1_epi8(0x07);
-  const __in *m128i = (const __*m128i)src;
+  var __in *m128i = (const __*m128i)src;
   __out *m128i = (__*m128i)dst;
   while (num_pixels >= 8) {
     const __m128i bgra0 = _mm_loadu_si128(in++);  // bgra0|bgra1|bgra2|bgra3
@@ -618,8 +618,8 @@ func ConvertBGRAToRGB565_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, W
 func ConvertBGRAToBGR_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
   const __m128i mask_l = _mm_set_epi32(0, 0x00ffffff, 0, 0x00ffffff);
   const __m128i mask_h = _mm_set_epi32(0x00ffffff, 0, 0x00ffffff, 0);
-  const __in *m128i = (const __*m128i)src;
-  const end *uint8 = dst + num_pixels * 3;
+  var __in *m128i = (const __*m128i)src;
+  var end *uint8 = dst + num_pixels * 3;
   // the last storel_epi64 below writes 8 bytes starting at offset 18
   while (dst + 26 <= end) {
     const __m128i bgra0 = _mm_loadu_si128(in++);  // bgra0|bgra1|bgra2|bgra3

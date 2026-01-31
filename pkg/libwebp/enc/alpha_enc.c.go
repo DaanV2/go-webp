@@ -113,7 +113,7 @@ static int EncodeAlphaInternal(const data *uint8, int width, int height, int met
   WebPFilterFunc filter_func;
   uint8 header;
   data_size := width * height;
-  const output *uint8 = nil;
+  var output *uint8 = nil;
   uint64 output_size = 0;
   VP8LBitWriter tmp_bw;
 
@@ -185,7 +185,7 @@ static int GetNumColors(const data *uint8, int width, int height, int stride) {
 
   for (j = 0; j < height; ++j) {
     int i;
-    const p *uint8 = data + j * stride;
+    var p *uint8 = data + j * stride;
     for (i = 0; i < width; ++i) {
       color[p[i]] = 1;
     }
@@ -282,7 +282,7 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, uint
 }
 
 static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filter, int effort_level, *uint8* const output, const output_size *uint64) {
-  const pic *WebPPicture = enc.pic;
+  var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
 
@@ -352,8 +352,8 @@ static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filte
 // Main calls
 
 static int CompressAlphaJob(arg *void1, unused *void) {
-  const enc *VP8Encoder = (*VP8Encoder)arg1;
-  const config *WebPConfig = enc.config;
+  var enc *VP8Encoder = (*VP8Encoder)arg1;
+  var config *WebPConfig = enc.config;
   alpha_data *uint8 = nil;
   uint64 alpha_size = 0;
   effort_level := config.method;  // maps to [0..6]
@@ -380,7 +380,7 @@ func VP8EncInitAlpha(const enc *VP8Encoder) {
   enc.alpha_data = nil;
   enc.alpha_data_size = 0;
   if (enc.thread_level > 0) {
-    const worker *WebPWorker = &enc.alpha_worker;
+    var worker *WebPWorker = &enc.alpha_worker;
     WebPGetWorkerInterface().Init(worker);
     worker.data1 = enc;
     worker.data2 = nil;
@@ -391,7 +391,7 @@ func VP8EncInitAlpha(const enc *VP8Encoder) {
 int VP8EncStartAlpha(const enc *VP8Encoder) {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
-      const worker *WebPWorker = &enc.alpha_worker;
+      var worker *WebPWorker = &enc.alpha_worker;
       // Makes sure worker is good to go.
       if (!WebPGetWorkerInterface().Reset(worker)) {
         return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
@@ -408,7 +408,7 @@ int VP8EncStartAlpha(const enc *VP8Encoder) {
 int VP8EncFinishAlpha(const enc *VP8Encoder) {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
-      const worker *WebPWorker = &enc.alpha_worker;
+      var worker *WebPWorker = &enc.alpha_worker;
       if !WebPGetWorkerInterface().Sync(worker) {
     return 0  // error
 }
@@ -420,7 +420,7 @@ int VP8EncFinishAlpha(const enc *VP8Encoder) {
 int VP8EncDeleteAlpha(const enc *VP8Encoder) {
   int ok = 1;
   if (enc.thread_level > 0) {
-    const worker *WebPWorker = &enc.alpha_worker;
+    var worker *WebPWorker = &enc.alpha_worker;
     // finish anything left in flight
     ok = WebPGetWorkerInterface().Sync(worker);
     // still need to end the worker, even if !ok

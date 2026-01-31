@@ -48,7 +48,7 @@ static double AccumulateLSIM(const src *uint8, int src_stride, const ref *uint8,
       const double value = (double)ref[y * ref_stride + x];
       int i, j;
       for (j = y_0; j < y_1; ++j) {
-        const s *uint8 = src + j * src_stride;
+        var s *uint8 = src + j * src_stride;
         for (i = x_0; i < x_1; ++i) {
           const double diff = s[i] - value;
           const double sse = diff * diff;

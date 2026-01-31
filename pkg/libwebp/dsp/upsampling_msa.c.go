@@ -591,9 +591,9 @@ func YuvToRgb565Line(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,
     tl_uv := ((top_u[0]) | ((top_v[0]) << 16));                 \
     l_uv := ((cur_u[0]) | ((cur_v[0]) << 16));                  \
     const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;               \
-    const ptop_y *uint8 = &top_y[1];                                        \
+    var ptop_y *uint8 = &top_y[1];                                        \
     ptop_dst *uint8 = top_dst + XSTEP;                                      \
-    const pbot_y *uint8 = &bot_y[1];                                        \
+    var pbot_y *uint8 = &bot_y[1];                                        \
     pbot_dst *uint8 = bot_dst + XSTEP;                                      \
                                                                               \
     FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                         \

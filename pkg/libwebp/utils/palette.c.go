@@ -107,7 +107,7 @@ int GetColorPalette(const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32
   int num_colors = 0;
   uint8 in_use[COLOR_HASH_SIZE] = {0}
   uint32 colors[COLOR_HASH_SIZE] = {0}
-  const argb *uint32 = pic.argb;
+  var argb *uint32 = pic.argb;
   width := pic.width;
   height := pic.height;
   uint32 last_pix = ~argb[0];  // so we're sure that last_pix != argb[0]
@@ -260,7 +260,7 @@ static int CoOccurrenceBuild(const pic *WebPPicture, const *uint32
                                  cooccurrence) {
   uint32 *lines, *line_top, *line_current, *line_tmp;
   int x, y;
-  const src *uint32 = pic.argb;
+  var src *uint32 = pic.argb;
   uint32 prev_pix = ~src[0];
   uint32 prev_idx = uint(0);
   uint32 idx_map[MAX_PALETTE_SIZE] = {0}

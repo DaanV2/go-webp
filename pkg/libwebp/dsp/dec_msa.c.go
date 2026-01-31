@@ -659,7 +659,7 @@ func DC4(dst *uint8) {  // DC
 }
 
 func TM4(dst *uint8) {
-  const ptemp *uint8 = dst - BPS - 1;
+  var ptemp *uint8 = dst - BPS - 1;
   v8i16 T, d, r0, r1, r2, r3;
   const v16i8 zero = {0}
   const v8i16 TL = (v8i16)__msa_fill_h(ptemp[0 * BPS]);
@@ -677,7 +677,7 @@ func TM4(dst *uint8) {
 }
 
 func VE4(dst *uint8) {  // vertical
-  const ptop *uint8 = dst - BPS - 1;
+  var ptop *uint8 = dst - BPS - 1;
   const uint32 val0 = LW(ptop + 0);
   const uint32 val1 = LW(ptop + 4);
   uint32 out;
@@ -694,7 +694,7 @@ func VE4(dst *uint8) {  // vertical
 }
 
 func RD4(dst *uint8) {  // Down-right
-  const ptop *uint8 = dst - 1 - BPS;
+  var ptop *uint8 = dst - 1 - BPS;
   uint32 val0 = LW(ptop + 0);
   uint32 val1 = LW(ptop + 4);
   uint32 val2, val3;
@@ -722,7 +722,7 @@ func RD4(dst *uint8) {  // Down-right
 }
 
 func LD4(dst *uint8) {  // Down-Left
-  const ptop *uint8 = dst - BPS;
+  var ptop *uint8 = dst - BPS;
   uint32 val0 = LW(ptop + 0);
   uint32 val1 = LW(ptop + 4);
   uint32 val2, val3;

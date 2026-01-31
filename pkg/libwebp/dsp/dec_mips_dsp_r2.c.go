@@ -562,7 +562,7 @@ func SimpleHFilter16i(p *uint8, int stride, int thresh) {
 // clang-format on
 
 func VE4(dst *uint8) {  // vertical
-  const top *uint8 = dst - BPS;
+  var top *uint8 = dst - BPS;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   __asm__ volatile(
       "ulw             %[temp0],   -1(%[top])              \n\t"
@@ -854,7 +854,7 @@ func DC8uvNoTop(dst *uint8) {  // DC with no top samples
 #define CLIP_TO_DST(DST, SIZE)                        \
   for {                                                \
     int y;                                            \
-    const top *uint8 = (DST) - BPS;                 \
+    var top *uint8 = (DST) - BPS;                 \
     const int top_1 = ((int)top[-1] << 16) + top[-1]; \
     for (y = 0; y < (SIZE); ++y) {                    \
       CLIP_8B_TO_DST((DST), top, (SIZE));             \

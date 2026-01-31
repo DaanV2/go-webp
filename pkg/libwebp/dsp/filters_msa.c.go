@@ -70,8 +70,8 @@ static  func PredictLineInverse0(const src *uint8, const pred *uint8, WEBP_RESTR
 // Horrizontal filter
 
 func HorizontalFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
-  const preds *uint8 = data;
-  const in *uint8 = data;
+  var preds *uint8 = data;
+  var in *uint8 = data;
   out *uint8 = filtered_data;
   int row = 1;
   DCHECK(in, out);
@@ -128,8 +128,8 @@ static  func PredictLineGradient(const pinput *uint8, const ppred *uint8, WEBP_R
 }
 
 func GradientFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
-  const in *uint8 = data;
-  const preds *uint8 = data;
+  var in *uint8 = data;
+  var preds *uint8 = data;
   out *uint8 = filtered_data;
   int row = 1;
   DCHECK(in, out);
@@ -155,8 +155,8 @@ func GradientFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height, 
 // Vertical filter
 
 func VerticalFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
-  const in *uint8 = data;
-  const preds *uint8 = data;
+  var in *uint8 = data;
+  var preds *uint8 = data;
   out *uint8 = filtered_data;
   int row = 1;
   DCHECK(in, out);

@@ -234,7 +234,7 @@ type WebPChunkIterator struct {
     }
     WebPAnimDecoderReset(dec);
   }
-  const demuxer *WebPDemuxer = WebPAnimDecoderGetDemuxer(dec);
+  var demuxer *WebPDemuxer = WebPAnimDecoderGetDemuxer(dec);
   // ... (Do something using 'demuxer'; e.g. get EXIF/XMP/ICC data).
   WebPAnimDecoderDelete(dec);
 */

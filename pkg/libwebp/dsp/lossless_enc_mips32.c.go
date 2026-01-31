@@ -93,8 +93,8 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
 // C version of this function:
 //   int i = 0;
 //   int64 cost = 0;
-//   const pop *uint32 = &population[4];
-//   const LoopEnd *uint32 = &population[length];
+//   var pop *uint32 = &population[4];
+//   var LoopEnd *uint32 = &population[length];
 //   while (pop != LoopEnd) {
 //     ++i;
 //     cost += i * *pop;
@@ -104,8 +104,8 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
 //   return cost;
 static uint32 ExtraCost_MIPS32(const population *uint32, int length) {
   int i, temp0, temp1;
-  const pop *uint32 = &population[4];
-  const LoopEnd *uint32 = &population[length];
+  var pop *uint32 = &population[4];
+  var LoopEnd *uint32 = &population[length];
 
   __asm__ volatile(
       "mult   $zero,    $zero                  \n\t"
@@ -158,8 +158,8 @@ const HUFFMAN_COST_PASS =                                                 \
 // Returns the various RLE counts
 static  func GetEntropyUnrefinedHelper(
     uint32 val, int i, WEBP_RESTRICT const val_prev *uint32, WEBP_RESTRICT const i_prev *int, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
-  const pstreaks *int = &stats.streaks[0][0];
-  const pcnts *int = &stats.counts[0];
+  var pstreaks *int = &stats.streaks[0][0];
+  var pcnts *int = &stats.counts[0];
   int temp0, temp1, temp2, temp3;
   streak := i - *i_prev;
 
@@ -285,7 +285,7 @@ const ASM_END_1 = \
 func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, const WEBP_RESTRICT pb *uint32, WEBP_RESTRICT pout *uint32, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
-  const LoopEnd *uint32 = pa + end;
+  var LoopEnd *uint32 = pa + end;
   int i;
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 1, pa, pb, pout)
@@ -296,7 +296,7 @@ func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, const WEBP_RESTRICT pb *ui
 func AddVectorEq_MIPS32(const WEBP_RESTRICT pa *uint32, WEBP_RESTRICT pout *uint32, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
-  const LoopEnd *uint32 = pa + end;
+  var LoopEnd *uint32 = pa + end;
   int i;
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 0, pa, pout, pout)

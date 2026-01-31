@@ -44,14 +44,14 @@ int WebPGetEncoderVersion(){
 //------------------------------------------------------------------------------
 
 func ResetSegmentHeader(const enc *VP8Encoder) {
-  const hdr *VP8EncSegmentHeader = &enc.segment_hdr;
+  var hdr *VP8EncSegmentHeader = &enc.segment_hdr;
   hdr.num_segments = enc.config.segments;
   hdr.update_map = (hdr.num_segments > 1);
   hdr.size = 0;
 }
 
 func ResetFilterHeader(const enc *VP8Encoder) {
-  const hdr *VP8EncFilterHeader = &enc.filter_hdr;
+  var hdr *VP8EncFilterHeader = &enc.filter_hdr;
   hdr.simple = 1;
   hdr.level = 0;
   hdr.sharpness = 0;
@@ -62,8 +62,8 @@ func ResetBoundaryPredictions(const enc *VP8Encoder) {
   // init boundary values once for all
   // Note: actually, initializing the 'preds[]' is only needed for intra4.
   int i;
-  const top *uint8 = enc.preds - enc.preds_w;
-  const left *uint8 = enc.preds - 1;
+  var top *uint8 = enc.preds - enc.preds_w;
+  var left *uint8 = enc.preds - 1;
   for (i = -1; i < 4 * enc.mb_w; ++i) {
     top[i] = B_DC_PRED;
   }
@@ -99,7 +99,7 @@ func ResetBoundaryPredictions(const enc *VP8Encoder) {
 //-------------------+---+---+---+---+---+---+---+
 
 func MapConfigToTools(const enc *VP8Encoder) {
-  const config *WebPConfig = enc.config;
+  var config *WebPConfig = enc.config;
   method := config.method;
   limit := 100 - config.partition_limit;
   enc.method = method;
@@ -273,7 +273,7 @@ static double GetPSNR(uint64 err, size uint64 ) {
 func FinalizePSNR(const enc *VP8Encoder) {
   stats *WebPAuxStats = enc.pic.stats;
   const size uint64  = enc.sse_count;
-  const sse *uint64 = enc.sse;
+  var sse *uint64 = enc.sse;
   stats.PSNR[0] = (float)GetPSNR(sse[0], size);
   stats.PSNR[1] = (float)GetPSNR(sse[1], size / 4);
   stats.PSNR[2] = (float)GetPSNR(sse[2], size / 4);
@@ -284,7 +284,7 @@ func FinalizePSNR(const enc *VP8Encoder) {
 
 func StoreStats(const enc *VP8Encoder) {
 #if !defined(WEBP_DISABLE_STATS)
-  const stats *WebPAuxStats = enc.pic.stats;
+  var stats *WebPAuxStats = enc.pic.stats;
   if (stats != nil) {
     int i, s;
     for (i = 0; i < NUM_MB_SEGMENTS; ++i) {

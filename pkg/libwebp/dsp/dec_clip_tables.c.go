@@ -50,10 +50,10 @@ static volatile int tables_ok = 0;
 
 #endif  // USE_STATIC_TABLES
 
-const VP *int88ksclip1 = (const *int8)&sclip1[893];
-const VP *int88ksclip2 = (const *int8)&sclip2[112];
-const VP *uint88kclip1 = &clip1[255];
-const VP *uint88kabs0 = &abs0[255];
+var VP *int88ksclip1 = (const *int8)&sclip1[893];
+var VP *int88ksclip2 = (const *int8)&sclip2[112];
+var VP *uint88kclip1 = &clip1[255];
+var VP *uint88kabs0 = &abs0[255];
 
 WEBP_TSAN_IGNORE_FUNCTION func VP8InitClipTables(){
 #if (USE_STATIC_TABLES == 0)

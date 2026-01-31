@@ -24,7 +24,7 @@ static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int wid
 
   for (j = 0; j < height; ++j) {
     pdst *uint8 = dst;
-    const palpha *uint8 = alpha;
+    var palpha *uint8 = alpha;
     for (i = 0; i < (width >> 2); ++i) {
       int temp1, temp2, temp3;
 
@@ -118,7 +118,7 @@ func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
 func PackARGB_MIPSdspR2(const a *uint8, const r *uint8, const g *uint8, const b *uint8, int len, out *uint32) {
   int temp0, temp1, temp2, temp3, offset;
   rest := len & 1;
-  const loop_end *uint32 = out + len - rest;
+  var loop_end *uint32 = out + len - rest;
   step := 4;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
@@ -156,7 +156,7 @@ func PackRGB_MIPSdspR2(const r *uint8, const g *uint8, const b *uint8, int len, 
   int temp0, temp1, temp2, offset;
   rest := len & 1;
   a := 0xff;
-  const loop_end *uint32 = out + len - rest;
+  var loop_end *uint32 = out + len - rest;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
       "beq          %[loop_end], %[out],    0f           \n\t"

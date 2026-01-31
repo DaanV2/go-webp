@@ -470,7 +470,7 @@ func WebPResetDecParams(const params *WebPDecParams) {
   WebPInitCustomIo(params, &io);  // Plug the I/O functions.
 
   if (!headers.is_lossless) {
-    const dec *VP8Decoder = VP8New();
+    var dec *VP8Decoder = VP8New();
     if (dec == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
@@ -495,7 +495,7 @@ func WebPResetDecParams(const params *WebPDecParams) {
     }
     VP8Delete(dec);
   } else {
-    const dec *VP8LDecoder = VP8LNew();
+    var dec *VP8LDecoder = VP8LNew();
     if (dec == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
@@ -653,7 +653,7 @@ WebPDecodeYUV *uint8(const *uint8  data, uint64 data_size, width *int, height *i
         Decode(MODE_YUV, data, data_size, width, height, &output);
 
     if (out != nil) {
-      const buf *WebPYUVABuffer = &output.u.YUVA;
+      var buf *WebPYUVABuffer = &output.u.YUVA;
       *u = buf.u;
       *v = buf.v;
       *stride = buf.y_stride;

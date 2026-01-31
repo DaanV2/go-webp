@@ -212,14 +212,14 @@ static struct {
 
 static int last_label = 0;
 static int last_pos = 0;
-static const buf_start *uint8 = nil;
+static var buf_start *uint8 = nil;
 static int init_done = 0;
 
 func PrintBitTraces(){
   int i;
   int scale = 1;
   int total = 0;
-  const units *byte = "bits";
+  var units *byte = "bits";
 #if (BITTRACE == 2)
   scale = 8;
   units = "bytes";

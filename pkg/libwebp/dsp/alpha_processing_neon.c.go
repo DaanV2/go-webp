@@ -45,7 +45,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 func ApplyAlphaMultiply_NEON(rgba *uint8, int alpha_first, int w, int h, int stride) {
   const uint16x8_t kOne = vdupq_n_u16(uint(1));
   while (h-- > 0) {
-    const rgbx *uint32 = (*uint32)rgba;
+    var rgbx *uint32 = (*uint32)rgba;
     int i = 0;
     if (alpha_first) {
       for (; i + 8 <= w; i += 8) {
@@ -63,8 +63,8 @@ func ApplyAlphaMultiply_NEON(rgba *uint8, int alpha_first, int w, int h, int str
     }
     // Finish with left-overs.
     for (; i < w; ++i) {
-      const rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
-      const alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
+      var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
+      var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
       a := alpha[4 * i];
       if (a != 0xff) {
         mult := MULTIPLIER(a);

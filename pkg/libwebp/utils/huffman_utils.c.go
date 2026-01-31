@@ -291,7 +291,7 @@ int VP8LBuildHuffmanTable(const root_table *HuffmanTables, int root_bits, const 
 
 int VP8LHuffmanTablesAllocate(int size, huffman_tables *HuffmanTables) {
   // Have 'segment' point to the first segment for now, 'root'.
-  const root *HuffmanTablesSegment = &huffman_tables.root;
+  var root *HuffmanTablesSegment = &huffman_tables.root;
   huffman_tables.curr_segment = root;
   root.next = nil;
   // Allocate root.

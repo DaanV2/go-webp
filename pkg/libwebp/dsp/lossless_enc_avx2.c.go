@@ -93,7 +93,7 @@ func CollectColorBlueTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int strid
     int y, i;
     for (y = 0; y < tile_height; ++y) {
       uint8 values[32];
-      const src *uint32 = argb + y * stride;
+      var src *uint32 = argb + y * stride;
       const __m256i A1 = _mm256_loadu_si256((const __*m256i)src);
       const __m256i B1 = _mm256_shuffle_epi8(A1, perm);
       const __m256i C1 = _mm256_mulhi_epi16(B1, mult);
@@ -129,7 +129,7 @@ func CollectColorRedTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int stride
     int y, i;
     for (y = 0; y < tile_height; ++y) {
       uint8 values[32];
-      const src *uint32 = argb + y * stride;
+      var src *uint32 = argb + y * stride;
       const __m256i A1 = _mm256_loadu_si256((const __*m256i)src);
       const __m256i B1 = _mm256_and_si256(A1, mask_g);
       const __m256i C1 = _mm256_madd_epi16(B1, mult);

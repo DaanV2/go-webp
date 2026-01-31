@@ -137,8 +137,8 @@ func WebPMultRows(WEBP_RESTRICT ptr *uint8, int stride, const WEBP_RESTRICT alph
 #if !WEBP_NEON_OMIT_C_CODE
 func ApplyAlphaMultiply_C(rgba *uint8, int alpha_first, int w, int h, int stride) {
   while (h-- > 0) {
-    const rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
-    const alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
+    var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
+    var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
     int i;
     for (i = 0; i < w; ++i) {
       a := alpha[4 * i];

@@ -58,9 +58,9 @@ func VP8ResetProba(const proba *VP8Proba) {
 }
 
 func ParseIntraMode(const br *VP8BitReader, const dec *VP8Decoder, int mb_x) {
-  const top *uint8 = dec.intra_t + 4 * mb_x;
-  const left *uint8 = dec.intra_l;
-  const block *VP8MBData = dec.mb_data + mb_x;
+  var top *uint8 = dec.intra_t + 4 * mb_x;
+  var left *uint8 = dec.intra_l;
+  var block *VP8MBData = dec.mb_data + mb_x;
 
   // Note: we don't save segment map (yet), as we don't expect
   // to decode more than 1 keyframe.
@@ -92,7 +92,7 @@ func ParseIntraMode(const br *VP8BitReader, const dec *VP8Decoder, int mb_x) {
       int ymode = left[y];
       int x;
       for (x = 0; x < 4; ++x) {
-        const prob *uint8 = kBModesProba[top[x]][ymode];
+        var prob *uint8 = kBModesProba[top[x]][ymode];
 #if (USE_GENERIC_TREE == 1)
         // Generic tree-parsing
         int i = kYModesIntra4[VP8GetBit(br, prob[0], "pred-modes")];
@@ -155,7 +155,7 @@ static const uint8 kBands[16 + 1] = {
 }
 
 func VP8ParseProba(const br *VP8BitReader, const dec *VP8Decoder) {
-  const proba *VP8Proba = &dec.proba;
+  var proba *VP8Proba = &dec.proba;
   int t, b, c, p;
   for (t = 0; t < NUM_TYPES; ++t) {
     for (b = 0; b < NUM_BANDS; ++b) {

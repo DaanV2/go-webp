@@ -313,7 +313,7 @@ static  GetAccumulatedHisto *uint32(all_accumulated *uint32, int subsampling_ind
 func GetBestPredictorForTile(const all_argb *uint32, int subsampling_index, int tile_x, int tile_y, int tiles_per_row, all_accumulated_argb *uint32, *uint32* const all_modes, const all_pred_histos *uint32) {
   const accumulated_argb *uint32 =
       GetAccumulatedHisto(all_accumulated_argb, subsampling_index);
-  const modes *uint32 = all_modes[subsampling_index];
+  var modes *uint32 = all_modes[subsampling_index];
   const pred_histos *uint32 =
       &all_pred_histos[subsampling_index * kNumPredModes];
   // Prediction modes of the left and above neighbor tiles.
@@ -371,7 +371,7 @@ func ComputeResidualsForTile(
   // when at the right edge.
   upper_row *uint32 = argb_scratch;
   current_row *uint32 = upper_row + width + 1;
-  const max_diffs *uint8 = (*uint8)(current_row + width + 1);
+  var max_diffs *uint8 = (*uint8)(current_row + width + 1);
   int mode;
   // Need pointers to be able to swap arrays.
   uint32 residuals[1 << MAX_TRANSFORM_BITS];
@@ -442,7 +442,7 @@ func CopyImageWithPrediction(int width, int height, int bits, const modes *uint3
 
   for (y = 0; y < height; ++y) {
     int x;
-    const tmp *uint3232 = upper_row;
+    var tmp *uint3232 = upper_row;
     upper_row = current_row;
     current_row = tmp32;
     memcpy(current_row, argb + y * width, sizeof(*argb) * (width + (y + 1 < height)));
@@ -455,7 +455,7 @@ func CopyImageWithPrediction(int width, int height, int bits, const modes *uint3
         // Compute max_diffs for the lower row now, because that needs the
         // contents of argb for the current row, which we will overwrite with
         // residuals before proceeding with the next row.
-        const tmp *uint88 = current_max_diffs;
+        var tmp *uint88 = current_max_diffs;
         current_max_diffs = lower_max_diffs;
         lower_max_diffs = tmp8;
         if (y + 2 < height) {
@@ -575,11 +575,11 @@ func GetBestPredictorsAndSubSampling(
   num_argb := (max_subsampling_index + 1) * kNumPredModes * HISTO_SIZE;
   num_accumulated_rgb := (max_subsampling_index + 1) * HISTO_SIZE;
   num_predictors := (max_subsampling_index + 1) * kNumPredModes;
-  const raw_data *uint32 = (*uint32)WebPSafeCalloc(
+  var raw_data *uint32 = (*uint32)WebPSafeCalloc(
       num_argb + num_accumulated_rgb + num_predictors, sizeof(uint32));
-  const all_argb *uint32 = raw_data;
-  const all_accumulated_argb *uint32 = all_argb + num_argb;
-  const all_pred_histos *uint32 = all_accumulated_argb + num_accumulated_rgb;
+  var all_argb *uint32 = raw_data;
+  var all_accumulated_argb *uint32 = all_argb + num_argb;
+  var all_pred_histos *uint32 = all_accumulated_argb + num_accumulated_rgb;
   max_tile_size := 1 << max_subsampling_index;  // in tile size
   int percent_start = *percent;
   // When using the residuals of a tile for its super-tiles, you can either:

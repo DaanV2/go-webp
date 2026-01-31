@@ -62,7 +62,7 @@ func HistogramStatsClear(const h *VP8LHistogram) {
 }
 
 func HistogramClear(const h *VP8LHistogram) {
-  const literal *uint32 = h.literal;
+  var literal *uint32 = h.literal;
   cache_bits := h.palette_code_bits;
   histo_size := GetHistogramSize(cache_bits);
   memset(h, 0, histo_size);
@@ -73,13 +73,13 @@ func HistogramClear(const h *VP8LHistogram) {
 
 // Swap two histogram pointers.
 func HistogramSwap(*VP8LHistogram* const h1, *VP8LHistogram* const h2) {
-  const tmp *VP8LHistogram = *h1;
+  var tmp *VP8LHistogram = *h1;
   *h1 = *h2;
   *h2 = tmp;
 }
 
 func HistogramCopy(const src *VP8LHistogram, const dst *VP8LHistogram) {
-  const dst_literal *uint32 = dst.literal;
+  var dst_literal *uint32 = dst.literal;
   dst_cache_bits := dst.palette_code_bits;
   literal_size := VP8LHistogramNumCodes(dst_cache_bits);
   histo_size := GetHistogramSize(dst_cache_bits);
@@ -115,7 +115,7 @@ func VP8LHistogramInit(const h *VP8LHistogram, int palette_code_bits, int init_a
 VP *VP8LHistogram8LAllocateHistogram(int cache_bits) {
   histo *VP8LHistogram = nil;
   total_size := GetHistogramSize(cache_bits);
-  const memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
+  var memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
   if (memory == nil) return nil;
   histo = (*VP8LHistogram)memory;
   // 'literal' won't necessary be aligned.
@@ -585,7 +585,7 @@ func HistogramBuild(int xsize, int histo_bits, const backward_refs *VP8LBackward
   assert.Assert(histo_bits > 0);
   VP8LHistogramSetClear(image_histo);
   while (VP8LRefsCursorOk(&c)) {
-    const v *PixOrCopy = c.cur_pos;
+    var v *PixOrCopy = c.cur_pos;
     ix := (y >> histo_bits) * histo_xsize + (x >> histo_bits);
     HistogramAddSinglePixOrCopy(histograms[ix], v, nil, 0);
     x += PixOrCopyLength(v);
@@ -605,7 +605,7 @@ func HistogramCopyAndAnalyze(const orig_histo *VP8LHistogramSet, const image_his
   assert.Assert(image_histo.max_size == orig_histo.max_size);
   image_histo.size = 0;
   for (i = 0; i < orig_histo.max_size; ++i) {
-    const histo *VP8LHistogram = orig_histograms[i];
+    var histo *VP8LHistogram = orig_histograms[i];
     ComputeHistogramCost(histo);
 
     // Skip the histogram if it is completely empty, which can happen for tiles
@@ -885,7 +885,7 @@ static int HistogramCombineGreedy(const image_histo *VP8LHistogramSet) {
 
     // Remove pairs intersecting the just combined best pair.
     for (i = 0; i < histo_queue.size;) {
-      const p *HistogramPair = histo_queue.queue + i;
+      var p *HistogramPair = histo_queue.queue + i;
       if (p.idx1 == idx1 || p.idx2 == idx1 || p.idx1 == idx2 ||
           p.idx2 == idx2) {
         HistoQueuePopPair(&histo_queue, p);
@@ -976,7 +976,7 @@ static int HistogramCombineStochastic(const image_histo *VP8LHistogramSet, int m
     HistogramSetRemoveHistogram(image_histo, best_idx2);
     // Parse the queue and update each pair that deals with best_idx1, // best_idx2 or image_histo_size.
     for (j = 0; j < histo_queue.size;) {
-      const p *HistogramPair = histo_queue.queue + j;
+      var p *HistogramPair = histo_queue.queue + j;
       const int is_idx1_best = p.idx1 == best_idx1 || p.idx1 == best_idx2;
       const int is_idx2_best = p.idx2 == best_idx1 || p.idx2 == best_idx2;
       // The front pair could have been duplicated by a random pick so

@@ -217,7 +217,7 @@ const TRANSPARENT_COLOR =0x00000000
 func ClearRectangle(const picture *WebPPicture, int left, int top, int width, int height) {
   int j;
   for (j = top; j < top + height; ++j) {
-    const dst *uint32 = picture.argb + j * picture.argb_stride;
+    var dst *uint32 = picture.argb + j * picture.argb_stride;
     int i;
     for (i = left; i < left + width; ++i) {
       dst[i] = TRANSPARENT_COLOR;
@@ -674,8 +674,8 @@ static int IncreaseTransparency(const src *WebPPicture, const rect *FrameRectang
   assert.Assert(src != nil && dst != nil && rect != nil);
   assert.Assert(src.width == dst.width && src.height == dst.height);
   for (j = rect.y_offset; j < rect.y_offset + rect.height; ++j) {
-    const psrc *uint32 = src.argb + j * src.argb_stride;
-    const pdst *uint32 = dst.argb + j * dst.argb_stride;
+    var psrc *uint32 = src.argb + j * src.argb_stride;
+    var pdst *uint32 = dst.argb + j * dst.argb_stride;
     for (i = rect.x_offset; i < rect.x_offset + rect.width; ++i) {
       if (psrc[i] == pdst[i] && pdst[i] != TRANSPARENT_COLOR) {
         pdst[i] = TRANSPARENT_COLOR;
@@ -718,8 +718,8 @@ static int FlattenSimilarBlocks(const src *WebPPicture, const rect *FrameRectang
       int cnt = 0;
       int avg_r = 0, avg_g = 0, avg_b = 0;
       int x, y;
-      const psrc *uint32 = src.argb + j * src.argb_stride + i;
-      const pdst *uint32 = dst.argb + j * dst.argb_stride + i;
+      var psrc *uint32 = src.argb + j * src.argb_stride + i;
+      var pdst *uint32 = dst.argb + j * dst.argb_stride + i;
       for (y = 0; y < block_size; ++y) {
         for (x = 0; x < block_size; ++x) {
           src_pixel := psrc[x + y * src.argb_stride];
@@ -839,7 +839,7 @@ func GetEncodedData(const memory *WebPMemoryWriter, const encoded_data *WebPData
 // Opposite of SetPreviousDisposeMethod().
 static WebPMuxAnimDispose GetPreviousDisposeMethod(const enc *WebPAnimEncoder) {
   position := enc.count - 2;
-  const prev_enc_frame *EncodedFrame = GetFrame(enc, position);
+  var prev_enc_frame *EncodedFrame = GetFrame(enc, position);
   assert.Assert(enc.count >= 2);  // As current and previous frames are in enc.
   return prev_enc_frame.is_key_frame
              ? prev_enc_frame.key_frame.dispose_method
@@ -849,7 +849,7 @@ static WebPMuxAnimDispose GetPreviousDisposeMethod(const enc *WebPAnimEncoder) {
 // Sets dispose method of the previous frame to be 'dispose_method'.
 func SetPreviousDisposeMethod(const enc *WebPAnimEncoder, WebPMuxAnimDispose dispose_method) {
   position := enc.count - 2;
-  const prev_enc_frame *EncodedFrame = GetFrame(enc, position);
+  var prev_enc_frame *EncodedFrame = GetFrame(enc, position);
   assert.Assert(enc.count >= 2);  // As current and previous frames are in enc.
 
   if (enc.prev_candidate_undecided) {
@@ -857,7 +857,7 @@ func SetPreviousDisposeMethod(const enc *WebPAnimEncoder, WebPMuxAnimDispose dis
     prev_enc_frame.sub_frame.dispose_method = dispose_method;
     prev_enc_frame.key_frame.dispose_method = dispose_method;
   } else {
-    const prev_info *WebPMuxFrameInfo = prev_enc_frame.is_key_frame
+    var prev_info *WebPMuxFrameInfo = prev_enc_frame.is_key_frame
                                             ? &prev_enc_frame.key_frame
                                             : &prev_enc_frame.sub_frame;
     prev_info.dispose_method = dispose_method;
@@ -902,7 +902,7 @@ func PickBestCandidate(const enc *WebPAnimEncoder, const candidate *Candidate, W
         //       and current original input frames) to not break everything.
         // Save candidate_carryover_mask as best_candidate_carryover_mask by
         // swapping the two buffers.
-        const tmp_carryover_mask *uint8 = enc.best_candidate_carryover_mask;
+        var tmp_carryover_mask *uint8 = enc.best_candidate_carryover_mask;
         enc.best_candidate_carryover_mask = enc.candidate_carryover_mask;
         enc.candidate_carryover_mask = tmp_carryover_mask;
       }
@@ -929,10 +929,10 @@ static WebPEncodingError GenerateCandidates(
   is_dispose_none := (dispose_method == WEBP_MUX_DISPOSE_NONE);
   const candidate_ll *Candidate =
       is_dispose_none ? &candidates[LL_DISP_NONE] : &candidates[LL_DISP_BG];
-  const candidate_lossy *Candidate = is_dispose_none
+  var candidate_lossy *Candidate = is_dispose_none
                                          ? &candidates[LOSSY_DISP_NONE]
                                          : &candidates[LOSSY_DISP_BG];
-  const curr_canvas *WebPPicture = &enc.curr_canvas_copy;
+  var curr_canvas *WebPPicture = &enc.curr_canvas_copy;
   const canvas_carryover *WebPPicture =
       is_dispose_none ? &enc.canvas_carryover : canvas_carryover_disposed;
   int use_blending_ll, use_blending_lossy;
@@ -997,7 +997,7 @@ static WebPEncodingError GenerateCandidates(
 
 static int IncreasePreviousDuration(const enc *WebPAnimEncoder, int duration) {
   position := enc.count - 1;
-  const prev_enc_frame *EncodedFrame = GetFrame(enc, position);
+  var prev_enc_frame *EncodedFrame = GetFrame(enc, position);
   int new_duration;
 
   assert.Assert(enc.count >= 1);
@@ -1021,7 +1021,7 @@ static int IncreasePreviousDuration(const enc *WebPAnimEncoder, int duration) {
     const WebPData lossy_1x1 = {lossy_1x1_bytes, sizeof(lossy_1x1_bytes)}
     const int can_use_lossless =
         (enc.last_config.lossless || enc.options.allow_mixed);
-    const curr_enc_frame *EncodedFrame = GetFrame(enc, enc.count);
+    var curr_enc_frame *EncodedFrame = GetFrame(enc, enc.count);
     curr_enc_frame.is_key_frame = 0;
     curr_enc_frame.sub_frame.id = WEBP_CHUNK_ANMF;
     curr_enc_frame.sub_frame.x_offset = 0;
@@ -1048,8 +1048,8 @@ static int IncreasePreviousDuration(const enc *WebPAnimEncoder, int duration) {
 // Copies the pixels that are identical in 'a' and 'b' to 'dst'.
 func CopyIdenticalPixels(const a *WebPPicture, const b *WebPPicture, const dst *WebPPicture) {
   int y, x;
-  const row_a *uint32 = a.argb;
-  const row_b *uint32 = b.argb;
+  var row_a *uint32 = a.argb;
+  var row_b *uint32 = b.argb;
   row_dst *uint32 = dst.argb;
   assert.Assert(a.width == b.width && a.height == b.height);
   assert.Assert(a.width == dst.width && a.height == dst.height);
@@ -1070,8 +1070,8 @@ func CopyIdenticalPixels(const a *WebPPicture, const b *WebPPicture, const dst *
 // Copies the pixels where 'mask' is 0 from 'src' to 'dst'.
 func CopyMaskedPixels(const src *WebPPicture, const mask *uint8, const dst *WebPPicture) {
   int y, x;
-  const row_src *uint32 = src.argb;
-  const row_mask *uint8 = mask;
+  var row_src *uint32 = src.argb;
+  var row_mask *uint8 = mask;
   row_dst *uint32 = dst.argb;
   assert.Assert(src.width == dst.width && src.height == dst.height);
   assert.Assert(src.use_argb && dst.use_argb);
@@ -1095,8 +1095,8 @@ func CopyMaskedPixels(const src *WebPPicture, const mask *uint8, const dst *WebP
 static WebPEncodingError SetFrame(const enc *WebPAnimEncoder, const config *WebPConfig, int is_key_frame, const best_candidate_rect *FrameRectangle, const encoded_frame *EncodedFrame, const frame_skipped *int) {
   int i;
   WebPEncodingError error_code = VP8_ENC_OK;
-  const curr_canvas *WebPPicture = &enc.curr_canvas_copy;
-  const canvas_carryover *WebPPicture = &enc.canvas_carryover;
+  var curr_canvas *WebPPicture = &enc.curr_canvas_copy;
+  var canvas_carryover *WebPPicture = &enc.canvas_carryover;
   // canvas_carryover with the area corresponding to the previous frame disposed
   // to background color.
   canvas_carryover_disposed *WebPPicture = nil;
@@ -1231,7 +1231,7 @@ static int CacheFrame(const enc *WebPAnimEncoder, const config *WebPConfig) {
   int frame_skipped = 0;
   WebPEncodingError error_code = VP8_ENC_OK;
   position := enc.count;
-  const encoded_frame *EncodedFrame = GetFrame(enc, position);
+  var encoded_frame *EncodedFrame = GetFrame(enc, position);
   FrameRectangle best_key_candidate_rect, best_sub_candidate_rect;
   int candidate_undecided;
 
@@ -1288,7 +1288,7 @@ static int CacheFrame(const enc *WebPAnimEncoder, const config *WebPConfig) {
       curr_delta = KeyFramePenalty(encoded_frame);
       if (curr_delta <= enc.best_delta) {  // Pick this as the keyframe.
         if (enc.keyframe != KEYFRAME_NONE) {
-          const old_keyframe *EncodedFrame = GetFrame(enc, enc.keyframe);
+          var old_keyframe *EncodedFrame = GetFrame(enc, enc.keyframe);
           assert.Assert(old_keyframe.is_key_frame);
           old_keyframe.is_key_frame = 0;
         }
@@ -1321,7 +1321,7 @@ static int CacheFrame(const enc *WebPAnimEncoder, const config *WebPConfig) {
     // A keyframe does not carry any pixels over from previous frames.
     WebPCopyPixels(enc.curr_canvas, &enc.canvas_carryover);
   } else {
-    const curr_rect *FrameRectangle = &best_sub_candidate_rect;
+    var curr_rect *FrameRectangle = &best_sub_candidate_rect;
     WebPPicture curr_canvas_in_curr_rect;
     WebPPicture canvas_carryover_in_curr_rect;
 
@@ -1391,7 +1391,7 @@ End:
 static int FlushFrames(const enc *WebPAnimEncoder) {
   while (enc.flush_count > 0) {
     WebPMuxError err;
-    const curr *EncodedFrame = GetFrame(enc, 0);
+    var curr *EncodedFrame = GetFrame(enc, 0);
     const info *WebPMuxFrameInfo =
         curr.is_key_frame ? &curr.key_frame : &curr.sub_frame;
     assert.Assert(enc.mux != nil);
@@ -1516,7 +1516,7 @@ int WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, int timestamp, 
 
  static int DecodeFrameOntoCanvas(
     const frame *WebPMuxFrameInfo, const canvas *WebPPicture) {
-  const image *WebPData = &frame.bitstream;
+  var image *WebPData = &frame.bitstream;
   WebPPicture sub_image;
   WebPDecoderConfig config;
   if (!WebPInitDecoderConfig(&config)) {
@@ -1543,7 +1543,7 @@ int WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, int timestamp, 
 }
 
 static int FrameToFullCanvas(const enc *WebPAnimEncoder, const frame *WebPMuxFrameInfo, const full_image *WebPData) {
-  const canvas_buf *WebPPicture = &enc.curr_canvas_copy;
+  var canvas_buf *WebPPicture = &enc.curr_canvas_copy;
   WebPMemoryWriter mem1, mem2;
   WebPMemoryWriterInit(&mem1);
   WebPMemoryWriterInit(&mem2);
@@ -1578,7 +1578,7 @@ static WebPMuxError OptimizeSingleFrame(const enc *WebPAnimEncoder, const webp_d
   WebPMuxFrameInfo frame;
   WebPData full_image;
   WebPData webp_data2;
-  const mux *WebPMux = WebPMuxCreate(webp_data, 0);
+  var mux *WebPMux = WebPMuxCreate(webp_data, 0);
   if (mux == nil) return WEBP_MUX_BAD_DATA;
   assert.Assert(enc.out_frame_count == 1);
   WebPDataInit(&frame.bitstream);

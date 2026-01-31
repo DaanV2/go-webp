@@ -339,10 +339,10 @@ static const int32 kCoeff32[] = {1812,  1812,  1812,  1812,  937,   937, 937,   
 
 func FTransform_NEON(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
   const int kBPS = BPS;
-  const src_ptr *uint8 = src;
-  const ref_ptr *uint8 = ref;
-  const coeff *int1616 = kCoeff16;
-  const coeff *int3232 = kCoeff32;
+  var src_ptr *uint8 = src;
+  var ref_ptr *uint8 = ref;
+  var coeff *int1616 = kCoeff16;
+  var coeff *int3232 = kCoeff32;
 
   __asm__ volatile(
       // load src into q4, q5 in high half

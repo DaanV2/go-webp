@@ -79,7 +79,7 @@ const ARGB_TO_RGB_SSE41 =                              \
   } while (0)
 
 func ConvertBGRAToRGB_SSE41(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const __in *m128i = (const __*m128i)src;
+  var __in *m128i = (const __*m128i)src;
   __out *m128i = (__*m128i)dst;
   const __m128i perm0 =
       _mm_setr_epi8(2, 1, 0, 6, 5, 4, 10, 9, 8, 14, 13, 12, -1, -1, -1, -1);
@@ -96,7 +96,7 @@ func ConvertBGRAToRGB_SSE41(const WEBP_RESTRICT src *uint32, int num_pixels, WEB
 }
 
 func ConvertBGRAToBGR_SSE41(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const __in *m128i = (const __*m128i)src;
+  var __in *m128i = (const __*m128i)src;
   __out *m128i = (__*m128i)dst;
   const __m128i perm0 =
       _mm_setr_epi8(0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, -1, -1, -1, -1);

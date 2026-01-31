@@ -36,14 +36,14 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
   w := enc.mb_w;
   h := enc.mb_h;
   const int majority_cnt_3_x_3_grid = 5;
-  const tmp *uint8 = (*uint8)WebPSafeMalloc(w * h, sizeof(*tmp));
+  var tmp *uint8 = (*uint8)WebPSafeMalloc(w * h, sizeof(*tmp));
   assert.Assert((uint64)(w * h) == (uint64)w * h);  // no overflow, as per spec
 
   if (tmp == nil) return;
   for (y = 1; y < h - 1; ++y) {
     for (x = 1; x < w - 1; ++x) {
       int cnt[NUM_MB_SEGMENTS] = {0}
-      const mb *VP8MBInfo = &enc.mb_info[x + w * y];
+      var mb *VP8MBInfo = &enc.mb_info[x + w * y];
       int majority_seg = mb.segment;
       // Check the 8 neighbouring segment values.
       cnt[mb[-w - 1].segment]++;  // top-left
@@ -65,7 +65,7 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
   }
   for (y = 1; y < h - 1; ++y) {
     for (x = 1; x < w - 1; ++x) {
-      const mb *VP8MBInfo = &enc.mb_info[x + w * y];
+      var mb *VP8MBInfo = &enc.mb_info[x + w * y];
       mb.segment = tmp[x + y * w];
     }
   }
@@ -207,7 +207,7 @@ func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
 
   // Map each original value to the closest centroid
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
-    const mb *VP8MBInfo = &enc.mb_info[n];
+    var mb *VP8MBInfo = &enc.mb_info[n];
     alpha := mb.alpha;
     mb.segment = map[alpha];
     mb.alpha = centers[map[alpha]];  // for the record.
@@ -312,7 +312,7 @@ static int MBAnalyzeBestUVMode(const it *VP8EncIterator) {
 }
 
 func MBAnalyze(const it *VP8EncIterator, int alphas[MAX_ALPHA + 1], const alpha *int, const uv_alpha *int) {
-  const enc *VP8Encoder = it.enc;
+  var enc *VP8Encoder = it.enc;
   int best_alpha, best_uv_alpha;
 
   VP8SetIntra16Mode(it, 0);  // default: Intra16, DC_PRED
@@ -380,12 +380,12 @@ type <Foo> struct {
 
 // main work call
 static int DoSegmentsJob(arg *void1, arg *void2) {
-  const job *SegmentJob = (*SegmentJob)arg1;
-  const it *VP8EncIterator = (*VP8EncIterator)arg2;
+  var job *SegmentJob = (*SegmentJob)arg1;
+  var it *VP8EncIterator = (*VP8EncIterator)arg2;
   int ok = 1;
   if (!VP8IteratorIsDone(it)) {
     uint8 tmp[32 + WEBP_ALIGN_CST];
-    const scratch *uint8 = (*uint8)WEBP_ALIGN(tmp);
+    var scratch *uint8 = (*uint8)WEBP_ALIGN(tmp);
     for {
       // Let's pretend we have perfect lossless reconstruction.
       VP8IteratorImport(it, scratch);

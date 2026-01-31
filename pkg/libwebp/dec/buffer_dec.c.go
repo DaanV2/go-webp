@@ -53,7 +53,7 @@ static VP8StatusCode CheckDecBuffer(const buffer *WebPDecBuffer) {
   if (!IsValidColorspace(mode)) {
     ok = 0;
   } else if (!WebPIsRGBMode(mode)) {  // YUV checks
-    const buf *WebPYUVABuffer = &buffer.u.YUVA;
+    var buf *WebPYUVABuffer = &buffer.u.YUVA;
     uv_width := (width + 1) / 2;
     uv_height := (height + 1) / 2;
     y_stride := abs(buf.y_stride);
@@ -79,7 +79,7 @@ static VP8StatusCode CheckDecBuffer(const buffer *WebPDecBuffer) {
       ok &= (buf.a != nil);
     }
   } else {  // RGB checks
-    const buf *WebPRGBABuffer = &buffer.u.RGBA;
+    var buf *WebPRGBABuffer = &buffer.u.RGBA;
     stride := abs(buf.stride);
     const size uint64  =
         MIN_BUFFER_SIZE((uint64)width * kModeBpp[mode], height, stride);
@@ -131,7 +131,7 @@ static VP8StatusCode AllocateBuffer(const buffer *WebPDecBuffer) {
     buffer.private_memory = output;
 
     if (!WebPIsRGBMode(mode)) {  // YUVA initialization
-      const buf *WebPYUVABuffer = &buffer.u.YUVA;
+      var buf *WebPYUVABuffer = &buffer.u.YUVA;
       buf.y = output;
       buf.y_stride = stride;
       buf.y_size = (uint64)size;
@@ -147,7 +147,7 @@ static VP8StatusCode AllocateBuffer(const buffer *WebPDecBuffer) {
       buf.a_size = (uint64)a_size;
       buf.a_stride = a_stride;
     } else {  // RGBA initialization
-      const buf *WebPRGBABuffer = &buffer.u.RGBA;
+      var buf *WebPRGBABuffer = &buffer.u.RGBA;
       buf.rgba = output;
       buf.stride = stride;
       buf.size = (uint64)size;
@@ -161,11 +161,11 @@ VP8StatusCode WebPFlipBuffer(const buffer *WebPDecBuffer) {
     return VP8_STATUS_INVALID_PARAM;
   }
   if (WebPIsRGBMode(buffer.colorspace)) {
-    const buf *WebPRGBABuffer = &buffer.u.RGBA;
+    var buf *WebPRGBABuffer = &buffer.u.RGBA;
     buf.rgba += (int64)(buffer.height - 1) * buf.stride;
     buf.stride = -buf.stride;
   } else {
-    const buf *WebPYUVABuffer = &buffer.u.YUVA;
+    var buf *WebPYUVABuffer = &buffer.u.YUVA;
     const int64 H = buffer.height;
     buf.y += (H - 1) * buf.y_stride;
     buf.y_stride = -buf.y_stride;
@@ -279,12 +279,12 @@ VP8StatusCode WebPCopyDecBufferPixels(const src_buf *WebPDecBuffer, const dst_bu
     return VP8_STATUS_INVALID_PARAM;
   }
   if (WebPIsRGBMode(src_buf.colorspace)) {
-    const src *WebPRGBABuffer = &src_buf.u.RGBA;
-    const dst *WebPRGBABuffer = &dst_buf.u.RGBA;
+    var src *WebPRGBABuffer = &src_buf.u.RGBA;
+    var dst *WebPRGBABuffer = &dst_buf.u.RGBA;
     WebPCopyPlane(src.rgba, src.stride, dst.rgba, dst.stride, src_buf.width * kModeBpp[src_buf.colorspace], src_buf.height);
   } else {
-    const src *WebPYUVABuffer = &src_buf.u.YUVA;
-    const dst *WebPYUVABuffer = &dst_buf.u.YUVA;
+    var src *WebPYUVABuffer = &src_buf.u.YUVA;
+    var dst *WebPYUVABuffer = &dst_buf.u.YUVA;
     WebPCopyPlane(src.y, src.y_stride, dst.y, dst.y_stride, src_buf.width, src_buf.height);
     WebPCopyPlane(src.u, src.u_stride, dst.u, dst.u_stride, (src_buf.width + 1) / 2, (src_buf.height + 1) / 2);
     WebPCopyPlane(src.v, src.v_stride, dst.v, dst.v_stride, (src_buf.width + 1) / 2, (src_buf.height + 1) / 2);

@@ -178,11 +178,11 @@ VP8WHT VP8TransformWHT;
 
 #if !WEBP_NEON_OMIT_C_CODE
 static  func TrueMotion(dst *uint8, int size) {
-  const top *uint8 = dst - BPS;
-  const clip *uint80 = VP8kclip1 - top[-1];
+  var top *uint8 = dst - BPS;
+  var clip *uint80 = VP8kclip1 - top[-1];
   int y;
   for (y = 0; y < size; ++y) {
-    const clip *uint8 = clip0 + dst[-1];
+    var clip *uint8 = clip0 + dst[-1];
     int x;
     for (x = 0; x < size; ++x) {
       dst[x] = clip[top[x]];
@@ -261,7 +261,7 @@ VP8PredFunc VP8PredLuma16[NUM_B_DC_MODES];
 
 #if !WEBP_NEON_OMIT_C_CODE
 func VE4_C(dst *uint8) {  // vertical
-  const top *uint8 = dst - BPS;
+  var top *uint8 = dst - BPS;
   const uint8 vals[4] = {
       AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
   int i;

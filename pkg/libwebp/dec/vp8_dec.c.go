@@ -69,7 +69,7 @@ int VP8InitIoInternal(const io *VP8Io, int version) {
 }
 
 VP *VP8Decoder8New(){
-  const dec *VP8Decoder = (*VP8Decoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
+  var dec *VP8Decoder = (*VP8Decoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
   if (dec != nil) {
     SetOk(dec);
     WebPGetWorkerInterface().Init(&dec.worker);
@@ -216,9 +216,9 @@ static int ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP
 // is returned, and this is an unrecoverable error.
 // If the partitions were positioned ok, VP8_STATUS_OK is returned.
 static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, size uint64 ) {
-  const br *VP8BitReader = &dec.br;
+  var br *VP8BitReader = &dec.br;
   const WEBP_BIDI_INDEXABLE sz *uint8 = buf;
-  const buf_end *uint8 = buf + size;
+  var buf_end *uint8 = buf + size;
   const WEBP_BIDI_INDEXABLE part_start *uint8;
   uint64 size_left = size;
   uint64 last_part;
@@ -249,7 +249,7 @@ static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, s
 
 // Paragraph 9.4
 static int ParseFilterHeader(br *VP8BitReader, const dec *VP8Decoder) {
-  const hdr *VP8FilterHeader = &dec.filter_hdr;
+  var hdr *VP8FilterHeader = &dec.filter_hdr;
   hdr.simple = VP8Get(br, "global-header");
   hdr.level = VP8GetValue(br, 6, "global-header");
   hdr.sharpness = VP8GetValue(br, 3, "global-header");
@@ -443,7 +443,7 @@ static int GetLargeValue(const br *VP8BitReader, const p *uint8) {
 
 // Returns the position of the last non-zero coeff plus one
 static int GetCoeffsFast(const br *VP8BitReader, const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16) {
-  const p *uint8 = prob[n].probas[ctx];
+  var p *uint8 = prob[n].probas[ctx];
   for (; n < 16; ++n) {
     if (!VP8GetBit(br, p[0], "coeffs")) {
       return n;  // previous coeff was last non-zero coeff
@@ -454,7 +454,7 @@ static int GetCoeffsFast(const br *VP8BitReader, const prob *VP8BandProbas[], in
       if (n == 16) return 16;
     }
     {  // non zero coeff
-      const p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
+      var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
       int v;
       if (!VP8GetBit(br, p[2], "coeffs")) {
         v = 1;
@@ -472,7 +472,7 @@ static int GetCoeffsFast(const br *VP8BitReader, const prob *VP8BandProbas[], in
 // This version of GetCoeffs() uses VP8GetBitAlt() which is an alternate version
 // of VP8GetBitAlt() targeting specific platforms.
 static int GetCoeffsAlt(const br *VP8BitReader, const prob *VP8BandProbas[], int ctx, const quant_t dq, int n, out *int16) {
-  const p *uint8 = prob[n].probas[ctx];
+  var p *uint8 = prob[n].probas[ctx];
   for (; n < 16; ++n) {
     if (!VP8GetBitAlt(br, p[0], "coeffs")) {
       return n;  // previous coeff was last non-zero coeff
@@ -483,7 +483,7 @@ static int GetCoeffsAlt(const br *VP8BitReader, const prob *VP8BandProbas[], int
       if (n == 16) {return 16};
     }
     {  // non zero coeff
-      const p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
+      var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
       int v;
       if (!VP8GetBitAlt(br, p[2], "coeffs")) {
         v = 1;
@@ -517,10 +517,10 @@ static  uint32 NzCodeBits(uint32 nz_coeffs, int nz, int dc_nz) {
 static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br *VP8BitReader) {
   const *VP8BandProbas(bands *const)[16 + 1] = dec.proba.bands_ptr;
   const ac_proba *VP8BandProbas *const;
-  const block *VP8MBData = dec.mb_data + dec.mb_x;
-  const q *VP8QuantMatrix = &dec.dqm[block.segment];
+  var block *VP8MBData = dec.mb_data + dec.mb_x;
+  var q *VP8QuantMatrix = &dec.dqm[block.segment];
   dst *int16 = block.coeffs;
-  const left_mb *VP8MB = dec.mb_info - 1;
+  var left_mb *VP8MB = dec.mb_info - 1;
   uint8 tnz, lnz;
   uint32 non_zero_y = 0;
   uint32 non_zero_uv = 0;
@@ -608,9 +608,9 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
 // Main loop
 
 int VP8DecodeMB(const dec *VP8Decoder, const token_br *VP8BitReader) {
-  const left *VP8MB = dec.mb_info - 1;
-  const mb *VP8MB = dec.mb_info + dec.mb_x;
-  const block *VP8MBData = dec.mb_data + dec.mb_x;
+  var left *VP8MB = dec.mb_info - 1;
+  var mb *VP8MB = dec.mb_info + dec.mb_x;
+  var block *VP8MBData = dec.mb_data + dec.mb_x;
   int skip = tenary.If(dec.use_skip_proba, block.skip, 0);
 
   if (!skip) {
@@ -626,7 +626,7 @@ int VP8DecodeMB(const dec *VP8Decoder, const token_br *VP8BitReader) {
   }
 
   if (dec.filter_type > 0) {  // store filter info
-    const finfo *VP8FInfo = dec.f_info + dec.mb_x;
+    var finfo *VP8FInfo = dec.f_info + dec.mb_x;
     *finfo = dec.fstrengths[block.segment][block.is_i4x4];
     finfo.f_inner |= !skip;
   }
@@ -635,7 +635,7 @@ int VP8DecodeMB(const dec *VP8Decoder, const token_br *VP8BitReader) {
 }
 
 func VP8InitScanline(const dec *VP8Decoder) {
-  const left *VP8MB = dec.mb_info - 1;
+  var left *VP8MB = dec.mb_info - 1;
   left.nz = 0;
   left.nz_dc = 0;
   WEBP_UNSAFE_MEMSET(dec.intra_l, B_DC_PRED, sizeof(dec.intra_l));

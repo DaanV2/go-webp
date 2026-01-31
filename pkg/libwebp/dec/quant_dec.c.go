@@ -34,7 +34,7 @@ static const uint16 kAcTable[128] = {
 // Paragraph 9.6
 
 func VP8ParseQuant(const dec *VP8Decoder) {
-  const br *VP8BitReader = &dec.br;
+  var br *VP8BitReader = &dec.br;
   const int base_q0 = VP8GetValue(br, 7, "global-header");
   const int dqy1_dc = VP8Get(br, "global-header")
                           ? VP8GetSignedValue(br, 4, "global-header")
@@ -52,7 +52,7 @@ func VP8ParseQuant(const dec *VP8Decoder) {
                           ? VP8GetSignedValue(br, 4, "global-header")
                           : 0;
 
-  const hdr *VP8SegmentHeader = &dec.segment_hdr;
+  var hdr *VP8SegmentHeader = &dec.segment_hdr;
   int i;
 
   for (i = 0; i < NUM_MB_SEGMENTS; ++i) {
@@ -71,7 +71,7 @@ func VP8ParseQuant(const dec *VP8Decoder) {
       }
     }
     {
-      const m *VP8QuantMatrix = &dec.dqm[i];
+      var m *VP8QuantMatrix = &dec.dqm[i];
       m.y1_mat[0] = kDcTable[clip(q + dqy1_dc, 127)];
       m.y1_mat[1] = kAcTable[clip(q + 0, 127)];
 

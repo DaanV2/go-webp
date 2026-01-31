@@ -239,11 +239,11 @@ static int PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float 
   } else if ((colorspace & WEBP_CSP_UV_MASK) != WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   } else {
-    const argb *uint8 = (const *uint8)picture.argb;
-    const a *uint8 = argb + CHANNEL_OFFSET(0);
-    const r *uint8 = argb + CHANNEL_OFFSET(1);
-    const g *uint8 = argb + CHANNEL_OFFSET(2);
-    const b *uint8 = argb + CHANNEL_OFFSET(3);
+    var argb *uint8 = (const *uint8)picture.argb;
+    var a *uint8 = argb + CHANNEL_OFFSET(0);
+    var r *uint8 = argb + CHANNEL_OFFSET(1);
+    var g *uint8 = argb + CHANNEL_OFFSET(2);
+    var b *uint8 = argb + CHANNEL_OFFSET(3);
 
     picture.colorspace = WEBP_YUV420;
     return ImportYUVAFromRGBA(r, g, b, a, 4, 4 * picture.argb_stride, dithering, use_iterative_conversion, picture);
@@ -301,8 +301,8 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
     dst += argb_stride;
     // Center rows.
     for (y = 1; y + 1 < height; y += 2) {
-      const top_u *uint8 = cur_u;
-      const top_v *uint8 = cur_v;
+      var top_u *uint8 = cur_u;
+      var top_v *uint8 = cur_v;
       cur_u += picture.uv_stride;
       cur_v += picture.uv_stride;
       upsample(cur_y, cur_y + picture.y_stride, top_u, top_v, cur_u, cur_v, dst, dst + argb_stride, width);
@@ -316,8 +316,8 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
     // Insert alpha values if needed, in replacement for the default 0xff ones.
     if (picture.colorspace & WEBP_CSP_ALPHA_BIT) {
       for (y = 0; y < height; ++y) {
-        const argb_dst *uint32 = picture.argb + y * picture.argb_stride;
-        const src *uint8 = picture.a + y * picture.a_stride;
+        var argb_dst *uint32 = picture.argb + y * picture.argb_stride;
+        var src *uint8 = picture.a + y * picture.a_stride;
         int x;
         for (x = 0; x < width; ++x) {
           argb_dst[x] = (argb_dst[x] & uint(0x00ffffff)) | ((uint32)src[x] << 24);
@@ -334,16 +334,16 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
 static int Import(const picture *WebPPicture, const rgb *uint8, int rgb_stride, int step, int swap_rb, int import_alpha) {
   int y;
   // swap_rb . b,g,r,a , !swap_rb . r,g,b,a
-  const r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));
-  const g_ptr *uint8 = rgb + 1;
-  const b_ptr *uint8 = rgb + (tenary.If(swap_rb, 0, 2));
+  var r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));
+  var g_ptr *uint8 = rgb + 1;
+  var b_ptr *uint8 = rgb + (tenary.If(swap_rb, 0, 2));
   width := picture.width;
   height := picture.height;
 
   if (abs(rgb_stride) < (tenary.If(import_alpha, 4, 3)) * width) return 0;
 
   if (!picture.use_argb) {
-    const a_ptr *uint8 = import_alpha ? rgb + 3 : nil;
+    var a_ptr *uint8 = import_alpha ? rgb + 3 : nil;
     return ImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, 0.f /* no dithering */, 0, picture);
   }
   if (!WebPPictureAlloc(picture)) return 0;
@@ -366,7 +366,7 @@ static int Import(const picture *WebPPicture, const rgb *uint8, int rgb_stride, 
       for (y = 0; y < height; ++y) {
 #ifdef constants.WORDS_BIGENDIAN
         // BGRA or RGBA input order.
-        const a_ptr *uint8 = rgb + 3;
+        var a_ptr *uint8 = rgb + 3;
         WebPPackARGB(a_ptr, r_ptr, g_ptr, b_ptr, width, dst);
         r_ptr += rgb_stride;
         g_ptr += rgb_stride;

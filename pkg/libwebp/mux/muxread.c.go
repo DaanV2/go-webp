@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #define SWITCH_ID_LIST(INDEX, LIST)                           \
   for {                                                        \
     if (idx == (INDEX)) {                                     \
-      const chunk *WebPChunk =                          \
+      var chunk *WebPChunk =                          \
           ChunkSearchList((LIST), nth, kChunks[(INDEX)].tag); \
       if (chunk) {                                            \
         *data = chunk.data;                                  \
@@ -83,8 +83,8 @@ static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, const data *uint8, ui
 }
 
 int MuxImageFinalize(const wpi *WebPMuxImage) {
-  const img *WebPChunk = wpi.img;
-  const image *WebPData = &img.data;
+  var img *WebPChunk = wpi.img;
+  var image *WebPData = &img.data;
   is_lossless := (img.tag == kChunks[IDX_VP8L].tag);
   int w, h;
   int vp8l_has_alpha = 0;
@@ -107,9 +107,9 @@ int MuxImageFinalize(const wpi *WebPMuxImage) {
 }
 
 static int MuxImageParse(const chunk *WebPChunk, int copy_data, const wpi *WebPMuxImage) {
-  const bytes *uint8 = chunk.data.bytes;
+  var bytes *uint8 = chunk.data.bytes;
   size uint64  = chunk.data.size;
-  const last *uint8 = (bytes == nil) ? nil : bytes + size;
+  var last *uint8 = (bytes == nil) ? nil : bytes + size;
   WebPChunk subchunk;
   uint64 subchunk_size;
   *WebPChunk* unknown_chunk_list = &wpi.unknown;
@@ -347,7 +347,7 @@ static WebPMuxError MuxGetCanvasInfo(const mux *WebPMux, width *int, height *int
     w = GetLE24(data.bytes + 4) + 1;
     h = GetLE24(data.bytes + 7) + 1;
   } else {
-    const wpi *WebPMuxImage = mux.images;
+    var wpi *WebPMuxImage = mux.images;
     // Grab user-forced canvas size as default.
     w = mux.canvas_width;
     h = mux.canvas_height;
@@ -405,7 +405,7 @@ static WebPMuxError SynthesizeBitstream(const wpi *WebPMuxImage, const bitstream
   // Note: No need to output ANMF chunk for a single image.
   const size uint64  =
       RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img);
-  const data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size);
+  var data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size);
   if (data == nil) return WEBP_MUX_MEMORY_ERROR;
 
   // There should be at most one alpha chunk and exactly one img chunk.

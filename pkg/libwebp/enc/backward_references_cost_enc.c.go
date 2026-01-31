@@ -64,7 +64,7 @@ func ConvertPopulationCountTableToBitEstimates(
 
 static int CostModelBuild(const m *CostModel, int xsize, int cache_bits, const refs *VP8LBackwardRefs) {
   int ok = 0;
-  const histo *VP8LHistogram = VP8LAllocateHistogram(cache_bits);
+  var histo *VP8LHistogram = VP8LAllocateHistogram(cache_bits);
   if (histo == nil) goto Error;
 
   // The following code is similar to VP8LHistogramCreate but converts the
@@ -207,7 +207,7 @@ func CostManagerInitFreeList(const manager *CostManager) {
 
 func DeleteIntervalList(const manager *CostManager, const interval *CostInterval) {
   while (interval != nil) {
-    const next *CostInterval = interval.next;
+    var next *CostInterval = interval.next;
     if (!CostIntervalIsInFreeList(manager, interval)) {
       WebPSafeFree((*void)interval);
     }  // else: do nothing
@@ -358,7 +358,7 @@ static  func UpdateCostAtIndex(const manager *CostManager, int i, int do_clean_i
   current *CostInterval = manager.head;
 
   while (current != nil && current.start <= i) {
-    const next *CostInterval = current.next;
+    var next *CostInterval = current.next;
     if (current.end <= i) {
       if (do_clean_intervals) {
         // We have an outdated interval, remove it.

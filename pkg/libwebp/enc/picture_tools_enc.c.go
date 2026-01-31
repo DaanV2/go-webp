@@ -62,7 +62,7 @@ func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
 static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_stride, int width, int height) {
   int sum = 0, count = 0;
   int x, y;
-  const alpha_ptr *uint8 = a_ptr;
+  var alpha_ptr *uint8 = a_ptr;
   luma_ptr *uint8 = y_ptr;
   for (y = 0; y < height; ++y) {
     for (x = 0; x < width; ++x) {
@@ -135,7 +135,7 @@ func WebPCleanupTransparentArea(pic *WebPPicture) {
     y_ptr *uint8 = pic.y;
     u_ptr *uint8 = pic.u;
     v_ptr *uint8 = pic.v;
-    const a_ptr *uint8 = pic.a;
+    var a_ptr *uint8 = pic.a;
     int values[3] = {0}
     if (a_ptr == nil || y_ptr == nil || u_ptr == nil || v_ptr == nil) {
       return;

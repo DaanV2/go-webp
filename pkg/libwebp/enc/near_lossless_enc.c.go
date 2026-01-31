@@ -98,7 +98,7 @@ func NearLossless(int xsize, int ysize, const argb_src *uint32, int stride, int 
     }
     {
       // Three-way swap.
-      const temp *uint32 = prev_row;
+      var temp *uint32 = prev_row;
       prev_row = curr_row;
       curr_row = next_row;
       next_row = temp;

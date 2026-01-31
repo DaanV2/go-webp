@@ -81,7 +81,7 @@ func RescalerImportRowExpand_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, const W
     }
   } else {
     int left;
-    const src_limit *uint8 = src + wrk.src_width - 8;
+    var src_limit *uint8 = src + wrk.src_width - 8;
     LoadEightPixels_SSE2(src, &cur_pixels);
     src += 7;
     left = 7;
@@ -222,7 +222,7 @@ static  func ProcessRow_SSE2(
 
 func RescalerExportRowExpand_SSE2(const wrk *WebPRescaler) {
   int x_out;
-  const dst *uint8 = wrk.dst;
+  var dst *uint8 = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   x_out_max := wrk.dst_width * wrk.num_channels;
   const rescaler_t* const frow = wrk.frow;
@@ -279,7 +279,7 @@ func RescalerExportRowExpand_SSE2(const wrk *WebPRescaler) {
 
 func RescalerExportRowShrink_SSE2(const wrk *WebPRescaler) {
   int x_out;
-  const dst *uint8 = wrk.dst;
+  var dst *uint8 = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   x_out_max := wrk.dst_width * wrk.num_channels;
   const rescaler_t* const frow = wrk.frow;

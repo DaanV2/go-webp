@@ -222,8 +222,8 @@ static uint32 Predictor13_MIPSdspR2(const left *uint32, const top *uint32) {
 // 'subtract green').
 func AddGreenToBlueAndRed_MIPSdspR2(const src *uint32, int num_pixels, dst *uint32) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
-  const p_loop *uint321_end = src + (num_pixels & ~3);
-  const p_loop *uint322_end = src + num_pixels;
+  var p_loop *uint321_end = src + (num_pixels & ~3);
+  var p_loop *uint322_end = src + num_pixels;
   __asm__ volatile(
       ".set       push                                          \n\t"
       ".set       noreorder                                     \n\t"
@@ -278,7 +278,7 @@ func TransformColorInverse_MIPSdspR2(const m *VP8LMultipliers, const src *uint32
   const uint32 G_to_R = m.green_to_red;
   const uint32 G_to_B = m.green_to_blue;
   const uint32 R_to_B = m.red_to_blue;
-  const p_loop_end *uint32 = src + (num_pixels & ~1);
+  var p_loop_end *uint32 = src + (num_pixels & ~1);
   __asm__ volatile(
       ".set            push                                    \n\t"
       ".set            noreorder                               \n\t"
@@ -338,8 +338,8 @@ func TransformColorInverse_MIPSdspR2(const m *VP8LMultipliers, const src *uint32
 
 func ConvertBGRAToRGB_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
   int temp0, temp1, temp2, temp3;
-  const p_loop *uint321_end = src + (num_pixels & ~3);
-  const p_loop *uint322_end = src + num_pixels;
+  var p_loop *uint321_end = src + (num_pixels & ~3);
+  var p_loop *uint322_end = src + num_pixels;
   __asm__ volatile(
       ".set       push                                       \n\t"
       ".set       noreorder                                  \n\t"
@@ -387,8 +387,8 @@ func ConvertBGRAToRGB_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
 
 func ConvertBGRAToRGBA_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
   int temp0, temp1, temp2, temp3;
-  const p_loop *uint321_end = src + (num_pixels & ~3);
-  const p_loop *uint322_end = src + num_pixels;
+  var p_loop *uint321_end = src + (num_pixels & ~3);
+  var p_loop *uint322_end = src + num_pixels;
   __asm__ volatile(
       ".set       push                                       \n\t"
       ".set       noreorder                                  \n\t"
@@ -434,8 +434,8 @@ func ConvertBGRAToRGBA_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) 
 
 func ConvertBGRAToRGBA4444_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
-  const p_loop *uint321_end = src + (num_pixels & ~3);
-  const p_loop *uint322_end = src + num_pixels;
+  var p_loop *uint321_end = src + (num_pixels & ~3);
+  var p_loop *uint322_end = src + num_pixels;
   __asm__ volatile(
       ".set           push                                       \n\t"
       ".set           noreorder                                  \n\t"
@@ -504,8 +504,8 @@ func ConvertBGRAToRGBA4444_MIPSdspR2(const src *uint32, int num_pixels, dst *uin
 
 func ConvertBGRAToRGB565_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
-  const p_loop *uint321_end = src + (num_pixels & ~3);
-  const p_loop *uint322_end = src + num_pixels;
+  var p_loop *uint321_end = src + (num_pixels & ~3);
+  var p_loop *uint322_end = src + num_pixels;
   __asm__ volatile(
       ".set           push                                       \n\t"
       ".set           noreorder                                  \n\t"
@@ -578,8 +578,8 @@ func ConvertBGRAToRGB565_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8
 
 func ConvertBGRAToBGR_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
   int temp0, temp1, temp2, temp3;
-  const p_loop *uint321_end = src + (num_pixels & ~3);
-  const p_loop *uint322_end = src + num_pixels;
+  var p_loop *uint321_end = src + (num_pixels & ~3);
+  var p_loop *uint322_end = src + num_pixels;
   __asm__ volatile(
       ".set       push                                         \n\t"
       ".set       noreorder                                    \n\t"

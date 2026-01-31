@@ -216,7 +216,7 @@ func PredictorInverseTransform_C(const transform *VP8LTransform, int y_start, in
         transform.data + (y >> transform.bits) * tiles_per_row;
 
     while (y < y_end) {
-      const pred_mode_src *uint32 = pred_mode_base;
+      var pred_mode_src *uint32 = pred_mode_base;
       int x = 1;
       // First pixel follows the T (mode=2) mode.
       PredictorAdd2_C(in, out - width, 1, out);
@@ -293,10 +293,10 @@ func ColorSpaceInverseTransform_C(const transform *VP8LTransform, int y_start, i
       transform.data + (y >> transform.bits) * tiles_per_row;
 
   while (y < y_end) {
-    const pred *uint32 = pred_row;
+    var pred *uint32 = pred_row;
     VP8LMultipliers m = {0, 0, 0}
-    const src_safe_end *uint32 = src + safe_width;
-    const src_end *uint32 = src + width;
+    var src_safe_end *uint32 = src + safe_width;
+    var src_end *uint32 = src + width;
     while (src < src_safe_end) {
       ColorCodeToMultipliers(*pred++, &m);
       VP8LTransformColorInverse(&m, src, tile_width, dst);
@@ -335,7 +335,7 @@ STATIC_DECL func FUNC_NAME(const transform *VP8LTransform,               \
   int y;                                                                       \
   bits_per_pixel := 8 >> transform.bits;                             \
   width := transform.xsize;                                          \
-  const color_map *uint32 = transform.data;                           \
+  var color_map *uint32 = transform.data;                           \
   if (bits_per_pixel < 8) {                                                    \
     pixels_per_byte := 1 << transform.bits;                          \
     count_mask := pixels_per_byte - 1;                                \
@@ -394,7 +394,7 @@ func VP8LInverseTransform(const transform *VP8LTransform, int row_start, int row
         const int in_stride =
             (row_end - row_start) *
             VP8LSubSampleSize(transform.xsize, transform.bits);
-        const src *uint32 = out + out_stride - in_stride;
+        var src *uint32 = out + out_stride - in_stride;
         memmove(src, out, in_stride * sizeof(*src));
         ColorIndexInverseTransform_C(transform, row_start, row_end, src, out);
       } else {
@@ -416,7 +416,7 @@ static int is_big_endian(){
 }
 
 func VP8LConvertBGRAToRGB_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const src_end *uint32 = src + num_pixels;
+  var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
     *dst++ = (argb >> 16) & 0xff;
@@ -426,7 +426,7 @@ func VP8LConvertBGRAToRGB_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEB
 }
 
 func VP8LConvertBGRAToRGBA_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const src_end *uint32 = src + num_pixels;
+  var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
     *dst++ = (argb >> 16) & 0xff;
@@ -437,7 +437,7 @@ func VP8LConvertBGRAToRGBA_C(const WEBP_RESTRICT src *uint32, int num_pixels, WE
 }
 
 func VP8LConvertBGRAToRGBA4444_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const src_end *uint32 = src + num_pixels;
+  var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
     rg := ((argb >> 16) & 0xf0) | ((argb >> 12) & 0xf);
@@ -453,7 +453,7 @@ func VP8LConvertBGRAToRGBA4444_C(const WEBP_RESTRICT src *uint32, int num_pixels
 }
 
 func VP8LConvertBGRAToRGB565_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const src_end *uint32 = src + num_pixels;
+  var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
     rg := ((argb >> 16) & 0xf8) | ((argb >> 13) & 0x7);
@@ -469,7 +469,7 @@ func VP8LConvertBGRAToRGB565_C(const WEBP_RESTRICT src *uint32, int num_pixels, 
 }
 
 func VP8LConvertBGRAToBGR_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const src_end *uint32 = src + num_pixels;
+  var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
     *dst++ = (argb >> 0) & 0xff;
@@ -480,7 +480,7 @@ func VP8LConvertBGRAToBGR_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEB
 
 func CopyOrSwap(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8, int swap_on_big_endian) {
   if (is_big_endian() == swap_on_big_endian) {
-    const src_end *uint32 = src + num_pixels;
+    var src_end *uint32 = src + num_pixels;
     while (src < src_end) {
       argb := *src++;
       WebPUint32ToMem(dst, BSwap32(argb));

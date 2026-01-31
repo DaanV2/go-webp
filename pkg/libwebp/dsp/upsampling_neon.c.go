@@ -215,7 +215,7 @@ const v255 = vdup_n_u8(255)
     int block;                                                                \
     /* 16 byte aligned array to cache reconstructed u and v */                \
     uint8 uv_buf[2 * 32 + 15];                                              \
-    const r_uv *uint8 =                                                     \
+    var r_uv *uint8 =                                                     \
         (*uint8)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
     uv_len := (len + 1) >> 1;                                        \
     /* 9 pixels must be read-able for each block */                           \

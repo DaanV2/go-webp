@@ -383,7 +383,7 @@ func TransformColorInverse_AVX2(const m *VP8LMultipliers, const src *uint32, int
 // Color-space conversion functions
 
 func ConvertBGRAToRGBA_AVX2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const __in *m256i = (const __*m256i)src;
+  var __in *m256i = (const __*m256i)src;
   __out *m256i = (__*m256i)dst;
   while (num_pixels >= 8) {
     const __m256i A = _mm256_loadu_si256(in++);

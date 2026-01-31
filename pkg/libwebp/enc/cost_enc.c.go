@@ -58,8 +58,8 @@ func VP8CalculateLevelCosts(const proba *VP8EncProba) {
     int n;
     for (band = 0; band < NUM_BANDS; ++band) {
       for (ctx = 0; ctx < NUM_CTX; ++ctx) {
-        const p *uint8 = proba.coeffs[ctype][band][ctx];
-        const table *uint16 = proba.level_cost[ctype][band][ctx];
+        var p *uint8 = proba.coeffs[ctype][band][ctx];
+        var table *uint16 = proba.level_cost[ctype][band][ctx];
         const int cost0 = (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
         cost_base := VP8BitCost(1, p[1]) + cost0;
         int v;
@@ -109,7 +109,7 @@ func VP8InitResidual(int first, int coeff_type, const enc *VP8Encoder, const res
 int VP8GetCostLuma4(const it *VP8EncIterator, const int16 levels[16]) {
   x := (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
-  const enc *VP8Encoder = it.enc;
+  var enc *VP8Encoder = it.enc;
   int R = 0;
   int ctx;
 
@@ -122,7 +122,7 @@ int VP8GetCostLuma4(const it *VP8EncIterator, const int16 levels[16]) {
 
 int VP8GetCostLuma16(const it *VP8EncIterator, const rd *VP8ModeScore) {
   VP8Residual res;
-  const enc *VP8Encoder = it.enc;
+  var enc *VP8Encoder = it.enc;
   int x, y;
   int R = 0;
 
@@ -148,7 +148,7 @@ int VP8GetCostLuma16(const it *VP8EncIterator, const rd *VP8ModeScore) {
 
 int VP8GetCostUV(const it *VP8EncIterator, const rd *VP8ModeScore) {
   VP8Residual res;
-  const enc *VP8Encoder = it.enc;
+  var enc *VP8Encoder = it.enc;
   int ch, x, y;
   int R = 0;
 

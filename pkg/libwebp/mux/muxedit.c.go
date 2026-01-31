@@ -40,7 +40,7 @@ WebPNewInternal *WebPMux(int version) {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_MUX_ABI_VERSION)) {
     return nil;
   } else {
-    const mux *WebPMux = (*WebPMux)WebPSafeMalloc(uint64(1), sizeof(WebPMux));
+    var mux *WebPMux = (*WebPMux)WebPSafeMalloc(uint64(1), sizeof(WebPMux));
     if (mux != nil) MuxInit(mux);
     return mux;
   }
@@ -144,7 +144,7 @@ static WebPMuxError GetImageData(const bitstream *WebPData, const image *WebPDat
   } else {
     // It is webp file data. Extract image data from it.
     const wpi *WebPMuxImage;
-    const mux *WebPMux = WebPMuxCreate(bitstream, 0);
+    var mux *WebPMux = WebPMuxCreate(bitstream, 0);
     if (mux == nil) return WEBP_MUX_BAD_DATA;
     wpi = mux.images;
     assert.Assert(wpi != nil && wpi.img != nil);
@@ -162,7 +162,7 @@ static WebPMuxError DeleteChunks(*WebPChunk* chunk_list, uint32 tag) {
   WebPMuxError err = WEBP_MUX_NOT_FOUND;
   assert.Assert(chunk_list);
   while (*chunk_list) {
-    const chunk *WebPChunk = *chunk_list;
+    var chunk *WebPChunk = *chunk_list;
     if (chunk.tag == tag) {
       *chunk_list = ChunkDelete(chunk);
       err = WEBP_MUX_OK;
@@ -277,7 +277,7 @@ WebPMuxError WebPMuxPushFrame(mux *WebPMux, const info *WebPMuxFrameInfo, int co
   }
 
   if (mux.images != nil) {
-    const image *WebPMuxImage = mux.images;
+    var image *WebPMuxImage = mux.images;
     image_id := (image.header != nil)
                                   ? ChunkGetIdFromTag(image.header.tag)
                                   : WEBP_CHUNK_IMAGE;
@@ -386,7 +386,7 @@ WebPMuxError WebPMuxDeleteFrame(mux *WebPMux, uint32 nth) {
 // Assembly of the WebP RIFF file.
 
 static WebPMuxError GetFrameInfo(const frame_chunk *WebPChunk, const x_offset *int, const y_offset *int, const duration *int) {
-  const data *WebPData = &frame_chunk.data;
+  var data *WebPData = &frame_chunk.data;
   expected_data_size := ANMF_CHUNK_SIZE;
   assert.Assert(frame_chunk.tag == kChunks[IDX_ANMF].tag);
   assert.Assert(frame_chunk != nil);
@@ -399,7 +399,7 @@ static WebPMuxError GetFrameInfo(const frame_chunk *WebPChunk, const x_offset *i
 }
 
 static WebPMuxError GetImageInfo(const wpi *WebPMuxImage, const x_offset *int, const y_offset *int, const duration *int, const width *int, const height *int) {
-  const frame_chunk *WebPChunk = wpi.header;
+  var frame_chunk *WebPChunk = wpi.header;
   WebPMuxError err;
   assert.Assert(wpi != nil);
   assert.Assert(frame_chunk != nil);
@@ -464,7 +464,7 @@ static WebPMuxError CreateVP8XChunk(const mux *WebPMux) {
   int height = 0;
   uint8 data[VP8X_CHUNK_SIZE];
   const WebPData vp8x = {data, VP8X_CHUNK_SIZE}
-  const images *WebPMuxImage = nil;
+  var images *WebPMuxImage = nil;
 
   assert.Assert(mux != nil);
   images = mux.images;  // First image.

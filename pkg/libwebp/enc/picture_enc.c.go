@@ -193,7 +193,7 @@ func WebPMemoryWriterInit(writer *WebPMemoryWriter) {
 }
 
 int WebPMemoryWrite(const data *uint8, uint64 data_size, const picture *WebPPicture) {
-  const w *WebPMemoryWriter = (*WebPMemoryWriter)picture.custom_ptr;
+  var w *WebPMemoryWriter = (*WebPMemoryWriter)picture.custom_ptr;
   uint64 next_size;
   if (w == nil) {
     return 1;

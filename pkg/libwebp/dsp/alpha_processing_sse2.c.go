@@ -121,7 +121,7 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
   limit := (width - 1) & ~7;
 
   for (j = 0; j < height; ++j) {
-    const __src *m128i = (const __*m128i)argb;
+    var __src *m128i = (const __*m128i)argb;
     for (i = 0; i < limit; i += 8) {
       // load 32 argb bytes
       const __m128i a0 = _mm_loadu_si128(src + 0);
@@ -152,7 +152,7 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
 func ExtractGreen_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
   int i;
   const __m128i mask = _mm_set1_epi32(0xff);
-  const __src *m128i = (const __*m128i)argb;
+  var __src *m128i = (const __*m128i)argb;
 
   for (i = 0; i + 16 <= size; i += 16, src += 4) {
     const __m128i a0 = _mm_loadu_si128(src + 0);
@@ -226,7 +226,7 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
   const __m128i kMask = _mm_set_epi16(0, 0xff, 0xff, 0, 0, 0xff, 0xff, 0);
   const int kSpan = 4;
   while (h-- > 0) {
-    const rgbx *uint32 = (*uint32)rgba;
+    var rgbx *uint32 = (*uint32)rgba;
     int i;
     if (!alpha_first) {
       for (i = 0; i + kSpan <= w; i += kSpan) {
@@ -239,8 +239,8 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
     }
     // Finish with left-overs.
     for (; i < w; ++i) {
-      const rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
-      const alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
+      var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
+      var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
       a := alpha[4 * i];
       if (a != 0xff) {
         mult := MULTIPLIER(a);

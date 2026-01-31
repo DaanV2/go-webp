@@ -44,7 +44,7 @@ static int ExtractAlpha_SSE41(const WEBP_RESTRICT argb *uint8, int argb_stride, 
   const __m128i kCstAlpha3 =
       _mm_set_epi8(12, 8, 4, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
   for (j = 0; j < height; ++j) {
-    const __src *m128i = (const __*m128i)argb;
+    var __src *m128i = (const __*m128i)argb;
     for (i = 0; i < limit; i += 16) {
       // load 64 argb bytes
       const __m128i a0 = _mm_loadu_si128(src + 0);

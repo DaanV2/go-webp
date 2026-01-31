@@ -187,11 +187,11 @@ static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], const mtx *VP8Matri
 
   ppin *int16 = &in[0];
   pout *int16 = &out[0];
-  const ppsharpen *uint16 = &mtx.sharpen[0];
-  const ppzthresh *uint32 = &mtx.zthresh[0];
-  const ppq *uint16 = &mtx.q[0];
-  const ppiq *uint16 = &mtx.iq[0];
-  const ppbias *uint32 = &mtx.bias[0];
+  var ppsharpen *uint16 = &mtx.sharpen[0];
+  var ppzthresh *uint32 = &mtx.zthresh[0];
+  var ppq *uint16 = &mtx.q[0];
+  var ppiq *uint16 = &mtx.iq[0];
+  var ppbias *uint32 = &mtx.bias[0];
 
   __asm__ volatile(
       QUANTIZE_ONE(0, 0, 0)     //

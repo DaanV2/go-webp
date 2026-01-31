@@ -56,10 +56,10 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 // compression method or filter, error in lossless header data etc).
  static int ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, uint64 data_size, const src_io *VP8Io, output *uint8) {
   int ok = 0;
-  const alpha_data *uint8 = data + ALPHA_HEADER_LEN;
+  var alpha_data *uint8 = data + ALPHA_HEADER_LEN;
   alpha_data_size := data_size - ALPHA_HEADER_LEN;
   int rsrv;
-  const io *VP8Io = &dec.io;
+  var io *VP8Io = &dec.io;
 
   assert.Assert(data != nil && output != nil && src_io != nil);
 
@@ -120,13 +120,13 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 // already been decoded.
 // Returns false in case of bitstream error.
  static int ALPHDecode(const dec *VP8Decoder, int row, int num_rows) {
-  const alph_dec *ALPHDecoder = dec.alph_dec;
+  var alph_dec *ALPHDecoder = dec.alph_dec;
   width := alph_dec.width;
   height := alph_dec.io.crop_bottom;
   if (alph_dec.method == ALPHA_NO_COMPRESSION) {
     int y;
-    const prev_line *uint8 = dec.alpha_prev_line;
-    const deltas *uint8 = dec.alpha_data + ALPHA_HEADER_LEN + row * width;
+    var prev_line *uint8 = dec.alpha_prev_line;
+    var deltas *uint8 = dec.alpha_data + ALPHA_HEADER_LEN + row * width;
     dst *uint8 = dec.alpha_plane + row * width;
     assert.Assert(deltas <= &dec.alpha_data[dec.alpha_data_size]);
     assert.Assert(WebPUnfilters[alph_dec.filter] != nil);
@@ -196,7 +196,7 @@ func WebPDeallocateAlphaMemory(const dec *VP8Decoder) {
       }
       if (!AllocateAlphaPlane(dec, io)) goto Error;
       if (!ALPHInit(dec.alph_dec, dec.alpha_data, dec.alpha_data_size, io, dec.alpha_plane)) {
-        const vp *VP8LDecoder8l_dec = dec.alph_dec.vp8l_dec;
+        var vp *VP8LDecoder8l_dec = dec.alph_dec.vp8l_dec;
         VP8SetError(
             dec, (vp8l_dec == nil) ? VP8_STATUS_OUT_OF_MEMORY : vp8l_dec.status, "Alpha decoder initialization failed.");
         goto Error;

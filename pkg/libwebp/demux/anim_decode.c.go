@@ -341,14 +341,14 @@ func WebPAnimDecoderGetNext(dec *WebPAnimDecoder, *uint8* buf_ptr, timestamp_ptr
 
   // Decode.
   {
-    const in *uint8 = iter.fragment.bytes;
+    var in *uint8 = iter.fragment.bytes;
     in_size := iter.fragment.size;
     stride := width * NUM_CHANNELS;  // at most 25 + 2 bits
     out_offset := (uint64)iter.y_offset * stride +
                                 (uint64)iter.x_offset * NUM_CHANNELS;  // 53b
     const size uint64  = (uint64)iter.height * stride;  // at most 25 + 27b
-    const config *WebPDecoderConfig = &dec.config;
-    const buf *WebPRGBABuffer = &config.output.u.RGBA;
+    var config *WebPDecoderConfig = &dec.config;
+    var buf *WebPRGBABuffer = &config.output.u.RGBA;
     if ((uint64)size != size) goto Error;
     buf.stride = (int)stride;
     buf.size = (uint64)size;

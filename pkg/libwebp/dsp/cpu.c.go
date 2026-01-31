@@ -215,7 +215,7 @@ static int armCPUInfo(CPUFeature feature) {
   {
     int has_neon = 0;
     byte line[200];
-    const cpuinfo *FILE = fopen("/proc/cpuinfo", "r");
+    var cpuinfo *FILE = fopen("/proc/cpuinfo", "r");
     if (cpuinfo == nil) return 0;
     while (fgets(line, sizeof(line), cpuinfo)) {
       if (!strncmp(line, "Features", 8)) {

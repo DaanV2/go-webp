@@ -92,7 +92,7 @@ func VP8LBackwardRefsClear(const refs *VP8LBackwardRefs) {
   assert.Assert(refs != nil);
   VP8LClearBackwardRefs(refs);
   while (refs.free_blocks != nil) {
-    const next *PixOrCopyBlock = refs.free_blocks.next;
+    var next *PixOrCopyBlock = refs.free_blocks.next;
     WebPSafeFree(refs.free_blocks);
     refs.free_blocks = next;
   }
@@ -133,7 +133,7 @@ VP8LRefsCursor VP8LRefsCursorInit(const refs *VP8LBackwardRefs) {
 }
 
 func VP8LRefsCursorNextBlock(const c *VP8LRefsCursor) {
-  const b *PixOrCopyBlock = c.cur_block.next;
+  var b *PixOrCopyBlock = c.cur_block.next;
   c.cur_pos = (b == nil) ? nil : b.start;
   c.last_pos = (b == nil) ? nil : b.start + b.size;
   c.cur_block = b;
@@ -163,10 +163,10 @@ static BackwardRefsNewBlock *PixOrCopyBlock(const refs *VP8LBackwardRefs) {
 
 // Return 1 on success, 0 on error.
 static int BackwardRefsClone(const from *VP8LBackwardRefs, const to *VP8LBackwardRefs) {
-  const block_from *PixOrCopyBlock = from.refs;
+  var block_from *PixOrCopyBlock = from.refs;
   VP8LClearBackwardRefs(to);
   while (block_from != nil) {
-    const block_to *PixOrCopyBlock = BackwardRefsNewBlock(to);
+    var block_to *PixOrCopyBlock = BackwardRefsNewBlock(to);
     if (block_to == nil) return 0;
     memcpy(block_to.start, block_from.start, block_from.size * sizeof(PixOrCopy));
     block_to.size = block_from.size;
@@ -340,7 +340,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, const argb *uint32, i
   p.offset_length[0] = p.offset_length[size - 1] = 0;
   for (base_position = size - 2; base_position > 0;) {
     max_len := MaxFindCopyLength(size - 1 - base_position);
-    const argb_start *uint32 = argb + base_position;
+    var argb_start *uint32 = argb + base_position;
     int iter = iter_max;
     int best_length = 0;
     uint32 best_distance = 0;
@@ -753,7 +753,7 @@ static int CalculateBestCacheSize(const argb *uint32, int quality, const refs *V
   // brute-force way as the function (entropy w.r.t cache_bits) can be
   // anything in practice.
   while (VP8LRefsCursorOk(&c)) {
-    const v *PixOrCopy = c.cur_pos;
+    var v *PixOrCopy = c.cur_pos;
     if (PixOrCopyIsLiteral(v)) {
       pix := *argb++;
       a := (pix >> 24) & 0xff;
@@ -832,7 +832,7 @@ static int BackwardRefsWithLocalCache(const argb *uint32, int cache_bits, const 
   if (!VP8LColorCacheInit(&hashers, cache_bits)) return 0;
 
   while (VP8LRefsCursorOk(&c)) {
-    const v *PixOrCopy = c.cur_pos;
+    var v *PixOrCopy = c.cur_pos;
     if (PixOrCopyIsLiteral(v)) {
       argb_literal := v.argb_or_distance;
       ix := VP8LColorCacheContains(&hashers, argb_literal);
@@ -877,7 +877,7 @@ static int GetBackwardReferences(int width, int height, const argb *uint32, int 
   int lz77_types_best[2] = {0, 0}
   uint64 bit_costs_best[2] = {WEBP_UINT64_MAX, WEBP_UINT64_MAX}
   VP8LHashChain hash_chain_box;
-  const refs_tmp *VP8LBackwardRefs = &refs[do_no_cache ? 2 : 1];
+  var refs_tmp *VP8LBackwardRefs = &refs[do_no_cache ? 2 : 1];
   int status = 0;
   memset(&hash_chain_box, 0, sizeof(hash_chain_box));
 

@@ -144,7 +144,7 @@ func ApplyFilter(const p *SmoothParams) {
   const WEBP_BIDI_INDEXABLE correction *int16 =
       p.correction + LUT_SIZE;
 #if defined(USE_DITHERING)
-  const dither *uint8 = kOrderedDither[p.row % DSIZE];
+  var dither *uint8 = kOrderedDither[p.row % DSIZE];
 #endif
   const WEBP_INDEXABLE dst *uint8 = p.dst;
   int x;

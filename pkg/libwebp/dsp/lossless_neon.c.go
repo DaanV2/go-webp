@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // gcc 4.6.0 had some trouble (NDK-r9) with this code. We only use it for
 // gcc-4.8.x at least.
 func ConvertBGRAToRGBA_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const end *uint32 = src + (num_pixels & ~15);
+  var end *uint32 = src + (num_pixels & ~15);
   for (; src < end; src += 16) {
     uint8x16x4_t pixel = vld4q_u8((*uint8)src);
     // swap B and R. (VSWP d0,d2 has no intrinsics equivalent!)
@@ -44,7 +44,7 @@ func ConvertBGRAToRGBA_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEB
 }
 
 func ConvertBGRAToBGR_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const end *uint32 = src + (num_pixels & ~15);
+  var end *uint32 = src + (num_pixels & ~15);
   for (; src < end; src += 16) {
     const uint8x16x4_t pixel = vld4q_u8((*uint8)src);
     const uint8x16x3_t tmp = {{pixel.val[0], pixel.val[1], pixel.val[2]}}
@@ -55,7 +55,7 @@ func ConvertBGRAToBGR_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP
 }
 
 func ConvertBGRAToRGB_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const end *uint32 = src + (num_pixels & ~15);
+  var end *uint32 = src + (num_pixels & ~15);
   for (; src < end; src += 16) {
     const uint8x16x4_t pixel = vld4q_u8((*uint8)src);
     const uint8x16x3_t tmp = {{pixel.val[2], pixel.val[1], pixel.val[0]}}
@@ -72,7 +72,7 @@ func ConvertBGRAToRGB_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP
 static const uint8 kRGBAShuffle[8] = {2, 1, 0, 3, 6, 5, 4, 7}
 
 func ConvertBGRAToRGBA_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const end *uint32 = src + (num_pixels & ~1);
+  var end *uint32 = src + (num_pixels & ~1);
   const uint8x8_t shuffle = vld1_u8(kRGBAShuffle);
   for (; src < end; src += 2) {
     const uint8x8_t pixels = vld1_u8((*uint8)src);
@@ -85,7 +85,7 @@ func ConvertBGRAToRGBA_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEB
 static const uint8 kBGRShuffle[3][8] = {{0, 1, 2, 4, 5, 6, 8, 9}, {10, 12, 13, 14, 16, 17, 18, 20}, {21, 22, 24, 25, 26, 28, 29, 30}}
 
 func ConvertBGRAToBGR_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const end *uint32 = src + (num_pixels & ~7);
+  var end *uint32 = src + (num_pixels & ~7);
   const uint8x8_t shuffle0 = vld1_u8(kBGRShuffle[0]);
   const uint8x8_t shuffle1 = vld1_u8(kBGRShuffle[1]);
   const uint8x8_t shuffle2 = vld1_u8(kBGRShuffle[2]);
@@ -103,7 +103,7 @@ func ConvertBGRAToBGR_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP
 static const uint8 kRGBShuffle[3][8] = {{2, 1, 0, 6, 5, 4, 10, 9}, {8, 14, 13, 12, 18, 17, 16, 22}, {21, 20, 26, 25, 24, 30, 29, 28}}
 
 func ConvertBGRAToRGB_NEON(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
-  const end *uint32 = src + (num_pixels & ~7);
+  var end *uint32 = src + (num_pixels & ~7);
   const uint8x8_t shuffle0 = vld1_u8(kRGBShuffle[0]);
   const uint8x8_t shuffle1 = vld1_u8(kRGBShuffle[1]);
   const uint8x8_t shuffle2 = vld1_u8(kRGBShuffle[2]);
@@ -492,7 +492,7 @@ static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x8_t sh
 #endif  // USE_VTBLQ
 
 func AddGreenToBlueAndRed_NEON(const src *uint32, int num_pixels, dst *uint32) {
-  const end *uint32 = src + (num_pixels & ~3);
+  var end *uint32 = src + (num_pixels & ~3);
 #ifdef USE_VTBLQ
   const uint8x16_t shuffle = vld1q_u8(kGreenShuffle);
 #else
