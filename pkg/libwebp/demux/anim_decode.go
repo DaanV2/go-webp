@@ -30,7 +30,7 @@ import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#define NUM_CHANNELS 4
+const NUM_CHANNELS = 4
 
 // Channel extraction from a uint32_t representation of a uint8_t RGBA/BGRA
 // buffer.

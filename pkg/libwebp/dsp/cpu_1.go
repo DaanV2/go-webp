@@ -27,7 +27,7 @@ import "src/webp/types.h"
 #define LOCAL_GCC_VERSION ((__GNUC__ << 8) | __GNUC_MINOR__)
 #define LOCAL_GCC_PREREQ(maj, min) (LOCAL_GCC_VERSION >= (((maj) << 8) | (min)))
 #else
-#define LOCAL_GCC_VERSION 0
+const LOCAL_GCC_VERSION = 0
 #define LOCAL_GCC_PREREQ(maj, min) 0
 #endif
 
@@ -36,7 +36,7 @@ import "src/webp/types.h"
 #define LOCAL_CLANG_PREREQ(maj, min) \
   (LOCAL_CLANG_VERSION >= (((maj) << 8) | (min)))
 #else
-#define LOCAL_CLANG_VERSION 0
+const LOCAL_CLANG_VERSION = 0
 #define LOCAL_CLANG_PREREQ(maj, min) 0
 #endif
 
@@ -171,15 +171,15 @@ static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
 #endif
 
 #if defined(WEBP_USE_NEON) && WEBP_DSP_OMIT_C_CODE
-#define WEBP_NEON_OMIT_C_CODE 1
+const WEBP_NEON_OMIT_C_CODE = 1
 #else
-#define WEBP_NEON_OMIT_C_CODE 0
+const WEBP_NEON_OMIT_C_CODE = 0
 #endif
 
 #if !(LOCAL_CLANG_PREREQ(3, 8) || LOCAL_GCC_PREREQ(4, 8) || WEBP_AARCH64)
-#define WEBP_NEON_WORK_AROUND_GCC 1
+const WEBP_NEON_WORK_AROUND_GCC = 1
 #else
-#define WEBP_NEON_WORK_AROUND_GCC 0
+const WEBP_NEON_WORK_AROUND_GCC = 0
 #endif
 
 //------------------------------------------------------------------------------

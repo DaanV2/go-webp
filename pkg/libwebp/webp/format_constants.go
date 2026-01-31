@@ -33,26 +33,26 @@ package webp
 #define VP8L_VERSION 0       // version 0
 #define VP8L_FRAME_HEADER_SIZE 5  // Size of the VP8L frame header.
 
-#define MAX_PALETTE_SIZE 256
-#define MAX_CACHE_BITS 11
-#define HUFFMAN_CODES_PER_META_CODE 5
+const MAX_PALETTE_SIZE = 256
+const MAX_CACHE_BITS = 11
+const HUFFMAN_CODES_PER_META_CODE = 5
 #define ARGB_BLACK 0xff000000
 
-#define DEFAULT_CODE_LENGTH 8
-#define MAX_ALLOWED_CODE_LENGTH 15
+const DEFAULT_CODE_LENGTH = 8
+const MAX_ALLOWED_CODE_LENGTH = 15
 
-#define NUM_LITERAL_CODES 256
-#define NUM_LENGTH_CODES 24
-#define NUM_DISTANCE_CODES 40
-#define CODE_LENGTH_CODES 19
+const NUM_LITERAL_CODES = 256
+const NUM_LENGTH_CODES = 24
+const NUM_DISTANCE_CODES = 40
+const CODE_LENGTH_CODES = 19
 
 #define MIN_HUFFMAN_BITS 2  // min number of Huffman bits
-#define NUM_HUFFMAN_BITS 3
+const NUM_HUFFMAN_BITS = 3
 
 // the maximum number of bits defining a transform is
 // MIN_TRANSFORM_BITS + (1 << NUM_TRANSFORM_BITS) - 1
-#define MIN_TRANSFORM_BITS 2
-#define NUM_TRANSFORM_BITS 3
+const MIN_TRANSFORM_BITS = 2
+const NUM_TRANSFORM_BITS = 3
 
 #define TRANSFORM_PRESENT \
   1  // The bit to be written when next data to be read is a transform.
@@ -65,10 +65,10 @@ typedef enum {
 } VP8LImageTransformType;
 
 // Alpha related constants.
-#define ALPHA_HEADER_LEN 1
-#define ALPHA_NO_COMPRESSION 0
-#define ALPHA_LOSSLESS_COMPRESSION 1
-#define ALPHA_PREPROCESSED_LEVELS 1
+const ALPHA_HEADER_LEN = 1
+const ALPHA_NO_COMPRESSION = 0
+const ALPHA_LOSSLESS_COMPRESSION = 1
+const ALPHA_PREPROCESSED_LEVELS = 1
 
 // Mux related constants.
 #define TAG_SIZE 4           // Size of a chunk tag (e.g. "VP8L").

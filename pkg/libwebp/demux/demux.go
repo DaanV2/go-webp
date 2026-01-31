@@ -33,9 +33,9 @@ import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#define DMUX_MAJ_VERSION 1
-#define DMUX_MIN_VERSION 6
-#define DMUX_REV_VERSION 0
+const DMUX_MAJ_VERSION = 1
+const DMUX_MIN_VERSION = 6
+const DMUX_REV_VERSION = 0
 
 typedef struct {
   size_t start;     // start location of the data

@@ -32,7 +32,7 @@ import "src/webp/types.h"
 #define snprintf _snprintf
 #endif
 
-#define ERROR_STR_MAX_LENGTH 100
+const ERROR_STR_MAX_LENGTH = 100
 
 //------------------------------------------------------------------------------
 // Internal structs.
@@ -144,7 +144,7 @@ static void DisableKeyframes(WebPAnimEncoderOptions* const enc_options) {
   enc_options->kmin = enc_options->kmax - 1;
 }
 
-#define MAX_CACHED_FRAMES 30
+const MAX_CACHED_FRAMES = 30
 
 static void SanitizeEncoderOptions(WebPAnimEncoderOptions* const enc_options) {
   int print_warning = enc_options->verbose;

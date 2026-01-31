@@ -45,7 +45,7 @@ static const uint8_t kOrderedDither[DSIZE][DSIZE] = {
     {15, 7, 13, 5}};
 
 #else
-#define DFIX 0
+const DFIX = 0
 #endif
 
 typedef struct {

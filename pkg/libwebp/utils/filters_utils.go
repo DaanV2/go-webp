@@ -27,7 +27,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // -----------------------------------------------------------------------------
 // Quick estimate of a potentially interesting filter mode to try.
 
-#define SMAX 16
+const SMAX = 16
 #define SDIFF(a, b) (abs((a) - (b)) >> 4)  // Scoring diff, in [0..SMAX)
 
 static WEBP_INLINE int GradientPredictor(uint8_t a, uint8_t b, uint8_t c) {

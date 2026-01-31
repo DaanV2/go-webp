@@ -233,7 +233,7 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
 #define MAX_CODE_LENGTHS_SIZE \
   ((1 << MAX_CACHE_BITS) + NUM_LITERAL_CODES + NUM_LENGTH_CODES)
 // Cut-off value for switching between heap and stack allocation.
-#define SORTED_SIZE_CUTOFF 512
+const SORTED_SIZE_CUTOFF = 512
 int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
                           const int WEBP_COUNTED_BY(code_lengths_size)
                               code_lengths[],

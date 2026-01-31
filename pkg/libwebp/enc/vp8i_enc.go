@@ -34,9 +34,9 @@ extern "C" {
 // Various defines and enums
 
 // version numbers
-#define ENC_MAJ_VERSION 1
-#define ENC_MIN_VERSION 6
-#define ENC_REV_VERSION 0
+const ENC_MAJ_VERSION = 1
+const ENC_MIN_VERSION = 6
+const ENC_REV_VERSION = 0
 
 enum {
   MAX_LF_LEVELS = 64,       // Maximum loop filter level
@@ -113,7 +113,7 @@ typedef int64_t score_t;  // type used for scores, rate, distortion
 // in order to allow overflowing computations.
 #define MAX_COST ((score_t)0x7fffffffffffffLL)
 
-#define QFIX 17
+const QFIX = 17
 #define BIAS(b) ((b) << (QFIX - 8))
 // Fun fact: this is the _only_ line where we're actually being lossy and
 // discarding bits.
@@ -125,7 +125,7 @@ static WEBP_INLINE int QUANTDIV(uint32_t n, uint32_t iQ, uint32_t B) {
 // #define DISABLE_TOKEN_BUFFER
 
 // quality below which error-diffusion is enabled
-#define ERROR_DIFFUSION_QUALITY 98
+const ERROR_DIFFUSION_QUALITY = 98
 
 //------------------------------------------------------------------------------
 // Headers

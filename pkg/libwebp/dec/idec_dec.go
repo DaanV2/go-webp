@@ -33,8 +33,8 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // In append mode, buffer allocations increase as multiples of this value.
 // Needs to be a power of 2.
-#define CHUNK_SIZE 4096
-#define MAX_MB_SIZE 4096
+const CHUNK_SIZE = 4096
+const MAX_MB_SIZE = 4096
 
 //------------------------------------------------------------------------------
 // Data structures for memory and states

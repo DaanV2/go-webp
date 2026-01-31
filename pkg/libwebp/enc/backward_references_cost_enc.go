@@ -27,7 +27,7 @@ import "src/utils/utils.h"
 import "src/webp/format_constants.h"
 import "src/webp/types.h"
 
-#define VALUES_IN_BYTE 256
+const VALUES_IN_BYTE = 256
 
 extern void VP8LClearBackwardRefs(VP8LBackwardRefs* const refs);
 extern int VP8LDistanceToPlaneCode(int xsize, int dist);
@@ -143,7 +143,7 @@ static WEBP_INLINE void AddSingleLiteralWithCostModel(
 // CostManager and interval handling
 
 // Empirical value to avoid high memory consumption but good for performance.
-#define COST_CACHE_INTERVAL_SIZE_MAX 500
+const COST_CACHE_INTERVAL_SIZE_MAX = 500
 
 // To perform backward reference every pixel at index 'index' is considered and
 // the cost for the MAX_LENGTH following pixels computed. Those following pixels
@@ -180,7 +180,7 @@ typedef struct {
 // It caches the different CostCacheInterval, caches the different
 // GetLengthCost(cost_model, k) in cost_cache and the CostInterval's (whose
 // 'count' is limited by COST_CACHE_INTERVAL_SIZE_MAX).
-#define COST_MANAGER_MAX_FREE_LIST 10
+const COST_MANAGER_MAX_FREE_LIST = 10
 typedef struct {
   CostInterval* head;
   int count;  // The number of stored intervals.

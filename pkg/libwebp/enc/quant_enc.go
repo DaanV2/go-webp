@@ -28,7 +28,7 @@ import "src/webp/types.h"
 #define DO_TRELLIS_I4 1
 #define DO_TRELLIS_I16 1  // not a huge gain, but ok at low bitrate.
 #define DO_TRELLIS_UV 0   // disable trellis for UV. Risky. Not worth.
-#define USE_TDISTO 1
+const USE_TDISTO = 1
 
 #define MID_ALPHA 64   // neutral value for susceptibility
 #define MIN_ALPHA 30   // lowest usable value for susceptibility
@@ -269,7 +269,7 @@ static void SetupMatrices(VP8Encoder* enc) {
 
 // Very small filter-strength values have close to no visual effect. So we can
 // save a little decoding-CPU by turning filtering off for these.
-#define FSTRENGTH_CUTOFF 2
+const FSTRENGTH_CUTOFF = 2
 
 static void SetupFilterStrength(VP8Encoder* const enc) {
   int i;
@@ -834,7 +834,7 @@ static int ReconstructIntra4(VP8EncIterator* WEBP_RESTRICT const it,
 // diffused) to avoid 'rainbow' chessboard pattern of blocks at q~=0.
 #define C1 7  // fraction of error sent to the 4x4 block below
 #define C2 8  // fraction of error sent to the 4x4 block on the right
-#define DSHIFT 4
+const DSHIFT = 4
 #define DSCALE 1  // storage descaling, needed to make the error fit int8_t
 
 // Quantize as usual, but also compute and return the quantization error.

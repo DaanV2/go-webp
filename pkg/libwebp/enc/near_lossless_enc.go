@@ -28,8 +28,8 @@ import "src/webp/types.h"
 
 #if (WEBP_NEAR_LOSSLESS == 1)
 
-#define MIN_DIM_FOR_NEAR_LOSSLESS 64
-#define MAX_LIMIT_BITS 5
+const MIN_DIM_FOR_NEAR_LOSSLESS = 64
+const MAX_LIMIT_BITS = 5
 
 // Quantizes the value up or down to a multiple of 1<<bits (or to 255),
 // choosing the closer one, resolving ties using bankers' rounding.

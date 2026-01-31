@@ -38,9 +38,9 @@ extern "C" {
 // Various defines and enums
 
 // version numbers
-#define DEC_MAJ_VERSION 1
-#define DEC_MIN_VERSION 6
-#define DEC_REV_VERSION 0
+const DEC_MAJ_VERSION = 1
+const DEC_MIN_VERSION = 6
+const DEC_REV_VERSION = 0
 
 // YUV-cache parameters. Cache is 32-bytes wide (= one cacheline).
 // Constraints are: We need to store one 16x16 block of luma samples (y),
@@ -70,7 +70,7 @@ extern "C" {
 #define V_OFF (U_OFF + 16)
 
 // minimal width under which lossy multi-threading is always disabled
-#define MIN_WIDTH_FOR_THREADS 512
+const MIN_WIDTH_FOR_THREADS = 512
 
 //------------------------------------------------------------------------------
 // Headers

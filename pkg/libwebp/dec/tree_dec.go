@@ -30,7 +30,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // using a table is ~1-2% slower on ARM. Prefer the coded-tree approach then.
 #define USE_GENERIC_TREE 1  // ALTERNATE_CODE
 #else
-#define USE_GENERIC_TREE 0
+const USE_GENERIC_TREE = 0
 #endif
 #endif  // USE_GENERIC_TREE
 

@@ -136,7 +136,7 @@ int WebPValidateConfig(const WebPConfig* config) {
 
 //------------------------------------------------------------------------------
 
-#define MAX_LEVEL 9
+const MAX_LEVEL = 9
 
 // Mapping between -z level and -m / -q parameter settings.
 static const struct {

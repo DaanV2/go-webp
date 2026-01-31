@@ -228,7 +228,7 @@ import <stdio.h>
 import <stdlib.h>  // for atexit()
 import <string.h>
 
-#define MAX_NUM_LABELS 32
+const MAX_NUM_LABELS = 32
 static struct {
   const char* label;
   int size;

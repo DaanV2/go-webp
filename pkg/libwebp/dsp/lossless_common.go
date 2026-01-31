@@ -71,8 +71,8 @@ static WEBP_INLINE int VP8LNearLosslessBits(int near_lossless_quality) {
 // Practically, we can get rid of the call to log() as the two values match to
 // very high degree (the ratio of these two is 0.99999x).
 // Keeping a high threshold for now.
-#define APPROX_LOG_WITH_CORRECTION_MAX 65536
-#define APPROX_LOG_MAX 4096
+const APPROX_LOG_WITH_CORRECTION_MAX = 65536
+const APPROX_LOG_MAX = 4096
 // VP8LFastLog2 and VP8LFastSLog2 are used on elements from image histograms.
 // The histogram values cannot exceed the maximum number of pixels, which
 // is (1 << 14) * (1 << 14). Therefore S * log(S) < (1 << 33).
@@ -83,7 +83,7 @@ static WEBP_INLINE int VP8LNearLosslessBits(int near_lossless_quality) {
 // LOG_2_RECIPROCAL * (1 << LOG_2_PRECISION_BITS)
 #define LOG_2_RECIPROCAL_FIXED_DOUBLE 12102203.161561485379934310913085937500
 #define LOG_2_RECIPROCAL_FIXED ((uint64_t)12102203)
-#define LOG_LOOKUP_IDX_MAX 256
+const LOG_LOOKUP_IDX_MAX = 256
 extern const uint32_t kLog2Table[LOG_LOOKUP_IDX_MAX];
 extern const uint64_t kSLog2Table[LOG_LOOKUP_IDX_MAX];
 typedef uint32_t (*VP8LFastLog2SlowFunc)(uint32_t v);
@@ -135,7 +135,7 @@ static WEBP_INLINE void VP8LPrefixEncodeNoLUT(int distance, int* const code,
   *code = 2 * highest_bit + second_highest_bit;
 }
 
-#define PREFIX_LOOKUP_IDX_MAX 512
+const PREFIX_LOOKUP_IDX_MAX = 512
 typedef struct {
   int8_t code;
   int8_t extra_bits;

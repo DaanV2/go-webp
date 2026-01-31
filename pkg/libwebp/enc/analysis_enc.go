@@ -25,7 +25,7 @@ import "src/utils/utils.h"
 import "src/webp/encode.h"
 import "src/webp/types.h"
 
-#define MAX_ITERS_K_MEANS 6
+const MAX_ITERS_K_MEANS = 6
 
 //------------------------------------------------------------------------------
 // Smooth the segment map by replacing isolated block by the majority of its
@@ -233,7 +233,7 @@ static void AssignSegments(VP8Encoder* const enc,
 // optimum, or be subject to boundary effect
 #define MAX_INTRA16_MODE 2
 #define MAX_INTRA4_MODE 2
-#define MAX_UV_MODE 2
+const MAX_UV_MODE = 2
 
 static int MBAnalyzeBestIntra16Mode(VP8EncIterator* const it) {
   const int max_mode = MAX_INTRA16_MODE;

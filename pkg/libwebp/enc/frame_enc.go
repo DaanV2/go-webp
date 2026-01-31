@@ -26,7 +26,7 @@ import "src/webp/encode.h"
 import "src/webp/format_constants.h"  // RIFF constants
 import "src/webp/types.h"
 
-#define SEGMENT_VISU 0
+const SEGMENT_VISU = 0
 #define DEBUG_SEARCH 0  // useful to track search convergence
 
 //------------------------------------------------------------------------------

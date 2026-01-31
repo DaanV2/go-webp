@@ -951,8 +951,8 @@ static int64_t GetPredictionCostCrossColorBlue(
   return cur_diff;
 }
 
-#define kGreenRedToBlueNumAxis 8
-#define kGreenRedToBlueMaxIters 7
+const kGreenRedToBlueNumAxis = 8
+const kGreenRedToBlueMaxIters = 7
 static void GetBestGreenRedToBlue(const uint32_t* argb, int stride,
                                   int tile_width, int tile_height,
                                   VP8LMultipliers prev_x,

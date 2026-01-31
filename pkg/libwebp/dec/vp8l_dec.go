@@ -38,7 +38,7 @@ import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#define NUM_ARGB_CACHE_ROWS 16
+const NUM_ARGB_CACHE_ROWS = 16
 
 static const int kCodeLengthLiterals = 16;
 static const int kCodeLengthRepeatCode = 16;
@@ -60,11 +60,11 @@ static const uint16_t kAlphabetSize[HUFFMAN_CODES_PER_META_CODE] = {
 
 static const uint8_t kLiteralMap[HUFFMAN_CODES_PER_META_CODE] = {0, 1, 1, 1, 0};
 
-#define NUM_CODE_LENGTH_CODES 19
+const NUM_CODE_LENGTH_CODES = 19
 static const uint8_t kCodeLengthCodeOrder[NUM_CODE_LENGTH_CODES] = {
     17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
-#define CODE_TO_PLANE_CODES 120
+const CODE_TO_PLANE_CODES = 120
 static const uint8_t kCodeToPlane[CODE_TO_PLANE_CODES] = {
     0x18, 0x07, 0x17, 0x19, 0x28, 0x06, 0x27, 0x29, 0x16, 0x1a, 0x26, 0x2a,
     0x38, 0x05, 0x37, 0x39, 0x15, 0x1b, 0x36, 0x3a, 0x25, 0x2b, 0x48, 0x04,

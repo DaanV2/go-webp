@@ -86,7 +86,7 @@ static void TransformColor_SSE2(const VP8LMultipliers* WEBP_RESTRICT const m,
 }
 
 //------------------------------------------------------------------------------
-#define SPAN 8
+const SPAN = 8
 static void CollectColorBlueTransforms_SSE2(const uint32_t* WEBP_RESTRICT argb,
                                             int stride, int tile_width,
                                             int tile_height, int green_to_blue,

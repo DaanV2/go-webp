@@ -34,7 +34,7 @@ import "src/webp/format_constants.h"
 import "src/webp/types.h"
 
 // Maximum number of histogram images (sub-blocks).
-#define MAX_HUFF_IMAGE_SIZE 2600
+const MAX_HUFF_IMAGE_SIZE = 2600
 #define MAX_HUFFMAN_BITS (MIN_HUFFMAN_BITS + (1 << NUM_HUFFMAN_BITS) - 1)
 // Empirical value for which it becomes too computationally expensive to
 // compute the best predictor image.
@@ -71,7 +71,7 @@ typedef enum {
   kHistoTotal  // Must be last.
 } HistoIx;
 
-#define NUM_BUCKETS 256
+const NUM_BUCKETS = 256
 
 typedef uint32_t HistogramBuckets[NUM_BUCKETS];
 
@@ -274,7 +274,7 @@ static int GetTransformBits(int method, int histo_bits) {
 }
 
 // Set of parameters to be used in each iteration of the cruncher.
-#define CRUNCH_SUBCONFIGS_MAX 2
+const CRUNCH_SUBCONFIGS_MAX = 2
 typedef struct {
   int lz77;
   int do_no_cache;
@@ -1271,7 +1271,7 @@ static int MakeInputImageCopy(VP8LEncoder* const enc) {
 
 // -----------------------------------------------------------------------------
 
-#define APPLY_PALETTE_GREEDY_MAX 4
+const APPLY_PALETTE_GREEDY_MAX = 4
 
 static WEBP_INLINE uint32_t SearchColorGreedy(const uint32_t palette[],
                                               int palette_size,
@@ -1290,7 +1290,7 @@ static WEBP_INLINE uint32_t ApplyPaletteHash0(uint32_t color) {
   return (color >> 8) & 0xff;
 }
 
-#define PALETTE_INV_SIZE_BITS 11
+const PALETTE_INV_SIZE_BITS = 11
 #define PALETTE_INV_SIZE (1 << PALETTE_INV_SIZE_BITS)
 
 static WEBP_INLINE uint32_t ApplyPaletteHash1(uint32_t color) {

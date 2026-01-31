@@ -22,7 +22,7 @@ import <stddef.h>
 import "src/utils/bounds_safety.h"
 import "src/webp/types.h"
 
-#define NUM_SYMBOLS 256
+const NUM_SYMBOLS = 256
 
 #define MAX_ITER 6            // Maximum number of convergence steps.
 #define ERROR_THRESHOLD 1e-4  // MSE stopping criterion.

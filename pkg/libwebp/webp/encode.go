@@ -298,7 +298,7 @@ typedef enum WebPEncodingError {
 } WebPEncodingError;
 
 // maximum width/height allowed (inclusive), in pixels
-#define WEBP_MAX_DIMENSION 16383
+const WEBP_MAX_DIMENSION = 16383
 
 // Main exchange structure (input samples, output bytes, statistics)
 //
