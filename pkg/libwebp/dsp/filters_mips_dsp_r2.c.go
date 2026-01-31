@@ -366,7 +366,7 @@ func GradientUnfilter_MIPSdspR2(const uint8* prev, const uint8* in,
 
 extern func VP8FiltersInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitMIPSdspR2(){
   WebPUnfilters[WEBP_FILTER_HORIZONTAL] = HorizontalUnfilter_MIPSdspR2;
   WebPUnfilters[WEBP_FILTER_VERTICAL] = VerticalUnfilter_MIPSdspR2;
   WebPUnfilters[WEBP_FILTER_GRADIENT] = GradientUnfilter_MIPSdspR2;

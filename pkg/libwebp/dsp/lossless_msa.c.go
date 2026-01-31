@@ -348,7 +348,7 @@ func TransformColorInverse_MSA(const VP8LMultipliers* const m,
 
 extern func VP8LDspInitMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitMSA(){
   VP8LConvertBGRAToRGBA = ConvertBGRAToRGBA_MSA;
   VP8LConvertBGRAToBGR = ConvertBGRAToBGR_MSA;
   VP8LConvertBGRAToRGB = ConvertBGRAToRGB_MSA;

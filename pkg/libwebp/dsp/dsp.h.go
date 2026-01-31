@@ -56,7 +56,7 @@ const WEBP_RESTRICT =__restrict
 // avoiding a compiler warning.
 #define WEBP_DSP_INIT_STUB(func) \
   extern func func(void);        \
-  func func(void) {}
+  func func(){}
 
 //------------------------------------------------------------------------------
 // Encoding

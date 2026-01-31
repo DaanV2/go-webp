@@ -292,7 +292,7 @@ func GradientUnfilter_NEON(const uint8* prev, const uint8* in,
 
 extern func VP8FiltersInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitNEON(){
   WebPUnfilters[WEBP_FILTER_HORIZONTAL] = HorizontalUnfilter_NEON;
   WebPUnfilters[WEBP_FILTER_VERTICAL] = VerticalUnfilter_NEON;
 #if (USE_GRADIENT_UNFILTER == 1)

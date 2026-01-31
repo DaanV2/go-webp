@@ -77,7 +77,7 @@ var size_t mem_limit = 0;
 
 var int exit_registered = 0;
 
-func PrintMemInfo(void) {
+func PrintMemInfo(){
   fprintf(stderr, "\nMEMORY INFO:\n");
   fprintf(stderr, "num calls to: malloc = %4d\n", num_malloc_calls);
   fprintf(stderr, "              calloc = %4d\n", num_calloc_calls);

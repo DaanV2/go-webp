@@ -259,7 +259,7 @@ func CollectColorRedTransforms_MIPSdspR2(
 
 extern func VP8LEncDspInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitMIPSdspR2(){
   VP8LSubtractGreenFromBlueAndRed = SubtractGreenFromBlueAndRed_MIPSdspR2;
   VP8LTransformColor = TransformColor_MIPSdspR2;
   VP8LCollectColorBlueTransforms = CollectColorBlueTransforms_MIPSdspR2;

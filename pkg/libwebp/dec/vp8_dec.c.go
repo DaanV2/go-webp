@@ -38,7 +38,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 //------------------------------------------------------------------------------
 
-int WebPGetDecoderVersion(void) {
+int WebPGetDecoderVersion(){
   return (DEC_MAJ_VERSION << 16) | (DEC_MIN_VERSION << 8) | DEC_REV_VERSION;
 }
 
@@ -70,7 +70,7 @@ int VP8InitIoInternal(VP8Io* const io, int version) {
   return 1;
 }
 
-VP8Decoder* VP8New(void) {
+VP8Decoder* VP8New(){
   VP8Decoder* const dec = (VP8Decoder*)WebPSafeCalloc(1ULL, sizeof(*dec));
   if (dec != NULL) {
     SetOk(dec);

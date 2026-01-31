@@ -195,7 +195,7 @@ func ConvertARGBToUV_NEON(const uint32* WEBP_RESTRICT argb,
 
 extern func WebPInitConvertARGBToYUVNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitConvertARGBToYUVNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitConvertARGBToYUVNEON(){
   WebPConvertRGBToY = ConvertRGBToY_NEON;
   WebPConvertBGRToY = ConvertBGRToY_NEON;
   WebPConvertARGBToY = ConvertARGBToY_NEON;

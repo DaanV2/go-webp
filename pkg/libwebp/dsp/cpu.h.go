@@ -259,7 +259,7 @@ import "github.com/daanv2/go-webp/pkg/pthread"
 #define WEBP_DSP_INIT_FUNC(name)                                            \
   WEBP_DSP_INIT_VARS(name##_body);                                          \
   static WEBP_TSAN_IGNORE_FUNCTION func name##_body(void);                  \
-  WEBP_TSAN_IGNORE_FUNCTION func name(void) { WEBP_DSP_INIT(name##_body); } \
+  WEBP_TSAN_IGNORE_FUNCTION func name(){ WEBP_DSP_INIT(name##_body); } \
   static WEBP_TSAN_IGNORE_FUNCTION func name##_body(void)
 
 #define WEBP_UBSAN_IGNORE_UNDEF

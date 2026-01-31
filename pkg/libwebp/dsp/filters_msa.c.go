@@ -197,7 +197,7 @@ func VerticalFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
 
 extern func VP8FiltersInitMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitMSA(){
   WebPFilters[WEBP_FILTER_HORIZONTAL] = HorizontalFilter_MSA;
   WebPFilters[WEBP_FILTER_VERTICAL] = VerticalFilter_MSA;
   WebPFilters[WEBP_FILTER_GRADIENT] = GradientFilter_MSA;

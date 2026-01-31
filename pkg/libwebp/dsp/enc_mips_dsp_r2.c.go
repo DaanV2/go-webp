@@ -1513,7 +1513,7 @@ func CollectHistogram_MIPSdspR2(const uint8* ref, const uint8* pred,
 
 extern func VP8EncDspInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitMIPSdspR2(){
   VP8FTransform = FTransform_MIPSdspR2;
   VP8FTransformWHT = FTransformWHT_MIPSdspR2;
   VP8ITransform = ITransform_MIPSdspR2;

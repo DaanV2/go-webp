@@ -406,7 +406,7 @@ func MultRow_SSE2(uint8* WEBP_RESTRICT const ptr,
 
 extern func WebPInitAlphaProcessingSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingSSE2(){
   WebPMultARGBRow = MultARGBRow_SSE2;
   WebPMultRow = MultRow_SSE2;
   WebPApplyAlphaMultiply = ApplyAlphaMultiply_SSE2;

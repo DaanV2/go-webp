@@ -351,7 +351,7 @@ func RescalerExportRowShrink_SSE2(WebPRescaler* const wrk) {
 
 extern func WebPRescalerDspInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitSSE2(){
   WebPRescalerImportRowExpand = RescalerImportRowExpand_SSE2;
   WebPRescalerImportRowShrink = RescalerImportRowShrink_SSE2;
   WebPRescalerExportRowExpand = RescalerExportRowExpand_SSE2;

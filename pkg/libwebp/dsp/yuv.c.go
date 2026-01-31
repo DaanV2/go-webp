@@ -275,7 +275,7 @@ static  int LinearToGamma(uint32 base_value, int shift) {
 
 #else
 
-func WebPInitGammaTables(void) {}
+func WebPInitGammaTables(){}
 static  uint32 GammaToLinear(uint8 v) { return v; }
 static  int LinearToGamma(uint32 base_value, int shift) {
   return (int)(base_value << shift);

@@ -182,7 +182,7 @@ func RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
 
 extern func WebPRescalerDspInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitNEON(){
   WebPRescalerExportRowExpand = RescalerExportRowExpand_NEON;
   WebPRescalerExportRowShrink = RescalerExportRowShrink_NEON;
 }

@@ -698,7 +698,7 @@ func PredictorSub13_SSE2(const uint32* in, const uint32* upper,
 
 extern func VP8LEncDspInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitSSE2(){
   // SSE exports for AVX and above.
   VP8LSubtractGreenFromBlueAndRed_SSE = SubtractGreenFromBlueAndRed_SSE2;
   VP8LTransformColor_SSE = TransformColor_SSE2;

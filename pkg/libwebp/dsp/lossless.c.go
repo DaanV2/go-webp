@@ -441,7 +441,7 @@ func VP8LInverseTransform(const VP8LTransform* const transform, int row_start,
 //------------------------------------------------------------------------------
 // Color space conversion.
 
-static int is_big_endian(void) {
+static int is_big_endian(){
   static const union {
     uint16 w;
     uint8 b[2];

@@ -1617,7 +1617,7 @@ func TM16_NEON(uint8* dst) {
 
 extern func VP8DspInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitNEON(){
   VP8Transform = TransformTwo_NEON;
   VP8TransformAC3 = TransformAC3_NEON;
   VP8TransformDC = TransformDC_NEON;

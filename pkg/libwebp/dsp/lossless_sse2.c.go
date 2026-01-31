@@ -686,7 +686,7 @@ func ConvertBGRAToBGR_SSE2(const uint32* WEBP_RESTRICT src,
 
 extern func VP8LDspInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitSSE2(){
   VP8LPredictors[5] = Predictor5_SSE2;
   VP8LPredictors[6] = Predictor6_SSE2;
   VP8LPredictors[7] = Predictor7_SSE2;

@@ -281,7 +281,7 @@ extern WebPUpsampleLinePairFunc WebPUpsamplers[/* MODE_LAST */];
 
 extern func WebPInitUpsamplersNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersNEON(){
   WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair_NEON;
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair_NEON;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair_NEON;

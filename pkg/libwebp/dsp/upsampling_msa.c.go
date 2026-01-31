@@ -700,7 +700,7 @@ extern WebPUpsampleLinePairFunc WebPUpsamplers[/* MODE_LAST */];
 
 extern func WebPInitUpsamplersMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersMSA(){
   WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair;
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair;

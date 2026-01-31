@@ -228,7 +228,7 @@ UPSAMPLE_FUNC(UpsampleRgb565LinePair, YuvToRgb565, 2)
 
 extern func WebPInitUpsamplersMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersMIPSdspR2(){
   WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair;
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair;
@@ -274,7 +274,7 @@ YUV444_FUNC(Yuv444ToRgb565, YuvToRgb565, 2)
 
 extern func WebPInitYUV444ConvertersMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitYUV444ConvertersMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitYUV444ConvertersMIPSdspR2(){
   WebPYUV444Converters[MODE_RGBA] = Yuv444ToRgba;
   WebPYUV444Converters[MODE_BGRA] = Yuv444ToBgra;
   WebPYUV444Converters[MODE_rgbA] = Yuv444ToRgba;

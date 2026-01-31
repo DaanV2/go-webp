@@ -609,7 +609,7 @@ func TransformColorInverse_NEON(const VP8LMultipliers* const m,
 
 extern func VP8LDspInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitNEON(){
   VP8LPredictors[5] = Predictor5_NEON;
   VP8LPredictors[6] = Predictor6_NEON;
   VP8LPredictors[7] = Predictor7_NEON;

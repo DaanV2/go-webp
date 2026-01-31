@@ -99,7 +99,7 @@ static int GetResidualCost_MIPSdspR2(int ctx0, const VP8Residual* const res) {
 
 extern func VP8EncDspCostInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitMIPSdspR2(){
   VP8GetResidualCost = GetResidualCost_MIPSdspR2;
 }
 

@@ -112,7 +112,7 @@ static int GetResidualCost_SSE2(int ctx0, const VP8Residual* const res) {
 
 extern func VP8EncDspCostInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitSSE2(){
   VP8SetResidualCoeffs = SetResidualCoeffs_SSE2;
   VP8GetResidualCost = GetResidualCost_SSE2;
 }

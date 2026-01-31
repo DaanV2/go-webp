@@ -175,7 +175,7 @@ func CollectColorRedTransforms_SSE41(const uint32* WEBP_RESTRICT argb,
 
 extern func VP8LEncDspInitSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitSSE41(){
   VP8LExtraCost = ExtraCost_SSE41;
 
   // SSE exports for AVX and above.

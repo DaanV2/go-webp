@@ -1189,7 +1189,7 @@ func DC8uvNoTopLeft_SSE2(uint8* dst) {  // DC with nothing
 
 extern func VP8DspInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitSSE2(){
   VP8Transform = Transform_SSE2;
 #if (USE_TRANSFORM_AC3 == 1)
   VP8TransformAC3 = TransformAC3_SSE2;

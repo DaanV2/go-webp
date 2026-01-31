@@ -1202,7 +1202,7 @@ func Intra16Preds_NEON(uint8* WEBP_RESTRICT dst,
 
 extern func VP8EncDspInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitNEON(){
   VP8ITransform = ITransform_NEON;
   VP8FTransform = FTransform_NEON;
 

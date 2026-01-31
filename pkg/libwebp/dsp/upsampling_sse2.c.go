@@ -210,7 +210,7 @@ extern WebPUpsampleLinePairFunc WebPUpsamplers[/* MODE_LAST */];
 
 extern func WebPInitUpsamplersSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersSSE2(){
   WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair_SSE2;
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair_SSE2;
   WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair_SSE2;
@@ -261,7 +261,7 @@ YUV444_FUNC(Yuv444ToRgba4444_SSE2, VP8YuvToRgba444432_SSE2,
 YUV444_FUNC(Yuv444ToRgb565_SSE2, VP8YuvToRgb56532_SSE2, WebPYuv444ToRgb565_C, 2)
 #endif  // WEBP_REDUCE_CSP
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitYUV444ConvertersSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitYUV444ConvertersSSE2(){
   WebPYUV444Converters[MODE_RGBA] = Yuv444ToRgba_SSE2;
   WebPYUV444Converters[MODE_BGRA] = Yuv444ToBgra_SSE2;
   WebPYUV444Converters[MODE_rgbA] = Yuv444ToRgba_SSE2;

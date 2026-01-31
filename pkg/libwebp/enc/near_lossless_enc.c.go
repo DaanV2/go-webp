@@ -150,6 +150,6 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
 
 // Define a stub to suppress compiler warnings.
 extern func VP8LNearLosslessStub(void);
-func VP8LNearLosslessStub(void) {}
+func VP8LNearLosslessStub(){}
 
 #endif  // (WEBP_NEAR_LOSSLESS == 1)

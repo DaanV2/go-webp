@@ -326,7 +326,7 @@ func AddVectorEq_MIPS32(const uint32* WEBP_RESTRICT pa,
 
 extern func VP8LEncDspInitMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitMIPS32(){
   VP8LFastSLog2Slow = FastSLog2Slow_MIPS32;
   VP8LFastLog2Slow = FastLog2Slow_MIPS32;
   VP8LExtraCost = ExtraCost_MIPS32;

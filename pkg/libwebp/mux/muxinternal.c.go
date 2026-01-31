@@ -43,7 +43,7 @@ const ChunkInfo kChunks[] = {
 
 //------------------------------------------------------------------------------
 
-int WebPGetMuxVersion(void) {
+int WebPGetMuxVersion(){
   return (MUX_MAJ_VERSION << 16) | (MUX_MIN_VERSION << 8) | MUX_REV_VERSION;
 }
 

@@ -66,7 +66,7 @@ const GetCPUInfo = __cpuid
 
 // NaCl has no support for xgetbv or the raw opcode.
 #if !defined(__native_client__) && (defined(__i386__) || defined(__x86_64__))
-static  uint64 xgetbv(void) {
+static  uint64 xgetbv(){
   const uint32 ecx = 0;
   uint32 eax, edx;
   // Use the raw opcode for xgetbv for compatibility with older toolchains.
@@ -80,7 +80,7 @@ static  uint64 xgetbv(void) {
 import "github.com/daanv2/go-webp/pkg/immintrin"
 #define xgetbv() _xgetbv(0)
 #elif defined(_MSC_VER) && defined(_M_IX86)
-static  uint64 xgetbv(void) {
+static  uint64 xgetbv(){
   uint32 eax_, edx_;
   __asm {
     xor ecx, ecx  // ecx = 0

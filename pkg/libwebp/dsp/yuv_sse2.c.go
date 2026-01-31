@@ -459,7 +459,7 @@ func YuvToBgrRow_SSE2(const uint8* WEBP_RESTRICT y,
 
 extern func WebPInitSamplersSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersSSE2(){
   WebPSamplers[MODE_RGB] = YuvToRgbRow_SSE2;
   WebPSamplers[MODE_RGBA] = YuvToRgbaRow_SSE2;
   WebPSamplers[MODE_BGR] = YuvToBgrRow_SSE2;
@@ -786,7 +786,7 @@ func ConvertRGBA32ToUV_SSE2(const uint16* WEBP_RESTRICT rgb,
 
 extern func WebPInitConvertARGBToYUVSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitConvertARGBToYUVSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitConvertARGBToYUVSSE2(){
   WebPConvertARGBToY = ConvertARGBToY_SSE2;
   WebPConvertARGBToUV = ConvertARGBToUV_SSE2;
 

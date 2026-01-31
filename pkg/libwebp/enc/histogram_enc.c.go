@@ -284,7 +284,7 @@ uint64 VP8LBitsEntropy(const uint32* const array, int n) {
   return BitsEntropyRefine(&entropy);
 }
 
-static uint64 InitialHuffmanCost(void) {
+static uint64 InitialHuffmanCost(){
   // Small bias because Huffman code length is typically not stored in
   // full length.
   static const uint64 kHuffmanCodeOfHuffmanCodeSize = CODE_LENGTH_CODES * 3;

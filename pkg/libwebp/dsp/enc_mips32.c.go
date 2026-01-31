@@ -658,7 +658,7 @@ static int SSE4x4_MIPS32(const uint8* WEBP_RESTRICT a,
 
 extern func VP8EncDspInitMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitMIPS32(){
   VP8ITransform = ITransform_MIPS32;
   VP8FTransform = FTransform_MIPS32;
 

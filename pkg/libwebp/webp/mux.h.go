@@ -111,7 +111,7 @@ typedef enum WebPChunkId {
 // Returns:
 //   A pointer to the newly created empty mux object.
 //   Or NULL in case of memory error.
- static  WebPMux* WebPMuxNew(void) {
+ static  WebPMux* WebPMuxNew(){
   return WebPNewInternal(WEBP_MUX_ABI_VERSION);
 }
 

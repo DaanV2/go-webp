@@ -326,7 +326,7 @@ const int8* const VP8ksclip2 = (const int8*)&sclip2[112];
 const uint8* const VP8kclip1 = &clip1[255];
 const uint8* const VP8kabs0 = &abs0[255];
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8InitClipTables(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8InitClipTables(){
 #if (USE_STATIC_TABLES == 0)
   int i;
   if (!tables_ok) {

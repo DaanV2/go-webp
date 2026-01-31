@@ -907,7 +907,7 @@ static int Quantize2Blocks_MSA(int16 in[32], int16 out[32],
 
 extern func VP8EncDspInitMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitMSA(){
   VP8ITransform = ITransform_MSA;
   VP8FTransform = FTransform_MSA;
   VP8FTransformWHT = FTransformWHT_MSA;

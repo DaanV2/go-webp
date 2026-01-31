@@ -153,7 +153,7 @@ static double SSIMGet_SSE2(const uint8* src1, int stride1,
 
 extern func VP8SSIMDspInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8SSIMDspInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8SSIMDspInitSSE2(){
 #if !defined(WEBP_DISABLE_STATS)
   VP8AccumulateSSE = AccumulateSSE_SSE2;
 #endif

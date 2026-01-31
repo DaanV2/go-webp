@@ -1537,7 +1537,7 @@ static int Quantize2Blocks_SSE2(int16 in[32], int16 out[32],
 
 extern func VP8EncDspInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitSSE2(){
   VP8CollectHistogram = CollectHistogram_SSE2;
   VP8EncPredLuma16 = Intra16Preds_SSE2;
   VP8EncPredChroma8 = IntraChromaPreds_SSE2;

@@ -268,7 +268,7 @@ func YuvToBgrRow_SSE41(const uint8* WEBP_RESTRICT y,
 
 extern func WebPInitSamplersSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersSSE41(){
   WebPSamplers[MODE_RGB] = YuvToRgbRow_SSE41;
   WebPSamplers[MODE_BGR] = YuvToBgrRow_SSE41;
 }
@@ -631,7 +631,7 @@ func ConvertRGBA32ToUV_SSE41(const uint16* WEBP_RESTRICT rgb,
 
 extern func WebPInitConvertARGBToYUVSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitConvertARGBToYUVSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitConvertARGBToYUVSSE41(){
   WebPConvertARGBToY = ConvertARGBToY_SSE41;
   WebPConvertARGBToUV = ConvertARGBToUV_SSE41;
 

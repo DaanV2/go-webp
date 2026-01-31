@@ -124,7 +124,7 @@ func ConvertBGRAToBGR_SSE41(const uint32* WEBP_RESTRICT src,
 
 extern func VP8LDspInitSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitSSE41(){
   VP8LTransformColorInverse = TransformColorInverse_SSE41;
   VP8LConvertBGRAToRGB = ConvertBGRAToRGB_SSE41;
   VP8LConvertBGRAToBGR = ConvertBGRAToBGR_SSE41;

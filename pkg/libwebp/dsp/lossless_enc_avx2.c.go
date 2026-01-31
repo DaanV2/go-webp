@@ -701,7 +701,7 @@ func PredictorSub13_AVX2(const uint32* in, const uint32* upper,
 
 extern func VP8LEncDspInitAVX2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitAVX2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitAVX2(){
   VP8LSubtractGreenFromBlueAndRed = SubtractGreenFromBlueAndRed_AVX2;
   VP8LTransformColor = TransformColor_AVX2;
   VP8LCollectColorBlueTransforms = CollectColorBlueTransforms_AVX2;

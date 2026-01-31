@@ -302,7 +302,7 @@ int WebPSetWorkerInterface(const WebPWorkerInterface* const winterface) {
   return 1;
 }
 
-const WebPWorkerInterface* WebPGetWorkerInterface(void) {
+const WebPWorkerInterface* WebPGetWorkerInterface(){
   return &g_worker_interface;
 }
 

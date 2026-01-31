@@ -40,7 +40,7 @@ func HE16_SSE41(uint8* dst) {  // horizontal
 
 extern func VP8DspInitSSE41(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitSSE41(){
   VP8PredLuma16[3] = HE16_SSE41;
 }
 

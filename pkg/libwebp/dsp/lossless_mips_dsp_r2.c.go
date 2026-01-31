@@ -662,7 +662,7 @@ func ConvertBGRAToBGR_MIPSdspR2(const uint32* src, int num_pixels,
 
 extern func VP8LDspInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitMIPSdspR2(){
   VP8LMapColor32b = MapARGB_MIPSdspR2;
   VP8LMapColor8b = MapAlpha_MIPSdspR2;
 

@@ -91,7 +91,7 @@ ROW_FUNC(YuvToBgraRow_MIPS32, 4, 2, 1, 0, 3)
 
 extern func WebPInitSamplersMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitSamplersMIPS32(){
   WebPSamplers[MODE_RGB] = YuvToRgbRow_MIPS32;
   WebPSamplers[MODE_RGBA] = YuvToRgbaRow_MIPS32;
   WebPSamplers[MODE_BGR] = YuvToBgrRow_MIPS32;

@@ -548,7 +548,7 @@ func TransformTwo(const int16* WEBP_RESTRICT in,
 
 extern func VP8DspInitMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitMIPS32(){
   VP8InitClipTables();
 
   VP8Transform = TransformTwo;

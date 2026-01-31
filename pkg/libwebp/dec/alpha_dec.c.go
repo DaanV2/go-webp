@@ -28,13 +28,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 //------------------------------------------------------------------------------
 // ALPHDecoder object.
 
 // Allocates a new alpha decoder instance.
- static ALPHDecoder* ALPHNew(void) {
+func ALPHNew() ALPHDecoder* {
   ALPHDecoder* const dec = (ALPHDecoder*)WebPSafeCalloc(1ULL, sizeof(*dec));
   return dec;
 }

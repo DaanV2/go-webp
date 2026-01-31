@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/stdio"
 
 //------------------------------------------------------------------------------
 
-int WebPGetEncoderVersion(void) {
+int WebPGetEncoderVersion(){
   return (ENC_MAJ_VERSION << 16) | (ENC_MIN_VERSION << 8) | ENC_REV_VERSION;
 }
 

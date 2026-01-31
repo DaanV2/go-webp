@@ -142,7 +142,7 @@ func SetResidualCoeffs_MIPS32(const int16* WEBP_RESTRICT const coeffs,
 
 extern func VP8EncDspCostInitMIPS32(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitMIPS32(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitMIPS32(){
   VP8GetResidualCost = GetResidualCost_MIPS32;
   VP8SetResidualCoeffs = SetResidualCoeffs_MIPS32;
 }

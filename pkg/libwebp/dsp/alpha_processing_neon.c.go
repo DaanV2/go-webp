@@ -182,7 +182,7 @@ func ExtractGreen_NEON(const uint32* WEBP_RESTRICT argb,
 
 extern func WebPInitAlphaProcessingNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingNEON(){
   WebPApplyAlphaMultiply = ApplyAlphaMultiply_NEON;
   WebPDispatchAlpha = DispatchAlpha_NEON;
   WebPDispatchAlphaToGreen = DispatchAlphaToGreen_NEON;

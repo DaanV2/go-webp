@@ -988,7 +988,7 @@ func DC8uvNoTopLeft(uint8* dst) {  // DC with nothing
 
 extern func VP8DspInitMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitMSA(){
   VP8TransformWHT = TransformWHT;
   VP8Transform = TransformTwo;
   VP8TransformDC = TransformDC;

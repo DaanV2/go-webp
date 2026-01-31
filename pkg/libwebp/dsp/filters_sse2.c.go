@@ -305,7 +305,7 @@ func GradientUnfilter_SSE2(const uint8* prev, const uint8* in,
 
 extern func VP8FiltersInitSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitSSE2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8FiltersInitSSE2(){
   WebPUnfilters[WEBP_FILTER_HORIZONTAL] = HorizontalUnfilter_SSE2;
 #if defined(CHROMIUM)
   // TODO(crbug.com/654974)

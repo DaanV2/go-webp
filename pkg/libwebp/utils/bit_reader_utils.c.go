@@ -240,7 +240,7 @@ static int last_pos = 0;
 static const uint8* buf_start = NULL;
 static int init_done = 0;
 
-func PrintBitTraces(void) {
+func PrintBitTraces(){
   int i;
   int scale = 1;
   int total = 0;

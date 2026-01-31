@@ -420,7 +420,7 @@ func ConvertBGRAToRGBA_AVX2(const uint32* WEBP_RESTRICT src,
 
 extern func VP8LDspInitAVX2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitAVX2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LDspInitAVX2(){
   VP8LPredictorsAdd[0] = PredictorAdd0_AVX2;
   VP8LPredictorsAdd[1] = PredictorAdd1_AVX2;
   VP8LPredictorsAdd[2] = PredictorAdd2_AVX2;

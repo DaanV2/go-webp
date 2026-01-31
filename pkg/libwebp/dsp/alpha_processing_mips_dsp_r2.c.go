@@ -207,7 +207,7 @@ func PackRGB_MIPSdspR2(const uint8* r, const uint8* g,
 
 extern func WebPInitAlphaProcessingMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingMIPSdspR2(){
   WebPDispatchAlpha = DispatchAlpha_MIPSdspR2;
   WebPMultARGBRow = MultARGBRow_MIPSdspR2;
 #ifdef WORDS_BIGENDIAN

@@ -331,7 +331,7 @@ static int Quantize2Blocks_SSE41(int16 in[32], int16 out[32],
 // Entry point
 
 extern func VP8EncDspInitSSE41(void);
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitSSE41(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspInitSSE41(){
   VP8CollectHistogram = CollectHistogram_SSE41;
   VP8EncQuantizeBlock = QuantizeBlock_SSE41;
   VP8EncQuantize2Blocks = Quantize2Blocks_SSE41;

@@ -302,7 +302,7 @@ func ExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
 
 extern func WebPRescalerDspInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func WebPRescalerDspInitMIPSdspR2(){
   WebPRescalerExportRowExpand = ExportRowExpand_MIPSdspR2;
   //  WebPRescalerExportRowShrink = ExportRowShrink_MIPSdspR2;
 }

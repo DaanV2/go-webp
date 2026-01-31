@@ -140,7 +140,7 @@ func SubtractGreenFromBlueAndRed_MSA(uint32* argb_data,
 
 extern func VP8LEncDspInitMSA(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitMSA(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitMSA(){
   VP8LSubtractGreenFromBlueAndRed = SubtractGreenFromBlueAndRed_MSA;
   VP8LTransformColor = TransformColor_MSA;
 }

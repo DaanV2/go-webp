@@ -112,7 +112,7 @@ static int GetResidualCost_NEON(int ctx0, const VP8Residual* const res) {
 
 extern func VP8EncDspCostInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8EncDspCostInitNEON(){
   VP8SetResidualCoeffs = SetResidualCoeffs_NEON;
   VP8GetResidualCost = GetResidualCost_NEON;
 }

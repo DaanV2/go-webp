@@ -1483,7 +1483,7 @@ func ClearMetadata(VP8LMetadata* const hdr) {
 // -----------------------------------------------------------------------------
 // VP8LDecoder
 
-VP8LDecoder* VP8LNew(void) {
+VP8LDecoder* VP8LNew(){
   VP8LDecoder* const dec = (VP8LDecoder*)WebPSafeCalloc(1ULL, sizeof(*dec));
   if (dec == NULL) return NULL;
   dec.status = VP8_STATUS_OK;

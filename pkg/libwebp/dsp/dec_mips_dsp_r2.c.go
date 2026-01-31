@@ -960,7 +960,7 @@ TRUE_MOTION(dst, 16)
 
 extern func VP8DspInitMIPSdspR2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitMIPSdspR2(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8DspInitMIPSdspR2(){
   VP8TransformDC = TransformDC;
   VP8TransformAC3 = TransformAC3;
   VP8Transform = TransformTwo;

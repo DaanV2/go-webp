@@ -131,7 +131,7 @@ func TransformColor_NEON(const VP8LMultipliers* WEBP_RESTRICT const m,
 
 extern func VP8LEncDspInitNEON(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitNEON(void) {
+WEBP_TSAN_IGNORE_FUNCTION func VP8LEncDspInitNEON(){
   VP8LSubtractGreenFromBlueAndRed = SubtractGreenFromBlueAndRed_NEON;
   VP8LTransformColor = TransformColor_NEON;
 }
