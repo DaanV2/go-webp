@@ -67,7 +67,7 @@ static  func SwapColor(const col *uint321, const col *uint322) {
   *col2 = tmp;
 }
 
-int SearchColorNoIdx(const uint32  sorted[], uint32 color, int num_colors) {
+int SearchColorNoIdx(  sorted []uint32, uint32 color, int num_colors) {
   int low = 0, hi = num_colors;
   if sorted[low] == color {
     return low  // loop invariant: sorted[low] != color

@@ -73,7 +73,7 @@ func WEBP_SIZED_BY_OR_nil(x any) {}
 // Deprecated: Use golang std code
 func WEBP_ENDED_BY(x any) {}
 
-// Deprecated: Use golang std code
+// Deprecated: Use golang [std.WEBP_UNSAFE_MEMCPY]
 func WEBP_UNSAFE_MEMCPY(dst, src, size any) {}
 
 // Deprecated: Use golang std code

@@ -22,7 +22,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
+
 
 
 // Main color cache struct.
@@ -32,7 +32,7 @@ type VP8LColorCache struct {
   int hash_bits;
 }
 
-const uint32 kHashMul = uint(0x1e35a7bd);
+const kHashMul  = uint32(0x1e35a7bd);
 
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
     uint32 argb, int shift) {

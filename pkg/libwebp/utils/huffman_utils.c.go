@@ -85,7 +85,7 @@ static  int NextTableBitSize(
 
 // sorted[code_lengths_size] is a pre-allocated array for sorting symbols
 // by code length.
-static int BuildHuffmanTable(const WEBP_BIDI_INDEXABLE root_table *HuffmanCode, int root_bits, const int code_lengths[], int code_lengths_size, uint16 WEBP_COUNTED_BY_OR_nil(code_lengths_size)
+static int BuildHuffmanTable(/* const */ WEBP_BIDI_INDEXABLE root_table *HuffmanCode, int root_bits, /* const */ int code_lengths[], int code_lengths_size, uint16 WEBP_COUNTED_BY_OR_nil(code_lengths_size)
                                  sorted[]) {
   // next available space in table
   WEBP_BIDI_INDEXABLE table *HuffmanCode = root_table;
