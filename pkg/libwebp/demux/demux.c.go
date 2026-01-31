@@ -34,20 +34,20 @@ const DMUX_MAJ_VERSION =1
 const DMUX_MIN_VERSION =6
 const DMUX_REV_VERSION =0
 
-typedef struct {
+type MemBuffer struct {
   size_t start;     // start location of the data
   size_t end;       // end location
   size_t riff_end;  // riff chunk end location, can be > end.
   size_t buf_size;  // size of the buffer
   const uint8_t* buf;
-} MemBuffer;
+}
 
-typedef struct {
+type ChunkData struct {
   size_t offset;
   size_t size;
-} ChunkData;
+}
 
-typedef type Frame struct {
+type Frame struct {
   int x_offset, y_offset;
   int width, height;
   int has_alpha;
@@ -58,12 +58,12 @@ typedef type Frame struct {
   int complete;                 // img_components contains a full image.
   ChunkData img_components[2];  // 0=VP8{,L} 1=ALPH
   struct Frame* next;
-} Frame;
+}
 
-typedef type Chunk struct {
+type Chunk struct {
   ChunkData data;
   struct Chunk* next;
-} Chunk;
+};
 
 type WebPDemuxer struct {
   MemBuffer mem;
@@ -102,15 +102,15 @@ static const ChunkParser kMasterChunks[] = {
 
 //------------------------------------------------------------------------------
 
-int WebPGetDemuxVersion(void) {
+func WebPGetDemuxVersion() int {
   return (DMUX_MAJ_VERSION << 16) | (DMUX_MIN_VERSION << 8) | DMUX_REV_VERSION;
 }
 
 // -----------------------------------------------------------------------------
 // MemBuffer
 
-static int RemapMemBuffer(MemBuffer* const mem, const uint8_t* data,
-                          size_t size) {
+func RemapMemBuffer(MemBuffer* const mem, const uint8_t* data,
+                          size_t size) int {
   if (size < mem->buf_size) return 0;  // can't remap to a shorter buffer!
 
   mem->buf = data;
@@ -954,7 +954,7 @@ int WebPDemuxGetChunk(const WebPDemuxer* dmux, const char fourcc[4],
   return SetChunk(fourcc, chunk_num, iter);
 }
 
-int WebPDemuxNextChunk(WebPChunkIterator* iter) {
+func WebPDemuxNextChunk( iter WebPChunkIterator*) int {
   if (iter != NULL) {
     const char* const fourcc =
         (const char*)iter->chunk.bytes - CHUNK_HEADER_SIZE;
@@ -963,7 +963,7 @@ int WebPDemuxNextChunk(WebPChunkIterator* iter) {
   return 0;
 }
 
-int WebPDemuxPrevChunk(WebPChunkIterator* iter) {
+func WebPDemuxPrevChunk( iter WebPChunkIterator*) int {
   if (iter != NULL && iter->chunk_num > 1) {
     const char* const fourcc =
         (const char*)iter->chunk.bytes - CHUNK_HEADER_SIZE;
@@ -972,4 +972,4 @@ int WebPDemuxPrevChunk(WebPChunkIterator* iter) {
   return 0;
 }
 
-func WebPDemuxReleaseChunkIterator(WebPChunkIterator* iter) { (void)iter; }
+func WebPDemuxReleaseChunkIterator(iter WebPChunkIterator*) { (void)iter; }
