@@ -12,6 +12,8 @@
 // images.
 //
 // Author: Vincent Rabaud (vrabaud@google.com)
+
+package enc
 //
 
 import <assert.h>

@@ -12,6 +12,8 @@
 // Authors: Vikas Arora (vikaas.arora@gmail.com)
 //          Jyrki Alakuijala (jyrki@google.com)
 
+package dec
+
 import <assert.h>
 import <stddef.h>
 import <stdlib.h>

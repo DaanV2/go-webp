@@ -11,6 +11,8 @@
 //
 // Author: Vincent Rabaud (vrabaud@google.com)
 
+package dsp
+
 import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_AVX2)

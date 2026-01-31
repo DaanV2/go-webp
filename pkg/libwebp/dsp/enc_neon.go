@@ -11,6 +11,8 @@
 //
 // adapted from libvpx (https://www.webmproject.org/code/)
 
+package dsp
+
 import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)

@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Boolean decoder
+
+package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 //         Vikas Arora (vikaas.arora@gmail.com)

@@ -9,6 +9,8 @@
 //
 // MIPS common macros
 
+package dsp
+
 #ifndef WEBP_DSP_MIPS_MACRO_H_
 #define WEBP_DSP_MIPS_MACRO_H_
 

@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Utilities for building and looking up Huffman trees.
+
+package utils
 //
 // Author: Urvang Joshi (urvang@google.com)
 

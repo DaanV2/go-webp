@@ -9,6 +9,8 @@
 //
 // Endian related functions.
 
+package utils
+
 #ifndef WEBP_UTILS_ENDIAN_INL_UTILS_H_
 #define WEBP_UTILS_ENDIAN_INL_UTILS_H_
 

@@ -11,6 +11,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package dec
+
 import <string.h>
 
 import "src/dec/common_dec.h"

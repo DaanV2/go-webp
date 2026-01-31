@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Misc. common utility functions
+
+package utils
 //
 // Authors: Skal (pascal.massimino@gmail.com)
 //          Urvang (urvang@google.com)

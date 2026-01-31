@@ -1,7 +1,7 @@
 {
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "[markdown]": {
-        "editor.wordWrap": "off",
+        "editor.wordWrap": "off"
     },
     // Go settings
     "go.delveConfig": {
@@ -38,14 +38,10 @@
     "go.inlayHints.compositeLiteralTypes": true,
     "go.inlayHints.constantValues": true,
     "go.inlayHints.parameterNames": true,
-    "go.languageServerFlags": [
-        "-rpc.trace"
-    ],
+    "go.languageServerFlags": ["-rpc.trace"],
     "go.lintOnSave": "workspace",
     "go.lintTool": "golangci-lint-v2",
-    "go.lintFlags": [
-        "--fix"
-    ],
+    "go.lintFlags": ["--fix"],
     "go.trace.server": "verbose",
     "go.coverOnSave": true,
     "go.coverageOptions": "showBothCoveredAndUncoveredCode",
@@ -58,5 +54,5 @@
         "uncoveredBorderColor": "rgba(128,64,64,0.25)",
         "coveredGutterStyle": "blockblue",
         "uncoveredGutterStyle": "slashyellow"
-    },
+    }
 }

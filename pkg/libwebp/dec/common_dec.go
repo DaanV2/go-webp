@@ -11,6 +11,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package dec
+
 #ifndef WEBP_DEC_COMMON_DEC_H_
 #define WEBP_DEC_COMMON_DEC_H_
 

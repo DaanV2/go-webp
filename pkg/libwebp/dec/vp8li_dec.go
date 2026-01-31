@@ -12,6 +12,8 @@
 // Author: Skal (pascal.massimino@gmail.com)
 //         Vikas Arora(vikaas.arora@gmail.com)
 
+package dec
+
 #ifndef WEBP_DEC_VP8LI_DEC_H_
 #define WEBP_DEC_VP8LI_DEC_H_
 

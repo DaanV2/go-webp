@@ -1,3 +1,7 @@
+
+package dsp
+
+
 AM_CPPFLAGS += -I$(top_builddir) -I$(top_srcdir)
 noinst_LTLIBRARIES =
 noinst_LTLIBRARIES += libwebpdsp.la

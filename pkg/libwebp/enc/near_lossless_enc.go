@@ -12,6 +12,8 @@
 // resulting pixel values.
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
+
+package enc
 // Converted to C by Aleksander Kramarz (akramarz@google.com)
 
 import <assert.h>

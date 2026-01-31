@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
+
+package utils
 //
 // Entropy encoding (Huffman) for webp lossless.
 

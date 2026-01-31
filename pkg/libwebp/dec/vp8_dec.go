@@ -11,6 +11,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package dec
+
 import "src/dec/vp8_dec.h"
 
 import <assert.h>

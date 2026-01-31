@@ -13,6 +13,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package utils
+
 #ifndef WEBP_UTILS_BIT_READER_INL_UTILS_H_
 #define WEBP_UTILS_BIT_READER_INL_UTILS_H_
 

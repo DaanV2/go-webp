@@ -12,6 +12,8 @@
 // Author(s):  Djordje Pesut    (djordje.pesut@imgtec.com)
 //             Jovan Zelincevic (jovan.zelincevic@imgtec.com)
 
+package dsp
+
 import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)

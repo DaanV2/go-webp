@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Alpha plane quantization utility
+
+package utils
 //
 // Author:  Vikas Arora (vikasa@google.com)
 

@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Multi-threaded worker
+
+package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 

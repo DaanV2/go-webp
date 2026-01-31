@@ -11,6 +11,8 @@
 //
 // Author: Urvang (urvang@google.com)
 
+package mux
+
 #ifndef WEBP_MUX_MUXI_H_
 #define WEBP_MUX_MUXI_H_
 

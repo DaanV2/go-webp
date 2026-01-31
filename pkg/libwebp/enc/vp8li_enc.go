@@ -11,6 +11,8 @@
 //
 // Author: Vikas Arora (vikaas.arora@gmail.com)
 
+package enc
+
 #ifndef WEBP_ENC_VP8LI_ENC_H_
 #define WEBP_ENC_VP8LI_ENC_H_
 

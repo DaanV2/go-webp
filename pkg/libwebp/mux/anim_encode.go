@@ -10,6 +10,8 @@
 //  AnimEncoder implementation.
 //
 
+package mux
+
 import <assert.h>
 import <limits.h>
 import <math.h>  // for pow()

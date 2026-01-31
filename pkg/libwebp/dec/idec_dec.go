@@ -11,6 +11,8 @@
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
+package dec
+
 import <assert.h>
 import <stdlib.h>
 import <string.h>

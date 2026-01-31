@@ -11,6 +11,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package enc
+
 import <assert.h>
 import <stddef.h>
 import <string.h>

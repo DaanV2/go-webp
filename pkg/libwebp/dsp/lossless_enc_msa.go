@@ -11,6 +11,8 @@
 //
 // Authors: Prashant Patil (Prashant.Patil@imgtec.com)
 
+package dsp
+
 import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_MSA)

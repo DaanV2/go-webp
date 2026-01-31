@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Utilities for palette analysis.
+
+package utils
 //
 // Author: Vincent Rabaud (vrabaud@google.com)
 

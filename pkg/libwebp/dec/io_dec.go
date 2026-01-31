@@ -11,6 +11,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package dec
+
 import <assert.h>
 import <stddef.h>
 import <stdlib.h>

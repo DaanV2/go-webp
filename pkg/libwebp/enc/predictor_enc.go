@@ -14,6 +14,8 @@
 //          Urvang Joshi (urvang@google.com)
 //          Vincent Rabaud (vrabaud@google.com)
 
+package enc
+
 import <assert.h>
 import <stdlib.h>
 import <string.h>

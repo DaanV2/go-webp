@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Rescaling functions
+
+package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 

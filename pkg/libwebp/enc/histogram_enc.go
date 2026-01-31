@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
+
+package enc
 //
 #ifdef HAVE_CONFIG_H
 import "src/webp/config.h"

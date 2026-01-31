@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Implement gradient smoothing: we replace a current alpha value by its
+
+package utils
 // surrounding average if it's close enough (that is: the change will be less
 // than the minimum distance between two quantized level).
 // We use sliding window for computing the 2d moving average.

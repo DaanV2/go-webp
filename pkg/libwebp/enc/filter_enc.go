@@ -11,6 +11,8 @@
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
+package enc
+
 import <assert.h>
 import <stddef.h>
 import <string.h>

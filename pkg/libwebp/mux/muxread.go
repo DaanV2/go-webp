@@ -12,6 +12,8 @@
 // Authors: Urvang (urvang@google.com)
 //          Vikas (vikasa@google.com)
 
+package mux
+
 import <assert.h>
 import <stddef.h>
 

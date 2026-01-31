@@ -13,6 +13,10 @@
 //          Jyrki Alakuijala (jyrki@google.com)
 //          Urvang Joshi (urvang@google.com)
 
+
+package dsp
+
+
 import "src/dsp/lossless.h"
 
 import <assert.h>

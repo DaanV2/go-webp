@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
+
+package enc
 //
 
 import "src/enc/backward_references_enc.h"

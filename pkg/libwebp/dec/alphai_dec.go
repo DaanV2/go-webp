@@ -11,6 +11,8 @@
 //
 // Author: Urvang (urvang@google.com)
 
+package dec
+
 #ifndef WEBP_DEC_ALPHAI_DEC_H_
 #define WEBP_DEC_ALPHAI_DEC_H_
 

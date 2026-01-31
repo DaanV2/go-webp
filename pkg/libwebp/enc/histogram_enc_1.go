@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
+
+package enc
 //
 // Models the histograms of literal and distance codes.
 

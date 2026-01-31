@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Pseudo-random utilities
+
+package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 

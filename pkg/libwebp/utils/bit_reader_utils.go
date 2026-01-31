@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Boolean decoder non-inlined methods
+
+package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 

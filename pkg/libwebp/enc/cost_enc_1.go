@@ -11,6 +11,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package enc
+
 #ifndef WEBP_ENC_COST_ENC_H_
 #define WEBP_ENC_COST_ENC_H_
 

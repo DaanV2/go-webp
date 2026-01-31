@@ -11,6 +11,8 @@
 //
 // Author: Urvang (urvang@google.com)
 
+package webp
+
 #ifndef WEBP_WEBP_FORMAT_CONSTANTS_H_
 #define WEBP_WEBP_FORMAT_CONSTANTS_H_
 

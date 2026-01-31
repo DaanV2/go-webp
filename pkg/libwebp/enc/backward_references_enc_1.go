@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
+
+package enc
 //
 
 #ifndef WEBP_ENC_BACKWARD_REFERENCES_ENC_H_

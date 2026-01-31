@@ -11,6 +11,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package enc
+
 import "src/enc/cost_enc.h"
 
 import <stdlib.h>

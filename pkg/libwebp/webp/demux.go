@@ -45,6 +45,10 @@
   WebPDemuxDelete(demux);
 */
 
+
+package webp
+
+
 #ifndef WEBP_WEBP_DEMUX_H_
 #define WEBP_WEBP_DEMUX_H_
 

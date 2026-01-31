@@ -10,6 +10,8 @@
 // main entry for the lossless encoder.
 //
 // Author: Vikas Arora (vikaas.arora@gmail.com)
+
+package enc
 //
 
 import <assert.h>

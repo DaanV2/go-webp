@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 //
 // Color Cache for WebP Lossless
+
+package utils
 //
 // Authors: Jyrki Alakuijala (jyrki@google.com)
 //          Urvang Joshi (urvang@google.com)

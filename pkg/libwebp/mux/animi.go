@@ -11,6 +11,8 @@
 //
 // Author: Hui Su (huisu@google.com)
 
+package mux
+
 #ifndef WEBP_MUX_ANIMI_H_
 #define WEBP_MUX_ANIMI_H_
 

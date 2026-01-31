@@ -11,6 +11,8 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+package dsp
+
 import "src/dsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
