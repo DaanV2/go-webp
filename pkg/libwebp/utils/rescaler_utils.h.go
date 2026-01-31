@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 const WEBP_RESCALER_RFIX =32  // fixed-point precision for multiplies
-const WEBP_RESCALER_ONE =(1ull << WEBP_RESCALER_RFIX)
+const WEBP_RESCALER_ONE =(uint64(1) << WEBP_RESCALER_RFIX)
 #define WEBP_RESCALER_FRAC(x, y) \
   ((uint32)(((uint64)(x) << WEBP_RESCALER_RFIX) / (y)))
 
@@ -53,7 +53,7 @@ type WebPRescaler struct {
 
 // Initialize a rescaler given scratch area 'work' and dimensions of src & dst.
 // Returns false in case of error.
-int WebPRescalerInit(*WebPRescaler const rescaler, int src_width, int src_height, *uint8 const dst, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(2ULL * dst_width *
+int WebPRescalerInit(*WebPRescaler const rescaler, int src_width, int src_height, *uint8 const dst, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(uint64(2) * dst_width *
                                                        num_channels) work);
 
 // If either 'scaled_width' or 'scaled_height' (but not both) is 0 the value

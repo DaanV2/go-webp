@@ -201,7 +201,7 @@ const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
 static uint32 GetFilterMap(const *uint8 alpha, int width, int height, int filter, int effort_level) {
-  uint32 bit_map = 0U;
+  uint32 bit_map = uint(0);
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
     int try_filter_none = (effort_level > 3);
@@ -227,7 +227,7 @@ static uint32 GetFilterMap(const *uint8 alpha, int width, int height, int filter
 }
 
 func InitFilterTrial(*FilterTrial const score) {
-  score.score = (uint64)~0U;
+  score.score = (uint64)~uint(0);
   VP8BitWriterInit(&score.bw, 0);
 }
 
@@ -238,7 +238,7 @@ static int ApplyFiltersAndEncode(const *uint8 alpha, int width, int height, uint
   InitFilterTrial(&best);
 
   if (try_map != FILTER_TRY_NONE) {
-    *uint8 filtered_alpha = (*uint8)WebPSafeMalloc(1ULL, data_size);
+    *uint8 filtered_alpha = (*uint8)WebPSafeMalloc(uint64(1), data_size);
     if (filtered_alpha == nil) return 0;
 
     for (filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1) {
@@ -313,7 +313,7 @@ static int EncodeAlpha(*VP8Encoder const enc, int quality, int method, int filte
     filter = WEBP_FILTER_NONE;
   }
 
-  quant_alpha = (*uint8)WebPSafeMalloc(1ULL, data_size);
+  quant_alpha = (*uint8)WebPSafeMalloc(uint64(1), data_size);
   if (quant_alpha == nil) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }

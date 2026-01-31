@@ -127,7 +127,7 @@ type WebPAnimEncoder struct {
 // -----------------------------------------------------------------------------
 // Life of WebPAnimEncoder object.
 
-const DELTA_INFINITY =(1ULL << 32)
+const DELTA_INFINITY =(uint64(1) << 32)
 const KEYFRAME_NONE =(-1)
 
 // Reset the counters in the WebPAnimEncoder.

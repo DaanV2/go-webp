@@ -350,7 +350,7 @@ func VP8InitDithering(const *WebPDecoderOptions const options, *VP8Decoder const
         all_amp |= dqm.dither;
       }
       if (all_amp != 0) {
-        VP8InitRandom(&dec.dithering_rg, 1.0f);
+        VP8InitRandom(&dec.dithering_rg, float64(1.0));
         dec.dither = 1;
       }
     }
@@ -702,7 +702,7 @@ static int AllocateMemory(*VP8Decoder const dec) {
   const uint64 alpha_size =
       (dec.alpha_data != nil)
           ? (uint64)dec.pic_hdr.width * dec.pic_hdr.height
-          : 0ULL;
+          : uint64(0);
   const uint64 needed = (uint64)intra_pred_mode_size + top_size +
                           mb_info_size + f_info_size + yuv_size + mb_data_size +
                           cache_size + alpha_size + WEBP_ALIGN_CST;

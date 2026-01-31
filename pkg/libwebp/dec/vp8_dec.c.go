@@ -69,7 +69,7 @@ int VP8InitIoInternal(*VP8Io const io, int version) {
 }
 
 *VP8Decoder VP8New(){
-  *VP8Decoder const dec = (*VP8Decoder)WebPSafeCalloc(1ULL, sizeof(*dec));
+  *VP8Decoder const dec = (*VP8Decoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
   if (dec != nil) {
     SetOk(dec);
     WebPGetWorkerInterface().Init(&dec.worker);
@@ -197,7 +197,7 @@ static int ParseSegmentHeader(*VP8BitReader br, *VP8SegmentHeader hdr, *VP8Proba
       for (s = 0; s < MB_FEATURE_TREE_PROBS; ++s) {
         proba.segments[s] = VP8Get(br, "global-header")
                                  ? VP8GetValue(br, 8, "global-header")
-                                 : 255u;
+                                 : uint(255);
       }
     }
   } else {
@@ -546,8 +546,8 @@ static int ParseResiduals(*VP8Decoder const dec, *VP8MB const mb, *VP8BitReader 
     ac_proba = bands[3];
   }
 
-  tnz = mb.nz & 0x0f;
-  lnz = left_mb.nz & 0x0f;
+  tnz = mb.nz & float64(0x0f);
+  lnz = left_mb.nz & float64(0x0f);
   for (y = 0; y < 4; ++y) {
     int l = lnz & 1;
     uint32 nz_coeffs = 0;

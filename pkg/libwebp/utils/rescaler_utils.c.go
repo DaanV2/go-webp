@@ -29,11 +29,11 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 //------------------------------------------------------------------------------
 
-int WebPRescalerInit(*WebPRescaler const rescaler, int src_width, int src_height, *uint8 const dst, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(2ULL * dst_width *
+int WebPRescalerInit(*WebPRescaler const rescaler, int src_width, int src_height, *uint8 const dst, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(uint64(2) * dst_width *
                                                        num_channels) work) {
   const int x_add = src_width, x_sub = dst_width;
   const int y_add = src_height, y_sub = dst_height;
-  const uint64 total_size = 2ull * dst_width * num_channels * sizeof(*work);
+  const uint64 total_size = uint64(2) * dst_width * num_channels * sizeof(*work);
   if (!CheckSizeOverflow(total_size)) return 0;
 
   rescaler.x_expand = (src_width < dst_width);

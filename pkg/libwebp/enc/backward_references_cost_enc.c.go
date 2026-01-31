@@ -544,10 +544,10 @@ static int BackwardReferencesHashChainDistanceOnly(
       sizeof(*((*CostModel)nil).literal) * VP8LHistogramNumCodes(cache_bits);
   const uint64 cost_model_size = sizeof(CostModel) + literal_array_size;
   *CostModel const cost_model =
-      (*CostModel)WebPSafeCalloc(1ULL, cost_model_size);
+      (*CostModel)WebPSafeCalloc(uint64(1), cost_model_size);
   VP8LColorCache hashers;
   *CostManager cost_manager =
-      (*CostManager)WebPSafeCalloc(1ULL, sizeof(*cost_manager));
+      (*CostManager)WebPSafeCalloc(uint64(1), sizeof(*cost_manager));
   int offset_prev = -1, len_prev = -1;
   int64 offset_cost = -1;
   int first_offset_is_constant = -1;  // initialized with 'impossible' value

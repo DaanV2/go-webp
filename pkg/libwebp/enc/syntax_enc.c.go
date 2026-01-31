@@ -199,7 +199,7 @@ func PutSegmentHeader(*VP8BitWriter const bw, const *VP8Encoder const enc) {
     }
     if (hdr.update_map) {
       for (s = 0; s < 3; ++s) {
-        if (VP8PutBitUniform(bw, (proba.segments[s] != 255u))) {
+        if (VP8PutBitUniform(bw, (proba.segments[s] != uint(255)))) {
           VP8PutBits(bw, proba.segments[s], 8);
         }
       }
@@ -344,7 +344,7 @@ int VP8EncWrite(*VP8Encoder const enc) {
     riff_size += CHUNK_HEADER_SIZE + padded_alpha_size;
   }
   // RIFF size should fit in 32-bits.
-  if (riff_size > 0xfffffffeU) {
+  if (riff_size > uint(0xfffffffe)) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_FILE_TOO_BIG);
   }
 

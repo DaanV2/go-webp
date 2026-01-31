@@ -144,7 +144,7 @@ static *PixOrCopyBlock BackwardRefsNewBlock(*VP8LBackwardRefs const refs) {
   *PixOrCopyBlock b = refs.free_blocks;
   if (b == nil) {  // allocate new memory chunk
     const uint64 total_size = sizeof(*b) + refs.block_size * sizeof(*b.start);
-    b = (*PixOrCopyBlock)WebPSafeMalloc(1ULL, total_size);
+    b = (*PixOrCopyBlock)WebPSafeMalloc(uint64(1), total_size);
     if (b == nil) {
       refs.error |= 1;
       return nil;
@@ -209,8 +209,8 @@ func VP8LHashChainClear(*VP8LHashChain const p) {
 
 // -----------------------------------------------------------------------------
 
-static const uint32 kHashMultiplierHi = 0xc6a4a793u;
-static const uint32 kHashMultiplierLo = 0x5bd1e996u;
+static const uint32 kHashMultiplierHi = uint(0xc6a4a793);
+static const uint32 kHashMultiplierLo = uint(0x5bd1e996);
 
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32
 GetPixPairHash64(const *uint32 const argb) {
@@ -785,7 +785,7 @@ static int CalculateBestCacheSize(const *uint32 argb, int quality, const *VP8LBa
       // histogram contributions, we can ignore them, except for the length
       // prefix that is part of the 'literal' histogram.
       int len = PixOrCopyLength(v);
-      uint32 argb_prev = *argb ^ 0xffffffffu;
+      uint32 argb_prev = *argb ^ uint(0xffffffff);
       VP8LPrefixEncode(len, &code, &extra_bits, &extra_bits_value);
       for (i = 0; i <= cache_bits_max; ++i) {
         ++histos[i].literal[NUM_LITERAL_CODES + code];
@@ -884,7 +884,7 @@ static int GetBackwardReferences(int width, int height, const *uint32 const argb
   for (lz77_type = 1; lz77_types_to_try;
        lz77_types_to_try &= ~lz77_type, lz77_type <<= 1) {
     int res = 0;
-    uint64 bit_cost = 0u;
+    uint64 bit_cost = uint(0);
     if ((lz77_types_to_try & lz77_type) == 0) continue;
     switch (lz77_type) {
       case kLZ77RLE:

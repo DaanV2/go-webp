@@ -47,7 +47,7 @@ static int DispatchAlpha_MIPSdspR2(const *uint8 alpha, int alpha_stride, int wid
 
     for (i = 0; i < (width & 3); ++i) {
       __asm__ volatile(
-          "lbu    %[temp0],      0(%[palpha])                \n\t"
+          "luint(b)    %[temp0],      0(%[palpha])                \n\t"
           "addiu  %[palpha],     %[palpha],     1            \n\t"
           "sb     %[temp0],      0(%[pdst])                  \n\t"
           "and    %[alpha_mask], %[alpha_mask], %[temp0]     \n\t"
@@ -75,14 +75,14 @@ static int DispatchAlpha_MIPSdspR2(const *uint8 alpha, int alpha_stride, int wid
 
 func MultARGBRow_MIPSdspR2(*uint32 const ptr, int width, int inverse) {
   int x;
-  const uint32 c_00ffffff = 0x00ffffffu;
-  const uint32 c_ff000000 = 0xff000000u;
-  const uint32 c_8000000 = 0x00800000u;
-  const uint32 c_8000080 = 0x00800080u;
+  const uint32 c_00ffffff = uint(0x00ffffff);
+  const uint32 c_ff000000 = uint(0xff000000);
+  const uint32 c_8000000 = uint(0x00800000);
+  const uint32 c_8000080 = uint(0x00800080);
   for (x = 0; x < width; ++x) {
     const uint32 argb = ptr[x];
-    if (argb < 0xff000000u) {     // alpha < 255
-      if (argb <= 0x00ffffffu) {  // alpha == 0
+    if (argb < uint(0xff000000)) {     // alpha < 255
+      if (argb <= uint(0x00ffffff)) {  // alpha == 0
         ptr[x] = 0;
       } else {
         int temp0, temp1, temp2, temp3, alpha;
@@ -101,8 +101,8 @@ func MultARGBRow_MIPSdspR2(*uint32 const ptr, int width, int inverse) {
             "mul          %[temp2],   %[temp2],      %[temp0]          \n\t"
             "mul          %[temp3],   %[temp3],      %[temp0]          \n\t"
             "precrq.ph.w  %[temp1],   %[temp2],      %[temp1]          \n\t"
-            "addu         %[temp3],   %[temp3],      %[c_8000000]      \n\t"
-            "addu         %[temp1],   %[temp1],      %[c_8000080]      \n\t"
+            "uint(add)         %[temp3],   %[temp3],      %[c_8000000]      \n\t"
+            "uint(add)         %[temp1],   %[temp1],      %[c_8000080]      \n\t"
             "precrq.ph.w  %[temp3],   %[argb],       %[temp3]          \n\t"
             "precrq.qb.ph %[temp1],   %[temp3],      %[temp1]          \n\t"
             : [temp0] "=&r"(temp0), [temp1] "=&r"(temp1), [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [alpha] "=&r"(alpha)
@@ -133,7 +133,7 @@ func PackARGB_MIPSdspR2(const *uint8 a, const *uint8 r, const *uint8 g, const *u
       "addiu        %[out],      %[out],    4            \n\t"
       "precr.qb.ph  %[temp0],    %[temp1],  %[temp3]     \n\t"
       "sw           %[temp0],    -4(%[out])              \n\t"
-      "addu         %[offset],   %[offset], %[step]      \n\t"
+      "uint(add)         %[offset],   %[offset], %[step]      \n\t"
       "bne          %[loop_end], %[out],    2b           \n\t"
       "0:                                                  \n\t"
       "beq          %[rest],     $zero,     1f           \n\t"
@@ -169,7 +169,7 @@ func PackRGB_MIPSdspR2(const *uint8 r, const *uint8 g, const *uint8 b, int len, 
       "addiu        %[out],      %[out],    4            \n\t"
       "precr.qb.ph  %[temp0],    %[temp0],  %[temp2]     \n\t"
       "sw           %[temp0],    -4(%[out])              \n\t"
-      "addu         %[offset],   %[offset], %[step]      \n\t"
+      "uint(add)         %[offset],   %[offset], %[step]      \n\t"
       "bne          %[loop_end], %[out],    2b           \n\t"
       "0:                                                  \n\t"
       "beq          %[rest],     $zero,     1f           \n\t"

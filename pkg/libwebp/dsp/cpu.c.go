@@ -90,7 +90,7 @@ static  uint64 xgetbv(){
   return ((uint64)edx_ << 32) | eax_;
 }
 #else
-#define xgetbv() 0U  // no AVX for older x64 or unrecognized toolchains.
+func xgetbv() uint { return 0 }  // no AVX for older x64 or unrecognized toolchains.
 #endif
 
 #if defined(__i386__) || defined(__x86_64__) || defined(WEBP_HAVE_MSC_CPUID)

@@ -34,7 +34,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Allocates a new alpha decoder instance.
 func ALPHNew() *ALPHDecoder {
-  *ALPHDecoder const dec = (*ALPHDecoder)WebPSafeCalloc(1ULL, sizeof(*dec));
+  var dec *ALPHDecoder = (*ALPHDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
   return dec;
 }
 

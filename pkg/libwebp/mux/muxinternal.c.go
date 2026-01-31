@@ -141,7 +141,7 @@ WebPMuxError ChunkSetHead(*WebPChunk const chunk, *WebPChunk* const chunk_list) 
     return WEBP_MUX_NOT_FOUND;
   }
 
-  new_chunk = (*WebPChunk)WebPSafeMalloc(1ULL, sizeof(*new_chunk));
+  new_chunk = (*WebPChunk)WebPSafeMalloc(uint64(1), sizeof(*new_chunk));
   if (new_chunk == nil) return WEBP_MUX_MEMORY_ERROR;
   *new_chunk = *chunk;
   chunk.owner = 0;
@@ -305,7 +305,7 @@ WebPMuxError MuxImagePush(const *WebPMuxImage wpi, *WebPMuxImage* wpi_list) {
     wpi_list = &cur_wpi.next;
   }
 
-  new_wpi = (*WebPMuxImage)WebPSafeMalloc(1ULL, sizeof(*new_wpi));
+  new_wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*new_wpi));
   if (new_wpi == nil) return WEBP_MUX_MEMORY_ERROR;
   *new_wpi = *wpi;
   new_wpi.next = nil;

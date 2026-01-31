@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Image transforms.
 
 static  uint32 Average2(uint32 a0, uint32 a1) {
-  return (((a0 ^ a1) & 0xfefefefeu) >> 1) + (a0 & a1);
+  return (((a0 ^ a1) & uint(0xfefefefe)) >> 1) + (a0 & a1);
 }
 
 static  uint32 Average3(uint32 a0, uint32 a1, uint32 a2) {
@@ -246,10 +246,10 @@ func VP8LAddGreenToBlueAndRed_C(const *uint32 src, int num_pixels, *uint32 dst) 
   for (i = 0; i < num_pixels; ++i) {
     const uint32 argb = src[i];
     const uint32 green = ((argb >> 8) & 0xff);
-    uint32 red_blue = (argb & 0x00ff00ffu);
+    uint32 red_blue = (argb & uint(0x00ff00ff));
     red_blue += (green << 16) | green;
-    red_blue &= 0x00ff00ffu;
-    dst[i] = (argb & 0xff00ff00u) | red_blue;
+    red_blue &= uint(0x00ff00ff);
+    dst[i] = (argb & uint(0xff00ff00)) | red_blue;
   }
 }
 
@@ -276,7 +276,7 @@ func VP8LTransformColorInverse_C(const *VP8LMultipliers const m, const *uint32 s
     new_blue += ColorTransformDelta((int8)m.green_to_blue, green);
     new_blue += ColorTransformDelta((int8)m.red_to_blue, (int8)new_red);
     new_blue &= 0xff;
-    dst[i] = (argb & 0xff00ff00u) | (new_red << 16) | (new_blue);
+    dst[i] = (argb & uint(0xff00ff00)) | (new_red << 16) | (new_blue);
   }
 }
 

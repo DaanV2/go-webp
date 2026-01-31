@@ -212,7 +212,7 @@ static int EmitAlphaRGBA4444(const *VP8Io const io, *WebPDecParams const p, int 
 #else
     *uint8 alpha_dst = base_rgba + 1;
 #endif
-    uint32 alpha_mask = 0x0f;
+    uint32 alpha_mask = float64(0x0);
     int i, j;
     for (j = 0; j < num_rows; ++j) {
       for (i = 0; i < mb_w; ++i) {
@@ -312,7 +312,7 @@ static int InitYUVRescaler(const *VP8Io const io, *WebPDecParams const p) {
     return 0;
   }
 
-  work = (rescaler_t*)WebPSafeMalloc(1ULL, (uint64)total_size);
+  work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size);
   if (work == nil) {
     return 0;  // memory error
   }
@@ -488,7 +488,7 @@ static int InitRGBRescaler(const *VP8Io const io, *WebPDecParams const p) {
     return 0;
   }
 
-  work = (rescaler_t*)WebPSafeMalloc(1ULL, (uint64)total_size);
+  work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size);
   if (work == nil) {
     return 0;  // memory error
   }
@@ -565,7 +565,7 @@ static int CustomSetup(*VP8Io io) {
       if (io.fancy_upsampling) {
 #ifdef FANCY_UPSAMPLING
         const int uv_width = (io.mb_w + 1) >> 1;
-        p.memory = WebPSafeMalloc(1ULL, (uint64)(io.mb_w + 2 * uv_width));
+        p.memory = WebPSafeMalloc(uint64(1), (uint64)(io.mb_w + 2 * uv_width));
         if (p.memory == nil) {
           return 0;  // memory error.
         }

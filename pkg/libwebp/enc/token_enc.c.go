@@ -34,7 +34,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // we use pages to reduce the number of memcpy()
 const MIN_PAGE_SIZE =8192  // minimum number of token per page
-const FIXED_PROBA_BIT =(1u << 14)
+const FIXED_PROBA_BIT =(uint(1) << 14)
 
 typedef uint16 token_t;  // bit #15: bit value
                            // bit #14: flags for constant proba or idx
@@ -73,7 +73,7 @@ static int TBufferNewPage(*VP8TBuffer const b) {
   *VP8Tokens page = nil;
   if (!b.error) {
     const uint64 size = sizeof(*page) + b.page_size * sizeof(token_t);
-    page = (*VP8Tokens)WebPSafeMalloc(1ULL, size);
+    page = (*VP8Tokens)WebPSafeMalloc(uint64(1), size);
   }
   if (page == nil) {
     b.error = 1;
@@ -211,9 +211,9 @@ int VP8EmitTokens(*VP8TBuffer const b, *VP8BitWriter const bw, const *uint8 cons
       const token_t token = tokens[n];
       const int bit = (token >> 15) & 1;
       if (token & FIXED_PROBA_BIT) {
-        VP8PutBit(bw, bit, token & 0xffu);  // constant proba
+        VP8PutBit(bw, bit, token & uint(0xff));  // constant proba
       } else {
-        VP8PutBit(bw, bit, probas[token & 0x3fffu]);
+        VP8PutBit(bw, bit, probas[token & uint(0x3fff)]);
       }
     }
     if (final_pass) WebPSafeFree((*void)p);
@@ -237,9 +237,9 @@ uint64 VP8EstimateTokenSize(*VP8TBuffer const b, const *uint8 const probas) {
       const token_t token = tokens[n];
       const int bit = token & (1 << 15);
       if (token & FIXED_PROBA_BIT) {
-        size += VP8BitCost(bit, token & 0xffu);
+        size += VP8BitCost(bit, token & uint(0xff));
       } else {
-        size += VP8BitCost(bit, probas[token & 0x3fffu]);
+        size += VP8BitCost(bit, probas[token & uint(0x3fff)]);
       }
     }
     p = next;

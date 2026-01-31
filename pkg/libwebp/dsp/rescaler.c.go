@@ -113,7 +113,7 @@ func WebPRescalerExportRowExpand_C(*WebPRescaler const wrk) {
     for (x_out = 0; x_out < x_out_max; ++x_out) {
       const uint32 J = frow[x_out];
       const int v = (int)MULT_FIX(J, wrk.fy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8)v;
+      dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
     }
   } else {
     const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
@@ -122,7 +122,7 @@ func WebPRescalerExportRowExpand_C(*WebPRescaler const wrk) {
       const uint64 I = (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
       const uint32 J = (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       const int v = (int)MULT_FIX(J, wrk.fy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8)v;
+      dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
     }
   }
 }
@@ -141,13 +141,13 @@ func WebPRescalerExportRowShrink_C(*WebPRescaler const wrk) {
     for (x_out = 0; x_out < x_out_max; ++x_out) {
       const uint32 frac = (uint32)MULT_FIX_FLOOR(frow[x_out], yscale);
       const int v = (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8)v;
+      dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
       irow[x_out] = frac;  // new fractional start
     }
   } else {
     for (x_out = 0; x_out < x_out_max; ++x_out) {
       const int v = (int)MULT_FIX(irow[x_out], wrk.fxy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8)v;
+      dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
       irow[x_out] = 0;
     }
   }

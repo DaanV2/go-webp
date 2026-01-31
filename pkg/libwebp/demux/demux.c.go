@@ -295,7 +295,7 @@ static ParseStatus NewFrame(const *MemBuffer const mem, uint32 min_size, uint32 
   if (actual_size < min_size) return PARSE_ERROR;
   if (MemDataSize(mem) < min_size) return PARSE_NEED_MORE_DATA;
 
-  *frame = (*Frame)WebPSafeCalloc(1ULL, sizeof(**frame));
+  *frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(**frame));
   return (*frame == nil) ? PARSE_ERROR : PARSE_OK;
 }
 
@@ -351,7 +351,7 @@ static ParseStatus ParseAnimationFrame(*WebPDemuxer const dmux, uint32 frame_chu
 // header and the unpadded payload size.
 // Returns true on success, false otherwise.
 static int StoreChunk(*WebPDemuxer const dmux, uint64 start_offset, uint32 size) {
-  *Chunk const chunk = (*Chunk)WebPSafeCalloc(1ULL, sizeof(*chunk));
+  *Chunk const chunk = (*Chunk)WebPSafeCalloc(uint64(1), sizeof(*chunk));
   if (chunk == nil) return 0;
 
   chunk.data.offset = start_offset;
@@ -399,7 +399,7 @@ static ParseStatus ParseSingleImage(*WebPDemuxer const dmux) {
   if (SizeIsInvalid(mem, min_size)) return PARSE_ERROR;
   if (MemDataSize(mem) < min_size) return PARSE_NEED_MORE_DATA;
 
-  frame = (*Frame)WebPSafeCalloc(1ULL, sizeof(*frame));
+  frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(*frame));
   if (frame == nil) return PARSE_ERROR;
 
   // For the single image case we allow parsing of a partial frame, so no
@@ -665,8 +665,8 @@ static ParseStatus CreateRawImageDemuxer(*MemBuffer const mem, *WebPDemuxer* dem
   }
 
   {
-    *WebPDemuxer const dmux = (*WebPDemuxer)WebPSafeCalloc(1ULL, sizeof(*dmux));
-    *Frame const frame = (*Frame)WebPSafeCalloc(1ULL, sizeof(*frame));
+    *WebPDemuxer const dmux = (*WebPDemuxer)WebPSafeCalloc(uint64(1), sizeof(*dmux));
+    *Frame const frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(*frame));
     if (dmux == nil || frame == nil) goto Error;
     InitDemux(dmux, mem);
     SetFrameInfo(0, mem.buf_size, 1 /*frame_*num/, 1 /**complete/, &features, frame);
@@ -721,7 +721,7 @@ static ParseStatus CreateRawImageDemuxer(*MemBuffer const mem, *WebPDemuxer* dem
   partial = (mem.buf_size < mem.riff_end);
   if (!allow_partial && partial) return nil;
 
-  dmux = (*WebPDemuxer)WebPSafeCalloc(1ULL, sizeof(*dmux));
+  dmux = (*WebPDemuxer)WebPSafeCalloc(uint64(1), sizeof(*dmux));
   if (dmux == nil) return nil;
   InitDemux(dmux, &mem);
 

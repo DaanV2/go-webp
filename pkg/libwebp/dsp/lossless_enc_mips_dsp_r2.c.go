@@ -147,7 +147,7 @@ func TransformColor_MIPSdspR2(
     new_blue -= ColorTransformDelta(m.green_to_blue, green);
     new_blue -= ColorTransformDelta(m.red_to_blue, red);
     new_blue &= 0xff;
-    data[0] = (argb_ & 0xff00ff00u) | (new_red << 16) | (new_blue);
+    data[0] = (argb_ & uint(0xff00ff00)) | (new_red << 16) | (new_blue);
   }
 }
 
@@ -164,7 +164,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
     const *uint32 WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   const int rtb = (red_to_blue << 16) | (red_to_blue & 0xffff);
   const int gtb = (green_to_blue << 16) | (green_to_blue & 0xffff);
-  const uint32 mask = 0xff00ffu;
+  const uint32 mask = uint(0xff00ff);
   while (tile_height-- > 0) {
     int x;
     const *uint32 p_argb = argb;

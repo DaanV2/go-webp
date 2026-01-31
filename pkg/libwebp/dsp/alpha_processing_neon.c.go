@@ -43,7 +43,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 func ApplyAlphaMultiply_NEON(*uint8 rgba, int alpha_first, int w, int h, int stride) {
-  const uint16x8_t kOne = vdupq_n_u16(1u);
+  const uint16x8_t kOne = vdupq_n_u16(uint(1));
   while (h-- > 0) {
     *uint32 const rgbx = (*uint32)rgba;
     int i = 0;
@@ -83,7 +83,7 @@ func ApplyAlphaMultiply_NEON(*uint8 rgba, int alpha_first, int w, int h, int str
 //------------------------------------------------------------------------------
 
 static int DispatchAlpha_NEON(const *uint8 WEBP_RESTRICT alpha, int alpha_stride, int width, int height, *uint8 WEBP_RESTRICT dst, int dst_stride) {
-  uint32 alpha_mask = 0xffu;
+  uint32 alpha_mask = uint(0xff);
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
   int i, j;
@@ -110,7 +110,7 @@ static int DispatchAlpha_NEON(const *uint8 WEBP_RESTRICT alpha, int alpha_stride
   alpha_mask *= 0x01010101;
   alpha_mask &= tmp[0];
   alpha_mask &= tmp[1];
-  return (alpha_mask != 0xffffffffu);
+  return (alpha_mask != uint(0xffffffff));
 }
 
 func DispatchAlphaToGreen_NEON(const *uint8 WEBP_RESTRICT alpha, int alpha_stride, int width, int height, *uint32 WEBP_RESTRICT dst, int dst_stride) {
@@ -131,7 +131,7 @@ func DispatchAlphaToGreen_NEON(const *uint8 WEBP_RESTRICT alpha, int alpha_strid
 }
 
 static int ExtractAlpha_NEON(const *uint8 WEBP_RESTRICT argb, int argb_stride, int width, int height, *uint8 WEBP_RESTRICT alpha, int alpha_stride) {
-  uint32 alpha_mask = 0xffu;
+  uint32 alpha_mask = uint(0xff);
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
   int i, j;
@@ -156,7 +156,7 @@ static int ExtractAlpha_NEON(const *uint8 WEBP_RESTRICT argb, int argb_stride, i
   alpha_mask *= 0x01010101;
   alpha_mask &= tmp[0];
   alpha_mask &= tmp[1];
-  return (alpha_mask == 0xffffffffu);
+  return (alpha_mask == uint(0xffffffff));
 }
 
 func ExtractGreen_NEON(const *uint32 WEBP_RESTRICT argb, *uint8 WEBP_RESTRICT alpha, int size) {

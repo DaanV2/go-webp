@@ -30,12 +30,12 @@ extern "C" {
 
 // Main color cache struct.
 type VP8LColorCache struct {
-  *uint32 colors;  // color entries, WEBP_COUNTED_BY_OR_nil(1u << hash_bits)
+  *uint32 colors;  // color entries, WEBP_COUNTED_BY_OR_nil(uint(1) << hash_bits)
   int hash_shift;  // Hash shift: 32 - 'hash_bits'.
   int hash_bits;
 }
 
-const uint32 kHashMul = 0x1e35a7bdu;
+const uint32 kHashMul = uint(0x1e35a7bd);
 
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
     uint32 argb, int shift) {
@@ -43,12 +43,12 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
 }
 
 static  uint32 VP8LColorCacheLookup(const *VP8LColorCache const cc, uint32 key) {
-  assert.Assert((key >> cc.hash_bits) == 0u);
+  assert.Assert((key >> cc.hash_bits) == uint(0));
   return cc.colors[key];
 }
 
 static  func VP8LColorCacheSet(const *VP8LColorCache const cc, uint32 key, uint32 argb) {
-  assert.Assert((key >> cc.hash_bits) == 0u);
+  assert.Assert((key >> cc.hash_bits) == uint(0));
   cc.colors[key] = argb;
 }
 

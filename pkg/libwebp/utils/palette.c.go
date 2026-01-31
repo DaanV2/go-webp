@@ -206,7 +206,7 @@ func PaletteSortMinimizeDeltas(
   }
   for (i = 0; i < num_colors; ++i) {
     int best_ix = i;
-    uint32 best_score = ~0U;
+    uint32 best_score = ~uint(0);
     for (k = i; k < num_colors; ++k) {
       const uint32 cur_score = PaletteColorDistance(palette[k], predict);
       if (best_score > cur_score) {
@@ -229,9 +229,9 @@ func CoOccurrenceFindMax(
     const *uint32 const WEBP_COUNTED_BY(num_*colors num_colors) cooccurrence, uint32 num_colors, *uint8 const c1, *uint8 const c2) {
   // Find the index that is most frequently located adjacent to other
   // (different) indexes.
-  uint32 best_sum = 0u;
+  uint32 best_sum = uint(0);
   uint32 i, j, best_cooccurrence;
-  *c1 = 0u;
+  *c1 = uint(0);
   for (i = 0; i < num_colors; ++i) {
     uint32 sum = 0;
     for (j = 0; j < num_colors; ++j) sum += cooccurrence[i * num_colors + j];
@@ -241,8 +241,8 @@ func CoOccurrenceFindMax(
     }
   }
   // Find the index that is most frequently found adjacent to *c1.
-  *c2 = 0u;
-  best_cooccurrence = 0u;
+  *c2 = uint(0);
+  best_cooccurrence = uint(0);
   for (i = 0; i < num_colors; ++i) {
     if (cooccurrence[*c1 * num_colors + i] > best_cooccurrence) {
       best_cooccurrence = cooccurrence[*c1 * num_colors + i];
@@ -260,7 +260,7 @@ static int CoOccurrenceBuild(const *WebPPicture const pic, const *uint32 const
   int x, y;
   const *uint32 src = pic.argb;
   uint32 prev_pix = ~src[0];
-  uint32 prev_idx = 0u;
+  uint32 prev_idx = uint(0);
   uint32 idx_map[MAX_PALETTE_SIZE] = {0}
   uint32 palette_sorted[MAX_PALETTE_SIZE];
   lines = (*uint32)WebPSafeMalloc(2 * pic.width, sizeof(*lines));
@@ -340,8 +340,8 @@ static int PaletteSortModifiedZeng(
   if (num_sums > 0) {
     // Initialize the sums with the first two remappings and find the best one
     struct *Sum best_sum = &sums[0];
-    best_sum.index = 0u;
-    best_sum.sum = 0u;
+    best_sum.index = uint(0);
+    best_sum.sum = uint(0);
     for (i = 0, j = 0; i < num_colors; ++i) {
       if (i == remapping[0] || i == remapping[1]) continue;
       sums[j].index = i;

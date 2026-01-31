@@ -79,13 +79,13 @@ const ANIM_CHUNK_SIZE =6    // Size of an ANIM chunk.
 const VP8X_CHUNK_SIZE =10   // Size of a VP8X chunk.
 
 const MAX_CANVAS_SIZE =(1 << 24)      // 24-bit max for VP8X width/height.
-const MAX_IMAGE_AREA =(1ULL << 32)    // 32-bit max for width x height.
+const MAX_IMAGE_AREA =(uint64(1) << 32)    // 32-bit max for width x height.
 const MAX_LOOP_COUNT =(1 << 16)       // maximum value for loop-count
 const MAX_DURATION =(1 << 24)         // maximum duration
 const MAX_POSITION_OFFSET =(1 << 24)  // maximum frame x/y offset
 
 // Maximum chunk payload is such that adding the header and padding won't
 // overflow a uint32.
-const MAX_CHUNK_PAYLOAD =(~0U - CHUNK_HEADER_SIZE - 1)
+const MAX_CHUNK_PAYLOAD =(~uint(0) - CHUNK_HEADER_SIZE - 1)
 
 #endif  // WEBP_WEBP_FORMAT_CONSTANTS_H_

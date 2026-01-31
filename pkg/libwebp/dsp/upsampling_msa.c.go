@@ -590,7 +590,7 @@ func YuvToRgb565Line(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,
     uint8 temp_v[64];                                                       \
     const uint32 tl_uv = ((top_u[0]) | ((top_v[0]) << 16));                 \
     const uint32 l_uv = ((cur_u[0]) | ((cur_v[0]) << 16));                  \
-    const uint32 uv0 = (3 * tl_uv + l_uv + 0x00020002u) >> 2;               \
+    const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;               \
     const *uint8 ptop_y = &top_y[1];                                        \
     *uint8 ptop_dst = top_dst + XSTEP;                                      \
     const *uint8 pbot_y = &bot_y[1];                                        \
@@ -598,7 +598,7 @@ func YuvToRgb565Line(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,
                                                                               \
     FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                         \
     if (bot_y != nil) {                                                      \
-      const uint32 uv1 = (3 * l_uv + tl_uv + 0x00020002u) >> 2;             \
+      const uint32 uv1 = (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
       FUNC(bot_y[0], uv1 & 0xff, (uv1 >> 16), bot_dst);                       \
     }                                                                         \
     while (size >= 16) {                                                      \
@@ -651,11 +651,11 @@ func YuvToRgb565Line(const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,
     if (!(len & 1)) {                                                         \
       const uint32 t0 = ((top_u[0]) | ((top_v[0]) << 16));                  \
       const uint32 c0 = ((cur_u[0]) | ((cur_v[0]) << 16));                  \
-      const uint32 tmp0 = (3 * t0 + c0 + 0x00020002u) >> 2;                 \
+      const uint32 tmp0 = (3 * t0 + c0 + uint(0x00020002)) >> 2;                 \
       FUNC(top_y[len - 1], tmp0 & 0xff, (tmp0 >> 16),                         \
            top_dst + (len - 1) * XSTEP);                                      \
       if (bot_y != nil) {                                                    \
-        const uint32 tmp1 = (3 * c0 + t0 + 0x00020002u) >> 2;               \
+        const uint32 tmp1 = (3 * c0 + t0 + uint(0x00020002)) >> 2;               \
         FUNC(bot_y[len - 1], tmp1 & 0xff, (tmp1 >> 16),                       \
              bot_dst + (len - 1) * XSTEP);                                    \
       }                                                                       \

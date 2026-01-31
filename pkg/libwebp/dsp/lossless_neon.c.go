@@ -526,7 +526,7 @@ func TransformColorInverse_NEON(const *VP8LMultipliers const m, const *uint32 co
   static const uint8 k0g0g[8] = {255, 1, 255, 1, 255, 5, 255, 5}
   const uint8x8_t shuffle = vld1_u8(k0g0g);
 #endif
-  const uint32x4_t mask_ag = vdupq_n_u32(0xff00ff00u);
+  const uint32x4_t mask_ag = vdupq_n_u32(uint(0xff00ff00));
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const uint8x16_t in = vld1q_u8((const *uint8)(src + i));

@@ -157,7 +157,7 @@ static int BuildHuffmanTable(*HuffmanCode const WEBP_BIDI_INDEXABLE root_table, 
 
   {
     int step;  // step size to replicate values in current table
-    uint32 low = 0xffffffffu;      // low bits for current root entry
+    uint32 low = uint32(0xffffffff);      // low bits for current root entry
     uint32 mask = total_size - 1;  // mask for low bits
     uint32 key = 0;                // reversed prefix code
     int num_nodes = 1;               // number of Huffman tree nodes

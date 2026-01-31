@@ -157,11 +157,11 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, *uint8 const rgba) {
     uint32 l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
     assert.Assert(top_y != nil);                                                    \
     {                                                                         \
-      const uint32 uv0 = (3 * tl_uv + l_uv + 0x00020002u) >> 2;             \
+      const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;             \
       FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                       \
     }                                                                         \
     if (bottom_y != nil) {                                                   \
-      const uint32 uv0 = (3 * l_uv + tl_uv + 0x00020002u) >> 2;             \
+      const uint32 uv0 = (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
     for (x = 1; x <= last_pixel_pair; ++x) {                                  \
@@ -169,7 +169,7 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, *uint8 const rgba) {
       const uint32 uv = LOAD_UV(cur_u[x], cur_v[x]);   /* sample */         \
       /* precompute invariant values associated with first and second         \
        * *diagonals/                                                          \
-      const uint32 avg = tl_uv + t_uv + l_uv + uv + 0x00080008u;            \
+      const uint32 avg = tl_uv + t_uv + l_uv + uv + uint(0x00080008);            \
       const uint32 diag_12 = (avg + 2 * (t_uv + l_uv)) >> 3;                \
       const uint32 diag_03 = (avg + 2 * (tl_uv + uv)) >> 3;                 \
       {                                                                       \
@@ -193,12 +193,12 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, *uint8 const rgba) {
     }                                                                         \
     if (!(len & 1)) {                                                         \
       {                                                                       \
-        const uint32 uv0 = (3 * tl_uv + l_uv + 0x00020002u) >> 2;           \
+        const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;           \
         FUNC(top_y[len - 1], uv0 & 0xff, (uv0 >> 16),                         \
              top_dst + (len - 1) * XSTEP);                                    \
       }                                                                       \
       if (bottom_y != nil) {                                                 \
-        const uint32 uv0 = (3 * l_uv + tl_uv + 0x00020002u) >> 2;           \
+        const uint32 uv0 = (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;           \
         FUNC(bottom_y[len - 1], uv0 & 0xff, (uv0 >> 16),                      \
              bottom_dst + (len - 1) * XSTEP);                                 \
       }                                                                       \

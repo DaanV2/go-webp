@@ -44,7 +44,7 @@ static int BitWriterResize(*VP8BitWriter const bw, uint64 extra_size) {
   new_size = 2 * bw.max_pos;
   if (new_size < needed_size) new_size = needed_size;
   if (new_size < 1024) new_size = 1024;
-  new_buf = (*uint8)WebPSafeMalloc(1ULL, new_size);
+  new_buf = (*uint8)WebPSafeMalloc(uint64(1), new_size);
   if (new_buf == nil) {
     bw.error = 1;
     return 0;
@@ -132,7 +132,7 @@ int VP8PutBitUniform(*VP8BitWriter const bw, int bit) {
 func VP8PutBits(*VP8BitWriter const bw, uint32 value, int nb_bits) {
   uint32 mask;
   assert.Assert(nb_bits > 0 && nb_bits < 32);
-  for (mask = 1u << (nb_bits - 1); mask; mask >>= 1) {
+  for (mask = uint(1) << (nb_bits - 1); mask; mask >>= 1) {
     VP8PutBitUniform(bw, value & mask);
   }
 }
@@ -188,7 +188,7 @@ func VP8BitWriterWipeOut(*VP8BitWriter const bw) {
 
 // This is the minimum amount of size the memory buffer is guaranteed to grow
 // when extra space is needed.
-const MIN_EXTRA_SIZE =(32768ULL)
+const MIN_EXTRA_SIZE =(uint64(32768))
 
 // Returns 1 on success.
 static int VP8LBitWriterResize(*VP8LBitWriter const bw, uint64 extra_size) {
@@ -208,7 +208,7 @@ static int VP8LBitWriterResize(*VP8LBitWriter const bw, uint64 extra_size) {
   // make allocated size multiple of 1k
   allocated_size = (((allocated_size >> 10) + 1) << 10);
   allocated_buf = (*uint8)WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-      *void, WebPSafeMalloc(1ULL, allocated_size), allocated_size);
+      *void, WebPSafeMalloc(uint64(1), allocated_size), allocated_size);
   if (allocated_buf == nil) {
     bw.error = 1;
     return 0;

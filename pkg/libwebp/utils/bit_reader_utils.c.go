@@ -44,7 +44,7 @@ func VP8BitReaderSetBuffer(*VP8BitReader const br, const *uint8 const  start, ui
 func VP8InitBitReader(*VP8BitReader const br, const *uint8 const  start, uint64 size) {
   assert.Assert(br != nil);
   assert.Assert(start != nil);
-  assert.Assert(size < (1u << 31));  // limit ensured by format and upstream checks
+  assert.Assert(size < (uint(1) << 31));  // limit ensured by format and upstream checks
   br.range = 255 - 1;
   br.value = 0;
   br.bits = -8;  // to load the very first 8bits
@@ -119,7 +119,7 @@ func VP8LInitBitReader(*VP8LBitReader const br, const *uint8 const  start, uint6
   vp8l_val_t value = 0;
   assert.Assert(br != nil);
   assert.Assert(start != nil);
-  assert.Assert(length < 0xfffffff8u);  // can't happen with a RIFF chunk.
+  assert.Assert(length < uint(0xfffffff8));  // can't happen with a RIFF chunk.
 
   br.buf = start;
   br.len = length;
@@ -139,7 +139,7 @@ func VP8LInitBitReader(*VP8LBitReader const br, const *uint8 const  start, uint6
 func VP8LBitReaderSetBuffer(*VP8LBitReader const br, const *uint8 const  buf, uint64 len) {
   assert.Assert(br != nil);
   assert.Assert(buf != nil);
-  assert.Assert(len < 0xfffffff8u);  // can't happen with a RIFF chunk.
+  assert.Assert(len < uint(0xfffffff8));  // can't happen with a RIFF chunk.
   br.buf = buf;
   br.len = len;
   // 'pos' > 'len' should be considered a param error.

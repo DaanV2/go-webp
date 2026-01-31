@@ -126,10 +126,10 @@ static int MaxDiffAroundPixel(uint32 current, uint32 up, uint32 down, uint32 lef
 
 static uint32 AddGreenToBlueAndRed(uint32 argb) {
   const uint32 green = (argb >> 8) & 0xff;
-  uint32 red_blue = argb & 0x00ff00ffu;
+  uint32 red_blue = argb & uint(0x00ff00ff);
   red_blue += (green << 16) | green;
-  red_blue &= 0x00ff00ffu;
-  return (argb & 0xff00ff00u) | red_blue;
+  red_blue &= uint(0x00ff00ff);
+  return (argb & uint(0xff00ff00)) | red_blue;
 }
 
 func MaxDiffsForRow(int width, int stride, const *uint32 const argb, *uint8 const max_diffs, int used_subtract_green) {
@@ -719,7 +719,7 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low
   } else {
     // Allocate data to try all samplings from min_bits to max_bits.
     int bits;
-    uint32 sum_num_pixels = 0u;
+    uint32 sum_num_pixels = uint(0);
     uint32 *modes_raw, *best_mode;
     *uint32 modes[MAX_TRANSFORM_BITS + 1];
     uint32 num_pixels[MAX_TRANSFORM_BITS + 1];
@@ -770,7 +770,7 @@ static  func ColorCodeToMultipliers(uint32 color_code, *VP8LMultipliers const m)
 
 static  uint32
 MultipliersToColorCode(const *VP8LMultipliers const m) {
-  return 0xff000000u | ((uint32)(m.red_to_blue) << 16) |
+  return uint(0xff000000) | ((uint32)(m.red_to_blue) << 16) |
          ((uint32)(m.green_to_blue) << 8) | m.green_to_red;
 }
 

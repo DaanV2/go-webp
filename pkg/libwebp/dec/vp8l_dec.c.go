@@ -922,9 +922,9 @@ func ExtractPalettedAlphaRows(*VP8LDecoder const dec, int last_row) {
 // cyclic rotation of pattern word
 static  uint32 Rotate8b(uint32 V) {
 	if constants.WORDS_BIGENDIAN {
-	return ((V & 0xff000000u) >> 24) | (V << 8);
+	return ((V & uint(0xff000000)) >> 24) | (V << 8);
 	} else {
-	return ((V & 0xffu) << 24) | (V >> 8);
+	return ((V & uint(0xff)) << 24) | (V >> 8);
 	}
 }
 
@@ -960,7 +960,7 @@ static  func CopyBlock8b(*uint8 const dst, int dist, int length) {
 #elif defined(WEBP_USE_MIPS_DSP_R2)
         __asm__ volatile("replv.qb %0, %0" : "+r"(pattern));
 #else
-        pattern = 0x01010101u * pattern;
+        pattern = uint(0x01010101) * pattern;
 #endif
         break;
       case 2:
@@ -974,7 +974,7 @@ if !constants.WORDS_BIGENDIAN {
 #elif defined(WEBP_USE_MIPS_DSP_R2)
         __asm__ volatile("replv.ph %0, %0" : "+r"(pattern));
 #else
-        pattern = 0x00010001u * pattern;
+        pattern = uint(0x00010001) * pattern;
 #endif
         break;
       case 4:
@@ -1332,10 +1332,10 @@ static int ReadTransform(*int const xsize, int *const ysize, *VP8LDecoder const 
       (VP8LImageTransformType)VP8LReadBits(br, 2);
 
   // Each transform type can only be present once in the stream.
-  if (dec.transforms_seen & (1U << type)) {
+  if (dec.transforms_seen & (uint(1) << type)) {
     return 0;  // Already there, let's not accept the second same transform.
   }
-  dec.transforms_seen |= (1U << type);
+  dec.transforms_seen |= (uint(1) << type);
 
   transform.type = type;
   transform.xsize = *xsize;
@@ -1399,7 +1399,7 @@ func ClearMetadata(*VP8LMetadata const hdr) {
 // VP8LDecoder
 
 *VP8LDecoder VP8LNew(){
-  *VP8LDecoder const dec = (*VP8LDecoder)WebPSafeCalloc(1ULL, sizeof(*dec));
+  *VP8LDecoder const dec = (*VP8LDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
   if (dec == nil) return nil;
   dec.status = VP8_STATUS_OK;
   dec.state = READ_DIM;

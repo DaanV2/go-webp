@@ -76,9 +76,9 @@ type <Foo> struct {
 
 //------------------------------------------------------------------------------
 
-const CLIP_8b_MASK =(int)(~0U << (8 + DFIX))
+const CLIP_8b_MASK =(int)(~uint(0) << (8 + DFIX))
 static  uint8 clip_8b(int v) {
-  return (!(v & CLIP_8b_MASK)) ? (uint8)(v >> DFIX) : (v < 0) ? 0u : 255u;
+  return (!(v & CLIP_8b_MASK)) ? (uint8)(v >> DFIX) : (v < 0) ? uint(0) : uint(255);
 }
 #undef CLIP_8b_MASK
 
@@ -232,7 +232,7 @@ static int InitParams(*uint8 WEBP_SIZED_BY((uint64)*stride height) const data, i
   const uint64 size_m = width * sizeof(*p.average);
   const uint64 size_lut = CORRECTION_LUT_SIZE * sizeof(*p.correction);
   const uint64 total_size = size_scratch_m + size_m + size_lut;
-  *uint8 WEBP_BIDI_INDEXABLE mem = (*uint8)WebPSafeMalloc(1U, total_size);
+  *uint8 WEBP_BIDI_INDEXABLE mem = (*uint8)WebPSafeMalloc(uint(1), total_size);
 
   if (mem == nil) return 0;
   p.mem = (*void)mem;

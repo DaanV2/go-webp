@@ -68,7 +68,7 @@ typedef type HuffmanTables struct {
 func VP8LHuffmanTablesDeallocate(*HuffmanTables const huffman_tables);
 
 const HUFFMAN_PACKED_BITS =6
-const HUFFMAN_PACKED_TABLE_SIZE =(1u << HUFFMAN_PACKED_BITS)
+const HUFFMAN_PACKED_TABLE_SIZE =(uint(1) << HUFFMAN_PACKED_BITS)
 
 // Huffman table group.
 // Includes special handling for the following cases:

@@ -99,15 +99,15 @@ static  uint64 VP8LFastSLog2(uint32 v) {
 }
 
 static  uint64 RightShiftRound(uint64 v, uint32 shift) {
-  return (v + (1ull << shift >> 1)) >> shift;
+  return (v + (uint64(1) << shift >> 1)) >> shift;
 }
 
 static  int64 DivRound(int64 a, int64 b) {
   return ((a < 0) == (b < 0)) ? ((a + b / 2) / b) : ((a - b / 2) / b);
 }
 
-const WEBP_INT64_MAX =((int64)((1ull << 63) - 1))
-const WEBP_UINT64_MAX =(~0ull)
+const WEBP_INT64_MAX =((int64)((uint64(1) << 63) - 1))
+const WEBP_UINT64_MAX =(~uint64(0))
 
 // -----------------------------------------------------------------------------
 // PrefixEncode()
@@ -163,19 +163,19 @@ static  func VP8LPrefixEncode(int distance, *int const code, *int const extra_bi
 // Sum of each component, mod 256.
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32
 VP8LAddPixels(uint32 a, uint32 b) {
-  const uint32 alpha_and_green = (a & 0xff00ff00u) + (b & 0xff00ff00u);
-  const uint32 red_and_blue = (a & 0x00ff00ffu) + (b & 0x00ff00ffu);
-  return (alpha_and_green & 0xff00ff00u) | (red_and_blue & 0x00ff00ffu);
+  const uint32 alpha_and_green = (a & uint(0xff00ff00)) + (b & uint(0xff00ff00));
+  const uint32 red_and_blue = (a & uint(0x00ff00ff)) + (b & uint(0x00ff00ff));
+  return (alpha_and_green & uint(0xff00ff00)) | (red_and_blue & uint(0x00ff00ff));
 }
 
 // Difference of each component, mod 256.
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32
 VP8LSubPixels(uint32 a, uint32 b) {
   const uint32 alpha_and_green =
-      0x00ff00ffu + (a & 0xff00ff00u) - (b & 0xff00ff00u);
+      uint(0x00ff00ff) + (a & uint(0xff00ff00)) - (b & uint(0xff00ff00));
   const uint32 red_and_blue =
-      0xff00ff00u + (a & 0x00ff00ffu) - (b & 0x00ff00ffu);
-  return (alpha_and_green & 0xff00ff00u) | (red_and_blue & 0x00ff00ffu);
+      uint(0xff00ff00) + (a & uint(0x00ff00ff)) - (b & uint(0x00ff00ff));
+  return (alpha_and_green & uint(0xff00ff00)) | (red_and_blue & uint(0x00ff00ff));
 }
 
 //------------------------------------------------------------------------------

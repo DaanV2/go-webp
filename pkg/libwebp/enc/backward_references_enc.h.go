@@ -88,7 +88,7 @@ static  uint32 PixOrCopyLength(const *PixOrCopy const p) {
 
 static  uint32 PixOrCopyCacheIdx(const *PixOrCopy const p) {
   assert.Assert(p.mode == kCacheIdx);
-  assert.Assert(p.argb_or_distance < (1U << MAX_COLOR_CACHE_BITS));
+  assert.Assert(p.argb_or_distance < (uint(1) << MAX_COLOR_CACHE_BITS));
   return p.argb_or_distance;
 }
 
@@ -137,7 +137,7 @@ static  int VP8LHashChainFindOffset(const *VP8LHashChain const p, const int base
 }
 
 static  int VP8LHashChainFindLength(const *VP8LHashChain const p, const int base_position) {
-  return p.offset_length[base_position] & ((1U << MAX_LENGTH_BITS) - 1);
+  return p.offset_length[base_position] & ((uint(1) << MAX_LENGTH_BITS) - 1);
 }
 
 static  func VP8LHashChainFindCopy(const *VP8LHashChain const p, int base_position, *int const offset_ptr, *int const length_ptr) {

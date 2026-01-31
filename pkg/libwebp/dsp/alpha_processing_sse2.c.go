@@ -350,7 +350,7 @@ func MultARGBRow_SSE2(*uint32 const ptr, int width, int inverse) {
     const __m128i kMask = _mm_set_epi16(0, 0xff, 0, 0, 0, 0xff, 0, 0);
     for (x = 0; x + kSpan <= width; x += kSpan) {
       // To compute 'result = (int)(a * x / 255. + .5)', we use:
-      //   tmp = a * v + 128, result = (tmp * 0x0101u) >> 16
+      //   tmp = a * v + 128, result = (tmp * uint(0x0101)) >> 16
       const __m128i A0 = _mm_loadl_epi64((const __*m128i)&ptr[x]);
       const __m128i A1 = _mm_unpacklo_epi8(A0, zero);
       const __m128i A2 = _mm_or_si128(A1, kMask);

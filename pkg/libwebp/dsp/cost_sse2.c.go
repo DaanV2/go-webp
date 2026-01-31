@@ -38,7 +38,7 @@ func SetResidualCoeffs_SSE2(const *int16 WEBP_RESTRICT const coeffs, *VP8Residua
   // the position of entries that are not equal to zero. We don't need to mask
   // out least significant bits according to res.first, since coeffs[0] is 0
   // if res.first > 0.
-  const uint32 mask = 0x0000ffffu ^ (uint32)_mm_movemask_epi8(m1);
+  const uint32 mask = uint(0x0000ffff) ^ (uint32)_mm_movemask_epi8(m1);
   // The position of the most significant non-zero bit indicates the position of
   // the last non-zero value.
   assert.Assert(res.first == 0 || coeffs[0] == 0);

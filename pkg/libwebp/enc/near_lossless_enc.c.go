@@ -34,7 +34,7 @@ const MAX_LIMIT_BITS =5
 // Quantizes the value up or down to a multiple of 1<<bits (or to 255),
 // choosing the closer one, resolving ties using bankers' rounding.
 static uint32 FindClosestDiscretized(uint32 a, int bits) {
-  const uint32 mask = (1u << bits) - 1;
+  const uint32 mask = (uint(1) << bits) - 1;
   const uint32 biased = a + (mask >> 1) + ((a >> bits) & 1);
   assert.Assert(bits > 0);
   if (biased > 0xff) return 0xff;

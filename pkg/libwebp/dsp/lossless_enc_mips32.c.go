@@ -38,7 +38,7 @@ static uint64 FastSLog2Slow_MIPS32(uint32 v) {
     __asm__ volatile(
         "clz      %[log_cnt], %[v]                      \n\t"
         "addiu    %[y],       $zero,        1           \n\t"
-        "subu     %[log_cnt], %[c24],       %[log_cnt]  \n\t"
+        "suuint(b)     %[log_cnt], %[c24],       %[log_cnt]  \n\t"
         "sllv     %[y],       %[y],         %[log_cnt]  \n\t"
         "srlv     %[temp],    %[v],         %[log_cnt]  \n\t"
         : [log_cnt] "=&r"(log_cnt), [y] "=&r"(y), [temp] "=r"(temp)

@@ -87,7 +87,7 @@ const (
   IDX_NIL, IDX_LAST_CHUNK
 } CHUNK_INDEX;
 
-const NIL_TAG =0x00000000u  // To signal func chunk.
+const NIL_TAG =uint(0x00000000)  // To signal func chunk.
 
 type <Foo> struct {
   uint32 tag;
@@ -143,7 +143,7 @@ func ChunkListDelete(*WebPChunk* const chunk_list);
 // Returns size of the chunk including chunk header and padding byte (if any).
 static  uint64 SizeWithPadding(uint64 chunk_size) {
   assert.Assert(chunk_size <= MAX_CHUNK_PAYLOAD);
-  return CHUNK_HEADER_SIZE + ((chunk_size + 1) & ~1U);
+  return CHUNK_HEADER_SIZE + ((chunk_size + 1) & ~uint(1));
 }
 
 // Size of a chunk including header and padding.

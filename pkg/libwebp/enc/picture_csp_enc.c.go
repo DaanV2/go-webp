@@ -320,7 +320,7 @@ int WebPPictureYUVAToARGB(*WebPPicture picture) {
         const *uint8 const src = picture.a + y * picture.a_stride;
         int x;
         for (x = 0; x < width; ++x) {
-          argb_dst[x] = (argb_dst[x] & 0x00ffffffu) | ((uint32)src[x] << 24);
+          argb_dst[x] = (argb_dst[x] & uint(0x00ffffff)) | ((uint32)src[x] << 24);
         }
       }
     }

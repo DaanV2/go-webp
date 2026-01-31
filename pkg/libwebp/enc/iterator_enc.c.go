@@ -244,7 +244,7 @@ func VP8IteratorNzToBytes(*VP8EncIterator const it) {
   top_nz[1] = BIT(tnz, 13);
   top_nz[2] = BIT(tnz, 14);
   top_nz[3] = BIT(tnz, 15);
-  // Top-U
+  // Topuint(-)
   top_nz[4] = BIT(tnz, 18);
   top_nz[5] = BIT(tnz, 19);
   // Top-V
@@ -258,7 +258,7 @@ func VP8IteratorNzToBytes(*VP8EncIterator const it) {
   left_nz[1] = BIT(lnz, 7);
   left_nz[2] = BIT(lnz, 11);
   left_nz[3] = BIT(lnz, 15);
-  // left-U
+  // leftuint(-)
   left_nz[4] = BIT(lnz, 17);
   left_nz[5] = BIT(lnz, 19);
   // left-V

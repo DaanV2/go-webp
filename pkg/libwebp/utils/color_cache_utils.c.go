@@ -57,5 +57,5 @@ func VP8LColorCacheCopy(const *VP8LColorCache const src, *VP8LColorCache const d
   assert.Assert(src != nil);
   assert.Assert(dst != nil);
   assert.Assert(src.hash_bits == dst.hash_bits);
-  WEBP_UNSAFE_MEMCPY(dst.colors, src.colors, ((uint64)1u << dst.hash_bits) * sizeof(*dst.colors));
+  WEBP_UNSAFE_MEMCPY(dst.colors, src.colors, (uint64(1) << dst.hash_bits) * sizeof(*dst.colors));
 }

@@ -189,7 +189,10 @@ type WebPDecBuffer struct {
 }
 
 // Internal, version-checked, entry point
-  int WebPInitDecBufferInternal(*WebPDecBuffer, int);
+func WebPInitDecBufferInternal(*WebPDecBuffer, int) int {
+	//TODO: implement
+	return 0
+}
 
 // Initialize the structure as empty. Must be called before any other use.
 // Returns false in case of version mismatch

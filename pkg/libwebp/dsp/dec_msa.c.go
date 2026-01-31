@@ -937,7 +937,7 @@ func DC8uvNoTop(*uint8 dst) {  // DC with no top samples
 }
 
 func DC8uvNoTopLeft(*uint8 dst) {  // DC with nothing
-  const uint64 out = 0x8080808080808080ULL;
+  const uint64 out = uint64(0x8080808080808080);
   STORE8x8(out, dst);
 }
 

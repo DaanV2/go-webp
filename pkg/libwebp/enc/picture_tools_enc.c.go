@@ -32,7 +32,7 @@ static int IsTransparentARGBArea(const *uint32 ptr, int stride, int size) {
   int y, x;
   for (y = 0; y < size; ++y) {
     for (x = 0; x < size; ++x) {
-      if (ptr[x] & 0xff000000u) {
+      if (ptr[x] & uint(0xff000000)) {
         return 0;
       }
     }
@@ -93,7 +93,7 @@ func WebPReplaceTransparentPixels(*WebPPicture const pic, uint32 color) {
   if (pic != nil && pic.use_argb) {
     int y = pic.height;
     *uint32 argb = pic.argb;
-    color &= 0xffffffu;  // force alpha=0
+    color &= uint(0xffffff);  // force alpha=0
     WebPInitAlphaProcessing();
     while (y-- > 0) {
       WebPAlphaReplace(argb, pic.width, color);
@@ -189,7 +189,7 @@ func WebPCleanupTransparentArea(*WebPPicture pic) {
   ((((V0) * (1020 - (ALPHA)) + (V1) * (ALPHA)) * 0x101 + 1024) >> 18)
 
 static  uint32 MakeARGB32(int r, int g, int b) {
-  return (0xff000000u | (r << 16) | (g << 8) | b);
+  return (uint(0xff000000) | (r << 16) | (g << 8) | b);
 }
 
 func WebPBlendAlpha(*WebPPicture picture, uint32 background_rgb) {

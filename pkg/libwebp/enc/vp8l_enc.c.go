@@ -81,9 +81,9 @@ func AddSingle(uint32 p, HistogramBuckets a, HistogramBuckets r, HistogramBucket
 }
 
 static  uint8 HashPix(uint32 pix) {
-  // Note that masking with 0xffffffffu is for preventing an
+  // Note that masking with uint(0xffffffff) is for preventing an
   // 'unsigned int overflow' warning. Doesn't impact the compiled code.
-  return ((((uint64)pix + (pix >> 19)) * 0x39c5fba7ull) & 0xffffffffu) >> 24;
+  return ((((uint64)pix + (pix >> 19)) * uint64(0x39c5fba7)) & uint64(0xffffffff)) >> 24;
 }
 
 static int AnalyzeEntropy(const *uint32 argb, int width, int height, int argb_stride, int use_palette, int palette_size, int transform_bits, *EntropyIx const min_entropy_ix, *int const red_and_blue_always_zero) {
@@ -171,7 +171,7 @@ static int AnalyzeEntropy(const *uint32 argb, int width, int height, int argb_st
       // We empirically estimate the cost of a compressed entry as 8 bits.
       // The palette is differential-coded when compressed hence a much
       // lower cost than sizeof(uint32)*8.
-      entropy[kPalette] += (palette_size * 8ull) << LOG_2_PRECISION_BITS;
+      entropy[kPalette] += (palette_size * uint64(8)) << LOG_2_PRECISION_BITS;
 
       *min_entropy_ix = kDirect;
       for (k = kDirect + 1; k <= last_mode_to_analyze; ++k) {
@@ -431,9 +431,9 @@ static int GetHuffBitLengthsAndCodes(
     }
   }
 
-  buf_rle = (*uint8)WebPSafeMalloc(1ULL, max_num_symbols);
+  buf_rle = (*uint8)WebPSafeMalloc(uint64(1), max_num_symbols);
   huff_tree =
-      (*HuffmanTree)WebPSafeMalloc(3ULL * max_num_symbols, sizeof(*huff_tree));
+      (*HuffmanTree)WebPSafeMalloc(uint64(3) * max_num_symbols, sizeof(*huff_tree));
   if (buf_rle == nil || huff_tree == nil) goto End;
 
   // Create Huffman trees.
@@ -702,7 +702,7 @@ static int EncodeImageNoHuffman(*VP8LBitWriter const bw, const *uint32 const arg
   int cache_bits = 0;
   *VP8LHistogramSet histogram_image = nil;
   *HuffmanTree const huff_tree = (*HuffmanTree)WebPSafeMalloc(
-      3ULL * CODE_LENGTH_CODES, sizeof(*huff_tree));
+      uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
   if (huff_tree == nil) {
     WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
     goto Error;
@@ -783,7 +783,7 @@ static int EncodeImageInternal(
   uint32 i, histogram_image_size = 0;
   uint64 bit_array_size = 0;
   *HuffmanTree const huff_tree = (*HuffmanTree)WebPSafeMalloc(
-      3ULL * CODE_LENGTH_CODES, sizeof(*huff_tree));
+      uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
   *HuffmanTreeToken tokens = nil;
   *HuffmanTreeCode huffman_codes = nil;
   *uint32 const histogram_argb = (*uint32)WebPSafeMalloc(
@@ -1177,13 +1177,13 @@ const PALETTE_INV_SIZE =(1 << PALETTE_INV_SIZE_BITS)
 
 static  uint32 ApplyPaletteHash1(uint32 color) {
   // Forget about alpha.
-  return ((uint32)((color & 0x00ffffffu) * 4222244071ull)) >>
+  return ((uint32)((color & uint(0x00ffffff)) * uint64(4222244071))) >>
          (32 - PALETTE_INV_SIZE_BITS);
 }
 
 static  uint32 ApplyPaletteHash2(uint32 color) {
   // Forget about alpha.
-  return ((uint32)((color & 0x00ffffffu) * ((1ull << 31) - 1))) >>
+  return ((uint32)((color & uint(0x00ffffff)) * ((uint64(1) << 31) - 1))) >>
          (32 - PALETTE_INV_SIZE_BITS);
 }
 
@@ -1238,7 +1238,7 @@ static int ApplyPalette(const *uint32 src, uint32 src_stride, *uint32 dst, uint3
       memset(buffer, 0xff, sizeof(buffer));
       for (j = 0; j < palette_size; ++j) {
         const uint32 ind = hash_functions[i](palette[j]);
-        if (buffer[ind] != 0xffffu) {
+        if (buffer[ind] != uint(0xffff)) {
           use_LUT = 0;
           break;
         } else {
@@ -1325,7 +1325,7 @@ static int EncodePalette(*VP8LBitWriter const bw, int low_effort, *VP8LEncoder c
 // VP8LEncoder
 
 static *VP8LEncoder VP8LEncoderNew(const *WebPConfig const config, const *WebPPicture const picture) {
-  *VP8LEncoder const enc = (*VP8LEncoder)WebPSafeCalloc(1ULL, sizeof(*enc));
+  *VP8LEncoder const enc = (*VP8LEncoder)WebPSafeCalloc(uint64(1), sizeof(*enc));
   if (enc == nil) {
     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
     return nil;

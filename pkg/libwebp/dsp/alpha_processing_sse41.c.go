@@ -73,9 +73,9 @@ static int ExtractAlpha_SSE41(const *uint8 WEBP_RESTRICT argb, int argb_stride, 
     alpha += alpha_stride;
   }
   // Combine the sixteen alpha 'and' into an 8-bit mask.
-  alpha_and |= 0xff00u;  // pretend the upper bits [8..15] were tested ok.
+  alpha_and |= uint(0xff00);  // pretend the upper bits [8..15] were tested ok.
   alpha_and &= _mm_movemask_epi8(_mm_cmpeq_epi8(all_alphas, all_0xff));
-  return (alpha_and == 0xffffu);
+  return (alpha_and == uint(0xffff));
 }
 
 //------------------------------------------------------------------------------

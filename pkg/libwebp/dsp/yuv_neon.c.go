@@ -35,12 +35,12 @@ static uint8x8_t ConvertRGBToYImpl_NEON(const uint8x8_t R, const uint8x8_t G, co
   const uint16x4_t g_hi = vget_high_u16(g);
   const uint16x4_t b_lo = vget_low_u16(b);
   const uint16x4_t b_hi = vget_high_u16(b);
-  const uint32x4_t tmp0_lo = vmull_n_u16(r_lo, 16839u);
-  const uint32x4_t tmp0_hi = vmull_n_u16(r_hi, 16839u);
-  const uint32x4_t tmp1_lo = vmlal_n_u16(tmp0_lo, g_lo, 33059u);
-  const uint32x4_t tmp1_hi = vmlal_n_u16(tmp0_hi, g_hi, 33059u);
-  const uint32x4_t tmp2_lo = vmlal_n_u16(tmp1_lo, b_lo, 6420u);
-  const uint32x4_t tmp2_hi = vmlal_n_u16(tmp1_hi, b_hi, 6420u);
+  const uint32x4_t tmp0_lo = vmull_n_u16(r_lo, uint(16839));
+  const uint32x4_t tmp0_hi = vmull_n_u16(r_hi, uint(16839));
+  const uint32x4_t tmp1_lo = vmlal_n_u16(tmp0_lo, g_lo, uint(33059));
+  const uint32x4_t tmp1_hi = vmlal_n_u16(tmp0_hi, g_hi, uint(33059));
+  const uint32x4_t tmp2_lo = vmlal_n_u16(tmp1_lo, b_lo, uint(6420));
+  const uint32x4_t tmp2_hi = vmlal_n_u16(tmp1_hi, b_hi, uint(6420));
   const uint16x8_t Y1 =
       vcombine_u16(vrshrn_n_u32(tmp2_lo, 16), vrshrn_n_u32(tmp2_hi, 16));
   const uint16x8_t Y2 = vaddq_u16(Y1, vdupq_n_u16(16));

@@ -240,7 +240,7 @@ Fail:
   data += RIFF_HEADER_SIZE;
   size -= RIFF_HEADER_SIZE;
 
-  wpi = (*WebPMuxImage)WebPSafeMalloc(1ULL, sizeof(*wpi));
+  wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*wpi));
   if (wpi == nil) goto Err;
   MuxImageInit(wpi);
 
@@ -405,7 +405,7 @@ static WebPMuxError SynthesizeBitstream(const *WebPMuxImage const wpi, *WebPData
   // Note: No need to output ANMF chunk for a single image.
   const uint64 size =
       RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img);
-  *uint8 const data = (*uint8)WebPSafeMalloc(1ULL, size);
+  *uint8 const data = (*uint8)WebPSafeMalloc(uint64(1), size);
   if (data == nil) return WEBP_MUX_MEMORY_ERROR;
 
   // There should be at most one alpha chunk and exactly one img chunk.

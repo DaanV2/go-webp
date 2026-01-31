@@ -151,7 +151,7 @@ func ExportRowShrink_MIPSdspR2(*WebPRescaler const wrk) {
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const int v = (int)MULT_FIX_FLOOR(*irow, wrk.fxy_scale);
-      *dst++ = (v > 255) ? 255u : (uint8)v;
+      *dst++ = (v > 255) ? uint(255) : (uint8)v;
       *irow++ = 0;
     }
   }
@@ -208,7 +208,7 @@ func ExportRowExpand_MIPSdspR2(*WebPRescaler const wrk) {
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const uint32 J = *frow++;
       const int v = (int)MULT_FIX(J, wrk.fy_scale);
-      *dst++ = (v > 255) ? 255u : (uint8)v;
+      *dst++ = (v > 255) ? uint(255) : (uint8)v;
     }
   } else {
     const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
@@ -272,7 +272,7 @@ func ExportRowExpand_MIPSdspR2(*WebPRescaler const wrk) {
       const uint64 I = (uint64)A * *frow++ + (uint64)B * *irow++;
       const uint32 J = (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       const int v = (int)MULT_FIX(J, wrk.fy_scale);
-      *dst++ = (v > 255) ? 255u : (uint8)v;
+      *dst++ = (v > 255) ? uint(255) : (uint8)v;
     }
   }
 }

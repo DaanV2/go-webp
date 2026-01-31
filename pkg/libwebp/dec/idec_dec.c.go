@@ -416,7 +416,7 @@ static VP8StatusCode CopyParts0Data(*WebPIDecoder const idec) {
   if (mem.mode == MEM_MODE_APPEND) {
     // We copy and grab ownership of the partition #0 data.
     *uint8 WEBP_BIDI_INDEXABLE const part0_buf =
-        (*uint8)WebPSafeMalloc(1ULL, part_size);
+        (*uint8)WebPSafeMalloc(uint64(1), part_size);
     if (part0_buf == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
@@ -636,7 +636,7 @@ static VP8StatusCode IDecode(*WebPIDecoder idec) {
 
  static *WebPIDecoder NewDecoder(
     *WebPDecBuffer const output_buffer, const *WebPBitstreamFeatures const features) {
-  *WebPIDecoder idec = (*WebPIDecoder)WebPSafeCalloc(1ULL, sizeof(*idec));
+  *WebPIDecoder idec = (*WebPIDecoder)WebPSafeCalloc(uint64(1), sizeof(*idec));
   if (idec == nil) {
     return nil;
   }

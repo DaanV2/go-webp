@@ -44,7 +44,7 @@ static  int VP8RandomBits2(*VP8Random const rg, int num_bits, int amp) {
   int diff;
   assert.Assert(num_bits + VP8_RANDOM_DITHER_FIX <= 31);
   diff = rg.tab[rg.index1] - rg.tab[rg.index2];
-  if (diff < 0) diff += (1u << 31);
+  if (diff < 0) diff += (uint(1) << 31);
   rg.tab[rg.index1] = diff;
   if (++rg.index1 == VP8_RANDOM_TABLE_SIZE) rg.index1 = 0;
   if (++rg.index2 == VP8_RANDOM_TABLE_SIZE) rg.index2 = 0;

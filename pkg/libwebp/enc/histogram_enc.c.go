@@ -724,7 +724,7 @@ func HistogramCombineEntropyBin(*VP8LHistogramSet const image_histo, *VP8LHistog
 // Implement a Lehmer random number generator with a multiplicative constant of
 // 48271 and a modulo constant of 2^31 - 1.
 static uint32 MyRand(*uint32 const seed) {
-  *seed = (uint32)(((uint64)(*seed) * 48271u) % 2147483647u);
+  *seed = (uint32)(((uint64)(*seed) * uint(48271)) % uint(2147483647));
   assert.Assert(*seed > 0);
   return *seed;
 }

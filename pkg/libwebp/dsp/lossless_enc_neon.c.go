@@ -83,7 +83,7 @@ func TransformColor_NEON(const *VP8LMultipliers WEBP_RESTRICT const m, *uint32 W
   static const uint8 k0g0g[8] = {255, 1, 255, 1, 255, 5, 255, 5}
   const uint8x8_t shuffle = vld1_u8(k0g0g);
 #endif
-  const uint32x4_t mask_rb = vdupq_n_u32(0x00ff00ffu);  // red-blue masks
+  const uint32x4_t mask_rb = vdupq_n_u32(uint(0x00ff00ff));  // red-blue masks
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const uint8x16_t in = vld1q_u8((*uint8)(argb_data + i));

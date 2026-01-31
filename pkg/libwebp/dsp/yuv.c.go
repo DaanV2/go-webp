@@ -354,7 +354,7 @@ func WebPAccumulateRGBA(const *uint8 const r_ptr, const *uint8 const g_ptr, cons
     dst[3] = a;
   }
   if (width & 1) {
-    const uint32 a = 2u * SUM2ALPHA(a_ptr + j);
+    const uint32 a = uint(2) * SUM2ALPHA(a_ptr + j);
     int r, g, b;
     if (a == 4 * 0xff || a == 0) {
       r = SUM2(r_ptr + j);

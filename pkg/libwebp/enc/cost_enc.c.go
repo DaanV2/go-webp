@@ -192,7 +192,7 @@ int VP8RecordCoeffs(int ctx, const *VP8Residual const res) {
       s = res.stats[VP8EncBands[n]][0];
     }
     VP8RecordStats(1, s + 1);
-    if (!VP8RecordStats(2u < (unsigned int)(v + 1), s + 2)) {  // v = -1 or 1
+    if (!VP8RecordStats(uint(2) < (unsigned int)(v + 1), s + 2)) {  // v = -1 or 1
       s = res.stats[VP8EncBands[n]][1];
     } else {
       v = abs(v);
