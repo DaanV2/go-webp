@@ -19,23 +19,25 @@ import "github.com/daanv2/go-webp/pkg/stddef"  // IWYU pragma: export for size_t
 
 
 // Macro to check ABI compatibility (same major revision number)
-#define WEBP_ABI_IS_INCOMPATIBLE(a, b) (((a) >> 8) != ((b) >> 8))
+func WEBP_ABI_IS_INCOMPATIBLE(a, b int) int {
+	return (((a) >> 8) != ((b) >> 8))
+}
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Allocates 'size' bytes of memory. Returns NULL upon error. Memory
 // must be deallocated by calling WebPFree(). This function is made available
 // by the core 'libwebp' library.
-  void* WebPMalloc(size_t size);
+// Deprecated: Not needed in Go, use built-in memory management.
+func WebPMalloc(size size_t) {
+	panic("not implemented")
+}
 
 // Releases memory returned by the WebPDecode*() functions (from decode.h).
- func WebPFree(void* ptr);
+// Deprecated: Not needed in Go, use built-in memory management.
+func WebPFree(void* ptr) {
+	panic("not implemented")
+}
 
-#ifdef __cplusplus
-}  // extern "C"
-#endif
 
 import "github.com/daanv2/go-webp/pkg/string"  // For memcpy and friends
 
