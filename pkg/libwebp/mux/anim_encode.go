@@ -896,8 +896,8 @@ enum {
   CANDIDATE_COUNT
 };
 
-#define MIN_COLORS_LOSSY 31      // Don't try lossy below this threshold.
-#define MAX_COLORS_LOSSLESS 194  // Don't try lossless above this threshold.
+const MIN_COLORS_LOSSY = 31      // Don't try lossy below this threshold.
+const MAX_COLORS_LOSSLESS = 194  // Don't try lossless above this threshold.
 
 static void GetEncodedData(const WebPMemoryWriter* const memory,
                            WebPData* const encoded_data) {

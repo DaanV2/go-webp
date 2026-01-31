@@ -223,8 +223,8 @@ void WebPConvertRGBA32ToUV_C(const uint16_t* WEBP_RESTRICT rgb,
 #if defined(USE_GAMMA_COMPRESSION)
 
 // Gamma correction compensates loss of resolution during chroma subsampling.
-#define GAMMA_FIX 12     // fixed-point precision for linear values
-#define GAMMA_TAB_FIX 7  // fixed-point fractional bits precision
+const GAMMA_FIX = 12     // fixed-point precision for linear values
+const GAMMA_TAB_FIX = 7  // fixed-point fractional bits precision
 #define GAMMA_TAB_SIZE (1 << (GAMMA_FIX - GAMMA_TAB_FIX))
 static const double kGamma = 0.80;
 static const int kGammaScale = ((1 << GAMMA_FIX) - 1);

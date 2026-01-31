@@ -122,7 +122,7 @@ static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
 
 #if !defined(WEBP_USE_NEON) && defined(__ANDROID__) && \
     defined(__ARM_ARCH_7A__) && defined(HAVE_CPU_FEATURES_H)
-#define WEBP_ANDROID_NEON  // Android targets that may have NEON
+const WEBP_ANDROID_NEON =  // Android targets that may have NEON
 #define WEBP_USE_NEON
 #endif
 

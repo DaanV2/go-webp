@@ -61,7 +61,7 @@ import "./types.h"
 extern "C" {
 #endif
 
-#define WEBP_DEMUX_ABI_VERSION 0x0107  // MAJOR(8b) + MINOR(8b)
+const WEBP_DEMUX_ABI_VERSION = 0x0107  // MAJOR(8b) + MINOR(8b)
 
 // Note: forward declaring enumerations is not allowed in (strict) C and C++,
 // the types are left here for reference.

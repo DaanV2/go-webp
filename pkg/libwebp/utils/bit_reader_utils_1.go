@@ -30,7 +30,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // Warning! This macro triggers quite some MACRO wizardry around func signature!
 #if !defined(BITTRACE)
-#define BITTRACE 0  // 0 = off, 1 = print bits, 2 = print bytes
+const BITTRACE = 0  // 0 = off, 1 = print bits, 2 = print bytes
 #endif
 
 #if (BITTRACE > 0)

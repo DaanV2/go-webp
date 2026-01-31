@@ -28,7 +28,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 #if !defined(USE_GENERIC_TREE)
 #if !defined(__arm__) && !defined(_M_ARM) && !WEBP_AARCH64 && !defined(__wasm__)
 // using a table is ~1-2% slower on ARM. Prefer the coded-tree approach then.
-#define USE_GENERIC_TREE 1  // ALTERNATE_CODE
+const USE_GENERIC_TREE = 1  // ALTERNATE_CODE
 #else
 const USE_GENERIC_TREE = 0
 #endif

@@ -105,8 +105,8 @@ static void SetSegmentAlphas(VP8Encoder* const enc,
 // Compute susceptibility based on DCT-coeff histograms:
 // the higher, the "easier" the macroblock is to compress.
 
-#define MAX_ALPHA 255                // 8b of precision for susceptibilities.
-#define ALPHA_SCALE (2 * MAX_ALPHA)  // scaling factor for alpha.
+const MAX_ALPHA = 255                // 8b of precision for susceptibilities.
+const ALPHA_SCALE = (2 * MAX_ALPHA)  // scaling factor for alpha.
 #define DEFAULT_ALPHA (-1)
 #define IS_BETTER_ALPHA(alpha, best_alpha) ((alpha) > (best_alpha))
 

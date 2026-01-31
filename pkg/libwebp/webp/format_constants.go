@@ -46,7 +46,7 @@ const NUM_LENGTH_CODES = 24
 const NUM_DISTANCE_CODES = 40
 const CODE_LENGTH_CODES = 19
 
-#define MIN_HUFFMAN_BITS 2  // min number of Huffman bits
+const MIN_HUFFMAN_BITS = 2  // min number of Huffman bits
 const NUM_HUFFMAN_BITS = 3
 
 // the maximum number of bits defining a transform is
@@ -56,7 +56,7 @@ const NUM_TRANSFORM_BITS = 3
 
 #define TRANSFORM_PRESENT \
   1  // The bit to be written when next data to be read is a transform.
-#define NUM_TRANSFORMS 4  // Maximum number of allowed transform in a bitstream.
+const NUM_TRANSFORMS = 4  // Maximum number of allowed transform in a bitstream.
 typedef enum {
   PREDICTOR_TRANSFORM = 0,
   CROSS_COLOR_TRANSFORM = 1,
@@ -71,19 +71,19 @@ const ALPHA_LOSSLESS_COMPRESSION = 1
 const ALPHA_PREPROCESSED_LEVELS = 1
 
 // Mux related constants.
-#define TAG_SIZE 4           // Size of a chunk tag (e.g. "VP8L").
-#define CHUNK_SIZE_BYTES 4   // Size needed to store chunk's size.
-#define CHUNK_HEADER_SIZE 8  // Size of a chunk header.
-#define RIFF_HEADER_SIZE 12  // Size of the RIFF header ("RIFFnnnnWEBP").
-#define ANMF_CHUNK_SIZE 16   // Size of an ANMF chunk.
-#define ANIM_CHUNK_SIZE 6    // Size of an ANIM chunk.
+const TAG_SIZE = 4           // Size of a chunk tag (e.g. "VP8L").
+const CHUNK_SIZE_BYTES = 4   // Size needed to store chunk's size.
+const CHUNK_HEADER_SIZE = 8  // Size of a chunk header.
+const RIFF_HEADER_SIZE = 12  // Size of the RIFF header ("RIFFnnnnWEBP").
+const ANMF_CHUNK_SIZE = 16   // Size of an ANMF chunk.
+const ANIM_CHUNK_SIZE = 6    // Size of an ANIM chunk.
 #define VP8X_CHUNK_SIZE 10   // Size of a VP8X chunk.
 
-#define MAX_CANVAS_SIZE (1 << 24)      // 24-bit max for VP8X width/height.
-#define MAX_IMAGE_AREA (1ULL << 32)    // 32-bit max for width x height.
-#define MAX_LOOP_COUNT (1 << 16)       // maximum value for loop-count
-#define MAX_DURATION (1 << 24)         // maximum duration
-#define MAX_POSITION_OFFSET (1 << 24)  // maximum frame x/y offset
+const MAX_CANVAS_SIZE = (1 << 24)      // 24-bit max for VP8X width/height.
+const MAX_IMAGE_AREA = (1ULL << 32)    // 32-bit max for width x height.
+const MAX_LOOP_COUNT = (1 << 16)       // maximum value for loop-count
+const MAX_DURATION = (1 << 24)         // maximum duration
+const MAX_POSITION_OFFSET = (1 << 24)  // maximum frame x/y offset
 
 // Maximum chunk payload is such that adding the header and padding won't
 // overflow a uint32_t.

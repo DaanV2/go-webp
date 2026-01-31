@@ -156,7 +156,7 @@ static WEBP_INLINE int BitsCtz(uint32_t n) {
   return first_set_bit;
 }
 #else                           // default: use the (slow) C-version.
-#define WEBP_HAVE_SLOW_CLZ_CTZ  // signal that the Clz/Ctz function are slow
+const WEBP_HAVE_SLOW_CLZ_CTZ =  // signal that the Clz/Ctz function are slow
 // Returns 31 ^ clz(n) = log2(n). This is the default C-implementation, either
 // based on table or not. Can be used as fallback if clz() is not available.
 #define WEBP_NEED_LOG_TABLE_8BIT

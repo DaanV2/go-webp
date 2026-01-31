@@ -195,8 +195,8 @@ static WEBP_INLINE int ReadSymbol(const HuffmanCode* table,
 }
 
 // Reads packed symbol depending on GREEN channel
-#define BITS_SPECIAL_MARKER 0x100  // something large enough (and a bit-mask)
-#define PACKED_NON_LITERAL_CODE 0  // must be < NUM_LITERAL_CODES
+const BITS_SPECIAL_MARKER = 0x100  // something large enough (and a bit-mask)
+const PACKED_NON_LITERAL_CODE = 0  // must be < NUM_LITERAL_CODES
 static WEBP_INLINE int ReadPackedSymbols(const HTreeGroup* group,
                                          VP8LBitReader* const br,
                                          uint32_t* const dst) {
@@ -1210,7 +1210,7 @@ static void RestoreState(VP8LDecoder* const dec) {
   }
 }
 
-#define SYNC_EVERY_N_ROWS 8  // minimum number of rows between check-points
+const SYNC_EVERY_N_ROWS = 8  // minimum number of rows between check-points
 static int DecodeImageData(VP8LDecoder* const dec, uint32_t* const data,
                            int width, int height, int last_row,
                            ProcessRowsFunc process_func) {

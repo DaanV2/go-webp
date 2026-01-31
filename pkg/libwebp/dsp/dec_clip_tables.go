@@ -19,7 +19,7 @@ import "src/webp/types.h"
 
 // define to 0 to have run-time table initialization
 #if !defined(USE_STATIC_TABLES)
-#define USE_STATIC_TABLES 1  // ALTERNATE_CODE
+const USE_STATIC_TABLES = 1  // ALTERNATE_CODE
 #endif
 
 #if (USE_STATIC_TABLES == 1)

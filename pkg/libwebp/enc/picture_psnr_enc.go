@@ -35,7 +35,7 @@ typedef double (*AccumulateFunc)(const uint8_t* src, int src_stride,
 // For every pixel in the *reference* picture, we search for the local best
 // match in the compressed image. This is not a symmetrical measure.
 
-#define RADIUS 2  // search radius. Shouldn't be too large.
+const RADIUS = 2  // search radius. Shouldn't be too large.
 
 static double AccumulateLSIM(const uint8_t* src, int src_stride,
                              const uint8_t* ref, int ref_stride, int w, int h) {
@@ -170,9 +170,9 @@ int WebPPlaneDistortion(const uint8_t* src, size_t src_stride,
 }
 
 #ifdef WORDS_BIGENDIAN
-#define BLUE_OFFSET 3  // uint32_t 0x000000ff is 0x00,00,00,ff in memory
+const BLUE_OFFSET = 3  // uint32_t 0x000000ff is 0x00,00,00,ff in memory
 #else
-#define BLUE_OFFSET 0  // uint32_t 0x000000ff is 0xff,00,00,00 in memory
+const BLUE_OFFSET = 0  // uint32_t 0x000000ff is 0xff,00,00,00 in memory
 #endif
 
 int WebPPictureDistortion(const WebPPicture* src, const WebPPicture* ref,

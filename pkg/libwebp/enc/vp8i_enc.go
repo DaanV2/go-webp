@@ -75,7 +75,7 @@ typedef enum {            // Rate-distortion optimization levels
 //         |I4DC4 I4TM4 I4VE4 I4HE4|I4RD4 I4VR4 I4LD4 I4VL4|
 //         |I4HD4 I4HU4 I4TMP .....|.......................| <- ~31% wasted
 #define YUV_SIZE_ENC (BPS * 16)
-#define PRED_SIZE_ENC (32 * BPS + 16 * BPS + 8 * BPS)  // I16+Chroma+I4 preds
+const PRED_SIZE_ENC = (32 * BPS + 16 * BPS + 8 * BPS)  // I16+Chroma+I4 preds
 #define Y_OFF_ENC (0)
 #define U_OFF_ENC (16)
 #define V_OFF_ENC (16 + 8)

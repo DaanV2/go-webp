@@ -233,7 +233,7 @@ static void VerticalUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
 // at least on ARM64. For armv7, it's a wash.
 // So best is to disable it for now, but keep the idea around...
 #if !defined(USE_GRADIENT_UNFILTER)
-#define USE_GRADIENT_UNFILTER 0  // ALTERNATE_CODE
+const USE_GRADIENT_UNFILTER = 0  // ALTERNATE_CODE
 #endif
 
 #if (USE_GRADIENT_UNFILTER == 1)

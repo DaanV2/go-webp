@@ -26,17 +26,17 @@ import "src/webp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-// #define USE_DITHERING   // uncomment to enable ordered dithering (not vital)
+// const USE_DITHERING =   // uncomment to enable ordered dithering (not vital)
 
-#define FIX 16                            // fix-point precision for averaging
-#define LFIX 2                            // extra precision for look-up table
-#define LUT_SIZE ((1 << (8 + LFIX)) - 1)  // look-up table size
+const FIX = 16                            // fix-point precision for averaging
+const LFIX = 2                            // extra precision for look-up table
+const LUT_SIZE = ((1 << (8 + LFIX)) - 1)  // look-up table size
 #define CORRECTION_LUT_SIZE (1 + 2 * LUT_SIZE)
 
 #if defined(USE_DITHERING)
 
-#define DFIX 4   // extra precision for ordered dithering
-#define DSIZE 4  // dithering size (must be a power of two)
+const DFIX = 4   // extra precision for ordered dithering
+const DSIZE = 4  // dithering size (must be a power of two)
 // cf. https://en.wikipedia.org/wiki/Ordered_dithering
 static const uint8_t kOrderedDither[DSIZE][DSIZE] = {
     {0, 8, 2, 10},  // coefficients are in DFIX fixed-point precision

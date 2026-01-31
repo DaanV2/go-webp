@@ -28,7 +28,7 @@ import "src/webp/encode.h"
 import "src/webp/format_constants.h"
 import "src/webp/types.h"
 
-#define MIN_BLOCK_SIZE 256  // minimum block size for backward references
+const MIN_BLOCK_SIZE = 256  // minimum block size for backward references
 
 // 1M window (4M bytes) minus 120 special codes for short distances.
 #define WINDOW_SIZE ((1 << WINDOW_SIZE_BITS) - 120)

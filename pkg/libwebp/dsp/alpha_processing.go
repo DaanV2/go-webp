@@ -22,12 +22,12 @@ import "src/webp/types.h"
 
 // Tables can be faster on some platform but incur some extra binary size (~2k).
 #if !defined(USE_TABLES_FOR_ALPHA_MULT)
-#define USE_TABLES_FOR_ALPHA_MULT 0  // ALTERNATE_CODE
+const USE_TABLES_FOR_ALPHA_MULT = 0  // ALTERNATE_CODE
 #endif
 
 // -----------------------------------------------------------------------------
 
-#define MFIX 24  // 24bit fixed-point arithmetic
+const MFIX = 24  // 24bit fixed-point arithmetic
 #define HALF ((1u << MFIX) >> 1)
 #define KINV_255 ((1u << MFIX) / 255u)
 

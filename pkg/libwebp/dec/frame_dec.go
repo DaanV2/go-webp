@@ -654,7 +654,7 @@ int VP8ExitCritical(VP8Decoder* const dec, VP8Io* const io) {
 // io->put:         [ 0..15][16..31][ 0..15][...
 
 const MT_CACHE_LINES = 3
-#define ST_CACHE_LINES 1  // 1 cache row only for single-threaded case
+const ST_CACHE_LINES = 1  // 1 cache row only for single-threaded case
 
 // Initialize multi/single-thread worker
 static int InitThreadContext(VP8Decoder* const dec) {

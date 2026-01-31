@@ -27,12 +27,12 @@ import "src/webp/types.h"
 
 #define DO_TRELLIS_I4 1
 #define DO_TRELLIS_I16 1  // not a huge gain, but ok at low bitrate.
-#define DO_TRELLIS_UV 0   // disable trellis for UV. Risky. Not worth.
+const DO_TRELLIS_UV = 0   // disable trellis for UV. Risky. Not worth.
 const USE_TDISTO = 1
 
-#define MID_ALPHA 64   // neutral value for susceptibility
-#define MIN_ALPHA 30   // lowest usable value for susceptibility
-#define MAX_ALPHA 100  // higher meaningful value for susceptibility
+const MID_ALPHA = 64   // neutral value for susceptibility
+const MIN_ALPHA = 30   // lowest usable value for susceptibility
+const MAX_ALPHA = 100  // higher meaningful value for susceptibility
 
 #define SNS_TO_DQ \
   0.9  // Scaling constant between the sns value and the QP
@@ -42,12 +42,12 @@ const USE_TDISTO = 1
 // (and apply a penalty to complex predictions)
 #define FLATNESS_LIMIT_I16 0  // I16 mode (special case)
 #define FLATNESS_LIMIT_I4 3   // I4 mode
-#define FLATNESS_LIMIT_UV 2   // UV mode
-#define FLATNESS_PENALTY 140  // roughly ~1bit per block
+const FLATNESS_LIMIT_UV = 2   // UV mode
+const FLATNESS_PENALTY = 140  // roughly ~1bit per block
 
 #define MULT_8B(a, b) (((a) * (b) + 128) >> 8)
 
-#define RD_DISTO_MULT 256  // distortion multiplier (equivalent of lambda)
+const RD_DISTO_MULT = 256  // distortion multiplier (equivalent of lambda)
 
 // #define DEBUG_BLOCK
 
@@ -176,7 +176,7 @@ static const uint8_t kBiasMatrices[3][2] = {  // [luma-ac,luma-dc,chroma][dc,ac]
 
 // Sharpening by (slightly) raising the hi-frequency coeffs.
 // Hack-ish but helpful for mid-bitrate range. Use with care.
-#define SHARPEN_BITS 11  // number of descaling bits for sharpening bias
+const SHARPEN_BITS = 11  // number of descaling bits for sharpening bias
 static const uint8_t kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90,
                                             60, 90, 90, 90, 90, 90, 90, 90};
 
@@ -550,8 +550,8 @@ typedef struct {
 // If a coefficient was quantized to a value Q (using a neutral bias),
 // we test all alternate possibilities between [Q-MIN_DELTA, Q+MAX_DELTA]
 // We don't test negative values though.
-#define MIN_DELTA 0  // how much lower level to try
-#define MAX_DELTA 1  // how much higher
+const MIN_DELTA = 0  // how much lower level to try
+const MAX_DELTA = 1  // how much higher
 #define NUM_NODES (MIN_DELTA + 1 + MAX_DELTA)
 #define NODE(n, l) (nodes[(n)][(l) + MIN_DELTA])
 #define SCORE_STATE(n, l) (score_states[n][(l) + MIN_DELTA])
@@ -835,7 +835,7 @@ static int ReconstructIntra4(VP8EncIterator* WEBP_RESTRICT const it,
 #define C1 7  // fraction of error sent to the 4x4 block below
 #define C2 8  // fraction of error sent to the 4x4 block on the right
 const DSHIFT = 4
-#define DSCALE 1  // storage descaling, needed to make the error fit int8_t
+const DSCALE = 1  // storage descaling, needed to make the error fit int8_t
 
 // Quantize as usual, but also compute and return the quantization error.
 // Error is already divided by DSHIFT.

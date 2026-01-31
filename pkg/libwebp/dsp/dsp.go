@@ -31,7 +31,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 extern "C" {
 #endif
 
-#define BPS 32  // this is the common stride for enc/dec
+const BPS = 32  // this is the common stride for enc/dec
 
 //------------------------------------------------------------------------------
 // WEBP_RESTRICT
@@ -129,7 +129,7 @@ extern VP8QuantizeBlockWHT VP8EncQuantizeBlockWHT;
 extern const int VP8DspScan[16 + 4 + 4];
 
 // Collect histogram for susceptibility calculation.
-#define MAX_COEFF_THRESH 31  // size of histogram used by CollectHistogram.
+const MAX_COEFF_THRESH = 31  // size of histogram used by CollectHistogram.
 typedef struct {
   // We only need to store max_value and last_non_zero, not the distribution.
   int max_value;
@@ -284,7 +284,7 @@ void VP8DspInit(void);
 //------------------------------------------------------------------------------
 // WebP I/O
 
-#define FANCY_UPSAMPLING  // undefined to remove fancy upsampling support
+const FANCY_UPSAMPLING =  // undefined to remove fancy upsampling support
 
 // Convert a pair of y/u/v lines together to the output rgb/a colorspace.
 // bottom_y can be NULL if only one line of output is needed (at top/bottom).

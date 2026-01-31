@@ -96,7 +96,7 @@ typedef enum {
   IDX_LAST_CHUNK
 } CHUNK_INDEX;
 
-#define NIL_TAG 0x00000000u  // To signal void chunk.
+const NIL_TAG = 0x00000000u  // To signal void chunk.
 
 typedef struct {
   uint32_t tag;
