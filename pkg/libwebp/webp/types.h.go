@@ -69,8 +69,6 @@ func WEBP_COUNTED_BY_OR_nil(x any) {}
 // Deprecated: Use golang std code
 func WEBP_SIZED_BY(x any) {}
 // Deprecated: Use golang std code
-func WEBP_SIZED_BY_OR_nil(x any) {}
-// Deprecated: Use golang std code
 func WEBP_ENDED_BY(x any) {}
 
 // Deprecated: Use golang [std.WEBP_UNSAFE_MEMCPY]

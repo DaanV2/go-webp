@@ -38,8 +38,8 @@ func CHANNEL_SHIFT(i int) int {
 }
 
 type BlendRowFunc = func(/* const */ *uint32, /* const */ *uint32, int)
-type BlendPixelRowNonPremult =func(/* const */ src *uint32, /* const */ dst *uint32, int num_pixels);
-type BlendPixelRowPremult =func(/* const */ src *uint32, /* const */ dst *uint32, int num_pixels);
+type BlendPixelRowNonPremult = func(/* const */ src *uint32, /* const */ dst *uint32, int num_pixels);
+type BlendPixelRowPremult = func(/* const */ src *uint32, /* const */ dst *uint32, int num_pixels);
 
 type WebPAnimDecoder struct {
 	demux *WebPDemuxer        // Demuxer created from given WebP bitstream.

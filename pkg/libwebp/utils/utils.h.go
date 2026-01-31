@@ -51,12 +51,10 @@ static  int CheckSizeOverflow(size uint64 ) {
 // somewhere (like: malloc(num_pixels * sizeof(*something))). That's why this
 // safe malloc() borrows the signature from calloc(), pointing at the dangerous
 // underlying multiply involved.
- WEBP_SIZED_BY_OR_nil *void(size *nmemb)
-    WebPSafeMalloc(uint64 nmemb, size uint64 );
+*void(size *nmemb) WebPSafeMalloc(uint64 nmemb, size uint64 );
 // Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
- WEBP_SIZED_BY_OR_nil *void(size *nmemb)
-    WebPSafeCalloc(uint64 nmemb, size uint64 );
+*void(size *nmemb) WebPSafeCalloc(uint64 nmemb, size uint64 );
 
 // Companion deallocation function to the above allocations.
  func WebPSafeFree(const ptr *void);
