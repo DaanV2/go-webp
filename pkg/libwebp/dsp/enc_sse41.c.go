@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Compute susceptibility based on DCT-coeff histograms.
 
-func CollectHistogram_SSE41(const *uint8 WEBP_RESTRICT ref, const *uint8 WEBP_RESTRICT pred, int start_block, int end_block, *VP8Histogram WEBP_RESTRICT const histo) {
+func CollectHistogram_SSE41(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   int j;
   int distribution[MAX_COEFF_THRESH + 1] = {0}
@@ -73,7 +73,7 @@ func CollectHistogram_SSE41(const *uint8 WEBP_RESTRICT ref, const *uint8 WEBP_RE
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int TTransform_SSE41(const *uint8 inA, const *uint8 inB, const *uint16 const w) {
+static int TTransform_SSE41(const inA *uint8, const inB *uint8, const const w *uint16) {
   int32 sum[4];
   __m128i tmp_0, tmp_1, tmp_2, tmp_3;
 
@@ -169,12 +169,12 @@ static int TTransform_SSE41(const *uint8 inA, const *uint8 inB, const *uint16 co
   return sum[0] + sum[1] + sum[2] + sum[3];
 }
 
-static int Disto4x4_SSE41(const *uint8 WEBP_RESTRICT const a, const *uint8 WEBP_RESTRICT const b, const *uint16 WEBP_RESTRICT const w) {
+static int Disto4x4_SSE41(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
   const int diff_sum = TTransform_SSE41(a, b, w);
   return abs(diff_sum) >> 5;
 }
 
-static int Disto16x16_SSE41(const *uint8 WEBP_RESTRICT const a, const *uint8 WEBP_RESTRICT const b, const *uint16 WEBP_RESTRICT const w) {
+static int Disto16x16_SSE41(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
   int D = 0;
   int x, y;
   for (y = 0; y < 16 * BPS; y += 4 * BPS) {
@@ -196,7 +196,7 @@ static int Disto16x16_SSE41(const *uint8 WEBP_RESTRICT const a, const *uint8 WEB
                2 * (D) + 1, 2 * (D) + 0, 2 * (C) + 1, 2 * (C) + 0, \
                2 * (B) + 1, 2 * (B) + 0, 2 * (A) + 1, 2 * (A) + 0)
 
-static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const *uint16 const sharpen, const *VP8Matrix const mtx) {
+static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const const sharpen *uint16, const const mtx *VP8Matrix) {
   const __m128i max_coeff_2047 = _mm_set1_epi16(MAX_LEVEL);
   const __m128i zero = _mm_setzero_si128();
   __m128i out0, out8;
@@ -297,17 +297,17 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const *uint16 con
 
 #undef PSHUFB_CST
 
-static int QuantizeBlock_SSE41(int16 in[16], int16 out[16], const *VP8Matrix WEBP_RESTRICT const mtx) {
+static int QuantizeBlock_SSE41(int16 in[16], int16 out[16], const WEBP_RESTRICT const mtx *VP8Matrix) {
   return DoQuantizeBlock_SSE41(in, out, &mtx.sharpen[0], mtx);
 }
 
-static int QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16], const *VP8Matrix WEBP_RESTRICT const mtx) {
+static int QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16], const WEBP_RESTRICT const mtx *VP8Matrix) {
   return DoQuantizeBlock_SSE41(in, out, nil, mtx);
 }
 
-static int Quantize2Blocks_SSE41(int16 in[32], int16 out[32], const *VP8Matrix WEBP_RESTRICT const mtx) {
+static int Quantize2Blocks_SSE41(int16 in[32], int16 out[32], const WEBP_RESTRICT const mtx *VP8Matrix) {
   int nz;
-  const *uint16 const sharpen = &mtx.sharpen[0];
+  const const sharpen *uint16 = &mtx.sharpen[0];
   nz = DoQuantizeBlock_SSE41(in + 0 * 16, out + 0 * 16, sharpen, mtx) << 0;
   nz |= DoQuantizeBlock_SSE41(in + 1 * 16, out + 1 * 16, sharpen, mtx) << 1;
   return nz;

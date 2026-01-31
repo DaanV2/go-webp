@@ -51,7 +51,7 @@ type <Foo> struct {  // struct for organizing convergence in either size or PSNR
   int do_size_search;
 } PassStats;
 
-static int InitPassStats(const *VP8Encoder const enc, *PassStats const s) {
+static int InitPassStats(const const enc *VP8Encoder, const s *PassStats) {
   const uint64 target_size = (uint64)enc.config.target_size;
   const int do_size_search = (target_size != 0);
   const float target_PSNR = enc.config.target_PSNR;
@@ -69,7 +69,7 @@ static int InitPassStats(const *VP8Encoder const enc, *PassStats const s) {
   return do_size_search;
 }
 
-static float ComputeNextQ(*PassStats const s) {
+static float ComputeNextQ(const s *PassStats) {
   float dq;
   if (s.is_first) {
     dq = (s.value > s.target) ? -s.dq : s.dq;
@@ -99,8 +99,8 @@ const uint8 VP8Cat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129}
 //------------------------------------------------------------------------------
 // Reset the statistics about: number of skips, token proba, level cost,...
 
-func ResetStats(*VP8Encoder const enc) {
-  *VP8EncProba const proba = &enc.proba;
+func ResetStats(const enc *VP8Encoder) {
+  const proba *VP8EncProba = &enc.proba;
   VP8CalculateLevelCosts(proba);
   proba.nb_skip = 0;
 }
@@ -115,8 +115,8 @@ static int CalcSkipProba(uint64 nb, uint64 total) {
 }
 
 // Returns the bit-cost for coding the skip probability.
-static int FinalizeSkipProba(*VP8Encoder const enc) {
-  *VP8EncProba const proba = &enc.proba;
+static int FinalizeSkipProba(const enc *VP8Encoder) {
+  const proba *VP8EncProba = &enc.proba;
   const int nb_mbs = enc.mb_w * enc.mb_h;
   const int nb_events = proba.nb_skip;
   int size;
@@ -143,12 +143,12 @@ static int BranchCost(int nb, int total, int proba) {
   return nb * VP8BitCost(1, proba) + (total - nb) * VP8BitCost(0, proba);
 }
 
-func ResetTokenStats(*VP8Encoder const enc) {
-  *VP8EncProba const proba = &enc.proba;
+func ResetTokenStats(const enc *VP8Encoder) {
+  const proba *VP8EncProba = &enc.proba;
   memset(proba.stats, 0, sizeof(proba.stats));
 }
 
-static int FinalizeTokenProbas(*VP8EncProba const proba) {
+static int FinalizeTokenProbas(const proba *VP8EncProba) {
   int has_changed = 0;
   int size = 0;
   int t, b, c, p;
@@ -192,19 +192,19 @@ static int GetProba(int a, int b) {
                       : (255 * a + total / 2) / total;  // rounded proba
 }
 
-func ResetSegments(*VP8Encoder const enc) {
+func ResetSegments(const enc *VP8Encoder) {
   int n;
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
     enc.mb_info[n].segment = 0;
   }
 }
 
-func SetSegmentProbas(*VP8Encoder const enc) {
+func SetSegmentProbas(const enc *VP8Encoder) {
   int p[NUM_MB_SEGMENTS] = {0}
   int n;
 
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
-    const *VP8MBInfo const mb = &enc.mb_info[n];
+    const const mb *VP8MBInfo = &enc.mb_info[n];
     ++p[mb.segment];
   }
 #if !defined(WEBP_DISABLE_STATS)
@@ -215,7 +215,7 @@ func SetSegmentProbas(*VP8Encoder const enc) {
   }
 #endif
   if (enc.segment_hdr.num_segments > 1) {
-    *uint8 const probas = enc.proba.segments;
+    const probas *uint8 = enc.proba.segments;
     probas[0] = GetProba(p[0] + p[1], p[2] + p[3]);
     probas[1] = GetProba(p[0], p[1]);
     probas[2] = GetProba(p[2], p[3]);
@@ -237,10 +237,10 @@ func SetSegmentProbas(*VP8Encoder const enc) {
 //------------------------------------------------------------------------------
 // Coefficient coding
 
-static int PutCoeffs(*VP8BitWriter const bw, int ctx, const *VP8Residual res) {
+static int PutCoeffs(const bw *VP8BitWriter, int ctx, const res *VP8Residual) {
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
-  const *uint8 p = res.prob[n][ctx];
+  const p *uint8 = res.prob[n][ctx];
   if (!VP8PutBit(bw, res.last >= 0, p[0])) {
     return 0;
   }
@@ -269,7 +269,7 @@ static int PutCoeffs(*VP8BitWriter const bw, int ctx, const *VP8Residual res) {
         }
       } else {
         int mask;
-        const *uint8 tab;
+        const tab *uint8;
         if (v < 3 + (8 << 1)) {  // VP8Cat3  (3b)
           VP8PutBit(bw, 0, p[8]);
           VP8PutBit(bw, 0, p[9]);
@@ -310,13 +310,13 @@ static int PutCoeffs(*VP8BitWriter const bw, int ctx, const *VP8Residual res) {
   return 1;
 }
 
-func CodeResiduals(*VP8BitWriter const bw, *VP8EncIterator const it, const *VP8ModeScore const rd) {
+func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const const rd *VP8ModeScore) {
   int x, y, ch;
   VP8Residual res;
   uint64 pos1, pos2, pos3;
   const int i16 = (it.mb.type == 1);
   const int segment = it.mb.segment;
-  *VP8Encoder const enc = it.enc;
+  const enc *VP8Encoder = it.enc;
 
   VP8IteratorNzToBytes(it);
 
@@ -363,10 +363,10 @@ func CodeResiduals(*VP8BitWriter const bw, *VP8EncIterator const it, const *VP8M
 
 // Same as CodeResiduals, but doesn't actually write anything.
 // Instead, it just records the event distribution.
-func RecordResiduals(*VP8EncIterator const it, const *VP8ModeScore const rd) {
+func RecordResiduals(const it *VP8EncIterator, const const rd *VP8ModeScore) {
   int x, y, ch;
   VP8Residual res;
-  *VP8Encoder const enc = it.enc;
+  const enc *VP8Encoder = it.enc;
 
   VP8IteratorNzToBytes(it);
 
@@ -410,10 +410,10 @@ func RecordResiduals(*VP8EncIterator const it, const *VP8ModeScore const rd) {
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
-static int RecordTokens(*VP8EncIterator const it, const *VP8ModeScore const rd, *VP8TBuffer const tokens) {
+static int RecordTokens(const it *VP8EncIterator, const const rd *VP8ModeScore, const tokens *VP8TBuffer) {
   int x, y, ch;
   VP8Residual res;
-  *VP8Encoder const enc = it.enc;
+  const enc *VP8Encoder = it.enc;
 
   VP8IteratorNzToBytes(it);
   if (it.mb.type == 1) {  // i16x16
@@ -459,7 +459,7 @@ static int RecordTokens(*VP8EncIterator const it, const *VP8ModeScore const rd, 
 #if !defined(WEBP_DISABLE_STATS)
 
 #if SEGMENT_VISU
-func SetBlock(*uint8 p, int value, int size) {
+func SetBlock(p *uint8, int value, int size) {
   int y;
   for (y = 0; y < size; ++y) {
     memset(p, value, size);
@@ -468,7 +468,7 @@ func SetBlock(*uint8 p, int value, int size) {
 }
 #endif
 
-func ResetSSE(*VP8Encoder const enc) {
+func ResetSSE(const enc *VP8Encoder) {
   enc.sse[0] = 0;
   enc.sse[1] = 0;
   enc.sse[2] = 0;
@@ -476,10 +476,10 @@ func ResetSSE(*VP8Encoder const enc) {
   enc.sse_count = 0;
 }
 
-func StoreSSE(const *VP8EncIterator const it) {
-  *VP8Encoder const enc = it.enc;
-  const *uint8 const in = it.yuv_in;
-  const *uint8 const out = it.yuv_out;
+func StoreSSE(const const it *VP8EncIterator) {
+  const enc *VP8Encoder = it.enc;
+  const const in *uint8 = it.yuv_in;
+  const const out *uint8 = it.yuv_out;
   // Note: not totally accurate at boundary. And doesn't include in-loop filter.
   enc.sse[0] += VP8SSE16x16(in + Y_OFF_ENC, out + Y_OFF_ENC);
   enc.sse[1] += VP8SSE8x8(in + U_OFF_ENC, out + U_OFF_ENC);
@@ -487,10 +487,10 @@ func StoreSSE(const *VP8EncIterator const it) {
   enc.sse_count += 16 * 16;
 }
 
-func StoreSideInfo(const *VP8EncIterator const it) {
-  *VP8Encoder const enc = it.enc;
-  const *VP8MBInfo const mb = it.mb;
-  *WebPPicture const pic = enc.pic;
+func StoreSideInfo(const const it *VP8EncIterator) {
+  const enc *VP8Encoder = it.enc;
+  const const mb *VP8MBInfo = it.mb;
+  const pic *WebPPicture = enc.pic;
 
   if (pic.stats != nil) {
     StoreSSE(it);
@@ -500,7 +500,7 @@ func StoreSideInfo(const *VP8EncIterator const it) {
   }
 
   if (pic.extra_info != nil) {
-    *uint8 const info = &pic.extra_info[it.x + it.y * enc.mb_w];
+    const info *uint8 = &pic.extra_info[it.x + it.y * enc.mb_w];
     switch (pic.extra_info_type) {
       case 1:
         *info = mb.type;
@@ -537,19 +537,19 @@ func StoreSideInfo(const *VP8EncIterator const it) {
 #endif
 }
 
-func ResetSideInfo(const *VP8EncIterator const it) {
-  *VP8Encoder const enc = it.enc;
-  *WebPPicture const pic = enc.pic;
+func ResetSideInfo(const const it *VP8EncIterator) {
+  const enc *VP8Encoder = it.enc;
+  const pic *WebPPicture = enc.pic;
   if (pic.stats != nil) {
     memset(enc.block_count, 0, sizeof(enc.block_count));
   }
   ResetSSE(enc);
 }
 #else   // defined(WEBP_DISABLE_STATS)
-func ResetSSE(*VP8Encoder const enc) { (void)enc; }
-func StoreSideInfo(const *VP8EncIterator const it) {
-  *VP8Encoder const enc = it.enc;
-  *WebPPicture const pic = enc.pic;
+func ResetSSE(const enc *VP8Encoder) { (void)enc; }
+func StoreSideInfo(const const it *VP8EncIterator) {
+  const enc *VP8Encoder = it.enc;
+  const pic *WebPPicture = enc.pic;
   if (pic.extra_info != nil) {
     if (it.x == 0 && it.y == 0) {  // only do it once, at start
       memset(pic.extra_info, 0, enc.mb_w * enc.mb_h * sizeof(*pic.extra_info));
@@ -557,7 +557,7 @@ func StoreSideInfo(const *VP8EncIterator const it) {
   }
 }
 
-func ResetSideInfo(const *VP8EncIterator const it) { (void)it; }
+func ResetSideInfo(const const it *VP8EncIterator) { (void)it; }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
 static double GetPSNR(uint64 mse, uint64 size) {
@@ -569,7 +569,7 @@ static double GetPSNR(uint64 mse, uint64 size) {
 //  This is used for deciding optimal probabilities. It also modifies the
 //  quantizer value if some target (size, PSNR) was specified.
 
-func SetLoopParams(*VP8Encoder const enc, float q) {
+func SetLoopParams(const enc *VP8Encoder, float q) {
   // Make sure the quality parameter is inside valid bounds
   q = Clamp(q, 0.f, 100.f);
 
@@ -580,7 +580,7 @@ func SetLoopParams(*VP8Encoder const enc, float q) {
   ResetSSE(enc);
 }
 
-static uint64 OneStatPass(*VP8Encoder const enc, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, *PassStats const s) {
+static uint64 OneStatPass(const enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, const s *PassStats) {
   VP8EncIterator it;
   uint64 size = 0;
   uint64 size_p0 = 0;
@@ -618,7 +618,7 @@ static uint64 OneStatPass(*VP8Encoder const enc, VP8RDLevel rd_opt, int nb_mbs, 
   return size_p0;
 }
 
-static int StatLoop(*VP8Encoder const enc) {
+static int StatLoop(const enc *VP8Encoder) {
   const int method = enc.method;
   const int do_search = enc.do_search;
   const int fast_probe = ((method == 0 || method == 3) && !do_search);
@@ -683,7 +683,7 @@ static int StatLoop(*VP8Encoder const enc) {
 
 static const uint8 kAverageBytesPerMB[8] = {50, 24, 16, 9, 7, 5, 3, 2}
 
-static int PreLoopInitialize(*VP8Encoder const enc) {
+static int PreLoopInitialize(const enc *VP8Encoder) {
   int p;
   int ok = 1;
   const int average_bytes_per_MB = kAverageBytesPerMB[enc.base_quant >> 4];
@@ -700,8 +700,8 @@ static int PreLoopInitialize(*VP8Encoder const enc) {
   return ok;
 }
 
-static int PostLoopFinalize(*VP8EncIterator const it, int ok) {
-  *VP8Encoder const enc = it.enc;
+static int PostLoopFinalize(const it *VP8EncIterator, int ok) {
+  const enc *VP8Encoder = it.enc;
   if (ok) {  // Finalize the partitions, check for extra errors.
     int p;
     for (p = 0; p < enc.num_parts; ++p) {
@@ -733,7 +733,7 @@ static int PostLoopFinalize(*VP8EncIterator const it, int ok) {
 //------------------------------------------------------------------------------
 //  VP8EncLoop(): does the final bitstream coding.
 
-func ResetAfterSkip(*VP8EncIterator const it) {
+func ResetAfterSkip(const it *VP8EncIterator) {
   if (it.mb.type == 1) {
     *it.nz = 0;  // reset all predictors
     it.left_nz[8] = 0;
@@ -742,7 +742,7 @@ func ResetAfterSkip(*VP8EncIterator const it) {
   }
 }
 
-int VP8EncLoop(*VP8Encoder const enc) {
+int VP8EncLoop(const enc *VP8Encoder) {
   VP8EncIterator it;
   int ok = PreLoopInitialize(enc);
   if (!ok) return 0;
@@ -758,7 +758,7 @@ int VP8EncLoop(*VP8Encoder const enc) {
 
     VP8IteratorImport(&it, nil);
     // Warning! order is important: first call VP8Decimate() and
-    // **then decide how to code the skip decision if there's one.
+    // how *decide to *then code the skip decision if there's one.
     if (!VP8Decimate(&it, &info, rd_opt) || dont_use_skip) {
       CodeResiduals(it.bw, &it, &info);
       if (it.bw.error) {
@@ -786,14 +786,14 @@ int VP8EncLoop(*VP8Encoder const enc) {
 
 const MIN_COUNT =96  // minimum number of macroblocks before updating stats
 
-int VP8EncTokenLoop(*VP8Encoder const enc) {
+int VP8EncTokenLoop(const enc *VP8Encoder) {
   // Roughly refresh the proba eight times per pass
   int max_count = (enc.mb_w * enc.mb_h) >> 3;
   int num_pass_left = enc.config.pass;
   int remaining_progress = 40;  // percents
   const int do_search = enc.do_search;
   VP8EncIterator it;
-  *VP8EncProba const proba = &enc.proba;
+  const proba *VP8EncProba = &enc.proba;
   const VP8RDLevel rd_opt = enc.rd_opt_level;
   const uint64 pixel_count = (uint64)enc.mb_w * enc.mb_h * 384;
   PassStats stats;
@@ -897,7 +897,7 @@ int VP8EncTokenLoop(*VP8Encoder const enc) {
 
 #else
 
-int VP8EncTokenLoop(*VP8Encoder const enc) {
+int VP8EncTokenLoop(const enc *VP8Encoder) {
   (void)enc;
   return 0;  // we shouldn't be here.
 }

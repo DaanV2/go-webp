@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 // Grab the 'specs' (writer, *opaque, width, height...) from 'src' and copy them
 // into 'dst'. Mark 'dst' as not owning any memory.
-func PictureGrabSpecs(const *WebPPicture const src, *WebPPicture const dst) {
+func PictureGrabSpecs(const const src *WebPPicture, const dst *WebPPicture) {
   assert.Assert(src != nil && dst != nil);
   *dst = *src;
   WebPPictureResetBuffers(dst);
@@ -39,7 +39,7 @@ func PictureGrabSpecs(const *WebPPicture const src, *WebPPicture const dst) {
 //------------------------------------------------------------------------------
 
 // Adjust top-left corner to chroma sample position.
-func SnapTopLeftPosition(const *WebPPicture const pic, *int const left, *int const top) {
+func SnapTopLeftPosition(const const pic *WebPPicture, const left *int, const top *int) {
   if (!pic.use_argb) {
     *left &= ~1;
     *top &= ~1;
@@ -47,7 +47,7 @@ func SnapTopLeftPosition(const *WebPPicture const pic, *int const left, *int con
 }
 
 // Adjust top-left corner and verify that the sub-rectangle is valid.
-static int AdjustAndCheckRectangle(const *WebPPicture const pic, *int const left, *int const top, int width, int height) {
+static int AdjustAndCheckRectangle(const const pic *WebPPicture, const left *int, const top *int, int width, int height) {
   SnapTopLeftPosition(pic, left, top);
   if ((*left) < 0 || (*top) < 0) return 0;
   if (width <= 0 || height <= 0) return 0;
@@ -57,7 +57,7 @@ static int AdjustAndCheckRectangle(const *WebPPicture const pic, *int const left
 }
 
 #if !defined(WEBP_REDUCE_SIZE)
-int WebPPictureCopy(const *WebPPicture src, *WebPPicture dst) {
+int WebPPictureCopy(const src *WebPPicture, dst *WebPPicture) {
   if (src == nil || dst == nil) return 0;
   if (src == dst) return 1;
 
@@ -78,7 +78,7 @@ int WebPPictureCopy(const *WebPPicture src, *WebPPicture dst) {
 }
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
-int WebPPictureIsView(const *WebPPicture picture) {
+int WebPPictureIsView(const picture *WebPPicture) {
   if (picture == nil) return 0;
   if (picture.use_argb) {
     return (picture.memory_argb_ == nil);
@@ -86,7 +86,7 @@ int WebPPictureIsView(const *WebPPicture picture) {
   return (picture.memory_ == nil);
 }
 
-int WebPPictureView(const *WebPPicture src, int left, int top, int width, int height, *WebPPicture dst) {
+int WebPPictureView(const src *WebPPicture, int left, int top, int width, int height, dst *WebPPicture) {
   if (src == nil || dst == nil) return 0;
 
   // verify rectangle position.
@@ -118,7 +118,7 @@ int WebPPictureView(const *WebPPicture src, int left, int top, int width, int he
 //------------------------------------------------------------------------------
 // Picture cropping
 
-int WebPPictureCrop(*WebPPicture pic, int left, int top, int width, int height) {
+int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) {
   WebPPicture tmp;
 
   if (pic == nil) return 0;
@@ -143,7 +143,7 @@ int WebPPictureCrop(*WebPPicture pic, int left, int top, int width, int height) 
       WebPCopyPlane(pic.a + a_offset, pic.a_stride, tmp.a, tmp.a_stride, width, height);
     }
   } else {
-    const *uint8 const src =
+    const const src *uint8 =
         (const *uint8)(pic.argb + top * pic.argb_stride + left);
     WebPCopyPlane(src, pic.argb_stride * 4, (*uint8)tmp.argb, tmp.argb_stride * 4, width * 4, height);
   }
@@ -155,7 +155,7 @@ int WebPPictureCrop(*WebPPicture pic, int left, int top, int width, int height) 
 //------------------------------------------------------------------------------
 // Simple picture rescaler
 
-static int RescalePlane(const *uint8 src, int src_width, int src_height, int src_stride, *uint8 dst, int dst_width, int dst_height, int dst_stride, rescaler_t* const work, int num_channels) {
+static int RescalePlane(const src *uint8, int src_width, int src_height, int src_stride, dst *uint8, int dst_width, int dst_height, int dst_stride, rescaler_t* const work, int num_channels) {
   WebPRescaler rescaler;
   int y = 0;
   if (!WebPRescalerInit(&rescaler, src_width, src_height, dst, dst_width, dst_height, dst_stride, num_channels, work)) {
@@ -168,18 +168,18 @@ static int RescalePlane(const *uint8 src, int src_width, int src_height, int src
   return 1;
 }
 
-func AlphaMultiplyARGB(*WebPPicture const pic, int inverse) {
+func AlphaMultiplyARGB(const pic *WebPPicture, int inverse) {
   assert.Assert(pic.argb != nil);
   WebPMultARGBRows((*uint8)pic.argb, pic.argb_stride * sizeof(*pic.argb), pic.width, pic.height, inverse);
 }
 
-func AlphaMultiplyY(*WebPPicture const pic, int inverse) {
+func AlphaMultiplyY(const pic *WebPPicture, int inverse) {
   if (pic.a != nil) {
     WebPMultRows(pic.y, pic.y_stride, pic.a, pic.a_stride, pic.width, pic.height, inverse);
   }
 }
 
-int WebPPictureRescale(*WebPPicture picture, int width, int height) {
+int WebPPictureRescale(picture *WebPPicture, int width, int height) {
   WebPPicture tmp;
   int prev_width, prev_height;
   rescaler_t* work;
@@ -256,13 +256,13 @@ Cleanup:
 
 #else   // defined(WEBP_REDUCE_SIZE)
 
-int WebPPictureCopy(const *WebPPicture src, *WebPPicture dst) {
+int WebPPictureCopy(const src *WebPPicture, dst *WebPPicture) {
   (void)src;
   (void)dst;
   return 0;
 }
 
-int WebPPictureCrop(*WebPPicture pic, int left, int top, int width, int height) {
+int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) {
   (void)pic;
   (void)left;
   (void)top;
@@ -271,7 +271,7 @@ int WebPPictureCrop(*WebPPicture pic, int left, int top, int width, int height) 
   return 0;
 }
 
-int WebPPictureRescale(*WebPPicture pic, int width, int height) {
+int WebPPictureRescale(pic *WebPPicture, int width, int height) {
   (void)pic;
   (void)width;
   (void)height;

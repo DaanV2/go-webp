@@ -48,10 +48,10 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // These functions compress using the lossy format, and the quality_factor
 // can go from 0 (smaller output, lower quality) to 100 (best quality,
 // larger output).
- uint64 WebPEncodeRGB(const *uint8 rgb, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGR(const *uint8 bgr, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeRGBA(const *uint8 rgba, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGRA(const *uint8 bgra, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeRGB(const rgb *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeBGR(const bgr *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeRGBA(const rgba *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeBGRA(const bgra *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
 
 // These functions are the equivalent of the above, but compressing in a
 // lossless manner. Files are usually larger than lossy format, but will
@@ -61,10 +61,10 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // transparent areas (that is, areas with alpha values equal to 0) will be
 // modified to improve compression. To afunc this, use WebPEncode() and set
 // WebPConfig::exact to 1.
- uint64 WebPEncodeLosslessRGB(const *uint8 rgb, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessBGR(const *uint8 bgr, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessRGBA(const *uint8 rgba, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessBGRA(const *uint8 bgra, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessRGB(const rgb *uint8, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessBGR(const bgr *uint8, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessRGBA(const rgba *uint8, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessBGRA(const bgra *uint8, int width, int height, int stride, *uint8* output);
 
 //------------------------------------------------------------------------------
 // Coding parameters
@@ -155,7 +155,7 @@ typedef enum WebPPreset {
 // modification. Returns false in case of version mismatch. WebPConfigInit()
 // must have succeeded before using the 'config' object.
 // Note that the default values are lossless=0 and quality=75.
- static  int WebPConfigInit(*WebPConfig config) {
+ static  int WebPConfigInit(config *WebPConfig) {
   return WebPConfigInitInternal(config, WEBP_PRESET_DEFAULT, 75.f, WEBP_ENCODER_ABI_VERSION);
 }
 
@@ -163,7 +163,7 @@ typedef enum WebPPreset {
 // set of parameters (referred to by 'preset') and a given quality factor.
 // This function can be called as a replacement to WebPConfigInit(). Will
 // return false in case of error.
- static  int WebPConfigPreset(*WebPConfig config, WebPPreset preset, float quality) {
+ static  int WebPConfigPreset(config *WebPConfig, WebPPreset preset, float quality) {
   return WebPConfigInitInternal(config, preset, quality, WEBP_ENCODER_ABI_VERSION);
 }
 
@@ -173,11 +173,11 @@ typedef enum WebPPreset {
 // speed and final compressed size.
 // This function will overwrite several fields from config: 'method', 'quality'
 // and 'lossless'. Returns false in case of parameter error.
-  int WebPConfigLosslessPreset(*WebPConfig config, int level);
+  int WebPConfigLosslessPreset(config *WebPConfig, int level);
 
 // Returns true if 'config' is non-nil and all configuration parameters are
 // within their valid ranges.
-  int WebPValidateConfig(const *WebPConfig config);
+  int WebPValidateConfig(const config *WebPConfig);
 
 //------------------------------------------------------------------------------
 // Input / Output
@@ -217,32 +217,32 @@ type WebPAuxStats struct {
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
 // reference (and so one can make use of picture.custom_ptr).
-typedef int (*WebPWriterFunction)(const *uint8 data, uint64 data_size, const *WebPPicture picture);
+typedef int (*WebPWriterFunction)(const data *uint8, uint64 data_size, const picture *WebPPicture);
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
 // the following WebPMemoryWriter object (to be set as a custom_ptr).
 type WebPMemoryWriter struct {
-  *uint8 mem;     // final buffer (of size 'max_size', larger than 'size').
+  mem *uint8;     // final buffer (of size 'max_size', larger than 'size').
   uint64 size;      // final size
   uint64 max_size;  // total capacity
   uint32 pad[1];  // padding for later use
 }
 
 // The following must be called first before any use.
- func WebPMemoryWriterInit(*WebPMemoryWriter writer);
+ func WebPMemoryWriterInit(writer *WebPMemoryWriter);
 
 // The following must be called to deallocate writer.mem memory. The 'writer'
 // object itself is not deallocated.
- func WebPMemoryWriterClear(*WebPMemoryWriter writer);
+ func WebPMemoryWriterClear(writer *WebPMemoryWriter);
 // The custom writer to be used with WebPMemoryWriter as custom_ptr. Upon
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
-  int WebPMemoryWrite(const *uint8 data, uint64 data_size, const *WebPPicture picture);
+  int WebPMemoryWrite(const data *uint8, uint64 data_size, const picture *WebPPicture);
 
 // Progress hook, called from time to time to report progress. It can return
 // false to request an abort of the encoding process, or true otherwise if
 // everything is OK.
-typedef int (*WebPProgressHook)(int percent, const *WebPPicture picture);
+typedef int (*WebPProgressHook)(int percent, const picture *WebPPicture);
 
 // Color spaces.
 typedef enum WebPEncCSP {
@@ -276,7 +276,7 @@ const WEBP_MAX_DIMENSION =16383
 // Once WebPPictureInit() has been called, it's ok to make all the INPUT fields
 // (use_argb, y/u/v, argb, ...) point to user-owned data, even if
 // WebPPictureAlloc() has been called. Depending on the value use_argb,
-// it's guaranteed that either *argb or *y/*u/*v content will be kept untouched.
+// it's guaranteed that either or *argb *y/*u/content will be *v kept untouched.
 type WebPPicture struct {
   //   INPUT
   //////////////
@@ -291,12 +291,12 @@ type WebPPicture struct {
   int width, height;        // dimensions (less or equal to WEBP_MAX_DIMENSION)
   uint8 *y, *u, *v;       // pointers to luma/chroma planes.
   int y_stride, uv_stride;  // luma/chroma strides.
-  *uint8 a;               // pointer to the alpha plane
+  a *uint8;               // pointer to the alpha plane
   int a_stride;             // stride of the alpha plane
   uint32 pad1[2];         // padding for later use
 
   // ARGB input (mostly used for input to lossless compression)
-  *uint32 argb;    // Pointer to argb (32 bit) plane.
+  argb *uint32;    // Pointer to argb (32 bit) plane.
   int argb_stride;   // This is stride in pixels units, not bytes.
   uint32 pad2[3];  // padding for later use
 
@@ -304,12 +304,12 @@ type WebPPicture struct {
   ///////////////
   // Byte-emission hook, to store compressed bytes as they are ready.
   WebPWriterFunction writer;  // can be nil
-  *void custom_ptr;           // can be used by the writer.
+  custom_ptr *void;           // can be used by the writer.
 
   // map for extra information (only for lossy compression mode)
   int extra_info_type;  // 1: intra type, 2: segment, 3: quant
                         // 4: intra-16 prediction mode, // 5: chroma prediction mode, // 6: bit cost, 7: distortion
-  *uint8 extra_info;  // if not nil, points to an array of size
+  extra_info *uint8;  // if not nil, points to an array of size
                         // ((width + 15) / 16) * ((height + 15) / 16) that
                         // will be filled with a macroblock map, depending
                         // on extra_info_type.
@@ -317,7 +317,7 @@ type WebPPicture struct {
   //   STATS AND REPORTS
   ///////////////////////////
   // Pointer to side statistics (updated only if not nil)
-  *WebPAuxStats stats;
+  stats *WebPAuxStats;
 
   // Error code for the latest error encountered during encoding
   WebPEncodingError error_code;
@@ -325,7 +325,7 @@ type WebPPicture struct {
   // If not nil, report progress during encoding.
   WebPProgressHook progress_hook;
 
-  *void user_data;  // this field is free to be set to any value and
+  user_data *void;  // this field is free to be set to any value and
                     // used during callbacks (like progress-report e.g.).
 
   uint32 pad3[3];  // padding for later use
@@ -336,9 +336,9 @@ type WebPPicture struct {
 
   // PRIVATE FIELDS
   ////////////////////
-  *void memory_;       // row chunk of memory for yuva planes
-  *void memory_argb_;  // and for argb too.
-  *void pad7[2];       // padding for later use
+  memory_ *void;       // row chunk of memory for yuva planes
+  memory_argb_ *void;  // and for argb too.
+  pad *void7[2];       // padding for later use
 }
 
 // Internal, version-checked, entry point
@@ -348,7 +348,7 @@ type WebPPicture struct {
 // of version mismatch. WebPPictureInit() must have succeeded before using the
 // 'picture' object.
 // Note that, by default, use_argb is false and colorspace is WEBP_YUV420.
- static  int WebPPictureInit(*WebPPicture picture) {
+ static  int WebPPictureInit(picture *WebPPicture) {
   return WebPPictureInitInternal(picture, WEBP_ENCODER_ABI_VERSION);
 }
 
@@ -359,20 +359,20 @@ type WebPPicture struct {
 // Allocate y/u/v buffers as per colorspace/width/height specification.
 // Note! This function will free the previous buffer if needed.
 // Returns false in case of memory error.
-  int WebPPictureAlloc(*WebPPicture picture);
+  int WebPPictureAlloc(picture *WebPPicture);
 
 // Release the memory allocated by WebPPictureAlloc() or *WebPPictureImport().
 // Note that this function does _not_ free the memory used by the 'picture'
 // object itself.
 // Besides memory (which is reclaimed) all other fields of 'picture' are
 // preserved.
- func WebPPictureFree(*WebPPicture picture);
+ func WebPPictureFree(picture *WebPPicture);
 
-// Copy the pixels of *src into *dst, using WebPPictureAlloc. Upon return, *dst
+// Copy the pixels of into *src *dst, using WebPPictureAlloc. Upon return, *dst
 // will fully own the copied pixels (this is not a view). The 'dst' picture need
 // not be initialized as its content is overwritten.
 // Returns false in case of memory allocation error.
-  int WebPPictureCopy(const *WebPPicture src, *WebPPicture dst);
+  int WebPPictureCopy(const src *WebPPicture, dst *WebPPicture);
 
 // Compute the single distortion for packed planes of samples.
 // 'src' will be compared to 'ref', and the raw distortion stored into
@@ -382,8 +382,8 @@ type WebPPicture struct {
 // 'src/ref_stride' is the byte distance between rows.
 // Returns false in case of error (bad parameter, memory allocation error, ...).
   int WebPPlaneDistortion(
-    const *uint8 src, uint64 src_stride, const *uint8 ref, uint64 ref_stride, int width, int height, uint64 x_step, int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
-    *float distortion, *float result);
+    const src *uint8, uint64 src_stride, const ref *uint8, uint64 ref_stride, int width, int height, uint64 x_step, int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
+    distortion *float, result *float);
 
 // Compute PSNR, SSIM or LSIM distortion metric between two pictures. Results
 // are in dB, stored in result[] in the B/G/R/A/All order. The distortion is
@@ -391,7 +391,7 @@ type WebPPicture struct {
 // picture will be internally converted to ARGB (just for the measurement).
 // Warning: this function is rather CPU-intensive.
   int WebPPictureDistortion(
-    const *WebPPicture src, const *WebPPicture ref, int metric_type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
+    const src *WebPPicture, const ref *WebPPicture, int metric_type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     float result[5]);
 
 // self-crops a picture to the rectangle defined by top/left/width/height.
@@ -402,7 +402,7 @@ type WebPPicture struct {
 // must be fully be comprised inside the 'src' source picture. If the source
 // picture uses the YUV420 colorspace, the top and left coordinates will be
 // snapped to even values.
-  int WebPPictureCrop(*WebPPicture picture, int left, int top, int width, int height);
+  int WebPPictureCrop(picture *WebPPicture, int left, int top, int width, int height);
 
 // Extracts a view from 'src' picture into 'dst'. The rectangle for the view
 // is defined by the top-left corner pixel coordinates (left, top) as well
@@ -415,35 +415,35 @@ type WebPPicture struct {
 // with WebPPictureInit() if it is different from 'src', since its content will
 // be overwritten.
 // Returns false in case of invalid parameters.
-  int WebPPictureView(const *WebPPicture src, int left, int top, int width, int height, *WebPPicture dst);
+  int WebPPictureView(const src *WebPPicture, int left, int top, int width, int height, dst *WebPPicture);
 
 // Returns true if the 'picture' is actually a view and therefore does
 // not own the memory for pixels.
- int WebPPictureIsView(const *WebPPicture picture);
+ int WebPPictureIsView(const picture *WebPPicture);
 
 // Rescale a picture to new dimension width x height.
 // If either 'width' or 'height' (but not both) is 0 the corresponding
 // dimension will be calculated preserving the aspect ratio.
 // No gamma correction is applied.
 // Returns false in case of error (invalid parameter or insufficient memory).
-  int WebPPictureRescale(*WebPPicture picture, int width, int height);
+  int WebPPictureRescale(picture *WebPPicture, int width, int height);
 
 // Colorspace conversion function to import RGB samples.
 // Previous buffer will be free'd, if any.
-// *rgb buffer should have a size of at least height * rgb_stride.
+// buffer should have *rgb a size of at least height * rgb_stride.
 // Returns false in case of memory error.
-  int WebPPictureImportRGB(*WebPPicture picture, const *uint8 rgb, int rgb_stride);
+  int WebPPictureImportRGB(picture *WebPPicture, const rgb *uint8, int rgb_stride);
 // Same, but for RGBA buffer.
-  int WebPPictureImportRGBA(*WebPPicture picture, const *uint8 rgba, int rgba_stride);
+  int WebPPictureImportRGBA(picture *WebPPicture, const rgba *uint8, int rgba_stride);
 // Same, but for RGBA buffer. Imports the RGB direct from the 32-bit format
 // input buffer ignoring the alpha channel. Avoids needing to copy the data
 // to a temporary 24-bit RGB buffer to import the RGB only.
-  int WebPPictureImportRGBX(*WebPPicture picture, const *uint8 rgbx, int rgbx_stride);
+  int WebPPictureImportRGBX(picture *WebPPicture, const rgbx *uint8, int rgbx_stride);
 
 // Variants of the above, but taking BGR(A|X) input.
-  int WebPPictureImportBGR(*WebPPicture picture, const *uint8 bgr, int bgr_stride);
-  int WebPPictureImportBGRA(*WebPPicture picture, const *uint8 bgra, int bgra_stride);
-  int WebPPictureImportBGRX(*WebPPicture picture, const *uint8 bgrx, int bgrx_stride);
+  int WebPPictureImportBGR(picture *WebPPicture, const bgr *uint8, int bgr_stride);
+  int WebPPictureImportBGRA(picture *WebPPicture, const bgra *uint8, int bgra_stride);
+  int WebPPictureImportBGRX(picture *WebPPicture, const bgrx *uint8, int bgrx_stride);
 
 // Converts picture.argb data to the YUV420A format. The 'colorspace'
 // parameter is deprecated and should be equal to WEBP_YUV420.
@@ -452,23 +452,23 @@ type WebPPicture struct {
 // adjusted accordingly. Note that this method is lossy.
 // Returns false in case of error.
   int WebPPictureARGBToYUVA(
-    *WebPPicture picture, WebPEncCSP /*colorspace = WEBP_*YUV420/);
+    picture *WebPPicture, WebPEncCSP /*colorspace = WEBP_*YUV420/);
 
 // Same as WebPPictureARGBToYUVA(), but the conversion is done using
 // pseudo-random dithering with a strength 'dithering' between
 // 0.0 (no dithering) and 1.0 (maximum dithering). This is useful
 // for photographic picture.
   int WebPPictureARGBToYUVADithered(
-    *WebPPicture picture, WebPEncCSP colorspace, float dithering);
+    picture *WebPPicture, WebPEncCSP colorspace, float dithering);
 
 // Performs 'sharp' RGBA.YUVA420 downsampling and colorspace conversion
 // Downsampling is handled with extra care in case of color clipping. This
 // method is roughly 2x slower than WebPPictureARGBToYUVA() but produces better
 // and sharper YUV representation.
 // Returns false in case of error.
-  int WebPPictureSharpARGBToYUVA(*WebPPicture picture);
+  int WebPPictureSharpARGBToYUVA(picture *WebPPicture);
 // kept for backward compatibility:
-  int WebPPictureSmartARGBToYUVA(*WebPPicture picture);
+  int WebPPictureSmartARGBToYUVA(picture *WebPPicture);
 
 // Converts picture.yuv to picture.argb and sets picture.use_argb to true.
 // The input format must be YUV_420 or YUV_420A. The conversion from YUV420 to
@@ -476,22 +476,22 @@ type WebPPicture struct {
 // Note that the use of this colorspace is discouraged if one has access to the
 // raw ARGB samples, since using YUV420 is comparatively lossy.
 // Returns false in case of error.
-  int WebPPictureYUVAToARGB(*WebPPicture picture);
+  int WebPPictureYUVAToARGB(picture *WebPPicture);
 
 // Helper function: given a width x height plane of RGBA or YUV(A) samples
 // clean-up or smoothen the YUV or RGB samples under fully transparent area,
 // to help compressibility (no guarantee, though).
- func WebPCleanupTransparentArea(*WebPPicture picture);
+ func WebPCleanupTransparentArea(picture *WebPPicture);
 
 // Scan the picture 'picture' for the presence of non fully opaque alpha values.
 // Returns true in such case. Otherwise returns false (indicating that the
 // alpha plane can be ignored altogether e.g.).
- int WebPPictureHasTransparency(const *WebPPicture picture);
+ int WebPPictureHasTransparency(const picture *WebPPicture);
 
 // Remove the transparency information (if present) by blending the color with
 // the background color 'background_rgb' (specified as 24bit RGB triplet).
 // After this call, all alpha values are reset to 0xff.
- func WebPBlendAlpha(*WebPPicture picture, uint32 background_rgb);
+ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb);
 
 //------------------------------------------------------------------------------
 // Main call
@@ -506,7 +506,7 @@ type WebPPicture struct {
 // the former for lossy encoding, and the latter for lossless encoding
 // (when config.lossless is true). Automatic conversion from one format to
 // another is provided but they both incur some loss.
-  int WebPEncode(const *WebPConfig config, *WebPPicture picture);
+  int WebPEncode(const config *WebPConfig, picture *WebPPicture);
 
 //------------------------------------------------------------------------------
 

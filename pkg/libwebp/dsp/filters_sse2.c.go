@@ -38,7 +38,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
     assert.Assert(stride >= width); \
   } while (0)
 
-func PredictLineTop_SSE2(const *uint8 WEBP_RESTRICT src, const *uint8 WEBP_RESTRICT pred, *uint8 WEBP_RESTRICT dst, int length) {
+func PredictLineTop_SSE2(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
   int i;
   const int max_pos = length & ~31;
   assert.Assert(length >= 0);
@@ -56,7 +56,7 @@ func PredictLineTop_SSE2(const *uint8 WEBP_RESTRICT src, const *uint8 WEBP_RESTR
 }
 
 // Special case for left-based prediction (when preds==dst-1 or preds==src-1).
-func PredictLineLeft_SSE2(const *uint8 WEBP_RESTRICT src, *uint8 WEBP_RESTRICT dst, int length) {
+func PredictLineLeft_SSE2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int length) {
   int i;
   const int max_pos = length & ~31;
   assert.Assert(length >= 0);
@@ -76,7 +76,7 @@ func PredictLineLeft_SSE2(const *uint8 WEBP_RESTRICT src, *uint8 WEBP_RESTRICT d
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static  func DoHorizontalFilter_SSE2(const *uint8 WEBP_RESTRICT in, int width, int height, int stride, *uint8 WEBP_RESTRICT out) {
+static  func DoHorizontalFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   int row;
   DCHECK(in, out);
 
@@ -99,7 +99,7 @@ static  func DoHorizontalFilter_SSE2(const *uint8 WEBP_RESTRICT in, int width, i
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static  func DoVerticalFilter_SSE2(const *uint8 WEBP_RESTRICT in, int width, int height, int stride, *uint8 WEBP_RESTRICT out) {
+static  func DoVerticalFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   int row;
   DCHECK(in, out);
 
@@ -126,7 +126,7 @@ static  int GradientPredictor_SSE2(uint8 a, uint8 b, uint8 c) {
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
-func GradientPredictDirect_SSE2(const *uint8 const row, const *uint8 const top, *uint8 WEBP_RESTRICT const out, int length) {
+func GradientPredictDirect_SSE2(const const row *uint8, const const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
   const int max_pos = length & ~7;
   int i;
   const __m128i zero = _mm_setzero_si128();
@@ -150,7 +150,7 @@ func GradientPredictDirect_SSE2(const *uint8 const row, const *uint8 const top, 
   }
 }
 
-static  func DoGradientFilter_SSE2(const *uint8 WEBP_RESTRICT in, int width, int height, int stride, *uint8 WEBP_RESTRICT out) {
+static  func DoGradientFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   int row;
   DCHECK(in, out);
 
@@ -173,22 +173,22 @@ static  func DoGradientFilter_SSE2(const *uint8 WEBP_RESTRICT in, int width, int
 
 //------------------------------------------------------------------------------
 
-func HorizontalFilter_SSE2(const *uint8 WEBP_RESTRICT data, int width, int height, int stride, *uint8 WEBP_RESTRICT filtered_data) {
+func HorizontalFilter_SSE2(const WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoHorizontalFilter_SSE2(data, width, height, stride, filtered_data);
 }
 
-func VerticalFilter_SSE2(const *uint8 WEBP_RESTRICT data, int width, int height, int stride, *uint8 WEBP_RESTRICT filtered_data) {
+func VerticalFilter_SSE2(const WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoVerticalFilter_SSE2(data, width, height, stride, filtered_data);
 }
 
-func GradientFilter_SSE2(const *uint8 WEBP_RESTRICT data, int width, int height, int stride, *uint8 WEBP_RESTRICT filtered_data) {
+func GradientFilter_SSE2(const WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoGradientFilter_SSE2(data, width, height, stride, filtered_data);
 }
 
 //------------------------------------------------------------------------------
 // Inverse transforms
 
-func HorizontalUnfilter_SSE2(const *uint8 prev, const *uint8 in, *uint8 out, int width) {
+func HorizontalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int width) {
   int i;
   __m128i last;
   out[0] = (uint8)(in[0] + (prev == nil ? 0 : prev[0]));
@@ -209,7 +209,7 @@ func HorizontalUnfilter_SSE2(const *uint8 prev, const *uint8 in, *uint8 out, int
   for (; i < width; ++i) out[i] = (uint8)(in[i] + out[i - 1]);
 }
 
-func VerticalUnfilter_SSE2(const *uint8 prev, const *uint8 in, *uint8 out, int width) {
+func VerticalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int width) {
   if (prev == nil) {
     HorizontalUnfilter_SSE2(nil, in, out, width);
   } else {
@@ -230,7 +230,7 @@ func VerticalUnfilter_SSE2(const *uint8 prev, const *uint8 in, *uint8 out, int w
   }
 }
 
-func GradientPredictInverse_SSE2(const *uint8 const in, const *uint8 const top, *uint8 const row, int length) {
+func GradientPredictInverse_SSE2(const const in *uint8, const const top *uint8, const row *uint8, int length) {
   if (length > 0) {
     int i;
     const int max_pos = length & ~7;
@@ -267,7 +267,7 @@ func GradientPredictInverse_SSE2(const *uint8 const in, const *uint8 const top, 
   }
 }
 
-func GradientUnfilter_SSE2(const *uint8 prev, const *uint8 in, *uint8 out, int width) {
+func GradientUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int width) {
   if (prev == nil) {
     HorizontalUnfilter_SSE2(nil, in, out, width);
   } else {

@@ -119,10 +119,10 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     dst = VSHF_UB(src, t0, mask1);                                \
   } while (0)
 
-func ConvertBGRAToRGBA_MSA(const *uint32 src, int num_pixels, *uint8 dst) {
+func ConvertBGRAToRGBA_MSA(const src *uint32, int num_pixels, dst *uint8) {
   int i;
-  const *uint8 ptemp_src = (const *uint8)src;
-  *uint8 ptemp_dst = (*uint8)dst;
+  const ptemp_src *uint8 = (const *uint8)src;
+  ptemp_dst *uint8 = (*uint8)dst;
   v16u8 src0, dst0;
   const v16u8 mask = {2, 1, 0, 3, 6, 5, 4, 7, 10, 9, 8, 11, 14, 13, 12, 15}
 
@@ -159,9 +159,9 @@ func ConvertBGRAToRGBA_MSA(const *uint32 src, int num_pixels, *uint8 dst) {
   }
 }
 
-func ConvertBGRAToBGR_MSA(const *uint32 src, int num_pixels, *uint8 dst) {
-  const *uint8 ptemp_src = (const *uint8)src;
-  *uint8 ptemp_dst = (*uint8)dst;
+func ConvertBGRAToBGR_MSA(const src *uint32, int num_pixels, dst *uint8) {
+  const ptemp_src *uint8 = (const *uint8)src;
+  ptemp_dst *uint8 = (*uint8)dst;
   const v16u8 mask0 = {0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 20}
   const v16u8 mask1 = {5,  6,  8,  9,  10, 12, 13, 14, 16, 17, 18, 20, 21, 22, 24, 25}
   const v16u8 mask2 = {10, 12, 13, 14, 16, 17, 18, 20, 21, 22, 24, 25, 26, 28, 29, 30}
@@ -202,9 +202,9 @@ func ConvertBGRAToBGR_MSA(const *uint32 src, int num_pixels, *uint8 dst) {
   }
 }
 
-func ConvertBGRAToRGB_MSA(const *uint32 src, int num_pixels, *uint8 dst) {
-  const *uint8 ptemp_src = (const *uint8)src;
-  *uint8 ptemp_dst = (*uint8)dst;
+func ConvertBGRAToRGB_MSA(const src *uint32, int num_pixels, dst *uint8) {
+  const ptemp_src *uint8 = (const *uint8)src;
+  ptemp_dst *uint8 = (*uint8)dst;
   const v16u8 mask0 = {2, 1, 0, 6, 5, 4, 10, 9, 8, 14, 13, 12, 18, 17, 16, 22}
   const v16u8 mask1 = {5,  4,  10, 9,  8,  14, 13, 12, 18, 17, 16, 22, 21, 20, 26, 25}
   const v16u8 mask2 = {8,  14, 13, 12, 18, 17, 16, 22, 21, 20, 26, 25, 24, 30, 29, 28}
@@ -245,10 +245,10 @@ func ConvertBGRAToRGB_MSA(const *uint32 src, int num_pixels, *uint8 dst) {
   }
 }
 
-func AddGreenToBlueAndRed_MSA(const *uint32 const src, int num_pixels, *uint32 dst) {
+func AddGreenToBlueAndRed_MSA(const const src *uint32, int num_pixels, dst *uint32) {
   int i;
-  const *uint8 in = (const *uint8)src;
-  *uint8 out = (*uint8)dst;
+  const in *uint8 = (const *uint8)src;
+  out *uint8 = (*uint8)dst;
   v16u8 src0, dst0, tmp0;
   const v16u8 mask = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255}
 
@@ -285,7 +285,7 @@ func AddGreenToBlueAndRed_MSA(const *uint32 const src, int num_pixels, *uint32 d
   }
 }
 
-func TransformColorInverse_MSA(const *VP8LMultipliers const m, const *uint32 src, int num_pixels, *uint32 dst) {
+func TransformColorInverse_MSA(const const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
   v16u8 src0, dst0;
   const v16i8 g2br =
       (v16i8)__msa_fill_w(m.green_to_blue | (m.green_to_red << 16));

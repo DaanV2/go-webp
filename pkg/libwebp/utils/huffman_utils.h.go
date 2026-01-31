@@ -46,12 +46,12 @@ type <Foo> struct {
 
 // Contiguous memory segment of HuffmanCodes.
 typedef type HuffmanTablesSegment struct {
-  *HuffmanCode WEBP_COUNTED_BY_OR_nil(size) start;
+  WEBP_COUNTED_BY_OR_nil *HuffmanCode(size) start;
   // Pointer to where we are writing into the segment. Starts at 'start' and
   // cannot go beyond 'start' + 'size'.
-  *HuffmanCode WEBP_UNSAFE_INDEXABLE curr_table;
+  WEBP_UNSAFE_INDEXABLE curr_table *HuffmanCode;
   // Pointer to the next segment in the chain.
-  struct *HuffmanTablesSegment next;
+  struct next *HuffmanTablesSegment;
   int size;
 } HuffmanTablesSegment;
 
@@ -59,13 +59,13 @@ typedef type HuffmanTablesSegment struct {
 typedef type HuffmanTables struct {
   HuffmanTablesSegment root;
   // Currently processed segment. At first, this is 'root'.
-  *HuffmanTablesSegment curr_segment;
+  curr_segment *HuffmanTablesSegment;
 } HuffmanTables;
 
 // Allocates a HuffmanTables with 'size' contiguous HuffmanCodes. Returns 0 on
 // memory allocation error, 1 otherwise.
- int VP8LHuffmanTablesAllocate(int size, *HuffmanTables huffman_tables);
-func VP8LHuffmanTablesDeallocate(*HuffmanTables const huffman_tables);
+ int VP8LHuffmanTablesAllocate(int size, huffman_tables *HuffmanTables);
+func VP8LHuffmanTablesDeallocate(const huffman_tables *HuffmanTables);
 
 const HUFFMAN_PACKED_BITS =6
 const HUFFMAN_PACKED_TABLE_SIZE =(uint(1) << HUFFMAN_PACKED_BITS)
@@ -79,7 +79,7 @@ const HUFFMAN_PACKED_TABLE_SIZE =(uint(1) << HUFFMAN_PACKED_BITS)
 // The common literal base, if applicable, is stored in 'literal_arb'.
 typedef struct HTreeGroup HTreeGroup;
 type HTreeGroup struct {
-  *HuffmanCode htrees[HUFFMAN_CODES_PER_META_CODE];
+  htrees *HuffmanCode[HUFFMAN_CODES_PER_META_CODE];
   int is_trivial_literal;  // True, if huffman trees for Red, Blue & Alpha
                            // Symbols are trivial (have a single code).
   uint32 literal_arb;    // If is_trivial_literal is true, this is the
@@ -92,10 +92,10 @@ type HTreeGroup struct {
 }
 
 // Creates the instance of HTreeGroup with specified number of tree-groups.
- *HTreeGroup VP8LHtreeGroupsNew(int num_htree_groups);
+ VP *HTreeGroup8LHtreeGroupsNew(int num_htree_groups);
 
 // Releases the memory allocated for HTreeGroup.
-func VP8LHtreeGroupsFree(*HTreeGroup const htree_groups);
+func VP8LHtreeGroupsFree(const htree_groups *HTreeGroup);
 
 // Builds Huffman lookup table assuming code lengths are in symbol order.
 // The 'code_lengths' is pre-allocated temporary memory buffer used for creating
@@ -103,7 +103,7 @@ func VP8LHtreeGroupsFree(*HTreeGroup const htree_groups);
 // Returns built table size or 0 in case of error (invalid tree or
 // memory error).
  int VP8LBuildHuffmanTable(
-    *HuffmanTables const root_table, int root_bits, const int  code_lengths[], int code_lengths_size);
+    const root_table *HuffmanTables, int root_bits, const int  code_lengths[], int code_lengths_size);
 
 #ifdef __cplusplus
 }  // extern "C"

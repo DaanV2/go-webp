@@ -35,20 +35,20 @@ type ALPHDecoder struct {
   int method;
   WEBP_FILTER_TYPE filter;
   int pre_processing;
-  struct *VP8LDecoder vp8l_dec;
+  struct vp *VP8LDecoder8l_dec;
   VP8Io io;
   int use_8b_decode;  // Although alpha channel requires only 1 byte per
                       // pixel, sometimes VP8LDecoder may need to allocate
                       // 4 bytes per pixel internally during decode.
-  *uint8 output;
-  const *uint8 prev_line;  // last output row (or nil)
+  output *uint8;
+  const prev_line *uint8;  // last output row (or nil)
 }
 
 //------------------------------------------------------------------------------
 // internal functions. Not public.
 
 // Deallocate memory associated to dec.alpha_plane decoding
-func WebPDeallocateAlphaMemory(*VP8Decoder const dec);
+func WebPDeallocateAlphaMemory(const dec *VP8Decoder);
 
 //------------------------------------------------------------------------------
 

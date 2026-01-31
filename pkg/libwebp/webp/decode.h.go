@@ -55,7 +55,7 @@ func WebPGetInfo(data *uint8, data_size uint64,  width *int, height *int) int {
 }
 
 // Decodes WebP images pointed to by 'data' and returns RGBA samples, along
-// with the dimensions in *width and *height. The ordering of samples in
+// with the dimensions in and *width *height. The ordering of samples in
 // memory is R, G, B, A, R, G, B, A... in scan order (endian-independent).
 // The returned pointer should be deleted calling WebPFree().
 // Returns nil in case of error.
@@ -90,7 +90,7 @@ func  WebPDecodeBGR(data *uint8, data_size uint64, width *int, height *int) *uin
 }
 
 // Decode WebP images pointed to by 'data' to Y'UV format(*). The pointer
-// returned is the Y samples buffer. Upon return, *u and *v will point to
+// returned is the Y samples buffer. Upon return, and will point *u to *v
 // the U and V chroma data. These U and V buffers need NOT be passed to
 // WebPFree(), unlike the returned Y luma one. The dimension of the U and V
 // planes are both (*width + 1) / 2 and (*height + 1) / 2.
@@ -154,7 +154,7 @@ func WebPDecodeYUVInto(    data *uint8, data_size uint64,  luma *uint8,  luma_si
 type WebPRGBABuffer struct {  // view as RGBA
   rgba *uint8          // pointer to RGBA samples
   stride int            // stride in bytes from one scanline to the next.
-  size uint64           // total size of the *rgba buffer.
+  size uint64           // total size of the buffer *rgba.
 }
 
 type WebPYUVABuffer struct {    // view as YUVA
@@ -196,13 +196,13 @@ func WebPInitDecBufferInternal(*WebPDecBuffer, int) int {
 
 // Initialize the structure as empty. Must be called before any other use.
 // Returns false in case of version mismatch
- static  int WebPInitDecBuffer(*WebPDecBuffer buffer) {
+func WebPInitDecBuffer(buffer *WebPDecBuffer) int {
   return WebPInitDecBufferInternal(buffer, WEBP_DECODER_ABI_VERSION);
 }
 
 // Free any memory associated with the buffer. Must always be called last.
 // Note: doesn't free the 'buffer' structure itself.
- func WebPFreeDecBuffer(*WebPDecBuffer buffer);
+ func WebPFreeDecBuffer(buffer *WebPDecBuffer);
 
 
 
@@ -218,7 +218,7 @@ func WebPInitDecBufferInternal(*WebPDecBuffer, int) int {
      WebPInitDecBuffer(&output_buffer);
      output_buffer.colorspace = mode;
      ...
-     *WebPIDecoder idec = WebPINewDecoder(&output_buffer);
+     idec *WebPIDecoder = WebPINewDecoder(&output_buffer);
      while (additional_data_is_available) {
        // ... (get additional data in some new_data[] buffer)
        status = WebPIAppend(idec, new_data, new_data_size);
@@ -245,8 +245,10 @@ func WebPInitDecBufferInternal(*WebPDecBuffer, int) int {
 // within valid bounds.
 // All other fields of WebPDecBuffer MUST remain constant between calls.
 // Returns nil if the allocation failed.
-  *WebPIDecoder WebPINewDecoder(
-    *WebPDecBuffer output_buffer);
+func WebPINewDecoder(output_buffer *WebPDecBuffer ) *WebPIDecoder {
+	//TODO: implement
+	return nil
+}
 
 // This function allocates and initializes an incremental-decoder object, which
 // will output the RGB/A samples specified by 'csp' into a preallocated
@@ -258,7 +260,7 @@ func WebPInitDecBufferInternal(*WebPDecBuffer, int) int {
 // colorspace 'csp' is taken into account for allocating this buffer. All other
 // parameters are ignored.
 // Returns nil if the allocation failed, or if some parameters are invalid.
-  *WebPIDecoder WebPINewRGB(
+  WebPINewRGB *WebPIDecoder(
     WEBP_CSP_MODE csp, *uint8  output_buffer, uint64 output_buffer_size, int output_stride);
 
 // This function allocates and initializes an incremental-decoder object, which
@@ -272,22 +274,22 @@ func WebPInitDecBufferInternal(*WebPDecBuffer, int) int {
 // In this case, the output buffer will be automatically allocated (using
 // MODE_YUVA) when decoding starts. All parameters are then ignored.
 // Returns nil if the allocation failed or if a parameter is invalid.
-  *WebPIDecoder WebPINewYUVA(
+  WebPINewYUVA *WebPIDecoder(
     *uint8  luma, uint64 luma_size, int luma_stride, *uint8  u, uint64 u_size, int u_stride, *uint8  v, uint64 v_size, int v_stride, *uint8  a, uint64 a_size, int a_stride);
 
 // Deprecated version of the above, without the alpha plane.
 // Kept for backward compatibility.
-  *WebPIDecoder WebPINewYUV(
+  WebPINewYUV *WebPIDecoder(
     *uint8  luma, uint64 luma_size, int luma_stride, *uint8  u, uint64 u_size, int u_stride, *uint8  v, uint64 v_size, int v_stride);
 
 // Deletes the WebPIDecoder object and associated memory. Must always be called
 // if WebPINewDecoder, WebPINewRGB or WebPINewYUV succeeded.
- func WebPIDelete(*WebPIDecoder idec);
+ func WebPIDelete(idec *WebPIDecoder);
 
 // Copies and decodes the next available data. Returns VP8_STATUS_OK when
 // the image is successfully decoded. Returns VP8_STATUS_SUSPENDED when more
 // data is expected. Returns error in other cases.
- VP8StatusCode WebPIAppend(*WebPIDecoder idec, *uint8 
+ VP8StatusCode WebPIAppend(idec *WebPIDecoder, *uint8 
                                           data, data_size uint64);
 
 // A variant of the above function to be used when data buffer contains
@@ -295,27 +297,27 @@ func WebPInitDecBufferInternal(*WebPDecBuffer, int) int {
 // to the internal memory.
 // Note that the value of the 'data' pointer can change between calls to
 // WebPIUpdate, for instance when the data buffer is resized to fit larger data.
- VP8StatusCode WebPIUpdate(*WebPIDecoder idec, *uint8 
+ VP8StatusCode WebPIUpdate(idec *WebPIDecoder, *uint8 
                                           data, data_size uint64);
 
 // Returns the RGB/A image decoded so far. Returns nil if output params
 // are not initialized yet. The RGB/A output type corresponds to the colorspace
 // specified during call to WebPINewDecoder() or WebPINewRGB().
-// *last_y is the index of last decoded row in raster scan order. Some pointers
-// (*last_y, *width etc.) can be nil if corresponding information is not
+// is the index *last_y of last decoded row in raster scan order. Some pointers
+// (*last_y, etc *width.) can be nil if corresponding information is not
 // needed. The values in these pointers are only valid on successful (non-nil)
 // return.
-  *uint8 WebPIDecGetRGB(const *WebPIDecoder idec, *int last_y, width *int, height *int, *int stride);
+  WebPIDecGetRGB *uint8(const idec *WebPIDecoder, last_y *int, width *int, height *int, stride *int);
 
 // Same as above function to get a YUVA image. Returns pointer to the luma
 // plane or nil in case of error. If there is no alpha information
 // the alpha pointer '*a' will be returned nil.
-  *uint8 WebPIDecGetYUVA(const *WebPIDecoder idec, *int last_y, *uint8* u, *uint8* v, *uint8* a, width *int, height *int, *int stride, *int uv_stride, *int a_stride);
+  WebPIDecGetYUVA *uint8(const idec *WebPIDecoder, last_y *int, *uint8* u, *uint8* v, *uint8* a, width *int, height *int, stride *int, uv_stride *int, a_stride *int);
 
 // Deprecated alpha-less version of WebPIDecGetYUVA(): it will ignore the
 // alpha information (if present). Kept for backward compatibility.
- static  *uint8 WebPIDecGetYUV(
-    const *WebPIDecoder idec, *int last_y, *uint8* u, *uint8* v, width *int, height *int, *int stride, *int uv_stride) {
+ static  WebPIDecGetYUV *uint8(
+    const idec *WebPIDecoder, last_y *int, *uint8* u, *uint8* v, width *int, height *int, stride *int, uv_stride *int) {
   return WebPIDecGetYUVA(idec, last_y, u, v, nil, width, height, stride, uv_stride, nil);
 }
 
@@ -325,8 +327,8 @@ func WebPInitDecBufferInternal(*WebPDecBuffer, int) int {
 // Returns nil in case the incremental decoder object is in an invalid state.
 // Otherwise returns the pointer to the internal representation. This structure
 // is read-only, tied to WebPIDecoder's lifespan and should not be modified.
-  const *WebPDecBuffer WebPIDecodedArea(
-    const *WebPIDecoder idec, *int left, *int top, width *int, height *int);
+  const WebPIDecodedArea *WebPDecBuffer(
+    const idec *WebPIDecoder, left *int, top *int, width *int, height *int);
 
 //------------------------------------------------------------------------------
 // Advanced decoding parametrization
@@ -376,7 +378,7 @@ type WebPBitstreamFeatures struct {
  VP8StatusCode
 WebPGetFeaturesInternal(*uint8 , data_size uint64, *WebPBitstreamFeatures, int);
 
-// Retrieve features from the bitstream. The *features structure is filled
+// Retrieve features from the bitstream. The structure is filled *features
 // with information gathered from the bitstream.
 // Returns VP8_STATUS_OK when the features are successfully retrieved. Returns
 // VP8_STATUS_NOT_ENOUGH_DATA when more data is needed to retrieve the
@@ -388,7 +390,7 @@ WebPGetFeaturesInternal(*uint8 , data_size uint64, *WebPBitstreamFeatures, int);
 // ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
 static  VP8StatusCode
-WebPGetFeatures(data *uint8, data_size uint64, *WebPBitstreamFeatures features) {
+WebPGetFeatures(data *uint8, data_size uint64, features *WebPBitstreamFeatures) {
   return WebPGetFeaturesInternal(data, data_size, features, WEBP_DECODER_ABI_VERSION);
 }
 
@@ -426,14 +428,14 @@ type WebPDecoderConfig struct {
 // called first, unless WebPGetFeatures() is to be called.
 // Returns false in case of mismatched version.
  static  int WebPInitDecoderConfig(
-    *WebPDecoderConfig config) {
+    config *WebPDecoderConfig) {
   return WebPInitDecoderConfigInternal(config, WEBP_DECODER_ABI_VERSION);
 }
 
 // Returns true if 'config' is non-nil and all configuration parameters are
 // within their valid ranges.
   int WebPValidateDecoderConfig(
-    const *WebPDecoderConfig config);
+    const config *WebPDecoderConfig);
 
 // Instantiate a new incremental decoder object with the requested
 // configuration. The bitstream can be passed using 'data' and 'data_size'
@@ -446,14 +448,14 @@ type WebPDecoderConfig struct {
 // The return WebPIDecoder object must always be deleted calling WebPIDelete().
 // Returns nil in case of error (and config.status will then reflect
 // the error condition, if available).
-  *WebPIDecoder WebPIDecode(
-    data *uint8, data_size uint64, *WebPDecoderConfig config);
+  WebPIDecode *WebPIDecoder(
+    data *uint8, data_size uint64, config *WebPDecoderConfig);
 
 // Non-incremental version. This version decodes the full data at once, taking
 // 'config' into account. Returns decoding status (which should be VP8_STATUS_OK
 // if the decoding was successful). Note that 'config' cannot be nil.
 func WebPDecode(*uint8 
-                                         data, data_size uint64, *WebPDecoderConfig config) VP8StatusCode {
+                                         data, data_size uint64, config *WebPDecoderConfig) VP8StatusCode {
 										// TODO: implement
 									 }
 

@@ -111,7 +111,7 @@ type <Foo> struct {
   uint8 segments[MB_FEATURE_TREE_PROBS];
   // Type: 0:Intra16-AC  1:Intra16-DC   2:Chroma   3:Intra4
   VP8BandProbas bands[NUM_TYPES][NUM_BANDS];
-  const *VP8BandProbas bands_ptr[NUM_TYPES][16 + 1];
+  const bands_ptr *VP8BandProbas[NUM_TYPES][16 + 1];
 } VP8Proba;
 
 // Filter parameters
@@ -173,8 +173,8 @@ type <Foo> struct {
   int id;              // cache row to process (in [0..2])
   int mb_y;            // macroblock position of the row
   int filter_row;      // true if row-filtering is needed
-  *VP8FInfo f_info;    // filter strengths (swapped with dec.f_info)
-  *VP8MBData mb_data;  // reconstruction data (swapped with dec.mb_data)
+  f_info *VP8FInfo;    // filter strengths (swapped with dec.f_info)
+  mb_data *VP8MBData;  // reconstruction data (swapped with dec.mb_data)
   VP8Io io;            // copy of the VP8Io to pass to put()
 } VP8ThreadContext;
 
@@ -189,7 +189,7 @@ type <Foo> struct {
 type VP8Decoder struct {
   VP8StatusCode status;
   int ready;              // true if ready to decode a picture with VP8Decode()
-  const *byte error_msg;  // set when status is not OK.
+  const error_msg *byte;  // set when status is not OK.
 
   // Main data source
   VP8BitReader br;
@@ -234,42 +234,42 @@ type VP8Decoder struct {
   uint8 skip_p;
 
   // Boundary data cache and persistent buffers.
-  *uint8 intra_t;    // top intra modes values: 4 * mb_w
+  intra_t *uint8;    // top intra modes values: 4 * mb_w
   uint8 intra_l[4];  // left intra modes values
 
-  *VP8TopSamples yuv_t;  // top y/u/v samples
+  yuv_t *VP8TopSamples;  // top y/u/v samples
 
-  *VP8MB mb_info;    // contextual macroblock info (mb_w + 1)
-  *VP8FInfo f_info;  // filter strength info
-  *uint8 yuv_b;    // main block for Y/U/V (size = YUV_SIZE)
+  mb_info *VP8MB;    // contextual macroblock info (mb_w + 1)
+  f_info *VP8FInfo;  // filter strength info
+  yuv_b *uint8;    // main block for Y/U/V (size = YUV_SIZE)
 
-  *uint8 cache_y;  // macroblock row for storing unfiltered samples
-  *uint8 cache_u;
-  *uint8 cache_v;
+  cache_y *uint8;  // macroblock row for storing unfiltered samples
+  cache_u *uint8;
+  cache_v *uint8;
   int cache_y_stride;
   int cache_uv_stride;
 
   // main memory chunk for the above data. Persistent.
-  *void mem;
+  mem *void;
   uint64 mem_size;
 
   // Per macroblock non-persistent infos.
   int mb_x, mb_y;      // current position, in macroblock units
-  *VP8MBData mb_data;  // parsed reconstruction data
+  mb_data *VP8MBData;  // parsed reconstruction data
 
   // Filtering side-info
   int filter_type;                          // 0=off, 1=simple, 2=complex
   VP8FInfo fstrengths[NUM_MB_SEGMENTS][2];  // precalculated per-segment/type
 
   // Alpha
-  struct *ALPHDecoder alph_dec;  // alpha-plane decoder object
+  struct alph_dec *ALPHDecoder;  // alpha-plane decoder object
   const *uint8 
       alpha_data;  // compressed alpha data (if present)
   uint64 alpha_data_size;
   int is_alpha_decoded;      // true if alpha_data is decoded in alpha_plane
-  *uint8 alpha_plane_mem;  // memory allocated for alpha_plane
-  *uint8 alpha_plane;      // output. Persistent, contains the whole data.
-  const *uint8 alpha_prev_line;  // last decoded alpha row (or nil)
+  alpha_plane_mem *uint8;  // memory allocated for alpha_plane
+  alpha_plane *uint8;      // output. Persistent, contains the whole data.
+  const alpha_prev_line *uint8;  // last decoded alpha row (or nil)
   int alpha_dithering;  // derived from decoding options (0=off, 100=full)
 }
 
@@ -277,41 +277,41 @@ type VP8Decoder struct {
 // internal functions. Not public.
 
 // in vp8.c
-int VP8SetError(*VP8Decoder const dec, VP8StatusCode error, const *byte const msg);
+int VP8SetError(const dec *VP8Decoder, VP8StatusCode error, const const msg *byte);
 
 // in tree.c
-func VP8ResetProba(*VP8Proba const proba);
-func VP8ParseProba(*VP8BitReader const br, *VP8Decoder const dec);
+func VP8ResetProba(const proba *VP8Proba);
+func VP8ParseProba(const br *VP8BitReader, const dec *VP8Decoder);
 // parses one row of intra mode data in partition 0, returns !eof
-int VP8ParseIntraModeRow(*VP8BitReader const br, *VP8Decoder const dec);
+int VP8ParseIntraModeRow(const br *VP8BitReader, const dec *VP8Decoder);
 
 // in quant.c
-func VP8ParseQuant(*VP8Decoder const dec);
+func VP8ParseQuant(const dec *VP8Decoder);
 
 // in frame.c
- int VP8InitFrame(*VP8Decoder const dec, *VP8Io const io);
+ int VP8InitFrame(const dec *VP8Decoder, const io *VP8Io);
 // Call io.setup() and finish setting up scan parameters.
 // After this call returns, one must always call VP8ExitCritical() with the
 // same parameters. Both functions should be used in pair. Returns VP8_STATUS_OK
 // if ok, otherwise sets and returns the error status on *dec.
-VP8StatusCode VP8EnterCritical(*VP8Decoder const dec, *VP8Io const io);
+VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, const io *VP8Io);
 // Must always be called in pair with VP8EnterCritical().
 // Returns false in case of error.
- int VP8ExitCritical(*VP8Decoder const dec, *VP8Io const io);
+ int VP8ExitCritical(const dec *VP8Decoder, const io *VP8Io);
 // Return the multi-threading method to use (0=off), depending
 // on options and bitstream size. Only for lossy decoding.
-int VP8GetThreadMethod(const *WebPDecoderOptions const options, const *WebPHeaderStructure const headers, int width, int height);
+int VP8GetThreadMethod(const const options *WebPDecoderOptions, const const headers *WebPHeaderStructure, int width, int height);
 // Initialize dithering post-process if needed.
-func VP8InitDithering(const *WebPDecoderOptions const options, *VP8Decoder const dec);
+func VP8InitDithering(const const options *WebPDecoderOptions, const dec *VP8Decoder);
 // Process the last decoded row (filtering + output).
- int VP8ProcessRow(*VP8Decoder const dec, *VP8Io const io);
+ int VP8ProcessRow(const dec *VP8Decoder, const io *VP8Io);
 // To be called at the start of a new scanline, to initialize predictors.
-func VP8InitScanline(*VP8Decoder const dec);
+func VP8InitScanline(const dec *VP8Decoder);
 // Decode one macroblock. Returns false if there is not enough data.
- int VP8DecodeMB(*VP8Decoder const dec, *VP8BitReader const token_br);
+ int VP8DecodeMB(const dec *VP8Decoder, const token_br *VP8BitReader);
 
 // in alpha.c
-const *uint8 VP8DecompressAlphaRows(*VP8Decoder const dec, const *VP8Io const io, int row, int num_rows);
+const VP *uint88DecompressAlphaRows(const dec *VP8Decoder, const const io *VP8Io, int row, int num_rows);
 
 //------------------------------------------------------------------------------
 

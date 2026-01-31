@@ -80,7 +80,7 @@ static  uint32 Select_SSE2(uint32 a, uint32 b, uint32 c) {
   return (pa_minus_pb <= 0) ? a : b;
 }
 
-static  func Average2_m128i(const __*m128i const a0, const __*m128i const a1, __*m128i const avg) {
+static  func Average2_m128i(const __const a *m128i0, const __const a *m128i1, __const avg *m128i) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m128i ones = _mm_set1_epi8(1);
   const __m128i avg1 = _mm_avg_epu8(*a0, *a1);
@@ -88,7 +88,7 @@ static  func Average2_m128i(const __*m128i const a0, const __*m128i const a1, __
   *avg = _mm_sub_epi8(avg1, one);
 }
 
-static  func Average2_uint32_SSE2(const uint32 a0, const uint32 a1, __*m128i const avg) {
+static  func Average2_uint32_SSE2(const uint32 a0, const uint32 a1, __const avg *m128i) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m128i ones = _mm_set1_epi8(1);
   const __m128i A0 = _mm_cvtsi32_si128((int)a0);
@@ -131,41 +131,41 @@ static  uint32 Average4_SSE2(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
   return (uint32)_mm_cvtsi128_si32(A0);
 }
 
-static uint32 Predictor5_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor5_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = Average3_SSE2(*left, top[0], top[1]);
   return pred;
 }
-static uint32 Predictor6_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor6_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = Average2_SSE2(*left, top[-1]);
   return pred;
 }
-static uint32 Predictor7_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor7_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = Average2_SSE2(*left, top[0]);
   return pred;
 }
-static uint32 Predictor8_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor8_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = Average2_SSE2(top[-1], top[0]);
   (void)left;
   return pred;
 }
-static uint32 Predictor9_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor9_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = Average2_SSE2(top[0], top[1]);
   (void)left;
   return pred;
 }
-static uint32 Predictor10_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor10_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = Average4_SSE2(*left, top[-1], top[0], top[1]);
   return pred;
 }
-static uint32 Predictor11_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor11_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = Select_SSE2(top[0], *left, top[-1]);
   return pred;
 }
-static uint32 Predictor12_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor12_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = ClampedAddSubtractFull_SSE2(*left, top[0], top[-1]);
   return pred;
 }
-static uint32 Predictor13_SSE2(const *uint32 const left, const *uint32 const top) {
+static uint32 Predictor13_SSE2(const const left *uint32, const const top *uint32) {
   const uint32 pred = ClampedAddSubtractHalf_SSE2(*left, top[0], top[-1]);
   return pred;
 }
@@ -173,7 +173,7 @@ static uint32 Predictor13_SSE2(const *uint32 const left, const *uint32 const top
 // Batch versions of those functions.
 
 // Predictor0: ARGB_BLACK.
-func PredictorAdd0_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorAdd0_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   const __m128i black = _mm_set1_epi32((int)ARGB_BLACK);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
@@ -188,7 +188,7 @@ func PredictorAdd0_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *
 }
 
 // Predictor1: left.
-func PredictorAdd1_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorAdd1_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   __m128i prev = _mm_set1_epi32((int)out[-1]);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
@@ -215,9 +215,9 @@ func PredictorAdd1_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *
 // Macro that adds 32-bit integers from IN using mod 256 arithmetic
 // per 8 bit channel.
 #define GENERATE_PREDICTOR_1(X, IN)                                         \
-  func PredictorAdd##X##_SSE2(const *uint32 in,                    \
-                                     const *uint32 upper, int num_pixels, \
-                                     *uint32 WEBP_RESTRICT out) {         \
+  func PredictorAdd##X##_SSE2(const in *uint32,                    \
+                                     const upper *uint32, int num_pixels, \
+                                     WEBP_RESTRICT out *uint32) {         \
     int i;                                                                  \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                              \
       const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);          \
@@ -245,9 +245,9 @@ GENERATE_PREDICTOR_ADD(Predictor6_SSE2, PredictorAdd6_SSE2)
 GENERATE_PREDICTOR_ADD(Predictor7_SSE2, PredictorAdd7_SSE2)
 
 #define GENERATE_PREDICTOR_2(X, IN)                                         \
-  func PredictorAdd##X##_SSE2(const *uint32 in,                    \
-                                     const *uint32 upper, int num_pixels, \
-                                     *uint32 WEBP_RESTRICT out) {         \
+  func PredictorAdd##X##_SSE2(const in *uint32,                    \
+                                     const upper *uint32, int num_pixels, \
+                                     WEBP_RESTRICT out *uint32) {         \
     int i;                                                                  \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                              \
       const __m128i Tother = _mm_loadu_si128((const __*m128i)&(IN));        \
@@ -286,7 +286,7 @@ const DO_PRED10_SHIFT =                                        \
     src = _mm_srli_si128(src, 4);                               \
   } while (0)
 
-func PredictorAdd10_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorAdd10_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
@@ -334,7 +334,7 @@ const DO_PRED11_SHIFT =                                      \
     pa = _mm_srli_si128(pa, 4);                               \
   } while (0)
 
-func PredictorAdd11_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorAdd11_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   __m128i pa;
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
@@ -386,7 +386,7 @@ func PredictorAdd11_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, 
     src = _mm_srli_si128(src, 4);                             \
   } while (0)
 
-func PredictorAdd12_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorAdd12_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   const __m128i zero = _mm_setzero_si128();
   const __m128i L8 = _mm_cvtsi32_si128((int)out[-1]);
@@ -424,7 +424,7 @@ GENERATE_PREDICTOR_ADD(Predictor13_SSE2, PredictorAdd13_SSE2)
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func AddGreenToBlueAndRed_SSE2(const *uint32 const src, int num_pixels, *uint32 dst) {
+func AddGreenToBlueAndRed_SSE2(const const src *uint32, int num_pixels, dst *uint32) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i in = _mm_loadu_si128((const __*m128i)&src[i]);  // argb
@@ -443,7 +443,7 @@ func AddGreenToBlueAndRed_SSE2(const *uint32 const src, int num_pixels, *uint32 
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColorInverse_SSE2(const *VP8LMultipliers const m, const *uint32 const src, int num_pixels, *uint32 dst) {
+func TransformColorInverse_SSE2(const const m *VP8LMultipliers, const const src *uint32, int num_pixels, dst *uint32) {
 // sign-extended multiplying constants, pre-shifted by 5.
 #define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
 #define MK_CST_16(HI, LO) \
@@ -478,9 +478,9 @@ func TransformColorInverse_SSE2(const *VP8LMultipliers const m, const *uint32 co
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-func ConvertBGRAToRGB_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
-  const __*m128i in = (const __*m128i)src;
-  __*m128i out = (__*m128i)dst;
+func ConvertBGRAToRGB_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
+  const __in *m128i = (const __*m128i)src;
+  __out *m128i = (__*m128i)dst;
 
   while (num_pixels >= 32) {
     // Load the BGRA buffers.
@@ -513,10 +513,10 @@ func ConvertBGRAToRGB_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels, *uin
   }
 }
 
-func ConvertBGRAToRGBA_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
+func ConvertBGRAToRGBA_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
   const __m128i red_blue_mask = _mm_set1_epi32(0x00ff00ff);
-  const __*m128i in = (const __*m128i)src;
-  __*m128i out = (__*m128i)dst;
+  const __in *m128i = (const __*m128i)src;
+  __out *m128i = (__*m128i)dst;
   while (num_pixels >= 8) {
     const __m128i A1 = _mm_loadu_si128(in++);
     const __m128i A2 = _mm_loadu_si128(in++);
@@ -540,11 +540,11 @@ func ConvertBGRAToRGBA_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels, *ui
   }
 }
 
-func ConvertBGRAToRGBA4444_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
+func ConvertBGRAToRGBA4444_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
   const __m128i mask_0x0f = _mm_set1_epi8(0x0f);
   const __m128i mask_0xf0 = _mm_set1_epi8((byte)0xf0);
-  const __*m128i in = (const __*m128i)src;
-  __*m128i out = (__*m128i)dst;
+  const __in *m128i = (const __*m128i)src;
+  __out *m128i = (__*m128i)dst;
   while (num_pixels >= 8) {
     const __m128i bgra0 = _mm_loadu_si128(in++);  // bgra0|bgra1|bgra2|bgra3
     const __m128i bgra4 = _mm_loadu_si128(in++);  // bgra4|bgra5|bgra6|bgra7
@@ -575,12 +575,12 @@ func ConvertBGRAToRGBA4444_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels,
   }
 }
 
-func ConvertBGRAToRGB565_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
+func ConvertBGRAToRGB565_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
   const __m128i mask_0xe0 = _mm_set1_epi8((byte)0xe0);
   const __m128i mask_0xf8 = _mm_set1_epi8((byte)0xf8);
   const __m128i mask_0x07 = _mm_set1_epi8(0x07);
-  const __*m128i in = (const __*m128i)src;
-  __*m128i out = (__*m128i)dst;
+  const __in *m128i = (const __*m128i)src;
+  __out *m128i = (__*m128i)dst;
   while (num_pixels >= 8) {
     const __m128i bgra0 = _mm_loadu_si128(in++);  // bgra0|bgra1|bgra2|bgra3
     const __m128i bgra4 = _mm_loadu_si128(in++);  // bgra4|bgra5|bgra6|bgra7
@@ -615,11 +615,11 @@ func ConvertBGRAToRGB565_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels, *
   }
 }
 
-func ConvertBGRAToBGR_SSE2(const *uint32 WEBP_RESTRICT src, int num_pixels, *uint8 WEBP_RESTRICT dst) {
+func ConvertBGRAToBGR_SSE2(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
   const __m128i mask_l = _mm_set_epi32(0, 0x00ffffff, 0, 0x00ffffff);
   const __m128i mask_h = _mm_set_epi32(0x00ffffff, 0, 0x00ffffff, 0);
-  const __*m128i in = (const __*m128i)src;
-  const *uint8 const end = dst + num_pixels * 3;
+  const __in *m128i = (const __*m128i)src;
+  const const end *uint8 = dst + num_pixels * 3;
   // the last storel_epi64 below writes 8 bytes starting at offset 18
   while (dst + 26 <= end) {
     const __m128i bgra0 = _mm_loadu_si128(in++);  // bgra0|bgra1|bgra2|bgra3

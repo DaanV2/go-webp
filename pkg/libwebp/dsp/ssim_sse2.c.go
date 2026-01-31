@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if !defined(WEBP_DISABLE_STATS)
 
 // Helper function
-static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b, __*m128i const sum) {
+static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b, __const sum *m128i) {
   // take abs(a-b) in 8b
   const __m128i a_b = _mm_subs_epu8(a, b);
   const __m128i b_a = _mm_subs_epu8(b, a);
@@ -44,7 +44,7 @@ static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b, __*m128i c
 //------------------------------------------------------------------------------
 // SSIM / PSNR entry point
 
-static uint32 AccumulateSSE_SSE2(const *uint8 src1, const *uint8 src2, int len) {
+static uint32 AccumulateSSE_SSE2(const src *uint81, const src *uint82, int len) {
   int i = 0;
   uint32 sse2 = 0;
   if (len >= 16) {
@@ -84,7 +84,7 @@ static uint32 AccumulateSSE_SSE2(const *uint8 src1, const *uint8 src2, int len) 
 
 #if !defined(WEBP_REDUCE_SIZE)
 
-static uint32 HorizontalAdd16b_SSE2(const __*m128i const m) {
+static uint32 HorizontalAdd16b_SSE2(const __const m *m128i) {
   uint16 tmp[8];
   const __m128i a = _mm_srli_si128(*m, 8);
   const __m128i b = _mm_add_epi16(*m, a);
@@ -92,7 +92,7 @@ static uint32 HorizontalAdd16b_SSE2(const __*m128i const m) {
   return (uint32)tmp[3] + tmp[2] + tmp[1] + tmp[0];
 }
 
-static uint32 HorizontalAdd32b_SSE2(const __*m128i const m) {
+static uint32 HorizontalAdd32b_SSE2(const __const m *m128i) {
   const __m128i a = _mm_srli_si128(*m, 8);
   const __m128i b = _mm_add_epi32(*m, a);
   const __m128i c = _mm_add_epi32(b, _mm_srli_si128(b, 4));
@@ -124,7 +124,7 @@ static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0}
     src2 += stride2;                                          \
   } while (0)
 
-static double SSIMGet_SSE2(const *uint8 src1, int stride1, const *uint8 src2, int stride2) {
+static double SSIMGet_SSE2(const src *uint81, int stride1, const src *uint82, int stride2) {
   VP8DistoStats stats;
   const __m128i zero = _mm_setzero_si128();
   __m128i xm = zero, ym = zero;                // 16b accums

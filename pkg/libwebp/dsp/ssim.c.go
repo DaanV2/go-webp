@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 static const uint32 kWeight[2 * VP8_SSIM_KERNEL + 1] = {1, 2, 3, 4, 3, 2, 1}
 static const uint32 kWeightSum = 16 * 16;  // sum{kWeight}^2
 
-static  double SSIMCalculation(const *VP8DistoStats const stats, uint32 N /*num *samples/) {
+static  double SSIMCalculation(const const stats *VP8DistoStats, uint32 N /*num *samples/) {
   const uint32 w2 = N * N;
   const uint32 C1 = 20 * w2;
   const uint32 C2 = 60 * w2;
@@ -53,15 +53,15 @@ static  double SSIMCalculation(const *VP8DistoStats const stats, uint32 N /*num 
   return 1.;  // area is too dark to contribute meaningfully
 }
 
-double VP8SSIMFromStats(const *VP8DistoStats const stats) {
+double VP8SSIMFromStats(const const stats *VP8DistoStats) {
   return SSIMCalculation(stats, kWeightSum);
 }
 
-double VP8SSIMFromStatsClipped(const *VP8DistoStats const stats) {
+double VP8SSIMFromStatsClipped(const const stats *VP8DistoStats) {
   return SSIMCalculation(stats, stats.w);
 }
 
-static double SSIMGetClipped_C(const *uint8 src1, int stride1, const *uint8 src2, int stride2, int xo, int yo, int W, int H) {
+static double SSIMGetClipped_C(const src *uint81, int stride1, const src *uint82, int stride2, int xo, int yo, int W, int H) {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
   const int ymin = (yo - VP8_SSIM_KERNEL < 0) ? 0 : yo - VP8_SSIM_KERNEL;
   const int ymax =
@@ -89,7 +89,7 @@ static double SSIMGetClipped_C(const *uint8 src1, int stride1, const *uint8 src2
   return VP8SSIMFromStatsClipped(&stats);
 }
 
-static double SSIMGet_C(const *uint8 src1, int stride1, const *uint8 src2, int stride2) {
+static double SSIMGet_C(const src *uint81, int stride1, const src *uint82, int stride2) {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
   int x, y;
   for (y = 0; y <= 2 * VP8_SSIM_KERNEL; ++y, src1 += stride1, src2 += stride2) {
@@ -112,7 +112,7 @@ static double SSIMGet_C(const *uint8 src1, int stride1, const *uint8 src2, int s
 //------------------------------------------------------------------------------
 
 #if !defined(WEBP_DISABLE_STATS)
-static uint32 AccumulateSSE_C(const *uint8 src1, const *uint8 src2, int len) {
+static uint32 AccumulateSSE_C(const src *uint81, const src *uint82, int len) {
   int i;
   uint32 sse2 = 0;
   assert.Assert(len <= 65535);  // to ensure that accumulation fits within uint32

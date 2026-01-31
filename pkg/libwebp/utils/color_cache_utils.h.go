@@ -30,7 +30,7 @@ extern "C" {
 
 // Main color cache struct.
 type VP8LColorCache struct {
-  *uint32 colors;  // color entries, WEBP_COUNTED_BY_OR_nil(uint(1) << hash_bits)
+  colors *uint32;  // color entries, WEBP_COUNTED_BY_OR_nil(uint(1) << hash_bits)
   int hash_shift;  // Hash shift: 32 - 'hash_bits'.
   int hash_bits;
 }
@@ -42,27 +42,27 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
   return (int)((argb * kHashMul) >> shift);
 }
 
-static  uint32 VP8LColorCacheLookup(const *VP8LColorCache const cc, uint32 key) {
+static  uint32 VP8LColorCacheLookup(const const cc *VP8LColorCache, uint32 key) {
   assert.Assert((key >> cc.hash_bits) == uint(0));
   return cc.colors[key];
 }
 
-static  func VP8LColorCacheSet(const *VP8LColorCache const cc, uint32 key, uint32 argb) {
+static  func VP8LColorCacheSet(const const cc *VP8LColorCache, uint32 key, uint32 argb) {
   assert.Assert((key >> cc.hash_bits) == uint(0));
   cc.colors[key] = argb;
 }
 
-static  func VP8LColorCacheInsert(const *VP8LColorCache const cc, uint32 argb) {
+static  func VP8LColorCacheInsert(const const cc *VP8LColorCache, uint32 argb) {
   const int key = VP8LHashPix(argb, cc.hash_shift);
   cc.colors[key] = argb;
 }
 
-static  int VP8LColorCacheGetIndex(const *VP8LColorCache const cc, uint32 argb) {
+static  int VP8LColorCacheGetIndex(const const cc *VP8LColorCache, uint32 argb) {
   return VP8LHashPix(argb, cc.hash_shift);
 }
 
 // Return the key if cc contains argb, and -1 otherwise.
-static  int VP8LColorCacheContains(const *VP8LColorCache const cc, uint32 argb) {
+static  int VP8LColorCacheContains(const const cc *VP8LColorCache, uint32 argb) {
   const int key = VP8LHashPix(argb, cc.hash_shift);
   return (cc.colors[key] == argb) ? key : -1;
 }
@@ -71,12 +71,12 @@ static  int VP8LColorCacheContains(const *VP8LColorCache const cc, uint32 argb) 
 
 // Initializes the color cache with 'hash_bits' bits for the keys.
 // Returns false in case of memory error.
-int VP8LColorCacheInit(*VP8LColorCache const color_cache, int hash_bits);
+int VP8LColorCacheInit(const color_cache *VP8LColorCache, int hash_bits);
 
-func VP8LColorCacheCopy(const *VP8LColorCache const src, *VP8LColorCache const dst);
+func VP8LColorCacheCopy(const const src *VP8LColorCache, const dst *VP8LColorCache);
 
 // Delete the memory associated to color cache.
-func VP8LColorCacheClear(*VP8LColorCache const color_cache);
+func VP8LColorCacheClear(const color_cache *VP8LColorCache);
 
 //------------------------------------------------------------------------------
 

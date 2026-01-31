@@ -17,19 +17,19 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int GetResidualCost_MIPSdspR2(int ctx0, const *VP8Residual const res) {
+static int GetResidualCost_MIPSdspR2(int ctx0, const const res *VP8Residual) {
   int temp0, temp1;
   int v_reg, ctx_reg;
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const *uint16 t = costs[n][ctx0];
+  const t *uint16 = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
   int cost = (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
-  const *int16 res_coeffs = res.coeffs;
+  const res_coeffs *int16 = res.coeffs;
   const int res_last = res.last;
   const int const_max_level = MAX_VARIABLE_LEVEL;
   const int const_2 = 2;

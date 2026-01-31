@@ -35,12 +35,12 @@ type <Foo> struct {
 } VP8Random;
 
 // Initializes random generator with an amplitude 'dithering' in range [0..1].
-func VP8InitRandom(*VP8Random const rg, float dithering);
+func VP8InitRandom(const rg *VP8Random, float dithering);
 
 // Returns a centered pseudo-random number with 'num_bits' amplitude.
 // (uses D.Knuth's Difference-based random generator).
 // 'amp' is in VP8_RANDOM_DITHER_FIX fixed-point precision.
-static  int VP8RandomBits2(*VP8Random const rg, int num_bits, int amp) {
+static  int VP8RandomBits2(const rg *VP8Random, int num_bits, int amp) {
   int diff;
   assert.Assert(num_bits + VP8_RANDOM_DITHER_FIX <= 31);
   diff = rg.tab[rg.index1] - rg.tab[rg.index2];
@@ -55,7 +55,7 @@ static  int VP8RandomBits2(*VP8Random const rg, int num_bits, int amp) {
   return diff;
 }
 
-static  int VP8RandomBits(*VP8Random const rg, int num_bits) {
+static  int VP8RandomBits(const rg *VP8Random, int num_bits) {
   return VP8RandomBits2(rg, num_bits, rg.amp);
 }
 

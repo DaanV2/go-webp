@@ -48,8 +48,8 @@ static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x8_t sh
 }
 #endif  // USE_VTBLQ
 
-func SubtractGreenFromBlueAndRed_NEON(*uint32 argb_data, int num_pixels) {
-  const *uint32 const end = argb_data + (num_pixels & ~3);
+func SubtractGreenFromBlueAndRed_NEON(argb_data *uint32, int num_pixels) {
+  const const end *uint32 = argb_data + (num_pixels & ~3);
 #ifdef USE_VTBLQ
   const uint8x16_t shuffle = vld1q_u8(kGreenShuffle);
 #else
@@ -67,7 +67,7 @@ func SubtractGreenFromBlueAndRed_NEON(*uint32 argb_data, int num_pixels) {
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColor_NEON(const *VP8LMultipliers WEBP_RESTRICT const m, *uint32 WEBP_RESTRICT argb_data, int num_pixels) {
+func TransformColor_NEON(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT argb_data *uint32, int num_pixels) {
   // sign-extended multiplying constants, pre-shifted by 6.
 #define CST(X) (((int16)(m.X << 8)) >> 6)
   const int16 rb[8] = {CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red)}

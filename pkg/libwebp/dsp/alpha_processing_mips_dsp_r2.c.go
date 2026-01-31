@@ -18,13 +18,13 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-static int DispatchAlpha_MIPSdspR2(const *uint8 alpha, int alpha_stride, int width, int height, *uint8 dst, int dst_stride) {
+static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int width, int height, dst *uint8, int dst_stride) {
   uint32 alpha_mask = 0xffffffff;
   int i, j, temp0;
 
   for (j = 0; j < height; ++j) {
-    *uint8 pdst = dst;
-    const *uint8 palpha = alpha;
+    pdst *uint8 = dst;
+    const palpha *uint8 = alpha;
     for (i = 0; i < (width >> 2); ++i) {
       int temp1, temp2, temp3;
 
@@ -73,7 +73,7 @@ static int DispatchAlpha_MIPSdspR2(const *uint8 alpha, int alpha_stride, int wid
   return (alpha_mask != 0xff);
 }
 
-func MultARGBRow_MIPSdspR2(*uint32 const ptr, int width, int inverse) {
+func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
   int x;
   const uint32 c_00ffffff = uint(0x00ffffff);
   const uint32 c_ff000000 = uint(0xff000000);
@@ -115,10 +115,10 @@ func MultARGBRow_MIPSdspR2(*uint32 const ptr, int width, int inverse) {
 }
 
 #ifdef constants.WORDS_BIGENDIAN
-func PackARGB_MIPSdspR2(const *uint8 a, const *uint8 r, const *uint8 g, const *uint8 b, int len, *uint32 out) {
+func PackARGB_MIPSdspR2(const a *uint8, const r *uint8, const g *uint8, const b *uint8, int len, out *uint32) {
   int temp0, temp1, temp2, temp3, offset;
   const int rest = len & 1;
-  const *uint32 const loop_end = out + len - rest;
+  const const loop_end *uint32 = out + len - rest;
   const int step = 4;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
@@ -152,11 +152,11 @@ func PackARGB_MIPSdspR2(const *uint8 a, const *uint8 r, const *uint8 g, const *u
 }
 #endif  // constants.WORDS_BIGENDIAN
 
-func PackRGB_MIPSdspR2(const *uint8 r, const *uint8 g, const *uint8 b, int len, int step, *uint32 out) {
+func PackRGB_MIPSdspR2(const r *uint8, const g *uint8, const b *uint8, int len, int step, out *uint32) {
   int temp0, temp1, temp2, offset;
   const int rest = len & 1;
   const int a = 0xff;
-  const *uint32 const loop_end = out + len - rest;
+  const const loop_end *uint32 = out + len - rest;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
       "beq          %[loop_end], %[out],    0f           \n\t"

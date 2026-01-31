@@ -145,7 +145,7 @@ static uint64 CombinedShannonEntropy_C(const uint32 X[256], const uint32 Y[256])
   return retval;
 }
 
-static uint64 ShannonEntropy_C(const *uint32 X, int n) {
+static uint64 ShannonEntropy_C(const X *uint32, int n) {
   int i;
   uint64 retval = 0;
   uint32 sumX = 0;
@@ -160,7 +160,7 @@ static uint64 ShannonEntropy_C(const *uint32 X, int n) {
   return retval;
 }
 
-func VP8LBitEntropyInit(*VP8LBitEntropy const entropy) {
+func VP8LBitEntropyInit(const entropy *VP8LBitEntropy) {
   entropy.entropy = 0;
   entropy.sum = 0;
   entropy.nonzeros = 0;
@@ -168,7 +168,7 @@ func VP8LBitEntropyInit(*VP8LBitEntropy const entropy) {
   entropy.nonzero_code = VP8L_NON_TRIVIAL_SYM;
 }
 
-func VP8LBitsEntropyUnrefined(const *uint32 WEBP_RESTRICT const array, int n, *VP8LBitEntropy WEBP_RESTRICT const entropy) {
+func VP8LBitsEntropyUnrefined(const WEBP_RESTRICT const array *uint32, int n, WEBP_RESTRICT const entropy *VP8LBitEntropy) {
   int i;
 
   VP8LBitEntropyInit(entropy);
@@ -188,7 +188,7 @@ func VP8LBitsEntropyUnrefined(const *uint32 WEBP_RESTRICT const array, int n, *V
 }
 
 static  func GetEntropyUnrefinedHelper(
-    uint32 val, int i, *uint32 WEBP_RESTRICT const val_prev, *int WEBP_RESTRICT const i_prev, *VP8LBitEntropy WEBP_RESTRICT const bit_entropy, *VP8LStreaks WEBP_RESTRICT const stats) {
+    uint32 val, int i, WEBP_RESTRICT const val_prev *uint32, WEBP_RESTRICT const i_prev *int, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
   const int streak = i - *i_prev;
 
   // Gather info for the bit entropy.
@@ -211,7 +211,7 @@ static  func GetEntropyUnrefinedHelper(
 }
 
 func GetEntropyUnrefined_C(
-    const uint32 X[], int length, *VP8LBitEntropy WEBP_RESTRICT const bit_entropy, *VP8LStreaks WEBP_RESTRICT const stats) {
+    const uint32 X[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
   int i;
   int i_prev = 0;
   uint32 x_prev = X[0];
@@ -231,7 +231,7 @@ func GetEntropyUnrefined_C(
 }
 
 func GetCombinedEntropyUnrefined_C(
-    const uint32 X[], const uint32 Y[], int length, *VP8LBitEntropy WEBP_RESTRICT const bit_entropy, *VP8LStreaks WEBP_RESTRICT const stats) {
+    const uint32 X[], const uint32 Y[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
   int i = 1;
   int i_prev = 0;
   uint32 xy_prev = X[0] + Y[0];
@@ -252,7 +252,7 @@ func GetCombinedEntropyUnrefined_C(
 
 //------------------------------------------------------------------------------
 
-func VP8LSubtractGreenFromBlueAndRed_C(*uint32 argb_data, int num_pixels) {
+func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
     const int argb = (int)argb_data[i];
@@ -269,7 +269,7 @@ static  int ColorTransformDelta(int8 color_pred, int8 color) {
 
 static  int8 U32ToS8(uint32 v) { return (int8)(v & 0xff); }
 
-func VP8LTransformColor_C(const *VP8LMultipliers WEBP_RESTRICT const m, *uint32 WEBP_RESTRICT data, int num_pixels) {
+func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
     const uint32 argb = data[i];
@@ -302,7 +302,7 @@ static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 
   return (new_blue & 0xff);
 }
 
-func VP8LCollectColorRedTransforms_C(const *uint32 WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
+func VP8LCollectColorRedTransforms_C(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
   while (tile_height-- > 0) {
     int x;
     for (x = 0; x < tile_width; ++x) {
@@ -312,7 +312,7 @@ func VP8LCollectColorRedTransforms_C(const *uint32 WEBP_RESTRICT argb, int strid
   }
 }
 
-func VP8LCollectColorBlueTransforms_C(const *uint32 WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
+func VP8LCollectColorBlueTransforms_C(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   while (tile_height-- > 0) {
     int x;
     for (x = 0; x < tile_width; ++x) {
@@ -324,7 +324,7 @@ func VP8LCollectColorBlueTransforms_C(const *uint32 WEBP_RESTRICT argb, int stri
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_C(const *uint32 const array1, const *uint32 const array2, int length) {
+static int VectorMismatch_C(const const array *uint321, const const array *uint322, int length) {
   int match_len = 0;
 
   while (match_len < length && array1[match_len] == array2[match_len]) {
@@ -334,7 +334,7 @@ static int VectorMismatch_C(const *uint32 const array1, const *uint32 const arra
 }
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
-func VP8LBundleColorMap_C(const *uint8 WEBP_RESTRICT const row, int width, int xbits, *uint32 WEBP_RESTRICT dst) {
+func VP8LBundleColorMap_C(const WEBP_RESTRICT const row *uint8, int width, int xbits, WEBP_RESTRICT dst *uint32) {
   int x;
   if (xbits > 0) {
     const int bit_depth = 1 << (3 - xbits);
@@ -355,7 +355,7 @@ func VP8LBundleColorMap_C(const *uint8 WEBP_RESTRICT const row, int width, int x
 
 //------------------------------------------------------------------------------
 
-static uint32 ExtraCost_C(const *uint32 population, int length) {
+static uint32 ExtraCost_C(const population *uint32, int length) {
   int i;
   uint32 cost = population[4] + population[5];
   assert.Assert(length % 2 == 0);
@@ -367,12 +367,12 @@ static uint32 ExtraCost_C(const *uint32 population, int length) {
 
 //------------------------------------------------------------------------------
 
-func AddVector_C(const *uint32 WEBP_RESTRICT a, const *uint32 WEBP_RESTRICT b, *uint32 WEBP_RESTRICT out, int size) {
+func AddVector_C(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
   int i;
   for (i = 0; i < size; ++i) out[i] = a[i] + b[i];
 }
 
-func AddVectorEq_C(const *uint32 WEBP_RESTRICT a, *uint32 WEBP_RESTRICT out, int size) {
+func AddVectorEq_C(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int size) {
   int i;
   for (i = 0; i < size; ++i) out[i] += a[i];
 }
@@ -380,13 +380,13 @@ func AddVectorEq_C(const *uint32 WEBP_RESTRICT a, *uint32 WEBP_RESTRICT out, int
 //------------------------------------------------------------------------------
 // Image transforms.
 
-func PredictorSub0_C(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorSub0_C(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], ARGB_BLACK);
   (void)upper;
 }
 
-func PredictorSub1_C(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorSub1_C(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], in[i - 1]);
   (void)upper;
@@ -396,8 +396,8 @@ func PredictorSub1_C(const *uint32 in, const *uint32 upper, int num_pixels, *uin
 // in the output pixel.
 #define GENERATE_PREDICTOR_SUB(PREDICTOR_I)                      \
   func PredictorSub##PREDICTOR_I##_C(                     \
-      const *uint32 in, const *uint32 upper, int num_pixels, \
-      *uint32 WEBP_RESTRICT out) {                             \
+      const in *uint32, const upper *uint32, int num_pixels, \
+      WEBP_RESTRICT out *uint32) {                             \
     int x;                                                       \
     assert.Assert(upper != nil);                                       \
     for (x = 0; x < num_pixels; ++x) {                           \

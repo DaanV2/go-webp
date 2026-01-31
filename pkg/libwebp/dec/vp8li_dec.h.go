@@ -43,7 +43,7 @@ type VP8LTransform struct {
   int bits;                     // subsampling bits defining transform window.
   int xsize;                    // transform window X index.
   int ysize;                    // transform window Y index.
-  *uint32 data;               // transform data.
+  data *uint32;               // transform data.
 }
 
 type <Foo> struct {
@@ -54,9 +54,9 @@ type <Foo> struct {
   int huffman_mask;
   int huffman_subsample_bits;
   int huffman_xsize;
-  *uint32 huffman_image;
+  huffman_image *uint32;
   int num_htree_groups;
-  *HTreeGroup htree_groups;
+  htree_groups *HTreeGroup;
   HuffmanTables huffman_tables;
 } VP8LMetadata;
 
@@ -64,14 +64,14 @@ typedef struct VP8LDecoder VP8LDecoder;
 type VP8LDecoder struct {
   VP8StatusCode status;
   VP8LDecodeState state;
-  *VP8Io io;
+  io *VP8Io;
 
-  const *WebPDecBuffer output;  // shortcut to io.opaque.output
+  const output *WebPDecBuffer;  // shortcut to io.opaque.output
 
-  *uint32 pixels;      // Internal data: either *uint8 for alpha
-                         // or *uint32 for BGRA.
-  *uint32 argb_cache;  // Scratch buffer for temporary BGRA storage.
-  *uint16 accumulated_rgb_pixels;  // Scratch buffer for accumulated RGB for
+  pixels *uint32;      // Internal data: either for alpha *uint8
+                         // or for BGRA *uint32.
+  argb_cache *uint32;  // Scratch buffer for temporary BGRA storage.
+  accumulated_rgb_pixels *uint16;  // Scratch buffer for accumulated RGB for
                                      // YUV conversion.
 
   VP8LBitReader br;
@@ -94,8 +94,8 @@ type VP8LDecoder struct {
   // or'd bitset storing the transforms types.
   uint32 transforms_seen;
 
-  *uint8 rescaler_memory;  // Working memory for rescaling work.
-  *WebPRescaler rescaler;    // Common rescaler for all channels.
+  rescaler_memory *uint8;  // Working memory for rescaling work.
+  rescaler *WebPRescaler;    // Common rescaler for all channels.
 }
 
 //------------------------------------------------------------------------------
@@ -108,27 +108,27 @@ struct ALPHDecoder;  // Defined in dec/alphai.h.
 // Decodes image header for alpha data stored using lossless compression.
 // Returns false in case of error.
  int VP8LDecodeAlphaHeader(
-    struct *ALPHDecoder const alph_dec, const *uint8 const  data, uint64 data_size);
+    struct const alph_dec *ALPHDecoder, const const *uint8  data, uint64 data_size);
 
 // Decodes *at *least 'last_row' rows of alpha. If some of the initial rows are
 // already decoded in previous call(s), it will resume decoding from where it
 // was paused.
 // Returns false in case of bitstream error.
  int VP8LDecodeAlphaImageStream(
-    struct *ALPHDecoder const alph_dec, int last_row);
+    struct const alph_dec *ALPHDecoder, int last_row);
 
 // Allocates and initialize a new lossless decoder instance.
- *VP8LDecoder VP8LNew(void);
+ VP *VP8LDecoder8LNew(void);
 
 // Decodes the image header. Returns false in case of error.
- int VP8LDecodeHeader(*VP8LDecoder const dec, *VP8Io const io);
+ int VP8LDecodeHeader(const dec *VP8LDecoder, const io *VP8Io);
 
 // Decodes an image. It's required to decode the lossless header before calling
 // this function. Returns false in case of error, with updated dec.status.
- int VP8LDecodeImage(*VP8LDecoder const dec);
+ int VP8LDecodeImage(const dec *VP8LDecoder);
 
 // Clears and deallocate a lossless decoder instance.
-func VP8LDelete(*VP8LDecoder const dec);
+func VP8LDelete(const dec *VP8LDecoder);
 
 // Helper function for reading the different Huffman codes and storing them in
 // 'huffman_tables' and 'htree_groups'.
@@ -138,7 +138,7 @@ func VP8LDelete(*VP8LDecoder const dec);
 // some of those indices map to -1. This is used for non-balanced codes to
 // limit memory usage.
  int ReadHuffmanCodesHelper(
-    int color_cache_bits, int num_htree_groups, int num_htree_groups_max, const *int const mapping, *VP8LDecoder const dec, *HuffmanTables const huffman_tables, *HTreeGroup* const htree_groups);
+    int color_cache_bits, int num_htree_groups, int num_htree_groups_max, const const mapping *int, const dec *VP8LDecoder, const huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups);
 
 //------------------------------------------------------------------------------
 

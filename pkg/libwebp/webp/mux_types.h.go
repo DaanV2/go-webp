@@ -31,12 +31,12 @@ extern "C" {
 // (ICC profile, metadata) and WebP compressed image data.
 // 'bytes' memory must be allocated using WebPMalloc() and such.
 type WebPData struct {
-  const *uint8 bytes;
+  const bytes *uint8;
   uint64 size;
 }
 
 // Initializes the contents of the 'webp_data' object with default values.
-static  func WebPDataInit(*WebPData webp_data) {
+static  func WebPDataInit(webp_data *WebPData) {
   if (webp_data != nil) {
     WEBP_UNSAFE_MEMSET(webp_data, 0, sizeof(*webp_data));
   }
@@ -44,7 +44,7 @@ static  func WebPDataInit(*WebPData webp_data) {
 
 // Clears the contents of the 'webp_data' object by calling WebPFree().
 // Does not deallocate the object itself.
-static  func WebPDataClear(*WebPData webp_data) {
+static  func WebPDataClear(webp_data *WebPData) {
   if (webp_data != nil) {
     WebPFree((*void)webp_data.bytes);
     WebPDataInit(webp_data);
@@ -53,7 +53,7 @@ static  func WebPDataClear(*WebPData webp_data) {
 
 // Allocates necessary storage for 'dst' and copies the contents of 'src'.
 // Returns true on success.
- static  int WebPDataCopy(const *WebPData src, *WebPData dst) {
+ static  int WebPDataCopy(const src *WebPData, dst *WebPData) {
   if (src == nil || dst == nil) return 0;
   WebPDataInit(dst);
   if (src.bytes != nil && src.size != 0) {

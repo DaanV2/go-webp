@@ -57,14 +57,14 @@ static int GetILevel(int sharpness, int level) {
   return level;
 }
 
-func DoFilter(const *VP8EncIterator const it, int level) {
-  const *VP8Encoder const enc = it.enc;
+func DoFilter(const const it *VP8EncIterator, int level) {
+  const const enc *VP8Encoder = it.enc;
   const int ilevel = GetILevel(enc.config.filter_sharpness, level);
   const int limit = 2 * level + ilevel;
 
-  *uint8 const y_dst = it.yuv_out2 + Y_OFF_ENC;
-  *uint8 const u_dst = it.yuv_out2 + U_OFF_ENC;
-  *uint8 const v_dst = it.yuv_out2 + V_OFF_ENC;
+  const y_dst *uint8 = it.yuv_out2 + Y_OFF_ENC;
+  const u_dst *uint8 = it.yuv_out2 + U_OFF_ENC;
+  const v_dst *uint8 = it.yuv_out2 + V_OFF_ENC;
 
   // copy current block to yuv_out2
   memcpy(y_dst, it.yuv_out, YUV_SIZE_ENC * sizeof(uint8));
@@ -84,7 +84,7 @@ func DoFilter(const *VP8EncIterator const it, int level) {
 //------------------------------------------------------------------------------
 // SSIM metric for one macroblock
 
-static double GetMBSSIM(const *uint8 yuv1, const *uint8 yuv2) {
+static double GetMBSSIM(const yuv *uint81, const yuv *uint82) {
   int x, y;
   double sum = 0.;
 
@@ -109,7 +109,7 @@ static double GetMBSSIM(const *uint8 yuv1, const *uint8 yuv2) {
 // Exposed APIs: Encoder should call the following 3 functions to adjust
 // loop filter strength
 
-func VP8InitFilter(*VP8EncIterator const it) {
+func VP8InitFilter(const it *VP8EncIterator) {
 #if !defined(WEBP_REDUCE_SIZE)
   if (it.lf_stats != nil) {
     int s, i;
@@ -125,10 +125,10 @@ func VP8InitFilter(*VP8EncIterator const it) {
 #endif
 }
 
-func VP8StoreFilterStats(*VP8EncIterator const it) {
+func VP8StoreFilterStats(const it *VP8EncIterator) {
 #if !defined(WEBP_REDUCE_SIZE)
   int d;
-  *VP8Encoder const enc = it.enc;
+  const enc *VP8Encoder = it.enc;
   const int s = it.mb.segment;
   const int level0 = enc.dqm[s].fstrength;
 
@@ -163,8 +163,8 @@ func VP8StoreFilterStats(*VP8EncIterator const it) {
 #endif  // !defined(WEBP_REDUCE_SIZE)
 }
 
-func VP8AdjustFilterStrength(*VP8EncIterator const it) {
-  *VP8Encoder const enc = it.enc;
+func VP8AdjustFilterStrength(const it *VP8EncIterator) {
+  const enc *VP8Encoder = it.enc;
 #if !defined(WEBP_REDUCE_SIZE)
   if (it.lf_stats != nil) {
     int s;
@@ -188,7 +188,7 @@ func VP8AdjustFilterStrength(*VP8EncIterator const it) {
     int max_level = 0;
     int s;
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
-      *VP8SegmentInfo const dqm = &enc.dqm[s];
+      const dqm *VP8SegmentInfo = &enc.dqm[s];
       // this '>> 3' accounts for some inverse WHT scaling
       const int delta = (dqm.max_edge * dqm.y2.q[1]) >> 3;
       const int level =

@@ -74,8 +74,8 @@ const ALPHAVAL = (0xff)
 #define ST_SW(...) ST_W(v4i32, __VA_ARGS__)
 
 #define MSA_LOAD_FUNC(TYPE, INSTR, FUNC_NAME)               \
-  static inline TYPE FUNC_NAME(const *void const psrc) {    \
-    const *uint8 const psrc_m = (const *uint8)psrc;     \
+  static inline TYPE FUNC_NAME(const const psrc *void) {    \
+    const const psrc_m *uint8 = (const *uint8)psrc;     \
     TYPE val_m;                                             \
     __asm__ volatile("" #INSTR " %[val_m], %[psrc_m]  \n\t" \
                      : [val_m] "=r"(val_m)                  \
@@ -86,8 +86,8 @@ const ALPHAVAL = (0xff)
 #define MSA_LOAD(psrc, FUNC_NAME) FUNC_NAME(psrc)
 
 #define MSA_STORE_FUNC(TYPE, INSTR, FUNC_NAME)                 \
-  static inline func FUNC_NAME(TYPE val, *void const pdst) {   \
-    *uint8 const pdst_m = (*uint8)pdst;                    \
+  static inline func FUNC_NAME(TYPE val, const pdst *void) {   \
+    const pdst_m *uint8 = (*uint8)pdst;                    \
     TYPE val_m = val;                                          \
     __asm__ volatile(" " #INSTR "  %[val_m],  %[pdst_m]  \n\t" \
                      : [pdst_m] "=m"(*pdst_m)                  \
@@ -134,7 +134,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define SW(val, pdst) MSA_STORE(val, pdst, msa_usw)
 #define SD(val, pdst)                                                     \
   do {                                                                    \
-    *uint8 const pdst_sd_m = (*uint8)(pdst);                          \
+    const pdst_sd_m *uint8 = (*uint8)(pdst);                          \
     const uint32 val0_m = (uint32)(val & 0x00000000FFFFFFFF);         \
     const uint32 val1_m = (uint32)((val >> 32) & 0x00000000FFFFFFFF); \
     SW(val0_m, pdst_sd_m);                                                \
@@ -152,7 +152,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  */
 #define LW4(psrc, stride, out0, out1, out2, out3) \
   do {                                            \
-    const *uint8 ptmp = (const *uint8)psrc;   \
+    const ptmp *uint8 = (const *uint8)psrc;   \
     out0 = LW(ptmp);                              \
     ptmp += stride;                               \
     out1 = LW(ptmp);                              \
@@ -171,7 +171,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  */
 #define SW4(in0, in1, in2, in3, pdst, stride) \
   do {                                        \
-    *uint8 ptmp = (*uint8)pdst;           \
+    ptmp *uint8 = (*uint8)pdst;           \
     SW(in0, ptmp);                            \
     ptmp += stride;                           \
     SW(in1, ptmp);                            \
@@ -183,7 +183,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 
 #define SW3(in0, in1, in2, pdst, stride) \
   do {                                   \
-    *uint8 ptmp = (*uint8)pdst;      \
+    ptmp *uint8 = (*uint8)pdst;      \
     SW(in0, ptmp);                       \
     ptmp += stride;                      \
     SW(in1, ptmp);                       \
@@ -193,7 +193,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 
 #define SW2(in0, in1, pdst, stride) \
   do {                              \
-    *uint8 ptmp = (*uint8)pdst; \
+    ptmp *uint8 = (*uint8)pdst; \
     SW(in0, ptmp);                  \
     ptmp += stride;                 \
     SW(in1, ptmp);                  \
@@ -208,7 +208,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  */
 #define SD4(in0, in1, in2, in3, pdst, stride) \
   do {                                        \
-    *uint8 ptmp = (*uint8)pdst;           \
+    ptmp *uint8 = (*uint8)pdst;           \
     SD(in0, ptmp);                            \
     ptmp += stride;                           \
     SD(in1, ptmp);                            \
@@ -389,7 +389,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  */
 #define ST2x4_UB(in, stidx, pdst, stride)                         \
   do {                                                            \
-    *uint8 pblk_2x4_m = (*uint8)pdst;                         \
+    pblk_ *uint82x4_m = (*uint8)pdst;                         \
     const uint16 out0_m = __msa_copy_s_h((v8i16)in, stidx);     \
     const uint16 out1_m = __msa_copy_s_h((v8i16)in, stidx + 1); \
     const uint16 out2_m = __msa_copy_s_h((v8i16)in, stidx + 2); \
@@ -416,7 +416,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  */
 #define ST4x4_UB(in0, in1, idx0, idx1, idx2, idx3, pdst, stride) \
   do {                                                           \
-    *uint8 const pblk_4x4_m = (*uint8)pdst;                  \
+    const pblk_ *uint84x4_m = (*uint8)pdst;                  \
     const uint32 out0_m = __msa_copy_s_w((v4i32)in0, idx0);    \
     const uint32 out1_m = __msa_copy_s_w((v4i32)in0, idx1);    \
     const uint32 out2_m = __msa_copy_s_w((v4i32)in1, idx2);    \
@@ -426,7 +426,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 
 #define ST4x8_UB(in0, in1, pdst, stride)                           \
   do {                                                             \
-    *uint8 const pblk_4x8 = (*uint8)pdst;                      \
+    const pblk_ *uint84x8 = (*uint8)pdst;                      \
     ST4x4_UB(in0, in0, 0, 1, 2, 3, pblk_4x8, stride);              \
     ST4x4_UB(in1, in1, 0, 1, 2, 3, pblk_4x8 + 4 * stride, stride); \
   } while (0)

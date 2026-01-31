@@ -52,21 +52,21 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // clang-format on
 
 #if !defined(WEBP_REDUCE_CSP)
-static  func YuvToRgb(int y, int u, int v, *uint8 const rgb) {
+static  func YuvToRgb(int y, int u, int v, const rgb *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   rgb[0] = r;
   rgb[1] = g;
   rgb[2] = b;
 }
-static  func YuvToBgr(int y, int u, int v, *uint8 const bgr) {
+static  func YuvToBgr(int y, int u, int v, const bgr *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   bgr[0] = b;
   bgr[1] = g;
   bgr[2] = r;
 }
-static  func YuvToRgb565(int y, int u, int v, *uint8 const rgb) {
+static  func YuvToRgb565(int y, int u, int v, const rgb *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   {
@@ -81,7 +81,7 @@ static  func YuvToRgb565(int y, int u, int v, *uint8 const rgb) {
 #endif
   }
 }
-static  func YuvToRgba4444(int y, int u, int v, *uint8 const argb) {
+static  func YuvToRgba4444(int y, int u, int v, const argb *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   {
@@ -102,7 +102,7 @@ static  func YuvToRgba4444(int y, int u, int v, *uint8 const argb) {
 // Alpha handling variants
 
 #if !defined(WEBP_REDUCE_CSP)
-static  func YuvToArgb(uint8 y, uint8 u, uint8 v, *uint8 const argb) {
+static  func YuvToArgb(uint8 y, uint8 u, uint8 v, const argb *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   argb[0] = 0xff;
@@ -111,7 +111,7 @@ static  func YuvToArgb(uint8 y, uint8 u, uint8 v, *uint8 const argb) {
   argb[3] = b;
 }
 #endif  // WEBP_REDUCE_CSP
-static  func YuvToBgra(uint8 y, uint8 u, uint8 v, *uint8 const bgra) {
+static  func YuvToBgra(uint8 y, uint8 u, uint8 v, const bgra *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   bgra[0] = b;
@@ -119,7 +119,7 @@ static  func YuvToBgra(uint8 y, uint8 u, uint8 v, *uint8 const bgra) {
   bgra[2] = r;
   bgra[3] = 0xff;
 }
-static  func YuvToRgba(uint8 y, uint8 u, uint8 v, *uint8 const rgba) {
+static  func YuvToRgba(uint8 y, uint8 u, uint8 v, const rgba *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   rgba[0] = r;
@@ -145,11 +145,11 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, *uint8 const rgba) {
 
 #define UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                                 \
   func FUNC_NAME(                                                      \
-      const *uint8 WEBP_RESTRICT top_y,                                     \
-      const *uint8 WEBP_RESTRICT bottom_y,                                  \
-      const *uint8 WEBP_RESTRICT top_u, const *uint8 WEBP_RESTRICT top_v, \
-      const *uint8 WEBP_RESTRICT cur_u, const *uint8 WEBP_RESTRICT cur_v, \
-      *uint8 WEBP_RESTRICT top_dst, *uint8 WEBP_RESTRICT bottom_dst,      \
+      const WEBP_RESTRICT top_y *uint8,                                     \
+      const WEBP_RESTRICT bottom_y *uint8,                                  \
+      const WEBP_RESTRICT top_u *uint8, const WEBP_RESTRICT top_v *uint8, \
+      const WEBP_RESTRICT cur_u *uint8, const WEBP_RESTRICT cur_v *uint8, \
+      WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
       int len) {                                                              \
     int x;                                                                    \
     const int last_pixel_pair = (len - 1) >> 1;                               \
@@ -247,8 +247,8 @@ WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersMIPSdspR2(){
 
 #define YUV444_FUNC(FUNC_NAME, FUNC, XSTEP)                                  \
   func FUNC_NAME(                                                     \
-      const *uint8 WEBP_RESTRICT y, const *uint8 WEBP_RESTRICT u,        \
-      const *uint8 WEBP_RESTRICT v, *uint8 WEBP_RESTRICT dst, int len) { \
+      const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,        \
+      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
     int i;                                                                   \
     for (i = 0; i < len; ++i) FUNC(y[i], u[i], v[i], &dst[i * XSTEP]);       \
   }

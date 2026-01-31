@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-func HE16_SSE41(*uint8 dst) {  // horizontal
+func HE16_SSE41(dst *uint8) {  // horizontal
   int j;
   const __m128i kShuffle3 = _mm_set1_epi8(3);
   for (j = 16; j > 0; --j) {

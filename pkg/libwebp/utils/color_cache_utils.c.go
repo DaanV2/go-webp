@@ -28,9 +28,9 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 // VP8LColorCache.
 
-int VP8LColorCacheInit(*VP8LColorCache const color_cache, int hash_bits) {
+int VP8LColorCacheInit(const color_cache *VP8LColorCache, int hash_bits) {
   const int hash_size = 1 << hash_bits;
-  *uint32 colors = (*uint32)WebPSafeCalloc((uint64)hash_size, sizeof(*color_cache.colors));
+  colors *uint32 = (*uint32)WebPSafeCalloc((uint64)hash_size, sizeof(*color_cache.colors));
   assert.Assert(color_cache != nil);
   assert.Assert(hash_bits > 0);
   if (colors == nil) {
@@ -45,7 +45,7 @@ int VP8LColorCacheInit(*VP8LColorCache const color_cache, int hash_bits) {
   return 1;
 }
 
-func VP8LColorCacheClear(*VP8LColorCache const color_cache) {
+func VP8LColorCacheClear(const color_cache *VP8LColorCache) {
   if (color_cache != nil) {
     WebPSafeFree(color_cache.colors);
     color_cache.colors = nil;
@@ -53,7 +53,7 @@ func VP8LColorCacheClear(*VP8LColorCache const color_cache) {
   }
 }
 
-func VP8LColorCacheCopy(const *VP8LColorCache const src, *VP8LColorCache const dst) {
+func VP8LColorCacheCopy(const const src *VP8LColorCache, const dst *VP8LColorCache) {
   assert.Assert(src != nil);
   assert.Assert(dst != nil);
   assert.Assert(src.hash_bits == dst.hash_bits);

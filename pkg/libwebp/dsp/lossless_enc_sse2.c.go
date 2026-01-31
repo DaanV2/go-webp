@@ -33,7 +33,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func SubtractGreenFromBlueAndRed_SSE2(*uint32 argb_data, int num_pixels) {
+func SubtractGreenFromBlueAndRed_SSE2(argb_data *uint32, int num_pixels) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i in = _mm_loadu_si128((__*m128i)&argb_data[i]);  // argb
@@ -55,7 +55,7 @@ func SubtractGreenFromBlueAndRed_SSE2(*uint32 argb_data, int num_pixels) {
 #define MK_CST_16(HI, LO) \
   _mm_set1_epi32((int)(((uint32)(HI) << 16) | ((LO) & 0xffff)))
 
-func TransformColor_SSE2(const *VP8LMultipliers WEBP_RESTRICT const m, *uint32 WEBP_RESTRICT argb_data, int num_pixels) {
+func TransformColor_SSE2(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT argb_data *uint32, int num_pixels) {
   const __m128i mults_rb =
       MK_CST_16(CST_5b(m.green_to_red), CST_5b(m.green_to_blue));
   const __m128i mults_b2 = MK_CST_16(CST_5b(m.red_to_blue), 0);
@@ -84,14 +84,14 @@ func TransformColor_SSE2(const *VP8LMultipliers WEBP_RESTRICT const m, *uint32 W
 
 //------------------------------------------------------------------------------
 const SPAN = 8
-func CollectColorBlueTransforms_SSE2(const *uint32 WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
+func CollectColorBlueTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   const __m128i mults_r = MK_CST_16(CST_5b(red_to_blue), 0);
   const __m128i mults_g = MK_CST_16(0, CST_5b(green_to_blue));
   const __m128i mask_g = _mm_set1_epi32(0x00ff00);  // green mask
   const __m128i mask_b = _mm_set1_epi32(0x0000ff);  // blue mask
   int y;
   for (y = 0; y < tile_height; ++y) {
-    const *uint32 const src = argb + y * stride;
+    const const src *uint32 = argb + y * stride;
     int i, x;
     for (x = 0; x + SPAN <= tile_width; x += SPAN) {
       uint16 values[SPAN];
@@ -126,14 +126,14 @@ func CollectColorBlueTransforms_SSE2(const *uint32 WEBP_RESTRICT argb, int strid
   }
 }
 
-func CollectColorRedTransforms_SSE2(const *uint32 WEBP_RESTRICT argb, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
+func CollectColorRedTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
   const __m128i mults_g = MK_CST_16(0, CST_5b(green_to_red));
   const __m128i mask_g = _mm_set1_epi32(0x00ff00);  // green mask
   const __m128i mask = _mm_set1_epi32(0xff);
 
   int y;
   for (y = 0; y < tile_height; ++y) {
-    const *uint32 const src = argb + y * stride;
+    const const src *uint32 = argb + y * stride;
     int i, x;
     for (x = 0; x + SPAN <= tile_width; x += SPAN) {
       uint16 values[SPAN];
@@ -166,9 +166,9 @@ func CollectColorRedTransforms_SSE2(const *uint32 WEBP_RESTRICT argb, int stride
 
 //------------------------------------------------------------------------------
 
-// Note we are adding uint32's as **signed int32's (using _mm_add_epi32). But
+// Note we are adding uint32's as *int *signed32's (using _mm_add_epi32). But
 // that's ok since the histogram values are less than 1<<28 (max picture size).
-func AddVector_SSE2(const *uint32 WEBP_RESTRICT a, const *uint32 WEBP_RESTRICT b, *uint32 WEBP_RESTRICT out, int size) {
+func AddVector_SSE2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
   int i = 0;
   int aligned_size = size & ~15;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
@@ -215,7 +215,7 @@ func AddVector_SSE2(const *uint32 WEBP_RESTRICT a, const *uint32 WEBP_RESTRICT b
   }
 }
 
-func AddVectorEq_SSE2(const *uint32 WEBP_RESTRICT a, *uint32 WEBP_RESTRICT out, int size) {
+func AddVectorEq_SSE2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int size) {
   int i = 0;
   int aligned_size = size & ~15;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
@@ -314,7 +314,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_SSE2(const *uint32 const array1, const *uint32 const array2, int length) {
+static int VectorMismatch_SSE2(const const array *uint321, const const array *uint322, int length) {
   int match_len;
 
   if (length >= 12) {
@@ -362,7 +362,7 @@ static int VectorMismatch_SSE2(const *uint32 const array1, const *uint32 const a
 }
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
-func BundleColorMap_SSE2(const *uint8 WEBP_RESTRICT const row, int width, int xbits, *uint32 WEBP_RESTRICT dst) {
+func BundleColorMap_SSE2(const WEBP_RESTRICT const row *uint8, int width, int xbits, WEBP_RESTRICT dst *uint32) {
   int x;
   assert.Assert(xbits >= 0);
   assert.Assert(xbits <= 3);
@@ -439,7 +439,7 @@ func BundleColorMap_SSE2(const *uint8 WEBP_RESTRICT const row, int width, int xb
 //------------------------------------------------------------------------------
 // Batch version of Predictor Transform subtraction
 
-static  func Average2_m128i(const __*m128i const a0, const __*m128i const a1, __*m128i const avg) {
+static  func Average2_m128i(const __const a *m128i0, const __const a *m128i1, __const avg *m128i) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m128i ones = _mm_set1_epi8(1);
   const __m128i avg1 = _mm_avg_epu8(*a0, *a1);
@@ -448,7 +448,7 @@ static  func Average2_m128i(const __*m128i const a0, const __*m128i const a1, __
 }
 
 // Predictor0: ARGB_BLACK.
-func PredictorSub0_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorSub0_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   const __m128i black = _mm_set1_epi32((int)ARGB_BLACK);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
@@ -464,8 +464,8 @@ func PredictorSub0_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *
 
 #define GENERATE_PREDICTOR_1(X, IN)                                          \
   func PredictorSub##X##_SSE2(                                        \
-      const *uint32 const in, const *uint32 const upper, int num_pixels, \
-      *uint32 WEBP_RESTRICT const out) {                                   \
+      const const in *uint32, const const upper *uint32, int num_pixels, \
+      WEBP_RESTRICT const out *uint32) {                                   \
     int i;                                                                   \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                               \
       const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);           \
@@ -486,7 +486,7 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])  // Predictor4: TL
 #undef GENERATE_PREDICTOR_1
 
 // Predictor5: avg2(avg2(L, TR), T)
-func PredictorSub5_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorSub5_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i L = _mm_loadu_si128((const __*m128i)&in[i - 1]);
@@ -505,9 +505,9 @@ func PredictorSub5_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *
 }
 
 #define GENERATE_PREDICTOR_2(X, A, B)                                       \
-  func PredictorSub##X##_SSE2(const *uint32 in,                    \
-                                     const *uint32 upper, int num_pixels, \
-                                     *uint32 WEBP_RESTRICT out) {         \
+  func PredictorSub##X##_SSE2(const in *uint32,                    \
+                                     const upper *uint32, int num_pixels, \
+                                     WEBP_RESTRICT out *uint32) {         \
     int i;                                                                  \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                              \
       const __m128i tA = _mm_loadu_si128((const __*m128i)&(A));             \
@@ -530,7 +530,7 @@ GENERATE_PREDICTOR_2(9, upper[i], upper[i + 1])   // Predictor9: average(T, TR)
 #undef GENERATE_PREDICTOR_2
 
 // Predictor10: avg(avg(L,TL), avg(T, TR)).
-func PredictorSub10_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorSub10_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i L = _mm_loadu_si128((const __*m128i)&in[i - 1]);
@@ -551,7 +551,7 @@ func PredictorSub10_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, 
 }
 
 // Predictor11: select.
-func GetSumAbsDiff32_SSE2(const __*m128i const A, const __*m128i const B, __*m128i const out) {
+func GetSumAbsDiff32_SSE2(const __const A *m128i, const __const B *m128i, __const out *m128i) {
   // We can unpack with any value on the upper 32 bits, provided it's the same
   // on both operands (to that their sum of abs diff is zero). Here we use *A.
   const __m128i A_lo = _mm_unpacklo_epi32(*A, *A);
@@ -563,7 +563,7 @@ func GetSumAbsDiff32_SSE2(const __*m128i const A, const __*m128i const B, __*m12
   *out = _mm_packs_epi32(s_lo, s_hi);
 }
 
-func PredictorSub11_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorSub11_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i L = _mm_loadu_si128((const __*m128i)&in[i - 1]);
@@ -588,7 +588,7 @@ func PredictorSub11_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, 
 }
 
 // Predictor12: ClampedSubSubtractFull.
-func PredictorSub12_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorSub12_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   const __m128i zero = _mm_setzero_si128();
   for (i = 0; i + 4 <= num_pixels; i += 4) {
@@ -616,7 +616,7 @@ func PredictorSub12_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, 
 }
 
 // Predictors13: ClampedAddSubtractHalf
-func PredictorSub13_SSE2(const *uint32 in, const *uint32 upper, int num_pixels, *uint32 WEBP_RESTRICT out) {
+func PredictorSub13_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i;
   const __m128i zero = _mm_setzero_si128();
   for (i = 0; i + 4 <= num_pixels; i += 4) {

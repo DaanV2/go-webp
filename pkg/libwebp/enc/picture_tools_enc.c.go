@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const SIZE = 8
 const SIZE2 = (SIZE / 2)
-static int IsTransparentARGBArea(const *uint32 ptr, int stride, int size) {
+static int IsTransparentARGBArea(const ptr *uint32, int stride, int size) {
   int y, x;
   for (y = 0; y < size; ++y) {
     for (x = 0; x < size; ++x) {
@@ -41,7 +41,7 @@ static int IsTransparentARGBArea(const *uint32 ptr, int stride, int size) {
   return 1;
 }
 
-func Flatten(*uint8 ptr, int v, int stride, int size) {
+func Flatten(ptr *uint8, int v, int stride, int size) {
   int y;
   for (y = 0; y < size; ++y) {
     memset(ptr, v, size);
@@ -49,7 +49,7 @@ func Flatten(*uint8 ptr, int v, int stride, int size) {
   }
 }
 
-func FlattenARGB(*uint32 ptr, uint32 v, int stride, int size) {
+func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
   int x, y;
   for (y = 0; y < size; ++y) {
     for (x = 0; x < size; ++x) ptr[x] = v;
@@ -59,11 +59,11 @@ func FlattenARGB(*uint32 ptr, uint32 v, int stride, int size) {
 
 // Smoothen the luma components of transparent pixels. Return true if the whole
 // block is transparent.
-static int SmoothenBlock(const *uint8 a_ptr, int a_stride, *uint8 y_ptr, int y_stride, int width, int height) {
+static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_stride, int width, int height) {
   int sum = 0, count = 0;
   int x, y;
-  const *uint8 alpha_ptr = a_ptr;
-  *uint8 luma_ptr = y_ptr;
+  const alpha_ptr *uint8 = a_ptr;
+  luma_ptr *uint8 = y_ptr;
   for (y = 0; y < height; ++y) {
     for (x = 0; x < width; ++x) {
       if (alpha_ptr[x] != 0) {
@@ -89,10 +89,10 @@ static int SmoothenBlock(const *uint8 a_ptr, int a_stride, *uint8 y_ptr, int y_s
   return (count == 0);
 }
 
-func WebPReplaceTransparentPixels(*WebPPicture const pic, uint32 color) {
+func WebPReplaceTransparentPixels(const pic *WebPPicture, uint32 color) {
   if (pic != nil && pic.use_argb) {
     int y = pic.height;
-    *uint32 argb = pic.argb;
+    argb *uint32 = pic.argb;
     color &= uint(0xffffff);  // force alpha=0
     WebPInitAlphaProcessing();
     while (y-- > 0) {
@@ -102,7 +102,7 @@ func WebPReplaceTransparentPixels(*WebPPicture const pic, uint32 color) {
   }
 }
 
-func WebPCleanupTransparentArea(*WebPPicture pic) {
+func WebPCleanupTransparentArea(pic *WebPPicture) {
   int x, y, w, h;
   if (pic == nil) return;
   w = pic.width / SIZE;
@@ -132,10 +132,10 @@ func WebPCleanupTransparentArea(*WebPPicture pic) {
     const int y_stride = pic.y_stride;
     const int uv_stride = pic.uv_stride;
     const int a_stride = pic.a_stride;
-    *uint8 y_ptr = pic.y;
-    *uint8 u_ptr = pic.u;
-    *uint8 v_ptr = pic.v;
-    const *uint8 a_ptr = pic.a;
+    y_ptr *uint8 = pic.y;
+    u_ptr *uint8 = pic.u;
+    v_ptr *uint8 = pic.v;
+    const a_ptr *uint8 = pic.a;
     int values[3] = {0}
     if (a_ptr == nil || y_ptr == nil || u_ptr == nil || v_ptr == nil) {
       return;
@@ -192,7 +192,7 @@ static  uint32 MakeARGB32(int r, int g, int b) {
   return (uint(0xff000000) | (r << 16) | (g << 8) | b);
 }
 
-func WebPBlendAlpha(*WebPPicture picture, uint32 background_rgb) {
+func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
   const int red = (background_rgb >> 16) & 0xff;
   const int green = (background_rgb >> 8) & 0xff;
   const int blue = (background_rgb >> 0) & 0xff;
@@ -206,10 +206,10 @@ func WebPBlendAlpha(*WebPPicture picture, uint32 background_rgb) {
     const int U0 = VP8RGBToU(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
     const int V0 = VP8RGBToV(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
     const int has_alpha = picture.colorspace & WEBP_CSP_ALPHA_BIT;
-    *uint8 y_ptr = picture.y;
-    *uint8 u_ptr = picture.u;
-    *uint8 v_ptr = picture.v;
-    *uint8 a_ptr = picture.a;
+    y_ptr *uint8 = picture.y;
+    u_ptr *uint8 = picture.u;
+    v_ptr *uint8 = picture.v;
+    a_ptr *uint8 = picture.a;
     if (!has_alpha || a_ptr == nil) return;  // nothing to do
     for (y = 0; y < picture.height; ++y) {
       // Luma blending
@@ -221,7 +221,7 @@ func WebPBlendAlpha(*WebPPicture picture, uint32 background_rgb) {
       }
       // Chroma blending every even line
       if ((y & 1) == 0) {
-        *uint8 const a_ptr2 =
+        const a_ptr *uint82 =
             (y + 1 == picture.height) ? a_ptr : a_ptr + picture.a_stride;
         for (x = 0; x < uv_width; ++x) {
           // Average four alpha values into a single blending weight.
@@ -245,7 +245,7 @@ func WebPBlendAlpha(*WebPPicture picture, uint32 background_rgb) {
       y_ptr += picture.y_stride;
     }
   } else {
-    *uint32 argb = picture.argb;
+    argb *uint32 = picture.argb;
     const uint32 background = MakeARGB32(red, green, blue);
     for (y = 0; y < picture.height; ++y) {
       for (x = 0; x < picture.width; ++x) {

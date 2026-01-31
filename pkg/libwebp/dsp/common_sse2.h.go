@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/emmintrin"
 
 #if 0
 import "github.com/daanv2/go-webp/pkg/stdio"
-static  func PrintReg(const __m128i r, const *byte const name, int size) {
+static  func PrintReg(const __m128i r, const const name *byte, int size) {
   int n;
   union {
     __m128i r;
@@ -55,7 +55,7 @@ static  func PrintReg(const __m128i r, const *byte const name, int size) {
 // Math functions.
 
 // Return the sum of all the 8b in the register.
-static  int VP8HorizontalAdd8b(const __*m128i const a) {
+static  int VP8HorizontalAdd8b(const __const a *m128i) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i sad8x2 = _mm_sad_epu8(*a, zero);
   // sum the two sads: sad8x2[0:1] + sad8x2[8:9]
@@ -65,7 +65,7 @@ static  int VP8HorizontalAdd8b(const __*m128i const a) {
 
 // Transpose two 4x4 16b matrices horizontally stored in registers.
 static  func VP8Transpose_2_4x4_16b(
-    const __*m128i const in0, const __*m128i const in1, const __*m128i const in2, const __*m128i const in3, __*m128i const out0, __*m128i const out1, __*m128i const out2, __*m128i const out3) {
+    const __const in *m128i0, const __const in *m128i1, const __const in *m128i2, const __const in *m128i3, __const out *m128i0, __const out *m128i1, __const out *m128i2, __const out *m128i3) {
   // Transpose the two 4x4.
   // a00 a01 a02 a03   b00 b01 b02 b03
   // a10 a11 a12 a13   b10 b11 b12 b13
@@ -126,7 +126,7 @@ static  func VP8Transpose_2_4x4_16b(
 // rrrr... rrrr... gggg... gggg... bbbb... bbbb....
 // triplet by triplet in the output buffer rgb as rgbrgbrgbrgb ...
 static  func VP8PlanarTo24b_SSE2(
-    __*m128i const in0, __*m128i const in1, __*m128i const in2, __*m128i const in3, __*m128i const in4, __*m128i const in5) {
+    __const in *m128i0, __const in *m128i1, __const in *m128i2, __const in *m128i3, __const in *m128i4, __const in *m128i5) {
   // The input is 6 registers of sixteen 8b but for the sake of explanation, // let's take 6 registers of four 8b values.
   // To pack, we will keep taking one every two 8b integer and move it
   // around as follows:
@@ -154,7 +154,7 @@ static  func VP8PlanarTo24b_SSE2(
 
 // Convert four packed four-channel buffers like argbargbargbargb... into the
 // split channels aaaaa ... rrrr ... gggg .... bbbbb ......
-static  func VP8L32bToPlanar_SSE2(__*m128i const in0, __*m128i const in1, __*m128i const in2, __*m128i const in3) {
+static  func VP8L32bToPlanar_SSE2(__const in *m128i0, __const in *m128i1, __const in *m128i2, __const in *m128i3) {
   // Column-wise transpose.
   const __m128i A0 = _mm_unpacklo_epi8(*in0, *in1);
   const __m128i A1 = _mm_unpackhi_epi8(*in0, *in1);

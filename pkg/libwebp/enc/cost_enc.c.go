@@ -49,7 +49,7 @@ static int VariableLevelCost(int level, const uint8 probas[NUM_PROBAS]) {
 //------------------------------------------------------------------------------
 // Pre-calc level costs once for all
 
-func VP8CalculateLevelCosts(*VP8EncProba const proba) {
+func VP8CalculateLevelCosts(const proba *VP8EncProba) {
   int ctype, band, ctx;
 
   if (!proba.dirty) return;  // nothing to do.
@@ -58,8 +58,8 @@ func VP8CalculateLevelCosts(*VP8EncProba const proba) {
     int n;
     for (band = 0; band < NUM_BANDS; ++band) {
       for (ctx = 0; ctx < NUM_CTX; ++ctx) {
-        const *uint8 const p = proba.coeffs[ctype][band][ctx];
-        *uint16 const table = proba.level_cost[ctype][band][ctx];
+        const const p *uint8 = proba.coeffs[ctype][band][ctx];
+        const table *uint16 = proba.level_cost[ctype][band][ctx];
         const int cost0 = (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
         const int cost_base = VP8BitCost(1, p[1]) + cost0;
         int v;
@@ -95,7 +95,7 @@ const uint16 VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES] = {
 //------------------------------------------------------------------------------
 // helper functions for residuals struct VP8Residual.
 
-func VP8InitResidual(int first, int coeff_type, *VP8Encoder const enc, *VP8Residual const res) {
+func VP8InitResidual(int first, int coeff_type, const enc *VP8Encoder, const res *VP8Residual) {
   res.coeff_type = coeff_type;
   res.prob = enc.proba.coeffs[coeff_type];
   res.stats = enc.proba.stats[coeff_type];
@@ -106,10 +106,10 @@ func VP8InitResidual(int first, int coeff_type, *VP8Encoder const enc, *VP8Resid
 //------------------------------------------------------------------------------
 // Mode costs
 
-int VP8GetCostLuma4(*VP8EncIterator const it, const int16 levels[16]) {
+int VP8GetCostLuma4(const it *VP8EncIterator, const int16 levels[16]) {
   const int x = (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
-  *VP8Encoder const enc = it.enc;
+  const enc *VP8Encoder = it.enc;
   int R = 0;
   int ctx;
 
@@ -120,9 +120,9 @@ int VP8GetCostLuma4(*VP8EncIterator const it, const int16 levels[16]) {
   return R;
 }
 
-int VP8GetCostLuma16(*VP8EncIterator const it, const *VP8ModeScore const rd) {
+int VP8GetCostLuma16(const it *VP8EncIterator, const const rd *VP8ModeScore) {
   VP8Residual res;
-  *VP8Encoder const enc = it.enc;
+  const enc *VP8Encoder = it.enc;
   int x, y;
   int R = 0;
 
@@ -146,9 +146,9 @@ int VP8GetCostLuma16(*VP8EncIterator const it, const *VP8ModeScore const rd) {
   return R;
 }
 
-int VP8GetCostUV(*VP8EncIterator const it, const *VP8ModeScore const rd) {
+int VP8GetCostUV(const it *VP8EncIterator, const const rd *VP8ModeScore) {
   VP8Residual res;
-  *VP8Encoder const enc = it.enc;
+  const enc *VP8Encoder = it.enc;
   int ch, x, y;
   int R = 0;
 
@@ -176,7 +176,7 @@ int VP8GetCostUV(*VP8EncIterator const it, const *VP8ModeScore const rd) {
 
 // Simulate block coding, but only record statistics.
 // Note: no need to record the fixed probas.
-int VP8RecordCoeffs(int ctx, const *VP8Residual const res) {
+int VP8RecordCoeffs(int ctx, const const res *VP8Residual) {
   int n = res.first;
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
   proba_t* s = res.stats[n][ctx];

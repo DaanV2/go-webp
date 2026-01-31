@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-func SetResidualCoeffs_SSE2(const *int16 WEBP_RESTRICT const coeffs, *VP8Residual WEBP_RESTRICT const res) {
+func SetResidualCoeffs_SSE2(const WEBP_RESTRICT const coeffs *int16, WEBP_RESTRICT const res *VP8Residual) {
   const __m128i c0 = _mm_loadu_si128((const __*m128i)(coeffs + 0));
   const __m128i c1 = _mm_loadu_si128((const __*m128i)(coeffs + 8));
   // Use SSE2 to compare 16 values with a single instruction.
@@ -46,14 +46,14 @@ func SetResidualCoeffs_SSE2(const *int16 WEBP_RESTRICT const coeffs, *VP8Residua
   res.coeffs = coeffs;
 }
 
-static int GetResidualCost_SSE2(int ctx0, const *VP8Residual const res) {
+static int GetResidualCost_SSE2(int ctx0, const const res *VP8Residual) {
   uint8 levels[16], ctxs[16];
   uint16 abs_levels[16];
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   const int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const *uint16 t = costs[n][ctx0];
+  const t *uint16 = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.

@@ -45,12 +45,12 @@ const uint8 VP8EncBands[16 + 1] = {
 //------------------------------------------------------------------------------
 // Mode costs
 
-static int GetResidualCost_C(int ctx0, const *VP8Residual const res) {
+static int GetResidualCost_C(int ctx0, const const res *VP8Residual) {
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   const int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const *uint16 t = costs[n][ctx0];
+  const t *uint16 = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
@@ -80,7 +80,7 @@ static int GetResidualCost_C(int ctx0, const *VP8Residual const res) {
   return cost;
 }
 
-func SetResidualCoeffs_C(const *int16 WEBP_RESTRICT const coeffs, *VP8Residual WEBP_RESTRICT const res) {
+func SetResidualCoeffs_C(const WEBP_RESTRICT const coeffs *int16, WEBP_RESTRICT const res *VP8Residual) {
   int n;
   res.last = -1;
   assert.Assert(res.first == 0 || coeffs[0] == 0);
