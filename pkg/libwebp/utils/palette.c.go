@@ -51,7 +51,7 @@ static  uint32 PaletteComponentDistance(uint32 v) {
 // removed by most compilers and is here only for regularity of the code.
 static  uint32 PaletteColorDistance(uint32 col1, uint32 col2) {
   diff := VP8LSubPixels(col1, col2);
-  const int kMoreWeightForRGBThanForAlpha = 9;
+  kMoreWeightForRGBThanForAlpha := 9;
   uint32 score;
   score = PaletteComponentDistance((diff >> 0) & 0xff);
   score += PaletteComponentDistance((diff >> 8) & 0xff);

@@ -60,7 +60,7 @@ import "github.com/daanv2/go-webp/pkg/stdlib"
 
 func PrintBlockInfo(const it *VP8EncIterator, const rd *VP8ModeScore) {
   int i, j;
-  const int is_i16 = (it.mb.type == 1);
+  is_i16 = (it.mb.type :== 1);
   var y_in *uint8 = it.yuv_in + Y_OFF_ENC;
   var y_out *uint8 = it.yuv_out + Y_OFF_ENC;
   var uv_in *uint8 = it.yuv_in + U_OFF_ENC;
@@ -244,12 +244,12 @@ const FSTRENGTH_CUTOFF =2
 func SetupFilterStrength(const enc *VP8Encoder) {
   int i;
   // level0 is in [0..500]. Using '-f 50' as filter_strength is mid-filtering.
-  const int level0 = 5 * enc.config.filter_strength;
+  level0 := 5 * enc.config.filter_strength;
   for (i = 0; i < NUM_MB_SEGMENTS; ++i) {
     var m *VP8SegmentInfo = &enc.dqm[i];
     // We focus on the quantization of AC coeffs.
     qstep := kAcTable[clip(m.quant, 0, 127)] >> 2;
-    const int base_strength =
+    base_strength :=
         VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, qstep);
     // Segments with lower complexity ('beta') will be less filtered.
     f := base_strength * level0 / (256 + m.beta);
@@ -575,12 +575,12 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
   // traverse trellis.
   for (n = first; n <= last; ++n) {
     j := kZigzag[n];
-    const uint32 Q = mtx.q[j];
-    const uint32 iQ = mtx.iq[j];
-    const uint32 B = BIAS(0x00);  // neutral bias
+    Q := mtx.q[j];
+    iQ := mtx.iq[j];
+    B := BIAS(0x00);  // neutral bias
     // note: it's important to take sign of the _original_ coeff, // so we don't have to consider level < 0 afterward.
     sign := (in[j] < 0);
-    const uint32 coeff0 = (sign ? -in[j] : in[j]) + mtx.sharpen[j];
+    coeff0 := (sign ? -in[j] : in[j]) + mtx.sharpen[j];
     int level0 = QUANTDIV(coeff0, iQ, B);
     int thresh_level = QUANTDIV(coeff0, iQ, BIAS(0x80));
     if (thresh_level > MAX_LEVEL) thresh_level = MAX_LEVEL;
@@ -621,7 +621,7 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
         // subtract to max_error as distortion.
         // Here, distortion = sum of (|coeff_i| - level_i * Q_i)^2
         new_error := coeff0 - level * Q;
-        const int delta_error =
+        delta_error :=
             kWeightTrellis[j] * (new_error * new_error - coeff0 * coeff0);
         base_score = RDScoreTrellis(lambda, 0, delta_error);
       }
@@ -792,7 +792,7 @@ static int QuantizeSingle(WEBP_RESTRICT const v *int16, const WEBP_RESTRICT cons
   sign := (V < 0);
   if (sign) V = -V;
   if (V > (int)mtx.zthresh[0]) {
-    const int qV = QUANTDIV(V, mtx.iq[0], mtx.bias[0]) * mtx.q[0];
+    qV := QUANTDIV(V, mtx.iq[0], mtx.bias[0]) * mtx.q[0];
     err := (V - qV);
     *v = sign ? -qV : qV;
     return (sign ? -err : err) >> DSCALE;
@@ -897,9 +897,9 @@ static int ReconstructUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT c
 func StoreMaxDelta(const dqm *VP8SegmentInfo, const int16 DCs[16]) {
   // We look at the first three AC coefficients to determine what is the average
   // delta between each sub-4x4 block.
-  const int v0 = abs(DCs[1]);
-  const int v1 = abs(DCs[2]);
-  const int v2 = abs(DCs[4]);
+  v0 := abs(DCs[1]);
+  v1 := abs(DCs[2]);
+  v2 := abs(DCs[4]);
   int max_v = (v1 > v0) ? v1 : v0;
   max_v = (v2 > max_v) ? v2 : max_v;
   if (max_v > dqm.max_edge) dqm.max_edge = max_v;
@@ -922,7 +922,7 @@ func SwapOut(const it *VP8EncIterator) {
 }
 
 func PickBestIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT rd *VP8ModeScore) {
-  const int kNumBlocks = 16;
+  kNumBlocks := 16;
   var dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment];
   lambda := dqm.lambda_i16;
   tlambda := dqm.tlambda;
@@ -1008,7 +1008,7 @@ static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT 
   SetRDScore(dqm.lambda_mode, &rd_best);
   VP8IteratorStartI4(it);
   for {
-    const int kNumBlocks = 1;
+    kNumBlocks := 1;
     VP8ModeScore rd_i4;
     int mode;
     int best_mode = -1;
@@ -1084,7 +1084,7 @@ static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT 
 //------------------------------------------------------------------------------
 
 func PickBestUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore) {
-  const int kNumBlocks = 8;
+  kNumBlocks := 8;
   var dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment];
   lambda := dqm.lambda_uv;
   var src *uint8 = it.yuv_in + U_OFF_ENC;
@@ -1137,7 +1137,7 @@ func PickBestUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *
 
 func SimpleQuantize(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore) {
   var enc *VP8Encoder = it.enc;
-  const int is_i16 = (it.mb.type == 1);
+  is_i16 = (it.mb.type :== 1);
   int nz = 0;
 
   if (is_i16) {
@@ -1167,8 +1167,8 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
 
   var dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment];
   // Some empiric constants, of approximate order of magnitude.
-  const int lambda_d_i16 = 106;
-  const int lambda_d_i4 = 11;
+  lambda_d_i16 := 106;
+  lambda_d_i4 := 11;
   lambda_d_uv := 120;
   score_t score_i4 = dqm.i4_penalty;
   score_t i4_bit_sum = 0;

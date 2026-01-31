@@ -234,13 +234,13 @@ const v255 = vdup_n_u8(255)
     /* Treat the first pixel in regular way */                                \
     assert.Assert(top_y != nil);                                                    \
     {                                                                         \
-      const int u0 = (top_u[0] + u_diag) >> 1;                                \
-      const int v0 = (top_v[0] + v_diag) >> 1;                                \
+      u0 := (top_u[0] + u_diag) >> 1;                                \
+      v0 := (top_v[0] + v_diag) >> 1;                                \
       VP8YuvTo##FMT(top_y[0], u0, v0, top_dst);                               \
     }                                                                         \
     if (bottom_y != nil) {                                                   \
-      const int u0 = (cur_u[0] + u_diag) >> 1;                                \
-      const int v0 = (cur_v[0] + v_diag) >> 1;                                \
+      u0 := (cur_u[0] + u_diag) >> 1;                                \
+      v0 := (cur_v[0] + v_diag) >> 1;                                \
       VP8YuvTo##FMT(bottom_y[0], u0, v0, bottom_dst);                         \
     }                                                                         \
                                                                               \

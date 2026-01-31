@@ -113,9 +113,9 @@ static  func ITransformOne(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT i
   for (i = 0; i < 4; ++i) {  // vertical pass
     a := in[0] + in[8];
     b := in[0] - in[8];
-    const int c =
+    c :=
         WEBP_TRANSFORM_AC3_MUL2(in[4]) - WEBP_TRANSFORM_AC3_MUL1(in[12]);
-    const int d =
+    d :=
         WEBP_TRANSFORM_AC3_MUL1(in[4]) + WEBP_TRANSFORM_AC3_MUL2(in[12]);
     tmp[0] = a + d;
     tmp[1] = b + c;
@@ -130,9 +130,9 @@ static  func ITransformOne(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT i
     dc := tmp[0] + 4;
     a := dc + tmp[8];
     b := dc - tmp[8];
-    const int c =
+    c :=
         WEBP_TRANSFORM_AC3_MUL2(tmp[4]) - WEBP_TRANSFORM_AC3_MUL1(tmp[12]);
-    const int d =
+    d :=
         WEBP_TRANSFORM_AC3_MUL1(tmp[4]) + WEBP_TRANSFORM_AC3_MUL2(tmp[12]);
     STORE(0, i, a + d);
     STORE(1, i, b + c);
@@ -153,24 +153,24 @@ func FTransform_C(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint8
   int i;
   int tmp[16];
   for (i = 0; i < 4; ++i, src += BPS, ref += BPS) {
-    const int d0 = src[0] - ref[0];  // 9bit dynamic range ([-255,255])
-    const int d1 = src[1] - ref[1];
-    const int d2 = src[2] - ref[2];
-    const int d3 = src[3] - ref[3];
-    const int a0 = (d0 + d3);  // 10b [-510,510]
-    const int a1 = (d1 + d2);
-    const int a2 = (d1 - d2);
-    const int a3 = (d0 - d3);
+    d0 := src[0] - ref[0];  // 9bit dynamic range ([-255,255])
+    d1 := src[1] - ref[1];
+    d2 := src[2] - ref[2];
+    d3 := src[3] - ref[3];
+    a0 := (d0 + d3);  // 10b [-510,510]
+    a1 := (d1 + d2);
+    a2 := (d1 - d2);
+    a3 := (d0 - d3);
     tmp[0 + i * 4] = (a0 + a1) * 8;                        // 14b [-8160,8160]
     tmp[1 + i * 4] = (a2 * 2217 + a3 * 5352 + 1812) >> 9;  // [-7536,7542]
     tmp[2 + i * 4] = (a0 - a1) * 8;
     tmp[3 + i * 4] = (a3 * 2217 - a2 * 5352 + 937) >> 9;
   }
   for (i = 0; i < 4; ++i) {
-    const int a0 = (tmp[0 + i] + tmp[12 + i]);  // 15b
-    const int a1 = (tmp[4 + i] + tmp[8 + i]);
-    const int a2 = (tmp[4 + i] - tmp[8 + i]);
-    const int a3 = (tmp[0 + i] - tmp[12 + i]);
+    a0 := (tmp[0 + i] + tmp[12 + i]);  // 15b
+    a1 := (tmp[4 + i] + tmp[8 + i]);
+    a2 := (tmp[4 + i] - tmp[8 + i]);
+    a3 := (tmp[0 + i] - tmp[12 + i]);
     out[0 + i] = (a0 + a1 + 7) >> 4;  // 12b
     out[4 + i] = ((a2 * 2217 + a3 * 5352 + 12000) >> 16) + (a3 != 0);
     out[8 + i] = (a0 - a1 + 7) >> 4;
@@ -190,24 +190,24 @@ func FTransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   int32 tmp[16];
   int i;
   for (i = 0; i < 4; ++i, in += 64) {
-    const int a0 = (in[0 * 16] + in[2 * 16]);  // 13b
-    const int a1 = (in[1 * 16] + in[3 * 16]);
-    const int a2 = (in[1 * 16] - in[3 * 16]);
-    const int a3 = (in[0 * 16] - in[2 * 16]);
+    a0 := (in[0 * 16] + in[2 * 16]);  // 13b
+    a1 := (in[1 * 16] + in[3 * 16]);
+    a2 := (in[1 * 16] - in[3 * 16]);
+    a3 := (in[0 * 16] - in[2 * 16]);
     tmp[0 + i * 4] = a0 + a1;  // 14b
     tmp[1 + i * 4] = a3 + a2;
     tmp[2 + i * 4] = a3 - a2;
     tmp[3 + i * 4] = a0 - a1;
   }
   for (i = 0; i < 4; ++i) {
-    const int a0 = (tmp[0 + i] + tmp[8 + i]);  // 15b
-    const int a1 = (tmp[4 + i] + tmp[12 + i]);
-    const int a2 = (tmp[4 + i] - tmp[12 + i]);
-    const int a3 = (tmp[0 + i] - tmp[8 + i]);
-    const int b0 = a0 + a1;  // 16b
-    const int b1 = a3 + a2;
-    const int b2 = a3 - a2;
-    const int b3 = a0 - a1;
+    a0 := (tmp[0 + i] + tmp[8 + i]);  // 15b
+    a1 := (tmp[4 + i] + tmp[12 + i]);
+    a2 := (tmp[4 + i] - tmp[12 + i]);
+    a3 := (tmp[0 + i] - tmp[8 + i]);
+    b0 := a0 + a1;  // 16b
+    b1 := a3 + a2;
+    b2 := a3 - a2;
+    b3 := a0 - a1;
     out[0 + i] = b0 >> 1;  // 15b
     out[4 + i] = b1 >> 1;
     out[8 + i] = b2 >> 1;
@@ -340,7 +340,7 @@ func Intra16Preds_C(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, c
 
 // vertical
 func VE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const uint8 vals[4] = {
+  vals[4] := {
       AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
   int i;
   for (i = 0; i < 4; ++i) {
@@ -350,11 +350,11 @@ func VE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 // horizontal
 func HE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
   WebPUint32ToMem(dst + 0 * BPS, uint(0x01010101) * AVG3(X, I, J));
   WebPUint32ToMem(dst + 1 * BPS, uint(0x01010101) * AVG3(I, J, K));
   WebPUint32ToMem(dst + 2 * BPS, uint(0x01010101) * AVG3(J, K, L));
@@ -369,15 +369,15 @@ func DC4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 func RD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
-  const int D = top[3];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
+  A := top[0];
+  B := top[1];
+  C := top[2];
+  D := top[3];
   DST(0, 3) = AVG3(J, K, L);
   DST(0, 2) = DST(1, 3) = AVG3(I, J, K);
   DST(0, 1) = DST(1, 2) = DST(2, 3) = AVG3(X, I, J);
@@ -388,14 +388,14 @@ func RD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 func LD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
-  const int D = top[3];
-  const int E = top[4];
-  const int F = top[5];
-  const int G = top[6];
-  const int H = top[7];
+  A := top[0];
+  B := top[1];
+  C := top[2];
+  D := top[3];
+  E := top[4];
+  F := top[5];
+  G := top[6];
+  H := top[7];
   DST(0, 0) = AVG3(A, B, C);
   DST(1, 0) = DST(0, 1) = AVG3(B, C, D);
   DST(2, 0) = DST(1, 1) = DST(0, 2) = AVG3(C, D, E);
@@ -406,14 +406,14 @@ func LD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 func VR4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
-  const int D = top[3];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  A := top[0];
+  B := top[1];
+  C := top[2];
+  D := top[3];
   DST(0, 0) = DST(1, 2) = AVG2(X, A);
   DST(1, 0) = DST(2, 2) = AVG2(A, B);
   DST(2, 0) = DST(3, 2) = AVG2(B, C);
@@ -428,14 +428,14 @@ func VR4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 func VL4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
-  const int D = top[3];
-  const int E = top[4];
-  const int F = top[5];
-  const int G = top[6];
-  const int H = top[7];
+  A := top[0];
+  B := top[1];
+  C := top[2];
+  D := top[3];
+  E := top[4];
+  F := top[5];
+  G := top[6];
+  H := top[7];
   DST(0, 0) = AVG2(A, B);
   DST(1, 0) = DST(0, 2) = AVG2(B, C);
   DST(2, 0) = DST(1, 2) = AVG2(C, D);
@@ -450,10 +450,10 @@ func VL4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 func HU4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
   DST(0, 0) = AVG2(I, J);
   DST(2, 0) = DST(0, 1) = AVG2(J, K);
   DST(2, 1) = DST(0, 2) = AVG2(K, L);
@@ -464,14 +464,14 @@ func HU4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 func HD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
+  A := top[0];
+  B := top[1];
+  C := top[2];
 
   DST(0, 0) = DST(2, 1) = AVG2(I, X);
   DST(0, 1) = DST(2, 2) = AVG2(J, I);
@@ -581,10 +581,10 @@ static int TTransform(const WEBP_RESTRICT in *uint8, const WEBP_RESTRICT w *uint
   int i;
   // horizontal pass
   for (i = 0; i < 4; ++i, in += BPS) {
-    const int a0 = in[0] + in[2];
-    const int a1 = in[1] + in[3];
-    const int a2 = in[1] - in[3];
-    const int a3 = in[0] - in[2];
+    a0 := in[0] + in[2];
+    a1 := in[1] + in[3];
+    a2 := in[1] - in[3];
+    a3 := in[0] - in[2];
     tmp[0 + i * 4] = a0 + a1;
     tmp[1 + i * 4] = a3 + a2;
     tmp[2 + i * 4] = a3 - a2;
@@ -592,14 +592,14 @@ static int TTransform(const WEBP_RESTRICT in *uint8, const WEBP_RESTRICT w *uint
   }
   // vertical pass
   for (i = 0; i < 4; ++i, ++w) {
-    const int a0 = tmp[0 + i] + tmp[8 + i];
-    const int a1 = tmp[4 + i] + tmp[12 + i];
-    const int a2 = tmp[4 + i] - tmp[12 + i];
-    const int a3 = tmp[0 + i] - tmp[8 + i];
-    const int b0 = a0 + a1;
-    const int b1 = a3 + a2;
-    const int b2 = a3 - a2;
-    const int b3 = a0 - a1;
+    a0 := tmp[0 + i] + tmp[8 + i];
+    a1 := tmp[4 + i] + tmp[12 + i];
+    a2 := tmp[4 + i] - tmp[12 + i];
+    a3 := tmp[0 + i] - tmp[8 + i];
+    b0 := a0 + a1;
+    b1 := a3 + a2;
+    b2 := a3 - a2;
+    b3 := a0 - a1;
 
     sum += w[0] * abs(b0);
     sum += w[4] * abs(b1);
@@ -610,8 +610,8 @@ static int TTransform(const WEBP_RESTRICT in *uint8, const WEBP_RESTRICT w *uint
 }
 
 static int Disto4x4_C(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  const int sum1 = TTransform(a, w);
-  const int sum2 = TTransform(b, w);
+  sum1 := TTransform(a, w);
+  sum2 := TTransform(b, w);
   return abs(sum2 - sum1) >> 5;
 }
 
@@ -643,9 +643,9 @@ static int QuantizeBlock_C(int16 in[16], int16 out[16], const WEBP_RESTRICT cons
     sign := (in[j] < 0);
     coeff := (sign ? -in[j] : in[j]) + mtx.sharpen[j];
     if (coeff > mtx.zthresh[j]) {
-      const uint32 Q = mtx.q[j];
-      const uint32 iQ = mtx.iq[j];
-      const uint32 B = mtx.bias[j];
+      Q := mtx.q[j];
+      iQ := mtx.iq[j];
+      B := mtx.bias[j];
       int level = QUANTDIV(coeff, iQ, B);
       if (level > MAX_LEVEL) level = MAX_LEVEL;
       if (sign) level = -level;

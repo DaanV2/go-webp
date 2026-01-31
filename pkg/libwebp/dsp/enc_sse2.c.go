@@ -742,7 +742,7 @@ static  func DC8uv_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint
   const __m128i top_values = _mm_loadl_epi64((const __*m128i)top);
   const __m128i left_values = _mm_loadl_epi64((const __*m128i)left);
   const __m128i combined = _mm_unpacklo_epi64(top_values, left_values);
-  const int DC = VP8HorizontalAdd8b(&combined) + 8;
+  DC := VP8HorizontalAdd8b(&combined) + 8;
   Put8x8uv_SSE2(DC >> 4, dst);
 }
 
@@ -750,7 +750,7 @@ static  func DC8uvNoLeft_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top 
   const __m128i zero = _mm_setzero_si128();
   const __m128i top_values = _mm_loadl_epi64((const __*m128i)top);
   const __m128i sum = _mm_sad_epu8(top_values, zero);
-  const int DC = _mm_cvtsi128_si32(sum) + 4;
+  DC := _mm_cvtsi128_si32(sum) + 4;
   Put8x8uv_SSE2(DC >> 3, dst);
 }
 
@@ -780,14 +780,14 @@ static  func DC8uvMode_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *
 static  func DC16_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, const WEBP_RESTRICT top *uint8) {
   const __m128i top_row = _mm_load_si128((const __*m128i)top);
   const __m128i left_row = _mm_load_si128((const __*m128i)left);
-  const int DC =
+  DC :=
       VP8HorizontalAdd8b(&top_row) + VP8HorizontalAdd8b(&left_row) + 16;
   Put16_SSE2(DC >> 5, dst);
 }
 
 static  func DC16NoLeft_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   const __m128i top_row = _mm_load_si128((const __*m128i)top);
-  const int DC = VP8HorizontalAdd8b(&top_row) + 8;
+  DC := VP8HorizontalAdd8b(&top_row) + 8;
   Put16_SSE2(DC >> 4, dst);
 }
 
@@ -848,11 +848,11 @@ static  func VE4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
 
 // horizontal
 static  func HE4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
   WebPUint32ToMem(dst + 0 * BPS, uint(0x01010101) * AVG3(X, I, J));
   WebPUint32ToMem(dst + 1 * BPS, uint(0x01010101) * AVG3(I, J, K));
   WebPUint32ToMem(dst + 2 * BPS, uint(0x01010101) * AVG3(J, K, L));
@@ -886,10 +886,10 @@ static  func LD4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
 // Vertical-Right
 static  func VR4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   const __m128i one = _mm_set1_epi8(1);
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int X = top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  X := top[-1];
   const __m128i XABCD = _mm_loadl_epi64((const __*m128i)(top - 1));
   const __m128i ABCD0 = _mm_srli_si128(XABCD, 1);
   const __m128i abcd = _mm_avg_epu8(XABCD, ABCD0);
@@ -924,7 +924,7 @@ static  func VL4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
   const __m128i abbc = _mm_or_si128(ab, bc);
   const __m128i lsb2 = _mm_and_si128(abbc, lsb1);
   const __m128i avg4 = _mm_subs_epu8(avg3, lsb2);
-  const uint32 extra_out =
+  extra_out :=
       (uint32)_mm_cvtsi128_si32(_mm_srli_si128(avg4, 4));
   WebPInt32ToMem(dst + 0 * BPS, _mm_cvtsi128_si32(avg1));
   WebPInt32ToMem(dst + 1 * BPS, _mm_cvtsi128_si32(avg4));
@@ -954,10 +954,10 @@ static  func RD4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
 }
 
 static  func HU4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
   DST(0, 0) = AVG2(I, J);
   DST(2, 0) = DST(0, 1) = AVG2(J, K);
   DST(2, 1) = DST(0, 2) = AVG2(K, L);
@@ -968,14 +968,14 @@ static  func HU4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
 }
 
 static  func HD4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
+  A := top[0];
+  B := top[1];
+  C := top[2];
 
   DST(0, 0) = DST(2, 1) = AVG2(I, X);
   DST(0, 1) = DST(2, 2) = AVG2(J, I);
@@ -1426,8 +1426,8 @@ static  int DoQuantizeBlock_SSE2(
     packed_out = _mm_packs_epi16(outZ0, outZ8);
   }
   {
-    const int16 outZ_12 = out[12];
-    const int16 outZ_3 = out[3];
+    outZ_12 := out[12];
+    outZ_3 := out[3];
     out[3] = outZ_12;
     out[12] = outZ_3;
   }

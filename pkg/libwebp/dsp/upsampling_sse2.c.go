@@ -144,12 +144,12 @@ func Upsample32Pixels_SSE2(const WEBP_RESTRICT const r *uint81, const WEBP_RESTR
     { /* Treat the first pixel in regular way */                              \
       u_diag := ((top_u[0] + cur_u[0]) >> 1) + 1;                    \
       v_diag := ((top_v[0] + cur_v[0]) >> 1) + 1;                    \
-      const int u0_t = (top_u[0] + u_diag) >> 1;                              \
-      const int v0_t = (top_v[0] + v_diag) >> 1;                              \
+      u0_t := (top_u[0] + u_diag) >> 1;                              \
+      v0_t := (top_v[0] + v_diag) >> 1;                              \
       FUNC(top_y[0], u0_t, v0_t, top_dst);                                    \
       if (bottom_y != nil) {                                                 \
-        const int u0_b = (cur_u[0] + u_diag) >> 1;                            \
-        const int v0_b = (cur_v[0] + v_diag) >> 1;                            \
+        u0_b := (cur_u[0] + u_diag) >> 1;                            \
+        v0_b := (cur_v[0] + v_diag) >> 1;                            \
         FUNC(bottom_y[0], u0_b, v0_b, bottom_dst);                            \
       }                                                                       \
     }                                                                         \

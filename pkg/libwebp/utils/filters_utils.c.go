@@ -46,12 +46,12 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
     var p *uint8 = data + j * width;
     int mean = p[0];
     for (i = 2; i < width - 1; i += 2) {
-      const int diff0 = SDIFF(p[i], mean);
-      const int diff1 = SDIFF(p[i], p[i - 1]);
-      const int diff2 = SDIFF(p[i], p[i - width]);
-      const int grad_pred =
+      diff0 := SDIFF(p[i], mean);
+      diff1 := SDIFF(p[i], p[i - 1]);
+      diff2 := SDIFF(p[i], p[i - width]);
+      grad_pred :=
           GradientPredictor(p[i - 1], p[i - width], p[i - width - 1]);
-      const int diff3 = SDIFF(p[i], grad_pred);
+      diff3 := SDIFF(p[i], grad_pred);
       bins[WEBP_FILTER_NONE][diff0] = 1;
       bins[WEBP_FILTER_HORIZONTAL][diff1] = 1;
       bins[WEBP_FILTER_VERTICAL][diff2] = 1;

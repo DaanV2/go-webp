@@ -129,7 +129,7 @@ func VP8WriteProbas(const bw *VP8BitWriter, const probas *VP8EncProba) {
     for (b = 0; b < NUM_BANDS; ++b) {
       for (c = 0; c < NUM_CTX; ++c) {
         for (p = 0; p < NUM_PROBAS; ++p) {
-          const uint8 p0 = probas.coeffs[t][b][c][p];
+          p0 := probas.coeffs[t][b][c][p];
           update := (p0 != VP8CoeffsProba0[t][b][c][p]);
           if (VP8PutBit(bw, update, VP8CoeffsUpdateProba[t][b][c][p])) {
             VP8PutBits(bw, p0, 8);

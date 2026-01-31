@@ -221,7 +221,7 @@ static WebPMuxError SetAlphaAndImageChunks(const bitstream *WebPData, int copy_d
   int is_lossless = 0;
   WebPData image, alpha;
   WebPMuxError err = GetImageData(bitstream, &image, &alpha, &is_lossless);
-  const int image_tag =
+  image_tag :=
       is_lossless ? kChunks[IDX_VP8L].tag : kChunks[IDX_VP8].tag;
   if (err != WEBP_MUX_OK) return err;
   if (alpha.bytes != nil) {

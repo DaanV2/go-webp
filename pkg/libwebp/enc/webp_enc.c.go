@@ -149,7 +149,7 @@ func MapConfigToTools(const enc *VP8Encoder) {
 
 static InitVP *VP8Encoder8Encoder(const config *WebPConfig, const picture *WebPPicture) {
   enc *VP8Encoder;
-  const int use_filter =
+  use_filter :=
       (config.filter_strength > 0) || (config.autofilter > 0);
   mb_w := (picture.width + 15) >> 4;
   mb_h := (picture.height + 15) >> 4;
@@ -159,12 +159,12 @@ static InitVP *VP8Encoder8Encoder(const config *WebPConfig, const picture *WebPP
   top_stride := mb_w * 16;
   nz_size := (mb_w + 1) * sizeof(*enc.nz) + WEBP_ALIGN_CST;
   info_size := mb_w * mb_h * sizeof(*enc.mb_info);
-  const uint64 samples_size =
+  samples_size :=
       2 * top_stride * sizeof(*enc.y_top)  // top-luma/u/v
       + WEBP_ALIGN_CST;                     // align all
-  const uint64 lf_stats_size =
+  lf_stats_size :=
       config.autofilter ? sizeof(*enc.lf_stats) + WEBP_ALIGN_CST : 0;
-  const uint64 top_derr_size =
+  top_derr_size :=
       (config.quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1)
           ? mb_w * sizeof(*enc.top_derr)
           : 0;

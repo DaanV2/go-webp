@@ -44,9 +44,9 @@ func TransformDC(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   a := in[0] + 4;
   int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
-  const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
-  const int c1 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
-  const int d1 = WEBP_TRANSFORM_AC3_MUL1(in[1]);
+  d4 := WEBP_TRANSFORM_AC3_MUL1(in[4]);
+  c1 := WEBP_TRANSFORM_AC3_MUL2(in[1]);
+  d1 := WEBP_TRANSFORM_AC3_MUL1(in[1]);
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17, temp18;
 
@@ -126,7 +126,7 @@ func TransformTwo(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int d
 }
 
 static  func FilterLoop26(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15;
 
@@ -258,7 +258,7 @@ static  func FilterLoop24(p *uint8, int hstride, int vstride, int size, int thre
   int step1, step2, temp1, temp2, temp3, temp4;
   pTemp *uint80;
   pTemp *uint81;
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
 
   __asm__ volatile(
       ".set      push                                   \n\t"
@@ -424,7 +424,7 @@ func HFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int t
 
 func SimpleVFilter16(p *uint8, int stride, int thresh) {
   int i;
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   p *uint81 = p - stride;
   __asm__ volatile(
@@ -491,7 +491,7 @@ func SimpleVFilter16(p *uint8, int stride, int thresh) {
 
 func SimpleHFilter16(p *uint8, int stride, int thresh) {
   int i;
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   __asm__ volatile(
     ".set      push                                     \n\t"
@@ -855,7 +855,7 @@ func DC8uvNoTop(dst *uint8) {  // DC with no top samples
   for {                                                \
     int y;                                            \
     var top *uint8 = (DST) - BPS;                 \
-    const int top_1 = ((int)top[-1] << 16) + top[-1]; \
+    top_1 := ((int)top[-1] << 16) + top[-1]; \
     for (y = 0; y < (SIZE); ++y) {                    \
       CLIP_8B_TO_DST((DST), top, (SIZE));             \
       (DST) += BPS;                                   \

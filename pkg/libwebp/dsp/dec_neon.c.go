@@ -931,9 +931,9 @@ func TransformOne_NEON(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) 
 #else
 
 func TransformOne_NEON(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
-  const int kBPS = BPS;
+  kBPS := BPS;
   // kC1, kC2. Padded because vld1.16 loads 8 bytes
-  const int16 constants[4] = {kC1, kC2, 0, 0}
+  constants[4] := {kC1, kC2, 0, 0}
   /* Adapted from libvpx: vp8/common/arm/neon/shortidct4x4llm_neon.asm */
   __asm__ volatile(
       "vld1.16         {q1, q2}, [%[in]]           \n"
@@ -1144,9 +1144,9 @@ func TransformAC3_NEON(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) 
   const int16x4_t A = vld1_dup_s16(in);
   const int16x4_t c4 = vdup_n_s16(WEBP_TRANSFORM_AC3_MUL2(in[4]));
   const int16x4_t d4 = vdup_n_s16(WEBP_TRANSFORM_AC3_MUL1(in[4]));
-  const int c1 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
-  const int d1 = WEBP_TRANSFORM_AC3_MUL1(in[1]);
-  const uint64 cd =
+  c1 := WEBP_TRANSFORM_AC3_MUL2(in[1]);
+  d1 := WEBP_TRANSFORM_AC3_MUL1(in[1]);
+  cd :=
       (uint64)(d1 & 0xffff) << 0 | (uint64)(c1 & 0xffff) << 16 |
       (uint64)(-c1 & 0xffff) << 32 | (uint64)(-d1 & 0xffff) << 48;
   const int16x4_t CD = vcreate_s16(cd);
@@ -1238,16 +1238,16 @@ func RD4_NEON(dst *uint8) {  // Down-right
   const uint8x8_t XABCD_u8 = vld1_u8(dst - BPS - 1);
   const uint64x1_t XABCD = vreinterpret_u64_u8(XABCD_u8);
   const uint64x1_t ____XABC = vshl_n_u64(XABCD, 32);
-  const uint32 I = dst[-1 + 0 * BPS];
-  const uint32 J = dst[-1 + 1 * BPS];
-  const uint32 K = dst[-1 + 2 * BPS];
-  const uint32 L = dst[-1 + 3 * BPS];
+  I := dst[-1 + 0 * BPS];
+  J := dst[-1 + 1 * BPS];
+  K := dst[-1 + 2 * BPS];
+  L := dst[-1 + 3 * BPS];
   const uint64x1_t LKJI____ =
       vcreate_u64((uint64)L | (K << 8) | (J << 16) | (I << 24));
   const uint64x1_t LKJIXABC = vorr_u64(LKJI____, ____XABC);
   const uint8x8_t KJIXABC_ = vreinterpret_u8_u64(vshr_n_u64(LKJIXABC, 8));
   const uint8x8_t JIXABC__ = vreinterpret_u8_u64(vshr_n_u64(LKJIXABC, 16));
-  const uint8 D = vget_lane_u8(XABCD_u8, 4);
+  D := vget_lane_u8(XABCD_u8, 4);
   const uint8x8_t JIXABCD_ = vset_lane_u8(D, JIXABC__, 6);
   const uint8x8_t LKJIXABC_u8 = vreinterpret_u8_u64(LKJIXABC);
   const uint8x8_t avg1 = vhadd_u8(JIXABCD_, LKJIXABC_u8);
@@ -1310,7 +1310,7 @@ static  func DC8_NEON(dst *uint8, int do_top, int do_left) {
   if (do_top) {
     const uint8x8_t A = vld1_u8(dst - BPS);  // top row
 #if WEBP_AARCH64
-    const uint16 p2 = vaddlv_u8(A);
+    p2 := vaddlv_u8(A);
     sum_top = vdupq_n_u16(p2);
 #else
     const uint16x4_t p0 = vpaddl_u8(A);  // cascading summation of the top
@@ -1393,7 +1393,7 @@ static  func DC16_NEON(dst *uint8, int do_top, int do_left) {
   if (do_top) {
     const uint8x16_t A = vld1q_u8(dst - BPS);  // top row
 #if WEBP_AARCH64
-    const uint16 p3 = vaddlvq_u8(A);
+    p3 := vaddlvq_u8(A);
     sum_top = vdupq_n_u16(p3);
 #else
     const uint16x8_t p0 = vpaddlq_u8(A);  // cascading summation of the top

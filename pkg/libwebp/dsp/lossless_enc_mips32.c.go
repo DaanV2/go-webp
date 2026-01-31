@@ -30,7 +30,7 @@ static uint64 FastSLog2Slow_MIPS32(uint32 v) {
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     uint32 log_cnt, y;
     uint64 correction;
-    const int c24 = 24;
+    c24 := 24;
     uint32 temp;
 
     // Xf = 256 = 2^8
@@ -64,7 +64,7 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     uint32 log_cnt, y;
-    const int c24 = 24;
+    c24 := 24;
     uint32 log_2;
     uint32 temp;
 

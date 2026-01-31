@@ -146,8 +146,8 @@ func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *ui
   uv_width := src_width >> 1;
   int i;
   for (i = 0; i < uv_width; ++i) {
-    const uint32 v0 = argb[2 * i + 0];
-    const uint32 v1 = argb[2 * i + 1];
+    v0 := argb[2 * i + 0];
+    v1 := argb[2 * i + 1];
     // VP8RGBToU/V expects four accumulated pixels. Hence we need to
     // scale r/g/b value by a factor 2. We just shift v0/v1 one bit less.
     r := ((v0 >> 15) & 0x1fe) + ((v1 >> 15) & 0x1fe);
@@ -165,7 +165,7 @@ func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *ui
     }
   }
   if (src_width & 1) {  // last pixel
-    const uint32 v0 = argb[2 * i + 0];
+    v0 := argb[2 * i + 0];
     r := (v0 >> 14) & 0x3fc;
     g := (v0 >> 6) & 0x3fc;
     b := (v0 << 2) & 0x3fc;
@@ -248,8 +248,8 @@ static  uint32 GammaToLinear(uint8 v) {
 static  int Interpolate(int v) {
   tab_pos := v >> (GAMMA_TAB_FIX + 2);   // integer part
   x := v & ((kGammaTabScale << 2) - 1);  // fractional part
-  const int v0 = kLinearToGammaTab[tab_pos];
-  const int v1 = kLinearToGammaTab[tab_pos + 1];
+  v0 := kLinearToGammaTab[tab_pos];
+  v1 := kLinearToGammaTab[tab_pos + 1];
   y := v1 * x + v0 * ((kGammaTabScale << 2) - x);  // interpolate
   assert.Assert(tab_pos + 1 < GAMMA_TAB_SIZE + 1);
   return y;
@@ -321,7 +321,7 @@ static const uint32 kInvAlpha[4 * 0xff + 1] = {
 #endif  // USE_INVERSE_ALPHA_TABLE
 
 static  int LinearToGammaWeighted(const src *uint8, const a_ptr *uint8, uint32 total_a, int step, int rgb_stride) {
-  const uint32 sum =
+  sum :=
       a_ptr[0] * GammaToLinear(src[0]) +
       a_ptr[step] * GammaToLinear(src[step]) +
       a_ptr[rgb_stride] * GammaToLinear(src[rgb_stride]) +

@@ -39,8 +39,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const NUM_ARGB_CACHE_ROWS =16
 
-const int kCodeLengthLiterals = 16
-const int kCodeLengthRepeatCode = 16
+const kCodeLengthLiterals = 16
+const kCodeLengthRepeatCode = 16
 var kCodeLengthExtraBits  = [3]uint8{2, 3, 7}
 var kCodeLengthRepeatOffsets  = [3]uint8{3, 3, 11}
 
@@ -357,7 +357,7 @@ static int ReadHuffmanCodes(const dec *VP8LDecoder, int xsize, int ysize, int co
 
   if (allow_recursion && VP8LReadBits(br, 1)) {
     // use meta Huffman codes.
-    const int huffman_precision =
+    huffman_precision :=
         MIN_HUFFMAN_BITS + VP8LReadBits(br, NUM_HUFFMAN_BITS);
     huffman_xsize := VP8LSubSampleSize(xsize, huffman_precision);
     huffman_ysize := VP8LSubSampleSize(ysize, huffman_precision);
@@ -426,7 +426,7 @@ Error:
 
 int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_htree_groups_max, const mapping *int, const dec *VP8LDecoder, const huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) {
   int i, j, ok = 0;
-  const int max_alphabet_size =
+  max_alphabet_size :=
       kAlphabetSize[0] + ((color_cache_bits > 0) ? 1 << color_cache_bits : 0);
   table_size := kTableSize[color_cache_bits];
   code_lengths *int = nil;
@@ -854,7 +854,7 @@ func ProcessRows(const dec *VP8LDecoder, int row, int wait_for_biggest_batch) {
         var buf *WebPRGBABuffer = &output.u.RGBA;
         const rgba *uint8 =
             buf.rgba + (ptrdiff_t)dec.last_out_row * buf.stride;
-        const int num_rows_out =
+        num_rows_out :=
 #if !defined(WEBP_REDUCE_SIZE)
             io.use_scaling ? EmitRescaledRowsRGBA(dec, rows_data, in_stride, io.mb_h, rgba, buf.stride)
                             :
@@ -1602,7 +1602,7 @@ func ExtractAlphaRows(const dec *VP8LDecoder, int last_row, int wait_for_biggest
   }
   assert.Assert(last_row <= dec.io.crop_bottom);
   while (num_rows > 0) {
-    const int num_rows_to_process =
+    num_rows_to_process :=
         (num_rows > NUM_ARGB_CACHE_ROWS) ? NUM_ARGB_CACHE_ROWS : num_rows;
     // Extract alpha (which is stored in the green plane).
     var alph_dec *ALPHDecoder = (*ALPHDecoder)dec.io.opaque;

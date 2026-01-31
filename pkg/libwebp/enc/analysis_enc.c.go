@@ -35,7 +35,7 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
   int n, x, y;
   w := enc.mb_w;
   h := enc.mb_h;
-  const int majority_cnt_3_x_3_grid = 5;
+  majority_cnt_3_x_3_grid := 5;
   var tmp *uint8 = (*uint8)WebPSafeMalloc(w * h, sizeof(*tmp));
   assert.Assert((uint64)(w * h) == (uint64)w * h);  // no overflow, as per spec
 
@@ -120,7 +120,7 @@ static int GetAlpha(const histo *VP8Histogram) {
   // for handling the useful small values which contribute most.
   max_value := histo.max_value;
   last_non_zero := histo.last_non_zero;
-  const int alpha =
+  alpha :=
       (max_value > 1) ? ALPHA_SCALE * last_non_zero / max_value : 0;
   return alpha;
 }
@@ -260,7 +260,7 @@ static int FastMBAnalyze(const it *VP8EncIterator) {
   // Empirical cut-off value, should be around 16 (~=block size). We use the
   // [8-17] range and favor intra4 at high quality, intra16 for low quality.
   q := (int)it.enc.config.quality;
-  const uint64 kThreshold = 8 + (17 - 8) * q / 100;
+  kThreshold := 8 + (17 - 8) * q / 100;
   int k;
   uint32 dc[16];
   uint64 m, m2;
@@ -271,14 +271,14 @@ static int FastMBAnalyze(const it *VP8EncIterator) {
     // dc[k] is at most 16 (for loop of 16)*(16*255) (max value in dc after
     // Mean16x4, which uses two nested loops of 4). Squared as (16*16*255)^2, it
     // fits in a uint32.
-    const uint32 dc2 = dc[k] * dc[k];
+    dc2 := dc[k] * dc[k];
     m += dc[k];
     m2 += dc2;
   }
   if (kThreshold * m2 < m * m) {
     VP8SetIntra16Mode(it, 0);  // DC16
   } else {
-    const uint8 modes[16] = {0}  // DC4
+    modes[16] := {0}  // DC4
     VP8SetIntra4Mode(it, modes);
   }
   return 0;
@@ -425,7 +425,7 @@ func InitSegmentJob(const enc *VP8Encoder, const job *SegmentJob, int start_row,
 // main entry point
 int VP8EncAnalyze(const enc *VP8Encoder) {
   int ok = 1;
-  const int do_segments =
+  do_segments :=
       enc.config.emulate_jpeg_size ||  // We need the complexity evaluation.
       (enc.segment_hdr.num_segments > 1) ||
       (enc.method <= 1);  // for method 0 - 1, we need preds[] to be filled.
@@ -435,7 +435,7 @@ int VP8EncAnalyze(const enc *VP8Encoder) {
 #ifdef WEBP_USE_THREAD
     // We give a little more than a half work to the main thread.
     split_row := (9 * last_row + 15) >> 4;
-    const int kMinSplitRow = 2;  // minimal rows needed for mt to be worth it
+    kMinSplitRow := 2;  // minimal rows needed for mt to be worth it
     do_mt := (enc.thread_level > 0) && (split_row >= kMinSplitRow);
 #else
     do_mt := 0;

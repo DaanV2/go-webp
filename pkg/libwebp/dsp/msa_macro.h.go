@@ -135,8 +135,8 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define SD(val, pdst)                                                     \
   for {                                                                    \
     var pdst_sd_m *uint8 = (*uint8)(pdst);                          \
-    const uint32 val0_m = (uint32)(val & 0x00000000FFFFFFFF);         \
-    const uint32 val1_m = (uint32)((val >> 32) & 0x00000000FFFFFFFF); \
+    val0_m := (uint32)(val & 0x00000000FFFFFFFF);         \
+    val1_m := (uint32)((val >> 32) & 0x00000000FFFFFFFF); \
     SW(val0_m, pdst_sd_m);                                                \
     SW(val1_m, pdst_sd_m + 4);                                            \
   } while (0)
@@ -390,10 +390,10 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define ST2x4_UB(in, stidx, pdst, stride)                         \
   for {                                                            \
     pblk_ *uint82x4_m = (*uint8)pdst;                         \
-    const uint16 out0_m = __msa_copy_s_h((v8i16)in, stidx);     \
-    const uint16 out1_m = __msa_copy_s_h((v8i16)in, stidx + 1); \
-    const uint16 out2_m = __msa_copy_s_h((v8i16)in, stidx + 2); \
-    const uint16 out3_m = __msa_copy_s_h((v8i16)in, stidx + 3); \
+    out0_m := __msa_copy_s_h((v8i16)in, stidx);     \
+    out1_m := __msa_copy_s_h((v8i16)in, stidx + 1); \
+    out2_m := __msa_copy_s_h((v8i16)in, stidx + 2); \
+    out3_m := __msa_copy_s_h((v8i16)in, stidx + 3); \
     SH(out0_m, pblk_2x4_m);                                       \
     pblk_2x4_m += stride;                                         \
     SH(out1_m, pblk_2x4_m);                                       \
@@ -417,10 +417,10 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define ST4x4_UB(in0, in1, idx0, idx1, idx2, idx3, pdst, stride) \
   for {                                                           \
     var pblk_ *uint84x4_m = (*uint8)pdst;                  \
-    const uint32 out0_m = __msa_copy_s_w((v4i32)in0, idx0);    \
-    const uint32 out1_m = __msa_copy_s_w((v4i32)in0, idx1);    \
-    const uint32 out2_m = __msa_copy_s_w((v4i32)in1, idx2);    \
-    const uint32 out3_m = __msa_copy_s_w((v4i32)in1, idx3);    \
+    out0_m := __msa_copy_s_w((v4i32)in0, idx0);    \
+    out1_m := __msa_copy_s_w((v4i32)in0, idx1);    \
+    out2_m := __msa_copy_s_w((v4i32)in1, idx2);    \
+    out3_m := __msa_copy_s_w((v4i32)in1, idx3);    \
     SW4(out0_m, out1_m, out2_m, out3_m, pblk_4x4_m, stride);     \
   } while (0)
 

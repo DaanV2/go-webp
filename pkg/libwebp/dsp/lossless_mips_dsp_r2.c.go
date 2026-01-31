@@ -275,9 +275,9 @@ func AddGreenToBlueAndRed_MIPSdspR2(const src *uint32, int num_pixels, dst *uint
 func TransformColorInverse_MIPSdspR2(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   uint32 argb, argb1, new_red;
-  const uint32 G_to_R = m.green_to_red;
-  const uint32 G_to_B = m.green_to_blue;
-  const uint32 R_to_B = m.red_to_blue;
+  G_to_R := m.green_to_red;
+  G_to_B := m.green_to_blue;
+  R_to_B := m.red_to_blue;
   var p_loop_end *uint32 = src + (num_pixels & ~1);
   __asm__ volatile(
       ".set            push                                    \n\t"

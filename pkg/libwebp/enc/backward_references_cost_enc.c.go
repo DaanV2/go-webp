@@ -441,7 +441,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
       manager.cache_intervals;
   // If the interval is small enough, no need to deal with the heavy
   // interval logic, just serialize it right away. This constant is empirical.
-  const int kSkipDistance = 10;
+  kSkipDistance := 10;
 
   if (len < kSkipDistance) {
     int j;
@@ -464,7 +464,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
        ++i) {
     // Define the intersection of the ith interval with the new one.
     int start = position + cost_cache_intervals[i].start;
-    const int end =
+    end :=
         position +
         (cost_cache_intervals[i].end > len ? len : cost_cache_intervals[i].end);
     cost := distance_cost + cost_cache_intervals[i].cost;
@@ -540,7 +540,7 @@ static int BackwardReferencesHashChainDistanceOnly(
   int cc_init = 0;
   pix_count := xsize * ysize;
   use_color_cache := (cache_bits > 0);
-  const uint64 literal_array_size =
+  literal_array_size :=
       sizeof(*((*CostModel)nil).literal) * VP8LHistogramNumCodes(cache_bits);
   cost_model_size := sizeof(CostModel) + literal_array_size;
   const cost_model *CostModel =
@@ -694,7 +694,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
       i += len;
     } else {
       PixOrCopy v;
-      const int idx =
+      idx :=
           use_color_cache ? VP8LColorCacheContains(&hashers, argb[i]) : -1;
       if (idx >= 0) {
         // use_color_cache is true and hashers contains argb[i]

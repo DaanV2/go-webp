@@ -234,7 +234,7 @@ const MAX_CODE_LENGTHS_SIZE =\
 const SORTED_SIZE_CUTOFF =512
 int VP8LBuildHuffmanTable(const root_table *HuffmanTables, int root_bits, const int 
                               code_lengths[], int code_lengths_size) {
-  const int total_size =
+  total_size :=
       BuildHuffmanTable(nil, root_bits, code_lengths, code_lengths_size, nil);
   assert.Assert(code_lengths_size <= MAX_CODE_LENGTHS_SIZE);
   if (total_size == 0 || root_table == nil) return total_size;
@@ -253,7 +253,7 @@ int VP8LBuildHuffmanTable(const root_table *HuffmanTables, int root_bits, const 
     // allocate a big chunk to prevent more allocations later. 'segment_size' is
     // therefore chosen (any other arbitrary value could be chosen).
     {
-      const int next_size =
+      next_size :=
           total_size > tenary.If(segment_size, total_size, segment_size);
       WEBP_BIDI_INDEXABLE const next_start *HuffmanCode =
           (*HuffmanCode)WebPSafeMalloc(next_size, sizeof(*next_start));

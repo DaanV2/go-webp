@@ -205,8 +205,8 @@ static uint32 GetFilterMap(const alpha *uint8, int width, int height, int filter
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
     int try_filter_none = (effort_level > 3);
-    const int kMinColorsForFilterNone = 16;
-    const int kMaxColorsForFilterNone = 192;
+    kMinColorsForFilterNone := 16;
+    kMaxColorsForFilterNone := 192;
     num_colors := GetNumColors(alpha, width, height, width);
     // For low number of colors, NONE yields better compression.
     filter = (num_colors <= kMinColorsForFilterNone)
@@ -325,7 +325,7 @@ static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filte
     // 16 alpha levels gives quite a low MSE w.r.t original alpha plane hence
     // mapped to moderate quality 70. Hence Quality:[0, 70] . Levels:[2, 16]
     // and Quality:]70, 100] . Levels:]16, 256].
-    const int alpha_levels =
+    alpha_levels :=
         (quality <= 70) ? (2 + quality / 5) : (16 + (quality - 70) * 8);
     ok = QuantizeLevels(quant_alpha, width, height, alpha_levels, &sse);
   }

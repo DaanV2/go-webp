@@ -126,9 +126,9 @@ static int x86CPUInfo(CPUFeature feature) {
   if (max_cpuid_value < 1) {
     return 0;
   } else {
-    const int VENDOR_ID_INTEL_EBX = 0x756e6547;  // uneG
-    const int VENDOR_ID_INTEL_EDX = 0x49656e69;  // Ieni
-    const int VENDOR_ID_INTEL_ECX = 0x6c65746e;  // letn
+    VENDOR_ID_INTEL_EBX := 0x756e6547;  // uneG
+    VENDOR_ID_INTEL_EDX := 0x49656e69;  // Ieni
+    VENDOR_ID_INTEL_ECX := 0x6c65746e;  // letn
     is_intel = (cpu_info[1] == VENDOR_ID_INTEL_EBX &&
                 cpu_info[2] == VENDOR_ID_INTEL_ECX &&
                 cpu_info[3] == VENDOR_ID_INTEL_EDX);  // genuine Intel?

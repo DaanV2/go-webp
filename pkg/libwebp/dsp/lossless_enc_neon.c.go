@@ -70,9 +70,9 @@ func SubtractGreenFromBlueAndRed_NEON(argb_data *uint32, int num_pixels) {
 func TransformColor_NEON(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT argb_data *uint32, int num_pixels) {
   // sign-extended multiplying constants, pre-shifted by 6.
 #define CST(X) (((int16)(m.X << 8)) >> 6)
-  const int16 rb[8] = {CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red)}
+  rb[8] := {CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red)}
   const int16x8_t mults_rb = vld1q_s16(rb);
-  const int16 b2[8] = {
+  b2[8] := {
       0, CST(red_to_blue), 0, CST(red_to_blue), 0, CST(red_to_blue), 0, CST(red_to_blue), }
   const int16x8_t mults_b2 = vld1q_s16(b2);
 #undef CST

@@ -103,7 +103,7 @@ static VP8StatusCode ParseRIFF(const WEBP_COUNTED_BY *uint8(*data_size) *
 // from the VP8X chunk.
 static VP8StatusCode ParseVP8X(const WEBP_COUNTED_BY *uint8(*data_size) *
                                    WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, WEBP_SINGLE const found_vp *int8x, WEBP_SINGLE const width_ptr *int, WEBP_SINGLE const height_ptr *int, WEBP_SINGLE const flags_ptr *uint32) {
-  const uint32 vp8x_size = CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
+  vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   assert.Assert(data != nil);
   assert.Assert(data_size != nil);
   assert.Assert(found_vp8x != nil);
@@ -227,9 +227,9 @@ static VP8StatusCode ParseVP8Header(const WEBP_COUNTED_BY *uint8(*data_size) *
                                         WEBP_SINGLE const data_ptr, WEBP_SINGLE const data_size *uint64, int have_all_data, uint64 riff_size, WEBP_SINGLE const chunk_size *uint64, WEBP_SINGLE const is_lossless *int) {
   local_data_size := *data_size;
   const *uint8  const data = *data_ptr;
-  const int is_vp8 = !memcmp(data, "VP8 ", TAG_SIZE);
-  const int is_vp8l = !memcmp(data, "VP8L", TAG_SIZE);
-  const uint32 minimal_size =
+  is_vp8 := !memcmp(data, "VP8 ", TAG_SIZE);
+  is_vp8l := !memcmp(data, "VP8L", TAG_SIZE);
+  minimal_size :=
       TAG_SIZE + CHUNK_HEADER_SIZE;  // "WEBP" + "VP8 nnnn" OR
                                      // "WEBP" + "VP8Lnnnn"
   (void)local_data_size;
@@ -831,8 +831,8 @@ int WebPCheckCropDimensions(int image_width, int image_height, int x, int y, int
 }
 
 int WebPIoInitFromOptions(const options *WebPDecoderOptions, const io *VP8Io, WEBP_CSP_MODE src_colorspace) {
-  const int W = io.width;
-  const int H = io.height;
+  W := io.width;
+  H := io.height;
   int x = 0, y = 0, w = W, h = H;
 
   // Cropping

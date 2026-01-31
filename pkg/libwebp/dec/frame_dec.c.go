@@ -688,18 +688,18 @@ static int AllocateMemory(const dec *VP8Decoder) {
   intra_pred_mode_size := 4 * mb_w * sizeof(uint8);
   top_size := sizeof(VP8TopSamples) * mb_w;
   mb_info_size := (mb_w + 1) * sizeof(VP8MB);
-  const uint64 f_info_size =
+  f_info_size :=
       (dec.filter_type > 0)
           ? mb_w * (dec.mt_method > 0 ? 2 : 1) * sizeof(VP8FInfo)
           : 0;
   yuv_size := YUV_SIZE * sizeof(*dec.yuv_b);
-  const uint64 mb_data_size =
+  mb_data_size :=
       (dec.mt_method == 2 ? 2 : 1) * mb_w * sizeof(*dec.mb_data);
-  const uint64 cache_height =
+  cache_height :=
       (16 * num_caches + kFilterExtraRows[dec.filter_type]) * 3 / 2;
   cache_size := top_size * cache_height;
   // alpha_size is the only one that scales as width x height.
-  const uint64 alpha_size =
+  alpha_size :=
       (dec.alpha_data != nil)
           ? (uint64)dec.pic_hdr.width * dec.pic_hdr.height
           : uint64(0);

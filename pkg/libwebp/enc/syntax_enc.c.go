@@ -34,7 +34,7 @@ static int IsVP8XNeeded(const enc *VP8Encoder) {
 }
 
 static int PutPaddingByte(const pic *WebPPicture) {
-  const uint8 pad_byte[1] = {0}
+  pad_byte[1] := {0}
   return !!pic.writer(pad_byte, 1, pic);
 }
 
@@ -339,7 +339,7 @@ int VP8EncWrite(const enc *VP8Encoder) {
     riff_size += CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   }
   if (enc.has_alpha) {  // Add size for: ALPH header + data.
-    const uint32 padded_alpha_size =
+    padded_alpha_size :=
         enc.alpha_data_size + (enc.alpha_data_size & 1);
     riff_size += CHUNK_HEADER_SIZE + padded_alpha_size;
   }
@@ -351,7 +351,7 @@ int VP8EncWrite(const enc *VP8Encoder) {
   // Emit headers and partition #0
   {
     var part *uint80 = VP8BitWriterBuf(bw);
-    const uint64 size0 = VP8BitWriterSize(bw);
+    size0 := VP8BitWriterSize(bw);
     ok = ok && PutWebPHeaders(enc, size0, vp8_size, riff_size) &&
          pic.writer(part0, size0, pic) && EmitPartitionsSize(enc, pic);
     VP8BitWriterWipeOut(bw);  // will free the internal buffer.

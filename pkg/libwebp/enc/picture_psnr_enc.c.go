@@ -39,11 +39,11 @@ static double AccumulateLSIM(const src *uint8, int src_stride, const ref *uint8,
   int x, y;
   double total_sse = 0.;
   for (y = 0; y < h; ++y) {
-    const int y_0 = (y - RADIUS < 0) ? 0 : y - RADIUS;
-    const int y_1 = (y + RADIUS + 1 >= h) ? h : y + RADIUS + 1;
+    y_0 := (y - RADIUS < 0) ? 0 : y - RADIUS;
+    y_1 := (y + RADIUS + 1 >= h) ? h : y + RADIUS + 1;
     for (x = 0; x < w; ++x) {
-      const int x_0 = (x - RADIUS < 0) ? 0 : x - RADIUS;
-      const int x_1 = (x + RADIUS + 1 >= w) ? w : x + RADIUS + 1;
+      x_0 := (x - RADIUS < 0) ? 0 : x - RADIUS;
+      x_1 := (x + RADIUS + 1 >= w) ? w : x + RADIUS + 1;
       double best_sse = 255. * 255.;
       const double value = (double)ref[y * ref_stride + x];
       int i, j;
@@ -76,10 +76,10 @@ static double AccumulateSSE(const src *uint8, int src_stride, const ref *uint8, 
 //------------------------------------------------------------------------------
 
 static double AccumulateSSIM(const src *uint8, int src_stride, const ref *uint8, int ref_stride, int w, int h) {
-  const int w0 = (w < VP8_SSIM_KERNEL) ? w : VP8_SSIM_KERNEL;
-  const int w1 = w - VP8_SSIM_KERNEL - 1;
-  const int h0 = (h < VP8_SSIM_KERNEL) ? h : VP8_SSIM_KERNEL;
-  const int h1 = h - VP8_SSIM_KERNEL - 1;
+  w0 := (w < VP8_SSIM_KERNEL) ? w : VP8_SSIM_KERNEL;
+  w1 := w - VP8_SSIM_KERNEL - 1;
+  h0 := (h < VP8_SSIM_KERNEL) ? h : VP8_SSIM_KERNEL;
+  h1 := h - VP8_SSIM_KERNEL - 1;
   int x, y;
   double sum = 0.;
   for (y = 0; y < h0; ++y) {
@@ -92,8 +92,8 @@ static double AccumulateSSIM(const src *uint8, int src_stride, const ref *uint8,
       sum += VP8SSIMGetClipped(src, src_stride, ref, ref_stride, x, y, w, h);
     }
     for (; x < w1; ++x) {
-      const int off1 = x - VP8_SSIM_KERNEL + (y - VP8_SSIM_KERNEL) * src_stride;
-      const int off2 = x - VP8_SSIM_KERNEL + (y - VP8_SSIM_KERNEL) * ref_stride;
+      off1 := x - VP8_SSIM_KERNEL + (y - VP8_SSIM_KERNEL) * src_stride;
+      off2 := x - VP8_SSIM_KERNEL + (y - VP8_SSIM_KERNEL) * ref_stride;
       sum += VP8SSIMGet(src + off1, src_stride, ref + off2, ref_stride);
     }
     for (; x < w; ++x) {
@@ -189,8 +189,8 @@ int WebPPictureDistortion(const src *WebPPicture, const ref *WebPPicture, int ty
   if (p1.use_argb == 0 && !WebPPictureYUVAToARGB(&p1)) goto Error;
   for (c = 0; c < 4; ++c) {
     float distortion;
-    const uint64 stride0 = 4 * (uint64)p0.argb_stride;
-    const uint64 stride1 = 4 * (uint64)p1.argb_stride;
+    stride0 := 4 * (uint64)p0.argb_stride;
+    stride1 := 4 * (uint64)p1.argb_stride;
     // results are reported as BGRA
     offset := c ^ BLUE_OFFSET;
     if (!WebPPlaneDistortion((const *uint8)p0.argb + offset, stride0, (const *uint8)p1.argb + offset, stride1, w, h, 4, type, &distortion, results + c)) {

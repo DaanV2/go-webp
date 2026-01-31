@@ -30,21 +30,21 @@ static  int abs_mips32(int x) {
 
 // 4 pixels in, 2 pixels out
 static  func do_filter2(p *uint8, int step) {
-  const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
+  p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   a := 3 * (q0 - p0) + VP8ksclip1[p1 - q1];
-  const int a1 = VP8ksclip2[(a + 4) >> 3];
-  const int a2 = VP8ksclip2[(a + 3) >> 3];
+  a1 := VP8ksclip2[(a + 4) >> 3];
+  a2 := VP8ksclip2[(a + 3) >> 3];
   p[-step] = VP8kclip1[p0 + a2];
   p[0] = VP8kclip1[q0 - a1];
 }
 
 // 4 pixels in, 4 pixels out
 static  func do_filter4(p *uint8, int step) {
-  const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
+  p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   a := 3 * (q0 - p0);
-  const int a1 = VP8ksclip2[(a + 4) >> 3];
-  const int a2 = VP8ksclip2[(a + 3) >> 3];
-  const int a3 = (a1 + 1) >> 1;
+  a1 := VP8ksclip2[(a + 4) >> 3];
+  a2 := VP8ksclip2[(a + 3) >> 3];
+  a3 := (a1 + 1) >> 1;
   p[-2 * step] = VP8kclip1[p1 + a3];
   p[-step] = VP8kclip1[p0 + a2];
   p[0] = VP8kclip1[q0 - a1];
@@ -53,13 +53,13 @@ static  func do_filter4(p *uint8, int step) {
 
 // 6 pixels in, 6 pixels out
 static  func do_filter6(p *uint8, int step) {
-  const int p2 = p[-3 * step], p1 = p[-2 * step], p0 = p[-step];
-  const int q0 = p[0], q1 = p[step], q2 = p[2 * step];
+  p2 = p[-3 * step], p1 = p[-2 * step], p0 := p[-step];
+  q0 = p[0], q1 = p[step], q2 := p[2 * step];
   a := VP8ksclip1[3 * (q0 - p0) + VP8ksclip1[p1 - q1]];
   // a is in [-128,127], a1 in [-27,27], a2 in [-18,18] and a3 in [-9,9]
-  const int a1 = (27 * a + 63) >> 7;  // eq. to ((3 * a + 7) * 9) >> 7
-  const int a2 = (18 * a + 63) >> 7;  // eq. to ((2 * a + 7) * 9) >> 7
-  const int a3 = (9 * a + 63) >> 7;   // eq. to ((1 * a + 7) * 9) >> 7
+  a1 := (27 * a + 63) >> 7;  // eq. to ((3 * a + 7) * 9) >> 7
+  a2 := (18 * a + 63) >> 7;  // eq. to ((2 * a + 7) * 9) >> 7
+  a3 := (9 * a + 63) >> 7;   // eq. to ((1 * a + 7) * 9) >> 7
   p[-3 * step] = VP8kclip1[p2 + a3];
   p[-2 * step] = VP8kclip1[p1 + a2];
   p[-step] = VP8kclip1[p0 + a1];
@@ -69,19 +69,19 @@ static  func do_filter6(p *uint8, int step) {
 }
 
 static  int hev(const p *uint8, int step, int thresh) {
-  const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
+  p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return (abs_mips32(p1 - p0) > thresh) || (abs_mips32(q1 - q0) > thresh);
 }
 
 static  int needs_filter(const p *uint8, int step, int t) {
-  const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
+  p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return ((4 * abs_mips32(p0 - q0) + abs_mips32(p1 - q1)) <= t);
 }
 
 static  int needs_filter2(const p *uint8, int step, int t, int it) {
-  const int p3 = p[-4 * step], p2 = p[-3 * step];
-  const int p1 = p[-2 * step], p0 = p[-step];
-  const int q0 = p[0], q1 = p[step], q2 = p[2 * step], q3 = p[3 * step];
+  p3 = p[-4 * step], p2 := p[-3 * step];
+  p1 = p[-2 * step], p0 := p[-step];
+  q0 = p[0], q1 = p[step], q2 = p[2 * step], q3 := p[3 * step];
   if ((4 * abs_mips32(p0 - q0) + abs_mips32(p1 - q1)) > t) {
     return 0;
   }
@@ -91,7 +91,7 @@ static  int needs_filter2(const p *uint8, int step, int t, int it) {
 }
 
 static  func FilterLoop26(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (needs_filter2(p, hstride, thresh2, ithresh)) {
       if (hev(p, hstride, hev_thresh)) {
@@ -105,7 +105,7 @@ static  func FilterLoop26(p *uint8, int hstride, int vstride, int size, int thre
 }
 
 static  func FilterLoop24(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (needs_filter2(p, hstride, thresh2, ithresh)) {
       if (hev(p, hstride, hev_thresh)) {
@@ -170,7 +170,7 @@ func HFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
 
 func SimpleVFilter16(p *uint8, int stride, int thresh) {
   int i;
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   for (i = 0; i < 16; ++i) {
     if (needs_filter(p + i, stride, thresh2)) {
       do_filter2(p + i, stride);
@@ -180,7 +180,7 @@ func SimpleVFilter16(p *uint8, int stride, int thresh) {
 
 func SimpleHFilter16(p *uint8, int stride, int thresh) {
   int i;
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   for (i = 0; i < 16; ++i) {
     if (needs_filter(p + i * stride, 1, thresh2)) {
       do_filter2(p + i * stride, 1);

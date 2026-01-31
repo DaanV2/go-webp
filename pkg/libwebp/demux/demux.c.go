@@ -823,7 +823,7 @@ static const GetFramePayload *uint8(const mem_buf *uint8, const frame *Frame, co
     // if alpha exists it precedes image, update the size allowing for
     // intervening chunks.
     if (alpha.size > 0) {
-      const uint64 inter_size =
+      inter_size :=
           (image.offset > 0) ? image.offset - (alpha.offset + alpha.size)
                               : 0
       start_offset = alpha.offset

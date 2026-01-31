@@ -384,11 +384,11 @@ func WebPAnimDecoderGetNext(dec *WebPAnimDecoder, *uint8* buf_ptr, timestamp_ptr
         int left1, width1, left2, width2;
         FindBlendRangeAtRow(&iter, &dec.prev_iter, canvas_y, &left1, &width1, &left2, &width2);
         if (width1 > 0) {
-          const uint64 offset1 = canvas_y * width + left1;
+          offset1 := canvas_y * width + left1;
           blend_row((*uint32)dec.curr_frame + offset1, (*uint32)dec.prev_frame_disposed + offset1, width1);
         }
         if (width2 > 0) {
-          const uint64 offset2 = canvas_y * width + left2;
+          offset2 := canvas_y * width + left2;
           blend_row((*uint32)dec.curr_frame + offset2, (*uint32)dec.prev_frame_disposed + offset2, width2);
         }
       }

@@ -200,8 +200,8 @@ static int TTransform_MSA(const WEBP_RESTRICT in *uint8, const WEBP_RESTRICT w *
 }
 
 static int Disto4x4_MSA(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  const int sum1 = TTransform_MSA(a, w);
-  const int sum2 = TTransform_MSA(b, w);
+  sum1 := TTransform_MSA(a, w);
+  sum2 := TTransform_MSA(b, w);
   return abs(sum2 - sum1) >> 5;
 }
 
@@ -270,11 +270,11 @@ static  func VE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 // horizontal
 static  func HE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
   WebPUint32ToMem(dst + 0 * BPS, uint(0x01010101) * AVG3(X, I, J));
   WebPUint32ToMem(dst + 1 * BPS, uint(0x01010101) * AVG3(I, J, K));
   WebPUint32ToMem(dst + 2 * BPS, uint(0x01010101) * AVG3(J, K, L));
@@ -303,10 +303,10 @@ static  func RD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   const v16u8 R1 = SLDI_UB(R0, R0, 1);
   const v16u8 R2 = SLDI_UB(R1, R1, 1);
   const v16u8 R3 = SLDI_UB(R2, R2, 1);
-  const uint32 val0 = __msa_copy_s_w((v4i32)R0, 0);
-  const uint32 val1 = __msa_copy_s_w((v4i32)R1, 0);
-  const uint32 val2 = __msa_copy_s_w((v4i32)R2, 0);
-  const uint32 val3 = __msa_copy_s_w((v4i32)R3, 0);
+  val0 := __msa_copy_s_w((v4i32)R0, 0);
+  val1 := __msa_copy_s_w((v4i32)R1, 0);
+  val2 := __msa_copy_s_w((v4i32)R2, 0);
+  val3 := __msa_copy_s_w((v4i32)R3, 0);
   SW4(val3, val2, val1, val0, dst, BPS);
 }
 
@@ -323,22 +323,22 @@ static  func LD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   const v16u8 R1 = SLDI_UB(R0, R0, 1);
   const v16u8 R2 = SLDI_UB(R1, R1, 1);
   const v16u8 R3 = SLDI_UB(R2, R2, 1);
-  const uint32 val0 = __msa_copy_s_w((v4i32)R0, 0);
-  const uint32 val1 = __msa_copy_s_w((v4i32)R1, 0);
-  const uint32 val2 = __msa_copy_s_w((v4i32)R2, 0);
-  const uint32 val3 = __msa_copy_s_w((v4i32)R3, 0);
+  val0 := __msa_copy_s_w((v4i32)R0, 0);
+  val1 := __msa_copy_s_w((v4i32)R1, 0);
+  val2 := __msa_copy_s_w((v4i32)R2, 0);
+  val3 := __msa_copy_s_w((v4i32)R3, 0);
   SW4(val0, val1, val2, val3, dst, BPS);
 }
 
 static  func VR4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
-  const int D = top[3];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  A := top[0];
+  B := top[1];
+  C := top[2];
+  D := top[3];
   DST(0, 0) = DST(1, 2) = AVG2(X, A);
   DST(1, 0) = DST(2, 2) = AVG2(A, B);
   DST(2, 0) = DST(3, 2) = AVG2(B, C);
@@ -352,14 +352,14 @@ static  func VR4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 static  func VL4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
-  const int D = top[3];
-  const int E = top[4];
-  const int F = top[5];
-  const int G = top[6];
-  const int H = top[7];
+  A := top[0];
+  B := top[1];
+  C := top[2];
+  D := top[3];
+  E := top[4];
+  F := top[5];
+  G := top[6];
+  H := top[7];
   DST(0, 0) = AVG2(A, B);
   DST(1, 0) = DST(0, 2) = AVG2(B, C);
   DST(2, 0) = DST(1, 2) = AVG2(C, D);
@@ -373,10 +373,10 @@ static  func VL4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 static  func HU4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
   DST(0, 0) = AVG2(I, J);
   DST(2, 0) = DST(0, 1) = AVG2(J, K);
   DST(2, 1) = DST(0, 2) = AVG2(K, L);
@@ -387,14 +387,14 @@ static  func HU4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 }
 
 static  func HD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
-  const int X = top[-1];
-  const int I = top[-2];
-  const int J = top[-3];
-  const int K = top[-4];
-  const int L = top[-5];
-  const int A = top[0];
-  const int B = top[1];
-  const int C = top[2];
+  X := top[-1];
+  I := top[-2];
+  J := top[-3];
+  K := top[-4];
+  L := top[-5];
+  A := top[0];
+  B := top[1];
+  C := top[2];
   DST(0, 0) = DST(2, 1) = AVG2(I, X);
   DST(0, 1) = DST(2, 2) = AVG2(J, I);
   DST(0, 2) = DST(2, 3) = AVG2(K, J);
@@ -587,10 +587,10 @@ static  func HorizontalPred8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT lef
       const v16u8 L1 = (v16u8)__msa_fill_b(left[1]);
       const v16u8 L2 = (v16u8)__msa_fill_b(left[2]);
       const v16u8 L3 = (v16u8)__msa_fill_b(left[3]);
-      const uint64 out0 = __msa_copy_s_d((v2i64)L0, 0);
-      const uint64 out1 = __msa_copy_s_d((v2i64)L1, 0);
-      const uint64 out2 = __msa_copy_s_d((v2i64)L2, 0);
-      const uint64 out3 = __msa_copy_s_d((v2i64)L3, 0);
+      out0 := __msa_copy_s_d((v2i64)L0, 0);
+      out1 := __msa_copy_s_d((v2i64)L1, 0);
+      out2 := __msa_copy_s_d((v2i64)L2, 0);
+      out3 := __msa_copy_s_d((v2i64)L3, 0);
       SD4(out0, out1, out2, out3, dst, BPS);
       dst += 4 * BPS;
       left += 4;

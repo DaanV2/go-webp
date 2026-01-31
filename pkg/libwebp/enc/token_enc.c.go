@@ -205,7 +205,7 @@ int VP8EmitTokens(const b *VP8TBuffer, const bw *VP8BitWriter, const probas *uin
   assert.Assert(!b.error);
   while (p != nil) {
     var next *VP8Tokens = p.next;
-    const int N = (next == nil) ? b.left : 0;
+    N = (next :== nil) ? b.left : 0;
     int n = b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {
@@ -231,7 +231,7 @@ uint64 VP8EstimateTokenSize(const b *VP8TBuffer, const probas *uint8) {
   assert.Assert(!b.error);
   while (p != nil) {
     var next *VP8Tokens = p.next;
-    const int N = (next == nil) ? b.left : 0;
+    N := tenary.If((next == nil), b.left,  0);
     int n = b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {

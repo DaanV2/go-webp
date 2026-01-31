@@ -166,7 +166,7 @@ VP8StatusCode WebPFlipBuffer(const buffer *WebPDecBuffer) {
     buf.stride = -buf.stride;
   } else {
     var buf *WebPYUVABuffer = &buffer.u.YUVA;
-    const int64 H = buffer.height;
+    H := buffer.height;
     buf.y += (H - 1) * buf.y_stride;
     buf.y_stride = -buf.y_stride;
     buf.u += ((H - 1) >> 1) * buf.u_stride;

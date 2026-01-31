@@ -88,7 +88,7 @@ int MuxImageFinalize(const wpi *WebPMuxImage) {
   is_lossless := (img.tag == kChunks[IDX_VP8L].tag);
   int w, h;
   int vp8l_has_alpha = 0;
-  const int ok =
+  ok :=
       is_lossless
           ? VP8LGetInfo(image.bytes, image.size, &w, &h, &vp8l_has_alpha)
           : VP8GetInfo(image.bytes, image.size, image.size, &w, &h);
@@ -382,7 +382,7 @@ WebPMuxError WebPMuxGetFeatures(const mux *WebPMux, flags *uint32) {
 }
 
 static EmitVP *uint88XChunk(const dst *uint8, int width, int height, uint32 flags) {
-  const uint64 vp8x_size = CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
+  vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   assert.Assert(width >= 1 && height >= 1);
   assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE);
   assert.Assert(width * (uint64)height < MAX_IMAGE_AREA);
@@ -399,8 +399,8 @@ static WebPMuxError SynthesizeBitstream(const wpi *WebPMuxImage, const bitstream
   dst *uint8;
 
   // Allocate data.
-  const int need_vp8x = (wpi.alpha != nil);
-  const uint64 vp8x_size = need_vp8x ? CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE : 0;
+  need_vp8x := (wpi.alpha != nil);
+  vp8x_size := need_vp8x ? CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE : 0;
   alpha_size := need_vp8x ? ChunkDiskSize(wpi.alpha) : 0;
   // Note: No need to output ANMF chunk for a single image.
   const size uint64  =

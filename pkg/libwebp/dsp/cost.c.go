@@ -48,7 +48,7 @@ const uint8 VP8EncBands[16 + 1] = {
 static int GetResidualCost_C(int ctx0, const res *VP8Residual) {
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
-  const int p0 = res.prob[n][ctx0][0];
+  p0 := res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
   var t *uint16 = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
@@ -73,7 +73,7 @@ static int GetResidualCost_C(int ctx0, const res *VP8Residual) {
     if (n < 15) {
       b := VP8EncBands[n + 1];
       ctx := (v == 1) ? 1 : 2;
-      const int last_p0 = res.prob[b][ctx][0];
+      last_p0 := res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }
   }

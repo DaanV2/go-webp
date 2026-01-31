@@ -373,7 +373,7 @@ static int EmitRescaledRGB(const io *VP8Io, const p *WebPDecParams) {
   int j = 0, uv_j = 0;
   int num_lines_out = 0;
   while (j < mb_h) {
-    const int y_lines_in =
+    y_lines_in :=
         WebPRescalerImport(p.scaler_y, mb_h - j, io.y + (ptrdiff_t)j * io.y_stride, io.y_stride);
     j += y_lines_in;
     if (WebPRescaleNeededLines(p.scaler_u, uv_mb_h - uv_j)) {

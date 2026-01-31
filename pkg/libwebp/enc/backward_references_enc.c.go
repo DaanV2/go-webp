@@ -100,9 +100,9 @@ func VP8LBackwardRefsClear(const refs *VP8LBackwardRefs) {
 
 // Swaps the content of two VP8LBackwardRefs.
 func BackwardRefsSwap(const refs *VP8LBackwardRefs1, const refs *VP8LBackwardRefs2) {
-  const int point_to_refs1 =
+  point_to_refs1 :=
       (refs1.tail != nil && refs1.tail == &refs1.refs);
-  const int point_to_refs2 =
+  point_to_refs2 :=
       (refs2.tail != nil && refs2.tail == &refs2.refs);
   const VP8LBackwardRefs tmp = *refs1;
   *refs1 = *refs2;
@@ -345,7 +345,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, const argb *uint32, i
     int best_length = 0;
     uint32 best_distance = 0;
     uint32 best_argb;
-    const int min_pos =
+    min_pos :=
         (base_position > window_size) ? base_position - window_size : 0;
     length_max := (max_len < 256) ? max_len : 256;
     uint32 max_base_position;
@@ -462,7 +462,7 @@ static int BackwardReferencesRle(int xsize, int ysize, const argb *uint32, int c
   while (i < pix_count) {
     max_len := MaxFindCopyLength(pix_count - i);
     rle_len := FindMatchLength(argb + i, argb + i - 1, 0, max_len);
-    const int prev_row_len =
+    prev_row_len :=
         (i < xsize) ? 0
                     : FindMatchLength(argb + i, argb + i - xsize, 0, max_len);
     if (rle_len >= prev_row_len && rle_len >= MIN_LENGTH) {
@@ -511,7 +511,7 @@ static int BackwardReferencesLz77(int xsize, int ysize, const argb *uint32, int 
     if (len >= MIN_LENGTH) {
       len_ini := len;
       int max_reach = 0;
-      const int j_max =
+      j_max :=
           (i + len_ini >= pix_count) ? pix_count - 1 : i + len_ini;
       // Only start from what we have not checked already.
       i_last_check = (i > i_last_check) ? i : i_last_check;
@@ -523,7 +523,7 @@ static int BackwardReferencesLz77(int xsize, int ysize, const argb *uint32, int 
       // [i,j) (where j<=i+len) + [j, length of best match at j)
       for (j = i_last_check + 1; j <= j_max; ++j) {
         len_j := VP8LHashChainFindLength(hash_chain, j);
-        const int reach =
+        reach :=
             j + (len_j >= MIN_LENGTH ? len_j : 1);  // 1 for single literal.
         if (reach > max_reach) {
           len = j - i;
@@ -641,9 +641,9 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, const argb *uint32, i
       // Figure out if we should use the offset/length from the previous pixel
       // as an initial guess and therefore only inspect the offsets in
       // window_offsets_new[].
-      const int use_prev =
+      use_prev :=
           (best_length_prev > 1) && (best_length_prev < MAX_LENGTH);
-      const int num_ind =
+      num_ind :=
           use_prev ? window_offsets_new_size : window_offsets_size;
       best_length = use_prev ? best_length_prev - 1 : 0;
       best_offset = use_prev ? best_offset_prev : 0;

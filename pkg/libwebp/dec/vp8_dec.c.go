@@ -428,8 +428,8 @@ static int GetLargeValue(const br *VP8BitReader, const p *uint8) {
       }
     } else {
       const tab *uint8;
-      const int bit1 = VP8GetBit(br, p[8], "coeffs");
-      const int bit0 = VP8GetBit(br, p[9 + bit1], "coeffs");
+      bit1 := VP8GetBit(br, p[8], "coeffs");
+      bit0 := VP8GetBit(br, p[9 + bit1], "coeffs");
       cat := 2 * bit1 + bit0;
       v = 0;
       for (tab = kCat3456[cat]; *tab; ++tab) {
@@ -538,7 +538,7 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
       VP8TransformWHT(dc, dst);
     } else {  // only DC is non-zero . inlined simplified transform
       int i;
-      const int dc0 = (dc[0] + 3) >> 3;
+      dc0 := (dc[0] + 3) >> 3;
       for (i = 0; i < 16 * 16; i += 16) dst[i] = dc0;
     }
     first = 1;

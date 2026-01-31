@@ -276,8 +276,8 @@ static int Quantize2Blocks_MIPS32(int16 in[32], int16 out[32], const WEBP_RESTRI
 // since only one accu is available in mips32r1 instruction set
 //   first is done second call of function TTransform and after
 //   that first one.
-//   const int sum1 = TTransform(a, w);
-//   const int sum2 = TTransform(b, w);
+//   sum1 := TTransform(a, w);
+//   sum2 := TTransform(b, w);
 //   return abs(sum2 - sum1) >> 5;
 //   (sum2 - sum1) is calculated with madds (sub2) and msubs (sub1)
 // A..D - offsets in bytes to load first results from tmp buffer
@@ -464,8 +464,8 @@ func FTransform_MIPS32(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   int temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16;
   int temp17, temp18, temp19, temp20;
-  const int c2217 = 2217;
-  const int c5352 = 5352;
+  c2217 := 2217;
+  c5352 := 5352;
   const args *int[3] = {(const *int)src, (const *int)ref, (const *int)out}
 
   __asm__ volatile(

@@ -115,17 +115,17 @@ func TransformWHT(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
 }
 
 func TransformDC(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
-  const int DC = (in[0] + 4) >> 3;
+  DC := (in[0] + 4) >> 3;
   const v8i16 tmp0 = __msa_fill_h(DC);
   ADDBLK_ST4x4_UB(tmp0, tmp0, tmp0, tmp0, dst, BPS);
 }
 
 func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   a := in[0] + 4;
-  const int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
-  const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
-  const int in2 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
-  const int in3 = WEBP_TRANSFORM_AC3_MUL1(in[1]);
+  c4 := WEBP_TRANSFORM_AC3_MUL2(in[4]);
+  d4 := WEBP_TRANSFORM_AC3_MUL1(in[4]);
+  in2 := WEBP_TRANSFORM_AC3_MUL2(in[1]);
+  in3 := WEBP_TRANSFORM_AC3_MUL1(in[1]);
   v4i32 tmp0 = {0}
   v4i32 out0 = __msa_fill_w(a + d4);
   v4i32 out1 = __msa_fill_w(a + c4);
@@ -292,8 +292,8 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 
 #define ST6x1_UB(in0, in0_idx, in1, in1_idx, pdst, stride)       \
   for {                                                           \
-    const uint16 tmp0_h = __msa_copy_s_h((v8i16)in1, in1_idx); \
-    const uint32 tmp0_w = __msa_copy_s_w((v4i32)in0, in0_idx); \
+    tmp0_h := __msa_copy_s_h((v8i16)in1, in1_idx); \
+    tmp0_w := __msa_copy_s_w((v4i32)in0, in0_idx); \
     SW(tmp0_w, pdst);                                            \
     SH(tmp0_h, pdst + stride);                                   \
   } while (0)
@@ -678,8 +678,8 @@ func TM4(dst *uint8) {
 
 func VE4(dst *uint8) {  // vertical
   var ptop *uint8 = dst - BPS - 1;
-  const uint32 val0 = LW(ptop + 0);
-  const uint32 val1 = LW(ptop + 4);
+  val0 := LW(ptop + 0);
+  val1 := LW(ptop + 4);
   uint32 out;
   v16u8 A = {0}, B, C, AC, B2, R;
 
@@ -901,10 +901,10 @@ func HE8uv(dst *uint8) {  // horizontal
     const v16u8 L1 = (v16u8)__msa_fill_b(dst[-1 + 1 * BPS]);
     const v16u8 L2 = (v16u8)__msa_fill_b(dst[-1 + 2 * BPS]);
     const v16u8 L3 = (v16u8)__msa_fill_b(dst[-1 + 3 * BPS]);
-    const uint64 out0 = __msa_copy_s_d((v2i64)L0, 0);
-    const uint64 out1 = __msa_copy_s_d((v2i64)L1, 0);
-    const uint64 out2 = __msa_copy_s_d((v2i64)L2, 0);
-    const uint64 out3 = __msa_copy_s_d((v2i64)L3, 0);
+    out0 := __msa_copy_s_d((v2i64)L0, 0);
+    out1 := __msa_copy_s_d((v2i64)L1, 0);
+    out2 := __msa_copy_s_d((v2i64)L2, 0);
+    out3 := __msa_copy_s_d((v2i64)L3, 0);
     SD4(out0, out1, out2, out3, dst, BPS);
     dst += 4 * BPS;
   }

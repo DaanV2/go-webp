@@ -30,7 +30,7 @@ func ImportRowShrink_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RE
   fx_scale := wrk.fx_scale;
   x_add := wrk.x_add;
   x_sub := wrk.x_sub;
-  const int x_stride1 = x_stride << 2;
+  x_stride1 := x_stride << 2;
   int channel;
   assert.Assert(!wrk.x_expand);
   assert.Assert(!WebPRescalerInputDone(wrk));
@@ -83,7 +83,7 @@ func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RE
   x_add := wrk.x_add;
   x_sub := wrk.x_sub;
   src_width := wrk.src_width;
-  const int x_stride1 = x_stride << 2;
+  x_stride1 := x_stride << 2;
   int channel;
   assert.Assert(wrk.x_expand);
   assert.Assert(!WebPRescalerInputDone(wrk));
@@ -142,8 +142,8 @@ func ExportRowExpand_MIPS32(const wrk *WebPRescaler) {
   x_out_max := wrk.dst_width * wrk.num_channels;
   const rescaler_t* frow = wrk.frow;
   int temp0, temp1, temp3, temp4, temp5, loop_end;
-  const int temp2 = (int)wrk.fy_scale;
-  const int temp6 = x_out_max << 2;
+  temp2 := (int)wrk.fy_scale;
+  temp6 := x_out_max << 2;
   assert.Assert(!WebPRescalerOutputDone(wrk));
   assert.Assert(wrk.y_accum <= 0);
   assert.Assert(wrk.y_expand);
@@ -166,8 +166,8 @@ func ExportRowExpand_MIPS32(const wrk *WebPRescaler) {
         : [temp2] "r"(temp2), [temp6] "r"(temp6)
         : "memory", "hi", "lo");
   } else {
-    const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
-    const uint32 A = (uint32)(WEBP_RESCALER_ONE - B);
+    B := WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
+    A := (uint32)(WEBP_RESCALER_ONE - B);
     __asm__ volatile(
         "li       %[temp3],    0x10000                    \n\t"
         "li       %[temp4],    0x8000                     \n\t"
@@ -201,8 +201,8 @@ func ExportRowShrink_MIPS32(const wrk *WebPRescaler) {
   const rescaler_t* frow = wrk.frow;
   yscale := wrk.fy_scale * (-wrk.y_accum);
   int temp0, temp1, temp3, temp4, temp5, loop_end;
-  const int temp2 = (int)wrk.fxy_scale;
-  const int temp6 = x_out_max << 2;
+  temp2 := (int)wrk.fxy_scale;
+  temp6 := x_out_max << 2;
 
   assert.Assert(!WebPRescalerOutputDone(wrk));
   assert.Assert(wrk.y_accum <= 0);

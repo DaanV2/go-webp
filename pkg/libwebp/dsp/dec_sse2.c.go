@@ -205,8 +205,8 @@ func TransformAC3_SSE2(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) 
   const __m128i A = _mm_set1_epi16(in[0] + 4);
   const __m128i c4 = _mm_set1_epi16(WEBP_TRANSFORM_AC3_MUL2(in[4]));
   const __m128i d4 = _mm_set1_epi16(WEBP_TRANSFORM_AC3_MUL1(in[4]));
-  const int c1 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
-  const int d1 = WEBP_TRANSFORM_AC3_MUL1(in[1]);
+  c1 := WEBP_TRANSFORM_AC3_MUL2(in[1]);
+  d1 := WEBP_TRANSFORM_AC3_MUL1(in[1]);
   const __m128i CD = _mm_set_epi16(0, 0, 0, 0, -d1, -c1, c1, d1);
   const __m128i B = _mm_adds_epi16(A, CD);
   const __m128i m0 = _mm_adds_epi16(B, d4);
@@ -891,10 +891,10 @@ func LD4_SSE2(dst *uint8) {  // Down-Left
 
 func VR4_SSE2(dst *uint8) {  // Vertical-Right
   const __m128i one = _mm_set1_epi8(1);
-  const int I = dst[-1 + 0 * BPS];
-  const int J = dst[-1 + 1 * BPS];
-  const int K = dst[-1 + 2 * BPS];
-  const int X = dst[-1 - BPS];
+  I := dst[-1 + 0 * BPS];
+  J := dst[-1 + 1 * BPS];
+  K := dst[-1 + 2 * BPS];
+  X := dst[-1 - BPS];
   const __m128i XABCD = _mm_loadl_epi64((__*m128i)(dst - BPS - 1));
   const __m128i ABCD0 = _mm_srli_si128(XABCD, 1);
   const __m128i abcd = _mm_avg_epu8(XABCD, ABCD0);
@@ -928,7 +928,7 @@ func VL4_SSE2(dst *uint8) {  // Vertical-Left
   const __m128i abbc = _mm_or_si128(ab, bc);
   const __m128i lsb2 = _mm_and_si128(abbc, lsb1);
   const __m128i avg4 = _mm_subs_epu8(avg3, lsb2);
-  const uint32 extra_out =
+  extra_out :=
       (uint32)_mm_cvtsi128_si32(_mm_srli_si128(avg4, 4));
   WebPInt32ToMem(dst + 0 * BPS, _mm_cvtsi128_si32(avg1));
   WebPInt32ToMem(dst + 1 * BPS, _mm_cvtsi128_si32(avg4));
@@ -944,10 +944,10 @@ func RD4_SSE2(dst *uint8) {  // Down-right
   const __m128i one = _mm_set1_epi8(1);
   const __m128i XABCD = _mm_loadl_epi64((__*m128i)(dst - BPS - 1));
   const __m128i ____XABCD = _mm_slli_si128(XABCD, 4);
-  const uint32 I = dst[-1 + 0 * BPS];
-  const uint32 J = dst[-1 + 1 * BPS];
-  const uint32 K = dst[-1 + 2 * BPS];
-  const uint32 L = dst[-1 + 3 * BPS];
+  I := dst[-1 + 0 * BPS];
+  J := dst[-1 + 1 * BPS];
+  K := dst[-1 + 2 * BPS];
+  L := dst[-1 + 3 * BPS];
   const __m128i LKJI_____ =
       _mm_cvtsi32_si128((int)(L | (K << 8) | (J << 16) | (I << 24)));
   const __m128i LKJIXABCD = _mm_or_si128(LKJI_____, ____XABCD);
@@ -1047,7 +1047,7 @@ func DC16_SSE2(dst *uint8) {  // DC
     left += dst[-1 + j * BPS];
   }
   {
-    const int DC = _mm_cvtsi128_si32(sum) + left + 16;
+    DC := _mm_cvtsi128_si32(sum) + left + 16;
     Put16_SSE2(DC >> 5, dst);
   }
 }
@@ -1067,7 +1067,7 @@ func DC16NoLeft_SSE2(dst *uint8) {  // DC with left samples unavailable
   const __m128i sad8x2 = _mm_sad_epu8(top, zero);
   // sum the two sads: sad8x2[0:1] + sad8x2[8:9]
   const __m128i sum = _mm_add_epi16(sad8x2, _mm_shuffle_epi32(sad8x2, 2));
-  const int DC = _mm_cvtsi128_si32(sum) + 8;
+  DC := _mm_cvtsi128_si32(sum) + 8;
   Put16_SSE2(DC >> 4, dst);
 }
 
@@ -1105,7 +1105,7 @@ func DC8uv_SSE2(dst *uint8) {  // DC
     left += dst[-1 + j * BPS];
   }
   {
-    const int DC = _mm_cvtsi128_si32(sum) + left + 8;
+    DC := _mm_cvtsi128_si32(sum) + left + 8;
     Put8x8uv_SSE2(DC >> 4, dst);
   }
 }
@@ -1114,7 +1114,7 @@ func DC8uvNoLeft_SSE2(dst *uint8) {  // DC with no left samples
   const __m128i zero = _mm_setzero_si128();
   const __m128i top = _mm_loadl_epi64((const __*m128i)(dst - BPS));
   const __m128i sum = _mm_sad_epu8(top, zero);
-  const int DC = _mm_cvtsi128_si32(sum) + 4;
+  DC := _mm_cvtsi128_si32(sum) + 4;
   Put8x8uv_SSE2(DC >> 3, dst);
 }
 

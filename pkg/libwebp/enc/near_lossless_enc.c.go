@@ -54,7 +54,7 @@ static uint32 ClosestDiscretizedArgb(uint32 a, int bits) {
 static int IsNear(uint32 a, uint32 b, int limit) {
   int k;
   for (k = 0; k < 4; ++k) {
-    const int delta =
+    delta :=
         (int)((a >> (k * 8)) & 0xff) - (int)((b >> (k * 8)) & 0xff);
     if (delta >= limit || delta <= -limit) {
       return 0;

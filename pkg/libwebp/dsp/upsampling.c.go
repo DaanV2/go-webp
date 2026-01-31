@@ -54,11 +54,11 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
     uint32 l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
     assert.Assert(top_y != nil);                                                    \
     {                                                                         \
-      const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;             \
+      uv0 := (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;             \
       FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                       \
     }                                                                         \
     if (bottom_y != nil) {                                                   \
-      const uint32 uv0 = (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
+      uv0 := (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
     for (x = 1; x <= last_pixel_pair; ++x) {                                  \
@@ -67,19 +67,19 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
       /* precompute invariant values associated with first and second         \
        * *diagonals/                                                          \
       avg := tl_uv + t_uv + l_uv + uv + uint(0x00080008);            \
-      const uint32 diag_12 = (avg + 2 * (t_uv + l_uv)) >> 3;                \
-      const uint32 diag_03 = (avg + 2 * (tl_uv + uv)) >> 3;                 \
+      diag_12 := (avg + 2 * (t_uv + l_uv)) >> 3;                \
+      diag_03 := (avg + 2 * (tl_uv + uv)) >> 3;                 \
       {                                                                       \
-        const uint32 uv0 = (diag_12 + tl_uv) >> 1;                          \
-        const uint32 uv1 = (diag_03 + t_uv) >> 1;                           \
+        uv0 := (diag_12 + tl_uv) >> 1;                          \
+        uv1 := (diag_03 + t_uv) >> 1;                           \
         FUNC(top_y[2 * x - 1], uv0 & 0xff, (uv0 >> 16),                       \
              top_dst + (2 * x - 1) * (XSTEP));                                \
         FUNC(top_y[2 * x - 0], uv1 & 0xff, (uv1 >> 16),                       \
              top_dst + (2 * x - 0) * (XSTEP));                                \
       }                                                                       \
       if (bottom_y != nil) {                                                 \
-        const uint32 uv0 = (diag_03 + l_uv) >> 1;                           \
-        const uint32 uv1 = (diag_12 + uv) >> 1;                             \
+        uv0 := (diag_03 + l_uv) >> 1;                           \
+        uv1 := (diag_12 + uv) >> 1;                             \
         FUNC(bottom_y[2 * x - 1], uv0 & 0xff, (uv0 >> 16),                    \
              bottom_dst + (2 * x - 1) * (XSTEP));                             \
         FUNC(bottom_y[2 * x + 0], uv1 & 0xff, (uv1 >> 16),                    \
@@ -90,12 +90,12 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
     }                                                                         \
     if (!(len & 1)) {                                                         \
       {                                                                       \
-        const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;           \
+        uv0 := (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;           \
         FUNC(top_y[len - 1], uv0 & 0xff, (uv0 >> 16),                         \
              top_dst + (len - 1) * (XSTEP));                                  \
       }                                                                       \
       if (bottom_y != nil) {                                                 \
-        const uint32 uv0 = (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;           \
+        uv0 := (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;           \
         FUNC(bottom_y[len - 1], uv0 & 0xff, (uv0 >> 16),                      \
              bottom_dst + (len - 1) * (XSTEP));                               \
       }                                                                       \

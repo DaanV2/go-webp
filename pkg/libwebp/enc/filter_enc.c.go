@@ -130,7 +130,7 @@ func VP8StoreFilterStats(const it *VP8EncIterator) {
   int d;
   var enc *VP8Encoder = it.enc;
   s := it.mb.segment;
-  const int level0 = enc.dqm[s].fstrength;
+  level0 := enc.dqm[s].fstrength;
 
   // explore +/-quant range of values around level0
   delta_min := -enc.dqm[s].quant;
@@ -191,7 +191,7 @@ func VP8AdjustFilterStrength(const it *VP8EncIterator) {
       var dqm *VP8SegmentInfo = &enc.dqm[s];
       // this '>> 3' accounts for some inverse WHT scaling
       delta := (dqm.max_edge * dqm.y2.q[1]) >> 3;
-      const int level =
+      level :=
           VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, delta);
       if (level > dqm.fstrength) {
         dqm.fstrength = level;

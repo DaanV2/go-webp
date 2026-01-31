@@ -198,7 +198,7 @@ func GenerateOptimalTree(
     int j;
     for (j = 0; j < histogram_size; ++j) {
       if (histogram[j] != 0) {
-        const uint32 count =
+        count :=
             (histogram[j] < count_min) ? count_min : histogram[j];
         tree[idx].total_count = count;
         tree[idx].value = j;

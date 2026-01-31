@@ -63,7 +63,7 @@ static int64 PredictionCostSpatialHistogram(
   int i;
   int64 retval = 0;
   for (i = 0; i < 4; ++i) {
-    const uint64 kExpValue = 94;
+    kExpValue := 94;
     retval += PredictionCostBias(&tile[i * 256], 1, kExpValue);
     // Compute the new cost if 'tile' is added to 'accumulate' but also add the
     // cost of the current histogram to guide the spatial predictor selection.
@@ -317,10 +317,10 @@ func GetBestPredictorForTile(const all_argb *uint32, int subsampling_index, int 
   const pred_histos *uint32 =
       &all_pred_histos[subsampling_index * kNumPredModes];
   // Prediction modes of the left and above neighbor tiles.
-  const int left_mode =
+  left_mode :=
       (tile_x > 0) ? (modes[tile_y * tiles_per_row + tile_x - 1] >> 8) & 0xff
                    : 0xff;
-  const int above_mode =
+  above_mode :=
       (tile_y > 0) ? (modes[(tile_y - 1) * tiles_per_row + tile_x] >> 8) & 0xff
                    : 0xff;
   int mode;
@@ -464,7 +464,7 @@ func CopyImageWithPrediction(int width, int height, int bits, const modes *uint3
       }
 #endif
       for (x = 0; x < width;) {
-        const int mode =
+        mode :=
             (modes[(y >> bits) * tiles_per_row + (x >> bits)] >> 8) & 0xff;
         int x_end = x + (1 << bits);
         if (x_end > width) x_end = width;
@@ -590,7 +590,7 @@ func GetBestPredictorsAndSubSampling(
   // The first method is therefore faster until n==4. 'update_up_to_index'
   // defines the maximum subsampling_index for which the residuals should be
   // individually added to the super-tile histogram.
-  const uint32 update_up_to_index =
+  update_up_to_index :=
       GetMax(GetMin(4, max_bits), min_bits) - min_bits;
   // Coordinates in the max-tile in tile units.
   uint32 local_tile_x = 0, local_tile_y = 0;
@@ -609,7 +609,7 @@ func GetBestPredictorsAndSubSampling(
     while (1) {
       super_tile_x := tile_x >> subsampling_index;
       super_tile_y := tile_y >> subsampling_index;
-      const uint32 super_tiles_per_row =
+      super_tiles_per_row :=
           VP8LSubSampleSize(width, min_bits + subsampling_index);
       GetBestPredictorForTile(all_argb, subsampling_index, super_tile_x, super_tile_y, super_tiles_per_row, all_accumulated_argb, all_modes, all_pred_histos);
       if (subsampling_index == max_subsampling_index) break;
@@ -805,7 +805,7 @@ static int64 GetPredictionCostCrossColorRed(
 }
 
 func GetBestGreenToRed(const argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, const uint32 accumulated_red_histo[256], const best_tx *VP8LMultipliers) {
-  const int kMaxIters = 4 + ((7 * quality) >> 8);  // in range [4..6]
+  kMaxIters := 4 + ((7 * quality) >> 8);  // in range [4..6]
   int green_to_red_best = 0;
   int iter, offset;
   int64 best_diff = GetPredictionCostCrossColorRed(
@@ -865,9 +865,9 @@ static int64 GetPredictionCostCrossColorBlue(
 const kGreenRedToBlueNumAxis = 8
 const kGreenRedToBlueMaxIters = 7
 func GetBestGreenRedToBlue(const argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, const uint32 accumulated_blue_histo[256], const best_tx *VP8LMultipliers) {
-  const int8 offset[kGreenRedToBlueNumAxis][2] = {
+  offset[kGreenRedToBlueNumAxis][2] := {
       {0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}}
-  const int8 delta_lut[kGreenRedToBlueMaxIters] = {16, 16, 8, 4, 2, 2, 2}
+  delta_lut[kGreenRedToBlueMaxIters] := {16, 16, 8, 4, 2, 2, 2}
   iters := (quality < 25)   ? 1
                     : (quality > 50) ? kGreenRedToBlueMaxIters
                                      : 4;
@@ -881,7 +881,7 @@ func GetBestGreenRedToBlue(const argb *uint32, int stride, int tile_width, int t
     delta := delta_lut[iter];
     int axis;
     for (axis = 0; axis < kGreenRedToBlueNumAxis; ++axis) {
-      const int green_to_blue_cur =
+      green_to_blue_cur :=
           offset[axis][0] * delta + green_to_blue_best;
       red_to_blue_cur := offset[axis][1] * delta + red_to_blue_best;
       cur_diff := GetPredictionCostCrossColorBlue(

@@ -60,7 +60,7 @@ func VP8CalculateLevelCosts(const proba *VP8EncProba) {
       for (ctx = 0; ctx < NUM_CTX; ++ctx) {
         var p *uint8 = proba.coeffs[ctype][band][ctx];
         var table *uint16 = proba.level_cost[ctype][band][ctx];
-        const int cost0 = (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
+        cost0 := (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
         cost_base := VP8BitCost(1, p[1]) + cost0;
         int v;
         table[0] = VP8BitCost(0, p[1]) + cost0;

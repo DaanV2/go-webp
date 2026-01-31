@@ -75,7 +75,7 @@ static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_s
     luma_ptr += y_stride;
   }
   if (count > 0 && count < width * height) {
-    const uint8 avg_u8 = (uint8)(sum / count);
+    avg_u8 := (uint8)(sum / count);
     alpha_ptr = a_ptr;
     luma_ptr = y_ptr;
     for (y = 0; y < height; ++y) {
@@ -201,10 +201,10 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
   if (!picture.use_argb) {
     // omit last pixel during u/v loop
     uv_width := (picture.width >> 1);
-    const int Y0 = VP8RGBToY(red, green, blue, YUV_HALF);
+    Y0 := VP8RGBToY(red, green, blue, YUV_HALF);
     // VP8RGBToU/V expects the u/v values summed over four pixels
-    const int U0 = VP8RGBToU(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
-    const int V0 = VP8RGBToV(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
+    U0 := VP8RGBToU(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
+    V0 := VP8RGBToV(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
     has_alpha := picture.colorspace & WEBP_CSP_ALPHA_BIT;
     y_ptr *uint8 = picture.y;
     u_ptr *uint8 = picture.u;

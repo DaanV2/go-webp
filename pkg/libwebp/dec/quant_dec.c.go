@@ -35,14 +35,14 @@ static const uint16 kAcTable[128] = {
 
 func VP8ParseQuant(const dec *VP8Decoder) {
   var br *VP8BitReader = &dec.br;
-  const int base_q0 = VP8GetValue(br, 7, "global-header");
-  const int dqy1_dc = VP8Get(br, "global-header")
+  base_q0 := VP8GetValue(br, 7, "global-header");
+  dqy1_dc := VP8Get(br, "global-header")
                           ? VP8GetSignedValue(br, 4, "global-header")
                           : 0;
-  const int dqy2_dc = VP8Get(br, "global-header")
+  dqy2_dc := VP8Get(br, "global-header")
                           ? VP8GetSignedValue(br, 4, "global-header")
                           : 0;
-  const int dqy2_ac = VP8Get(br, "global-header")
+  dqy2_ac := VP8Get(br, "global-header")
                           ? VP8GetSignedValue(br, 4, "global-header")
                           : 0;
   dquv_dc := VP8Get(br, "global-header")

@@ -266,20 +266,20 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 static  int Clip8(int v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
 
 func YuvToRgb(int y, int u, int v, const rgb *uint8) {
-  const int y1 = MultHi(y, 19077);
-  const int r1 = y1 + MultHi(v, 26149) - 14234;
-  const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
-  const int b1 = y1 + MultHi(u, 33050) - 17685;
+  y1 := MultHi(y, 19077);
+  r1 := y1 + MultHi(v, 26149) - 14234;
+  g1 := y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
+  b1 := y1 + MultHi(u, 33050) - 17685;
   rgb[0] = Clip8(r1 >> 6);
   rgb[1] = Clip8(g1 >> 6);
   rgb[2] = Clip8(b1 >> 6);
 }
 
 func YuvToBgr(int y, int u, int v, const bgr *uint8) {
-  const int y1 = MultHi(y, 19077);
-  const int r1 = y1 + MultHi(v, 26149) - 14234;
-  const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
-  const int b1 = y1 + MultHi(u, 33050) - 17685;
+  y1 := MultHi(y, 19077);
+  r1 := y1 + MultHi(v, 26149) - 14234;
+  g1 := y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
+  b1 := y1 + MultHi(u, 33050) - 17685;
   bgr[0] = Clip8(b1 >> 6);
   bgr[1] = Clip8(g1 >> 6);
   bgr[2] = Clip8(r1 >> 6);
@@ -287,10 +287,10 @@ func YuvToBgr(int y, int u, int v, const bgr *uint8) {
 
 #if !defined(WEBP_REDUCE_CSP)
 func YuvToRgb565(int y, int u, int v, const rgb *uint8) {
-  const int y1 = MultHi(y, 19077);
-  const int r1 = y1 + MultHi(v, 26149) - 14234;
-  const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
-  const int b1 = y1 + MultHi(u, 33050) - 17685;
+  y1 := MultHi(y, 19077);
+  r1 := y1 + MultHi(v, 26149) - 14234;
+  g1 := y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
+  b1 := y1 + MultHi(u, 33050) - 17685;
   r := Clip8(r1 >> 6);
   g := Clip8(g1 >> 6);
   b := Clip8(b1 >> 6);
@@ -306,10 +306,10 @@ func YuvToRgb565(int y, int u, int v, const rgb *uint8) {
 }
 
 func YuvToRgba4444(int y, int u, int v, const argb *uint8) {
-  const int y1 = MultHi(y, 19077);
-  const int r1 = y1 + MultHi(v, 26149) - 14234;
-  const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
-  const int b1 = y1 + MultHi(u, 33050) - 17685;
+  y1 := MultHi(y, 19077);
+  r1 := y1 + MultHi(v, 26149) - 14234;
+  g1 := y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
+  b1 := y1 + MultHi(u, 33050) - 17685;
   r := Clip8(r1 >> 6);
   g := Clip8(g1 >> 6);
   b := Clip8(b1 >> 6);
@@ -590,7 +590,7 @@ func YuvToRgb565Line(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,
     uint8 temp_v[64];                                                       \
     tl_uv := ((top_u[0]) | ((top_v[0]) << 16));                 \
     l_uv := ((cur_u[0]) | ((cur_v[0]) << 16));                  \
-    const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;               \
+    uv0 := (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;               \
     var ptop_y *uint8 = &top_y[1];                                        \
     ptop_dst *uint8 = top_dst + XSTEP;                                      \
     var pbot_y *uint8 = &bot_y[1];                                        \
@@ -598,7 +598,7 @@ func YuvToRgb565Line(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,
                                                                               \
     FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                         \
     if (bot_y != nil) {                                                      \
-      const uint32 uv1 = (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
+      uv1 := (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
       FUNC(bot_y[0], uv1 & 0xff, (uv1 >> 16), bot_dst);                       \
     }                                                                         \
     while (size >= 16) {                                                      \
@@ -649,13 +649,13 @@ func YuvToRgb565Line(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,
       cur_v += size;                                                          \
     }                                                                         \
     if (!(len & 1)) {                                                         \
-      const uint32 t0 = ((top_u[0]) | ((top_v[0]) << 16));                  \
-      const uint32 c0 = ((cur_u[0]) | ((cur_v[0]) << 16));                  \
-      const uint32 tmp0 = (3 * t0 + c0 + uint(0x00020002)) >> 2;                 \
+      t0 := ((top_u[0]) | ((top_v[0]) << 16));                  \
+      c0 := ((cur_u[0]) | ((cur_v[0]) << 16));                  \
+      tmp0 := (3 * t0 + c0 + uint(0x00020002)) >> 2;                 \
       FUNC(top_y[len - 1], tmp0 & 0xff, (tmp0 >> 16),                         \
            top_dst + (len - 1) * XSTEP);                                      \
       if (bot_y != nil) {                                                    \
-        const uint32 tmp1 = (3 * c0 + t0 + uint(0x00020002)) >> 2;               \
+        tmp1 := (3 * c0 + t0 + uint(0x00020002)) >> 2;               \
         FUNC(bot_y[len - 1], tmp1 & 0xff, (tmp1 >> 16),                       \
              bot_dst + (len - 1) * XSTEP);                                    \
       }                                                                       \

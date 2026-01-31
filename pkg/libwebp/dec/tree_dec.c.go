@@ -78,7 +78,7 @@ func ParseIntraMode(const br *VP8BitReader, const dec *VP8Decoder, int mb_x) {
   block.is_i4x4 = !VP8GetBit(br, 145, "block-size");
   if (!block.is_i4x4) {
     // Hardcoded 16x16 intra-mode decision tree.
-    const int ymode =
+    ymode :=
         VP8GetBit(br, 156, "pred-modes")
             ? (VP8GetBit(br, 128, "pred-modes") ? TM_PRED : H_PRED)
             : (VP8GetBit(br, 163, "pred-modes") ? V_PRED : DC_PRED);
@@ -161,7 +161,7 @@ func VP8ParseProba(const br *VP8BitReader, const dec *VP8Decoder) {
     for (b = 0; b < NUM_BANDS; ++b) {
       for (c = 0; c < NUM_CTX; ++c) {
         for (p = 0; p < NUM_PROBAS; ++p) {
-          const int v =
+          v :=
               VP8GetBit(br, CoeffsUpdateProba[t][b][c][p], "global-header")
                   ? VP8GetValue(br, 8, "global-header")
                   : CoeffsProba0[t][b][c][p];

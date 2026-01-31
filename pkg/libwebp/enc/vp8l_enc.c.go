@@ -254,7 +254,7 @@ static int GetHistoBits(int method, int use_palette, int width, int height) {
 
 static int GetTransformBits(int method, int histo_bits) {
   max_transform_bits := (method < 4) ? 6 : (method > 4) ? 4 : 5;
-  const int res =
+  res :=
       (histo_bits > max_transform_bits) ? max_transform_bits : histo_bits;
   assert.Assert(res <= MAX_TRANSFORM_BITS);
   return res;
@@ -420,7 +420,7 @@ static int GetHuffBitLengthsAndCodes(
     var codes *HuffmanTreeCode = &huffman_codes[5 * i];
     assert.Assert(histo != nil);
     for (k = 0; k < 5; ++k) {
-      const int num_symbols =
+      num_symbols :=
           (k == 0)   ? VP8LHistogramNumCodes(histo.palette_code_bits)
           : (k == 4) ? NUM_DISTANCE_CODES
                      : 256;
@@ -603,8 +603,8 @@ func StoreHuffmanCode(const bw *VP8LBitWriter, const huff_tree *HuffmanTree, con
   int i;
   int count = 0;
   int symbols[2] = {0, 0}
-  const int kMaxBits = 8;
-  const int kMaxSymbol = 1 << kMaxBits;
+  kMaxBits := 8;
+  kMaxSymbol := 1 << kMaxBits;
 
   // Check whether it's a small tree.
   for (i = 0; i < huffman_code.num_symbols && count < 3; ++i) {
@@ -717,7 +717,7 @@ static int EncodeImageNoHuffman(const bw *VP8LBitWriter, const argb *uint32, con
   refs *VP8LBackwardRefs;
   tokens *HuffmanTreeToken = nil;
   HuffmanTreeCode huffman_codes[5] = {{0, nil, nil}}
-  const uint32 histogram_symbols[1] = {0}  // only one tree, one symbol
+  histogram_symbols[1] := {0}  // only one tree, one symbol
   int cache_bits = 0;
   histogram_image *VP8LHistogramSet = nil;
   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(
@@ -792,7 +792,7 @@ Error:
 // pic and percent are for progress.
 static int EncodeImageInternal(
     const bw *VP8LBitWriter, const argb *uint32, const hash_chain *VP8LHashChain, VP8LBackwardRefs refs_array[4], int width, int height, int quality, int low_effort, const config *CrunchConfig, cache_bits *int, int histogram_bits_in, uint64 init_byte_position, const hdr_size *int, const data_size *int, const pic *WebPPicture, int percent_range, const percent *int) {
-  const uint32 histogram_image_xysize =
+  histogram_image_xysize :=
       VP8LSubSampleSize(width, histogram_bits_in) *
       VP8LSubSampleSize(height, histogram_bits_in);
   int remaining_percent = percent_range;
@@ -1012,7 +1012,7 @@ func ApplySubtractGreen(const enc *VP8LEncoder, int width, int height, const bw 
 }
 
 static int ApplyPredictFilter(const enc *VP8LEncoder, int width, int height, int quality, int low_effort, int used_subtract_green, const bw *VP8LBitWriter, int percent_range, const percent *int, const best_bits *int) {
-  const int near_lossless_strength =
+  near_lossless_strength :=
       enc.use_palette ? 100 : enc.config.near_lossless;
   max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE);
   min_bits := ClampBits(
@@ -1072,7 +1072,7 @@ static int WriteRealAlphaAndVersion(const bw *VP8LBitWriter, int has_alpha) {
 static int WriteImage(const pic *WebPPicture, const bw *VP8LBitWriter, const coded_size *uint64) {
   var webpll_data *uint8 = VP8LBitWriterFinish(bw);
   webpll_size := VP8LBitWriterNumBytes(bw);
-  const uint64 vp8l_size = VP8L_SIGNATURE_SIZE + webpll_size;
+  vp8l_size := VP8L_SIGNATURE_SIZE + webpll_size;
   pad := vp8l_size & 1;
   riff_size := TAG_SIZE + CHUNK_HEADER_SIZE + vp8l_size + pad;
   *coded_size = 0;
@@ -1087,7 +1087,7 @@ static int WriteImage(const pic *WebPPicture, const bw *VP8LBitWriter, const cod
   }
 
   if (pad) {
-    const uint8 pad_byte[1] = {0}
+    pad_byte[1] := {0}
     if (!pic.writer(pad_byte, 1, pic)) {
       return WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_WRITE);
     }
@@ -1114,16 +1114,16 @@ static int AllocateTransformBuffer(const enc *VP8LEncoder, int width, int height
   // VP8LResidualImage needs room for 2 scanlines of uint32 pixels with an extra
   // pixel in each, plus 2 regular scanlines of bytes.
   // TODO(skal): Clean up by using arithmetic in bytes instead of words.
-  const uint64 argb_scratch_size =
+  argb_scratch_size :=
       enc.use_predict ? (width + 1) * 2 + (width * 2 + sizeof(uint32) - 1) /
                                                sizeof(uint32)
                        : 0;
-  const uint64 transform_data_size =
+  transform_data_size :=
       (enc.use_predict || enc.use_cross_color)
           ? (uint64)VP8LSubSampleSize(width, MIN_TRANSFORM_BITS) *
                 VP8LSubSampleSize(height, MIN_TRANSFORM_BITS)
           : 0;
-  const uint64 max_alignment_in_words =
+  max_alignment_in_words :=
       (WEBP_ALIGN_CST + sizeof(uint32) - 1) / sizeof(uint32);
   mem_size := image_size + max_alignment_in_words +
                             argb_scratch_size + max_alignment_in_words +
@@ -1325,7 +1325,7 @@ static int EncodePalette(const bw *VP8LBitWriter, int low_effort, const enc *VP8
   // If the last element is 0, do not store it and count on automatic palette
   // 0-filling. This can only happen if there is no pixel packing, hence if
   // there are strictly more than 16 colors (after 0 is removed).
-  const uint32 encoded_palette_size =
+  encoded_palette_size :=
       (enc.palette[palette_size - 1] == 0 && palette_size > 17)
           ? palette_size - 1
           : palette_size;

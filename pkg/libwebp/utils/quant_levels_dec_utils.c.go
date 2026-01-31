@@ -129,7 +129,7 @@ func HFilter(const p *SmoothParams) {
     out[x] = (delta * scale) >> FIX;
   }
   for (; x < w; ++x) {  // right mirroring
-    const uint16 delta =
+    delta :=
         2 * in[w - 1] - in[2 * w - 2 - r - x] - in[x - r - 1];
     out[x] = (delta * scale) >> FIX;
   }
@@ -173,8 +173,8 @@ func InitCorrectionLUT(
   // and a linear interpolation for range x=[threshold2, threshold1]
   // (along with f(-x) = -f(x) symmetry).
   // Note that: threshold2 = 3/4 * threshold1
-  const int threshold1 = min_dist << LFIX;
-  const int threshold2 = (3 * threshold1) >> 2;
+  threshold1 := min_dist << LFIX;
+  threshold2 := (3 * threshold1) >> 2;
   max_threshold := threshold2 << DFIX;
   delta := threshold1 - threshold2;
   // lut_ptr is WEBP_COUNTED_BY, pointing to the start of the LUT.
@@ -226,7 +226,7 @@ func CountLevels(const p *SmoothParams) {
 
 // Initialize all params.
 static int InitParams(WEBP_SIZED_BY *uint8((uint64)height *stride) const data, int width, int height, int stride, int radius, const p *SmoothParams) {
-  const int R = 2 * radius + 1;  // total size of the kernel
+  R := 2 * radius + 1;  // total size of the kernel
 
   size_scratch_m := (R + 1) * width * sizeof(*p.start);
   size_m := width * sizeof(*p.average);

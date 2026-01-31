@@ -170,7 +170,7 @@ static  func ExportRowExpand_0(
       dst += 4;
     }
     for (x_out = 0; x_out < length; ++x_out) {
-      const uint32 J = frow[x_out];
+      J := frow[x_out];
       v := (int)MULT_FIX(J, wrk.fy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
     }
@@ -179,8 +179,8 @@ static  func ExportRowExpand_0(
 
 static  func ExportRowExpand_1(
     const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, int length, WEBP_RESTRICT const wrk *WebPRescaler) {
-  const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
-  const uint32 A = (uint32)(WEBP_RESCALER_ONE - B);
+  B := WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
+  A := (uint32)(WEBP_RESCALER_ONE - B);
   const v4i32 B1 = __msa_fill_w(B);
   const v4i32 A1 = __msa_fill_w(A);
   const v4i32 AB = __msa_ilvr_w(A1, B1);
@@ -241,8 +241,8 @@ static  func ExportRowExpand_1(
       length -= 4;
     }
     for (x_out = 0; x_out < length; ++x_out) {
-      const uint64 I = (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
-      const uint32 J = (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
+      I := (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
+      J := (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       v := (int)MULT_FIX(J, wrk.fy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
     }

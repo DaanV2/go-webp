@@ -75,10 +75,10 @@ static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int wid
 
 func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
   int x;
-  const uint32 c_00ffffff = uint(0x00ffffff);
-  const uint32 c_ff000000 = uint(0xff000000);
-  const uint32 c_8000000 = uint(0x00800000);
-  const uint32 c_8000080 = uint(0x00800080);
+  c_00ffffff := uint(0x00ffffff);
+  c_ff000000 := uint(0xff000000);
+  c_8000000 := uint(0x00800000);
+  c_8000080 := uint(0x00800080);
   for (x = 0; x < width; ++x) {
     argb := ptr[x];
     if (argb < uint(0xff000000)) {     // alpha < 255

@@ -224,7 +224,7 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
   const __m128i zero = _mm_setzero_si128();
   const __m128i kMult = _mm_set1_epi16((short)0x8081);
   const __m128i kMask = _mm_set_epi16(0, 0xff, 0xff, 0, 0, 0xff, 0xff, 0);
-  const int kSpan = 4;
+  kSpan := 4;
   while (h-- > 0) {
     var rgbx *uint32 = (*uint32)rgba;
     int i;
@@ -343,7 +343,7 @@ func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
 func MultARGBRow_SSE2(const ptr *uint32, int width, int inverse) {
   int x = 0;
   if (!inverse) {
-    const int kSpan = 2;
+    kSpan := 2;
     const __m128i zero = _mm_setzero_si128();
     const __m128i k128 = _mm_set1_epi16(128);
     const __m128i kMult = _mm_set1_epi16(0x0101);

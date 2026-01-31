@@ -80,14 +80,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
                         WEBP_RESTRICT dst *uint8, int len) {                 \
     int i;                                                                     \
     uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;           \
-    const int t_con_1 = 26149;                                                 \
-    const int t_con_2 = 13320;                                                 \
-    const int t_con_3 = 6419;                                                  \
-    const int t_con_4 = 33050;                                                 \
-    const int t_con_5 = 19077;                                                 \
-    const int t_con_6 = 14234;                                                 \
-    const int t_con_7 = 8708;                                                  \
-    const int t_con_8 = 17685;                                                 \
+    t_con_1 := 26149;                                                 \
+    t_con_2 := 13320;                                                 \
+    t_con_3 := 6419;                                                  \
+    t_con_4 := 33050;                                                 \
+    t_con_5 := 19077;                                                 \
+    t_con_6 := 14234;                                                 \
+    t_con_7 := 8708;                                                  \
+    t_con_8 := 17685;                                                 \
     for (i = 0; i < (len >> 1); i++) {                                         \
       __asm__ volatile(                                                        \
         ROW_FUNC_PART_1()                                                      \

@@ -284,7 +284,7 @@ static uint64 CombinedShannonEntropy_AVX2(const uint32 X[256], const uint32 Y[25
         x4, _mm256_set_epi32(7, 3, 6, 2, 5, 1, 4, 0));
     const __m256i y5 = _mm256_permutevar8x32_epi32(
         y4, _mm256_set_epi32(7, 3, 6, 2, 5, 1, 4, 0));
-    const uint32 mx =
+    mx :=
         (uint32)_mm256_movemask_epi8(_mm256_cmpgt_epi8(x5, zero));
     uint32 my =
         (uint32)_mm256_movemask_epi8(_mm256_cmpgt_epi8(y5, zero)) | mx;

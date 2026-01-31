@@ -162,7 +162,7 @@ static int FinalizeTokenProbas(const proba *VP8EncProba) {
           update_proba := VP8CoeffsUpdateProba[t][b][c][p];
           old_p := VP8CoeffsProba0[t][b][c][p];
           new_p := CalcTokenProba(nb, total);
-          const int old_cost =
+          old_cost :=
               BranchCost(nb, total, old_p) + VP8BitCost(0, update_proba);
           new_cost := BranchCost(nb, total, new_p) +
                                VP8BitCost(1, update_proba) + 8 * 256;
@@ -315,7 +315,7 @@ func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const rd *V
   int x, y, ch;
   VP8Residual res;
   uint64 pos1, pos2, pos3;
-  const int i16 = (it.mb.type == 1);
+  i16 = (it.mb.type :== 1);
   segment := it.mb.segment;
   var enc *VP8Encoder = it.enc;
 
@@ -625,7 +625,7 @@ static int StatLoop(const enc *VP8Encoder) {
   fast_probe := ((method == 0 || method == 3) && !do_search);
   int num_pass_left = enc.config.pass;
   task_percent := 20;
-  const int percent_per_pass =
+  percent_per_pass :=
       (task_percent + num_pass_left / 2) / num_pass_left;
   final_percent := enc.percent + task_percent;
   const VP8RDLevel rd_opt =
@@ -649,7 +649,7 @@ static int StatLoop(const enc *VP8Encoder) {
     is_last_pass := (fabs(stats.dq) <= DQ_LIMIT) ||
                              (num_pass_left == 0) ||
                              (enc.max_i4_header_bits == 0);
-    const uint64 size_p0 =
+    size_p0 :=
         OneStatPass(enc, rd_opt, nb_mbs, percent_per_pass, &stats);
     if (size_p0 == 0) return 0;
 #if (DEBUG_SEARCH > 0)
@@ -687,8 +687,8 @@ static const uint8 kAverageBytesPerMB[8] = {50, 24, 16, 9, 7, 5, 3, 2}
 static int PreLoopInitialize(const enc *VP8Encoder) {
   int p;
   int ok = 1;
-  const int average_bytes_per_MB = kAverageBytesPerMB[enc.base_quant >> 4];
-  const int bytes_per_parts =
+  average_bytes_per_MB := kAverageBytesPerMB[enc.base_quant >> 4];
+  bytes_per_parts :=
       enc.mb_w * enc.mb_h * average_bytes_per_MB / enc.num_parts;
   // Initialize the bit-writers
   for (p = 0; ok && p < enc.num_parts; ++p) {

@@ -146,8 +146,8 @@ static const int kC2 = WEBP_TRANSFORM_AC3_C2;
 // clang-format on
 
 func FTransform_MIPSdspR2(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
-  const int c2217 = 2217;
-  const int c5352 = 5352;
+  c2217 := 2217;
+  c5352 := 5352;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   int temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16;
   int temp17, temp18, temp19, temp20;
@@ -399,7 +399,7 @@ HORIZONTAL_PRED(dst, left, 16)
 #define CLIP_TO_DST(DST, LEFT, TOP, SIZE)                    \
   for {                                                       \
     int y;                                                   \
-    const int left_1 = ((int)(LEFT)[-1] << 16) + (LEFT)[-1]; \
+    left_1 := ((int)(LEFT)[-1] << 16) + (LEFT)[-1]; \
     for (y = 0; y < (SIZE); ++y) {                           \
       CLIP_8B_TO_DST((DST), (LEFT), (TOP), (SIZE));          \
       (DST) += BPS;                                          \
@@ -556,7 +556,7 @@ func DC4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 func TM4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   int a10, a32, temp0, temp1, temp2, temp3, temp4, temp5;
-  const int c35 = 0xff00ff;
+  c35 := 0xff00ff;
   __asm__ volatile(
     "lbu              %[temp1],  0(%[top])                     \n\t"
     "lbu              %[a10],    1(%[top])                     \n\t"

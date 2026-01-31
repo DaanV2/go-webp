@@ -1013,13 +1013,13 @@ static int IncreasePreviousDuration(const enc *WebPAnimEncoder, int duration) {
     // Separate out previous frame from earlier merged frames to afunc overflow.
     // We add a 1x1 transparent frame for the previous frame, with blending on.
     const FrameRectangle rect = {0, 0, 1, 1}
-    const uint8 lossless_1x1_bytes[] = {
+    lossless_1x1_bytes[] := {
         0x52, 0x49, 0x46, 0x46, 0x14, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50, 0x56, 0x50, 0x38, 0x4c, 0x08, 0x00, 0x00, 0x00, 0x2f, 0x00, 0x00, 0x00, 0x10, 0x88, 0x88, 0x08}
     const WebPData lossless_1x1 = {lossless_1x1_bytes, sizeof(lossless_1x1_bytes)}
-    const uint8 lossy_1x1_bytes[] = {
+    lossy_1x1_bytes[] := {
         0x52, 0x49, 0x46, 0x46, 0x40, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50, 0x56, 0x50, 0x38, 0x58, 0x0a, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x4c, 0x50, 0x48, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x50, 0x38, 0x20, 0x18, 0x00, 0x00, 0x00, 0x30, 0x01, 0x00, 0x9d, 0x01, 0x2a, 0x01, 0x00, 0x01, 0x00, 0x02, 0x00, 0x34, 0x25, 0xa4, 0x00, 0x03, 0x70, 0x00, 0xfe, 0xfb, 0xfd, 0x50, 0x00}
     const WebPData lossy_1x1 = {lossy_1x1_bytes, sizeof(lossy_1x1_bytes)}
-    const int can_use_lossless =
+    can_use_lossless :=
         (enc.last_config.lossless || enc.options.allow_mixed);
     var curr_enc_frame *EncodedFrame = GetFrame(enc, enc.count);
     curr_enc_frame.is_key_frame = 0;
@@ -1123,7 +1123,7 @@ static WebPEncodingError SetFrame(const enc *WebPAnimEncoder, const config *WebP
   // either a subframe or a keyframe, then we can't be sure about what frame
   // rectangle would be disposed. In that case too, we don't try dispose to
   // background.
-  const int dispose_bg_possible =
+  dispose_bg_possible :=
       !is_key_frame && !enc.prev_candidate_undecided;
 
   SubFrameParams dispose_none_params;
@@ -1437,7 +1437,7 @@ int WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, int timestamp, 
 
   if (!enc.is_first_frame) {
     // Make sure timestamps are non-decreasing (integer wrap-around is OK).
-    const uint32 prev_frame_duration =
+    prev_frame_duration :=
         (uint32)timestamp - enc.prev_timestamp;
     if (prev_frame_duration >= MAX_DURATION) {
       if (frame != nil) {

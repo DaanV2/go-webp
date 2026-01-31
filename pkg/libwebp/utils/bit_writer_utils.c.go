@@ -33,7 +33,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 static int BitWriterResize(const bw *VP8BitWriter, uint64 extra_size) {
   new_buf *uint8;
   uint64 new_size;
-  const uint64 needed_size_64b = (uint64)bw.pos + extra_size;
+  needed_size_64b := (uint64)bw.pos + extra_size;
   needed_size := (uint64)needed_size_64b;
   if (needed_size_64b != needed_size) {
     bw.error = 1;
@@ -202,7 +202,7 @@ static int VP8LBitWriterResize(const bw *VP8LBitWriter, uint64 extra_size) {
   uint64 allocated_size;
   max_bytes := bw.end - bw.buf;
   current_size := bw.cur - bw.buf;
-  const uint64 size_required_64b = (uint64)current_size + extra_size;
+  size_required_64b := (uint64)current_size + extra_size;
   size_required := (uint64)size_required_64b;
   if (size_required != size_required_64b) {
     bw.error = 1;

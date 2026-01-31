@@ -124,8 +124,8 @@ func ITransformOne_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *
 #else
 
 func ITransformOne_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
-  const int kBPS = BPS;
-  const int16 kC1C2[] = {kC1, kC2, 0, 0}
+  kBPS := BPS;
+  kC1C2[] := {kC1, kC2, 0, 0}
 
   __asm__ volatile(
       "vld1.16         {q1, q2}, [%[in]]           \n"
@@ -338,7 +338,7 @@ static const int16 kCoeff16[] = {5352, 5352, 5352, 5352, 2217, 2217, 2217, 2217}
 static const int32 kCoeff32[] = {1812,  1812,  1812,  1812,  937,   937, 937,   937,   12000, 12000, 12000, 12000, 51000, 51000, 51000, 51000}
 
 func FTransform_NEON(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
-  const int kBPS = BPS;
+  kBPS := BPS;
   var src_ptr *uint8 = src;
   var ref_ptr *uint8 = ref;
   var coeff *int1616 = kCoeff16;

@@ -97,7 +97,7 @@ static LOCAL_INLINE int Sub3(int a, int b, int c) {
 #undef LOCAL_INLINE
 
 static  uint32 Select(uint32 a, uint32 b, uint32 c) {
-  const int pa_minus_pb =
+  pa_minus_pb :=
       Sub3((a >> 24), (b >> 24), (c >> 24)) +
       Sub3((a >> 16) & 0xff, (b >> 16) & 0xff, (c >> 16) & 0xff) +
       Sub3((a >> 8) & 0xff, (b >> 8) & 0xff, (c >> 8) & 0xff) +
@@ -391,7 +391,7 @@ func VP8LInverseTransform(const transform *VP8LTransform, int row_start, int row
         // the effective width of VP8LSubSampleSize(xsize, bits). All other
         // transforms work on effective width of 'xsize'.
         out_stride := (row_end - row_start) * width;
-        const int in_stride =
+        in_stride :=
             (row_end - row_start) *
             VP8LSubSampleSize(transform.xsize, transform.bits);
         var src *uint32 = out + out_stride - in_stride;

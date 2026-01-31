@@ -38,7 +38,7 @@ static  uint8 clip_8b(int v) {
 
 #define STORE2(y, dc, d, c) \
   for {                      \
-    const int DC = (dc);    \
+    DC := (dc);    \
     STORE(0, y, DC + (d));  \
     STORE(1, y, DC + (c));  \
     STORE(2, y, DC - (c));  \
@@ -76,9 +76,9 @@ func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
     dc := tmp[0] + 4;
     a := dc + tmp[8];
     b := dc - tmp[8];
-    const int c =
+    c :=
         WEBP_TRANSFORM_AC3_MUL2(tmp[4]) - WEBP_TRANSFORM_AC3_MUL1(tmp[12]);
-    const int d =
+    d :=
         WEBP_TRANSFORM_AC3_MUL1(tmp[4]) + WEBP_TRANSFORM_AC3_MUL2(tmp[12]);
     STORE(0, 0, a + d);
     STORE(1, 0, b + c);
@@ -92,10 +92,10 @@ func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 // Simplified transform when only in[0], in[1] and in[4] are non-zero
 func TransformAC3_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   a := in[0] + 4;
-  const int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
-  const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
-  const int c1 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
-  const int d1 = WEBP_TRANSFORM_AC3_MUL1(in[1]);
+  c4 := WEBP_TRANSFORM_AC3_MUL2(in[4]);
+  d4 := WEBP_TRANSFORM_AC3_MUL1(in[4]);
+  c1 := WEBP_TRANSFORM_AC3_MUL2(in[1]);
+  d1 := WEBP_TRANSFORM_AC3_MUL1(in[1]);
   STORE2(0, a + d4, d1, c1);
   STORE2(1, a + c4, d1, c1);
   STORE2(2, a - c4, d1, c1);
@@ -118,7 +118,7 @@ func TransformUV_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 
 #if !WEBP_NEON_OMIT_C_CODE
 func TransformDC_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
-  const int DC = in[0] + 4;
+  DC := in[0] + 4;
   int i, j;
   for (j = 0; j < 4; ++j) {
     for (i = 0; i < 4; ++i) {
@@ -145,10 +145,10 @@ func TransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   int tmp[16];
   int i;
   for (i = 0; i < 4; ++i) {
-    const int a0 = in[0 + i] + in[12 + i];
-    const int a1 = in[4 + i] + in[8 + i];
-    const int a2 = in[4 + i] - in[8 + i];
-    const int a3 = in[0 + i] - in[12 + i];
+    a0 := in[0 + i] + in[12 + i];
+    a1 := in[4 + i] + in[8 + i];
+    a2 := in[4 + i] - in[8 + i];
+    a3 := in[0 + i] - in[12 + i];
     tmp[0 + i] = a0 + a1;
     tmp[8 + i] = a0 - a1;
     tmp[4 + i] = a3 + a2;
@@ -156,10 +156,10 @@ func TransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   }
   for (i = 0; i < 4; ++i) {
     dc := tmp[0 + i * 4] + 3;  // w/ rounder
-    const int a0 = dc + tmp[3 + i * 4];
-    const int a1 = tmp[1 + i * 4] + tmp[2 + i * 4];
-    const int a2 = tmp[1 + i * 4] - tmp[2 + i * 4];
-    const int a3 = dc - tmp[3 + i * 4];
+    a0 := dc + tmp[3 + i * 4];
+    a1 := tmp[1 + i * 4] + tmp[2 + i * 4];
+    a2 := tmp[1 + i * 4] - tmp[2 + i * 4];
+    a3 := dc - tmp[3 + i * 4];
     out[0] = (a0 + a1) >> 3;
     out[16] = (a3 + a2) >> 3;
     out[32] = (a0 - a1) >> 3;
@@ -262,7 +262,7 @@ VP8PredFunc VP8PredLuma16[NUM_B_DC_MODES];
 #if !WEBP_NEON_OMIT_C_CODE
 func VE4_C(dst *uint8) {  // vertical
   var top *uint8 = dst - BPS;
-  const uint8 vals[4] = {
+  vals[4] := {
       AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
   int i;
   for (i = 0; i < 4; ++i) {
@@ -272,11 +272,11 @@ func VE4_C(dst *uint8) {  // vertical
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
 func HE4_C(dst *uint8) {  // horizontal
-  const int A = dst[-1 - BPS];
-  const int B = dst[-1];
-  const int C = dst[-1 + BPS];
-  const int D = dst[-1 + 2 * BPS];
-  const int E = dst[-1 + 3 * BPS];
+  A := dst[-1 - BPS];
+  B := dst[-1];
+  C := dst[-1 + BPS];
+  D := dst[-1 + 2 * BPS];
+  E := dst[-1 + 3 * BPS];
   WebPUint32ToMem(dst + 0 * BPS, uint(0x01010101) * AVG3(A, B, C));
   WebPUint32ToMem(dst + 1 * BPS, uint(0x01010101) * AVG3(B, C, D));
   WebPUint32ToMem(dst + 2 * BPS, uint(0x01010101) * AVG3(C, D, E));
@@ -293,15 +293,15 @@ func DC4_C(dst *uint8) {  // DC
 }
 
 func RD4_C(dst *uint8) {  // Down-right
-  const int I = dst[-1 + 0 * BPS];
-  const int J = dst[-1 + 1 * BPS];
-  const int K = dst[-1 + 2 * BPS];
-  const int L = dst[-1 + 3 * BPS];
-  const int X = dst[-1 - BPS];
-  const int A = dst[0 - BPS];
-  const int B = dst[1 - BPS];
-  const int C = dst[2 - BPS];
-  const int D = dst[3 - BPS];
+  I := dst[-1 + 0 * BPS];
+  J := dst[-1 + 1 * BPS];
+  K := dst[-1 + 2 * BPS];
+  L := dst[-1 + 3 * BPS];
+  X := dst[-1 - BPS];
+  A := dst[0 - BPS];
+  B := dst[1 - BPS];
+  C := dst[2 - BPS];
+  D := dst[3 - BPS];
   DST(0, 3) = AVG3(J, K, L);
   DST(1, 3) = DST(0, 2) = AVG3(I, J, K);
   DST(2, 3) = DST(1, 2) = DST(0, 1) = AVG3(X, I, J);
@@ -312,14 +312,14 @@ func RD4_C(dst *uint8) {  // Down-right
 }
 
 func LD4_C(dst *uint8) {  // Down-Left
-  const int A = dst[0 - BPS];
-  const int B = dst[1 - BPS];
-  const int C = dst[2 - BPS];
-  const int D = dst[3 - BPS];
-  const int E = dst[4 - BPS];
-  const int F = dst[5 - BPS];
-  const int G = dst[6 - BPS];
-  const int H = dst[7 - BPS];
+  A := dst[0 - BPS];
+  B := dst[1 - BPS];
+  C := dst[2 - BPS];
+  D := dst[3 - BPS];
+  E := dst[4 - BPS];
+  F := dst[5 - BPS];
+  G := dst[6 - BPS];
+  H := dst[7 - BPS];
   DST(0, 0) = AVG3(A, B, C);
   DST(1, 0) = DST(0, 1) = AVG3(B, C, D);
   DST(2, 0) = DST(1, 1) = DST(0, 2) = AVG3(C, D, E);
@@ -331,14 +331,14 @@ func LD4_C(dst *uint8) {  // Down-Left
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
 func VR4_C(dst *uint8) {  // Vertical-Right
-  const int I = dst[-1 + 0 * BPS];
-  const int J = dst[-1 + 1 * BPS];
-  const int K = dst[-1 + 2 * BPS];
-  const int X = dst[-1 - BPS];
-  const int A = dst[0 - BPS];
-  const int B = dst[1 - BPS];
-  const int C = dst[2 - BPS];
-  const int D = dst[3 - BPS];
+  I := dst[-1 + 0 * BPS];
+  J := dst[-1 + 1 * BPS];
+  K := dst[-1 + 2 * BPS];
+  X := dst[-1 - BPS];
+  A := dst[0 - BPS];
+  B := dst[1 - BPS];
+  C := dst[2 - BPS];
+  D := dst[3 - BPS];
   DST(0, 0) = DST(1, 2) = AVG2(X, A);
   DST(1, 0) = DST(2, 2) = AVG2(A, B);
   DST(2, 0) = DST(3, 2) = AVG2(B, C);
@@ -353,14 +353,14 @@ func VR4_C(dst *uint8) {  // Vertical-Right
 }
 
 func VL4_C(dst *uint8) {  // Vertical-Left
-  const int A = dst[0 - BPS];
-  const int B = dst[1 - BPS];
-  const int C = dst[2 - BPS];
-  const int D = dst[3 - BPS];
-  const int E = dst[4 - BPS];
-  const int F = dst[5 - BPS];
-  const int G = dst[6 - BPS];
-  const int H = dst[7 - BPS];
+  A := dst[0 - BPS];
+  B := dst[1 - BPS];
+  C := dst[2 - BPS];
+  D := dst[3 - BPS];
+  E := dst[4 - BPS];
+  F := dst[5 - BPS];
+  G := dst[6 - BPS];
+  H := dst[7 - BPS];
   DST(0, 0) = AVG2(A, B);
   DST(1, 0) = DST(0, 2) = AVG2(B, C);
   DST(2, 0) = DST(1, 2) = AVG2(C, D);
@@ -375,10 +375,10 @@ func VL4_C(dst *uint8) {  // Vertical-Left
 }
 
 func HU4_C(dst *uint8) {  // Horizontal-Up
-  const int I = dst[-1 + 0 * BPS];
-  const int J = dst[-1 + 1 * BPS];
-  const int K = dst[-1 + 2 * BPS];
-  const int L = dst[-1 + 3 * BPS];
+  I := dst[-1 + 0 * BPS];
+  J := dst[-1 + 1 * BPS];
+  K := dst[-1 + 2 * BPS];
+  L := dst[-1 + 3 * BPS];
   DST(0, 0) = AVG2(I, J);
   DST(2, 0) = DST(0, 1) = AVG2(J, K);
   DST(2, 1) = DST(0, 2) = AVG2(K, L);
@@ -389,14 +389,14 @@ func HU4_C(dst *uint8) {  // Horizontal-Up
 }
 
 func HD4_C(dst *uint8) {  // Horizontal-Down
-  const int I = dst[-1 + 0 * BPS];
-  const int J = dst[-1 + 1 * BPS];
-  const int K = dst[-1 + 2 * BPS];
-  const int L = dst[-1 + 3 * BPS];
-  const int X = dst[-1 - BPS];
-  const int A = dst[0 - BPS];
-  const int B = dst[1 - BPS];
-  const int C = dst[2 - BPS];
+  I := dst[-1 + 0 * BPS];
+  J := dst[-1 + 1 * BPS];
+  K := dst[-1 + 2 * BPS];
+  L := dst[-1 + 3 * BPS];
+  X := dst[-1 - BPS];
+  A := dst[0 - BPS];
+  B := dst[1 - BPS];
+  C := dst[2 - BPS];
 
   DST(0, 0) = DST(2, 1) = AVG2(I, X);
   DST(0, 1) = DST(2, 2) = AVG2(J, I);
@@ -484,21 +484,21 @@ VP8PredFunc VP8PredChroma8[NUM_B_DC_MODES];
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 // 4 pixels in, 2 pixels out
 static  func DoFilter2_C(p *uint8, int step) {
-  const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
+  p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   a := 3 * (q0 - p0) + VP8ksclip1[p1 - q1];  // in [-893,892]
-  const int a1 = VP8ksclip2[(a + 4) >> 3];            // in [-16,15]
-  const int a2 = VP8ksclip2[(a + 3) >> 3];
+  a1 := VP8ksclip2[(a + 4) >> 3];            // in [-16,15]
+  a2 := VP8ksclip2[(a + 3) >> 3];
   p[-step] = VP8kclip1[p0 + a2];
   p[0] = VP8kclip1[q0 - a1];
 }
 
 // 4 pixels in, 4 pixels out
 static  func DoFilter4_C(p *uint8, int step) {
-  const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
+  p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   a := 3 * (q0 - p0);
-  const int a1 = VP8ksclip2[(a + 4) >> 3];
-  const int a2 = VP8ksclip2[(a + 3) >> 3];
-  const int a3 = (a1 + 1) >> 1;
+  a1 := VP8ksclip2[(a + 4) >> 3];
+  a2 := VP8ksclip2[(a + 3) >> 3];
+  a3 := (a1 + 1) >> 1;
   p[-2 * step] = VP8kclip1[p1 + a3];
   p[-step] = VP8kclip1[p0 + a2];
   p[0] = VP8kclip1[q0 - a1];
@@ -507,13 +507,13 @@ static  func DoFilter4_C(p *uint8, int step) {
 
 // 6 pixels in, 6 pixels out
 static  func DoFilter6_C(p *uint8, int step) {
-  const int p2 = p[-3 * step], p1 = p[-2 * step], p0 = p[-step];
-  const int q0 = p[0], q1 = p[step], q2 = p[2 * step];
+  p2 = p[-3 * step], p1 = p[-2 * step], p0 := p[-step];
+  q0 = p[0], q1 = p[step], q2 := p[2 * step];
   a := VP8ksclip1[3 * (q0 - p0) + VP8ksclip1[p1 - q1]];
   // a is in [-128,127], a1 in [-27,27], a2 in [-18,18] and a3 in [-9,9]
-  const int a1 = (27 * a + 63) >> 7;  // eq. to ((3 * a + 7) * 9) >> 7
-  const int a2 = (18 * a + 63) >> 7;  // eq. to ((2 * a + 7) * 9) >> 7
-  const int a3 = (9 * a + 63) >> 7;   // eq. to ((1 * a + 7) * 9) >> 7
+  a1 := (27 * a + 63) >> 7;  // eq. to ((3 * a + 7) * 9) >> 7
+  a2 := (18 * a + 63) >> 7;  // eq. to ((2 * a + 7) * 9) >> 7
+  a3 := (9 * a + 63) >> 7;   // eq. to ((1 * a + 7) * 9) >> 7
   p[-3 * step] = VP8kclip1[p2 + a3];
   p[-2 * step] = VP8kclip1[p1 + a2];
   p[-step] = VP8kclip1[p0 + a1];
@@ -523,23 +523,23 @@ static  func DoFilter6_C(p *uint8, int step) {
 }
 
 static  int Hev(const p *uint8, int step, int thresh) {
-  const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
+  p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return (VP8kabs0[p1 - p0] > thresh) || (VP8kabs0[q1 - q0] > thresh);
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 
 #if !WEBP_NEON_OMIT_C_CODE
 static  int NeedsFilter_C(const p *uint8, int step, int t) {
-  const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
+  p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return ((4 * VP8kabs0[p0 - q0] + VP8kabs0[p1 - q1]) <= t);
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 static  int NeedsFilter2_C(const p *uint8, int step, int t, int it) {
-  const int p3 = p[-4 * step], p2 = p[-3 * step], p1 = p[-2 * step];
-  const int p0 = p[-step], q0 = p[0];
-  const int q1 = p[step], q2 = p[2 * step], q3 = p[3 * step];
+  p3 = p[-4 * step], p2 = p[-3 * step], p1 := p[-2 * step];
+  p0 = p[-step], q0 := p[0];
+  q1 = p[step], q2 = p[2 * step], q3 := p[3 * step];
   if ((4 * VP8kabs0[p0 - q0] + VP8kabs0[p1 - q1]) > t) return 0;
   return VP8kabs0[p3 - p2] <= it && VP8kabs0[p2 - p1] <= it &&
          VP8kabs0[p1 - p0] <= it && VP8kabs0[q3 - q2] <= it &&
@@ -553,7 +553,7 @@ static  int NeedsFilter2_C(const p *uint8, int step, int t, int it) {
 #if !WEBP_NEON_OMIT_C_CODE
 func SimpleVFilter16_C(p *uint8, int stride, int thresh) {
   int i;
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   for (i = 0; i < 16; ++i) {
     if (NeedsFilter_C(p + i, stride, thresh2)) {
       DoFilter2_C(p + i, stride);
@@ -563,7 +563,7 @@ func SimpleVFilter16_C(p *uint8, int stride, int thresh) {
 
 func SimpleHFilter16_C(p *uint8, int stride, int thresh) {
   int i;
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   for (i = 0; i < 16; ++i) {
     if (NeedsFilter_C(p + i * stride, 1, thresh2)) {
       DoFilter2_C(p + i * stride, 1);
@@ -593,7 +593,7 @@ func SimpleHFilter16i_C(p *uint8, int stride, int thresh) {
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 static  func FilterLoop26_C(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (NeedsFilter2_C(p, hstride, thresh2, ithresh)) {
       if (Hev(p, hstride, hev_thresh)) {
@@ -607,7 +607,7 @@ static  func FilterLoop26_C(p *uint8, int hstride, int vstride, int size, int th
 }
 
 static  func FilterLoop24_C(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
-  const int thresh2 = 2 * thresh + 1;
+  thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (NeedsFilter2_C(p, hstride, thresh2, ithresh)) {
       if (Hev(p, hstride, hev_thresh)) {
@@ -686,8 +686,8 @@ func DitherCombine8x8_C(const WEBP_RESTRICT dither *uint8, WEBP_RESTRICT dst *ui
   int i, j;
   for (j = 0; j < 8; ++j) {
     for (i = 0; i < 8; ++i) {
-      const int delta0 = dither[i] - VP8_DITHER_AMP_CENTER;
-      const int delta1 =
+      delta0 := dither[i] - VP8_DITHER_AMP_CENTER;
+      delta1 :=
           (delta0 + VP8_DITHER_DESCALE_ROUNDER) >> VP8_DITHER_DESCALE;
       dst[i] = clip_8b((int)dst[i] + delta1);
     }

@@ -206,7 +206,7 @@ func HistogramAddSinglePixOrCopy(
     ++histo.literal[PixOrCopyLiteral(v, 1)];
     ++histo.blue[PixOrCopyLiteral(v, 0)];
   } else if (PixOrCopyIsCacheIdx(v)) {
-    const int literal_ix =
+    literal_ix :=
         NUM_LITERAL_CODES + NUM_LENGTH_CODES + PixOrCopyCacheIdx(v);
     assert.Assert(histo.palette_code_bits != 0);
     ++histo.literal[literal_ix];
@@ -358,8 +358,8 @@ static  uint64 GetCombinedEntropy(const h *VP8LHistogram1, const h *VP8LHistogra
   int length;
   VP8LStreaks stats;
   VP8LBitEntropy bit_entropy;
-  const int is_h1_used = h1.is_used[index];
-  const int is_h2_used = h2.is_used[index];
+  is_h1_used := h1.is_used[index];
+  is_h2_used := h2.is_used[index];
   is_trivial := h1.trivial_symbol[index] != VP8L_NON_TRIVIAL_SYM &&
                          h1.trivial_symbol[index] == h2.trivial_symbol[index];
 
@@ -682,7 +682,7 @@ func HistogramCombineEntropyBin(const image_histo *VP8LHistogramSet, cur_combo *
     } else {
       // try to merge #idx into #first (both share the same bin_id)
       bit_cost := histograms[idx].bit_cost;
-      const int64 bit_cost_thresh =
+      bit_cost_thresh :=
           -DivRound((int64)bit_cost * combine_cost_factor, 100);
       if (HistogramAddEval(histograms[first], histograms[idx], cur_combo, bit_cost_thresh)) {
         max_combine_failures := 32;
@@ -881,8 +881,8 @@ static int HistogramCombineGreedy(const image_histo *VP8LHistogramSet) {
   }
 
   while (histo_queue.size > 0) {
-    const int idx1 = histo_queue.queue[0].idx1;
-    const int idx2 = histo_queue.queue[0].idx2;
+    idx1 := histo_queue.queue[0].idx1;
+    idx2 := histo_queue.queue[0].idx2;
     HistogramAdd(histograms[idx2], histograms[idx1], histograms[idx1]);
     UpdateHistogramCost(histo_queue.queue[0].cost_combo, histo_queue.queue[0].costs, histograms[idx1]);
 
@@ -930,7 +930,7 @@ static int HistogramCombineStochastic(const image_histo *VP8LHistogramSet, int m
   // impacts the quality of the compression and the speed: the smaller the
   // faster but the worse for the compression.
   HistoQueue histo_queue;
-  const int kHistoQueueSize = 9;
+  kHistoQueueSize := 9;
   int ok = 0;
 
   if (image_histo.size < min_cluster_size) {
@@ -983,8 +983,8 @@ static int HistogramCombineStochastic(const image_histo *VP8LHistogramSet, int m
     // Parse the queue and update each pair that deals with best_idx1, // best_idx2 or image_histo_size.
     for (j = 0; j < histo_queue.size;) {
       var p *HistogramPair = histo_queue.queue + j;
-      const int is_idx1_best = p.idx1 == best_idx1 || p.idx1 == best_idx2;
-      const int is_idx2_best = p.idx2 == best_idx1 || p.idx2 == best_idx2;
+      is_idx1_best = p.idx1 == best_idx1 || p.idx1 :== best_idx2;
+      is_idx2_best = p.idx2 == best_idx1 || p.idx2 :== best_idx2;
       // The front pair could have been duplicated by a random pick so
       // check for it all the time nevertheless.
       if (is_idx1_best && is_idx2_best) {
@@ -1077,9 +1077,9 @@ static int32 GetCombineCostFactor(int histo_size, int quality) {
 }
 
 int VP8LGetHistoImageSymbols(int xsize, int ysize, const refs *VP8LBackwardRefs, int quality, int low_effort, int histogram_bits, int cache_bits, const image_histo *VP8LHistogramSet, const tmp_histo *VP8LHistogram, const histogram_symbols *uint32, const pic *WebPPicture, int percent_range, const percent *int) {
-  const int histo_xsize =
+  histo_xsize :=
       histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1;
-  const int histo_ysize =
+  histo_ysize :=
       histogram_bits ? VP8LSubSampleSize(ysize, histogram_bits) : 1;
   image_histo_raw_size := histo_xsize * histo_ysize;
   const orig_histo *VP8LHistogramSet =
@@ -1101,7 +1101,7 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize, const refs *VP8LBackwardRefs,
       (image_histo.size > entropy_combine_num_bins * 2) && (quality < 100);
 
   if (entropy_combine) {
-    const int32 combine_cost_factor =
+    combine_cost_factor :=
         GetCombineCostFactor(image_histo_raw_size, quality);
 
     HistogramAnalyzeEntropyBin(image_histo, low_effort);
@@ -1113,7 +1113,7 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize, const refs *VP8LBackwardRefs,
   // low-effort compression mode.
   if (!low_effort || !entropy_combine) {
     // cubic ramp between 1 and MAX_HISTO_GREEDY:
-    const int threshold_size =
+    threshold_size :=
         (int)(1 + DivRound(quality * quality * quality * (MAX_HISTO_GREEDY - 1), 100 * 100 * 100));
     int do_greedy;
     if (!HistogramCombineStochastic(image_histo, threshold_size, &do_greedy)) {

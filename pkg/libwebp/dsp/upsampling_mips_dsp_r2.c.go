@@ -24,8 +24,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // clang-format off
 #define YUV_TO_RGB(Y, U, V, R, G, B) for {                                      \
-    const int t1 = MultHi(Y, 19077);                                           \
-    const int t2 = MultHi(V, 13320);                                           \
+    t1 := MultHi(Y, 19077);                                           \
+    t2 := MultHi(V, 13320);                                           \
     R = MultHi(V, 26149);                                                      \
     G = MultHi(U, 6419);                                                       \
     B = MultHi(U, 33050);                                                      \
@@ -157,11 +157,11 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, const rgba *uint8) {
     uint32 l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
     assert.Assert(top_y != nil);                                                    \
     {                                                                         \
-      const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;             \
+      uv0 := (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;             \
       FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                       \
     }                                                                         \
     if (bottom_y != nil) {                                                   \
-      const uint32 uv0 = (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
+      uv0 := (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
     for (x = 1; x <= last_pixel_pair; ++x) {                                  \
@@ -170,19 +170,19 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, const rgba *uint8) {
       /* precompute invariant values associated with first and second         \
        * *diagonals/                                                          \
       avg := tl_uv + t_uv + l_uv + uv + uint(0x00080008);            \
-      const uint32 diag_12 = (avg + 2 * (t_uv + l_uv)) >> 3;                \
-      const uint32 diag_03 = (avg + 2 * (tl_uv + uv)) >> 3;                 \
+      diag_12 := (avg + 2 * (t_uv + l_uv)) >> 3;                \
+      diag_03 := (avg + 2 * (tl_uv + uv)) >> 3;                 \
       {                                                                       \
-        const uint32 uv0 = (diag_12 + tl_uv) >> 1;                          \
-        const uint32 uv1 = (diag_03 + t_uv) >> 1;                           \
+        uv0 := (diag_12 + tl_uv) >> 1;                          \
+        uv1 := (diag_03 + t_uv) >> 1;                           \
         FUNC(top_y[2 * x - 1], uv0 & 0xff, (uv0 >> 16),                       \
              top_dst + (2 * x - 1) * XSTEP);                                  \
         FUNC(top_y[2 * x - 0], uv1 & 0xff, (uv1 >> 16),                       \
              top_dst + (2 * x - 0) * XSTEP);                                  \
       }                                                                       \
       if (bottom_y != nil) {                                                 \
-        const uint32 uv0 = (diag_03 + l_uv) >> 1;                           \
-        const uint32 uv1 = (diag_12 + uv) >> 1;                             \
+        uv0 := (diag_03 + l_uv) >> 1;                           \
+        uv1 := (diag_12 + uv) >> 1;                             \
         FUNC(bottom_y[2 * x - 1], uv0 & 0xff, (uv0 >> 16),                    \
              bottom_dst + (2 * x - 1) * XSTEP);                               \
         FUNC(bottom_y[2 * x + 0], uv1 & 0xff, (uv1 >> 16),                    \
@@ -193,12 +193,12 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, const rgba *uint8) {
     }                                                                         \
     if (!(len & 1)) {                                                         \
       {                                                                       \
-        const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;           \
+        uv0 := (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;           \
         FUNC(top_y[len - 1], uv0 & 0xff, (uv0 >> 16),                         \
              top_dst + (len - 1) * XSTEP);                                    \
       }                                                                       \
       if (bottom_y != nil) {                                                 \
-        const uint32 uv0 = (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;           \
+        uv0 := (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;           \
         FUNC(bottom_y[len - 1], uv0 & 0xff, (uv0 >> 16),                      \
              bottom_dst + (len - 1) * XSTEP);                                 \
       }                                                                       \

@@ -32,7 +32,7 @@ static int GetResidualCost_MIPS32(int ctx0, const res *VP8Residual) {
   var res_coeffs *int16 = res.coeffs;
   res_last := res.last;
   const_max_level := MAX_VARIABLE_LEVEL;
-  const int const_2 = 2;
+  const_2 := 2;
   const *uint16* p_costs = &costs[n][0];
   inc_p_costs := NUM_CTX * sizeof(*p_costs);
 
@@ -86,7 +86,7 @@ static int GetResidualCost_MIPS32(int ctx0, const res *VP8Residual) {
     if (n < 15) {
       b := VP8EncBands[n + 1];
       ctx := (v == 1) ? 1 : 2;
-      const int last_p0 = res.prob[b][ctx][0];
+      last_p0 := res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }
   }
