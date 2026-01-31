@@ -60,7 +60,7 @@ func WebPResetDecParams(WebPDecParams* const params);
 // Header parsing helpers
 
 // Structure storing a description of the RIFF headers.
-typedef struct {
+type <Foo> struct {
   const uint8*  data;  // input buffer
   size_t data_size;                                // input buffer size
   int have_all_data;  // true if all data is known to be available

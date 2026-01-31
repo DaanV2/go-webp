@@ -99,7 +99,7 @@ const (
 
 const NIL_TAG =0x00000000u  // To signal func chunk.
 
-typedef struct {
+type <Foo> struct {
   uint32 tag;
   WebPChunkId id;
   uint32 size;

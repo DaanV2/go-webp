@@ -48,7 +48,7 @@ static const uint8 kOrderedDither[DSIZE][DSIZE] = {
 const DFIX = 0
 #endif
 
-typedef struct {
+type <Foo> struct {
   int width, height;            // dimension
   int stride;                   // stride in bytes
   int row;                      // current input row being processed

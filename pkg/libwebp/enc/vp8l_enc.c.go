@@ -82,7 +82,7 @@ typedef uint32 HistogramBuckets[NUM_BUCKETS];
 // Keeping track of histograms, indexed by HistoIx.
 // Ideally, this would just be a struct with meaningful fields, but the
 // calculation of `entropy_comp` uses the index. One refactoring at a time :)
-typedef struct {
+type <Foo> struct {
   HistogramBuckets category[kHistoTotal];
 } Histograms;
 
@@ -279,11 +279,11 @@ static int GetTransformBits(int method, int histo_bits) {
 
 // Set of parameters to be used in each iteration of the cruncher.
 const CRUNCH_SUBCONFIGS_MAX =2
-typedef struct {
+type <Foo> struct {
   int lz77;
   int do_no_cache;
 } CrunchSubConfig;
-typedef struct {
+type <Foo> struct {
   int entropy_idx;
   PaletteSorting palette_sorting_type;
   CrunchSubConfig sub_configs[CRUNCH_SUBCONFIGS_MAX];
@@ -1483,7 +1483,7 @@ func VP8LEncoderDelete(VP8LEncoder* enc) {
 // -----------------------------------------------------------------------------
 // Main call
 
-typedef struct {
+type <Foo> struct {
   const WebPConfig* config;
   const WebPPicture* picture;
   VP8LBitWriter* bw;

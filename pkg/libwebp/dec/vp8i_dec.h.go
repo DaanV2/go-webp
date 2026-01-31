@@ -74,14 +74,14 @@ const MIN_WIDTH_FOR_THREADS =512
 //------------------------------------------------------------------------------
 // Headers
 
-typedef struct {
+type <Foo> struct {
   uint8 key_frame;
   uint8 profile;
   uint8 show;
   uint32 partition_length;
 } VP8FrameHeader;
 
-typedef struct {
+type <Foo> struct {
   uint16 width;
   uint16 height;
   uint8 xscale;
@@ -91,7 +91,7 @@ typedef struct {
 } VP8PictureHeader;
 
 // segment features
-typedef struct {
+type <Foo> struct {
   int use_segment;
   int update_map;      // whether to update the segment map or not
   int absolute_delta;  // absolute or delta values for quantizer and filter
@@ -102,12 +102,12 @@ typedef struct {
 // probas associated to one of the contexts
 typedef uint8 VP8ProbaArray[NUM_PROBAS];
 
-typedef struct {  // all the probas associated to one band
+type <Foo> struct {  // all the probas associated to one band
   VP8ProbaArray probas[NUM_CTX];
 } VP8BandProbas;
 
 // Struct collecting all frame-persistent probabilities.
-typedef struct {
+type <Foo> struct {
   uint8 segments[MB_FEATURE_TREE_PROBS];
   // Type: 0:Intra16-AC  1:Intra16-DC   2:Chroma   3:Intra4
   VP8BandProbas bands[NUM_TYPES][NUM_BANDS];
@@ -115,7 +115,7 @@ typedef struct {
 } VP8Proba;
 
 // Filter parameters
-typedef struct {
+type <Foo> struct {
   int simple;     // 0=complex, 1=simple
   int level;      // [0..63]
   int sharpness;  // [0..7]
@@ -127,21 +127,21 @@ typedef struct {
 //------------------------------------------------------------------------------
 // Informations about the macroblocks.
 
-typedef struct {       // filter specs
+type <Foo> struct {       // filter specs
   uint8 f_limit;     // filter limit in [3..189], or 0 if no filtering
   uint8 f_ilevel;    // inner limit in [1..63]
   uint8 f_inner;     // do inner filtering?
   uint8 hev_thresh;  // high edge variance threshold in [0..2]
 } VP8FInfo;
 
-typedef struct {  // Top/Left Contexts used for syntax-parsing
+type <Foo> struct {  // Top/Left Contexts used for syntax-parsing
   uint8 nz;     // non-zero AC/DC coeffs (4bit for luma + 4bit for chroma)
   uint8 nz_dc;  // non-zero DC coeff (1bit)
 } VP8MB;
 
 // Dequantization matrices
 typedef int quant_t[2];  // [DC / AC].  Can be 'uint16[2]' too (~slower).
-typedef struct {
+type <Foo> struct {
   quant_t y1_mat, y2_mat, uv_mat;
 
   int uv_quant;  // U/V quantizer value
@@ -149,7 +149,7 @@ typedef struct {
 } VP8QuantMatrix;
 
 // Data needed to reconstruct a macroblock
-typedef struct {
+type <Foo> struct {
   int16 coeffs[384];  // 384 coeffs = (16+4+4) * 4*4
   uint8 is_i4x4;      // true if intra4x4
   uint8 imodes[16];   // one 16x16 mode (#0) or sixteen 4x4 modes
@@ -169,7 +169,7 @@ typedef struct {
 } VP8MBData;
 
 // Persistent information needed by the parallel processing
-typedef struct {
+type <Foo> struct {
   int id;              // cache row to process (in [0..2])
   int mb_y;            // macroblock position of the row
   int filter_row;      // true if row-filtering is needed
@@ -179,7 +179,7 @@ typedef struct {
 } VP8ThreadContext;
 
 // Saved top samples, per macroblock. Fits into a cache-line.
-typedef struct {
+type <Foo> struct {
   uint8 y[16], u[8], v[8];
 } VP8TopSamples;
 

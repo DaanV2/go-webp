@@ -148,7 +148,7 @@ const VP8L_WBITS =32  // Minimum number of bytes ready after VP8LFillBitWindow.
 
 typedef uint64 vp8l_val_t;  // right now, this bit-reader can only use 64bit.
 
-typedef struct {
+type <Foo> struct {
   vp8l_val_t val;                           // pre-fetched bits
   const uint8*  buf;  // input byte buffer
   size_t len;                               // buffer length

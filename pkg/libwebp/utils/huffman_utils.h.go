@@ -33,13 +33,13 @@ const LENGTHS_TABLE_BITS =7
 const LENGTHS_TABLE_MASK =((1 << LENGTHS_TABLE_BITS) - 1)
 
 // Huffman lookup table entry
-typedef struct {
+type <Foo> struct {
   uint8 bits;    // number of bits used for this symbol
   uint16 value;  // symbol value or table offset
 } HuffmanCode;
 
 // long version for holding 32b values
-typedef struct {
+type <Foo> struct {
   int bits;        // number of bits used for this symbol,
                    // or an impossible value if not a literal code.
   uint32 value;  // 32b packed ARGB value if literal,

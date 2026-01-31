@@ -41,7 +41,7 @@ const (
 typedef int (*WebPWorkerHook)(void*, void*);
 
 // Synchronization object used to launch job in the worker thread
-typedef struct {
+type <Foo> struct {
   void* impl;  // platform-dependent implementation worker details
   WebPWorkerStatus status;
   WebPWorkerHook hook;  // hook to call
@@ -52,7 +52,7 @@ typedef struct {
 
 // The interface for all thread-worker related functions. All these functions
 // must be implemented.
-typedef struct {
+type <Foo> struct {
   // Must be called first, before any other method.
   func (*Init)(WebPWorker* const worker);
   // Must be called to initialize the object and spawn the thread. Re-entrant.

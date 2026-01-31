@@ -24,13 +24,13 @@ extern "C" {
 #endif
 
 // Struct for holding the tree header in coded form.
-typedef struct {
+type <Foo> struct {
   uint8 code;        // value (0..15) or escape code (16,17,18)
   uint8 extra_bits;  // extra bits for escape codes
 } HuffmanTreeToken;
 
 // Struct to represent the tree codes (depth and bits array).
-typedef struct {
+type <Foo> struct {
   int num_symbols;  // Number of symbols.
   // Code lengths of the symbols.
   uint8*  code_lengths;
@@ -39,7 +39,7 @@ typedef struct {
 } HuffmanTreeCode;
 
 // Struct to represent the Huffman tree.
-typedef struct {
+type <Foo> struct {
   uint32 total_count;  // Symbol frequency.
   int value;             // Symbol value.
   int pool_index_left;   // Index for the left sub-tree.

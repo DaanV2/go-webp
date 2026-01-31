@@ -38,13 +38,13 @@ const ERROR_STR_MAX_LENGTH =100
 // Internal structs.
 
 // Stores frame rectangle dimensions.
-typedef struct {
+type <Foo> struct {
   int x_offset, y_offset, width, height;
 } FrameRectangle;
 
 // Used to store two candidates of encoded data for an animation frame. One of
 // the two will be chosen later.
-typedef struct {
+type <Foo> struct {
   WebPMuxFrameInfo sub_frame;  // Encoded frame rectangle.
   WebPMuxFrameInfo key_frame;  // Encoded frame if it is a keyframe.
   int is_key_frame;            // True if 'key_frame' has been chosen.
@@ -537,7 +537,7 @@ static  func SnapToEvenOffsets(FrameRectangle* const rect) {
   rect.y_offset &= ~1;
 }
 
-typedef struct {
+type <Foo> struct {
   int should_try;               // Should try this set of parameters.
   int empty_rect_allowed;       // Frame with empty rectangle can be skipped.
   FrameRectangle rect_ll;       // Frame rectangle for lossless compression.
@@ -824,7 +824,7 @@ static int EncodeFrame(const WebPConfig* const config, WebPPicture* const pic,
 }
 
 // Struct representing a candidate encoded frame including its metadata.
-typedef struct {
+type <Foo> struct {
   WebPMemoryWriter mem;  // Encoded bytes.
   WebPMuxFrameInfo info;
   FrameRectangle rect;  // Coordinates and dimensions of this candidate.

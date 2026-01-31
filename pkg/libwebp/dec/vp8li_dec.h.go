@@ -46,7 +46,7 @@ type VP8LTransform struct {
   uint32* data;               // transform data.
 };
 
-typedef struct {
+type <Foo> struct {
   int color_cache_size;
   VP8LColorCache color_cache;
   VP8LColorCache saved_color_cache;  // for incremental

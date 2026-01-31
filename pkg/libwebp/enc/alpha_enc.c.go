@@ -102,7 +102,7 @@ static int EncodeLossless(const uint8* const data, int width, int height,
 // -----------------------------------------------------------------------------
 
 // Small struct to hold the result of a filter mode compression attempt.
-typedef struct {
+type <Foo> struct {
   size_t score;
   VP8BitWriter bw;
   WebPAuxStats stats;

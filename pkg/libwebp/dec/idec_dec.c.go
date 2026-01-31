@@ -67,14 +67,14 @@ const (
 
 // storage for partition #0 and partial data (in a rolling fashion)
 type MemBuffer struct {
-  MemBufferMode mode;  // Operation mode
-  size_t start;        // start location of the data to be decoded
-  size_t end;          // end location
-  size_t buf_size;     // size of the allocated buffer
-  uint8* buf;        // We don't own this buffer in case WebPIUpdate()
+   mode MemBufferMode;  // Operation mode
+   start size_t;        // start location of the data to be decoded
+   end size_t;          // end location
+   buf_size size_t;     // size of the allocated buffer
+   buf uint8*;        // We don't own this buffer in case WebPIUpdate()
 
-  size_t part0_size;         // size of partition #0
-  const uint8* part0_buf;  // buffer to store partition #0
+   part0_size size_t;         // size of partition #0
+  part0_buf uint8*;  // buffer to store partition #0
 }
 
 type WebPIDecoder struct {
@@ -94,11 +94,11 @@ type WebPIDecoder struct {
 };
 
 // MB context to restore in case VP8DecodeMB() fails
-typedef struct {
-  VP8MB left;
-  VP8MB info;
-  VP8BitReader token_br;
-} MBContext;
+type MBContext struct {
+   left VP8MB;
+   info VP8MB;
+   token_br VP8BitReader;
+}
 
 //------------------------------------------------------------------------------
 // MemBuffer: incoming data handling

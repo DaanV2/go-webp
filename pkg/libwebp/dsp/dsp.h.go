@@ -129,7 +129,7 @@ extern const int VP8DspScan[16 + 4 + 4];
 
 // Collect histogram for susceptibility calculation.
 const MAX_COEFF_THRESH =31  // size of histogram used by CollectHistogram.
-typedef struct {
+type <Foo> struct {
   // We only need to store max_value and last_non_zero, not the distribution.
   int max_value;
   int last_non_zero;
@@ -172,7 +172,7 @@ func VP8EncDspCostInit(void);
 // SSIM / PSNR utils
 
 // struct for accumulating statistical moments
-typedef struct {
+type <Foo> struct {
   uint32 w;              // sum(w_i) : sum of weights
   uint32 xm, ym;         // sum(w_i * x_i), sum(w_i * y_i)
   uint32 xxm, xym, yym;  // sum(w_i * x_i * x_i), etc.

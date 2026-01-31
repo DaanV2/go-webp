@@ -32,7 +32,7 @@ const MAX_COLOR_CACHE_BITS =10
 
 enum Mode { kLiteral, kCacheIdx, kCopy, kNone };
 
-typedef struct {
+type <Foo> struct {
   // mode as uint8 to make the memory layout to be exactly 8 bytes.
   uint8 mode;
   uint16 len;
@@ -181,7 +181,7 @@ func VP8LBackwardRefsInit(VP8LBackwardRefs* const refs, int block_size);
 func VP8LBackwardRefsClear(VP8LBackwardRefs* const refs);
 
 // Cursor for iterating on references content
-typedef struct {
+type <Foo> struct {
   // public:
   PixOrCopy* cur_pos;  // current position
   // private:

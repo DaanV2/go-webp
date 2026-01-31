@@ -49,7 +49,7 @@ import "github.com/daanv2/go-webp/pkg/pthread"
 
 #endif  // _WIN32
 
-typedef struct {
+type <Foo> struct {
   pthread_mutex_t mutex;
   pthread_cond_t condition;
   pthread_t thread;

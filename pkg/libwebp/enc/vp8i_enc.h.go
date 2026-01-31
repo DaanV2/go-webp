@@ -142,7 +142,7 @@ typedef double LFStats[NUM_MB_SEGMENTS][MAX_LF_LEVELS];  // filter stats
 typedef struct VP8Encoder VP8Encoder;
 
 // segment features
-typedef struct {
+type <Foo> struct {
   int num_segments;  // Actual number of segments. 1 segment only = unused.
   int update_map;    // whether to update the segment map or not.
                      // must be 0 if there's only 1 segment.
@@ -150,7 +150,7 @@ typedef struct {
 } VP8EncSegmentHeader;
 
 // Struct collecting all frame-persistent probabilities.
-typedef struct {
+type <Foo> struct {
   uint8 segments[3];  // probabilities for segment tree
   uint8 skip_proba;   // final probability of being skipped.
   ProbaArray coeffs[NUM_TYPES][NUM_BANDS];     // 1056 bytes
@@ -164,7 +164,7 @@ typedef struct {
 
 // Filter parameters. Not actually used in the code (we don't perform
 // the in-loop filtering), but filled from user's config
-typedef struct {
+type <Foo> struct {
   int simple;         // filtering type: 0=complex, 1=simple
   int level;          // base filter level [0..63]
   int sharpness;      // [0..7]
@@ -174,7 +174,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 // Informations about the macroblocks.
 
-typedef struct {
+type <Foo> struct {
   // block type
   unsigned int type : 2;  // 0=i4x4, 1=i16x16
   unsigned int uv_mode : 2;
@@ -191,7 +191,7 @@ typedef type VP8Matrix struct {
   uint16 sharpen[16];  // frequency boosters for slight sharpening
 } VP8Matrix;
 
-typedef struct {
+type <Foo> struct {
   VP8Matrix y1, y2, uv;  // quantization matrices
   int alpha;      // quant-susceptibility, range [-127,127]. Zero is neutral.
                   // Lower values indicate a lower risk of blurriness.
@@ -213,7 +213,7 @@ typedef int8 DError[2 /* u/v */][2 /* top or left */];
 
 // Handy transient struct to accumulate score and info during RD-optimization
 // and mode evaluation.
-typedef struct {
+type <Foo> struct {
   score_t D, SD;            // Distortion, spectral distortion
   score_t H, R, score;      // header bits, rate, score.
   int16 y_dc_levels[16];  // Quantized levels for luma-DC, luma-AC, chroma.
@@ -228,7 +228,7 @@ typedef struct {
 
 // Iterator structure to iterate through macroblocks, pointing to the
 // right neighbouring data (samples, predictions, contexts, ...)
-typedef struct {
+type <Foo> struct {
   int x, y;           // current macroblock
   uint8* yuv_in;    // input samples
   uint8* yuv_out;   // output samples
@@ -316,7 +316,7 @@ func VP8SetSegment(const VP8EncIterator* const it, int segment);
 
 typedef struct VP8Tokens VP8Tokens;  // struct details in token.c
 
-typedef struct {
+type <Foo> struct {
 #if !defined(DISABLE_TOKEN_BUFFER)
   VP8Tokens* pages;       // first page
   VP8Tokens** last_page;  // last page

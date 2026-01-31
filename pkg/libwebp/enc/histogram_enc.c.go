@@ -543,7 +543,7 @@ func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5],
 
 // The structure to keep track of cost range for the three dominant entropy
 // symbols.
-typedef struct {
+type <Foo> struct {
   uint64 literal_max;
   uint64 literal_min;
   uint64 red_max;
@@ -776,7 +776,7 @@ static uint32 MyRand(uint32* const seed) {
 // Histogram pairs priority queue
 
 // Pair of histograms. Negative idx1 value means that pair is out-of-date.
-typedef struct {
+type <Foo> struct {
   int idx1;
   int idx2;
   int64 cost_diff;
@@ -784,7 +784,7 @@ typedef struct {
   uint64 costs[5];
 } HistogramPair;
 
-typedef struct {
+type <Foo> struct {
   HistogramPair* queue;
   int size;
   int max_size;

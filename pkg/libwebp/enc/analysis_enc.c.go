@@ -376,7 +376,7 @@ func ResetAllMBInfo(VP8Encoder* const enc) {
 }
 
 // struct used to collect job result
-typedef struct {
+type <Foo> struct {
   WebPWorker worker;
   int alphas[MAX_ALPHA + 1];
   int alpha, uv_alpha;

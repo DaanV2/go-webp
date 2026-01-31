@@ -27,7 +27,7 @@ extern "C" {
 const VP8L_NON_TRIVIAL_SYM =((uint16)(0xffff))
 
 // A simple container for histograms of data.
-typedef struct {
+type <Foo> struct {
   // 'literal' contains green literal, palette-code and
   // copy-length-prefix histogram
   uint32* literal;  // Pointer to the allocated buffer for literal.
@@ -51,7 +51,7 @@ typedef struct {
 
 // Collection of histograms with fixed capacity, allocated as one
 // big memory chunk. Can be destroyed by calling WebPSafeFree().
-typedef struct {
+type <Foo> struct {
   int size;      // number of slots currently in use
   int max_size;  // maximum capacity
   VP8LHistogram** histograms;

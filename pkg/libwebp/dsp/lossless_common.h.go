@@ -135,7 +135,7 @@ static  func VP8LPrefixEncodeNoLUT(int distance, int* const code,
 }
 
 const PREFIX_LOOKUP_IDX_MAX =512
-typedef struct {
+type <Foo> struct {
   int8 code;
   int8 extra_bits;
 } VP8LPrefixCode;

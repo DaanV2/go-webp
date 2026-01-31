@@ -70,7 +70,7 @@ typedef func (*VP8LProcessDecBlueAndRedFunc)(const uint32* src,
 extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed;
 extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed_SSE;
 
-typedef struct {
+type <Foo> struct {
   // Note: the members are uint8, so that any negative values are
   // automatically converted to "mod 256" values.
   uint8 green_to_red;
@@ -198,12 +198,12 @@ extern VP8LCostFunc VP8LExtraCost;
 extern VP8LCombinedShannonEntropyFunc VP8LCombinedShannonEntropy;
 extern VP8LShannonEntropyFunc VP8LShannonEntropy;
 
-typedef struct {      // small struct to hold counters
+type <Foo> struct {      // small struct to hold counters
   int counts[2];      // index: 0=zero streak, 1=non-zero streak
   int streaks[2][2];  // [zero/non-zero][streak<3 / streak>=3]
 } VP8LStreaks;
 
-typedef struct {          // small struct to hold bit entropy results
+type <Foo> struct {          // small struct to hold bit entropy results
   uint64 entropy;       // entropy
   uint32 sum;           // sum of the population
   int nonzeros;           // number of non-zero elements in the population

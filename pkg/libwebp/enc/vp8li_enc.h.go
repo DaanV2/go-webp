@@ -47,7 +47,7 @@ const (
   kEncoderPalette
 } VP8LEncoderARGBContent;
 
-typedef struct {
+type <Foo> struct {
   const WebPConfig* config;  // user configuration and parameters
   const WebPPicture* pic;    // input picture.
 

@@ -94,7 +94,7 @@ const VP8L_WRITER_BITS =16
 const VP8L_WRITER_MAX_BITS =32
 #endif
 
-typedef struct {
+type <Foo> struct {
   vp8l_atype_t bits;                   // bit accumulator
   int used;                            // number of bits used in accumulator
   uint8* WEBP_ENDED_BY(end) buf;     // start of buffer

@@ -34,7 +34,7 @@ extern int VP8LDistanceToPlaneCode(int xsize, int dist);
 extern func VP8LBackwardRefsCursorAdd(VP8LBackwardRefs* const refs,
                                       const PixOrCopy v);
 
-typedef struct {
+type <Foo> struct {
   uint32 alpha[VALUES_IN_BYTE];
   uint32 red[VALUES_IN_BYTE];
   uint32 blue[VALUES_IN_BYTE];
@@ -170,7 +170,7 @@ type CostInterval struct {
 };
 
 // The GetLengthCost(cost_model, k) are cached in a CostCacheInterval.
-typedef struct {
+type <Foo> struct {
   int64 cost;
   int start;
   int end;  // Exclusive.
@@ -181,7 +181,7 @@ typedef struct {
 // GetLengthCost(cost_model, k) in cost_cache and the CostInterval's (whose
 // 'count' is limited by COST_CACHE_INTERVAL_SIZE_MAX).
 const COST_MANAGER_MAX_FREE_LIST =10
-typedef struct {
+type <Foo> struct {
   CostInterval* head;
   int count;  // The number of stored intervals.
   CostCacheInterval* cache_intervals;

@@ -42,7 +42,7 @@ static float Clamp(float v, float min, float max) {
   return (v < min) ? min : (v > max) ? max : v;
 }
 
-typedef struct {  // struct for organizing convergence in either size or PSNR
+type <Foo> struct {  // struct for organizing convergence in either size or PSNR
   int is_first;
   float dq;
   float q, last_q;
