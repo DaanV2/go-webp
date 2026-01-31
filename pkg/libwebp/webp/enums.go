@@ -106,3 +106,15 @@ const (
 	VP8_STATUS_USER_ABORT
 	VP8_STATUS_NOT_ENOUGH_DATA
 )
+
+// Error codes
+type WebPMuxError int
+
+const (
+	WEBP_MUX_OK               WebPMuxError = 1
+	WEBP_MUX_NOT_FOUND        WebPMuxError = 0
+	WEBP_MUX_INVALID_ARGUMENT WebPMuxError = -1
+	WEBP_MUX_BAD_DATA         WebPMuxError = -2
+	WEBP_MUX_MEMORY_ERROR     WebPMuxError = -3
+	WEBP_MUX_NOT_ENOUGH_DATA  WebPMuxError = -4
+)
