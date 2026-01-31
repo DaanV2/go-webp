@@ -13,8 +13,6 @@ package enc
 //
 // Models the histograms of literal and distance codes.
 
-#ifndef WEBP_ENC_HISTOGRAM_ENC_H_
-#define WEBP_ENC_HISTOGRAM_ENC_H_
 
 #include "src/enc/backward_references_enc.h"
 #include "src/webp/encode.h"

@@ -14,8 +14,6 @@ package dsp
 // Authors: Vikas Arora (vikaas.arora@gmail.com)
 //          Jyrki Alakuijala (jyrki@google.com)
 
-#ifndef WEBP_DSP_LOSSLESS_H_
-#define WEBP_DSP_LOSSLESS_H_
 
 #include "src/dsp/dsp.h"
 #include "src/webp/decode.h"

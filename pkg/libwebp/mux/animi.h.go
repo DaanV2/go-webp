@@ -13,8 +13,6 @@ package mux
 //
 // Author: Hui Su (huisu@google.com)
 
-#ifndef WEBP_MUX_ANIMI_H_
-#define WEBP_MUX_ANIMI_H_
 
 #include "src/webp/mux.h"
 

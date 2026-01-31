@@ -13,8 +13,6 @@ package enc
 //
 // Author: Vikas Arora (vikaas.arora@gmail.com)
 
-#ifndef WEBP_ENC_VP8LI_ENC_H_
-#define WEBP_ENC_VP8LI_ENC_H_
 
 #ifdef HAVE_CONFIG_H
 #include "src/webp/config.h"
@@ -24,8 +22,6 @@ package enc
 
 // Either WEBP_NEAR_LOSSLESS is defined as 0 in config.h when compiling to
 // disable near-lossless, or it is enabled by default.
-#ifndef WEBP_NEAR_LOSSLESS
-#define WEBP_NEAR_LOSSLESS 1
 #endif
 
 #include "src/enc/backward_references_enc.h"

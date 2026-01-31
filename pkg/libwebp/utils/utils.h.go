@@ -14,8 +14,6 @@ package utils
 // Authors: Skal (pascal.massimino@gmail.com)
 //          Urvang (urvang@google.com)
 
-#ifndef WEBP_UTILS_UTILS_H_
-#define WEBP_UTILS_UTILS_H_
 
 #ifdef HAVE_CONFIG_H
 #include "src/webp/config.h"

@@ -11,8 +11,6 @@ package utils
 //
 // Endian related functions.
 
-#ifndef WEBP_UTILS_ENDIAN_INL_UTILS_H_
-#define WEBP_UTILS_ENDIAN_INL_UTILS_H_
 
 #ifdef HAVE_CONFIG_H
 #include "src/webp/config.h"

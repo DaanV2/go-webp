@@ -11,8 +11,6 @@ package dsp
 //
 // MIPS common macros
 
-#ifndef WEBP_DSP_MIPS_MACRO_H_
-#define WEBP_DSP_MIPS_MACRO_H_
 
 #if defined(__GNUC__) && defined(__ANDROID__) && LOCAL_GCC_VERSION == 0x409
 #define WORK_AROUND_GCC

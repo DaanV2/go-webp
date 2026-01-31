@@ -15,8 +15,6 @@ package dsp
 //          Jyrki Alakuijala (jyrki@google.com)
 //          Vincent Rabaud (vrabaud@google.com)
 
-#ifndef WEBP_DSP_LOSSLESS_COMMON_H_
-#define WEBP_DSP_LOSSLESS_COMMON_H_
 
 #include <assert.h>
 #include <stddef.h>

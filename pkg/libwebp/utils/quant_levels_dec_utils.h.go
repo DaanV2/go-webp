@@ -13,8 +13,6 @@ package utils
 //
 // Author:  Vikas Arora (vikasa@google.com)
 
-#ifndef WEBP_UTILS_QUANT_LEVELS_DEC_UTILS_H_
-#define WEBP_UTILS_QUANT_LEVELS_DEC_UTILS_H_
 
 #include "src/utils/bounds_safety.h"
 #include "src/webp/types.h"

@@ -13,8 +13,6 @@ package dsp
 //
 // Author(s):  Prashant Patil   (prashant.patil@imgtec.com)
 
-#ifndef WEBP_DSP_MSA_MACRO_H_
-#define WEBP_DSP_MSA_MACRO_H_
 
 #include "src/dsp/dsp.h"
 

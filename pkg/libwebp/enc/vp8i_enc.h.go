@@ -13,8 +13,6 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifndef WEBP_ENC_VP8I_ENC_H_
-#define WEBP_ENC_VP8I_ENC_H_
 
 #include <string.h>  // for memcpy()
 

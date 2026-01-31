@@ -13,8 +13,6 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifndef WEBP_UTILS_RESCALER_UTILS_H_
-#define WEBP_UTILS_RESCALER_UTILS_H_
 
 #ifdef __cplusplus
 extern "C" {

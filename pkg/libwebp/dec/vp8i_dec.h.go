@@ -13,8 +13,6 @@ package dec
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifndef WEBP_DEC_VP8I_DEC_H_
-#define WEBP_DEC_VP8I_DEC_H_
 
 #include <string.h>  // for memcpy()
 

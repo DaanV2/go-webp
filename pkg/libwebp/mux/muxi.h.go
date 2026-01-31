@@ -13,8 +13,6 @@ package mux
 //
 // Author: Urvang (urvang@google.com)
 
-#ifndef WEBP_MUX_MUXI_H_
-#define WEBP_MUX_MUXI_H_
 
 #include <assert.h>
 #include <stdlib.h>

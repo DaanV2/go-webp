@@ -13,8 +13,6 @@ package webp
 //
 // Author: Urvang (urvang@google.com)
 
-#ifndef WEBP_WEBP_MUX_TYPES_H_
-#define WEBP_WEBP_MUX_TYPES_H_
 
 #include <string.h>  // memset()
 

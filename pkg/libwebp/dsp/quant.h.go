@@ -9,8 +9,6 @@ package dsp
 // be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 
-#ifndef WEBP_DSP_QUANT_H_
-#define WEBP_DSP_QUANT_H_
 
 #include <string.h>
 

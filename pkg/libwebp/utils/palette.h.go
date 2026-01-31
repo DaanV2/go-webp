@@ -13,8 +13,6 @@ package utils
 //
 // Author: Vincent Rabaud (vrabaud@google.com)
 
-#ifndef WEBP_UTILS_PALETTE_H_
-#define WEBP_UTILS_PALETTE_H_
 
 #include "src/utils/bounds_safety.h"
 #include "src/webp/format_constants.h"

@@ -13,8 +13,6 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifndef WEBP_DSP_DSP_H_
-#define WEBP_DSP_DSP_H_
 
 #ifdef HAVE_CONFIG_H
 #include "src/webp/config.h"

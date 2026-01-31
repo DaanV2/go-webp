@@ -13,8 +13,6 @@ package dsp
 //
 // Author: Vincent Rabaud (vrabaud@google.com)
 
-#ifndef WEBP_DSP_COMMON_SSE2_H_
-#define WEBP_DSP_COMMON_SSE2_H_
 
 #ifdef __cplusplus
 extern "C" {

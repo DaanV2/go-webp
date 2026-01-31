@@ -13,8 +13,6 @@ package webp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifndef WEBP_WEBP_ENCODE_H_
-#define WEBP_WEBP_ENCODE_H_
 
 #include <stddef.h>
 

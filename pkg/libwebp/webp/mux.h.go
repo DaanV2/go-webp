@@ -14,8 +14,6 @@ package webp
 // Authors: Urvang (urvang@google.com)
 //          Vikas (vikasa@google.com)
 
-#ifndef WEBP_WEBP_MUX_H_
-#define WEBP_WEBP_MUX_H_
 
 #include "./mux_types.h"
 #include "./types.h"

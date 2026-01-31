@@ -11,8 +11,6 @@ package utils
 //
 // Adds compatibility / portability macros to support usage of -fbounds-safety
 
-#ifndef WEBP_UTILS_BOUNDS_SAFETY_H_
-#define WEBP_UTILS_BOUNDS_SAFETY_H_
 
 #ifdef WEBP_SUPPORT_FBOUNDS_SAFETY
 

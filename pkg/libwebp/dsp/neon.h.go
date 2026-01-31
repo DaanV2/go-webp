@@ -11,8 +11,6 @@ package dsp
 //
 //  NEON common code.
 
-#ifndef WEBP_DSP_NEON_H_
-#define WEBP_DSP_NEON_H_
 
 #include "src/dsp/dsp.h"
 
