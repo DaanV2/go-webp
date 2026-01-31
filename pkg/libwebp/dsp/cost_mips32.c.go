@@ -107,7 +107,7 @@ func SetResidualCoeffs_MIPS32(const *int16 WEBP_RESTRICT const coeffs, *VP8Resid
       "0:                                                   \n\t"
       "ulw      %[temp0],      0(%[p_coeffs])             \n\t"
       "beqz     %[temp0],      1f                         \n\t"
-#if defined(constants.WORDS_BIGENDIAN)
+#if constants.WORDS_BIGENDIAN
       " sll     %[temp1],      %[temp0],       16         \n\t"
 #else
       " srl     %[temp1],      %[temp0],       16         \n\t"

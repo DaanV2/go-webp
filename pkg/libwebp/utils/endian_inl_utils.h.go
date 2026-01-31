@@ -22,7 +22,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#if defined(constants.WORDS_BIGENDIAN)
+#if constants.WORDS_BIGENDIAN
 const HToLE32 = BSwap32
 const HToLE16 = BSwap16
 #else

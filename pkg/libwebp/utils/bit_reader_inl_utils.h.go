@@ -86,7 +86,7 @@ static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
 #endif
     br.buf += BITS >> 3;
     WEBP_SELF_ASSIGN(br.buf_end);
-#if !defined(constants.WORDS_BIGENDIAN)
+#if !constants.WORDS_BIGENDIAN
 #if (BITS > 32)
     bits = BSwap64(in_bits);
     bits >>= 64 - BITS;
