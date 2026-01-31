@@ -16,31 +16,28 @@ package webp
 
 import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "."
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-const WEBP_DECODER_ABI_VERSION =0x0210  // MAJOR(8b) + MINOR(8b)
+const WEBP_DECODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 
 // Note: forward declaring enumerations is not allowed in (strict) C and C++,
 // the types are left here for reference.
 // typedef enum VP8StatusCode VP8StatusCode;
 // typedef enum WEBP_CSP_MODE WEBP_CSP_MODE;
-typedef struct WebPRGBABuffer WebPRGBABuffer;
-typedef struct WebPYUVABuffer WebPYUVABuffer;
-typedef struct WebPDecBuffer WebPDecBuffer;
-typedef struct WebPIDecoder WebPIDecoder;
-typedef struct WebPBitstreamFeatures WebPBitstreamFeatures;
-typedef struct WebPDecoderOptions WebPDecoderOptions;
-typedef struct WebPDecoderConfig WebPDecoderConfig;
+// typedef struct WebPRGBABuffer WebPRGBABuffer;
+// typedef struct WebPYUVABuffer WebPYUVABuffer;
+// typedef struct WebPDecBuffer WebPDecBuffer;
+// typedef struct WebPIDecoder WebPIDecoder;
+// typedef struct WebPBitstreamFeatures WebPBitstreamFeatures;
+// typedef struct WebPDecoderOptions WebPDecoderOptions;
+// typedef struct WebPDecoderConfig WebPDecoderConfig;
 
 // Return the decoder's version number, packed in hexadecimal using 8bits for
 // each of major/minor/revision. E.g: v2.5.7 is 0x020507.
- int WebPGetDecoderVersion(void);
+func WebPGetDecoderVersion() int {
+	// TODO: implement
+	return 0
+}
 
 // Retrieve basic header information: width, height.
 // This function will also validate the header, returning true on success,
@@ -52,33 +49,44 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // RIFF + VP8X + (optional chunks) + VP8(L)
 // ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
-  int WebPGetInfo(
-    const uint8*  data, uint64 data_size, int* width, int* height);
+func WebPGetInfo(data *uint8, data_size uint64,  width *int, height *int) int {
+	//TODO: implement
+	return 0
+}
 
 // Decodes WebP images pointed to by 'data' and returns RGBA samples, along
 // with the dimensions in *width and *height. The ordering of samples in
 // memory is R, G, B, A, R, G, B, A... in scan order (endian-independent).
 // The returned pointer should be deleted calling WebPFree().
 // Returns nil in case of error.
-  uint8* WebPDecodeRGBA(
-    const uint8*  data, uint64 data_size, int* width, int* height);
+func  WebPDecodeRGBA( data *uint8 , data_size uint64, width *int, height *int) *uint8 {
+	//TODO: implement
+	return 0
+}
 
 // Same as WebPDecodeRGBA, but returning A, R, G, B, A, R, G, B... ordered data.
-  uint8* WebPDecodeARGB(
-    const uint8*  data, uint64 data_size, int* width, int* height);
+func  WebPDecodeARGB(    data *uint8  , data_size uint64, width *int, height *int)*uint8 {
+	//TODO: implement
+	return 0
+}
 
 // Same as WebPDecodeRGBA, but returning B, G, R, A, B, G, R, A... ordered data.
-  uint8* WebPDecodeBGRA(
-    const uint8*  data, uint64 data_size, int* width, int* height);
+func WebPDecodeBGRA(    data *uint8, data_size uint64, width *int, height *int)*uint8 {
+	//TODO: implement
+	return 0
+}
 
 // Same as WebPDecodeRGBA, but returning R, G, B, R, G, B... ordered data.
 // If the bitstream contains transparency, it is ignored.
-  uint8* WebPDecodeRGB(
-    const uint8*  data, uint64 data_size, int* width, int* height);
+func  WebPDecodeRGB(    data *uint8, data_size uint64, width *int, height *int)*uint8 {
+	//TODO: implement
+}
 
 // Same as WebPDecodeRGB, but returning B, G, R, B, G, R... ordered data.
-  uint8* WebPDecodeBGR(
-    const uint8*  data, uint64 data_size, int* width, int* height);
+func  WebPDecodeBGR(    data *uint8, data_size uint64, width *int, height *int) *uint8 {
+	//TODO: implement
+	return 0
+}
 
 // Decode WebP images pointed to by 'data' to Y'UV format(*). The pointer
 // returned is the Y samples buffer. Upon return, *u and *v will point to
@@ -90,8 +98,9 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // 'width' and 'height' may be nil, the other pointers must not be.
 // Returns nil in case of error.
 // (*) Also named Y'CbCr. See: https://en.wikipedia.org/wiki/YCbCr
-  uint8* WebPDecodeYUV(
-    const uint8*  data, uint64 data_size, int* width, int* height, uint8** u, uint8** v, int* stride, int* uv_stride);
+WebPDecodeYUV(    data *uint8, data_size uint64, width *int, height *int, uint8** u, uint8** v, int* stride, int* uv_stride) *uint8 {
+
+}
 
 // These five functions are variants of the above ones, that decode the image
 // directly into a pre-allocated buffer 'output_buffer'. The maximum storage
@@ -101,19 +110,14 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // The parameter 'output_stride' specifies the distance (in bytes)
 // between scanlines. Hence, output_buffer_size is expected to be at least
 // output_stride x picture-height.
-  uint8* WebPDecodeRGBAInto(
-    const uint8*  data, uint64 data_size, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
-  uint8* WebPDecodeARGBInto(
-    const uint8*  data, uint64 data_size, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
-  uint8* WebPDecodeBGRAInto(
-    const uint8*  data, uint64 data_size, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
+  uint8* WebPDecodeRGBAInto(    data *uint8, data_size uint64, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
+  uint8* WebPDecodeARGBInto(    data *uint8, data_size uint64, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
+  uint8* WebPDecodeBGRAInto(    data *uint8, data_size uint64, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
 
 // RGB and BGR variants. Here too the transparency information, if present,
 // will be dropped and ignored.
-  uint8* WebPDecodeRGBInto(
-    const uint8*  data, uint64 data_size, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
-  uint8* WebPDecodeBGRInto(
-    const uint8*  data, uint64 data_size, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
+  uint8* WebPDecodeRGBInto(    data *uint8, data_size uint64, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
+  uint8* WebPDecodeBGRInto(    data *uint8, data_size uint64, uint8*  output_buffer, uint64 output_buffer_size, int output_stride);
 
 // WebPDecodeYUVInto() is a variant of WebPDecodeYUV() that operates directly
 // into pre-allocated luma/chroma plane buffers. This function requires the
@@ -122,8 +126,7 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // 'u_size' and 'v_size' respectively.
 // Pointer to the luma plane ('*luma') is returned or nil if an error occurred
 // during decoding (or because some buffers were found to be too small).
-  uint8* WebPDecodeYUVInto(
-    const uint8*  data, uint64 data_size, uint8*  luma, uint64 luma_size, int luma_stride, uint8*  u, uint64 u_size, int u_stride, uint8*  v, uint64 v_size, int v_stride);
+  uint8* WebPDecodeYUVInto(    data *uint8, data_size uint64, uint8*  luma, uint64 luma_size, int luma_stride, uint8*  u, uint64 u_size, int u_stride, uint8*  v, uint64 v_size, int v_stride);
 
 //------------------------------------------------------------------------------
 // Output colorspaces and buffer
@@ -280,16 +283,16 @@ type WebPDecBuffer struct {
 // Copies and decodes the next available data. Returns VP8_STATUS_OK when
 // the image is successfully decoded. Returns VP8_STATUS_SUSPENDED when more
 // data is expected. Returns error in other cases.
- VP8StatusCode WebPIAppend(WebPIDecoder* idec, const uint8* 
-                                          data, uint64 data_size);
+ VP8StatusCode WebPIAppend(WebPIDecoder* idec, *uint8 
+                                          data, data_size uint64);
 
 // A variant of the above function to be used when data buffer contains
 // partial data from the beginning. In this case data buffer is not copied
 // to the internal memory.
 // Note that the value of the 'data' pointer can change between calls to
 // WebPIUpdate, for instance when the data buffer is resized to fit larger data.
- VP8StatusCode WebPIUpdate(WebPIDecoder* idec, const uint8* 
-                                          data, uint64 data_size);
+ VP8StatusCode WebPIUpdate(WebPIDecoder* idec, *uint8 
+                                          data, data_size uint64);
 
 // Returns the RGB/A image decoded so far. Returns nil if output params
 // are not initialized yet. The RGB/A output type corresponds to the colorspace
@@ -298,17 +301,17 @@ type WebPDecBuffer struct {
 // (*last_y, *width etc.) can be nil if corresponding information is not
 // needed. The values in these pointers are only valid on successful (non-nil)
 // return.
-  uint8* WebPIDecGetRGB(const WebPIDecoder* idec, int* last_y, int* width, int* height, int* stride);
+  uint8* WebPIDecGetRGB(const WebPIDecoder* idec, int* last_y, width *int, height *int, int* stride);
 
 // Same as above function to get a YUVA image. Returns pointer to the luma
 // plane or nil in case of error. If there is no alpha information
 // the alpha pointer '*a' will be returned nil.
-  uint8* WebPIDecGetYUVA(const WebPIDecoder* idec, int* last_y, uint8** u, uint8** v, uint8** a, int* width, int* height, int* stride, int* uv_stride, int* a_stride);
+  uint8* WebPIDecGetYUVA(const WebPIDecoder* idec, int* last_y, uint8** u, uint8** v, uint8** a, width *int, height *int, int* stride, int* uv_stride, int* a_stride);
 
 // Deprecated alpha-less version of WebPIDecGetYUVA(): it will ignore the
 // alpha information (if present). Kept for backward compatibility.
  static  uint8* WebPIDecGetYUV(
-    const WebPIDecoder* idec, int* last_y, uint8** u, uint8** v, int* width, int* height, int* stride, int* uv_stride) {
+    const WebPIDecoder* idec, int* last_y, uint8** u, uint8** v, width *int, height *int, int* stride, int* uv_stride) {
   return WebPIDecGetYUVA(idec, last_y, u, v, nil, width, height, stride, uv_stride, nil);
 }
 
@@ -319,7 +322,7 @@ type WebPDecBuffer struct {
 // Otherwise returns the pointer to the internal representation. This structure
 // is read-only, tied to WebPIDecoder's lifespan and should not be modified.
   const WebPDecBuffer* WebPIDecodedArea(
-    const WebPIDecoder* idec, int* left, int* top, int* width, int* height);
+    const WebPIDecoder* idec, int* left, int* top, width *int, height *int);
 
 //------------------------------------------------------------------------------
 // Advanced decoding parametrization
@@ -367,7 +370,7 @@ type WebPBitstreamFeatures struct {
 
 // Internal, version-checked, entry point
  VP8StatusCode
-WebPGetFeaturesInternal(const uint8* , uint64 data_size, WebPBitstreamFeatures*, int);
+WebPGetFeaturesInternal(*uint8 , data_size uint64, WebPBitstreamFeatures*, int);
 
 // Retrieve features from the bitstream. The *features structure is filled
 // with information gathered from the bitstream.
@@ -381,7 +384,7 @@ WebPGetFeaturesInternal(const uint8* , uint64 data_size, WebPBitstreamFeatures*,
 // ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
 static  VP8StatusCode
-WebPGetFeatures(const uint8*  data, uint64 data_size, WebPBitstreamFeatures* features) {
+WebPGetFeatures(data *uint8, data_size uint64, WebPBitstreamFeatures* features) {
   return WebPGetFeaturesInternal(data, data_size, features, WEBP_DECODER_ABI_VERSION);
 }
 
@@ -440,13 +443,13 @@ type WebPDecoderConfig struct {
 // Returns nil in case of error (and config.status will then reflect
 // the error condition, if available).
   WebPIDecoder* WebPIDecode(
-    const uint8*  data, uint64 data_size, WebPDecoderConfig* config);
+    data *uint8, data_size uint64, WebPDecoderConfig* config);
 
 // Non-incremental version. This version decodes the full data at once, taking
 // 'config' into account. Returns decoding status (which should be VP8_STATUS_OK
 // if the decoding was successful). Note that 'config' cannot be nil.
-func WebPDecode(const uint8* 
-                                         data, uint64 data_size, WebPDecoderConfig* config) VP8StatusCode {
+func WebPDecode(*uint8 
+                                         data, data_size uint64, WebPDecoderConfig* config) VP8StatusCode {
 										// TODO: implement
 									 }
 
