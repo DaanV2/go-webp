@@ -29,7 +29,7 @@ extern "C" {
 // On-the-fly info about the current set of residuals. Handy to avoid
 // passing zillions of params.
 typedef struct VP8Residual VP8Residual;
-struct VP8Residual {
+type VP8Residual struct {
   int first;
   int last;
   const int16_t* coeffs;

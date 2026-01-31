@@ -186,7 +186,7 @@ typedef struct {
 //------------------------------------------------------------------------------
 // VP8Decoder: the main opaque structure handed over to user
 
-struct VP8Decoder {
+type VP8Decoder struct {
   VP8StatusCode status;
   int ready;              // true if ready to decode a picture with VP8Decode()
   const char* error_msg;  // set when status is not OK.

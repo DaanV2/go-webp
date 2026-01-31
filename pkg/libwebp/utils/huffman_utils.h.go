@@ -47,7 +47,7 @@ typedef struct {
 } HuffmanCode32;
 
 // Contiguous memory segment of HuffmanCodes.
-typedef struct HuffmanTablesSegment {
+typedef type HuffmanTablesSegment struct {
   HuffmanCode* WEBP_COUNTED_BY_OR_NULL(size) start;
   // Pointer to where we are writing into the segment. Starts at 'start' and
   // cannot go beyond 'start' + 'size'.
@@ -58,7 +58,7 @@ typedef struct HuffmanTablesSegment {
 } HuffmanTablesSegment;
 
 // Chained memory segments of HuffmanCodes.
-typedef struct HuffmanTables {
+typedef type HuffmanTables struct {
   HuffmanTablesSegment root;
   // Currently processed segment. At first, this is 'root'.
   HuffmanTablesSegment* curr_segment;
@@ -81,7 +81,7 @@ func VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables);
 //    can fit into a small look-up table packed_table[]
 // The common literal base, if applicable, is stored in 'literal_arb'.
 typedef struct HTreeGroup HTreeGroup;
-struct HTreeGroup {
+type HTreeGroup struct {
   HuffmanCode* htrees[HUFFMAN_CODES_PER_META_CODE];
   int is_trivial_literal;  // True, if huffman trees for Red, Blue & Alpha
                            // Symbols are trivial (have a single code).

@@ -50,7 +50,7 @@ typedef struct {
   int is_key_frame;            // True if 'key_frame' has been chosen.
 } EncodedFrame;
 
-struct WebPAnimEncoder {
+type WebPAnimEncoder struct {
   const int canvas_width;                // Canvas width.
   const int canvas_height;               // Canvas height.
   const WebPAnimEncoderOptions options;  // Global encoding options.

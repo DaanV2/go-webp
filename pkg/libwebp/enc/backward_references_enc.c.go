@@ -79,7 +79,7 @@ static WEBP_INLINE int FindMatchLength(const uint32_t* const array1,
 // -----------------------------------------------------------------------------
 //  VP8LBackwardRefs
 
-struct PixOrCopyBlock {
+type PixOrCopyBlock struct {
   PixOrCopyBlock* next;  // next block (or NULL)
   PixOrCopy* start;      // data start
   int size;              // currently used size

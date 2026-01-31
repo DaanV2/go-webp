@@ -29,7 +29,7 @@ extern "C" {
 struct VP8LDecoder;  // Defined in dec/vp8li.h.
 
 typedef struct ALPHDecoder ALPHDecoder;
-struct ALPHDecoder {
+type ALPHDecoder struct {
   int width;
   int height;
   int method;

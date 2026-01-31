@@ -310,7 +310,7 @@ static int CoOccurrenceBuild(const WebPPicture* const pic,
   return 1;
 }
 
-struct Sum {
+type Sum struct {
   uint8_t index;
   uint32_t sum;
 };

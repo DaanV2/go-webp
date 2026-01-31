@@ -181,7 +181,7 @@ typedef struct {
   uint8_t alpha;  // quantization-susceptibility
 } VP8MBInfo;
 
-typedef struct VP8Matrix {
+typedef type VP8Matrix struct {
   uint16_t q[16];        // quantizer steps
   uint16_t iq[16];       // reciprocals, fixed point.
   uint32_t bias[16];     // rounding bias
@@ -348,7 +348,7 @@ size_t VP8EstimateTokenSize(VP8TBuffer* const b, const uint8_t* const probas);
 //------------------------------------------------------------------------------
 // VP8Encoder
 
-struct VP8Encoder {
+type VP8Encoder struct {
   const WebPConfig* config;  // user configuration and parameters
   WebPPicture* pic;          // input / output picture
 

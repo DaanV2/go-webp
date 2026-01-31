@@ -57,7 +57,7 @@ typedef enum WebPMuxAnimBlend {
 // Data type used to describe 'raw' data, e.g., chunk data
 // (ICC profile, metadata) and WebP compressed image data.
 // 'bytes' memory must be allocated using WebPMalloc() and such.
-struct WebPData {
+type WebPData struct {
   const uint8_t* bytes;
   size_t size;
 };

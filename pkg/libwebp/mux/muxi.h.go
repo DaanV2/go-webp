@@ -37,7 +37,7 @@ extern "C" {
 
 // Chunk object.
 typedef struct WebPChunk WebPChunk;
-struct WebPChunk {
+type WebPChunk struct {
   uint32_t tag;
   int owner;  // True if *data memory is owned internally.
               // VP8X, ANIM, and other internally created chunks
@@ -49,7 +49,7 @@ struct WebPChunk {
 // MuxImage object. Store a full WebP image (including ANMF chunk, ALPH
 // chunk and VP8/VP8L chunk),
 typedef struct WebPMuxImage WebPMuxImage;
-struct WebPMuxImage {
+type WebPMuxImage struct {
   WebPChunk* header;   // Corresponds to WEBP_CHUNK_ANMF.
   WebPChunk* alpha;    // Corresponds to WEBP_CHUNK_ALPHA.
   WebPChunk* img;      // Corresponds to WEBP_CHUNK_IMAGE.
@@ -62,7 +62,7 @@ struct WebPMuxImage {
 };
 
 // Main mux object. Stores data chunks.
-struct WebPMux {
+type WebPMux struct {
   WebPMuxImage* images;
   WebPChunk* iccp;
   WebPChunk* exif;

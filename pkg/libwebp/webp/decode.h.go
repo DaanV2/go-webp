@@ -199,13 +199,13 @@ static WEBP_INLINE int WebPIsRGBMode(WEBP_CSP_MODE mode) {
 //------------------------------------------------------------------------------
 // WebPDecBuffer: Generic structure for describing the output sample buffer.
 
-struct WebPRGBABuffer {  // view as RGBA
+type WebPRGBABuffer struct {  // view as RGBA
   uint8_t* rgba;         // pointer to RGBA samples
   int stride;            // stride in bytes from one scanline to the next.
   size_t size;           // total size of the *rgba buffer.
 };
 
-struct WebPYUVABuffer {    // view as YUVA
+type WebPYUVABuffer struct {    // view as YUVA
   uint8_t *y, *u, *v, *a;  // pointer to luma, chroma U/V, alpha samples
   int y_stride;            // luma stride
   int u_stride, v_stride;  // chroma strides
@@ -216,7 +216,7 @@ struct WebPYUVABuffer {    // view as YUVA
 };
 
 // Output buffer
-struct WebPDecBuffer {
+type WebPDecBuffer struct {
   WEBP_CSP_MODE colorspace;  // Colorspace.
   int width, height;         // Dimensions.
   int is_external_memory;    // If non-zero, 'internal_memory' pointer is not
@@ -437,7 +437,7 @@ typedef enum  VP8StatusCode {
 */
 
 // Features gathered from the bitstream
-struct WebPBitstreamFeatures {
+type WebPBitstreamFeatures struct {
   int width;          // Width in pixels, as read from the bitstream.
   int height;         // Height in pixels, as read from the bitstream.
   int has_alpha;      // True if the bitstream contains an alpha channel.
@@ -471,7 +471,7 @@ WebPGetFeatures(const uint8_t* WEBP_COUNTED_BY(data_size) data,
 }
 
 // Decoding options
-struct WebPDecoderOptions {
+type WebPDecoderOptions struct {
   int bypass_filtering;             // if true, skip the in-loop filtering
   int no_fancy_upsampling;          // if true, use faster pointwise upsampler
   int use_cropping;                 // if true, cropping is applied _first_
@@ -491,7 +491,7 @@ struct WebPDecoderOptions {
 };
 
 // Main object storing the configuration for advanced decoding.
-struct WebPDecoderConfig {
+type WebPDecoderConfig struct {
   WebPBitstreamFeatures input;  // Immutable bitstream features (optional)
   WebPDecBuffer output;         // Output buffer (can point to external mem)
   WebPDecoderOptions options;   // Decoding options

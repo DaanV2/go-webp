@@ -116,7 +116,7 @@ static WEBP_INLINE uint32_t PixOrCopyDistance(const PixOrCopy* const p) {
 #endif
 
 typedef struct VP8LHashChain VP8LHashChain;
-struct VP8LHashChain {
+type VP8LHashChain struct {
   // The 20 most significant bits contain the offset at which the best match
   // is found. These 20 bits are the limit defined by GetWindowSizeForHashChain
   // (through WINDOW_SIZE = 1<<20).
@@ -165,7 +165,7 @@ typedef struct PixOrCopyBlock PixOrCopyBlock;  // forward declaration
 typedef struct VP8LBackwardRefs VP8LBackwardRefs;
 
 // Container for blocks chain
-struct VP8LBackwardRefs {
+type VP8LBackwardRefs struct {
   int block_size;               // common block-size
   int error;                    // set to true if some memory error occurred
   PixOrCopyBlock* refs;         // list of currently used blocks

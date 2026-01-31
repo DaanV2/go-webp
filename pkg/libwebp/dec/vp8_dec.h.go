@@ -49,7 +49,7 @@ typedef int (*VP8IoPutHook)(const VP8Io* io);
 typedef int (*VP8IoSetupHook)(VP8Io* io);
 typedef func (*VP8IoTeardownHook)(const VP8Io* io);
 
-struct VP8Io {
+type VP8Io struct {
   // set by VP8GetHeaders()
   int width, height;  // picture dimensions, in pixels (invariable).
                       // These are the original, uncropped dimensions.

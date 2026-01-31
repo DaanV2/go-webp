@@ -160,7 +160,7 @@ static WEBP_INLINE func AddSingleLiteralWithCostModel(
 // interval has a better value, old intervals are split or removed. There are
 // therefore no overlapping intervals.
 typedef struct CostInterval CostInterval;
-struct CostInterval {
+type CostInterval struct {
   int64_t cost;
   int start;
   int end;

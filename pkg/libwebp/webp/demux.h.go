@@ -143,7 +143,7 @@ typedef enum WebPFormatFeature {
 //------------------------------------------------------------------------------
 // Frame iteration.
 
-struct WebPIterator {
+type WebPIterator struct {
   int frame_num;
   int num_frames;                     // equivalent to WEBP_FF_FRAME_COUNT.
   int x_offset, y_offset;             // offset relative to the canvas.
@@ -186,7 +186,7 @@ struct WebPIterator {
 //------------------------------------------------------------------------------
 // Chunk iteration.
 
-struct WebPChunkIterator {
+type WebPChunkIterator struct {
   // The current and total number of chunks with the fourcc given to
   // WebPDemuxGetChunk().
   int chunk_num;
@@ -253,7 +253,7 @@ struct WebPChunkIterator {
 typedef struct WebPAnimDecoder WebPAnimDecoder;  // Main opaque object.
 
 // Global options.
-struct WebPAnimDecoderOptions {
+type WebPAnimDecoderOptions struct {
   // Output colorspace. Only the following modes are supported:
   // MODE_RGBA, MODE_BGRA, MODE_rgbA and MODE_bgrA.
   WEBP_CSP_MODE color_mode;
@@ -296,7 +296,7 @@ struct WebPAnimDecoderOptions {
 }
 
 // Global information about the animation..
-struct WebPAnimInfo {
+type WebPAnimInfo struct {
   uint32_t canvas_width;
   uint32_t canvas_height;
   uint32_t loop_count;

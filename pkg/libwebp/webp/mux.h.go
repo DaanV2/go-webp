@@ -202,7 +202,7 @@ typedef enum WebPChunkId {
 // Images.
 
 // Encapsulates data about a single frame.
-struct WebPMuxFrameInfo {
+type WebPMuxFrameInfo struct {
   WebPData bitstream;  // image data: can be a raw VP8/VP8L bitstream
                        // or a single-image WebP file.
   int x_offset;        // x-offset of the frame.
@@ -290,7 +290,7 @@ struct WebPMuxFrameInfo {
 // Animation.
 
 // Animation parameters.
-struct WebPMuxAnimParams {
+type WebPMuxAnimParams struct {
   uint32_t bgcolor;  // Background color of the canvas stored (in MSB order) as:
                      // Bits 00 to 07: Alpha.
                      // Bits 08 to 15: Red.
@@ -433,7 +433,7 @@ struct WebPPicture;
 struct WebPConfig;
 
 // Global options.
-struct WebPAnimEncoderOptions {
+type WebPAnimEncoderOptions struct {
   WebPMuxAnimParams anim_params;  // Animation parameters.
   int minimize_size;  // If true, minimize the output size (slow). Implicitly
                       // disables key-frame insertion.

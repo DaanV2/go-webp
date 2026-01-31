@@ -39,7 +39,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 typedef uint16_t token_t;  // bit #15: bit value
                            // bit #14: flags for constant proba or idx
                            // bits #0..13: slot or constant proba
-struct VP8Tokens {
+type VP8Tokens struct {
   VP8Tokens* next;  // pointer to next page
 };
 // Token data is located in memory just after the 'next' field.

@@ -36,7 +36,7 @@ extern "C" {
 typedef enum { READ_DATA = 0, READ_HDR = 1, READ_DIM = 2 } VP8LDecodeState;
 
 typedef struct VP8LTransform VP8LTransform;
-struct VP8LTransform {
+type VP8LTransform struct {
   VP8LImageTransformType type;  // transform type.
   int bits;                     // subsampling bits defining transform window.
   int xsize;                    // transform window X index.
@@ -59,7 +59,7 @@ typedef struct {
 } VP8LMetadata;
 
 typedef struct VP8LDecoder VP8LDecoder;
-struct VP8LDecoder {
+type VP8LDecoder struct {
   VP8StatusCode status;
   VP8LDecodeState state;
   VP8Io* io;

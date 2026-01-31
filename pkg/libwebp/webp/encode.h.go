@@ -95,7 +95,7 @@ typedef enum WebPImageHint {
 } WebPImageHint;
 
 // Compression parameters.
-struct WebPConfig {
+type WebPConfig struct {
   int lossless;   // Lossless encoding (0=lossy(default), 1=lossless).
   float quality;  // between 0 and 100. For lossy, 0 gives the smallest
                   // size and 100 the largest. For lossless, this
@@ -207,7 +207,7 @@ typedef enum WebPPreset {
 // Input / Output
 // Structure for storing auxiliary statistics.
 
-struct WebPAuxStats {
+type WebPAuxStats struct {
   int coded_size;  // final size
 
   float PSNR[5];             // peak-signal-to-noise ratio for Y/U/V/All/Alpha
@@ -246,7 +246,7 @@ typedef int (*WebPWriterFunction)(const uint8_t* data, size_t data_size,
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
 // the following WebPMemoryWriter object (to be set as a custom_ptr).
-struct WebPMemoryWriter {
+type WebPMemoryWriter struct {
   uint8_t* mem;     // final buffer (of size 'max_size', larger than 'size').
   size_t size;      // final size
   size_t max_size;  // total capacity
@@ -305,7 +305,7 @@ typedef enum WebPEncodingError {
 // (use_argb, y/u/v, argb, ...) point to user-owned data, even if
 // WebPPictureAlloc() has been called. Depending on the value use_argb,
 // it's guaranteed that either *argb or *y/*u/*v content will be kept untouched.
-struct WebPPicture {
+type WebPPicture struct {
   //   INPUT
   //////////////
   // Main flag for encoder selecting between ARGB or YUV input.

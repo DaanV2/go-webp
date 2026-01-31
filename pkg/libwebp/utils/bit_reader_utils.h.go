@@ -97,7 +97,7 @@ typedef uint32_t range_t;
 // Bitreader
 
 typedef struct VP8BitReader VP8BitReader;
-struct VP8BitReader {
+type VP8BitReader struct {
   // boolean decoder  (keep the field ordering as is!)
   bit_t value;    // current value
   range_t range;  // current range minus 1. In [127, 254] interval.

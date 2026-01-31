@@ -31,7 +31,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // Structure used for on-the-fly rescaling
 typedef uint32_t rescaler_t;  // type for side-buffer
 typedef struct WebPRescaler WebPRescaler;
-struct WebPRescaler {
+type WebPRescaler struct {
   int x_expand;               // true if we're expanding in the x direction
   int y_expand;               // true if we're expanding in the y direction
   int num_channels;           // bytes to jump between pixels

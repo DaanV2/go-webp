@@ -69,7 +69,7 @@ typedef struct {
   const uint8_t* part0_buf;  // buffer to store partition #0
 } MemBuffer;
 
-struct WebPIDecoder {
+type WebPIDecoder struct {
   DecState state;        // current decoding state
   WebPDecParams params;  // Params to store output info
   int is_lossless;       // for down-casting 'dec'.

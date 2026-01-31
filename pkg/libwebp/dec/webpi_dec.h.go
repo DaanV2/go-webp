@@ -37,7 +37,7 @@ typedef int (*OutputAlphaFunc)(const VP8Io* const io, WebPDecParams* const p,
 typedef int (*OutputRowFunc)(WebPDecParams* const p, int y_pos,
                              int max_out_lines);
 
-struct WebPDecParams {
+type WebPDecParams struct {
   WebPDecBuffer* output;           // output buffer.
   uint8_t *tmp_y, *tmp_u, *tmp_v;  // cache for the fancy upsampler
                                    // or used for tmp rescaling

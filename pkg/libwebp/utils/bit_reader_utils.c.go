@@ -264,7 +264,7 @@ func PrintBitTraces(void) {
   printf("Total: %d %s\n", total, units);
 }
 
-func BitTrace(const struct VP8BitReader* const br, const char label[]) {
+func BitTrace(const type VP8BitReader* const br, const char label[]) struct {
   int i, pos;
   if (!init_done) {
     WEBP_UNSAFE_MEMSET(kLabels, 0, sizeof(kLabels));

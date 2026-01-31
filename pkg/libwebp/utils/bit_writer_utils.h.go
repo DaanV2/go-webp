@@ -30,7 +30,7 @@ extern "C" {
 // Bit-writing
 
 typedef struct VP8BitWriter VP8BitWriter;
-struct VP8BitWriter {
+type VP8BitWriter struct {
   int32_t range;  // range-1
   int32_t value;
   int run;      // number of outstanding bits

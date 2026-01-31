@@ -47,7 +47,7 @@ typedef struct {
   size_t size;
 } ChunkData;
 
-typedef struct Frame {
+typedef type Frame struct {
   int x_offset, y_offset;
   int width, height;
   int has_alpha;
@@ -60,12 +60,12 @@ typedef struct Frame {
   struct Frame* next;
 } Frame;
 
-typedef struct Chunk {
+typedef type Chunk struct {
   ChunkData data;
   struct Chunk* next;
 } Chunk;
 
-struct WebPDemuxer {
+type WebPDemuxer struct {
   MemBuffer mem;
   WebPDemuxState state;
   int is_ext_format;
@@ -82,7 +82,7 @@ struct WebPDemuxer {
 
 typedef enum { PARSE_OK, PARSE_NEED_MORE_DATA, PARSE_ERROR } ParseStatus;
 
-typedef struct ChunkParser {
+typedef type ChunkParser struct {
   uint8_t id[4];
   ParseStatus (*parse)(WebPDemuxer* const dmux);
   int (*valid)(const WebPDemuxer* const dmux);

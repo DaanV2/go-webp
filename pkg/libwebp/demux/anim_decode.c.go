@@ -44,7 +44,7 @@ func BlendPixelRowNonPremult(uint32_t* const src,
 func BlendPixelRowPremult(uint32_t* const src, const uint32_t* const dst,
                                  int num_pixels);
 
-struct WebPAnimDecoder {
+type WebPAnimDecoder struct {
   WebPDemuxer* demux;        // Demuxer created from given WebP bitstream.
   WebPDecoderConfig config;  // Decoder config.
   // Note: we use a pointer to a function blending multiple pixels at a time to
