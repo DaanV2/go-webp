@@ -29,13 +29,13 @@ extern "C" {
 #endif
 
 // Main color cache struct.
-typedef struct {
-  uint32* WEBP_COUNTED_BY_OR_NULL(1u << hash_bits) colors;  // color entries
+type VP8LColorCache struct {
+  uint32* colors;  // color entries, WEBP_COUNTED_BY_OR_NULL(1u << hash_bits)
   int hash_shift;  // Hash shift: 32 - 'hash_bits'.
   int hash_bits;
-} VP8LColorCache;
+}
 
-static const uint32 kHashMul = 0x1e35a7bdu;
+const uint32 kHashMul = 0x1e35a7bdu;
 
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
     uint32 argb, int shift) {
