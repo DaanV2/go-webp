@@ -187,7 +187,7 @@ static void DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
 
 // Appends data to the end of MemBuffer->buf. It expands the allocated memory
 // size if required and also updates VP8BitReader's if new memory is allocated.
-WEBP_NODISCARD static int AppendToMemBuffer(WebPIDecoder* const idec,
+ static int AppendToMemBuffer(WebPIDecoder* const idec,
                                             const uint8_t* const data,
                                             size_t data_size) {
   VP8Decoder* const dec = (VP8Decoder*)idec->dec;
@@ -230,7 +230,7 @@ WEBP_NODISCARD static int AppendToMemBuffer(WebPIDecoder* const idec,
   return 1;
 }
 
-WEBP_NODISCARD static int RemapMemBuffer(WebPIDecoder* const idec,
+ static int RemapMemBuffer(WebPIDecoder* const idec,
                                          const uint8_t* const data,
                                          size_t data_size) {
   MemBuffer* const mem = &idec->mem;
@@ -265,7 +265,7 @@ static void ClearMemBuffer(MemBuffer* const mem) {
   }
 }
 
-WEBP_NODISCARD static int CheckMemBufferMode(MemBuffer* const mem,
+ static int CheckMemBufferMode(MemBuffer* const mem,
                                              MemBufferMode expected) {
   if (mem->mode == MEM_MODE_NONE) {
     mem->mode = expected;  // switch to the expected mode
@@ -277,7 +277,7 @@ WEBP_NODISCARD static int CheckMemBufferMode(MemBuffer* const mem,
 }
 
 // To be called last.
-WEBP_NODISCARD static VP8StatusCode FinishDecoding(WebPIDecoder* const idec) {
+ static VP8StatusCode FinishDecoding(WebPIDecoder* const idec) {
   const WebPDecoderOptions* const options = idec->params.options;
   WebPDecBuffer* const output = idec->params.output;
 
@@ -640,7 +640,7 @@ static VP8StatusCode IDecode(WebPIDecoder* idec) {
 //------------------------------------------------------------------------------
 // Internal constructor
 
-WEBP_NODISCARD static WebPIDecoder* NewDecoder(
+ static WebPIDecoder* NewDecoder(
     WebPDecBuffer* const output_buffer,
     const WebPBitstreamFeatures* const features) {
   WebPIDecoder* idec = (WebPIDecoder*)WebPSafeCalloc(1ULL, sizeof(*idec));
@@ -907,7 +907,7 @@ const WebPDecBuffer* WebPIDecodedArea(const WebPIDecoder* idec, int* left,
   return src;
 }
 
-WEBP_NODISCARD uint8_t* WebPIDecGetRGB(const WebPIDecoder* idec, int* last_y,
+ uint8_t* WebPIDecGetRGB(const WebPIDecoder* idec, int* last_y,
                                        int* width, int* height, int* stride) {
   const WebPDecBuffer* const src = GetOutputBuffer(idec);
   if (src == NULL) return NULL;
@@ -923,7 +923,7 @@ WEBP_NODISCARD uint8_t* WebPIDecGetRGB(const WebPIDecoder* idec, int* last_y,
   return src->u.RGBA.rgba;
 }
 
-WEBP_NODISCARD uint8_t* WebPIDecGetYUVA(const WebPIDecoder* idec, int* last_y,
+ uint8_t* WebPIDecGetYUVA(const WebPIDecoder* idec, int* last_y,
                                         uint8_t** u, uint8_t** v, uint8_t** a,
                                         int* width, int* height, int* stride,
                                         int* uv_stride, int* a_stride) {

@@ -419,7 +419,7 @@ static WEBP_INLINE void SaturateAdd(uint64_t a, int64_t* b) {
 
 // Returns 1 if the cost of the combined histogram is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
-WEBP_NODISCARD static int GetCombinedHistogramEntropy(
+ static int GetCombinedHistogramEntropy(
     const VP8LHistogram* const a, const VP8LHistogram* const b,
     int64_t cost_threshold_in, uint64_t* cost, uint64_t costs[5]) {
   int i;
@@ -501,7 +501,7 @@ static void UpdateHistogramCost(uint64_t bit_cost, uint64_t costs[5],
 // early.
 // Returns 1 if the cost is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
-WEBP_NODISCARD static int HistogramAddEval(const VP8LHistogram* const a,
+ static int HistogramAddEval(const VP8LHistogram* const a,
                                            const VP8LHistogram* const b,
                                            VP8LHistogram* const out,
                                            int64_t cost_threshold) {
@@ -522,7 +522,7 @@ WEBP_NODISCARD static int HistogramAddEval(const VP8LHistogram* const a,
 // the term C(b) which is constant over all the evaluations.
 // Returns 1 if the cost is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
-WEBP_NODISCARD static int HistogramAddThresh(const VP8LHistogram* const a,
+ static int HistogramAddThresh(const VP8LHistogram* const a,
                                              const VP8LHistogram* const b,
                                              int64_t cost_threshold,
                                              int64_t* cost_out) {
@@ -847,7 +847,7 @@ static void HistoQueueFixPair(int bad_id, int good_id,
 // called when the histograms have been merged with a third one.
 // Returns 1 if the cost diff is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
-WEBP_NODISCARD static int HistoQueueUpdatePair(const VP8LHistogram* const h1,
+ static int HistoQueueUpdatePair(const VP8LHistogram* const h1,
                                                const VP8LHistogram* const h2,
                                                int64_t cost_threshold,
                                                HistogramPair* const pair) {

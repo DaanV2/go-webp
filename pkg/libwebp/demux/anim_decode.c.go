@@ -75,7 +75,7 @@ int WebPAnimDecoderOptionsInitInternal(WebPAnimDecoderOptions* dec_options,
   return 1;
 }
 
-WEBP_NODISCARD static int ApplyDecoderOptions(
+ static int ApplyDecoderOptions(
     const WebPAnimDecoderOptions* const dec_options,
     WebPAnimDecoder* const dec) {
   WEBP_CSP_MODE mode;
@@ -167,7 +167,7 @@ static int IsFullFrame(int width, int height, int canvas_width,
 }
 
 // Clear the canvas to transparent.
-WEBP_NODISCARD static int ZeroFillCanvas(uint8_t* buf, uint32_t canvas_width,
+ static int ZeroFillCanvas(uint8_t* buf, uint32_t canvas_width,
                                          uint32_t canvas_height) {
   const uint64_t size =
       (uint64_t)canvas_width * canvas_height * NUM_CHANNELS * sizeof(*buf);
@@ -189,7 +189,7 @@ static void ZeroFillFrameRect(uint8_t* buf, int buf_stride, int x_offset,
 }
 
 // Copy width * height pixels from 'src' to 'dst'.
-WEBP_NODISCARD static int CopyCanvas(const uint8_t* src, uint8_t* dst,
+ static int CopyCanvas(const uint8_t* src, uint8_t* dst,
                                      uint32_t width, uint32_t height) {
   const uint64_t size = (uint64_t)width * height * NUM_CHANNELS;
   if (!CheckSizeOverflow(size)) return 0;

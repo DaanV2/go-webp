@@ -34,7 +34,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // ALPHDecoder object.
 
 // Allocates a new alpha decoder instance.
-WEBP_NODISCARD static ALPHDecoder* ALPHNew(void) {
+ static ALPHDecoder* ALPHNew(void) {
   ALPHDecoder* const dec = (ALPHDecoder*)WebPSafeCalloc(1ULL, sizeof(*dec));
   return dec;
 }
@@ -55,7 +55,7 @@ static void ALPHDelete(ALPHDecoder* const dec) {
 // header for alpha data stored using lossless compression.
 // Returns false in case of error in alpha header (data too short, invalid
 // compression method or filter, error in lossless header data etc).
-WEBP_NODISCARD static int ALPHInit(ALPHDecoder* const dec, const uint8_t* data,
+ static int ALPHInit(ALPHDecoder* const dec, const uint8_t* data,
                                    size_t data_size, const VP8Io* const src_io,
                                    uint8_t* output) {
   int ok = 0;
@@ -123,7 +123,7 @@ WEBP_NODISCARD static int ALPHInit(ALPHDecoder* const dec, const uint8_t* data,
 // starting from row number 'row'. It assumes that rows up to (row - 1) have
 // already been decoded.
 // Returns false in case of bitstream error.
-WEBP_NODISCARD static int ALPHDecode(VP8Decoder* const dec, int row,
+ static int ALPHDecode(VP8Decoder* const dec, int row,
                                      int num_rows) {
   ALPHDecoder* const alph_dec = dec->alph_dec;
   const int width = alph_dec->width;
@@ -155,7 +155,7 @@ WEBP_NODISCARD static int ALPHDecode(VP8Decoder* const dec, int row,
   return 1;
 }
 
-WEBP_NODISCARD static int AllocateAlphaPlane(VP8Decoder* const dec,
+ static int AllocateAlphaPlane(VP8Decoder* const dec,
                                              const VP8Io* const io) {
   const int stride = io->width;
   const int height = io->crop_bottom;
@@ -184,7 +184,7 @@ void WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
 //------------------------------------------------------------------------------
 // Main entry point.
 
-WEBP_NODISCARD const uint8_t* VP8DecompressAlphaRows(VP8Decoder* const dec,
+ const uint8_t* VP8DecompressAlphaRows(VP8Decoder* const dec,
                                                      const VP8Io* const io,
                                                      int row, int num_rows) {
   const int width = io->width;

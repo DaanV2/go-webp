@@ -94,7 +94,7 @@ void WebPInitCustomIo(WebPDecParams* const params, VP8Io* const io);
 
 // Setup crop_xxx fields, mb_w and mb_h in io. 'src_colorspace' refers
 // to the *compressed* format, not the output one.
-WEBP_NODISCARD int WebPIoInitFromOptions(
+ int WebPIoInitFromOptions(
     const WebPDecoderOptions* const options, VP8Io* const io,
     WEBP_CSP_MODE src_colorspace);
 

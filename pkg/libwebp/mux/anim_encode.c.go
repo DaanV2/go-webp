@@ -1650,7 +1650,7 @@ int WebPAnimEncoderAdd(WebPAnimEncoder* enc, WebPPicture* frame, int timestamp,
 // -----------------------------------------------------------------------------
 // Bitstream assembly.
 
-WEBP_NODISCARD static int DecodeFrameOntoCanvas(
+ static int DecodeFrameOntoCanvas(
     const WebPMuxFrameInfo* const frame, WebPPicture* const canvas) {
   const WebPData* const image = &frame->bitstream;
   WebPPicture sub_image;

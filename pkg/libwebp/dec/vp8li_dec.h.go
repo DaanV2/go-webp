@@ -105,7 +105,7 @@ struct ALPHDecoder;  // Defined in dec/alphai.h.
 
 // Decodes image header for alpha data stored using lossless compression.
 // Returns false in case of error.
-WEBP_NODISCARD int VP8LDecodeAlphaHeader(
+ int VP8LDecodeAlphaHeader(
     struct ALPHDecoder* const alph_dec,
     const uint8_t* const WEBP_COUNTED_BY(data_size) data, size_t data_size);
 
@@ -113,18 +113,18 @@ WEBP_NODISCARD int VP8LDecodeAlphaHeader(
 // already decoded in previous call(s), it will resume decoding from where it
 // was paused.
 // Returns false in case of bitstream error.
-WEBP_NODISCARD int VP8LDecodeAlphaImageStream(
+ int VP8LDecodeAlphaImageStream(
     struct ALPHDecoder* const alph_dec, int last_row);
 
 // Allocates and initialize a new lossless decoder instance.
-WEBP_NODISCARD VP8LDecoder* VP8LNew(void);
+ VP8LDecoder* VP8LNew(void);
 
 // Decodes the image header. Returns false in case of error.
-WEBP_NODISCARD int VP8LDecodeHeader(VP8LDecoder* const dec, VP8Io* const io);
+ int VP8LDecodeHeader(VP8LDecoder* const dec, VP8Io* const io);
 
 // Decodes an image. It's required to decode the lossless header before calling
 // this function. Returns false in case of error, with updated dec->status.
-WEBP_NODISCARD int VP8LDecodeImage(VP8LDecoder* const dec);
+ int VP8LDecodeImage(VP8LDecoder* const dec);
 
 // Clears and deallocate a lossless decoder instance.
 void VP8LDelete(VP8LDecoder* const dec);
@@ -136,7 +136,7 @@ void VP8LDelete(VP8LDecoder* const dec);
 // 'num_htree_groups' groups. If 'num_htree_groups_max' > 'num_htree_groups',
 // some of those indices map to -1. This is used for non-balanced codes to
 // limit memory usage.
-WEBP_NODISCARD int ReadHuffmanCodesHelper(
+ int ReadHuffmanCodesHelper(
     int color_cache_bits, int num_htree_groups, int num_htree_groups_max,
     const int* const mapping, VP8LDecoder* const dec,
     HuffmanTables* const huffman_tables, HTreeGroup** const htree_groups);

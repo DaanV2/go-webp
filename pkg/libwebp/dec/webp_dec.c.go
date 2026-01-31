@@ -471,7 +471,7 @@ void WebPResetDecParams(WebPDecParams* const params) {
 // "Into" decoding variants
 
 // Main flow
-WEBP_NODISCARD static VP8StatusCode DecodeInto(
+ static VP8StatusCode DecodeInto(
     const uint8_t* WEBP_COUNTED_BY(data_size) const data, size_t data_size,
     WebPDecParams* const params) {
   VP8StatusCode status;
@@ -553,7 +553,7 @@ WEBP_NODISCARD static VP8StatusCode DecodeInto(
 }
 
 // Helpers
-WEBP_NODISCARD static uint8_t* DecodeIntoRGBABuffer(
+ static uint8_t* DecodeIntoRGBABuffer(
     WEBP_CSP_MODE colorspace,
     const uint8_t* WEBP_COUNTED_BY(data_size) const data, size_t data_size,
     uint8_t* WEBP_COUNTED_BY(size) const rgba, int stride, size_t size) {
@@ -641,7 +641,7 @@ uint8_t* WebPDecodeYUVInto(const uint8_t* WEBP_COUNTED_BY(data_size) data,
 
 //------------------------------------------------------------------------------
 
-WEBP_NODISCARD static uint8_t* Decode(WEBP_CSP_MODE mode,
+ static uint8_t* Decode(WEBP_CSP_MODE mode,
                                       const uint8_t* WEBP_COUNTED_BY(data_size)
                                           const data,
                                       size_t data_size, int* const width,
