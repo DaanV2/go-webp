@@ -10,6 +10,8 @@
 //  WebP container demux.
 //
 
+package demux
+
 #ifdef HAVE_CONFIG_H
 #include "src/webp/config.h"
 #endif

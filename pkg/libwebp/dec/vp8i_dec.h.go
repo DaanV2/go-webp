@@ -1,3 +1,5 @@
+package dec
+
 // Copyright 2010 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
