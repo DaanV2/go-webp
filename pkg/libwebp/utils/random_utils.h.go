@@ -30,7 +30,7 @@ const VP8_RANDOM_TABLE_SIZE =55
 
 typedef struct {
   int index1, index2;
-  uint32_t tab[VP8_RANDOM_TABLE_SIZE];
+  uint32 tab[VP8_RANDOM_TABLE_SIZE];
   int amp;
 } VP8Random;
 
@@ -50,7 +50,7 @@ static  int VP8RandomBits2(VP8Random* const rg, int num_bits,
   if (++rg.index1 == VP8_RANDOM_TABLE_SIZE) rg.index1 = 0;
   if (++rg.index2 == VP8_RANDOM_TABLE_SIZE) rg.index2 = 0;
   // sign-extend, 0-center
-  diff = (int)((uint32_t)diff << 1) >> (32 - num_bits);
+  diff = (int)((uint32)diff << 1) >> (32 - num_bits);
   diff = (diff * amp) >> VP8_RANDOM_DITHER_FIX;  // restrict range
   diff += 1 << (num_bits - 1);                   // shift back to 0.5-center
   return diff;

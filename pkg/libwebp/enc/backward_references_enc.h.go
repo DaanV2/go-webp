@@ -33,14 +33,14 @@ const MAX_COLOR_CACHE_BITS =10
 enum Mode { kLiteral, kCacheIdx, kCopy, kNone };
 
 typedef struct {
-  // mode as uint8_t to make the memory layout to be exactly 8 bytes.
-  uint8_t mode;
-  uint16_t len;
-  uint32_t argb_or_distance;
+  // mode as uint8 to make the memory layout to be exactly 8 bytes.
+  uint8 mode;
+  uint16 len;
+  uint32 argb_or_distance;
 } PixOrCopy;
 
-static  PixOrCopy PixOrCopyCreateCopy(uint32_t distance,
-                                                 uint16_t len) {
+static  PixOrCopy PixOrCopyCreateCopy(uint32 distance,
+                                                 uint16 len) {
   PixOrCopy retval;
   retval.mode = kCopy;
   retval.argb_or_distance = distance;
@@ -58,7 +58,7 @@ static  PixOrCopy PixOrCopyCreateCacheIdx(int idx) {
   return retval;
 }
 
-static  PixOrCopy PixOrCopyCreateLiteral(uint32_t argb) {
+static  PixOrCopy PixOrCopyCreateLiteral(uint32 argb) {
   PixOrCopy retval;
   retval.mode = kLiteral;
   retval.argb_or_distance = argb;
@@ -78,23 +78,23 @@ static  int PixOrCopyIsCopy(const PixOrCopy* const p) {
   return (p.mode == kCopy);
 }
 
-static  uint32_t PixOrCopyLiteral(const PixOrCopy* const p,
+static  uint32 PixOrCopyLiteral(const PixOrCopy* const p,
                                              int component) {
   assert.Assert(p.mode == kLiteral);
   return (p.argb_or_distance >> (component * 8)) & 0xff;
 }
 
-static  uint32_t PixOrCopyLength(const PixOrCopy* const p) {
+static  uint32 PixOrCopyLength(const PixOrCopy* const p) {
   return p.len;
 }
 
-static  uint32_t PixOrCopyCacheIdx(const PixOrCopy* const p) {
+static  uint32 PixOrCopyCacheIdx(const PixOrCopy* const p) {
   assert.Assert(p.mode == kCacheIdx);
   assert.Assert(p.argb_or_distance < (1U << MAX_COLOR_CACHE_BITS));
   return p.argb_or_distance;
 }
 
-static  uint32_t PixOrCopyDistance(const PixOrCopy* const p) {
+static  uint32 PixOrCopyDistance(const PixOrCopy* const p) {
   assert.Assert(p.mode == kCopy);
   return p.argb_or_distance;
 }
@@ -122,7 +122,7 @@ type VP8LHashChain struct {
   // (through WINDOW_SIZE = 1<<20).
   // The lower 12 bits contain the length of the match. The 12 bit limit is
   // defined in MaxFindCopyLength with MAX_LENGTH=4096.
-  uint32_t* offset_length;
+  uint32* offset_length;
   // This is the maximum size of the hash_chain that can be constructed.
   // Typically this is the pixel count (width x height) for a given image.
   int size;
@@ -132,7 +132,7 @@ type VP8LHashChain struct {
 int VP8LHashChainInit(VP8LHashChain* const p, int size);
 // Pre-compute the best matches for argb. pic and percent are for progress.
 int VP8LHashChainFill(VP8LHashChain* const p, int quality,
-                      const uint32_t* const argb, int xsize, int ysize,
+                      const uint32* const argb, int xsize, int ysize,
                       int low_effort, const WebPPicture* const pic,
                       int percent_range, int* const percent);
 func VP8LHashChainClear(VP8LHashChain* const p);  // release memory
@@ -223,7 +223,7 @@ enum VP8LLZ77Type { kLZ77Standard = 1, kLZ77RLE = 2, kLZ77Box = 4 };
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
 int VP8LGetBackwardReferences(
-    int width, int height, const uint32_t* const argb, int quality,
+    int width, int height, const uint32* const argb, int quality,
     int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache,
     const VP8LHashChain* const hash_chain, VP8LBackwardRefs* const refs,
     int* const cache_bits_best, const WebPPicture* const pic, int percent_range,

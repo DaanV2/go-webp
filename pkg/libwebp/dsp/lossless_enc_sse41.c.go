@@ -27,13 +27,13 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Cost operations.
 
-static  uint32_t HorizontalSum_SSE41(__m128i cost) {
+static  uint32 HorizontalSum_SSE41(__m128i cost) {
   cost = _mm_add_epi32(cost, _mm_srli_si128(cost, 8));
   cost = _mm_add_epi32(cost, _mm_srli_si128(cost, 4));
   return _mm_cvtsi128_si32(cost);
 }
 
-static uint32_t ExtraCost_SSE41(const uint32_t* const a, int length) {
+static uint32 ExtraCost_SSE41(const uint32* const a, int length) {
   int i;
   __m128i cost = _mm_set_epi32(2 * a[7], 2 * a[6], a[5], a[4]);
   assert.Assert(length % 8 == 0);
@@ -53,7 +53,7 @@ static uint32_t ExtraCost_SSE41(const uint32_t* const a, int length) {
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func SubtractGreenFromBlueAndRed_SSE41(uint32_t* argb_data,
+func SubtractGreenFromBlueAndRed_SSE41(uint32* argb_data,
                                               int num_pixels) {
   int i;
   const __m128i kCstShuffle =
@@ -74,16 +74,16 @@ func SubtractGreenFromBlueAndRed_SSE41(uint32_t* argb_data,
 // Color Transform
 
 // For sign-extended multiplying constants, pre-shifted by 5:
-#define CST_5b(X) (((int16_t)((uint16_t)(X) << 8)) >> 5)
+#define CST_5b(X) (((int16)((uint16)(X) << 8)) >> 5)
 
 #define MK_CST_16(HI, LO) \
-  _mm_set1_epi32((int)(((uint32_t)(HI) << 16) | ((LO) & 0xffff)))
+  _mm_set1_epi32((int)(((uint32)(HI) << 16) | ((LO) & 0xffff)))
 
-func CollectColorBlueTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
+func CollectColorBlueTransforms_SSE41(const uint32* WEBP_RESTRICT argb,
                                              int stride, int tile_width,
                                              int tile_height, int green_to_blue,
                                              int red_to_blue,
-                                             uint32_t histo[]) {
+                                             uint32 histo[]) {
   const __m128i mult =
       MK_CST_16(CST_5b(red_to_blue) + 256, CST_5b(green_to_blue));
   const __m128i perm =
@@ -91,7 +91,7 @@ func CollectColorBlueTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
   if (tile_width >= 4) {
     int y;
     for (y = 0; y < tile_height; ++y) {
-      const uint32_t* const src = argb + y * stride;
+      const uint32* const src = argb + y * stride;
       const __m128i A1 = _mm_loadu_si128((const __m128i*)src);
       const __m128i B1 = _mm_shuffle_epi8(A1, perm);
       const __m128i C1 = _mm_mulhi_epi16(B1, mult);
@@ -126,16 +126,16 @@ func CollectColorBlueTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
   }
 }
 
-func CollectColorRedTransforms_SSE41(const uint32_t* WEBP_RESTRICT argb,
+func CollectColorRedTransforms_SSE41(const uint32* WEBP_RESTRICT argb,
                                             int stride, int tile_width,
                                             int tile_height, int green_to_red,
-                                            uint32_t histo[]) {
+                                            uint32 histo[]) {
   const __m128i mult = MK_CST_16(0, CST_5b(green_to_red));
   const __m128i mask_g = _mm_set1_epi32(0x0000ff00);
   if (tile_width >= 4) {
     int y;
     for (y = 0; y < tile_height; ++y) {
-      const uint32_t* const src = argb + y * stride;
+      const uint32* const src = argb + y * stride;
       const __m128i A1 = _mm_loadu_si128((const __m128i*)src);
       const __m128i B1 = _mm_and_si128(A1, mask_g);
       const __m128i C1 = _mm_madd_epi16(B1, mult);

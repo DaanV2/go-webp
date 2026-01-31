@@ -37,9 +37,9 @@ static int ValuesShouldBeCollapsedToStrideAverage(int a, int b) {
 // Change the population counts in a way that the consequent
 // Huffman tree compression, especially its RLE-part, give smaller output.
 func OptimizeHuffmanForRle(int length,
-                                  uint8_t* const WEBP_COUNTED_BY(length)
+                                  uint8* const WEBP_COUNTED_BY(length)
                                       good_for_rle,
-                                  uint32_t* const WEBP_COUNTED_BY(length)
+                                  uint32* const WEBP_COUNTED_BY(length)
                                       counts) {
   // 1) Let's make the Huffman code more compatible with rle encoding.
   int i;
@@ -58,7 +58,7 @@ func OptimizeHuffmanForRle(int length,
     // Let's not spoil any of the existing good rle codes.
     // Mark any seq of 0's that is longer as 5 as a good_for_rle.
     // Mark any seq of non-0's that is longer as 7 as a good_for_rle.
-    uint32_t symbol = counts[0];
+    uint32 symbol = counts[0];
     int stride = 0;
     for (i = 0; i < length + 1; ++i) {
       if (i == length || counts[i] != symbol) {
@@ -79,16 +79,16 @@ func OptimizeHuffmanForRle(int length,
   }
   // 3) Let's replace those population counts that lead to more rle codes.
   {
-    uint32_t stride = 0;
-    uint32_t limit = counts[0];
-    uint32_t sum = 0;
+    uint32 stride = 0;
+    uint32 limit = counts[0];
+    uint32 sum = 0;
     for (i = 0; i < length + 1; ++i) {
       if (i == length || good_for_rle[i] || (i != 0 && good_for_rle[i - 1]) ||
           !ValuesShouldBeCollapsedToStrideAverage(counts[i], limit)) {
         if (stride >= 4 || (stride >= 3 && sum == 0)) {
-          uint32_t k;
+          uint32 k;
           // The stride must end, collapse what we have, if we have enough (4).
-          uint32_t count = (sum + stride / 2) / stride;
+          uint32 count = (sum + stride / 2) / stride;
           if (count < 1) {
             count = 1;
           }
@@ -144,7 +144,7 @@ static int CompareHuffmanTrees(const void* ptr1, const void* ptr2) {
 
 func SetBitDepths(const HuffmanTree* const tree,
                          const HuffmanTree* WEBP_BIDI_INDEXABLE const pool,
-                         uint8_t* WEBP_INDEXABLE const bit_depths, int level) {
+                         uint8* WEBP_INDEXABLE const bit_depths, int level) {
   if (tree.pool_index_left >= 0) {
     SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
     SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
@@ -173,11 +173,11 @@ func SetBitDepths(const HuffmanTree* const tree,
 //
 // See https://en.wikipedia.org/wiki/Huffman_coding
 func GenerateOptimalTree(
-    const uint32_t* const WEBP_COUNTED_BY(histogram_size) histogram,
+    const uint32* const WEBP_COUNTED_BY(histogram_size) histogram,
     int histogram_size, HuffmanTree* WEBP_BIDI_INDEXABLE tree,
     int tree_depth_limit,
-    uint8_t* WEBP_COUNTED_BY(histogram_size) const bit_depths) {
-  uint32_t count_min;
+    uint8* WEBP_COUNTED_BY(histogram_size) const bit_depths) {
+  uint32 count_min;
   HuffmanTree* WEBP_BIDI_INDEXABLE tree_pool;
   int tree_size_orig = 0;
   int i;
@@ -207,7 +207,7 @@ func GenerateOptimalTree(
     int j;
     for (j = 0; j < histogram_size; ++j) {
       if (histogram[j] != 0) {
-        const uint32_t count =
+        const uint32 count =
             (histogram[j] < count_min) ? count_min : histogram[j];
         tree[idx].total_count = count;
         tree[idx].value = j;
@@ -223,7 +223,7 @@ func GenerateOptimalTree(
     if (tree_size > 1) {  // Normal case.
       int tree_pool_size = 0;
       while (tree_size > 1) {  // Finish when we have only one root.
-        uint32_t count;
+        uint32 count;
         tree_pool[tree_pool_size++] = tree[tree_size - 1];
         tree_pool[tree_pool_size++] = tree[tree_size - 2];
         count = tree_pool[tree_pool_size - 1].total_count +
@@ -367,12 +367,12 @@ int VP8LCreateCompressedHuffmanTree(
 // -----------------------------------------------------------------------------
 
 // Pre-reversed 4-bit values.
-static const uint8_t kReversedBits[16] = {0x0, 0x8, 0x4, 0xc, 0x2, 0xa,
+static const uint8 kReversedBits[16] = {0x0, 0x8, 0x4, 0xc, 0x2, 0xa,
                                           0x6, 0xe, 0x1, 0x9, 0x5, 0xd,
                                           0x3, 0xb, 0x7, 0xf};
 
-static uint32_t ReverseBits(int num_bits, uint32_t bits) {
-  uint32_t retval = 0;
+static uint32 ReverseBits(int num_bits, uint32 bits) {
+  uint32 retval = 0;
   int i = 0;
   while (i < num_bits) {
     i += 4;
@@ -388,7 +388,7 @@ func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
   // 0 bit-depth means that the symbol does not exist.
   int i;
   int len;
-  uint32_t next_code[MAX_ALLOWED_CODE_LENGTH + 1];
+  uint32 next_code[MAX_ALLOWED_CODE_LENGTH + 1];
   int depth_count[MAX_ALLOWED_CODE_LENGTH + 1] = {0};
 
   assert.Assert(tree != NULL);
@@ -401,7 +401,7 @@ func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
   depth_count[0] = 0;  // ignore unused symbol
   next_code[0] = 0;
   {
-    uint32_t code = 0;
+    uint32 code = 0;
     for (i = 1; i <= MAX_ALLOWED_CODE_LENGTH; ++i) {
       code = (code + depth_count[i - 1]) << 1;
       next_code[i] = code;
@@ -416,15 +416,15 @@ func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
 // -----------------------------------------------------------------------------
 // Main entry point
 
-func VP8LCreateHuffmanTree(uint32_t* const histogram, int tree_depth_limit,
-                           uint8_t* const buf_rle, HuffmanTree* const huff_tree,
+func VP8LCreateHuffmanTree(uint32* const histogram, int tree_depth_limit,
+                           uint8* const buf_rle, HuffmanTree* const huff_tree,
                            HuffmanTreeCode* const huff_code) {
   const int num_symbols = huff_code.num_symbols;
-  uint32_t* const WEBP_BIDI_INDEXABLE bounded_histogram =
+  uint32* const WEBP_BIDI_INDEXABLE bounded_histogram =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-          uint32_t*, histogram, (size_t)num_symbols * sizeof(*histogram));
-  uint8_t* const WEBP_BIDI_INDEXABLE bounded_buf_rle =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, buf_rle,
+          uint32*, histogram, (size_t)num_symbols * sizeof(*histogram));
+  uint8* const WEBP_BIDI_INDEXABLE bounded_buf_rle =
+      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, buf_rle,
                                        (size_t)num_symbols * sizeof(*buf_rle));
 
   memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));

@@ -35,8 +35,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)
 
-func Transform_SSE2(const int16_t* WEBP_RESTRICT in,
-                           uint8_t* WEBP_RESTRICT dst, int do_two) {
+func Transform_SSE2(const int16* WEBP_RESTRICT in,
+                           uint8* WEBP_RESTRICT dst, int do_two) {
   // This implementation makes use of 16-bit fixed point versions of two
   // multiply constants:
   //    K1 = sqrt(2) * cos (pi/8) ~= 85627 / 2^16
@@ -203,8 +203,8 @@ func Transform_SSE2(const int16_t* WEBP_RESTRICT in,
 
 #if (USE_TRANSFORM_AC3 == 1)
 
-func TransformAC3_SSE2(const int16_t* WEBP_RESTRICT in,
-                              uint8_t* WEBP_RESTRICT dst) {
+func TransformAC3_SSE2(const int16* WEBP_RESTRICT in,
+                              uint8* WEBP_RESTRICT dst) {
   const __m128i A = _mm_set1_epi16(in[0] + 4);
   const __m128i c4 = _mm_set1_epi16(WEBP_TRANSFORM_AC3_MUL2(in[4]));
   const __m128i d4 = _mm_set1_epi16(WEBP_TRANSFORM_AC3_MUL1(in[4]));
@@ -275,7 +275,7 @@ static  func SignedShift8b_SSE2(__m128i* const x) {
     FLIP_SIGN_BIT2(c, d);          \
   } while (0)
 
-// input/output is uint8_t
+// input/output is uint8
 static  func GetNotHEV_SSE2(const __m128i* const p1,
                                        const __m128i* const p0,
                                        const __m128i* const q0,
@@ -292,7 +292,7 @@ static  func GetNotHEV_SSE2(const __m128i* const p1,
   *not_hev = _mm_cmpeq_epi8(t_max_h, zero);  // not_hev <= t1 && not_hev <= t2
 }
 
-// input pixels are int8_t
+// input pixels are int8
 static  func GetBaseDelta_SSE2(const __m128i* const p1,
                                           const __m128i* const p0,
                                           const __m128i* const q0,
@@ -307,7 +307,7 @@ static  func GetBaseDelta_SSE2(const __m128i* const p1,
   *delta = s3;
 }
 
-// input and output are int8_t
+// input and output are int8
 static  func DoSimpleFilter_SSE2(__m128i* const p0,
                                             __m128i* const q0,
                                             const __m128i* const fl) {
@@ -325,7 +325,7 @@ static  func DoSimpleFilter_SSE2(__m128i* const p0,
 // Updates values of 2 pixels at MB edge during complex filtering.
 // Update operations:
 // q = q - delta and p = p + delta; where delta = [(a_hi >> 7), (a_lo >> 7)]
-// Pixels 'pi' and 'qi' are int8_t on input, uint8_t on output (sign flip).
+// Pixels 'pi' and 'qi' are int8 on input, uint8 on output (sign flip).
 static  func Update2Pixels_SSE2(__m128i* const pi, __m128i* const qi,
                                            const __m128i* const a0_lo,
                                            const __m128i* const a0_hi) {
@@ -338,7 +338,7 @@ static  func Update2Pixels_SSE2(__m128i* const pi, __m128i* const qi,
   FLIP_SIGN_BIT2(*pi, *qi);
 }
 
-// input pixels are uint8_t
+// input pixels are uint8
 static  func NeedsFilter_SSE2(const __m128i* const p1,
                                          const __m128i* const p0,
                                          const __m128i* const q0,
@@ -367,7 +367,7 @@ static  func DoFilter2_SSE2(__m128i* const p1, __m128i* const p0,
                                        int thresh) {
   __m128i a, mask;
   const __m128i sign_bit = _mm_set1_epi8((char)0x80);
-  // convert p1/q1 to int8_t (for GetBaseDelta_SSE2)
+  // convert p1/q1 to int8 (for GetBaseDelta_SSE2)
   const __m128i p1s = _mm_xor_si128(*p1, sign_bit);
   const __m128i q1s = _mm_xor_si128(*q1, sign_bit);
 
@@ -478,7 +478,7 @@ static  func DoFilter6_SSE2(__m128i* const p2, __m128i* const p1,
 }
 
 // reads 8 rows across a vertical edge.
-static  func Load8x4_SSE2(const uint8_t* const b, int stride,
+static  func Load8x4_SSE2(const uint8* const b, int stride,
                                      __m128i* const p, __m128i* const q) {
   // A0 = 63 62 61 60 23 22 21 20 43 42 41 40 03 02 01 00
   // A1 = 73 72 71 70 33 32 31 30 53 52 51 50 13 12 11 10
@@ -505,8 +505,8 @@ static  func Load8x4_SSE2(const uint8_t* const b, int stride,
   *q = _mm_unpackhi_epi32(C0, C1);
 }
 
-static  func Load16x4_SSE2(const uint8_t* const r0,
-                                      const uint8_t* const r8, int stride,
+static  func Load16x4_SSE2(const uint8* const r0,
+                                      const uint8* const r8, int stride,
                                       __m128i* const p1, __m128i* const p0,
                                       __m128i* const q0, __m128i* const q1) {
   // Assume the pixels around the edge (|) are numbered as follows
@@ -541,7 +541,7 @@ static  func Load16x4_SSE2(const uint8_t* const r0,
   }
 }
 
-static  func Store4x4_SSE2(__m128i* const x, uint8_t* dst,
+static  func Store4x4_SSE2(__m128i* const x, uint8* dst,
                                       int stride) {
   int i;
   for (i = 0; i < 4; ++i, dst += stride) {
@@ -554,8 +554,8 @@ static  func Store4x4_SSE2(__m128i* const x, uint8_t* dst,
 static  func Store16x4_SSE2(const __m128i* const p1,
                                        const __m128i* const p0,
                                        const __m128i* const q0,
-                                       const __m128i* const q1, uint8_t* r0,
-                                       uint8_t* r8, int stride) {
+                                       const __m128i* const q1, uint8* r0,
+                                       uint8* r8, int stride) {
   __m128i t1, p1_s, p0_s, q0_s, q1_s;
 
   // p0 = 71 70 61 60 51 50 41 40 31 30 21 20 11 10 01 00
@@ -594,7 +594,7 @@ static  func Store16x4_SSE2(const __m128i* const p1,
 //------------------------------------------------------------------------------
 // Simple In-loop filtering (Paragraph 15.2)
 
-func SimpleVFilter16_SSE2(uint8_t* p, int stride, int thresh) {
+func SimpleVFilter16_SSE2(uint8* p, int stride, int thresh) {
   // Load
   __m128i p1 = _mm_loadu_si128((__m128i*)&p[-2 * stride]);
   __m128i p0 = _mm_loadu_si128((__m128i*)&p[-stride]);
@@ -608,7 +608,7 @@ func SimpleVFilter16_SSE2(uint8_t* p, int stride, int thresh) {
   _mm_storeu_si128((__m128i*)&p[0], q0);
 }
 
-func SimpleHFilter16_SSE2(uint8_t* p, int stride, int thresh) {
+func SimpleHFilter16_SSE2(uint8* p, int stride, int thresh) {
   __m128i p1, p0, q0, q1;
 
   p -= 2;  // beginning of p1
@@ -618,7 +618,7 @@ func SimpleHFilter16_SSE2(uint8_t* p, int stride, int thresh) {
   Store16x4_SSE2(&p1, &p0, &q0, &q1, p, p + 8 * stride, stride);
 }
 
-func SimpleVFilter16i_SSE2(uint8_t* p, int stride, int thresh) {
+func SimpleVFilter16i_SSE2(uint8* p, int stride, int thresh) {
   int k;
   for (k = 3; k > 0; --k) {
     p += 4 * stride;
@@ -626,7 +626,7 @@ func SimpleVFilter16i_SSE2(uint8_t* p, int stride, int thresh) {
   }
 }
 
-func SimpleHFilter16i_SSE2(uint8_t* p, int stride, int thresh) {
+func SimpleHFilter16i_SSE2(uint8* p, int stride, int thresh) {
   int k;
   for (k = 3; k > 0; --k) {
     p += 4;
@@ -695,7 +695,7 @@ static  func ComplexMask_SSE2(const __m128i* const p1,
 }
 
 // on macroblock edges
-func VFilter16_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
+func VFilter16_SSE2(uint8* p, int stride, int thresh, int ithresh,
                            int hev_thresh) {
   __m128i t1;
   __m128i mask;
@@ -721,12 +721,12 @@ func VFilter16_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
   _mm_storeu_si128((__m128i*)&p[+2 * stride], q2);
 }
 
-func HFilter16_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
+func HFilter16_SSE2(uint8* p, int stride, int thresh, int ithresh,
                            int hev_thresh) {
   __m128i mask;
   __m128i p3, p2, p1, p0, q0, q1, q2, q3;
 
-  uint8_t* const b = p - 4;
+  uint8* const b = p - 4;
   Load16x4_SSE2(b, b + 8 * stride, stride, &p3, &p2, &p1, &p0);
   MAX_DIFF1(p3, p2, p1, p0, mask);
 
@@ -741,7 +741,7 @@ func HFilter16_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
 }
 
 // on three inner edges
-func VFilter16i_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
+func VFilter16i_SSE2(uint8* p, int stride, int thresh, int ithresh,
                             int hev_thresh) {
   int k;
   __m128i p3, p2, p1, p0;  // loop invariants
@@ -750,7 +750,7 @@ func VFilter16i_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
 
   for (k = 3; k > 0; --k) {
     __m128i mask, tmp1, tmp2;
-    uint8_t* const b = p + 2 * stride;  // beginning of p1
+    uint8* const b = p + 2 * stride;  // beginning of p1
     p += 4 * stride;
 
     MAX_DIFF1(p3, p2, p1, p0, mask);  // compute partial mask
@@ -774,7 +774,7 @@ func VFilter16i_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
   }
 }
 
-func HFilter16i_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
+func HFilter16i_SSE2(uint8* p, int stride, int thresh, int ithresh,
                             int hev_thresh) {
   int k;
   __m128i p3, p2, p1, p0;  // loop invariants
@@ -783,7 +783,7 @@ func HFilter16i_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
 
   for (k = 3; k > 0; --k) {
     __m128i mask, tmp1, tmp2;
-    uint8_t* const b = p + 2;  // beginning of p1
+    uint8* const b = p + 2;  // beginning of p1
 
     p += 4;  // beginning of q0 (and next span)
 
@@ -803,7 +803,7 @@ func HFilter16i_SSE2(uint8_t* p, int stride, int thresh, int ithresh,
 }
 
 // 8-pixels wide variant, for chroma filtering
-func VFilter8_SSE2(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func VFilter8_SSE2(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
                           int stride, int thresh, int ithresh, int hev_thresh) {
   __m128i mask;
   __m128i t1, p2, p1, p0, q0, q1, q2;
@@ -828,13 +828,13 @@ func VFilter8_SSE2(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
   STOREUV(q2, u, v, 2 * stride);
 }
 
-func HFilter8_SSE2(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func HFilter8_SSE2(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
                           int stride, int thresh, int ithresh, int hev_thresh) {
   __m128i mask;
   __m128i p3, p2, p1, p0, q0, q1, q2, q3;
 
-  uint8_t* const tu = u - 4;
-  uint8_t* const tv = v - 4;
+  uint8* const tu = u - 4;
+  uint8* const tv = v - 4;
   Load16x4_SSE2(tu, tv, stride, &p3, &p2, &p1, &p0);
   MAX_DIFF1(p3, p2, p1, p0, mask);
 
@@ -848,7 +848,7 @@ func HFilter8_SSE2(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
   Store16x4_SSE2(&q0, &q1, &q2, &q3, u, v, stride);
 }
 
-func VFilter8i_SSE2(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func VFilter8i_SSE2(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
                            int stride, int thresh, int ithresh,
                            int hev_thresh) {
   __m128i mask;
@@ -875,7 +875,7 @@ func VFilter8i_SSE2(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
   STOREUV(q1, u, v, 1 * stride);
 }
 
-func HFilter8i_SSE2(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
+func HFilter8i_SSE2(uint8* WEBP_RESTRICT u, uint8* WEBP_RESTRICT v,
                            int stride, int thresh, int ithresh,
                            int hev_thresh) {
   __m128i mask;
@@ -910,7 +910,7 @@ func HFilter8i_SSE2(uint8_t* WEBP_RESTRICT u, uint8_t* WEBP_RESTRICT v,
 //   where: AC = (a + b + 1) >> 1,   BC = (b + c + 1) >> 1
 //   and ab = a ^ b, bc = b ^ c, lsb = (AC^BC)&1
 
-func VE4_SSE2(uint8_t* dst) {  // vertical
+func VE4_SSE2(uint8* dst) {  // vertical
   const __m128i one = _mm_set1_epi8(1);
   const __m128i ABCDEFGH = _mm_loadl_epi64((__m128i*)(dst - BPS - 1));
   const __m128i BCDEFGH0 = _mm_srli_si128(ABCDEFGH, 1);
@@ -926,7 +926,7 @@ func VE4_SSE2(uint8_t* dst) {  // vertical
   }
 }
 
-func LD4_SSE2(uint8_t* dst) {  // Down-Left
+func LD4_SSE2(uint8* dst) {  // Down-Left
   const __m128i one = _mm_set1_epi8(1);
   const __m128i ABCDEFGH = _mm_loadl_epi64((__m128i*)(dst - BPS));
   const __m128i BCDEFGH0 = _mm_srli_si128(ABCDEFGH, 1);
@@ -942,7 +942,7 @@ func LD4_SSE2(uint8_t* dst) {  // Down-Left
   WebPInt32ToMem(dst + 3 * BPS, _mm_cvtsi128_si32(_mm_srli_si128(abcdefg, 3)));
 }
 
-func VR4_SSE2(uint8_t* dst) {  // Vertical-Right
+func VR4_SSE2(uint8* dst) {  // Vertical-Right
   const __m128i one = _mm_set1_epi8(1);
   const int I = dst[-1 + 0 * BPS];
   const int J = dst[-1 + 1 * BPS];
@@ -967,7 +967,7 @@ func VR4_SSE2(uint8_t* dst) {  // Vertical-Right
   DST(0, 3) = AVG3(K, J, I);
 }
 
-func VL4_SSE2(uint8_t* dst) {  // Vertical-Left
+func VL4_SSE2(uint8* dst) {  // Vertical-Left
   const __m128i one = _mm_set1_epi8(1);
   const __m128i ABCDEFGH = _mm_loadl_epi64((__m128i*)(dst - BPS));
   const __m128i BCDEFGH_ = _mm_srli_si128(ABCDEFGH, 1);
@@ -981,8 +981,8 @@ func VL4_SSE2(uint8_t* dst) {  // Vertical-Left
   const __m128i abbc = _mm_or_si128(ab, bc);
   const __m128i lsb2 = _mm_and_si128(abbc, lsb1);
   const __m128i avg4 = _mm_subs_epu8(avg3, lsb2);
-  const uint32_t extra_out =
-      (uint32_t)_mm_cvtsi128_si32(_mm_srli_si128(avg4, 4));
+  const uint32 extra_out =
+      (uint32)_mm_cvtsi128_si32(_mm_srli_si128(avg4, 4));
   WebPInt32ToMem(dst + 0 * BPS, _mm_cvtsi128_si32(avg1));
   WebPInt32ToMem(dst + 1 * BPS, _mm_cvtsi128_si32(avg4));
   WebPInt32ToMem(dst + 2 * BPS, _mm_cvtsi128_si32(_mm_srli_si128(avg1, 1)));
@@ -993,14 +993,14 @@ func VL4_SSE2(uint8_t* dst) {  // Vertical-Left
   DST(3, 3) = (extra_out >> 8) & 0xff;
 }
 
-func RD4_SSE2(uint8_t* dst) {  // Down-right
+func RD4_SSE2(uint8* dst) {  // Down-right
   const __m128i one = _mm_set1_epi8(1);
   const __m128i XABCD = _mm_loadl_epi64((__m128i*)(dst - BPS - 1));
   const __m128i ____XABCD = _mm_slli_si128(XABCD, 4);
-  const uint32_t I = dst[-1 + 0 * BPS];
-  const uint32_t J = dst[-1 + 1 * BPS];
-  const uint32_t K = dst[-1 + 2 * BPS];
-  const uint32_t L = dst[-1 + 3 * BPS];
+  const uint32 I = dst[-1 + 0 * BPS];
+  const uint32 J = dst[-1 + 1 * BPS];
+  const uint32 K = dst[-1 + 2 * BPS];
+  const uint32 L = dst[-1 + 3 * BPS];
   const __m128i LKJI_____ =
       _mm_cvtsi32_si128((int)(L | (K << 8) | (J << 16) | (I << 24)));
   const __m128i LKJIXABCD = _mm_or_si128(LKJI_____, ____XABCD);
@@ -1022,8 +1022,8 @@ func RD4_SSE2(uint8_t* dst) {  // Down-right
 //------------------------------------------------------------------------------
 // Luma 16x16
 
-static  func TrueMotion_SSE2(uint8_t* dst, int size) {
-  const uint8_t* top = dst - BPS;
+static  func TrueMotion_SSE2(uint8* dst, int size) {
+  const uint8* top = dst - BPS;
   const __m128i zero = _mm_setzero_si128();
   int y;
   if (size == 4) {
@@ -1059,11 +1059,11 @@ static  func TrueMotion_SSE2(uint8_t* dst, int size) {
   }
 }
 
-func TM4_SSE2(uint8_t* dst) { TrueMotion_SSE2(dst, 4); }
-func TM8uv_SSE2(uint8_t* dst) { TrueMotion_SSE2(dst, 8); }
-func TM16_SSE2(uint8_t* dst) { TrueMotion_SSE2(dst, 16); }
+func TM4_SSE2(uint8* dst) { TrueMotion_SSE2(dst, 4); }
+func TM8uv_SSE2(uint8* dst) { TrueMotion_SSE2(dst, 8); }
+func TM16_SSE2(uint8* dst) { TrueMotion_SSE2(dst, 16); }
 
-func VE16_SSE2(uint8_t* dst) {
+func VE16_SSE2(uint8* dst) {
   const __m128i top = _mm_loadu_si128((const __m128i*)(dst - BPS));
   int j;
   for (j = 0; j < 16; ++j) {
@@ -1071,7 +1071,7 @@ func VE16_SSE2(uint8_t* dst) {
   }
 }
 
-func HE16_SSE2(uint8_t* dst) {  // horizontal
+func HE16_SSE2(uint8* dst) {  // horizontal
   int j;
   for (j = 16; j > 0; --j) {
     const __m128i values = _mm_set1_epi8((char)dst[-1]);
@@ -1080,7 +1080,7 @@ func HE16_SSE2(uint8_t* dst) {  // horizontal
   }
 }
 
-static  func Put16_SSE2(uint8_t v, uint8_t* dst) {
+static  func Put16_SSE2(uint8 v, uint8* dst) {
   int j;
   const __m128i values = _mm_set1_epi8((char)v);
   for (j = 0; j < 16; ++j) {
@@ -1088,7 +1088,7 @@ static  func Put16_SSE2(uint8_t v, uint8_t* dst) {
   }
 }
 
-func DC16_SSE2(uint8_t* dst) {  // DC
+func DC16_SSE2(uint8* dst) {  // DC
   const __m128i zero = _mm_setzero_si128();
   const __m128i top = _mm_loadu_si128((const __m128i*)(dst - BPS));
   const __m128i sad8x2 = _mm_sad_epu8(top, zero);
@@ -1105,7 +1105,7 @@ func DC16_SSE2(uint8_t* dst) {  // DC
   }
 }
 
-func DC16NoTop_SSE2(uint8_t* dst) {  // DC with top samples unavailable
+func DC16NoTop_SSE2(uint8* dst) {  // DC with top samples unavailable
   int DC = 8;
   int j;
   for (j = 0; j < 16; ++j) {
@@ -1114,7 +1114,7 @@ func DC16NoTop_SSE2(uint8_t* dst) {  // DC with top samples unavailable
   Put16_SSE2(DC >> 4, dst);
 }
 
-func DC16NoLeft_SSE2(uint8_t* dst) {  // DC with left samples unavailable
+func DC16NoLeft_SSE2(uint8* dst) {  // DC with left samples unavailable
   const __m128i zero = _mm_setzero_si128();
   const __m128i top = _mm_loadu_si128((const __m128i*)(dst - BPS));
   const __m128i sad8x2 = _mm_sad_epu8(top, zero);
@@ -1124,14 +1124,14 @@ func DC16NoLeft_SSE2(uint8_t* dst) {  // DC with left samples unavailable
   Put16_SSE2(DC >> 4, dst);
 }
 
-func DC16NoTopLeft_SSE2(uint8_t* dst) {  // DC with no top & left samples
+func DC16NoTopLeft_SSE2(uint8* dst) {  // DC with no top & left samples
   Put16_SSE2(0x80, dst);
 }
 
 //------------------------------------------------------------------------------
 // Chroma
 
-func VE8uv_SSE2(uint8_t* dst) {  // vertical
+func VE8uv_SSE2(uint8* dst) {  // vertical
   int j;
   const __m128i top = _mm_loadl_epi64((const __m128i*)(dst - BPS));
   for (j = 0; j < 8; ++j) {
@@ -1140,7 +1140,7 @@ func VE8uv_SSE2(uint8_t* dst) {  // vertical
 }
 
 // helper for chroma-DC predictions
-static  func Put8x8uv_SSE2(uint8_t v, uint8_t* dst) {
+static  func Put8x8uv_SSE2(uint8 v, uint8* dst) {
   int j;
   const __m128i values = _mm_set1_epi8((char)v);
   for (j = 0; j < 8; ++j) {
@@ -1148,7 +1148,7 @@ static  func Put8x8uv_SSE2(uint8_t v, uint8_t* dst) {
   }
 }
 
-func DC8uv_SSE2(uint8_t* dst) {  // DC
+func DC8uv_SSE2(uint8* dst) {  // DC
   const __m128i zero = _mm_setzero_si128();
   const __m128i top = _mm_loadl_epi64((const __m128i*)(dst - BPS));
   const __m128i sum = _mm_sad_epu8(top, zero);
@@ -1163,7 +1163,7 @@ func DC8uv_SSE2(uint8_t* dst) {  // DC
   }
 }
 
-func DC8uvNoLeft_SSE2(uint8_t* dst) {  // DC with no left samples
+func DC8uvNoLeft_SSE2(uint8* dst) {  // DC with no left samples
   const __m128i zero = _mm_setzero_si128();
   const __m128i top = _mm_loadl_epi64((const __m128i*)(dst - BPS));
   const __m128i sum = _mm_sad_epu8(top, zero);
@@ -1171,7 +1171,7 @@ func DC8uvNoLeft_SSE2(uint8_t* dst) {  // DC with no left samples
   Put8x8uv_SSE2(DC >> 3, dst);
 }
 
-func DC8uvNoTop_SSE2(uint8_t* dst) {  // DC with no top samples
+func DC8uvNoTop_SSE2(uint8* dst) {  // DC with no top samples
   int dc0 = 4;
   int i;
   for (i = 0; i < 8; ++i) {
@@ -1180,7 +1180,7 @@ func DC8uvNoTop_SSE2(uint8_t* dst) {  // DC with no top samples
   Put8x8uv_SSE2(dc0 >> 3, dst);
 }
 
-func DC8uvNoTopLeft_SSE2(uint8_t* dst) {  // DC with nothing
+func DC8uvNoTopLeft_SSE2(uint8* dst) {  // DC with nothing
   Put8x8uv_SSE2(0x80, dst);
 }
 

@@ -79,13 +79,13 @@ int VP8IteratorIsDone(const VP8EncIterator* const it) {
 
 func VP8IteratorInit(VP8Encoder* const enc, VP8EncIterator* const it) {
   it.enc = enc;
-  it.yuv_in = (uint8_t*)WEBP_ALIGN(it.yuv_mem);
+  it.yuv_in = (uint8*)WEBP_ALIGN(it.yuv_mem);
   it.yuv_out = it.yuv_in + YUV_SIZE_ENC;
   it.yuv_out2 = it.yuv_out + YUV_SIZE_ENC;
   it.yuv_p = it.yuv_out2 + YUV_SIZE_ENC;
   it.lf_stats = enc.lf_stats;
   it.percent0 = enc.percent;
-  it.y_left = (uint8_t*)WEBP_ALIGN(it.yuv_left_mem + 1);
+  it.y_left = (uint8*)WEBP_ALIGN(it.yuv_left_mem + 1);
   it.u_left = it.y_left + 16 + 16;
   it.v_left = it.u_left + 16;
   it.top_derr = enc.top_derr;
@@ -110,7 +110,7 @@ int VP8IteratorProgress(const VP8EncIterator* const it, int delta) {
 
 static  int MinSize(int a, int b) { return (a < b) ? a : b; }
 
-func ImportBlock(const uint8_t* src, int src_stride, uint8_t* dst, int w,
+func ImportBlock(const uint8* src, int src_stride, uint8* dst, int w,
                         int h, int size) {
   int i;
   for (i = 0; i < h; ++i) {
@@ -127,20 +127,20 @@ func ImportBlock(const uint8_t* src, int src_stride, uint8_t* dst, int w,
   }
 }
 
-func ImportLine(const uint8_t* src, int src_stride, uint8_t* dst,
+func ImportLine(const uint8* src, int src_stride, uint8* dst,
                        int len, int total_len) {
   int i;
   for (i = 0; i < len; ++i, src += src_stride) dst[i] = *src;
   for (; i < total_len; ++i) dst[i] = dst[len - 1];
 }
 
-func VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32) {
+func VP8IteratorImport(VP8EncIterator* const it, uint8* const tmp_32) {
   const VP8Encoder* const enc = it.enc;
   const int x = it.x, y = it.y;
   const WebPPicture* const pic = enc.pic;
-  const uint8_t* const ysrc = pic.y + (y * pic.y_stride + x) * 16;
-  const uint8_t* const usrc = pic.u + (y * pic.uv_stride + x) * 8;
-  const uint8_t* const vsrc = pic.v + (y * pic.uv_stride + x) * 8;
+  const uint8* const ysrc = pic.y + (y * pic.y_stride + x) * 16;
+  const uint8* const usrc = pic.u + (y * pic.uv_stride + x) * 8;
+  const uint8* const vsrc = pic.v + (y * pic.uv_stride + x) * 8;
   const int w = MinSize(pic.width - x * 16, 16);
   const int h = MinSize(pic.height - y * 16, 16);
   const int uv_w = (w + 1) >> 1;
@@ -182,7 +182,7 @@ func VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32) {
 //------------------------------------------------------------------------------
 // Copy back the compressed samples into user space if requested.
 
-func ExportBlock(const uint8_t* src, uint8_t* dst, int dst_stride, int w,
+func ExportBlock(const uint8* src, uint8* dst, int dst_stride, int w,
                         int h) {
   while (h-- > 0) {
     memcpy(dst, src, w);
@@ -195,13 +195,13 @@ func VP8IteratorExport(const VP8EncIterator* const it) {
   const VP8Encoder* const enc = it.enc;
   if (enc.config.show_compressed) {
     const int x = it.x, y = it.y;
-    const uint8_t* const ysrc = it.yuv_out + Y_OFF_ENC;
-    const uint8_t* const usrc = it.yuv_out + U_OFF_ENC;
-    const uint8_t* const vsrc = it.yuv_out + V_OFF_ENC;
+    const uint8* const ysrc = it.yuv_out + Y_OFF_ENC;
+    const uint8* const usrc = it.yuv_out + U_OFF_ENC;
+    const uint8* const vsrc = it.yuv_out + V_OFF_ENC;
     const WebPPicture* const pic = enc.pic;
-    uint8_t* const ydst = pic.y + (y * pic.y_stride + x) * 16;
-    uint8_t* const udst = pic.u + (y * pic.uv_stride + x) * 8;
-    uint8_t* const vdst = pic.v + (y * pic.uv_stride + x) * 8;
+    uint8* const ydst = pic.y + (y * pic.y_stride + x) * 16;
+    uint8* const udst = pic.u + (y * pic.uv_stride + x) * 8;
+    uint8* const vdst = pic.v + (y * pic.uv_stride + x) * 8;
     int w = (pic.width - x * 16);
     int h = (pic.height - y * 16);
 
@@ -271,7 +271,7 @@ func VP8IteratorNzToBytes(VP8EncIterator* const it) {
 }
 
 func VP8IteratorBytesToNz(VP8EncIterator* const it) {
-  uint32_t nz = 0;
+  uint32 nz = 0;
   const int* const top_nz = it.top_nz;
   const int* const left_nz = it.left_nz;
   // top
@@ -296,8 +296,8 @@ func VP8IteratorBytesToNz(VP8EncIterator* const it) {
 func VP8IteratorSaveBoundary(VP8EncIterator* const it) {
   VP8Encoder* const enc = it.enc;
   const int x = it.x, y = it.y;
-  const uint8_t* const ysrc = it.yuv_out + Y_OFF_ENC;
-  const uint8_t* const uvsrc = it.yuv_out + U_OFF_ENC;
+  const uint8* const ysrc = it.yuv_out + Y_OFF_ENC;
+  const uint8* const uvsrc = it.yuv_out + U_OFF_ENC;
   if (x < enc.mb_w - 1) {  // left
     int i;
     for (i = 0; i < 16; ++i) {
@@ -335,7 +335,7 @@ int VP8IteratorNext(VP8EncIterator* const it) {
 // Helper function to set mode properties
 
 func VP8SetIntra16Mode(const VP8EncIterator* const it, int mode) {
-  uint8_t* preds = it.preds;
+  uint8* preds = it.preds;
   int y;
   for (y = 0; y < 4; ++y) {
     memset(preds, mode, 4);
@@ -344,8 +344,8 @@ func VP8SetIntra16Mode(const VP8EncIterator* const it, int mode) {
   it.mb.type = 1;
 }
 
-func VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8_t* modes) {
-  uint8_t* preds = it.preds;
+func VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8* modes) {
+  uint8* preds = it.preds;
   int y;
   for (y = 4; y > 0; --y) {
     memcpy(preds, modes, 4 * sizeof(*modes));
@@ -399,7 +399,7 @@ func VP8SetSegment(const VP8EncIterator* const it, int segment) {
 
 // Array to record the position of the top sample to pass to the prediction
 // functions in dsp.c.
-static const uint8_t VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25,
+static const uint8 VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25,
                                          9,  13, 17, 21, 5,  9,  13, 17};
 
 func VP8IteratorStartI4(VP8EncIterator* const it) {
@@ -439,9 +439,9 @@ func VP8IteratorStartI4(VP8EncIterator* const it) {
 }
 
 int VP8IteratorRotateI4(VP8EncIterator* const it,
-                        const uint8_t* const yuv_out) {
-  const uint8_t* const blk = yuv_out + VP8Scan[it.i4];
-  uint8_t* const top = it.i4_top;
+                        const uint8* const yuv_out) {
+  const uint8* const blk = yuv_out + VP8Scan[it.i4];
+  uint8* const top = it.i4_top;
   int i;
 
   // Update the cache with 7 fresh samples

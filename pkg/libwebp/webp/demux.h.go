@@ -17,10 +17,10 @@ package webp
 /*
   WebPDemuxer* demux = WebPDemux(&webp_data);
 
-  uint32_t width = WebPDemuxGetI(demux, WEBP_FF_CANVAS_WIDTH);
-  uint32_t height = WebPDemuxGetI(demux, WEBP_FF_CANVAS_HEIGHT);
+  uint32 width = WebPDemuxGetI(demux, WEBP_FF_CANVAS_WIDTH);
+  uint32 height = WebPDemuxGetI(demux, WEBP_FF_CANVAS_HEIGHT);
   // ... (Get information about the features present in the WebP file).
-  uint32_t flags = WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
+  uint32 flags = WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
 
   // ... (Iterate over all frames).
   WebPIterator iter;
@@ -137,7 +137,7 @@ typedef enum WebPFormatFeature {
 // combination of WebPFeatureFlags values.
 // If 'feature' is WEBP_FF_LOOP_COUNT, WEBP_FF_BACKGROUND_COLOR, the returned
 // value is only meaningful if the bitstream is animated.
- uint32_t WebPDemuxGetI(const WebPDemuxer* dmux,
+ uint32 WebPDemuxGetI(const WebPDemuxer* dmux,
                                    WebPFormatFeature feature);
 
 //------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ type WebPIterator struct {
   int has_alpha;      // True if the frame contains transparency.
   WebPMuxAnimBlend blend_method;  // Blend operation for the frame.
 
-  uint32_t pad[2];  // padding for later use.
+  uint32 pad[2];  // padding for later use.
   void* private_;   // for internal use only.
 };
 
@@ -193,7 +193,7 @@ type WebPChunkIterator struct {
   int num_chunks;
   WebPData chunk;  // The payload of the chunk.
 
-  uint32_t pad[6];  // padding for later use
+  uint32 pad[6];  // padding for later use
   void* private_;
 };
 
@@ -235,9 +235,9 @@ type WebPChunkIterator struct {
   WebPAnimDecoder* dec = WebPAnimDecoderNew(webp_data, &dec_options);
   WebPAnimInfo anim_info;
   WebPAnimDecoderGetInfo(dec, &anim_info);
-  for (uint32_t i = 0; i < anim_info.loop_count; ++i) {
+  for (uint32 i = 0; i < anim_info.loop_count; ++i) {
     while (WebPAnimDecoderHasMoreFrames(dec)) {
-      uint8_t* buf;
+      uint8* buf;
       int timestamp;
       WebPAnimDecoderGetNext(dec, &buf, &timestamp);
       // ... (Render 'buf' based on 'timestamp').
@@ -258,7 +258,7 @@ type WebPAnimDecoderOptions struct {
   // MODE_RGBA, MODE_BGRA, MODE_rgbA and MODE_bgrA.
   WEBP_CSP_MODE color_mode;
   int use_threads;      // If true, use multi-threaded decoding.
-  uint32_t padding[7];  // Padding for later use.
+  uint32 padding[7];  // Padding for later use.
 };
 
 // Internal, version-checked, entry point.
@@ -297,12 +297,12 @@ type WebPAnimDecoderOptions struct {
 
 // Global information about the animation..
 type WebPAnimInfo struct {
-  uint32_t canvas_width;
-  uint32_t canvas_height;
-  uint32_t loop_count;
-  uint32_t bgcolor;
-  uint32_t frame_count;
-  uint32_t pad[4];  // padding for later use
+  uint32 canvas_width;
+  uint32 canvas_height;
+  uint32 loop_count;
+  uint32 bgcolor;
+  uint32 frame_count;
+  uint32 pad[4];  // padding for later use
 };
 
 // Get global information about the animation.
@@ -327,7 +327,7 @@ type WebPAnimInfo struct {
 //   False if any of the arguments are NULL, or if there is a parsing or
 //   decoding error, or if there are no more frames. Otherwise, returns true.
   int WebPAnimDecoderGetNext(WebPAnimDecoder* dec,
-                                                      uint8_t** buf,
+                                                      uint8** buf,
                                                       int* timestamp);
 
 // Check if there are more frames left to decode.

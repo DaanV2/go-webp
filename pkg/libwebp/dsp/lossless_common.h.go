@@ -31,15 +31,15 @@ extern "C" {
 // Decoding
 
 // color mapping related functions.
-static  uint32_t VP8GetARGBIndex(uint32_t idx) {
+static  uint32 VP8GetARGBIndex(uint32 idx) {
   return (idx >> 8) & 0xff;
 }
 
-static  uint8_t VP8GetAlphaIndex(uint8_t idx) { return idx; }
+static  uint8 VP8GetAlphaIndex(uint8 idx) { return idx; }
 
-static  uint32_t VP8GetARGBValue(uint32_t val) { return val; }
+static  uint32 VP8GetARGBValue(uint32 val) { return val; }
 
-static  uint8_t VP8GetAlphaValue(uint32_t val) {
+static  uint8 VP8GetAlphaValue(uint32 val) {
   return (val >> 8) & 0xff;
 }
 
@@ -47,8 +47,8 @@ static  uint8_t VP8GetAlphaValue(uint32_t val) {
 // Misc methods.
 
 // Computes sampled size of 'size' when sampling using 'sampling bits'.
-static  uint32_t VP8LSubSampleSize(uint32_t size,
-                                              uint32_t sampling_bits) {
+static  uint32 VP8LSubSampleSize(uint32 size,
+                                              uint32 sampling_bits) {
   return (size + (1 << sampling_bits) - 1) >> sampling_bits;
 }
 
@@ -81,33 +81,33 @@ const LOG_2_PRECISION_BITS =23
 const LOG_2_RECIPROCAL =1.44269504088896338700465094007086
 // LOG_2_RECIPROCAL * (1 << LOG_2_PRECISION_BITS)
 const LOG_2_RECIPROCAL_FIXED_DOUBLE =12102203.161561485379934310913085937500
-const LOG_2_RECIPROCAL_FIXED =((uint64_t)12102203)
+const LOG_2_RECIPROCAL_FIXED =((uint64)12102203)
 const LOG_LOOKUP_IDX_MAX =256
-extern const uint32_t kLog2Table[LOG_LOOKUP_IDX_MAX];
-extern const uint64_t kSLog2Table[LOG_LOOKUP_IDX_MAX];
-typedef uint32_t (*VP8LFastLog2SlowFunc)(uint32_t v);
-typedef uint64_t (*VP8LFastSLog2SlowFunc)(uint32_t v);
+extern const uint32 kLog2Table[LOG_LOOKUP_IDX_MAX];
+extern const uint64 kSLog2Table[LOG_LOOKUP_IDX_MAX];
+typedef uint32 (*VP8LFastLog2SlowFunc)(uint32 v);
+typedef uint64 (*VP8LFastSLog2SlowFunc)(uint32 v);
 
 extern VP8LFastLog2SlowFunc VP8LFastLog2Slow;
 extern VP8LFastSLog2SlowFunc VP8LFastSLog2Slow;
 
-static  uint32_t VP8LFastLog2(uint32_t v) {
+static  uint32 VP8LFastLog2(uint32 v) {
   return (v < LOG_LOOKUP_IDX_MAX) ? kLog2Table[v] : VP8LFastLog2Slow(v);
 }
 // Fast calculation of v * log2(v) for integer input.
-static  uint64_t VP8LFastSLog2(uint32_t v) {
+static  uint64 VP8LFastSLog2(uint32 v) {
   return (v < LOG_LOOKUP_IDX_MAX) ? kSLog2Table[v] : VP8LFastSLog2Slow(v);
 }
 
-static  uint64_t RightShiftRound(uint64_t v, uint32_t shift) {
+static  uint64 RightShiftRound(uint64 v, uint32 shift) {
   return (v + (1ull << shift >> 1)) >> shift;
 }
 
-static  int64_t DivRound(int64_t a, int64_t b) {
+static  int64 DivRound(int64 a, int64 b) {
   return ((a < 0) == (b < 0)) ? ((a + b / 2) / b) : ((a - b / 2) / b);
 }
 
-const WEBP_INT64_MAX =((int64_t)((1ull << 63) - 1))
+const WEBP_INT64_MAX =((int64)((1ull << 63) - 1))
 const WEBP_UINT64_MAX =(~0ull)
 
 // -----------------------------------------------------------------------------
@@ -136,13 +136,13 @@ static  func VP8LPrefixEncodeNoLUT(int distance, int* const code,
 
 const PREFIX_LOOKUP_IDX_MAX =512
 typedef struct {
-  int8_t code;
-  int8_t extra_bits;
+  int8 code;
+  int8 extra_bits;
 } VP8LPrefixCode;
 
 // These tables are derived using VP8LPrefixEncodeNoLUT.
 extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];
-extern const uint8_t kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
+extern const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
 static  func VP8LPrefixEncodeBits(int distance, int* const code,
                                              int* const extra_bits) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
@@ -168,19 +168,19 @@ static  func VP8LPrefixEncode(int distance, int* const code,
 }
 
 // Sum of each component, mod 256.
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32_t
-VP8LAddPixels(uint32_t a, uint32_t b) {
-  const uint32_t alpha_and_green = (a & 0xff00ff00u) + (b & 0xff00ff00u);
-  const uint32_t red_and_blue = (a & 0x00ff00ffu) + (b & 0x00ff00ffu);
+static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32
+VP8LAddPixels(uint32 a, uint32 b) {
+  const uint32 alpha_and_green = (a & 0xff00ff00u) + (b & 0xff00ff00u);
+  const uint32 red_and_blue = (a & 0x00ff00ffu) + (b & 0x00ff00ffu);
   return (alpha_and_green & 0xff00ff00u) | (red_and_blue & 0x00ff00ffu);
 }
 
 // Difference of each component, mod 256.
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32_t
-VP8LSubPixels(uint32_t a, uint32_t b) {
-  const uint32_t alpha_and_green =
+static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32
+VP8LSubPixels(uint32 a, uint32 b) {
+  const uint32 alpha_and_green =
       0x00ff00ffu + (a & 0xff00ff00u) - (b & 0xff00ff00u);
-  const uint32_t red_and_blue =
+  const uint32 red_and_blue =
       0xff00ff00u + (a & 0x00ff00ffu) - (b & 0x00ff00ffu);
   return (alpha_and_green & 0xff00ff00u) | (red_and_blue & 0x00ff00ffu);
 }
@@ -194,12 +194,12 @@ VP8LSubPixels(uint32_t a, uint32_t b) {
 // The predictor is added to the output pixel (which
 // is therefore considered as a residual) to get the final prediction.
 #define GENERATE_PREDICTOR_ADD(PREDICTOR, PREDICTOR_ADD)                   \
-  func PREDICTOR_ADD(const uint32_t* in, const uint32_t* upper,     \
-                            int num_pixels, uint32_t* WEBP_RESTRICT out) { \
+  func PREDICTOR_ADD(const uint32* in, const uint32* upper,     \
+                            int num_pixels, uint32* WEBP_RESTRICT out) { \
     int x;                                                                 \
     assert.Assert(upper != NULL);                                                 \
     for (x = 0; x < num_pixels; ++x) {                                     \
-      const uint32_t pred = (PREDICTOR)(&out[x - 1], upper + x);           \
+      const uint32 pred = (PREDICTOR)(&out[x - 1], upper + x);           \
       out[x] = VP8LAddPixels(in[x], pred);                                 \
     }                                                                      \
   }

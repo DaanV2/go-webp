@@ -32,7 +32,7 @@ typedef struct VP8Residual VP8Residual;
 type VP8Residual struct {
   int first;
   int last;
-  const int16_t* coeffs;
+  const int16* coeffs;
 
   int coeff_type;
   ProbaArray* prob;
@@ -60,21 +60,21 @@ static  int VP8RecordStats(int bit, proba_t* const stats) {
 }
 
 // Cost of coding one event with probability 'proba'.
-static  int VP8BitCost(int bit, uint8_t proba) {
+static  int VP8BitCost(int bit, uint8 proba) {
   return !bit ? VP8EntropyCost[proba] : VP8EntropyCost[255 - proba];
 }
 
 // Level cost calculations
 func VP8CalculateLevelCosts(VP8EncProba* const proba);
-static  int VP8LevelCost(const uint16_t* const table, int level) {
+static  int VP8LevelCost(const uint16* const table, int level) {
   return VP8LevelFixedCosts[level] +
          table[(level > MAX_VARIABLE_LEVEL) ? MAX_VARIABLE_LEVEL : level];
 }
 
 // Mode costs
-extern const uint16_t VP8FixedCostsUV[4];
-extern const uint16_t VP8FixedCostsI16[4];
-extern const uint16_t VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES];
+extern const uint16 VP8FixedCostsUV[4];
+extern const uint16 VP8FixedCostsI16[4];
+extern const uint16 VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES];
 
 //------------------------------------------------------------------------------
 

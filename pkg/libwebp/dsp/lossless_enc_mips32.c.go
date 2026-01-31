@@ -25,13 +25,13 @@ import "github.com/daanv2/go-webp/pkg/math"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 import "github.com/daanv2/go-webp/pkg/string"
 
-static uint64_t FastSLog2Slow_MIPS32(uint32_t v) {
+static uint64 FastSLog2Slow_MIPS32(uint32 v) {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
-    uint32_t log_cnt, y;
-    uint64_t correction;
+    uint32 log_cnt, y;
+    uint64 correction;
     const int c24 = 24;
-    uint32_t temp;
+    uint32 temp;
 
     // Xf = 256 = 2^8
     // log_cnt is index of leading one in upper 24 bits
@@ -52,21 +52,21 @@ static uint64_t FastSLog2Slow_MIPS32(uint32_t v) {
 
     // (v % y) = (v % 2^log_cnt) = v & (2^log_cnt - 1)
     correction = LOG_2_RECIPROCAL_FIXED * (v & (y - 1));
-    return (uint64_t)v * (kLog2Table[temp] +
-                          ((uint64_t)log_cnt << LOG_2_PRECISION_BITS)) +
+    return (uint64)v * (kLog2Table[temp] +
+                          ((uint64)log_cnt << LOG_2_PRECISION_BITS)) +
            correction;
   } else {
-    return (uint64_t)(LOG_2_RECIPROCAL_FIXED_DOUBLE * v * log((double)v) + .5);
+    return (uint64)(LOG_2_RECIPROCAL_FIXED_DOUBLE * v * log((double)v) + .5);
   }
 }
 
-static uint32_t FastLog2Slow_MIPS32(uint32_t v) {
+static uint32 FastLog2Slow_MIPS32(uint32 v) {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
-    uint32_t log_cnt, y;
+    uint32 log_cnt, y;
     const int c24 = 24;
-    uint32_t log_2;
-    uint32_t temp;
+    uint32 log_2;
+    uint32 temp;
 
     __asm__ volatile(
         "clz      %[log_cnt], %[v]                      \n\t"
@@ -81,20 +81,20 @@ static uint32_t FastLog2Slow_MIPS32(uint32_t v) {
     if (v >= APPROX_LOG_MAX) {
       // Since the division is still expensive, add this correction factor only
       // for large values of 'v'.
-      const uint64_t correction = LOG_2_RECIPROCAL_FIXED * (v & (y - 1));
-      log_2 += (uint32_t)DivRound(correction, v);
+      const uint64 correction = LOG_2_RECIPROCAL_FIXED * (v & (y - 1));
+      log_2 += (uint32)DivRound(correction, v);
     }
     return log_2;
   } else {
-    return (uint32_t)(LOG_2_RECIPROCAL_FIXED_DOUBLE * log((double)v) + .5);
+    return (uint32)(LOG_2_RECIPROCAL_FIXED_DOUBLE * log((double)v) + .5);
   }
 }
 
 // C version of this function:
 //   int i = 0;
-//   int64_t cost = 0;
-//   const uint32_t* pop = &population[4];
-//   const uint32_t* LoopEnd = &population[length];
+//   int64 cost = 0;
+//   const uint32* pop = &population[4];
+//   const uint32* LoopEnd = &population[length];
 //   while (pop != LoopEnd) {
 //     ++i;
 //     cost += i * *pop;
@@ -102,10 +102,10 @@ static uint32_t FastLog2Slow_MIPS32(uint32_t v) {
 //     pop += 2;
 //   }
 //   return cost;
-static uint32_t ExtraCost_MIPS32(const uint32_t* const population, int length) {
+static uint32 ExtraCost_MIPS32(const uint32* const population, int length) {
   int i, temp0, temp1;
-  const uint32_t* pop = &population[4];
-  const uint32_t* const LoopEnd = &population[length];
+  const uint32* pop = &population[4];
+  const uint32* const LoopEnd = &population[length];
 
   __asm__ volatile(
       "mult   $zero,    $zero                  \n\t"
@@ -127,7 +127,7 @@ static uint32_t ExtraCost_MIPS32(const uint32_t* const population, int length) {
       : [LoopEnd] "r"(LoopEnd)
       : "memory", "hi", "lo");
 
-  return ((int64_t)temp0 << 32 | temp1);
+  return ((int64)temp0 << 32 | temp1);
 }
 
 const HUFFMAN_COST_PASS =                                                 \
@@ -157,7 +157,7 @@ const HUFFMAN_COST_PASS =                                                 \
 
 // Returns the various RLE counts
 static  func GetEntropyUnrefinedHelper(
-    uint32_t val, int i, uint32_t* WEBP_RESTRICT const val_prev,
+    uint32 val, int i, uint32* WEBP_RESTRICT const val_prev,
     int* WEBP_RESTRICT const i_prev,
     VP8LBitEntropy* WEBP_RESTRICT const bit_entropy,
     VP8LStreaks* WEBP_RESTRICT const stats) {
@@ -186,18 +186,18 @@ static  func GetEntropyUnrefinedHelper(
 }
 
 func GetEntropyUnrefined_MIPS32(
-    const uint32_t X[], int length,
+    const uint32 X[], int length,
     VP8LBitEntropy* WEBP_RESTRICT const bit_entropy,
     VP8LStreaks* WEBP_RESTRICT const stats) {
   int i;
   int i_prev = 0;
-  uint32_t x_prev = X[0];
+  uint32 x_prev = X[0];
 
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
 
   for (i = 1; i < length; ++i) {
-    const uint32_t x = X[i];
+    const uint32 x = X[i];
     if (x != x_prev) {
       GetEntropyUnrefinedHelper(x, i, &x_prev, &i_prev, bit_entropy, stats);
     }
@@ -208,18 +208,18 @@ func GetEntropyUnrefined_MIPS32(
 }
 
 func GetCombinedEntropyUnrefined_MIPS32(
-    const uint32_t X[], const uint32_t Y[], int length,
+    const uint32 X[], const uint32 Y[], int length,
     VP8LBitEntropy* WEBP_RESTRICT const entropy,
     VP8LStreaks* WEBP_RESTRICT const stats) {
   int i = 1;
   int i_prev = 0;
-  uint32_t xy_prev = X[0] + Y[0];
+  uint32 xy_prev = X[0] + Y[0];
 
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(entropy);
 
   for (i = 1; i < length; ++i) {
-    const uint32_t xy = X[i] + Y[i];
+    const uint32 xy = X[i] + Y[i];
     if (xy != xy_prev) {
       GetEntropyUnrefinedHelper(xy, i, &xy_prev, &i_prev, entropy, stats);
     }
@@ -289,12 +289,12 @@ const ASM_END_1 = \
   ASM_END_COMMON_0 \
   ASM_END_COMMON_1
 
-func AddVector_MIPS32(const uint32_t* WEBP_RESTRICT pa,
-                             const uint32_t* WEBP_RESTRICT pb,
-                             uint32_t* WEBP_RESTRICT pout, int size) {
-  uint32_t temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
+func AddVector_MIPS32(const uint32* WEBP_RESTRICT pa,
+                             const uint32* WEBP_RESTRICT pb,
+                             uint32* WEBP_RESTRICT pout, int size) {
+  uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   const int end = ((size) / 4) * 4;
-  const uint32_t* const LoopEnd = pa + end;
+  const uint32* const LoopEnd = pa + end;
   int i;
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 1, pa, pb, pout)
@@ -302,11 +302,11 @@ func AddVector_MIPS32(const uint32_t* WEBP_RESTRICT pa,
   for (i = 0; i < size - end; ++i) pout[i] = pa[i] + pb[i];
 }
 
-func AddVectorEq_MIPS32(const uint32_t* WEBP_RESTRICT pa,
-                               uint32_t* WEBP_RESTRICT pout, int size) {
-  uint32_t temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
+func AddVectorEq_MIPS32(const uint32* WEBP_RESTRICT pa,
+                               uint32* WEBP_RESTRICT pout, int size) {
+  uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   const int end = ((size) / 4) * 4;
-  const uint32_t* const LoopEnd = pa + end;
+  const uint32* const LoopEnd = pa + end;
   int i;
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 0, pa, pout, pout)

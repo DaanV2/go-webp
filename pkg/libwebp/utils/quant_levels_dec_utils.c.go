@@ -38,7 +38,7 @@ const CORRECTION_LUT_SIZE =(1 + 2 * LUT_SIZE)
 const DFIX = 4   // extra precision for ordered dithering
 const DSIZE = 4  // dithering size (must be a power of two)
 // cf. https://en.wikipedia.org/wiki/Ordered_dithering
-static const uint8_t kOrderedDither[DSIZE][DSIZE] = {
+static const uint8 kOrderedDither[DSIZE][DSIZE] = {
     {0, 8, 2, 10},  // coefficients are in DFIX fixed-point precision
     {12, 4, 14, 6},
     {3, 11, 1, 9},
@@ -52,8 +52,8 @@ typedef struct {
   int width, height;            // dimension
   int stride;                   // stride in bytes
   int row;                      // current input row being processed
-  uint8_t* WEBP_INDEXABLE src;  // input pointer
-  uint8_t* WEBP_INDEXABLE dst;  // output pointer
+  uint8* WEBP_INDEXABLE src;  // input pointer
+  uint8* WEBP_INDEXABLE dst;  // output pointer
 
   int radius;  // filter radius (=delay)
   int scale;   // normalization factor, in FIX bits precision
@@ -61,11 +61,11 @@ typedef struct {
   void* mem;  // all memory
 
   // various scratch buffers
-  uint16_t* WEBP_INDEXABLE start;
-  uint16_t* WEBP_INDEXABLE cur;
-  uint16_t* WEBP_BIDI_INDEXABLE end;
-  uint16_t* WEBP_INDEXABLE top;
-  uint16_t* WEBP_COUNTED_BY(width) average;
+  uint16* WEBP_INDEXABLE start;
+  uint16* WEBP_INDEXABLE cur;
+  uint16* WEBP_BIDI_INDEXABLE end;
+  uint16* WEBP_INDEXABLE top;
+  uint16* WEBP_COUNTED_BY(width) average;
 
   // input levels distribution
   int num_levels;      // number of quantized levels
@@ -73,29 +73,29 @@ typedef struct {
   int min_level_dist;  // smallest distance between two consecutive levels
 
   // size = 1 + 2*LUT_SIZE  . ~4k memory
-  int16_t* WEBP_COUNTED_BY_OR_NULL(CORRECTION_LUT_SIZE) correction;
+  int16* WEBP_COUNTED_BY_OR_NULL(CORRECTION_LUT_SIZE) correction;
 } SmoothParams;
 
 //------------------------------------------------------------------------------
 
 const CLIP_8b_MASK =(int)(~0U << (8 + DFIX))
-static  uint8_t clip_8b(int v) {
-  return (!(v & CLIP_8b_MASK)) ? (uint8_t)(v >> DFIX) : (v < 0) ? 0u : 255u;
+static  uint8 clip_8b(int v) {
+  return (!(v & CLIP_8b_MASK)) ? (uint8)(v >> DFIX) : (v < 0) ? 0u : 255u;
 }
 #undef CLIP_8b_MASK
 
 // vertical accumulation
 func VFilter(SmoothParams* const p) {
-  const uint8_t* WEBP_INDEXABLE src = p.src;
+  const uint8* WEBP_INDEXABLE src = p.src;
   const int w = p.width;
-  uint16_t* const WEBP_INDEXABLE cur = p.cur;
-  const uint16_t* const WEBP_INDEXABLE top = p.top;
-  uint16_t* const WEBP_INDEXABLE out = p.end;
-  uint16_t sum = 0;  // all arithmetic is modulo 16bit
+  uint16* const WEBP_INDEXABLE cur = p.cur;
+  const uint16* const WEBP_INDEXABLE top = p.top;
+  uint16* const WEBP_INDEXABLE out = p.end;
+  uint16 sum = 0;  // all arithmetic is modulo 16bit
   int x;
 
   for (x = 0; x < w; ++x) {
-    uint16_t new_value;
+    uint16 new_value;
     sum += src[x];
     new_value = top[x] + sum;
     out[x] = new_value - cur[x];  // vertical sum of 'r' pixels.
@@ -115,23 +115,23 @@ func VFilter(SmoothParams* const p) {
 // horizontal accumulation. We use mirror replication of missing pixels, as it's
 // a little easier to implement (surprisingly).
 func HFilter(SmoothParams* const p) {
-  const uint16_t* const WEBP_INDEXABLE in = p.end;
-  uint16_t* const WEBP_INDEXABLE out = p.average;
-  const uint32_t scale = p.scale;
+  const uint16* const WEBP_INDEXABLE in = p.end;
+  uint16* const WEBP_INDEXABLE out = p.average;
+  const uint32 scale = p.scale;
   const int w = p.width;
   const int r = p.radius;
 
   int x;
   for (x = 0; x <= r; ++x) {  // left mirroring
-    const uint16_t delta = in[x + r - 1] + in[r - x];
+    const uint16 delta = in[x + r - 1] + in[r - x];
     out[x] = (delta * scale) >> FIX;
   }
   for (; x < w - r; ++x) {  // bulk middle run
-    const uint16_t delta = in[x + r] - in[x - r - 1];
+    const uint16 delta = in[x + r] - in[x - r - 1];
     out[x] = (delta * scale) >> FIX;
   }
   for (; x < w; ++x) {  // right mirroring
-    const uint16_t delta =
+    const uint16 delta =
         2 * in[w - 1] - in[2 * w - 2 - r - x] - in[x - r - 1];
     out[x] = (delta * scale) >> FIX;
   }
@@ -139,16 +139,16 @@ func HFilter(SmoothParams* const p) {
 
 // emit one filtered output row
 func ApplyFilter(SmoothParams* const p) {
-  const uint16_t* const WEBP_INDEXABLE average = p.average;
+  const uint16* const WEBP_INDEXABLE average = p.average;
   const int w = p.width;
   // correction is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer for negative indexing.
-  const int16_t* const WEBP_BIDI_INDEXABLE correction =
+  const int16* const WEBP_BIDI_INDEXABLE correction =
       p.correction + LUT_SIZE;
 #if defined(USE_DITHERING)
-  const uint8_t* const dither = kOrderedDither[p.row % DSIZE];
+  const uint8* const dither = kOrderedDither[p.row % DSIZE];
 #endif
-  uint8_t* const WEBP_INDEXABLE dst = p.dst;
+  uint8* const WEBP_INDEXABLE dst = p.dst;
   int x;
   for (x = 0; x < w; ++x) {
     const int v = dst[x];
@@ -168,7 +168,7 @@ func ApplyFilter(SmoothParams* const p) {
 // Initialize correction table
 
 func InitCorrectionLUT(
-    int16_t* const WEBP_COUNTED_BY(CORRECTION_LUT_SIZE) lut_ptr, int min_dist) {
+    int16* const WEBP_COUNTED_BY(CORRECTION_LUT_SIZE) lut_ptr, int min_dist) {
   // The correction curve is:
   //   f(x) = x for x <= threshold2
   //   f(x) = 0 for x >= threshold1
@@ -181,7 +181,7 @@ func InitCorrectionLUT(
   const int delta = threshold1 - threshold2;
   // lut_ptr is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer (lut) for negative indexing.
-  int16_t* const WEBP_BIDI_INDEXABLE lut = lut_ptr + LUT_SIZE;
+  int16* const WEBP_BIDI_INDEXABLE lut = lut_ptr + LUT_SIZE;
   int i;
   for (i = 1; i <= LUT_SIZE; ++i) {
     int c = (i <= threshold2)  ? (i << DFIX)
@@ -196,8 +196,8 @@ func InitCorrectionLUT(
 
 func CountLevels(SmoothParams* const p) {
   int i, j, last_level;
-  uint8_t used_levels[256] = {0};
-  const uint8_t* WEBP_INDEXABLE data = p.src;
+  uint8 used_levels[256] = {0};
+  const uint8* WEBP_INDEXABLE data = p.src;
   p.min = 255;
   p.max = 0;
   for (j = 0; j < p.height; ++j) {
@@ -227,7 +227,7 @@ func CountLevels(SmoothParams* const p) {
 }
 
 // Initialize all params.
-static int InitParams(uint8_t* WEBP_SIZED_BY((size_t)stride* height) const data,
+static int InitParams(uint8* WEBP_SIZED_BY((size_t)stride* height) const data,
                       int width, int height, int stride, int radius,
                       SmoothParams* const p) {
   const int R = 2 * radius + 1;  // total size of the kernel
@@ -236,12 +236,12 @@ static int InitParams(uint8_t* WEBP_SIZED_BY((size_t)stride* height) const data,
   const size_t size_m = width * sizeof(*p.average);
   const size_t size_lut = CORRECTION_LUT_SIZE * sizeof(*p.correction);
   const size_t total_size = size_scratch_m + size_m + size_lut;
-  uint8_t* WEBP_BIDI_INDEXABLE mem = (uint8_t*)WebPSafeMalloc(1U, total_size);
+  uint8* WEBP_BIDI_INDEXABLE mem = (uint8*)WebPSafeMalloc(1U, total_size);
 
   if (mem == NULL) return 0;
   p.mem = (void*)mem;
 
-  p.start = (uint16_t*)mem;
+  p.start = (uint16*)mem;
   p.cur = p.start;
   p.end = p.start + R * width;
   p.top = p.end - width;
@@ -249,7 +249,7 @@ static int InitParams(uint8_t* WEBP_SIZED_BY((size_t)stride* height) const data,
   mem += size_scratch_m;
 
   p.width = width;
-  p.average = (uint16_t*)mem;
+  p.average = (uint16*)mem;
   mem += size_m;
 
   p.height = height;
@@ -265,7 +265,7 @@ static int InitParams(uint8_t* WEBP_SIZED_BY((size_t)stride* height) const data,
 
   // correction table. p.correction is WEBP_COUNTED_BY(CORRECTION_LUT_SIZE).
   // It points to the start of the buffer.
-  p.correction = ((int16_t*)mem);
+  p.correction = ((int16*)mem);
   InitCorrectionLUT(p.correction, p.min_level_dist);
 
   return 1;
@@ -273,7 +273,7 @@ static int InitParams(uint8_t* WEBP_SIZED_BY((size_t)stride* height) const data,
 
 func CleanupParams(SmoothParams* const p) { WebPSafeFree(p.mem); }
 
-int WebPDequantizeLevels(uint8_t* WEBP_SIZED_BY((size_t)stride* height)
+int WebPDequantizeLevels(uint8* WEBP_SIZED_BY((size_t)stride* height)
                              const data,
                          int width, int height, int stride, int strength) {
   int radius = 4 * strength / 100;

@@ -92,11 +92,11 @@ import "github.com/daanv2/go-webp/pkg/stdio"
     int i;                                              \
     printf("%s \t[%d]: 0x", #REG, SIZE);                \
     if (SIZE == 8) {                                    \
-      uint8_t _tmp[8];                                  \
+      uint8 _tmp[8];                                  \
       vst1_u8(_tmp, (REG));                             \
       for (i = 0; i < 8; ++i) printf("%.2x ", _tmp[i]); \
     } else if (SIZE == 16) {                            \
-      uint16_t _tmp[4];                                 \
+      uint16 _tmp[4];                                 \
       vst1_u16(_tmp, (REG));                            \
       for (i = 0; i < 4; ++i) printf("%.4x ", _tmp[i]); \
     }                                                   \

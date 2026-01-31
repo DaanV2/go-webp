@@ -35,7 +35,7 @@ const USE_GENERIC_TREE =0
 #endif  // USE_GENERIC_TREE
 
 #if (USE_GENERIC_TREE == 1)
-static const int8_t kYModesIntra4[18] = {
+static const int8 kYModesIntra4[18] = {
     -B_DC_PRED, 1, -B_TM_PRED, 2, -B_VE_PRED, 3,
     4,          6, -B_HE_PRED, 5, -B_RD_PRED, -B_VR_PRED,
     -B_LD_PRED, 7, -B_VL_PRED, 8, -B_HD_PRED, -B_HU_PRED};
@@ -45,7 +45,7 @@ static const int8_t kYModesIntra4[18] = {
 // Default probabilities
 
 // Paragraph 13.5
-static const uint8_t CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
+static const uint8 CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
     {{{128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128},
       {128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128},
       {128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128}},
@@ -148,7 +148,7 @@ static const uint8_t CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
       {238, 1, 255, 128, 128, 128, 128, 128, 128, 128, 128}}}};
 
 // Paragraph 11.5
-static const uint8_t kBModesProba[NUM_BMODES][NUM_BMODES][NUM_BMODES - 1] = {
+static const uint8 kBModesProba[NUM_BMODES][NUM_BMODES][NUM_BMODES - 1] = {
     {{231, 120, 48, 89, 115, 113, 120, 152, 112},
      {152, 179, 64, 126, 170, 118, 46, 70, 95},
      {175, 69, 143, 80, 85, 82, 72, 155, 103},
@@ -257,8 +257,8 @@ func VP8ResetProba(VP8Proba* const proba) {
 
 func ParseIntraMode(VP8BitReader* const br, VP8Decoder* const dec,
                            int mb_x) {
-  uint8_t* const top = dec.intra_t + 4 * mb_x;
-  uint8_t* const left = dec.intra_l;
+  uint8* const top = dec.intra_t + 4 * mb_x;
+  uint8* const left = dec.intra_l;
   VP8MBData* const block = dec.mb_data + mb_x;
 
   // Note: we don't save segment map (yet), as we don't expect
@@ -285,13 +285,13 @@ func ParseIntraMode(VP8BitReader* const br, VP8Decoder* const dec,
     WEBP_UNSAFE_MEMSET(top, ymode, 4 * sizeof(*top));
     WEBP_UNSAFE_MEMSET(left, ymode, 4 * sizeof(*left));
   } else {
-    uint8_t* modes = block.imodes;
+    uint8* modes = block.imodes;
     int y;
     for (y = 0; y < 4; ++y) {
       int ymode = left[y];
       int x;
       for (x = 0; x < 4; ++x) {
-        const uint8_t* const prob = kBModesProba[top[x]][ymode];
+        const uint8* const prob = kBModesProba[top[x]][ymode];
 #if (USE_GENERIC_TREE == 1)
         // Generic tree-parsing
         int i = kYModesIntra4[VP8GetBit(br, prob[0], "pred-modes")];
@@ -343,7 +343,7 @@ int VP8ParseIntraModeRow(VP8BitReader* const br, VP8Decoder* const dec) {
 //------------------------------------------------------------------------------
 // Paragraph 13
 
-static const uint8_t
+static const uint8
     CoeffsUpdateProba[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
         {{{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
           {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
@@ -444,7 +444,7 @@ static const uint8_t
 
 // Paragraph 9.9
 
-static const uint8_t kBands[16 + 1] = {
+static const uint8 kBands[16 + 1] = {
     0, 1, 2, 3, 6, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7,
     0  // extra entry as sentinel
 };

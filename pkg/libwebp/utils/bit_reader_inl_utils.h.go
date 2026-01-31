@@ -41,17 +41,17 @@ extern "C" {
 // Derived type lbit_t = natural type for memory I/O
 
 #if (BITS > 32)
-typedef uint64_t lbit_t;
+typedef uint64 lbit_t;
 #elif (BITS > 16)
-typedef uint32_t lbit_t;
+typedef uint32 lbit_t;
 #elif (BITS > 8)
-typedef uint16_t lbit_t;
+typedef uint16 lbit_t;
 #else
-typedef uint8_t lbit_t;
+typedef uint8 lbit_t;
 #endif
 
-extern const uint8_t kVP8Log2Range[128];
-extern const uint8_t kVP8NewRange[128];
+extern const uint8 kVP8Log2Range[128];
+extern const uint8 kVP8NewRange[128];
 
 // special case for the tail byte-reading
 func VP8LoadFinalBytes(VP8BitReader* const br);
@@ -151,11 +151,11 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8GetSigned(
     const int pos = br.bits;
     const range_t split = br.range >> 1;
     const range_t value = (range_t)(br.value >> pos);
-    const int32_t mask = (int32_t)(split - value) >> 31;  // -1 or 0
+    const int32 mask = (int32)(split - value) >> 31;  // -1 or 0
     br.bits -= 1;
     br.range += (range_t)mask;
     br.range |= 1;
-    br.value -= (bit_t)((split + 1) & (uint32_t)mask) << pos;
+    br.value -= (bit_t)((split + 1) & (uint32)mask) << pos;
     BT_TRACK(br);
     return (v ^ mask) - mask;
   }

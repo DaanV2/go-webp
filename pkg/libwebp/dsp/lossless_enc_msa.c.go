@@ -53,7 +53,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 func TransformColor_MSA(const VP8LMultipliers* WEBP_RESTRICT const m,
-                               uint32_t* WEBP_RESTRICT data, int num_pixels) {
+                               uint32* WEBP_RESTRICT data, int num_pixels) {
   v16u8 src0, dst0;
   const v16i8 g2br =
       (v16i8)__msa_fill_w(m.green_to_blue | (m.green_to_red << 16));
@@ -83,25 +83,25 @@ func TransformColor_MSA(const VP8LMultipliers* WEBP_RESTRICT const m,
       src0 = LD_UB(data);
       TRANSFORM_COLOR_4(src0, dst0, g2br, r2b, mask0, mask1);
       if (num_pixels == 3) {
-        const uint64_t pix_d = __msa_copy_s_d((v2i64)dst0, 0);
-        const uint32_t pix_w = __msa_copy_s_w((v4i32)dst0, 2);
+        const uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0);
+        const uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 2);
         SD(pix_d, data + 0);
         SW(pix_w, data + 2);
       } else if (num_pixels == 2) {
-        const uint64_t pix_d = __msa_copy_s_d((v2i64)dst0, 0);
+        const uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0);
         SD(pix_d, data);
       } else {
-        const uint32_t pix_w = __msa_copy_s_w((v4i32)dst0, 0);
+        const uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 0);
         SW(pix_w, data);
       }
     }
   }
 }
 
-func SubtractGreenFromBlueAndRed_MSA(uint32_t* argb_data,
+func SubtractGreenFromBlueAndRed_MSA(uint32* argb_data,
                                             int num_pixels) {
   int i;
-  uint8_t* ptemp_data = (uint8_t*)argb_data;
+  uint8* ptemp_data = (uint8*)argb_data;
   v16u8 src0, dst0, tmp0;
   const v16u8 mask = {1, 255, 1, 255, 5,  255, 5,  255,
                       9, 255, 9, 255, 13, 255, 13, 255};
@@ -125,9 +125,9 @@ func SubtractGreenFromBlueAndRed_MSA(uint32_t* argb_data,
       num_pixels -= 4;
     }
     for (i = 0; i < num_pixels; i++) {
-      const uint8_t b = ptemp_data[0];
-      const uint8_t g = ptemp_data[1];
-      const uint8_t r = ptemp_data[2];
+      const uint8 b = ptemp_data[0];
+      const uint8 g = ptemp_data[1];
+      const uint8 r = ptemp_data[2];
       ptemp_data[0] = (b - g) & 0xff;
       ptemp_data[2] = (r - g) & 0xff;
       ptemp_data += 4;

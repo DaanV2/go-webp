@@ -24,29 +24,29 @@ extern "C" {
 #endif
 
 // Not a trivial literal symbol.
-const VP8L_NON_TRIVIAL_SYM =((uint16_t)(0xffff))
+const VP8L_NON_TRIVIAL_SYM =((uint16)(0xffff))
 
 // A simple container for histograms of data.
 typedef struct {
   // 'literal' contains green literal, palette-code and
   // copy-length-prefix histogram
-  uint32_t* literal;  // Pointer to the allocated buffer for literal.
-  uint32_t red[NUM_LITERAL_CODES];
-  uint32_t blue[NUM_LITERAL_CODES];
-  uint32_t alpha[NUM_LITERAL_CODES];
+  uint32* literal;  // Pointer to the allocated buffer for literal.
+  uint32 red[NUM_LITERAL_CODES];
+  uint32 blue[NUM_LITERAL_CODES];
+  uint32 alpha[NUM_LITERAL_CODES];
   // Backward reference prefix-code histogram.
-  uint32_t distance[NUM_DISTANCE_CODES];
+  uint32 distance[NUM_DISTANCE_CODES];
   int palette_code_bits;
   // The following members are only used within VP8LGetHistoImageSymbols.
 
   // Index of the unique value of a histogram if any, VP8L_NON_TRIVIAL_SYM
   // otherwise.
-  uint16_t trivial_symbol[5];
-  uint64_t bit_cost;  // Cached value of total bit cost.
+  uint16 trivial_symbol[5];
+  uint64 bit_cost;  // Cached value of total bit cost.
   // Cached values of entropy costs: literal, red, blue, alpha, distance
-  uint64_t costs[5];
-  uint8_t is_used[5];  // 5 for literal, red, blue, alpha, distance
-  uint16_t bin_id;     // entropy bin index.
+  uint64 costs[5];
+  uint8 is_used[5];  // 5 for literal, red, blue, alpha, distance
+  uint16 bin_id;     // entropy bin index.
 } VP8LHistogram;
 
 // Collection of histograms with fixed capacity, allocated as one
@@ -109,16 +109,16 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize,
                              int low_effort, int histogram_bits, int cache_bits,
                              VP8LHistogramSet* const image_histo,
                              VP8LHistogram* const tmp_histo,
-                             uint32_t* const histogram_symbols,
+                             uint32* const histogram_symbols,
                              const WebPPicture* const pic, int percent_range,
                              int* const percent);
 
 // Returns the entropy for the symbols in the input array.
-uint64_t VP8LBitsEntropy(const uint32_t* const array, int n);
+uint64 VP8LBitsEntropy(const uint32* const array, int n);
 
 // Estimate how many bits the combined entropy of literals and distance
 // approximately maps to.
-uint64_t VP8LHistogramEstimateBits(const VP8LHistogram* const h);
+uint64 VP8LHistogramEstimateBits(const VP8LHistogram* const h);
 
 #ifdef __cplusplus
 }

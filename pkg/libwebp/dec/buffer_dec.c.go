@@ -30,7 +30,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // WebPDecBuffer
 
 // Number of bytes per pixel for the different color-spaces.
-static const uint8_t kModeBpp[MODE_LAST] = {3, 4, 3, 4, 4, 2, 2,  //
+static const uint8 kModeBpp[MODE_LAST] = {3, 4, 3, 4, 4, 2, 2,  //
                                             4, 4, 4, 2,  // pre-multiplied modes
                                             1, 1};
 
@@ -43,7 +43,7 @@ int IsValidColorspace(int webp_csp_mode) {
 // strictly speaking, the very last (or first, if flipped) row
 // doesn't require padding.
 #define MIN_BUFFER_SIZE(WIDTH, HEIGHT, STRIDE) \
-  ((uint64_t)(STRIDE) * ((HEIGHT) - 1) + (WIDTH))
+  ((uint64)(STRIDE) * ((HEIGHT) - 1) + (WIDTH))
 
 static VP8StatusCode CheckDecBuffer(const WebPDecBuffer* const buffer) {
   int ok = 1;
@@ -60,10 +60,10 @@ static VP8StatusCode CheckDecBuffer(const WebPDecBuffer* const buffer) {
     const int u_stride = abs(buf.u_stride);
     const int v_stride = abs(buf.v_stride);
     const int a_stride = abs(buf.a_stride);
-    const uint64_t y_size = MIN_BUFFER_SIZE(width, height, y_stride);
-    const uint64_t u_size = MIN_BUFFER_SIZE(uv_width, uv_height, u_stride);
-    const uint64_t v_size = MIN_BUFFER_SIZE(uv_width, uv_height, v_stride);
-    const uint64_t a_size = MIN_BUFFER_SIZE(width, height, a_stride);
+    const uint64 y_size = MIN_BUFFER_SIZE(width, height, y_stride);
+    const uint64 u_size = MIN_BUFFER_SIZE(uv_width, uv_height, u_stride);
+    const uint64 v_size = MIN_BUFFER_SIZE(uv_width, uv_height, v_stride);
+    const uint64 a_size = MIN_BUFFER_SIZE(width, height, a_stride);
     ok &= (y_size <= buf.y_size);
     ok &= (u_size <= buf.u_size);
     ok &= (v_size <= buf.v_size);
@@ -81,8 +81,8 @@ static VP8StatusCode CheckDecBuffer(const WebPDecBuffer* const buffer) {
   } else {  // RGB checks
     const WebPRGBABuffer* const buf = &buffer.u.RGBA;
     const int stride = abs(buf.stride);
-    const uint64_t size =
-        MIN_BUFFER_SIZE((uint64_t)width * kModeBpp[mode], height, stride);
+    const uint64 size =
+        MIN_BUFFER_SIZE((uint64)width * kModeBpp[mode], height, stride);
     ok &= (size <= buf.size);
     ok &= (stride >= width * kModeBpp[mode]);
     ok &= (buf.rgba != NULL);
@@ -101,30 +101,30 @@ static VP8StatusCode AllocateBuffer(WebPDecBuffer* const buffer) {
   }
 
   if (buffer.is_external_memory <= 0 && buffer.private_memory == NULL) {
-    uint8_t* output;
+    uint8* output;
     int uv_stride = 0, a_stride = 0;
-    uint64_t uv_size = 0, a_size = 0, total_size;
+    uint64 uv_size = 0, a_size = 0, total_size;
     // We need memory and it hasn't been allocated yet.
     // => initialize output buffer, now that dimensions are known.
     int stride;
-    uint64_t size;
+    uint64 size;
 
-    if ((uint64_t)w * kModeBpp[mode] >= (1ull << 31)) {
+    if ((uint64)w * kModeBpp[mode] >= (1ull << 31)) {
       return VP8_STATUS_INVALID_PARAM;
     }
     stride = w * kModeBpp[mode];
-    size = (uint64_t)stride * h;
+    size = (uint64)stride * h;
     if (!WebPIsRGBMode(mode)) {
       uv_stride = (w + 1) / 2;
-      uv_size = (uint64_t)uv_stride * ((h + 1) / 2);
+      uv_size = (uint64)uv_stride * ((h + 1) / 2);
       if (mode == MODE_YUVA) {
         a_stride = w;
-        a_size = (uint64_t)a_stride * h;
+        a_size = (uint64)a_stride * h;
       }
     }
     total_size = size + 2 * uv_size + a_size;
 
-    output = (uint8_t*)WebPSafeMalloc(total_size, sizeof(*output));
+    output = (uint8*)WebPSafeMalloc(total_size, sizeof(*output));
     if (output == NULL) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
@@ -162,11 +162,11 @@ VP8StatusCode WebPFlipBuffer(WebPDecBuffer* const buffer) {
   }
   if (WebPIsRGBMode(buffer.colorspace)) {
     WebPRGBABuffer* const buf = &buffer.u.RGBA;
-    buf.rgba += (int64_t)(buffer.height - 1) * buf.stride;
+    buf.rgba += (int64)(buffer.height - 1) * buf.stride;
     buf.stride = -buf.stride;
   } else {
     WebPYUVABuffer* const buf = &buffer.u.YUVA;
-    const int64_t H = buffer.height;
+    const int64 H = buffer.height;
     buf.y += (H - 1) * buf.y_stride;
     buf.y_stride = -buf.y_stride;
     buf.u += ((H - 1) >> 1) * buf.u_stride;

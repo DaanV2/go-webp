@@ -32,8 +32,8 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // -----------------------------------------------------------------------------
 // Quantize levels.
 
-int QuantizeLevels(uint8_t* const WEBP_COUNTED_BY((size_t)width* height) data,
-                   int width, int height, int num_levels, uint64_t* const sse) {
+int QuantizeLevels(uint8* const WEBP_COUNTED_BY((size_t)width* height) data,
+                   int width, int height, int num_levels, uint64* const sse) {
   int freq[NUM_SYMBOLS] = {0};
   int q_level[NUM_SYMBOLS] = {0};
   double inv_q_level[NUM_SYMBOLS] = {0};
@@ -127,12 +127,12 @@ int QuantizeLevels(uint8_t* const WEBP_COUNTED_BY((size_t)width* height) data,
     // double.int rounding operation can be costly, so we do it
     // once for all before remapping. We also perform the data[] . slot
     // mapping, while at it (afunc one indirection in the final loop).
-    uint8_t map[NUM_SYMBOLS];
+    uint8 map[NUM_SYMBOLS];
     int s;
     size_t n;
     for (s = min_s; s <= max_s; ++s) {
       const int slot = q_level[s];
-      map[s] = (uint8_t)(inv_q_level[slot] + .5);
+      map[s] = (uint8)(inv_q_level[slot] + .5);
     }
     // Final pass.
     for (n = 0; n < data_size; ++n) {
@@ -141,7 +141,7 @@ int QuantizeLevels(uint8_t* const WEBP_COUNTED_BY((size_t)width* height) data,
   }
 End:
   // Store sum of squared error if needed.
-  if (sse != NULL) *sse = (uint64_t)err;
+  if (sse != NULL) *sse = (uint64)err;
 
   return 1;
 }

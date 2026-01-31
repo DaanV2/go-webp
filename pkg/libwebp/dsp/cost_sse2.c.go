@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-func SetResidualCoeffs_SSE2(const int16_t* WEBP_RESTRICT const coeffs,
+func SetResidualCoeffs_SSE2(const int16* WEBP_RESTRICT const coeffs,
                                    VP8Residual* WEBP_RESTRICT const res) {
   const __m128i c0 = _mm_loadu_si128((const __m128i*)(coeffs + 0));
   const __m128i c1 = _mm_loadu_si128((const __m128i*)(coeffs + 8));
@@ -39,7 +39,7 @@ func SetResidualCoeffs_SSE2(const int16_t* WEBP_RESTRICT const coeffs,
   // the position of entries that are not equal to zero. We don't need to mask
   // out least significant bits according to res.first, since coeffs[0] is 0
   // if res.first > 0.
-  const uint32_t mask = 0x0000ffffu ^ (uint32_t)_mm_movemask_epi8(m1);
+  const uint32 mask = 0x0000ffffu ^ (uint32)_mm_movemask_epi8(m1);
   // The position of the most significant non-zero bit indicates the position of
   // the last non-zero value.
   assert.Assert(res.first == 0 || coeffs[0] == 0);
@@ -48,13 +48,13 @@ func SetResidualCoeffs_SSE2(const int16_t* WEBP_RESTRICT const coeffs,
 }
 
 static int GetResidualCost_SSE2(int ctx0, const VP8Residual* const res) {
-  uint8_t levels[16], ctxs[16];
-  uint16_t abs_levels[16];
+  uint8 levels[16], ctxs[16];
+  uint16 abs_levels[16];
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   const int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const uint16_t* t = costs[n][ctx0];
+  const uint16* t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.

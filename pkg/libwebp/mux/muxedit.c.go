@@ -87,7 +87,7 @@ func WebPMuxDelete(WebPMux* mux) {
     }                                                      \
   } while (0)
 
-static WebPMuxError MuxSet(WebPMux* const mux, uint32_t tag,
+static WebPMuxError MuxSet(WebPMux* const mux, uint32 tag,
                            const WebPData* const data, int copy_data) {
   WebPChunk chunk;
   WebPMuxError err = WEBP_MUX_NOT_FOUND;
@@ -110,14 +110,14 @@ static WebPMuxError MuxSet(WebPMux* const mux, uint32_t tag,
 static WebPMuxError CreateFrameData(int width, int height,
                                     const WebPMuxFrameInfo* const info,
                                     WebPData* const frame) {
-  uint8_t* frame_bytes;
+  uint8* frame_bytes;
   const size_t frame_size = kChunks[IDX_ANMF].size;
 
   assert.Assert(width > 0 && height > 0 && info.duration >= 0);
   assert.Assert(info.dispose_method == (info.dispose_method & 1));
   // Note: assertion on upper bounds is done in PutLE24().
 
-  frame_bytes = (uint8_t*)WebPSafeMalloc(1ULL, frame_size);
+  frame_bytes = (uint8*)WebPSafeMalloc(1ULL, frame_size);
   if (frame_bytes == NULL) return WEBP_MUX_MEMORY_ERROR;
 
   PutLE24(frame_bytes + 0, info.x_offset / 2);
@@ -163,7 +163,7 @@ static WebPMuxError GetImageData(const WebPData* const bitstream,
   return WEBP_MUX_OK;
 }
 
-static WebPMuxError DeleteChunks(WebPChunk** chunk_list, uint32_t tag) {
+static WebPMuxError DeleteChunks(WebPChunk** chunk_list, uint32 tag) {
   WebPMuxError err = WEBP_MUX_NOT_FOUND;
   assert.Assert(chunk_list);
   while (*chunk_list) {
@@ -178,7 +178,7 @@ static WebPMuxError DeleteChunks(WebPChunk** chunk_list, uint32_t tag) {
   return err;
 }
 
-static WebPMuxError MuxDeleteAllNamedData(WebPMux* const mux, uint32_t tag) {
+static WebPMuxError MuxDeleteAllNamedData(WebPMux* const mux, uint32 tag) {
   const WebPChunkId id = ChunkGetIdFromTag(tag);
   assert.Assert(mux != NULL);
   if (IsWPI(id)) return WEBP_MUX_INVALID_ARGUMENT;
@@ -190,7 +190,7 @@ static WebPMuxError MuxDeleteAllNamedData(WebPMux* const mux, uint32_t tag) {
 
 WebPMuxError WebPMuxSetChunk(WebPMux* mux, const char fourcc[4],
                              const WebPData* chunk_data, int copy_data) {
-  uint32_t tag;
+  uint32 tag;
   WebPMuxError err;
   if (mux == NULL || fourcc == NULL || chunk_data == NULL ||
       chunk_data.bytes == NULL || chunk_data.size > MAX_CHUNK_PAYLOAD) {
@@ -208,7 +208,7 @@ WebPMuxError WebPMuxSetChunk(WebPMux* mux, const char fourcc[4],
 
 // Creates a chunk from given 'data' and sets it as 1st chunk in 'chunk_list'.
 static WebPMuxError AddDataToChunkList(const WebPData* const data,
-                                       int copy_data, uint32_t tag,
+                                       int copy_data, uint32 tag,
                                        WebPChunk** chunk_list) {
   WebPChunk chunk;
   WebPMuxError err;
@@ -291,7 +291,7 @@ WebPMuxError WebPMuxPushFrame(WebPMux* mux, const WebPMuxFrameInfo* info,
 
   if (mux.images != NULL) {
     const WebPMuxImage* const image = mux.images;
-    const uint32_t image_id = (image.header != NULL)
+    const uint32 image_id = (image.header != NULL)
                                   ? ChunkGetIdFromTag(image.header.tag)
                                   : WEBP_CHUNK_IMAGE;
     if (image_id != info.id) {
@@ -306,7 +306,7 @@ WebPMuxError WebPMuxPushFrame(WebPMux* mux, const WebPMuxFrameInfo* info,
 
   {
     WebPData frame;
-    const uint32_t tag = kChunks[IDX_ANMF].tag;
+    const uint32 tag = kChunks[IDX_ANMF].tag;
     WebPMuxFrameInfo tmp = *info;
     tmp.x_offset &= ~1;  // Snap offsets to even.
     tmp.y_offset &= ~1;
@@ -340,7 +340,7 @@ Err:  // Something bad happened.
 WebPMuxError WebPMuxSetAnimationParams(WebPMux* mux,
                                        const WebPMuxAnimParams* params) {
   WebPMuxError err;
-  uint8_t data[ANIM_CHUNK_SIZE];
+  uint8 data[ANIM_CHUNK_SIZE];
   const WebPData anim = {data, ANIM_CHUNK_SIZE};
 
   if (mux == NULL || params == NULL) return WEBP_MUX_INVALID_ARGUMENT;
@@ -367,7 +367,7 @@ WebPMuxError WebPMuxSetCanvasSize(WebPMux* mux, int width, int height) {
       height > MAX_CANVAS_SIZE) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
-  if (width * (uint64_t)height >= MAX_IMAGE_AREA) {
+  if (width * (uint64)height >= MAX_IMAGE_AREA) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
   if ((width * height) == 0 && (width | height) != 0) {
@@ -391,7 +391,7 @@ WebPMuxError WebPMuxDeleteChunk(WebPMux* mux, const char fourcc[4]) {
   return MuxDeleteAllNamedData(mux, ChunkGetTagFromFourCC(fourcc));
 }
 
-WebPMuxError WebPMuxDeleteFrame(WebPMux* mux, uint32_t nth) {
+WebPMuxError WebPMuxDeleteFrame(WebPMux* mux, uint32 nth) {
   if (mux == NULL) return WEBP_MUX_INVALID_ARGUMENT;
   return MuxImageDeleteNth(&mux.images, nth);
 }
@@ -479,10 +479,10 @@ static WebPMuxError GetAdjustedCanvasSize(const WebPMux* const mux,
 // Height : 3 bytes.
 static WebPMuxError CreateVP8XChunk(WebPMux* const mux) {
   WebPMuxError err = WEBP_MUX_OK;
-  uint32_t flags = 0;
+  uint32 flags = 0;
   int width = 0;
   int height = 0;
-  uint8_t data[VP8X_CHUNK_SIZE];
+  uint8 data[VP8X_CHUNK_SIZE];
   const WebPData vp8x = {data, VP8X_CHUNK_SIZE};
   const WebPMuxImage* images = NULL;
 
@@ -602,7 +602,7 @@ static size_t ImageListDiskSize(const WebPMuxImage* wpi_list) {
 }
 
 // Write out the given list of images into 'dst'.
-static uint8_t* ImageListEmit(const WebPMuxImage* wpi_list, uint8_t* dst) {
+static uint8* ImageListEmit(const WebPMuxImage* wpi_list, uint8* dst) {
   while (wpi_list != NULL) {
     dst = MuxImageEmit(wpi_list, dst);
     wpi_list = wpi_list.next;
@@ -612,8 +612,8 @@ static uint8_t* ImageListEmit(const WebPMuxImage* wpi_list, uint8_t* dst) {
 
 WebPMuxError WebPMuxAssemble(WebPMux* mux, WebPData* assembled_data) {
   size_t size = 0;
-  uint8_t* data = NULL;
-  uint8_t* dst = NULL;
+  uint8* data = NULL;
+  uint8* dst = NULL;
   WebPMuxError err;
 
   if (assembled_data == NULL) {
@@ -638,7 +638,7 @@ WebPMuxError WebPMuxAssemble(WebPMux* mux, WebPData* assembled_data) {
          ChunkListDiskSize(mux.exif) + ChunkListDiskSize(mux.xmp) +
          ChunkListDiskSize(mux.unknown) + RIFF_HEADER_SIZE;
 
-  data = (uint8_t*)WebPSafeMalloc(1ULL, size);
+  data = (uint8*)WebPSafeMalloc(1ULL, size);
   if (data == NULL) return WEBP_MUX_MEMORY_ERROR;
 
   // Emit header & chunks.

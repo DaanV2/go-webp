@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define CONVERT12_BGRA_XXX(psrc, pdst, m0, m1, m2)          \
   do {                                                      \
-    uint32_t pix_w;                                         \
+    uint32 pix_w;                                         \
     v16u8 src0, src1, src2, dst0, dst1, dst2;               \
     LD_UB3(psrc, 16, src0, src1, src2);                     \
     VSHF_B2_UB(src0, src1, src1, src2, m0, m1, dst0, dst1); \
@@ -47,7 +47,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define CONVERT8_BGRA_XXX(psrc, pdst, m0, m1)               \
   do {                                                      \
-    uint64_t pix_d;                                         \
+    uint64 pix_d;                                         \
     v16u8 src0, src1, src2 = {0}, dst0, dst1;               \
     LD_UB2(psrc, 16, src0, src1);                           \
     VSHF_B2_UB(src0, src1, src1, src2, m0, m1, dst0, dst1); \
@@ -60,17 +60,17 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   do {                                               \
     const v16u8 src0 = LD_UB(psrc);                  \
     const v16u8 dst0 = VSHF_UB(src0, src0, m);       \
-    uint64_t pix_d = __msa_copy_s_d((v2i64)dst0, 0); \
-    uint32_t pix_w = __msa_copy_s_w((v4i32)dst0, 2); \
+    uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0); \
+    uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 2); \
     SD(pix_d, pdst + 0);                             \
     SW(pix_w, pdst + 8);                             \
   } while (0)
 
 #define CONVERT1_BGRA_BGR(psrc, pdst) \
   do {                                \
-    const int32_t b = (psrc)[0];      \
-    const int32_t g = (psrc)[1];      \
-    const int32_t r = (psrc)[2];      \
+    const int32 b = (psrc)[0];      \
+    const int32 g = (psrc)[1];      \
+    const int32 r = (psrc)[2];      \
     (pdst)[0] = b;                    \
     (pdst)[1] = g;                    \
     (pdst)[2] = r;                    \
@@ -78,9 +78,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define CONVERT1_BGRA_RGB(psrc, pdst) \
   do {                                \
-    const int32_t b = (psrc)[0];      \
-    const int32_t g = (psrc)[1];      \
-    const int32_t r = (psrc)[2];      \
+    const int32 b = (psrc)[0];      \
+    const int32 g = (psrc)[1];      \
+    const int32 r = (psrc)[2];      \
     (pdst)[0] = r;                    \
     (pdst)[1] = g;                    \
     (pdst)[2] = b;                    \
@@ -119,11 +119,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     dst = VSHF_UB(src, t0, mask1);                                \
   } while (0)
 
-func ConvertBGRAToRGBA_MSA(const uint32_t* src, int num_pixels,
-                                  uint8_t* dst) {
+func ConvertBGRAToRGBA_MSA(const uint32* src, int num_pixels,
+                                  uint8* dst) {
   int i;
-  const uint8_t* ptemp_src = (const uint8_t*)src;
-  uint8_t* ptemp_dst = (uint8_t*)dst;
+  const uint8* ptemp_src = (const uint8*)src;
+  uint8* ptemp_dst = (uint8*)dst;
   v16u8 src0, dst0;
   const v16u8 mask = {2, 1, 0, 3, 6, 5, 4, 7, 10, 9, 8, 11, 14, 13, 12, 15};
 
@@ -146,10 +146,10 @@ func ConvertBGRAToRGBA_MSA(const uint32_t* src, int num_pixels,
       num_pixels -= 4;
     }
     for (i = 0; i < num_pixels; i++) {
-      const uint8_t b = ptemp_src[2];
-      const uint8_t g = ptemp_src[1];
-      const uint8_t r = ptemp_src[0];
-      const uint8_t a = ptemp_src[3];
+      const uint8 b = ptemp_src[2];
+      const uint8 g = ptemp_src[1];
+      const uint8 r = ptemp_src[0];
+      const uint8 a = ptemp_src[3];
       ptemp_dst[0] = b;
       ptemp_dst[1] = g;
       ptemp_dst[2] = r;
@@ -160,10 +160,10 @@ func ConvertBGRAToRGBA_MSA(const uint32_t* src, int num_pixels,
   }
 }
 
-func ConvertBGRAToBGR_MSA(const uint32_t* src, int num_pixels,
-                                 uint8_t* dst) {
-  const uint8_t* ptemp_src = (const uint8_t*)src;
-  uint8_t* ptemp_dst = (uint8_t*)dst;
+func ConvertBGRAToBGR_MSA(const uint32* src, int num_pixels,
+                                 uint8* dst) {
+  const uint8* ptemp_src = (const uint8*)src;
+  uint8* ptemp_dst = (uint8*)dst;
   const v16u8 mask0 = {0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 20};
   const v16u8 mask1 = {5,  6,  8,  9,  10, 12, 13, 14,
                        16, 17, 18, 20, 21, 22, 24, 25};
@@ -206,10 +206,10 @@ func ConvertBGRAToBGR_MSA(const uint32_t* src, int num_pixels,
   }
 }
 
-func ConvertBGRAToRGB_MSA(const uint32_t* src, int num_pixels,
-                                 uint8_t* dst) {
-  const uint8_t* ptemp_src = (const uint8_t*)src;
-  uint8_t* ptemp_dst = (uint8_t*)dst;
+func ConvertBGRAToRGB_MSA(const uint32* src, int num_pixels,
+                                 uint8* dst) {
+  const uint8* ptemp_src = (const uint8*)src;
+  uint8* ptemp_dst = (uint8*)dst;
   const v16u8 mask0 = {2, 1, 0, 6, 5, 4, 10, 9, 8, 14, 13, 12, 18, 17, 16, 22};
   const v16u8 mask1 = {5,  4,  10, 9,  8,  14, 13, 12,
                        18, 17, 16, 22, 21, 20, 26, 25};
@@ -252,11 +252,11 @@ func ConvertBGRAToRGB_MSA(const uint32_t* src, int num_pixels,
   }
 }
 
-func AddGreenToBlueAndRed_MSA(const uint32_t* const src, int num_pixels,
-                                     uint32_t* dst) {
+func AddGreenToBlueAndRed_MSA(const uint32* const src, int num_pixels,
+                                     uint32* dst) {
   int i;
-  const uint8_t* in = (const uint8_t*)src;
-  uint8_t* out = (uint8_t*)dst;
+  const uint8* in = (const uint8*)src;
+  uint8* out = (uint8*)dst;
   v16u8 src0, dst0, tmp0;
   const v16u8 mask = {1, 255, 1, 255, 5,  255, 5,  255,
                       9, 255, 9, 255, 13, 255, 13, 255};
@@ -282,9 +282,9 @@ func AddGreenToBlueAndRed_MSA(const uint32_t* const src, int num_pixels,
       num_pixels -= 4;
     }
     for (i = 0; i < num_pixels; i++) {
-      const uint8_t b = in[0];
-      const uint8_t g = in[1];
-      const uint8_t r = in[2];
+      const uint8 b = in[0];
+      const uint8 g = in[1];
+      const uint8 r = in[2];
       out[0] = (b + g) & 0xff;
       out[1] = g;
       out[2] = (r + g) & 0xff;
@@ -295,8 +295,8 @@ func AddGreenToBlueAndRed_MSA(const uint32_t* const src, int num_pixels,
 }
 
 func TransformColorInverse_MSA(const VP8LMultipliers* const m,
-                                      const uint32_t* src, int num_pixels,
-                                      uint32_t* dst) {
+                                      const uint32* src, int num_pixels,
+                                      uint32* dst) {
   v16u8 src0, dst0;
   const v16i8 g2br =
       (v16i8)__msa_fill_w(m.green_to_blue | (m.green_to_red << 16));
@@ -328,15 +328,15 @@ func TransformColorInverse_MSA(const VP8LMultipliers* const m,
       src0 = LD_UB(src);
       TRANSFORM_COLOR_INVERSE_4(src0, dst0, g2br, r2b, mask0, mask1);
       if (num_pixels == 3) {
-        const uint64_t pix_d = __msa_copy_s_d((v2i64)dst0, 0);
-        const uint32_t pix_w = __msa_copy_s_w((v4i32)dst0, 2);
+        const uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0);
+        const uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 2);
         SD(pix_d, dst + 0);
         SW(pix_w, dst + 2);
       } else if (num_pixels == 2) {
-        const uint64_t pix_d = __msa_copy_s_d((v2i64)dst0, 0);
+        const uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0);
         SD(pix_d, dst);
       } else {
-        const uint32_t pix_w = __msa_copy_s_w((v4i32)dst0, 0);
+        const uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 0);
         SW(pix_w, dst);
       }
     }

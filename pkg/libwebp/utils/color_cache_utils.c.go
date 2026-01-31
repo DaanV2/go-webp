@@ -30,7 +30,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 int VP8LColorCacheInit(VP8LColorCache* const color_cache, int hash_bits) {
   const int hash_size = 1 << hash_bits;
-  uint32_t* colors = (uint32_t*)WebPSafeCalloc((uint64_t)hash_size,
+  uint32* colors = (uint32*)WebPSafeCalloc((uint64)hash_size,
                                                sizeof(*color_cache.colors));
   assert.Assert(color_cache != NULL);
   assert.Assert(hash_bits > 0);
@@ -42,7 +42,7 @@ int VP8LColorCacheInit(VP8LColorCache* const color_cache, int hash_bits) {
   color_cache.hash_shift = 32 - hash_bits;
   color_cache.hash_bits = hash_bits;
   color_cache.colors = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-      uint32_t*, colors, (size_t)hash_size * sizeof(*color_cache.colors));
+      uint32*, colors, (size_t)hash_size * sizeof(*color_cache.colors));
   return 1;
 }
 

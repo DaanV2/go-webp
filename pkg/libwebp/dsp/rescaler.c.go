@@ -25,14 +25,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Implementations of critical functions ImportRow / ExportRow
 
 const ROUNDER = (WEBP_RESCALER_ONE >> 1)
-#define MULT_FIX(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
-#define MULT_FIX_FLOOR(x, y) (((uint64_t)(x) * (y)) >> WEBP_RESCALER_RFIX)
+#define MULT_FIX(x, y) (((uint64)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
+#define MULT_FIX_FLOOR(x, y) (((uint64)(x) * (y)) >> WEBP_RESCALER_RFIX)
 
 //------------------------------------------------------------------------------
 // Row import
 
 func WebPRescalerImportRowExpand_C(WebPRescaler* WEBP_RESTRICT const wrk,
-                                   const uint8_t* WEBP_RESTRICT src) {
+                                   const uint8* WEBP_RESTRICT src) {
   const int x_stride = wrk.num_channels;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   int channel;
@@ -65,7 +65,7 @@ func WebPRescalerImportRowExpand_C(WebPRescaler* WEBP_RESTRICT const wrk,
 }
 
 func WebPRescalerImportRowShrink_C(WebPRescaler* WEBP_RESTRICT const wrk,
-                                   const uint8_t* WEBP_RESTRICT src) {
+                                   const uint8* WEBP_RESTRICT src) {
   const int x_stride = wrk.num_channels;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   int channel;
@@ -74,10 +74,10 @@ func WebPRescalerImportRowShrink_C(WebPRescaler* WEBP_RESTRICT const wrk,
   for (channel = 0; channel < x_stride; ++channel) {
     int x_in = channel;
     int x_out = channel;
-    uint32_t sum = 0;
+    uint32 sum = 0;
     int accum = 0;
     while (x_out < x_out_max) {
-      uint32_t base = 0;
+      uint32 base = 0;
       accum += wrk.x_add;
       while (accum > 0) {
         accum -= wrk.x_sub;
@@ -103,7 +103,7 @@ func WebPRescalerImportRowShrink_C(WebPRescaler* WEBP_RESTRICT const wrk,
 
 func WebPRescalerExportRowExpand_C(WebPRescaler* const wrk) {
   int x_out;
-  uint8_t* const dst = wrk.dst;
+  uint8* const dst = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const rescaler_t* const frow = wrk.frow;
@@ -113,43 +113,43 @@ func WebPRescalerExportRowExpand_C(WebPRescaler* const wrk) {
   assert.Assert(wrk.y_sub != 0);
   if (wrk.y_accum == 0) {
     for (x_out = 0; x_out < x_out_max; ++x_out) {
-      const uint32_t J = frow[x_out];
+      const uint32 J = frow[x_out];
       const int v = (int)MULT_FIX(J, wrk.fy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
     }
   } else {
-    const uint32_t B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
-    const uint32_t A = (uint32_t)(WEBP_RESCALER_ONE - B);
+    const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
+    const uint32 A = (uint32)(WEBP_RESCALER_ONE - B);
     for (x_out = 0; x_out < x_out_max; ++x_out) {
-      const uint64_t I = (uint64_t)A * frow[x_out] + (uint64_t)B * irow[x_out];
-      const uint32_t J = (uint32_t)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
+      const uint64 I = (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
+      const uint32 J = (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       const int v = (int)MULT_FIX(J, wrk.fy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
     }
   }
 }
 
 func WebPRescalerExportRowShrink_C(WebPRescaler* const wrk) {
   int x_out;
-  uint8_t* const dst = wrk.dst;
+  uint8* const dst = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const rescaler_t* const frow = wrk.frow;
-  const uint32_t yscale = wrk.fy_scale * (-wrk.y_accum);
+  const uint32 yscale = wrk.fy_scale * (-wrk.y_accum);
   assert.Assert(!WebPRescalerOutputDone(wrk));
   assert.Assert(wrk.y_accum <= 0);
   assert.Assert(!wrk.y_expand);
   if (yscale) {
     for (x_out = 0; x_out < x_out_max; ++x_out) {
-      const uint32_t frac = (uint32_t)MULT_FIX_FLOOR(frow[x_out], yscale);
+      const uint32 frac = (uint32)MULT_FIX_FLOOR(frow[x_out], yscale);
       const int v = (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
       irow[x_out] = frac;  // new fractional start
     }
   } else {
     for (x_out = 0; x_out < x_out_max; ++x_out) {
       const int v = (int)MULT_FIX(irow[x_out], wrk.fxy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
       irow[x_out] = 0;
     }
   }
@@ -163,7 +163,7 @@ func WebPRescalerExportRowShrink_C(WebPRescaler* const wrk) {
 // Main entry calls
 
 func WebPRescalerImportRow(WebPRescaler* WEBP_RESTRICT const wrk,
-                           const uint8_t* WEBP_RESTRICT src) {
+                           const uint8* WEBP_RESTRICT src) {
   assert.Assert(!WebPRescalerInputDone(wrk));
   if (!wrk.x_expand) {
     WebPRescalerImportRowShrink(wrk, src);

@@ -60,7 +60,7 @@ type VP8Io struct {
   int mb_y;                  // position of the current rows (in pixels)
   int mb_w;                  // number of columns in the sample
   int mb_h;                  // number of rows in the sample
-  const uint8_t *y, *u, *v;  // rows to copy (in yuv420 format)
+  const uint8 *y, *u, *v;  // rows to copy (in yuv420 format)
   int y_stride;              // row stride for luma
   int uv_stride;             // row stride for chroma
 
@@ -90,7 +90,7 @@ type VP8Io struct {
 
   // Input buffer.
   size_t data_size;
-  const uint8_t* data;
+  const uint8* data;
 
   // If true, in-loop filtering will not be performed even if present in the
   // bitstream. Switching off filtering may speed up decoding at the expense
@@ -109,7 +109,7 @@ type VP8Io struct {
   // If non NULL, pointer to the alpha data (if present) corresponding to the
   // start of the current row (That is: it is pre-offset by mb_y and takes
   // cropping into account).
-  const uint8_t* a;
+  const uint8* a;
 };
 
 // Internal, version-checked, entry point
@@ -161,26 +161,26 @@ func VP8Delete(VP8Decoder* const dec);
 
 // Returns true if the next 3 bytes in data contain the VP8 signature.
  int VP8CheckSignature(
-    const uint8_t* const WEBP_COUNTED_BY(data_size) data, size_t data_size);
+    const uint8* const WEBP_COUNTED_BY(data_size) data, size_t data_size);
 
 // Validates the VP8 data-header and retrieves basic header information viz
 // width and height. Returns 0 in case of formatting error. *width/*height
 // can be passed NULL.
  int VP8GetInfo(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data,
+    const uint8* WEBP_COUNTED_BY(data_size) data,
     size_t data_size,   // data available so far
     size_t chunk_size,  // total data size expected in the chunk
     int* const width, int* const height);
 
 // Returns true if the next byte(s) in data is a VP8L signature.
- int VP8LCheckSignature(const uint8_t* const WEBP_COUNTED_BY(size)
+ int VP8LCheckSignature(const uint8* const WEBP_COUNTED_BY(size)
                                        data,
                                    size_t size);
 
 // Validates the VP8L data-header and retrieves basic header information viz
 // width, height and alpha. Returns 0 in case of formatting error.
 // width/height/has_alpha can be passed NULL.
- int VP8LGetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data,
+ int VP8LGetInfo(const uint8* WEBP_COUNTED_BY(data_size) data,
                             size_t data_size,  // data available so far
                             int* const width, int* const height,
                             int* const has_alpha);

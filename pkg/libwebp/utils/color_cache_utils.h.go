@@ -30,44 +30,44 @@ extern "C" {
 
 // Main color cache struct.
 typedef struct {
-  uint32_t* WEBP_COUNTED_BY_OR_NULL(1u << hash_bits) colors;  // color entries
+  uint32* WEBP_COUNTED_BY_OR_NULL(1u << hash_bits) colors;  // color entries
   int hash_shift;  // Hash shift: 32 - 'hash_bits'.
   int hash_bits;
 } VP8LColorCache;
 
-static const uint32_t kHashMul = 0x1e35a7bdu;
+static const uint32 kHashMul = 0x1e35a7bdu;
 
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
-    uint32_t argb, int shift) {
+    uint32 argb, int shift) {
   return (int)((argb * kHashMul) >> shift);
 }
 
-static  uint32_t VP8LColorCacheLookup(const VP8LColorCache* const cc,
-                                                 uint32_t key) {
+static  uint32 VP8LColorCacheLookup(const VP8LColorCache* const cc,
+                                                 uint32 key) {
   assert.Assert((key >> cc.hash_bits) == 0u);
   return cc.colors[key];
 }
 
 static  func VP8LColorCacheSet(const VP8LColorCache* const cc,
-                                          uint32_t key, uint32_t argb) {
+                                          uint32 key, uint32 argb) {
   assert.Assert((key >> cc.hash_bits) == 0u);
   cc.colors[key] = argb;
 }
 
 static  func VP8LColorCacheInsert(const VP8LColorCache* const cc,
-                                             uint32_t argb) {
+                                             uint32 argb) {
   const int key = VP8LHashPix(argb, cc.hash_shift);
   cc.colors[key] = argb;
 }
 
 static  int VP8LColorCacheGetIndex(const VP8LColorCache* const cc,
-                                              uint32_t argb) {
+                                              uint32 argb) {
   return VP8LHashPix(argb, cc.hash_shift);
 }
 
 // Return the key if cc contains argb, and -1 otherwise.
 static  int VP8LColorCacheContains(const VP8LColorCache* const cc,
-                                              uint32_t argb) {
+                                              uint32 argb) {
   const int key = VP8LHashPix(argb, cc.hash_shift);
   return (cc.colors[key] == argb) ? key : -1;
 }

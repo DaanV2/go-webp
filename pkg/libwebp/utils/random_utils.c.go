@@ -25,7 +25,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 
 // 31b-range values
-static const uint32_t kRandomTable[VP8_RANDOM_TABLE_SIZE] = {
+static const uint32 kRandomTable[VP8_RANDOM_TABLE_SIZE] = {
     0x0de15230, 0x03b31886, 0x775faccb, 0x1c88626a, 0x68385c55, 0x14b3b828,
     0x4a85fef8, 0x49ddb84b, 0x64fcf397, 0x5c550289, 0x4a290000, 0x0d7ec1da,
     0x5940b7ab, 0x5492577d, 0x4e19ca72, 0x38d38c69, 0x0c01ee65, 0x32a1755f,
@@ -44,7 +44,7 @@ func VP8InitRandom(VP8Random* const rg, float dithering) {
   rg.amp = (dithering < 0.0) ? 0
             : (dithering > 1.0)
                 ? (1 << VP8_RANDOM_DITHER_FIX)
-                : (uint32_t)((1 << VP8_RANDOM_DITHER_FIX) * dithering);
+                : (uint32)((1 << VP8_RANDOM_DITHER_FIX) * dithering);
 }
 
 //------------------------------------------------------------------------------

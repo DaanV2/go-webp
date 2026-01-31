@@ -75,19 +75,19 @@ const MIN_WIDTH_FOR_THREADS =512
 // Headers
 
 typedef struct {
-  uint8_t key_frame;
-  uint8_t profile;
-  uint8_t show;
-  uint32_t partition_length;
+  uint8 key_frame;
+  uint8 profile;
+  uint8 show;
+  uint32 partition_length;
 } VP8FrameHeader;
 
 typedef struct {
-  uint16_t width;
-  uint16_t height;
-  uint8_t xscale;
-  uint8_t yscale;
-  uint8_t colorspace;  // 0 = YCbCr
-  uint8_t clamp_type;
+  uint16 width;
+  uint16 height;
+  uint8 xscale;
+  uint8 yscale;
+  uint8 colorspace;  // 0 = YCbCr
+  uint8 clamp_type;
 } VP8PictureHeader;
 
 // segment features
@@ -95,12 +95,12 @@ typedef struct {
   int use_segment;
   int update_map;      // whether to update the segment map or not
   int absolute_delta;  // absolute or delta values for quantizer and filter
-  int8_t quantizer[NUM_MB_SEGMENTS];        // quantization changes
-  int8_t filter_strength[NUM_MB_SEGMENTS];  // filter strength for segments
+  int8 quantizer[NUM_MB_SEGMENTS];        // quantization changes
+  int8 filter_strength[NUM_MB_SEGMENTS];  // filter strength for segments
 } VP8SegmentHeader;
 
 // probas associated to one of the contexts
-typedef uint8_t VP8ProbaArray[NUM_PROBAS];
+typedef uint8 VP8ProbaArray[NUM_PROBAS];
 
 typedef struct {  // all the probas associated to one band
   VP8ProbaArray probas[NUM_CTX];
@@ -108,7 +108,7 @@ typedef struct {  // all the probas associated to one band
 
 // Struct collecting all frame-persistent probabilities.
 typedef struct {
-  uint8_t segments[MB_FEATURE_TREE_PROBS];
+  uint8 segments[MB_FEATURE_TREE_PROBS];
   // Type: 0:Intra16-AC  1:Intra16-DC   2:Chroma   3:Intra4
   VP8BandProbas bands[NUM_TYPES][NUM_BANDS];
   const VP8BandProbas* bands_ptr[NUM_TYPES][16 + 1];
@@ -128,19 +128,19 @@ typedef struct {
 // Informations about the macroblocks.
 
 typedef struct {       // filter specs
-  uint8_t f_limit;     // filter limit in [3..189], or 0 if no filtering
-  uint8_t f_ilevel;    // inner limit in [1..63]
-  uint8_t f_inner;     // do inner filtering?
-  uint8_t hev_thresh;  // high edge variance threshold in [0..2]
+  uint8 f_limit;     // filter limit in [3..189], or 0 if no filtering
+  uint8 f_ilevel;    // inner limit in [1..63]
+  uint8 f_inner;     // do inner filtering?
+  uint8 hev_thresh;  // high edge variance threshold in [0..2]
 } VP8FInfo;
 
 typedef struct {  // Top/Left Contexts used for syntax-parsing
-  uint8_t nz;     // non-zero AC/DC coeffs (4bit for luma + 4bit for chroma)
-  uint8_t nz_dc;  // non-zero DC coeff (1bit)
+  uint8 nz;     // non-zero AC/DC coeffs (4bit for luma + 4bit for chroma)
+  uint8 nz_dc;  // non-zero DC coeff (1bit)
 } VP8MB;
 
 // Dequantization matrices
-typedef int quant_t[2];  // [DC / AC].  Can be 'uint16_t[2]' too (~slower).
+typedef int quant_t[2];  // [DC / AC].  Can be 'uint16[2]' too (~slower).
 typedef struct {
   quant_t y1_mat, y2_mat, uv_mat;
 
@@ -150,10 +150,10 @@ typedef struct {
 
 // Data needed to reconstruct a macroblock
 typedef struct {
-  int16_t coeffs[384];  // 384 coeffs = (16+4+4) * 4*4
-  uint8_t is_i4x4;      // true if intra4x4
-  uint8_t imodes[16];   // one 16x16 mode (#0) or sixteen 4x4 modes
-  uint8_t uvmode;       // chroma prediction mode
+  int16 coeffs[384];  // 384 coeffs = (16+4+4) * 4*4
+  uint8 is_i4x4;      // true if intra4x4
+  uint8 imodes[16];   // one 16x16 mode (#0) or sixteen 4x4 modes
+  uint8 uvmode;       // chroma prediction mode
   // bit-wise info about the content of each sub-4x4 blocks (in decoding order).
   // Each of the 4x4 blocks for y/u/v is associated with a 2b code according to:
   //   code=0 . no coefficient
@@ -161,11 +161,11 @@ typedef struct {
   //   code=2 . first three coefficients are non-zero
   //   code=3 . more than three coefficients are non-zero
   // This allows to call specialized transform functions.
-  uint32_t non_zero_y;
-  uint32_t non_zero_uv;
-  uint8_t dither;  // local dithering strength (deduced from non_zero*)
-  uint8_t skip;
-  uint8_t segment;
+  uint32 non_zero_y;
+  uint32 non_zero_uv;
+  uint8 dither;  // local dithering strength (deduced from non_zero*)
+  uint8 skip;
+  uint8 segment;
 } VP8MBData;
 
 // Persistent information needed by the parallel processing
@@ -180,7 +180,7 @@ typedef struct {
 
 // Saved top samples, per macroblock. Fits into a cache-line.
 typedef struct {
-  uint8_t y[16], u[8], v[8];
+  uint8 y[16], u[8], v[8];
 } VP8TopSamples;
 
 //------------------------------------------------------------------------------
@@ -217,7 +217,7 @@ type VP8Decoder struct {
   int br_mb_x, br_mb_y;  // last bottom-right MB that must be decoded
 
   // number of partitions minus one.
-  uint32_t num_parts_minus_one;
+  uint32 num_parts_minus_one;
   // per-partition boolean decoders.
   VP8BitReader parts[MAX_NUM_PARTITIONS];
 
@@ -231,21 +231,21 @@ type VP8Decoder struct {
   // probabilities
   VP8Proba proba;
   int use_skip_proba;
-  uint8_t skip_p;
+  uint8 skip_p;
 
   // Boundary data cache and persistent buffers.
-  uint8_t* intra_t;    // top intra modes values: 4 * mb_w
-  uint8_t intra_l[4];  // left intra modes values
+  uint8* intra_t;    // top intra modes values: 4 * mb_w
+  uint8 intra_l[4];  // left intra modes values
 
   VP8TopSamples* yuv_t;  // top y/u/v samples
 
   VP8MB* mb_info;    // contextual macroblock info (mb_w + 1)
   VP8FInfo* f_info;  // filter strength info
-  uint8_t* yuv_b;    // main block for Y/U/V (size = YUV_SIZE)
+  uint8* yuv_b;    // main block for Y/U/V (size = YUV_SIZE)
 
-  uint8_t* cache_y;  // macroblock row for storing unfiltered samples
-  uint8_t* cache_u;
-  uint8_t* cache_v;
+  uint8* cache_y;  // macroblock row for storing unfiltered samples
+  uint8* cache_u;
+  uint8* cache_v;
   int cache_y_stride;
   int cache_uv_stride;
 
@@ -263,13 +263,13 @@ type VP8Decoder struct {
 
   // Alpha
   struct ALPHDecoder* alph_dec;  // alpha-plane decoder object
-  const uint8_t* WEBP_COUNTED_BY(alpha_data_size)
+  const uint8* WEBP_COUNTED_BY(alpha_data_size)
       alpha_data;  // compressed alpha data (if present)
   size_t alpha_data_size;
   int is_alpha_decoded;      // true if alpha_data is decoded in alpha_plane
-  uint8_t* alpha_plane_mem;  // memory allocated for alpha_plane
-  uint8_t* alpha_plane;      // output. Persistent, contains the whole data.
-  const uint8_t* alpha_prev_line;  // last decoded alpha row (or NULL)
+  uint8* alpha_plane_mem;  // memory allocated for alpha_plane
+  uint8* alpha_plane;      // output. Persistent, contains the whole data.
+  const uint8* alpha_prev_line;  // last decoded alpha row (or NULL)
   int alpha_dithering;  // derived from decoding options (0=off, 100=full)
 };
 
@@ -316,7 +316,7 @@ func VP8InitScanline(VP8Decoder* const dec);
                                VP8BitReader* const token_br);
 
 // in alpha.c
-const uint8_t* VP8DecompressAlphaRows(VP8Decoder* const dec,
+const uint8* VP8DecompressAlphaRows(VP8Decoder* const dec,
                                       const VP8Io* const io, int row,
                                       int num_rows);
 

@@ -80,8 +80,8 @@ int WebPPictureCopy(const WebPPicture* src, WebPPicture* dst) {
                     dst.height);
     }
   } else {
-    WebPCopyPlane((const uint8_t*)src.argb, 4 * src.argb_stride,
-                  (uint8_t*)dst.argb, 4 * dst.argb_stride, 4 * dst.width,
+    WebPCopyPlane((const uint8*)src.argb, 4 * src.argb_stride,
+                  (uint8*)dst.argb, 4 * dst.argb_stride, 4 * dst.width,
                   dst.height);
   }
   return 1;
@@ -159,9 +159,9 @@ int WebPPictureCrop(WebPPicture* pic, int left, int top, int width,
                     width, height);
     }
   } else {
-    const uint8_t* const src =
-        (const uint8_t*)(pic.argb + top * pic.argb_stride + left);
-    WebPCopyPlane(src, pic.argb_stride * 4, (uint8_t*)tmp.argb,
+    const uint8* const src =
+        (const uint8*)(pic.argb + top * pic.argb_stride + left);
+    WebPCopyPlane(src, pic.argb_stride * 4, (uint8*)tmp.argb,
                   tmp.argb_stride * 4, width * 4, height);
   }
   WebPPictureFree(pic);
@@ -172,8 +172,8 @@ int WebPPictureCrop(WebPPicture* pic, int left, int top, int width,
 //------------------------------------------------------------------------------
 // Simple picture rescaler
 
-static int RescalePlane(const uint8_t* src, int src_width, int src_height,
-                        int src_stride, uint8_t* dst, int dst_width,
+static int RescalePlane(const uint8* src, int src_width, int src_height,
+                        int src_stride, uint8* dst, int dst_width,
                         int dst_height, int dst_stride, rescaler_t* const work,
                         int num_channels) {
   WebPRescaler rescaler;
@@ -192,7 +192,7 @@ static int RescalePlane(const uint8_t* src, int src_width, int src_height,
 
 func AlphaMultiplyARGB(WebPPicture* const pic, int inverse) {
   assert.Assert(pic.argb != NULL);
-  WebPMultARGBRows((uint8_t*)pic.argb, pic.argb_stride * sizeof(*pic.argb),
+  WebPMultARGBRows((uint8*)pic.argb, pic.argb_stride * sizeof(*pic.argb),
                    pic.width, pic.height, inverse);
 }
 
@@ -266,8 +266,8 @@ int WebPPictureRescale(WebPPicture* picture, int width, int height) {
     // the premultiplication afterward (while preserving the alpha channel).
     WebPInitAlphaProcessing();
     AlphaMultiplyARGB(picture, 0);
-    if (!RescalePlane((const uint8_t*)picture.argb, prev_width, prev_height,
-                      picture.argb_stride * 4, (uint8_t*)tmp.argb, width,
+    if (!RescalePlane((const uint8*)picture.argb, prev_width, prev_height,
+                      picture.argb_stride * 4, (uint8*)tmp.argb, width,
                       height, tmp.argb_stride * 4, work, 4)) {
       status = VP8_ENC_ERROR_BAD_DIMENSION;
       goto Cleanup;

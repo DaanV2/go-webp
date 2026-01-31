@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // For each given level, the following table gives the pattern of contexts to
 // use for coding it (in [][0]) as well as the bit value to use for each
 // context (in [][1]).
-static const uint16_t VP8LevelCodes[MAX_VARIABLE_LEVEL][2] = {
+static const uint16 VP8LevelCodes[MAX_VARIABLE_LEVEL][2] = {
     {0x001, 0x000}, {0x007, 0x001}, {0x00f, 0x005}, {0x00f, 0x00d},
     {0x033, 0x003}, {0x033, 0x003}, {0x033, 0x023}, {0x033, 0x023},
     {0x033, 0x023}, {0x033, 0x023}, {0x0d3, 0x013}, {0x0d3, 0x013},
@@ -47,7 +47,7 @@ static const uint16_t VP8LevelCodes[MAX_VARIABLE_LEVEL][2] = {
     {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053},
     {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x153}};
 
-static int VariableLevelCost(int level, const uint8_t probas[NUM_PROBAS]) {
+static int VariableLevelCost(int level, const uint8 probas[NUM_PROBAS]) {
   int pattern = VP8LevelCodes[level - 1][0];
   int bits = VP8LevelCodes[level - 1][1];
   int cost = 0;
@@ -74,8 +74,8 @@ func VP8CalculateLevelCosts(VP8EncProba* const proba) {
     int n;
     for (band = 0; band < NUM_BANDS; ++band) {
       for (ctx = 0; ctx < NUM_CTX; ++ctx) {
-        const uint8_t* const p = proba.coeffs[ctype][band][ctx];
-        uint16_t* const table = proba.level_cost[ctype][band][ctx];
+        const uint8* const p = proba.coeffs[ctype][band][ctx];
+        uint16* const table = proba.level_cost[ctype][band][ctx];
         const int cost0 = (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
         const int cost_base = VP8BitCost(1, p[1]) + cost0;
         int v;
@@ -102,10 +102,10 @@ func VP8CalculateLevelCosts(VP8EncProba* const proba) {
 
 // These are the fixed probabilities (in the coding trees) turned into bit-cost
 // by calling VP8BitCost().
-const uint16_t VP8FixedCostsUV[4] = {302, 984, 439, 642};
+const uint16 VP8FixedCostsUV[4] = {302, 984, 439, 642};
 // note: these values include the fixed VP8BitCost(1, 145) mode selection cost.
-const uint16_t VP8FixedCostsI16[4] = {663, 919, 872, 919};
-const uint16_t VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES] = {
+const uint16 VP8FixedCostsI16[4] = {663, 919, 872, 919};
+const uint16 VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES] = {
     {{40, 1151, 1723, 1874, 2103, 2019, 1628, 1777, 2226, 2137},
      {192, 469, 1296, 1308, 1849, 1794, 1781, 1703, 1713, 1522},
      {142, 910, 762, 1684, 1849, 1576, 1460, 1305, 1801, 1657},
@@ -222,7 +222,7 @@ func VP8InitResidual(int first, int coeff_type, VP8Encoder* const enc,
 //------------------------------------------------------------------------------
 // Mode costs
 
-int VP8GetCostLuma4(VP8EncIterator* const it, const int16_t levels[16]) {
+int VP8GetCostLuma4(VP8EncIterator* const it, const int16 levels[16]) {
   const int x = (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
   VP8Encoder* const enc = it.enc;

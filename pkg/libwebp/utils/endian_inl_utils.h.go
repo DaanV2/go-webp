@@ -42,7 +42,7 @@ const HToLE16 = BSwap16
 #endif
 #endif  // !HAVE_CONFIG_H
 
-static  uint16_t BSwap16(uint16_t x) {
+static  uint16 BSwap16(uint16 x) {
 #if defined(HAVE_BUILTIN_BSWAP16)
   return __builtin_bswap16(x);
 #elif defined(_MSC_VER)
@@ -53,9 +53,9 @@ static  uint16_t BSwap16(uint16_t x) {
 #endif  // HAVE_BUILTIN_BSWAP16
 }
 
-static  uint32_t BSwap32(uint32_t x) {
+static  uint32 BSwap32(uint32 x) {
 #if defined(WEBP_USE_MIPS32_R2)
-  uint32_t ret;
+  uint32 ret;
   __asm__ volatile(
       "wsbh   %[ret], %[x]          \n\t"
       "rotr   %[ret], %[ret],  16   \n\t"
@@ -65,25 +65,25 @@ static  uint32_t BSwap32(uint32_t x) {
 #elif defined(HAVE_BUILTIN_BSWAP32)
   return __builtin_bswap32(x);
 #elif defined(__i386__) || defined(__x86_64__)
-  uint32_t swapped_bytes;
+  uint32 swapped_bytes;
   __asm__ volatile("bswap %0" : "=r"(swapped_bytes) : "0"(x));
   return swapped_bytes;
 #elif defined(_MSC_VER)
-  return (uint32_t)_byteswap_ulong(x);
+  return (uint32)_byteswap_ulong(x);
 #else
   return (x >> 24) | ((x >> 8) & 0xff00) | ((x << 8) & 0xff0000) | (x << 24);
 #endif  // HAVE_BUILTIN_BSWAP32
 }
 
-static  uint64_t BSwap64(uint64_t x) {
+static  uint64 BSwap64(uint64 x) {
 #if defined(HAVE_BUILTIN_BSWAP64)
   return __builtin_bswap64(x);
 #elif defined(__x86_64__)
-  uint64_t swapped_bytes;
+  uint64 swapped_bytes;
   __asm__ volatile("bswapq %0" : "=r"(swapped_bytes) : "0"(x));
   return swapped_bytes;
 #elif defined(_MSC_VER)
-  return (uint64_t)_byteswap_uint64(x);
+  return (uint64)_byteswap_uint64(x);
 #else   // generic code for swapping 64-bit values (suggested by bdb@)
   x = ((x & 0xffffffff00000000ull) >> 32) | ((x & 0x00000000ffffffffull) << 32);
   x = ((x & 0xffff0000ffff0000ull) >> 16) | ((x & 0x0000ffff0000ffffull) << 16);

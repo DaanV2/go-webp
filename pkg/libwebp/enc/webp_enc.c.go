@@ -62,8 +62,8 @@ func ResetBoundaryPredictions(VP8Encoder* const enc) {
   // init boundary values once for all
   // Note: actually, initializing the 'preds[]' is only needed for intra4.
   int i;
-  uint8_t* const top = enc.preds - enc.preds_w;
-  uint8_t* const left = enc.preds - 1;
+  uint8* const top = enc.preds - enc.preds_w;
+  uint8* const left = enc.preds - 1;
   for (i = -1; i < 4 * enc.mb_w; ++i) {
     top[i] = B_DC_PRED;
   }
@@ -169,8 +169,8 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
       (config.quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1)
           ? mb_w * sizeof(*enc.top_derr)
           : 0;
-  uint8_t* mem;
-  const uint64_t size = (uint64_t)sizeof(*enc)  // main struct
+  uint8* mem;
+  const uint64 size = (uint64)sizeof(*enc)  // main struct
                         + WEBP_ALIGN_CST        // cache alignment
                         + info_size             // modes info
                         + preds_size            // prediction modes
@@ -202,16 +202,16 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
       "             LFStats: %ld\n",
       sizeof(VP8EncIterator), sizeof(VP8ModeScore), sizeof(VP8SegmentInfo),
       sizeof(VP8EncProba), sizeof(LFStats));
-  printf("Picture size (yuv): %ld\n", mb_w * mb_h * 384 * sizeof(uint8_t));
+  printf("Picture size (yuv): %ld\n", mb_w * mb_h * 384 * sizeof(uint8));
   printf("===================================\n");
 #endif
-  mem = (uint8_t*)WebPSafeMalloc(size, sizeof(*mem));
+  mem = (uint8*)WebPSafeMalloc(size, sizeof(*mem));
   if (mem == NULL) {
     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
     return NULL;
   }
   enc = (VP8Encoder*)mem;
-  mem = (uint8_t*)WEBP_ALIGN(mem + sizeof(*enc));
+  mem = (uint8*)WEBP_ALIGN(mem + sizeof(*enc));
   memset(enc, 0, sizeof(*enc));
   enc.num_parts = 1 << config.partitions;
   enc.mb_w = mb_w;
@@ -221,19 +221,19 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
   mem += info_size;
   enc.preds = mem + 1 + enc.preds_w;
   mem += preds_size;
-  enc.nz = 1 + (uint32_t*)WEBP_ALIGN(mem);
+  enc.nz = 1 + (uint32*)WEBP_ALIGN(mem);
   mem += nz_size;
   enc.lf_stats = lf_stats_size ? (LFStats*)WEBP_ALIGN(mem) : NULL;
   mem += lf_stats_size;
 
   // top samples (all 16-aligned)
-  mem = (uint8_t*)WEBP_ALIGN(mem);
+  mem = (uint8*)WEBP_ALIGN(mem);
   enc.y_top = mem;
   enc.uv_top = enc.y_top + top_stride;
   mem += 2 * top_stride;
   enc.top_derr = top_derr_size ? (DError*)mem : NULL;
   mem += top_derr_size;
-  assert.Assert(mem <= (uint8_t*)enc + size);
+  assert.Assert(mem <= (uint8*)enc + size);
 
   enc.config = config;
   enc.profile = use_filter ? ((config.filter_type == 1) ? 0 : 1) : 2;
@@ -271,14 +271,14 @@ static int DeleteVP8Encoder(VP8Encoder* enc) {
 //------------------------------------------------------------------------------
 
 #if !defined(WEBP_DISABLE_STATS)
-static double GetPSNR(uint64_t err, uint64_t size) {
+static double GetPSNR(uint64 err, uint64 size) {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
 
 func FinalizePSNR(const VP8Encoder* const enc) {
   WebPAuxStats* stats = enc.pic.stats;
-  const uint64_t size = enc.sse_count;
-  const uint64_t* const sse = enc.sse;
+  const uint64 size = enc.sse_count;
+  const uint64* const sse = enc.sse;
   stats.PSNR[0] = (float)GetPSNR(sse[0], size);
   stats.PSNR[1] = (float)GetPSNR(sse[1], size / 4);
   stats.PSNR[2] = (float)GetPSNR(sse[2], size / 4);

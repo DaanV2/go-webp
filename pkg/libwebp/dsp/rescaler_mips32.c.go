@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 // Row import
 
 func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
-                                   const uint8_t* WEBP_RESTRICT src) {
+                                   const uint8* WEBP_RESTRICT src) {
   const int x_stride = wrk.num_channels;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const int fx_scale = wrk.fx_scale;
@@ -37,7 +37,7 @@ func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
   assert.Assert(!WebPRescalerInputDone(wrk));
 
   for (channel = 0; channel < x_stride; ++channel) {
-    const uint8_t* src1 = src + channel;
+    const uint8* src1 = src + channel;
     rescaler_t* frow = wrk.frow + channel;
     int temp1, temp2, temp3;
     int base, frac, sum;
@@ -84,7 +84,7 @@ func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
 }
 
 func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
-                                   const uint8_t* WEBP_RESTRICT src) {
+                                   const uint8* WEBP_RESTRICT src) {
   const int x_stride = wrk.num_channels;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const int x_add = wrk.x_add;
@@ -96,7 +96,7 @@ func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
   assert.Assert(!WebPRescalerInputDone(wrk));
 
   for (channel = 0; channel < x_stride; ++channel) {
-    const uint8_t* src1 = src + channel;
+    const uint8* src1 = src + channel;
     rescaler_t* frow = wrk.frow + channel;
     int temp1, temp2, temp3, temp4;
     int frac;
@@ -148,7 +148,7 @@ func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
 // Row export
 
 func ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
-  uint8_t* dst = wrk.dst;
+  uint8* dst = wrk.dst;
   rescaler_t* irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const rescaler_t* frow = wrk.frow;
@@ -179,8 +179,8 @@ func ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
         : [temp2] "r"(temp2), [temp6] "r"(temp6)
         : "memory", "hi", "lo");
   } else {
-    const uint32_t B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
-    const uint32_t A = (uint32_t)(WEBP_RESCALER_ONE - B);
+    const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
+    const uint32 A = (uint32)(WEBP_RESCALER_ONE - B);
     __asm__ volatile(
         "li       %[temp3],    0x10000                    \n\t"
         "li       %[temp4],    0x8000                     \n\t"
@@ -211,7 +211,7 @@ func ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
 #if 0   // disabled for now. TODO(skal): make match the C-code
 func ExportRowShrink_MIPS32(WebPRescaler* const wrk) {
   const int x_out_max = wrk.dst_width * wrk.num_channels;
-  uint8_t* dst = wrk.dst;
+  uint8* dst = wrk.dst;
   rescaler_t* irow = wrk.irow;
   const rescaler_t* frow = wrk.frow;
   const int yscale = wrk.fy_scale * (-wrk.y_accum);

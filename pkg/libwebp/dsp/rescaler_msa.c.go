@@ -23,8 +23,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 const ROUNDER = (WEBP_RESCALER_ONE >> 1)
-#define MULT_FIX(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
-#define MULT_FIX_FLOOR(x, y) (((uint64_t)(x) * (y)) >> WEBP_RESCALER_RFIX)
+#define MULT_FIX(x, y) (((uint64)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
+#define MULT_FIX_FLOOR(x, y) (((uint64)(x) * (y)) >> WEBP_RESCALER_RFIX)
 
 #define CALC_MULT_FIX_16(in0, in1, in2, in3, scale, shift, dst) \
   do {                                                          \
@@ -122,7 +122,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
   } while (0)
 
 static  func ExportRowExpand_0(
-    const uint32_t* WEBP_RESTRICT frow, uint8_t* WEBP_RESTRICT dst, int length,
+    const uint32* WEBP_RESTRICT frow, uint8* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk.fy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
@@ -141,7 +141,7 @@ static  func ExportRowExpand_0(
   if (length > 0) {
     int x_out;
     if (length >= 12) {
-      uint32_t val0_m, val1_m, val2_m;
+      uint32 val0_m, val1_m, val2_m;
       v4u32 src0, src1, src2;
       LD_UW3(frow, 4, src0, src1, src2);
       CALC_MULT_FIX_4(src0, scale, shift, val0_m);
@@ -152,7 +152,7 @@ static  func ExportRowExpand_0(
       frow += 12;
       dst += 12;
     } else if (length >= 8) {
-      uint32_t val0_m, val1_m;
+      uint32 val0_m, val1_m;
       v4u32 src0, src1;
       LD_UW2(frow, 4, src0, src1);
       CALC_MULT_FIX_4(src0, scale, shift, val0_m);
@@ -162,7 +162,7 @@ static  func ExportRowExpand_0(
       frow += 8;
       dst += 8;
     } else if (length >= 4) {
-      uint32_t val0_m;
+      uint32 val0_m;
       const v4u32 src0 = LD_UW(frow);
       CALC_MULT_FIX_4(src0, scale, shift, val0_m);
       SW(val0_m, dst);
@@ -171,19 +171,19 @@ static  func ExportRowExpand_0(
       dst += 4;
     }
     for (x_out = 0; x_out < length; ++x_out) {
-      const uint32_t J = frow[x_out];
+      const uint32 J = frow[x_out];
       const int v = (int)MULT_FIX(J, wrk.fy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
     }
   }
 }
 
 static  func ExportRowExpand_1(
-    const uint32_t* WEBP_RESTRICT frow, uint32_t* WEBP_RESTRICT irow,
-    uint8_t* WEBP_RESTRICT dst, int length,
+    const uint32* WEBP_RESTRICT frow, uint32* WEBP_RESTRICT irow,
+    uint8* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
-  const uint32_t B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
-  const uint32_t A = (uint32_t)(WEBP_RESCALER_ONE - B);
+  const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
+  const uint32 A = (uint32)(WEBP_RESCALER_ONE - B);
   const v4i32 B1 = __msa_fill_w(B);
   const v4i32 A1 = __msa_fill_w(A);
   const v4i32 AB = __msa_ilvr_w(A1, B1);
@@ -208,7 +208,7 @@ static  func ExportRowExpand_1(
   if (length > 0) {
     int x_out;
     if (length >= 12) {
-      uint32_t val0_m, val1_m, val2_m;
+      uint32 val0_m, val1_m, val2_m;
       v4u32 frow0, frow1, frow2, irow0, irow1, irow2;
       LD_UW3(frow, 4, frow0, frow1, frow2);
       LD_UW3(irow, 4, irow0, irow1, irow2);
@@ -221,7 +221,7 @@ static  func ExportRowExpand_1(
       dst += 12;
       length -= 12;
     } else if (length >= 8) {
-      uint32_t val0_m, val1_m;
+      uint32 val0_m, val1_m;
       v4u32 frow0, frow1, irow0, irow1;
       LD_UW2(frow, 4, frow0, frow1);
       LD_UW2(irow, 4, irow0, irow1);
@@ -233,7 +233,7 @@ static  func ExportRowExpand_1(
       dst += 4;
       length -= 4;
     } else if (length >= 4) {
-      uint32_t val0_m;
+      uint32 val0_m;
       const v4u32 frow0 = LD_UW(frow + 0);
       const v4u32 irow0 = LD_UW(irow + 0);
       CALC_MULT_FIX2_4(frow0, irow0, AB, scale, shift, val0_m);
@@ -244,16 +244,16 @@ static  func ExportRowExpand_1(
       length -= 4;
     }
     for (x_out = 0; x_out < length; ++x_out) {
-      const uint64_t I = (uint64_t)A * frow[x_out] + (uint64_t)B * irow[x_out];
-      const uint32_t J = (uint32_t)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
+      const uint64 I = (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
+      const uint32 J = (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       const int v = (int)MULT_FIX(J, wrk.fy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
     }
   }
 }
 
 func RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
-  uint8_t* dst = wrk.dst;
+  uint8* dst = wrk.dst;
   rescaler_t* irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const rescaler_t* frow = wrk.frow;
@@ -270,8 +270,8 @@ func RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
 static  func ExportRowShrink_0(
-    const uint32_t* WEBP_RESTRICT frow, uint32_t* WEBP_RESTRICT irow,
-    uint8_t* WEBP_RESTRICT dst, int length, const uint32_t yscale,
+    const uint32* WEBP_RESTRICT frow, uint32* WEBP_RESTRICT irow,
+    uint8* WEBP_RESTRICT dst, int length, const uint32 yscale,
     WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 y_scale = (v4u32)__msa_fill_w(yscale);
   const v4u32 fxyscale = (v4u32)__msa_fill_w(wrk.fxy_scale);
@@ -298,7 +298,7 @@ static  func ExportRowShrink_0(
   if (length > 0) {
     int x_out;
     if (length >= 12) {
-      uint32_t val0_m, val1_m, val2_m;
+      uint32 val0_m, val1_m, val2_m;
       v4u32 src0, src1, src2, frac0, frac1, frac2;
       LD_UW3(frow, 4, src0, src1, src2);
       CALC_MULT_FIX1_4(src0, y_scale, shiftval, frac0);
@@ -316,7 +316,7 @@ static  func ExportRowShrink_0(
       dst    += 12;
       length -= 12;
     } else if (length >= 8) {
-      uint32_t val0_m, val1_m;
+      uint32 val0_m, val1_m;
       v4u32 src0, src1, frac0, frac1;
       LD_UW2(frow, 4, src0, src1);
       CALC_MULT_FIX1_4(src0, y_scale, shiftval, frac0);
@@ -332,7 +332,7 @@ static  func ExportRowShrink_0(
       dst    += 8;
       length -= 8;
     } else if (length >= 4) {
-      uint32_t val0_m;
+      uint32 val0_m;
       v4u32 frac0;
       v4u32 src0 = LD_UW(frow);
       CALC_MULT_FIX1_4(src0, y_scale, shiftval, frac0);
@@ -347,16 +347,16 @@ static  func ExportRowShrink_0(
       length -= 4;
     }
     for (x_out = 0; x_out < length; ++x_out) {
-      const uint32_t frac = (uint32_t)MULT_FIX_FLOOR(frow[x_out], yscale);
+      const uint32 frac = (uint32)MULT_FIX_FLOOR(frow[x_out], yscale);
       const int v = (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
       irow[x_out] = frac;
     }
   }
 }
 
 static  func ExportRowShrink_1(
-    uint32_t* WEBP_RESTRICT irow, uint8_t* WEBP_RESTRICT dst, int length,
+    uint32* WEBP_RESTRICT irow, uint8* WEBP_RESTRICT dst, int length,
     WebPRescaler* WEBP_RESTRICT const wrk) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
@@ -376,7 +376,7 @@ static  func ExportRowShrink_1(
   if (length > 0) {
     int x_out;
     if (length >= 12) {
-      uint32_t val0_m, val1_m, val2_m;
+      uint32 val0_m, val1_m, val2_m;
       v4u32 src0, src1, src2;
       LD_UW3(irow, 4, src0, src1, src2);
       CALC_MULT_FIX_4(src0, scale, shift, val0_m);
@@ -388,7 +388,7 @@ static  func ExportRowShrink_1(
       irow   += 12;
       dst    += 12;
     } else if (length >= 8) {
-      uint32_t val0_m, val1_m;
+      uint32 val0_m, val1_m;
       v4u32 src0, src1;
       LD_UW2(irow, 4, src0, src1);
       CALC_MULT_FIX_4(src0, scale, shift, val0_m);
@@ -399,7 +399,7 @@ static  func ExportRowShrink_1(
       irow   += 8;
       dst    += 8;
     } else if (length >= 4) {
-      uint32_t val0_m;
+      uint32 val0_m;
       const v4u32 src0 = LD_UW(irow + 0);
       CALC_MULT_FIX_4(src0, scale, shift, val0_m);
       SW(val0_m, dst);
@@ -410,18 +410,18 @@ static  func ExportRowShrink_1(
     }
     for (x_out = 0; x_out < length; ++x_out) {
       const int v = (int)MULT_FIX(irow[x_out], wrk.fxy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
       irow[x_out] = 0;
     }
   }
 }
 
 func RescalerExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
-  uint8_t* dst = wrk.dst;
+  uint8* dst = wrk.dst;
   rescaler_t* irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const rescaler_t* frow = wrk.frow;
-  const uint32_t yscale = wrk.fy_scale * (-wrk.y_accum);
+  const uint32 yscale = wrk.fy_scale * (-wrk.y_accum);
   assert.Assert(!WebPRescalerOutputDone(wrk));
   assert.Assert(wrk.y_accum <= 0);
   assert.Assert(!wrk.y_expand);

@@ -24,8 +24,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 const ROUNDER = (WEBP_RESCALER_ONE >> 1)
-#define MULT_FIX_C(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
-#define MULT_FIX_FLOOR_C(x, y) (((uint64_t)(x) * (y)) >> WEBP_RESCALER_RFIX)
+#define MULT_FIX_C(x, y) (((uint64)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)
+#define MULT_FIX_FLOOR_C(x, y) (((uint64)(x) * (y)) >> WEBP_RESCALER_RFIX)
 
 #define LOAD_32x4(SRC, DST) const uint32x4_t DST = vld1q_u32((SRC))
 #define LOAD_32x8(SRC, DST0, DST1) \
@@ -39,7 +39,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
   } while (0)
 
 #if (WEBP_RESCALER_RFIX == 32)
-#define MAKE_HALF_CST(C) vdupq_n_s32((int32_t)((C) >> 1))
+#define MAKE_HALF_CST(C) vdupq_n_s32((int32)((C) >> 1))
 // note: B is actualy scale>>1. See MAKE_HALF_CST
 #define MULT_FIX(A, B) \
   vreinterpretq_u32_s32(vqrdmulhq_s32(vreinterpretq_s32_u32((A)), (B)))
@@ -51,7 +51,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 
 static uint32x4_t Interpolate_NEON(const rescaler_t* WEBP_RESTRICT const frow,
                                    const rescaler_t* WEBP_RESTRICT const irow,
-                                   uint32_t A, uint32_t B) {
+                                   uint32 A, uint32 B) {
   LOAD_32x4(frow, A0);
   LOAD_32x4(irow, B0);
   const uint64x2_t C0 = vmull_n_u32(vget_low_u32(A0), A);
@@ -65,12 +65,12 @@ static uint32x4_t Interpolate_NEON(const rescaler_t* WEBP_RESTRICT const frow,
 
 func RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
   int x_out;
-  uint8_t* const dst = wrk.dst;
+  uint8* const dst = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const int max_span = x_out_max & ~7;
   const rescaler_t* const frow = wrk.frow;
-  const uint32_t fy_scale = wrk.fy_scale;
+  const uint32 fy_scale = wrk.fy_scale;
   const int32x4_t fy_scale_half = MAKE_HALF_CST(fy_scale);
   assert.Assert(!WebPRescalerOutputDone(wrk));
   assert.Assert(wrk.y_accum <= 0);
@@ -88,13 +88,13 @@ func RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
       vst1_u8(dst + x_out, D);
     }
     for (; x_out < x_out_max; ++x_out) {
-      const uint32_t J = frow[x_out];
+      const uint32 J = frow[x_out];
       const int v = (int)MULT_FIX_C(J, fy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
     }
   } else {
-    const uint32_t B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
-    const uint32_t A = (uint32_t)(WEBP_RESCALER_ONE - B);
+    const uint32 B = WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
+    const uint32 A = (uint32)(WEBP_RESCALER_ONE - B);
     for (x_out = 0; x_out < max_span; x_out += 8) {
       const uint32x4_t C0 =
           Interpolate_NEON(frow + x_out + 0, irow + x_out + 0, A, B);
@@ -108,23 +108,23 @@ func RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
       vst1_u8(dst + x_out, F);
     }
     for (; x_out < x_out_max; ++x_out) {
-      const uint64_t I = (uint64_t)A * frow[x_out] + (uint64_t)B * irow[x_out];
-      const uint32_t J = (uint32_t)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
+      const uint64 I = (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
+      const uint32 J = (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       const int v = (int)MULT_FIX_C(J, fy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
     }
   }
 }
 
 func RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
   int x_out;
-  uint8_t* const dst = wrk.dst;
+  uint8* const dst = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   const int x_out_max = wrk.dst_width * wrk.num_channels;
   const int max_span = x_out_max & ~7;
   const rescaler_t* const frow = wrk.frow;
-  const uint32_t yscale = wrk.fy_scale * (-wrk.y_accum);
-  const uint32_t fxy_scale = wrk.fxy_scale;
+  const uint32 yscale = wrk.fy_scale * (-wrk.y_accum);
+  const uint32 fxy_scale = wrk.fxy_scale;
   const uint32x4_t zero = vdupq_n_u32(0);
   const int32x4_t yscale_half = MAKE_HALF_CST(yscale);
   const int32x4_t fxy_scale_half = MAKE_HALF_CST(fxy_scale);
@@ -148,9 +148,9 @@ func RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
       STORE_32x8(A0, A1, irow + x_out);
     }
     for (; x_out < x_out_max; ++x_out) {
-      const uint32_t frac = (uint32_t)MULT_FIX_FLOOR_C(frow[x_out], yscale);
+      const uint32 frac = (uint32)MULT_FIX_FLOOR_C(frow[x_out], yscale);
       const int v = (int)MULT_FIX_C(irow[x_out] - frac, fxy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
       irow[x_out] = frac;  // new fractional start
     }
   } else {
@@ -166,7 +166,7 @@ func RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
     }
     for (; x_out < x_out_max; ++x_out) {
       const int v = (int)MULT_FIX_C(irow[x_out], fxy_scale);
-      dst[x_out] = (v > 255) ? 255u : (uint8_t)v;
+      dst[x_out] = (v > 255) ? 255u : (uint8)v;
       irow[x_out] = 0;
     }
   }

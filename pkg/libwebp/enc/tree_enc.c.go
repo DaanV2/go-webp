@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Default probabilities
 
 // Paragraph 13.5
-const uint8_t VP8CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
+const uint8 VP8CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
     {{{128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128},
       {128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128},
       {128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128}},
@@ -137,7 +137,7 @@ func VP8DefaultProbas(VP8Encoder* const enc) {
 }
 
 // Paragraph 11.5.  900bytes.
-static const uint8_t kBModesProba[NUM_BMODES][NUM_BMODES][NUM_BMODES - 1] = {
+static const uint8 kBModesProba[NUM_BMODES][NUM_BMODES][NUM_BMODES - 1] = {
     {{231, 120, 48, 89, 115, 113, 120, 152, 112},
      {152, 179, 64, 126, 170, 118, 46, 70, 95},
      {175, 69, 143, 80, 85, 82, 72, 155, 103},
@@ -240,7 +240,7 @@ static const uint8_t kBModesProba[NUM_BMODES][NUM_BMODES][NUM_BMODES - 1] = {
      {112, 19, 12, 61, 195, 128, 48, 4, 24}}};
 
 static int PutI4Mode(VP8BitWriter* const bw, int mode,
-                     const uint8_t* const prob) {
+                     const uint8* const prob) {
   if (VP8PutBit(bw, mode != B_DC_PRED, prob[0])) {
     if (VP8PutBit(bw, mode != B_TM_PRED, prob[1])) {
       if (VP8PutBit(bw, mode != B_VE_PRED, prob[2])) {
@@ -277,7 +277,7 @@ func PutUVMode(VP8BitWriter* const bw, int uv_mode) {
   }
 }
 
-func PutSegment(VP8BitWriter* const bw, int s, const uint8_t* p) {
+func PutSegment(VP8BitWriter* const bw, int s, const uint8* p) {
   if (VP8PutBit(bw, s >= 2, p[0])) p += 1;
   VP8PutBit(bw, s & 1, p[1]);
 }
@@ -288,7 +288,7 @@ func VP8CodeIntraModes(VP8Encoder* const enc) {
   VP8IteratorInit(enc, &it);
   do {
     const VP8MBInfo* const mb = it.mb;
-    const uint8_t* preds = it.preds;
+    const uint8* preds = it.preds;
     if (enc.segment_hdr.update_map) {
       PutSegment(bw, mb.segment, enc.proba.segments);
     }
@@ -299,12 +299,12 @@ func VP8CodeIntraModes(VP8Encoder* const enc) {
       PutI16Mode(bw, preds[0]);
     } else {
       const int preds_w = enc.preds_w;
-      const uint8_t* top_pred = preds - preds_w;
+      const uint8* top_pred = preds - preds_w;
       int x, y;
       for (y = 0; y < 4; ++y) {
         int left = preds[-1];
         for (x = 0; x < 4; ++x) {
-          const uint8_t* const probas = kBModesProba[top_pred[x]][left];
+          const uint8* const probas = kBModesProba[top_pred[x]][left];
           left = PutI4Mode(bw, preds[x], probas);
         }
         top_pred = preds;
@@ -318,7 +318,7 @@ func VP8CodeIntraModes(VP8Encoder* const enc) {
 //------------------------------------------------------------------------------
 // Paragraph 13
 
-const uint8_t VP8CoeffsUpdateProba[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] =
+const uint8 VP8CoeffsUpdateProba[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] =
     {{{{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
        {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
        {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255}},
@@ -422,7 +422,7 @@ func VP8WriteProbas(VP8BitWriter* const bw, const VP8EncProba* const probas) {
     for (b = 0; b < NUM_BANDS; ++b) {
       for (c = 0; c < NUM_CTX; ++c) {
         for (p = 0; p < NUM_PROBAS; ++p) {
-          const uint8_t p0 = probas.coeffs[t][b][c][p];
+          const uint8 p0 = probas.coeffs[t][b][c][p];
           const int update = (p0 != VP8CoeffsProba0[t][b][c][p]);
           if (VP8PutBit(bw, update, VP8CoeffsUpdateProba[t][b][c][p])) {
             VP8PutBits(bw, p0, 8);

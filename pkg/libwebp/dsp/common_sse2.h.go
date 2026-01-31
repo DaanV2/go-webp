@@ -32,10 +32,10 @@ static  func PrintReg(const __m128i r, const char* const name,
   int n;
   union {
     __m128i r;
-    uint8_t i8[16];
-    uint16_t i16[8];
-    uint32_t i32[4];
-    uint64_t i64[2];
+    uint8 i8[16];
+    uint16 i16[8];
+    uint32 i32[4];
+    uint64 i64[2];
   } tmp;
   tmp.r = r;
   fprintf(stderr, "%s\t: ", name);

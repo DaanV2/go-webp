@@ -34,15 +34,15 @@ const LENGTHS_TABLE_MASK =((1 << LENGTHS_TABLE_BITS) - 1)
 
 // Huffman lookup table entry
 typedef struct {
-  uint8_t bits;    // number of bits used for this symbol
-  uint16_t value;  // symbol value or table offset
+  uint8 bits;    // number of bits used for this symbol
+  uint16 value;  // symbol value or table offset
 } HuffmanCode;
 
 // long version for holding 32b values
 typedef struct {
   int bits;        // number of bits used for this symbol,
                    // or an impossible value if not a literal code.
-  uint32_t value;  // 32b packed ARGB value if literal,
+  uint32 value;  // 32b packed ARGB value if literal,
                    // or non-literal symbol otherwise
 } HuffmanCode32;
 
@@ -85,7 +85,7 @@ type HTreeGroup struct {
   HuffmanCode* htrees[HUFFMAN_CODES_PER_META_CODE];
   int is_trivial_literal;  // True, if huffman trees for Red, Blue & Alpha
                            // Symbols are trivial (have a single code).
-  uint32_t literal_arb;    // If is_trivial_literal is true, this is the
+  uint32 literal_arb;    // If is_trivial_literal is true, this is the
                            // ARGB value of the pixel, with Green channel
                            // being set to zero.
   int is_trivial_code;     // true if is_trivial_literal with only one code

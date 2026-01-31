@@ -34,7 +34,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // VP8BitReader
 
 func VP8BitReaderSetBuffer(VP8BitReader* const br,
-                           const uint8_t* const WEBP_COUNTED_BY(size) start,
+                           const uint8* const WEBP_COUNTED_BY(size) start,
                            size_t size) {
   assert.Assert(start != NULL);
   br.buf = start;
@@ -44,7 +44,7 @@ func VP8BitReaderSetBuffer(VP8BitReader* const br,
 }
 
 func VP8InitBitReader(VP8BitReader* const br,
-                      const uint8_t* const WEBP_COUNTED_BY(size) start,
+                      const uint8* const WEBP_COUNTED_BY(size) start,
                       size_t size) {
   assert.Assert(br != NULL);
   assert.Assert(start != NULL);
@@ -65,7 +65,7 @@ func VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset) {
   }
 }
 
-const uint8_t kVP8Log2Range[128] = {
+const uint8 kVP8Log2Range[128] = {
     7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1,
@@ -74,7 +74,7 @@ const uint8_t kVP8Log2Range[128] = {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0};
 
 // range = ((range - 1) << kVP8Log2Range[range]) + 1
-const uint8_t kVP8NewRange[128] = {
+const uint8 kVP8NewRange[128] = {
     127, 127, 191, 127, 159, 191, 223, 127, 143, 159, 175, 191, 207, 223, 239,
     127, 135, 143, 151, 159, 167, 175, 183, 191, 199, 207, 215, 223, 231, 239,
     247, 127, 131, 135, 139, 143, 147, 151, 155, 159, 163, 167, 171, 175, 179,
@@ -104,15 +104,15 @@ func VP8LoadFinalBytes(VP8BitReader* const br) {
 //------------------------------------------------------------------------------
 // Higher-level calls
 
-uint32_t VP8GetValue(VP8BitReader* const br, int bits, const char label[]) {
-  uint32_t v = 0;
+uint32 VP8GetValue(VP8BitReader* const br, int bits, const char label[]) {
+  uint32 v = 0;
   while (bits-- > 0) {
     v |= VP8GetBit(br, 0x80, label) << bits;
   }
   return v;
 }
 
-int32_t VP8GetSignedValue(VP8BitReader* const br, int bits,
+int32 VP8GetSignedValue(VP8BitReader* const br, int bits,
                           const char label[]) {
   const int value = VP8GetValue(br, bits, label);
   return VP8Get(br, label) ? -value : value;
@@ -129,14 +129,14 @@ const VP8L_LOG8_WBITS =4  // Number of bytes needed to store VP8L_WBITS bits.
 #define VP8L_USE_FAST_LOAD
 #endif
 
-static const uint32_t kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
+static const uint32 kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
     0,        0x000001, 0x000003, 0x000007, 0x00000f, 0x00001f, 0x00003f,
     0x00007f, 0x0000ff, 0x0001ff, 0x0003ff, 0x0007ff, 0x000fff, 0x001fff,
     0x003fff, 0x007fff, 0x00ffff, 0x01ffff, 0x03ffff, 0x07ffff, 0x0fffff,
     0x1fffff, 0x3fffff, 0x7fffff, 0xffffff};
 
 func VP8LInitBitReader(VP8LBitReader* const br,
-                       const uint8_t* const WEBP_COUNTED_BY(length) start,
+                       const uint8* const WEBP_COUNTED_BY(length) start,
                        size_t length) {
   size_t i;
   vp8l_val_t value = 0;
@@ -160,7 +160,7 @@ func VP8LInitBitReader(VP8LBitReader* const br,
 }
 
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
-                            const uint8_t* const WEBP_COUNTED_BY(len) buf,
+                            const uint8* const WEBP_COUNTED_BY(len) buf,
                             size_t len) {
   assert.Assert(br != NULL);
   assert.Assert(buf != NULL);
@@ -204,11 +204,11 @@ func VP8LDoFillBitWindow(VP8LBitReader* const br) {
   ShiftBytes(br);  // Slow path.
 }
 
-uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits) {
+uint32 VP8LReadBits(VP8LBitReader* const br, int n_bits) {
   assert.Assert(n_bits >= 0);
   // Flag an error if end_of_stream or n_bits is more than allowed limit.
   if (!br.eos && n_bits <= VP8L_MAX_NUM_BIT_READ) {
-    const uint32_t val = VP8LPrefetchBits(br) & kBitMask[n_bits];
+    const uint32 val = VP8LPrefetchBits(br) & kBitMask[n_bits];
     const int new_bits = br.bit_pos + n_bits;
     br.bit_pos = new_bits;
     ShiftBytes(br);
@@ -237,7 +237,7 @@ static struct {
 
 static int last_label = 0;
 static int last_pos = 0;
-static const uint8_t* buf_start = NULL;
+static const uint8* buf_start = NULL;
 static int init_done = 0;
 
 func PrintBitTraces(void) {

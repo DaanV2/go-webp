@@ -25,12 +25,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Color-space conversion functions
 
 func TransformColorInverse_SSE41(const VP8LMultipliers* const m,
-                                        const uint32_t* const src,
-                                        int num_pixels, uint32_t* dst) {
+                                        const uint32* const src,
+                                        int num_pixels, uint32* dst) {
 // sign-extended multiplying constants, pre-shifted by 5.
-#define CST(X) (((int16_t)(m.X << 8)) >> 5)  // sign-extend
+#define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
   const __m128i mults_rb = _mm_set1_epi32(
-      (int)((uint32_t)CST(green_to_red) << 16 | (CST(green_to_blue) & 0xffff)));
+      (int)((uint32)CST(green_to_red) << 16 | (CST(green_to_blue) & 0xffff)));
   const __m128i mults_b2 = _mm_set1_epi32(CST(red_to_blue));
 #undef CST
   const __m128i mask_ag = _mm_set1_epi32((int)0xff00ff00);
@@ -81,8 +81,8 @@ const ARGB_TO_RGB_SSE41 =                              \
     }                                                   \
   } while (0)
 
-func ConvertBGRAToRGB_SSE41(const uint32_t* WEBP_RESTRICT src,
-                                   int num_pixels, uint8_t* WEBP_RESTRICT dst) {
+func ConvertBGRAToRGB_SSE41(const uint32* WEBP_RESTRICT src,
+                                   int num_pixels, uint8* WEBP_RESTRICT dst) {
   const __m128i* in = (const __m128i*)src;
   __m128i* out = (__m128i*)dst;
   const __m128i perm0 =
@@ -95,12 +95,12 @@ func ConvertBGRAToRGB_SSE41(const uint32_t* WEBP_RESTRICT src,
 
   // left-overs
   if (num_pixels > 0) {
-    VP8LConvertBGRAToRGB_C((const uint32_t*)in, num_pixels, (uint8_t*)out);
+    VP8LConvertBGRAToRGB_C((const uint32*)in, num_pixels, (uint8*)out);
   }
 }
 
-func ConvertBGRAToBGR_SSE41(const uint32_t* WEBP_RESTRICT src,
-                                   int num_pixels, uint8_t* WEBP_RESTRICT dst) {
+func ConvertBGRAToBGR_SSE41(const uint32* WEBP_RESTRICT src,
+                                   int num_pixels, uint8* WEBP_RESTRICT dst) {
   const __m128i* in = (const __m128i*)src;
   __m128i* out = (__m128i*)dst;
   const __m128i perm0 =
@@ -113,7 +113,7 @@ func ConvertBGRAToBGR_SSE41(const uint32_t* WEBP_RESTRICT src,
 
   // left-overs
   if (num_pixels > 0) {
-    VP8LConvertBGRAToBGR_C((const uint32_t*)in, num_pixels, (uint8_t*)out);
+    VP8LConvertBGRAToBGR_C((const uint32*)in, num_pixels, (uint8*)out);
   }
 }
 

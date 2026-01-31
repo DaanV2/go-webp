@@ -53,7 +53,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int EncodeLossless(const uint8_t* const data, int width, int height,
+static int EncodeLossless(const uint8* const data, int width, int height,
                           int effort_level,  // in [0..6] range
                           int use_quality_100, VP8LBitWriter* const bw,
                           WebPAuxStats* const stats) {
@@ -109,20 +109,20 @@ typedef struct {
 } FilterTrial;
 
 // This function always returns an initialized 'bw' object, even upon error.
-static int EncodeAlphaInternal(const uint8_t* const data, int width, int height,
+static int EncodeAlphaInternal(const uint8* const data, int width, int height,
                                int method, int filter, int reduce_levels,
                                int effort_level,  // in [0..6] range
-                               uint8_t* const tmp_alpha, FilterTrial* result) {
+                               uint8* const tmp_alpha, FilterTrial* result) {
   int ok = 0;
-  const uint8_t* alpha_src;
+  const uint8* alpha_src;
   WebPFilterFunc filter_func;
-  uint8_t header;
+  uint8 header;
   const size_t data_size = width * height;
-  const uint8_t* output = NULL;
+  const uint8* output = NULL;
   size_t output_size = 0;
   VP8LBitWriter tmp_bw;
 
-  assert.Assert((uint64_t)data_size == (uint64_t)width * height);  // as per spec
+  assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
   assert.Assert(filter >= 0 && filter < WEBP_FILTER_LAST);
   assert.Assert(method >= ALPHA_NO_COMPRESSION);
   assert.Assert(method <= ALPHA_LOSSLESS_COMPRESSION);
@@ -184,15 +184,15 @@ static int EncodeAlphaInternal(const uint8_t* const data, int width, int height,
 
 // -----------------------------------------------------------------------------
 
-static int GetNumColors(const uint8_t* data, int width, int height,
+static int GetNumColors(const uint8* data, int width, int height,
                         int stride) {
   int j;
   int colors = 0;
-  uint8_t color[256] = {0};
+  uint8 color[256] = {0};
 
   for (j = 0; j < height; ++j) {
     int i;
-    const uint8_t* const p = data + j * stride;
+    const uint8* const p = data + j * stride;
     for (i = 0; i < width; ++i) {
       color[p[i]] = 1;
     }
@@ -207,9 +207,9 @@ const FILTER_TRY_NONE =(1 << WEBP_FILTER_NONE)
 const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
-static uint32_t GetFilterMap(const uint8_t* alpha, int width, int height,
+static uint32 GetFilterMap(const uint8* alpha, int width, int height,
                              int filter, int effort_level) {
-  uint32_t bit_map = 0U;
+  uint32 bit_map = 0U;
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
     int try_filter_none = (effort_level > 3);
@@ -239,19 +239,19 @@ func InitFilterTrial(FilterTrial* const score) {
   VP8BitWriterInit(&score.bw, 0);
 }
 
-static int ApplyFiltersAndEncode(const uint8_t* alpha, int width, int height,
+static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height,
                                  size_t data_size, int method, int filter,
                                  int reduce_levels, int effort_level,
-                                 uint8_t** const output,
+                                 uint8** const output,
                                  size_t* const output_size,
                                  WebPAuxStats* const stats) {
   int ok = 1;
   FilterTrial best;
-  uint32_t try_map = GetFilterMap(alpha, width, height, filter, effort_level);
+  uint32 try_map = GetFilterMap(alpha, width, height, filter, effort_level);
   InitFilterTrial(&best);
 
   if (try_map != FILTER_TRY_NONE) {
-    uint8_t* filtered_alpha = (uint8_t*)WebPSafeMalloc(1ULL, data_size);
+    uint8* filtered_alpha = (uint8*)WebPSafeMalloc(1ULL, data_size);
     if (filtered_alpha == NULL) return 0;
 
     for (filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1) {
@@ -298,20 +298,20 @@ static int ApplyFiltersAndEncode(const uint8_t* alpha, int width, int height,
 }
 
 static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
-                       int filter, int effort_level, uint8_t** const output,
+                       int filter, int effort_level, uint8** const output,
                        size_t* const output_size) {
   const WebPPicture* const pic = enc.pic;
   const int width = pic.width;
   const int height = pic.height;
 
-  uint8_t* quant_alpha = NULL;
+  uint8* quant_alpha = NULL;
   const size_t data_size = width * height;
-  uint64_t sse = 0;
+  uint64 sse = 0;
   int ok = 1;
   const int reduce_levels = (quality < 100);
 
   // quick correctness checks
-  assert.Assert((uint64_t)data_size == (uint64_t)width * height);  // as per spec
+  assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
   assert.Assert(enc != NULL && pic != NULL && pic.a != NULL);
   assert.Assert(output != NULL && output_size != NULL);
   assert.Assert(width > 0 && height > 0);
@@ -331,7 +331,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
     filter = WEBP_FILTER_NONE;
   }
 
-  quant_alpha = (uint8_t*)WebPSafeMalloc(1ULL, data_size);
+  quant_alpha = (uint8*)WebPSafeMalloc(1ULL, data_size);
   if (quant_alpha == NULL) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
@@ -374,7 +374,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method,
 static int CompressAlphaJob(void* arg1, void* unused) {
   VP8Encoder* const enc = (VP8Encoder*)arg1;
   const WebPConfig* config = enc.config;
-  uint8_t* alpha_data = NULL;
+  uint8* alpha_data = NULL;
   size_t alpha_size = 0;
   const int effort_level = config.method;  // maps to [0..6]
   const WEBP_FILTER_TYPE filter =
@@ -385,11 +385,11 @@ static int CompressAlphaJob(void* arg1, void* unused) {
                    filter, effort_level, &alpha_data, &alpha_size)) {
     return 0;
   }
-  if (alpha_size != (uint32_t)alpha_size) {  // Soundness check.
+  if (alpha_size != (uint32)alpha_size) {  // Soundness check.
     WebPSafeFree(alpha_data);
     return 0;
   }
-  enc.alpha_data_size = (uint32_t)alpha_size;
+  enc.alpha_data_size = (uint32)alpha_size;
   enc.alpha_data = alpha_data;
   (void)unused;
   return 1;

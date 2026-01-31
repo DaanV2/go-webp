@@ -31,7 +31,7 @@ extern "C" {
 // (ICC profile, metadata) and WebP compressed image data.
 // 'bytes' memory must be allocated using WebPMalloc() and such.
 type WebPData struct {
-  const uint8_t* bytes;
+  const uint8* bytes;
   size_t size;
 };
 
@@ -58,7 +58,7 @@ static  func WebPDataClear(WebPData* webp_data) {
   if (src == NULL || dst == NULL) return 0;
   WebPDataInit(dst);
   if (src.bytes != NULL && src.size != 0) {
-    dst.bytes = (uint8_t*)WebPMalloc(src.size);
+    dst.bytes = (uint8*)WebPMalloc(src.size);
     if (dst.bytes == NULL) return 0;
     WEBP_UNSAFE_MEMCPY((void*)dst.bytes, src.bytes, src.size);
     dst.size = src.size;

@@ -48,8 +48,8 @@ static uint8x8_t ConvertRGBToYImpl_NEON(const uint8x8_t R, const uint8x8_t G,
   return vqmovn_u16(Y2);
 }
 
-func ConvertRGBToY_NEON(const uint8_t* WEBP_RESTRICT rgb,
-                               uint8_t* WEBP_RESTRICT y, int width, int step) {
+func ConvertRGBToY_NEON(const uint8* WEBP_RESTRICT rgb,
+                               uint8* WEBP_RESTRICT y, int width, int step) {
   int i;
   if (step == 3) {
     for (i = 0; i + 8 <= width; i += 8, rgb += 3 * 8) {
@@ -71,8 +71,8 @@ func ConvertRGBToY_NEON(const uint8_t* WEBP_RESTRICT rgb,
   }
 }
 
-func ConvertBGRToY_NEON(const uint8_t* WEBP_RESTRICT bgr,
-                               uint8_t* WEBP_RESTRICT y, int width, int step) {
+func ConvertBGRToY_NEON(const uint8* WEBP_RESTRICT bgr,
+                               uint8* WEBP_RESTRICT y, int width, int step) {
   int i;
   if (step == 3) {
     for (i = 0; i + 8 <= width; i += 8, bgr += 3 * 8) {
@@ -94,17 +94,17 @@ func ConvertBGRToY_NEON(const uint8_t* WEBP_RESTRICT bgr,
   }
 }
 
-func ConvertARGBToY_NEON(const uint32_t* WEBP_RESTRICT argb,
-                                uint8_t* WEBP_RESTRICT y, int width) {
+func ConvertARGBToY_NEON(const uint32* WEBP_RESTRICT argb,
+                                uint8* WEBP_RESTRICT y, int width) {
   int i;
   for (i = 0; i + 8 <= width; i += 8) {
-    const uint8x8x4_t RGB = vld4_u8((const uint8_t*)&argb[i]);
+    const uint8x8x4_t RGB = vld4_u8((const uint8*)&argb[i]);
     const uint8x8_t Y =
         ConvertRGBToYImpl_NEON(RGB.val[2], RGB.val[1], RGB.val[0]);
     vst1_u8(y + i, Y);
   }
   for (; i < width; ++i) {  // left-over
-    const uint32_t p = argb[i];
+    const uint32 p = argb[i];
     y[i] =
         VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);
   }
@@ -142,12 +142,12 @@ func ConvertARGBToY_NEON(const uint32_t* WEBP_RESTRICT argb,
     MULTIPLY_16b(28800, -24116, -4684, 128 << SHIFT, V_DST); \
   } while (0)
 
-func ConvertRGBA32ToUV_NEON(const uint16_t* WEBP_RESTRICT rgb,
-                                   uint8_t* WEBP_RESTRICT u,
-                                   uint8_t* WEBP_RESTRICT v, int width) {
+func ConvertRGBA32ToUV_NEON(const uint16* WEBP_RESTRICT rgb,
+                                   uint8* WEBP_RESTRICT u,
+                                   uint8* WEBP_RESTRICT v, int width) {
   int i;
   for (i = 0; i + 8 <= width; i += 8, rgb += 4 * 8) {
-    const uint16x8x4_t RGB = vld4q_u16((const uint16_t*)rgb);
+    const uint16x8x4_t RGB = vld4q_u16((const uint16*)rgb);
     int16x8_t U, V;
     CONVERT_RGB_TO_UV(RGB.val[0], RGB.val[1], RGB.val[2], 2, U, V);
     vst1_u8(u + i, vqrshrun_n_s16(U, 2));
@@ -160,13 +160,13 @@ func ConvertRGBA32ToUV_NEON(const uint16_t* WEBP_RESTRICT rgb,
   }
 }
 
-func ConvertARGBToUV_NEON(const uint32_t* WEBP_RESTRICT argb,
-                                 uint8_t* WEBP_RESTRICT u,
-                                 uint8_t* WEBP_RESTRICT v, int src_width,
+func ConvertARGBToUV_NEON(const uint32* WEBP_RESTRICT argb,
+                                 uint8* WEBP_RESTRICT u,
+                                 uint8* WEBP_RESTRICT v, int src_width,
                                  int do_store) {
   int i;
   for (i = 0; i + 16 <= src_width; i += 16, u += 8, v += 8) {
-    const uint8x16x4_t RGB = vld4q_u8((const uint8_t*)&argb[i]);
+    const uint8x16x4_t RGB = vld4q_u8((const uint8*)&argb[i]);
     const uint16x8_t R = vpaddlq_u8(RGB.val[2]);  // pair-wise adds
     const uint16x8_t G = vpaddlq_u8(RGB.val[1]);
     const uint16x8_t B = vpaddlq_u8(RGB.val[0]);

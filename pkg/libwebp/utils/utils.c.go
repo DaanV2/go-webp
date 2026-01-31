@@ -82,9 +82,9 @@ func PrintMemInfo(void) {
   fprintf(stderr, "num calls to: malloc = %4d\n", num_malloc_calls);
   fprintf(stderr, "              calloc = %4d\n", num_calloc_calls);
   fprintf(stderr, "              free   = %4d\n", num_free_calls);
-  fprintf(stderr, "total_mem: %u\n", (uint32_t)total_mem);
-  fprintf(stderr, "total_mem allocated: %u\n", (uint32_t)total_mem_allocated);
-  fprintf(stderr, "high-water mark: %u\n", (uint32_t)high_water_mark);
+  fprintf(stderr, "total_mem: %u\n", (uint32)total_mem);
+  fprintf(stderr, "total_mem allocated: %u\n", (uint32)total_mem_allocated);
+  fprintf(stderr, "high-water mark: %u\n", (uint32)high_water_mark);
   while (all_blocks != NULL) {
     MemBlock* b = all_blocks;
     all_blocks = b.next;
@@ -134,9 +134,9 @@ func AddMem(void* ptr, size_t size) {
 #if defined(PRINT_MEM_TRAFFIC)
 #if defined(MALLOC_FAIL_AT)
     fprintf(stderr, "fail-count: %5d [mem=%u]\n",
-            num_malloc_calls + num_calloc_calls, (uint32_t)total_mem);
+            num_malloc_calls + num_calloc_calls, (uint32)total_mem);
 #else
-    fprintf(stderr, "Mem: %u (+%u)\n", (uint32_t)total_mem, (uint32_t)size);
+    fprintf(stderr, "Mem: %u (+%u)\n", (uint32)total_mem, (uint32)size);
 #endif
 #endif
     if (total_mem > high_water_mark) high_water_mark = total_mem;
@@ -157,8 +157,8 @@ func SubMem(void* ptr) {
       *b = block.next;
       total_mem -= block.size;
 #if defined(PRINT_MEM_TRAFFIC)
-      fprintf(stderr, "Mem: %u (-%u)\n", (uint32_t)total_mem,
-              (uint32_t)block.size);
+      fprintf(stderr, "Mem: %u (-%u)\n", (uint32)total_mem,
+              (uint32)block.size);
 #endif
       free(block);
     }
@@ -178,10 +178,10 @@ func SubMem(void* ptr) {
 #endif
 
 // Returns 0 in case of overflow of nmemb * size.
-static int CheckSizeArgumentsOverflow(uint64_t nmemb, size_t size) {
-  const uint64_t total_size = nmemb * size;
+static int CheckSizeArgumentsOverflow(uint64 nmemb, size_t size) {
+  const uint64 total_size = nmemb * size;
   if (nmemb == 0) return 1;
-  if ((uint64_t)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb) return 0;
+  if ((uint64)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb) return 0;
   if (!CheckSizeOverflow(total_size)) return 0;
 #if defined(PRINT_MEM_INFO) && defined(MALLOC_FAIL_AT)
   if (countdown_to_fail > 0 && --countdown_to_fail == 0) {
@@ -190,7 +190,7 @@ static int CheckSizeArgumentsOverflow(uint64_t nmemb, size_t size) {
 #endif
 #if defined(PRINT_MEM_INFO) && defined(MALLOC_LIMIT)
   if (mem_limit > 0) {
-    const uint64_t new_total_mem = (uint64_t)total_mem + total_size;
+    const uint64 new_total_mem = (uint64)total_mem + total_size;
     if (!CheckSizeOverflow(new_total_mem) || new_total_mem > mem_limit) {
       return 0;  // fake fail!
     }
@@ -201,7 +201,7 @@ static int CheckSizeArgumentsOverflow(uint64_t nmemb, size_t size) {
 }
 
 void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
-    WebPSafeMalloc(uint64_t nmemb, size_t size) {
+    WebPSafeMalloc(uint64 nmemb, size_t size) {
   void* ptr;
   Increment(&num_malloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) return NULL;
@@ -212,7 +212,7 @@ void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
 }
 
 void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
-    WebPSafeCalloc(uint64_t nmemb, size_t size) {
+    WebPSafeCalloc(uint64 nmemb, size_t size) {
   void* ptr;
   Increment(&num_calloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) return NULL;
@@ -250,7 +250,7 @@ func WebPFree(void* WEBP_SINGLE ptr) { WebPSafeFree(ptr); }
 
 //------------------------------------------------------------------------------
 
-func WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
+func WebPCopyPlane(const uint8* src, int src_stride, uint8* dst,
                    int dst_stride, int width, int height) {
   assert.Assert(src != NULL && dst != NULL);
   assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
@@ -265,7 +265,7 @@ func WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
   assert.Assert(src != NULL && dst != NULL)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   assert.Assert(src.use_argb && dst.use_argb)
-  WebPCopyPlane((uint8_t*)src.argb, 4 * src.argb_stride, (uint8_t*)dst.argb,
+  WebPCopyPlane((uint8*)src.argb, 4 * src.argb_stride, (uint8*)dst.argb,
                 4 * dst.argb_stride, 4 * src.width, src.height);
 }
 
@@ -273,14 +273,14 @@ func WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
 
 int WebPGetColorPalette(
     const WebPPicture* const pic,
-    uint32_t* const WEBP_COUNTED_BY_OR_NULL(MAX_PALETTE_SIZE) palette) {
+    uint32* const WEBP_COUNTED_BY_OR_NULL(MAX_PALETTE_SIZE) palette) {
   return GetColorPalette(pic, palette);
 }
 
 //------------------------------------------------------------------------------
 
 #if defined(WEBP_NEED_LOG_TABLE_8BIT)
-const uint8_t WebPLogTable8bit[256] = {  // 31 ^ clz(i)
+const uint8 WebPLogTable8bit[256] = {  // 31 ^ clz(i)
     0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
     5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6,

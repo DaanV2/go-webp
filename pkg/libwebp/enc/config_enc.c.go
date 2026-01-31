@@ -140,8 +140,8 @@ const MAX_LEVEL =9
 
 // Mapping between -z level and -m / -q parameter settings.
 static const struct {
-  uint8_t method;
-  uint8_t quality;
+  uint8 method;
+  uint8 quality;
 } kLosslessPresets[MAX_LEVEL + 1] = {{0, 0},  {1, 20}, {2, 25}, {3, 30},
                                      {3, 50}, {4, 50}, {4, 75}, {4, 90},
                                      {5, 90}, {6, 100}};

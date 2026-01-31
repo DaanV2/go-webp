@@ -25,8 +25,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-typedef double (*AccumulateFunc)(const uint8_t* src, int src_stride,
-                                 const uint8_t* ref, int ref_stride, int w,
+typedef double (*AccumulateFunc)(const uint8* src, int src_stride,
+                                 const uint8* ref, int ref_stride, int w,
                                  int h);
 
 //------------------------------------------------------------------------------
@@ -37,8 +37,8 @@ typedef double (*AccumulateFunc)(const uint8_t* src, int src_stride,
 
 const RADIUS = 2  // search radius. Shouldn't be too large.
 
-static double AccumulateLSIM(const uint8_t* src, int src_stride,
-                             const uint8_t* ref, int ref_stride, int w, int h) {
+static double AccumulateLSIM(const uint8* src, int src_stride,
+                             const uint8* ref, int ref_stride, int w, int h) {
   int x, y;
   double total_sse = 0.;
   for (y = 0; y < h; ++y) {
@@ -51,7 +51,7 @@ static double AccumulateLSIM(const uint8_t* src, int src_stride,
       const double value = (double)ref[y * ref_stride + x];
       int i, j;
       for (j = y_0; j < y_1; ++j) {
-        const uint8_t* const s = src + j * src_stride;
+        const uint8* const s = src + j * src_stride;
         for (i = x_0; i < x_1; ++i) {
           const double diff = s[i] - value;
           const double sse = diff * diff;
@@ -65,8 +65,8 @@ static double AccumulateLSIM(const uint8_t* src, int src_stride,
 }
 #undef RADIUS
 
-static double AccumulateSSE(const uint8_t* src, int src_stride,
-                            const uint8_t* ref, int ref_stride, int w, int h) {
+static double AccumulateSSE(const uint8* src, int src_stride,
+                            const uint8* ref, int ref_stride, int w, int h) {
   int y;
   double total_sse = 0.;
   for (y = 0; y < h; ++y) {
@@ -79,8 +79,8 @@ static double AccumulateSSE(const uint8_t* src, int src_stride,
 
 //------------------------------------------------------------------------------
 
-static double AccumulateSSIM(const uint8_t* src, int src_stride,
-                             const uint8_t* ref, int ref_stride, int w, int h) {
+static double AccumulateSSIM(const uint8* src, int src_stride,
+                             const uint8* ref, int ref_stride, int w, int h) {
   const int w0 = (w < VP8_SSIM_KERNEL) ? w : VP8_SSIM_KERNEL;
   const int w1 = w - VP8_SSIM_KERNEL - 1;
   const int h0 = (h < VP8_SSIM_KERNEL) ? h : VP8_SSIM_KERNEL;
@@ -129,11 +129,11 @@ static double GetLogSSIM(double v, double size) {
   return (v < 1.) ? -10.0 * log10(1. - v) : kMinDistortion_dB;
 }
 
-int WebPPlaneDistortion(const uint8_t* src, size_t src_stride,
-                        const uint8_t* ref, size_t ref_stride, int width,
+int WebPPlaneDistortion(const uint8* src, size_t src_stride,
+                        const uint8* ref, size_t ref_stride, int width,
                         int height, size_t x_step, int type, float* distortion,
                         float* result) {
-  uint8_t* allocated = NULL;
+  uint8* allocated = NULL;
   const AccumulateFunc metric = (type == 0)   ? AccumulateSSE
                                 : (type == 1) ? AccumulateSSIM
                                               : AccumulateLSIM;
@@ -145,10 +145,10 @@ int WebPPlaneDistortion(const uint8_t* src, size_t src_stride,
   VP8SSIMDspInit();
   if (x_step != 1) {  // extract a packed plane if needed
     int x, y;
-    uint8_t* tmp1;
-    uint8_t* tmp2;
+    uint8* tmp1;
+    uint8* tmp2;
     allocated =
-        (uint8_t*)WebPSafeMalloc(2ULL * width * height, sizeof(*allocated));
+        (uint8*)WebPSafeMalloc(2ULL * width * height, sizeof(*allocated));
     if (allocated == NULL) return 0;
     tmp1 = allocated;
     tmp2 = tmp1 + (size_t)width * height;
@@ -170,9 +170,9 @@ int WebPPlaneDistortion(const uint8_t* src, size_t src_stride,
 }
 
 #ifdef WORDS_BIGENDIAN
-const BLUE_OFFSET =3  // uint32_t 0x000000ff is 0x00,00,00,ff in memory
+const BLUE_OFFSET =3  // uint32 0x000000ff is 0x00,00,00,ff in memory
 #else
-const BLUE_OFFSET =0  // uint32_t 0x000000ff is 0xff,00,00,00 in memory
+const BLUE_OFFSET =0  // uint32 0x000000ff is 0xff,00,00,00 in memory
 #endif
 
 int WebPPictureDistortion(const WebPPicture* src, const WebPPicture* ref,
@@ -202,8 +202,8 @@ int WebPPictureDistortion(const WebPPicture* src, const WebPPicture* ref,
     const size_t stride1 = 4 * (size_t)p1.argb_stride;
     // results are reported as BGRA
     const int offset = c ^ BLUE_OFFSET;
-    if (!WebPPlaneDistortion((const uint8_t*)p0.argb + offset, stride0,
-                             (const uint8_t*)p1.argb + offset, stride1, w, h, 4,
+    if (!WebPPlaneDistortion((const uint8*)p0.argb + offset, stride0,
+                             (const uint8*)p1.argb + offset, stride1, w, h, 4,
                              type, &distortion, results + c)) {
       goto Error;
     }
@@ -224,8 +224,8 @@ Error:
 #undef BLUE_OFFSET
 
 #else  // defined(WEBP_DISABLE_STATS)
-int WebPPlaneDistortion(const uint8_t* src, size_t src_stride,
-                        const uint8_t* ref, size_t ref_stride, int width,
+int WebPPlaneDistortion(const uint8* src, size_t src_stride,
+                        const uint8* ref, size_t ref_stride, int width,
                         int height, size_t x_step, int type, float* distortion,
                         float* result) {
   (void)src;

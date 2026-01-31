@@ -39,7 +39,7 @@ typedef int (*OutputRowFunc)(WebPDecParams* const p, int y_pos,
 
 type WebPDecParams struct {
   WebPDecBuffer* output;           // output buffer.
-  uint8_t *tmp_y, *tmp_u, *tmp_v;  // cache for the fancy upsampler
+  uint8 *tmp_y, *tmp_u, *tmp_v;  // cache for the fancy upsampler
                                    // or used for tmp rescaling
 
   int last_y;  // coordinate of the line that was last output
@@ -61,11 +61,11 @@ func WebPResetDecParams(WebPDecParams* const params);
 
 // Structure storing a description of the RIFF headers.
 typedef struct {
-  const uint8_t* WEBP_COUNTED_BY(data_size) data;  // input buffer
+  const uint8* WEBP_COUNTED_BY(data_size) data;  // input buffer
   size_t data_size;                                // input buffer size
   int have_all_data;  // true if all data is known to be available
   size_t offset;      // offset to main data chunk (VP8 or VP8L)
-  const uint8_t* WEBP_COUNTED_BY(alpha_data_size)
+  const uint8* WEBP_COUNTED_BY(alpha_data_size)
       alpha_data;          // points to alpha chunk (if present)
   size_t alpha_data_size;  // alpha chunk size
   size_t compressed_size;  // VP8/VP8L compressed data size

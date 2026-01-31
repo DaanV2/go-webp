@@ -45,13 +45,13 @@ static  func SubtractAndSquare_SSE2(const __m128i a, const __m128i b,
 //------------------------------------------------------------------------------
 // SSIM / PSNR entry point
 
-static uint32_t AccumulateSSE_SSE2(const uint8_t* src1, const uint8_t* src2,
+static uint32 AccumulateSSE_SSE2(const uint8* src1, const uint8* src2,
                                    int len) {
   int i = 0;
-  uint32_t sse2 = 0;
+  uint32 sse2 = 0;
   if (len >= 16) {
     const int limit = len - 32;
-    int32_t tmp[4];
+    int32 tmp[4];
     __m128i sum1;
     __m128i sum = _mm_setzero_si128();
     __m128i a0 = _mm_loadu_si128((const __m128i*)&src1[i]);
@@ -77,7 +77,7 @@ static uint32_t AccumulateSSE_SSE2(const uint8_t* src1, const uint8_t* src2,
   }
 
   for (; i < len; ++i) {
-    const int32_t diff = src1[i] - src2[i];
+    const int32 diff = src1[i] - src2[i];
     sse2 += diff * diff;
   }
   return sse2;
@@ -86,22 +86,22 @@ static uint32_t AccumulateSSE_SSE2(const uint8_t* src1, const uint8_t* src2,
 
 #if !defined(WEBP_REDUCE_SIZE)
 
-static uint32_t HorizontalAdd16b_SSE2(const __m128i* const m) {
-  uint16_t tmp[8];
+static uint32 HorizontalAdd16b_SSE2(const __m128i* const m) {
+  uint16 tmp[8];
   const __m128i a = _mm_srli_si128(*m, 8);
   const __m128i b = _mm_add_epi16(*m, a);
   _mm_storeu_si128((__m128i*)tmp, b);
-  return (uint32_t)tmp[3] + tmp[2] + tmp[1] + tmp[0];
+  return (uint32)tmp[3] + tmp[2] + tmp[1] + tmp[0];
 }
 
-static uint32_t HorizontalAdd32b_SSE2(const __m128i* const m) {
+static uint32 HorizontalAdd32b_SSE2(const __m128i* const m) {
   const __m128i a = _mm_srli_si128(*m, 8);
   const __m128i b = _mm_add_epi32(*m, a);
   const __m128i c = _mm_add_epi32(b, _mm_srli_si128(b, 4));
-  return (uint32_t)_mm_cvtsi128_si32(c);
+  return (uint32)_mm_cvtsi128_si32(c);
 }
 
-static const uint16_t kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0};
+static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0};
 
 #define ACCUMULATE_ROW(WEIGHT)                                \
   do {                                                        \
@@ -126,8 +126,8 @@ static const uint16_t kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0};
     src2 += stride2;                                          \
   } while (0)
 
-static double SSIMGet_SSE2(const uint8_t* src1, int stride1,
-                           const uint8_t* src2, int stride2) {
+static double SSIMGet_SSE2(const uint8* src1, int stride1,
+                           const uint8* src2, int stride2) {
   VP8DistoStats stats;
   const __m128i zero = _mm_setzero_si128();
   __m128i xm = zero, ym = zero;                // 16b accums

@@ -14,7 +14,7 @@ package enc
 //  A 'token' is a bit value associated with a probability, either fixed
 // or a later-to-be-determined after statistics have been collected.
 // For dynamic probability, we just record the slot id (idx) for the probability
-// value in the final probability array (uint8_t* probas in VP8EmitTokens).
+// value in the final probability array (uint8* probas in VP8EmitTokens).
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
@@ -36,7 +36,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 const MIN_PAGE_SIZE =8192  // minimum number of token per page
 const FIXED_PROBA_BIT =(1u << 14)
 
-typedef uint16_t token_t;  // bit #15: bit value
+typedef uint16 token_t;  // bit #15: bit value
                            // bit #14: flags for constant proba or idx
                            // bits #0..13: slot or constant proba
 type VP8Tokens struct {
@@ -93,8 +93,8 @@ static int TBufferNewPage(VP8TBuffer* const b) {
 #define TOKEN_ID(t, b, ctx) \
   (NUM_PROBAS * ((ctx) + NUM_CTX * ((b) + NUM_BANDS * (t))))
 
-static  uint32_t AddToken(VP8TBuffer* const b, uint32_t bit,
-                                     uint32_t proba_idx, proba_t* const stats) {
+static  uint32 AddToken(VP8TBuffer* const b, uint32 bit,
+                                     uint32 proba_idx, proba_t* const stats) {
   assert.Assert(proba_idx < FIXED_PROBA_BIT);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -105,8 +105,8 @@ static  uint32_t AddToken(VP8TBuffer* const b, uint32_t bit,
   return bit;
 }
 
-static  func AddConstantToken(VP8TBuffer* const b, uint32_t bit,
-                                         uint32_t proba) {
+static  func AddConstantToken(VP8TBuffer* const b, uint32 bit,
+                                         uint32 proba) {
   assert.Assert(proba < 256);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -117,11 +117,11 @@ static  func AddConstantToken(VP8TBuffer* const b, uint32_t bit,
 
 int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res,
                          VP8TBuffer* const tokens) {
-  const int16_t* const coeffs = res.coeffs;
+  const int16* const coeffs = res.coeffs;
   const int coeff_type = res.coeff_type;
   const int last = res.last;
   int n = res.first;
-  uint32_t base_id = TOKEN_ID(coeff_type, n, ctx);
+  uint32 base_id = TOKEN_ID(coeff_type, n, ctx);
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
   proba_t* s = res.stats[n][ctx];
   if (!AddToken(tokens, last >= 0, base_id + 0, s + 0)) {
@@ -131,7 +131,7 @@ int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res,
   while (n < 16) {
     const int c = coeffs[n++];
     const int sign = c < 0;
-    const uint32_t v = sign ? -c : c;
+    const uint32 v = sign ? -c : c;
     if (!AddToken(tokens, v != 0, base_id + 1, s + 1)) {
       base_id = TOKEN_ID(coeff_type, VP8EncBands[n], 0);  // ctx=0
       s = res.stats[VP8EncBands[n]][0];
@@ -154,8 +154,8 @@ int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res,
         }
       } else {
         int mask;
-        const uint8_t* tab;
-        uint32_t residue = v - 3;
+        const uint8* tab;
+        uint32 residue = v - 3;
         if (residue < (8 << 1)) {  // VP8Cat3  (3b)
           AddToken(tokens, 0, base_id + 8, s + 8);
           AddToken(tokens, 0, base_id + 9, s + 9);
@@ -203,7 +203,7 @@ int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res,
 // Final coding pass, with known probabilities
 
 int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw,
-                  const uint8_t* const probas, int final_pass) {
+                  const uint8* const probas, int final_pass) {
   const VP8Tokens* p = b.pages;
   assert.Assert(!b.error);
   while (p != NULL) {
@@ -228,7 +228,7 @@ int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw,
 }
 
 // Size estimation
-size_t VP8EstimateTokenSize(VP8TBuffer* const b, const uint8_t* const probas) {
+size_t VP8EstimateTokenSize(VP8TBuffer* const b, const uint8* const probas) {
   size_t size = 0;
   const VP8Tokens* p = b.pages;
   assert.Assert(!b.error);

@@ -21,7 +21,7 @@ import "github.com/daanv2/go-webp/pkg/arm_neon"
 
 const IsFlat = IsFlat_NEON
 
-static uint32_t horizontal_add_uint32x4(const uint32x4_t a) {
+static uint32 horizontal_add_uint32x4(const uint32x4_t a) {
 #if WEBP_AARCH64
   return vaddvq_u32(a);
 #else
@@ -32,7 +32,7 @@ static uint32_t horizontal_add_uint32x4(const uint32x4_t a) {
 #endif
 }
 
-static  int IsFlat(const int16_t* levels, int num_blocks,
+static  int IsFlat(const int16* levels, int num_blocks,
                               int thresh) {
   const int16x8_t tst_ones = vdupq_n_s16(-1);
   uint32x4_t sum = vdupq_n_u32(0);
@@ -58,7 +58,7 @@ static  int IsFlat(const int16_t* levels, int num_blocks,
 
 const IsFlat = IsFlat_C
 
-static  int IsFlat(const int16_t* levels, int num_blocks,
+static  int IsFlat(const int16* levels, int num_blocks,
                               int thresh) {
   int score = 0;
   while (num_blocks-- > 0) {  // TODO(skal): refine positional scoring?
@@ -75,8 +75,8 @@ static  int IsFlat(const int16_t* levels, int num_blocks,
 #endif  // defined(WEBP_USE_NEON) && !defined(WEBP_ANDROID_NEON) &&
         // !defined(WEBP_HAVE_NEON_RTCD)
 
-static  int IsFlatSource16(const uint8_t* src) {
-  const uint32_t v = src[0] * 0x01010101u;
+static  int IsFlatSource16(const uint8* src) {
+  const uint32 v = src[0] * 0x01010101u;
   int i;
   for (i = 0; i < 16; ++i) {
     if (memcmp(src + 0, &v, 4) || memcmp(src + 4, &v, 4) ||

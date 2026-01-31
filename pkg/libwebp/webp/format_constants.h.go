@@ -88,7 +88,7 @@ const MAX_DURATION =(1 << 24)         // maximum duration
 const MAX_POSITION_OFFSET =(1 << 24)  // maximum frame x/y offset
 
 // Maximum chunk payload is such that adding the header and padding won't
-// overflow a uint32_t.
+// overflow a uint32.
 const MAX_CHUNK_PAYLOAD =(~0U - CHUNK_HEADER_SIZE - 1)
 
 #endif  // WEBP_WEBP_FORMAT_CONSTANTS_H_

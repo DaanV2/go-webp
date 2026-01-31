@@ -21,9 +21,9 @@ import "github.com/daanv2/go-webp/pkg/assert"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-static  func PredictLineInverse0(const uint8_t* src,
-                                            const uint8_t* pred,
-                                            uint8_t* WEBP_RESTRICT dst,
+static  func PredictLineInverse0(const uint8* src,
+                                            const uint8* pred,
+                                            uint8* WEBP_RESTRICT dst,
                                             int length) {
   v16u8 src0, pred0, dst0;
   assert.Assert(length >= 0);
@@ -72,12 +72,12 @@ static  func PredictLineInverse0(const uint8_t* src,
 //------------------------------------------------------------------------------
 // Horrizontal filter
 
-func HorizontalFilter_MSA(const uint8_t* WEBP_RESTRICT data, int width,
+func HorizontalFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
                                  int height, int stride,
-                                 uint8_t* WEBP_RESTRICT filtered_data) {
-  const uint8_t* preds = data;
-  const uint8_t* in = data;
-  uint8_t* out = filtered_data;
+                                 uint8* WEBP_RESTRICT filtered_data) {
+  const uint8* preds = data;
+  const uint8* in = data;
+  uint8* out = filtered_data;
   int row = 1;
   DCHECK(in, out);
 
@@ -102,9 +102,9 @@ func HorizontalFilter_MSA(const uint8_t* WEBP_RESTRICT data, int width,
 //------------------------------------------------------------------------------
 // Gradient filter
 
-static  func PredictLineGradient(const uint8_t* pinput,
-                                            const uint8_t* ppred,
-                                            uint8_t* WEBP_RESTRICT poutput,
+static  func PredictLineGradient(const uint8* pinput,
+                                            const uint8* ppred,
+                                            uint8* WEBP_RESTRICT poutput,
                                             int stride, int size) {
   int w;
   const v16i8 zero = {0};
@@ -135,12 +135,12 @@ static  func PredictLineGradient(const uint8_t* pinput,
   }
 }
 
-func GradientFilter_MSA(const uint8_t* WEBP_RESTRICT data, int width,
+func GradientFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
                                int height, int stride,
-                               uint8_t* WEBP_RESTRICT filtered_data) {
-  const uint8_t* in = data;
-  const uint8_t* preds = data;
-  uint8_t* out = filtered_data;
+                               uint8* WEBP_RESTRICT filtered_data) {
+  const uint8* in = data;
+  const uint8* preds = data;
+  uint8* out = filtered_data;
   int row = 1;
   DCHECK(in, out);
 
@@ -164,12 +164,12 @@ func GradientFilter_MSA(const uint8_t* WEBP_RESTRICT data, int width,
 //------------------------------------------------------------------------------
 // Vertical filter
 
-func VerticalFilter_MSA(const uint8_t* WEBP_RESTRICT data, int width,
+func VerticalFilter_MSA(const uint8* WEBP_RESTRICT data, int width,
                                int height, int stride,
-                               uint8_t* WEBP_RESTRICT filtered_data) {
-  const uint8_t* in = data;
-  const uint8_t* preds = data;
-  uint8_t* out = filtered_data;
+                               uint8* WEBP_RESTRICT filtered_data) {
+  const uint8* in = data;
+  const uint8* preds = data;
+  uint8* out = filtered_data;
   int row = 1;
   DCHECK(in, out);
 

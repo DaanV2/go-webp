@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Boolean-cost cost table
 
-const uint16_t VP8EntropyCost[256] = {
+const uint16 VP8EntropyCost[256] = {
     1792, 1792, 1792, 1536, 1536, 1408, 1366, 1280, 1280, 1216, 1178, 1152,
     1110, 1076, 1061, 1024, 1024, 992,  968,  951,  939,  911,  896,  878,
     871,  854,  838,  820,  811,  794,  786,  768,  768,  752,  740,  732,
@@ -53,7 +53,7 @@ const uint16_t VP8EntropyCost[256] = {
 
 // fixed costs for coding levels, deduce from the coding tree.
 // This is only the part that doesn't depend on the probability state.
-const uint16_t VP8LevelFixedCosts[MAX_LEVEL + 1] = {
+const uint16 VP8LevelFixedCosts[MAX_LEVEL + 1] = {
     0,    256,  256,  256,  256,  432,  618,  630,  731,  640,  640,  828,
     901,  948,  1021, 1101, 1174, 1221, 1294, 1042, 1085, 1115, 1158, 1202,
     1245, 1275, 1318, 1337, 1380, 1410, 1453, 1497, 1540, 1570, 1613, 1280,
@@ -229,7 +229,7 @@ const uint16_t VP8LevelFixedCosts[MAX_LEVEL + 1] = {
 //------------------------------------------------------------------------------
 // Tables for level coding
 
-const uint8_t VP8EncBands[16 + 1] = {
+const uint8 VP8EncBands[16 + 1] = {
     0, 1, 2, 3, 6, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7,
     0  // sentinel
 };
@@ -242,7 +242,7 @@ static int GetResidualCost_C(int ctx0, const VP8Residual* const res) {
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   const int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const uint16_t* t = costs[n][ctx0];
+  const uint16* t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
@@ -272,7 +272,7 @@ static int GetResidualCost_C(int ctx0, const VP8Residual* const res) {
   return cost;
 }
 
-func SetResidualCoeffs_C(const int16_t* WEBP_RESTRICT const coeffs,
+func SetResidualCoeffs_C(const int16* WEBP_RESTRICT const coeffs,
                                 VP8Residual* WEBP_RESTRICT const res) {
   int n;
   res.last = -1;

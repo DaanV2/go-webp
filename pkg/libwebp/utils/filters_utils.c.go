@@ -30,13 +30,13 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 const SMAX = 16
 #define SDIFF(a, b) (abs((a) - (b)) >> 4)  // Scoring diff, in [0..SMAX)
 
-static  int GradientPredictor(uint8_t a, uint8_t b, uint8_t c) {
+static  int GradientPredictor(uint8 a, uint8 b, uint8 c) {
   const int g = a + b - c;
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
 WEBP_FILTER_TYPE WebPEstimateBestFilter(
-    const uint8_t* WEBP_COUNTED_BY((size_t)width* height) data, int width,
+    const uint8* WEBP_COUNTED_BY((size_t)width* height) data, int width,
     int height) {
   int i, j;
   int bins[WEBP_FILTER_LAST][SMAX];
@@ -44,7 +44,7 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
 
   // We only sample every other pixels. That's enough.
   for (j = 2; j < height - 1; j += 2) {
-    const uint8_t* const p = data + j * width;
+    const uint8* const p = data + j * width;
     int mean = p[0];
     for (i = 2; i < width - 1; i += 2) {
       const int diff0 = SDIFF(p[i], mean);

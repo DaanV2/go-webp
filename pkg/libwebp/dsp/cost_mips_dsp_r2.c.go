@@ -24,16 +24,16 @@ static int GetResidualCost_MIPSdspR2(int ctx0, const VP8Residual* const res) {
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const uint16_t* t = costs[n][ctx0];
+  const uint16* t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
   int cost = (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
-  const int16_t* res_coeffs = res.coeffs;
+  const int16* res_coeffs = res.coeffs;
   const int res_last = res.last;
   const int const_max_level = MAX_VARIABLE_LEVEL;
   const int const_2 = 2;
-  const uint16_t** p_costs = &costs[n][0];
+  const uint16** p_costs = &costs[n][0];
   const size_t inc_p_costs = NUM_CTX * sizeof(*p_costs);
 
   if (res.last < 0) {

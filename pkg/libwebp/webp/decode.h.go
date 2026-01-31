@@ -53,7 +53,7 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
   int WebPGetInfo(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
     int* width, int* height);
 
 // Decodes WebP images pointed to by 'data' and returns RGBA samples, along
@@ -61,29 +61,29 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // memory is R, G, B, A, R, G, B, A... in scan order (endian-independent).
 // The returned pointer should be deleted calling WebPFree().
 // Returns NULL in case of error.
-  uint8_t* WebPDecodeRGBA(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+  uint8* WebPDecodeRGBA(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
     int* width, int* height);
 
 // Same as WebPDecodeRGBA, but returning A, R, G, B, A, R, G, B... ordered data.
-  uint8_t* WebPDecodeARGB(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+  uint8* WebPDecodeARGB(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
     int* width, int* height);
 
 // Same as WebPDecodeRGBA, but returning B, G, R, A, B, G, R, A... ordered data.
-  uint8_t* WebPDecodeBGRA(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+  uint8* WebPDecodeBGRA(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
     int* width, int* height);
 
 // Same as WebPDecodeRGBA, but returning R, G, B, R, G, B... ordered data.
 // If the bitstream contains transparency, it is ignored.
-  uint8_t* WebPDecodeRGB(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+  uint8* WebPDecodeRGB(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
     int* width, int* height);
 
 // Same as WebPDecodeRGB, but returning B, G, R, B, G, R... ordered data.
-  uint8_t* WebPDecodeBGR(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+  uint8* WebPDecodeBGR(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
     int* width, int* height);
 
 // Decode WebP images pointed to by 'data' to Y'UV format(*). The pointer
@@ -96,9 +96,9 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // 'width' and 'height' may be NULL, the other pointers must not be.
 // Returns NULL in case of error.
 // (*) Also named Y'CbCr. See: https://en.wikipedia.org/wiki/YCbCr
-  uint8_t* WebPDecodeYUV(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
-    int* width, int* height, uint8_t** u, uint8_t** v, int* stride,
+  uint8* WebPDecodeYUV(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    int* width, int* height, uint8** u, uint8** v, int* stride,
     int* uv_stride);
 
 // These five functions are variants of the above ones, that decode the image
@@ -109,28 +109,28 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // The parameter 'output_stride' specifies the distance (in bytes)
 // between scanlines. Hence, output_buffer_size is expected to be at least
 // output_stride x picture-height.
-  uint8_t* WebPDecodeRGBAInto(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
-    uint8_t* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
+  uint8* WebPDecodeRGBAInto(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    uint8* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
     size_t output_buffer_size, int output_stride);
-  uint8_t* WebPDecodeARGBInto(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
-    uint8_t* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
+  uint8* WebPDecodeARGBInto(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    uint8* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
     size_t output_buffer_size, int output_stride);
-  uint8_t* WebPDecodeBGRAInto(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
-    uint8_t* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
+  uint8* WebPDecodeBGRAInto(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    uint8* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
     size_t output_buffer_size, int output_stride);
 
 // RGB and BGR variants. Here too the transparency information, if present,
 // will be dropped and ignored.
-  uint8_t* WebPDecodeRGBInto(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
-    uint8_t* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
+  uint8* WebPDecodeRGBInto(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    uint8* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
     size_t output_buffer_size, int output_stride);
-  uint8_t* WebPDecodeBGRInto(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
-    uint8_t* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
+  uint8* WebPDecodeBGRInto(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    uint8* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
     size_t output_buffer_size, int output_stride);
 
 // WebPDecodeYUVInto() is a variant of WebPDecodeYUV() that operates directly
@@ -140,11 +140,11 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 // 'u_size' and 'v_size' respectively.
 // Pointer to the luma plane ('*luma') is returned or NULL if an error occurred
 // during decoding (or because some buffers were found to be too small).
-  uint8_t* WebPDecodeYUVInto(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
-    uint8_t* WEBP_COUNTED_BY(luma_size) luma, size_t luma_size, int luma_stride,
-    uint8_t* WEBP_COUNTED_BY(u_size) u, size_t u_size, int u_stride,
-    uint8_t* WEBP_COUNTED_BY(v_size) v, size_t v_size, int v_stride);
+  uint8* WebPDecodeYUVInto(
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    uint8* WEBP_COUNTED_BY(luma_size) luma, size_t luma_size, int luma_stride,
+    uint8* WEBP_COUNTED_BY(u_size) u, size_t u_size, int u_stride,
+    uint8* WEBP_COUNTED_BY(v_size) v, size_t v_size, int v_stride);
 
 //------------------------------------------------------------------------------
 // Output colorspaces and buffer
@@ -171,13 +171,13 @@ static  int WebPIsRGBMode(WEBP_CSP_MODE mode) {
 // WebPDecBuffer: Generic structure for describing the output sample buffer.
 
 type WebPRGBABuffer struct {  // view as RGBA
-  rgba uint8_t*          // pointer to RGBA samples
+  rgba uint8*          // pointer to RGBA samples
   stride int            // stride in bytes from one scanline to the next.
   size size_t           // total size of the *rgba buffer.
 };
 
 type WebPYUVABuffer struct {    // view as YUVA
-  uint8_t *y, *u, *v, *a;  // pointer to luma, chroma U/V, alpha samples
+  uint8 *y, *u, *v, *a;  // pointer to luma, chroma U/V, alpha samples
   int y_stride;            // luma stride
   int u_stride, v_stride;  // chroma strides
   int a_stride;            // alpha stride
@@ -198,9 +198,9 @@ type WebPDecBuffer struct {
     WebPRGBABuffer RGBA;
     WebPYUVABuffer YUVA;
   } u;              // Nameless union of buffer parameters.
-  uint32_t pad[4];  // padding for later use
+  uint32 pad[4];  // padding for later use
 
-  uint8_t* private_memory;  // Internally allocated memory (only when
+  uint8* private_memory;  // Internally allocated memory (only when
                             // is_external_memory is 0). Should not be used
                             // externally, but accessed via the buffer union.
 };
@@ -274,7 +274,7 @@ type WebPDecBuffer struct {
 // Returns NULL if the allocation failed, or if some parameters are invalid.
   WebPIDecoder* WebPINewRGB(
     WEBP_CSP_MODE csp,
-    uint8_t* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
+    uint8* WEBP_COUNTED_BY(output_buffer_size) output_buffer,
     size_t output_buffer_size, int output_stride);
 
 // This function allocates and initializes an incremental-decoder object, which
@@ -289,17 +289,17 @@ type WebPDecBuffer struct {
 // MODE_YUVA) when decoding starts. All parameters are then ignored.
 // Returns NULL if the allocation failed or if a parameter is invalid.
   WebPIDecoder* WebPINewYUVA(
-    uint8_t* WEBP_COUNTED_BY(luma_size) luma, size_t luma_size, int luma_stride,
-    uint8_t* WEBP_COUNTED_BY(u_size) u, size_t u_size, int u_stride,
-    uint8_t* WEBP_COUNTED_BY(v_size) v, size_t v_size, int v_stride,
-    uint8_t* WEBP_COUNTED_BY(a_size) a, size_t a_size, int a_stride);
+    uint8* WEBP_COUNTED_BY(luma_size) luma, size_t luma_size, int luma_stride,
+    uint8* WEBP_COUNTED_BY(u_size) u, size_t u_size, int u_stride,
+    uint8* WEBP_COUNTED_BY(v_size) v, size_t v_size, int v_stride,
+    uint8* WEBP_COUNTED_BY(a_size) a, size_t a_size, int a_stride);
 
 // Deprecated version of the above, without the alpha plane.
 // Kept for backward compatibility.
   WebPIDecoder* WebPINewYUV(
-    uint8_t* WEBP_COUNTED_BY(luma_size) luma, size_t luma_size, int luma_stride,
-    uint8_t* WEBP_COUNTED_BY(u_size) u, size_t u_size, int u_stride,
-    uint8_t* WEBP_COUNTED_BY(v_size) v, size_t v_size, int v_stride);
+    uint8* WEBP_COUNTED_BY(luma_size) luma, size_t luma_size, int luma_stride,
+    uint8* WEBP_COUNTED_BY(u_size) u, size_t u_size, int u_stride,
+    uint8* WEBP_COUNTED_BY(v_size) v, size_t v_size, int v_stride);
 
 // Deletes the WebPIDecoder object and associated memory. Must always be called
 // if WebPINewDecoder, WebPINewRGB or WebPINewYUV succeeded.
@@ -309,7 +309,7 @@ type WebPDecBuffer struct {
 // the image is successfully decoded. Returns VP8_STATUS_SUSPENDED when more
 // data is expected. Returns error in other cases.
  VP8StatusCode WebPIAppend(WebPIDecoder* idec,
-                                      const uint8_t* WEBP_COUNTED_BY(data_size)
+                                      const uint8* WEBP_COUNTED_BY(data_size)
                                           data,
                                       size_t data_size);
 
@@ -319,7 +319,7 @@ type WebPDecBuffer struct {
 // Note that the value of the 'data' pointer can change between calls to
 // WebPIUpdate, for instance when the data buffer is resized to fit larger data.
  VP8StatusCode WebPIUpdate(WebPIDecoder* idec,
-                                      const uint8_t* WEBP_COUNTED_BY(data_size)
+                                      const uint8* WEBP_COUNTED_BY(data_size)
                                           data,
                                       size_t data_size);
 
@@ -330,24 +330,24 @@ type WebPDecBuffer struct {
 // (*last_y, *width etc.) can be NULL if corresponding information is not
 // needed. The values in these pointers are only valid on successful (non-NULL)
 // return.
-  uint8_t* WebPIDecGetRGB(const WebPIDecoder* idec,
+  uint8* WebPIDecGetRGB(const WebPIDecoder* idec,
                                                    int* last_y, int* width,
                                                    int* height, int* stride);
 
 // Same as above function to get a YUVA image. Returns pointer to the luma
 // plane or NULL in case of error. If there is no alpha information
 // the alpha pointer '*a' will be returned NULL.
-  uint8_t* WebPIDecGetYUVA(const WebPIDecoder* idec,
-                                                    int* last_y, uint8_t** u,
-                                                    uint8_t** v, uint8_t** a,
+  uint8* WebPIDecGetYUVA(const WebPIDecoder* idec,
+                                                    int* last_y, uint8** u,
+                                                    uint8** v, uint8** a,
                                                     int* width, int* height,
                                                     int* stride, int* uv_stride,
                                                     int* a_stride);
 
 // Deprecated alpha-less version of WebPIDecGetYUVA(): it will ignore the
 // alpha information (if present). Kept for backward compatibility.
- static  uint8_t* WebPIDecGetYUV(
-    const WebPIDecoder* idec, int* last_y, uint8_t** u, uint8_t** v, int* width,
+ static  uint8* WebPIDecGetYUV(
+    const WebPIDecoder* idec, int* last_y, uint8** u, uint8** v, int* width,
     int* height, int* stride, int* uv_stride) {
   return WebPIDecGetYUVA(idec, last_y, u, v, NULL, width, height, stride,
                          uv_stride, NULL);
@@ -403,12 +403,12 @@ type WebPBitstreamFeatures struct {
   int has_animation;  // True if the bitstream is an animation.
   int format;         // 0 = undefined (/mixed), 1 = lossy, 2 = lossless
 
-  uint32_t pad[5];  // padding for later use
+  uint32 pad[5];  // padding for later use
 };
 
 // Internal, version-checked, entry point
  VP8StatusCode
-WebPGetFeaturesInternal(const uint8_t* WEBP_COUNTED_BY(data_size),
+WebPGetFeaturesInternal(const uint8* WEBP_COUNTED_BY(data_size),
                         size_t data_size, WebPBitstreamFeatures*, int);
 
 // Retrieve features from the bitstream. The *features structure is filled
@@ -423,7 +423,7 @@ WebPGetFeaturesInternal(const uint8_t* WEBP_COUNTED_BY(data_size),
 // ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
 static  VP8StatusCode
-WebPGetFeatures(const uint8_t* WEBP_COUNTED_BY(data_size) data,
+WebPGetFeatures(const uint8* WEBP_COUNTED_BY(data_size) data,
                 size_t data_size, WebPBitstreamFeatures* features) {
   return WebPGetFeaturesInternal(data, data_size, features,
                                  WEBP_DECODER_ABI_VERSION);
@@ -446,7 +446,7 @@ type WebPDecoderOptions struct {
   int flip;                         // if true, flip output vertically
   int alpha_dithering_strength;     // alpha dithering strength in [0..100]
 
-  uint32_t pad[5];  // padding for later use
+  uint32 pad[5];  // padding for later use
 };
 
 // Main object storing the configuration for advanced decoding.
@@ -485,13 +485,13 @@ type WebPDecoderConfig struct {
 // Returns NULL in case of error (and config.status will then reflect
 // the error condition, if available).
   WebPIDecoder* WebPIDecode(
-    const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+    const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
     WebPDecoderConfig* config);
 
 // Non-incremental version. This version decodes the full data at once, taking
 // 'config' into account. Returns decoding status (which should be VP8_STATUS_OK
 // if the decoding was successful). Note that 'config' cannot be NULL.
- VP8StatusCode WebPDecode(const uint8_t* WEBP_COUNTED_BY(data_size)
+ VP8StatusCode WebPDecode(const uint8* WEBP_COUNTED_BY(data_size)
                                          data,
                                      size_t data_size,
                                      WebPDecoderConfig* config);

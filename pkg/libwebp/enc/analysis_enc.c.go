@@ -36,8 +36,8 @@ func SmoothSegmentMap(VP8Encoder* const enc) {
   const int w = enc.mb_w;
   const int h = enc.mb_h;
   const int majority_cnt_3_x_3_grid = 5;
-  uint8_t* const tmp = (uint8_t*)WebPSafeMalloc(w * h, sizeof(*tmp));
-  assert.Assert((uint64_t)(w * h) == (uint64_t)w * h);  // no overflow, as per spec
+  uint8* const tmp = (uint8*)WebPSafeMalloc(w * h, sizeof(*tmp));
+  assert.Assert((uint64)(w * h) == (uint64)w * h);  // no overflow, as per spec
 
   if (tmp == NULL) return;
   for (y = 1; y < h - 1; ++y) {
@@ -263,25 +263,25 @@ static int FastMBAnalyze(VP8EncIterator* const it) {
   // Empirical cut-off value, should be around 16 (~=block size). We use the
   // [8-17] range and favor intra4 at high quality, intra16 for low quality.
   const int q = (int)it.enc.config.quality;
-  const uint64_t kThreshold = 8 + (17 - 8) * q / 100;
+  const uint64 kThreshold = 8 + (17 - 8) * q / 100;
   int k;
-  uint32_t dc[16];
-  uint64_t m, m2;
+  uint32 dc[16];
+  uint64 m, m2;
   for (k = 0; k < 16; k += 4) {
     VP8Mean16x4(it.yuv_in + Y_OFF_ENC + k * BPS, &dc[k]);
   }
   for (m = 0, m2 = 0, k = 0; k < 16; ++k) {
     // dc[k] is at most 16 (for loop of 16)*(16*255) (max value in dc after
     // Mean16x4, which uses two nested loops of 4). Squared as (16*16*255)^2, it
-    // fits in a uint32_t.
-    const uint32_t dc2 = dc[k] * dc[k];
+    // fits in a uint32.
+    const uint32 dc2 = dc[k] * dc[k];
     m += dc[k];
     m2 += dc2;
   }
   if (kThreshold * m2 < m * m) {
     VP8SetIntra16Mode(it, 0);  // DC16
   } else {
-    const uint8_t modes[16] = {0};  // DC4
+    const uint8 modes[16] = {0};  // DC4
     VP8SetIntra4Mode(it, modes);
   }
   return 0;
@@ -390,8 +390,8 @@ static int DoSegmentsJob(void* arg1, void* arg2) {
   VP8EncIterator* const it = (VP8EncIterator*)arg2;
   int ok = 1;
   if (!VP8IteratorIsDone(it)) {
-    uint8_t tmp[32 + WEBP_ALIGN_CST];
-    uint8_t* const scratch = (uint8_t*)WEBP_ALIGN(tmp);
+    uint8 tmp[32 + WEBP_ALIGN_CST];
+    uint8* const scratch = (uint8*)WEBP_ALIGN(tmp);
     do {
       // Let's pretend we have perfect lossless reconstruction.
       VP8IteratorImport(it, scratch);

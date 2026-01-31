@@ -47,7 +47,7 @@ int WebPGetDecoderVersion(void) {
 
 typedef int (*GetCoeffsFunc)(VP8BitReader* const br,
                              const VP8BandProbas* const prob[], int ctx,
-                             const quant_t dq, int n, int16_t* out);
+                             const quant_t dq, int n, int16* out);
 static volatile GetCoeffsFunc GetCoeffs = NULL;
 
 func InitGetCoeffs(void);
@@ -115,13 +115,13 @@ int VP8SetError(VP8Decoder* const dec, VP8StatusCode error,
 
 //------------------------------------------------------------------------------
 
-int VP8CheckSignature(const uint8_t* const WEBP_COUNTED_BY(data_size) data,
+int VP8CheckSignature(const uint8* const WEBP_COUNTED_BY(data_size) data,
                       size_t data_size) {
   return (data_size >= 3 && data[0] == 0x9d && data[1] == 0x01 &&
           data[2] == 0x2a);
 }
 
-int VP8GetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
+int VP8GetInfo(const uint8* WEBP_COUNTED_BY(data_size) data, size_t data_size,
                size_t chunk_size, int* const width, int* const height) {
   if (data == NULL || data_size < VP8_FRAME_HEADER_SIZE) {
     return 0;  // not enough data
@@ -130,7 +130,7 @@ int VP8GetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
   if (!VP8CheckSignature(data + 3, data_size - 3)) {
     return 0;  // Wrong signature.
   } else {
-    const uint32_t bits = data[0] | (data[1] << 8) | (data[2] << 16);
+    const uint32 bits = data[0] | (data[1] << 8) | (data[2] << 16);
     const int key_frame = !(bits & 1);
     const int w = ((data[7] << 8) | data[6]) & 0x3fff;
     const int h = ((data[9] << 8) | data[8]) & 0x3fff;
@@ -222,12 +222,12 @@ static int ParseSegmentHeader(VP8BitReader* br, VP8SegmentHeader* hdr,
 // is returned, and this is an unrecoverable error.
 // If the partitions were positioned ok, VP8_STATUS_OK is returned.
 static VP8StatusCode ParsePartitions(VP8Decoder* const dec,
-                                     const uint8_t* WEBP_COUNTED_BY(size) buf,
+                                     const uint8* WEBP_COUNTED_BY(size) buf,
                                      size_t size) {
   VP8BitReader* const br = &dec.br;
-  const uint8_t* WEBP_BIDI_INDEXABLE sz = buf;
-  const uint8_t* buf_end = buf + size;
-  const uint8_t* WEBP_BIDI_INDEXABLE part_start;
+  const uint8* WEBP_BIDI_INDEXABLE sz = buf;
+  const uint8* buf_end = buf + size;
+  const uint8* WEBP_BIDI_INDEXABLE part_start;
   size_t size_left = size;
   size_t last_part;
   size_t p;
@@ -284,7 +284,7 @@ static int ParseFilterHeader(VP8BitReader* br, VP8Decoder* const dec) {
 // Topmost call
 int VP8GetHeaders(VP8Decoder* const dec, VP8Io* const io) {
   size_t buf_size;
-  const uint8_t* WEBP_COUNTED_BY(buf_size) buf;
+  const uint8* WEBP_COUNTED_BY(buf_size) buf;
   VP8FrameHeader* frm_hdr;
   VP8PictureHeader* pic_hdr;
   VP8BitReader* br;
@@ -300,14 +300,14 @@ int VP8GetHeaders(VP8Decoder* const dec, VP8Io* const io) {
   }
   buf_size = io.data_size;
   buf =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const uint8_t*, io.data, io.data_size);
+      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const uint8*, io.data, io.data_size);
   if (buf_size < 4) {
     return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "Truncated header.");
   }
 
   // Paragraph 9.1
   {
-    const uint32_t bits = buf[0] | (buf[1] << 8) | (buf[2] << 16);
+    const uint32 bits = buf[0] | (buf[1] << 8) | (buf[2] << 16);
     frm_hdr = &dec.frm_hdr;
     frm_hdr.key_frame = !(bits & 1);
     frm_hdr.profile = (bits >> 1) & 7;
@@ -416,17 +416,17 @@ int VP8GetHeaders(VP8Decoder* const dec, VP8Io* const io) {
 //------------------------------------------------------------------------------
 // Residual decoding (Paragraph 13.2 / 13.3)
 
-static const uint8_t kCat3[] = {173, 148, 140, 0};
-static const uint8_t kCat4[] = {176, 155, 140, 135, 0};
-static const uint8_t kCat5[] = {180, 157, 141, 134, 130, 0};
-static const uint8_t kCat6[] = {254, 254, 243, 230, 196, 177,
+static const uint8 kCat3[] = {173, 148, 140, 0};
+static const uint8 kCat4[] = {176, 155, 140, 135, 0};
+static const uint8 kCat5[] = {180, 157, 141, 134, 130, 0};
+static const uint8 kCat6[] = {254, 254, 243, 230, 196, 177,
                                 153, 140, 133, 130, 129, 0};
-static const uint8_t* const kCat3456[] = {kCat3, kCat4, kCat5, kCat6};
-static const uint8_t kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6,
+static const uint8* const kCat3456[] = {kCat3, kCat4, kCat5, kCat6};
+static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6,
                                     9, 12, 13, 10, 7, 11, 14, 15};
 
 // See section 13-2: https://datatracker.ietf.org/doc/html/rfc6386#section-13.2
-static int GetLargeValue(VP8BitReader* const br, const uint8_t* const p) {
+static int GetLargeValue(VP8BitReader* const br, const uint8* const p) {
   int v;
   if (!VP8GetBit(br, p[3], "coeffs")) {
     if (!VP8GetBit(br, p[4], "coeffs")) {
@@ -443,7 +443,7 @@ static int GetLargeValue(VP8BitReader* const br, const uint8_t* const p) {
         v += VP8GetBit(br, 145, "coeffs");
       }
     } else {
-      const uint8_t* tab;
+      const uint8* tab;
       const int bit1 = VP8GetBit(br, p[8], "coeffs");
       const int bit0 = VP8GetBit(br, p[9 + bit1], "coeffs");
       const int cat = 2 * bit1 + bit0;
@@ -460,8 +460,8 @@ static int GetLargeValue(VP8BitReader* const br, const uint8_t* const p) {
 // Returns the position of the last non-zero coeff plus one
 static int GetCoeffsFast(VP8BitReader* const br,
                          const VP8BandProbas* const prob[], int ctx,
-                         const quant_t dq, int n, int16_t* out) {
-  const uint8_t* p = prob[n].probas[ctx];
+                         const quant_t dq, int n, int16* out) {
+  const uint8* p = prob[n].probas[ctx];
   for (; n < 16; ++n) {
     if (!VP8GetBit(br, p[0], "coeffs")) {
       return n;  // previous coeff was last non-zero coeff
@@ -490,8 +490,8 @@ static int GetCoeffsFast(VP8BitReader* const br,
 // of VP8GetBitAlt() targeting specific platforms.
 static int GetCoeffsAlt(VP8BitReader* const br,
                         const VP8BandProbas* const prob[], int ctx,
-                        const quant_t dq, int n, int16_t* out) {
-  const uint8_t* p = prob[n].probas[ctx];
+                        const quant_t dq, int n, int16* out) {
+  const uint8* p = prob[n].probas[ctx];
   for (; n < 16; ++n) {
     if (!VP8GetBitAlt(br, p[0], "coeffs")) {
       return n;  // previous coeff was last non-zero coeff
@@ -526,7 +526,7 @@ WEBP_DSP_INIT_FUNC(InitGetCoeffs) {
   }
 }
 
-static  uint32_t NzCodeBits(uint32_t nz_coeffs, int nz, int dc_nz) {
+static  uint32 NzCodeBits(uint32 nz_coeffs, int nz, int dc_nz) {
   nz_coeffs <<= 2;
   nz_coeffs |= (nz > 3) ? 3 : (nz > 1) ? 2 : dc_nz;
   return nz_coeffs;
@@ -538,18 +538,18 @@ static int ParseResiduals(VP8Decoder* const dec, VP8MB* const mb,
   const VP8BandProbas* const* ac_proba;
   VP8MBData* const block = dec.mb_data + dec.mb_x;
   const VP8QuantMatrix* const q = &dec.dqm[block.segment];
-  int16_t* dst = block.coeffs;
+  int16* dst = block.coeffs;
   VP8MB* const left_mb = dec.mb_info - 1;
-  uint8_t tnz, lnz;
-  uint32_t non_zero_y = 0;
-  uint32_t non_zero_uv = 0;
+  uint8 tnz, lnz;
+  uint32 non_zero_y = 0;
+  uint32 non_zero_uv = 0;
   int x, y, ch;
-  uint32_t out_t_nz, out_l_nz;
+  uint32 out_t_nz, out_l_nz;
   int first;
 
   WEBP_UNSAFE_MEMSET(dst, 0, 384 * sizeof(*dst));
   if (!block.is_i4x4) {  // parse DC
-    int16_t dc[16] = {0};
+    int16 dc[16] = {0};
     const int ctx = mb.nz_dc + left_mb.nz_dc;
     const int nz = GetCoeffs(token_br, bands[1], ctx, q.y2_mat, 0, dc);
     mb.nz_dc = left_mb.nz_dc = (nz > 0);
@@ -571,7 +571,7 @@ static int ParseResiduals(VP8Decoder* const dec, VP8MB* const mb,
   lnz = left_mb.nz & 0x0f;
   for (y = 0; y < 4; ++y) {
     int l = lnz & 1;
-    uint32_t nz_coeffs = 0;
+    uint32 nz_coeffs = 0;
     for (x = 0; x < 4; ++x) {
       const int ctx = l + (tnz & 1);
       const int nz = GetCoeffs(token_br, ac_proba, ctx, q.y1_mat, first, dst);
@@ -588,7 +588,7 @@ static int ParseResiduals(VP8Decoder* const dec, VP8MB* const mb,
   out_l_nz = lnz >> 4;
 
   for (ch = 0; ch < 4; ch += 2) {
-    uint32_t nz_coeffs = 0;
+    uint32 nz_coeffs = 0;
     tnz = mb.nz >> (4 + ch);
     lnz = left_mb.nz >> (4 + ch);
     for (y = 0; y < 2; ++y) {

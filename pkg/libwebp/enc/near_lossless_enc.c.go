@@ -33,16 +33,16 @@ const MAX_LIMIT_BITS =5
 
 // Quantizes the value up or down to a multiple of 1<<bits (or to 255),
 // choosing the closer one, resolving ties using bankers' rounding.
-static uint32_t FindClosestDiscretized(uint32_t a, int bits) {
-  const uint32_t mask = (1u << bits) - 1;
-  const uint32_t biased = a + (mask >> 1) + ((a >> bits) & 1);
+static uint32 FindClosestDiscretized(uint32 a, int bits) {
+  const uint32 mask = (1u << bits) - 1;
+  const uint32 biased = a + (mask >> 1) + ((a >> bits) & 1);
   assert.Assert(bits > 0);
   if (biased > 0xff) return 0xff;
   return biased & ~mask;
 }
 
 // Applies FindClosestDiscretized to all channels of pixel.
-static uint32_t ClosestDiscretizedArgb(uint32_t a, int bits) {
+static uint32 ClosestDiscretizedArgb(uint32 a, int bits) {
   return (FindClosestDiscretized(a >> 24, bits) << 24) |
          (FindClosestDiscretized((a >> 16) & 0xff, bits) << 16) |
          (FindClosestDiscretized((a >> 8) & 0xff, bits) << 8) |
@@ -51,7 +51,7 @@ static uint32_t ClosestDiscretizedArgb(uint32_t a, int bits) {
 
 // Checks if distance between corresponding channel values of pixels a and b
 // is within the given limit.
-static int IsNear(uint32_t a, uint32_t b, int limit) {
+static int IsNear(uint32 a, uint32 b, int limit) {
   int k;
   for (k = 0; k < 4; ++k) {
     const int delta =
@@ -63,9 +63,9 @@ static int IsNear(uint32_t a, uint32_t b, int limit) {
   return 1;
 }
 
-static int IsSmooth(const uint32_t* const prev_row,
-                    const uint32_t* const curr_row,
-                    const uint32_t* const next_row, int ix, int limit) {
+static int IsSmooth(const uint32* const prev_row,
+                    const uint32* const curr_row,
+                    const uint32* const next_row, int ix, int limit) {
   // Check that all pixels in 4-connected neighborhood are smooth.
   return (IsNear(curr_row[ix], curr_row[ix - 1], limit) &&
           IsNear(curr_row[ix], curr_row[ix + 1], limit) &&
@@ -74,14 +74,14 @@ static int IsSmooth(const uint32_t* const prev_row,
 }
 
 // Adjusts pixel values of image with given maximum error.
-func NearLossless(int xsize, int ysize, const uint32_t* argb_src,
-                         int stride, int limit_bits, uint32_t* copy_buffer,
-                         uint32_t* argb_dst) {
+func NearLossless(int xsize, int ysize, const uint32* argb_src,
+                         int stride, int limit_bits, uint32* copy_buffer,
+                         uint32* argb_dst) {
   int x, y;
   const int limit = 1 << limit_bits;
-  uint32_t* prev_row = copy_buffer;
-  uint32_t* curr_row = prev_row + xsize;
-  uint32_t* next_row = curr_row + xsize;
+  uint32* prev_row = copy_buffer;
+  uint32* curr_row = prev_row + xsize;
+  uint32* next_row = curr_row + xsize;
   memcpy(curr_row, argb_src, xsize * sizeof(argb_src[0]));
   memcpy(next_row, argb_src + stride, xsize * sizeof(argb_src[0]));
 
@@ -102,7 +102,7 @@ func NearLossless(int xsize, int ysize, const uint32_t* argb_src,
     }
     {
       // Three-way swap.
-      uint32_t* const temp = prev_row;
+      uint32* const temp = prev_row;
       prev_row = curr_row;
       curr_row = next_row;
       next_row = temp;
@@ -111,9 +111,9 @@ func NearLossless(int xsize, int ysize, const uint32_t* argb_src,
 }
 
 int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
-                         uint32_t* const argb_dst) {
+                         uint32* const argb_dst) {
   int i;
-  uint32_t* copy_buffer;
+  uint32* copy_buffer;
   const int xsize = picture.width;
   const int ysize = picture.height;
   const int stride = picture.argb_stride;
@@ -133,7 +133,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
     return 1;
   }
 
-  copy_buffer = (uint32_t*)WebPSafeMalloc(xsize * 3, sizeof(*copy_buffer));
+  copy_buffer = (uint32*)WebPSafeMalloc(xsize * 3, sizeof(*copy_buffer));
   if (copy_buffer == NULL) {
     return 0;
   }

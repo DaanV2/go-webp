@@ -66,22 +66,22 @@ const GetCPUInfo = __cpuid
 
 // NaCl has no support for xgetbv or the raw opcode.
 #if !defined(__native_client__) && (defined(__i386__) || defined(__x86_64__))
-static  uint64_t xgetbv(void) {
-  const uint32_t ecx = 0;
-  uint32_t eax, edx;
+static  uint64 xgetbv(void) {
+  const uint32 ecx = 0;
+  uint32 eax, edx;
   // Use the raw opcode for xgetbv for compatibility with older toolchains.
   __asm__ volatile(".byte 0x0f, 0x01, 0xd0\n"
                    : "=a"(eax), "=d"(edx)
                    : "c"(ecx));
-  return ((uint64_t)edx << 32) | eax;
+  return ((uint64)edx << 32) | eax;
 }
 #elif (defined(_M_X64) || defined(_M_IX86)) && defined(_MSC_FULL_VER) && \
     _MSC_FULL_VER >= 160040219  // >= VS2010 SP1
 import "github.com/daanv2/go-webp/pkg/immintrin"
 #define xgetbv() _xgetbv(0)
 #elif defined(_MSC_VER) && defined(_M_IX86)
-static  uint64_t xgetbv(void) {
-  uint32_t eax_, edx_;
+static  uint64 xgetbv(void) {
+  uint32 eax_, edx_;
   __asm {
     xor ecx, ecx  // ecx = 0
     // Use the raw opcode for xgetbv for compatibility with older toolchains.
@@ -89,7 +89,7 @@ static  uint64_t xgetbv(void) {
     mov eax_, eax
     mov edx_, edx
   }
-  return ((uint64_t)edx_ << 32) | eax_;
+  return ((uint64)edx_ << 32) | eax_;
 }
 #else
 #define xgetbv() 0U  // no AVX for older x64 or unrecognized toolchains.
@@ -102,12 +102,12 @@ static int CheckSlowModel(int info) {
   // Table listing display models with longer latencies for the bsr instruction
   // (ie 2 cycles vs 10/16 cycles) and some SSSE3 instructions like pshufb.
   // Refer to Intel 64 and IA-32 Architectures Optimization Reference Manual.
-  static const uint8_t kSlowModels[] = {
+  static const uint8 kSlowModels[] = {
       0x37, 0x4a, 0x4d,  // Silvermont Microarchitecture
       0x1c, 0x26, 0x27   // Atom Microarchitecture
   };
-  const uint32_t model = ((info & 0xf0000) >> 12) | ((info >> 4) & 0xf);
-  const uint32_t family = (info >> 8) & 0xf;
+  const uint32 model = ((info & 0xf0000) >> 12) | ((info >> 4) & 0xf);
+  const uint32 family = (info >> 8) & 0xf;
   if (family == 0x06) {
     size_t i;
     for (i = 0; i < sizeof(kSlowModels) / sizeof(kSlowModels[0]); ++i) {
@@ -173,7 +173,7 @@ VP8CPUInfo VP8GetCPUInfo = x86CPUInfo;
 #elif defined(WEBP_ANDROID_NEON)  // NB: needs to be before generic NEON test.
 static int AndroidCPUInfo(CPUFeature feature) {
   const AndroidCpuFamily cpu_family = android_getCpuFamily();
-  const uint64_t cpu_features = android_getCpuFeatures();
+  const uint64 cpu_features = android_getCpuFeatures();
   if (feature == kNEON) {
     return cpu_family == ANDROID_CPU_FAMILY_ARM &&
            (cpu_features & ANDROID_CPU_ARM_FEATURE_NEON) != 0;

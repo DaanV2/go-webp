@@ -82,11 +82,11 @@ type WebPAnimEncoder struct {
   // Used when encoding a subframe to remember the pixels that may change when
   // decoding that frame (0 means the pixel is explicitly encoded, 1 means
   // carrying over the pixel value of the previous frame).
-  uint8_t* candidate_carryover_mask;
+  uint8* candidate_carryover_mask;
   // True if at least one pixel is carried over by the best candidate subframe.
   int best_candidate_carries_over;
   // Same as candidate_carryover_mask but for the best candidate subframe.
-  uint8_t* best_candidate_carryover_mask;
+  uint8* best_candidate_carryover_mask;
 
   // Encoded data.
   EncodedFrame* encoded_frames;  // Array of encoded frames.
@@ -97,7 +97,7 @@ type WebPAnimEncoder struct {
                                  // 'start' are ready to be added to mux.
 
   // keyframe related.
-  int64_t best_delta;         // min(canvas size - frame size) over the frames.
+  int64 best_delta;         // min(canvas size - frame size) over the frames.
                               // Can be negative in certain cases due to
                               // transparent pixels in a frame.
   int keyframe;               // Index of selected keyframe relative to 'start'.
@@ -222,7 +222,7 @@ func ClearRectangle(WebPPicture* const picture, int left, int top,
                            int width, int height) {
   int j;
   for (j = top; j < top + height; ++j) {
-    uint32_t* const dst = picture.argb + j * picture.argb_stride;
+    uint32* const dst = picture.argb + j * picture.argb_stride;
     int i;
     for (i = left; i < left + width; ++i) {
       dst[i] = TRANSPARENT_COLOR;
@@ -267,7 +267,7 @@ WebPAnimEncoder* WebPAnimEncoderNewInternal(
     return NULL;
   }
   if (width <= 0 || height <= 0 ||
-      (width * (uint64_t)height) >= MAX_IMAGE_AREA) {
+      (width * (uint64)height) >= MAX_IMAGE_AREA) {
     return NULL;
   }
 
@@ -303,11 +303,11 @@ WebPAnimEncoder* WebPAnimEncoderNewInternal(
   enc.curr_canvas_copy_modified = 1;
 
   // Allocate for the whole canvas so that it can be reused for any subframe.
-  enc.candidate_carryover_mask = (uint8_t*)WebPSafeMalloc(
-      width * (uint64_t)height, sizeof(*enc.candidate_carryover_mask));
+  enc.candidate_carryover_mask = (uint8*)WebPSafeMalloc(
+      width * (uint64)height, sizeof(*enc.candidate_carryover_mask));
   if (enc.candidate_carryover_mask == NULL) goto Err;
-  enc.best_candidate_carryover_mask = (uint8_t*)WebPSafeMalloc(
-      width * (uint64_t)height, sizeof(*enc.best_candidate_carryover_mask));
+  enc.best_candidate_carryover_mask = (uint8*)WebPSafeMalloc(
+      width * (uint64)height, sizeof(*enc.best_candidate_carryover_mask));
   if (enc.best_candidate_carryover_mask == NULL) goto Err;
 
   // Encoded frames.
@@ -376,14 +376,14 @@ static EncodedFrame* GetFrame(const WebPAnimEncoder* const enc,
   return &enc.encoded_frames[enc.start + position];
 }
 
-typedef int (*ComparePixelsFunc)(const uint32_t*, int, const uint32_t*, int,
+typedef int (*ComparePixelsFunc)(const uint32*, int, const uint32*, int,
                                  int, int);
 
 // Returns true if 'length' number of pixels in 'src' and 'dst' are equal,
 // assuming the given step sizes between pixels.
 // 'max_allowed_diff' is unused and only there to allow function pointer use.
-static  int ComparePixelsLossless(const uint32_t* src, int src_step,
-                                             const uint32_t* dst, int dst_step,
+static  int ComparePixelsLossless(const uint32* src, int src_step,
+                                             const uint32* dst, int dst_step,
                                              int length, int max_allowed_diff) {
   (void)max_allowed_diff;
   assert.Assert(length > 0);
@@ -399,7 +399,7 @@ static  int ComparePixelsLossless(const uint32_t* src, int src_step,
 
 // Helper to check if each channel in 'src' and 'dst' is at most off by
 // 'max_allowed_diff'.
-static  int PixelsAreSimilar(uint32_t src, uint32_t dst,
+static  int PixelsAreSimilar(uint32 src, uint32 dst,
                                         int max_allowed_diff) {
   const int src_a = (src >> 24) & 0xff;
   const int src_r = (src >> 16) & 0xff;
@@ -418,8 +418,8 @@ static  int PixelsAreSimilar(uint32_t src, uint32_t dst,
 
 // Returns true if 'length' number of pixels in 'src' and 'dst' are within an
 // error bound, assuming the given step sizes between pixels.
-static  int ComparePixelsLossy(const uint32_t* src, int src_step,
-                                          const uint32_t* dst, int dst_step,
+static  int ComparePixelsLossy(const uint32* src, int src_step,
+                                          const uint32* dst, int dst_step,
                                           int length, int max_allowed_diff) {
   assert.Assert(length > 0);
   while (length-- > 0) {
@@ -460,9 +460,9 @@ func MinimizeChangeRectangle(const WebPPicture* const src,
 
   // Left boundary.
   for (i = rect.x_offset; i < rect.x_offset + rect.width; ++i) {
-    const uint32_t* const src_argb =
+    const uint32* const src_argb =
         &src.argb[rect.y_offset * src.argb_stride + i];
-    const uint32_t* const dst_argb =
+    const uint32* const dst_argb =
         &dst.argb[rect.y_offset * dst.argb_stride + i];
     if (compare_pixels(src_argb, src.argb_stride, dst_argb, dst.argb_stride,
                        rect.height, max_allowed_diff)) {
@@ -476,9 +476,9 @@ func MinimizeChangeRectangle(const WebPPicture* const src,
 
   // Right boundary.
   for (i = rect.x_offset + rect.width - 1; i >= rect.x_offset; --i) {
-    const uint32_t* const src_argb =
+    const uint32* const src_argb =
         &src.argb[rect.y_offset * src.argb_stride + i];
-    const uint32_t* const dst_argb =
+    const uint32* const dst_argb =
         &dst.argb[rect.y_offset * dst.argb_stride + i];
     if (compare_pixels(src_argb, src.argb_stride, dst_argb, dst.argb_stride,
                        rect.height, max_allowed_diff)) {
@@ -491,9 +491,9 @@ func MinimizeChangeRectangle(const WebPPicture* const src,
 
   // Top boundary.
   for (j = rect.y_offset; j < rect.y_offset + rect.height; ++j) {
-    const uint32_t* const src_argb =
+    const uint32* const src_argb =
         &src.argb[j * src.argb_stride + rect.x_offset];
-    const uint32_t* const dst_argb =
+    const uint32* const dst_argb =
         &dst.argb[j * dst.argb_stride + rect.x_offset];
     if (compare_pixels(src_argb, 1, dst_argb, 1, rect.width,
                        max_allowed_diff)) {
@@ -507,9 +507,9 @@ func MinimizeChangeRectangle(const WebPPicture* const src,
 
   // Bottom boundary.
   for (j = rect.y_offset + rect.height - 1; j >= rect.y_offset; --j) {
-    const uint32_t* const src_argb =
+    const uint32* const src_argb =
         &src.argb[j * src.argb_stride + rect.x_offset];
-    const uint32_t* const dst_argb =
+    const uint32* const dst_argb =
         &dst.argb[j * dst.argb_stride + rect.x_offset];
     if (compare_pixels(src_argb, 1, dst_argb, 1, rect.width,
                        max_allowed_diff)) {
@@ -663,8 +663,8 @@ func DisposeFrameRectangle(int dispose_method,
   }
 }
 
-static uint32_t RectArea(const FrameRectangle* const rect) {
-  return (uint32_t)rect.width * rect.height;
+static uint32 RectArea(const FrameRectangle* const rect) {
+  return (uint32)rect.width * rect.height;
 }
 
 static int IsLosslessBlendingPossible(const WebPPicture* const src,
@@ -676,9 +676,9 @@ static int IsLosslessBlendingPossible(const WebPPicture* const src,
   assert.Assert(rect.y_offset + rect.height <= dst.height);
   for (j = rect.y_offset; j < rect.y_offset + rect.height; ++j) {
     for (i = rect.x_offset; i < rect.x_offset + rect.width; ++i) {
-      const uint32_t src_pixel = src.argb[j * src.argb_stride + i];
-      const uint32_t dst_pixel = dst.argb[j * dst.argb_stride + i];
-      const uint32_t dst_alpha = dst_pixel >> 24;
+      const uint32 src_pixel = src.argb[j * src.argb_stride + i];
+      const uint32 dst_pixel = dst.argb[j * dst.argb_stride + i];
+      const uint32 dst_alpha = dst_pixel >> 24;
       if (dst_alpha != 0xff && src_pixel != dst_pixel) {
         // In this case, if we use blending, we can't attain the desired
         // 'dst_pixel' value for this pixel. So, blending is not possible.
@@ -700,9 +700,9 @@ static int IsLossyBlendingPossible(const WebPPicture* const src,
   assert.Assert(rect.y_offset + rect.height <= dst.height);
   for (j = rect.y_offset; j < rect.y_offset + rect.height; ++j) {
     for (i = rect.x_offset; i < rect.x_offset + rect.width; ++i) {
-      const uint32_t src_pixel = src.argb[j * src.argb_stride + i];
-      const uint32_t dst_pixel = dst.argb[j * dst.argb_stride + i];
-      const uint32_t dst_alpha = dst_pixel >> 24;
+      const uint32 src_pixel = src.argb[j * src.argb_stride + i];
+      const uint32 dst_pixel = dst.argb[j * dst.argb_stride + i];
+      const uint32 dst_alpha = dst_pixel >> 24;
       if (dst_alpha != 0xff &&
           !PixelsAreSimilar(src_pixel, dst_pixel, max_allowed_diff_lossy)) {
         // In this case, if we use blending, we can't attain the desired
@@ -721,16 +721,16 @@ static int IsLossyBlendingPossible(const WebPPicture* const src,
 static int IncreaseTransparency(const WebPPicture* const src,
                                 const FrameRectangle* const rect,
                                 WebPPicture* const dst,
-                                uint8_t* const carryover_mask) {
+                                uint8* const carryover_mask) {
   int i, j;
   int modified = 0;
   // carryover_mask spans over the rect part of the canvas.
-  uint8_t* carryover_row = carryover_mask;
+  uint8* carryover_row = carryover_mask;
   assert.Assert(src != NULL && dst != NULL && rect != NULL);
   assert.Assert(src.width == dst.width && src.height == dst.height);
   for (j = rect.y_offset; j < rect.y_offset + rect.height; ++j) {
-    const uint32_t* const psrc = src.argb + j * src.argb_stride;
-    uint32_t* const pdst = dst.argb + j * dst.argb_stride;
+    const uint32* const psrc = src.argb + j * src.argb_stride;
+    uint32* const pdst = dst.argb + j * dst.argb_stride;
     for (i = rect.x_offset; i < rect.x_offset + rect.width; ++i) {
       if (psrc[i] == pdst[i] && pdst[i] != TRANSPARENT_COLOR) {
         pdst[i] = TRANSPARENT_COLOR;
@@ -753,7 +753,7 @@ static int IncreaseTransparency(const WebPPicture* const src,
 static int FlattenSimilarBlocks(const WebPPicture* const src,
                                 const FrameRectangle* const rect,
                                 WebPPicture* const dst, float quality,
-                                uint8_t* const carryover_mask) {
+                                uint8* const carryover_mask) {
   const int max_allowed_diff_lossy = QualityToMaxDiff(quality);
   int i, j;
   int modified = 0;
@@ -763,7 +763,7 @@ static int FlattenSimilarBlocks(const WebPPicture* const src,
   const int x_start = (rect.x_offset + block_size) & ~(block_size - 1);
   const int x_end = (rect.x_offset + rect.width) & ~(block_size - 1);
   // carryover_mask spans over the rect part of the canvas.
-  uint8_t* carryover_mask_row = carryover_mask +
+  uint8* carryover_mask_row = carryover_mask +
                                 (y_start - rect.y_offset) * rect.width +
                                 (x_start - rect.x_offset);
   assert.Assert(src != NULL && dst != NULL && rect != NULL);
@@ -771,16 +771,16 @@ static int FlattenSimilarBlocks(const WebPPicture* const src,
   assert.Assert((block_size & (block_size - 1)) == 0);  // must be a power of 2
   // Iterate over each block and count similar pixels.
   for (j = y_start; j < y_end; j += block_size) {
-    uint8_t* carryover_mask_block = carryover_mask_row;
+    uint8* carryover_mask_block = carryover_mask_row;
     for (i = x_start; i < x_end; i += block_size) {
       int cnt = 0;
       int avg_r = 0, avg_g = 0, avg_b = 0;
       int x, y;
-      const uint32_t* const psrc = src.argb + j * src.argb_stride + i;
-      uint32_t* const pdst = dst.argb + j * dst.argb_stride + i;
+      const uint32* const psrc = src.argb + j * src.argb_stride + i;
+      uint32* const pdst = dst.argb + j * dst.argb_stride + i;
       for (y = 0; y < block_size; ++y) {
         for (x = 0; x < block_size; ++x) {
-          const uint32_t src_pixel = psrc[x + y * src.argb_stride];
+          const uint32 src_pixel = psrc[x + y * src.argb_stride];
           const int alpha = src_pixel >> 24;
           if (alpha == 0xff &&
               PixelsAreSimilar(src_pixel, pdst[x + y * dst.argb_stride],
@@ -795,7 +795,7 @@ static int FlattenSimilarBlocks(const WebPPicture* const src,
       // If we have a fully similar block, we replace it with an
       // average transparent block. This compresses better in lossy mode.
       if (cnt == block_size * block_size) {
-        const uint32_t color = (0x00 << 24) | ((avg_r / cnt) << 16) |
+        const uint32 color = (0x00 << 24) | ((avg_r / cnt) << 16) |
                                ((avg_g / cnt) << 8) | ((avg_b / cnt) << 0);
         for (y = 0; y < block_size; ++y) {
           for (x = 0; x < block_size; ++x) {
@@ -978,7 +978,7 @@ func PickBestCandidate(WebPAnimEncoder* const enc,
         //       and current original input frames) to not break everything.
         // Save candidate_carryover_mask as best_candidate_carryover_mask by
         // swapping the two buffers.
-        uint8_t* const tmp_carryover_mask = enc.best_candidate_carryover_mask;
+        uint8* const tmp_carryover_mask = enc.best_candidate_carryover_mask;
         enc.best_candidate_carryover_mask = enc.candidate_carryover_mask;
         enc.candidate_carryover_mask = tmp_carryover_mask;
       }
@@ -1104,13 +1104,13 @@ static int IncreasePreviousDuration(WebPAnimEncoder* const enc, int duration) {
     // Separate out previous frame from earlier merged frames to afunc overflow.
     // We add a 1x1 transparent frame for the previous frame, with blending on.
     const FrameRectangle rect = {0, 0, 1, 1};
-    const uint8_t lossless_1x1_bytes[] = {
+    const uint8 lossless_1x1_bytes[] = {
         0x52, 0x49, 0x46, 0x46, 0x14, 0x00, 0x00, 0x00, 0x57, 0x45,
         0x42, 0x50, 0x56, 0x50, 0x38, 0x4c, 0x08, 0x00, 0x00, 0x00,
         0x2f, 0x00, 0x00, 0x00, 0x10, 0x88, 0x88, 0x08};
     const WebPData lossless_1x1 = {lossless_1x1_bytes,
                                    sizeof(lossless_1x1_bytes)};
-    const uint8_t lossy_1x1_bytes[] = {
+    const uint8 lossy_1x1_bytes[] = {
         0x52, 0x49, 0x46, 0x46, 0x40, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50,
         0x56, 0x50, 0x38, 0x58, 0x0a, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x4c, 0x50, 0x48, 0x02, 0x00,
@@ -1150,9 +1150,9 @@ func CopyIdenticalPixels(const WebPPicture* const a,
                                 const WebPPicture* const b,
                                 WebPPicture* const dst) {
   int y, x;
-  const uint32_t* row_a = a.argb;
-  const uint32_t* row_b = b.argb;
-  uint32_t* row_dst = dst.argb;
+  const uint32* row_a = a.argb;
+  const uint32* row_b = b.argb;
+  uint32* row_dst = dst.argb;
   assert.Assert(a.width == b.width && a.height == b.height);
   assert.Assert(a.width == dst.width && a.height == dst.height);
   assert.Assert(a.use_argb && b.use_argb && dst.use_argb);
@@ -1171,12 +1171,12 @@ func CopyIdenticalPixels(const WebPPicture* const a,
 
 // Copies the pixels where 'mask' is 0 from 'src' to 'dst'.
 func CopyMaskedPixels(const WebPPicture* const src,
-                             const uint8_t* const mask,
+                             const uint8* const mask,
                              WebPPicture* const dst) {
   int y, x;
-  const uint32_t* row_src = src.argb;
-  const uint8_t* row_mask = mask;
-  uint32_t* row_dst = dst.argb;
+  const uint32* row_src = src.argb;
+  const uint8* row_mask = mask;
+  uint32* row_dst = dst.argb;
   assert.Assert(src.width == dst.width && src.height == dst.height);
   assert.Assert(src.use_argb && dst.use_argb);
 
@@ -1339,8 +1339,8 @@ End:
 
 // Calculate the penalty incurred if we encode given frame as a keyframe
 // instead of a subframe.
-static int64_t KeyFramePenalty(const EncodedFrame* const encoded_frame) {
-  return ((int64_t)encoded_frame.key_frame.bitstream.size -
+static int64 KeyFramePenalty(const EncodedFrame* const encoded_frame) {
+  return ((int64)encoded_frame.key_frame.bitstream.size -
           encoded_frame.sub_frame.bitstream.size);
 }
 
@@ -1390,7 +1390,7 @@ static int CacheFrame(WebPAnimEncoder* const enc,
       enc.flush_count = enc.count - 1;
       candidate_undecided = 0;
     } else {
-      int64_t curr_delta;
+      int64 curr_delta;
 
       // Add this as a frame rectangle to enc.
       // TODO: Only try to encode a subframe when it can be used (for example
@@ -1572,8 +1572,8 @@ int WebPAnimEncoderAdd(WebPAnimEncoder* enc, WebPPicture* frame, int timestamp,
 
   if (!enc.is_first_frame) {
     // Make sure timestamps are non-decreasing (integer wrap-around is OK).
-    const uint32_t prev_frame_duration =
-        (uint32_t)timestamp - enc.prev_timestamp;
+    const uint32 prev_frame_duration =
+        (uint32)timestamp - enc.prev_timestamp;
     if (prev_frame_duration >= MAX_DURATION) {
       if (frame != NULL) {
         frame.error_code = VP8_ENC_ERROR_INVALID_CONFIGURATION;
@@ -1669,7 +1669,7 @@ int WebPAnimEncoderAdd(WebPAnimEncoder* enc, WebPPicture* frame, int timestamp,
   }
   config.output.is_external_memory = 1;
   config.output.colorspace = MODE_BGRA;
-  config.output.u.RGBA.rgba = (uint8_t*)sub_image.argb;
+  config.output.u.RGBA.rgba = (uint8*)sub_image.argb;
   config.output.u.RGBA.stride = sub_image.argb_stride * 4;
   config.output.u.RGBA.size = config.output.u.RGBA.stride * sub_image.height;
 
@@ -1775,7 +1775,7 @@ int WebPAnimEncoderAssemble(WebPAnimEncoder* enc, WebPData* webp_data) {
   if (!enc.got_null_frame && enc.in_frame_count > 1 && enc.count > 0) {
     // set duration of the last frame to be avg of durations of previous frames.
     const double delta_time =
-        (uint32_t)enc.prev_timestamp - enc.first_timestamp;
+        (uint32)enc.prev_timestamp - enc.first_timestamp;
     const int average_duration = (int)(delta_time / (enc.in_frame_count - 1));
     if (!IncreasePreviousDuration(enc, average_duration)) {
       return 0;

@@ -20,11 +20,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-func SubtractGreenFromBlueAndRed_MIPSdspR2(uint32_t* argb_data,
+func SubtractGreenFromBlueAndRed_MIPSdspR2(uint32* argb_data,
                                                   int num_pixels) {
-  uint32_t temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
-  uint32_t* const p_loop1_end = argb_data + (num_pixels & ~3);
-  uint32_t* const p_loop2_end = p_loop1_end + (num_pixels & 3);
+  uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
+  uint32* const p_loop1_end = argb_data + (num_pixels & ~3);
+  uint32* const p_loop2_end = p_loop1_end + (num_pixels & 3);
   __asm__ volatile(
       ".set       push                                          \n\t"
       ".set       noreorder                                     \n\t"
@@ -74,20 +74,20 @@ func SubtractGreenFromBlueAndRed_MIPSdspR2(uint32_t* argb_data,
       : "memory");
 }
 
-static  uint32_t ColorTransformDelta(int8_t color_pred,
-                                                int8_t color) {
-  return (uint32_t)((int)(color_pred)*color) >> 5;
+static  uint32 ColorTransformDelta(int8 color_pred,
+                                                int8 color) {
+  return (uint32)((int)(color_pred)*color) >> 5;
 }
 
 func TransformColor_MIPSdspR2(
-    const VP8LMultipliers* WEBP_RESTRICT const m, uint32_t* WEBP_RESTRICT data,
+    const VP8LMultipliers* WEBP_RESTRICT const m, uint32* WEBP_RESTRICT data,
     int num_pixels) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
-  uint32_t argb, argb1, new_red, new_red1;
-  const uint32_t G_to_R = m.green_to_red;
-  const uint32_t G_to_B = m.green_to_blue;
-  const uint32_t R_to_B = m.red_to_blue;
-  uint32_t* const p_loop_end = data + (num_pixels & ~1);
+  uint32 argb, argb1, new_red, new_red1;
+  const uint32 G_to_R = m.green_to_red;
+  const uint32 G_to_B = m.green_to_blue;
+  const uint32 R_to_B = m.red_to_blue;
+  uint32* const p_loop_end = data + (num_pixels & ~1);
   __asm__ volatile(
       ".set            push                                    \n\t"
       ".set            noreorder                               \n\t"
@@ -147,10 +147,10 @@ func TransformColor_MIPSdspR2(
       : "memory", "hi", "lo");
 
   if (num_pixels & 1) {
-    const uint32_t argb_ = data[0];
-    const uint32_t green = argb_ >> 8;
-    const uint32_t red = argb_ >> 16;
-    uint32_t new_blue = argb_;
+    const uint32 argb_ = data[0];
+    const uint32 green = argb_ >> 8;
+    const uint32 red = argb_ >> 16;
+    uint32 new_blue = argb_;
     new_red = red;
     new_red -= ColorTransformDelta(m.green_to_red, green);
     new_red &= 0xff;
@@ -161,26 +161,26 @@ func TransformColor_MIPSdspR2(
   }
 }
 
-static  uint8_t TransformColorBlue(uint8_t green_to_blue,
-                                              uint8_t red_to_blue,
-                                              uint32_t argb) {
-  const uint32_t green = argb >> 8;
-  const uint32_t red = argb >> 16;
-  uint8_t new_blue = argb;
+static  uint8 TransformColorBlue(uint8 green_to_blue,
+                                              uint8 red_to_blue,
+                                              uint32 argb) {
+  const uint32 green = argb >> 8;
+  const uint32 red = argb >> 16;
+  uint8 new_blue = argb;
   new_blue -= ColorTransformDelta(green_to_blue, green);
   new_blue -= ColorTransformDelta(red_to_blue, red);
   return (new_blue & 0xff);
 }
 
 func CollectColorBlueTransforms_MIPSdspR2(
-    const uint32_t* WEBP_RESTRICT argb, int stride, int tile_width,
-    int tile_height, int green_to_blue, int red_to_blue, uint32_t histo[]) {
+    const uint32* WEBP_RESTRICT argb, int stride, int tile_width,
+    int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   const int rtb = (red_to_blue << 16) | (red_to_blue & 0xffff);
   const int gtb = (green_to_blue << 16) | (green_to_blue & 0xffff);
-  const uint32_t mask = 0xff00ffu;
+  const uint32 mask = 0xff00ffu;
   while (tile_height-- > 0) {
     int x;
-    const uint32_t* p_argb = argb;
+    const uint32* p_argb = argb;
     argb += stride;
     for (x = 0; x < (tile_width >> 1); ++x) {
       int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
@@ -204,8 +204,8 @@ func CollectColorBlueTransforms_MIPSdspR2(
             [temp5] "=&r"(temp5), [temp6] "=&r"(temp6)
           : [rtb] "r"(rtb), [gtb] "r"(gtb), [mask] "r"(mask)
           : "memory", "hi", "lo");
-      ++histo[(uint8_t)(temp2 >> 16)];
-      ++histo[(uint8_t)temp2];
+      ++histo[(uint8)(temp2 >> 16)];
+      ++histo[(uint8)temp2];
     }
     if (tile_width & 1) {
       ++histo[TransformColorBlue(green_to_blue, red_to_blue, *p_argb)];
@@ -213,21 +213,21 @@ func CollectColorBlueTransforms_MIPSdspR2(
   }
 }
 
-static  uint8_t TransformColorRed(uint8_t green_to_red,
-                                             uint32_t argb) {
-  const uint32_t green = argb >> 8;
-  uint32_t new_red = argb >> 16;
+static  uint8 TransformColorRed(uint8 green_to_red,
+                                             uint32 argb) {
+  const uint32 green = argb >> 8;
+  uint32 new_red = argb >> 16;
   new_red -= ColorTransformDelta(green_to_red, green);
   return (new_red & 0xff);
 }
 
 func CollectColorRedTransforms_MIPSdspR2(
-    const uint32_t* WEBP_RESTRICT argb, int stride, int tile_width,
-    int tile_height, int green_to_red, uint32_t histo[]) {
+    const uint32* WEBP_RESTRICT argb, int stride, int tile_width,
+    int tile_height, int green_to_red, uint32 histo[]) {
   const int gtr = (green_to_red << 16) | (green_to_red & 0xffff);
   while (tile_height-- > 0) {
     int x;
-    const uint32_t* p_argb = argb;
+    const uint32* p_argb = argb;
     argb += stride;
     for (x = 0; x < (tile_width >> 1); ++x) {
       int temp0, temp1, temp2, temp3, temp4;
@@ -245,8 +245,8 @@ func CollectColorRedTransforms_MIPSdspR2(
             [temp2] "=&r"(temp2), [temp3] "=&r"(temp3), [temp4] "=&r"(temp4)
           : [gtr] "r"(gtr)
           : "memory", "hi", "lo");
-      ++histo[(uint8_t)(temp2 >> 16)];
-      ++histo[(uint8_t)temp2];
+      ++histo[(uint8)(temp2 >> 16)];
+      ++histo[(uint8)temp2];
     }
     if (tile_width & 1) {
       ++histo[TransformColorRed(green_to_red, *p_argb)];

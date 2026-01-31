@@ -75,7 +75,7 @@ const ALPHAVAL = (0xff)
 
 #define MSA_LOAD_FUNC(TYPE, INSTR, FUNC_NAME)               \
   static inline TYPE FUNC_NAME(const void* const psrc) {    \
-    const uint8_t* const psrc_m = (const uint8_t*)psrc;     \
+    const uint8* const psrc_m = (const uint8*)psrc;     \
     TYPE val_m;                                             \
     __asm__ volatile("" #INSTR " %[val_m], %[psrc_m]  \n\t" \
                      : [val_m] "=r"(val_m)                  \
@@ -87,7 +87,7 @@ const ALPHAVAL = (0xff)
 
 #define MSA_STORE_FUNC(TYPE, INSTR, FUNC_NAME)                 \
   static inline func FUNC_NAME(TYPE val, void* const pdst) {   \
-    uint8_t* const pdst_m = (uint8_t*)pdst;                    \
+    uint8* const pdst_m = (uint8*)pdst;                    \
     TYPE val_m = val;                                          \
     __asm__ volatile(" " #INSTR "  %[val_m],  %[pdst_m]  \n\t" \
                      : [pdst_m] "=m"(*pdst_m)                  \
@@ -97,46 +97,46 @@ const ALPHAVAL = (0xff)
 #define MSA_STORE(val, pdst, FUNC_NAME) FUNC_NAME(val, pdst)
 
 #if (__mips_isa_rev >= 6)
-MSA_LOAD_FUNC(uint16_t, lh, msa_lh);
+MSA_LOAD_FUNC(uint16, lh, msa_lh);
 #define LH(psrc) MSA_LOAD(psrc, msa_lh)
-MSA_LOAD_FUNC(uint32_t, lw, msa_lw);
+MSA_LOAD_FUNC(uint32, lw, msa_lw);
 #define LW(psrc) MSA_LOAD(psrc, msa_lw)
 #if (__mips == 64)
-MSA_LOAD_FUNC(uint64_t, ld, msa_ld);
+MSA_LOAD_FUNC(uint64, ld, msa_ld);
 #define LD(psrc) MSA_LOAD(psrc, msa_ld)
 #else  // !(__mips == 64)
 #define LD(psrc) \
-  ((((uint64_t)MSA_LOAD(psrc + 4, msa_lw)) << 32) | MSA_LOAD(psrc, msa_lw))
+  ((((uint64)MSA_LOAD(psrc + 4, msa_lw)) << 32) | MSA_LOAD(psrc, msa_lw))
 #endif  // (__mips == 64)
 
-MSA_STORE_FUNC(uint16_t, sh, msa_sh);
+MSA_STORE_FUNC(uint16, sh, msa_sh);
 #define SH(val, pdst) MSA_STORE(val, pdst, msa_sh)
-MSA_STORE_FUNC(uint32_t, sw, msa_sw);
+MSA_STORE_FUNC(uint32, sw, msa_sw);
 #define SW(val, pdst) MSA_STORE(val, pdst, msa_sw)
-MSA_STORE_FUNC(uint64_t, sd, msa_sd);
+MSA_STORE_FUNC(uint64, sd, msa_sd);
 #define SD(val, pdst) MSA_STORE(val, pdst, msa_sd)
 #else  // !(__mips_isa_rev >= 6)
-MSA_LOAD_FUNC(uint16_t, ulh, msa_ulh);
+MSA_LOAD_FUNC(uint16, ulh, msa_ulh);
 #define LH(psrc) MSA_LOAD(psrc, msa_ulh)
-MSA_LOAD_FUNC(uint32_t, ulw, msa_ulw);
+MSA_LOAD_FUNC(uint32, ulw, msa_ulw);
 #define LW(psrc) MSA_LOAD(psrc, msa_ulw)
 #if (__mips == 64)
-MSA_LOAD_FUNC(uint64_t, uld, msa_uld);
+MSA_LOAD_FUNC(uint64, uld, msa_uld);
 #define LD(psrc) MSA_LOAD(psrc, msa_uld)
 #else  // !(__mips == 64)
 #define LD(psrc) \
-  ((((uint64_t)MSA_LOAD(psrc + 4, msa_ulw)) << 32) | MSA_LOAD(psrc, msa_ulw))
+  ((((uint64)MSA_LOAD(psrc + 4, msa_ulw)) << 32) | MSA_LOAD(psrc, msa_ulw))
 #endif  // (__mips == 64)
 
-MSA_STORE_FUNC(uint16_t, ush, msa_ush);
+MSA_STORE_FUNC(uint16, ush, msa_ush);
 #define SH(val, pdst) MSA_STORE(val, pdst, msa_ush)
-MSA_STORE_FUNC(uint32_t, usw, msa_usw);
+MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define SW(val, pdst) MSA_STORE(val, pdst, msa_usw)
 #define SD(val, pdst)                                                     \
   do {                                                                    \
-    uint8_t* const pdst_sd_m = (uint8_t*)(pdst);                          \
-    const uint32_t val0_m = (uint32_t)(val & 0x00000000FFFFFFFF);         \
-    const uint32_t val1_m = (uint32_t)((val >> 32) & 0x00000000FFFFFFFF); \
+    uint8* const pdst_sd_m = (uint8*)(pdst);                          \
+    const uint32 val0_m = (uint32)(val & 0x00000000FFFFFFFF);         \
+    const uint32 val1_m = (uint32)((val >> 32) & 0x00000000FFFFFFFF); \
     SW(val0_m, pdst_sd_m);                                                \
     SW(val1_m, pdst_sd_m + 4);                                            \
   } while (0)
@@ -152,7 +152,7 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
  */
 #define LW4(psrc, stride, out0, out1, out2, out3) \
   do {                                            \
-    const uint8_t* ptmp = (const uint8_t*)psrc;   \
+    const uint8* ptmp = (const uint8*)psrc;   \
     out0 = LW(ptmp);                              \
     ptmp += stride;                               \
     out1 = LW(ptmp);                              \
@@ -171,7 +171,7 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
  */
 #define SW4(in0, in1, in2, in3, pdst, stride) \
   do {                                        \
-    uint8_t* ptmp = (uint8_t*)pdst;           \
+    uint8* ptmp = (uint8*)pdst;           \
     SW(in0, ptmp);                            \
     ptmp += stride;                           \
     SW(in1, ptmp);                            \
@@ -183,7 +183,7 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
 
 #define SW3(in0, in1, in2, pdst, stride) \
   do {                                   \
-    uint8_t* ptmp = (uint8_t*)pdst;      \
+    uint8* ptmp = (uint8*)pdst;      \
     SW(in0, ptmp);                       \
     ptmp += stride;                      \
     SW(in1, ptmp);                       \
@@ -193,7 +193,7 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
 
 #define SW2(in0, in1, pdst, stride) \
   do {                              \
-    uint8_t* ptmp = (uint8_t*)pdst; \
+    uint8* ptmp = (uint8*)pdst; \
     SW(in0, ptmp);                  \
     ptmp += stride;                 \
     SW(in1, ptmp);                  \
@@ -208,7 +208,7 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
  */
 #define SD4(in0, in1, in2, in3, pdst, stride) \
   do {                                        \
-    uint8_t* ptmp = (uint8_t*)pdst;           \
+    uint8* ptmp = (uint8*)pdst;           \
     SD(in0, ptmp);                            \
     ptmp += stride;                           \
     SD(in1, ptmp);                            \
@@ -389,11 +389,11 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
  */
 #define ST2x4_UB(in, stidx, pdst, stride)                         \
   do {                                                            \
-    uint8_t* pblk_2x4_m = (uint8_t*)pdst;                         \
-    const uint16_t out0_m = __msa_copy_s_h((v8i16)in, stidx);     \
-    const uint16_t out1_m = __msa_copy_s_h((v8i16)in, stidx + 1); \
-    const uint16_t out2_m = __msa_copy_s_h((v8i16)in, stidx + 2); \
-    const uint16_t out3_m = __msa_copy_s_h((v8i16)in, stidx + 3); \
+    uint8* pblk_2x4_m = (uint8*)pdst;                         \
+    const uint16 out0_m = __msa_copy_s_h((v8i16)in, stidx);     \
+    const uint16 out1_m = __msa_copy_s_h((v8i16)in, stidx + 1); \
+    const uint16 out2_m = __msa_copy_s_h((v8i16)in, stidx + 2); \
+    const uint16 out3_m = __msa_copy_s_h((v8i16)in, stidx + 3); \
     SH(out0_m, pblk_2x4_m);                                       \
     pblk_2x4_m += stride;                                         \
     SH(out1_m, pblk_2x4_m);                                       \
@@ -416,17 +416,17 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
  */
 #define ST4x4_UB(in0, in1, idx0, idx1, idx2, idx3, pdst, stride) \
   do {                                                           \
-    uint8_t* const pblk_4x4_m = (uint8_t*)pdst;                  \
-    const uint32_t out0_m = __msa_copy_s_w((v4i32)in0, idx0);    \
-    const uint32_t out1_m = __msa_copy_s_w((v4i32)in0, idx1);    \
-    const uint32_t out2_m = __msa_copy_s_w((v4i32)in1, idx2);    \
-    const uint32_t out3_m = __msa_copy_s_w((v4i32)in1, idx3);    \
+    uint8* const pblk_4x4_m = (uint8*)pdst;                  \
+    const uint32 out0_m = __msa_copy_s_w((v4i32)in0, idx0);    \
+    const uint32 out1_m = __msa_copy_s_w((v4i32)in0, idx1);    \
+    const uint32 out2_m = __msa_copy_s_w((v4i32)in1, idx2);    \
+    const uint32 out3_m = __msa_copy_s_w((v4i32)in1, idx3);    \
     SW4(out0_m, out1_m, out2_m, out3_m, pblk_4x4_m, stride);     \
   } while (0)
 
 #define ST4x8_UB(in0, in1, pdst, stride)                           \
   do {                                                             \
-    uint8_t* const pblk_4x8 = (uint8_t*)pdst;                      \
+    uint8* const pblk_4x8 = (uint8*)pdst;                      \
     ST4x4_UB(in0, in0, 0, 1, 2, 3, pblk_4x8, stride);              \
     ST4x4_UB(in1, in1, 0, 1, 2, 3, pblk_4x8 + 4 * stride, stride); \
   } while (0)
@@ -623,11 +623,11 @@ MSA_STORE_FUNC(uint32_t, usw, msa_usw);
  * Details     : 4 signed word elements of 'in' vector are added together and
  *               the resulting integer sum is returned
  */
-static  int32_t func_hadd_sw_s32(v4i32 in) {
+static  int32 func_hadd_sw_s32(v4i32 in) {
   const v2i64 res0_m = __msa_hadd_s_d((v4i32)in, (v4i32)in);
   const v2i64 res1_m = __msa_splati_d(res0_m, 1);
   const v2i64 out = res0_m + res1_m;
-  int32_t sum_m = __msa_copy_s_w((v4i32)out, 0);
+  int32 sum_m = __msa_copy_s_w((v4i32)out, 0);
   return sum_m;
 }
 #define HADD_SW_S32(in) func_hadd_sw_s32(in)
@@ -639,12 +639,12 @@ static  int32_t func_hadd_sw_s32(v4i32 in) {
  * Details     : 8 signed halfword elements of input vector are added
  *               together and the resulting integer sum is returned
  */
-static  int32_t func_hadd_sh_s32(v8i16 in) {
+static  int32 func_hadd_sh_s32(v8i16 in) {
   const v4i32 res = __msa_hadd_s_w(in, in);
   const v2i64 res0 = __msa_hadd_s_d(res, res);
   const v2i64 res1 = __msa_splati_d(res0, 1);
   const v2i64 res2 = res0 + res1;
-  const int32_t sum_m = __msa_copy_s_w((v4i32)res2, 0);
+  const int32 sum_m = __msa_copy_s_w((v4i32)res2, 0);
   return sum_m;
 }
 #define HADD_SH_S32(in) func_hadd_sh_s32(in)
@@ -656,8 +656,8 @@ static  int32_t func_hadd_sh_s32(v8i16 in) {
  * Details     : 8 unsigned halfword elements of input vector are added
  *               together and the resulting integer sum is returned
  */
-static  uint32_t func_hadd_uh_u32(v8u16 in) {
-  uint32_t sum_m;
+static  uint32 func_hadd_uh_u32(v8u16 in) {
+  uint32 sum_m;
   const v4u32 res_m = __msa_hadd_u_w(in, in);
   v2u64 res0_m = __msa_hadd_u_d(res_m, res_m);
   v2u64 res1_m = (v2u64)__msa_splati_d((v2i64)res0_m, 1);
@@ -1435,7 +1435,7 @@ static  uint32_t func_hadd_uh_u32(v8u16 in) {
  */
 #define ADDBLK_ST4x4_UB(in0, in1, in2, in3, pdst, stride)        \
   do {                                                           \
-    uint32_t src0_m, src1_m, src2_m, src3_m;                     \
+    uint32 src0_m, src1_m, src2_m, src3_m;                     \
     v8i16 inp0_m, inp1_m, res0_m, res1_m;                        \
     v16i8 dst0_m = {0};                                          \
     v16i8 dst1_m = {0};                                          \

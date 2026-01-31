@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // over all possible filtering strength / thresh until needs_filter() returns
 // true.
 const MAX_DELTA_SIZE =64
-static const uint8_t kLevelsFromDelta[8][MAX_DELTA_SIZE] = {
+static const uint8 kLevelsFromDelta[8][MAX_DELTA_SIZE] = {
     {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15,
      16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
      32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
@@ -93,12 +93,12 @@ func DoFilter(const VP8EncIterator* const it, int level) {
   const int ilevel = GetILevel(enc.config.filter_sharpness, level);
   const int limit = 2 * level + ilevel;
 
-  uint8_t* const y_dst = it.yuv_out2 + Y_OFF_ENC;
-  uint8_t* const u_dst = it.yuv_out2 + U_OFF_ENC;
-  uint8_t* const v_dst = it.yuv_out2 + V_OFF_ENC;
+  uint8* const y_dst = it.yuv_out2 + Y_OFF_ENC;
+  uint8* const u_dst = it.yuv_out2 + U_OFF_ENC;
+  uint8* const v_dst = it.yuv_out2 + V_OFF_ENC;
 
   // copy current block to yuv_out2
-  memcpy(y_dst, it.yuv_out, YUV_SIZE_ENC * sizeof(uint8_t));
+  memcpy(y_dst, it.yuv_out, YUV_SIZE_ENC * sizeof(uint8));
 
   if (enc.filter_hdr.simple == 1) {  // simple
     VP8SimpleHFilter16i(y_dst, BPS, limit);
@@ -115,7 +115,7 @@ func DoFilter(const VP8EncIterator* const it, int level) {
 //------------------------------------------------------------------------------
 // SSIM metric for one macroblock
 
-static double GetMBSSIM(const uint8_t* yuv1, const uint8_t* yuv2) {
+static double GetMBSSIM(const uint8* yuv1, const uint8* yuv2) {
   int x, y;
   double sum = 0.;
 

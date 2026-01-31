@@ -62,10 +62,10 @@ func PrintBlockInfo(const VP8EncIterator* const it,
                            const VP8ModeScore* const rd) {
   int i, j;
   const int is_i16 = (it.mb.type == 1);
-  const uint8_t* const y_in = it.yuv_in + Y_OFF_ENC;
-  const uint8_t* const y_out = it.yuv_out + Y_OFF_ENC;
-  const uint8_t* const uv_in = it.yuv_in + U_OFF_ENC;
-  const uint8_t* const uv_out = it.yuv_out + U_OFF_ENC;
+  const uint8* const y_in = it.yuv_in + Y_OFF_ENC;
+  const uint8* const y_out = it.yuv_out + Y_OFF_ENC;
+  const uint8* const uv_in = it.yuv_in + U_OFF_ENC;
+  const uint8* const uv_out = it.yuv_out + U_OFF_ENC;
   printf("SOURCE / OUTPUT / ABS DELTA\n");
   for (j = 0; j < 16; ++j) {
     for (i = 0; i < 16; ++i) printf("%3d ", y_in[i + j * BPS]);
@@ -133,10 +133,10 @@ static  int clip(int v, int m, int M) {
   return v < m ? m : v > M ? M : v;
 }
 
-static const uint8_t kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6,
+static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6,
                                     9, 12, 13, 10, 7, 11, 14, 15};
 
-static const uint8_t kDcTable[128] = {
+static const uint8 kDcTable[128] = {
     4,   5,   6,   7,   8,   9,   10,  10,  11,  12,  13,  14,  15,  16,  17,
     17,  18,  19,  20,  20,  21,  21,  22,  22,  23,  23,  24,  25,  25,  26,
     27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  37,  38,  39,  40,
@@ -147,7 +147,7 @@ static const uint8_t kDcTable[128] = {
     106, 108, 110, 112, 114, 116, 118, 122, 124, 126, 128, 130, 132, 134, 136,
     138, 140, 143, 145, 148, 151, 154, 157};
 
-static const uint16_t kAcTable[128] = {
+static const uint16 kAcTable[128] = {
     4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18,
     19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33,
     34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,  48,
@@ -158,7 +158,7 @@ static const uint16_t kAcTable[128] = {
     185, 189, 193, 197, 201, 205, 209, 213, 217, 221, 225, 229, 234, 239, 245,
     249, 254, 259, 264, 269, 274, 279, 284};
 
-static const uint16_t kAcTable2[128] = {
+static const uint16 kAcTable2[128] = {
     8,   8,   9,   10,  12,  13,  15,  17,  18,  20,  21,  23,  24,  26,  27,
     29,  31,  32,  34,  35,  37,  38,  40,  41,  43,  44,  46,  48,  49,  51,
     52,  54,  55,  57,  58,  60,  62,  63,  65,  66,  68,  69,  71,  72,  74,
@@ -169,7 +169,7 @@ static const uint16_t kAcTable2[128] = {
     286, 292, 299, 305, 311, 317, 323, 330, 336, 342, 348, 354, 362, 370, 379,
     385, 393, 401, 409, 416, 424, 432, 440};
 
-static const uint8_t kBiasMatrices[3][2] = {  // [luma-ac,luma-dc,chroma][dc,ac]
+static const uint8 kBiasMatrices[3][2] = {  // [luma-ac,luma-dc,chroma][dc,ac]
     {96, 110},
     {96, 108},
     {110, 115}};
@@ -177,7 +177,7 @@ static const uint8_t kBiasMatrices[3][2] = {  // [luma-ac,luma-dc,chroma][dc,ac]
 // Sharpening by (slightly) raising the hi-frequency coeffs.
 // Hack-ish but helpful for mid-bitrate range. Use with care.
 const SHARPEN_BITS =11  // number of descaling bits for sharpening bias
-static const uint8_t kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90,
+static const uint8 kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90,
                                             60, 90, 90, 90, 90, 90, 90, 90};
 
 //------------------------------------------------------------------------------
@@ -436,22 +436,22 @@ func VP8SetSegmentParams(VP8Encoder* const enc, float quality) {
 // Form the predictions in cache
 
 // Must be ordered using {DC_PRED, TM_PRED, V_PRED, H_PRED} as index
-const uint16_t VP8I16ModeOffsets[4] = {I16DC16, I16TM16, I16VE16, I16HE16};
-const uint16_t VP8UVModeOffsets[4] = {C8DC8, C8TM8, C8VE8, C8HE8};
+const uint16 VP8I16ModeOffsets[4] = {I16DC16, I16TM16, I16VE16, I16HE16};
+const uint16 VP8UVModeOffsets[4] = {C8DC8, C8TM8, C8VE8, C8HE8};
 
 // Must be indexed using {B_DC_PRED . B_HU_PRED} as index
-static const uint16_t VP8I4ModeOffsets[NUM_BMODES] = {
+static const uint16 VP8I4ModeOffsets[NUM_BMODES] = {
     I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4};
 
 func VP8MakeLuma16Preds(const VP8EncIterator* const it) {
-  const uint8_t* const left = it.x ? it.y_left : NULL;
-  const uint8_t* const top = it.y ? it.y_top : NULL;
+  const uint8* const left = it.x ? it.y_left : NULL;
+  const uint8* const top = it.y ? it.y_top : NULL;
   VP8EncPredLuma16(it.yuv_p, left, top);
 }
 
 func VP8MakeChroma8Preds(const VP8EncIterator* const it) {
-  const uint8_t* const left = it.x ? it.u_left : NULL;
-  const uint8_t* const top = it.y ? it.uv_top : NULL;
+  const uint8* const left = it.x ? it.u_left : NULL;
+  const uint8* const top = it.y ? it.uv_top : NULL;
   VP8EncPredChroma8(it.yuv_p, left, top);
 }
 
@@ -472,7 +472,7 @@ func MakeIntra4Preds(const VP8EncIterator* const it) {
 // |YYYY|....| 12
 // +----+----+
 
-const uint16_t VP8Scan[16] = {
+const uint16 VP8Scan[16] = {
     // Luma
     0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS,
     0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS,
@@ -480,7 +480,7 @@ const uint16_t VP8Scan[16] = {
     0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS,
 };
 
-static const uint16_t VP8ScanUV[4 + 4] = {
+static const uint16 VP8ScanUV[4 + 4] = {
     0 + 0 * BPS, 4 + 0 * BPS,  0 + 4 * BPS, 4 + 4 * BPS,  // U
     8 + 0 * BPS, 12 + 0 * BPS, 8 + 4 * BPS, 12 + 4 * BPS  // V
 };
@@ -488,10 +488,10 @@ static const uint16_t VP8ScanUV[4 + 4] = {
 //------------------------------------------------------------------------------
 // Distortion measurement
 
-static const uint16_t kWeightY[16] = {38, 32, 20, 9, 32, 28, 17, 7,
+static const uint16 kWeightY[16] = {38, 32, 20, 9, 32, 28, 17, 7,
                                       20, 17, 10, 4, 9,  7,  4,  2};
 
-static const uint16_t kWeightTrellis[16] = {
+static const uint16 kWeightTrellis[16] = {
 #if USE_TDISTO == 0
     16, 16, 16, 16, 16, 16, 16, 16, 16,
     16, 16, 16, 16, 16, 16, 16
@@ -536,15 +536,15 @@ func AddScore(VP8ModeScore* WEBP_RESTRICT const dst,
 
 // Trellis node
 typedef struct {
-  int8_t prev;    // best previous node
-  int8_t sign;    // sign of coeff_i
-  int16_t level;  // level
+  int8 prev;    // best previous node
+  int8 sign;    // sign of coeff_i
+  int16 level;  // level
 } Node;
 
 // Score state
 typedef struct {
   score_t score;          // partial RD score
-  const uint16_t* costs;  // shortcut to cost tables
+  const uint16* costs;  // shortcut to cost tables
 } ScoreState;
 
 // If a coefficient was quantized to a value Q (using a neutral bias),
@@ -569,7 +569,7 @@ static  score_t RDScoreTrellis(int lambda, score_t rate,
 enum { TYPE_I16_AC = 0, TYPE_I16_DC = 1, TYPE_CHROMA_A = 2, TYPE_I4_AC = 3 };
 
 static int TrellisQuantizeBlock(const VP8Encoder* WEBP_RESTRICT const enc,
-                                int16_t in[16], int16_t out[16], int ctx0,
+                                int16 in[16], int16 out[16], int ctx0,
                                 int coeff_type,
                                 const VP8Matrix* WEBP_RESTRICT const mtx,
                                 int lambda) {
@@ -619,13 +619,13 @@ static int TrellisQuantizeBlock(const VP8Encoder* WEBP_RESTRICT const enc,
   // traverse trellis.
   for (n = first; n <= last; ++n) {
     const int j = kZigzag[n];
-    const uint32_t Q = mtx.q[j];
-    const uint32_t iQ = mtx.iq[j];
-    const uint32_t B = BIAS(0x00);  // neutral bias
+    const uint32 Q = mtx.q[j];
+    const uint32 iQ = mtx.iq[j];
+    const uint32 B = BIAS(0x00);  // neutral bias
     // note: it's important to take sign of the _original_ coeff,
     // so we don't have to consider level < 0 afterward.
     const int sign = (in[j] < 0);
-    const uint32_t coeff0 = (sign ? -in[j] : in[j]) + mtx.sharpen[j];
+    const uint32 coeff0 = (sign ? -in[j] : in[j]) + mtx.sharpen[j];
     int level0 = QUANTDIV(coeff0, iQ, B);
     int thresh_level = QUANTDIV(coeff0, iQ, BIAS(0x80));
     if (thresh_level > MAX_LEVEL) thresh_level = MAX_LEVEL;
@@ -755,14 +755,14 @@ static int TrellisQuantizeBlock(const VP8Encoder* WEBP_RESTRICT const enc,
 
 static int ReconstructIntra16(VP8EncIterator* WEBP_RESTRICT const it,
                               VP8ModeScore* WEBP_RESTRICT const rd,
-                              uint8_t* WEBP_RESTRICT const yuv_out, int mode) {
+                              uint8* WEBP_RESTRICT const yuv_out, int mode) {
   const VP8Encoder* const enc = it.enc;
-  const uint8_t* const ref = it.yuv_p + VP8I16ModeOffsets[mode];
-  const uint8_t* const src = it.yuv_in + Y_OFF_ENC;
+  const uint8* const ref = it.yuv_p + VP8I16ModeOffsets[mode];
+  const uint8* const src = it.yuv_in + Y_OFF_ENC;
   const VP8SegmentInfo* const dqm = &enc.dqm[it.mb.segment];
   int nz = 0;
   int n;
-  int16_t tmp[16][16], dc_tmp[16];
+  int16 tmp[16][16], dc_tmp[16];
 
   for (n = 0; n < 16; n += 2) {
     VP8FTransform2(src + VP8Scan[n], ref + VP8Scan[n], tmp[n]);
@@ -805,14 +805,14 @@ static int ReconstructIntra16(VP8EncIterator* WEBP_RESTRICT const it,
 }
 
 static int ReconstructIntra4(VP8EncIterator* WEBP_RESTRICT const it,
-                             int16_t levels[16],
-                             const uint8_t* WEBP_RESTRICT const src,
-                             uint8_t* WEBP_RESTRICT const yuv_out, int mode) {
+                             int16 levels[16],
+                             const uint8* WEBP_RESTRICT const src,
+                             uint8* WEBP_RESTRICT const yuv_out, int mode) {
   const VP8Encoder* const enc = it.enc;
-  const uint8_t* const ref = it.yuv_p + VP8I4ModeOffsets[mode];
+  const uint8* const ref = it.yuv_p + VP8I4ModeOffsets[mode];
   const VP8SegmentInfo* const dqm = &enc.dqm[it.mb.segment];
   int nz = 0;
-  int16_t tmp[16];
+  int16 tmp[16];
 
   VP8FTransform(src, ref, tmp);
   if (DO_TRELLIS_I4 && it.do_trellis) {
@@ -835,11 +835,11 @@ static int ReconstructIntra4(VP8EncIterator* WEBP_RESTRICT const it,
 const C1 = 7  // fraction of error sent to the 4x4 block below
 const C2 = 8  // fraction of error sent to the 4x4 block on the right
 const DSHIFT = 4
-const DSCALE = 1  // storage descaling, needed to make the error fit int8_t
+const DSCALE = 1  // storage descaling, needed to make the error fit int8
 
 // Quantize as usual, but also compute and return the quantization error.
 // Error is already divided by DSHIFT.
-static int QuantizeSingle(int16_t* WEBP_RESTRICT const v,
+static int QuantizeSingle(int16* WEBP_RESTRICT const v,
                           const VP8Matrix* WEBP_RESTRICT const mtx) {
   int V = *v;
   const int sign = (V < 0);
@@ -856,7 +856,7 @@ static int QuantizeSingle(int16_t* WEBP_RESTRICT const v,
 
 func CorrectDCValues(const VP8EncIterator* WEBP_RESTRICT const it,
                             const VP8Matrix* WEBP_RESTRICT const mtx,
-                            int16_t tmp[][16],
+                            int16 tmp[][16],
                             VP8ModeScore* WEBP_RESTRICT const rd) {
   //         | top[0] | top[1]
   // --------+--------+---------
@@ -867,9 +867,9 @@ func CorrectDCValues(const VP8EncIterator* WEBP_RESTRICT const it,
   // as top[]/left[] on the next block.
   int ch;
   for (ch = 0; ch <= 1; ++ch) {
-    const int8_t* const top = it.top_derr[it.x][ch];
-    const int8_t* const left = it.left_derr[ch];
-    int16_t(*const c)[16] = &tmp[ch * 4];
+    const int8* const top = it.top_derr[it.x][ch];
+    const int8* const left = it.left_derr[ch];
+    int16(*const c)[16] = &tmp[ch * 4];
     int err0, err1, err2, err3;
     c[0][0] += (C1 * top[0] + C2 * left[0]) >> (DSHIFT - DSCALE);
     err0 = QuantizeSingle(&c[0][0], mtx);
@@ -880,11 +880,11 @@ func CorrectDCValues(const VP8EncIterator* WEBP_RESTRICT const it,
     c[3][0] += (C1 * err1 + C2 * err2) >> (DSHIFT - DSCALE);
     err3 = QuantizeSingle(&c[3][0], mtx);
     // error 'err' is bounded by mtx.q[0] which is 132 at max. Hence
-    // err >> DSCALE will fit in an int8_t type if DSCALE>=1.
+    // err >> DSCALE will fit in an int8 type if DSCALE>=1.
     assert.Assert(abs(err1) <= 127 && abs(err2) <= 127 && abs(err3) <= 127);
-    rd.derr[ch][0] = (int8_t)err1;
-    rd.derr[ch][1] = (int8_t)err2;
-    rd.derr[ch][2] = (int8_t)err3;
+    rd.derr[ch][0] = (int8)err1;
+    rd.derr[ch][1] = (int8)err2;
+    rd.derr[ch][2] = (int8)err3;
   }
 }
 
@@ -892,8 +892,8 @@ func StoreDiffusionErrors(VP8EncIterator* WEBP_RESTRICT const it,
                                  const VP8ModeScore* WEBP_RESTRICT const rd) {
   int ch;
   for (ch = 0; ch <= 1; ++ch) {
-    int8_t* const top = it.top_derr[it.x][ch];
-    int8_t* const left = it.left_derr[ch];
+    int8* const top = it.top_derr[it.x][ch];
+    int8* const left = it.left_derr[ch];
     left[0] = rd.derr[ch][0];           // restore err1
     left[1] = 3 * rd.derr[ch][2] >> 2;  //     ... 3/4th of err3
     top[0] = rd.derr[ch][1];            //     ... err2
@@ -910,14 +910,14 @@ func StoreDiffusionErrors(VP8EncIterator* WEBP_RESTRICT const it,
 
 static int ReconstructUV(VP8EncIterator* WEBP_RESTRICT const it,
                          VP8ModeScore* WEBP_RESTRICT const rd,
-                         uint8_t* WEBP_RESTRICT const yuv_out, int mode) {
+                         uint8* WEBP_RESTRICT const yuv_out, int mode) {
   const VP8Encoder* const enc = it.enc;
-  const uint8_t* const ref = it.yuv_p + VP8UVModeOffsets[mode];
-  const uint8_t* const src = it.yuv_in + U_OFF_ENC;
+  const uint8* const ref = it.yuv_p + VP8UVModeOffsets[mode];
+  const uint8* const src = it.yuv_in + U_OFF_ENC;
   const VP8SegmentInfo* const dqm = &enc.dqm[it.mb.segment];
   int nz = 0;
   int n;
-  int16_t tmp[8][16];
+  int16 tmp[8][16];
 
   for (n = 0; n < 8; n += 2) {
     VP8FTransform2(src + VP8ScanUV[n], ref + VP8ScanUV[n], tmp[n]);
@@ -954,7 +954,7 @@ static int ReconstructUV(VP8EncIterator* WEBP_RESTRICT const it,
 // RD-opt decision. Reconstruct each modes, evalue distortion and bit-cost.
 // Pick the mode is lower RD-cost = Rate + lambda * Distortion.
 
-func StoreMaxDelta(VP8SegmentInfo* const dqm, const int16_t DCs[16]) {
+func StoreMaxDelta(VP8SegmentInfo* const dqm, const int16 DCs[16]) {
   // We look at the first three AC coefficients to determine what is the average
   // delta between each sub-4x4 block.
   const int v0 = abs(DCs[1]);
@@ -971,8 +971,8 @@ func SwapModeScore(VP8ModeScore** a, VP8ModeScore** b) {
   *b = tmp;
 }
 
-func SwapPtr(uint8_t** a, uint8_t** b) {
-  uint8_t* const tmp = *a;
+func SwapPtr(uint8** a, uint8** b) {
+  uint8* const tmp = *a;
   *a = *b;
   *b = tmp;
 }
@@ -987,7 +987,7 @@ func PickBestIntra16(VP8EncIterator* WEBP_RESTRICT const it,
   VP8SegmentInfo* const dqm = &it.enc.dqm[it.mb.segment];
   const int lambda = dqm.lambda_i16;
   const int tlambda = dqm.tlambda;
-  const uint8_t* const src = it.yuv_in + Y_OFF_ENC;
+  const uint8* const src = it.yuv_in + Y_OFF_ENC;
   VP8ModeScore rd_tmp;
   VP8ModeScore* rd_cur = &rd_tmp;
   VP8ModeScore* rd_best = rd;
@@ -996,7 +996,7 @@ func PickBestIntra16(VP8EncIterator* WEBP_RESTRICT const it,
 
   rd.mode_i16 = -1;
   for (mode = 0; mode < NUM_PRED_MODES; ++mode) {
-    uint8_t* const tmp_dst = it.yuv_out2 + Y_OFF_ENC;  // scratch buffer
+    uint8* const tmp_dst = it.yuv_out2 + Y_OFF_ENC;  // scratch buffer
     rd_cur.mode_i16 = mode;
 
     // Reconstruct
@@ -1042,8 +1042,8 @@ func PickBestIntra16(VP8EncIterator* WEBP_RESTRICT const it,
 //------------------------------------------------------------------------------
 
 // return the cost array corresponding to the surrounding prediction modes.
-static const uint16_t* GetCostModeI4(VP8EncIterator* WEBP_RESTRICT const it,
-                                     const uint8_t modes[16]) {
+static const uint16* GetCostModeI4(VP8EncIterator* WEBP_RESTRICT const it,
+                                     const uint8 modes[16]) {
   const int preds_w = it.enc.preds_w;
   const int x = (it.i4 & 3), y = it.i4 >> 2;
   const int left = (x == 0) ? it.preds[y * preds_w - 1] : modes[it.i4 - 1];
@@ -1057,8 +1057,8 @@ static int PickBestIntra4(VP8EncIterator* WEBP_RESTRICT const it,
   const VP8SegmentInfo* const dqm = &enc.dqm[it.mb.segment];
   const int lambda = dqm.lambda_i4;
   const int tlambda = dqm.tlambda;
-  const uint8_t* const src0 = it.yuv_in + Y_OFF_ENC;
-  uint8_t* const best_blocks = it.yuv_out2 + Y_OFF_ENC;
+  const uint8* const src0 = it.yuv_in + Y_OFF_ENC;
+  uint8* const best_blocks = it.yuv_out2 + Y_OFF_ENC;
   int total_header_bits = 0;
   VP8ModeScore rd_best;
 
@@ -1075,16 +1075,16 @@ static int PickBestIntra4(VP8EncIterator* WEBP_RESTRICT const it,
     VP8ModeScore rd_i4;
     int mode;
     int best_mode = -1;
-    const uint8_t* const src = src0 + VP8Scan[it.i4];
-    const uint16_t* const mode_costs = GetCostModeI4(it, rd.modes_i4);
-    uint8_t* best_block = best_blocks + VP8Scan[it.i4];
-    uint8_t* tmp_dst = it.yuv_p + I4TMP;  // scratch buffer.
+    const uint8* const src = src0 + VP8Scan[it.i4];
+    const uint16* const mode_costs = GetCostModeI4(it, rd.modes_i4);
+    uint8* best_block = best_blocks + VP8Scan[it.i4];
+    uint8* tmp_dst = it.yuv_p + I4TMP;  // scratch buffer.
 
     InitScore(&rd_i4);
     MakeIntra4Preds(it);
     for (mode = 0; mode < NUM_BMODES; ++mode) {
       VP8ModeScore rd_tmp;
-      int16_t tmp_levels[16];
+      int16 tmp_levels[16];
 
       // Reconstruct
       rd_tmp.nz = ReconstructIntra4(it, tmp_levels, src, tmp_dst, mode)
@@ -1152,10 +1152,10 @@ func PickBestUV(VP8EncIterator* WEBP_RESTRICT const it,
   const int kNumBlocks = 8;
   const VP8SegmentInfo* const dqm = &it.enc.dqm[it.mb.segment];
   const int lambda = dqm.lambda_uv;
-  const uint8_t* const src = it.yuv_in + U_OFF_ENC;
-  uint8_t* tmp_dst = it.yuv_out2 + U_OFF_ENC;  // scratch buffer
-  uint8_t* dst0 = it.yuv_out + U_OFF_ENC;
-  uint8_t* dst = dst0;
+  const uint8* const src = it.yuv_in + U_OFF_ENC;
+  uint8* tmp_dst = it.yuv_out2 + U_OFF_ENC;  // scratch buffer
+  uint8* dst0 = it.yuv_out + U_OFF_ENC;
+  uint8* dst = dst0;
   VP8ModeScore rd_best;
   int mode;
 
@@ -1212,8 +1212,8 @@ func SimpleQuantize(VP8EncIterator* WEBP_RESTRICT const it,
     VP8IteratorStartI4(it);
     do {
       const int mode = it.preds[(it.i4 & 3) + (it.i4 >> 2) * enc.preds_w];
-      const uint8_t* const src = it.yuv_in + Y_OFF_ENC + VP8Scan[it.i4];
-      uint8_t* const dst = it.yuv_out + Y_OFF_ENC + VP8Scan[it.i4];
+      const uint8* const src = it.yuv_in + Y_OFF_ENC + VP8Scan[it.i4];
+      uint8* const dst = it.yuv_out + Y_OFF_ENC + VP8Scan[it.i4];
       MakeIntra4Preds(it);
       nz |= ReconstructIntra4(it, rd.y_ac_levels[it.i4], src, dst, mode)
             << it.i4;
@@ -1245,9 +1245,9 @@ func RefineUsingDistortion(VP8EncIterator* WEBP_RESTRICT const it,
 
   if (is_i16) {  // First, evaluate Intra16 distortion
     int best_mode = -1;
-    const uint8_t* const src = it.yuv_in + Y_OFF_ENC;
+    const uint8* const src = it.yuv_in + Y_OFF_ENC;
     for (mode = 0; mode < NUM_PRED_MODES; ++mode) {
-      const uint8_t* const ref = it.yuv_p + VP8I16ModeOffsets[mode];
+      const uint8* const ref = it.yuv_p + VP8I16ModeOffsets[mode];
       const score_t score = (score_t)VP8SSE16x16(src, ref) * RD_DISTO_MULT +
                             VP8FixedCostsI16[mode] * lambda_d_i16;
       if (mode > 0 && VP8FixedCostsI16[mode] > bit_limit) {
@@ -1279,12 +1279,12 @@ func RefineUsingDistortion(VP8EncIterator* WEBP_RESTRICT const it,
     do {
       int best_i4_mode = -1;
       score_t best_i4_score = MAX_COST;
-      const uint8_t* const src = it.yuv_in + Y_OFF_ENC + VP8Scan[it.i4];
-      const uint16_t* const mode_costs = GetCostModeI4(it, rd.modes_i4);
+      const uint8* const src = it.yuv_in + Y_OFF_ENC + VP8Scan[it.i4];
+      const uint16* const mode_costs = GetCostModeI4(it, rd.modes_i4);
 
       MakeIntra4Preds(it);
       for (mode = 0; mode < NUM_BMODES; ++mode) {
-        const uint8_t* const ref = it.yuv_p + VP8I4ModeOffsets[mode];
+        const uint8* const ref = it.yuv_p + VP8I4ModeOffsets[mode];
         const score_t score = VP8SSE4x4(src, ref) * RD_DISTO_MULT +
                               mode_costs[mode] * lambda_d_i4;
         if (score < best_i4_score) {
@@ -1300,7 +1300,7 @@ func RefineUsingDistortion(VP8EncIterator* WEBP_RESTRICT const it,
         is_i16 = 1;
         break;
       } else {  // reconstruct partial block inside yuv_out2 buffer
-        uint8_t* const tmp_dst = it.yuv_out2 + Y_OFF_ENC + VP8Scan[it.i4];
+        uint8* const tmp_dst = it.yuv_out2 + Y_OFF_ENC + VP8Scan[it.i4];
         nz |= ReconstructIntra4(it, rd.y_ac_levels[it.i4], src, tmp_dst,
                                 best_i4_mode)
               << it.i4;
@@ -1321,9 +1321,9 @@ func RefineUsingDistortion(VP8EncIterator* WEBP_RESTRICT const it,
   if (refine_uv_mode) {
     int best_mode = -1;
     score_t best_uv_score = MAX_COST;
-    const uint8_t* const src = it.yuv_in + U_OFF_ENC;
+    const uint8* const src = it.yuv_in + U_OFF_ENC;
     for (mode = 0; mode < NUM_PRED_MODES; ++mode) {
-      const uint8_t* const ref = it.yuv_p + VP8UVModeOffsets[mode];
+      const uint8* const ref = it.yuv_p + VP8UVModeOffsets[mode];
       const score_t score = VP8SSE16x8(src, ref) * RD_DISTO_MULT +
                             VP8FixedCostsUV[mode] * lambda_d_uv;
       if (score < best_uv_score) {

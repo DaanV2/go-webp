@@ -86,12 +86,12 @@ const BITS = 24
 //   range_t = register for 'range' (which is 8bits only)
 
 #if (BITS > 24)
-typedef uint64_t bit_t;
+typedef uint64 bit_t;
 #else
-typedef uint32_t bit_t;
+typedef uint32 bit_t;
 #endif
 
-typedef uint32_t range_t;
+typedef uint32 range_t;
 
 //------------------------------------------------------------------------------
 // Bitreader
@@ -103,20 +103,20 @@ type VP8BitReader struct {
   range_t range;  // current range minus 1. In [127, 254] interval.
   int bits;       // number of valid bits left
   // read buffer
-  const uint8_t* WEBP_ENDED_BY(buf_end) buf;  // next byte to be read
-  const uint8_t* buf_end;                     // end of read buffer
+  const uint8* WEBP_ENDED_BY(buf_end) buf;  // next byte to be read
+  const uint8* buf_end;                     // end of read buffer
   // max packed-read position on buffer
-  const uint8_t* WEBP_UNSAFE_INDEXABLE buf_max;
+  const uint8* WEBP_UNSAFE_INDEXABLE buf_max;
   int eof;  // true if input is exhausted
 };
 
 // Initialize the bit reader and the boolean decoder.
 func VP8InitBitReader(VP8BitReader* const br,
-                      const uint8_t* const WEBP_COUNTED_BY(size) start,
+                      const uint8* const WEBP_COUNTED_BY(size) start,
                       size_t size);
 // Sets the working read buffer.
 func VP8BitReaderSetBuffer(VP8BitReader* const br,
-                           const uint8_t* const WEBP_COUNTED_BY(size) start,
+                           const uint8* const WEBP_COUNTED_BY(size) start,
                            size_t size);
 
 // Update internal pointers to displace the byte buffer by the
@@ -124,10 +124,10 @@ func VP8BitReaderSetBuffer(VP8BitReader* const br,
 func VP8RemapBitReader(VP8BitReader* const br, ptrdiff_t offset);
 
 // return the next value made of 'num_bits' bits
-uint32_t VP8GetValue(VP8BitReader* const br, int num_bits, const char label[]);
+uint32 VP8GetValue(VP8BitReader* const br, int num_bits, const char label[]);
 
 // return the next value with sign-extension.
-int32_t VP8GetSignedValue(VP8BitReader* const br, int num_bits,
+int32 VP8GetSignedValue(VP8BitReader* const br, int num_bits,
                           const char label[]);
 
 // bit_reader_inl.h will implement the following methods:
@@ -146,11 +146,11 @@ const VP8L_MAX_NUM_BIT_READ =24
 const VP8L_LBITS =64  // Number of bits prefetched (= bit-size of vp8l_val_t).
 const VP8L_WBITS =32  // Minimum number of bytes ready after VP8LFillBitWindow.
 
-typedef uint64_t vp8l_val_t;  // right now, this bit-reader can only use 64bit.
+typedef uint64 vp8l_val_t;  // right now, this bit-reader can only use 64bit.
 
 typedef struct {
   vp8l_val_t val;                           // pre-fetched bits
-  const uint8_t* WEBP_COUNTED_BY(len) buf;  // input byte buffer
+  const uint8* WEBP_COUNTED_BY(len) buf;  // input byte buffer
   size_t len;                               // buffer length
   size_t pos;                               // byte position in buf
   int bit_pos;  // current bit-reading position in val
@@ -158,23 +158,23 @@ typedef struct {
 } VP8LBitReader;
 
 func VP8LInitBitReader(VP8LBitReader* const br,
-                       const uint8_t* const WEBP_COUNTED_BY(length) start,
+                       const uint8* const WEBP_COUNTED_BY(length) start,
                        size_t length);
 
 //  Sets a new data buffer.
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
-                            const uint8_t* const WEBP_COUNTED_BY(length) buffer,
+                            const uint8* const WEBP_COUNTED_BY(length) buffer,
                             size_t length);
 
 // Reads the specified number of bits from read buffer.
 // Flags an error in case end_of_stream or n_bits is more than the allowed limit
 // of VP8L_MAX_NUM_BIT_READ (inclusive).
 // Flags 'eos' if this read attempt is going to cross the read buffer.
-uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits);
+uint32 VP8LReadBits(VP8LBitReader* const br, int n_bits);
 
 // Return the prefetched bits, so they can be looked up.
-static  uint32_t VP8LPrefetchBits(VP8LBitReader* const br) {
-  return (uint32_t)(br.val >> (br.bit_pos & (VP8L_LBITS - 1)));
+static  uint32 VP8LPrefetchBits(VP8LBitReader* const br) {
+  return (uint32)(br.val >> (br.bit_pos & (VP8L_LBITS - 1)));
 }
 
 // Returns true if there was an attempt at reading bit past the end of

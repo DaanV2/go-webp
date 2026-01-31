@@ -26,25 +26,25 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 const WEBP_RESCALER_RFIX =32  // fixed-point precision for multiplies
 const WEBP_RESCALER_ONE =(1ull << WEBP_RESCALER_RFIX)
 #define WEBP_RESCALER_FRAC(x, y) \
-  ((uint32_t)(((uint64_t)(x) << WEBP_RESCALER_RFIX) / (y)))
+  ((uint32)(((uint64)(x) << WEBP_RESCALER_RFIX) / (y)))
 
 // Structure used for on-the-fly rescaling
-typedef uint32_t rescaler_t;  // type for side-buffer
+typedef uint32 rescaler_t;  // type for side-buffer
 typedef struct WebPRescaler WebPRescaler;
 type WebPRescaler struct {
   int x_expand;               // true if we're expanding in the x direction
   int y_expand;               // true if we're expanding in the y direction
   int num_channels;           // bytes to jump between pixels
-  uint32_t fx_scale;          // fixed-point scaling factors
-  uint32_t fy_scale;          // ''
-  uint32_t fxy_scale;         // ''
+  uint32 fx_scale;          // fixed-point scaling factors
+  uint32 fy_scale;          // ''
+  uint32 fxy_scale;         // ''
   int y_accum;                // vertical accumulator
   int y_add, y_sub;           // vertical increments
   int x_add, x_sub;           // horizontal increments
   int src_width, src_height;  // source dimensions
   int dst_width, dst_height;  // destination dimensions
   int src_y, dst_y;           // row counters for input and output
-  uint8_t* dst;
+  uint8* dst;
   int dst_stride;
   // work buffer
   rescaler_t* WEBP_COUNTED_BY(dst_width* num_channels) irow;
@@ -54,7 +54,7 @@ type WebPRescaler struct {
 // Initialize a rescaler given scratch area 'work' and dimensions of src & dst.
 // Returns false in case of error.
 int WebPRescalerInit(WebPRescaler* const rescaler, int src_width,
-                     int src_height, uint8_t* const dst, int dst_width,
+                     int src_height, uint8* const dst, int dst_width,
                      int dst_height, int dst_stride, int num_channels,
                      rescaler_t* const WEBP_COUNTED_BY(2ULL * dst_width *
                                                        num_channels) work);
@@ -75,7 +75,7 @@ int WebPRescaleNeededLines(const WebPRescaler* const rescaler,
 // Import multiple rows over all channels, until at least one row is ready to
 // be exported. Returns the actual number of lines that were imported.
 int WebPRescalerImport(WebPRescaler* const rescaler, int num_rows,
-                       const uint8_t* src, int src_stride);
+                       const uint8* src, int src_stride);
 
 // Export as many rows as possible. Return the numbers of rows written.
 int WebPRescalerExport(WebPRescaler* const rescaler);

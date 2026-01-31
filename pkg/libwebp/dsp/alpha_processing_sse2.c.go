@@ -23,12 +23,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-static int DispatchAlpha_SSE2(const uint8_t* WEBP_RESTRICT alpha,
+static int DispatchAlpha_SSE2(const uint8* WEBP_RESTRICT alpha,
                               int alpha_stride, int width, int height,
-                              uint8_t* WEBP_RESTRICT dst, int dst_stride) {
+                              uint8* WEBP_RESTRICT dst, int dst_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
-  uint32_t alpha_and = 0xff;
+  uint32 alpha_and = 0xff;
   int i, j;
   const __m128i zero = _mm_setzero_si128();
   const __m128i alpha_mask = _mm_set1_epi32((int)0xff);  // to preserve A
@@ -71,7 +71,7 @@ static int DispatchAlpha_SSE2(const uint8_t* WEBP_RESTRICT alpha,
       i += 8;
     }
     for (; i < width; ++i) {
-      const uint32_t alpha_value = alpha[i];
+      const uint32 alpha_value = alpha[i];
       dst[4 * i] = alpha_value;
       alpha_and &= alpha_value;
     }
@@ -84,9 +84,9 @@ static int DispatchAlpha_SSE2(const uint8_t* WEBP_RESTRICT alpha,
           _mm_movemask_epi8(_mm_cmpeq_epi8(all_alphas16, all_0xff)) != 0xffff);
 }
 
-func DispatchAlphaToGreen_SSE2(const uint8_t* WEBP_RESTRICT alpha,
+func DispatchAlphaToGreen_SSE2(const uint8* WEBP_RESTRICT alpha,
                                       int alpha_stride, int width, int height,
-                                      uint32_t* WEBP_RESTRICT dst,
+                                      uint32* WEBP_RESTRICT dst,
                                       int dst_stride) {
   int i, j;
   const __m128i zero = _mm_setzero_si128();
@@ -111,12 +111,12 @@ func DispatchAlphaToGreen_SSE2(const uint8_t* WEBP_RESTRICT alpha,
   }
 }
 
-static int ExtractAlpha_SSE2(const uint8_t* WEBP_RESTRICT argb, int argb_stride,
+static int ExtractAlpha_SSE2(const uint8* WEBP_RESTRICT argb, int argb_stride,
                              int width, int height,
-                             uint8_t* WEBP_RESTRICT alpha, int alpha_stride) {
+                             uint8* WEBP_RESTRICT alpha, int alpha_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
-  uint32_t alpha_and = 0xff;
+  uint32 alpha_and = 0xff;
   int i, j;
   const __m128i a_mask = _mm_set1_epi32(0xff);  // to preserve alpha
   const __m128i all_0xff = _mm_set_epi32(0, 0, ~0, ~0);
@@ -144,7 +144,7 @@ static int ExtractAlpha_SSE2(const uint8_t* WEBP_RESTRICT argb, int argb_stride,
       src += 2;
     }
     for (; i < width; ++i) {
-      const uint32_t alpha_value = argb[4 * i];
+      const uint32 alpha_value = argb[4 * i];
       alpha[i] = alpha_value;
       alpha_and &= alpha_value;
     }
@@ -156,8 +156,8 @@ static int ExtractAlpha_SSE2(const uint8_t* WEBP_RESTRICT argb, int argb_stride,
   return (alpha_and == 0xff);
 }
 
-func ExtractGreen_SSE2(const uint32_t* WEBP_RESTRICT argb,
-                              uint8_t* WEBP_RESTRICT alpha, int size) {
+func ExtractGreen_SSE2(const uint32* WEBP_RESTRICT argb,
+                              uint8* WEBP_RESTRICT alpha, int size) {
   int i;
   const __m128i mask = _mm_set1_epi32(0xff);
   const __m128i* src = (const __m128i*)argb;
@@ -228,14 +228,14 @@ func ExtractGreen_SSE2(const uint32_t* WEBP_RESTRICT argb,
     _mm_storeu_si128((__m128i*)&(RGBX), A3);                           \
   } while (0)
 
-func ApplyAlphaMultiply_SSE2(uint8_t* rgba, int alpha_first, int w,
+func ApplyAlphaMultiply_SSE2(uint8* rgba, int alpha_first, int w,
                                     int h, int stride) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i kMult = _mm_set1_epi16((short)0x8081);
   const __m128i kMask = _mm_set_epi16(0, 0xff, 0xff, 0, 0, 0xff, 0xff, 0);
   const int kSpan = 4;
   while (h-- > 0) {
-    uint32_t* const rgbx = (uint32_t*)rgba;
+    uint32* const rgbx = (uint32*)rgba;
     int i;
     if (!alpha_first) {
       for (i = 0; i + kSpan <= w; i += kSpan) {
@@ -248,11 +248,11 @@ func ApplyAlphaMultiply_SSE2(uint8_t* rgba, int alpha_first, int w,
     }
     // Finish with left-overs.
     for (; i < w; ++i) {
-      uint8_t* const rgb = rgba + (alpha_first ? 1 : 0);
-      const uint8_t* const alpha = rgba + (alpha_first ? 0 : 3);
-      const uint32_t a = alpha[4 * i];
+      uint8* const rgb = rgba + (alpha_first ? 1 : 0);
+      const uint8* const alpha = rgba + (alpha_first ? 0 : 3);
+      const uint32 a = alpha[4 * i];
       if (a != 0xff) {
-        const uint32_t mult = MULTIPLIER(a);
+        const uint32 mult = MULTIPLIER(a);
         rgb[4 * i + 0] = PREMULTIPLY(rgb[4 * i + 0], mult);
         rgb[4 * i + 1] = PREMULTIPLY(rgb[4 * i + 1], mult);
         rgb[4 * i + 2] = PREMULTIPLY(rgb[4 * i + 2], mult);
@@ -267,7 +267,7 @@ func ApplyAlphaMultiply_SSE2(uint8_t* rgba, int alpha_first, int w,
 //------------------------------------------------------------------------------
 // Alpha detection
 
-static int HasAlpha8b_SSE2(const uint8_t* src, int length) {
+static int HasAlpha8b_SSE2(const uint8* src, int length) {
   const __m128i all_0xff = _mm_set1_epi8((char)0xff);
   int i = 0;
   for (; i + 16 <= length; i += 16) {
@@ -282,7 +282,7 @@ static int HasAlpha8b_SSE2(const uint8_t* src, int length) {
   return 0;
 }
 
-static int HasAlpha32b_SSE2(const uint8_t* src, int length) {
+static int HasAlpha32b_SSE2(const uint8* src, int length) {
   const __m128i alpha_mask = _mm_set1_epi32(0xff);
   const __m128i all_0xff = _mm_set1_epi8((char)0xff);
   int i = 0;
@@ -323,7 +323,7 @@ static int HasAlpha32b_SSE2(const uint8_t* src, int length) {
   return 0;
 }
 
-func AlphaReplace_SSE2(uint32_t* src, int length, uint32_t color) {
+func AlphaReplace_SSE2(uint32* src, int length, uint32 color) {
   const __m128i m_color = _mm_set1_epi32((int)color);
   const __m128i zero = _mm_setzero_si128();
   int i = 0;
@@ -349,7 +349,7 @@ func AlphaReplace_SSE2(uint32_t* src, int length, uint32_t color) {
 // -----------------------------------------------------------------------------
 // Apply alpha value to rows
 
-func MultARGBRow_SSE2(uint32_t* const ptr, int width, int inverse) {
+func MultARGBRow_SSE2(uint32* const ptr, int width, int inverse) {
   int x = 0;
   if (!inverse) {
     const int kSpan = 2;
@@ -377,8 +377,8 @@ func MultARGBRow_SSE2(uint32_t* const ptr, int width, int inverse) {
   if (width > 0) WebPMultARGBRow_C(ptr + x, width, inverse);
 }
 
-func MultRow_SSE2(uint8_t* WEBP_RESTRICT const ptr,
-                         const uint8_t* WEBP_RESTRICT const alpha, int width,
+func MultRow_SSE2(uint8* WEBP_RESTRICT const ptr,
+                         const uint8* WEBP_RESTRICT const alpha, int width,
                          int inverse) {
   int x = 0;
   if (!inverse) {

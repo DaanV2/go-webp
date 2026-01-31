@@ -38,7 +38,7 @@ const MUX_REV_VERSION =0
 // Chunk object.
 typedef struct WebPChunk WebPChunk;
 type WebPChunk struct {
-  uint32_t tag;
+  uint32 tag;
   int owner;  // True if *data memory is owned internally.
               // VP8X, ANIM, and other internally created chunks
               // like ANMF are always owned.
@@ -100,9 +100,9 @@ const (
 const NIL_TAG =0x00000000u  // To signal func chunk.
 
 typedef struct {
-  uint32_t tag;
+  uint32 tag;
   WebPChunkId id;
-  uint32_t size;
+  uint32 size;
 } ChunkInfo;
 
 extern const ChunkInfo kChunks[IDX_LAST_CHUNK];
@@ -114,24 +114,24 @@ extern const ChunkInfo kChunks[IDX_LAST_CHUNK];
 func ChunkInit(WebPChunk* const chunk);
 
 // Get chunk index from chunk tag. Returns IDX_UNKNOWN if not found.
-CHUNK_INDEX ChunkGetIndexFromTag(uint32_t tag);
+CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag);
 
 // Get chunk id from chunk tag. Returns WEBP_CHUNK_UNKNOWN if not found.
-WebPChunkId ChunkGetIdFromTag(uint32_t tag);
+WebPChunkId ChunkGetIdFromTag(uint32 tag);
 
 // Convert a fourcc string to a tag.
-uint32_t ChunkGetTagFromFourCC(const char fourcc[4]);
+uint32 ChunkGetTagFromFourCC(const char fourcc[4]);
 
 // Get chunk index from fourcc. Returns IDX_UNKNOWN if given fourcc is unknown.
 CHUNK_INDEX ChunkGetIndexFromFourCC(const char fourcc[4]);
 
 // Search for nth chunk with given 'tag' in the chunk list.
 // nth = 0 means "last of the list".
-WebPChunk* ChunkSearchList(WebPChunk* first, uint32_t nth, uint32_t tag);
+WebPChunk* ChunkSearchList(WebPChunk* first, uint32 nth, uint32 tag);
 
 // Fill the chunk with the given data.
 WebPMuxError ChunkAssignData(WebPChunk* chunk, const WebPData* const data,
-                             int copy_data, uint32_t tag);
+                             int copy_data, uint32 tag);
 
 // Sets 'chunk' as the only element in 'chunk_list' if it is empty.
 // On success ownership is transferred from 'chunk' to the 'chunk_list'.
@@ -167,7 +167,7 @@ static  size_t ChunkDiskSize(const WebPChunk* chunk) {
 size_t ChunkListDiskSize(const WebPChunk* chunk_list);
 
 // Write out the given list of chunks into 'dst'.
-uint8_t* ChunkListEmit(const WebPChunk* chunk_list, uint8_t* dst);
+uint8* ChunkListEmit(const WebPChunk* chunk_list, uint8* dst);
 
 //------------------------------------------------------------------------------
 // MuxImage object management.
@@ -206,17 +206,17 @@ static  int IsWPI(WebPChunkId id) {
 WebPMuxError MuxImagePush(const WebPMuxImage* wpi, WebPMuxImage** wpi_list);
 
 // Delete nth image in the image list.
-WebPMuxError MuxImageDeleteNth(WebPMuxImage** wpi_list, uint32_t nth);
+WebPMuxError MuxImageDeleteNth(WebPMuxImage** wpi_list, uint32 nth);
 
 // Get nth image in the image list.
-WebPMuxError MuxImageGetNth(const WebPMuxImage** wpi_list, uint32_t nth,
+WebPMuxError MuxImageGetNth(const WebPMuxImage** wpi_list, uint32 nth,
                             WebPMuxImage** wpi);
 
 // Total size of the given image.
 size_t MuxImageDiskSize(const WebPMuxImage* const wpi);
 
 // Write out the given image into 'dst'.
-uint8_t* MuxImageEmit(const WebPMuxImage* const wpi, uint8_t* dst);
+uint8* MuxImageEmit(const WebPMuxImage* const wpi, uint8* dst);
 
 //------------------------------------------------------------------------------
 // Helper methods for mux.
@@ -225,7 +225,7 @@ uint8_t* MuxImageEmit(const WebPMuxImage* const wpi, uint8_t* dst);
 int MuxHasAlpha(const WebPMuxImage* images);
 
 // Write out RIFF header into 'data', given total data size 'size'.
-uint8_t* MuxEmitRiffHeader(uint8_t* const data, size_t size);
+uint8* MuxEmitRiffHeader(uint8* const data, size_t size);
 
 // Returns the list where chunk with given ID is to be inserted in mux.
 WebPChunk** MuxGetChunkListFromId(const WebPMux* mux, WebPChunkId id);

@@ -77,7 +77,7 @@ const (
 
 const NUM_BUCKETS =256
 
-typedef uint32_t HistogramBuckets[NUM_BUCKETS];
+typedef uint32 HistogramBuckets[NUM_BUCKETS];
 
 // Keeping track of histograms, indexed by HistoIx.
 // Ideally, this would just be a struct with meaningful fields, but the
@@ -86,14 +86,14 @@ typedef struct {
   HistogramBuckets category[kHistoTotal];
 } Histograms;
 
-func AddSingleSubGreen(uint32_t p, HistogramBuckets r,
+func AddSingleSubGreen(uint32 p, HistogramBuckets r,
                               HistogramBuckets b) {
   const int green = (int)p >> 8;  // The upper bits are masked away later.
   ++r[(((int)p >> 16) - green) & 0xff];
   ++b[(((int)p >> 0) - green) & 0xff];
 }
 
-func AddSingle(uint32_t p, HistogramBuckets a, HistogramBuckets r,
+func AddSingle(uint32 p, HistogramBuckets a, HistogramBuckets r,
                       HistogramBuckets g, HistogramBuckets b) {
   ++a[(p >> 24) & 0xff];
   ++r[(p >> 16) & 0xff];
@@ -101,13 +101,13 @@ func AddSingle(uint32_t p, HistogramBuckets a, HistogramBuckets r,
   ++b[(p >> 0) & 0xff];
 }
 
-static  uint8_t HashPix(uint32_t pix) {
+static  uint8 HashPix(uint32 pix) {
   // Note that masking with 0xffffffffu is for preventing an
   // 'unsigned int overflow' warning. Doesn't impact the compiled code.
-  return ((((uint64_t)pix + (pix >> 19)) * 0x39c5fba7ull) & 0xffffffffu) >> 24;
+  return ((((uint64)pix + (pix >> 19)) * 0x39c5fba7ull) & 0xffffffffu) >> 24;
 }
 
-static int AnalyzeEntropy(const uint32_t* argb, int width, int height,
+static int AnalyzeEntropy(const uint32* argb, int width, int height,
                           int argb_stride, int use_palette, int palette_size,
                           int transform_bits, EntropyIx* const min_entropy_ix,
                           int* const red_and_blue_always_zero) {
@@ -124,13 +124,13 @@ static int AnalyzeEntropy(const uint32_t* argb, int width, int height,
   histo = (Histograms*)WebPSafeCalloc(1, sizeof(*histo));
   if (histo != NULL) {
     int i, x, y;
-    const uint32_t* prev_row = NULL;
-    const uint32_t* curr_row = argb;
-    uint32_t pix_prev = argb[0];  // Skip the first pixel.
+    const uint32* prev_row = NULL;
+    const uint32* curr_row = argb;
+    uint32 pix_prev = argb[0];  // Skip the first pixel.
     for (y = 0; y < height; ++y) {
       for (x = 0; x < width; ++x) {
-        const uint32_t pix = curr_row[x];
-        const uint32_t pix_diff = VP8LSubPixels(pix, pix_prev);
+        const uint32 pix = curr_row[x];
+        const uint32 pix_diff = VP8LSubPixels(pix, pix_prev);
         pix_prev = pix;
         if ((pix_diff == 0) || (prev_row != NULL && pix == prev_row[x])) {
           continue;
@@ -147,7 +147,7 @@ static int AnalyzeEntropy(const uint32_t* argb, int width, int height,
                           histo.category[kHistoBluePredSubGreen]);
         {
           // Approximate the palette by the entropy of the multiplicative hash.
-          const uint8_t hash = HashPix(pix);
+          const uint8 hash = HashPix(pix);
           ++histo.category[kHistoPalette][hash];
         }
       }
@@ -155,8 +155,8 @@ static int AnalyzeEntropy(const uint32_t* argb, int width, int height,
       curr_row += argb_stride;
     }
     {
-      uint64_t entropy_comp[kHistoTotal];
-      uint64_t entropy[kNumEntropyIx];
+      uint64 entropy_comp[kHistoTotal];
+      uint64 entropy[kNumEntropyIx];
       int k;
       int last_mode_to_analyze = use_palette ? kPalette : kSpatialSubGreen;
       int j;
@@ -189,18 +189,18 @@ static int AnalyzeEntropy(const uint32_t* argb, int width, int height,
       // When including transforms, there is an overhead in bits from
       // storing them. This overhead is small but matters for small images.
       // For spatial, there are 14 transformations.
-      entropy[kSpatial] += (uint64_t)VP8LSubSampleSize(width, transform_bits) *
+      entropy[kSpatial] += (uint64)VP8LSubSampleSize(width, transform_bits) *
                            VP8LSubSampleSize(height, transform_bits) *
                            VP8LFastLog2(14);
       // For color transforms: 24 as only 3 channels are considered in a
       // ColorTransformElement.
       entropy[kSpatialSubGreen] +=
-          (uint64_t)VP8LSubSampleSize(width, transform_bits) *
+          (uint64)VP8LSubSampleSize(width, transform_bits) *
           VP8LSubSampleSize(height, transform_bits) * VP8LFastLog2(24);
       // For palettes, add the cost of storing the palette.
       // We empirically estimate the cost of a compressed entry as 8 bits.
       // The palette is differential-coded when compressed hence a much
-      // lower cost than sizeof(uint32_t)*8.
+      // lower cost than sizeof(uint32)*8.
       entropy[kPalette] += (palette_size * 8ull) << LOG_2_PRECISION_BITS;
 
       *min_entropy_ix = kDirect;
@@ -215,7 +215,7 @@ static int AnalyzeEntropy(const uint32_t* argb, int width, int height,
       // non-zero red and blue values. If all are zero, we can later skip
       // the cross color optimization.
       {
-        static const uint8_t kHistoPairs[5][2] = {
+        static const uint8 kHistoPairs[5][2] = {
             {kHistoRed, kHistoBlue},
             {kHistoRedPred, kHistoBluePred},
             {kHistoRedSubGreen, kHistoBlueSubGreen},
@@ -430,11 +430,11 @@ static int GetHuffBitLengthsAndCodes(
     HuffmanTreeCode* const huffman_codes) {
   int i, k;
   int ok = 0;
-  uint64_t total_length_size = 0;
-  uint8_t* mem_buf = NULL;
+  uint64 total_length_size = 0;
+  uint8* mem_buf = NULL;
   const int histogram_image_size = histogram_image.size;
   int max_num_symbols = 0;
-  uint8_t* buf_rle = NULL;
+  uint8* buf_rle = NULL;
   HuffmanTree* huff_tree = NULL;
 
   // Iterate over all histograms and get the aggregate number of codes used.
@@ -454,14 +454,14 @@ static int GetHuffBitLengthsAndCodes(
 
   // Allocate and Set Huffman codes.
   {
-    uint16_t* codes;
-    uint8_t* lengths;
-    mem_buf = (uint8_t*)WebPSafeCalloc(total_length_size,
+    uint16* codes;
+    uint8* lengths;
+    mem_buf = (uint8*)WebPSafeCalloc(total_length_size,
                                        sizeof(*lengths) + sizeof(*codes));
     if (mem_buf == NULL) goto End;
 
-    codes = (uint16_t*)mem_buf;
-    lengths = (uint8_t*)&codes[total_length_size];
+    codes = (uint16*)mem_buf;
+    lengths = (uint8*)&codes[total_length_size];
     for (i = 0; i < 5 * histogram_image_size; ++i) {
       const int bit_length = huffman_codes[i].num_symbols;
       huffman_codes[i].codes = codes;
@@ -474,7 +474,7 @@ static int GetHuffBitLengthsAndCodes(
     }
   }
 
-  buf_rle = (uint8_t*)WebPSafeMalloc(1ULL, max_num_symbols);
+  buf_rle = (uint8*)WebPSafeMalloc(1ULL, max_num_symbols);
   huff_tree =
       (HuffmanTree*)WebPSafeMalloc(3ULL * max_num_symbols, sizeof(*huff_tree));
   if (buf_rle == NULL || huff_tree == NULL) goto End;
@@ -501,11 +501,11 @@ End:
 }
 
 func StoreHuffmanTreeOfHuffmanTreeToBitMask(
-    VP8LBitWriter* const bw, const uint8_t* code_length_bitdepth) {
+    VP8LBitWriter* const bw, const uint8* code_length_bitdepth) {
   // RFC 1951 will calm you down if you are worried about this funny sequence.
   // This sequence is tuned from that, but more weighted for lower symbol count,
   // and more spiking histograms.
-  static const uint8_t kStorageOrder[CODE_LENGTH_CODES] = {
+  static const uint8 kStorageOrder[CODE_LENGTH_CODES] = {
       17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
   int i;
   // Throw away trailing zeros:
@@ -564,8 +564,8 @@ func StoreFullHuffmanCode(VP8LBitWriter* const bw,
                                  HuffmanTree* const huff_tree,
                                  HuffmanTreeToken* const tokens,
                                  const HuffmanTreeCode* const tree) {
-  uint8_t code_length_bitdepth[CODE_LENGTH_CODES] = {0};
-  uint16_t code_length_bitdepth_symbols[CODE_LENGTH_CODES] = {0};
+  uint8 code_length_bitdepth[CODE_LENGTH_CODES] = {0};
+  uint16 code_length_bitdepth_symbols[CODE_LENGTH_CODES] = {0};
   const int max_tokens = tree.num_symbols;
   int num_tokens;
   HuffmanTreeCode huffman_code;
@@ -576,8 +576,8 @@ func StoreFullHuffmanCode(VP8LBitWriter* const bw,
   VP8LPutBits(bw, 0, 1);
   num_tokens = VP8LCreateCompressedHuffmanTree(tree, tokens, max_tokens);
   {
-    uint32_t histogram[CODE_LENGTH_CODES] = {0};
-    uint8_t buf_rle[CODE_LENGTH_CODES] = {0};
+    uint32 histogram[CODE_LENGTH_CODES] = {0};
+    uint8 buf_rle[CODE_LENGTH_CODES] = {0};
     int i;
     for (i = 0; i < num_tokens; ++i) {
       ++histogram[tokens[i].code];
@@ -686,7 +686,7 @@ static  func WriteHuffmanCodeWithExtraBits(
 static int StoreImageToBitMask(VP8LBitWriter* const bw, int width,
                                int histo_bits,
                                const VP8LBackwardRefs* const refs,
-                               const uint32_t* histogram_symbols,
+                               const uint32* histogram_symbols,
                                const HuffmanTreeCode* const huffman_codes,
                                const WebPPicture* const pic) {
   const int histo_xsize = histo_bits ? VP8LSubSampleSize(width, histo_bits) : 1;
@@ -711,7 +711,7 @@ static int StoreImageToBitMask(VP8LBitWriter* const bw, int width,
       codes = huffman_codes + 5 * histogram_ix;
     }
     if (PixOrCopyIsLiteral(v)) {
-      static const uint8_t order[] = {1, 2, 0, 3};
+      static const uint8 order[] = {1, 2, 0, 3};
       int k;
       for (k = 0; k < 4; ++k) {
         const int code = PixOrCopyLiteral(v, order[k]);
@@ -752,7 +752,7 @@ static int StoreImageToBitMask(VP8LBitWriter* const bw, int width,
 // Special case of EncodeImageInternal() for cache-bits=0, histo_bits=31.
 // pic and percent are for progress.
 static int EncodeImageNoHuffman(VP8LBitWriter* const bw,
-                                const uint32_t* const argb,
+                                const uint32* const argb,
                                 VP8LHashChain* const hash_chain,
                                 VP8LBackwardRefs* const refs_array, int width,
                                 int height, int quality, int low_effort,
@@ -763,7 +763,7 @@ static int EncodeImageNoHuffman(VP8LBitWriter* const bw,
   VP8LBackwardRefs* refs;
   HuffmanTreeToken* tokens = NULL;
   HuffmanTreeCode huffman_codes[5] = {{0, NULL, NULL}};
-  const uint32_t histogram_symbols[1] = {0};  // only one tree, one symbol
+  const uint32 histogram_symbols[1] = {0};  // only one tree, one symbol
   int cache_bits = 0;
   VP8LHistogramSet* histogram_image = NULL;
   HuffmanTree* const huff_tree = (HuffmanTree*)WebPSafeMalloc(
@@ -845,26 +845,26 @@ Error:
 
 // pic and percent are for progress.
 static int EncodeImageInternal(
-    VP8LBitWriter* const bw, const uint32_t* const argb,
+    VP8LBitWriter* const bw, const uint32* const argb,
     VP8LHashChain* const hash_chain, VP8LBackwardRefs refs_array[4], int width,
     int height, int quality, int low_effort, const CrunchConfig* const config,
     int* cache_bits, int histogram_bits_in, size_t init_byte_position,
     int* const hdr_size, int* const data_size, const WebPPicture* const pic,
     int percent_range, int* const percent) {
-  const uint32_t histogram_image_xysize =
+  const uint32 histogram_image_xysize =
       VP8LSubSampleSize(width, histogram_bits_in) *
       VP8LSubSampleSize(height, histogram_bits_in);
   int remaining_percent = percent_range;
   int percent_start = *percent;
   VP8LHistogramSet* histogram_image = NULL;
   VP8LHistogram* tmp_histo = NULL;
-  uint32_t i, histogram_image_size = 0;
+  uint32 i, histogram_image_size = 0;
   size_t bit_array_size = 0;
   HuffmanTree* const huff_tree = (HuffmanTree*)WebPSafeMalloc(
       3ULL * CODE_LENGTH_CODES, sizeof(*huff_tree));
   HuffmanTreeToken* tokens = NULL;
   HuffmanTreeCode* huffman_codes = NULL;
-  uint32_t* const histogram_argb = (uint32_t*)WebPSafeMalloc(
+  uint32* const histogram_argb = (uint32*)WebPSafeMalloc(
       histogram_image_xysize, sizeof(*histogram_argb));
   int sub_configs_idx;
   int cache_bits_init, write_histogram_image;
@@ -1141,13 +1141,13 @@ static int ApplyCrossColorFilter(VP8LEncoder* const enc, int width, int height,
 
 static int WriteRiffHeader(const WebPPicture* const pic, size_t riff_size,
                            size_t vp8l_size) {
-  uint8_t riff[RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE + VP8L_SIGNATURE_SIZE] = {
+  uint8 riff[RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE + VP8L_SIGNATURE_SIZE] = {
       'R', 'I', 'F', 'F', 0,   0,   0,
       0,   'W', 'E', 'B', 'P', 'V', 'P',
       '8', 'L', 0,   0,   0,   0,   VP8L_MAGIC_BYTE,
   };
-  PutLE32(riff + TAG_SIZE, (uint32_t)riff_size);
-  PutLE32(riff + RIFF_HEADER_SIZE + TAG_SIZE, (uint32_t)vp8l_size);
+  PutLE32(riff + TAG_SIZE, (uint32)riff_size);
+  PutLE32(riff + RIFF_HEADER_SIZE + TAG_SIZE, (uint32)vp8l_size);
   return pic.writer(riff, sizeof(riff), pic);
 }
 
@@ -1170,7 +1170,7 @@ static int WriteRealAlphaAndVersion(VP8LBitWriter* const bw, int has_alpha) {
 
 static int WriteImage(const WebPPicture* const pic, VP8LBitWriter* const bw,
                       size_t* const coded_size) {
-  const uint8_t* const webpll_data = VP8LBitWriterFinish(bw);
+  const uint8* const webpll_data = VP8LBitWriterFinish(bw);
   const size_t webpll_size = VP8LBitWriterNumBytes(bw);
   const size_t vp8l_size = VP8L_SIGNATURE_SIZE + webpll_size;
   const size_t pad = vp8l_size & 1;
@@ -1187,7 +1187,7 @@ static int WriteImage(const WebPPicture* const pic, VP8LBitWriter* const bw,
   }
 
   if (pad) {
-    const uint8_t pad_byte[1] = {0};
+    const uint8 pad_byte[1] = {0};
     if (!pic.writer(pad_byte, 1, pic)) {
       return WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_WRITE);
     }
@@ -1211,28 +1211,28 @@ func ClearTransformBuffer(VP8LEncoder* const enc) {
 //  enc.use_predict, enc.use_cross_color
 static int AllocateTransformBuffer(VP8LEncoder* const enc, int width,
                                    int height) {
-  const uint64_t image_size = (uint64_t)width * height;
+  const uint64 image_size = (uint64)width * height;
   // VP8LResidualImage needs room for 2 scanlines of uint32 pixels with an extra
   // pixel in each, plus 2 regular scanlines of bytes.
   // TODO(skal): Clean up by using arithmetic in bytes instead of words.
-  const uint64_t argb_scratch_size =
-      enc.use_predict ? (width + 1) * 2 + (width * 2 + sizeof(uint32_t) - 1) /
-                                               sizeof(uint32_t)
+  const uint64 argb_scratch_size =
+      enc.use_predict ? (width + 1) * 2 + (width * 2 + sizeof(uint32) - 1) /
+                                               sizeof(uint32)
                        : 0;
-  const uint64_t transform_data_size =
+  const uint64 transform_data_size =
       (enc.use_predict || enc.use_cross_color)
-          ? (uint64_t)VP8LSubSampleSize(width, MIN_TRANSFORM_BITS) *
+          ? (uint64)VP8LSubSampleSize(width, MIN_TRANSFORM_BITS) *
                 VP8LSubSampleSize(height, MIN_TRANSFORM_BITS)
           : 0;
-  const uint64_t max_alignment_in_words =
-      (WEBP_ALIGN_CST + sizeof(uint32_t) - 1) / sizeof(uint32_t);
-  const uint64_t mem_size = image_size + max_alignment_in_words +
+  const uint64 max_alignment_in_words =
+      (WEBP_ALIGN_CST + sizeof(uint32) - 1) / sizeof(uint32);
+  const uint64 mem_size = image_size + max_alignment_in_words +
                             argb_scratch_size + max_alignment_in_words +
                             transform_data_size;
-  uint32_t* mem = enc.transform_mem;
+  uint32* mem = enc.transform_mem;
   if (mem == NULL || mem_size > enc.transform_mem_size) {
     ClearTransformBuffer(enc);
-    mem = (uint32_t*)WebPSafeMalloc(mem_size, sizeof(*mem));
+    mem = (uint32*)WebPSafeMalloc(mem_size, sizeof(*mem));
     if (mem == NULL) {
       return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
     }
@@ -1241,9 +1241,9 @@ static int AllocateTransformBuffer(VP8LEncoder* const enc, int width,
     enc.argb_content = kEncoderNone;
   }
   enc.argb = mem;
-  mem = (uint32_t*)WEBP_ALIGN(mem + image_size);
+  mem = (uint32*)WEBP_ALIGN(mem + image_size);
   enc.argb_scratch = mem;
-  mem = (uint32_t*)WEBP_ALIGN(mem + argb_scratch_size);
+  mem = (uint32*)WEBP_ALIGN(mem + argb_scratch_size);
   enc.transform_data = mem;
 
   enc.current_width = width;
@@ -1259,8 +1259,8 @@ static int MakeInputImageCopy(VP8LEncoder* const enc) {
   if (enc.argb_content == kEncoderARGB) return 1;
 
   {
-    uint32_t* dst = enc.argb;
-    const uint32_t* src = picture.argb;
+    uint32* dst = enc.argb;
+    const uint32* src = picture.argb;
     int y;
     for (y = 0; y < height; ++y) {
       memcpy(dst, src, width * sizeof(*dst));
@@ -1277,9 +1277,9 @@ static int MakeInputImageCopy(VP8LEncoder* const enc) {
 
 const APPLY_PALETTE_GREEDY_MAX =4
 
-static  uint32_t SearchColorGreedy(const uint32_t palette[],
+static  uint32 SearchColorGreedy(const uint32 palette[],
                                               int palette_size,
-                                              uint32_t color) {
+                                              uint32 color) {
   (void)palette_size;
   assert.Assert(palette_size < APPLY_PALETTE_GREEDY_MAX);
   assert.Assert(3 == APPLY_PALETTE_GREEDY_MAX - 1);
@@ -1289,7 +1289,7 @@ static  uint32_t SearchColorGreedy(const uint32_t palette[],
   return 3;
 }
 
-static  uint32_t ApplyPaletteHash0(uint32_t color) {
+static  uint32 ApplyPaletteHash0(uint32 color) {
   // Focus on the green color.
   return (color >> 8) & 0xff;
 }
@@ -1297,26 +1297,26 @@ static  uint32_t ApplyPaletteHash0(uint32_t color) {
 const PALETTE_INV_SIZE_BITS =11
 const PALETTE_INV_SIZE =(1 << PALETTE_INV_SIZE_BITS)
 
-static  uint32_t ApplyPaletteHash1(uint32_t color) {
+static  uint32 ApplyPaletteHash1(uint32 color) {
   // Forget about alpha.
-  return ((uint32_t)((color & 0x00ffffffu) * 4222244071ull)) >>
+  return ((uint32)((color & 0x00ffffffu) * 4222244071ull)) >>
          (32 - PALETTE_INV_SIZE_BITS);
 }
 
-static  uint32_t ApplyPaletteHash2(uint32_t color) {
+static  uint32 ApplyPaletteHash2(uint32 color) {
   // Forget about alpha.
-  return ((uint32_t)((color & 0x00ffffffu) * ((1ull << 31) - 1))) >>
+  return ((uint32)((color & 0x00ffffffu) * ((1ull << 31) - 1))) >>
          (32 - PALETTE_INV_SIZE_BITS);
 }
 
 // Use 1 pixel cache for ARGB pixels.
 #define APPLY_PALETTE_FOR(COLOR_INDEX)                \
   do {                                                \
-    uint32_t prev_pix = palette[0];                   \
-    uint32_t prev_idx = 0;                            \
+    uint32 prev_pix = palette[0];                   \
+    uint32 prev_idx = 0;                            \
     for (y = 0; y < height; ++y) {                    \
       for (x = 0; x < width; ++x) {                   \
-        const uint32_t pix = src[x];                  \
+        const uint32 pix = src[x];                  \
         if (pix != prev_pix) {                        \
           prev_idx = COLOR_INDEX;                     \
           prev_pix = pix;                             \
@@ -1333,13 +1333,13 @@ static  uint32_t ApplyPaletteHash2(uint32_t color) {
 // using 'row' as a temporary buffer of size 'width'.
 // We assume that all src[] values have a corresponding entry in the palette.
 // Note: src[] can be the same as dst[]
-static int ApplyPalette(const uint32_t* src, uint32_t src_stride, uint32_t* dst,
-                        uint32_t dst_stride, const uint32_t* palette,
+static int ApplyPalette(const uint32* src, uint32 src_stride, uint32* dst,
+                        uint32 dst_stride, const uint32* palette,
                         int palette_size, int width, int height, int xbits,
                         const WebPPicture* const pic) {
   // TODO(skal): this tmp buffer is not needed if VP8LBundleColorMap() can be
   // made to work in-place.
-  uint8_t* const tmp_row = (uint8_t*)WebPSafeMalloc(width, sizeof(*tmp_row));
+  uint8* const tmp_row = (uint8*)WebPSafeMalloc(width, sizeof(*tmp_row));
   int x, y;
 
   if (tmp_row == NULL) {
@@ -1350,8 +1350,8 @@ static int ApplyPalette(const uint32_t* src, uint32_t src_stride, uint32_t* dst,
     APPLY_PALETTE_FOR(SearchColorGreedy(palette, palette_size, pix));
   } else {
     int i, j;
-    uint16_t buffer[PALETTE_INV_SIZE];
-    uint32_t (*const hash_functions[])(uint32_t) = {
+    uint16 buffer[PALETTE_INV_SIZE];
+    uint32 (*const hash_functions[])(uint32) = {
         ApplyPaletteHash0, ApplyPaletteHash1, ApplyPaletteHash2};
 
     // Try to find a perfect hash function able to go from a color to an index
@@ -1359,10 +1359,10 @@ static int ApplyPalette(const uint32_t* src, uint32_t src_stride, uint32_t* dst,
     // from color to index in palette.
     for (i = 0; i < 3; ++i) {
       int use_LUT = 1;
-      // Set each element in buffer to max uint16_t.
+      // Set each element in buffer to max uint16.
       memset(buffer, 0xff, sizeof(buffer));
       for (j = 0; j < palette_size; ++j) {
-        const uint32_t ind = hash_functions[i](palette[j]);
+        const uint32 ind = hash_functions[i](palette[j]);
         if (buffer[ind] != 0xffffu) {
           use_LUT = 0;
           break;
@@ -1380,8 +1380,8 @@ static int ApplyPalette(const uint32_t* src, uint32_t src_stride, uint32_t* dst,
     } else if (i == 2) {
       APPLY_PALETTE_FOR(buffer[ApplyPaletteHash2(pix)]);
     } else {
-      uint32_t idx_map[MAX_PALETTE_SIZE];
-      uint32_t palette_sorted[MAX_PALETTE_SIZE];
+      uint32 idx_map[MAX_PALETTE_SIZE];
+      uint32 palette_sorted[MAX_PALETTE_SIZE];
       PrepareMapToPalette(palette, palette_size, palette_sorted, idx_map);
       APPLY_PALETTE_FOR(
           idx_map[SearchColorNoIdx(palette_sorted, pix, palette_size)]);
@@ -1400,7 +1400,7 @@ static int MapImageFromPalette(VP8LEncoder* const enc) {
   const WebPPicture* const pic = enc.pic;
   const int width = pic.width;
   const int height = pic.height;
-  const uint32_t* const palette = enc.palette;
+  const uint32* const palette = enc.palette;
   const int palette_size = enc.palette_size;
   int xbits;
 
@@ -1428,13 +1428,13 @@ static int EncodePalette(VP8LBitWriter* const bw, int low_effort,
                          VP8LEncoder* const enc, int percent_range,
                          int* const percent) {
   int i;
-  uint32_t tmp_palette[MAX_PALETTE_SIZE];
+  uint32 tmp_palette[MAX_PALETTE_SIZE];
   const int palette_size = enc.palette_size;
-  const uint32_t* const palette = enc.palette;
+  const uint32* const palette = enc.palette;
   // If the last element is 0, do not store it and count on automatic palette
   // 0-filling. This can only happen if there is no pixel packing, hence if
   // there are strictly more than 16 colors (after 0 is removed).
-  const uint32_t encoded_palette_size =
+  const uint32 encoded_palette_size =
       (enc.palette[palette_size - 1] == 0 && palette_size > 17)
           ? palette_size - 1
           : palette_size;

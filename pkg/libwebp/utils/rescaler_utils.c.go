@@ -30,13 +30,13 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 
 int WebPRescalerInit(WebPRescaler* const rescaler, int src_width,
-                     int src_height, uint8_t* const dst, int dst_width,
+                     int src_height, uint8* const dst, int dst_width,
                      int dst_height, int dst_stride, int num_channels,
                      rescaler_t* const WEBP_COUNTED_BY(2ULL * dst_width *
                                                        num_channels) work) {
   const int x_add = src_width, x_sub = dst_width;
   const int y_add = src_height, y_sub = dst_height;
-  const uint64_t total_size = 2ull * dst_width * num_channels * sizeof(*work);
+  const uint64 total_size = 2ull * dst_width * num_channels * sizeof(*work);
   if (!CheckSizeOverflow(total_size)) return 0;
 
   rescaler.x_expand = (src_width < dst_width);
@@ -68,17 +68,17 @@ int WebPRescalerInit(WebPRescaler* const rescaler, int src_width,
     // This is WEBP_RESCALER_FRAC(dst_height, x_add * y_add) without the cast.
     // Its value is <= WEBP_RESCALER_ONE, because dst_height <= rescaler.y_add
     // and rescaler.x_add >= 1;
-    const uint64_t num = (uint64_t)dst_height * WEBP_RESCALER_ONE;
-    const uint64_t den = (uint64_t)rescaler.x_add * rescaler.y_add;
-    const uint64_t ratio = num / den;
-    if (ratio != (uint32_t)ratio) {
+    const uint64 num = (uint64)dst_height * WEBP_RESCALER_ONE;
+    const uint64 den = (uint64)rescaler.x_add * rescaler.y_add;
+    const uint64 ratio = num / den;
+    if (ratio != (uint32)ratio) {
       // When ratio == WEBP_RESCALER_ONE, we can't represent the ratio with the
       // current fixed-point precision. This happens when src_height ==
       // rescaler.y_add (which == src_height), and rescaler.x_add == 1.
       // => We special-case fxy_scale = 0, in WebPRescalerExportRow().
       rescaler.fxy_scale = 0;
     } else {
-      rescaler.fxy_scale = (uint32_t)ratio;
+      rescaler.fxy_scale = (uint32)ratio;
     }
     rescaler.fy_scale = WEBP_RESCALER_FRAC(1, rescaler.y_sub);
   } else {
@@ -103,12 +103,12 @@ int WebPRescalerGetScaledDimensions(int src_width, int src_height,
     // if width is unspecified, scale original proportionally to height ratio.
     if (width == 0 && src_height > 0) {
       width =
-          (int)(((uint64_t)src_width * height + src_height - 1) / src_height);
+          (int)(((uint64)src_width * height + src_height - 1) / src_height);
     }
     // if height is unspecified, scale original proportionally to width ratio.
     if (height == 0 && src_width > 0) {
       height =
-          (int)(((uint64_t)src_height * width + src_width - 1) / src_width);
+          (int)(((uint64)src_height * width + src_width - 1) / src_width);
     }
     // Check if the overall dimensions still make sense.
     if (width <= 0 || height <= 0 || width > max_size || height > max_size) {
@@ -132,7 +132,7 @@ int WebPRescaleNeededLines(const WebPRescaler* const rescaler,
 }
 
 int WebPRescalerImport(WebPRescaler* const rescaler, int num_lines,
-                       const uint8_t* src, int src_stride) {
+                       const uint8* src, int src_stride) {
   int total_imported = 0;
   while (total_imported < num_lines &&
          !WebPRescalerHasPendingOutput(rescaler)) {

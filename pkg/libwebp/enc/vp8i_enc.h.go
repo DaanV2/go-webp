@@ -81,9 +81,9 @@ const Y_OFF_ENC =(0)
 const U_OFF_ENC =(16)
 const V_OFF_ENC =(16 + 8)
 
-extern const uint16_t VP8Scan[16];
-extern const uint16_t VP8UVModeOffsets[4];
-extern const uint16_t VP8I16ModeOffsets[4];
+extern const uint16 VP8Scan[16];
+extern const uint16 VP8UVModeOffsets[4];
+extern const uint16 VP8I16ModeOffsets[4];
 
 // Layout of prediction blocks
 // intra 16x16
@@ -109,7 +109,7 @@ const I4HD4 = (3 * 16 * BPS + 4 * BPS)
 const I4HU4 = (I4HD4 + 4)
 const I4TMP = (I4HD4 + 8)
 
-typedef int64_t score_t;  // type used for scores, rate, distortion
+typedef int64 score_t;  // type used for scores, rate, distortion
 // Note that MAX_COST is not the maximum allowed by sizeof(score_t),
 // in order to allow overflowing computations.
 const MAX_COST =((score_t)0x7fffffffffffffLL)
@@ -118,7 +118,7 @@ const QFIX = 17
 #define BIAS(b) ((b) << (QFIX - 8))
 // Fun fact: this is the _only_ line where we're actually being lossy and
 // discarding bits.
-static  int QUANTDIV(uint32_t n, uint32_t iQ, uint32_t B) {
+static  int QUANTDIV(uint32 n, uint32 iQ, uint32 B) {
   return (int)((n * iQ + B) >> QFIX);
 }
 
@@ -131,12 +131,12 @@ const ERROR_DIFFUSION_QUALITY =98
 //------------------------------------------------------------------------------
 // Headers
 
-typedef uint32_t proba_t;  // 16b + 16b
-typedef uint8_t ProbaArray[NUM_CTX][NUM_PROBAS];
+typedef uint32 proba_t;  // 16b + 16b
+typedef uint8 ProbaArray[NUM_CTX][NUM_PROBAS];
 typedef proba_t StatsArray[NUM_CTX][NUM_PROBAS];
-typedef uint16_t CostArray[NUM_CTX][MAX_VARIABLE_LEVEL + 1];
-typedef const uint16_t* (*CostArrayPtr)[NUM_CTX];  // for easy casting
-typedef const uint16_t* CostArrayMap[16][NUM_CTX];
+typedef uint16 CostArray[NUM_CTX][MAX_VARIABLE_LEVEL + 1];
+typedef const uint16* (*CostArrayPtr)[NUM_CTX];  // for easy casting
+typedef const uint16* CostArrayMap[16][NUM_CTX];
 typedef double LFStats[NUM_MB_SEGMENTS][MAX_LF_LEVELS];  // filter stats
 
 typedef struct VP8Encoder VP8Encoder;
@@ -151,8 +151,8 @@ typedef struct {
 
 // Struct collecting all frame-persistent probabilities.
 typedef struct {
-  uint8_t segments[3];  // probabilities for segment tree
-  uint8_t skip_proba;   // final probability of being skipped.
+  uint8 segments[3];  // probabilities for segment tree
+  uint8 skip_proba;   // final probability of being skipped.
   ProbaArray coeffs[NUM_TYPES][NUM_BANDS];     // 1056 bytes
   StatsArray stats[NUM_TYPES][NUM_BANDS];      // 4224 bytes
   CostArray level_cost[NUM_TYPES][NUM_BANDS];  // 13056 bytes
@@ -180,15 +180,15 @@ typedef struct {
   unsigned int uv_mode : 2;
   unsigned int skip : 1;
   unsigned int segment : 2;
-  uint8_t alpha;  // quantization-susceptibility
+  uint8 alpha;  // quantization-susceptibility
 } VP8MBInfo;
 
 typedef type VP8Matrix struct {
-  uint16_t q[16];        // quantizer steps
-  uint16_t iq[16];       // reciprocals, fixed point.
-  uint32_t bias[16];     // rounding bias
-  uint32_t zthresh[16];  // value below which a coefficient is zeroed
-  uint16_t sharpen[16];  // frequency boosters for slight sharpening
+  uint16 q[16];        // quantizer steps
+  uint16 iq[16];       // reciprocals, fixed point.
+  uint32 bias[16];     // rounding bias
+  uint32 zthresh[16];  // value below which a coefficient is zeroed
+  uint16 sharpen[16];  // frequency boosters for slight sharpening
 } VP8Matrix;
 
 typedef struct {
@@ -209,48 +209,48 @@ typedef struct {
   score_t i4_penalty;  // penalty for using Intra4
 } VP8SegmentInfo;
 
-typedef int8_t DError[2 /* u/v */][2 /* top or left */];
+typedef int8 DError[2 /* u/v */][2 /* top or left */];
 
 // Handy transient struct to accumulate score and info during RD-optimization
 // and mode evaluation.
 typedef struct {
   score_t D, SD;            // Distortion, spectral distortion
   score_t H, R, score;      // header bits, rate, score.
-  int16_t y_dc_levels[16];  // Quantized levels for luma-DC, luma-AC, chroma.
-  int16_t y_ac_levels[16][16];
-  int16_t uv_levels[4 + 4][16];
+  int16 y_dc_levels[16];  // Quantized levels for luma-DC, luma-AC, chroma.
+  int16 y_ac_levels[16][16];
+  int16 uv_levels[4 + 4][16];
   int mode_i16;          // mode number for intra16 prediction
-  uint8_t modes_i4[16];  // mode numbers for intra4 predictions
+  uint8 modes_i4[16];  // mode numbers for intra4 predictions
   int mode_uv;           // mode number of chroma prediction
-  uint32_t nz;           // non-zero blocks
-  int8_t derr[2][3];     // DC diffusion errors for U/V for blocks #1/2/3
+  uint32 nz;           // non-zero blocks
+  int8 derr[2][3];     // DC diffusion errors for U/V for blocks #1/2/3
 } VP8ModeScore;
 
 // Iterator structure to iterate through macroblocks, pointing to the
 // right neighbouring data (samples, predictions, contexts, ...)
 typedef struct {
   int x, y;           // current macroblock
-  uint8_t* yuv_in;    // input samples
-  uint8_t* yuv_out;   // output samples
-  uint8_t* yuv_out2;  // secondary buffer swapped with yuv_out.
-  uint8_t* yuv_p;     // scratch buffer for prediction
+  uint8* yuv_in;    // input samples
+  uint8* yuv_out;   // output samples
+  uint8* yuv_out2;  // secondary buffer swapped with yuv_out.
+  uint8* yuv_p;     // scratch buffer for prediction
   VP8Encoder* enc;    // back-pointer
   VP8MBInfo* mb;      // current macroblock
   VP8BitWriter* bw;   // current bit-writer
-  uint8_t* preds;     // intra mode predictors (4x4 blocks)
-  uint32_t* nz;       // non-zero pattern
+  uint8* preds;     // intra mode predictors (4x4 blocks)
+  uint32* nz;       // non-zero pattern
 #if WEBP_AARCH64 && BPS == 32
-  uint8_t i4_boundary[40];  // 32+8 boundary samples needed by intra4x4
+  uint8 i4_boundary[40];  // 32+8 boundary samples needed by intra4x4
 #else
-  uint8_t i4_boundary[37];  // 32+5 boundary samples needed by intra4x4
+  uint8 i4_boundary[37];  // 32+5 boundary samples needed by intra4x4
 #endif
-  uint8_t* i4_top;           // pointer to the current top boundary sample
+  uint8* i4_top;           // pointer to the current top boundary sample
   int i4;                    // current intra4x4 mode being tested
   int top_nz[9];             // top-non-zero context.
   int left_nz[9];            // left-non-zero. left_nz[8] is independent.
-  uint64_t bit_count[4][3];  // bit counters for coded levels.
-  uint64_t luma_bits;        // macroblock bit-cost for luma
-  uint64_t uv_bits;          // macroblock bit-cost for chroma
+  uint64 bit_count[4][3];  // bit counters for coded levels.
+  uint64 luma_bits;        // macroblock bit-cost for luma
+  uint64 uv_bits;          // macroblock bit-cost for chroma
   LFStats* lf_stats;         // filter stats (borrowed from enc)
   int do_trellis;            // if true, perform extra level optimisation
   int count_down;            // number of mb still to be processed
@@ -260,17 +260,17 @@ typedef struct {
   DError left_derr;  // left error diffusion (u/v)
   DError* top_derr;  // top diffusion error - NULL if disabled
 
-  uint8_t* y_left;  // left luma samples (addressable from index -1 to 15).
-  uint8_t* u_left;  // left u samples (addressable from index -1 to 7)
-  uint8_t* v_left;  // left v samples (addressable from index -1 to 7)
+  uint8* y_left;  // left luma samples (addressable from index -1 to 15).
+  uint8* u_left;  // left u samples (addressable from index -1 to 7)
+  uint8* v_left;  // left v samples (addressable from index -1 to 7)
 
-  uint8_t* y_top;   // top luma samples at position 'x'
-  uint8_t* uv_top;  // top u/v samples at position 'x', packed as 16 bytes
+  uint8* y_top;   // top luma samples at position 'x'
+  uint8* uv_top;  // top u/v samples at position 'x', packed as 16 bytes
 
   // memory for storing y/u/v_left
-  uint8_t yuv_left_mem[17 + 16 + 16 + 8 + WEBP_ALIGN_CST];
+  uint8 yuv_left_mem[17 + 16 + 16 + 8 + WEBP_ALIGN_CST];
   // memory for yuv*
-  uint8_t yuv_mem[3 * YUV_SIZE_ENC + PRED_SIZE_ENC + WEBP_ALIGN_CST];
+  uint8 yuv_mem[3 * YUV_SIZE_ENC + PRED_SIZE_ENC + WEBP_ALIGN_CST];
 } VP8EncIterator;
 
 // in iterator.c
@@ -285,7 +285,7 @@ int VP8IteratorIsDone(const VP8EncIterator* const it);
 // Import uncompressed samples from source.
 // If tmp_32 is not NULL, import boundary samples too.
 // tmp_32 is a 32-bytes scratch buffer that must be aligned in memory.
-func VP8IteratorImport(VP8EncIterator* const it, uint8_t* const tmp_32);
+func VP8IteratorImport(VP8EncIterator* const it, uint8* const tmp_32);
 // export decimated samples
 func VP8IteratorExport(const VP8EncIterator* const it);
 // go to next macroblock. Returns false if not finished.
@@ -298,7 +298,7 @@ int VP8IteratorProgress(const VP8EncIterator* const it, int delta);
 // Intra4x4 iterations
 func VP8IteratorStartI4(VP8EncIterator* const it);
 // returns true if not done.
-int VP8IteratorRotateI4(VP8EncIterator* const it, const uint8_t* const yuv_out);
+int VP8IteratorRotateI4(VP8EncIterator* const it, const uint8* const yuv_out);
 
 // Non-zero context setup/teardown
 func VP8IteratorNzToBytes(VP8EncIterator* const it);
@@ -306,7 +306,7 @@ func VP8IteratorBytesToNz(VP8EncIterator* const it);
 
 // Helper functions to set mode properties
 func VP8SetIntra16Mode(const VP8EncIterator* const it, int mode);
-func VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8_t* modes);
+func VP8SetIntra4Mode(const VP8EncIterator* const it, const uint8* modes);
 func VP8SetIntraUVMode(const VP8EncIterator* const it, int mode);
 func VP8SetSkip(const VP8EncIterator* const it, int skip);
 func VP8SetSegment(const VP8EncIterator* const it, int segment);
@@ -320,7 +320,7 @@ typedef struct {
 #if !defined(DISABLE_TOKEN_BUFFER)
   VP8Tokens* pages;       // first page
   VP8Tokens** last_page;  // last page
-  uint16_t* tokens;       // set to (*last_page).tokens
+  uint16* tokens;       // set to (*last_page).tokens
   int left;               // how many free tokens left before the page is full
   int page_size;          // number of tokens per page
 #endif
@@ -336,14 +336,14 @@ func VP8TBufferClear(VP8TBuffer* const b);  // de-allocate pages memory
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
 int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw,
-                  const uint8_t* const probas, int final_pass);
+                  const uint8* const probas, int final_pass);
 
 // record the coding of coefficients without knowing the probabilities yet
 int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res,
                          VP8TBuffer* const tokens);
 
 // Estimate the final coded size given a set of 'probas'.
-size_t VP8EstimateTokenSize(VP8TBuffer* const b, const uint8_t* const probas);
+size_t VP8EstimateTokenSize(VP8TBuffer* const b, const uint8* const probas);
 
 #endif  // !DISABLE_TOKEN_BUFFER
 
@@ -376,8 +376,8 @@ type VP8Encoder struct {
 
   // transparency blob
   int has_alpha;
-  uint8_t* alpha_data;  // non-NULL if transparency is present
-  uint32_t alpha_data_size;
+  uint8* alpha_data;  // non-NULL if transparency is present
+  uint32 alpha_data_size;
   WebPWorker alpha_worker;
 
   // quantization info (one set of DC/AC dequant factor per segment)
@@ -393,8 +393,8 @@ type VP8Encoder struct {
 
   // probabilities and statistics
   VP8EncProba proba;
-  uint64_t sse[4];     // sum of Y/U/V/A squared errors for all macroblocks
-  uint64_t sse_count;  // pixel count for the sse[] stats
+  uint64 sse[4];     // sum of Y/U/V/A squared errors for all macroblocks
+  uint64 sse_count;  // pixel count for the sse[] stats
   int coded_size;
   int residual_bytes[3][4];
   int block_count[3];
@@ -410,10 +410,10 @@ type VP8Encoder struct {
 
   // Memory
   VP8MBInfo* mb_info;  // contextual macroblock infos (mb_w + 1)
-  uint8_t* preds;      // predictions modes: (4*mb_w+1) * (4*mb_h+1)
-  uint32_t* nz;        // non-zero bit context: mb_w+1
-  uint8_t* y_top;      // top luma samples.
-  uint8_t* uv_top;     // top u/v samples.
+  uint8* preds;      // predictions modes: (4*mb_w+1) * (4*mb_h+1)
+  uint32* nz;        // non-zero bit context: mb_w+1
+  uint8* y_top;      // top luma samples.
+  uint8* uv_top;     // top u/v samples.
                        // U and V are packed into 16 bytes (8 U + 8 V)
   LFStats* lf_stats;   // autofilter stats (if NULL, autofilter is off)
   DError* top_derr;    // diffusion error (NULL if disabled)
@@ -423,8 +423,8 @@ type VP8Encoder struct {
 // internal functions. Not public.
 
 // in tree.c
-extern const uint8_t VP8CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS];
-extern const uint8_t VP8CoeffsUpdateProba[NUM_TYPES][NUM_BANDS][NUM_CTX]
+extern const uint8 VP8CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS];
+extern const uint8 VP8CoeffsUpdateProba[NUM_TYPES][NUM_BANDS][NUM_CTX]
                                          [NUM_PROBAS];
 // Reset the token probabilities to their initial (default) values
 func VP8DefaultProbas(VP8Encoder* const enc);
@@ -442,10 +442,10 @@ int VP8EncWrite(VP8Encoder* const enc);
 func VP8EncFreeBitWriters(VP8Encoder* const enc);
 
 // in frame.c
-extern const uint8_t VP8Cat3[];
-extern const uint8_t VP8Cat4[];
-extern const uint8_t VP8Cat5[];
-extern const uint8_t VP8Cat6[];
+extern const uint8 VP8Cat3[];
+extern const uint8 VP8Cat4[];
+extern const uint8 VP8Cat5[];
+extern const uint8 VP8Cat6[];
 
 // Form all the four Intra16x16 predictions in the 'yuv_p' cache
 func VP8MakeLuma16Preds(const VP8EncIterator* const it);
@@ -453,7 +453,7 @@ func VP8MakeLuma16Preds(const VP8EncIterator* const it);
 func VP8MakeChroma8Preds(const VP8EncIterator* const it);
 // Rate calculation
 int VP8GetCostLuma16(VP8EncIterator* const it, const VP8ModeScore* const rd);
-int VP8GetCostLuma4(VP8EncIterator* const it, const int16_t levels[16]);
+int VP8GetCostLuma4(VP8EncIterator* const it, const int16 levels[16]);
 int VP8GetCostUV(VP8EncIterator* const it, const VP8ModeScore* const rd);
 // Main coding calls
 int VP8EncLoop(VP8Encoder* const enc);
@@ -515,7 +515,7 @@ int WebPPictureAllocYUVA(WebPPicture* const picture);
 
 // Replace samples that are fully transparent by 'color' to help compressibility
 // (no guarantee, though). Assumes pic.use_argb is true.
-func WebPReplaceTransparentPixels(WebPPicture* const pic, uint32_t color);
+func WebPReplaceTransparentPixels(WebPPicture* const pic, uint32 color);
 
 //------------------------------------------------------------------------------
 

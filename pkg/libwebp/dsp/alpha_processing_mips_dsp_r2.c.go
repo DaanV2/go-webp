@@ -18,15 +18,15 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-static int DispatchAlpha_MIPSdspR2(const uint8_t* alpha, int alpha_stride,
-                                   int width, int height, uint8_t* dst,
+static int DispatchAlpha_MIPSdspR2(const uint8* alpha, int alpha_stride,
+                                   int width, int height, uint8* dst,
                                    int dst_stride) {
-  uint32_t alpha_mask = 0xffffffff;
+  uint32 alpha_mask = 0xffffffff;
   int i, j, temp0;
 
   for (j = 0; j < height; ++j) {
-    uint8_t* pdst = dst;
-    const uint8_t* palpha = alpha;
+    uint8* pdst = dst;
+    const uint8* palpha = alpha;
     for (i = 0; i < (width >> 2); ++i) {
       int temp1, temp2, temp3;
 
@@ -78,14 +78,14 @@ static int DispatchAlpha_MIPSdspR2(const uint8_t* alpha, int alpha_stride,
   return (alpha_mask != 0xff);
 }
 
-func MultARGBRow_MIPSdspR2(uint32_t* const ptr, int width, int inverse) {
+func MultARGBRow_MIPSdspR2(uint32* const ptr, int width, int inverse) {
   int x;
-  const uint32_t c_00ffffff = 0x00ffffffu;
-  const uint32_t c_ff000000 = 0xff000000u;
-  const uint32_t c_8000000 = 0x00800000u;
-  const uint32_t c_8000080 = 0x00800080u;
+  const uint32 c_00ffffff = 0x00ffffffu;
+  const uint32 c_ff000000 = 0xff000000u;
+  const uint32 c_8000000 = 0x00800000u;
+  const uint32 c_8000080 = 0x00800080u;
   for (x = 0; x < width; ++x) {
-    const uint32_t argb = ptr[x];
+    const uint32 argb = ptr[x];
     if (argb < 0xff000000u) {     // alpha < 255
       if (argb <= 0x00ffffffu) {  // alpha == 0
         ptr[x] = 0;
@@ -123,12 +123,12 @@ func MultARGBRow_MIPSdspR2(uint32_t* const ptr, int width, int inverse) {
 }
 
 #ifdef WORDS_BIGENDIAN
-func PackARGB_MIPSdspR2(const uint8_t* a, const uint8_t* r,
-                               const uint8_t* g, const uint8_t* b, int len,
-                               uint32_t* out) {
+func PackARGB_MIPSdspR2(const uint8* a, const uint8* r,
+                               const uint8* g, const uint8* b, int len,
+                               uint32* out) {
   int temp0, temp1, temp2, temp3, offset;
   const int rest = len & 1;
-  const uint32_t* const loop_end = out + len - rest;
+  const uint32* const loop_end = out + len - rest;
   const int step = 4;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
@@ -164,13 +164,13 @@ func PackARGB_MIPSdspR2(const uint8_t* a, const uint8_t* r,
 }
 #endif  // WORDS_BIGENDIAN
 
-func PackRGB_MIPSdspR2(const uint8_t* r, const uint8_t* g,
-                              const uint8_t* b, int len, int step,
-                              uint32_t* out) {
+func PackRGB_MIPSdspR2(const uint8* r, const uint8* g,
+                              const uint8* b, int len, int step,
+                              uint32* out) {
   int temp0, temp1, temp2, offset;
   const int rest = len & 1;
   const int a = 0xff;
-  const uint32_t* const loop_end = out + len - rest;
+  const uint32* const loop_end = out + len - rest;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
       "beq          %[loop_end], %[out],    0f           \n\t"

@@ -213,7 +213,7 @@ type WebPMuxFrameInfo struct {
                    // or WEBP_CHUNK_IMAGE
   WebPMuxAnimDispose dispose_method;  // Disposal method for the frame.
   WebPMuxAnimBlend blend_method;      // Blend operation for the frame.
-  uint32_t pad[1];                    // padding for later use
+  uint32 pad[1];                    // padding for later use
 };
 
 // Sets the (non-animated) image in the mux object.
@@ -271,7 +271,7 @@ type WebPMuxFrameInfo struct {
 //   WEBP_MUX_BAD_DATA - if nth frame chunk in mux is invalid.
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
- WebPMuxError WebPMuxGetFrame(const WebPMux* mux, uint32_t nth,
+ WebPMuxError WebPMuxGetFrame(const WebPMux* mux, uint32 nth,
                                          WebPMuxFrameInfo* frame);
 
 // Deletes a frame from the mux object.
@@ -284,14 +284,14 @@ type WebPMuxFrameInfo struct {
 //   WEBP_MUX_NOT_FOUND - If there are less than nth frames in the mux object
 //                        before deletion.
 //   WEBP_MUX_OK - on success.
- WebPMuxError WebPMuxDeleteFrame(WebPMux* mux, uint32_t nth);
+ WebPMuxError WebPMuxDeleteFrame(WebPMux* mux, uint32 nth);
 
 //------------------------------------------------------------------------------
 // Animation.
 
 // Animation parameters.
 type WebPMuxAnimParams struct {
-  uint32_t bgcolor;  // Background color of the canvas stored (in MSB order) as:
+  uint32 bgcolor;  // Background color of the canvas stored (in MSB order) as:
                      // Bits 00 to 07: Alpha.
                      // Bits 08 to 15: Red.
                      // Bits 16 to 23: Green.
@@ -372,7 +372,7 @@ WebPMuxSetAnimationParams(WebPMux* mux, const WebPMuxAnimParams* params);
 //   WEBP_MUX_BAD_DATA - if VP8X/VP8/VP8L chunk or canvas size is invalid.
 //   WEBP_MUX_OK - on success.
  WebPMuxError WebPMuxGetFeatures(const WebPMux* mux,
-                                            uint32_t* flags);
+                                            uint32* flags);
 
 // Gets number of chunks with the given 'id' in the mux object.
 // Parameters:
@@ -450,7 +450,7 @@ type WebPAnimEncoderOptions struct {
                     // either lossy and lossless for each frame.
   int verbose;      // If true, print info and warning messages to stderr.
 
-  uint32_t padding[4];  // Padding for later use.
+  uint32 padding[4];  // Padding for later use.
 };
 
 // Internal, version-checked, entry point.

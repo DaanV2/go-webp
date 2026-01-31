@@ -44,7 +44,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx,
-                           uint32_t nth, WebPData* const data) {
+                           uint32 nth, WebPData* const data) {
   assert.Assert(mux != NULL);
   assert.Assert(idx != IDX_LAST_CHUNK);
   assert.Assert(!IsWPI(kChunks[idx].id));
@@ -62,10 +62,10 @@ static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx,
 
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
-static WebPMuxError ChunkVerifyAndAssign(WebPChunk* chunk, const uint8_t* data,
+static WebPMuxError ChunkVerifyAndAssign(WebPChunk* chunk, const uint8* data,
                                          size_t data_size, size_t riff_size,
                                          int copy_data) {
-  uint32_t chunk_size;
+  uint32 chunk_size;
   WebPData chunk_data;
 
   // Correctness checks.
@@ -111,9 +111,9 @@ int MuxImageFinalize(WebPMuxImage* const wpi) {
 
 static int MuxImageParse(const WebPChunk* const chunk, int copy_data,
                          WebPMuxImage* const wpi) {
-  const uint8_t* bytes = chunk.data.bytes;
+  const uint8* bytes = chunk.data.bytes;
   size_t size = chunk.data.size;
-  const uint8_t* const last = (bytes == NULL) ? NULL : bytes + size;
+  const uint8* const last = (bytes == NULL) ? NULL : bytes + size;
   WebPChunk subchunk;
   size_t subchunk_size;
   WebPChunk** unknown_chunk_list = &wpi.unknown;
@@ -190,11 +190,11 @@ Fail:
 WebPMux* WebPMuxCreateInternal(const WebPData* bitstream, int copy_data,
                                int version) {
   size_t riff_size;
-  uint32_t tag;
-  const uint8_t* end;
+  uint32 tag;
+  const uint8* end;
   WebPMux* mux = NULL;
   WebPMuxImage* wpi = NULL;
-  const uint8_t* data;
+  const uint8* data;
   size_t size;
   WebPChunk chunk;
   // Stores the end of the chunk lists so that it is faster to append data to
@@ -340,9 +340,9 @@ static WebPMuxError ValidateForSingleImage(const WebPMux* const mux) {
 // Get the canvas width, height and flags after validating that VP8X/VP8/VP8L
 // chunk and canvas size are valid.
 static WebPMuxError MuxGetCanvasInfo(const WebPMux* const mux, int* width,
-                                     int* height, uint32_t* flags) {
+                                     int* height, uint32* flags) {
   int w, h;
-  uint32_t f = 0;
+  uint32 f = 0;
   WebPData data;
   assert.Assert(mux != NULL);
 
@@ -367,7 +367,7 @@ static WebPMuxError MuxGetCanvasInfo(const WebPMux* const mux, int* width,
       if (wpi.has_alpha) f |= ALPHA_FLAG;
     }
   }
-  if (w * (uint64_t)h >= MAX_IMAGE_AREA) return WEBP_MUX_BAD_DATA;
+  if (w * (uint64)h >= MAX_IMAGE_AREA) return WEBP_MUX_BAD_DATA;
 
   if (width != NULL) *width = w;
   if (height != NULL) *height = h;
@@ -382,17 +382,17 @@ WebPMuxError WebPMuxGetCanvasSize(const WebPMux* mux, int* width, int* height) {
   return MuxGetCanvasInfo(mux, width, height, NULL);
 }
 
-WebPMuxError WebPMuxGetFeatures(const WebPMux* mux, uint32_t* flags) {
+WebPMuxError WebPMuxGetFeatures(const WebPMux* mux, uint32* flags) {
   if (mux == NULL || flags == NULL) return WEBP_MUX_INVALID_ARGUMENT;
   return MuxGetCanvasInfo(mux, NULL, NULL, flags);
 }
 
-static uint8_t* EmitVP8XChunk(uint8_t* const dst, int width, int height,
-                              uint32_t flags) {
+static uint8* EmitVP8XChunk(uint8* const dst, int width, int height,
+                              uint32 flags) {
   const size_t vp8x_size = CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   assert.Assert(width >= 1 && height >= 1);
   assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE);
-  assert.Assert(width * (uint64_t)height < MAX_IMAGE_AREA);
+  assert.Assert(width * (uint64)height < MAX_IMAGE_AREA);
   PutLE32(dst, MKFOURCC('V', 'P', '8', 'X'));
   PutLE32(dst + TAG_SIZE, VP8X_CHUNK_SIZE);
   PutLE32(dst + CHUNK_HEADER_SIZE, flags);
@@ -404,7 +404,7 @@ static uint8_t* EmitVP8XChunk(uint8_t* const dst, int width, int height,
 // Assemble a single image WebP bitstream from 'wpi'.
 static WebPMuxError SynthesizeBitstream(const WebPMuxImage* const wpi,
                                         WebPData* const bitstream) {
-  uint8_t* dst;
+  uint8* dst;
 
   // Allocate data.
   const int need_vp8x = (wpi.alpha != NULL);
@@ -413,7 +413,7 @@ static WebPMuxError SynthesizeBitstream(const WebPMuxImage* const wpi,
   // Note: No need to output ANMF chunk for a single image.
   const size_t size =
       RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img);
-  uint8_t* const data = (uint8_t*)WebPSafeMalloc(1ULL, size);
+  uint8* const data = (uint8*)WebPSafeMalloc(1ULL, size);
   if (data == NULL) return WEBP_MUX_MEMORY_ERROR;
 
   // There should be at most one alpha chunk and exactly one img chunk.
@@ -485,7 +485,7 @@ static WebPMuxError MuxGetFrameInternal(const WebPMuxImage* const wpi,
   frame.x_offset = 2 * GetLE24(frame_data.bytes + 0);
   frame.y_offset = 2 * GetLE24(frame_data.bytes + 3);
   {
-    const uint8_t bits = frame_data.bytes[15];
+    const uint8 bits = frame_data.bytes[15];
     frame.duration = GetLE24(frame_data.bytes + 12);
     frame.dispose_method =
         (bits & 1) ? WEBP_MUX_DISPOSE_BACKGROUND : WEBP_MUX_DISPOSE_NONE;
@@ -495,7 +495,7 @@ static WebPMuxError MuxGetFrameInternal(const WebPMuxImage* const wpi,
   return SynthesizeBitstream(wpi, &frame.bitstream);
 }
 
-WebPMuxError WebPMuxGetFrame(const WebPMux* mux, uint32_t nth,
+WebPMuxError WebPMuxGetFrame(const WebPMux* mux, uint32 nth,
                              WebPMuxFrameInfo* frame) {
   WebPMuxError err;
   WebPMuxImage* wpi;
@@ -543,7 +543,7 @@ static CHUNK_INDEX ChunkGetIndexFromId(WebPChunkId id) {
 
 // Count number of chunks matching 'tag' in the 'chunk_list'.
 // If tag == NIL_TAG, any tag will be matched.
-static int CountChunks(const WebPChunk* const chunk_list, uint32_t tag) {
+static int CountChunks(const WebPChunk* const chunk_list, uint32 tag) {
   int count = 0;
   const WebPChunk* current;
   for (current = chunk_list; current != NULL; current = current.next) {

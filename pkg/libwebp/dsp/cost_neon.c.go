@@ -18,10 +18,10 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static const uint8_t position[16] = {1, 2,  3,  4,  5,  6,  7,  8,
+static const uint8 position[16] = {1, 2,  3,  4,  5,  6,  7,  8,
                                      9, 10, 11, 12, 13, 14, 15, 16};
 
-func SetResidualCoeffs_NEON(const int16_t* WEBP_RESTRICT const coeffs,
+func SetResidualCoeffs_NEON(const int16* WEBP_RESTRICT const coeffs,
                                    VP8Residual* WEBP_RESTRICT const res) {
   const int16x8_t minus_one = vdupq_n_s16(-1);
   const int16x8_t coeffs_0 = vld1q_s16(coeffs);
@@ -51,13 +51,13 @@ func SetResidualCoeffs_NEON(const int16_t* WEBP_RESTRICT const coeffs,
 }
 
 static int GetResidualCost_NEON(int ctx0, const VP8Residual* const res) {
-  uint8_t levels[16], ctxs[16];
-  uint16_t abs_levels[16];
+  uint8 levels[16], ctxs[16];
+  uint16 abs_levels[16];
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   const int p0 = res.prob[n][ctx0][0];
   CostArrayPtr const costs = res.costs;
-  const uint16_t* t = costs[n][ctx0];
+  const uint16* t = costs[n][ctx0];
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.

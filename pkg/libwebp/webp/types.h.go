@@ -79,24 +79,24 @@ const WEBP_SINGLE =__single
 // Provide memcpy/memset/memmove wrappers to make migration easier.
 #define WEBP_UNSAFE_MEMCPY(dst, src, size)                               \
   do {                                                                   \
-    memcpy(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, dst, size),        \
-           WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, src, size), size); \
+    memcpy(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, dst, size),        \
+           WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, src, size), size); \
   } while (0)
 
 #define WEBP_UNSAFE_MEMSET(dst, c, size)                                    \
   do {                                                                      \
-    memset(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, dst, size), c, size); \
+    memset(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, dst, size), c, size); \
   } while (0)
 
 #define WEBP_UNSAFE_MEMMOVE(dst, src, size)                               \
   do {                                                                    \
-    memmove(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, dst, size),        \
-            WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, src, size), size); \
+    memmove(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, dst, size),        \
+            WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, src, size), size); \
   } while (0)
 
 #define WEBP_UNSAFE_MEMCMP(s1, s2, size)                       \
-  memcmp(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, s1, size), \
-         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8_t*, s2, size), size)
+  memcmp(WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, s1, size), \
+         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(uint8*, s2, size), size)
 
 #else  // WEBP_SUPPORT_FBOUNDS_SAFETY
 

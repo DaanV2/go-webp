@@ -31,7 +31,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func SubtractGreenFromBlueAndRed_AVX2(uint32_t* argb_data,
+func SubtractGreenFromBlueAndRed_AVX2(uint32* argb_data,
                                              int num_pixels) {
   int i;
   const __m256i kCstShuffle = _mm256_set_epi8(
@@ -53,13 +53,13 @@ func SubtractGreenFromBlueAndRed_AVX2(uint32_t* argb_data,
 // Color Transform
 
 // For sign-extended multiplying constants, pre-shifted by 5:
-#define CST_5b(X) (((int16_t)((uint16_t)(X) << 8)) >> 5)
+#define CST_5b(X) (((int16)((uint16)(X) << 8)) >> 5)
 
 #define MK_CST_16(HI, LO) \
-  _mm256_set1_epi32((int)(((uint32_t)(HI) << 16) | ((LO) & 0xffff)))
+  _mm256_set1_epi32((int)(((uint32)(HI) << 16) | ((LO) & 0xffff)))
 
 func TransformColor_AVX2(const VP8LMultipliers* WEBP_RESTRICT const m,
-                                uint32_t* WEBP_RESTRICT argb_data,
+                                uint32* WEBP_RESTRICT argb_data,
                                 int num_pixels) {
   const __m256i mults_rb =
       MK_CST_16(CST_5b(m.green_to_red), CST_5b(m.green_to_blue));
@@ -89,10 +89,10 @@ func TransformColor_AVX2(const VP8LMultipliers* WEBP_RESTRICT const m,
 
 //------------------------------------------------------------------------------
 const SPAN = 16
-func CollectColorBlueTransforms_AVX2(const uint32_t* WEBP_RESTRICT argb,
+func CollectColorBlueTransforms_AVX2(const uint32* WEBP_RESTRICT argb,
                                             int stride, int tile_width,
                                             int tile_height, int green_to_blue,
-                                            int red_to_blue, uint32_t histo[]) {
+                                            int red_to_blue, uint32 histo[]) {
   const __m256i mult =
       MK_CST_16(CST_5b(red_to_blue) + 256, CST_5b(green_to_blue));
   const __m256i perm = _mm256_setr_epi8(
@@ -101,8 +101,8 @@ func CollectColorBlueTransforms_AVX2(const uint32_t* WEBP_RESTRICT argb,
   if (tile_width >= 8) {
     int y, i;
     for (y = 0; y < tile_height; ++y) {
-      uint8_t values[32];
-      const uint32_t* const src = argb + y * stride;
+      uint8 values[32];
+      const uint32* const src = argb + y * stride;
       const __m256i A1 = _mm256_loadu_si256((const __m256i*)src);
       const __m256i B1 = _mm256_shuffle_epi8(A1, perm);
       const __m256i C1 = _mm256_mulhi_epi16(B1, mult);
@@ -133,17 +133,17 @@ func CollectColorBlueTransforms_AVX2(const uint32_t* WEBP_RESTRICT argb,
   }
 }
 
-func CollectColorRedTransforms_AVX2(const uint32_t* WEBP_RESTRICT argb,
+func CollectColorRedTransforms_AVX2(const uint32* WEBP_RESTRICT argb,
                                            int stride, int tile_width,
                                            int tile_height, int green_to_red,
-                                           uint32_t histo[]) {
+                                           uint32 histo[]) {
   const __m256i mult = MK_CST_16(0, CST_5b(green_to_red));
   const __m256i mask_g = _mm256_set1_epi32(0x0000ff00);
   if (tile_width >= 8) {
     int y, i;
     for (y = 0; y < tile_height; ++y) {
-      uint8_t values[32];
-      const uint32_t* const src = argb + y * stride;
+      uint8 values[32];
+      const uint32* const src = argb + y * stride;
       const __m256i A1 = _mm256_loadu_si256((const __m256i*)src);
       const __m256i B1 = _mm256_and_si256(A1, mask_g);
       const __m256i C1 = _mm256_madd_epi16(B1, mult);
@@ -176,12 +176,12 @@ func CollectColorRedTransforms_AVX2(const uint32_t* WEBP_RESTRICT argb,
 
 //------------------------------------------------------------------------------
 
-// Note we are adding uint32_t's as *signed* int32's (using _mm256_add_epi32).
+// Note we are adding uint32's as *signed* int32's (using _mm256_add_epi32).
 // But that's ok since the histogram values are less than 1<<28 (max picture
 // size).
-func AddVector_AVX2(const uint32_t* WEBP_RESTRICT a,
-                           const uint32_t* WEBP_RESTRICT b,
-                           uint32_t* WEBP_RESTRICT out, int size) {
+func AddVector_AVX2(const uint32* WEBP_RESTRICT a,
+                           const uint32* WEBP_RESTRICT b,
+                           uint32* WEBP_RESTRICT out, int size) {
   int i = 0;
   int aligned_size = size & ~31;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
@@ -228,8 +228,8 @@ func AddVector_AVX2(const uint32_t* WEBP_RESTRICT a,
   }
 }
 
-func AddVectorEq_AVX2(const uint32_t* WEBP_RESTRICT a,
-                             uint32_t* WEBP_RESTRICT out, int size) {
+func AddVectorEq_AVX2(const uint32* WEBP_RESTRICT a,
+                             uint32* WEBP_RESTRICT out, int size) {
   int i = 0;
   int aligned_size = size & ~31;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
@@ -281,11 +281,11 @@ func AddVectorEq_AVX2(const uint32_t* WEBP_RESTRICT a,
 
 #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
 
-static uint64_t CombinedShannonEntropy_AVX2(const uint32_t X[256],
-                                            const uint32_t Y[256]) {
+static uint64 CombinedShannonEntropy_AVX2(const uint32 X[256],
+                                            const uint32 Y[256]) {
   int i;
-  uint64_t retval = 0;
-  uint32_t sumX = 0, sumXY = 0;
+  uint64 retval = 0;
+  uint32 sumX = 0, sumXY = 0;
   const __m256i zero = _mm256_setzero_si256();
 
   for (i = 0; i < 256; i += 32) {
@@ -306,13 +306,13 @@ static uint64_t CombinedShannonEntropy_AVX2(const uint32_t X[256],
         x4, _mm256_set_epi32(7, 3, 6, 2, 5, 1, 4, 0));
     const __m256i y5 = _mm256_permutevar8x32_epi32(
         y4, _mm256_set_epi32(7, 3, 6, 2, 5, 1, 4, 0));
-    const uint32_t mx =
-        (uint32_t)_mm256_movemask_epi8(_mm256_cmpgt_epi8(x5, zero));
-    uint32_t my =
-        (uint32_t)_mm256_movemask_epi8(_mm256_cmpgt_epi8(y5, zero)) | mx;
+    const uint32 mx =
+        (uint32)_mm256_movemask_epi8(_mm256_cmpgt_epi8(x5, zero));
+    uint32 my =
+        (uint32)_mm256_movemask_epi8(_mm256_cmpgt_epi8(y5, zero)) | mx;
     while (my) {
-      const int32_t j = BitsCtz(my);
-      uint32_t xy;
+      const int32 j = BitsCtz(my);
+      uint32 xy;
       if ((mx >> j) & 1) {
         const int x = X[i + j];
         sumXY += x;
@@ -336,8 +336,8 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_AVX2(const uint32_t* const array1,
-                               const uint32_t* const array2, int length) {
+static int VectorMismatch_AVX2(const uint32* const array1,
+                               const uint32* const array2, int length) {
   int match_len;
 
   if (length >= 24) {
@@ -352,14 +352,14 @@ static int VectorMismatch_AVX2(const uint32_t* const array1,
           _mm256_loadu_si256((const __m256i*)&array1[match_len + 8]);
       const __m256i B1 =
           _mm256_loadu_si256((const __m256i*)&array2[match_len + 8]);
-      if ((uint32_t)_mm256_movemask_epi8(cmpA) != 0xffffffff) break;
+      if ((uint32)_mm256_movemask_epi8(cmpA) != 0xffffffff) break;
       match_len += 8;
 
       {
         const __m256i cmpB = _mm256_cmpeq_epi32(B0, B1);
         A0 = _mm256_loadu_si256((const __m256i*)&array1[match_len + 8]);
         A1 = _mm256_loadu_si256((const __m256i*)&array2[match_len + 8]);
-        if ((uint32_t)_mm256_movemask_epi8(cmpB) != 0xffffffff) break;
+        if ((uint32)_mm256_movemask_epi8(cmpB) != 0xffffffff) break;
         match_len += 8;
       }
     } while (match_len + 24 < length);
@@ -367,12 +367,12 @@ static int VectorMismatch_AVX2(const uint32_t* const array1,
     match_len = 0;
     // Unroll the potential first two loops.
     if (length >= 8 &&
-        (uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi32(
+        (uint32)_mm256_movemask_epi8(_mm256_cmpeq_epi32(
             _mm256_loadu_si256((const __m256i*)&array1[0]),
             _mm256_loadu_si256((const __m256i*)&array2[0]))) == 0xffffffff) {
       match_len = 8;
       if (length >= 16 &&
-          (uint32_t)_mm256_movemask_epi8(_mm256_cmpeq_epi32(
+          (uint32)_mm256_movemask_epi8(_mm256_cmpeq_epi32(
               _mm256_loadu_si256((const __m256i*)&array1[8]),
               _mm256_loadu_si256((const __m256i*)&array2[8]))) == 0xffffffff) {
         match_len = 16;
@@ -387,9 +387,9 @@ static int VectorMismatch_AVX2(const uint32_t* const array1,
 }
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
-func BundleColorMap_AVX2(const uint8_t* WEBP_RESTRICT const row,
+func BundleColorMap_AVX2(const uint8* WEBP_RESTRICT const row,
                                 int width, int xbits,
-                                uint32_t* WEBP_RESTRICT dst) {
+                                uint32* WEBP_RESTRICT dst) {
   int x = 0;
   assert.Assert(xbits >= 0);
   assert.Assert(xbits <= 3);
@@ -453,7 +453,7 @@ func BundleColorMap_AVX2(const uint8_t* WEBP_RESTRICT const row,
         // 0000000a00000000b... | (where a/b are 1 bit).
         const __m256i in = _mm256_loadu_si256((const __m256i*)&row[x]);
         const __m256i shift = _mm256_slli_epi64(in, 7);
-        const uint32_t move = _mm256_movemask_epi8(shift);
+        const uint32 move = _mm256_movemask_epi8(shift);
         dst[0] = 0xff000000 | ((move & 0xff) << 8);
         dst[1] = 0xff000000 | (move & 0xff00);
         dst[2] = 0xff000000 | ((move & 0xff0000) >> 8);
@@ -481,8 +481,8 @@ static  func Average2_m256i(const __m256i* const a0,
 }
 
 // Predictor0: ARGB_BLACK.
-func PredictorSub0_AVX2(const uint32_t* in, const uint32_t* upper,
-                               int num_pixels, uint32_t* WEBP_RESTRICT out) {
+func PredictorSub0_AVX2(const uint32* in, const uint32* upper,
+                               int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   const __m256i black = _mm256_set1_epi32((int)ARGB_BLACK);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
@@ -498,8 +498,8 @@ func PredictorSub0_AVX2(const uint32_t* in, const uint32_t* upper,
 
 #define GENERATE_PREDICTOR_1(X, IN)                                          \
   func PredictorSub##X##_AVX2(                                        \
-      const uint32_t* const in, const uint32_t* const upper, int num_pixels, \
-      uint32_t* WEBP_RESTRICT const out) {                                   \
+      const uint32* const in, const uint32* const upper, int num_pixels, \
+      uint32* WEBP_RESTRICT const out) {                                   \
     int i;                                                                   \
     for (i = 0; i + 8 <= num_pixels; i += 8) {                               \
       const __m256i src = _mm256_loadu_si256((const __m256i*)&in[i]);        \
@@ -520,8 +520,8 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])  // Predictor4: TL
 #undef GENERATE_PREDICTOR_1
 
 // Predictor5: avg2(avg2(L, TR), T)
-func PredictorSub5_AVX2(const uint32_t* in, const uint32_t* upper,
-                               int num_pixels, uint32_t* WEBP_RESTRICT out) {
+func PredictorSub5_AVX2(const uint32* in, const uint32* upper,
+                               int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i L = _mm256_loadu_si256((const __m256i*)&in[i - 1]);
@@ -540,9 +540,9 @@ func PredictorSub5_AVX2(const uint32_t* in, const uint32_t* upper,
 }
 
 #define GENERATE_PREDICTOR_2(X, A, B)                                         \
-  func PredictorSub##X##_AVX2(const uint32_t* in,                      \
-                                     const uint32_t* upper, int num_pixels,   \
-                                     uint32_t* WEBP_RESTRICT out) {           \
+  func PredictorSub##X##_AVX2(const uint32* in,                      \
+                                     const uint32* upper, int num_pixels,   \
+                                     uint32* WEBP_RESTRICT out) {           \
     int i;                                                                    \
     for (i = 0; i + 8 <= num_pixels; i += 8) {                                \
       const __m256i tA = _mm256_loadu_si256((const __m256i*)&(A));            \
@@ -565,8 +565,8 @@ GENERATE_PREDICTOR_2(9, upper[i], upper[i + 1])   // Predictor9: average(T, TR)
 #undef GENERATE_PREDICTOR_2
 
 // Predictor10: avg(avg(L,TL), avg(T, TR)).
-func PredictorSub10_AVX2(const uint32_t* in, const uint32_t* upper,
-                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
+func PredictorSub10_AVX2(const uint32* in, const uint32* upper,
+                                int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i L = _mm256_loadu_si256((const __m256i*)&in[i - 1]);
@@ -600,8 +600,8 @@ func GetSumAbsDiff32_AVX2(const __m256i* const A, const __m256i* const B,
   *out = _mm256_packs_epi32(s_lo, s_hi);
 }
 
-func PredictorSub11_AVX2(const uint32_t* in, const uint32_t* upper,
-                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
+func PredictorSub11_AVX2(const uint32* in, const uint32* upper,
+                                int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i L = _mm256_loadu_si256((const __m256i*)&in[i - 1]);
@@ -626,8 +626,8 @@ func PredictorSub11_AVX2(const uint32_t* in, const uint32_t* upper,
 }
 
 // Predictor12: ClampedSubSubtractFull.
-func PredictorSub12_AVX2(const uint32_t* in, const uint32_t* upper,
-                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
+func PredictorSub12_AVX2(const uint32* in, const uint32* upper,
+                                int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   const __m256i zero = _mm256_setzero_si256();
   for (i = 0; i + 8 <= num_pixels; i += 8) {
@@ -655,8 +655,8 @@ func PredictorSub12_AVX2(const uint32_t* in, const uint32_t* upper,
 }
 
 // Predictors13: ClampedAddSubtractHalf
-func PredictorSub13_AVX2(const uint32_t* in, const uint32_t* upper,
-                                int num_pixels, uint32_t* WEBP_RESTRICT out) {
+func PredictorSub13_AVX2(const uint32* in, const uint32* upper,
+                                int num_pixels, uint32* WEBP_RESTRICT out) {
   int i;
   const __m256i zero = _mm256_setzero_si256();
   for (i = 0; i + 8 <= num_pixels; i += 8) {

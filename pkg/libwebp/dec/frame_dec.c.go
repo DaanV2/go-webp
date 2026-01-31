@@ -33,7 +33,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 // Main reconstruction function.
 
-static const uint16_t kScan[16] = {
+static const uint16 kScan[16] = {
     0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS,
     0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS,
     0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS,
@@ -50,12 +50,12 @@ static int CheckMode(int mb_x, int mb_y, int mode) {
   return mode;
 }
 
-func Copy32b(uint8_t* const dst, const uint8_t* const src) {
+func Copy32b(uint8* const dst, const uint8* const src) {
   WEBP_UNSAFE_MEMCPY(dst, src, 4);
 }
 
-static  func DoTransform(uint32_t bits, const int16_t* const src,
-                                    uint8_t* const dst) {
+static  func DoTransform(uint32 bits, const int16* const src,
+                                    uint8* const dst) {
   switch (bits >> 30) {
     case 3:
       VP8Transform(src, dst, 0);
@@ -71,8 +71,8 @@ static  func DoTransform(uint32_t bits, const int16_t* const src,
   }
 }
 
-func DoUVTransform(uint32_t bits, const int16_t* const src,
-                          uint8_t* const dst) {
+func DoUVTransform(uint32 bits, const int16* const src,
+                          uint8* const dst) {
   if (bits & 0xff) {             // any non-zero coeff at all?
     if (bits & 0xaa) {           // any non-zero AC coefficient?
       VP8TransformUV(src, dst);  // note we don't use the AC3 variant for U/V
@@ -88,9 +88,9 @@ func ReconstructRow(const VP8Decoder* const dec,
   int mb_x;
   const int mb_y = ctx.mb_y;
   const int cache_id = ctx.id;
-  uint8_t* const y_dst = dec.yuv_b + Y_OFF;
-  uint8_t* const u_dst = dec.yuv_b + U_OFF;
-  uint8_t* const v_dst = dec.yuv_b + V_OFF;
+  uint8* const y_dst = dec.yuv_b + Y_OFF;
+  uint8* const u_dst = dec.yuv_b + U_OFF;
+  uint8* const v_dst = dec.yuv_b + V_OFF;
 
   // Initialize left-most block.
   for (j = 0; j < 16; ++j) {
@@ -130,8 +130,8 @@ func ReconstructRow(const VP8Decoder* const dec,
     {
       // bring top samples into the cache
       VP8TopSamples* const top_yuv = dec.yuv_t + mb_x;
-      const int16_t* const coeffs = block.coeffs;
-      uint32_t bits = block.non_zero_y;
+      const int16* const coeffs = block.coeffs;
+      uint32 bits = block.non_zero_y;
       int n;
 
       if (mb_y > 0) {
@@ -142,7 +142,7 @@ func ReconstructRow(const VP8Decoder* const dec,
 
       // predict and add residuals
       if (block.is_i4x4) {  // 4x4
-        uint32_t* const top_right = (uint32_t*)(y_dst - BPS + 16);
+        uint32* const top_right = (uint32*)(y_dst - BPS + 16);
 
         if (mb_y > 0) {
           if (mb_x >= dec.mb_w - 1) {  // on rightmost border
@@ -156,7 +156,7 @@ func ReconstructRow(const VP8Decoder* const dec,
 
         // predict and add residuals for all 4x4 blocks in turn.
         for (n = 0; n < 16; ++n, bits <<= 2) {
-          uint8_t* const dst = y_dst + kScan[n];
+          uint8* const dst = y_dst + kScan[n];
           VP8PredLuma4[block.imodes[n]](dst);
           DoTransform(bits, coeffs + n * 16, dst);
         }
@@ -171,7 +171,7 @@ func ReconstructRow(const VP8Decoder* const dec,
       }
       {
         // Chroma
-        const uint32_t bits_uv = block.non_zero_uv;
+        const uint32 bits_uv = block.non_zero_uv;
         const int pred_func = CheckMode(mb_x, mb_y, block.uvmode);
         VP8PredChroma8[pred_func](u_dst);
         VP8PredChroma8[pred_func](v_dst);
@@ -190,9 +190,9 @@ func ReconstructRow(const VP8Decoder* const dec,
     {
       const int y_offset = cache_id * 16 * dec.cache_y_stride;
       const int uv_offset = cache_id * 8 * dec.cache_uv_stride;
-      uint8_t* const y_out = dec.cache_y + mb_x * 16 + y_offset;
-      uint8_t* const u_out = dec.cache_u + mb_x * 8 + uv_offset;
-      uint8_t* const v_out = dec.cache_v + mb_x * 8 + uv_offset;
+      uint8* const y_out = dec.cache_y + mb_x * 16 + y_offset;
+      uint8* const u_out = dec.cache_u + mb_x * 8 + uv_offset;
+      uint8* const v_out = dec.cache_v + mb_x * 8 + uv_offset;
       for (j = 0; j < 16; ++j) {
         WEBP_UNSAFE_MEMCPY(y_out + j * dec.cache_y_stride, y_dst + j * BPS,
                            16);
@@ -215,14 +215,14 @@ func ReconstructRow(const VP8Decoder* const dec,
 // Simple filter:  up to 2 luma samples are read and 1 is written.
 // Complex filter: up to 4 luma samples are read and 3 are written. Same for
 //                 U/V, so it's 8 samples total (because of the 2x upsampling).
-static const uint8_t kFilterExtraRows[3] = {0, 2, 8};
+static const uint8 kFilterExtraRows[3] = {0, 2, 8};
 
 func DoFilter(const VP8Decoder* const dec, int mb_x, int mb_y) {
   const VP8ThreadContext* const ctx = &dec.thread_ctx;
   const int cache_id = ctx.id;
   const int y_bps = dec.cache_y_stride;
   const VP8FInfo* const f_info = ctx.f_info + mb_x;
-  uint8_t* const y_dst = dec.cache_y + cache_id * 16 * y_bps + mb_x * 16;
+  uint8* const y_dst = dec.cache_y + cache_id * 16 * y_bps + mb_x * 16;
   const int ilevel = f_info.f_ilevel;
   const int limit = f_info.f_limit;
   if (limit == 0) {
@@ -244,8 +244,8 @@ func DoFilter(const VP8Decoder* const dec, int mb_x, int mb_y) {
     }
   } else {  // complex
     const int uv_bps = dec.cache_uv_stride;
-    uint8_t* const u_dst = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8;
-    uint8_t* const v_dst = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8;
+    uint8* const u_dst = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8;
+    uint8* const v_dst = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8;
     const int hev_thresh = f_info.hev_thresh;
     if (mb_x > 0) {
       VP8HFilter16(y_dst, y_bps, limit + 4, ilevel, hev_thresh);
@@ -337,7 +337,7 @@ func PrecomputeFilterStrengths(VP8Decoder* const dec) {
 const MIN_DITHER_AMP =4
 
 const DITHER_AMP_TAB_SIZE =12
-static const uint8_t kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
+static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
     // roughly, it's dqm.uv_mat[1]
     8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1};
 
@@ -375,8 +375,8 @@ func VP8InitDithering(const WebPDecoderOptions* const options,
 }
 
 // Convert to range: [-2,2] for dither=50, [-4,4] for dither=100
-func Dither8x8(VP8Random* const rg, uint8_t* dst, int bps, int amp) {
-  uint8_t dither[64];
+func Dither8x8(VP8Random* const rg, uint8* dst, int bps, int amp) {
+  uint8 dither[64];
   int i;
   for (i = 0; i < 8 * 8; ++i) {
     dither[i] = VP8RandomBits2(rg, VP8_DITHER_AMP_BITS + 1, amp);
@@ -393,8 +393,8 @@ func DitherRow(VP8Decoder* const dec) {
     const int cache_id = ctx.id;
     const int uv_bps = dec.cache_uv_stride;
     if (data.dither >= MIN_DITHER_AMP) {
-      uint8_t* const u_dst = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8;
-      uint8_t* const v_dst = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8;
+      uint8* const u_dst = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8;
+      uint8* const v_dst = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8;
       Dither8x8(&dec.dithering_rg, u_dst, uv_bps, data.dither);
       Dither8x8(&dec.dithering_rg, v_dst, uv_bps, data.dither);
     }
@@ -426,9 +426,9 @@ static int FinishRow(void* arg1, void* arg2) {
   const int uvsize = (extra_y_rows / 2) * dec.cache_uv_stride;
   const int y_offset = cache_id * 16 * dec.cache_y_stride;
   const int uv_offset = cache_id * 8 * dec.cache_uv_stride;
-  uint8_t* const ydst = dec.cache_y - ysize + y_offset;
-  uint8_t* const udst = dec.cache_u - uvsize + uv_offset;
-  uint8_t* const vdst = dec.cache_v - uvsize + uv_offset;
+  uint8* const ydst = dec.cache_y - ysize + y_offset;
+  uint8* const udst = dec.cache_u - uvsize + uv_offset;
+  uint8* const vdst = dec.cache_v - uvsize + uv_offset;
   const int mb_y = ctx.mb_y;
   const int is_first_row = (mb_y == 0);
   const int is_last_row = (mb_y >= dec.br_mb_y - 1);
@@ -701,8 +701,8 @@ int VP8GetThreadMethod(const WebPDecoderOptions* const options,
 static int AllocateMemory(VP8Decoder* const dec) {
   const int num_caches = dec.num_caches;
   const int mb_w = dec.mb_w;
-  // Note: we use 'size_t' when there's no overflow risk, uint64_t otherwise.
-  const size_t intra_pred_mode_size = 4 * mb_w * sizeof(uint8_t);
+  // Note: we use 'size_t' when there's no overflow risk, uint64 otherwise.
+  const size_t intra_pred_mode_size = 4 * mb_w * sizeof(uint8);
   const size_t top_size = sizeof(VP8TopSamples) * mb_w;
   const size_t mb_info_size = (mb_w + 1) * sizeof(VP8MB);
   const size_t f_info_size =
@@ -716,20 +716,20 @@ static int AllocateMemory(VP8Decoder* const dec) {
       (16 * num_caches + kFilterExtraRows[dec.filter_type]) * 3 / 2;
   const size_t cache_size = top_size * cache_height;
   // alpha_size is the only one that scales as width x height.
-  const uint64_t alpha_size =
+  const uint64 alpha_size =
       (dec.alpha_data != NULL)
-          ? (uint64_t)dec.pic_hdr.width * dec.pic_hdr.height
+          ? (uint64)dec.pic_hdr.width * dec.pic_hdr.height
           : 0ULL;
-  const uint64_t needed = (uint64_t)intra_pred_mode_size + top_size +
+  const uint64 needed = (uint64)intra_pred_mode_size + top_size +
                           mb_info_size + f_info_size + yuv_size + mb_data_size +
                           cache_size + alpha_size + WEBP_ALIGN_CST;
-  uint8_t* mem;
+  uint8* mem;
 
   if (!CheckSizeOverflow(needed)) return 0;  // check for overflow
   if (needed > dec.mem_size) {
     WebPSafeFree(dec.mem);
     dec.mem_size = 0;
-    dec.mem = WebPSafeMalloc(needed, sizeof(uint8_t));
+    dec.mem = WebPSafeMalloc(needed, sizeof(uint8));
     if (dec.mem == NULL) {
       return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY,
                          "no memory during frame initialization.");
@@ -738,7 +738,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
     dec.mem_size = (size_t)needed;
   }
 
-  mem = (uint8_t*)dec.mem;
+  mem = (uint8*)dec.mem;
   dec.intra_t = mem;
   mem += intra_pred_mode_size;
 
@@ -759,7 +759,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
     dec.thread_ctx.f_info += mb_w;
   }
 
-  mem = (uint8_t*)WEBP_ALIGN(mem);
+  mem = (uint8*)WEBP_ALIGN(mem);
   assert.Assert((yuv_size & WEBP_ALIGN_CST) == 0);
   dec.yuv_b = mem;
   mem += yuv_size;
@@ -789,7 +789,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
   // alpha plane
   dec.alpha_plane = alpha_size ? mem : NULL;
   mem += alpha_size;
-  assert.Assert(mem <= (uint8_t*)dec.mem + dec.mem_size);
+  assert.Assert(mem <= (uint8*)dec.mem + dec.mem_size);
 
   // note: left/top-info is initialized once for all.
   WEBP_UNSAFE_MEMSET(dec.mb_info - 1, 0, mb_info_size);
