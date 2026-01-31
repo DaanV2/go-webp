@@ -11,12 +11,12 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
 
-import "src/dsp/neon.h"
-import "src/enc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
 
 static const uint8_t position[16] = {1, 2,  3,  4,  5,  6,  7,  8,
                                      9, 10, 11, 12, 13, 14, 15, 16};

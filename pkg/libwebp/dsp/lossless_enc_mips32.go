@@ -14,9 +14,9 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
-import "src/dsp/lossless.h"
-import "src/dsp/lossless_common.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
 
 #if defined(WEBP_USE_MIPS32)
 

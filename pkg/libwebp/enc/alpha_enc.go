@@ -17,16 +17,16 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/bit_writer_utils.h"
-import "src/utils/filters_utils.h"
-import "src/utils/quant_levels_utils.h"
-import "src/utils/thread_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/filters_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/quant_levels_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 // -----------------------------------------------------------------------------
 // Encodes the given alpha data via specified compression method 'method'.
@@ -51,7 +51,7 @@ import "src/webp/types.h"
 //           invalid quality or method, or
 //           memory allocation for the compressed data fails.
 
-import "src/enc/vp8li_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8li_enc.h"
 
 static int EncodeLossless(const uint8_t* const data, int width, int height,
                           int effort_level,  // in [0..6] range

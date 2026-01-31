@@ -18,14 +18,14 @@ import <math.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dec/common_dec.h"
-import "src/dsp/dsp.h"
-import "src/enc/cost_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/enc/vp8li_enc.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8li_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 // #define PRINT_MEMORY_INFO
 

@@ -38,10 +38,10 @@ package dsp
 
 
 
-import "src/dec/vp8_dec.h"
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

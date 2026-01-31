@@ -17,11 +17,11 @@ import <assert.h>
 import <stdlib.h>  // for abs()
 import <string.h>
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 static WEBP_INLINE uint8_t clip_8b(int v) {
   return (!(v & ~0xff)) ? v : (v < 0) ? 0 : 255;

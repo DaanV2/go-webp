@@ -19,15 +19,15 @@ import <string.h>
 
 import "sharpyuv/sharpyuv.h"
 import "sharpyuv/sharpyuv_csp.h"
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/dsp/lossless.h"
-import "src/dsp/yuv.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/random_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/random_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #if defined(WEBP_USE_THREAD) && !defined(_WIN32)
 import <pthread.h>

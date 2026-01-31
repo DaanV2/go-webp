@@ -13,19 +13,19 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
 import <assert.h>
 import <emmintrin.h>
 import <string.h>
 
-import "src/dsp/cpu.h"
-import "src/dsp/lossless.h"
-import "src/dsp/lossless_common.h"
-import "src/utils/utils.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 // For sign-extended multiplying constants, pre-shifted by 5:
 #define CST_5b(X) (((int16_t)((uint16_t)(X) << 8)) >> 5)

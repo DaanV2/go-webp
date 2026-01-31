@@ -13,13 +13,13 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
 import <emmintrin.h>
 
-import "src/dsp/cpu.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 

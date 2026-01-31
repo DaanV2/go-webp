@@ -17,16 +17,16 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dec/common_dec.h"
-import "src/dec/vp8_dec.h"
-import "src/dec/vp8i_dec.h"
-import "src/dec/webpi_dec.h"
-import "src/dsp/dsp.h"
-import "src/utils/random_utils.h"
-import "src/utils/thread_utils.h"
-import "src/utils/utils.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/random_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

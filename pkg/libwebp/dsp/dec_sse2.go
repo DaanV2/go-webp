@@ -14,7 +14,7 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
 
@@ -26,11 +26,11 @@ import "src/dsp/dsp.h"
 
 import <emmintrin.h>
 
-import "src/dec/vp8i_dec.h"
-import "src/dsp/common_sse2.h"
-import "src/dsp/cpu.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/common_sse2.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)

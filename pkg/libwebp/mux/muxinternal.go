@@ -18,12 +18,12 @@ import <assert.h>
 import <stddef.h>
 import <string.h>
 
-import "src/mux/muxi.h"
-import "src/utils/utils.h"
-import "src/webp/format_constants.h"
-import "src/webp/mux.h"
-import "src/webp/mux_types.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpmux/muxi.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux_types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #define UNDEFINED_CHUNK_SIZE ((uint32_t)(-1))
 

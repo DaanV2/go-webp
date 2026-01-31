@@ -17,17 +17,17 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dec/common_dec.h"
-import "src/dec/vp8_dec.h"
-import "src/dec/vp8i_dec.h"
-import "src/dec/vp8li_dec.h"
-import "src/dec/webpi_dec.h"
-import "src/utils/rescaler_utils.h"
-import "src/utils/utils.h"
-import "src/webp/decode.h"
-import "src/webp/format_constants.h"
-import "src/webp/mux_types.h"  // ALPHA_FLAG
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8li_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux_types.h"  // ALPHA_FLAG
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

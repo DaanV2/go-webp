@@ -13,8 +13,8 @@ package dsp
 
 import <string.h>
 
-import "src/dsp/dsp.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #if defined(WEBP_USE_NEON) && !defined(WEBP_ANDROID_NEON) && \
     !defined(WEBP_HAVE_NEON_RTCD)

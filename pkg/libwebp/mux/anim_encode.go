@@ -19,14 +19,14 @@ import <stdio.h>
 import <stdlib.h>  // for abs()
 import <string.h>
 
-import "src/mux/animi.h"
-import "src/utils/utils.h"
-import "src/webp/decode.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/mux.h"
-import "src/webp/mux_types.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpmux/animi.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux_types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #if defined(_MSC_VER) && _MSC_VER < 1900
 #define snprintf _snprintf

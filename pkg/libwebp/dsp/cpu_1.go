@@ -18,10 +18,10 @@ package dsp
 import <stddef.h>
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
 #endif
 
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #if defined(__GNUC__)
 #define LOCAL_GCC_VERSION ((__GNUC__ << 8) | __GNUC_MINOR__)

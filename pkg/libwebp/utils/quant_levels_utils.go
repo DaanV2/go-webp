@@ -14,13 +14,13 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/utils/quant_levels_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/quant_levels_utils.h"
 
 import <assert.h>
 import <stddef.h>
 
-import "src/utils/bounds_safety.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 const NUM_SYMBOLS = 256
 

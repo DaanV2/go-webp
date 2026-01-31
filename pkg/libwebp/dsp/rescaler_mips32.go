@@ -13,13 +13,13 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS32) && !defined(WEBP_REDUCE_SIZE)
 
 import <assert.h>
 
-import "src/utils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
 
 //------------------------------------------------------------------------------
 // Row import

@@ -13,15 +13,15 @@
 
 package dsp
 
-import "src/dsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
 
 #if defined(WEBP_USE_NEON)
 
 import <assert.h>
 import <stdlib.h>
 
-import "src/dsp/dsp.h"
-import "src/dsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
 
 //-----------------------------------------------------------------------------
 

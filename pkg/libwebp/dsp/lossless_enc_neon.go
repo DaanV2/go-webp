@@ -13,14 +13,14 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
 
 import <arm_neon.h>
 
-import "src/dsp/lossless.h"
-import "src/dsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
 
 //------------------------------------------------------------------------------
 // Subtract-Green Transform

@@ -19,8 +19,8 @@ package utils
 extern "C" {
 #endif
 
-import "src/utils/bounds_safety.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

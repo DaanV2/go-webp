@@ -20,14 +20,14 @@ import <math.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/dsp/lossless.h"
-import "src/dsp/lossless_common.h"
-import "src/enc/histogram_enc.h"
-import "src/utils/utils.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/histogram_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 // lookup table for small values of log2(int) * (1 << LOG_2_PRECISION_BITS).
 // Obtained in Python with:

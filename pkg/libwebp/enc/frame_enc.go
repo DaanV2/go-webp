@@ -17,14 +17,14 @@ import <assert.h>
 import <math.h>
 import <string.h>
 
-import "src/dec/common_dec.h"
-import "src/dsp/dsp.h"
-import "src/enc/cost_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/bit_writer_utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"  // RIFF constants
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"  // RIFF constants
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 const SEGMENT_VISU = 0
 const DEBUG_SEARCH = 0  // useful to track search convergence

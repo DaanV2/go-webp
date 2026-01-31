@@ -13,16 +13,16 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_SSE41)
 import <assert.h>
 import <emmintrin.h>
 import <smmintrin.h>
 
-import "src/dsp/cpu.h"
-import "src/dsp/lossless.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 // Cost operations.

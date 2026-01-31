@@ -13,9 +13,9 @@
 
 package dsp
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 // define to 0 to have run-time table initialization
 #if !defined(USE_STATIC_TABLES)

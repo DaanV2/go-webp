@@ -13,17 +13,17 @@
 
 package enc
 
-import "src/webp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
 
 #if !(defined(WEBP_DISABLE_STATS) || defined(WEBP_REDUCE_SIZE))
 
 import <math.h>
 import <stdlib.h>
 
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 typedef double (*AccumulateFunc)(const uint8_t* src, int src_stride,
                                  const uint8_t* ref, int ref_stride, int w,

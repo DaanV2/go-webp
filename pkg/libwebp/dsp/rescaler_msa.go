@@ -13,14 +13,14 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_MSA) && !defined(WEBP_REDUCE_SIZE)
 
 import <assert.h>
 
-import "src/dsp/msa_macro.h"
-import "src/utils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/msa_macro.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
 
 #define ROUNDER (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)

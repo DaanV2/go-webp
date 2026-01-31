@@ -13,16 +13,16 @@
 
 package dsp
 
-import "src/dsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 // Uncomment to disable gamma-compression during RGB->U/V averaging
 #define USE_GAMMA_COMPRESSION

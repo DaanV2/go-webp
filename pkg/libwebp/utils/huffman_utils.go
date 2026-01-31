@@ -13,16 +13,16 @@ package utils
 //
 // Author: Urvang Joshi (urvang@google.com)
 
-import "src/utils/huffman_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/huffman_utils.h"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/utils/bounds_safety.h"
-import "src/utils/utils.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

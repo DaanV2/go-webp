@@ -15,7 +15,7 @@ package dsp
 
 
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_MSA)
 

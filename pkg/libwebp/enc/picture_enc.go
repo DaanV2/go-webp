@@ -18,10 +18,10 @@ import <limits.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/enc/vp8i_enc.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 // WebPPicture

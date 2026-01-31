@@ -13,16 +13,16 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_SSE41)
 import <emmintrin.h>
 import <smmintrin.h>
 
-import "src/dec/vp8i_dec.h"
-import "src/dsp/cpu.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 static void HE16_SSE41(uint8_t* dst) {  // horizontal
   int j;

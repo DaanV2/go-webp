@@ -14,16 +14,16 @@ package utils
 // Author: Skal (pascal.massimino@gmail.com)
 //         Vikas Arora (vikaas.arora@gmail.com)
 
-import "src/utils/bit_writer_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>  // for memcpy()
 
-import "src/utils/bounds_safety.h"
-import "src/utils/endian_inl_utils.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/endian_inl_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

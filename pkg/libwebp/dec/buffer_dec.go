@@ -17,12 +17,12 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dec/vp8i_dec.h"
-import "src/dec/webpi_dec.h"
-import "src/utils/rescaler_utils.h"
-import "src/utils/utils.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

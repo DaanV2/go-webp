@@ -14,7 +14,7 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
 
@@ -22,8 +22,8 @@ import <arm_neon.h>
 import <assert.h>
 import <string.h>
 
-import "src/dsp/neon.h"
-import "src/dsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
 
 #ifdef FANCY_UPSAMPLING
 

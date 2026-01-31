@@ -15,11 +15,11 @@ import <assert.h>
 import <stddef.h>
 import <stdlib.h>
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/enc/cost_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 // Boolean-cost cost table

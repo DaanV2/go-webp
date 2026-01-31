@@ -13,7 +13,7 @@
 
 package dsp
 
-import "src/dsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
 
 #if defined(WEBP_HAVE_NEON_RTCD)
 import <stdio.h>
@@ -26,7 +26,7 @@ import <cpu-features.h>
 
 import <stddef.h>
 
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 // SSE2 detection.

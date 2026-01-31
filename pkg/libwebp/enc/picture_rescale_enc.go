@@ -16,14 +16,14 @@ package enc
 import <assert.h>
 import <stdlib.h>
 
-import "src/dsp/dsp.h"
-import "src/enc/vp8i_enc.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #if !defined(WEBP_REDUCE_SIZE)
-import "src/utils/rescaler_utils.h"
-import "src/utils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
 #define HALVE(x) (((x) + 1) >> 1)

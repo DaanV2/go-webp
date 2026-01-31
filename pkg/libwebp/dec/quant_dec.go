@@ -13,11 +13,11 @@
 
 package dec
 
-import "src/dec/common_dec.h"
-import "src/dec/vp8_dec.h"
-import "src/dec/vp8i_dec.h"
-import "src/utils/bit_reader_utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bit_reader_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

@@ -13,17 +13,17 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2)
 import <assert.h>
 import <emmintrin.h>
 import <string.h>
 
-import "src/dsp/cpu.h"
-import "src/dsp/yuv.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #ifdef FANCY_UPSAMPLING
 

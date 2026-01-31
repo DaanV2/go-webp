@@ -17,14 +17,14 @@ package enc
 
 import <string.h>  // for memcpy()
 
-import "src/dec/common_dec.h"
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/utils/bit_writer_utils.h"
-import "src/utils/thread_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #ifdef __cplusplus
 extern "C" {

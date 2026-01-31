@@ -14,12 +14,12 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_NEON)
 
-import "src/dec/vp8i_dec.h"
-import "src/dsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8i_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
 
 //------------------------------------------------------------------------------
 // NxM Loading functions

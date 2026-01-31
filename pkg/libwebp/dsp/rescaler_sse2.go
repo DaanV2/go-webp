@@ -13,17 +13,17 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_SSE2) && !defined(WEBP_REDUCE_SIZE)
 import <assert.h>
 import <emmintrin.h>
 import <stddef.h>
 
-import "src/dsp/cpu.h"
-import "src/utils/rescaler_utils.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 // Implementations of critical functions ImportRow / ExportRow

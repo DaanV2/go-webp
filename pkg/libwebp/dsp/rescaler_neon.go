@@ -13,15 +13,15 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_NEON) && !defined(WEBP_REDUCE_SIZE)
 
 import <arm_neon.h>
 import <assert.h>
 
-import "src/dsp/neon.h"
-import "src/utils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/neon.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
 
 #define ROUNDER (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX_C(x, y) (((uint64_t)(x) * (y) + ROUNDER) >> WEBP_RESCALER_RFIX)

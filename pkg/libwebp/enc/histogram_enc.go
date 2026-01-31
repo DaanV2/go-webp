@@ -12,22 +12,22 @@
 package enc
 //
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
 #endif
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dsp/lossless.h"
-import "src/dsp/lossless_common.h"
-import "src/enc/backward_references_enc.h"
-import "src/enc/histogram_enc.h"
-import "src/enc/vp8i_enc.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/backward_references_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/histogram_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 // Number of partitions for the three dominant (literal, red and blue) symbol
 // costs.

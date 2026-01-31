@@ -16,14 +16,14 @@ package dsp
 
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
 #endif
 
-import "src/dec/common_dec.h"
-import "src/dsp/cpu.h"
-import "src/utils/bounds_safety.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/common_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

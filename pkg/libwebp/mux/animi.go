@@ -15,7 +15,7 @@ package mux
 
 
 
-import "src/webp/mux.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/mux.h"
 
 #ifdef __cplusplus
 extern "C" {

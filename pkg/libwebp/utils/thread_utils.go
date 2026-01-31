@@ -13,13 +13,13 @@ package utils
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "src/utils/thread_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/thread_utils.h"
 
 import <assert.h>
 import <string.h>  // for memset()
 
-import "src/utils/bounds_safety.h"
-import "src/utils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

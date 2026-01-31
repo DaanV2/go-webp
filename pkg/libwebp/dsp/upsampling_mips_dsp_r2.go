@@ -14,13 +14,13 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
 import <assert.h>
 
-import "src/dsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
 
 // clang-format off
 #define YUV_TO_RGB(Y, U, V, R, G, B) do {                                      \

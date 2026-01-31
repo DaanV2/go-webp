@@ -13,15 +13,15 @@ package utils
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
 
-import "src/utils/color_cache_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/color_cache_utils.h"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/utils/bounds_safety.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

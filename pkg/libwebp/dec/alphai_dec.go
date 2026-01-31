@@ -15,11 +15,11 @@ package dec
 
 
 
-import "src/dec/vp8_dec.h"
-import "src/dec/webpi_dec.h"
-import "src/dsp/dsp.h"
-import "src/utils/filters_utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/filters_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

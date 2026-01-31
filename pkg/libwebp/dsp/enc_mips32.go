@@ -15,13 +15,13 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS32)
 
-import "src/dsp/mips_macro.h"
-import "src/enc/cost_enc.h"
-import "src/enc/vp8i_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/mips_macro.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/vp8i_enc.h"
 
 static const int kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int kC2 = WEBP_TRANSFORM_AC3_C2;

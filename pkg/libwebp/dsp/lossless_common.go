@@ -20,9 +20,9 @@ package dsp
 import <assert.h>
 import <stddef.h>
 
-import "src/dsp/cpu.h"
-import "src/utils/utils.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #ifdef __cplusplus
 extern "C" {

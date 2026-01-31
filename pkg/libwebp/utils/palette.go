@@ -13,19 +13,19 @@ package utils
 //
 // Author: Vincent Rabaud (vrabaud@google.com)
 
-import "src/utils/palette.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/palette.h"
 
 import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dsp/lossless_common.h"
-import "src/utils/bounds_safety.h"
-import "src/utils/color_cache_utils.h"
-import "src/utils/utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bounds_safety.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/color_cache_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

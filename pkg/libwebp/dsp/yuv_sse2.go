@@ -13,18 +13,18 @@
 
 package dsp
 
-import "src/dsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
 
 #if defined(WEBP_USE_SSE2)
 import <emmintrin.h>
 import <stdlib.h>
 
-import "src/dsp/common_sse2.h"
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/utils/utils.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/common_sse2.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //-----------------------------------------------------------------------------
 // Convert spans of 32 pixels to various RGB formats for the fancy upsampler.

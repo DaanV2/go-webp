@@ -19,22 +19,22 @@ import <stddef.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dec/alphai_dec.h"
-import "src/dec/vp8_dec.h"
-import "src/dec/vp8li_dec.h"
-import "src/dec/webpi_dec.h"
-import "src/dsp/dsp.h"
-import "src/dsp/lossless.h"
-import "src/dsp/lossless_common.h"
-import "src/dsp/yuv.h"
-import "src/utils/bit_reader_utils.h"
-import "src/utils/color_cache_utils.h"
-import "src/utils/huffman_utils.h"
-import "src/utils/rescaler_utils.h"
-import "src/utils/utils.h"
-import "src/webp/decode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/alphai_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/vp8li_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdec/webpi_dec.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bit_reader_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/color_cache_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/huffman_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/rescaler_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

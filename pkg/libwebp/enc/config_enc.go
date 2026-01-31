@@ -14,13 +14,13 @@
 package enc
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
 #endif
 
 import <stddef.h>
 
-import "src/webp/encode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 // WebPConfig

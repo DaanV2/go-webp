@@ -16,7 +16,7 @@ package enc
 
 
 #ifdef HAVE_CONFIG_H
-import "src/webp/config.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/config.h"
 #endif
 
 import <stddef.h>
@@ -26,12 +26,12 @@ import <stddef.h>
 
 #endif
 
-import "src/enc/backward_references_enc.h"
-import "src/enc/histogram_enc.h"
-import "src/utils/bit_writer_utils.h"
-import "src/webp/encode.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/backward_references_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/histogram_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/bit_writer_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/encode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 #ifdef __cplusplus
 extern "C" {

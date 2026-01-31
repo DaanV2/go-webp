@@ -16,11 +16,11 @@ package dsp
 import <assert.h>
 import <stddef.h>
 
-import "src/dsp/cpu.h"
-import "src/dsp/dsp.h"
-import "src/dsp/yuv.h"
-import "src/webp/decode.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/cpu.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/yuv.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/decode.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 //------------------------------------------------------------------------------
 // Fancy upsampler

@@ -14,7 +14,7 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
@@ -22,7 +22,7 @@ import <assert.h>
 import <stdlib.h>
 import <string.h>
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 //------------------------------------------------------------------------------
 // Helpful macro.

@@ -11,11 +11,11 @@
 
 package dsp
 
-import "src/dsp/dsp.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/dsp.h"
 
 #if defined(WEBP_USE_MIPS32)
 
-import "src/enc/cost_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/cost_enc.h"
 
 static int GetResidualCost_MIPS32(int ctx0, const VP8Residual* const res) {
   int temp0, temp1;

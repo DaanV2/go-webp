@@ -19,13 +19,13 @@ package enc
 import <assert.h>
 import <string.h>
 
-import "src/dsp/lossless_common.h"
-import "src/enc/backward_references_enc.h"
-import "src/enc/histogram_enc.h"
-import "src/utils/color_cache_utils.h"
-import "src/utils/utils.h"
-import "src/webp/format_constants.h"
-import "src/webp/types.h"
+import "github.com/daanv2/go-webp/pkg/libwebpdsp/lossless_common.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/backward_references_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebpenc/histogram_enc.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/color_cache_utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebputils/utils.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/format_constants.h"
+import "github.com/daanv2/go-webp/pkg/libwebpwebp/types.h"
 
 const VALUES_IN_BYTE = 256
 
