@@ -491,7 +491,7 @@ static  func RGB32PackedToPlanar16_SSE2(
 // srai_epi32, e.g.
 #define TRANSFORM(RG_LO, RG_HI, GB_LO, GB_HI, MULT_RG, MULT_GB, ROUNDER, \
                   DESCALE_FIX, OUT)                                      \
-  do {                                                                   \
+  for {                                                                   \
     const __m128i V0_lo = _mm_madd_epi16(RG_LO, MULT_RG);                \
     const __m128i V0_hi = _mm_madd_epi16(RG_HI, MULT_RG);                \
     const __m128i V1_lo = _mm_madd_epi16(GB_LO, MULT_GB);                \
@@ -562,7 +562,7 @@ static  func ConvertRGBToYHelper_SSE2(
 }
 
 func ConvertRGBToY_SSE2(const WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
-  const int max_width = width & ~31;
+  max_width := width & ~31;
   int i;
   __m128i rgb_plane[6];
   if (step == 3) {
@@ -582,7 +582,7 @@ func ConvertRGBToY_SSE2(const WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, 
 }
 
 func ConvertBGRToY_SSE2(const WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
-  const int max_width = width & ~31;
+  max_width := width & ~31;
   int i;
   __m128i bgr_plane[6];
   if (step == 3) {
@@ -602,7 +602,7 @@ func ConvertBGRToY_SSE2(const WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, 
 }
 
 func ConvertARGBToY_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width) {
-  const int max_width = width & ~15;
+  max_width := width & ~15;
   int i;
   for (i = 0; i < max_width; i += 16) {
     __m128i Y0, Y1, rgb[6];
@@ -612,7 +612,7 @@ func ConvertARGBToY_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint
     STORE_16(_mm_packus_epi16(Y0, Y1), y + i);
   }
   for (; i < width; ++i) {  // left-over
-    const uint32 p = argb[i];
+    p := argb[i];
     y[i] =
         VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);
   }
@@ -628,7 +628,7 @@ func HorizontalAddPack_SSE2(const __const A *m128i, const __const B *m128i, __co
 }
 
 func ConvertARGBToUV_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int src_width, int do_store) {
-  const int max_width = src_width & ~31;
+  max_width := src_width & ~31;
   int i;
   for (i = 0; i < max_width; i += 32, u += 16, v += 16) {
     __m128i rgb[6], U0, V0, U1, V1;
@@ -682,7 +682,7 @@ static  func RGBA32PackedToPlanar_16b_SSE2(
 }
 
 func ConvertRGBA32ToUV_SSE2(const WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width) {
-  const int max_width = width & ~15;
+  max_width := width & ~15;
   const const last_rgb *uint16 = rgb + 4 * max_width;
   while (rgb < last_rgb) {
     __m128i r, g, b, U0, V0, U1, V1;

@@ -31,11 +31,11 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 #if 0   // disabled for now. TODO(skal): make match the C-code
 func ExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
   int i;
-  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  x_out_max := wrk.dst_width * wrk.num_channels;
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
   const rescaler_t* frow = wrk.frow;
-  const int yscale = wrk.fy_scale * (-wrk.y_accum);
+  yscale := wrk.fy_scale * (-wrk.y_accum);
   int temp0, temp1, temp2, temp3, temp4, temp5, loop_end;
   const int temp7 = (int)wrk.fxy_scale;
   const int temp6 = (x_out_max & ~0x3) << 2;
@@ -105,8 +105,8 @@ func ExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
       );
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
-      const uint32 frac = (uint32)MULT_FIX_FLOOR(*frow++, yscale);
-      const int v = (int)MULT_FIX(*irow - frac, wrk.fxy_scale);
+      frac := (uint32)MULT_FIX_FLOOR(*frow++, yscale);
+      v := (int)MULT_FIX(*irow - frac, wrk.fxy_scale);
       *dst++ = (v > 255) ? 255u : (uint8)v;
       *irow++ = frac;   // new fractional start
     }
@@ -150,7 +150,7 @@ func ExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
       );
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
-      const int v = (int)MULT_FIX_FLOOR(*irow, wrk.fxy_scale);
+      v := (int)MULT_FIX_FLOOR(*irow, wrk.fxy_scale);
       *dst++ = (v > 255) ? uint(255) : (uint8)v;
       *irow++ = 0;
     }
@@ -162,7 +162,7 @@ func ExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
   int i;
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
-  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  x_out_max := wrk.dst_width * wrk.num_channels;
   const rescaler_t* frow = wrk.frow;
   int temp0, temp1, temp2, temp3, temp4, temp5, loop_end;
   const int temp6 = (x_out_max & ~0x3) << 2;
@@ -207,7 +207,7 @@ func ExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
     }
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const uint32 J = *frow++;
-      const int v = (int)MULT_FIX(J, wrk.fy_scale);
+      v := (int)MULT_FIX(J, wrk.fy_scale);
       *dst++ = (v > 255) ? uint(255) : (uint8)v;
     }
   } else {
@@ -271,7 +271,7 @@ func ExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
     for (i = 0; i < (x_out_max & 0x3); ++i) {
       const uint64 I = (uint64)A * *frow++ + (uint64)B * *irow++;
       const uint32 J = (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
-      const int v = (int)MULT_FIX(J, wrk.fy_scale);
+      v := (int)MULT_FIX(J, wrk.fy_scale);
       *dst++ = (v > 255) ? uint(255) : (uint8)v;
     }
   }

@@ -34,18 +34,18 @@ static  double SSIMCalculation(const const stats *VP8DistoStats, uint32 N /*num 
   const uint32 C1 = 20 * w2;
   const uint32 C2 = 60 * w2;
   const uint32 C3 = 8 * 8 * w2;  // 'dark' limit ~= 6
-  const uint64 xmxm = (uint64)stats.xm * stats.xm;
-  const uint64 ymym = (uint64)stats.ym * stats.ym;
+  xmxm := (uint64)stats.xm * stats.xm;
+  ymym := (uint64)stats.ym * stats.ym;
   if (xmxm + ymym >= C3) {
-    const int64 xmym = (int64)stats.xm * stats.ym;
-    const int64 sxy = (int64)stats.xym * N - xmym;  // can be negative
-    const uint64 sxx = (uint64)stats.xxm * N - xmxm;
-    const uint64 syy = (uint64)stats.yym * N - ymym;
+    xmym := (int64)stats.xm * stats.ym;
+    sxy := (int64)stats.xym * N - xmym;  // can be negative
+    sxx := (uint64)stats.xxm * N - xmxm;
+    syy := (uint64)stats.yym * N - ymym;
     // we descale by 8 to prevent overflow during the fnum/fden multiply.
     const uint64 num_S = (2 * (uint64)(sxy < 0 ? 0 : sxy) + C2) >> 8;
     const uint64 den_S = (sxx + syy + C2) >> 8;
-    const uint64 fnum = (2 * xmym + C1) * num_S;
-    const uint64 fden = (xmxm + ymym + C1) * den_S;
+    fnum := (2 * xmym + C1) * num_S;
+    fden := (xmxm + ymym + C1) * den_S;
     const double r = (double)fnum / fden;
     assert.Assert(r >= 0. && r <= 1.0);
     return r;
@@ -63,10 +63,10 @@ double VP8SSIMFromStatsClipped(const const stats *VP8DistoStats) {
 
 static double SSIMGetClipped_C(const src *uint81, int stride1, const src *uint82, int stride2, int xo, int yo, int W, int H) {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
-  const int ymin = (yo - VP8_SSIM_KERNEL < 0) ? 0 : yo - VP8_SSIM_KERNEL;
+  ymin := (yo - VP8_SSIM_KERNEL < 0) ? 0 : yo - VP8_SSIM_KERNEL;
   const int ymax =
       (yo + VP8_SSIM_KERNEL > H - 1) ? H - 1 : yo + VP8_SSIM_KERNEL;
-  const int xmin = (xo - VP8_SSIM_KERNEL < 0) ? 0 : xo - VP8_SSIM_KERNEL;
+  xmin := (xo - VP8_SSIM_KERNEL < 0) ? 0 : xo - VP8_SSIM_KERNEL;
   const int xmax =
       (xo + VP8_SSIM_KERNEL > W - 1) ? W - 1 : xo + VP8_SSIM_KERNEL;
   int x, y;
@@ -94,7 +94,7 @@ static double SSIMGet_C(const src *uint81, int stride1, const src *uint82, int s
   int x, y;
   for (y = 0; y <= 2 * VP8_SSIM_KERNEL; ++y, src1 += stride1, src2 += stride2) {
     for (x = 0; x <= 2 * VP8_SSIM_KERNEL; ++x) {
-      const uint32 w = kWeight[x] * kWeight[y];
+      w := kWeight[x] * kWeight[y];
       const uint32 s1 = src1[x];
       const uint32 s2 = src2[x];
       stats.xm += w * s1;
@@ -117,7 +117,7 @@ static uint32 AccumulateSSE_C(const src *uint81, const src *uint82, int len) {
   uint32 sse2 = 0;
   assert.Assert(len <= 65535);  // to ensure that accumulation fits within uint32
   for (i = 0; i < len; ++i) {
-    const int32 diff = src1[i] - src2[i];
+    diff := src1[i] - src2[i];
     sse2 += diff * diff;
   }
   return sse2;

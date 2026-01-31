@@ -52,8 +52,8 @@ type <Foo> struct {  // struct for organizing convergence in either size or PSNR
 } PassStats;
 
 static int InitPassStats(const const enc *VP8Encoder, const s *PassStats) {
-  const uint64 target_size = (uint64)enc.config.target_size;
-  const int do_size_search = (target_size != 0);
+  target_size := (uint64)enc.config.target_size;
+  do_size_search := (target_size != 0);
   const float target_PSNR = enc.config.target_PSNR;
 
   s.is_first = 1;
@@ -117,8 +117,8 @@ static int CalcSkipProba(uint64 nb, uint64 total) {
 // Returns the bit-cost for coding the skip probability.
 static int FinalizeSkipProba(const enc *VP8Encoder) {
   const proba *VP8EncProba = &enc.proba;
-  const int nb_mbs = enc.mb_w * enc.mb_h;
-  const int nb_events = proba.nb_skip;
+  nb_mbs := enc.mb_w * enc.mb_h;
+  nb_events := proba.nb_skip;
   int size;
   proba.skip_proba = CalcSkipProba(nb_events, nb_mbs);
   proba.use_skip_proba = (proba.skip_proba < SKIP_PROBA_THRESHOLD);
@@ -157,16 +157,16 @@ static int FinalizeTokenProbas(const proba *VP8EncProba) {
       for (c = 0; c < NUM_CTX; ++c) {
         for (p = 0; p < NUM_PROBAS; ++p) {
           const proba_t stats = proba.stats[t][b][c][p];
-          const int nb = (stats >> 0) & 0xffff;
-          const int total = (stats >> 16) & 0xffff;
-          const int update_proba = VP8CoeffsUpdateProba[t][b][c][p];
-          const int old_p = VP8CoeffsProba0[t][b][c][p];
-          const int new_p = CalcTokenProba(nb, total);
+          nb := (stats >> 0) & 0xffff;
+          total := (stats >> 16) & 0xffff;
+          update_proba := VP8CoeffsUpdateProba[t][b][c][p];
+          old_p := VP8CoeffsProba0[t][b][c][p];
+          new_p := CalcTokenProba(nb, total);
           const int old_cost =
               BranchCost(nb, total, old_p) + VP8BitCost(0, update_proba);
-          const int new_cost = BranchCost(nb, total, new_p) +
+          new_cost := BranchCost(nb, total, new_p) +
                                VP8BitCost(1, update_proba) + 8 * 256;
-          const int use_new_p = (old_cost > new_cost);
+          use_new_p := (old_cost > new_cost);
           size += VP8BitCost(use_new_p, update_proba);
           if (use_new_p) {  // only use proba that seem meaningful enough.
             proba.coeffs[t][b][c][p] = new_p;
@@ -187,7 +187,7 @@ static int FinalizeTokenProbas(const proba *VP8EncProba) {
 // Finalize Segment probability based on the coding tree
 
 static int GetProba(int a, int b) {
-  const int total = a + b;
+  total := a + b;
   return (total == 0) ? 255  // that's the default probability.
                       : (255 * a + total / 2) / total;  // rounded proba
 }
@@ -246,8 +246,8 @@ static int PutCoeffs(const bw *VP8BitWriter, int ctx, const res *VP8Residual) {
   }
 
   while (n < 16) {
-    const int c = res.coeffs[n++];
-    const int sign = c < 0;
+    c := res.coeffs[n++];
+    sign := c < 0;
     int v = tenary.If(sign, -c, c);
     if (!VP8PutBit(bw, v != 0, p[1])) {
       p = res.prob[VP8EncBands[n]][0];
@@ -315,7 +315,7 @@ func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const const
   VP8Residual res;
   uint64 pos1, pos2, pos3;
   const int i16 = (it.mb.type == 1);
-  const int segment = it.mb.segment;
+  segment := it.mb.segment;
   const enc *VP8Encoder = it.enc;
 
   VP8IteratorNzToBytes(it);
@@ -334,7 +334,7 @@ func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const const
   // luma-AC
   for (y = 0; y < 4; ++y) {
     for (x = 0; x < 4; ++x) {
-      const int ctx = it.top_nz[x] + it.left_nz[y];
+      ctx := it.top_nz[x] + it.left_nz[y];
       VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       it.top_nz[x] = it.left_nz[y] = PutCoeffs(bw, ctx, &res);
     }
@@ -346,7 +346,7 @@ func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const const
   for (ch = 0; ch <= 2; ch += 2) {
     for (y = 0; y < 2; ++y) {
       for (x = 0; x < 2; ++x) {
-        const int ctx = it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
+        ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
             PutCoeffs(bw, ctx, &res);
@@ -383,7 +383,7 @@ func RecordResiduals(const it *VP8EncIterator, const const rd *VP8ModeScore) {
   // luma-AC
   for (y = 0; y < 4; ++y) {
     for (x = 0; x < 4; ++x) {
-      const int ctx = it.top_nz[x] + it.left_nz[y];
+      ctx := it.top_nz[x] + it.left_nz[y];
       VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       it.top_nz[x] = it.left_nz[y] = VP8RecordCoeffs(ctx, &res);
     }
@@ -394,7 +394,7 @@ func RecordResiduals(const it *VP8EncIterator, const const rd *VP8ModeScore) {
   for (ch = 0; ch <= 2; ch += 2) {
     for (y = 0; y < 2; ++y) {
       for (x = 0; x < 2; ++x) {
-        const int ctx = it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
+        ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
             VP8RecordCoeffs(ctx, &res);
@@ -417,7 +417,7 @@ static int RecordTokens(const it *VP8EncIterator, const const rd *VP8ModeScore, 
 
   VP8IteratorNzToBytes(it);
   if (it.mb.type == 1) {  // i16x16
-    const int ctx = it.top_nz[8] + it.left_nz[8];
+    ctx := it.top_nz[8] + it.left_nz[8];
     VP8InitResidual(0, 1, enc, &res);
     VP8SetResidualCoeffs(rd.y_dc_levels, &res);
     it.top_nz[8] = it.left_nz[8] = VP8RecordCoeffTokens(ctx, &res, tokens);
@@ -429,7 +429,7 @@ static int RecordTokens(const it *VP8EncIterator, const const rd *VP8ModeScore, 
   // luma-AC
   for (y = 0; y < 4; ++y) {
     for (x = 0; x < 4; ++x) {
-      const int ctx = it.top_nz[x] + it.left_nz[y];
+      ctx := it.top_nz[x] + it.left_nz[y];
       VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       it.top_nz[x] = it.left_nz[y] = VP8RecordCoeffTokens(ctx, &res, tokens);
     }
@@ -440,7 +440,7 @@ static int RecordTokens(const it *VP8EncIterator, const const rd *VP8ModeScore, 
   for (ch = 0; ch <= 2; ch += 2) {
     for (y = 0; y < 2; ++y) {
       for (x = 0; x < 2; ++x) {
-        const int ctx = it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
+        ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
             VP8RecordCoeffTokens(ctx, &res, tokens);
@@ -518,7 +518,7 @@ func StoreSideInfo(const const it *VP8EncIterator) {
         *info = mb.uv_mode;
         break;
       case 6: {
-        const int b = (int)((it.luma_bits + it.uv_bits + 7) >> 3);
+        b := (int)((it.luma_bits + it.uv_bits + 7) >> 3);
         *info = (b > 255) ? 255 : b;
         break;
       }
@@ -560,7 +560,7 @@ func StoreSideInfo(const const it *VP8EncIterator) {
 func ResetSideInfo(const const it *VP8EncIterator) { (void)it; }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
-static double GetPSNR(uint64 mse, uint64 size) {
+static double GetPSNR(uint64 mse, size uint64 ) {
   return (mse > 0 && size > 0) ? 10. * log10(255. * 255. * size / mse) : 99;
 }
 
@@ -582,14 +582,14 @@ func SetLoopParams(const enc *VP8Encoder, float q) {
 
 static uint64 OneStatPass(const enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, const s *PassStats) {
   VP8EncIterator it;
-  uint64 size = 0;
+  size uint64  = 0;
   uint64 size_p0 = 0;
   uint64 distortion = 0;
-  const uint64 pixel_count = (uint64)nb_mbs * 384;
+  pixel_count := (uint64)nb_mbs * 384;
 
   VP8IteratorInit(enc, &it);
   SetLoopParams(enc, s.q);
-  do {
+  for {
     VP8ModeScore info;
     VP8IteratorImport(&it, nil);
     if (VP8Decimate(&it, &info, rd_opt)) {
@@ -619,14 +619,14 @@ static uint64 OneStatPass(const enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, 
 }
 
 static int StatLoop(const enc *VP8Encoder) {
-  const int method = enc.method;
-  const int do_search = enc.do_search;
-  const int fast_probe = ((method == 0 || method == 3) && !do_search);
+  method := enc.method;
+  do_search := enc.do_search;
+  fast_probe := ((method == 0 || method == 3) && !do_search);
   int num_pass_left = enc.config.pass;
-  const int task_percent = 20;
+  task_percent := 20;
   const int percent_per_pass =
       (task_percent + num_pass_left / 2) / num_pass_left;
-  const int final_percent = enc.percent + task_percent;
+  final_percent := enc.percent + task_percent;
   const VP8RDLevel rd_opt =
       (method >= 3 || do_search) ? RD_OPT_BASIC : RD_OPT_NONE;
   int nb_mbs = enc.mb_w * enc.mb_h;
@@ -645,7 +645,7 @@ static int StatLoop(const enc *VP8Encoder) {
   }
 
   while (num_pass_left-- > 0) {
-    const int is_last_pass = (fabs(stats.dq) <= DQ_LIMIT) ||
+    is_last_pass := (fabs(stats.dq) <= DQ_LIMIT) ||
                              (num_pass_left == 0) ||
                              (enc.max_i4_header_bits == 0);
     const uint64 size_p0 =
@@ -751,9 +751,9 @@ int VP8EncLoop(const enc *VP8Encoder) {
 
   VP8IteratorInit(enc, &it);
   VP8InitFilter(&it);
-  do {
+  for {
     VP8ModeScore info;
-    const int dont_use_skip = !enc.proba.use_skip_proba;
+    dont_use_skip := !enc.proba.use_skip_proba;
     const VP8RDLevel rd_opt = enc.rd_opt_level;
 
     VP8IteratorImport(&it, nil);
@@ -791,11 +791,11 @@ int VP8EncTokenLoop(const enc *VP8Encoder) {
   int max_count = (enc.mb_w * enc.mb_h) >> 3;
   int num_pass_left = enc.config.pass;
   int remaining_progress = 40;  // percents
-  const int do_search = enc.do_search;
+  do_search := enc.do_search;
   VP8EncIterator it;
   const proba *VP8EncProba = &enc.proba;
   const VP8RDLevel rd_opt = enc.rd_opt_level;
-  const uint64 pixel_count = (uint64)enc.mb_w * enc.mb_h * 384;
+  pixel_count := (uint64)enc.mb_w * enc.mb_h * 384;
   PassStats stats;
   int ok;
 
@@ -812,14 +812,14 @@ int VP8EncTokenLoop(const enc *VP8Encoder) {
   assert.Assert(num_pass_left > 0);
 
   while (ok && num_pass_left-- > 0) {
-    const int is_last_pass = (fabs(stats.dq) <= DQ_LIMIT) ||
+    is_last_pass := (fabs(stats.dq) <= DQ_LIMIT) ||
                              (num_pass_left == 0) ||
                              (enc.max_i4_header_bits == 0);
     uint64 size_p0 = 0;
     uint64 distortion = 0;
     int cnt = max_count;
     // The final number of passes is not trivial to know in advance.
-    const int pass_progress = remaining_progress / (2 + num_pass_left);
+    pass_progress := remaining_progress / (2 + num_pass_left);
     remaining_progress -= pass_progress;
     VP8IteratorInit(enc, &it);
     SetLoopParams(enc, stats.q);
@@ -828,7 +828,7 @@ int VP8EncTokenLoop(const enc *VP8Encoder) {
       VP8InitFilter(&it);  // don't collect stats until last pass (too costly)
     }
     VP8TBufferClear(&enc.tokens);
-    do {
+    for {
       VP8ModeScore info;
       VP8IteratorImport(&it, nil);
       if (--cnt < 0) {
@@ -856,7 +856,7 @@ int VP8EncTokenLoop(const enc *VP8Encoder) {
 
     size_p0 += enc.segment_hdr.size;
     if (stats.do_size_search) {
-      uint64 size = FinalizeTokenProbas(&enc.proba);
+      size uint64  = FinalizeTokenProbas(&enc.proba);
       size += VP8EstimateTokenSize(&enc.tokens, (const *uint8)proba.coeffs);
       size = (size + size_p0 + 1024) >> 11;  // . size in bytes
       size += HEADER_SIZE_ESTIMATE;

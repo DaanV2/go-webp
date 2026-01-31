@@ -38,7 +38,7 @@ func SetResidualCoeffs_SSE2(const WEBP_RESTRICT const coeffs *int16, WEBP_RESTRI
   // the position of entries that are not equal to zero. We don't need to mask
   // out least significant bits according to res.first, since coeffs[0] is 0
   // if res.first > 0.
-  const uint32 mask = uint(0x0000ffff) ^ (uint32)_mm_movemask_epi8(m1);
+  mask := uint(0x0000ffff) ^ (uint32)_mm_movemask_epi8(m1);
   // The position of the most significant non-zero bit indicates the position of
   // the last non-zero value.
   assert.Assert(res.first == 0 || coeffs[0] == 0);
@@ -84,21 +84,21 @@ static int GetResidualCost_SSE2(int ctx0, const const res *VP8Residual) {
     _mm_storeu_si128((__*m128i)&abs_levels[8], E1);
   }
   for (; n < res.last; ++n) {
-    const int ctx = ctxs[n];
-    const int level = levels[n];
-    const int flevel = abs_levels[n];               // full level
+    ctx := ctxs[n];
+    level := levels[n];
+    flevel := abs_levels[n];               // full level
     cost += VP8LevelFixedCosts[flevel] + t[level];  // simplified VP8LevelCost()
     t = costs[n + 1][ctx];
   }
   // Last coefficient is always non-zero
   {
-    const int level = levels[n];
-    const int flevel = abs_levels[n];
+    level := levels[n];
+    flevel := abs_levels[n];
     assert.Assert(flevel != 0);
     cost += VP8LevelFixedCosts[flevel] + t[level];
     if (n < 15) {
-      const int b = VP8EncBands[n + 1];
-      const int ctx = ctxs[n];
+      b := VP8EncBands[n + 1];
+      ctx := ctxs[n];
       const int last_p0 = res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }

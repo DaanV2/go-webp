@@ -210,7 +210,7 @@ import "github.com/daanv2/go-webp/pkg/windows"
       (VP8CPUInfo)&func##_last_cpuinfo_used;   \
   static SRWLOCK func##_lock = SRWLOCK_INIT
 #define WEBP_DSP_INIT(func)                                \
-  do {                                                     \
+  for {                                                     \
     AcquireSRWLockExclusive(&func##_lock);                 \
     if (func##_last_cpuinfo_used != VP8GetCPUInfo) func(); \
     func##_last_cpuinfo_used = VP8GetCPUInfo;              \
@@ -227,7 +227,7 @@ import "github.com/daanv2/go-webp/pkg/pthread"
       (VP8CPUInfo)&func##_last_cpuinfo_used;   \
   static pthread_mutex_t func##_lock = PTHREAD_MUTEX_INITIALIZER
 #define WEBP_DSP_INIT(func)                                \
-  do {                                                     \
+  for {                                                     \
     if (pthread_mutex_lock(&func##_lock)) break;           \
     if (func##_last_cpuinfo_used != VP8GetCPUInfo) func(); \
     func##_last_cpuinfo_used = VP8GetCPUInfo;              \
@@ -241,7 +241,7 @@ import "github.com/daanv2/go-webp/pkg/pthread"
   static volatile VP8CPUInfo func##_last_cpuinfo_used = \
       (VP8CPUInfo)&func##_last_cpuinfo_used
 #define WEBP_DSP_INIT(func)                               \
-  do {                                                    \
+  for {                                                    \
     if (func##_last_cpuinfo_used == VP8GetCPUInfo) break; \
     func();                                               \
     func##_last_cpuinfo_used = VP8GetCPUInfo;             \

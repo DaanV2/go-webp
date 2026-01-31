@@ -111,9 +111,9 @@ type VP8BitReader struct {
 }
 
 // Initialize the bit reader and the boolean decoder.
-func VP8InitBitReader(const br *VP8BitReader, const const *uint8  start, uint64 size);
+func VP8InitBitReader(const br *VP8BitReader, const const *uint8  start, size uint64 );
 // Sets the working read buffer.
-func VP8BitReaderSetBuffer(const br *VP8BitReader, const const *uint8  start, uint64 size);
+func VP8BitReaderSetBuffer(const br *VP8BitReader, const const *uint8  start, size uint64 );
 
 // Update internal pointers to displace the byte buffer by the
 // relative offset 'offset'.

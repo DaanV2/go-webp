@@ -101,11 +101,11 @@ static  func VP8YuvToBgr(int y, int u, int v, const bgr *uint8) {
 }
 
 static  func VP8YuvToRgb565(int y, int u, int v, const rgb *uint8) {
-  const int r = VP8YUVToR(y, v);     // 5 usable bits
-  const int g = VP8YUVToG(y, u, v);  // 6 usable bits
-  const int b = VP8YUVToB(y, u);     // 5 usable bits
-  const int rg = (r & 0xf8) | (g >> 5);
-  const int gb = ((g << 3) & 0xe0) | (b >> 3);
+  r := VP8YUVToR(y, v);     // 5 usable bits
+  g := VP8YUVToG(y, u, v);  // 6 usable bits
+  b := VP8YUVToB(y, u);     // 5 usable bits
+  rg := (r & 0xf8) | (g >> 5);
+  gb := ((g << 3) & 0xe0) | (b >> 3);
 #if (WEBP_SWAP_16BIT_CSP == 1)
   rgb[0] = gb;
   rgb[1] = rg;
@@ -116,11 +116,11 @@ static  func VP8YuvToRgb565(int y, int u, int v, const rgb *uint8) {
 }
 
 static  func VP8YuvToRgba4444(int y, int u, int v, const argb *uint8) {
-  const int r = VP8YUVToR(y, v);     // 4 usable bits
-  const int g = VP8YUVToG(y, u, v);  // 4 usable bits
-  const int b = VP8YUVToB(y, u);     // 4 usable bits
-  const int rg = (r & 0xf0) | (g >> 4);
-  const int ba = (b & 0xf0) | 0x0f;  // overwrite the lower 4 bits
+  r := VP8YUVToR(y, v);     // 4 usable bits
+  g := VP8YUVToG(y, u, v);  // 4 usable bits
+  b := VP8YUVToB(y, u);     // 4 usable bits
+  rg := (r & 0xf0) | (g >> 4);
+  ba := (b & 0xf0) | 0x0f;  // overwrite the lower 4 bits
 #if (WEBP_SWAP_16BIT_CSP == 1)
   argb[0] = ba;
   argb[1] = rg;
@@ -185,17 +185,17 @@ static  int VP8ClipUV(int uv, int rounding) {
 }
 
 static  int VP8RGBToY(int r, int g, int b, int rounding) {
-  const int luma = 16839 * r + 33059 * g + 6420 * b;
+  luma := 16839 * r + 33059 * g + 6420 * b;
   return (luma + rounding + (16 << YUV_FIX)) >> YUV_FIX;  // no need to clip
 }
 
 static  int VP8RGBToU(int r, int g, int b, int rounding) {
-  const int u = -9719 * r - 19081 * g + 28800 * b;
+  u := -9719 * r - 19081 * g + 28800 * b;
   return VP8ClipUV(u, rounding);
 }
 
 static  int VP8RGBToV(int r, int g, int b, int rounding) {
-  const int v = +28800 * r - 24116 * g - 4684 * b;
+  v := +28800 * r - 24116 * g - 4684 * b;
   return VP8ClipUV(v, rounding);
 }
 

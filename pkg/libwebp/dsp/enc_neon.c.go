@@ -453,13 +453,13 @@ func FTransform_NEON(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *ui
 #endif
 
 #define LOAD_LANE_16b(VALUE, LANE)                 \
-  do {                                             \
+  for {                                             \
     (VALUE) = vld1_lane_s16(src, (VALUE), (LANE)); \
     src += stride;                                 \
   } while (0)
 
 func FTransformWHT_NEON(const WEBP_RESTRICT src *int16, WEBP_RESTRICT out *int16) {
-  const int stride = 16;
+  stride := 16;
   const int16x4_t zero = vdup_n_s16(0);
   int32x4x4_t tmp0;
   int16x4x4_t in;
@@ -847,7 +847,7 @@ static int Quantize2Blocks_NEON(int16 in[32], int16 out[32], const WEBP_RESTRICT
 
 #if BPS == 32
 #define DC4_VE4_HE4_TM4_NEON(dst, tbl, res, lane)                     \
-  do {                                                                \
+  for {                                                                \
     uint8x16_t r;                                                     \
     r = vqtbl2q_u8(qcombined, tbl);                                   \
     r = vreinterpretq_u8_u32(                                         \
@@ -857,7 +857,7 @@ static int Quantize2Blocks_NEON(int16 in[32], int16 out[32], const WEBP_RESTRICT
   } while (0)
 
 #define RD4_VR4_LD4_VL4_NEON(dst, tbl) \
-  do {                                 \
+  for {                                 \
     uint8x16_t r;                      \
     r = vqtbl2q_u8(qcombined, tbl);    \
     vst1q_u8(dst, r);                  \

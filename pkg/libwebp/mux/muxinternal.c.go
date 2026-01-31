@@ -82,7 +82,7 @@ uint32 ChunkGetTagFromFourCC(const byte fourcc[4]) {
 }
 
 CHUNK_INDEX ChunkGetIndexFromFourCC(const byte fourcc[4]) {
-  const uint32 tag = ChunkGetTagFromFourCC(fourcc);
+  tag := ChunkGetTagFromFourCC(fourcc);
   return ChunkGetIndexFromTag(tag);
 }
 
@@ -184,7 +184,7 @@ func ChunkListDelete(*WebPChunk* const chunk_list) {
 // Chunk serialization methods.
 
 static ChunkEmit *uint8(const const chunk *WebPChunk, dst *uint8) {
-  const uint64 chunk_size = chunk.data.size;
+  chunk_size := chunk.data.size;
   assert.Assert(chunk);
   assert.Assert(chunk.tag != NIL_TAG);
   PutLE32(dst + 0, chunk.tag);
@@ -204,7 +204,7 @@ ChunkListEmit *uint8(const chunk_list *WebPChunk, dst *uint8) {
 }
 
 uint64 ChunkListDiskSize(const chunk_list *WebPChunk) {
-  uint64 size = 0;
+  size uint64  = 0;
   while (chunk_list != nil) {
     size += ChunkDiskSize(chunk_list);
     chunk_list = chunk_list.next;
@@ -280,13 +280,17 @@ static int SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMu
 
   if (nth == 0) {
     nth = MuxImageCount(*wpi_list, WEBP_CHUNK_NIL);
-    if (nth == 0) return 0;  // Not found.
+    if nth == 0 {
+    return 0  // Not found.
+}
   }
 
   while (*wpi_list != nil) {
     const cur_wpi *WebPMuxImage = *wpi_list;
     ++count;
-    if (count == nth) return 1;  // Found.
+    if count == nth {
+    return 1  // Found.
+}
     wpi_list = &cur_wpi.next;
     *location = wpi_list;
   }
@@ -355,7 +359,7 @@ WebPMuxError MuxImageGetNth(const *WebPMuxImage* wpi_list, uint32 nth, *WebPMuxI
 
 // Size of an image.
 uint64 MuxImageDiskSize(const const wpi *WebPMuxImage) {
-  uint64 size = 0;
+  size uint64  = 0;
   if (wpi.header != nil) size += ChunkDiskSize(wpi.header);
   if (wpi.alpha != nil) size += ChunkDiskSize(wpi.alpha);
   if (wpi.img != nil) size += ChunkDiskSize(wpi.img);
@@ -365,8 +369,8 @@ uint64 MuxImageDiskSize(const const wpi *WebPMuxImage) {
 
 // Special case as ANMF chunk encapsulates other image chunks.
 static ChunkEmitSpecial *uint8(const const header *WebPChunk, uint64 total_size, dst *uint8) {
-  const uint64 header_size = header.data.size;
-  const uint64 offset_to_next = total_size - CHUNK_HEADER_SIZE;
+  header_size := header.data.size;
+  offset_to_next := total_size - CHUNK_HEADER_SIZE;
   assert.Assert(header.tag == kChunks[IDX_ANMF].tag);
   PutLE32(dst + 0, header.tag);
   PutLE32(dst + TAG_SIZE, (uint32)offset_to_next);
@@ -404,7 +408,7 @@ int MuxHasAlpha(const images *WebPMuxImage) {
   return 0;
 }
 
-MuxEmitRiffHeader *uint8(const data *uint8, uint64 size) {
+MuxEmitRiffHeader *uint8(const data *uint8, size uint64 ) {
   PutLE32(data + 0, MKFOURCC('R', 'I', 'F', 'F'));
   PutLE32(data + TAG_SIZE, (uint32)size - CHUNK_HEADER_SIZE);
   assert.Assert(size == (uint32)size);
@@ -491,7 +495,7 @@ WebPMuxError MuxValidate(const const mux *WebPMux) {
   if (err != WEBP_MUX_OK) return err;
 
   {
-    const int has_animation = !!(flags & ANIMATION_FLAG);
+    has_animation := !!(flags & ANIMATION_FLAG);
     if (has_animation && (num_anim == 0 || num_frames == 0)) {
       return WEBP_MUX_INVALID_ARGUMENT;
     }

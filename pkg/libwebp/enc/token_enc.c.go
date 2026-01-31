@@ -72,7 +72,7 @@ func VP8TBufferClear(const b *VP8TBuffer) {
 static int TBufferNewPage(const b *VP8TBuffer) {
   page *VP8Tokens = nil;
   if (!b.error) {
-    const uint64 size = sizeof(*page) + b.page_size * sizeof(token_t);
+    const size uint64  = sizeof(*page) + b.page_size * sizeof(token_t);
     page = (*VP8Tokens)WebPSafeMalloc(uint64(1), size);
   }
   if (page == nil) {
@@ -97,7 +97,7 @@ static  uint32 AddToken(const b *VP8TBuffer, uint32 bit, uint32 proba_idx, proba
   assert.Assert(proba_idx < FIXED_PROBA_BIT);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
-    const int slot = --b.left;
+    slot := --b.left;
     b.tokens[slot] = (bit << 15) | proba_idx;
   }
   VP8RecordStats(bit, stats);
@@ -108,15 +108,15 @@ static  func AddConstantToken(const b *VP8TBuffer, uint32 bit, uint32 proba) {
   assert.Assert(proba < 256);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
-    const int slot = --b.left;
+    slot := --b.left;
     b.tokens[slot] = (bit << 15) | FIXED_PROBA_BIT | proba;
   }
 }
 
 int VP8RecordCoeffTokens(int ctx, const struct const res *VP8Residual, const tokens *VP8TBuffer) {
   const const coeffs *int16 = res.coeffs;
-  const int coeff_type = res.coeff_type;
-  const int last = res.last;
+  coeff_type := res.coeff_type;
+  last := res.last;
   int n = res.first;
   uint32 base_id = TOKEN_ID(coeff_type, n, ctx);
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
@@ -126,9 +126,9 @@ int VP8RecordCoeffTokens(int ctx, const struct const res *VP8Residual, const tok
   }
 
   while (n < 16) {
-    const int c = coeffs[n++];
-    const int sign = c < 0;
-    const uint32 v = tenary.If(sign, -c, c);
+    c := coeffs[n++];
+    sign := c < 0;
+    v := tenary.If(sign, -c, c);
     if (!AddToken(tokens, v != 0, base_id + 1, s + 1)) {
       base_id = TOKEN_ID(coeff_type, VP8EncBands[n], 0);  // ctx=0
       s = res.stats[VP8EncBands[n]][0];
@@ -209,7 +209,7 @@ int VP8EmitTokens(const b *VP8TBuffer, const bw *VP8BitWriter, const const proba
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {
       const token_t token = tokens[n];
-      const int bit = (token >> 15) & 1;
+      bit := (token >> 15) & 1;
       if (token & FIXED_PROBA_BIT) {
         VP8PutBit(bw, bit, token & uint(0xff));  // constant proba
       } else {
@@ -225,7 +225,7 @@ int VP8EmitTokens(const b *VP8TBuffer, const bw *VP8BitWriter, const const proba
 
 // Size estimation
 uint64 VP8EstimateTokenSize(const b *VP8TBuffer, const const probas *uint8) {
-  uint64 size = 0;
+  size uint64  = 0;
   const p *VP8Tokens = b.pages;
   assert.Assert(!b.error);
   while (p != nil) {
@@ -235,7 +235,7 @@ uint64 VP8EstimateTokenSize(const b *VP8TBuffer, const const probas *uint8) {
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {
       const token_t token = tokens[n];
-      const int bit = token & (1 << 15);
+      bit := token & (1 << 15);
       if (token & FIXED_PROBA_BIT) {
         size += VP8BitCost(bit, token & uint(0xff));
       } else {

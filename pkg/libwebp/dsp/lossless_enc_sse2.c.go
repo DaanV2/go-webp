@@ -119,7 +119,7 @@ func CollectColorBlueTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int strid
     }
   }
   {
-    const int left_over = tile_width & (SPAN - 1);
+    left_over := tile_width & (SPAN - 1);
     if (left_over > 0) {
       VP8LCollectColorBlueTransforms_C(argb + tile_width - left_over, stride, left_over, tile_height, green_to_blue, red_to_blue, histo);
     }
@@ -155,7 +155,7 @@ func CollectColorRedTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int stride
     }
   }
   {
-    const int left_over = tile_width & (SPAN - 1);
+    left_over := tile_width & (SPAN - 1);
     if (left_over > 0) {
       VP8LCollectColorRedTransforms_C(argb + tile_width - left_over, stride, left_over, tile_height, green_to_red, histo);
     }
@@ -177,7 +177,7 @@ func AddVector_SSE2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32
   assert.Assert(size >= 16);
   assert.Assert(size % 2 == 0);
 
-  do {
+  for {
     const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i + 0]);
     const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
     const __m128i a2 = _mm_loadu_si128((const __*m128i)&a[i + 8]);
@@ -224,7 +224,7 @@ func AddVectorEq_SSE2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, 
   assert.Assert(size >= 16);
   assert.Assert(size % 2 == 0);
 
-  do {
+  for {
     const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i + 0]);
     const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
     const __m128i a2 = _mm_loadu_si128((const __*m128i)&a[i + 8]);
@@ -286,13 +286,13 @@ static uint64 CombinedShannonEntropy_SSE2(const uint32 X[256], const uint32 Y[25
         _mm_packs_epi16(_mm_packs_epi32(x0, x1), _mm_packs_epi32(x2, x3));
     const __m128i y4 =
         _mm_packs_epi16(_mm_packs_epi32(y0, y1), _mm_packs_epi32(y2, y3));
-    const int32 mx = _mm_movemask_epi8(_mm_cmpgt_epi8(x4, zero));
+    mx := _mm_movemask_epi8(_mm_cmpgt_epi8(x4, zero));
     int32 my = _mm_movemask_epi8(_mm_cmpgt_epi8(y4, zero)) | mx;
     while (my) {
-      const int32 j = BitsCtz(my);
+      j := BitsCtz(my);
       uint32 xy;
       if ((mx >> j) & 1) {
-        const int x = X[i + j];
+        x := X[i + j];
         sumXY += x;
         retval += VP8LFastSLog2(x);
       }
@@ -321,7 +321,7 @@ static int VectorMismatch_SSE2(const const array *uint321, const const array *ui
     __m128i A0 = _mm_loadu_si128((const __*m128i)&array1[0]);
     __m128i A1 = _mm_loadu_si128((const __*m128i)&array2[0]);
     match_len = 0;
-    do {
+    for {
       // Loop unrolling and early load both provide a speedup of 10% for the
       // current function. Also, max_limit can be MAX_LENGTH=4096 at most.
       const __m128i cmpA = _mm_cmpeq_epi32(A0, A1);
@@ -424,7 +424,7 @@ func BundleColorMap_SSE2(const WEBP_RESTRICT const row *uint8, int width, int xb
         // 0000000a00000000b... | (where a/b are 1 bit).
         const __m128i in = _mm_loadu_si128((const __*m128i)&row[x]);
         const __m128i shift = _mm_slli_epi64(in, 7);
-        const uint32 move = _mm_movemask_epi8(shift);
+        move := _mm_movemask_epi8(shift);
         dst[0] = 0xff000000 | ((move & 0xff) << 8);
         dst[1] = 0xff000000 | (move & 0xff00);
       }

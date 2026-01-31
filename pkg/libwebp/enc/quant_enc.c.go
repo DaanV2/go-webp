@@ -157,8 +157,8 @@ static const uint8 kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90, 60, 90
 static int ExpandMatrix(const m *VP8Matrix, int type) {
   int i, sum;
   for (i = 0; i < 2; ++i) {
-    const int is_ac_coeff = (i > 0);
-    const int bias = kBiasMatrices[type][is_ac_coeff];
+    is_ac_coeff := (i > 0);
+    bias := kBiasMatrices[type][is_ac_coeff];
     m.iq[i] = (1 << QFIX) / m.q[i];
     m.bias[i] = BIAS(bias);
     // zthresh is the exact value such that QUANTDIV(coeff, iQ, B) is:
@@ -189,11 +189,11 @@ func CheckLambdaValue(const v *int) {
 
 func SetupMatrices(enc *VP8Encoder) {
   int i;
-  const int tlambda_scale = (enc.method >= 4) ? enc.config.sns_strength : 0;
-  const int num_segments = enc.segment_hdr.num_segments;
+  tlambda_scale := (enc.method >= 4) ? enc.config.sns_strength : 0;
+  num_segments := enc.segment_hdr.num_segments;
   for (i = 0; i < num_segments; ++i) {
     const m *VP8SegmentInfo = &enc.dqm[i];
-    const int q = m.quant;
+    q := m.quant;
     int q_i4, q_i16, q_uv;
     m.y1.q[0] = kDcTable[clip(q + enc.dq_y1_dc, 0, 127)];
     m.y1.q[1] = kAcTable[clip(q, 0, 127)];
@@ -248,11 +248,11 @@ func SetupFilterStrength(const enc *VP8Encoder) {
   for (i = 0; i < NUM_MB_SEGMENTS; ++i) {
     const m *VP8SegmentInfo = &enc.dqm[i];
     // We focus on the quantization of AC coeffs.
-    const int qstep = kAcTable[clip(m.quant, 0, 127)] >> 2;
+    qstep := kAcTable[clip(m.quant, 0, 127)] >> 2;
     const int base_strength =
         VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, qstep);
     // Segments with lower complexity ('beta') will be less filtered.
-    const int f = base_strength * level0 / (256 + m.beta);
+    f := base_strength * level0 / (256 + m.beta);
     m.fstrength = (f < FSTRENGTH_CUTOFF) ? 0 : (f > 63) ? 63 : f;
   }
   // We record the initial strength (mainly for the case of 1-segment only).
@@ -311,7 +311,7 @@ func SimplifySegments(const enc *VP8Encoder) {
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
   // explicit check is needed to afunc a spurious warning about 'i' exceeding
   // array bounds of 'dqm' with some compilers (noticed with gcc-4.9).
-  const int num_segments = (enc.segment_hdr.num_segments < NUM_MB_SEGMENTS)
+  num_segments := (enc.segment_hdr.num_segments < NUM_MB_SEGMENTS)
                                ? enc.segment_hdr.num_segments
                                : NUM_MB_SEGMENTS;
   int num_final_segments = 1;
@@ -349,7 +349,7 @@ func SimplifySegments(const enc *VP8Encoder) {
 func VP8SetSegmentParams(const enc *VP8Encoder, float quality) {
   int i;
   int dq_uv_ac, dq_uv_dc;
-  const int num_segments = enc.segment_hdr.num_segments;
+  num_segments := enc.segment_hdr.num_segments;
   const double amp = SNS_TO_DQ * enc.config.sns_strength / 100. / 128.;
   const double Q = quality / 100.;
   const double c_base = enc.config.emulate_jpeg_size
@@ -360,7 +360,7 @@ func VP8SetSegmentParams(const enc *VP8Encoder, float quality) {
     // susceptibility and allow denser segments to be quantized more.
     const double expn = 1. - amp * enc.dqm[i].alpha;
     const double c = pow(c_base, expn);
-    const int q = (int)(127. * (1. - c));
+    q := (int)(127. * (1. - c));
     assert.Assert(expn > 0.);
     enc.dqm[i].quant = clip(q, 0, 127);
   }
@@ -532,7 +532,7 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
   const const probas *ProbaArray = enc.proba.coeffs[coeff_type];
   CostArrayPtr const costs =
       (CostArrayPtr)enc.proba.remapped_costs[coeff_type];
-  const int first = (coeff_type == TYPE_I16_AC) ? 1 : 0;
+  first := (coeff_type == TYPE_I16_AC) ? 1 : 0;
   Node nodes[16][NUM_NODES];
   ScoreState score_states[2][NUM_NODES];
   ss_cur *ScoreState = &SCORE_STATE(0, MIN_DELTA);
@@ -543,14 +543,14 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
 
   {
     score_t cost;
-    const int thresh = mtx.q[1] * mtx.q[1] / 4;
-    const int last_proba = probas[VP8EncBands[first]][ctx0][0];
+    thresh := mtx.q[1] * mtx.q[1] / 4;
+    last_proba := probas[VP8EncBands[first]][ctx0][0];
 
     // compute the position of the last interesting coefficient
     last = first - 1;
     for (n = 15; n >= first; --n) {
-      const int j = kZigzag[n];
-      const int err = in[j] * in[j];
+      j := kZigzag[n];
+      err := in[j] * in[j];
       if (err > thresh) {
         last = n;
         break;
@@ -574,12 +574,12 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
 
   // traverse trellis.
   for (n = first; n <= last; ++n) {
-    const int j = kZigzag[n];
+    j := kZigzag[n];
     const uint32 Q = mtx.q[j];
     const uint32 iQ = mtx.iq[j];
     const uint32 B = BIAS(0x00);  // neutral bias
     // note: it's important to take sign of the _original_ coeff, // so we don't have to consider level < 0 afterward.
-    const int sign = (in[j] < 0);
+    sign := (in[j] < 0);
     const uint32 coeff0 = (sign ? -in[j] : in[j]) + mtx.sharpen[j];
     int level0 = QUANTDIV(coeff0, iQ, B);
     int thresh_level = QUANTDIV(coeff0, iQ, BIAS(0x80));
@@ -595,9 +595,9 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
     // test all alternate level values around level0.
     for (m = -MIN_DELTA; m <= MAX_DELTA; ++m) {
       const cur *Node = &NODE(n, m);
-      const int level = level0 + m;
-      const int ctx = (level > 2) ? 2 : level;
-      const int band = VP8EncBands[n + 1];
+      level := level0 + m;
+      ctx := (level > 2) ? 2 : level;
+      band := VP8EncBands[n + 1];
       score_t base_score;
       score_t best_cur_score;
       int best_prev;
@@ -620,7 +620,7 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
         // Compute delta_error = how much coding this level will
         // subtract to max_error as distortion.
         // Here, distortion = sum of (|coeff_i| - level_i * Q_i)^2
-        const int new_error = coeff0 - level * Q;
+        new_error := coeff0 - level * Q;
         const int delta_error =
             kWeightTrellis[j] * (new_error * new_error - coeff0 * coeff0);
         base_score = RDScoreTrellis(lambda, 0, delta_error);
@@ -691,7 +691,7 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
 
     for (; n >= first; --n) {
       const const node *Node = &NODE(n, best_node);
-      const int j = kZigzag[n];
+      j := kZigzag[n];
       out[n] = node.sign ? -node.level : node.level;
       nz |= node.level;
       in[j] = out[n] * mtx.q[j];
@@ -728,8 +728,8 @@ static int ReconstructIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTR
     VP8IteratorNzToBytes(it);
     for (y = 0, n = 0; y < 4; ++y) {
       for (x = 0; x < 4; ++x, ++n) {
-        const int ctx = it.top_nz[x] + it.left_nz[y];
-        const int non_zero = TrellisQuantizeBlock(
+        ctx := it.top_nz[x] + it.left_nz[y];
+        non_zero := TrellisQuantizeBlock(
             enc, tmp[n], rd.y_ac_levels[n], ctx, TYPE_I16_AC, &dqm.y1, dqm.lambda_trellis_i16);
         it.top_nz[x] = it.left_nz[y] = non_zero;
         rd.y_ac_levels[n][0] = 0;
@@ -765,8 +765,8 @@ static int ReconstructIntra4(WEBP_RESTRICT const it *VP8EncIterator, int16 level
 
   VP8FTransform(src, ref, tmp);
   if (DO_TRELLIS_I4 && it.do_trellis) {
-    const int x = it.i4 & 3, y = it.i4 >> 2;
-    const int ctx = it.top_nz[x] + it.left_nz[y];
+    x := it.i4 & 3, y = it.i4 >> 2;
+    ctx := it.top_nz[x] + it.left_nz[y];
     nz = TrellisQuantizeBlock(enc, tmp, levels, ctx, TYPE_I4_AC, &dqm.y1, dqm.lambda_trellis_i4);
   } else {
     nz = VP8EncQuantizeBlock(tmp, levels, &dqm.y1);
@@ -789,11 +789,11 @@ const DSCALE = 1  // storage descaling, needed to make the error fit int8
 // Error is already divided by DSHIFT.
 static int QuantizeSingle(WEBP_RESTRICT const v *int16, const WEBP_RESTRICT const mtx *VP8Matrix) {
   int V = *v;
-  const int sign = (V < 0);
+  sign := (V < 0);
   if (sign) V = -V;
   if (V > (int)mtx.zthresh[0]) {
     const int qV = QUANTDIV(V, mtx.iq[0], mtx.bias[0]) * mtx.q[0];
-    const int err = (V - qV);
+    err := (V - qV);
     *v = sign ? -qV : qV;
     return (sign ? -err : err) >> DSCALE;
   }
@@ -870,8 +870,8 @@ static int ReconstructUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT c
     for (ch = 0, n = 0; ch <= 2; ch += 2) {
       for (y = 0; y < 2; ++y) {
         for (x = 0; x < 2; ++x, ++n) {
-          const int ctx = it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
-          const int non_zero = TrellisQuantizeBlock(
+          ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
+          non_zero := TrellisQuantizeBlock(
               enc, tmp[n], rd.uv_levels[n], ctx, TYPE_CHROMA_A, &dqm.uv, dqm.lambda_trellis_uv);
           it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] = non_zero;
           nz |= non_zero << n;
@@ -924,8 +924,8 @@ func SwapOut(const it *VP8EncIterator) {
 func PickBestIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT rd *VP8ModeScore) {
   const int kNumBlocks = 16;
   const dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment];
-  const int lambda = dqm.lambda_i16;
-  const int tlambda = dqm.tlambda;
+  lambda := dqm.lambda_i16;
+  tlambda := dqm.tlambda;
   const const src *uint8 = it.yuv_in + Y_OFF_ENC;
   VP8ModeScore rd_tmp;
   rd_cur *VP8ModeScore = &rd_tmp;
@@ -982,18 +982,18 @@ func PickBestIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT rd *V
 
 // return the cost array corresponding to the surrounding prediction modes.
 static const GetCostModeI *uint164(WEBP_RESTRICT const it *VP8EncIterator, const uint8 modes[16]) {
-  const int preds_w = it.enc.preds_w;
-  const int x = (it.i4 & 3), y = it.i4 >> 2;
-  const int left = (x == 0) ? it.preds[y * preds_w - 1] : modes[it.i4 - 1];
-  const int top = (y == 0) ? it.preds[-preds_w + x] : modes[it.i4 - 4];
+  preds_w := it.enc.preds_w;
+  x := (it.i4 & 3), y = it.i4 >> 2;
+  left := (x == 0) ? it.preds[y * preds_w - 1] : modes[it.i4 - 1];
+  top := (y == 0) ? it.preds[-preds_w + x] : modes[it.i4 - 4];
   return VP8FixedCostsI4[top][left];
 }
 
 static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore) {
   const const enc *VP8Encoder = it.enc;
   const const dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment];
-  const int lambda = dqm.lambda_i4;
-  const int tlambda = dqm.tlambda;
+  lambda := dqm.lambda_i4;
+  tlambda := dqm.tlambda;
   const const src *uint80 = it.yuv_in + Y_OFF_ENC;
   const best_blocks *uint8 = it.yuv_out2 + Y_OFF_ENC;
   int total_header_bits = 0;
@@ -1007,7 +1007,7 @@ static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT 
   rd_best.H = 211;  // '211' is the value of VP8BitCost(0, 145)
   SetRDScore(dqm.lambda_mode, &rd_best);
   VP8IteratorStartI4(it);
-  do {
+  for {
     const int kNumBlocks = 1;
     VP8ModeScore rd_i4;
     int mode;
@@ -1086,7 +1086,7 @@ static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT 
 func PickBestUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore) {
   const int kNumBlocks = 8;
   const const dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment];
-  const int lambda = dqm.lambda_uv;
+  lambda := dqm.lambda_uv;
   const const src *uint8 = it.yuv_in + U_OFF_ENC;
   tmp_dst *uint8 = it.yuv_out2 + U_OFF_ENC;  // scratch buffer
   dst *uint80 = it.yuv_out + U_OFF_ENC;
@@ -1144,8 +1144,8 @@ func SimpleQuantize(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const 
     nz = ReconstructIntra16(it, rd, it.yuv_out + Y_OFF_ENC, it.preds[0]);
   } else {
     VP8IteratorStartI4(it);
-    do {
-      const int mode = it.preds[(it.i4 & 3) + (it.i4 >> 2) * enc.preds_w];
+    for {
+      mode := it.preds[(it.i4 & 3) + (it.i4 >> 2) * enc.preds_w];
       const const src *uint8 = it.yuv_in + Y_OFF_ENC + VP8Scan[it.i4];
       const dst *uint8 = it.yuv_out + Y_OFF_ENC + VP8Scan[it.i4];
       MakeIntra4Preds(it);
@@ -1169,7 +1169,7 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
   // Some empiric constants, of approximate order of magnitude.
   const int lambda_d_i16 = 106;
   const int lambda_d_i4 = 11;
-  const int lambda_d_uv = 120;
+  lambda_d_uv := 120;
   score_t score_i4 = dqm.i4_penalty;
   score_t i4_bit_sum = 0;
   const score_t bit_limit = try_both_modes ? it.enc.mb_header_limit
@@ -1208,7 +1208,7 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
     // constant penalty (i4 mode usually needs more bits compared to i16).
     is_i16 = 0;
     VP8IteratorStartI4(it);
-    do {
+    for {
       int best_i4_mode = -1;
       score_t best_i4_score = MAX_COST;
       const const src *uint8 = it.yuv_in + Y_OFF_ENC + VP8Scan[it.i4];
@@ -1275,7 +1275,7 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
 
 int VP8Decimate(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, VP8RDLevel rd_opt) {
   int is_skipped;
-  const int method = it.enc.method;
+  method := it.enc.method;
 
   InitScore(rd);
 

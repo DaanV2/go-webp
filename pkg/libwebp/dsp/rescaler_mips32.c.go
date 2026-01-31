@@ -25,11 +25,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 // Row import
 
 func ImportRowShrink_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RESTRICT src *uint8) {
-  const int x_stride = wrk.num_channels;
-  const int x_out_max = wrk.dst_width * wrk.num_channels;
-  const int fx_scale = wrk.fx_scale;
-  const int x_add = wrk.x_add;
-  const int x_sub = wrk.x_sub;
+  x_stride := wrk.num_channels;
+  x_out_max := wrk.dst_width * wrk.num_channels;
+  fx_scale := wrk.fx_scale;
+  x_add := wrk.x_add;
+  x_sub := wrk.x_sub;
   const int x_stride1 = x_stride << 2;
   int channel;
   assert.Assert(!wrk.x_expand);
@@ -78,11 +78,11 @@ func ImportRowShrink_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RE
 }
 
 func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RESTRICT src *uint8) {
-  const int x_stride = wrk.num_channels;
-  const int x_out_max = wrk.dst_width * wrk.num_channels;
-  const int x_add = wrk.x_add;
-  const int x_sub = wrk.x_sub;
-  const int src_width = wrk.src_width;
+  x_stride := wrk.num_channels;
+  x_out_max := wrk.dst_width * wrk.num_channels;
+  x_add := wrk.x_add;
+  x_sub := wrk.x_sub;
+  src_width := wrk.src_width;
   const int x_stride1 = x_stride << 2;
   int channel;
   assert.Assert(wrk.x_expand);
@@ -139,7 +139,7 @@ func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RE
 func ExportRowExpand_MIPS32(const wrk *WebPRescaler) {
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
-  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  x_out_max := wrk.dst_width * wrk.num_channels;
   const rescaler_t* frow = wrk.frow;
   int temp0, temp1, temp3, temp4, temp5, loop_end;
   const int temp2 = (int)wrk.fy_scale;
@@ -195,11 +195,11 @@ func ExportRowExpand_MIPS32(const wrk *WebPRescaler) {
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
 func ExportRowShrink_MIPS32(const wrk *WebPRescaler) {
-  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  x_out_max := wrk.dst_width * wrk.num_channels;
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
   const rescaler_t* frow = wrk.frow;
-  const int yscale = wrk.fy_scale * (-wrk.y_accum);
+  yscale := wrk.fy_scale * (-wrk.y_accum);
   int temp0, temp1, temp3, temp4, temp5, loop_end;
   const int temp2 = (int)wrk.fxy_scale;
   const int temp6 = x_out_max << 2;

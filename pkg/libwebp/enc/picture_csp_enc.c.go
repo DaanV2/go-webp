@@ -78,7 +78,7 @@ static const int kMinDimensionIterativeConversion = 4;
 // Main function
 
 static int PreprocessARGB(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, int step, int rgb_stride, const picture *WebPPicture) {
-  const int ok = SharpYuvConvert(
+  ok := SharpYuvConvert(
       r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.y, picture.y_stride, picture.u, picture.uv_stride, picture.v, picture.uv_stride, /*yuv_bit_depth=*/8, picture.width, picture.height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
@@ -97,7 +97,7 @@ static  func ConvertRowToY(const const r_ptr *uint8, const const g_ptr *uint8, c
 static  func ConvertRowsToUV(const rgb *uint16, const dst_u *uint8, const dst_v *uint8, int width, const rg *VP8Random) {
   int i;
   for (i = 0; i < width; i += 1, rgb += 4) {
-    const int r = rgb[0], g = rgb[1], b = rgb[2];
+    r := rgb[0], g = rgb[1], b = rgb[2];
     dst_u[i] = VP8RGBToU(r, g, b, VP8RandomBits(rg, YUV_FIX + 2));
     dst_v[i] = VP8RGBToV(r, g, b, VP8RandomBits(rg, YUV_FIX + 2));
   }
@@ -109,9 +109,9 @@ static int ImportYUVAFromRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_pt
                               int rgb_stride,  // bytes per scanline
                               float dithering, int use_iterative_conversion, const picture *WebPPicture) {
   int y;
-  const int width = picture.width;
-  const int height = picture.height;
-  const int has_alpha = CheckNonOpaque(a_ptr, width, height, step, rgb_stride);
+  width := picture.width;
+  height := picture.height;
+  has_alpha := CheckNonOpaque(a_ptr, width, height, step, rgb_stride);
 
   picture.colorspace = tenary.If(has_alpha, WEBP_YUV420A, WEBP_YUV420);
   picture.use_argb = 0;
@@ -138,7 +138,7 @@ static int ImportYUVAFromRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_pt
       WebPExtractAlpha(a_ptr, rgb_stride, width, height, picture.a, picture.a_stride);
     }
   } else {
-    const int uv_width = (width + 1) >> 1;
+    uv_width := (width + 1) >> 1;
     // temporary storage for accumulated R/G/B values during conversion to U/V
     const tmp_rgb *uint16 =
         (*uint16)WebPSafeMalloc(4 * uv_width, sizeof(*tmp_rgb));
@@ -287,9 +287,9 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
   // Convert
   {
     int y;
-    const int width = picture.width;
-    const int height = picture.height;
-    const int argb_stride = 4 * picture.argb_stride;
+    width := picture.width;
+    height := picture.height;
+    argb_stride := 4 * picture.argb_stride;
     dst *uint8 = (*uint8)picture.argb;
     const uint8 *cur_u = picture.u, *cur_v = picture.v, *cur_y = picture.y;
     WebPUpsampleLinePairFunc upsample =
@@ -337,8 +337,8 @@ static int Import(const picture *WebPPicture, const rgb *uint8, int rgb_stride, 
   const r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));
   const g_ptr *uint8 = rgb + 1;
   const b_ptr *uint8 = rgb + (tenary.If(swap_rb, 0, 2));
-  const int width = picture.width;
-  const int height = picture.height;
+  width := picture.width;
+  height := picture.height;
 
   if (abs(rgb_stride) < (tenary.If(import_alpha, 4, 3)) * width) return 0;
 
@@ -354,7 +354,7 @@ static int Import(const picture *WebPPicture, const rgb *uint8, int rgb_stride, 
   if (import_alpha) {
     // dst[] byte order is {a,r,g,b} for big-endian, {b,g,r,a} for little endian
     dst *uint32 = picture.argb;
-    const int do_copy = (ALPHA_OFFSET == 3) && swap_rb;
+    do_copy := (ALPHA_OFFSET == 3) && swap_rb;
     assert.Assert(step == 4);
     if (do_copy) {
       for (y = 0; y < height; ++y) {

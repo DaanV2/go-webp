@@ -125,7 +125,7 @@ static int pthread_cond_signal(pthread_cond_t* const condition) {
 }
 
 static int pthread_cond_wait(pthread_cond_t* const condition, pthread_mutex_t* const mutex) {
-  const int ok = SleepConditionVariableSRW(condition, mutex, INFINITE, 0);
+  ok := SleepConditionVariableSRW(condition, mutex, INFINITE, 0);
   return !ok;
 }
 

@@ -34,8 +34,8 @@ const MAX_LIMIT_BITS =5
 // Quantizes the value up or down to a multiple of 1<<bits (or to 255),
 // choosing the closer one, resolving ties using bankers' rounding.
 static uint32 FindClosestDiscretized(uint32 a, int bits) {
-  const uint32 mask = (uint(1) << bits) - 1;
-  const uint32 biased = a + (mask >> 1) + ((a >> bits) & 1);
+  mask := (uint(1) << bits) - 1;
+  biased := a + (mask >> 1) + ((a >> bits) & 1);
   assert.Assert(bits > 0);
   if (biased > 0xff) return 0xff;
   return biased & ~mask;
@@ -74,7 +74,7 @@ static int IsSmooth(const const prev_row *uint32, const const curr_row *uint32, 
 // Adjusts pixel values of image with given maximum error.
 func NearLossless(int xsize, int ysize, const argb_src *uint32, int stride, int limit_bits, copy_buffer *uint32, argb_dst *uint32) {
   int x, y;
-  const int limit = 1 << limit_bits;
+  limit := 1 << limit_bits;
   prev_row *uint32 = copy_buffer;
   curr_row *uint32 = prev_row + xsize;
   next_row *uint32 = curr_row + xsize;
@@ -109,10 +109,10 @@ func NearLossless(int xsize, int ysize, const argb_src *uint32, int stride, int 
 int VP8ApplyNearLossless(const const picture *WebPPicture, int quality, const argb_dst *uint32) {
   int i;
   copy_buffer *uint32;
-  const int xsize = picture.width;
-  const int ysize = picture.height;
-  const int stride = picture.argb_stride;
-  const int limit_bits = VP8LNearLosslessBits(quality);
+  xsize := picture.width;
+  ysize := picture.height;
+  stride := picture.argb_stride;
+  limit_bits := VP8LNearLosslessBits(quality);
   assert.Assert(argb_dst != nil);
   assert.Assert(limit_bits > 0);
   assert.Assert(limit_bits <= MAX_LIMIT_BITS);

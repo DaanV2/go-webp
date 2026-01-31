@@ -33,8 +33,8 @@ const MAX_ITERS_K_MEANS =6
 
 func SmoothSegmentMap(const enc *VP8Encoder) {
   int n, x, y;
-  const int w = enc.mb_w;
-  const int h = enc.mb_h;
+  w := enc.mb_w;
+  h := enc.mb_h;
   const int majority_cnt_3_x_3_grid = 5;
   const tmp *uint8 = (*uint8)WebPSafeMalloc(w * h, sizeof(*tmp));
   assert.Assert((uint64)(w * h) == (uint64)w * h);  // no overflow, as per spec
@@ -80,7 +80,7 @@ static  int clip(int v, int m, int M) {
 }
 
 func SetSegmentAlphas(const enc *VP8Encoder, const int centers[NUM_MB_SEGMENTS], int mid) {
-  const int nb = enc.segment_hdr.num_segments;
+  nb := enc.segment_hdr.num_segments;
   int min = centers[0], max = centers[0];
   int n;
 
@@ -93,8 +93,8 @@ func SetSegmentAlphas(const enc *VP8Encoder, const int centers[NUM_MB_SEGMENTS],
   if (max == min) max = min + 1;
   assert.Assert(mid <= max && mid >= min);
   for (n = 0; n < nb; ++n) {
-    const int alpha = 255 * (centers[n] - mid) / (max - min);
-    const int beta = 255 * (centers[n] - min) / (max - min);
+    alpha := 255 * (centers[n] - mid) / (max - min);
+    beta := 255 * (centers[n] - min) / (max - min);
     enc.dqm[n].alpha = clip(alpha, -127, 127);
     enc.dqm[n].beta = clip(beta, 0, 255);
   }
@@ -118,8 +118,8 @@ static int GetAlpha(const const histo *VP8Histogram) {
   // 'alpha' will later be clipped to [0..MAX_ALPHA] range, clamping outer
   // values which happen to be mostly noise. This leaves the maximum precision
   // for handling the useful small values which contribute most.
-  const int max_value = histo.max_value;
-  const int last_non_zero = histo.last_non_zero;
+  max_value := histo.max_value;
+  last_non_zero := histo.last_non_zero;
   const int alpha =
       (max_value > 1) ? ALPHA_SCALE * last_non_zero / max_value : 0;
   return alpha;
@@ -137,7 +137,7 @@ func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
   // explicit check is needed to afunc spurious warning about 'n + 1' exceeding
   // array bounds of 'centers' with some compilers (noticed with gcc-4.9).
-  const int nb = (enc.segment_hdr.num_segments < NUM_MB_SEGMENTS)
+  nb := (enc.segment_hdr.num_segments < NUM_MB_SEGMENTS)
                      ? enc.segment_hdr.num_segments
                      : NUM_MB_SEGMENTS;
   int centers[NUM_MB_SEGMENTS];
@@ -194,7 +194,7 @@ func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
     total_weight = 0;
     for (n = 0; n < nb; ++n) {
       if (accum[n]) {
-        const int new_center = (dist_accum[n] + accum[n] / 2) / accum[n];
+        new_center := (dist_accum[n] + accum[n] / 2) / accum[n];
         displaced += abs(centers[n] - new_center);
         centers[n] = new_center;
         weighted_average += new_center * accum[n];
@@ -208,13 +208,13 @@ func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
   // Map each original value to the closest centroid
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
     const mb *VP8MBInfo = &enc.mb_info[n];
-    const int alpha = mb.alpha;
+    alpha := mb.alpha;
     mb.segment = map[alpha];
     mb.alpha = centers[map[alpha]];  // for the record.
   }
 
   if (nb > 1) {
-    const int smooth = (enc.config.preprocessing & 1);
+    smooth := (enc.config.preprocessing & 1);
     if (smooth) SmoothSegmentMap(enc);
   }
 
@@ -234,7 +234,7 @@ const MAX_INTRA4_MODE =2
 const MAX_UV_MODE =2
 
 static int MBAnalyzeBestIntra16Mode(const it *VP8EncIterator) {
-  const int max_mode = MAX_INTRA16_MODE;
+  max_mode := MAX_INTRA16_MODE;
   int mode;
   int best_alpha = DEFAULT_ALPHA;
   int best_mode = 0;
@@ -259,7 +259,7 @@ static int MBAnalyzeBestIntra16Mode(const it *VP8EncIterator) {
 static int FastMBAnalyze(const it *VP8EncIterator) {
   // Empirical cut-off value, should be around 16 (~=block size). We use the
   // [8-17] range and favor intra4 at high quality, intra16 for low quality.
-  const int q = (int)it.enc.config.quality;
+  q := (int)it.enc.config.quality;
   const uint64 kThreshold = 8 + (17 - 8) * q / 100;
   int k;
   uint32 dc[16];
@@ -288,7 +288,7 @@ static int MBAnalyzeBestUVMode(const it *VP8EncIterator) {
   int best_alpha = DEFAULT_ALPHA;
   int smallest_alpha = 0;
   int best_mode = 0;
-  const int max_mode = MAX_UV_MODE;
+  max_mode := MAX_UV_MODE;
   int mode;
 
   VP8MakeChroma8Preds(it);
@@ -386,7 +386,7 @@ static int DoSegmentsJob(arg *void1, arg *void2) {
   if (!VP8IteratorIsDone(it)) {
     uint8 tmp[32 + WEBP_ALIGN_CST];
     const scratch *uint8 = (*uint8)WEBP_ALIGN(tmp);
-    do {
+    for {
       // Let's pretend we have perfect lossless reconstruction.
       VP8IteratorImport(it, scratch);
       MBAnalyze(it, job.alphas, &job.alpha, &job.uv_alpha);
@@ -430,15 +430,15 @@ int VP8EncAnalyze(const enc *VP8Encoder) {
       (enc.segment_hdr.num_segments > 1) ||
       (enc.method <= 1);  // for method 0 - 1, we need preds[] to be filled.
   if (do_segments) {
-    const int last_row = enc.mb_h;
-    const int total_mb = last_row * enc.mb_w;
+    last_row := enc.mb_h;
+    total_mb := last_row * enc.mb_w;
 #ifdef WEBP_USE_THREAD
     // We give a little more than a half work to the main thread.
-    const int split_row = (9 * last_row + 15) >> 4;
+    split_row := (9 * last_row + 15) >> 4;
     const int kMinSplitRow = 2;  // minimal rows needed for mt to be worth it
-    const int do_mt = (enc.thread_level > 0) && (split_row >= kMinSplitRow);
+    do_mt := (enc.thread_level > 0) && (split_row >= kMinSplitRow);
 #else
-    const int do_mt = 0;
+    do_mt := 0;
 #endif
     const const worker_interface *WebPWorkerInterface =
         WebPGetWorkerInterface();

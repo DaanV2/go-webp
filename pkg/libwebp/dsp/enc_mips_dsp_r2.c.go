@@ -289,7 +289,7 @@ static int Disto16x16_MIPSdspR2(const WEBP_RESTRICT const a *uint8, const WEBP_R
   ".endif                                                  \n\t"
 
 #define FILL_8_OR_16(DST, VALUE, SIZE)                                \
-  do {                                                                \
+  for {                                                                \
     int value = (VALUE);                                              \
     __asm__ volatile(                                                 \
       "replv.qb   %[value],  %[value]                      \n\t"      \
@@ -370,7 +370,7 @@ HORIZONTAL_PRED(dst, left, 16)
 
 // clang-format off
 #define CLIP_8B_TO_DST(DST, LEFT, TOP, SIZE)                                   \
-  do {                                                                         \
+  for {                                                                         \
     int leftY_1 = ((int)(LEFT)[y] << 16) + (LEFT)[y];                          \
     int temp0, temp1, temp2, temp3;                                            \
     __asm__ volatile(                                                          \
@@ -397,7 +397,7 @@ HORIZONTAL_PRED(dst, left, 16)
 // clang-format on
 
 #define CLIP_TO_DST(DST, LEFT, TOP, SIZE)                    \
-  do {                                                       \
+  for {                                                       \
     int y;                                                   \
     const int left_1 = ((int)(LEFT)[-1] << 16) + (LEFT)[-1]; \
     for (y = 0; y < (SIZE); ++y) {                           \
@@ -1361,7 +1361,7 @@ func FTransformWHT_MIPSdspR2(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *i
 func CollectHistogram_MIPSdspR2(const ref *uint8, const pred *uint8, int start_block, int end_block, const histo *VP8Histogram) {
   int j;
   int distribution[MAX_COEFF_THRESH + 1] = {0}
-  const int max_coeff = (MAX_COEFF_THRESH << 16) + MAX_COEFF_THRESH;
+  max_coeff := (MAX_COEFF_THRESH << 16) + MAX_COEFF_THRESH;
   for (j = start_block; j < end_block; ++j) {
     int16 out[16];
     int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;

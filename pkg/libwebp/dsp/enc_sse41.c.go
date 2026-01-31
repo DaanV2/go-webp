@@ -170,7 +170,7 @@ static int TTransform_SSE41(const inA *uint8, const inB *uint8, const const w *u
 }
 
 static int Disto4x4_SSE41(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  const int diff_sum = TTransform_SSE41(a, b, w);
+  diff_sum := TTransform_SSE41(a, b, w);
   return abs(diff_sum) >> 5;
 }
 

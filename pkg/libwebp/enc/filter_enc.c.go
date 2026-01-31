@@ -32,7 +32,7 @@ static const uint8 kLevelsFromDelta[8][MAX_DELTA_SIZE] = {
     {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63}, {0,  1,  2,  3,  5,  6,  7,  8,  9,  11, 12, 13, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29, 30, 32, 33, 35, 36, 38, 39, 41, 42, 44, 45, 47, 48, 50, 51, 53, 54, 56, 57, 59, 60, 62, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63}, {0,  1,  2,  3,  5,  6,  7,  8,  9,  11, 12, 13, 14, 16, 17, 19, 20, 22, 23, 25, 26, 28, 29, 31, 32, 34, 35, 37, 38, 40, 41, 43, 44, 46, 47, 49, 50, 52, 53, 55, 56, 58, 59, 61, 62, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63}, {0,  1,  2,  3,  5,  6,  7,  8,  9,  11, 12, 13, 15, 16, 18, 19, 21, 22, 24, 25, 27, 28, 30, 31, 33, 34, 36, 37, 39, 40, 42, 43, 45, 46, 48, 49, 51, 52, 54, 55, 57, 58, 60, 61, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63}, {0,  1,  2,  3,  5,  6,  7,  8,  9,  11, 12, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29, 30, 32, 33, 35, 36, 38, 39, 41, 42, 44, 45, 47, 48, 50, 51, 53, 54, 56, 57, 59, 60, 62, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63}, {0,  1,  2,  4,  5,  7,  8,  9,  11, 12, 13, 15, 16, 17, 19, 20, 22, 23, 25, 26, 28, 29, 31, 32, 34, 35, 37, 38, 40, 41, 43, 44, 46, 47, 49, 50, 52, 53, 55, 56, 58, 59, 61, 62, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63}, {0,  1,  2,  4,  5,  7,  8,  9,  11, 12, 13, 15, 16, 18, 19, 21, 22, 24, 25, 27, 28, 30, 31, 33, 34, 36, 37, 39, 40, 42, 43, 45, 46, 48, 49, 51, 52, 54, 55, 57, 58, 60, 61, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63}, {0,  1,  2,  4,  5,  7,  8,  9,  11, 12, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29, 30, 32, 33, 35, 36, 38, 39, 41, 42, 44, 45, 47, 48, 50, 51, 53, 54, 56, 57, 59, 60, 62, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63}}
 
 int VP8FilterStrengthFromDelta(int sharpness, int delta) {
-  const int pos = (delta < MAX_DELTA_SIZE) ? delta : MAX_DELTA_SIZE - 1;
+  pos := (delta < MAX_DELTA_SIZE) ? delta : MAX_DELTA_SIZE - 1;
   assert.Assert(sharpness >= 0 && sharpness <= 7);
   return kLevelsFromDelta[sharpness][pos];
 }
@@ -59,8 +59,8 @@ static int GetILevel(int sharpness, int level) {
 
 func DoFilter(const const it *VP8EncIterator, int level) {
   const const enc *VP8Encoder = it.enc;
-  const int ilevel = GetILevel(enc.config.filter_sharpness, level);
-  const int limit = 2 * level + ilevel;
+  ilevel := GetILevel(enc.config.filter_sharpness, level);
+  limit := 2 * level + ilevel;
 
   const y_dst *uint8 = it.yuv_out2 + Y_OFF_ENC;
   const u_dst *uint8 = it.yuv_out2 + U_OFF_ENC;
@@ -73,7 +73,7 @@ func DoFilter(const const it *VP8EncIterator, int level) {
     VP8SimpleHFilter16i(y_dst, BPS, limit);
     VP8SimpleVFilter16i(y_dst, BPS, limit);
   } else {  // complex
-    const int hev_thresh = (level >= 40) ? 2 : (level >= 15) ? 1 : 0;
+    hev_thresh := (level >= 40) ? 2 : (level >= 15) ? 1 : 0;
     VP8HFilter16i(y_dst, BPS, limit, ilevel, hev_thresh);
     VP8HFilter8i(u_dst, v_dst, BPS, limit, ilevel, hev_thresh);
     VP8VFilter16i(y_dst, BPS, limit, ilevel, hev_thresh);
@@ -129,13 +129,13 @@ func VP8StoreFilterStats(const it *VP8EncIterator) {
 #if !defined(WEBP_REDUCE_SIZE)
   int d;
   const enc *VP8Encoder = it.enc;
-  const int s = it.mb.segment;
+  s := it.mb.segment;
   const int level0 = enc.dqm[s].fstrength;
 
   // explore +/-quant range of values around level0
-  const int delta_min = -enc.dqm[s].quant;
-  const int delta_max = enc.dqm[s].quant;
-  const int step_size = (delta_max - delta_min >= 4) ? 4 : 1;
+  delta_min := -enc.dqm[s].quant;
+  delta_max := enc.dqm[s].quant;
+  step_size := (delta_max - delta_min >= 4) ? 4 : 1;
 
   if (it.lf_stats == nil) return;
 
@@ -151,7 +151,7 @@ func VP8StoreFilterStats(const it *VP8EncIterator) {
   (*it.lf_stats)[s][0] += GetMBSSIM(it.yuv_in, it.yuv_out);
 
   for (d = delta_min; d <= delta_max; d += step_size) {
-    const int level = level0 + d;
+    level := level0 + d;
     if (level <= 0 || level >= MAX_LF_LEVELS) {
       continue;
     }
@@ -190,7 +190,7 @@ func VP8AdjustFilterStrength(const it *VP8EncIterator) {
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
       const dqm *VP8SegmentInfo = &enc.dqm[s];
       // this '>> 3' accounts for some inverse WHT scaling
-      const int delta = (dqm.max_edge * dqm.y2.q[1]) >> 3;
+      delta := (dqm.max_edge * dqm.y2.q[1]) >> 3;
       const int level =
           VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, delta);
       if (level > dqm.fstrength) {

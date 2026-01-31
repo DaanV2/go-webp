@@ -48,7 +48,7 @@ static uint32 AccumulateSSE_SSE2(const src *uint81, const src *uint82, int len) 
   int i = 0;
   uint32 sse2 = 0;
   if (len >= 16) {
-    const int limit = len - 32;
+    limit := len - 32;
     int32 tmp[4];
     __m128i sum1;
     __m128i sum = _mm_setzero_si128();
@@ -75,7 +75,7 @@ static uint32 AccumulateSSE_SSE2(const src *uint81, const src *uint82, int len) 
   }
 
   for (; i < len; ++i) {
-    const int32 diff = src1[i] - src2[i];
+    diff := src1[i] - src2[i];
     sse2 += diff * diff;
   }
   return sse2;
@@ -102,7 +102,7 @@ static uint32 HorizontalAdd32b_SSE2(const __const m *m128i) {
 static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0}
 
 #define ACCUMULATE_ROW(WEIGHT)                                \
-  do {                                                        \
+  for {                                                        \
     /* compute row weight (Wx * Wy) */                        \
     const __m128i Wy = _mm_set1_epi16((WEIGHT));              \
     const __m128i W = _mm_mullo_epi16(Wx, Wy);                \

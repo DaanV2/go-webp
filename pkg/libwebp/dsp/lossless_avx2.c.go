@@ -70,7 +70,7 @@ func PredictorAdd1_AVX2(const in *uint32, const upper *uint32, int num_pixels, W
     // | a
     const __m256i sum1 = _mm256_add_epi8(sum0, shift1);
     // Add a + b + c + d to the upper lane.
-    const int32 sum_abcd = _mm256_extract_epi32(sum1, 3);
+    sum_abcd := _mm256_extract_epi32(sum1, 3);
     const __m256i sum2 = _mm256_add_epi8(
         sum1, _mm256_set_epi32(sum_abcd, sum_abcd, sum_abcd, sum_abcd, 0, 0, 0, 0));
 
@@ -140,7 +140,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
 
 // Predictor10: average of (average of (L,TL), average of (T, TR)).
 #define DO_PRED10(OUT)                                  \
-  do {                                                  \
+  for {                                                  \
     __m256i avgLTL, avg;                                \
     Average2_m256i(&L, &TL, &avgLTL);                   \
     Average2_m256i(&avgTTR, &avgLTL, &avg);             \
@@ -149,7 +149,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
   } while (0)
 
 const DO_PRED10_SHIFT =                                        \
-  do {                                                          \
+  for {                                                          \
     /* Rotate the pre-computed values for the next iteration.*/ \
     avgTTR = _mm256_srli_si256(avgTTR, 4);                      \
     TL = _mm256_srli_si256(TL, 4);                              \
@@ -192,7 +192,7 @@ func PredictorAdd10_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictor11: select.
 #define DO_PRED11(OUT)                                                      \
-  do {                                                                      \
+  for {                                                                      \
     const __m256i L_lo = _mm256_unpacklo_epi32(L, T);                       \
     const __m256i TL_lo = _mm256_unpacklo_epi32(TL, T);                     \
     const __m256i pb = _mm256_sad_epu8(L_lo, TL_lo); /* pb = sum |L-TL|*/   \
@@ -205,7 +205,7 @@ func PredictorAdd10_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
   } while (0)
 
 const DO_PRED11_SHIFT =                                      \
-  do {                                                        \
+  for {                                                        \
     /* Shift the pre-computed value for the next iteration.*/ \
     T = _mm256_srli_si256(T, 4);                              \
     TL = _mm256_srli_si256(TL, 4);                            \
@@ -261,7 +261,7 @@ func PredictorAdd11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictor12: ClampedAddSubtractFull.
 #define DO_PRED12(DIFF, OUT)                              \
-  do {                                                    \
+  for {                                                    \
     const __m256i all = _mm256_add_epi16(L, (DIFF));      \
     const __m256i alls = _mm256_packus_epi16(all, all);   \
     const __m256i res = _mm256_add_epi8(src, alls);       \
@@ -270,7 +270,7 @@ func PredictorAdd11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
   } while (0)
 
 #define DO_PRED12_SHIFT(DIFF, LANE)                           \
-  do {                                                        \
+  for {                                                        \
     /* Shift the pre-computed value for the next iteration.*/ \
     if ((LANE) == 0) (DIFF) = _mm256_srli_si256(DIFF, 8);     \
     src = _mm256_srli_si256(src, 4);                          \

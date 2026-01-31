@@ -83,21 +83,21 @@ static int GetResidualCost_NEON(int ctx0, const const res *VP8Residual) {
     vst1q_u16(abs_levels + 8, E1);
   }
   for (; n < res.last; ++n) {
-    const int ctx = ctxs[n];
-    const int level = levels[n];
-    const int flevel = abs_levels[n];               // full level
+    ctx := ctxs[n];
+    level := levels[n];
+    flevel := abs_levels[n];               // full level
     cost += VP8LevelFixedCosts[flevel] + t[level];  // simplified VP8LevelCost()
     t = costs[n + 1][ctx];
   }
   // Last coefficient is always non-zero
   {
-    const int level = levels[n];
-    const int flevel = abs_levels[n];
+    level := levels[n];
+    flevel := abs_levels[n];
     assert.Assert(flevel != 0);
     cost += VP8LevelFixedCosts[flevel] + t[level];
     if (n < 15) {
-      const int b = VP8EncBands[n + 1];
-      const int ctx = ctxs[n];
+      b := VP8EncBands[n + 1];
+      ctx := ctxs[n];
       const int last_p0 = res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }

@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // Loads 9 pixels each from rows r1 and r2 and generates 16 pixels.
 #define UPSAMPLE_16PIXELS(r1, r2, out)                         \
-  do {                                                         \
+  for {                                                         \
     const uint8x8_t a = vld1_u8(r1 + 0);                       \
     const uint8x8_t b = vld1_u8(r1 + 1);                       \
     const uint8x8_t c = vld1_u8(r2 + 0);                       \
@@ -86,35 +86,35 @@ static const int16 kCoeffs1[4] = {19077, 26149, 6419, 13320}
 const v255 = vdup_n_u8(255)
 
 #define STORE_Rgb(out, r, g, b)   \
-  do {                            \
+  for {                            \
     uint8x8x3_t r_g_b;            \
     INIT_VECTOR3(r_g_b, r, g, b); \
     vst3_u8(out, r_g_b);          \
   } while (0)
 
 #define STORE_Bgr(out, r, g, b)   \
-  do {                            \
+  for {                            \
     uint8x8x3_t b_g_r;            \
     INIT_VECTOR3(b_g_r, b, g, r); \
     vst3_u8(out, b_g_r);          \
   } while (0)
 
 #define STORE_Rgba(out, r, g, b)             \
-  do {                                       \
+  for {                                       \
     uint8x8x4_t r_g_b_v255;                  \
     INIT_VECTOR4(r_g_b_v255, r, g, b, v255); \
     vst4_u8(out, r_g_b_v255);                \
   } while (0)
 
 #define STORE_Bgra(out, r, g, b)             \
-  do {                                       \
+  for {                                       \
     uint8x8x4_t b_g_r_v255;                  \
     INIT_VECTOR4(b_g_r_v255, b, g, r, v255); \
     vst4_u8(out, b_g_r_v255);                \
   } while (0)
 
 #define STORE_Argb(out, r, g, b)             \
-  do {                                       \
+  for {                                       \
     uint8x8x4_t v255_r_g_b;                  \
     INIT_VECTOR4(v255_r_g_b, v255, r, g, b); \
     vst4_u8(out, v255_r_g_b);                \
@@ -127,7 +127,7 @@ const v255 = vdup_n_u8(255)
 #endif
 
 #define STORE_Rgba4444(out, r, g, b)                                    \
-  do {                                                                  \
+  for {                                                                  \
     const uint8x8_t rg = vsri_n_u8(r, g, 4);    /* shift g, insert r */ \
     const uint8x8_t ba = vsri_n_u8(b, v255, 4); /* shift a, insert b */ \
     const uint8x8x2_t rgba4444 = ZIP_U8(rg, ba);                        \
@@ -135,7 +135,7 @@ const v255 = vdup_n_u8(255)
   } while (0)
 
 #define STORE_Rgb565(out, r, g, b)                                       \
-  do {                                                                   \
+  for {                                                                   \
     const uint8x8_t rg = vsri_n_u8(r, g, 5);  /* shift g and insert r */ \
     const uint8x8_t g1 = vshl_n_u8(g, 3);     /* pre-shift g: 3bits */   \
     const uint8x8_t gb = vsri_n_u8(g1, b, 3); /* shift b and insert g */ \
@@ -144,10 +144,10 @@ const v255 = vdup_n_u8(255)
   } while (0)
 
 #define CONVERT8(FMT, XSTEP, N, src_y, src_uv, out, cur_x)          \
-  do {                                                              \
+  for {                                                              \
     int i;                                                          \
     for (i = 0; i < N; i += 8) {                                    \
-      const int off = ((cur_x) + i) * XSTEP;                        \
+      off := ((cur_x) + i) * XSTEP;                        \
       const uint8x8_t y = vld1_u8((src_y) + (cur_x) + i);           \
       const uint8x8_t u = vld1_u8((src_uv) + i + 0);                \
       const uint8x8_t v = vld1_u8((src_uv) + i + 16);               \
@@ -178,10 +178,10 @@ const v255 = vdup_n_u8(255)
   {                                                         \
     int i;                                                  \
     for (i = 0; i < N; i++) {                               \
-      const int off = ((cur_x) + i) * XSTEP;                \
-      const int y = src_y[(cur_x) + i];                     \
-      const int u = (src_uv)[i];                            \
-      const int v = (src_uv)[i + 16];                       \
+      off := ((cur_x) + i) * XSTEP;                \
+      y := src_y[(cur_x) + i];                     \
+      u := (src_uv)[i];                            \
+      v := (src_uv)[i + 16];                       \
       FUNC(y, u, v, rgb + off);                             \
     }                                                       \
   }
@@ -217,14 +217,14 @@ const v255 = vdup_n_u8(255)
     uint8 uv_buf[2 * 32 + 15];                                              \
     const r_uv *uint8 =                                                     \
         (*uint8)((uintptr_t)(uv_buf + 15) & ~(uintptr_t)15);                \
-    const int uv_len = (len + 1) >> 1;                                        \
+    uv_len := (len + 1) >> 1;                                        \
     /* 9 pixels must be read-able for each block */                           \
-    const int num_blocks = (uv_len - 1) >> 3;                                 \
-    const int leftover = uv_len - num_blocks * 8;                             \
-    const int last_pos = 1 + 16 * num_blocks;                                 \
+    num_blocks := (uv_len - 1) >> 3;                                 \
+    leftover := uv_len - num_blocks * 8;                             \
+    last_pos := 1 + 16 * num_blocks;                                 \
                                                                               \
-    const int u_diag = ((top_u[0] + cur_u[0]) >> 1) + 1;                      \
-    const int v_diag = ((top_v[0] + cur_v[0]) >> 1) + 1;                      \
+    u_diag := ((top_u[0] + cur_u[0]) >> 1) + 1;                      \
+    v_diag := ((top_v[0] + cur_v[0]) >> 1) + 1;                      \
                                                                               \
     const int16x4_t coeff1 = vld1_s16(kCoeffs1);                              \
     const int16x8_t R_Rounder = vdupq_n_s16(-14234);                          \

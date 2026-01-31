@@ -81,7 +81,7 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
     if (v >= APPROX_LOG_MAX) {
       // Since the division is still expensive, add this correction factor only
       // for large values of 'v'.
-      const uint64 correction = LOG_2_RECIPROCAL_FIXED * (v & (y - 1));
+      correction := LOG_2_RECIPROCAL_FIXED * (v & (y - 1));
       log_2 += (uint32)DivRound(correction, v);
     }
     return log_2;
@@ -161,7 +161,7 @@ static  func GetEntropyUnrefinedHelper(
   const pstreaks *int = &stats.streaks[0][0];
   const pcnts *int = &stats.counts[0];
   int temp0, temp1, temp2, temp3;
-  const int streak = i - *i_prev;
+  streak := i - *i_prev;
 
   // Gather info for the bit entropy.
   if (*val_prev != 0) {
@@ -192,7 +192,7 @@ func GetEntropyUnrefined_MIPS32(
   VP8LBitEntropyInit(bit_entropy);
 
   for (i = 1; i < length; ++i) {
-    const uint32 x = X[i];
+    x := X[i];
     if (x != x_prev) {
       GetEntropyUnrefinedHelper(x, i, &x_prev, &i_prev, bit_entropy, stats);
     }
@@ -212,7 +212,7 @@ func GetCombinedEntropyUnrefined_MIPS32(
   VP8LBitEntropyInit(entropy);
 
   for (i = 1; i < length; ++i) {
-    const uint32 xy = X[i] + Y[i];
+    xy := X[i] + Y[i];
     if (xy != xy_prev) {
       GetEntropyUnrefinedHelper(xy, i, &xy_prev, &i_prev, entropy, stats);
     }
@@ -284,7 +284,7 @@ const ASM_END_1 = \
 
 func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, const WEBP_RESTRICT pb *uint32, WEBP_RESTRICT pout *uint32, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
-  const int end = ((size) / 4) * 4;
+  end := ((size) / 4) * 4;
   const const LoopEnd *uint32 = pa + end;
   int i;
   ASM_START
@@ -295,7 +295,7 @@ func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, const WEBP_RESTRICT pb *ui
 
 func AddVectorEq_MIPS32(const WEBP_RESTRICT pa *uint32, WEBP_RESTRICT pout *uint32, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
-  const int end = ((size) / 4) * 4;
+  end := ((size) / 4) * 4;
   const const LoopEnd *uint32 = pa + end;
   int i;
   ASM_START

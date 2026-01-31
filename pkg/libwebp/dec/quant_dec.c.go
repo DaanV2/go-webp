@@ -45,10 +45,10 @@ func VP8ParseQuant(const dec *VP8Decoder) {
   const int dqy2_ac = VP8Get(br, "global-header")
                           ? VP8GetSignedValue(br, 4, "global-header")
                           : 0;
-  const int dquv_dc = VP8Get(br, "global-header")
+  dquv_dc := VP8Get(br, "global-header")
                           ? VP8GetSignedValue(br, 4, "global-header")
                           : 0;
-  const int dquv_ac = VP8Get(br, "global-header")
+  dquv_ac := VP8Get(br, "global-header")
                           ? VP8GetSignedValue(br, 4, "global-header")
                           : 0;
 

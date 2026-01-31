@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // Colorspace conversion functions
 
 #define CONVERT16_BGRA_XXX(psrc, pdst, m0, m1, m2)          \
-  do {                                                      \
+  for {                                                      \
     v16u8 src0, src1, src2, src3, dst0, dst1, dst2;         \
     LD_UB4(psrc, 16, src0, src1, src2, src3);               \
     VSHF_B2_UB(src0, src1, src1, src2, m0, m1, dst0, dst1); \
@@ -34,7 +34,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CONVERT12_BGRA_XXX(psrc, pdst, m0, m1, m2)          \
-  do {                                                      \
+  for {                                                      \
     uint32 pix_w;                                         \
     v16u8 src0, src1, src2, dst0, dst1, dst2;               \
     LD_UB3(psrc, 16, src0, src1, src2);                     \
@@ -46,7 +46,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CONVERT8_BGRA_XXX(psrc, pdst, m0, m1)               \
-  do {                                                      \
+  for {                                                      \
     uint64 pix_d;                                         \
     v16u8 src0, src1, src2 = {0}, dst0, dst1;               \
     LD_UB2(psrc, 16, src0, src1);                           \
@@ -57,7 +57,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CONVERT4_BGRA_XXX(psrc, pdst, m)             \
-  do {                                               \
+  for {                                               \
     const v16u8 src0 = LD_UB(psrc);                  \
     const v16u8 dst0 = VSHF_UB(src0, src0, m);       \
     uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0); \
@@ -67,20 +67,20 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CONVERT1_BGRA_BGR(psrc, pdst) \
-  do {                                \
-    const int32 b = (psrc)[0];      \
-    const int32 g = (psrc)[1];      \
-    const int32 r = (psrc)[2];      \
+  for {                                \
+    b := (psrc)[0];      \
+    g := (psrc)[1];      \
+    r := (psrc)[2];      \
     (pdst)[0] = b;                    \
     (pdst)[1] = g;                    \
     (pdst)[2] = r;                    \
   } while (0)
 
 #define CONVERT1_BGRA_RGB(psrc, pdst) \
-  do {                                \
-    const int32 b = (psrc)[0];      \
-    const int32 g = (psrc)[1];      \
-    const int32 r = (psrc)[2];      \
+  for {                                \
+    b := (psrc)[0];      \
+    g := (psrc)[1];      \
+    r := (psrc)[2];      \
     (pdst)[0] = r;                    \
     (pdst)[1] = g;                    \
     (pdst)[2] = b;                    \
@@ -88,7 +88,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define TRANSFORM_COLOR_INVERSE_8(src0, src1, dst0, dst1, c0, c1, mask0, \
                                   mask1)                                 \
-  do {                                                                   \
+  for {                                                                   \
     v8i16 g0, g1, t0, t1, t2, t3;                                        \
     v4i32 t4, t5;                                                        \
     VSHF_B2_SH(src0, src0, src1, src1, mask0, mask0, g0, g1);            \
@@ -105,7 +105,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define TRANSFORM_COLOR_INVERSE_4(src, dst, c0, c1, mask0, mask1) \
-  do {                                                            \
+  for {                                                            \
     const v16i8 g0 = VSHF_SB(src, src, mask0);                    \
     v8i16 t0 = __msa_dotp_s_h(c0, g0);                            \
     v8i16 t1;                                                     \
@@ -145,10 +145,10 @@ func ConvertBGRAToRGBA_MSA(const src *uint32, int num_pixels, dst *uint8) {
       num_pixels -= 4;
     }
     for (i = 0; i < num_pixels; i++) {
-      const uint8 b = ptemp_src[2];
-      const uint8 g = ptemp_src[1];
-      const uint8 r = ptemp_src[0];
-      const uint8 a = ptemp_src[3];
+      b := ptemp_src[2];
+      g := ptemp_src[1];
+      r := ptemp_src[0];
+      a := ptemp_src[3];
       ptemp_dst[0] = b;
       ptemp_dst[1] = g;
       ptemp_dst[2] = r;
@@ -273,9 +273,9 @@ func AddGreenToBlueAndRed_MSA(const const src *uint32, int num_pixels, dst *uint
       num_pixels -= 4;
     }
     for (i = 0; i < num_pixels; i++) {
-      const uint8 b = in[0];
-      const uint8 g = in[1];
-      const uint8 r = in[2];
+      b := in[0];
+      g := in[1];
+      r := in[2];
       out[0] = (b + g) & 0xff;
       out[1] = g;
       out[2] = (r + g) & 0xff;
@@ -315,15 +315,15 @@ func TransformColorInverse_MSA(const const m *VP8LMultipliers, const src *uint32
       src0 = LD_UB(src);
       TRANSFORM_COLOR_INVERSE_4(src0, dst0, g2br, r2b, mask0, mask1);
       if (num_pixels == 3) {
-        const uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0);
-        const uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 2);
+        pix_d := __msa_copy_s_d((v2i64)dst0, 0);
+        pix_w := __msa_copy_s_w((v4i32)dst0, 2);
         SD(pix_d, dst + 0);
         SW(pix_w, dst + 2);
       } else if (num_pixels == 2) {
-        const uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0);
+        pix_d := __msa_copy_s_d((v2i64)dst0, 0);
         SD(pix_d, dst);
       } else {
-        const uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 0);
+        pix_w := __msa_copy_s_w((v4i32)dst0, 0);
         SW(pix_w, dst);
       }
     }

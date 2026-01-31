@@ -59,17 +59,17 @@ const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX] = {
 static uint64 FastSLog2Slow_C(uint32 v) {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
-    const uint64 orig_v = v;
+    orig_v := v;
     uint64 correction;
 #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
     // use clz if available
-    const uint64 log_cnt = BitsLog2Floor(v) - 7;
-    const uint32 y = 1 << log_cnt;
+    log_cnt := BitsLog2Floor(v) - 7;
+    y := 1 << log_cnt;
     v >>= log_cnt;
 #else
     uint64 log_cnt = 0;
     uint32 y = 1;
-    do {
+    for {
       ++log_cnt;
       v = v >> 1;
       y = y << 1;
@@ -91,17 +91,17 @@ static uint64 FastSLog2Slow_C(uint32 v) {
 static uint32 FastLog2Slow_C(uint32 v) {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
-    const uint32 orig_v = v;
+    orig_v := v;
     uint32 log_2;
 #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
     // use clz if available
-    const uint32 log_cnt = BitsLog2Floor(v) - 7;
-    const uint32 y = 1 << log_cnt;
+    log_cnt := BitsLog2Floor(v) - 7;
+    y := 1 << log_cnt;
     v >>= log_cnt;
 #else
     uint32 log_cnt = 0;
     uint32 y = 1;
-    do {
+    for {
       ++log_cnt;
       v = v >> 1;
       y = y << 1;
@@ -111,7 +111,7 @@ static uint32 FastLog2Slow_C(uint32 v) {
     if (orig_v >= APPROX_LOG_MAX) {
       // Since the division is still expensive, add this correction factor only
       // for large values of 'v'.
-      const uint64 correction = LOG_2_RECIPROCAL_FIXED * (orig_v & (y - 1));
+      correction := LOG_2_RECIPROCAL_FIXED * (orig_v & (y - 1));
       log_2 += (uint32)DivRound(correction, orig_v);
     }
     return log_2;
@@ -129,9 +129,9 @@ static uint64 CombinedShannonEntropy_C(const uint32 X[256], const uint32 Y[256])
   uint64 retval = 0;
   uint32 sumX = 0, sumXY = 0;
   for (i = 0; i < 256; ++i) {
-    const uint32 x = X[i];
+    x := X[i];
     if (x != 0) {
-      const uint32 xy = x + Y[i];
+      xy := x + Y[i];
       sumX += x;
       retval += VP8LFastSLog2(x);
       sumXY += xy;
@@ -150,7 +150,7 @@ static uint64 ShannonEntropy_C(const X *uint32, int n) {
   uint64 retval = 0;
   uint32 sumX = 0;
   for (i = 0; i < n; ++i) {
-    const int x = X[i];
+    x := X[i];
     if (x != 0) {
       sumX += x;
       retval += VP8LFastSLog2(x);
@@ -189,7 +189,7 @@ func VP8LBitsEntropyUnrefined(const WEBP_RESTRICT const array *uint32, int n, WE
 
 static  func GetEntropyUnrefinedHelper(
     uint32 val, int i, WEBP_RESTRICT const val_prev *uint32, WEBP_RESTRICT const i_prev *int, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
-  const int streak = i - *i_prev;
+  streak := i - *i_prev;
 
   // Gather info for the bit entropy.
   if (*val_prev != 0) {
@@ -220,7 +220,7 @@ func GetEntropyUnrefined_C(
   VP8LBitEntropyInit(bit_entropy);
 
   for (i = 1; i < length; ++i) {
-    const uint32 x = X[i];
+    x := X[i];
     if (x != x_prev) {
       GetEntropyUnrefinedHelper(x, i, &x_prev, &i_prev, bit_entropy, stats);
     }
@@ -240,7 +240,7 @@ func GetCombinedEntropyUnrefined_C(
   VP8LBitEntropyInit(bit_entropy);
 
   for (i = 1; i < length; ++i) {
-    const uint32 xy = X[i] + Y[i];
+    xy := X[i] + Y[i];
     if (xy != xy_prev) {
       GetEntropyUnrefinedHelper(xy, i, &xy_prev, &i_prev, bit_entropy, stats);
     }
@@ -255,10 +255,10 @@ func GetCombinedEntropyUnrefined_C(
 func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
-    const int argb = (int)argb_data[i];
-    const int green = (argb >> 8) & 0xff;
-    const uint32 new_r = (((argb >> 16) & 0xff) - green) & 0xff;
-    const uint32 new_b = (((argb >> 0) & 0xff) - green) & 0xff;
+    argb := (int)argb_data[i];
+    green := (argb >> 8) & 0xff;
+    new_r := (((argb >> 16) & 0xff) - green) & 0xff;
+    new_b := (((argb >> 0) & 0xff) - green) & 0xff;
     argb_data[i] = ((uint32)argb & uint(0xff00ff00)) | (new_r << 16) | new_b;
   }
 }
@@ -272,9 +272,9 @@ static  int8 U32ToS8(uint32 v) { return (int8)(v & 0xff); }
 func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, int num_pixels) {
   int i;
   for (i = 0; i < num_pixels; ++i) {
-    const uint32 argb = data[i];
-    const int8 green = U32ToS8(argb >> 8);
-    const int8 red = U32ToS8(argb >> 16);
+    argb := data[i];
+    green := U32ToS8(argb >> 8);
+    red := U32ToS8(argb >> 16);
     int new_red = red & 0xff;
     int new_blue = argb & 0xff;
     new_red -= ColorTransformDelta((int8)m.green_to_red, green);
@@ -287,15 +287,15 @@ func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RES
 }
 
 static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
-  const int8 green = U32ToS8(argb >> 8);
+  green := U32ToS8(argb >> 8);
   int new_red = argb >> 16;
   new_red -= ColorTransformDelta((int8)green_to_red, green);
   return (new_red & 0xff);
 }
 
 static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 argb) {
-  const int8 green = U32ToS8(argb >> 8);
-  const int8 red = U32ToS8(argb >> 16);
+  green := U32ToS8(argb >> 8);
+  red := U32ToS8(argb >> 16);
   int new_blue = argb & 0xff;
   new_blue -= ColorTransformDelta((int8)green_to_blue, green);
   new_blue -= ColorTransformDelta((int8)red_to_blue, red);
@@ -337,11 +337,11 @@ static int VectorMismatch_C(const const array *uint321, const const array *uint3
 func VP8LBundleColorMap_C(const WEBP_RESTRICT const row *uint8, int width, int xbits, WEBP_RESTRICT dst *uint32) {
   int x;
   if (xbits > 0) {
-    const int bit_depth = 1 << (3 - xbits);
-    const int mask = (1 << xbits) - 1;
+    bit_depth := 1 << (3 - xbits);
+    mask := (1 << xbits) - 1;
     uint32 code = 0xff000000;
     for (x = 0; x < width; ++x) {
-      const int xsub = x & mask;
+      xsub := x & mask;
       if (xsub == 0) {
         code = 0xff000000;
       }
@@ -401,7 +401,7 @@ func PredictorSub1_C(const in *uint32, const upper *uint32, int num_pixels, WEBP
     int x;                                                       \
     assert.Assert(upper != nil);                                       \
     for (x = 0; x < num_pixels; ++x) {                           \
-      const uint32 pred =                                      \
+      pred :=                                      \
           VP8LPredictor##PREDICTOR_I##_C(&in[x - 1], upper + x); \
       out[x] = VP8LSubPixels(in[x], pred);                       \
     }                                                            \

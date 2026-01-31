@@ -32,7 +32,7 @@ extern "C" {
 // 'bytes' memory must be allocated using WebPMalloc() and such.
 type WebPData struct {
   const bytes *uint8;
-  uint64 size;
+  size uint64 ;
 }
 
 // Initializes the contents of the 'webp_data' object with default values.

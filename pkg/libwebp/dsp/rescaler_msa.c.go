@@ -27,7 +27,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX_FLOOR(x, y) (((uint64)(x) * (y)) >> WEBP_RESCALER_RFIX)
 
 #define CALC_MULT_FIX_16(in0, in1, in2, in3, scale, shift, dst) \
-  do {                                                          \
+  for {                                                          \
     v4u32 tmp0, tmp1, tmp2, tmp3;                               \
     v16u8 t0, t1, t2, t3, t4, t5;                               \
     v2u64 out0, out1, out2, out3;                               \
@@ -48,7 +48,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
   } while (0)
 
 #define CALC_MULT_FIX_4(in0, scale, shift, dst)        \
-  do {                                                 \
+  for {                                                 \
     v4u32 tmp0, tmp1;                                  \
     v16i8 t0, t1;                                      \
     v2u64 out0, out1;                                  \
@@ -63,7 +63,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 
 #define CALC_MULT_FIX1_16(in0, in1, in2, in3, fyscale, shift, dst0, dst1, \
                           dst2, dst3)                                     \
-  do {                                                                    \
+  for {                                                                    \
     v4u32 tmp0, tmp1, tmp2, tmp3;                                         \
     v2u64 out0, out1, out2, out3;                                         \
     ILVRL_W2_UW(zero, in0, tmp0, tmp1);                                   \
@@ -81,7 +81,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
   } while (0)
 
 #define CALC_MULT_FIX1_4(in0, scale, shift, dst)          \
-  do {                                                    \
+  for {                                                    \
     v4u32 tmp0, tmp1;                                     \
     v2u64 out0, out1;                                     \
     ILVRL_W2_UW(zero, in0, tmp0, tmp1);                   \
@@ -91,7 +91,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
   } while (0)
 
 #define CALC_MULT_FIX2_16(in0, in1, in2, in3, mult, scale, shift, dst0, dst1) \
-  do {                                                                        \
+  for {                                                                        \
     v4u32 tmp0, tmp1, tmp2, tmp3;                                             \
     v2u64 out0, out1, out2, out3;                                             \
     ILVRL_W2_UW(in0, in2, tmp0, tmp1);                                        \
@@ -106,7 +106,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
   } while (0)
 
 #define CALC_MULT_FIX2_4(in0, in1, mult, scale, shift, dst) \
-  do {                                                      \
+  for {                                                      \
     v4u32 tmp0, tmp1;                                       \
     v2u64 out0, out1;                                       \
     v16i8 t0, t1;                                           \
@@ -171,7 +171,7 @@ static  func ExportRowExpand_0(
     }
     for (x_out = 0; x_out < length; ++x_out) {
       const uint32 J = frow[x_out];
-      const int v = (int)MULT_FIX(J, wrk.fy_scale);
+      v := (int)MULT_FIX(J, wrk.fy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
     }
   }
@@ -243,7 +243,7 @@ static  func ExportRowExpand_1(
     for (x_out = 0; x_out < length; ++x_out) {
       const uint64 I = (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
       const uint32 J = (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
-      const int v = (int)MULT_FIX(J, wrk.fy_scale);
+      v := (int)MULT_FIX(J, wrk.fy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
     }
   }
@@ -252,7 +252,7 @@ static  func ExportRowExpand_1(
 func RescalerExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
-  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  x_out_max := wrk.dst_width * wrk.num_channels;
   const rescaler_t* frow = wrk.frow;
   assert.Assert(!WebPRescalerOutputDone(wrk));
   assert.Assert(wrk.y_accum <= 0);
@@ -340,8 +340,8 @@ static  func ExportRowShrink_0(
       length -= 4;
     }
     for (x_out = 0; x_out < length; ++x_out) {
-      const uint32 frac = (uint32)MULT_FIX_FLOOR(frow[x_out], yscale);
-      const int v = (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale);
+      frac := (uint32)MULT_FIX_FLOOR(frow[x_out], yscale);
+      v := (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
       irow[x_out] = frac;
     }
@@ -401,7 +401,7 @@ static  func ExportRowShrink_1(
       dst    += 4;
     }
     for (x_out = 0; x_out < length; ++x_out) {
-      const int v = (int)MULT_FIX(irow[x_out], wrk.fxy_scale);
+      v := (int)MULT_FIX(irow[x_out], wrk.fxy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
       irow[x_out] = 0;
     }
@@ -411,9 +411,9 @@ static  func ExportRowShrink_1(
 func RescalerExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
-  const int x_out_max = wrk.dst_width * wrk.num_channels;
+  x_out_max := wrk.dst_width * wrk.num_channels;
   const rescaler_t* frow = wrk.frow;
-  const uint32 yscale = wrk.fy_scale * (-wrk.y_accum);
+  yscale := wrk.fy_scale * (-wrk.y_accum);
   assert.Assert(!WebPRescalerOutputDone(wrk));
   assert.Assert(wrk.y_accum <= 0);
   assert.Assert(!wrk.y_expand);

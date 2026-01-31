@@ -39,7 +39,7 @@ static uint32 ExtraCost_SSE41(const const a *uint32, int length) {
   assert.Assert(length % 8 == 0);
 
   for (i = 8; i + 8 <= length; i += 8) {
-    const int j = (i - 2) >> 1;
+    j := (i - 2) >> 1;
     const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i]);
     const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
     const __m128i w = _mm_set_epi32(j + 3, j + 2, j + 1, j);
@@ -112,7 +112,7 @@ func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stri
     }
   }
   {
-    const int left_over = tile_width & 3;
+    left_over := tile_width & 3;
     if (left_over > 0) {
       VP8LCollectColorBlueTransforms_C(argb + tile_width - left_over, stride, left_over, tile_height, green_to_blue, red_to_blue, histo);
     }
@@ -149,7 +149,7 @@ func CollectColorRedTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int strid
     }
   }
   {
-    const int left_over = tile_width & 3;
+    left_over := tile_width & 3;
     if (left_over > 0) {
       VP8LCollectColorRedTransforms_C(argb + tile_width - left_over, stride, left_over, tile_height, green_to_red, histo);
     }

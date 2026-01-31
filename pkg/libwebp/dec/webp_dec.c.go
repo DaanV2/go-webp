@@ -74,7 +74,7 @@ static VP8StatusCode ParseRIFF(const WEBP_COUNTED_BY *uint8(*data_size) *
     if (memcmp(*data + 8, "WEBP", TAG_SIZE)) {
       return VP8_STATUS_BITSTREAM_ERROR;  // Wrong image file signature.
     } else {
-      const uint32 size = GetLE32(*data + TAG_SIZE);
+      size := GetLE32(*data + TAG_SIZE);
       // Check that we have at least one chunk (i.e "WEBP" + "VP8?nnnn").
       if (size < TAG_SIZE + CHUNK_HEADER_SIZE) {
         return VP8_STATUS_BITSTREAM_ERROR;
@@ -117,7 +117,7 @@ static VP8StatusCode ParseVP8X(const WEBP_COUNTED_BY *uint8(*data_size) *
   if (!memcmp(*data, "VP8X", TAG_SIZE)) {
     int width, height;
     uint32 flags;
-    const uint32 chunk_size = GetLE32(*data + TAG_SIZE);
+    chunk_size := GetLE32(*data + TAG_SIZE);
     if (chunk_size != VP8X_CHUNK_SIZE) {
       return VP8_STATUS_BITSTREAM_ERROR;  // Wrong chunk size.
     }
@@ -225,7 +225,7 @@ static VP8StatusCode ParseOptionalChunks(
 // The flag '*is_lossless' is set to 1 in case of VP8L chunk / raw VP8L data.
 static VP8StatusCode ParseVP8Header(const WEBP_COUNTED_BY *uint8(*data_size) *
                                         WEBP_SINGLE const data_ptr, WEBP_SINGLE const data_size *uint64, int have_all_data, uint64 riff_size, WEBP_SINGLE const chunk_size *uint64, WEBP_SINGLE const is_lossless *int) {
-  const uint64 local_data_size = *data_size;
+  local_data_size := *data_size;
   const *uint8  const data = *data_ptr;
   const int is_vp8 = !memcmp(data, "VP8 ", TAG_SIZE);
   const int is_vp8l = !memcmp(data, "VP8L", TAG_SIZE);
@@ -244,7 +244,7 @@ static VP8StatusCode ParseVP8Header(const WEBP_COUNTED_BY *uint8(*data_size) *
 
   if (is_vp8 || is_vp8l) {
     // Bitstream contains VP8/VP8L header.
-    const uint32 size = GetLE32(data + TAG_SIZE);
+    size := GetLE32(data + TAG_SIZE);
     if ((riff_size >= minimal_size) && (size > riff_size - minimal_size)) {
       return VP8_STATUS_BITSTREAM_ERROR;  // Inconsistent size information.
     }
@@ -289,7 +289,7 @@ static VP8StatusCode ParseHeadersInternal(
   int found_riff = 0;
   int found_vp8x = 0;
   int animation_present = 0;
-  const int have_all_data = (headers != nil) ? headers.have_all_data : 0;
+  have_all_data := (headers != nil) ? headers.have_all_data : 0;
 
   VP8StatusCode status;
   WebPHeaderStructure hdrs;
@@ -527,7 +527,7 @@ func WebPResetDecParams(const params *WebPDecParams) {
 
 // Helpers
  static DecodeIntoRGBABuffer *uint8(
-    WEBP_CSP_MODE colorspace, const *uint8  const data, uint64 data_size, *uint8  const rgba, int stride, uint64 size) {
+    WEBP_CSP_MODE colorspace, const *uint8  const data, uint64 data_size, *uint8  const rgba, int stride, size uint64 ) {
   WebPDecParams params;
   WebPDecBuffer buf;
   if (rgba == nil || !WebPInitDecBuffer(&buf)) {
@@ -546,23 +546,23 @@ func WebPResetDecParams(const params *WebPDecParams) {
   return rgba;
 }
 
-WebPDecodeRGBInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, uint64 size, int stride) {
+WebPDecodeRGBInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, size uint64 , int stride) {
   return DecodeIntoRGBABuffer(MODE_RGB, data, data_size, output, stride, size);
 }
 
-WebPDecodeRGBAInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, uint64 size, int stride) {
+WebPDecodeRGBAInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, size uint64 , int stride) {
   return DecodeIntoRGBABuffer(MODE_RGBA, data, data_size, output, stride, size);
 }
 
-WebPDecodeARGBInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, uint64 size, int stride) {
+WebPDecodeARGBInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, size uint64 , int stride) {
   return DecodeIntoRGBABuffer(MODE_ARGB, data, data_size, output, stride, size);
 }
 
-WebPDecodeBGRInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, uint64 size, int stride) {
+WebPDecodeBGRInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, size uint64 , int stride) {
   return DecodeIntoRGBABuffer(MODE_BGR, data, data_size, output, stride, size);
 }
 
-WebPDecodeBGRAInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, uint64 size, int stride) {
+WebPDecodeBGRAInto *uint8(const *uint8  data, uint64 data_size, *uint8  output, size uint64 , int stride) {
   return DecodeIntoRGBABuffer(MODE_BGRA, data, data_size, output, stride, size);
 }
 

@@ -114,7 +114,7 @@ func WebPCleanupTransparentArea(pic *WebPPicture) {
     for (y = 0; y < h; ++y) {
       int need_reset = 1;
       for (x = 0; x < w; ++x) {
-        const int off = (y * pic.argb_stride + x) * SIZE;
+        off := (y * pic.argb_stride + x) * SIZE;
         if (IsTransparentARGBArea(pic.argb + off, pic.argb_stride, SIZE)) {
           if (need_reset) {
             argb_value = pic.argb[off];
@@ -127,11 +127,11 @@ func WebPCleanupTransparentArea(pic *WebPPicture) {
       }
     }
   } else {
-    const int width = pic.width;
-    const int height = pic.height;
-    const int y_stride = pic.y_stride;
-    const int uv_stride = pic.uv_stride;
-    const int a_stride = pic.a_stride;
+    width := pic.width;
+    height := pic.height;
+    y_stride := pic.y_stride;
+    uv_stride := pic.uv_stride;
+    a_stride := pic.a_stride;
     y_ptr *uint8 = pic.y;
     u_ptr *uint8 = pic.u;
     v_ptr *uint8 = pic.v;
@@ -166,7 +166,7 @@ func WebPCleanupTransparentArea(pic *WebPPicture) {
       v_ptr += SIZE2 * uv_stride;
     }
     if (y < height) {
-      const int sub_height = height - y;
+      sub_height := height - y;
       for (x = 0; x + SIZE <= width; x += SIZE) {
         SmoothenBlock(a_ptr + x, a_stride, y_ptr + x, y_stride, SIZE, sub_height);
       }
@@ -193,19 +193,19 @@ static  uint32 MakeARGB32(int r, int g, int b) {
 }
 
 func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
-  const int red = (background_rgb >> 16) & 0xff;
-  const int green = (background_rgb >> 8) & 0xff;
-  const int blue = (background_rgb >> 0) & 0xff;
+  red := (background_rgb >> 16) & 0xff;
+  green := (background_rgb >> 8) & 0xff;
+  blue := (background_rgb >> 0) & 0xff;
   int x, y;
   if (picture == nil) return;
   if (!picture.use_argb) {
     // omit last pixel during u/v loop
-    const int uv_width = (picture.width >> 1);
+    uv_width := (picture.width >> 1);
     const int Y0 = VP8RGBToY(red, green, blue, YUV_HALF);
     // VP8RGBToU/V expects the u/v values summed over four pixels
     const int U0 = VP8RGBToU(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
     const int V0 = VP8RGBToV(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
-    const int has_alpha = picture.colorspace & WEBP_CSP_ALPHA_BIT;
+    has_alpha := picture.colorspace & WEBP_CSP_ALPHA_BIT;
     y_ptr *uint8 = picture.y;
     u_ptr *uint8 = picture.u;
     v_ptr *uint8 = picture.v;
@@ -214,7 +214,7 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
     for (y = 0; y < picture.height; ++y) {
       // Luma blending
       for (x = 0; x < picture.width; ++x) {
-        const uint8 alpha = a_ptr[x];
+        alpha := a_ptr[x];
         if (alpha < 0xff) {
           y_ptr[x] = BLEND(Y0, y_ptr[x], alpha);
         }
@@ -226,13 +226,13 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
         for (x = 0; x < uv_width; ++x) {
           // Average four alpha values into a single blending weight.
           // TODO(skal): might lead to visible contouring. Can we do better?
-          const uint32 alpha = a_ptr[2 * x + 0] + a_ptr[2 * x + 1] +
+          alpha := a_ptr[2 * x + 0] + a_ptr[2 * x + 1] +
                                  a_ptr2[2 * x + 0] + a_ptr2[2 * x + 1];
           u_ptr[x] = BLEND_10BIT(U0, u_ptr[x], alpha);
           v_ptr[x] = BLEND_10BIT(V0, v_ptr[x], alpha);
         }
         if (picture.width & 1) {  // rightmost pixel
-          const uint32 alpha = 2 * (a_ptr[2 * x + 0] + a_ptr2[2 * x + 0]);
+          alpha := 2 * (a_ptr[2 * x + 0] + a_ptr2[2 * x + 0]);
           u_ptr[x] = BLEND_10BIT(U0, u_ptr[x], alpha);
           v_ptr[x] = BLEND_10BIT(V0, v_ptr[x], alpha);
         }
@@ -246,10 +246,10 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
     }
   } else {
     argb *uint32 = picture.argb;
-    const uint32 background = MakeARGB32(red, green, blue);
+    background := MakeARGB32(red, green, blue);
     for (y = 0; y < picture.height; ++y) {
       for (x = 0; x < picture.width; ++x) {
-        const int alpha = (argb[x] >> 24) & 0xff;
+        alpha := (argb[x] >> 24) & 0xff;
         if (alpha != 0xff) {
           if (alpha > 0) {
             int r = (argb[x] >> 16) & 0xff;

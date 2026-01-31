@@ -37,7 +37,7 @@ int QuantizeLevels(const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int
   int q_level[NUM_SYMBOLS] = {0}
   double inv_q_level[NUM_SYMBOLS] = {0}
   int min_s = 255, max_s = 0;
-  const uint64 data_size = height * width;
+  data_size := height * width;
   int i, num_levels_in, iter;
   double last_err = 1.e38, err = 0.;
   const double err_threshold = ERROR_THRESHOLD * data_size;
@@ -130,7 +130,7 @@ int QuantizeLevels(const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int
     int s;
     uint64 n;
     for (s = min_s; s <= max_s; ++s) {
-      const int slot = q_level[s];
+      slot := q_level[s];
       map[s] = (uint8)(inv_q_level[slot] + .5);
     }
     // Final pass.

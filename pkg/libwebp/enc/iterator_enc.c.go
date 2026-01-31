@@ -38,7 +38,7 @@ func InitLeft(const it *VP8EncIterator) {
 
 func InitTop(const it *VP8EncIterator) {
   const const enc *VP8Encoder = it.enc;
-  const uint64 top_size = enc.mb_w * 16;
+  top_size := enc.mb_w * 16;
   memset(enc.y_top, 127, 2 * top_size);
   memset(enc.nz, 0, enc.mb_w * sizeof(*enc.nz));
   if (enc.top_derr != nil) {
@@ -95,8 +95,8 @@ func VP8IteratorInit(const enc *VP8Encoder, const it *VP8EncIterator) {
 int VP8IteratorProgress(const const it *VP8EncIterator, int delta) {
   const enc *VP8Encoder = it.enc;
   if (delta && enc.pic.progress_hook != nil) {
-    const int done = it.count_down0 - it.count_down;
-    const int percent = (it.count_down0 <= 0)
+    done := it.count_down0 - it.count_down;
+    percent := (it.count_down0 <= 0)
                             ? it.percent0
                             : it.percent0 + delta * done / it.count_down0;
     return WebPReportProgress(enc.pic, percent, &enc.percent);
@@ -134,15 +134,15 @@ func ImportLine(const src *uint8, int src_stride, dst *uint8, int len, int total
 
 func VP8IteratorImport(const it *VP8EncIterator, const tmp_ *uint832) {
   const const enc *VP8Encoder = it.enc;
-  const int x = it.x, y = it.y;
+  x := it.x, y = it.y;
   const const pic *WebPPicture = enc.pic;
   const const ysrc *uint8 = pic.y + (y * pic.y_stride + x) * 16;
   const const usrc *uint8 = pic.u + (y * pic.uv_stride + x) * 8;
   const const vsrc *uint8 = pic.v + (y * pic.uv_stride + x) * 8;
-  const int w = MinSize(pic.width - x * 16, 16);
-  const int h = MinSize(pic.height - y * 16, 16);
-  const int uv_w = (w + 1) >> 1;
-  const int uv_h = (h + 1) >> 1;
+  w := MinSize(pic.width - x * 16, 16);
+  h := MinSize(pic.height - y * 16, 16);
+  uv_w := (w + 1) >> 1;
+  uv_h := (h + 1) >> 1;
 
   ImportBlock(ysrc, pic.y_stride, it.yuv_in + Y_OFF_ENC, w, h, 16);
   ImportBlock(usrc, pic.uv_stride, it.yuv_in + U_OFF_ENC, uv_w, uv_h, 8);
@@ -191,7 +191,7 @@ func ExportBlock(const src *uint8, dst *uint8, int dst_stride, int w, int h) {
 func VP8IteratorExport(const const it *VP8EncIterator) {
   const const enc *VP8Encoder = it.enc;
   if (enc.config.show_compressed) {
-    const int x = it.x, y = it.y;
+    x := it.x, y = it.y;
     const const ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
     const const usrc *uint8 = it.yuv_out + U_OFF_ENC;
     const const vsrc *uint8 = it.yuv_out + V_OFF_ENC;
@@ -209,8 +209,8 @@ func VP8IteratorExport(const const it *VP8EncIterator) {
     ExportBlock(ysrc, ydst, pic.y_stride, w, h);
 
     {  // U/V planes
-      const int uv_w = (w + 1) >> 1;
-      const int uv_h = (h + 1) >> 1;
+      uv_w := (w + 1) >> 1;
+      uv_h := (h + 1) >> 1;
       ExportBlock(usrc, udst, pic.uv_stride, uv_w, uv_h);
       ExportBlock(vsrc, vdst, pic.uv_stride, uv_w, uv_h);
     }
@@ -235,7 +235,7 @@ func VP8IteratorExport(const const it *VP8EncIterator) {
 #define BIT(nz, n) (!!((nz) & (1 << (n))))
 
 func VP8IteratorNzToBytes(const it *VP8EncIterator) {
-  const int tnz = it.nz[0], lnz = it.nz[-1];
+  tnz := it.nz[0], lnz = it.nz[-1];
   const top_nz *int = it.top_nz;
   const left_nz *int = it.left_nz;
 
@@ -292,7 +292,7 @@ func VP8IteratorBytesToNz(const it *VP8EncIterator) {
 
 func VP8IteratorSaveBoundary(const it *VP8EncIterator) {
   const enc *VP8Encoder = it.enc;
-  const int x = it.x, y = it.y;
+  x := it.x, y = it.y;
   const const ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
   const const uvsrc *uint8 = it.yuv_out + U_OFF_ENC;
   if (x < enc.mb_w - 1) {  // left

@@ -58,7 +58,7 @@ static  func Load4x16_NEON(const const src *uint8, int stride, uint8x16_t* const
 #else  // WORK_AROUND_GCC
 
 #define LOADQ_LANE_32b(VALUE, LANE)                                  \
-  do {                                                               \
+  for {                                                               \
     (VALUE) = vld1q_lane_u32((const *uint32)src, (VALUE), (LANE)); \
     src += stride;                                                   \
   } while (0)
@@ -255,7 +255,7 @@ static  func Store8x4x2_NEON(const uint8x16_t p1, const uint8x16_t p0, const uin
 #if !defined(WORK_AROUND_GCC)
 
 #define STORE6_LANE(DST, VAL0, VAL1, LANE)   \
-  do {                                       \
+  for {                                       \
     vst3_lane_u8((DST) - 3, (VAL0), (LANE)); \
     vst3_lane_u8((DST) + 0, (VAL1), (LANE)); \
     (DST) += stride;                         \
@@ -1078,7 +1078,7 @@ func TransformDC_NEON(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 //------------------------------------------------------------------------------
 
 #define STORE_WHT(dst, col, rows)            \
-  do {                                       \
+  for {                                       \
     *dst = vgetq_lane_s32(rows.val[0], col); \
     (dst) += 16;                             \
     *dst = vgetq_lane_s32(rows.val[1], col); \

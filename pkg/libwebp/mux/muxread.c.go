@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Handy MACRO.
 #define SWITCH_ID_LIST(INDEX, LIST)                           \
-  do {                                                        \
+  for {                                                        \
     if (idx == (INDEX)) {                                     \
       const const chunk *WebPChunk =                          \
           ChunkSearchList((LIST), nth, kChunks[(INDEX)].tag); \
@@ -71,7 +71,7 @@ static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, const data *uint8, ui
   if (chunk_size > MAX_CHUNK_PAYLOAD) return WEBP_MUX_BAD_DATA;
 
   {
-    const uint64 chunk_disk_size = SizeWithPadding(chunk_size);
+    chunk_disk_size := SizeWithPadding(chunk_size);
     if (chunk_disk_size > riff_size) return WEBP_MUX_BAD_DATA;
     if (chunk_disk_size > data_size) return WEBP_MUX_NOT_ENOUGH_DATA;
   }
@@ -85,7 +85,7 @@ static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, const data *uint8, ui
 int MuxImageFinalize(const wpi *WebPMuxImage) {
   const const img *WebPChunk = wpi.img;
   const const image *WebPData = &img.data;
-  const int is_lossless = (img.tag == kChunks[IDX_VP8L].tag);
+  is_lossless := (img.tag == kChunks[IDX_VP8L].tag);
   int w, h;
   int vp8l_has_alpha = 0;
   const int ok =
@@ -108,7 +108,7 @@ int MuxImageFinalize(const wpi *WebPMuxImage) {
 
 static int MuxImageParse(const const chunk *WebPChunk, int copy_data, const wpi *WebPMuxImage) {
   const bytes *uint8 = chunk.data.bytes;
-  uint64 size = chunk.data.size;
+  size uint64  = chunk.data.size;
   const const last *uint8 = (bytes == nil) ? nil : bytes + size;
   WebPChunk subchunk;
   uint64 subchunk_size;
@@ -120,7 +120,7 @@ static int MuxImageParse(const const chunk *WebPChunk, int copy_data, const wpi 
 
   // ANMF.
   {
-    const uint64 hdr_size = ANMF_CHUNK_SIZE;
+    hdr_size := ANMF_CHUNK_SIZE;
     const WebPData temp = {bytes, hdr_size}
     // Each of ANMF chunk contain a header at the beginning. So, its size should
     // be at least 'hdr_size'.
@@ -190,7 +190,7 @@ WebPMuxCreateInternal *WebPMux(const bitstream *WebPData, int copy_data, int ver
   mux *WebPMux = nil;
   wpi *WebPMuxImage = nil;
   const data *uint8;
-  uint64 size;
+  size uint64 ;
   WebPChunk chunk;
   // Stores the end of the chunk lists so that it is faster to append data to
   // their ends.
@@ -317,8 +317,8 @@ Err:  // Something bad happened.
 
 // Validates that the given mux has a single image.
 static WebPMuxError ValidateForSingleImage(const const mux *WebPMux) {
-  const int num_images = MuxImageCount(mux.images, WEBP_CHUNK_IMAGE);
-  const int num_frames = MuxImageCount(mux.images, WEBP_CHUNK_ANMF);
+  num_images := MuxImageCount(mux.images, WEBP_CHUNK_IMAGE);
+  num_frames := MuxImageCount(mux.images, WEBP_CHUNK_ANMF);
 
   if (num_images == 0) {
     // No images in mux.
@@ -401,9 +401,9 @@ static WebPMuxError SynthesizeBitstream(const const wpi *WebPMuxImage, const bit
   // Allocate data.
   const int need_vp8x = (wpi.alpha != nil);
   const uint64 vp8x_size = need_vp8x ? CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE : 0;
-  const uint64 alpha_size = need_vp8x ? ChunkDiskSize(wpi.alpha) : 0;
+  alpha_size := need_vp8x ? ChunkDiskSize(wpi.alpha) : 0;
   // Note: No need to output ANMF chunk for a single image.
-  const uint64 size =
+  const size uint64  =
       RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img);
   const data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size);
   if (data == nil) return WEBP_MUX_MEMORY_ERROR;
@@ -463,7 +463,7 @@ func MuxGetImageInternal(wpi *WebPMuxImage, info *WebPMuxFrameInfo) WebPMuxError
 }
 
 func MuxGetFrameInternal(wpi *WebPMuxImage, frame *WebPMuxFrameInfo) WebPMuxError {
-  const int is_frame = (wpi.header.tag == kChunks[IDX_ANMF].tag);
+  is_frame := (wpi.header.tag == kChunks[IDX_ANMF].tag);
   const frame_data *WebPData;
   if (!is_frame) return WEBP_MUX_INVALID_ARGUMENT;
   assert.Assert(wpi.header != nil);  // Already checked by WebPMuxGetFrame().
@@ -474,7 +474,7 @@ func MuxGetFrameInternal(wpi *WebPMuxImage, frame *WebPMuxFrameInfo) WebPMuxErro
   frame.x_offset = 2 * GetLE24(frame_data.bytes + 0);
   frame.y_offset = 2 * GetLE24(frame_data.bytes + 3);
   {
-    const uint8 bits = frame_data.bytes[15];
+    bits := frame_data.bytes[15];
     frame.duration = GetLE24(frame_data.bytes + 12);
     frame.dispose_method =
         (bits & 1) ? WEBP_MUX_DISPOSE_BACKGROUND : WEBP_MUX_DISPOSE_NONE;

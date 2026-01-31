@@ -184,7 +184,7 @@ func PutSegmentHeader(const bw *VP8BitWriter, const const enc *VP8Encoder) {
   const const proba *VP8EncProba = &enc.proba;
   if (VP8PutBitUniform(bw, (hdr.num_segments > 1))) {
     // We always 'update' the quant and filter strength values
-    const int update_data = 1;
+    update_data := 1;
     int s;
     VP8PutBitUniform(bw, hdr.update_map);
     if (VP8PutBitUniform(bw, update_data)) {
@@ -209,13 +209,13 @@ func PutSegmentHeader(const bw *VP8BitWriter, const const enc *VP8Encoder) {
 
 // Filtering parameters header
 func PutFilterHeader(const bw *VP8BitWriter, const const hdr *VP8EncFilterHeader) {
-  const int use_lf_delta = (hdr.i4x4_lf_delta != 0);
+  use_lf_delta := (hdr.i4x4_lf_delta != 0);
   VP8PutBitUniform(bw, hdr.simple);
   VP8PutBits(bw, hdr.level, 6);
   VP8PutBits(bw, hdr.sharpness, 3);
   if (VP8PutBitUniform(bw, use_lf_delta)) {
     // '0' is the default value for i4x4_lf_delta at frame #0.
-    const int need_update = (hdr.i4x4_lf_delta != 0);
+    need_update := (hdr.i4x4_lf_delta != 0);
     if (VP8PutBitUniform(bw, need_update)) {
       // we don't use ref_lf_delta => emit four 0 bits
       VP8PutBits(bw, 0, 4);
@@ -241,7 +241,7 @@ static int EmitPartitionsSize(const const enc *VP8Encoder, const pic *WebPPictur
   uint8 buf[3 * (MAX_NUM_PARTITIONS - 1)];
   int p;
   for (p = 0; p < enc.num_parts - 1; ++p) {
-    const uint64 part_size = VP8BitWriterSize(enc.parts + p);
+    part_size := VP8BitWriterSize(enc.parts + p);
     if (part_size >= VP8_MAX_PARTITION_SIZE) {
       return WebPEncodingSetError(pic, VP8_ENC_ERROR_PARTITION_OVERFLOW);
     }
@@ -259,7 +259,7 @@ static int EmitPartitionsSize(const const enc *VP8Encoder, const pic *WebPPictur
 
 static int GeneratePartition0(const enc *VP8Encoder) {
   const bw *VP8BitWriter = &enc.bw;
-  const int mb_size = enc.mb_w * enc.mb_h;
+  mb_size := enc.mb_w * enc.mb_h;
   uint64 pos1, pos2, pos3;
 
   pos1 = VP8BitWriterPos(bw);
@@ -312,9 +312,9 @@ func VP8EncFreeBitWriters(const enc *VP8Encoder) {
 int VP8EncWrite(const enc *VP8Encoder) {
   const pic *WebPPicture = enc.pic;
   const bw *VP8BitWriter = &enc.bw;
-  const int task_percent = 19;
-  const int percent_per_part = task_percent / enc.num_parts;
-  const int final_percent = enc.percent + task_percent;
+  task_percent := 19;
+  percent_per_part := task_percent / enc.num_parts;
+  final_percent := enc.percent + task_percent;
   int ok = 0;
   uint64 vp8_size, pad, riff_size;
   int p;
@@ -360,7 +360,7 @@ int VP8EncWrite(const enc *VP8Encoder) {
   // Token partitions
   for (p = 0; p < enc.num_parts; ++p) {
     const const buf *uint8 = VP8BitWriterBuf(enc.parts + p);
-    const uint64 size = VP8BitWriterSize(enc.parts + p);
+    const size uint64  = VP8BitWriterSize(enc.parts + p);
     if (size) ok = ok && pic.writer(buf, size, pic);
     VP8BitWriterWipeOut(enc.parts + p);  // will free the internal buffer.
     ok = ok && WebPReportProgress(pic, enc.percent + percent_per_part, &enc.percent);

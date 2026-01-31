@@ -31,9 +31,9 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 int WebPRescalerInit(const rescaler *WebPRescaler, int src_width, int src_height, const dst *uint8, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(uint64(2) * dst_width *
                                                        num_channels) work) {
-  const int x_add = src_width, x_sub = dst_width;
-  const int y_add = src_height, y_sub = dst_height;
-  const uint64 total_size = uint64(2) * dst_width * num_channels * sizeof(*work);
+  x_add := src_width, x_sub = dst_width;
+  y_add := src_height, y_sub = dst_height;
+  total_size := uint64(2) * dst_width * num_channels * sizeof(*work);
   if (!CheckSizeOverflow(total_size)) return 0;
 
   rescaler.x_expand = (src_width < dst_width);
@@ -65,9 +65,9 @@ int WebPRescalerInit(const rescaler *WebPRescaler, int src_width, int src_height
     // This is WEBP_RESCALER_FRAC(dst_height, x_add * y_add) without the cast.
     // Its value is <= WEBP_RESCALER_ONE, because dst_height <= rescaler.y_add
     // and rescaler.x_add >= 1;
-    const uint64 num = (uint64)dst_height * WEBP_RESCALER_ONE;
-    const uint64 den = (uint64)rescaler.x_add * rescaler.y_add;
-    const uint64 ratio = num / den;
+    num := (uint64)dst_height * WEBP_RESCALER_ONE;
+    den := (uint64)rescaler.x_add * rescaler.y_add;
+    ratio := num / den;
     if (ratio != (uint32)ratio) {
       // When ratio == WEBP_RESCALER_ONE, we can't represent the ratio with the
       // current fixed-point precision. This happens when src_height ==
@@ -93,7 +93,7 @@ int WebPRescalerGetScaledDimensions(int src_width, int src_height, const scaled_
   {
     int width = *scaled_width;
     int height = *scaled_height;
-    const int max_size = INT_MAX / 2;
+    max_size := INT_MAX / 2;
 
     // if width is unspecified, scale original proportionally to height ratio.
     if (width == 0 && src_height > 0) {

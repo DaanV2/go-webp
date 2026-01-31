@@ -42,7 +42,7 @@ func TransformDC(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 }
 
 func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
-  const int a = in[0] + 4;
+  a := in[0] + 4;
   int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
   const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
   const int c1 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
@@ -819,7 +819,7 @@ func DC8uvNoTop(dst *uint8) {  // DC with no top samples
 ".endif                                                  \n\t"
 
 #define CLIP_8B_TO_DST(DST, TOP, SIZE)                                 \
-  do {                                                                 \
+  for {                                                                 \
     int dst_1 = ((int)(DST)[-1] << 16) + (DST)[-1];                    \
     int temp0, temp1, temp2, temp3;                                    \
     __asm__ volatile(                                                  \
@@ -852,7 +852,7 @@ func DC8uvNoTop(dst *uint8) {  // DC with no top samples
 // clang-format on
 
 #define CLIP_TO_DST(DST, SIZE)                        \
-  do {                                                \
+  for {                                                \
     int y;                                            \
     const top *uint8 = (DST) - BPS;                 \
     const int top_1 = ((int)top[-1] << 16) + top[-1]; \

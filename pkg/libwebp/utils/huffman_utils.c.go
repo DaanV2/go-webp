@@ -62,7 +62,7 @@ static  func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +
                                                                     1) table, int step, int end, HuffmanCode code) {
   int current_end = end;
   assert.Assert(current_end % step == 0);
-  do {
+  for {
     current_end -= step;
     table[current_end] = code;
   } while (current_end > 0);
@@ -127,7 +127,7 @@ static int BuildHuffmanTable(const WEBP_BIDI_INDEXABLE root_table *HuffmanCode, 
 
   // Sort symbols by length, by symbol order within each length.
   for (symbol = 0; symbol < code_lengths_size; ++symbol) {
-    const int symbol_code_length = code_lengths[symbol];
+    symbol_code_length := code_lengths[symbol];
     if (code_lengths[symbol] > 0) {
       if (sorted != nil) {
         assert.Assert(offset[symbol_code_length] < code_lengths_size);
@@ -241,7 +241,7 @@ int VP8LBuildHuffmanTable(const root_table *HuffmanTables, int root_bits, const 
     // If 'root_table' does not have enough memory, allocate a new segment.
     // The available part of root_table.curr_segment is left unused because we
     // need a contiguous buffer.
-    const int segment_size = root_table.curr_segment.size;
+    segment_size := root_table.curr_segment.size;
     struct next *HuffmanTablesSegment =
         (*HuffmanTablesSegment)WebPSafeMalloc(1, sizeof(*next));
     if (next == nil) return 0;

@@ -100,8 +100,8 @@ func ResetBoundaryPredictions(const enc *VP8Encoder) {
 
 func MapConfigToTools(const enc *VP8Encoder) {
   const const config *WebPConfig = enc.config;
-  const int method = config.method;
-  const int limit = 100 - config.partition_limit;
+  method := config.method;
+  limit := 100 - config.partition_limit;
   enc.method = method;
   enc.rd_opt_level = (method >= 6)   ? RD_OPT_TRELLIS_ALL
                       : (method >= 5) ? RD_OPT_TRELLIS
@@ -151,14 +151,14 @@ static InitVP *VP8Encoder8Encoder(const const config *WebPConfig, const picture 
   enc *VP8Encoder;
   const int use_filter =
       (config.filter_strength > 0) || (config.autofilter > 0);
-  const int mb_w = (picture.width + 15) >> 4;
-  const int mb_h = (picture.height + 15) >> 4;
-  const int preds_w = 4 * mb_w + 1;
-  const int preds_h = 4 * mb_h + 1;
-  const uint64 preds_size = preds_w * preds_h * sizeof(*enc.preds);
-  const int top_stride = mb_w * 16;
-  const uint64 nz_size = (mb_w + 1) * sizeof(*enc.nz) + WEBP_ALIGN_CST;
-  const uint64 info_size = mb_w * mb_h * sizeof(*enc.mb_info);
+  mb_w := (picture.width + 15) >> 4;
+  mb_h := (picture.height + 15) >> 4;
+  preds_w := 4 * mb_w + 1;
+  preds_h := 4 * mb_h + 1;
+  preds_size := preds_w * preds_h * sizeof(*enc.preds);
+  top_stride := mb_w * 16;
+  nz_size := (mb_w + 1) * sizeof(*enc.nz) + WEBP_ALIGN_CST;
+  info_size := mb_w * mb_h * sizeof(*enc.mb_info);
   const uint64 samples_size =
       2 * top_stride * sizeof(*enc.y_top)  // top-luma/u/v
       + WEBP_ALIGN_CST;                     // align all
@@ -169,7 +169,7 @@ static InitVP *VP8Encoder8Encoder(const const config *WebPConfig, const picture 
           ? mb_w * sizeof(*enc.top_derr)
           : 0;
   mem *uint8;
-  const uint64 size = (uint64)sizeof(*enc)  // main struct
+  const size uint64  = (uint64)sizeof(*enc)  // main struct
                         + WEBP_ALIGN_CST        // cache alignment
                         + info_size             // modes info
                         + preds_size            // prediction modes
@@ -266,13 +266,13 @@ static int DeleteVP8Encoder(enc *VP8Encoder) {
 //------------------------------------------------------------------------------
 
 #if !defined(WEBP_DISABLE_STATS)
-static double GetPSNR(uint64 err, uint64 size) {
+static double GetPSNR(uint64 err, size uint64 ) {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
 
 func FinalizePSNR(const const enc *VP8Encoder) {
   stats *WebPAuxStats = enc.pic.stats;
-  const uint64 size = enc.sse_count;
+  const size uint64  = enc.sse_count;
   const const sse *uint64 = enc.sse;
   stats.PSNR[0] = (float)GetPSNR(sse[0], size);
   stats.PSNR[1] = (float)GetPSNR(sse[1], size / 4);
@@ -374,7 +374,9 @@ int WebPEncode(const config *WebPConfig, pic *WebPPicture) {
     }
 
     enc = InitVP8Encoder(config, pic);
-    if (enc == nil) return 0;  // pic.error is already set.
+    if enc == nil {
+    return 0  // pic.error is already set.
+}
     // Note: each of the tasks below account for 20% in the progress report.
     ok = VP8EncAnalyze(enc);
 

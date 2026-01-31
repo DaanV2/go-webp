@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // Helpful macros.
 
 #define DCHECK(in, out)      \
-  do {                       \
+  for {                       \
     assert.Assert((in) != nil);    \
     assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
@@ -121,7 +121,7 @@ func VerticalFilter_NEON(const WEBP_RESTRICT data *uint8, int width, int height,
 // Gradient filter.
 
 static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
-  const int g = a + b - c;
+  g := a + b - c;
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
@@ -218,7 +218,7 @@ const USE_GRADIENT_UNFILTER =0  // ALTERNATE_CODE
 
 #if (USE_GRADIENT_UNFILTER == 1)
 #define GRAD_PROCESS_LANE(L)                                                  \
-  do {                                                                        \
+  for {                                                                        \
     const uint8x8_t tmp1 = ROTATE_RIGHT_N(pred, 1); /* rotate predictor in */ \
     const int16x8_t tmp2 = vaddq_s16(BC, U8_TO_S16(tmp1));                    \
     const uint8x8_t delta = vqmovun_s16(tmp2);                                \

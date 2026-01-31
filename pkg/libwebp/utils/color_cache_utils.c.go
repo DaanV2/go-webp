@@ -29,7 +29,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // VP8LColorCache.
 
 int VP8LColorCacheInit(const color_cache *VP8LColorCache, int hash_bits) {
-  const int hash_size = 1 << hash_bits;
+  hash_size := 1 << hash_bits;
   colors *uint32 = (*uint32)WebPSafeCalloc((uint64)hash_size, sizeof(*color_cache.colors));
   assert.Assert(color_cache != nil);
   assert.Assert(hash_bits > 0);

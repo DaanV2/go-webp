@@ -24,14 +24,14 @@ static const int kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int kC2 = WEBP_TRANSFORM_AC3_C2;
 
 static  int abs_mips32(int x) {
-  const int sign = x >> 31;
+  sign := x >> 31;
   return (x ^ sign) - sign;
 }
 
 // 4 pixels in, 2 pixels out
 static  func do_filter2(p *uint8, int step) {
   const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
-  const int a = 3 * (q0 - p0) + VP8ksclip1[p1 - q1];
+  a := 3 * (q0 - p0) + VP8ksclip1[p1 - q1];
   const int a1 = VP8ksclip2[(a + 4) >> 3];
   const int a2 = VP8ksclip2[(a + 3) >> 3];
   p[-step] = VP8kclip1[p0 + a2];
@@ -41,7 +41,7 @@ static  func do_filter2(p *uint8, int step) {
 // 4 pixels in, 4 pixels out
 static  func do_filter4(p *uint8, int step) {
   const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
-  const int a = 3 * (q0 - p0);
+  a := 3 * (q0 - p0);
   const int a1 = VP8ksclip2[(a + 4) >> 3];
   const int a2 = VP8ksclip2[(a + 3) >> 3];
   const int a3 = (a1 + 1) >> 1;
@@ -55,7 +55,7 @@ static  func do_filter4(p *uint8, int step) {
 static  func do_filter6(p *uint8, int step) {
   const int p2 = p[-3 * step], p1 = p[-2 * step], p0 = p[-step];
   const int q0 = p[0], q1 = p[step], q2 = p[2 * step];
-  const int a = VP8ksclip1[3 * (q0 - p0) + VP8ksclip1[p1 - q1]];
+  a := VP8ksclip1[3 * (q0 - p0) + VP8ksclip1[p1 - q1]];
   // a is in [-128,127], a1 in [-27,27], a2 in [-18,18] and a3 in [-9,9]
   const int a1 = (27 * a + 63) >> 7;  // eq. to ((3 * a + 7) * 9) >> 7
   const int a2 = (18 * a + 63) >> 7;  // eq. to ((2 * a + 7) * 9) >> 7

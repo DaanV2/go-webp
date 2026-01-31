@@ -80,7 +80,7 @@ func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
   const uint32 c_8000000 = uint(0x00800000);
   const uint32 c_8000080 = uint(0x00800080);
   for (x = 0; x < width; ++x) {
-    const uint32 argb = ptr[x];
+    argb := ptr[x];
     if (argb < uint(0xff000000)) {     // alpha < 255
       if (argb <= uint(0x00ffffff)) {  // alpha == 0
         ptr[x] = 0;
@@ -117,9 +117,9 @@ func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
 #ifdef constants.WORDS_BIGENDIAN
 func PackARGB_MIPSdspR2(const a *uint8, const r *uint8, const g *uint8, const b *uint8, int len, out *uint32) {
   int temp0, temp1, temp2, temp3, offset;
-  const int rest = len & 1;
+  rest := len & 1;
   const const loop_end *uint32 = out + len - rest;
-  const int step = 4;
+  step := 4;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
       "beq          %[loop_end], %[out],    0f           \n\t"
@@ -154,8 +154,8 @@ func PackARGB_MIPSdspR2(const a *uint8, const r *uint8, const g *uint8, const b 
 
 func PackRGB_MIPSdspR2(const r *uint8, const g *uint8, const b *uint8, int len, int step, out *uint32) {
   int temp0, temp1, temp2, offset;
-  const int rest = len & 1;
-  const int a = 0xff;
+  rest := len & 1;
+  a := 0xff;
   const const loop_end *uint32 = out + len - rest;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"

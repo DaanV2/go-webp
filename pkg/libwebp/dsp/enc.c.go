@@ -48,7 +48,7 @@ func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], const his
   int max_value = 0, last_non_zero = 1;
   int k;
   for (k = 0; k <= MAX_COEFF_THRESH; ++k) {
-    const int value = distribution[k];
+    value := distribution[k];
     if (value > 0) {
       if (value > max_value) max_value = value;
       last_non_zero = k;
@@ -70,8 +70,8 @@ func CollectHistogram_C(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT pred
 
     // Convert coefficients to bin.
     for (k = 0; k < 16; ++k) {
-      const int v = abs(out[k]) >> 3;
-      const int clipped_value = clip_max(v, MAX_COEFF_THRESH);
+      v := abs(out[k]) >> 3;
+      clipped_value := clip_max(v, MAX_COEFF_THRESH);
       ++distribution[clipped_value];
     }
   }
@@ -111,8 +111,8 @@ static  func ITransformOne(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT i
   int i;
   tmp = C;
   for (i = 0; i < 4; ++i) {  // vertical pass
-    const int a = in[0] + in[8];
-    const int b = in[0] - in[8];
+    a := in[0] + in[8];
+    b := in[0] - in[8];
     const int c =
         WEBP_TRANSFORM_AC3_MUL2(in[4]) - WEBP_TRANSFORM_AC3_MUL1(in[12]);
     const int d =
@@ -127,9 +127,9 @@ static  func ITransformOne(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT i
 
   tmp = C;
   for (i = 0; i < 4; ++i) {  // horizontal pass
-    const int dc = tmp[0] + 4;
-    const int a = dc + tmp[8];
-    const int b = dc - tmp[8];
+    dc := tmp[0] + 4;
+    a := dc + tmp[8];
+    b := dc - tmp[8];
     const int c =
         WEBP_TRANSFORM_AC3_MUL2(tmp[4]) - WEBP_TRANSFORM_AC3_MUL1(tmp[12]);
     const int d =
@@ -528,7 +528,7 @@ static  int GetSSE(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8, i
   int y, x;
   for (y = 0; y < h; ++y) {
     for (x = 0; x < w; ++x) {
-      const int diff = (int)a[x] - b[x];
+      diff := (int)a[x] - b[x];
       count += diff * diff;
     }
     a += BPS;
@@ -639,9 +639,9 @@ static int QuantizeBlock_C(int16 in[16], int16 out[16], const WEBP_RESTRICT cons
   int last = -1;
   int n;
   for (n = 0; n < 16; ++n) {
-    const int j = kZigzag[n];
-    const int sign = (in[j] < 0);
-    const uint32 coeff = (sign ? -in[j] : in[j]) + mtx.sharpen[j];
+    j := kZigzag[n];
+    sign := (in[j] < 0);
+    coeff := (sign ? -in[j] : in[j]) + mtx.sharpen[j];
     if (coeff > mtx.zthresh[j]) {
       const uint32 Q = mtx.q[j];
       const uint32 iQ = mtx.iq[j];

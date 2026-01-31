@@ -698,7 +698,7 @@ static  func TM_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, 
     const __m128i top_values = _mm_loadl_epi64((const __*m128i)top);
     const __m128i top_base = _mm_unpacklo_epi8(top_values, zero);
     for (y = 0; y < 8; ++y, dst += BPS) {
-      const int val = left[y] - left[-1];
+      val := left[y] - left[-1];
       const __m128i base = _mm_set1_epi16(val);
       const __m128i out = _mm_packus_epi16(_mm_add_epi16(base, top_base), zero);
       _mm_storel_epi64((__*m128i)dst, out);
@@ -708,7 +708,7 @@ static  func TM_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, 
     const __m128i top_base_0 = _mm_unpacklo_epi8(top_values, zero);
     const __m128i top_base_1 = _mm_unpackhi_epi8(top_values, zero);
     for (y = 0; y < 16; ++y, dst += BPS) {
-      const int val = left[y] - left[-1];
+      val := left[y] - left[-1];
       const __m128i base = _mm_set1_epi16(val);
       const __m128i out_0 = _mm_add_epi16(base, top_base_0);
       const __m128i out_1 = _mm_add_epi16(base, top_base_1);
@@ -839,7 +839,7 @@ static  func VE4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
   const __m128i lsb = _mm_and_si128(_mm_xor_si128(ABCDEFGH, CDEFGH00), one);
   const __m128i b = _mm_subs_epu8(a, lsb);
   const __m128i avg = _mm_avg_epu8(b, BCDEFGH0);
-  const int vals = _mm_cvtsi128_si32(avg);
+  vals := _mm_cvtsi128_si32(avg);
   int i;
   for (i = 0; i < 4; ++i) {
     WebPInt32ToMem(dst + i * BPS, vals);
@@ -996,7 +996,7 @@ static  func TM4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
   const __m128i top_base = _mm_unpacklo_epi8(top_values, zero);
   int y;
   for (y = 0; y < 4; ++y, dst += BPS) {
-    const int val = top[-2 - y] - top[-1];
+    val := top[-2 - y] - top[-1];
     const __m128i base = _mm_set1_epi16(val);
     const __m128i out = _mm_packus_epi16(_mm_add_epi16(base, top_base), zero);
     WebPInt32ToMem(dst, _mm_cvtsi128_si32(out));
@@ -1306,7 +1306,7 @@ static int TTransform_SSE2(const WEBP_RESTRICT inA *uint8, const WEBP_RESTRICT i
 }
 
 static int Disto4x4_SSE2(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
-  const int diff_sum = TTransform_SSE2(a, b, w);
+  diff_sum := TTransform_SSE2(a, b, w);
   return abs(diff_sum) >> 5;
 }
 

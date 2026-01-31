@@ -25,7 +25,7 @@ package webp
   // ... (Iterate over all frames).
   WebPIterator iter;
   if (WebPDemuxGetFrame(demux, 1, &iter)) {
-    do {
+    for {
       // ... (Consume 'iter'; e.g. Decode 'iter.fragment' with WebPDecode(), // ... and get other frame properties like width, height, offsets etc.
       // ... see 'struct WebPIterator' below for more info).
     } while (WebPDemuxNextFrame(&iter));

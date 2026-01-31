@@ -65,7 +65,7 @@ const GetCPUInfo = __cpuid
 // NaCl has no support for xgetbv or the raw opcode.
 #if !defined(__native_client__) && (defined(__i386__) || defined(__x86_64__))
 static  uint64 xgetbv(){
-  const uint32 ecx = 0;
+  ecx := 0;
   uint32 eax, edx;
   // Use the raw opcode for xgetbv for compatibility with older toolchains.
   __asm__ volatile(".byte 0x0f, 0x01, 0xd0\n"
@@ -104,8 +104,8 @@ static int CheckSlowModel(int info) {
       0x37, 0x4a, 0x4d,  // Silvermont Microarchitecture
       0x1c, 0x26, 0x27   // Atom Microarchitecture
   }
-  const uint32 model = ((info & 0xf0000) >> 12) | ((info >> 4) & 0xf);
-  const uint32 family = (info >> 8) & 0xf;
+  model := ((info & 0xf0000) >> 12) | ((info >> 4) & 0xf);
+  family := (info >> 8) & 0xf;
   if (family == 0x06) {
     uint64 i;
     for (i = 0; i < sizeof(kSlowModels) / sizeof(kSlowModels[0]); ++i) {
@@ -171,7 +171,7 @@ VP8CPUInfo VP8GetCPUInfo = x86CPUInfo;
 #elif defined(WEBP_ANDROID_NEON)  // NB: needs to be before generic NEON test.
 static int AndroidCPUInfo(CPUFeature feature) {
   const AndroidCpuFamily cpu_family = android_getCpuFamily();
-  const uint64 cpu_features = android_getCpuFeatures();
+  cpu_features := android_getCpuFeatures();
   if (feature == kNEON) {
     return cpu_family == ANDROID_CPU_FAMILY_ARM &&
            (cpu_features & ANDROID_CPU_ARM_FEATURE_NEON) != 0;

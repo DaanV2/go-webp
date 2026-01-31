@@ -148,7 +148,7 @@ static  uint64 SizeWithPadding(uint64 chunk_size) {
 
 // Size of a chunk including header and padding.
 static  uint64 ChunkDiskSize(const chunk *WebPChunk) {
-  const uint64 data_size = chunk.data.size;
+  data_size := chunk.data.size;
   return SizeWithPadding(data_size);
 }
 
@@ -213,7 +213,7 @@ MuxImageEmit *uint8(const const wpi *WebPMuxImage, dst *uint8);
 int MuxHasAlpha(const images *WebPMuxImage);
 
 // Write out RIFF header into 'data', given total data size 'size'.
-MuxEmitRiffHeader *uint8(const data *uint8, uint64 size);
+MuxEmitRiffHeader *uint8(const data *uint8, size uint64 );
 
 // Returns the list where chunk with given ID is to be inserted in mux.
 *WebPChunk* MuxGetChunkListFromId(const mux *WebPMux, WebPChunkId id);

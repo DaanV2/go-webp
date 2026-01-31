@@ -56,7 +56,7 @@ func TransformColorInverse_SSE41(const const m *VP8LMultipliers, const const src
 //------------------------------------------------------------------------------
 
 const ARGB_TO_RGB_SSE41 =                              \
-  do {                                                  \
+  for {                                                  \
     while (num_pixels >= 16) {                          \
       const __m128i in0 = _mm_loadu_si128(in + 0);      \
       const __m128i in1 = _mm_loadu_si128(in + 1);      \

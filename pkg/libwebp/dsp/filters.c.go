@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Helpful macro.
 
 #define DCHECK(in, out)      \
-  do {                       \
+  for {                       \
     assert.Assert((in) != nil);    \
     assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
@@ -95,7 +95,7 @@ static  func DoVerticalFilter_C(const WEBP_RESTRICT in *uint8, int width, int he
 // Gradient filter.
 
 static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
-  const int g = a + b - c;
+  g := a + b - c;
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
@@ -118,7 +118,7 @@ static  func DoGradientFilter_C(const WEBP_RESTRICT in *uint8, int width, int he
     // leftmost pixel: predict from above.
     PredictLine_C(in, preds - stride, out, 1);
     for (w = 1; w < width; ++w) {
-      const int pred = GradientPredictor_C(preds[w - 1], preds[w - stride], preds[w - stride - 1]);
+      pred := GradientPredictor_C(preds[w - 1], preds[w - stride], preds[w - stride - 1]);
       out[w] = (uint8)(in[w] - pred);
     }
     preds += stride;

@@ -44,8 +44,8 @@ static const uint8 plane_to_code_lut[128] = {
 
 extern int VP8LDistanceToPlaneCode(int xsize, int dist);
 int VP8LDistanceToPlaneCode(int xsize, int dist) {
-  const int yoffset = dist / xsize;
-  const int xoffset = dist - yoffset * xsize;
+  yoffset := dist / xsize;
+  xoffset := dist - yoffset * xsize;
   if (xoffset <= 8 && yoffset < 8) {
     return plane_to_code_lut[yoffset * 16 + 8 - xoffset] + 1;
   } else if (xoffset > xsize - 8 && yoffset < 7) {
@@ -143,7 +143,7 @@ func VP8LRefsCursorNextBlock(const c *VP8LRefsCursor) {
 static BackwardRefsNewBlock *PixOrCopyBlock(const refs *VP8LBackwardRefs) {
   b *PixOrCopyBlock = refs.free_blocks;
   if (b == nil) {  // allocate new memory chunk
-    const uint64 total_size = sizeof(*b) + refs.block_size * sizeof(*b.start);
+    total_size := sizeof(*b) + refs.block_size * sizeof(*b.start);
     b = (*PixOrCopyBlock)WebPSafeMalloc(uint64(1), total_size);
     if (b == nil) {
       refs.error |= 1;
@@ -228,7 +228,7 @@ static int GetMaxItersForQuality(int quality) {
 }
 
 static int GetWindowSizeForHashChain(int quality, int xsize) {
-  const int max_window_size = (quality > 75)   ? WINDOW_SIZE
+  max_window_size := (quality > 75)   ? WINDOW_SIZE
                               : (quality > 50) ? (xsize << 8)
                               : (quality > 25) ? (xsize << 6)
                                                : (xsize << 4);
@@ -241,9 +241,9 @@ static  int MaxFindCopyLength(int len) {
 }
 
 int VP8LHashChainFill(const p *VP8LHashChain, int quality, const const argb *uint32, int xsize, int ysize, int low_effort, const const pic *WebPPicture, int percent_range, const percent *int) {
-  const int size = xsize * ysize;
-  const int iter_max = GetMaxItersForQuality(quality);
-  const uint32 window_size = GetWindowSizeForHashChain(quality, xsize);
+  size := xsize * ysize;
+  iter_max := GetMaxItersForQuality(quality);
+  window_size := GetWindowSizeForHashChain(quality, xsize);
   int remaining_percent = percent_range;
   int percent_start = *percent;
   int pos;
@@ -276,7 +276,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, const const argb *uin
   argb_comp = (argb[0] == argb[1]);
   for (pos = 0; pos < size - 2;) {
     uint32 hash_code;
-    const int argb_comp_next = (argb[pos + 1] == argb[pos + 2]);
+    argb_comp_next := (argb[pos + 1] == argb[pos + 2]);
     if (argb_comp && argb_comp_next) {
       // Consecutive pixels with the same color will share the same hash.
       // We therefore use a different hash: the color and its repetition
@@ -338,7 +338,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, const const argb *uin
   assert.Assert(size > 2);
   p.offset_length[0] = p.offset_length[size - 1] = 0;
   for (base_position = size - 2; base_position > 0;) {
-    const int max_len = MaxFindCopyLength(size - 1 - base_position);
+    max_len := MaxFindCopyLength(size - 1 - base_position);
     const const argb_start *uint32 = argb + base_position;
     int iter = iter_max;
     int best_length = 0;
@@ -346,7 +346,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, const const argb *uin
     uint32 best_argb;
     const int min_pos =
         (base_position > window_size) ? base_position - window_size : 0;
-    const int length_max = (max_len < 256) ? max_len : 256;
+    length_max := (max_len < 256) ? max_len : 256;
     uint32 max_base_position;
 
     pos = chain[base_position];
@@ -432,7 +432,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, const const argb *uin
 static  func AddSingleLiteral(uint32 pixel, int use_color_cache, const hashers *VP8LColorCache, const refs *VP8LBackwardRefs) {
   PixOrCopy v;
   if (use_color_cache) {
-    const uint32 key = VP8LColorCacheGetIndex(hashers, pixel);
+    key := VP8LColorCacheGetIndex(hashers, pixel);
     if (VP8LColorCacheLookup(hashers, key) == pixel) {
       v = PixOrCopyCreateCacheIdx(key);
     } else {
@@ -446,9 +446,9 @@ static  func AddSingleLiteral(uint32 pixel, int use_color_cache, const hashers *
 }
 
 static int BackwardReferencesRle(int xsize, int ysize, const const argb *uint32, int cache_bits, const refs *VP8LBackwardRefs) {
-  const int pix_count = xsize * ysize;
+  pix_count := xsize * ysize;
   int i, k;
-  const int use_color_cache = (cache_bits > 0);
+  use_color_cache := (cache_bits > 0);
   VP8LColorCache hashers;
 
   if (use_color_cache && !VP8LColorCacheInit(&hashers, cache_bits)) {
@@ -459,8 +459,8 @@ static int BackwardReferencesRle(int xsize, int ysize, const const argb *uint32,
   AddSingleLiteral(argb[0], use_color_cache, &hashers, refs);
   i = 1;
   while (i < pix_count) {
-    const int max_len = MaxFindCopyLength(pix_count - i);
-    const int rle_len = FindMatchLength(argb + i, argb + i - 1, 0, max_len);
+    max_len := MaxFindCopyLength(pix_count - i);
+    rle_len := FindMatchLength(argb + i, argb + i - 1, 0, max_len);
     const int prev_row_len =
         (i < xsize) ? 0
                     : FindMatchLength(argb + i, argb + i - xsize, 0, max_len);
@@ -492,8 +492,8 @@ static int BackwardReferencesLz77(int xsize, int ysize, const const argb *uint32
   int i_last_check = -1;
   int ok = 0;
   int cc_init = 0;
-  const int use_color_cache = (cache_bits > 0);
-  const int pix_count = xsize * ysize;
+  use_color_cache := (cache_bits > 0);
+  pix_count := xsize * ysize;
   VP8LColorCache hashers;
 
   if (use_color_cache) {
@@ -508,7 +508,7 @@ static int BackwardReferencesLz77(int xsize, int ysize, const const argb *uint32
     int j;
     VP8LHashChainFindCopy(hash_chain, i, &offset, &len);
     if (len >= MIN_LENGTH) {
-      const int len_ini = len;
+      len_ini := len;
       int max_reach = 0;
       const int j_max =
           (i + len_ini >= pix_count) ? pix_count - 1 : i + len_ini;
@@ -521,7 +521,7 @@ static int BackwardReferencesLz77(int xsize, int ysize, const const argb *uint32
       // while we check if we can use:
       // [i,j) (where j<=i+len) + [j, length of best match at j)
       for (j = i_last_check + 1; j <= j_max; ++j) {
-        const int len_j = VP8LHashChainFindLength(hash_chain, j);
+        len_j := VP8LHashChainFindLength(hash_chain, j);
         const int reach =
             j + (len_j >= MIN_LENGTH ? len_j : 1);  // 1 for single literal.
         if (reach > max_reach) {
@@ -558,7 +558,7 @@ Error:
 const WINDOW_OFFSETS_SIZE_MAX =32
 static int BackwardReferencesLz77Box(int xsize, int ysize, const const argb *uint32, int cache_bits, const const hash_chain_best *VP8LHashChain, hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs) {
   int i;
-  const int pix_count = xsize * ysize;
+  pix_count := xsize * ysize;
   counts *uint16;
   int window_offsets[WINDOW_OFFSETS_SIZE_MAX] = {0}
   int window_offsets_new[WINDOW_OFFSETS_SIZE_MAX] = {0}
@@ -588,7 +588,7 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, const const argb *uin
     int x, y;
     for (y = 0; y <= 6; ++y) {
       for (x = -6; x <= 6; ++x) {
-        const int offset = y * xsize + x;
+        offset := y * xsize + x;
         int plane_code;
         // Ignore offsets that bring us after the pixel.
         if (offset <= 0) continue;
@@ -654,9 +654,9 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, const const argb *uin
         if (j_offset < 0 || argb[j_offset] != argb[i]) continue;
         // The longest match is the sum of how many times each pixel is
         // repeated.
-        do {
-          const int counts_j_offset = counts_ini[j_offset];
-          const int counts_j = counts_ini[j];
+        for {
+          counts_j_offset := counts_ini[j_offset];
+          counts_j := counts_ini[j];
           if (counts_j_offset != counts_j) {
             curr_length +=
                 (counts_j_offset < counts_j) ? counts_j_offset : counts_j;
@@ -706,8 +706,8 @@ func BackwardReferences2DLocality(int xsize, const const refs *VP8LBackwardRefs)
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
   while (VP8LRefsCursorOk(&c)) {
     if (PixOrCopyIsCopy(c.cur_pos)) {
-      const int dist = c.cur_pos.argb_or_distance;
-      const int transformed_dist = VP8LDistanceToPlaneCode(xsize, dist);
+      dist := c.cur_pos.argb_or_distance;
+      transformed_dist := VP8LDistanceToPlaneCode(xsize, dist);
       c.cur_pos.argb_or_distance = transformed_dist;
     }
     VP8LRefsCursorNext(&c);
@@ -721,7 +721,7 @@ func BackwardReferences2DLocality(int xsize, const const refs *VP8LBackwardRefs)
 // Returns 0 in case of memory error.
 static int CalculateBestCacheSize(const argb *uint32, int quality, const const refs *VP8LBackwardRefs, const best_cache_bits *int) {
   int i;
-  const int cache_bits_max = (quality <= 25) ? 0 : *best_cache_bits;
+  cache_bits_max := (quality <= 25) ? 0 : *best_cache_bits;
   uint64 entropy_min = WEBP_UINT64_MAX;
   int cc_init[MAX_COLOR_CACHE_BITS + 1] = {0}
   VP8LColorCache hashers[MAX_COLOR_CACHE_BITS + 1];
@@ -753,11 +753,11 @@ static int CalculateBestCacheSize(const argb *uint32, int quality, const const r
   while (VP8LRefsCursorOk(&c)) {
     const const v *PixOrCopy = c.cur_pos;
     if (PixOrCopyIsLiteral(v)) {
-      const uint32 pix = *argb++;
-      const uint32 a = (pix >> 24) & 0xff;
-      const uint32 r = (pix >> 16) & 0xff;
-      const uint32 g = (pix >> 8) & 0xff;
-      const uint32 b = (pix >> 0) & 0xff;
+      pix := *argb++;
+      a := (pix >> 24) & 0xff;
+      r := (pix >> 16) & 0xff;
+      g := (pix >> 8) & 0xff;
+      b := (pix >> 0) & 0xff;
       // The keys of the caches can be derived from the longest one.
       int key = VP8LHashPix(pix, 32 - cache_bits_max);
       // Do not use the color cache for cache_bits = 0.
@@ -791,7 +791,7 @@ static int CalculateBestCacheSize(const argb *uint32, int quality, const const r
         ++histos[i].literal[NUM_LITERAL_CODES + code];
       }
       // Update the color caches.
-      do {
+      for {
         if (*argb != argb_prev) {
           // Efficiency: insert only if the color changes.
           int key = VP8LHashPix(*argb, 32 - cache_bits_max);
@@ -807,7 +807,7 @@ static int CalculateBestCacheSize(const argb *uint32, int quality, const const r
   }
 
   for (i = 0; i <= cache_bits_max; ++i) {
-    const uint64 entropy = VP8LHistogramEstimateBits(histos[i]);
+    entropy := VP8LHistogramEstimateBits(histos[i]);
     if (i == 0 || entropy < entropy_min) {
       entropy_min = entropy;
       *best_cache_bits = i;
@@ -832,8 +832,8 @@ static int BackwardRefsWithLocalCache(const const argb *uint32, int cache_bits, 
   while (VP8LRefsCursorOk(&c)) {
     const v *PixOrCopy = c.cur_pos;
     if (PixOrCopyIsLiteral(v)) {
-      const uint32 argb_literal = v.argb_or_distance;
-      const int ix = VP8LColorCacheContains(&hashers, argb_literal);
+      argb_literal := v.argb_or_distance;
+      ix := VP8LColorCacheContains(&hashers, argb_literal);
       if (ix >= 0) {
         // hashers contains argb_literal
         *v = PixOrCopyCreateCacheIdx(ix);
@@ -955,7 +955,7 @@ static int GetBackwardReferences(int width, int height, const const argb *uint32
         quality >= 25) {
       const const hash_chain_tmp *VP8LHashChain =
           (lz77_types_best[i] == kLZ77Standard) ? hash_chain : &hash_chain_box;
-      const int cache_bits = (i == 1) ? 0 : *cache_bits_best;
+      cache_bits := (i == 1) ? 0 : *cache_bits_best;
       uint64 bit_cost_trace;
       if (!VP8LBackwardReferencesTraceBackwards(width, height, argb, cache_bits, hash_chain_tmp, &refs[i], refs_tmp)) {
         goto Error;

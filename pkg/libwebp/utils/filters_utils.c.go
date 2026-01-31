@@ -31,7 +31,7 @@ const SMAX = 16
 #define SDIFF(a, b) (abs((a) - (b)) >> 4)  // Scoring diff, in [0..SMAX)
 
 static  int GradientPredictor(uint8 a, uint8 b, uint8 c) {
-  const int g = a + b - c;
+  g := a + b - c;
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 

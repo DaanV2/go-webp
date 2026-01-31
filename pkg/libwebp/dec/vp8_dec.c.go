@@ -125,10 +125,10 @@ int VP8GetInfo(const *uint8  data, uint64 data_size, uint64 chunk_size, const wi
   if (!VP8CheckSignature(data + 3, data_size - 3)) {
     return 0;  // Wrong signature.
   } else {
-    const uint32 bits = data[0] | (data[1] << 8) | (data[2] << 16);
-    const int key_frame = !(bits & 1);
-    const int w = ((data[7] << 8) | data[6]) & 0x3fff;
-    const int h = ((data[9] << 8) | data[8]) & 0x3fff;
+    bits := data[0] | (data[1] << 8) | (data[2] << 16);
+    key_frame := !(bits & 1);
+    w := ((data[7] << 8) | data[6]) & 0x3fff;
+    h := ((data[9] << 8) | data[8]) & 0x3fff;
 
     if (!key_frame) {  // Not a keyframe.
       return 0;
@@ -215,7 +215,7 @@ static int ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP
 // If we don't even have the partitions' sizes, then VP8_STATUS_NOT_ENOUGH_DATA
 // is returned, and this is an unrecoverable error.
 // If the partitions were positioned ok, VP8_STATUS_OK is returned.
-static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, uint64 size) {
+static VP8StatusCode ParsePartitions(const dec *VP8Decoder, const *uint8  buf, size uint64 ) {
   const br *VP8BitReader = &dec.br;
   const WEBP_BIDI_INDEXABLE sz *uint8 = buf;
   const buf_end *uint8 = buf + size;
@@ -298,7 +298,7 @@ int VP8GetHeaders(const dec *VP8Decoder, const io *VP8Io) {
 
   // Paragraph 9.1
   {
-    const uint32 bits = buf[0] | (buf[1] << 8) | (buf[2] << 16);
+    bits := buf[0] | (buf[1] << 8) | (buf[2] << 16);
     frm_hdr = &dec.frm_hdr;
     frm_hdr.key_frame = !(bits & 1);
     frm_hdr.profile = (bits >> 1) & 7;
@@ -430,7 +430,7 @@ static int GetLargeValue(const br *VP8BitReader, const const p *uint8) {
       const tab *uint8;
       const int bit1 = VP8GetBit(br, p[8], "coeffs");
       const int bit0 = VP8GetBit(br, p[9 + bit1], "coeffs");
-      const int cat = 2 * bit1 + bit0;
+      cat := 2 * bit1 + bit0;
       v = 0;
       for (tab = kCat3456[cat]; *tab; ++tab) {
         v += v + VP8GetBit(br, *tab, "coeffs");
@@ -529,8 +529,8 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
   WEBP_UNSAFE_MEMSET(dst, 0, 384 * sizeof(*dst));
   if (!block.is_i4x4) {  // parse DC
     int16 dc[16] = {0}
-    const int ctx = mb.nz_dc + left_mb.nz_dc;
-    const int nz = GetCoeffs(token_br, bands[1], ctx, q.y2_mat, 0, dc);
+    ctx := mb.nz_dc + left_mb.nz_dc;
+    nz := GetCoeffs(token_br, bands[1], ctx, q.y2_mat, 0, dc);
     mb.nz_dc = left_mb.nz_dc = (nz > 0);
     if (nz > 1) {  // more than just the DC . perform the full transform
       VP8TransformWHT(dc, dst);
@@ -552,8 +552,8 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
     int l = lnz & 1;
     uint32 nz_coeffs = 0;
     for (x = 0; x < 4; ++x) {
-      const int ctx = l + (tnz & 1);
-      const int nz = GetCoeffs(token_br, ac_proba, ctx, q.y1_mat, first, dst);
+      ctx := l + (tnz & 1);
+      nz := GetCoeffs(token_br, ac_proba, ctx, q.y1_mat, first, dst);
       l = (nz > first);
       tnz = (tnz >> 1) | (l << 7);
       nz_coeffs = NzCodeBits(nz_coeffs, nz, dst[0] != 0);
@@ -573,8 +573,8 @@ static int ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br
     for (y = 0; y < 2; ++y) {
       int l = lnz & 1;
       for (x = 0; x < 2; ++x) {
-        const int ctx = l + (tnz & 1);
-        const int nz = GetCoeffs(token_br, bands[2], ctx, q.uv_mat, 0, dst);
+        ctx := l + (tnz & 1);
+        nz := GetCoeffs(token_br, bands[2], ctx, q.uv_mat, 0, dst);
         l = (nz > 0);
         tnz = (tnz >> 1) | (l << 3);
         nz_coeffs = NzCodeBits(nz_coeffs, nz, dst[0] != 0);

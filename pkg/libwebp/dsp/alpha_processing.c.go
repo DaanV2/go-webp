@@ -32,7 +32,7 @@ const HALF = ((uint(1) << MFIX) >> 1)
 const KINV_255 =((uint(1) << MFIX) / uint(255))
 
 static uint32 Mult(uint8 x, uint32 mult) {
-  const uint32 v = (x * mult + HALF) >> MFIX;
+  v := (x * mult + HALF) >> MFIX;
   assert.Assert(v <= 255);  // <- 24bit precision is enough to ensure that.
   return v;
 }
@@ -59,13 +59,13 @@ static  uint32 GetScale(uint32 a, int inverse) {
 func WebPMultARGBRow_C(const ptr *uint32, int width, int inverse) {
   int x;
   for (x = 0; x < width; ++x) {
-    const uint32 argb = ptr[x];
+    argb := ptr[x];
     if (argb < uint(0xff000000)) {     // alpha < 255
       if (argb <= uint(0x00ffffff)) {  // alpha == 0
         ptr[x] = 0;
       } else {
-        const uint32 alpha = (argb >> 24) & 0xff;
-        const uint32 scale = GetScale(alpha, inverse);
+        alpha := (argb >> 24) & 0xff;
+        scale := GetScale(alpha, inverse);
         uint32 out = argb & uint(0xff000000);
         out |= Mult(argb >> 0, scale) << 0;
         out |= Mult(argb >> 8, scale) << 8;
@@ -79,12 +79,12 @@ func WebPMultARGBRow_C(const ptr *uint32, int width, int inverse) {
 func WebPMultRow_C(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alpha *uint8, int width, int inverse) {
   int x;
   for (x = 0; x < width; ++x) {
-    const uint32 a = alpha[x];
+    a := alpha[x];
     if (a != 255) {
       if (a == 0) {
         ptr[x] = 0;
       } else {
-        const uint32 scale = GetScale(a, inverse);
+        scale := GetScale(a, inverse);
         ptr[x] = Mult(ptr[x], scale);
       }
     }
@@ -141,9 +141,9 @@ func ApplyAlphaMultiply_C(rgba *uint8, int alpha_first, int w, int h, int stride
     const const alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
     int i;
     for (i = 0; i < w; ++i) {
-      const uint32 a = alpha[4 * i];
+      a := alpha[4 * i];
       if (a != 0xff) {
-        const uint32 mult = MULTIPLIER(a);
+        mult := MULTIPLIER(a);
         rgb[4 * i + 0] = PREMULTIPLY(rgb[4 * i + 0], mult);
         rgb[4 * i + 1] = PREMULTIPLY(rgb[4 * i + 1], mult);
         rgb[4 * i + 2] = PREMULTIPLY(rgb[4 * i + 2], mult);
@@ -176,13 +176,13 @@ static  func ApplyAlphaMultiply4444_C(rgba *uint84444, int w, int h, int stride,
   while (h-- > 0) {
     int i;
     for (i = 0; i < w; ++i) {
-      const uint32 rg = rgba4444[2 * i + rg_byte_pos];
-      const uint32 ba = rgba4444[2 * i + (rg_byte_pos ^ 1)];
-      const uint8 a = ba & 0x0f;
-      const uint32 mult = MULTIPLIER(a);
-      const uint8 r = multiply(dither_hi(rg), mult);
-      const uint8 g = multiply(dither_lo(rg), mult);
-      const uint8 b = multiply(dither_hi(ba), mult);
+      rg := rgba4444[2 * i + rg_byte_pos];
+      ba := rgba4444[2 * i + (rg_byte_pos ^ 1)];
+      a := ba & 0x0f;
+      mult := MULTIPLIER(a);
+      r := multiply(dither_hi(rg), mult);
+      g := multiply(dither_lo(rg), mult);
+      b := multiply(dither_hi(ba), mult);
       rgba4444[2 * i + rg_byte_pos] = (r & 0xf0) | ((g >> 4) & 0x0f);
       rgba4444[2 * i + (rg_byte_pos ^ 1)] = (b & 0xf0) | a;
     }
@@ -206,7 +206,7 @@ static int DispatchAlpha_C(const WEBP_RESTRICT alpha *uint8, int alpha_stride, i
 
   for (j = 0; j < height; ++j) {
     for (i = 0; i < width; ++i) {
-      const uint32 alpha_value = alpha[i];
+      alpha_value := alpha[i];
       dst[4 * i] = alpha_value;
       alpha_mask &= alpha_value;
     }
@@ -234,7 +234,7 @@ static int ExtractAlpha_C(const WEBP_RESTRICT argb *uint8, int argb_stride, int 
 
   for (j = 0; j < height; ++j) {
     for (i = 0; i < width; ++i) {
-      const uint8 alpha_value = argb[4 * i];
+      alpha_value := argb[4 * i];
       alpha[i] = alpha_value;
       alpha_mask &= alpha_value;
     }

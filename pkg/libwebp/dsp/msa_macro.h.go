@@ -133,7 +133,7 @@ MSA_STORE_FUNC(uint16, ush, msa_ush);
 MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define SW(val, pdst) MSA_STORE(val, pdst, msa_usw)
 #define SD(val, pdst)                                                     \
-  do {                                                                    \
+  for {                                                                    \
     const pdst_sd_m *uint8 = (*uint8)(pdst);                          \
     const uint32 val0_m = (uint32)(val & 0x00000000FFFFFFFF);         \
     const uint32 val1_m = (uint32)((val >> 32) & 0x00000000FFFFFFFF); \
@@ -151,7 +151,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Load word in 'out3' from (psrc + 3 * stride)
  */
 #define LW4(psrc, stride, out0, out1, out2, out3) \
-  do {                                            \
+  for {                                            \
     const ptmp *uint8 = (const *uint8)psrc;   \
     out0 = LW(ptmp);                              \
     ptmp += stride;                               \
@@ -170,7 +170,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Store word from 'in3' to (pdst + 3 * stride)
  */
 #define SW4(in0, in1, in2, in3, pdst, stride) \
-  do {                                        \
+  for {                                        \
     ptmp *uint8 = (*uint8)pdst;           \
     SW(in0, ptmp);                            \
     ptmp += stride;                           \
@@ -182,7 +182,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
   } while (0)
 
 #define SW3(in0, in1, in2, pdst, stride) \
-  do {                                   \
+  for {                                   \
     ptmp *uint8 = (*uint8)pdst;      \
     SW(in0, ptmp);                       \
     ptmp += stride;                      \
@@ -192,7 +192,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
   } while (0)
 
 #define SW2(in0, in1, pdst, stride) \
-  do {                              \
+  for {                              \
     ptmp *uint8 = (*uint8)pdst; \
     SW(in0, ptmp);                  \
     ptmp += stride;                 \
@@ -207,7 +207,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Store double word from 'in3' to (pdst + 3 * stride)
  */
 #define SD4(in0, in1, in2, in3, pdst, stride) \
-  do {                                        \
+  for {                                        \
     ptmp *uint8 = (*uint8)pdst;           \
     SD(in0, ptmp);                            \
     ptmp += stride;                           \
@@ -226,7 +226,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Load 16 byte elements in 'out1' from (psrc + stride)
  */
 #define LD_B2(RTYPE, psrc, stride, out0, out1) \
-  do {                                         \
+  for {                                         \
     out0 = LD_B(RTYPE, psrc);                  \
     out1 = LD_B(RTYPE, psrc + stride);         \
   } while (0)
@@ -234,7 +234,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define LD_SB2(...) LD_B2(v16i8, __VA_ARGS__)
 
 #define LD_B3(RTYPE, psrc, stride, out0, out1, out2) \
-  do {                                               \
+  for {                                               \
     LD_B2(RTYPE, psrc, stride, out0, out1);          \
     out2 = LD_B(RTYPE, psrc + 2 * stride);           \
   } while (0)
@@ -242,7 +242,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define LD_SB3(...) LD_B3(v16i8, __VA_ARGS__)
 
 #define LD_B4(RTYPE, psrc, stride, out0, out1, out2, out3) \
-  do {                                                     \
+  for {                                                     \
     LD_B2(RTYPE, psrc, stride, out0, out1);                \
     LD_B2(RTYPE, psrc + 2 * stride, stride, out2, out3);   \
   } while (0)
@@ -251,7 +251,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 
 #define LD_B8(RTYPE, psrc, stride, out0, out1, out2, out3, out4, out5, out6, \
               out7)                                                          \
-  do {                                                                       \
+  for {                                                                       \
     LD_B4(RTYPE, psrc, stride, out0, out1, out2, out3);                      \
     LD_B4(RTYPE, psrc + 4 * stride, stride, out4, out5, out6, out7);         \
   } while (0)
@@ -265,7 +265,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Load 8 halfword elements in 'out1' from (psrc + stride)
  */
 #define LD_H2(RTYPE, psrc, stride, out0, out1) \
-  do {                                         \
+  for {                                         \
     out0 = LD_H(RTYPE, psrc);                  \
     out1 = LD_H(RTYPE, psrc + stride);         \
   } while (0)
@@ -281,7 +281,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Load 4 word elements in 'out3' from (psrc + 3 * stride)
  */
 #define LD_W2(RTYPE, psrc, stride, out0, out1) \
-  do {                                         \
+  for {                                         \
     out0 = LD_W(RTYPE, psrc);                  \
     out1 = LD_W(RTYPE, psrc + stride);         \
   } while (0)
@@ -289,7 +289,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define LD_SW2(...) LD_W2(v4i32, __VA_ARGS__)
 
 #define LD_W3(RTYPE, psrc, stride, out0, out1, out2) \
-  do {                                               \
+  for {                                               \
     LD_W2(RTYPE, psrc, stride, out0, out1);          \
     out2 = LD_W(RTYPE, psrc + 2 * stride);           \
   } while (0)
@@ -297,7 +297,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define LD_SW3(...) LD_W3(v4i32, __VA_ARGS__)
 
 #define LD_W4(RTYPE, psrc, stride, out0, out1, out2, out3) \
-  do {                                                     \
+  for {                                                     \
     LD_W2(RTYPE, psrc, stride, out0, out1);                \
     LD_W2(RTYPE, psrc + 2 * stride, stride, out2, out3);   \
   } while (0)
@@ -310,7 +310,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Store 16 byte elements from 'in1' to (pdst + stride)
  */
 #define ST_B2(RTYPE, in0, in1, pdst, stride) \
-  do {                                       \
+  for {                                       \
     ST_B(RTYPE, in0, pdst);                  \
     ST_B(RTYPE, in1, pdst + stride);         \
   } while (0)
@@ -318,7 +318,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define ST_SB2(...) ST_B2(v16i8, __VA_ARGS__)
 
 #define ST_B4(RTYPE, in0, in1, in2, in3, pdst, stride) \
-  do {                                                 \
+  for {                                                 \
     ST_B2(RTYPE, in0, in1, pdst, stride);              \
     ST_B2(RTYPE, in2, in3, pdst + 2 * stride, stride); \
   } while (0)
@@ -326,7 +326,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define ST_SB4(...) ST_B4(v16i8, __VA_ARGS__)
 
 #define ST_B8(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7, pdst, stride) \
-  do {                                                                     \
+  for {                                                                     \
     ST_B4(RTYPE, in0, in1, in2, in3, pdst, stride);                        \
     ST_B4(RTYPE, in4, in5, in6, in7, pdst + 4 * stride, stride);           \
   } while (0)
@@ -340,7 +340,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Store 4 word elements from 'in3' to (pdst + 3 * stride)
  */
 #define ST_W2(RTYPE, in0, in1, pdst, stride) \
-  do {                                       \
+  for {                                       \
     ST_W(RTYPE, in0, pdst);                  \
     ST_W(RTYPE, in1, pdst + stride);         \
   } while (0)
@@ -348,7 +348,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define ST_SW2(...) ST_W2(v4i32, __VA_ARGS__)
 
 #define ST_W3(RTYPE, in0, in1, in2, pdst, stride) \
-  do {                                            \
+  for {                                            \
     ST_W2(RTYPE, in0, in1, pdst, stride);         \
     ST_W(RTYPE, in2, pdst + 2 * stride);          \
   } while (0)
@@ -356,7 +356,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define ST_SW3(...) ST_W3(v4i32, __VA_ARGS__)
 
 #define ST_W4(RTYPE, in0, in1, in2, in3, pdst, stride) \
-  do {                                                 \
+  for {                                                 \
     ST_W2(RTYPE, in0, in1, pdst, stride);              \
     ST_W2(RTYPE, in2, in3, pdst + 2 * stride, stride); \
   } while (0)
@@ -369,7 +369,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Store 8 halfword elements from 'in1' to (pdst + stride)
  */
 #define ST_H2(RTYPE, in0, in1, pdst, stride) \
-  do {                                       \
+  for {                                       \
     ST_H(RTYPE, in0, pdst);                  \
     ST_H(RTYPE, in1, pdst + stride);         \
   } while (0)
@@ -388,7 +388,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               the GP register and stored to (pdst + 3 * stride)
  */
 #define ST2x4_UB(in, stidx, pdst, stride)                         \
-  do {                                                            \
+  for {                                                            \
     pblk_ *uint82x4_m = (*uint8)pdst;                         \
     const uint16 out0_m = __msa_copy_s_h((v8i16)in, stidx);     \
     const uint16 out1_m = __msa_copy_s_h((v8i16)in, stidx + 1); \
@@ -415,7 +415,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               GP register and stored to (pdst + 3 * stride)
  */
 #define ST4x4_UB(in0, in1, idx0, idx1, idx2, idx3, pdst, stride) \
-  do {                                                           \
+  for {                                                           \
     const pblk_ *uint84x4_m = (*uint8)pdst;                  \
     const uint32 out0_m = __msa_copy_s_w((v4i32)in0, idx0);    \
     const uint32 out1_m = __msa_copy_s_w((v4i32)in0, idx1);    \
@@ -425,7 +425,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
   } while (0)
 
 #define ST4x8_UB(in0, in1, pdst, stride)                           \
-  do {                                                             \
+  for {                                                             \
     const pblk_ *uint84x8 = (*uint8)pdst;                      \
     ST4x4_UB(in0, in0, 0, 1, 2, 3, pblk_4x8, stride);              \
     ST4x4_UB(in1, in1, 0, 1, 2, 3, pblk_4x8 + 4 * stride, stride); \
@@ -461,7 +461,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
 #define VSHF_SH(...) VSHF_B(v8i16, __VA_ARGS__)
 
 #define VSHF_B2(RTYPE, in0, in1, in2, in3, mask0, mask1, out0, out1) \
-  do {                                                               \
+  for {                                                               \
     out0 = VSHF_B(RTYPE, in0, in1, mask0);                           \
     out1 = VSHF_B(RTYPE, in2, in3, mask1);                           \
   } while (0)
@@ -478,7 +478,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               'out0' as per control vector 'mask0'
  */
 #define VSHF_H2(RTYPE, in0, in1, in2, in3, mask0, mask1, out0, out1)  \
-  do {                                                                \
+  for {                                                                \
     out0 = (RTYPE)__msa_vshf_h((v8i16)mask0, (v8i16)in1, (v8i16)in0); \
     out1 = (RTYPE)__msa_vshf_h((v8i16)mask1, (v8i16)in3, (v8i16)in2); \
   } while (0)
@@ -496,7 +496,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               are added together and written to the 'out0' vector
  */
 #define DOTP_SB2(RTYPE, mult0, mult1, cnst0, cnst1, out0, out1) \
-  do {                                                          \
+  for {                                                          \
     out0 = (RTYPE)__msa_dotp_s_h((v16i8)mult0, (v16i8)cnst0);   \
     out1 = (RTYPE)__msa_dotp_s_h((v16i8)mult1, (v16i8)cnst1);   \
   } while (0)
@@ -513,7 +513,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               are added together and written to the 'out0' vector
  */
 #define DOTP_SH2(RTYPE, mult0, mult1, cnst0, cnst1, out0, out1) \
-  do {                                                          \
+  for {                                                          \
     out0 = (RTYPE)__msa_dotp_s_w((v8i16)mult0, (v8i16)cnst0);   \
     out1 = (RTYPE)__msa_dotp_s_w((v8i16)mult1, (v8i16)cnst1);   \
   } while (0)
@@ -530,7 +530,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               are added together and written to the 'out0' vector
  */
 #define DOTP_UW2(RTYPE, mult0, mult1, cnst0, cnst1, out0, out1) \
-  do {                                                          \
+  for {                                                          \
     out0 = (RTYPE)__msa_dotp_u_d((v4u32)mult0, (v4u32)cnst0);   \
     out1 = (RTYPE)__msa_dotp_u_d((v4u32)mult1, (v4u32)cnst1);   \
   } while (0)
@@ -547,7 +547,7 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               are added to the 'out0' vector
  */
 #define DPADD_SH2(RTYPE, mult0, mult1, cnst0, cnst1, out0, out1)            \
-  do {                                                                      \
+  for {                                                                      \
     out0 = (RTYPE)__msa_dpadd_s_w((v4i32)out0, (v8i16)mult0, (v8i16)cnst0); \
     out1 = (RTYPE)__msa_dpadd_s_w((v4i32)out1, (v8i16)mult1, (v8i16)cnst1); \
   } while (0)
@@ -559,20 +559,20 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Return Type - signed halfword
  */
 #define CLIP_SH_0_255(val)                  \
-  do {                                      \
+  for {                                      \
     const v8i16 max_m = __msa_ldi_h(255);   \
     val = __msa_maxi_s_h((v8i16)val, 0);    \
     val = __msa_min_s_h(max_m, (v8i16)val); \
   } while (0)
 
 #define CLIP_SH2_0_255(in0, in1) \
-  do {                           \
+  for {                           \
     CLIP_SH_0_255(in0);          \
     CLIP_SH_0_255(in1);          \
   } while (0)
 
 #define CLIP_SH4_0_255(in0, in1, in2, in3) \
-  do {                                     \
+  for {                                     \
     CLIP_SH2_0_255(in0, in1);              \
     CLIP_SH2_0_255(in2, in3);              \
   } while (0)
@@ -584,14 +584,14 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Return Type - unsigned halfword
  */
 #define CLIP_UH_0_255(in)                        \
-  do {                                           \
+  for {                                           \
     const v8u16 max_m = (v8u16)__msa_ldi_h(255); \
     in = __msa_maxi_u_h((v8u16)in, 0);           \
     in = __msa_min_u_h((v8u16)max_m, (v8u16)in); \
   } while (0)
 
 #define CLIP_UH2_0_255(in0, in1) \
-  do {                           \
+  for {                           \
     CLIP_UH_0_255(in0);          \
     CLIP_UH_0_255(in1);          \
   } while (0)
@@ -602,14 +602,14 @@ MSA_STORE_FUNC(uint32, usw, msa_usw);
  *               Return Type - signed word
  */
 #define CLIP_SW_0_255(val)                  \
-  do {                                      \
+  for {                                      \
     const v4i32 max_m = __msa_ldi_w(255);   \
     val = __msa_maxi_s_w((v4i32)val, 0);    \
     val = __msa_min_s_w(max_m, (v4i32)val); \
   } while (0)
 
 #define CLIP_SW4_0_255(in0, in1, in2, in3) \
-  do {                                     \
+  for {                                     \
     CLIP_SW_0_255(in0);                    \
     CLIP_SW_0_255(in1);                    \
     CLIP_SW_0_255(in2);                    \
@@ -644,7 +644,7 @@ static  int32 func_hadd_sh_s32(v8i16 in) {
   const v2i64 res0 = __msa_hadd_s_d(res, res);
   const v2i64 res1 = __msa_splati_d(res0, 1);
   const v2i64 res2 = res0 + res1;
-  const int32 sum_m = __msa_copy_s_w((v4i32)res2, 0);
+  sum_m := __msa_copy_s_w((v4i32)res2, 0);
   return sum_m;
 }
 #define HADD_SH_S32(in) func_hadd_sh_s32(in)
@@ -676,14 +676,14 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
                  halfword result is written in 'out0'
 */
 #define HADD_SH2(RTYPE, in0, in1, out0, out1)             \
-  do {                                                    \
+  for {                                                    \
     out0 = (RTYPE)__msa_hadd_s_w((v8i16)in0, (v8i16)in0); \
     out1 = (RTYPE)__msa_hadd_s_w((v8i16)in1, (v8i16)in1); \
   } while (0)
 #define HADD_SH2_SW(...) HADD_SH2(v4i32, __VA_ARGS__)
 
 #define HADD_SH4(RTYPE, in0, in1, in2, in3, out0, out1, out2, out3) \
-  do {                                                              \
+  for {                                                              \
     HADD_SH2(RTYPE, in0, in1, out0, out1);                          \
     HADD_SH2(RTYPE, in2, in3, out2, out3);                          \
   } while (0)
@@ -698,7 +698,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               halfword result is written to 'out0'
  */
 #define HSUB_UB2(RTYPE, in0, in1, out0, out1)             \
-  do {                                                    \
+  for {                                                    \
     out0 = (RTYPE)__msa_hsub_u_h((v16u8)in0, (v16u8)in0); \
     out1 = (RTYPE)__msa_hsub_u_h((v16u8)in1, (v16u8)in1); \
   } while (0)
@@ -713,7 +713,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  * Details     : Set element 0 in vector 'out' to value specified in 'in0'
  */
 #define INSERT_W2(RTYPE, in0, in1, out)              \
-  do {                                               \
+  for {                                               \
     out = (RTYPE)__msa_insert_w((v4i32)out, 0, in0); \
     out = (RTYPE)__msa_insert_w((v4i32)out, 1, in1); \
   } while (0)
@@ -721,7 +721,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 #define INSERT_W2_SB(...) INSERT_W2(v16i8, __VA_ARGS__)
 
 #define INSERT_W4(RTYPE, in0, in1, in2, in3, out)    \
-  do {                                               \
+  for {                                               \
     out = (RTYPE)__msa_insert_w((v4i32)out, 0, in0); \
     out = (RTYPE)__msa_insert_w((v4i32)out, 1, in1); \
     out = (RTYPE)__msa_insert_w((v4i32)out, 2, in2); \
@@ -739,7 +739,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               Set element 1 in vector 'out' to GPR value specified in 'in1'
  */
 #define INSERT_D2(RTYPE, in0, in1, out)              \
-  do {                                               \
+  for {                                               \
     out = (RTYPE)__msa_insert_d((v2i64)out, 0, in0); \
     out = (RTYPE)__msa_insert_d((v2i64)out, 1, in1); \
   } while (0)
@@ -754,7 +754,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out0'
  */
 #define ILVEV_B2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_ilvev_b((v16i8)in1, (v16i8)in0); \
     out1 = (RTYPE)__msa_ilvev_b((v16i8)in3, (v16i8)in2); \
   } while (0)
@@ -772,7 +772,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out0'
  */
 #define ILVOD_B2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_ilvod_b((v16i8)in1, (v16i8)in0); \
     out1 = (RTYPE)__msa_ilvod_b((v16i8)in3, (v16i8)in2); \
   } while (0)
@@ -790,7 +790,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out0'
  */
 #define ILVEV_H2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_ilvev_h((v8i16)in1, (v8i16)in0); \
     out1 = (RTYPE)__msa_ilvev_h((v8i16)in3, (v8i16)in2); \
   } while (0)
@@ -807,7 +807,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out0'
  */
 #define ILVOD_H2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_ilvod_h((v8i16)in1, (v8i16)in0); \
     out1 = (RTYPE)__msa_ilvod_h((v8i16)in3, (v8i16)in2); \
   } while (0)
@@ -824,7 +824,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out0'
  */
 #define ILVEV_W2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_ilvev_w((v4i32)in1, (v4i32)in0); \
     out1 = (RTYPE)__msa_ilvev_w((v4i32)in3, (v4i32)in2); \
   } while (0)
@@ -843,7 +843,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out1'
  */
 #define ILVEVOD_W2(RTYPE, in0, in1, in2, in3, out0, out1) \
-  do {                                                    \
+  for {                                                    \
     out0 = (RTYPE)__msa_ilvev_w((v4i32)in1, (v4i32)in0);  \
     out1 = (RTYPE)__msa_ilvod_w((v4i32)in3, (v4i32)in2);  \
   } while (0)
@@ -862,7 +862,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out1'
  */
 #define ILVEVOD_H2(RTYPE, in0, in1, in2, in3, out0, out1) \
-  do {                                                    \
+  for {                                                    \
     out0 = (RTYPE)__msa_ilvev_h((v8i16)in1, (v8i16)in0);  \
     out1 = (RTYPE)__msa_ilvod_h((v8i16)in3, (v8i16)in2);  \
   } while (0)
@@ -879,7 +879,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out0'
  */
 #define ILVEV_D2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_ilvev_d((v2i64)in1, (v2i64)in0); \
     out1 = (RTYPE)__msa_ilvev_d((v2i64)in3, (v2i64)in2); \
   } while (0)
@@ -896,7 +896,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to 'out0'.
  */
 #define ILVL_B2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)__msa_ilvl_b((v16i8)in0, (v16i8)in1); \
     out1 = (RTYPE)__msa_ilvl_b((v16i8)in2, (v16i8)in3); \
   } while (0)
@@ -914,7 +914,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and written to out0.
  */
 #define ILVR_B2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)__msa_ilvr_b((v16i8)in0, (v16i8)in1); \
     out1 = (RTYPE)__msa_ilvr_b((v16i8)in2, (v16i8)in3); \
   } while (0)
@@ -926,7 +926,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 
 #define ILVR_B4(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7, out0, out1, \
                 out2, out3)                                                \
-  do {                                                                     \
+  for {                                                                     \
     ILVR_B2(RTYPE, in0, in1, in2, in3, out0, out1);                        \
     ILVR_B2(RTYPE, in4, in5, in6, in7, out2, out3);                        \
   } while (0)
@@ -944,7 +944,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               interleaved and written to 'out0'.
  */
 #define ILVR_H2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)__msa_ilvr_h((v8i16)in0, (v8i16)in1); \
     out1 = (RTYPE)__msa_ilvr_h((v8i16)in2, (v8i16)in3); \
   } while (0)
@@ -954,7 +954,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 
 #define ILVR_H4(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7, out0, out1, \
                 out2, out3)                                                \
-  do {                                                                     \
+  for {                                                                     \
     ILVR_H2(RTYPE, in0, in1, in2, in3, out0, out1);                        \
     ILVR_H2(RTYPE, in4, in5, in6, in7, out2, out3);                        \
   } while (0)
@@ -970,7 +970,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               interleaved and written to 'out0'.
  */
 #define ILVR_D2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)__msa_ilvr_d((v2i64)in0, (v2i64)in1); \
     out1 = (RTYPE)__msa_ilvr_d((v2i64)in2, (v2i64)in3); \
   } while (0)
@@ -980,7 +980,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 
 #define ILVR_D4(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7, out0, out1, \
                 out2, out3)                                                \
-  do {                                                                     \
+  for {                                                                     \
     ILVR_D2(RTYPE, in0, in1, in2, in3, out0, out1);                        \
     ILVR_D2(RTYPE, in4, in5, in6, in7, out2, out3);                        \
   } while (0)
@@ -995,7 +995,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               interleaved and written to 'out0'
  */
 #define ILVRL_B2(RTYPE, in0, in1, out0, out1)           \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)__msa_ilvr_b((v16i8)in0, (v16i8)in1); \
     out1 = (RTYPE)__msa_ilvl_b((v16i8)in0, (v16i8)in1); \
   } while (0)
@@ -1006,7 +1006,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 #define ILVRL_B2_SW(...) ILVRL_B2(v4i32, __VA_ARGS__)
 
 #define ILVRL_H2(RTYPE, in0, in1, out0, out1)           \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)__msa_ilvr_h((v8i16)in0, (v8i16)in1); \
     out1 = (RTYPE)__msa_ilvl_h((v8i16)in0, (v8i16)in1); \
   } while (0)
@@ -1017,7 +1017,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 #define ILVRL_H2_UW(...) ILVRL_H2(v4u32, __VA_ARGS__)
 
 #define ILVRL_W2(RTYPE, in0, in1, out0, out1)           \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)__msa_ilvr_w((v4i32)in0, (v4i32)in1); \
     out1 = (RTYPE)__msa_ilvl_w((v4i32)in0, (v4i32)in1); \
   } while (0)
@@ -1035,7 +1035,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *                half of 'out0'.
  */
 #define PCKEV_B2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_pckev_b((v16i8)in0, (v16i8)in1); \
     out1 = (RTYPE)__msa_pckev_b((v16i8)in2, (v16i8)in3); \
   } while (0)
@@ -1046,7 +1046,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 
 #define PCKEV_B4(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7, out0, out1, \
                  out2, out3)                                                \
-  do {                                                                      \
+  for {                                                                      \
     PCKEV_B2(RTYPE, in0, in1, in2, in3, out0, out1);                        \
     PCKEV_B2(RTYPE, in4, in5, in6, in7, out2, out3);                        \
   } while (0)
@@ -1064,7 +1064,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               right half of 'out0'.
  */
 #define PCKEV_H2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_pckev_h((v8i16)in0, (v8i16)in1); \
     out1 = (RTYPE)__msa_pckev_h((v8i16)in2, (v8i16)in3); \
   } while (0)
@@ -1082,7 +1082,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               right half of 'out0'.
  */
 #define PCKEV_W2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_pckev_w((v4i32)in0, (v4i32)in1); \
     out1 = (RTYPE)__msa_pckev_w((v4i32)in2, (v4i32)in3); \
   } while (0)
@@ -1100,7 +1100,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               right half of 'out0'.
  */
 #define PCKOD_H2(RTYPE, in0, in1, in2, in3, out0, out1)  \
-  do {                                                   \
+  for {                                                   \
     out0 = (RTYPE)__msa_pckod_h((v8i16)in0, (v8i16)in1); \
     out1 = (RTYPE)__msa_pckod_h((v8i16)in2, (v8i16)in3); \
   } while (0)
@@ -1117,7 +1117,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               the result is written in-place. 'shift' is a GP variable.
  */
 #define SRAI_W2(RTYPE, in0, in1, shift_val) \
-  do {                                      \
+  for {                                      \
     in0 = (RTYPE)SRAI_W(in0, shift_val);    \
     in1 = (RTYPE)SRAI_W(in1, shift_val);    \
   } while (0)
@@ -1125,7 +1125,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 #define SRAI_W2_UW(...) SRAI_W2(v4u32, __VA_ARGS__)
 
 #define SRAI_W4(RTYPE, in0, in1, in2, in3, shift_val) \
-  do {                                                \
+  for {                                                \
     SRAI_W2(RTYPE, in0, in1, shift_val);              \
     SRAI_W2(RTYPE, in2, in3, shift_val);              \
   } while (0)
@@ -1140,7 +1140,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               the result is written in-place. 'shift' is a GP variable.
  */
 #define SRAI_H2(RTYPE, in0, in1, shift_val) \
-  do {                                      \
+  for {                                      \
     in0 = (RTYPE)SRAI_H(in0, shift_val);    \
     in1 = (RTYPE)SRAI_H(in1, shift_val);    \
   } while (0)
@@ -1155,14 +1155,14 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               the result is written in-place. 'shift' is a GP variable.
  */
 #define SRARI_W2(RTYPE, in0, in1, shift)           \
-  do {                                             \
+  for {                                             \
     in0 = (RTYPE)__msa_srari_w((v4i32)in0, shift); \
     in1 = (RTYPE)__msa_srari_w((v4i32)in1, shift); \
   } while (0)
 #define SRARI_W2_SW(...) SRARI_W2(v4i32, __VA_ARGS__)
 
 #define SRARI_W4(RTYPE, in0, in1, in2, in3, shift) \
-  do {                                             \
+  for {                                             \
     SRARI_W2(RTYPE, in0, in1, shift);              \
     SRARI_W2(RTYPE, in2, in3, shift);              \
   } while (0)
@@ -1181,7 +1181,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               'shift' is a vector.
  */
 #define SRAR_D2(RTYPE, in0, in1, shift)                  \
-  do {                                                   \
+  for {                                                   \
     in0 = (RTYPE)__msa_srar_d((v2i64)in0, (v2i64)shift); \
     in1 = (RTYPE)__msa_srar_d((v2i64)in1, (v2i64)shift); \
   } while (0)
@@ -1190,7 +1190,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 #define SRAR_D2_UD(...) SRAR_D2(v2u64, __VA_ARGS__)
 
 #define SRAR_D4(RTYPE, in0, in1, in2, in3, shift) \
-  do {                                            \
+  for {                                            \
     SRAR_D2(RTYPE, in0, in1, shift);              \
     SRAR_D2(RTYPE, in2, in3, shift);              \
   } while (0)
@@ -1204,7 +1204,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               to 'out0'.
  */
 #define ADDVI_H2(RTYPE, in0, in1, in2, in3, out0, out1) \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)ADDVI_H(in0, in1);                    \
     out1 = (RTYPE)ADDVI_H(in2, in3);                    \
   } while (0)
@@ -1218,7 +1218,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               to 'out0'.
  */
 #define ADDVI_W2(RTYPE, in0, in1, in2, in3, out0, out1) \
-  do {                                                  \
+  for {                                                  \
     out0 = (RTYPE)ADDVI_W(in0, in1);                    \
     out1 = (RTYPE)ADDVI_W(in2, in3);                    \
   } while (0)
@@ -1231,7 +1231,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               GP register in1 is replicated in each word element of out1
  */
 #define FILL_W2(RTYPE, in0, in1, out0, out1) \
-  do {                                       \
+  for {                                       \
     out0 = (RTYPE)__msa_fill_w(in0);         \
     out1 = (RTYPE)__msa_fill_w(in1);         \
   } while (0)
@@ -1244,13 +1244,13 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               to 'out0'.
  */
 #define ADD2(in0, in1, in2, in3, out0, out1) \
-  do {                                       \
+  for {                                       \
     out0 = in0 + in1;                        \
     out1 = in2 + in3;                        \
   } while (0)
 
 #define ADD4(in0, in1, in2, in3, in4, in5, in6, in7, out0, out1, out2, out3) \
-  do {                                                                       \
+  for {                                                                       \
     ADD2(in0, in1, in2, in3, out0, out1);                                    \
     ADD2(in4, in5, in6, in7, out2, out3);                                    \
   } while (0)
@@ -1262,20 +1262,20 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               written to 'out0'.
  */
 #define SUB2(in0, in1, in2, in3, out0, out1) \
-  do {                                       \
+  for {                                       \
     out0 = in0 - in1;                        \
     out1 = in2 - in3;                        \
   } while (0)
 
 #define SUB3(in0, in1, in2, in3, in4, in5, out0, out1, out2) \
-  do {                                                       \
+  for {                                                       \
     out0 = in0 - in1;                                        \
     out1 = in2 - in3;                                        \
     out2 = in4 - in5;                                        \
   } while (0)
 
 #define SUB4(in0, in1, in2, in3, in4, in5, in6, in7, out0, out1, out2, out3) \
-  do {                                                                       \
+  for {                                                                       \
     out0 = in0 - in1;                                                        \
     out1 = in2 - in3;                                                        \
     out2 = in4 - in5;                                                        \
@@ -1291,7 +1291,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               written to 'out1'.
  */
 #define ADDSUB2(in0, in1, out0, out1) \
-  do {                                \
+  for {                                \
     out0 = in0 + in1;                 \
     out1 = in0 - in1;                 \
   } while (0)
@@ -1303,13 +1303,13 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               and the result is written to 'out0'
  */
 #define MUL2(in0, in1, in2, in3, out0, out1) \
-  do {                                       \
+  for {                                       \
     out0 = in0 * in1;                        \
     out1 = in2 * in3;                        \
   } while (0)
 
 #define MUL4(in0, in1, in2, in3, in4, in5, in6, in7, out0, out1, out2, out3) \
-  do {                                                                       \
+  for {                                                                       \
     MUL2(in0, in1, in2, in3, out0, out1);                                    \
     MUL2(in4, in5, in6, in7, out2, out3);                                    \
   } while (0)
@@ -1323,7 +1323,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               4 word elements keeping sign intact
  */
 #define UNPCK_R_SH_SW(in, out)                         \
-  do {                                                 \
+  for {                                                 \
     const v8i16 sign_m = __msa_clti_s_h((v8i16)in, 0); \
     out = (v4i32)__msa_ilvr_h(sign_m, (v8i16)in);      \
   } while (0)
@@ -1340,7 +1340,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               generate 4 signed word elements in 'out1'
  */
 #define UNPCK_SH_SW(in, out0, out1)                   \
-  do {                                                \
+  for {                                                \
     const v8i16 tmp_m = __msa_clti_s_h((v8i16)in, 0); \
     ILVRL_H2_SW(tmp_m, in, out0, out1);               \
   } while (0)
@@ -1351,7 +1351,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  * Details     : Butterfly operation
  */
 #define BUTTERFLY_4(in0, in1, in2, in3, out0, out1, out2, out3) \
-  do {                                                          \
+  for {                                                          \
     out0 = in0 + in3;                                           \
     out1 = in1 + in2;                                           \
     out2 = in1 - in2;                                           \
@@ -1366,7 +1366,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 #define TRANSPOSE16x4_UB_UB(in0, in1, in2, in3, in4, in5, in6, in7, in8, in9, \
                             in10, in11, in12, in13, in14, in15, out0, out1,   \
                             out2, out3)                                       \
-  do {                                                                        \
+  for {                                                                        \
     v2i64 tmp0_m, tmp1_m, tmp2_m, tmp3_m, tmp4_m, tmp5_m;                     \
     ILVEV_W2_SD(in0, in4, in8, in12, tmp2_m, tmp3_m);                         \
     ILVEV_W2_SD(in1, in5, in9, in13, tmp0_m, tmp1_m);                         \
@@ -1388,7 +1388,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
 #define TRANSPOSE16x8_UB_UB(in0, in1, in2, in3, in4, in5, in6, in7, in8, in9, \
                             in10, in11, in12, in13, in14, in15, out0, out1,   \
                             out2, out3, out4, out5, out6, out7)               \
-  do {                                                                        \
+  for {                                                                        \
     v8i16 tmp0_m, tmp1_m, tmp4_m, tmp5_m, tmp6_m, tmp7_m;                     \
     v4i32 tmp2_m, tmp3_m;                                                     \
     ILVEV_D2_UB(in0, in8, in1, in9, out7, out6);                              \
@@ -1415,7 +1415,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *                Return Type - as per RTYPE
  */
 #define TRANSPOSE4x4_W(RTYPE, in0, in1, in2, in3, out0, out1, out2, out3) \
-  do {                                                                    \
+  for {                                                                    \
     v4i32 s0_m, s1_m, s2_m, s3_m;                                         \
     ILVRL_W2_SW(in1, in0, s0_m, s1_m);                                    \
     ILVRL_W2_SW(in3, in2, s2_m, s3_m);                                    \
@@ -1432,7 +1432,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               the destination bytes, clipped between 0-255 and stored.
  */
 #define ADDBLK_ST4x4_UB(in0, in1, in2, in3, pdst, stride)        \
-  do {                                                           \
+  for {                                                           \
     uint32 src0_m, src1_m, src2_m, src3_m;                     \
     v8i16 inp0_m, inp1_m, res0_m, res1_m;                        \
     v16i8 dst0_m = {0}                                          \
@@ -1455,7 +1455,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  * Arguments   : Inputs - in0, in1, in2, in3, pdst, stride
  */
 #define PCKEV_ST4x4_UB(in0, in1, in2, in3, pdst, stride) \
-  do {                                                   \
+  for {                                                   \
     v16i8 tmp0_m, tmp1_m;                                \
     PCKEV_B2_SB(in1, in0, in3, in2, tmp0_m, tmp1_m);     \
     ST4x4_UB(tmp0_m, tmp1_m, 0, 2, 0, 2, pdst, stride);  \
@@ -1469,7 +1469,7 @@ static  uint32 func_hadd_uh_u32(v8u16 in) {
  *               with rounding is calculated and written to 'out0'
  */
 #define AVER_UB2(RTYPE, in0, in1, in2, in3, out0, out1)   \
-  do {                                                    \
+  for {                                                    \
     out0 = (RTYPE)__msa_aver_u_b((v16u8)in0, (v16u8)in1); \
     out1 = (RTYPE)__msa_aver_u_b((v16u8)in2, (v16u8)in3); \
   } while (0)

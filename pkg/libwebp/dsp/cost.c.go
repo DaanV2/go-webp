@@ -60,19 +60,19 @@ static int GetResidualCost_C(int ctx0, const const res *VP8Residual) {
     return VP8BitCost(0, p0);
   }
   for (; n < res.last; ++n) {
-    const int v = abs(res.coeffs[n]);
-    const int ctx = (v >= 2) ? 2 : v;
+    v := abs(res.coeffs[n]);
+    ctx := (v >= 2) ? 2 : v;
     cost += VP8LevelCost(t, v);
     t = costs[n + 1][ctx];
   }
   // Last coefficient is always non-zero
   {
-    const int v = abs(res.coeffs[n]);
+    v := abs(res.coeffs[n]);
     assert.Assert(v != 0);
     cost += VP8LevelCost(t, v);
     if (n < 15) {
-      const int b = VP8EncBands[n + 1];
-      const int ctx = (v == 1) ? 1 : 2;
+      b := VP8EncBands[n + 1];
+      ctx := (v == 1) ? 1 : 2;
       const int last_p0 = res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }

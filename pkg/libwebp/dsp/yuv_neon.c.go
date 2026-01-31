@@ -100,7 +100,7 @@ func ConvertARGBToY_NEON(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint
     vst1_u8(y + i, Y);
   }
   for (; i < width; ++i) {  // left-over
-    const uint32 p = argb[i];
+    p := argb[i];
     y[i] =
         VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);
   }
@@ -118,7 +118,7 @@ func ConvertARGBToY_NEON(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint
   const int16x4_t b_hi = vreinterpret_s16_u16(vget_high_u16(b))
 
 #define MULTIPLY_16b(C0, C1, C2, CST, DST_s16)                            \
-  do {                                                                    \
+  for {                                                                    \
     const int32x4_t tmp0_lo = vmull_n_s16(r_lo, C0);                      \
     const int32x4_t tmp0_hi = vmull_n_s16(r_hi, C0);                      \
     const int32x4_t tmp1_lo = vmlal_n_s16(tmp0_lo, g_lo, C1);             \
@@ -132,7 +132,7 @@ func ConvertARGBToY_NEON(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint
 
 // This needs to be a macro, since (128 << SHIFT) needs to be an immediate.
 #define CONVERT_RGB_TO_UV(r, g, b, SHIFT, U_DST, V_DST)      \
-  do {                                                       \
+  for {                                                       \
     MULTIPLY_16b_PREAMBLE(r, g, b);                          \
     MULTIPLY_16b(-9719, -19081, 28800, 128 << SHIFT, U_DST); \
     MULTIPLY_16b(28800, -24116, -4684, 128 << SHIFT, V_DST); \
@@ -148,7 +148,7 @@ func ConvertRGBA32ToUV_NEON(const WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *ui
     vst1_u8(v + i, vqrshrun_n_s16(V, 2));
   }
   for (; i < width; i += 1, rgb += 4) {
-    const int r = rgb[0], g = rgb[1], b = rgb[2];
+    r := rgb[0], g = rgb[1], b = rgb[2];
     u[i] = VP8RGBToU(r, g, b, YUV_HALF << 2);
     v[i] = VP8RGBToV(r, g, b, YUV_HALF << 2);
   }

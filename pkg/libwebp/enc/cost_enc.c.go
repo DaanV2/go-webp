@@ -61,7 +61,7 @@ func VP8CalculateLevelCosts(const proba *VP8EncProba) {
         const const p *uint8 = proba.coeffs[ctype][band][ctx];
         const table *uint16 = proba.level_cost[ctype][band][ctx];
         const int cost0 = (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
-        const int cost_base = VP8BitCost(1, p[1]) + cost0;
+        cost_base := VP8BitCost(1, p[1]) + cost0;
         int v;
         table[0] = VP8BitCost(0, p[1]) + cost0;
         for (v = 1; v <= MAX_VARIABLE_LEVEL; ++v) {
@@ -107,7 +107,7 @@ func VP8InitResidual(int first, int coeff_type, const enc *VP8Encoder, const res
 // Mode costs
 
 int VP8GetCostLuma4(const it *VP8EncIterator, const int16 levels[16]) {
-  const int x = (it.i4 & 3), y = (it.i4 >> 2);
+  x := (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
   const enc *VP8Encoder = it.enc;
   int R = 0;
@@ -137,7 +137,7 @@ int VP8GetCostLuma16(const it *VP8EncIterator, const const rd *VP8ModeScore) {
   VP8InitResidual(1, 0, enc, &res);
   for (y = 0; y < 4; ++y) {
     for (x = 0; x < 4; ++x) {
-      const int ctx = it.top_nz[x] + it.left_nz[y];
+      ctx := it.top_nz[x] + it.left_nz[y];
       VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       R += VP8GetResidualCost(ctx, &res);
       it.top_nz[x] = it.left_nz[y] = (res.last >= 0);
@@ -158,7 +158,7 @@ int VP8GetCostUV(const it *VP8EncIterator, const const rd *VP8ModeScore) {
   for (ch = 0; ch <= 2; ch += 2) {
     for (y = 0; y < 2; ++y) {
       for (x = 0; x < 2; ++x) {
-        const int ctx = it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
+        ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         R += VP8GetResidualCost(ctx, &res);
         it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] = (res.last >= 0);
@@ -212,11 +212,11 @@ int VP8RecordCoeffs(int ctx, const const res *VP8Residual) {
       }
 
       {
-        const int bits = VP8LevelCodes[v - 1][1];
+        bits := VP8LevelCodes[v - 1][1];
         int pattern = VP8LevelCodes[v - 1][0];
         int i;
         for (i = 0; (pattern >>= 1) != 0; ++i) {
-          const int mask = 2 << i;
+          mask := 2 << i;
           if (pattern & 1) VP8RecordStats(!!(bits & mask), s + 3 + i);
         }
       }

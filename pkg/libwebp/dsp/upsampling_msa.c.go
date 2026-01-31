@@ -25,14 +25,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 #ifdef FANCY_UPSAMPLING
 
 #define ILVR_UW2(in, out0, out1)                                  \
-  do {                                                            \
+  for {                                                            \
     const v8i16 t0 = (v8i16)__msa_ilvr_b((v16i8)zero, (v16i8)in); \
     out0 = (v4u32)__msa_ilvr_h((v8i16)zero, t0);                  \
     out1 = (v4u32)__msa_ilvl_h((v8i16)zero, t0);                  \
   } while (0)
 
 #define ILVRL_UW4(in, out0, out1, out2, out3) \
-  do {                                        \
+  for {                                        \
     v16u8 t0, t1;                             \
     ILVRL_B2_UB(zero, in, t0, t1);            \
     ILVRL_H2_UW(zero, t0, out0, out1);        \
@@ -40,7 +40,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define MULTHI_16(in0, in1, in2, in3, cnst, out0, out1)                    \
-  do {                                                                     \
+  for {                                                                     \
     const v4i32 const0 = (v4i32)__msa_fill_w(cnst * 256);                  \
     v4u32 temp0, temp1, temp2, temp3;                                      \
     MUL4(in0, const0, in1, const0, in2, const0, in3, const0, temp0, temp1, \
@@ -49,7 +49,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define MULTHI_8(in0, in1, cnst, out0)                       \
-  do {                                                       \
+  for {                                                       \
     const v4i32 const0 = (v4i32)__msa_fill_w(cnst * 256);    \
     v4u32 temp0, temp1;                                      \
     MUL2(in0, const0, in1, const0, temp0, temp1);            \
@@ -57,7 +57,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_R16(y0, y1, v0, v1, dst)                      \
-  do {                                                     \
+  for {                                                     \
     const v8i16 const_a = (v8i16)__msa_fill_h(14234);      \
     const v8i16 a0 = __msa_adds_s_h((v8i16)y0, (v8i16)v0); \
     const v8i16 a1 = __msa_adds_s_h((v8i16)y1, (v8i16)v1); \
@@ -69,7 +69,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_R8(y0, v0, dst)                               \
-  do {                                                     \
+  for {                                                     \
     const v8i16 const_a = (v8i16)__msa_fill_h(14234);      \
     const v8i16 a0 = __msa_adds_s_h((v8i16)y0, (v8i16)v0); \
     v8i16 b0 = __msa_subs_s_h(a0, const_a);                \
@@ -79,7 +79,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_G16(y0, y1, u0, u1, v0, v1, dst)         \
-  do {                                                \
+  for {                                                \
     const v8i16 const_a = (v8i16)__msa_fill_h(8708);  \
     v8i16 a0 = __msa_subs_s_h((v8i16)y0, (v8i16)u0);  \
     v8i16 a1 = __msa_subs_s_h((v8i16)y1, (v8i16)u1);  \
@@ -93,7 +93,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_G8(y0, u0, v0, dst)                      \
-  do {                                                \
+  for {                                                \
     const v8i16 const_a = (v8i16)__msa_fill_h(8708);  \
     v8i16 a0 = __msa_subs_s_h((v8i16)y0, (v8i16)u0);  \
     const v8i16 b0 = __msa_subs_s_h(a0, (v8i16)v0);   \
@@ -104,7 +104,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_B16(y0, y1, u0, u1, dst)                 \
-  do {                                                \
+  for {                                                \
     const v8u16 const_a = (v8u16)__msa_fill_h(17685); \
     const v8u16 a0 = __msa_adds_u_h((v8u16)y0, u0);   \
     const v8u16 a1 = __msa_adds_u_h((v8u16)y1, u1);   \
@@ -116,7 +116,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_B8(y0, u0, dst)                          \
-  do {                                                \
+  for {                                                \
     const v8u16 const_a = (v8u16)__msa_fill_h(17685); \
     const v8u16 a0 = __msa_adds_u_h((v8u16)y0, u0);   \
     v8u16 b0 = __msa_subs_u_h(a0, const_a);           \
@@ -126,7 +126,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_RGB16(y, u, v, R, G, B)          \
-  do {                                        \
+  for {                                        \
     const v16u8 zero = {0}                   \
     v8u16 y0, y1, u0, u1, v0, v1;             \
     v4u32 p0, p1, p2, p3;                     \
@@ -147,7 +147,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_RGB8(y, u, v, R, G, B) \
-  do {                              \
+  for {                              \
     const v16u8 zero = {0}         \
     v8u16 y0, u0, v0;               \
     v4u32 p0, p1;                   \
@@ -168,7 +168,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define STORE16_3(a0, a1, a2, dst)                             \
-  do {                                                         \
+  for {                                                         \
     const v16u8 mask0 = {                                      \
         0, 1, 16, 2, 3, 17, 4, 5, 18, 6, 7, 19, 8, 9, 20, 10} \
     const v16u8 mask1 = {                                      \
@@ -188,7 +188,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define STORE8_3(a0, a1, a2, dst)                                 \
-  do {                                                            \
+  for {                                                            \
     int64 out_m;                                                \
     const v16u8 mask0 = {                                         \
         0, 1, 16, 2, 3, 17, 4, 5, 18, 6, 7, 19, 8, 9, 20, 10}    \
@@ -203,7 +203,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define STORE16_4(a0, a1, a2, a3, dst)   \
-  do {                                   \
+  for {                                   \
     v16u8 tmp0, tmp1, tmp2, tmp3;        \
     v16u8 out0, out1, out2, out3;        \
     ILVRL_B2_UB(a1, a0, tmp0, tmp1);     \
@@ -217,7 +217,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define STORE8_4(a0, a1, a2, a3, dst)       \
-  do {                                      \
+  for {                                      \
     v16u8 tmp0, tmp1, tmp2, tmp3;           \
     ILVR_B2_UB(a1, a0, a3, a2, tmp0, tmp1); \
     ILVRL_H2_UB(tmp1, tmp0, tmp2, tmp3);    \
@@ -226,7 +226,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define STORE2_16(a0, a1, dst)       \
-  do {                               \
+  for {                               \
     v16u8 out0, out1;                \
     ILVRL_B2_UB(a1, a0, out0, out1); \
     ST_UB(out0, dst + 0);            \
@@ -234,13 +234,13 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define STORE2_8(a0, a1, dst)                                     \
-  do {                                                            \
+  for {                                                            \
     const v16u8 out0 = (v16u8)__msa_ilvr_b((v16i8)a1, (v16i8)a0); \
     ST_UB(out0, dst);                                             \
   } while (0)
 
 #define CALC_RGBA4444(y, u, v, out0, out1, N, dst) \
-  do {                                             \
+  for {                                             \
     CALC_RGB##N(y, u, v, R, G, B);                 \
     tmp0 = ANDI_B(R, 0xf0);                        \
     tmp1 = SRAI_B(G, 4);                           \
@@ -251,7 +251,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define CALC_RGB565(y, u, v, out0, out1, N, dst) \
-  do {                                           \
+  for {                                           \
     CALC_RGB##N(y, u, v, R, G, B);               \
     tmp0 = ANDI_B(R, 0xf8);                      \
     tmp1 = SRAI_B(G, 5);                         \
@@ -291,11 +291,11 @@ func YuvToRgb565(int y, int u, int v, const rgb *uint8) {
   const int r1 = y1 + MultHi(v, 26149) - 14234;
   const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
   const int b1 = y1 + MultHi(u, 33050) - 17685;
-  const int r = Clip8(r1 >> 6);
-  const int g = Clip8(g1 >> 6);
-  const int b = Clip8(b1 >> 6);
-  const int rg = (r & 0xf8) | (g >> 5);
-  const int gb = ((g << 3) & 0xe0) | (b >> 3);
+  r := Clip8(r1 >> 6);
+  g := Clip8(g1 >> 6);
+  b := Clip8(b1 >> 6);
+  rg := (r & 0xf8) | (g >> 5);
+  gb := ((g << 3) & 0xe0) | (b >> 3);
 #if (WEBP_SWAP_16BIT_CSP == 1)
   rgb[0] = gb;
   rgb[1] = rg;
@@ -310,11 +310,11 @@ func YuvToRgba4444(int y, int u, int v, const argb *uint8) {
   const int r1 = y1 + MultHi(v, 26149) - 14234;
   const int g1 = y1 - MultHi(u, 6419) - MultHi(v, 13320) + 8708;
   const int b1 = y1 + MultHi(u, 33050) - 17685;
-  const int r = Clip8(r1 >> 6);
-  const int g = Clip8(g1 >> 6);
-  const int b = Clip8(b1 >> 6);
-  const int rg = (r & 0xf0) | (g >> 4);
-  const int ba = (b & 0xf0) | 0x0f;  // overwrite the lower 4 bits
+  r := Clip8(r1 >> 6);
+  g := Clip8(g1 >> 6);
+  b := Clip8(b1 >> 6);
+  rg := (r & 0xf0) | (g >> 4);
+  ba := (b & 0xf0) | 0x0f;  // overwrite the lower 4 bits
 #if (WEBP_SWAP_16BIT_CSP == 1)
   argb[0] = ba;
   argb[1] = rg;
@@ -548,7 +548,7 @@ func YuvToRgb565Line(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,
 #endif  // WEBP_REDUCE_CSP
 
 #define UPSAMPLE_32PIXELS(a, b, c, d)          \
-  do {                                         \
+  for {                                         \
     v16u8 s = __msa_aver_u_b(a, d);            \
     v16u8 t = __msa_aver_u_b(b, c);            \
     const v16u8 st = s ^ t;                    \
@@ -588,8 +588,8 @@ func YuvToRgb565Line(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,
     int size = (len - 1) >> 1;                                                \
     uint8 temp_u[64];                                                       \
     uint8 temp_v[64];                                                       \
-    const uint32 tl_uv = ((top_u[0]) | ((top_v[0]) << 16));                 \
-    const uint32 l_uv = ((cur_u[0]) | ((cur_v[0]) << 16));                  \
+    tl_uv := ((top_u[0]) | ((top_v[0]) << 16));                 \
+    l_uv := ((cur_u[0]) | ((cur_v[0]) << 16));                  \
     const uint32 uv0 = (3 * tl_uv + l_uv + uint(0x00020002)) >> 2;               \
     const ptop_y *uint8 = &top_y[1];                                        \
     ptop_dst *uint8 = top_dst + XSTEP;                                      \

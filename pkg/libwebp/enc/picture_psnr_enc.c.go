@@ -192,7 +192,7 @@ int WebPPictureDistortion(const src *WebPPicture, const ref *WebPPicture, int ty
     const uint64 stride0 = 4 * (uint64)p0.argb_stride;
     const uint64 stride1 = 4 * (uint64)p1.argb_stride;
     // results are reported as BGRA
-    const int offset = c ^ BLUE_OFFSET;
+    offset := c ^ BLUE_OFFSET;
     if (!WebPPlaneDistortion((const *uint8)p0.argb + offset, stride0, (const *uint8)p1.argb + offset, stride1, w, h, 4, type, &distortion, results + c)) {
       goto Error;
     }

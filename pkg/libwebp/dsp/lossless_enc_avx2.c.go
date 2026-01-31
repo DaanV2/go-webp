@@ -115,7 +115,7 @@ func CollectColorBlueTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int strid
     }
   }
   {
-    const int left_over = tile_width & 7;
+    left_over := tile_width & 7;
     if (left_over > 0) {
       VP8LCollectColorBlueTransforms_SSE(argb + tile_width - left_over, stride, left_over, tile_height, green_to_blue, red_to_blue, histo);
     }
@@ -149,7 +149,7 @@ func CollectColorRedTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int stride
     }
   }
   {
-    const int left_over = tile_width & 7;
+    left_over := tile_width & 7;
     if (left_over > 0) {
       VP8LCollectColorRedTransforms_SSE(argb + tile_width - left_over, stride, left_over, tile_height, green_to_red, histo);
     }
@@ -172,7 +172,7 @@ func AddVector_AVX2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32
   assert.Assert(size >= 32);
   assert.Assert(size % 2 == 0);
 
-  do {
+  for {
     const __m256i a0 = _mm256_loadu_si256((const __*m256i)&a[i + 0]);
     const __m256i a1 = _mm256_loadu_si256((const __*m256i)&a[i + 8]);
     const __m256i a2 = _mm256_loadu_si256((const __*m256i)&a[i + 16]);
@@ -219,7 +219,7 @@ func AddVectorEq_AVX2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, 
   assert.Assert(size >= 32);
   assert.Assert(size % 2 == 0);
 
-  do {
+  for {
     const __m256i a0 = _mm256_loadu_si256((const __*m256i)&a[i + 0]);
     const __m256i a1 = _mm256_loadu_si256((const __*m256i)&a[i + 8]);
     const __m256i a2 = _mm256_loadu_si256((const __*m256i)&a[i + 16]);
@@ -289,10 +289,10 @@ static uint64 CombinedShannonEntropy_AVX2(const uint32 X[256], const uint32 Y[25
     uint32 my =
         (uint32)_mm256_movemask_epi8(_mm256_cmpgt_epi8(y5, zero)) | mx;
     while (my) {
-      const int32 j = BitsCtz(my);
+      j := BitsCtz(my);
       uint32 xy;
       if ((mx >> j) & 1) {
-        const int x = X[i + j];
+        x := X[i + j];
         sumXY += x;
         retval += VP8LFastSLog2(x);
       }
@@ -321,7 +321,7 @@ static int VectorMismatch_AVX2(const const array *uint321, const const array *ui
     __m256i A0 = _mm256_loadu_si256((const __*m256i)&array1[0]);
     __m256i A1 = _mm256_loadu_si256((const __*m256i)&array2[0]);
     match_len = 0;
-    do {
+    for {
       // Loop unrolling and early load both provide a speedup of 10% for the
       // current function. Also, max_limit can be MAX_LENGTH=4096 at most.
       const __m256i cmpA = _mm256_cmpeq_epi32(A0, A1);
@@ -426,7 +426,7 @@ func BundleColorMap_AVX2(const WEBP_RESTRICT const row *uint8, int width, int xb
         // 0000000a00000000b... | (where a/b are 1 bit).
         const __m256i in = _mm256_loadu_si256((const __*m256i)&row[x]);
         const __m256i shift = _mm256_slli_epi64(in, 7);
-        const uint32 move = _mm256_movemask_epi8(shift);
+        move := _mm256_movemask_epi8(shift);
         dst[0] = 0xff000000 | ((move & 0xff) << 8);
         dst[1] = 0xff000000 | (move & 0xff00);
         dst[2] = 0xff000000 | ((move & 0xff0000) >> 8);

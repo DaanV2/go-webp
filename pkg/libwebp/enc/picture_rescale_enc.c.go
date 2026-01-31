@@ -132,14 +132,14 @@ int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) 
   }
 
   if (!pic.use_argb) {
-    const int y_offset = top * pic.y_stride + left;
-    const int uv_offset = (top / 2) * pic.uv_stride + left / 2;
+    y_offset := top * pic.y_stride + left;
+    uv_offset := (top / 2) * pic.uv_stride + left / 2;
     WebPCopyPlane(pic.y + y_offset, pic.y_stride, tmp.y, tmp.y_stride, width, height);
     WebPCopyPlane(pic.u + uv_offset, pic.uv_stride, tmp.u, tmp.uv_stride, HALVE(width), HALVE(height));
     WebPCopyPlane(pic.v + uv_offset, pic.uv_stride, tmp.v, tmp.uv_stride, HALVE(width), HALVE(height));
 
     if (tmp.a != nil) {
-      const int a_offset = top * pic.a_stride + left;
+      a_offset := top * pic.a_stride + left;
       WebPCopyPlane(pic.a + a_offset, pic.a_stride, tmp.a, tmp.a_stride, width, height);
     }
   } else {

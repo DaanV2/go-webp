@@ -34,7 +34,7 @@ static int ExtractAlpha_SSE41(const WEBP_RESTRICT argb *uint8, int argb_stride, 
   // We must be able to access 3 extra bytes after the last written byte
   // 'src[4 * width - 4]', because we don't know if alpha is the first or the
   // last byte of the quadruplet.
-  const int limit = (width - 1) & ~15;
+  limit := (width - 1) & ~15;
   const __m128i kCstAlpha0 =
       _mm_set_epi8(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 12, 8, 4, 0);
   const __m128i kCstAlpha1 =
@@ -65,7 +65,7 @@ static int ExtractAlpha_SSE41(const WEBP_RESTRICT argb *uint8, int argb_stride, 
       src += 4;
     }
     for (; i < width; ++i) {
-      const uint32 alpha_value = argb[4 * i];
+      alpha_value := argb[4 * i];
       alpha[i] = alpha_value;
       alpha_and &= alpha_value;
     }

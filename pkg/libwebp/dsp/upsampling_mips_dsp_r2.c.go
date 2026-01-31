@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // clang-format off
-#define YUV_TO_RGB(Y, U, V, R, G, B) do {                                      \
+#define YUV_TO_RGB(Y, U, V, R, G, B) for {                                      \
     const int t1 = MultHi(Y, 19077);                                           \
     const int t2 = MultHi(V, 13320);                                           \
     R = MultHi(V, 26149);                                                      \
@@ -70,8 +70,8 @@ static  func YuvToRgb565(int y, int u, int v, const rgb *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   {
-    const int rg = (r & 0xf8) | (g >> 5);
-    const int gb = ((g << 3) & 0xe0) | (b >> 3);
+    rg := (r & 0xf8) | (g >> 5);
+    gb := ((g << 3) & 0xe0) | (b >> 3);
 #if (WEBP_SWAP_16BIT_CSP == 1)
     rgb[0] = gb;
     rgb[1] = rg;
@@ -85,8 +85,8 @@ static  func YuvToRgba4444(int y, int u, int v, const argb *uint8) {
   int r, g, b;
   YUV_TO_RGB(y, u, v, r, g, b);
   {
-    const int rg = (r & 0xf0) | (g >> 4);
-    const int ba = (b & 0xf0) | 0x0f;  // overwrite the lower 4 bits
+    rg := (r & 0xf0) | (g >> 4);
+    ba := (b & 0xf0) | 0x0f;  // overwrite the lower 4 bits
 #if (WEBP_SWAP_16BIT_CSP == 1)
     argb[0] = ba;
     argb[1] = rg;
@@ -152,7 +152,7 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, const rgba *uint8) {
       WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
       int len) {                                                              \
     int x;                                                                    \
-    const int last_pixel_pair = (len - 1) >> 1;                               \
+    last_pixel_pair := (len - 1) >> 1;                               \
     uint32 tl_uv = LOAD_UV(top_u[0], top_v[0]); /* top-left sample */       \
     uint32 l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
     assert.Assert(top_y != nil);                                                    \
@@ -165,11 +165,11 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, const rgba *uint8) {
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
     for (x = 1; x <= last_pixel_pair; ++x) {                                  \
-      const uint32 t_uv = LOAD_UV(top_u[x], top_v[x]); /* top sample */     \
-      const uint32 uv = LOAD_UV(cur_u[x], cur_v[x]);   /* sample */         \
+      t_uv := LOAD_UV(top_u[x], top_v[x]); /* top sample */     \
+      uv := LOAD_UV(cur_u[x], cur_v[x]);   /* sample */         \
       /* precompute invariant values associated with first and second         \
        * *diagonals/                                                          \
-      const uint32 avg = tl_uv + t_uv + l_uv + uv + uint(0x00080008);            \
+      avg := tl_uv + t_uv + l_uv + uv + uint(0x00080008);            \
       const uint32 diag_12 = (avg + 2 * (t_uv + l_uv)) >> 3;                \
       const uint32 diag_03 = (avg + 2 * (tl_uv + uv)) >> 3;                 \
       {                                                                       \

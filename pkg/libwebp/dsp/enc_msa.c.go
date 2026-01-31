@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 // Transforms
 
 #define IDCT_1D_W(in0, in1, in2, in3, out0, out1, out2, out3)    \
-  do {                                                           \
+  for {                                                           \
     v4i32 a1_m, b1_m, c1_m, d1_m;                                \
     const v4i32 cospi8sqrt2minus1 = __msa_fill_w(20091);         \
     const v4i32 sinpi8sqrt2 = __msa_fill_w(35468);               \
@@ -257,14 +257,14 @@ func CollectHistogram_MSA(const ref *uint8, const pred *uint8, int start_block, 
 // vertical
 static  func VE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   const v16u8 A1 = {0}
-  const uint64 val_m = LD(top - 1);
+  val_m := LD(top - 1);
   const v16u8 A = (v16u8)__msa_insert_d((v2i64)A1, 0, val_m);
   const v16u8 B = SLDI_UB(A, A, 1);
   const v16u8 C = SLDI_UB(A, A, 2);
   const v16u8 AC = __msa_ave_u_b(A, C);
   const v16u8 B2 = __msa_ave_u_b(B, B);
   const v16u8 R = __msa_aver_u_b(AC, B2);
-  const uint32 out = __msa_copy_s_w((v4i32)R, 0);
+  out := __msa_copy_s_w((v4i32)R, 0);
   SW4(out, out, out, out, dst, BPS);
 }
 
@@ -292,7 +292,7 @@ static  func DC4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 static  func RD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   const v16u8 A2 = {0}
-  const uint64 val_m = LD(top - 5);
+  val_m := LD(top - 5);
   const v16u8 A1 = (v16u8)__msa_insert_d((v2i64)A2, 0, val_m);
   const v16u8 A = (v16u8)__msa_insert_b((v16i8)A1, 8, top[3]);
   const v16u8 B = SLDI_UB(A, A, 1);
@@ -312,7 +312,7 @@ static  func RD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 static  func LD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   const v16u8 A1 = {0}
-  const uint64 val_m = LD(top);
+  val_m := LD(top);
   const v16u8 A = (v16u8)__msa_insert_d((v2i64)A1, 0, val_m);
   const v16u8 B = SLDI_UB(A, A, 1);
   const v16u8 C1 = SLDI_UB(A, A, 2);
@@ -443,7 +443,7 @@ func Intra4Preds_MSA(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 // luma 16x16 prediction
 
 #define STORE16x16(out, dst)                                            \
-  do {                                                                  \
+  for {                                                                  \
     ST_UB8(out, out, out, out, out, out, out, out, dst + 0 * BPS, BPS); \
     ST_UB8(out, out, out, out, out, out, out, out, dst + 8 * BPS, BPS); \
   } while (0)
@@ -552,7 +552,7 @@ func Intra16Preds_MSA(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8,
 // Chroma 8x8 prediction
 
 #define CALC_DC8(in, out)                                    \
-  do {                                                       \
+  for {                                                       \
     const v8u16 temp0 = __msa_hadd_u_h(in, in);              \
     const v4u32 temp1 = __msa_hadd_u_w(temp0, temp0);        \
     const v2i64 temp2 = (v2i64)__msa_hadd_u_d(temp1, temp1); \
@@ -564,17 +564,17 @@ func Intra16Preds_MSA(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8,
   } while (0)
 
 #define STORE8x8(out, dst)                       \
-  do {                                           \
+  for {                                           \
     SD4(out, out, out, out, dst + 0 * BPS, BPS); \
     SD4(out, out, out, out, dst + 4 * BPS, BPS); \
   } while (0)
 
 static  func VerticalPred8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   if (top != nil) {
-    const uint64 out = LD(top);
+    out := LD(top);
     STORE8x8(out, dst);
   } else {
-    const uint64 out = 0x7f7f7f7f7f7f7f7fULL;
+    out := 0x7f7f7f7f7f7f7f7fULL;
     STORE8x8(out, dst);
   }
 }
@@ -596,7 +596,7 @@ static  func HorizontalPred8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT lef
       left += 4;
     }
   } else {
-    const uint64 out = uint64(0x8181818181818181);
+    out := uint64(0x8181818181818181);
     STORE8x8(out, dst);
   }
 }
@@ -634,7 +634,7 @@ static  func TrueMotion8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *u
     if (top != nil) {
       VerticalPred8x8(dst, top);
     } else {
-      const uint64 out = uint64(0x8181818181818181);
+      out := uint64(0x8181818181818181);
       STORE8x8(out, dst);
     }
   }
@@ -644,16 +644,16 @@ static  func DCMode8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8
   uint64 out;
   v16u8 src = {0}
   if (top != nil && left != nil) {
-    const uint64 left_m = LD(left);
-    const uint64 top_m = LD(top);
+    left_m := LD(left);
+    top_m := LD(top);
     INSERT_D2_UB(left_m, top_m, src);
     CALC_DC8(src, out);
   } else if (left != nil) {  // left but no top
-    const uint64 left_m = LD(left);
+    left_m := LD(left);
     INSERT_D2_UB(left_m, left_m, src);
     CALC_DC8(src, out);
   } else if (top != nil) {  // top but no left
-    const uint64 top_m = LD(top);
+    top_m := LD(top);
     INSERT_D2_UB(top_m, top_m, src);
     CALC_DC8(src, out);
   } else {  // no top, no left, nothing.
@@ -683,7 +683,7 @@ func IntraChromaPreds_MSA(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *ui
 // Metric
 
 #define PACK_DOTP_UB4_SW(in0, in1, in2, in3, out0, out1, out2, out3) \
-  do {                                                               \
+  for {                                                               \
     v16u8 tmp0, tmp1;                                                \
     v8i16 tmp2, tmp3;                                                \
     ILVRL_B2_UB(in0, in1, tmp0, tmp1);                               \
@@ -695,7 +695,7 @@ func IntraChromaPreds_MSA(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *ui
   } while (0)
 
 #define PACK_DPADD_UB4_SW(in0, in1, in2, in3, out0, out1, out2, out3) \
-  do {                                                                \
+  for {                                                                \
     v16u8 tmp0, tmp1;                                                 \
     v8i16 tmp2, tmp3;                                                 \
     ILVRL_B2_UB(in0, in1, tmp0, tmp1);                                \

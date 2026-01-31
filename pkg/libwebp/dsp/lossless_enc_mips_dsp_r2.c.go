@@ -137,9 +137,9 @@ func TransformColor_MIPSdspR2(
       : "memory", "hi", "lo");
 
   if (num_pixels & 1) {
-    const uint32 argb_ = data[0];
-    const uint32 green = argb_ >> 8;
-    const uint32 red = argb_ >> 16;
+    argb_ := data[0];
+    green := argb_ >> 8;
+    red := argb_ >> 16;
     uint32 new_blue = argb_;
     new_red = red;
     new_red -= ColorTransformDelta(m.green_to_red, green);
@@ -152,8 +152,8 @@ func TransformColor_MIPSdspR2(
 }
 
 static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 argb) {
-  const uint32 green = argb >> 8;
-  const uint32 red = argb >> 16;
+  green := argb >> 8;
+  red := argb >> 16;
   uint8 new_blue = argb;
   new_blue -= ColorTransformDelta(green_to_blue, green);
   new_blue -= ColorTransformDelta(red_to_blue, red);
@@ -162,9 +162,9 @@ static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 
 
 func CollectColorBlueTransforms_MIPSdspR2(
     const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
-  const int rtb = (red_to_blue << 16) | (red_to_blue & 0xffff);
-  const int gtb = (green_to_blue << 16) | (green_to_blue & 0xffff);
-  const uint32 mask = uint(0xff00ff);
+  rtb := (red_to_blue << 16) | (red_to_blue & 0xffff);
+  gtb := (green_to_blue << 16) | (green_to_blue & 0xffff);
+  mask := uint(0xff00ff);
   while (tile_height-- > 0) {
     int x;
     const p_argb *uint32 = argb;
@@ -199,7 +199,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
 }
 
 static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
-  const uint32 green = argb >> 8;
+  green := argb >> 8;
   uint32 new_red = argb >> 16;
   new_red -= ColorTransformDelta(green_to_red, green);
   return (new_red & 0xff);
@@ -207,7 +207,7 @@ static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
 
 func CollectColorRedTransforms_MIPSdspR2(
     const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
-  const int gtr = (green_to_red << 16) | (green_to_red & 0xffff);
+  gtr := (green_to_red << 16) | (green_to_red & 0xffff);
   while (tile_height-- > 0) {
     int x;
     const p_argb *uint32 = argb;

@@ -261,13 +261,13 @@ static  func SignedShift8b_SSE2(__const x *m128i) {
 }
 
 #define FLIP_SIGN_BIT2(a, b)          \
-  do {                                \
+  for {                                \
     (a) = _mm_xor_si128(a, sign_bit); \
     (b) = _mm_xor_si128(b, sign_bit); \
   } while (0)
 
 #define FLIP_SIGN_BIT4(a, b, c, d) \
-  do {                             \
+  for {                             \
     FLIP_SIGN_BIT2(a, b);          \
     FLIP_SIGN_BIT2(c, d);          \
   } while (0)
@@ -599,21 +599,21 @@ func SimpleHFilter16i_SSE2(p *uint8, int stride, int thresh) {
 // Complex In-loop filtering (Paragraph 15.3)
 
 #define MAX_DIFF1(p3, p2, p1, p0, m)       \
-  do {                                     \
+  for {                                     \
     (m) = MM_ABS(p1, p0);                  \
     (m) = _mm_max_epu8(m, MM_ABS(p3, p2)); \
     (m) = _mm_max_epu8(m, MM_ABS(p2, p1)); \
   } while (0)
 
 #define MAX_DIFF2(p3, p2, p1, p0, m)       \
-  do {                                     \
+  for {                                     \
     (m) = _mm_max_epu8(m, MM_ABS(p1, p0)); \
     (m) = _mm_max_epu8(m, MM_ABS(p3, p2)); \
     (m) = _mm_max_epu8(m, MM_ABS(p2, p1)); \
   } while (0)
 
 #define LOAD_H_EDGES4(p, stride, e1, e2, e3, e4)          \
-  do {                                                    \
+  for {                                                    \
     (e1) = _mm_loadu_si128((__*m128i)&(p)[0 * (stride)]); \
     (e2) = _mm_loadu_si128((__*m128i)&(p)[1 * (stride)]); \
     (e3) = _mm_loadu_si128((__*m128i)&(p)[2 * (stride)]); \
@@ -621,14 +621,14 @@ func SimpleHFilter16i_SSE2(p *uint8, int stride, int thresh) {
   } while (0)
 
 #define LOADUV_H_EDGE(p, u, v, stride)                           \
-  do {                                                           \
+  for {                                                           \
     const __m128i U = _mm_loadl_epi64((__*m128i)&(u)[(stride)]); \
     const __m128i V = _mm_loadl_epi64((__*m128i)&(v)[(stride)]); \
     (p) = _mm_unpacklo_epi64(U, V);                              \
   } while (0)
 
 #define LOADUV_H_EDGES4(u, v, stride, e1, e2, e3, e4) \
-  do {                                                \
+  for {                                                \
     LOADUV_H_EDGE(e1, u, v, 0 * (stride));            \
     LOADUV_H_EDGE(e2, u, v, 1 * (stride));            \
     LOADUV_H_EDGE(e3, u, v, 2 * (stride));            \
@@ -636,7 +636,7 @@ func SimpleHFilter16i_SSE2(p *uint8, int stride, int thresh) {
   } while (0)
 
 #define STOREUV(p, u, v, stride)                   \
-  do {                                             \
+  for {                                             \
     _mm_storel_epi64((__*m128i)&(u)[(stride)], p); \
     (p) = _mm_srli_si128(p, 8);                    \
     _mm_storel_epi64((__*m128i)&(v)[(stride)], p); \
@@ -866,7 +866,7 @@ func VE4_SSE2(dst *uint8) {  // vertical
   const __m128i lsb = _mm_and_si128(_mm_xor_si128(ABCDEFGH, CDEFGH00), one);
   const __m128i b = _mm_subs_epu8(a, lsb);
   const __m128i avg = _mm_avg_epu8(b, BCDEFGH0);
-  const int vals = _mm_cvtsi128_si32(avg);
+  vals := _mm_cvtsi128_si32(avg);
   int i;
   for (i = 0; i < 4; ++i) {
     WebPInt32ToMem(dst + i * BPS, vals);
@@ -977,7 +977,7 @@ static  func TrueMotion_SSE2(dst *uint8, int size) {
     const __m128i top_values = _mm_cvtsi32_si128(WebPMemToInt32(top));
     const __m128i top_base = _mm_unpacklo_epi8(top_values, zero);
     for (y = 0; y < 4; ++y, dst += BPS) {
-      const int val = dst[-1] - top[-1];
+      val := dst[-1] - top[-1];
       const __m128i base = _mm_set1_epi16(val);
       const __m128i out = _mm_packus_epi16(_mm_add_epi16(base, top_base), zero);
       WebPInt32ToMem(dst, _mm_cvtsi128_si32(out));
@@ -986,7 +986,7 @@ static  func TrueMotion_SSE2(dst *uint8, int size) {
     const __m128i top_values = _mm_loadl_epi64((const __*m128i)top);
     const __m128i top_base = _mm_unpacklo_epi8(top_values, zero);
     for (y = 0; y < 8; ++y, dst += BPS) {
-      const int val = dst[-1] - top[-1];
+      val := dst[-1] - top[-1];
       const __m128i base = _mm_set1_epi16(val);
       const __m128i out = _mm_packus_epi16(_mm_add_epi16(base, top_base), zero);
       _mm_storel_epi64((__*m128i)dst, out);
@@ -996,7 +996,7 @@ static  func TrueMotion_SSE2(dst *uint8, int size) {
     const __m128i top_base_0 = _mm_unpacklo_epi8(top_values, zero);
     const __m128i top_base_1 = _mm_unpackhi_epi8(top_values, zero);
     for (y = 0; y < 16; ++y, dst += BPS) {
-      const int val = dst[-1] - top[-1];
+      val := dst[-1] - top[-1];
       const __m128i base = _mm_set1_epi16(val);
       const __m128i out_0 = _mm_add_epi16(base, top_base_0);
       const __m128i out_1 = _mm_add_epi16(base, top_base_1);

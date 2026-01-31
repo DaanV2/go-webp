@@ -48,22 +48,22 @@ int IsValidColorspace(int webp_csp_mode) {
 static VP8StatusCode CheckDecBuffer(const const buffer *WebPDecBuffer) {
   int ok = 1;
   const WEBP_CSP_MODE mode = buffer.colorspace;
-  const int width = buffer.width;
-  const int height = buffer.height;
+  width := buffer.width;
+  height := buffer.height;
   if (!IsValidColorspace(mode)) {
     ok = 0;
   } else if (!WebPIsRGBMode(mode)) {  // YUV checks
     const const buf *WebPYUVABuffer = &buffer.u.YUVA;
-    const int uv_width = (width + 1) / 2;
-    const int uv_height = (height + 1) / 2;
-    const int y_stride = abs(buf.y_stride);
-    const int u_stride = abs(buf.u_stride);
-    const int v_stride = abs(buf.v_stride);
-    const int a_stride = abs(buf.a_stride);
-    const uint64 y_size = MIN_BUFFER_SIZE(width, height, y_stride);
-    const uint64 u_size = MIN_BUFFER_SIZE(uv_width, uv_height, u_stride);
-    const uint64 v_size = MIN_BUFFER_SIZE(uv_width, uv_height, v_stride);
-    const uint64 a_size = MIN_BUFFER_SIZE(width, height, a_stride);
+    uv_width := (width + 1) / 2;
+    uv_height := (height + 1) / 2;
+    y_stride := abs(buf.y_stride);
+    u_stride := abs(buf.u_stride);
+    v_stride := abs(buf.v_stride);
+    a_stride := abs(buf.a_stride);
+    y_size := MIN_BUFFER_SIZE(width, height, y_stride);
+    u_size := MIN_BUFFER_SIZE(uv_width, uv_height, u_stride);
+    v_size := MIN_BUFFER_SIZE(uv_width, uv_height, v_stride);
+    a_size := MIN_BUFFER_SIZE(width, height, a_stride);
     ok &= (y_size <= buf.y_size);
     ok &= (u_size <= buf.u_size);
     ok &= (v_size <= buf.v_size);
@@ -80,8 +80,8 @@ static VP8StatusCode CheckDecBuffer(const const buffer *WebPDecBuffer) {
     }
   } else {  // RGB checks
     const const buf *WebPRGBABuffer = &buffer.u.RGBA;
-    const int stride = abs(buf.stride);
-    const uint64 size =
+    stride := abs(buf.stride);
+    const size uint64  =
         MIN_BUFFER_SIZE((uint64)width * kModeBpp[mode], height, stride);
     ok &= (size <= buf.size);
     ok &= (stride >= width * kModeBpp[mode]);
@@ -92,8 +92,8 @@ static VP8StatusCode CheckDecBuffer(const const buffer *WebPDecBuffer) {
 #undef MIN_BUFFER_SIZE
 
 static VP8StatusCode AllocateBuffer(const buffer *WebPDecBuffer) {
-  const int w = buffer.width;
-  const int h = buffer.height;
+  w := buffer.width;
+  h := buffer.height;
   const WEBP_CSP_MODE mode = buffer.colorspace;
 
   if (w <= 0 || h <= 0 || !IsValidColorspace(mode)) {
@@ -107,7 +107,7 @@ static VP8StatusCode AllocateBuffer(const buffer *WebPDecBuffer) {
     // We need memory and it hasn't been allocated yet.
     // => initialize output buffer, now that dimensions are known.
     int stride;
-    uint64 size;
+    size uint64 ;
 
     if ((uint64)w * kModeBpp[mode] >= (uint64(1) << 31)) {
       return VP8_STATUS_INVALID_PARAM;
@@ -188,10 +188,10 @@ VP8StatusCode WebPAllocateDecBuffer(int width, int height, const const options *
   }
   if (options != nil) {  // First, apply options if there is any.
     if (options.use_cropping) {
-      const int cw = options.crop_width;
-      const int ch = options.crop_height;
-      const int x = options.crop_left & ~1;
-      const int y = options.crop_top & ~1;
+      cw := options.crop_width;
+      ch := options.crop_height;
+      x := options.crop_left & ~1;
+      y := options.crop_top & ~1;
       if (!WebPCheckCropDimensions(width, height, x, y, cw, ch)) {
         return VP8_STATUS_INVALID_PARAM;  // out of frame boundary.
       }

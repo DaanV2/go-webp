@@ -88,7 +88,7 @@ func VP8CodeIntraModes(const enc *VP8Encoder) {
   const bw *VP8BitWriter = &enc.bw;
   VP8EncIterator it;
   VP8IteratorInit(enc, &it);
-  do {
+  for {
     const const mb *VP8MBInfo = it.mb;
     const preds *uint8 = it.preds;
     if (enc.segment_hdr.update_map) {
@@ -100,7 +100,7 @@ func VP8CodeIntraModes(const enc *VP8Encoder) {
     if (VP8PutBit(bw, (mb.type != 0), 145)) {  // i16x16
       PutI16Mode(bw, preds[0]);
     } else {
-      const int preds_w = enc.preds_w;
+      preds_w := enc.preds_w;
       const top_pred *uint8 = preds - preds_w;
       int x, y;
       for (y = 0; y < 4; ++y) {
@@ -130,7 +130,7 @@ func VP8WriteProbas(const bw *VP8BitWriter, const const probas *VP8EncProba) {
       for (c = 0; c < NUM_CTX; ++c) {
         for (p = 0; p < NUM_PROBAS; ++p) {
           const uint8 p0 = probas.coeffs[t][b][c][p];
-          const int update = (p0 != VP8CoeffsProba0[t][b][c][p]);
+          update := (p0 != VP8CoeffsProba0[t][b][c][p]);
           if (VP8PutBit(bw, update, VP8CoeffsUpdateProba[t][b][c][p])) {
             VP8PutBits(bw, p0, 8);
           }

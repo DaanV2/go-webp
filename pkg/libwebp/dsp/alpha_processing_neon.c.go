@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 #define PREMULTIPLY(x, m) (((x) * (m)) >> 23)
 
 #define MULTIPLY_BY_ALPHA(V, ALPHA, OTHER)                   \
-  do {                                                       \
+  for {                                                       \
     const uint8x8_t alpha = (V).val[(ALPHA)];                \
     const uint16x8_t r1 = vmull_u8((V).val[1], alpha);       \
     const uint16x8_t g1 = vmull_u8((V).val[2], alpha);       \
@@ -65,9 +65,9 @@ func ApplyAlphaMultiply_NEON(rgba *uint8, int alpha_first, int w, int h, int str
     for (; i < w; ++i) {
       const rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
       const const alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
-      const uint32 a = alpha[4 * i];
+      a := alpha[4 * i];
       if (a != 0xff) {
-        const uint32 mult = MULTIPLIER(a);
+        mult := MULTIPLIER(a);
         rgb[4 * i + 0] = PREMULTIPLY(rgb[4 * i + 0], mult);
         rgb[4 * i + 1] = PREMULTIPLY(rgb[4 * i + 1], mult);
         rgb[4 * i + 2] = PREMULTIPLY(rgb[4 * i + 2], mult);
@@ -99,7 +99,7 @@ static int DispatchAlpha_NEON(const WEBP_RESTRICT alpha *uint8, int alpha_stride
       mask8 = vand_u8(mask8, alphas);
     }
     for (; i < width; ++i) {
-      const uint32 alpha_value = alpha[i];
+      alpha_value := alpha[i];
       dst[4 * i] = alpha_value;
       alpha_mask &= alpha_value;
     }

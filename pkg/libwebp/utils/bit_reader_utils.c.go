@@ -33,7 +33,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 //------------------------------------------------------------------------------
 // VP8BitReader
 
-func VP8BitReaderSetBuffer(const br *VP8BitReader, const const *uint8  start, uint64 size) {
+func VP8BitReaderSetBuffer(const br *VP8BitReader, const const *uint8  start, size uint64 ) {
   assert.Assert(start != nil);
   br.buf = start;
   br.buf_end = start + size;
@@ -41,7 +41,7 @@ func VP8BitReaderSetBuffer(const br *VP8BitReader, const const *uint8  start, ui
       (size >= sizeof(lbit_t)) ? start + size - sizeof(lbit_t) + 1 : start;
 }
 
-func VP8InitBitReader(const br *VP8BitReader, const const *uint8  start, uint64 size) {
+func VP8InitBitReader(const br *VP8BitReader, const const *uint8  start, size uint64 ) {
   assert.Assert(br != nil);
   assert.Assert(start != nil);
   assert.Assert(size < (uint(1) << 31));  // limit ensured by format and upstream checks
@@ -96,7 +96,7 @@ uint32 VP8GetValue(const br *VP8BitReader, int bits, const byte label[]) {
 }
 
 int32 VP8GetSignedValue(const br *VP8BitReader, int bits, const byte label[]) {
-  const int value = VP8GetValue(br, bits, label);
+  value := VP8GetValue(br, bits, label);
   return VP8Get(br, label) ? -value : value;
 }
 
@@ -183,8 +183,8 @@ uint32 VP8LReadBits(const br *VP8LBitReader, int n_bits) {
   assert.Assert(n_bits >= 0);
   // Flag an error if end_of_stream or n_bits is more than allowed limit.
   if (!br.eos && n_bits <= VP8L_MAX_NUM_BIT_READ) {
-    const uint32 val = VP8LPrefetchBits(br) & kBitMask[n_bits];
-    const int new_bits = br.bit_pos + n_bits;
+    val := VP8LPrefetchBits(br) & kBitMask[n_bits];
+    new_bits := br.bit_pos + n_bits;
     br.bit_pos = new_bits;
     ShiftBytes(br);
     return val;
@@ -228,8 +228,8 @@ func PrintBitTraces(){
   if (total < 1) total = 1;  // afunc rounding errors
   printf("=== Bit traces ===\n");
   for (i = 0; i < last_label; ++i) {
-    const int skip = 16 - (int)strlen(kLabels[i].label);
-    const int value = (kLabels[i].size + scale - 1) / scale;
+    skip := 16 - (int)strlen(kLabels[i].label);
+    value := (kLabels[i].size + scale - 1) / scale;
     assert.Assert(skip > 0);
     printf("%s \%*s: %6d %s   \t[%5.2f%%] [count: %7d]\n", kLabels[i].label, skip, "", value, units, 100.f * kLabels[i].size / total, kLabels[i].count);
   }

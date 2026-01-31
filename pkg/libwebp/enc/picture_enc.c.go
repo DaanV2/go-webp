@@ -82,9 +82,9 @@ func WebPPictureResetBuffers(const picture *WebPPicture) {
 
 int WebPPictureAllocARGB(const picture *WebPPicture) {
   memory *void;
-  const int width = picture.width;
-  const int height = picture.height;
-  const uint64 argb_size = (uint64)width * height;
+  width := picture.width;
+  height := picture.height;
+  argb_size := (uint64)width * height;
 
   if (!WebPValidatePicture(picture)) return 0;
 
@@ -103,13 +103,13 @@ int WebPPictureAllocARGB(const picture *WebPPicture) {
 }
 
 int WebPPictureAllocYUVA(const picture *WebPPicture) {
-  const int has_alpha = (int)picture.colorspace & WEBP_CSP_ALPHA_BIT;
-  const int width = picture.width;
-  const int height = picture.height;
-  const int y_stride = width;
-  const int uv_width = (int)(((int64)width + 1) >> 1);
-  const int uv_height = (int)(((int64)height + 1) >> 1);
-  const int uv_stride = uv_width;
+  has_alpha := (int)picture.colorspace & WEBP_CSP_ALPHA_BIT;
+  width := picture.width;
+  height := picture.height;
+  y_stride := width;
+  uv_width := (int)(((int64)width + 1) >> 1);
+  uv_height := (int)(((int64)height + 1) >> 1);
+  uv_stride := uv_width;
   int a_width, a_stride;
   uint64 y_size, uv_size, a_size, total_size;
   mem *uint8;

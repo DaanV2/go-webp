@@ -37,7 +37,7 @@ static  uint8 clip_8b(int v) {
   dst[(x) + (y) * BPS] = clip_8b(dst[(x) + (y) * BPS] + ((v) >> 3))
 
 #define STORE2(y, dc, d, c) \
-  do {                      \
+  for {                      \
     const int DC = (dc);    \
     STORE(0, y, DC + (d));  \
     STORE(1, y, DC + (c));  \
@@ -51,11 +51,11 @@ func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int i;
   tmp = C;
   for (i = 0; i < 4; ++i) {       // vertical pass
-    const int a = in[0] + in[8];  // [-4096, 4094]
-    const int b = in[0] - in[8];  // [-4095, 4095]
-    const int c = WEBP_TRANSFORM_AC3_MUL2(in[4]) -
+    a := in[0] + in[8];  // [-4096, 4094]
+    b := in[0] - in[8];  // [-4095, 4095]
+    c := WEBP_TRANSFORM_AC3_MUL2(in[4]) -
                   WEBP_TRANSFORM_AC3_MUL1(in[12]);  // [-3783, 3783]
-    const int d = WEBP_TRANSFORM_AC3_MUL1(in[4]) +
+    d := WEBP_TRANSFORM_AC3_MUL1(in[4]) +
                   WEBP_TRANSFORM_AC3_MUL2(in[12]);  // [-3785, 3781]
     tmp[0] = a + d;                                 // [-7881, 7875]
     tmp[1] = b + c;                                 // [-7878, 7878]
@@ -73,9 +73,9 @@ func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   // [-60713, 60968].
   tmp = C;
   for (i = 0; i < 4; ++i) {  // horizontal pass
-    const int dc = tmp[0] + 4;
-    const int a = dc + tmp[8];
-    const int b = dc - tmp[8];
+    dc := tmp[0] + 4;
+    a := dc + tmp[8];
+    b := dc - tmp[8];
     const int c =
         WEBP_TRANSFORM_AC3_MUL2(tmp[4]) - WEBP_TRANSFORM_AC3_MUL1(tmp[12]);
     const int d =
@@ -91,7 +91,7 @@ func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 
 // Simplified transform when only in[0], in[1] and in[4] are non-zero
 func TransformAC3_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
-  const int a = in[0] + 4;
+  a := in[0] + 4;
   const int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
   const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
   const int c1 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
@@ -155,7 +155,7 @@ func TransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
     tmp[12 + i] = a3 - a2;
   }
   for (i = 0; i < 4; ++i) {
-    const int dc = tmp[0 + i * 4] + 3;  // w/ rounder
+    dc := tmp[0 + i * 4] + 3;  // w/ rounder
     const int a0 = dc + tmp[3 + i * 4];
     const int a1 = tmp[1 + i * 4] + tmp[2 + i * 4];
     const int a2 = tmp[1 + i * 4] - tmp[2 + i * 4];
@@ -485,7 +485,7 @@ VP8PredFunc VP8PredChroma8[NUM_B_DC_MODES];
 // 4 pixels in, 2 pixels out
 static  func DoFilter2_C(p *uint8, int step) {
   const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
-  const int a = 3 * (q0 - p0) + VP8ksclip1[p1 - q1];  // in [-893,892]
+  a := 3 * (q0 - p0) + VP8ksclip1[p1 - q1];  // in [-893,892]
   const int a1 = VP8ksclip2[(a + 4) >> 3];            // in [-16,15]
   const int a2 = VP8ksclip2[(a + 3) >> 3];
   p[-step] = VP8kclip1[p0 + a2];
@@ -495,7 +495,7 @@ static  func DoFilter2_C(p *uint8, int step) {
 // 4 pixels in, 4 pixels out
 static  func DoFilter4_C(p *uint8, int step) {
   const int p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 = p[step];
-  const int a = 3 * (q0 - p0);
+  a := 3 * (q0 - p0);
   const int a1 = VP8ksclip2[(a + 4) >> 3];
   const int a2 = VP8ksclip2[(a + 3) >> 3];
   const int a3 = (a1 + 1) >> 1;
@@ -509,7 +509,7 @@ static  func DoFilter4_C(p *uint8, int step) {
 static  func DoFilter6_C(p *uint8, int step) {
   const int p2 = p[-3 * step], p1 = p[-2 * step], p0 = p[-step];
   const int q0 = p[0], q1 = p[step], q2 = p[2 * step];
-  const int a = VP8ksclip1[3 * (q0 - p0) + VP8ksclip1[p1 - q1]];
+  a := VP8ksclip1[3 * (q0 - p0) + VP8ksclip1[p1 - q1]];
   // a is in [-128,127], a1 in [-27,27], a2 in [-18,18] and a3 in [-9,9]
   const int a1 = (27 * a + 63) >> 7;  // eq. to ((3 * a + 7) * 9) >> 7
   const int a2 = (18 * a + 63) >> 7;  // eq. to ((2 * a + 7) * 9) >> 7

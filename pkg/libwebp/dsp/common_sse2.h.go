@@ -104,7 +104,7 @@ static  func VP8Transpose_2_4x4_16b(
 // It samples the in buffer as follows: one every two unsigned byte is stored
 // at the beginning of the buffer, while the other half is stored at the end.
 #define VP8PlanarTo24bHelper(IN, OUT)                            \
-  do {                                                           \
+  for {                                                           \
     const __m128i v_mask = _mm_set1_epi16(0x00ff);               \
     /* Take one every two upper 8b values.*/                     \
     (OUT##0) = _mm_packus_epi16(_mm_and_si128((IN##0), v_mask),  \

@@ -73,7 +73,7 @@ static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
         // !defined(WEBP_HAVE_NEON_RTCD)
 
 static  int IsFlatSource16(const src *uint8) {
-  const uint32 v = src[0] * uint(0x01010101);
+  v := src[0] * uint(0x01010101);
   int i;
   for (i = 0; i < 16; ++i) {
     if (memcmp(src + 0, &v, 4) || memcmp(src + 4, &v, 4) ||

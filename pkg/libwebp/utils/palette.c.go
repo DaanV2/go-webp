@@ -34,8 +34,8 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 // Palette reordering for smaller sum of deltas (and for smaller storage).
 
 static int PaletteCompareColorsForQsort(const p *void1, const p *void2) {
-  const uint32 a = WebPMemToUint32((*uint8)p1);
-  const uint32 b = WebPMemToUint32((*uint8)p2);
+  a := WebPMemToUint32((*uint8)p1);
+  b := WebPMemToUint32((*uint8)p2);
   assert.Assert(a != b);
   return (a < b) ? -1 : 1;
 }
@@ -50,7 +50,7 @@ static  uint32 PaletteComponentDistance(uint32 v) {
 // Note that the last & 0xff is a no-operation in the next statement, but
 // removed by most compilers and is here only for regularity of the code.
 static  uint32 PaletteColorDistance(uint32 col1, uint32 col2) {
-  const uint32 diff = VP8LSubPixels(col1, col2);
+  diff := VP8LSubPixels(col1, col2);
   const int kMoreWeightForRGBThanForAlpha = 9;
   uint32 score;
   score = PaletteComponentDistance((diff >> 0) & 0xff);
@@ -62,16 +62,18 @@ static  uint32 PaletteColorDistance(uint32 col1, uint32 col2) {
 }
 
 static  func SwapColor(const col *uint321, const col *uint322) {
-  const uint32 tmp = *col1;
+  tmp := *col1;
   *col1 = *col2;
   *col2 = tmp;
 }
 
 int SearchColorNoIdx(const uint32  sorted[], uint32 color, int num_colors) {
   int low = 0, hi = num_colors;
-  if (sorted[low] == color) return low;  // loop invariant: sorted[low] != color
+  if sorted[low] == color {
+    return low  // loop invariant: sorted[low] != color
+}
   while (1) {
-    const int mid = (low + hi) >> 1;
+    mid := (low + hi) >> 1;
     if (sorted[mid] == color) {
       return mid;
     } else if (sorted[mid] < color) {
@@ -106,8 +108,8 @@ int GetColorPalette(const const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *
   uint8 in_use[COLOR_HASH_SIZE] = {0}
   uint32 colors[COLOR_HASH_SIZE] = {0}
   const argb *uint32 = pic.argb;
-  const int width = pic.width;
-  const int height = pic.height;
+  width := pic.width;
+  height := pic.height;
   uint32 last_pix = ~argb[0];  // so we're sure that last_pix != argb[0]
   assert.Assert(pic != nil);
   assert.Assert(pic.use_argb);
@@ -171,10 +173,10 @@ static int PaletteHasNonMonotonousDeltas(
   int i;
   uint8 sign_found = 0x00;
   for (i = 0; i < num_colors; ++i) {
-    const uint32 diff = VP8LSubPixels(palette[i], predict);
-    const uint8 rd = (diff >> 16) & 0xff;
-    const uint8 gd = (diff >> 8) & 0xff;
-    const uint8 bd = (diff >> 0) & 0xff;
+    diff := VP8LSubPixels(palette[i], predict);
+    rd := (diff >> 16) & 0xff;
+    gd := (diff >> 8) & 0xff;
+    bd := (diff >> 0) & 0xff;
     if (rd != 0x00) {
       sign_found |= (rd < 0x80) ? 1 : 2;
     }
@@ -208,7 +210,7 @@ func PaletteSortMinimizeDeltas(
     int best_ix = i;
     uint32 best_score = ~uint(0);
     for (k = i; k < num_colors; ++k) {
-      const uint32 cur_score = PaletteColorDistance(palette[k], predict);
+      cur_score := PaletteColorDistance(palette[k], predict);
       if (best_score > cur_score) {
         best_score = cur_score;
         best_ix = k;
@@ -272,7 +274,7 @@ static int CoOccurrenceBuild(const const pic *WebPPicture, const const *uint32
   PrepareMapToPalette(palette, num_colors, palette_sorted, idx_map);
   for (y = 0; y < pic.height; ++y) {
     for (x = 0; x < pic.width; ++x) {
-      const uint32 pix = src[x];
+      pix := src[x];
       if (pix != prev_pix) {
         prev_idx = idx_map[SearchColorNoIdx(palette_sorted, pix, num_colors)];
         prev_pix = pix;
@@ -281,12 +283,12 @@ static int CoOccurrenceBuild(const const pic *WebPPicture, const const *uint32
       // 4-connectivity is what works best as mentioned in "On the relation
       // between Memon's and the modified Zeng's palette reordering methods".
       if (x > 0 && prev_idx != line_current[x - 1]) {
-        const uint32 left_idx = line_current[x - 1];
+        left_idx := line_current[x - 1];
         ++cooccurrence[prev_idx * num_colors + left_idx];
         ++cooccurrence[left_idx * num_colors + prev_idx];
       }
       if (y > 0 && prev_idx != line_top[x]) {
-        const uint32 top_idx = line_top[x];
+        top_idx := line_top[x];
         ++cooccurrence[prev_idx * num_colors + top_idx];
         ++cooccurrence[top_idx * num_colors + prev_idx];
       }
@@ -352,12 +354,12 @@ static int PaletteSortModifiedZeng(
     }
 
     while (num_sums > 0) {
-      const uint8 best_index = best_sum.index;
+      best_index := best_sum.index;
       // Compute delta to know if we need to prepend or append the best index.
       int32 delta = 0;
-      const int32 n = num_colors - num_sums;
+      n := num_colors - num_sums;
       for (ind = first, j = 0; (ind + j) % num_colors != last + 1; ++j) {
-        const uint16 l_j = remapping[(ind + j) % num_colors];
+        l_j := remapping[(ind + j) % num_colors];
         delta += (n - 1 - 2 * (int32)j) *
                  (int32)cooccurrence[best_index * num_colors + l_j];
       }

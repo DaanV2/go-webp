@@ -80,8 +80,8 @@ func DoUVTransform(uint32 bits, const const src *int16, const dst *uint8) {
 func ReconstructRow(const const dec *VP8Decoder, const ctx *VP8ThreadContext) {
   int j;
   int mb_x;
-  const int mb_y = ctx.mb_y;
-  const int cache_id = ctx.id;
+  mb_y := ctx.mb_y;
+  cache_id := ctx.id;
   const y_dst *uint8 = dec.yuv_b + Y_OFF;
   const u_dst *uint8 = dec.yuv_b + U_OFF;
   const v_dst *uint8 = dec.yuv_b + V_OFF;
@@ -155,7 +155,7 @@ func ReconstructRow(const const dec *VP8Decoder, const ctx *VP8ThreadContext) {
           DoTransform(bits, coeffs + n * 16, dst);
         }
       } else {  // 16x16
-        const int pred_func = CheckMode(mb_x, mb_y, block.imodes[0]);
+        pred_func := CheckMode(mb_x, mb_y, block.imodes[0]);
         VP8PredLuma16[pred_func](y_dst);
         if (bits != 0) {
           for (n = 0; n < 16; ++n, bits <<= 2) {
@@ -165,8 +165,8 @@ func ReconstructRow(const const dec *VP8Decoder, const ctx *VP8ThreadContext) {
       }
       {
         // Chroma
-        const uint32 bits_uv = block.non_zero_uv;
-        const int pred_func = CheckMode(mb_x, mb_y, block.uvmode);
+        bits_uv := block.non_zero_uv;
+        pred_func := CheckMode(mb_x, mb_y, block.uvmode);
         VP8PredChroma8[pred_func](u_dst);
         VP8PredChroma8[pred_func](v_dst);
         DoUVTransform(bits_uv >> 0, coeffs + 16 * 16, u_dst);
@@ -182,8 +182,8 @@ func ReconstructRow(const const dec *VP8Decoder, const ctx *VP8ThreadContext) {
     }
     // Transfer reconstructed samples from yuv_b cache to final destination.
     {
-      const int y_offset = cache_id * 16 * dec.cache_y_stride;
-      const int uv_offset = cache_id * 8 * dec.cache_uv_stride;
+      y_offset := cache_id * 16 * dec.cache_y_stride;
+      uv_offset := cache_id * 8 * dec.cache_uv_stride;
       const y_out *uint8 = dec.cache_y + mb_x * 16 + y_offset;
       const u_out *uint8 = dec.cache_u + mb_x * 8 + uv_offset;
       const v_out *uint8 = dec.cache_v + mb_x * 8 + uv_offset;
@@ -210,12 +210,12 @@ static const uint8 kFilterExtraRows[3] = {0, 2, 8}
 
 func DoFilter(const const dec *VP8Decoder, int mb_x, int mb_y) {
   const const ctx *VP8ThreadContext = &dec.thread_ctx;
-  const int cache_id = ctx.id;
-  const int y_bps = dec.cache_y_stride;
+  cache_id := ctx.id;
+  y_bps := dec.cache_y_stride;
   const const f_info *VP8FInfo = ctx.f_info + mb_x;
   const y_dst *uint8 = dec.cache_y + cache_id * 16 * y_bps + mb_x * 16;
-  const int ilevel = f_info.f_ilevel;
-  const int limit = f_info.f_limit;
+  ilevel := f_info.f_ilevel;
+  limit := f_info.f_limit;
   if (limit == 0) {
     return;
   }
@@ -234,10 +234,10 @@ func DoFilter(const const dec *VP8Decoder, int mb_x, int mb_y) {
       VP8SimpleVFilter16i(y_dst, y_bps, limit);
     }
   } else {  // complex
-    const int uv_bps = dec.cache_uv_stride;
+    uv_bps := dec.cache_uv_stride;
     const u_dst *uint8 = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8;
     const v_dst *uint8 = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8;
-    const int hev_thresh = f_info.hev_thresh;
+    hev_thresh := f_info.hev_thresh;
     if (mb_x > 0) {
       VP8HFilter16(y_dst, y_bps, limit + 4, ilevel, hev_thresh);
       VP8HFilter8(u_dst, v_dst, uv_bps, limit + 4, ilevel, hev_thresh);
@@ -260,7 +260,7 @@ func DoFilter(const const dec *VP8Decoder, int mb_x, int mb_y) {
 // Filter the decoded macroblock row (if needed)
 func FilterRow(const const dec *VP8Decoder) {
   int mb_x;
-  const int mb_y = dec.thread_ctx.mb_y;
+  mb_y := dec.thread_ctx.mb_y;
   assert.Assert(dec.thread_ctx.filter_row);
   for (mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; ++mb_x) {
     DoFilter(dec, mb_x, mb_y);
@@ -335,16 +335,16 @@ static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
 func VP8InitDithering(const const options *WebPDecoderOptions, const dec *VP8Decoder) {
   assert.Assert(dec != nil);
   if (options != nil) {
-    const int d = options.dithering_strength;
-    const int max_amp = (1 << VP8_RANDOM_DITHER_FIX) - 1;
-    const int f = (d < 0) ? 0 : (d > 100) ? max_amp : (d * max_amp / 100);
+    d := options.dithering_strength;
+    max_amp := (1 << VP8_RANDOM_DITHER_FIX) - 1;
+    f := (d < 0) ? 0 : (d > 100) ? max_amp : (d * max_amp / 100);
     if (f > 0) {
       int s;
       int all_amp = 0;
       for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
         const dqm *VP8QuantMatrix = &dec.dqm[s];
         if (dqm.uv_quant < DITHER_AMP_TAB_SIZE) {
-          const int idx = (dqm.uv_quant < 0) ? 0 : dqm.uv_quant;
+          idx := (dqm.uv_quant < 0) ? 0 : dqm.uv_quant;
           dqm.dither = (f * kQuantToDitherAmp[idx]) >> 3;
         }
         all_amp |= dqm.dither;
@@ -380,8 +380,8 @@ func DitherRow(const dec *VP8Decoder) {
   for (mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; ++mb_x) {
     const const ctx *VP8ThreadContext = &dec.thread_ctx;
     const const data *VP8MBData = ctx.mb_data + mb_x;
-    const int cache_id = ctx.id;
-    const int uv_bps = dec.cache_uv_stride;
+    cache_id := ctx.id;
+    uv_bps := dec.cache_uv_stride;
     if (data.dither >= MIN_DITHER_AMP) {
       const u_dst *uint8 = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8;
       const v_dst *uint8 = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8;
@@ -410,18 +410,18 @@ static int FinishRow(arg *void1, arg *void2) {
   const io *VP8Io = (*VP8Io)arg2;
   int ok = 1;
   const const ctx *VP8ThreadContext = &dec.thread_ctx;
-  const int cache_id = ctx.id;
-  const int extra_y_rows = kFilterExtraRows[dec.filter_type];
-  const int ysize = extra_y_rows * dec.cache_y_stride;
-  const int uvsize = (extra_y_rows / 2) * dec.cache_uv_stride;
-  const int y_offset = cache_id * 16 * dec.cache_y_stride;
-  const int uv_offset = cache_id * 8 * dec.cache_uv_stride;
+  cache_id := ctx.id;
+  extra_y_rows := kFilterExtraRows[dec.filter_type];
+  ysize := extra_y_rows * dec.cache_y_stride;
+  uvsize := (extra_y_rows / 2) * dec.cache_uv_stride;
+  y_offset := cache_id * 16 * dec.cache_y_stride;
+  uv_offset := cache_id * 8 * dec.cache_uv_stride;
   const ydst *uint8 = dec.cache_y - ysize + y_offset;
   const udst *uint8 = dec.cache_u - uvsize + uv_offset;
   const vdst *uint8 = dec.cache_v - uvsize + uv_offset;
-  const int mb_y = ctx.mb_y;
-  const int is_first_row = (mb_y == 0);
-  const int is_last_row = (mb_y >= dec.br_mb_y - 1);
+  mb_y := ctx.mb_y;
+  is_first_row := (mb_y == 0);
+  is_last_row := (mb_y >= dec.br_mb_y - 1);
 
   if (dec.mt_method == 2) {
     ReconstructRow(dec, ctx);
@@ -464,7 +464,7 @@ static int FinishRow(arg *void1, arg *void2) {
       }
     }
     if (y_start < io.crop_top) {
-      const int delta_y = io.crop_top - y_start;
+      delta_y := io.crop_top - y_start;
       y_start = io.crop_top;
       assert.Assert(!(delta_y & 1));
       io.y += dec.cache_y_stride * delta_y;
@@ -506,7 +506,7 @@ static int FinishRow(arg *void1, arg *void2) {
 int VP8ProcessRow(const dec *VP8Decoder, const io *VP8Io) {
   int ok = 1;
   const ctx *VP8ThreadContext = &dec.thread_ctx;
-  const int filter_row = (dec.filter_type > 0) &&
+  filter_row := (dec.filter_type > 0) &&
                          (dec.mb_y >= dec.tl_mb_y) &&
                          (dec.mb_y <= dec.br_mb_y);
   if (dec.mt_method == 0) {
@@ -574,7 +574,7 @@ VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, const io *VP8Io) {
   // top-left corner of the picture (MB #0). We must filter all the previous
   // macroblocks.
   {
-    const int extra_pixels = kFilterExtraRows[dec.filter_type];
+    extra_pixels := kFilterExtraRows[dec.filter_type];
     if (dec.filter_type == 2) {
       // For complex filter, we need to preserve the dependency chain.
       dec.tl_mb_x = 0;
@@ -682,33 +682,35 @@ int VP8GetThreadMethod(const const options *WebPDecoderOptions, const const head
 // Memory setup
 
 static int AllocateMemory(const dec *VP8Decoder) {
-  const int num_caches = dec.num_caches;
-  const int mb_w = dec.mb_w;
+  num_caches := dec.num_caches;
+  mb_w := dec.mb_w;
   // Note: we use 'uint64' when there's no overflow risk, uint64 otherwise.
-  const uint64 intra_pred_mode_size = 4 * mb_w * sizeof(uint8);
-  const uint64 top_size = sizeof(VP8TopSamples) * mb_w;
-  const uint64 mb_info_size = (mb_w + 1) * sizeof(VP8MB);
+  intra_pred_mode_size := 4 * mb_w * sizeof(uint8);
+  top_size := sizeof(VP8TopSamples) * mb_w;
+  mb_info_size := (mb_w + 1) * sizeof(VP8MB);
   const uint64 f_info_size =
       (dec.filter_type > 0)
           ? mb_w * (dec.mt_method > 0 ? 2 : 1) * sizeof(VP8FInfo)
           : 0;
-  const uint64 yuv_size = YUV_SIZE * sizeof(*dec.yuv_b);
+  yuv_size := YUV_SIZE * sizeof(*dec.yuv_b);
   const uint64 mb_data_size =
       (dec.mt_method == 2 ? 2 : 1) * mb_w * sizeof(*dec.mb_data);
   const uint64 cache_height =
       (16 * num_caches + kFilterExtraRows[dec.filter_type]) * 3 / 2;
-  const uint64 cache_size = top_size * cache_height;
+  cache_size := top_size * cache_height;
   // alpha_size is the only one that scales as width x height.
   const uint64 alpha_size =
       (dec.alpha_data != nil)
           ? (uint64)dec.pic_hdr.width * dec.pic_hdr.height
           : uint64(0);
-  const uint64 needed = (uint64)intra_pred_mode_size + top_size +
+  needed := (uint64)intra_pred_mode_size + top_size +
                           mb_info_size + f_info_size + yuv_size + mb_data_size +
                           cache_size + alpha_size + WEBP_ALIGN_CST;
   mem *uint8;
 
-  if (!CheckSizeOverflow(needed)) return 0;  // check for overflow
+  if !CheckSizeOverflow(needed) {
+    return 0  // check for overflow
+}
   if (needed > dec.mem_size) {
     WebPSafeFree(dec.mem);
     dec.mem_size = 0;
@@ -756,9 +758,9 @@ static int AllocateMemory(const dec *VP8Decoder) {
   dec.cache_y_stride = 16 * mb_w;
   dec.cache_uv_stride = 8 * mb_w;
   {
-    const int extra_rows = kFilterExtraRows[dec.filter_type];
-    const int extra_y = extra_rows * dec.cache_y_stride;
-    const int extra_uv = (extra_rows / 2) * dec.cache_uv_stride;
+    extra_rows := kFilterExtraRows[dec.filter_type];
+    extra_y := extra_rows * dec.cache_y_stride;
+    extra_uv := (extra_rows / 2) * dec.cache_uv_stride;
     dec.cache_y = mem + extra_y;
     dec.cache_u =
         dec.cache_y + 16 * num_caches * dec.cache_y_stride + extra_uv;
@@ -795,7 +797,9 @@ func InitIo(const dec *VP8Decoder, io *VP8Io) {
 }
 
 int VP8InitFrame(const dec *VP8Decoder, const io *VP8Io) {
-  if (!InitThreadContext(dec)) return 0;  // call first. Sets dec.num_caches.
+  if !InitThreadContext(dec) {
+    return 0  // call first. Sets dec.num_caches.
+}
   if (!AllocateMemory(dec)) return 0;
   InitIo(dec, io);
   VP8DspInit();  // Init critical function pointers and look-up tables.

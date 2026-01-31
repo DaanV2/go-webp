@@ -149,20 +149,20 @@ static  uint32 ClampedAddSubtractHalf_NEON(uint32 c0, uint32 c1, uint32 c2) {
   // Compute the sum with avg and saturate.
   const int16x8_t avg_16 = vreinterpretq_s16_u16(vmovl_u8(avg));
   const uint8x8_t res = vqmovun_s16(vaddw_s8(avg_16, diff_avg));
-  const uint32 output = GET_U8_AS_U32(res);
+  output := GET_U8_AS_U32(res);
   return output;
 }
 
 static  uint32 Average2_NEON(uint32 a0, uint32 a1) {
   const uint8x8_t avg_u8x8 = Average2_u8_NEON(a0, a1);
-  const uint32 avg = GET_U8_AS_U32(avg_u8x8);
+  avg := GET_U8_AS_U32(avg_u8x8);
   return avg;
 }
 
 static  uint32 Average3_NEON(uint32 a0, uint32 a1, uint32 a2) {
   const uint8x8_t avg0 = Average2_u8_NEON(a0, a2);
   const uint8x8_t A1 = LOAD_U32_AS_U8(a1);
-  const uint32 avg = GET_U8_AS_U32(vhadd_u8(avg0, A1));
+  avg := GET_U8_AS_U32(vhadd_u8(avg0, A1));
   return avg;
 }
 
@@ -240,7 +240,7 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])
 
 // Predictor5: average(average(left, TR), T)
 #define DO_PRED5(LANE)                                                   \
-  do {                                                                   \
+  for {                                                                   \
     const uint8x16_t avgLTR = vhaddq_u8(L, TR);                          \
     const uint8x16_t avg = vhaddq_u8(avgLTR, T);                         \
     const uint8x16_t res = vaddq_u8(avg, src);                           \
@@ -265,7 +265,7 @@ func PredictorAdd5_NEON(const in *uint32, const upper *uint32, int num_pixels, W
 #undef DO_PRED5
 
 #define DO_PRED67(LANE)                                                  \
-  do {                                                                   \
+  for {                                                                   \
     const uint8x16_t avg = vhaddq_u8(L, top);                            \
     const uint8x16_t res = vaddq_u8(avg, src);                           \
     vst1q_lane_u32(&out[i + (LANE)], vreinterpretq_u32_u8(res), (LANE)); \
@@ -326,7 +326,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
 
 // Predictor10: average of (average of (L,TL), average of (T, TR)).
 #define DO_PRED10(LANE)                                                  \
-  do {                                                                   \
+  for {                                                                   \
     const uint8x16_t avgLTL = vhaddq_u8(L, TL);                          \
     const uint8x16_t avg = vhaddq_u8(avgTTR, avgLTL);                    \
     const uint8x16_t res = vaddq_u8(avg, src);                           \
@@ -354,7 +354,7 @@ func PredictorAdd10_NEON(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictor11: select.
 #define DO_PRED11(LANE)                                                  \
-  do {                                                                   \
+  for {                                                                   \
     const uint8x16_t sumLin = vaddq_u8(L, src); /* in + L */             \
     const uint8x16_t pLTL = vabdq_u8(L, TL);    /* |L - TL| */           \
     const uint16x8_t sum_LTL = vpaddlq_u8(pLTL);                         \
@@ -388,7 +388,7 @@ func PredictorAdd11_NEON(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictor12: ClampedAddSubtractFull.
 #define DO_PRED12(DIFF, LANE)                                              \
-  do {                                                                     \
+  for {                                                                     \
     const uint8x8_t pred =                                                 \
         vqmovun_s16(vaddq_s16(vreinterpretq_s16_u16(L), (DIFF)));          \
     const uint8x8_t res =                                                  \
@@ -424,7 +424,7 @@ func PredictorAdd12_NEON(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictor13: ClampedAddSubtractHalf
 #define DO_PRED13(LANE, LOW_OR_HI)                                            \
-  do {                                                                        \
+  for {                                                                        \
     const uint8x16_t avg = vhaddq_u8(L, T);                                   \
     const uint8x16_t cmp = vcgtq_u8(TL, avg);                                 \
     const uint8x16_t TL_1 = vaddq_u8(TL, cmp);                                \

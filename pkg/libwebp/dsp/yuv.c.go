@@ -135,7 +135,7 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
 func ConvertARGBToY_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width) {
   int i;
   for (i = 0; i < width; ++i) {
-    const uint32 p = argb[i];
+    p := argb[i];
     y[i] =
         VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);
   }
@@ -143,18 +143,18 @@ func ConvertARGBToY_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, 
 
 func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int src_width, int do_store) {
   // No rounding. Last pixel is dealt with separately.
-  const int uv_width = src_width >> 1;
+  uv_width := src_width >> 1;
   int i;
   for (i = 0; i < uv_width; ++i) {
     const uint32 v0 = argb[2 * i + 0];
     const uint32 v1 = argb[2 * i + 1];
     // VP8RGBToU/V expects four accumulated pixels. Hence we need to
     // scale r/g/b value by a factor 2. We just shift v0/v1 one bit less.
-    const int r = ((v0 >> 15) & 0x1fe) + ((v1 >> 15) & 0x1fe);
-    const int g = ((v0 >> 7) & 0x1fe) + ((v1 >> 7) & 0x1fe);
-    const int b = ((v0 << 1) & 0x1fe) + ((v1 << 1) & 0x1fe);
-    const int tmp_u = VP8RGBToU(r, g, b, YUV_HALF << 2);
-    const int tmp_v = VP8RGBToV(r, g, b, YUV_HALF << 2);
+    r := ((v0 >> 15) & 0x1fe) + ((v1 >> 15) & 0x1fe);
+    g := ((v0 >> 7) & 0x1fe) + ((v1 >> 7) & 0x1fe);
+    b := ((v0 << 1) & 0x1fe) + ((v1 << 1) & 0x1fe);
+    tmp_u := VP8RGBToU(r, g, b, YUV_HALF << 2);
+    tmp_v := VP8RGBToV(r, g, b, YUV_HALF << 2);
     if (do_store) {
       u[i] = tmp_u;
       v[i] = tmp_v;
@@ -166,11 +166,11 @@ func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *ui
   }
   if (src_width & 1) {  // last pixel
     const uint32 v0 = argb[2 * i + 0];
-    const int r = (v0 >> 14) & 0x3fc;
-    const int g = (v0 >> 6) & 0x3fc;
-    const int b = (v0 << 2) & 0x3fc;
-    const int tmp_u = VP8RGBToU(r, g, b, YUV_HALF << 2);
-    const int tmp_v = VP8RGBToV(r, g, b, YUV_HALF << 2);
+    r := (v0 >> 14) & 0x3fc;
+    g := (v0 >> 6) & 0x3fc;
+    b := (v0 << 2) & 0x3fc;
+    tmp_u := VP8RGBToU(r, g, b, YUV_HALF << 2);
+    tmp_v := VP8RGBToV(r, g, b, YUV_HALF << 2);
     if (do_store) {
       u[i] = tmp_u;
       v[i] = tmp_v;
@@ -200,7 +200,7 @@ func ConvertBGRToY_C(const WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int
 func WebPConvertRGBA32ToUV_C(const WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width) {
   int i;
   for (i = 0; i < width; i += 1, rgb += 4) {
-    const int r = rgb[0], g = rgb[1], b = rgb[2];
+    r := rgb[0], g = rgb[1], b = rgb[2];
     u[i] = VP8RGBToU(r, g, b, YUV_HALF << 2);
     v[i] = VP8RGBToV(r, g, b, YUV_HALF << 2);
   }
@@ -246,11 +246,11 @@ static  uint32 GammaToLinear(uint8 v) {
 }
 
 static  int Interpolate(int v) {
-  const int tab_pos = v >> (GAMMA_TAB_FIX + 2);   // integer part
-  const int x = v & ((kGammaTabScale << 2) - 1);  // fractional part
+  tab_pos := v >> (GAMMA_TAB_FIX + 2);   // integer part
+  x := v & ((kGammaTabScale << 2) - 1);  // fractional part
   const int v0 = kLinearToGammaTab[tab_pos];
   const int v1 = kLinearToGammaTab[tab_pos + 1];
-  const int y = v1 * x + v0 * ((kGammaTabScale << 2) - x);  // interpolate
+  y := v1 * x + v0 * ((kGammaTabScale << 2) - x);  // interpolate
   assert.Assert(tab_pos + 1 < GAMMA_TAB_SIZE + 1);
   return y;
 }
@@ -258,7 +258,7 @@ static  int Interpolate(int v) {
 // Convert a linear value 'v' to YUV_FIX+2 fixed-point precision
 // U/V value, suitable for RGBToU/V calls.
 static  int LinearToGamma(uint32 base_value, int shift) {
-  const int y = Interpolate(base_value << shift);  // final uplifted value
+  y := Interpolate(base_value << shift);  // final uplifted value
   return (y + kGammaTabRounder) >> GAMMA_TAB_FIX;  // descale
 }
 
@@ -337,7 +337,7 @@ func WebPAccumulateRGBA(const const r_ptr *uint8, const const g_ptr *uint8, cons
   int i, j;
   // we loop over 2x2 blocks and produce one R/G/B/A value for each.
   for (i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * 4, dst += 4) {
-    const uint32 a = SUM4ALPHA(a_ptr + j);
+    a := SUM4ALPHA(a_ptr + j);
     int r, g, b;
     if (a == 4 * 0xff || a == 0) {
       r = SUM4(r_ptr + j, 4);
@@ -354,7 +354,7 @@ func WebPAccumulateRGBA(const const r_ptr *uint8, const const g_ptr *uint8, cons
     dst[3] = a;
   }
   if (width & 1) {
-    const uint32 a = uint(2) * SUM2ALPHA(a_ptr + j);
+    a := uint(2) * SUM2ALPHA(a_ptr + j);
     int r, g, b;
     if (a == 4 * 0xff || a == 0) {
       r = SUM2(r_ptr + j);
@@ -399,8 +399,8 @@ func ImportYUVAFromRGBA_C(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
                                  int rgb_stride,  // bytes per scanline
                                  int has_alpha, int width, int height, tmp_rgb *uint16, int y_stride, int uv_stride, int a_stride, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
   int y;
-  const int is_rgb = (r_ptr < b_ptr);  // otherwise it's bgr
-  const int uv_width = (width + 1) >> 1;
+  is_rgb := (r_ptr < b_ptr);  // otherwise it's bgr
+  uv_width := (width + 1) >> 1;
 
   has_alpha &= dst_a != nil;
   if (has_alpha) {
@@ -453,8 +453,8 @@ func ImportYUVAFromRGBA_C(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
 func ImportYUVAFromRGBALastLine_C(
     const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, const a_ptr *uint8, int step,  // bytes per pixel
     int has_alpha, int width, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
-  const int is_rgb = (r_ptr < b_ptr);  // otherwise it's bgr
-  const int uv_width = (width + 1) >> 1;
+  is_rgb := (r_ptr < b_ptr);  // otherwise it's bgr
+  uv_width := (width + 1) >> 1;
   int row_has_alpha = has_alpha && dst_a != nil;
 
   if (is_rgb) {

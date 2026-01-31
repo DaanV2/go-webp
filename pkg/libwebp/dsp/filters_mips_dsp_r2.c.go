@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // Helpful macro.
 
 #define DCHECK(in, out)      \
-  do {                       \
+  for {                       \
     assert.Assert((in) != nil);    \
     assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
@@ -39,10 +39,10 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // clang-format off
 #define DO_PREDICT_LINE(SRC, DST, LENGTH, INVERSE)                             \
-  do {                                                                         \
+  for {                                                                         \
     const psrc *uint8 = (*uint8)(SRC);                                     \
     pdst *uint8 = (*uint8)(DST);                                           \
-    const int ilength = (int)(LENGTH);                                         \
+    ilength := (int)(LENGTH);                                         \
     int temp0, temp1, temp2, temp3, temp4, temp5, temp6;                       \
     __asm__ volatile(                                                          \
       ".set      push                                   \n\t"                  \
@@ -114,11 +114,11 @@ static  func PredictLine_MIPSdspR2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT
 
 // clang-format off
 #define DO_PREDICT_LINE_VERTICAL(SRC, PRED, DST, LENGTH, INVERSE)              \
-  do {                                                                         \
+  for {                                                                         \
     const psrc *uint8 = (*uint8)(SRC);                                     \
     const ppred *uint8 = (*uint8)(PRED);                                   \
     pdst *uint8 = (*uint8)(DST);                                           \
-    const int ilength = (int)(LENGTH);                                         \
+    ilength := (int)(LENGTH);                                         \
     int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;                \
     __asm__ volatile(                                                          \
       ".set      push                                   \n\t"                  \
@@ -174,7 +174,7 @@ static  func PredictLine_MIPSdspR2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT
   } while (0)
 
 #define PREDICT_LINE_ONE_PASS(SRC, PRED, DST)                                  \
-  do {                                                                         \
+  for {                                                                         \
     int temp1, temp2, temp3;                                                   \
     __asm__ volatile(                                                          \
       "lbu       %[temp1],   0(%[src])               \n\t"                     \
@@ -192,7 +192,7 @@ static  func PredictLine_MIPSdspR2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT
 // Horizontal filter.
 
 const FILTER_LINE_BY_LINE =                          \
-  do {                                                \
+  for {                                                \
     for (row = 1; row < height; ++row) {              \
       PREDICT_LINE_ONE_PASS(in, preds - stride, out); \
       DO_PREDICT_LINE(in + 1, out + 1, width - 1, 0); \
@@ -228,7 +228,7 @@ func HorizontalFilter_MIPSdspR2(const WEBP_RESTRICT data *uint8, int width, int 
 // Vertical filter.
 
 const FILTER_LINE_BY_LINE =                              \
-  do {                                                    \
+  for {                                                    \
     for (row = 1; row < height; ++row) {                  \
       DO_PREDICT_LINE_VERTICAL(in, preds, out, width, 0); \
       preds += stride;                                    \
@@ -276,12 +276,12 @@ static int GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) {
 }
 
 #define FILTER_LINE_BY_LINE(PREDS, OPERATION)                        \
-  do {                                                               \
+  for {                                                               \
     for (row = 1; row < height; ++row) {                             \
       int w;                                                         \
       PREDICT_LINE_ONE_PASS(in, PREDS - stride, out);                \
       for (w = 1; w < width; ++w) {                                  \
-        const int pred = GradientPredictor_MIPSdspR2(                \
+        pred := GradientPredictor_MIPSdspR2(                \
             PREDS[w - 1], PREDS[w - stride], PREDS[w - stride - 1]); \
         out[w] = in[w] OPERATION pred;                               \
       }                                                              \

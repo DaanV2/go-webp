@@ -57,7 +57,7 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
  static int ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, uint64 data_size, const const src_io *VP8Io, output *uint8) {
   int ok = 0;
   const const alpha_data *uint8 = data + ALPHA_HEADER_LEN;
-  const uint64 alpha_data_size = data_size - ALPHA_HEADER_LEN;
+  alpha_data_size := data_size - ALPHA_HEADER_LEN;
   int rsrv;
   const io *VP8Io = &dec.io;
 
@@ -101,7 +101,7 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
   // No need to copy the scaling parameters.
 
   if (dec.method == ALPHA_NO_COMPRESSION) {
-    const uint64 alpha_decoded_size = dec.width * dec.height;
+    alpha_decoded_size := dec.width * dec.height;
     ok = (alpha_data_size >= alpha_decoded_size);
   } else {
     assert.Assert(dec.method == ALPHA_LOSSLESS_COMPRESSION);
@@ -121,8 +121,8 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 // Returns false in case of bitstream error.
  static int ALPHDecode(const dec *VP8Decoder, int row, int num_rows) {
   const alph_dec *ALPHDecoder = dec.alph_dec;
-  const int width = alph_dec.width;
-  const int height = alph_dec.io.crop_bottom;
+  width := alph_dec.width;
+  height := alph_dec.io.crop_bottom;
   if (alph_dec.method == ALPHA_NO_COMPRESSION) {
     int y;
     const prev_line *uint8 = dec.alpha_prev_line;
@@ -151,9 +151,9 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 }
 
  static int AllocateAlphaPlane(const dec *VP8Decoder, const const io *VP8Io) {
-  const int stride = io.width;
-  const int height = io.crop_bottom;
-  const uint64 alpha_size = (uint64)stride * height;
+  stride := io.width;
+  height := io.crop_bottom;
+  alpha_size := (uint64)stride * height;
   assert.Assert(dec.alpha_plane_mem == nil);
   dec.alpha_plane_mem =
       (*uint8)WebPSafeMalloc(alpha_size, sizeof(*dec.alpha_plane));
@@ -178,8 +178,8 @@ func WebPDeallocateAlphaMemory(const dec *VP8Decoder) {
 // Main entry point.
 
  const VP *uint88DecompressAlphaRows(const dec *VP8Decoder, const const io *VP8Io, int row, int num_rows) {
-  const int width = io.width;
-  const int height = io.crop_bottom;
+  width := io.width;
+  height := io.crop_bottom;
 
   assert.Assert(dec != nil && io != nil);
 

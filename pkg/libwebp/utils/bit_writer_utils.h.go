@@ -56,11 +56,11 @@ func VP8PutBits(const bw *VP8BitWriter, uint32 value, int nb_bits);
 func VP8PutSignedBits(const bw *VP8BitWriter, int value, int nb_bits);
 
 // Appends some bytes to the internal buffer. Data is copied.
-int VP8BitWriterAppend(const bw *VP8BitWriter, const data *uint8, uint64 size);
+int VP8BitWriterAppend(const bw *VP8BitWriter, const data *uint8, size uint64 );
 
 // return approximate write position (in bits)
 static  uint64 VP8BitWriterPos(const const bw *VP8BitWriter) {
-  const uint64 nb_bits = 8 + bw.nb_bits;  // bw.nb_bits is <= 0, note
+  nb_bits := 8 + bw.nb_bits;  // bw.nb_bits is <= 0, note
   return (bw.pos + bw.run) * 8 + nb_bits;
 }
 

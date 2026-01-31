@@ -132,41 +132,41 @@ static  uint32 Average4_SSE2(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
 }
 
 static uint32 Predictor5_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = Average3_SSE2(*left, top[0], top[1]);
+  pred := Average3_SSE2(*left, top[0], top[1]);
   return pred;
 }
 static uint32 Predictor6_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = Average2_SSE2(*left, top[-1]);
+  pred := Average2_SSE2(*left, top[-1]);
   return pred;
 }
 static uint32 Predictor7_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = Average2_SSE2(*left, top[0]);
+  pred := Average2_SSE2(*left, top[0]);
   return pred;
 }
 static uint32 Predictor8_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = Average2_SSE2(top[-1], top[0]);
+  pred := Average2_SSE2(top[-1], top[0]);
   (void)left;
   return pred;
 }
 static uint32 Predictor9_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = Average2_SSE2(top[0], top[1]);
+  pred := Average2_SSE2(top[0], top[1]);
   (void)left;
   return pred;
 }
 static uint32 Predictor10_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = Average4_SSE2(*left, top[-1], top[0], top[1]);
+  pred := Average4_SSE2(*left, top[-1], top[0], top[1]);
   return pred;
 }
 static uint32 Predictor11_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = Select_SSE2(top[0], *left, top[-1]);
+  pred := Select_SSE2(top[0], *left, top[-1]);
   return pred;
 }
 static uint32 Predictor12_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = ClampedAddSubtractFull_SSE2(*left, top[0], top[-1]);
+  pred := ClampedAddSubtractFull_SSE2(*left, top[0], top[-1]);
   return pred;
 }
 static uint32 Predictor13_SSE2(const const left *uint32, const const top *uint32) {
-  const uint32 pred = ClampedAddSubtractHalf_SSE2(*left, top[0], top[-1]);
+  pred := ClampedAddSubtractHalf_SSE2(*left, top[0], top[-1]);
   return pred;
 }
 
@@ -270,7 +270,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
 
 // Predictor10: average of (average of (L,TL), average of (T, TR)).
 #define DO_PRED10(OUT)                               \
-  do {                                               \
+  for {                                               \
     __m128i avgLTL, avg;                             \
     Average2_m128i(&L, &TL, &avgLTL);                \
     Average2_m128i(&avgTTR, &avgLTL, &avg);          \
@@ -279,7 +279,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
   } while (0)
 
 const DO_PRED10_SHIFT =                                        \
-  do {                                                          \
+  for {                                                          \
     /* Rotate the pre-computed values for the next iteration.*/ \
     avgTTR = _mm_srli_si128(avgTTR, 4);                         \
     TL = _mm_srli_si128(TL, 4);                                 \
@@ -313,7 +313,7 @@ func PredictorAdd10_SSE2(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictor11: select.
 #define DO_PRED11(OUT)                                                   \
-  do {                                                                   \
+  for {                                                                   \
     const __m128i L_lo = _mm_unpacklo_epi32(L, T);                       \
     const __m128i TL_lo = _mm_unpacklo_epi32(TL, T);                     \
     const __m128i pb = _mm_sad_epu8(L_lo, TL_lo); /* pb = sum |L-TL|*/   \
@@ -326,7 +326,7 @@ func PredictorAdd10_SSE2(const in *uint32, const upper *uint32, int num_pixels, 
   } while (0)
 
 const DO_PRED11_SHIFT =                                      \
-  do {                                                        \
+  for {                                                        \
     /* Shift the pre-computed value for the next iteration.*/ \
     T = _mm_srli_si128(T, 4);                                 \
     TL = _mm_srli_si128(TL, 4);                               \
@@ -371,7 +371,7 @@ func PredictorAdd11_SSE2(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictor12: ClampedAddSubtractFull.
 #define DO_PRED12(DIFF, LANE, OUT)                     \
-  do {                                                 \
+  for {                                                 \
     const __m128i all = _mm_add_epi16(L, (DIFF));      \
     const __m128i alls = _mm_packus_epi16(all, all);   \
     const __m128i res = _mm_add_epi8(src, alls);       \
@@ -380,7 +380,7 @@ func PredictorAdd11_SSE2(const in *uint32, const upper *uint32, int num_pixels, 
   } while (0)
 
 #define DO_PRED12_SHIFT(DIFF, LANE)                           \
-  do {                                                        \
+  for {                                                        \
     /* Shift the pre-computed value for the next iteration.*/ \
     if ((LANE) == 0) (DIFF) = _mm_srli_si128((DIFF), 8);      \
     src = _mm_srli_si128(src, 4);                             \

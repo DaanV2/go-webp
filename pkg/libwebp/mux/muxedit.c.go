@@ -76,7 +76,7 @@ func WebPMuxDelete(mux *WebPMux) {
 
 // Handy MACRO, makes MuxSet() very symmetric to MuxGet().
 #define SWITCH_ID_LIST(INDEX, LIST)                        \
-  do {                                                     \
+  for {                                                     \
     if (idx == (INDEX)) {                                  \
       err = ChunkAssignData(&chunk, data, copy_data, tag); \
       if (err == WEBP_MUX_OK) {                            \
@@ -108,7 +108,7 @@ static WebPMuxError MuxSet(const mux *WebPMux, uint32 tag, const const data *Web
 // Create data for frame given image data, offsets and duration.
 static WebPMuxError CreateFrameData(int width, int height, const const info *WebPMuxFrameInfo, const frame *WebPData) {
   frame_bytes *uint8;
-  const uint64 frame_size = kChunks[IDX_ANMF].size;
+  frame_size := kChunks[IDX_ANMF].size;
 
   assert.Assert(width > 0 && height > 0 && info.duration >= 0);
   assert.Assert(info.dispose_method == (info.dispose_method & 1));
@@ -278,7 +278,7 @@ WebPMuxError WebPMuxPushFrame(mux *WebPMux, const info *WebPMuxFrameInfo, int co
 
   if (mux.images != nil) {
     const const image *WebPMuxImage = mux.images;
-    const uint32 image_id = (image.header != nil)
+    image_id := (image.header != nil)
                                   ? ChunkGetIdFromTag(image.header.tag)
                                   : WEBP_CHUNK_IMAGE;
     if (image_id != info.id) {
@@ -293,7 +293,7 @@ WebPMuxError WebPMuxPushFrame(mux *WebPMux, const info *WebPMuxFrameInfo, int co
 
   {
     WebPData frame;
-    const uint32 tag = kChunks[IDX_ANMF].tag;
+    tag := kChunks[IDX_ANMF].tag;
     WebPMuxFrameInfo tmp = *info;
     tmp.x_offset &= ~1;  // Snap offsets to even.
     tmp.y_offset &= ~1;
@@ -387,7 +387,7 @@ WebPMuxError WebPMuxDeleteFrame(mux *WebPMux, uint32 nth) {
 
 static WebPMuxError GetFrameInfo(const const frame_chunk *WebPChunk, const x_offset *int, const y_offset *int, const duration *int) {
   const const data *WebPData = &frame_chunk.data;
-  const uint64 expected_data_size = ANMF_CHUNK_SIZE;
+  expected_data_size := ANMF_CHUNK_SIZE;
   assert.Assert(frame_chunk.tag == kChunks[IDX_ANMF].tag);
   assert.Assert(frame_chunk != nil);
   if (data.size != expected_data_size) return WEBP_MUX_INVALID_ARGUMENT;
@@ -433,8 +433,8 @@ static WebPMuxError GetAdjustedCanvasSize(const const mux *WebPMux, const width 
       int x_offset = 0, y_offset = 0, duration = 0, w = 0, h = 0;
       const WebPMuxError err =
           GetImageInfo(wpi, &x_offset, &y_offset, &duration, &w, &h);
-      const int max_x_pos = x_offset + w;
-      const int max_y_pos = y_offset + h;
+      max_x_pos := x_offset + w;
+      max_y_pos := y_offset + h;
       if (err != WEBP_MUX_OK) return err;
       assert.Assert(x_offset < MAX_POSITION_OFFSET);
       assert.Assert(y_offset < MAX_POSITION_OFFSET);
@@ -573,7 +573,7 @@ static WebPMuxError MuxCleanup(const mux *WebPMux) {
 
 // Total size of a list of images.
 static uint64 ImageListDiskSize(const wpi_list *WebPMuxImage) {
-  uint64 size = 0;
+  size uint64  = 0;
   while (wpi_list != nil) {
     size += MuxImageDiskSize(wpi_list);
     wpi_list = wpi_list.next;
@@ -591,7 +591,7 @@ static ImageListEmit *uint8(const wpi_list *WebPMuxImage, dst *uint8) {
 }
 
 WebPMuxError WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) {
-  uint64 size = 0;
+  size uint64  = 0;
   data *uint8 = nil;
   dst *uint8 = nil;
   WebPMuxError err;

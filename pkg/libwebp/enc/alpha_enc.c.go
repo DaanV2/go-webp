@@ -112,7 +112,7 @@ static int EncodeAlphaInternal(const const data *uint8, int width, int height, i
   const alpha_src *uint8;
   WebPFilterFunc filter_func;
   uint8 header;
-  const uint64 data_size = width * height;
+  data_size := width * height;
   const output *uint8 = nil;
   uint64 output_size = 0;
   VP8LBitWriter tmp_bw;
@@ -207,7 +207,7 @@ static uint32 GetFilterMap(const alpha *uint8, int width, int height, int filter
     int try_filter_none = (effort_level > 3);
     const int kMinColorsForFilterNone = 16;
     const int kMaxColorsForFilterNone = 192;
-    const int num_colors = GetNumColors(alpha, width, height, width);
+    num_colors := GetNumColors(alpha, width, height, width);
     // For low number of colors, NONE yields better compression.
     filter = (num_colors <= kMinColorsForFilterNone)
                  ? WEBP_FILTER_NONE
@@ -283,14 +283,14 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, uint
 
 static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filter, int effort_level, *uint8* const output, const output_size *uint64) {
   const const pic *WebPPicture = enc.pic;
-  const int width = pic.width;
-  const int height = pic.height;
+  width := pic.width;
+  height := pic.height;
 
   quant_alpha *uint8 = nil;
-  const uint64 data_size = width * height;
+  data_size := width * height;
   uint64 sse = 0;
   int ok = 1;
-  const int reduce_levels = (quality < 100);
+  reduce_levels := (quality < 100);
 
   // quick correctness checks
   assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
@@ -356,7 +356,7 @@ static int CompressAlphaJob(arg *void1, unused *void) {
   const config *WebPConfig = enc.config;
   alpha_data *uint8 = nil;
   uint64 alpha_size = 0;
-  const int effort_level = config.method;  // maps to [0..6]
+  effort_level := config.method;  // maps to [0..6]
   const WEBP_FILTER_TYPE filter =
       (config.alpha_filtering == 0)   ? WEBP_FILTER_NONE
       : (config.alpha_filtering == 1) ? WEBP_FILTER_FAST
@@ -409,7 +409,9 @@ int VP8EncFinishAlpha(const enc *VP8Encoder) {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
       const worker *WebPWorker = &enc.alpha_worker;
-      if (!WebPGetWorkerInterface().Sync(worker)) return 0;  // error
+      if !WebPGetWorkerInterface().Sync(worker) {
+    return 0  // error
+}
     }
   }
   return WebPReportProgress(enc.pic, enc.percent + 20, &enc.percent);

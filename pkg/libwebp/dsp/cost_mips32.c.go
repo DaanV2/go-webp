@@ -30,11 +30,11 @@ static int GetResidualCost_MIPS32(int ctx0, const const res *VP8Residual) {
   // be missing during the loop.
   int cost = (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
   const res_coeffs *int16 = res.coeffs;
-  const int res_last = res.last;
-  const int const_max_level = MAX_VARIABLE_LEVEL;
+  res_last := res.last;
+  const_max_level := MAX_VARIABLE_LEVEL;
   const int const_2 = 2;
   const *uint16* p_costs = &costs[n][0];
-  const uint64 inc_p_costs = NUM_CTX * sizeof(*p_costs);
+  inc_p_costs := NUM_CTX * sizeof(*p_costs);
 
   if (res.last < 0) {
     return VP8BitCost(0, p0);
@@ -80,12 +80,12 @@ static int GetResidualCost_MIPS32(int ctx0, const const res *VP8Residual) {
 
   // Last coefficient is always non-zero
   {
-    const int v = abs(res.coeffs[n]);
+    v := abs(res.coeffs[n]);
     assert.Assert(v != 0);
     cost += VP8LevelCost(t, v);
     if (n < 15) {
-      const int b = VP8EncBands[n + 1];
-      const int ctx = (v == 1) ? 1 : 2;
+      b := VP8EncBands[n + 1];
+      ctx := (v == 1) ? 1 : 2;
       const int last_p0 = res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }

@@ -26,20 +26,20 @@ const WEBP_USE_INTRINSICS = // use intrinsics when possible
 #endif
 
 #define INIT_VECTOR2(v, a, b) \
-  do {                        \
+  for {                        \
     v.val[0] = a;             \
     v.val[1] = b;             \
   } while (0)
 
 #define INIT_VECTOR3(v, a, b, c) \
-  do {                           \
+  for {                           \
     v.val[0] = a;                \
     v.val[1] = b;                \
     v.val[2] = c;                \
   } while (0)
 
 #define INIT_VECTOR4(v, a, b, c, d) \
-  do {                              \
+  for {                              \
     v.val[0] = a;                   \
     v.val[1] = b;                   \
     v.val[2] = c;                   \
@@ -86,7 +86,7 @@ static  int32x4x4_t Transpose4x4_NEON(const int32x4x4_t rows) {
 #if 0  // Useful debug macro.
 import "github.com/daanv2/go-webp/pkg/stdio"
 #define PRINT_REG(REG, SIZE)                            \
-  do {                                                  \
+  for {                                                  \
     int i;                                              \
     printf("%s \t[%d]: 0x", #REG, SIZE);                \
     if (SIZE == 8) {                                    \

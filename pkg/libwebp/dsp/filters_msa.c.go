@@ -57,7 +57,7 @@ static  func PredictLineInverse0(const src *uint8, const pred *uint8, WEBP_RESTR
 // Helpful macro.
 
 #define DCHECK(in, out)      \
-  do {                       \
+  for {                       \
     assert.Assert((in) != nil);    \
     assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
@@ -122,7 +122,7 @@ static  func PredictLineGradient(const pinput *uint8, const ppred *uint8, WEBP_R
     size -= 16;
   }
   for (w = 0; w < size; ++w) {
-    const int pred = ppred[w - 1] + ppred[w - stride] - ppred[w - stride - 1];
+    pred := ppred[w - 1] + ppred[w - stride] - ppred[w - stride - 1];
     poutput[w] = pinput[w] - (pred < 0 ? 0 : pred > 255 ? 255 : pred);
   }
 }

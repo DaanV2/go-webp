@@ -329,12 +329,12 @@ int VP8LCreateCompressedHuffmanTree(
   WEBP_INDEXABLE current_token *HuffmanTreeToken = tokens;
   const starting_token *HuffmanTreeToken = tokens;
   const ending_token *HuffmanTreeToken = tokens + max_tokens;
-  const int depth_size = tree.num_symbols;
+  depth_size := tree.num_symbols;
   int prev_value = 8;  // 8 is the initial value for rle.
   int i = 0;
   assert.Assert(tokens != nil);
   while (i < depth_size) {
-    const int value = tree.code_lengths[i];
+    value := tree.code_lengths[i];
     int k = i + 1;
     int runs;
     while (k < depth_size && tree.code_lengths[k] == value) ++k;
@@ -381,7 +381,7 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
   assert.Assert(tree != nil);
   len = tree.num_symbols;
   for (i = 0; i < len; ++i) {
-    const int code_length = tree.code_lengths[i];
+    code_length := tree.code_lengths[i];
     assert.Assert(code_length <= MAX_ALLOWED_CODE_LENGTH);
     ++depth_count[code_length];
   }
@@ -395,7 +395,7 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
     }
   }
   for (i = 0; i < len; ++i) {
-    const int code_length = tree.code_lengths[i];
+    code_length := tree.code_lengths[i];
     tree.codes[i] = ReverseBits(code_length, next_code[code_length]++);
   }
 }
@@ -404,7 +404,7 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
 // Main entry point
 
 func VP8LCreateHuffmanTree(const histogram *uint32, int tree_depth_limit, const buf_rle *uint8, const huff_tree *HuffmanTree, const huff_code *HuffmanTreeCode) {
-  const int num_symbols = huff_code.num_symbols;
+  num_symbols := huff_code.num_symbols;
   const WEBP_BIDI_INDEXABLE bounded_histogram *uint32 =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           *uint32, histogram, (uint64)num_symbols * sizeof(*histogram));

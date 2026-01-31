@@ -21,7 +21,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define TRANSFORM_COLOR_8(src0, src1, dst0, dst1, c0, c1, mask0, mask1) \
-  do {                                                                  \
+  for {                                                                  \
     v8i16 g0, g1, t0, t1, t2, t3;                                       \
     v4i32 t4, t5;                                                       \
     VSHF_B2_SH(src0, src0, src1, src1, mask0, mask0, g0, g1);           \
@@ -38,7 +38,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 #define TRANSFORM_COLOR_4(src, dst, c0, c1, mask0, mask1) \
-  do {                                                    \
+  for {                                                    \
     const v16i8 g0 = VSHF_SB(src, src, mask0);            \
     v8i16 t0 = __msa_dotp_s_h(c0, g0);                    \
     v8i16 t1;                                             \
@@ -80,15 +80,15 @@ func TransformColor_MSA(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTR
       src0 = LD_UB(data);
       TRANSFORM_COLOR_4(src0, dst0, g2br, r2b, mask0, mask1);
       if (num_pixels == 3) {
-        const uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0);
-        const uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 2);
+        pix_d := __msa_copy_s_d((v2i64)dst0, 0);
+        pix_w := __msa_copy_s_w((v4i32)dst0, 2);
         SD(pix_d, data + 0);
         SW(pix_w, data + 2);
       } else if (num_pixels == 2) {
-        const uint64 pix_d = __msa_copy_s_d((v2i64)dst0, 0);
+        pix_d := __msa_copy_s_d((v2i64)dst0, 0);
         SD(pix_d, data);
       } else {
-        const uint32 pix_w = __msa_copy_s_w((v4i32)dst0, 0);
+        pix_w := __msa_copy_s_w((v4i32)dst0, 0);
         SW(pix_w, data);
       }
     }
@@ -120,9 +120,9 @@ func SubtractGreenFromBlueAndRed_MSA(argb_data *uint32, int num_pixels) {
       num_pixels -= 4;
     }
     for (i = 0; i < num_pixels; i++) {
-      const uint8 b = ptemp_data[0];
-      const uint8 g = ptemp_data[1];
-      const uint8 r = ptemp_data[2];
+      b := ptemp_data[0];
+      g := ptemp_data[1];
+      r := ptemp_data[2];
       ptemp_data[0] = (b - g) & 0xff;
       ptemp_data[2] = (r - g) & 0xff;
       ptemp_data += 4;

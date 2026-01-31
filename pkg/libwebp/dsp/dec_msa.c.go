@@ -121,7 +121,7 @@ func TransformDC(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 }
 
 func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
-  const int a = in[0] + 4;
+  a := in[0] + 4;
   const int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
   const int d4 = WEBP_TRANSFORM_AC3_MUL1(in[4]);
   const int in2 = WEBP_TRANSFORM_AC3_MUL2(in[1]);
@@ -164,7 +164,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   }
 
 #define FILT_VAL(q0_m, p0_m, mask, filt)    \
-  do {                                      \
+  for {                                      \
     v16i8 q0_sub_p0;                        \
     q0_sub_p0 = __msa_subs_s_b(q0_m, p0_m); \
     filt = __msa_adds_s_b(filt, q0_sub_p0); \
@@ -174,7 +174,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   } while (0)
 
 #define FILT2(q_m, p_m, q, p)                  \
-  do {                                         \
+  for {                                         \
     u_r = SRAI_H(temp1, 7);                    \
     u_r = __msa_sat_s_h(u_r, 7);               \
     u_l = SRAI_H(temp3, 7);                    \
@@ -187,7 +187,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   } while (0)
 
 #define LPF_FILTER4_4W(p1, p0, q0, q1, mask, hev)       \
-  do {                                                  \
+  for {                                                  \
     v16i8 p1_m, p0_m, q0_m, q1_m;                       \
     v16i8 filt, t1, t2;                                 \
     const v16i8 cnst4b = __msa_ldi_b(4);                \
@@ -215,7 +215,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   } while (0)
 
 #define LPF_MBFILTER(p2, p1, p0, q0, q1, q2, mask, hev) \
-  do {                                                  \
+  for {                                                  \
     v16i8 p2_m, p1_m, p0_m, q2_m, q1_m, q0_m;           \
     v16i8 u, filt, t1, t2, filt_sign;                   \
     v8i16 filt_r, filt_l, u_r, u_l;                     \
@@ -259,7 +259,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 
 #define LPF_MASK_HEV(p3_in, p2_in, p1_in, p0_in, q0_in, q1_in, q2_in, q3_in, \
                      limit_in, b_limit_in, thresh_in, hev_out, mask_out)     \
-  do {                                                                       \
+  for {                                                                       \
     v16u8 p3_asub_p2_m, p2_asub_p1_m, p1_asub_p0_m, q1_asub_q0_m;            \
     v16u8 p1_asub_q1_m, p0_asub_q0_m, q3_asub_q2_m, q2_asub_q1_m;            \
     v16u8 flat_out;                                                          \
@@ -291,7 +291,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   } while (0)
 
 #define ST6x1_UB(in0, in0_idx, in1, in1_idx, pdst, stride)       \
-  do {                                                           \
+  for {                                                           \
     const uint16 tmp0_h = __msa_copy_s_h((v8i16)in1, in1_idx); \
     const uint32 tmp0_w = __msa_copy_s_w((v4i32)in0, in0_idx); \
     SW(tmp0_w, pdst);                                            \
@@ -299,7 +299,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   } while (0)
 
 #define ST6x4_UB(in0, start_in0_idx, in1, start_in1_idx, pdst, stride)  \
-  do {                                                                  \
+  for {                                                                  \
     ptmp *uint81 = (*uint8)pdst;                                    \
     ST6x1_UB(in0, start_in0_idx, in1, start_in1_idx, ptmp1, 4);         \
     ptmp1 += stride;                                                    \
@@ -311,7 +311,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   } while (0)
 
 #define LPF_SIMPLE_FILT(p1_in, p0_in, q0_in, q1_in, mask)           \
-  do {                                                              \
+  for {                                                              \
     v16i8 p1_m, p0_m, q0_m, q1_m, filt, filt1, filt2;               \
     const v16i8 cnst4b = __msa_ldi_b(4);                            \
     const v16i8 cnst3b = __msa_ldi_b(3);                            \
@@ -330,7 +330,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   } while (0)
 
 #define LPF_SIMPLE_MASK(p1, p0, q0, q1, b_limit, mask)        \
-  do {                                                        \
+  for {                                                        \
     v16u8 p1_a_sub_q1, p0_a_sub_q0;                           \
                                                               \
     p0_a_sub_q0 = __msa_asub_u_b(p0, q0);                     \
@@ -841,7 +841,7 @@ func DC16NoTopLeft(dst *uint8) {  // DC with nothing
 // Chroma
 
 #define STORE8x8(out, dst)                       \
-  do {                                           \
+  for {                                           \
     SD4(out, out, out, out, dst + 0 * BPS, BPS); \
     SD4(out, out, out, out, dst + 4 * BPS, BPS); \
   } while (0)
@@ -890,7 +890,7 @@ func TM8uv(dst *uint8) {
 
 func VE8uv(dst *uint8) {  // vertical
   const v16u8 rtop = LD_UB(dst - BPS);
-  const uint64 out = __msa_copy_s_d((v2i64)rtop, 0);
+  out := __msa_copy_s_d((v2i64)rtop, 0);
   STORE8x8(out, dst);
 }
 
@@ -911,14 +911,14 @@ func HE8uv(dst *uint8) {  // horizontal
 }
 
 func DC8uvNoLeft(dst *uint8) {  // DC with no left samples
-  const uint32 dc = 4;
+  dc := 4;
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 temp0 = __msa_hadd_u_h(rtop, rtop);
   const v4u32 temp1 = __msa_hadd_u_w(temp0, temp0);
   const v2u64 temp2 = __msa_hadd_u_d(temp1, temp1);
-  const uint32 sum_m = __msa_copy_s_w((v4i32)temp2, 0);
+  sum_m := __msa_copy_s_w((v4i32)temp2, 0);
   const v16u8 dcval = (v16u8)__msa_fill_b((dc + sum_m) >> 3);
-  const uint64 out = __msa_copy_s_d((v2i64)dcval, 0);
+  out := __msa_copy_s_d((v2i64)dcval, 0);
   STORE8x8(out, dst);
 }
 
@@ -937,7 +937,7 @@ func DC8uvNoTop(dst *uint8) {  // DC with no top samples
 }
 
 func DC8uvNoTopLeft(dst *uint8) {  // DC with nothing
-  const uint64 out = uint64(0x8080808080808080);
+  out := uint64(0x8080808080808080);
   STORE8x8(out, dst);
 }
 

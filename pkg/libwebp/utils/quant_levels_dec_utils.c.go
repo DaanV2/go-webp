@@ -85,7 +85,7 @@ static  uint8 clip_8b(int v) {
 // vertical accumulation
 func VFilter(const p *SmoothParams) {
   const WEBP_INDEXABLE src *uint8 = p.src;
-  const int w = p.width;
+  w := p.width;
   const WEBP_INDEXABLE cur *uint16 = p.cur;
   const const WEBP_INDEXABLE top *uint16 = p.top;
   const WEBP_INDEXABLE out *uint16 = p.end;
@@ -115,17 +115,17 @@ func VFilter(const p *SmoothParams) {
 func HFilter(const p *SmoothParams) {
   const const WEBP_INDEXABLE in *uint16 = p.end;
   const WEBP_INDEXABLE out *uint16 = p.average;
-  const uint32 scale = p.scale;
-  const int w = p.width;
-  const int r = p.radius;
+  scale := p.scale;
+  w := p.width;
+  r := p.radius;
 
   int x;
   for (x = 0; x <= r; ++x) {  // left mirroring
-    const uint16 delta = in[x + r - 1] + in[r - x];
+    delta := in[x + r - 1] + in[r - x];
     out[x] = (delta * scale) >> FIX;
   }
   for (; x < w - r; ++x) {  // bulk middle run
-    const uint16 delta = in[x + r] - in[x - r - 1];
+    delta := in[x + r] - in[x - r - 1];
     out[x] = (delta * scale) >> FIX;
   }
   for (; x < w; ++x) {  // right mirroring
@@ -138,7 +138,7 @@ func HFilter(const p *SmoothParams) {
 // emit one filtered output row
 func ApplyFilter(const p *SmoothParams) {
   const const WEBP_INDEXABLE average *uint16 = p.average;
-  const int w = p.width;
+  w := p.width;
   // correction is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer for negative indexing.
   const const WEBP_BIDI_INDEXABLE correction *int16 =
@@ -149,9 +149,9 @@ func ApplyFilter(const p *SmoothParams) {
   const WEBP_INDEXABLE dst *uint8 = p.dst;
   int x;
   for (x = 0; x < w; ++x) {
-    const int v = dst[x];
+    v := dst[x];
     if (v < p.max && v > p.min) {
-      const int c = (v << DFIX) + correction[average[x] - (v << LFIX)];
+      c := (v << DFIX) + correction[average[x] - (v << LFIX)];
 #if defined(USE_DITHERING)
       dst[x] = clip_8b(c + dither[x % DSIZE]);
 #else
@@ -175,8 +175,8 @@ func InitCorrectionLUT(
   // Note that: threshold2 = 3/4 * threshold1
   const int threshold1 = min_dist << LFIX;
   const int threshold2 = (3 * threshold1) >> 2;
-  const int max_threshold = threshold2 << DFIX;
-  const int delta = threshold1 - threshold2;
+  max_threshold := threshold2 << DFIX;
+  delta := threshold1 - threshold2;
   // lut_ptr is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer (lut) for negative indexing.
   const WEBP_BIDI_INDEXABLE lut *int16 = lut_ptr + LUT_SIZE;
@@ -200,7 +200,7 @@ func CountLevels(const p *SmoothParams) {
   p.max = 0;
   for (j = 0; j < p.height; ++j) {
     for (i = 0; i < p.width; ++i) {
-      const int v = data[i];
+      v := data[i];
       if (v < p.min) p.min = v;
       if (v > p.max) p.max = v;
       used_levels[v] = 1;
@@ -214,7 +214,7 @@ func CountLevels(const p *SmoothParams) {
     if (used_levels[i]) {
       ++p.num_levels;
       if (last_level >= 0) {
-        const int level_dist = i - last_level;
+        level_dist := i - last_level;
         if (level_dist < p.min_level_dist) {
           p.min_level_dist = level_dist;
         }
@@ -228,10 +228,10 @@ func CountLevels(const p *SmoothParams) {
 static int InitParams(WEBP_SIZED_BY *uint8((uint64)height *stride) const data, int width, int height, int stride, int radius, const p *SmoothParams) {
   const int R = 2 * radius + 1;  // total size of the kernel
 
-  const uint64 size_scratch_m = (R + 1) * width * sizeof(*p.start);
-  const uint64 size_m = width * sizeof(*p.average);
-  const uint64 size_lut = CORRECTION_LUT_SIZE * sizeof(*p.correction);
-  const uint64 total_size = size_scratch_m + size_m + size_lut;
+  size_scratch_m := (R + 1) * width * sizeof(*p.start);
+  size_m := width * sizeof(*p.average);
+  size_lut := CORRECTION_LUT_SIZE * sizeof(*p.correction);
+  total_size := size_scratch_m + size_m + size_lut;
   WEBP_BIDI_INDEXABLE mem *uint8 = (*uint8)WebPSafeMalloc(uint(1), total_size);
 
   if (mem == nil) return 0;
@@ -274,7 +274,9 @@ int WebPDequantizeLevels(WEBP_SIZED_BY *uint8((uint64)height *stride)
   int radius = 4 * strength / 100;
 
   if (strength < 0 || strength > 100) return 0;
-  if (data == nil || width <= 0 || height <= 0) return 0;  // bad params
+  if data == nil || width <= 0 || height <= 0 {
+    return 0  // bad params
+}
 
   // limit the filter size to not exceed the image dimensions
   if (2 * radius + 1 > width) radius = (width - 1) >> 1;

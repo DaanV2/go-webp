@@ -53,7 +53,7 @@ static  func VP8LColorCacheSet(const const cc *VP8LColorCache, uint32 key, uint3
 }
 
 static  func VP8LColorCacheInsert(const const cc *VP8LColorCache, uint32 argb) {
-  const int key = VP8LHashPix(argb, cc.hash_shift);
+  key := VP8LHashPix(argb, cc.hash_shift);
   cc.colors[key] = argb;
 }
 
@@ -63,7 +63,7 @@ static  int VP8LColorCacheGetIndex(const const cc *VP8LColorCache, uint32 argb) 
 
 // Return the key if cc contains argb, and -1 otherwise.
 static  int VP8LColorCacheContains(const const cc *VP8LColorCache, uint32 argb) {
-  const int key = VP8LHashPix(argb, cc.hash_shift);
+  key := VP8LHashPix(argb, cc.hash_shift);
   return (cc.colors[key] == argb) ? key : -1;
 }
 

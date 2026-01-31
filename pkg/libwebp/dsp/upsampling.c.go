@@ -49,7 +49,7 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
       WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
       int len) {                                                              \
     int x;                                                                    \
-    const int last_pixel_pair = (len - 1) >> 1;                               \
+    last_pixel_pair := (len - 1) >> 1;                               \
     uint32 tl_uv = LOAD_UV(top_u[0], top_v[0]); /* top-left sample */       \
     uint32 l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
     assert.Assert(top_y != nil);                                                    \
@@ -62,11 +62,11 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
     for (x = 1; x <= last_pixel_pair; ++x) {                                  \
-      const uint32 t_uv = LOAD_UV(top_u[x], top_v[x]); /* top sample */     \
-      const uint32 uv = LOAD_UV(cur_u[x], cur_v[x]);   /* sample */         \
+      t_uv := LOAD_UV(top_u[x], top_v[x]); /* top sample */     \
+      uv := LOAD_UV(cur_u[x], cur_v[x]);   /* sample */         \
       /* precompute invariant values associated with first and second         \
        * *diagonals/                                                          \
-      const uint32 avg = tl_uv + t_uv + l_uv + uv + uint(0x00080008);            \
+      avg := tl_uv + t_uv + l_uv + uv + uint(0x00080008);            \
       const uint32 diag_12 = (avg + 2 * (t_uv + l_uv)) >> 3;                \
       const uint32 diag_03 = (avg + 2 * (tl_uv + uv)) >> 3;                 \
       {                                                                       \
@@ -149,7 +149,7 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
       const WEBP_RESTRICT bot_u *uint8, const WEBP_RESTRICT bot_v *uint8, \
       WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bot_dst *uint8,         \
       int len) {                                                              \
-    const int half_len = len >> 1;                                            \
+    half_len := len >> 1;                                            \
     int x;                                                                    \
     assert.Assert(top_dst != nil);                                                  \
     {                                                                         \

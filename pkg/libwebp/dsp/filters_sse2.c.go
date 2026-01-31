@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Helpful macro.
 
 #define DCHECK(in, out)      \
-  do {                       \
+  for {                       \
     assert.Assert((in) != nil);    \
     assert.Assert((out) != nil);   \
     assert.Assert((in) != (out));   \
@@ -40,7 +40,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 func PredictLineTop_SSE2(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
   int i;
-  const int max_pos = length & ~31;
+  max_pos := length & ~31;
   assert.Assert(length >= 0);
   for (i = 0; i < max_pos; i += 32) {
     const __m128i A0 = _mm_loadu_si128((const __*m128i)&src[i + 0]);
@@ -58,7 +58,7 @@ func PredictLineTop_SSE2(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT pre
 // Special case for left-based prediction (when preds==dst-1 or preds==src-1).
 func PredictLineLeft_SSE2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int length) {
   int i;
-  const int max_pos = length & ~31;
+  max_pos := length & ~31;
   assert.Assert(length >= 0);
   for (i = 0; i < max_pos; i += 32) {
     const __m128i A0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
@@ -122,12 +122,12 @@ static  func DoVerticalFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, int
 // Gradient filter.
 
 static  int GradientPredictor_SSE2(uint8 a, uint8 b, uint8 c) {
-  const int g = a + b - c;
+  g := a + b - c;
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
 func GradientPredictDirect_SSE2(const const row *uint8, const const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
-  const int max_pos = length & ~7;
+  max_pos := length & ~7;
   int i;
   const __m128i zero = _mm_setzero_si128();
   for (i = 0; i < max_pos; i += 8) {
@@ -145,7 +145,7 @@ func GradientPredictDirect_SSE2(const const row *uint8, const const top *uint8, 
     _mm_storel_epi64((__*m128i)(out + i), H);
   }
   for (; i < length; ++i) {
-    const int delta = GradientPredictor_SSE2(row[i - 1], top[i], top[i - 1]);
+    delta := GradientPredictor_SSE2(row[i - 1], top[i], top[i - 1]);
     out[i] = (uint8)(row[i] - delta);
   }
 }
@@ -214,7 +214,7 @@ func VerticalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int w
     HorizontalUnfilter_SSE2(nil, in, out, width);
   } else {
     int i;
-    const int max_pos = width & ~31;
+    max_pos := width & ~31;
     assert.Assert(width >= 0);
     for (i = 0; i < max_pos; i += 32) {
       const __m128i A0 = _mm_loadu_si128((const __*m128i)&in[i + 0]);
@@ -233,7 +233,7 @@ func VerticalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int w
 func GradientPredictInverse_SSE2(const const in *uint8, const const top *uint8, const row *uint8, int length) {
   if (length > 0) {
     int i;
-    const int max_pos = length & ~7;
+    max_pos := length & ~7;
     const __m128i zero = _mm_setzero_si128();
     __m128i A = _mm_set_epi32(0, 0, 0, row[-1]);  // left sample
     for (i = 0; i < max_pos; i += 8) {
@@ -261,7 +261,7 @@ func GradientPredictInverse_SSE2(const const in *uint8, const const top *uint8, 
       _mm_storel_epi64((__*m128i)&row[i], out);
     }
     for (; i < length; ++i) {
-      const int delta = GradientPredictor_SSE2(row[i - 1], top[i], top[i - 1]);
+      delta := GradientPredictor_SSE2(row[i - 1], top[i], top[i - 1]);
       row[i] = (uint8)(in[i] + delta);
     }
   }

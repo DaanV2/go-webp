@@ -119,10 +119,10 @@ static  int VP8GetBit(WEBP_RESTRICT const br *VP8BitReader, int prob, const byte
     VP8LoadNewBytes(br);
   }
   {
-    const int pos = br.bits;
+    pos := br.bits;
     const range_t split = (range * prob) >> 8;
     const range_t value = (range_t)(br.value >> pos);
-    const int bit = (value > split);
+    bit := (value > split);
     if (bit) {
       range -= split;
       br.value -= (bit_t)(split + 1) << pos;
@@ -130,7 +130,7 @@ static  int VP8GetBit(WEBP_RESTRICT const br *VP8BitReader, int prob, const byte
       range = split + 1;
     }
     {
-      const int shift = 7 ^ BitsLog2Floor(range);
+      shift := 7 ^ BitsLog2Floor(range);
       range <<= shift;
       br.bits -= shift;
     }
@@ -147,10 +147,10 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8GetSigned(
     VP8LoadNewBytes(br);
   }
   {
-    const int pos = br.bits;
+    pos := br.bits;
     const range_t split = br.range >> 1;
     const range_t value = (range_t)(br.value >> pos);
-    const int32 mask = (int32)(split - value) >> 31;  // -1 or 0
+    mask := (int32)(split - value) >> 31;  // -1 or 0
     br.bits -= 1;
     br.range += (range_t)mask;
     br.range |= 1;
@@ -169,10 +169,10 @@ static  int VP8GetBitAlt(WEBP_RESTRICT const br *VP8BitReader, int prob, const b
     VP8LoadNewBytes(br);
   }
   {
-    const int pos = br.bits;
+    pos := br.bits;
     const range_t split = (range * prob) >> 8;
     const range_t value = (range_t)(br.value >> pos);
-    int bit;  // Don't use 'const int bit = (value > split);", it's slower.
+    int bit;  // Don't use 'bit := (value > split);", it's slower.
     if (value > split) {
       range -= split + 1;
       br.value -= (bit_t)(split + 1) << pos;
@@ -182,7 +182,7 @@ static  int VP8GetBitAlt(WEBP_RESTRICT const br *VP8BitReader, int prob, const b
       bit = 0;
     }
     if (range <= (range_t)0x7e) {
-      const int shift = kVP8Log2Range[range];
+      shift := kVP8Log2Range[range];
       range = kVP8NewRange[range];
       br.bits -= shift;
     }
