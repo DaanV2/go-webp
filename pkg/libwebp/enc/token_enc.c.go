@@ -14,7 +14,7 @@ package enc
 //  A 'token' is a bit value associated with a probability, either fixed
 // or a later-to-be-determined after statistics have been collected.
 // For dynamic probability, we just record the slot id (idx) for the probability
-// value in the final probability array (uint8* probas in VP8EmitTokens).
+// value in the final probability array (*uint8 probas in VP8EmitTokens).
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
@@ -40,7 +40,7 @@ typedef uint16 token_t;  // bit #15: bit value
                            // bit #14: flags for constant proba or idx
                            // bits #0..13: slot or constant proba
 type VP8Tokens struct {
-  VP8Tokens* next;  // pointer to next page
+  *VP8Tokens next;  // pointer to next page
 };
 // Token data is located in memory just after the 'next' field.
 // This macro is used to return their address and hide the trick.
@@ -48,7 +48,7 @@ type VP8Tokens struct {
 
 //------------------------------------------------------------------------------
 
-func VP8TBufferInit(VP8TBuffer* const b, int page_size) {
+func VP8TBufferInit(*VP8TBuffer const b, int page_size) {
   b.tokens = nil;
   b.pages = nil;
   b.last_page = &b.pages;
@@ -57,11 +57,11 @@ func VP8TBufferInit(VP8TBuffer* const b, int page_size) {
   b.error = 0;
 }
 
-func VP8TBufferClear(VP8TBuffer* const b) {
+func VP8TBufferClear(*VP8TBuffer const b) {
   if (b != nil) {
-    VP8Tokens* p = b.pages;
+    *VP8Tokens p = b.pages;
     while (p != nil) {
-      VP8Tokens* const next = p.next;
+      *VP8Tokens const next = p.next;
       WebPSafeFree(p);
       p = next;
     }
@@ -69,11 +69,11 @@ func VP8TBufferClear(VP8TBuffer* const b) {
   }
 }
 
-static int TBufferNewPage(VP8TBuffer* const b) {
-  VP8Tokens* page = nil;
+static int TBufferNewPage(*VP8TBuffer const b) {
+  *VP8Tokens page = nil;
   if (!b.error) {
     const uint64 size = sizeof(*page) + b.page_size * sizeof(token_t);
-    page = (VP8Tokens*)WebPSafeMalloc(1ULL, size);
+    page = (*VP8Tokens)WebPSafeMalloc(1ULL, size);
   }
   if (page == nil) {
     b.error = 1;
@@ -93,7 +93,7 @@ static int TBufferNewPage(VP8TBuffer* const b) {
 #define TOKEN_ID(t, b, ctx) \
   (NUM_PROBAS * ((ctx) + NUM_CTX * ((b) + NUM_BANDS * (t))))
 
-static  uint32 AddToken(VP8TBuffer* const b, uint32 bit, uint32 proba_idx, proba_t* const stats) {
+static  uint32 AddToken(*VP8TBuffer const b, uint32 bit, uint32 proba_idx, proba_t* const stats) {
   assert.Assert(proba_idx < FIXED_PROBA_BIT);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -104,7 +104,7 @@ static  uint32 AddToken(VP8TBuffer* const b, uint32 bit, uint32 proba_idx, proba
   return bit;
 }
 
-static  func AddConstantToken(VP8TBuffer* const b, uint32 bit, uint32 proba) {
+static  func AddConstantToken(*VP8TBuffer const b, uint32 bit, uint32 proba) {
   assert.Assert(proba < 256);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -113,8 +113,8 @@ static  func AddConstantToken(VP8TBuffer* const b, uint32 bit, uint32 proba) {
   }
 }
 
-int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res, VP8TBuffer* const tokens) {
-  const int16* const coeffs = res.coeffs;
+int VP8RecordCoeffTokens(int ctx, const struct *VP8Residual const res, *VP8TBuffer const tokens) {
+  const *int16 const coeffs = res.coeffs;
   const int coeff_type = res.coeff_type;
   const int last = res.last;
   int n = res.first;
@@ -151,7 +151,7 @@ int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res, VP8TBuffe
         }
       } else {
         int mask;
-        const uint8* tab;
+        const *uint8 tab;
         uint32 residue = v - 3;
         if (residue < (8 << 1)) {  // VP8Cat3  (3b)
           AddToken(tokens, 0, base_id + 8, s + 8);
@@ -199,11 +199,11 @@ int VP8RecordCoeffTokens(int ctx, const struct VP8Residual* const res, VP8TBuffe
 //------------------------------------------------------------------------------
 // Final coding pass, with known probabilities
 
-int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw, const uint8* const probas, int final_pass) {
-  const VP8Tokens* p = b.pages;
+int VP8EmitTokens(*VP8TBuffer const b, *VP8BitWriter const bw, const *uint8 const probas, int final_pass) {
+  const *VP8Tokens p = b.pages;
   assert.Assert(!b.error);
   while (p != nil) {
-    const VP8Tokens* const next = p.next;
+    const *VP8Tokens const next = p.next;
     const int N = (next == nil) ? b.left : 0;
     int n = b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
@@ -216,7 +216,7 @@ int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw, const uint8* cons
         VP8PutBit(bw, bit, probas[token & 0x3fffu]);
       }
     }
-    if (final_pass) WebPSafeFree((void*)p);
+    if (final_pass) WebPSafeFree((*void)p);
     p = next;
   }
   if (final_pass) b.pages = nil;
@@ -224,12 +224,12 @@ int VP8EmitTokens(VP8TBuffer* const b, VP8BitWriter* const bw, const uint8* cons
 }
 
 // Size estimation
-uint64 VP8EstimateTokenSize(VP8TBuffer* const b, const uint8* const probas) {
+uint64 VP8EstimateTokenSize(*VP8TBuffer const b, const *uint8 const probas) {
   uint64 size = 0;
-  const VP8Tokens* p = b.pages;
+  const *VP8Tokens p = b.pages;
   assert.Assert(!b.error);
   while (p != nil) {
-    const VP8Tokens* const next = p.next;
+    const *VP8Tokens const next = p.next;
     const int N = (next == nil) ? b.left : 0;
     int n = b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
@@ -251,10 +251,10 @@ uint64 VP8EstimateTokenSize(VP8TBuffer* const b, const uint8* const probas) {
 
 #else  // DISABLE_TOKEN_BUFFER
 
-func VP8TBufferInit(VP8TBuffer* const b, int page_size) {
+func VP8TBufferInit(*VP8TBuffer const b, int page_size) {
   (void)b;
   (void)page_size;
 }
-func VP8TBufferClear(VP8TBuffer* const b) { (void)b; }
+func VP8TBufferClear(*VP8TBuffer const b) { (void)b; }
 
 #endif  // !DISABLE_TOKEN_BUFFER

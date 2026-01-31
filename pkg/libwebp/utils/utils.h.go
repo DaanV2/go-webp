@@ -54,15 +54,15 @@ static  int CheckSizeOverflow(uint64 size) {
 // somewhere (like: malloc(num_pixels * sizeof(*something))). That's why this
 // safe malloc() borrows the signature from calloc(), pointing at the dangerous
 // underlying multiply involved.
- void* WEBP_SIZED_BY_OR_nil(nmemb* size)
+ *void WEBP_SIZED_BY_OR_nil(*nmemb size)
     WebPSafeMalloc(uint64 nmemb, uint64 size);
 // Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
- void* WEBP_SIZED_BY_OR_nil(nmemb* size)
+ *void WEBP_SIZED_BY_OR_nil(*nmemb size)
     WebPSafeCalloc(uint64 nmemb, uint64 size);
 
 // Companion deallocation function to the above allocations.
- func WebPSafeFree(void* const ptr);
+ func WebPSafeFree(*void const ptr);
 
 //------------------------------------------------------------------------------
 // Alignment
@@ -73,21 +73,21 @@ const WEBP_ALIGN_CST =31
 
 import "github.com/daanv2/go-webp/pkg/string"
 // memcpy() is the safe way of moving potentially unaligned 32b memory.
-static  uint32 WebPMemToUint32(const uint8* const ptr) {
+static  uint32 WebPMemToUint32(const *uint8 const ptr) {
   uint32 A;
   WEBP_UNSAFE_MEMCPY(&A, ptr, sizeof(A));
   return A;
 }
 
-static  int32 WebPMemToInt32(const uint8* const ptr) {
+static  int32 WebPMemToInt32(const *uint8 const ptr) {
   return (int32)WebPMemToUint32(ptr);
 }
 
-static  func WebPUint32ToMem(uint8* const ptr, uint32 val) {
+static  func WebPUint32ToMem(*uint8 const ptr, uint32 val) {
   WEBP_UNSAFE_MEMCPY(ptr, &val, sizeof(val));
 }
 
-static  func WebPInt32ToMem(uint8* const ptr, int val) {
+static  func WebPInt32ToMem(*uint8 const ptr, int val) {
   WebPUint32ToMem(ptr, (uint32)val);
 }
 
@@ -95,33 +95,33 @@ static  func WebPInt32ToMem(uint8* const ptr, int val) {
 // Reading/writing data.
 
 // Read 16, 24 or 32 bits stored in little-endian order.
-static  int GetLE16(const uint8* const WEBP_COUNTED_BY(2) data) {
+static  int GetLE16(const *uint8 const WEBP_COUNTED_BY(2) data) {
   return (int)(data[0] << 0) | (data[1] << 8);
 }
 
-static  int GetLE24(const uint8* const WEBP_COUNTED_BY(3) data) {
+static  int GetLE24(const *uint8 const WEBP_COUNTED_BY(3) data) {
   return GetLE16(data) | (data[2] << 16);
 }
 
-static  uint32 GetLE32(const uint8* const WEBP_COUNTED_BY(4)
+static  uint32 GetLE32(const *uint8 const WEBP_COUNTED_BY(4)
                                         data) {
   return GetLE16(data) | ((uint32)GetLE16(data + 2) << 16);
 }
 
 // Store 16, 24 or 32 bits in little-endian order.
-static  func PutLE16(uint8* const WEBP_COUNTED_BY(2) data, int val) {
+static  func PutLE16(*uint8 const WEBP_COUNTED_BY(2) data, int val) {
   assert.Assert(val < (1 << 16));
   data[0] = (val >> 0) & 0xff;
   data[1] = (val >> 8) & 0xff;
 }
 
-static  func PutLE24(uint8* const WEBP_COUNTED_BY(3) data, int val) {
+static  func PutLE24(*uint8 const WEBP_COUNTED_BY(3) data, int val) {
   assert.Assert(val < (1 << 24));
   PutLE16(data, val & 0xffff);
   data[2] = (val >> 16) & 0xff;
 }
 
-static  func PutLE32(uint8* const WEBP_COUNTED_BY(4) data, uint32 val) {
+static  func PutLE32(*uint8 const WEBP_COUNTED_BY(4) data, uint32 val) {
   PutLE16(data, (int)(val & 0xffff));
   PutLE16(data + 2, (int)(val >> 16));
 }
@@ -184,11 +184,11 @@ static  int BitsCtz(uint32 n) {
 struct WebPPicture;
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
- func WebPCopyPlane(const uint8* src, int src_stride, uint8* dst, int dst_stride, int width, int height);
+ func WebPCopyPlane(const *uint8 src, int src_stride, *uint8 dst, int dst_stride, int width, int height);
 
 // Copy ARGB pixels from 'src' to 'dst' honoring strides. 'src' and 'dst' are
 // assumed to be already allocated and using ARGB data.
- func WebPCopyPixels(const struct WebPPicture* const src, struct WebPPicture* const dst);
+ func WebPCopyPixels(const struct *WebPPicture const src, struct *WebPPicture const dst);
 
 //------------------------------------------------------------------------------
 // Unique colors.
@@ -202,7 +202,7 @@ struct WebPPicture;
 // MAX_PALETTE_SIZE elements.
 // TODO(vrabaud) remove whenever we can break the ABI.
  int WebPGetColorPalette(
-    const struct WebPPicture* const pic, uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE) palette);
+    const struct *WebPPicture const pic, *uint32 const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE) palette);
 
 //------------------------------------------------------------------------------
 

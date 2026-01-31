@@ -63,7 +63,7 @@ static int IsNear(uint32 a, uint32 b, int limit) {
   return 1;
 }
 
-static int IsSmooth(const uint32* const prev_row, const uint32* const curr_row, const uint32* const next_row, int ix, int limit) {
+static int IsSmooth(const *uint32 const prev_row, const *uint32 const curr_row, const *uint32 const next_row, int ix, int limit) {
   // Check that all pixels in 4-connected neighborhood are smooth.
   return (IsNear(curr_row[ix], curr_row[ix - 1], limit) &&
           IsNear(curr_row[ix], curr_row[ix + 1], limit) &&
@@ -72,12 +72,12 @@ static int IsSmooth(const uint32* const prev_row, const uint32* const curr_row, 
 }
 
 // Adjusts pixel values of image with given maximum error.
-func NearLossless(int xsize, int ysize, const uint32* argb_src, int stride, int limit_bits, uint32* copy_buffer, uint32* argb_dst) {
+func NearLossless(int xsize, int ysize, const *uint32 argb_src, int stride, int limit_bits, *uint32 copy_buffer, *uint32 argb_dst) {
   int x, y;
   const int limit = 1 << limit_bits;
-  uint32* prev_row = copy_buffer;
-  uint32* curr_row = prev_row + xsize;
-  uint32* next_row = curr_row + xsize;
+  *uint32 prev_row = copy_buffer;
+  *uint32 curr_row = prev_row + xsize;
+  *uint32 next_row = curr_row + xsize;
   memcpy(curr_row, argb_src, xsize * sizeof(argb_src[0]));
   memcpy(next_row, argb_src + stride, xsize * sizeof(argb_src[0]));
 
@@ -98,7 +98,7 @@ func NearLossless(int xsize, int ysize, const uint32* argb_src, int stride, int 
     }
     {
       // Three-way swap.
-      uint32* const temp = prev_row;
+      *uint32 const temp = prev_row;
       prev_row = curr_row;
       curr_row = next_row;
       next_row = temp;
@@ -106,9 +106,9 @@ func NearLossless(int xsize, int ysize, const uint32* argb_src, int stride, int 
   }
 }
 
-int VP8ApplyNearLossless(const WebPPicture* const picture, int quality, uint32* const argb_dst) {
+int VP8ApplyNearLossless(const *WebPPicture const picture, int quality, *uint32 const argb_dst) {
   int i;
-  uint32* copy_buffer;
+  *uint32 copy_buffer;
   const int xsize = picture.width;
   const int ysize = picture.height;
   const int stride = picture.argb_stride;
@@ -127,7 +127,7 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality, uint32* 
     return 1;
   }
 
-  copy_buffer = (uint32*)WebPSafeMalloc(xsize * 3, sizeof(*copy_buffer));
+  copy_buffer = (*uint32)WebPSafeMalloc(xsize * 3, sizeof(*copy_buffer));
   if (copy_buffer == nil) {
     return 0;
   }

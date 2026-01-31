@@ -54,14 +54,14 @@ extern const uint8 kVP8Log2Range[128];
 extern const uint8 kVP8NewRange[128];
 
 // special case for the tail byte-reading
-func VP8LoadFinalBytes(VP8BitReader* const br);
+func VP8LoadFinalBytes(*VP8BitReader const br);
 
 //------------------------------------------------------------------------------
 // Inlined critical functions
 
 // makes sure br.value has at least BITS bits worth of data
 static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
-    VP8BitReader* WEBP_RESTRICT const br) {
+    *VP8BitReader WEBP_RESTRICT const br) {
   assert.Assert(br != nil && br.buf != nil);
   // Read 'BITS' bits at a time if possible.
   if (br.buf < br.buf_max) {
@@ -110,9 +110,9 @@ static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
 }
 
 // Read a bit with proba 'prob'. Speed-critical function!
-static  int VP8GetBit(VP8BitReader* WEBP_RESTRICT const br, int prob, const byte label[]) {
+static  int VP8GetBit(*VP8BitReader WEBP_RESTRICT const br, int prob, const byte label[]) {
   // Don't move this declaration! It makes a big speed difference to store
-  // 'range' *before* calling VP8LoadNewBytes(), even if this function doesn't
+  // 'range' **before calling VP8LoadNewBytes(), even if this function doesn't
   // alter br.range value.
   range_t range = br.range;
   if (br.bits < 0) {
@@ -142,7 +142,7 @@ static  int VP8GetBit(VP8BitReader* WEBP_RESTRICT const br, int prob, const byte
 
 // simplified version of VP8GetBit() for prob=0x80 (note shift is always 1 here)
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8GetSigned(
-    VP8BitReader* WEBP_RESTRICT const br, int v, const byte label[]) {
+    *VP8BitReader WEBP_RESTRICT const br, int v, const byte label[]) {
   if (br.bits < 0) {
     VP8LoadNewBytes(br);
   }
@@ -160,9 +160,9 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8GetSigned(
   }
 }
 
-static  int VP8GetBitAlt(VP8BitReader* WEBP_RESTRICT const br, int prob, const byte label[]) {
+static  int VP8GetBitAlt(*VP8BitReader WEBP_RESTRICT const br, int prob, const byte label[]) {
   // Don't move this declaration! It makes a big speed difference to store
-  // 'range' *before* calling VP8LoadNewBytes(), even if this function doesn't
+  // 'range' **before calling VP8LoadNewBytes(), even if this function doesn't
   // alter br.range value.
   range_t range = br.range;
   if (br.bits < 0) {

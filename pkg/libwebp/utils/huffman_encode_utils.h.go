@@ -33,9 +33,9 @@ type <Foo> struct {
 type <Foo> struct {
   int num_symbols;  // Number of symbols.
   // Code lengths of the symbols.
-  uint8*  code_lengths;
+  *uint8  code_lengths;
   // Symbol Codes.
-  uint16*  codes;
+  *uint16  codes;
 } HuffmanTreeCode;
 
 // Struct to represent the Huffman tree.
@@ -49,12 +49,12 @@ type <Foo> struct {
 // Turn the Huffman tree into a token sequence.
 // Returns the number of tokens used.
 int VP8LCreateCompressedHuffmanTree(
-    const HuffmanTreeCode* const tree, HuffmanTreeToken*  tokens, int max_tokens);
+    const *HuffmanTreeCode const tree, *HuffmanTreeToken  tokens, int max_tokens);
 
 // Create an optimized tree, and tokenize it.
 // 'buf_rle' and 'huff_tree' are pre-allocated and the 'tree' is the constructed
 // huffman code tree.
-func VP8LCreateHuffmanTree(uint32* const histogram, int tree_depth_limit, uint8* const buf_rle, HuffmanTree* const huff_tree, HuffmanTreeCode* const huff_code);
+func VP8LCreateHuffmanTree(*uint32 const histogram, int tree_depth_limit, *uint8 const buf_rle, *HuffmanTree const huff_tree, *HuffmanTreeCode const huff_code);
 
 #ifdef __cplusplus
 }

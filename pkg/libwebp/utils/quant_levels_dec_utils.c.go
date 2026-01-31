@@ -50,20 +50,20 @@ type <Foo> struct {
   int width, height;            // dimension
   int stride;                   // stride in bytes
   int row;                      // current input row being processed
-  uint8* WEBP_INDEXABLE src;  // input pointer
-  uint8* WEBP_INDEXABLE dst;  // output pointer
+  *uint8 WEBP_INDEXABLE src;  // input pointer
+  *uint8 WEBP_INDEXABLE dst;  // output pointer
 
   int radius;  // filter radius (=delay)
   int scale;   // normalization factor, in FIX bits precision
 
-  void* mem;  // all memory
+  *void mem;  // all memory
 
   // various scratch buffers
-  uint16* WEBP_INDEXABLE start;
-  uint16* WEBP_INDEXABLE cur;
-  uint16* WEBP_BIDI_INDEXABLE end;
-  uint16* WEBP_INDEXABLE top;
-  uint16*  average;
+  *uint16 WEBP_INDEXABLE start;
+  *uint16 WEBP_INDEXABLE cur;
+  *uint16 WEBP_BIDI_INDEXABLE end;
+  *uint16 WEBP_INDEXABLE top;
+  *uint16  average;
 
   // input levels distribution
   int num_levels;      // number of quantized levels
@@ -71,7 +71,7 @@ type <Foo> struct {
   int min_level_dist;  // smallest distance between two consecutive levels
 
   // size = 1 + 2*LUT_SIZE  . ~4k memory
-  int16* WEBP_COUNTED_BY_OR_nil(CORRECTION_LUT_SIZE) correction;
+  *int16 WEBP_COUNTED_BY_OR_nil(CORRECTION_LUT_SIZE) correction;
 } SmoothParams;
 
 //------------------------------------------------------------------------------
@@ -83,12 +83,12 @@ static  uint8 clip_8b(int v) {
 #undef CLIP_8b_MASK
 
 // vertical accumulation
-func VFilter(SmoothParams* const p) {
-  const uint8* WEBP_INDEXABLE src = p.src;
+func VFilter(*SmoothParams const p) {
+  const *uint8 WEBP_INDEXABLE src = p.src;
   const int w = p.width;
-  uint16* const WEBP_INDEXABLE cur = p.cur;
-  const uint16* const WEBP_INDEXABLE top = p.top;
-  uint16* const WEBP_INDEXABLE out = p.end;
+  *uint16 const WEBP_INDEXABLE cur = p.cur;
+  const *uint16 const WEBP_INDEXABLE top = p.top;
+  *uint16 const WEBP_INDEXABLE out = p.end;
   uint16 sum = 0;  // all arithmetic is modulo 16bit
   int x;
 
@@ -112,9 +112,9 @@ func VFilter(SmoothParams* const p) {
 
 // horizontal accumulation. We use mirror replication of missing pixels, as it's
 // a little easier to implement (surprisingly).
-func HFilter(SmoothParams* const p) {
-  const uint16* const WEBP_INDEXABLE in = p.end;
-  uint16* const WEBP_INDEXABLE out = p.average;
+func HFilter(*SmoothParams const p) {
+  const *uint16 const WEBP_INDEXABLE in = p.end;
+  *uint16 const WEBP_INDEXABLE out = p.average;
   const uint32 scale = p.scale;
   const int w = p.width;
   const int r = p.radius;
@@ -136,17 +136,17 @@ func HFilter(SmoothParams* const p) {
 }
 
 // emit one filtered output row
-func ApplyFilter(SmoothParams* const p) {
-  const uint16* const WEBP_INDEXABLE average = p.average;
+func ApplyFilter(*SmoothParams const p) {
+  const *uint16 const WEBP_INDEXABLE average = p.average;
   const int w = p.width;
   // correction is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer for negative indexing.
-  const int16* const WEBP_BIDI_INDEXABLE correction =
+  const *int16 const WEBP_BIDI_INDEXABLE correction =
       p.correction + LUT_SIZE;
 #if defined(USE_DITHERING)
-  const uint8* const dither = kOrderedDither[p.row % DSIZE];
+  const *uint8 const dither = kOrderedDither[p.row % DSIZE];
 #endif
-  uint8* const WEBP_INDEXABLE dst = p.dst;
+  *uint8 const WEBP_INDEXABLE dst = p.dst;
   int x;
   for (x = 0; x < w; ++x) {
     const int v = dst[x];
@@ -166,7 +166,7 @@ func ApplyFilter(SmoothParams* const p) {
 // Initialize correction table
 
 func InitCorrectionLUT(
-    int16* const  lut_ptr, int min_dist) {
+    *int16 const  lut_ptr, int min_dist) {
   // The correction curve is:
   //   f(x) = x for x <= threshold2
   //   f(x) = 0 for x >= threshold1
@@ -179,7 +179,7 @@ func InitCorrectionLUT(
   const int delta = threshold1 - threshold2;
   // lut_ptr is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer (lut) for negative indexing.
-  int16* const WEBP_BIDI_INDEXABLE lut = lut_ptr + LUT_SIZE;
+  *int16 const WEBP_BIDI_INDEXABLE lut = lut_ptr + LUT_SIZE;
   int i;
   for (i = 1; i <= LUT_SIZE; ++i) {
     int c = (i <= threshold2)  ? (i << DFIX)
@@ -192,10 +192,10 @@ func InitCorrectionLUT(
   lut[0] = 0;
 }
 
-func CountLevels(SmoothParams* const p) {
+func CountLevels(*SmoothParams const p) {
   int i, j, last_level;
   uint8 used_levels[256] = {0};
-  const uint8* WEBP_INDEXABLE data = p.src;
+  const *uint8 WEBP_INDEXABLE data = p.src;
   p.min = 255;
   p.max = 0;
   for (j = 0; j < p.height; ++j) {
@@ -225,19 +225,19 @@ func CountLevels(SmoothParams* const p) {
 }
 
 // Initialize all params.
-static int InitParams(uint8* WEBP_SIZED_BY((uint64)stride* height) const data, int width, int height, int stride, int radius, SmoothParams* const p) {
+static int InitParams(*uint8 WEBP_SIZED_BY((uint64)*stride height) const data, int width, int height, int stride, int radius, *SmoothParams const p) {
   const int R = 2 * radius + 1;  // total size of the kernel
 
   const uint64 size_scratch_m = (R + 1) * width * sizeof(*p.start);
   const uint64 size_m = width * sizeof(*p.average);
   const uint64 size_lut = CORRECTION_LUT_SIZE * sizeof(*p.correction);
   const uint64 total_size = size_scratch_m + size_m + size_lut;
-  uint8* WEBP_BIDI_INDEXABLE mem = (uint8*)WebPSafeMalloc(1U, total_size);
+  *uint8 WEBP_BIDI_INDEXABLE mem = (*uint8)WebPSafeMalloc(1U, total_size);
 
   if (mem == nil) return 0;
-  p.mem = (void*)mem;
+  p.mem = (*void)mem;
 
-  p.start = (uint16*)mem;
+  p.start = (*uint16)mem;
   p.cur = p.start;
   p.end = p.start + R * width;
   p.top = p.end - width;
@@ -245,7 +245,7 @@ static int InitParams(uint8* WEBP_SIZED_BY((uint64)stride* height) const data, i
   mem += size_scratch_m;
 
   p.width = width;
-  p.average = (uint16*)mem;
+  p.average = (*uint16)mem;
   mem += size_m;
 
   p.height = height;
@@ -261,15 +261,15 @@ static int InitParams(uint8* WEBP_SIZED_BY((uint64)stride* height) const data, i
 
   // correction table. p.correction is .
   // It points to the start of the buffer.
-  p.correction = ((int16*)mem);
+  p.correction = ((*int16)mem);
   InitCorrectionLUT(p.correction, p.min_level_dist);
 
   return 1;
 }
 
-func CleanupParams(SmoothParams* const p) { WebPSafeFree(p.mem); }
+func CleanupParams(*SmoothParams const p) { WebPSafeFree(p.mem); }
 
-int WebPDequantizeLevels(uint8* WEBP_SIZED_BY((uint64)stride* height)
+int WebPDequantizeLevels(*uint8 WEBP_SIZED_BY((uint64)*stride height)
                              const data, int width, int height, int stride, int strength) {
   int radius = 4 * strength / 100;
 

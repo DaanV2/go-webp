@@ -65,34 +65,34 @@ static  PixOrCopy PixOrCopyCreateLiteral(uint32 argb) {
   return retval;
 }
 
-static  int PixOrCopyIsLiteral(const PixOrCopy* const p) {
+static  int PixOrCopyIsLiteral(const *PixOrCopy const p) {
   return (p.mode == kLiteral);
 }
 
-static  int PixOrCopyIsCacheIdx(const PixOrCopy* const p) {
+static  int PixOrCopyIsCacheIdx(const *PixOrCopy const p) {
   return (p.mode == kCacheIdx);
 }
 
-static  int PixOrCopyIsCopy(const PixOrCopy* const p) {
+static  int PixOrCopyIsCopy(const *PixOrCopy const p) {
   return (p.mode == kCopy);
 }
 
-static  uint32 PixOrCopyLiteral(const PixOrCopy* const p, int component) {
+static  uint32 PixOrCopyLiteral(const *PixOrCopy const p, int component) {
   assert.Assert(p.mode == kLiteral);
   return (p.argb_or_distance >> (component * 8)) & 0xff;
 }
 
-static  uint32 PixOrCopyLength(const PixOrCopy* const p) {
+static  uint32 PixOrCopyLength(const *PixOrCopy const p) {
   return p.len;
 }
 
-static  uint32 PixOrCopyCacheIdx(const PixOrCopy* const p) {
+static  uint32 PixOrCopyCacheIdx(const *PixOrCopy const p) {
   assert.Assert(p.mode == kCacheIdx);
   assert.Assert(p.argb_or_distance < (1U << MAX_COLOR_CACHE_BITS));
   return p.argb_or_distance;
 }
 
-static  uint32 PixOrCopyDistance(const PixOrCopy* const p) {
+static  uint32 PixOrCopyDistance(const *PixOrCopy const p) {
   assert.Assert(p.mode == kCopy);
   return p.argb_or_distance;
 }
@@ -120,27 +120,27 @@ type VP8LHashChain struct {
   // (through WINDOW_SIZE = 1<<20).
   // The lower 12 bits contain the length of the match. The 12 bit limit is
   // defined in MaxFindCopyLength with MAX_LENGTH=4096.
-  uint32* offset_length;
+  *uint32 offset_length;
   // This is the maximum size of the hash_chain that can be constructed.
   // Typically this is the pixel count (width x height) for a given image.
   int size;
 };
 
 // Must be called first, to set size.
-int VP8LHashChainInit(VP8LHashChain* const p, int size);
+int VP8LHashChainInit(*VP8LHashChain const p, int size);
 // Pre-compute the best matches for argb. pic and percent are for progress.
-int VP8LHashChainFill(VP8LHashChain* const p, int quality, const uint32* const argb, int xsize, int ysize, int low_effort, const WebPPicture* const pic, int percent_range, int* const percent);
-func VP8LHashChainClear(VP8LHashChain* const p);  // release memory
+int VP8LHashChainFill(*VP8LHashChain const p, int quality, const *uint32 const argb, int xsize, int ysize, int low_effort, const *WebPPicture const pic, int percent_range, *int const percent);
+func VP8LHashChainClear(*VP8LHashChain const p);  // release memory
 
-static  int VP8LHashChainFindOffset(const VP8LHashChain* const p, const int base_position) {
+static  int VP8LHashChainFindOffset(const *VP8LHashChain const p, const int base_position) {
   return p.offset_length[base_position] >> MAX_LENGTH_BITS;
 }
 
-static  int VP8LHashChainFindLength(const VP8LHashChain* const p, const int base_position) {
+static  int VP8LHashChainFindLength(const *VP8LHashChain const p, const int base_position) {
   return p.offset_length[base_position] & ((1U << MAX_LENGTH_BITS) - 1);
 }
 
-static  func VP8LHashChainFindCopy(const VP8LHashChain* const p, int base_position, int* const offset_ptr, int* const length_ptr) {
+static  func VP8LHashChainFindCopy(const *VP8LHashChain const p, int base_position, *int const offset_ptr, *int const length_ptr) {
   *offset_ptr = VP8LHashChainFindOffset(p, base_position);
   *length_ptr = VP8LHashChainFindLength(p, base_position);
 }
@@ -158,37 +158,37 @@ typedef struct VP8LBackwardRefs VP8LBackwardRefs;
 type VP8LBackwardRefs struct {
   int block_size;               // common block-size
   int error;                    // set to true if some memory error occurred
-  PixOrCopyBlock* refs;         // list of currently used blocks
-  PixOrCopyBlock** tail;        // for list recycling
-  PixOrCopyBlock* free_blocks;  // free-list
-  PixOrCopyBlock* last_block;   // used for adding new refs (internal)
+  *PixOrCopyBlock refs;         // list of currently used blocks
+  *PixOrCopyBlock* tail;        // for list recycling
+  *PixOrCopyBlock free_blocks;  // free-list
+  *PixOrCopyBlock last_block;   // used for adding new refs (internal)
 };
 
 // Initialize the object. 'block_size' is the common block size to store
 // references (typically, width * height / MAX_REFS_BLOCK_PER_IMAGE).
-func VP8LBackwardRefsInit(VP8LBackwardRefs* const refs, int block_size);
+func VP8LBackwardRefsInit(*VP8LBackwardRefs const refs, int block_size);
 // Release memory for backward references.
-func VP8LBackwardRefsClear(VP8LBackwardRefs* const refs);
+func VP8LBackwardRefsClear(*VP8LBackwardRefs const refs);
 
 // Cursor for iterating on references content
 type <Foo> struct {
   // public:
-  PixOrCopy* cur_pos;  // current position
+  *PixOrCopy cur_pos;  // current position
   // private:
-  PixOrCopyBlock* cur_block;  // current block in the refs list
-  const PixOrCopy* last_pos;  // sentinel for switching to next block
+  *PixOrCopyBlock cur_block;  // current block in the refs list
+  const *PixOrCopy last_pos;  // sentinel for switching to next block
 } VP8LRefsCursor;
 
 // Returns a cursor positioned at the beginning of the references list.
-VP8LRefsCursor VP8LRefsCursorInit(const VP8LBackwardRefs* const refs);
+VP8LRefsCursor VP8LRefsCursorInit(const *VP8LBackwardRefs const refs);
 // Returns true if cursor is pointing at a valid position.
-static  int VP8LRefsCursorOk(const VP8LRefsCursor* const c) {
+static  int VP8LRefsCursorOk(const *VP8LRefsCursor const c) {
   return (c.cur_pos != nil);
 }
 // Move to next block of references. Internal, not to be called directly.
-func VP8LRefsCursorNextBlock(VP8LRefsCursor* const c);
+func VP8LRefsCursorNextBlock(*VP8LRefsCursor const c);
 // Move to next position, or nil. Should not be called if !VP8LRefsCursorOk().
-static  func VP8LRefsCursorNext(VP8LRefsCursor* const c) {
+static  func VP8LRefsCursorNext(*VP8LRefsCursor const c) {
   assert.Assert(c != nil);
   assert.Assert(VP8LRefsCursorOk(c));
   if (++c.cur_pos == c.last_pos) VP8LRefsCursorNextBlock(c);
@@ -213,7 +213,7 @@ enum VP8LLZ77Type { kLZ77Standard = 1, kLZ77RLE = 2, kLZ77Box = 4 };
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
 int VP8LGetBackwardReferences(
-    int width, int height, const uint32* const argb, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, const VP8LHashChain* const hash_chain, VP8LBackwardRefs* const refs, int* const cache_bits_best, const WebPPicture* const pic, int percent_range, int* const percent);
+    int width, int height, const *uint32 const argb, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, const *VP8LHashChain const hash_chain, *VP8LBackwardRefs const refs, *int const cache_bits_best, const *WebPPicture const pic, int percent_range, *int const percent);
 
 #ifdef __cplusplus
 }

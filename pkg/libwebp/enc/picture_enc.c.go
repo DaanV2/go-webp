@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // WebPPicture
 //------------------------------------------------------------------------------
 
-static int DummyWriter(const uint8* data, uint64 data_size, const WebPPicture* const picture) {
+static int DummyWriter(const *uint8 data, uint64 data_size, const *WebPPicture const picture) {
   // The following are to prevent 'unused variable' error message.
   (void)data;
   (void)data_size;
@@ -35,7 +35,7 @@ static int DummyWriter(const uint8* data, uint64 data_size, const WebPPicture* c
   return 1;
 }
 
-int WebPPictureInitInternal(WebPPicture* picture, int version) {
+int WebPPictureInitInternal(*WebPPicture picture, int version) {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_ENCODER_ABI_VERSION)) {
     return 0;  // caller/system version mismatch!
   }
@@ -49,7 +49,7 @@ int WebPPictureInitInternal(WebPPicture* picture, int version) {
 
 //------------------------------------------------------------------------------
 
-int WebPValidatePicture(const WebPPicture* const picture) {
+int WebPValidatePicture(const *WebPPicture const picture) {
   if (picture == nil) return 0;
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
       picture.height <= 0 || picture.height > INT_MAX / 4) {
@@ -62,26 +62,26 @@ int WebPValidatePicture(const WebPPicture* const picture) {
   return 1;
 }
 
-func WebPPictureResetBufferARGB(WebPPicture* const picture) {
+func WebPPictureResetBufferARGB(*WebPPicture const picture) {
   picture.memory_argb_ = nil;
   picture.argb = nil;
   picture.argb_stride = 0;
 }
 
-func WebPPictureResetBufferYUVA(WebPPicture* const picture) {
+func WebPPictureResetBufferYUVA(*WebPPicture const picture) {
   picture.memory_ = nil;
   picture.y = picture.u = picture.v = picture.a = nil;
   picture.y_stride = picture.uv_stride = 0;
   picture.a_stride = 0;
 }
 
-func WebPPictureResetBuffers(WebPPicture* const picture) {
+func WebPPictureResetBuffers(*WebPPicture const picture) {
   WebPPictureResetBufferARGB(picture);
   WebPPictureResetBufferYUVA(picture);
 }
 
-int WebPPictureAllocARGB(WebPPicture* const picture) {
-  void* memory;
+int WebPPictureAllocARGB(*WebPPicture const picture) {
+  *void memory;
   const int width = picture.width;
   const int height = picture.height;
   const uint64 argb_size = (uint64)width * height;
@@ -97,12 +97,12 @@ int WebPPictureAllocARGB(WebPPicture* const picture) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
   picture.memory_argb_ = memory;
-  picture.argb = (uint32*)WEBP_ALIGN(memory);
+  picture.argb = (*uint32)WEBP_ALIGN(memory);
   picture.argb_stride = width;
   return 1;
 }
 
-int WebPPictureAllocYUVA(WebPPicture* const picture) {
+int WebPPictureAllocYUVA(*WebPPicture const picture) {
   const int has_alpha = (int)picture.colorspace & WEBP_CSP_ALPHA_BIT;
   const int width = picture.width;
   const int height = picture.height;
@@ -112,7 +112,7 @@ int WebPPictureAllocYUVA(WebPPicture* const picture) {
   const int uv_stride = uv_width;
   int a_width, a_stride;
   uint64 y_size, uv_size, a_size, total_size;
-  uint8* mem;
+  *uint8 mem;
 
   if (!WebPValidatePicture(picture)) return 0;
 
@@ -134,13 +134,13 @@ int WebPPictureAllocYUVA(WebPPicture* const picture) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
   }
   // allocate a new buffer.
-  mem = (uint8*)WebPSafeMalloc(total_size, sizeof(*mem));
+  mem = (*uint8)WebPSafeMalloc(total_size, sizeof(*mem));
   if (mem == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
 
   // From now on, we're in the clear, we can no longer fail...
-  picture.memory_ = (void*)mem;
+  picture.memory_ = (*void)mem;
   picture.y_stride = y_stride;
   picture.uv_stride = uv_stride;
   picture.a_stride = a_stride;
@@ -162,7 +162,7 @@ int WebPPictureAllocYUVA(WebPPicture* const picture) {
   return 1;
 }
 
-int WebPPictureAlloc(WebPPicture* picture) {
+int WebPPictureAlloc(*WebPPicture picture) {
   if (picture != nil) {
     WebPPictureFree(picture);  // erase previous buffer
 
@@ -175,7 +175,7 @@ int WebPPictureAlloc(WebPPicture* picture) {
   return 1;
 }
 
-func WebPPictureFree(WebPPicture* picture) {
+func WebPPictureFree(*WebPPicture picture) {
   if (picture != nil) {
     WebPSafeFree(picture.memory_);
     WebPSafeFree(picture.memory_argb_);
@@ -186,25 +186,25 @@ func WebPPictureFree(WebPPicture* picture) {
 //------------------------------------------------------------------------------
 // WebPMemoryWriter: Write-to-memory
 
-func WebPMemoryWriterInit(WebPMemoryWriter* writer) {
+func WebPMemoryWriterInit(*WebPMemoryWriter writer) {
   writer.mem = nil;
   writer.size = 0;
   writer.max_size = 0;
 }
 
-int WebPMemoryWrite(const uint8* data, uint64 data_size, const WebPPicture* picture) {
-  WebPMemoryWriter* const w = (WebPMemoryWriter*)picture.custom_ptr;
+int WebPMemoryWrite(const *uint8 data, uint64 data_size, const *WebPPicture picture) {
+  *WebPMemoryWriter const w = (*WebPMemoryWriter)picture.custom_ptr;
   uint64 next_size;
   if (w == nil) {
     return 1;
   }
   next_size = (uint64)w.size + data_size;
   if (next_size > w.max_size) {
-    uint8* new_mem;
+    *uint8 new_mem;
     uint64 next_max_size = 2ULL * w.max_size;
     if (next_max_size < next_size) next_max_size = next_size;
     if (next_max_size < 8192ULL) next_max_size = 8192ULL;
-    new_mem = (uint8*)WebPSafeMalloc(next_max_size, 1);
+    new_mem = (*uint8)WebPSafeMalloc(next_max_size, 1);
     if (new_mem == nil) {
       return 0;
     }
@@ -223,7 +223,7 @@ int WebPMemoryWrite(const uint8* data, uint64 data_size, const WebPPicture* pict
   return 1;
 }
 
-func WebPMemoryWriterClear(WebPMemoryWriter* writer) {
+func WebPMemoryWriterClear(*WebPMemoryWriter writer) {
   if (writer != nil) {
     WebPSafeFree(writer.mem);
     WebPMemoryWriterInit(writer);
@@ -233,9 +233,9 @@ func WebPMemoryWriterClear(WebPMemoryWriter* writer) {
 //------------------------------------------------------------------------------
 // Simplest high-level calls:
 
-typedef int (*Importer)(WebPPicture* const, const uint8* const, int);
+typedef int (*Importer)(*WebPPicture const, const *uint8 const, int);
 
-static uint64 Encode(const uint8* rgba, int width, int height, int stride, Importer import, float quality_factor, int lossless, uint8** output) {
+static uint64 Encode(const *uint8 rgba, int width, int height, int stride, Importer import, float quality_factor, int lossless, *uint8* output) {
   WebPPicture pic;
   WebPConfig config;
   WebPMemoryWriter wrt;
@@ -268,8 +268,8 @@ static uint64 Encode(const uint8* rgba, int width, int height, int stride, Impor
 }
 
 #define ENCODE_FUNC(NAME, IMPORTER)                              \
-  uint64 NAME(const uint8* in, int w, int h, int bps, float q, \
-              uint8** out) {                                   \
+  uint64 NAME(const *uint8 in, int w, int h, int bps, float q, \
+              *uint8* out) {                                   \
     return Encode(in, w, h, bps, IMPORTER, q, 0, out);           \
   }
 
@@ -284,7 +284,7 @@ ENCODE_FUNC(WebPEncodeBGRA, WebPPictureImportBGRA)
 
 const LOSSLESS_DEFAULT_QUALITY =70.
 #define LOSSLESS_ENCODE_FUNC(NAME, IMPORTER)                                  \
-  uint64 NAME(const uint8* in, int w, int h, int bps, uint8** out) {      \
+  uint64 NAME(const *uint8 in, int w, int h, int bps, *uint8* out) {      \
     return Encode(in, w, h, bps, IMPORTER, LOSSLESS_DEFAULT_QUALITY, 1, out); \
   }
 

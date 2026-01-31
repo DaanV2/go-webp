@@ -32,17 +32,17 @@ typedef struct VP8Residual VP8Residual;
 type VP8Residual struct {
   int first;
   int last;
-  const int16* coeffs;
+  const *int16 coeffs;
 
   int coeff_type;
-  ProbaArray* prob;
-  StatsArray* stats;
+  *ProbaArray prob;
+  *StatsArray stats;
   CostArrayPtr costs;
 };
 
-func VP8InitResidual(int first, int coeff_type, VP8Encoder* const enc, VP8Residual* const res);
+func VP8InitResidual(int first, int coeff_type, *VP8Encoder const enc, *VP8Residual const res);
 
-int VP8RecordCoeffs(int ctx, const VP8Residual* const res);
+int VP8RecordCoeffs(int ctx, const *VP8Residual const res);
 
 // Record proba context used.
 static  int VP8RecordStats(int bit, proba_t* const stats) {
@@ -64,8 +64,8 @@ static  int VP8BitCost(int bit, uint8 proba) {
 }
 
 // Level cost calculations
-func VP8CalculateLevelCosts(VP8EncProba* const proba);
-static  int VP8LevelCost(const uint16* const table, int level) {
+func VP8CalculateLevelCosts(*VP8EncProba const proba);
+static  int VP8LevelCost(const *uint16 const table, int level) {
   return VP8LevelFixedCosts[level] +
          table[(level > MAX_VARIABLE_LEVEL) ? MAX_VARIABLE_LEVEL : level];
 }

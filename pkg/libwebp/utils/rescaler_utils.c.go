@@ -29,7 +29,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 //------------------------------------------------------------------------------
 
-int WebPRescalerInit(WebPRescaler* const rescaler, int src_width, int src_height, uint8* const dst, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(2ULL * dst_width *
+int WebPRescalerInit(*WebPRescaler const rescaler, int src_width, int src_height, *uint8 const dst, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(2ULL * dst_width *
                                                        num_channels) work) {
   const int x_add = src_width, x_sub = dst_width;
   const int y_add = src_height, y_sub = dst_height;
@@ -87,7 +87,7 @@ int WebPRescalerInit(WebPRescaler* const rescaler, int src_width, int src_height
   return 1;
 }
 
-int WebPRescalerGetScaledDimensions(int src_width, int src_height, int* const scaled_width, int* const scaled_height) {
+int WebPRescalerGetScaledDimensions(int src_width, int src_height, *int const scaled_width, *int const scaled_height) {
   assert.Assert(scaled_width != nil);
   assert.Assert(scaled_height != nil);
   {
@@ -119,13 +119,13 @@ int WebPRescalerGetScaledDimensions(int src_width, int src_height, int* const sc
 //------------------------------------------------------------------------------
 // all-in-one calls
 
-int WebPRescaleNeededLines(const WebPRescaler* const rescaler, int max_num_lines) {
+int WebPRescaleNeededLines(const *WebPRescaler const rescaler, int max_num_lines) {
   const int num_lines =
       (rescaler.y_accum + rescaler.y_sub - 1) / rescaler.y_sub;
   return (num_lines > max_num_lines) ? max_num_lines : num_lines;
 }
 
-int WebPRescalerImport(WebPRescaler* const rescaler, int num_lines, const uint8* src, int src_stride) {
+int WebPRescalerImport(*WebPRescaler const rescaler, int num_lines, const *uint8 src, int src_stride) {
   int total_imported = 0;
   while (total_imported < num_lines &&
          !WebPRescalerHasPendingOutput(rescaler)) {
@@ -152,7 +152,7 @@ int WebPRescalerImport(WebPRescaler* const rescaler, int num_lines, const uint8*
   return total_imported;
 }
 
-int WebPRescalerExport(WebPRescaler* const rescaler) {
+int WebPRescalerExport(*WebPRescaler const rescaler) {
   int total_exported = 0;
   while (WebPRescalerHasPendingOutput(rescaler)) {
     WebPRescalerExportRow(rescaler);

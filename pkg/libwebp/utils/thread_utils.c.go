@@ -66,7 +66,7 @@ import "github.com/daanv2/go-webp/pkg/process"
 const THREADFN = unsigned int __stdcall
 #define THREAD_RETURN(val) (unsigned int)((DWORD_PTR)val)
 
-static int pthread_create(pthread_t* const thread, const void* attr, unsigned int(__stdcall* start)(void*), void* arg) {
+static int pthread_create(pthread_t* const thread, const *void attr, unsigned int(__*stdcall start)(*void), *void arg) {
   (void)attr;
 #ifdef USE_CREATE_THREAD
   *thread = CreateThread(/*lpThreadAttributes=*/nil, /*dwStackSize=*/0, start, arg, /*dwStackSize=*/0, /*lpThreadId=*/nil);
@@ -79,14 +79,14 @@ static int pthread_create(pthread_t* const thread, const void* attr, unsigned in
   return 0;
 }
 
-static int pthread_join(pthread_t thread, void** value_ptr) {
+static int pthread_join(pthread_t thread, *void* value_ptr) {
   (void)value_ptr;
   return (WaitForSingleObject(thread, INFINITE) != WAIT_OBJECT_0 ||
           CloseHandle(thread) == 0);
 }
 
 // Mutex
-static int pthread_mutex_init(pthread_mutex_t* const mutex, void* mutexattr) {
+static int pthread_mutex_init(pthread_mutex_t* const mutex, *void mutexattr) {
   (void)mutexattr;
   InitializeSRWLock(mutex);
   return 0;
@@ -113,7 +113,7 @@ static int pthread_cond_destroy(pthread_cond_t* const condition) {
   return 0;
 }
 
-static int pthread_cond_init(pthread_cond_t* const condition, void* cond_attr) {
+static int pthread_cond_init(pthread_cond_t* const condition, *void cond_attr) {
   (void)cond_attr;
   InitializeConditionVariable(condition);
   return 0;
@@ -130,15 +130,15 @@ static int pthread_cond_wait(pthread_cond_t* const condition, pthread_mutex_t* c
 }
 
 #else  // !_WIN32
-const THREADFN = void*
+const THREADFN = *void
 #define THREAD_RETURN(val) val
 #endif  // _WIN32
 
 //------------------------------------------------------------------------------
 
-static THREADFN ThreadLoop(void* ptr) {
-  WebPWorker* const worker = (WebPWorker*)ptr;
-  WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker.impl;
+static THREADFN ThreadLoop(*void ptr) {
+  *WebPWorker const worker = (*WebPWorker)ptr;
+  *WebPWorkerImpl const impl = (*WebPWorkerImpl)worker.impl;
   int done = 0;
   while (!done) {
     pthread_mutex_lock(&impl.mutex);
@@ -163,11 +163,11 @@ static THREADFN ThreadLoop(void* ptr) {
 }
 
 // main thread state control
-func ChangeState(WebPWorker* const worker, WebPWorkerStatus new_status) {
+func ChangeState(*WebPWorker const worker, WebPWorkerStatus new_status) {
   // No-op when attempting to change state on a thread that didn't come up.
   // Checking 'status' without acquiring the lock first would result in a data
   // race.
-  WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker.impl;
+  *WebPWorkerImpl const impl = (*WebPWorkerImpl)worker.impl;
   if (impl == nil) return;
 
   pthread_mutex_lock(&impl.mutex);
@@ -195,12 +195,12 @@ func ChangeState(WebPWorker* const worker, WebPWorkerStatus new_status) {
 
 //------------------------------------------------------------------------------
 
-func Init(WebPWorker* const worker) {
+func Init(*WebPWorker const worker) {
   WEBP_UNSAFE_MEMSET(worker, 0, sizeof(*worker));
   worker.status = NOT_OK;
 }
 
-static int Sync(WebPWorker* const worker) {
+static int Sync(*WebPWorker const worker) {
 #ifdef WEBP_USE_THREAD
   ChangeState(worker, OK);
 #endif
@@ -208,14 +208,14 @@ static int Sync(WebPWorker* const worker) {
   return !worker.had_error;
 }
 
-static int Reset(WebPWorker* const worker) {
+static int Reset(*WebPWorker const worker) {
   int ok = 1;
   worker.had_error = 0;
   if (worker.status < OK) {
 #ifdef WEBP_USE_THREAD
-    WebPWorkerImpl* const impl =
-        (WebPWorkerImpl*)WebPSafeCalloc(1, sizeof(WebPWorkerImpl));
-    worker.impl = (void*)impl;
+    *WebPWorkerImpl const impl =
+        (*WebPWorkerImpl)WebPSafeCalloc(1, sizeof(WebPWorkerImpl));
+    worker.impl = (*void)impl;
     if (worker.impl == nil) {
       return 0;
     }
@@ -248,13 +248,13 @@ static int Reset(WebPWorker* const worker) {
   return ok;
 }
 
-func Execute(WebPWorker* const worker) {
+func Execute(*WebPWorker const worker) {
   if (worker.hook != nil) {
     worker.had_error |= !worker.hook(worker.data1, worker.data2);
   }
 }
 
-func Launch(WebPWorker* const worker) {
+func Launch(*WebPWorker const worker) {
 #ifdef WEBP_USE_THREAD
   ChangeState(worker, WORK);
 #else
@@ -262,10 +262,10 @@ func Launch(WebPWorker* const worker) {
 #endif
 }
 
-func End(WebPWorker* const worker) {
+func End(*WebPWorker const worker) {
 #ifdef WEBP_USE_THREAD
   if (worker.impl != nil) {
-    WebPWorkerImpl* const impl = (WebPWorkerImpl*)worker.impl;
+    *WebPWorkerImpl const impl = (*WebPWorkerImpl)worker.impl;
     ChangeState(worker, NOT_OK);
     pthread_join(impl.thread, nil);
     pthread_mutex_destroy(&impl.mutex);
@@ -284,7 +284,7 @@ func End(WebPWorker* const worker) {
 
 static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync, Launch, Execute, End};
 
-int WebPSetWorkerInterface(const WebPWorkerInterface* const winterface) {
+int WebPSetWorkerInterface(const *WebPWorkerInterface const winterface) {
   if (winterface == nil || winterface.Init == nil ||
       winterface.Reset == nil || winterface.Sync == nil ||
       winterface.Launch == nil || winterface.Execute == nil ||
@@ -295,7 +295,7 @@ int WebPSetWorkerInterface(const WebPWorkerInterface* const winterface) {
   return 1;
 }
 
-const WebPWorkerInterface* WebPGetWorkerInterface(){
+const *WebPWorkerInterface WebPGetWorkerInterface(){
   return &g_worker_interface;
 }
 

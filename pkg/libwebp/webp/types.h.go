@@ -31,7 +31,7 @@ func WebPMalloc(size uint64) {
 	panic("not implemented")
 }
 
-// Releases memory returned by the WebPDecode*() functions (from decode.h).
+// Releases memory returned by the *WebPDecode() functions (from decode.h).
 // Deprecated: Not needed in Go, use built-in memory management.
 func WebPFree(ptr any) {
 	panic("not implemented")

@@ -43,27 +43,27 @@ int WebPGetEncoderVersion(){
 // VP8Encoder
 //------------------------------------------------------------------------------
 
-func ResetSegmentHeader(VP8Encoder* const enc) {
-  VP8EncSegmentHeader* const hdr = &enc.segment_hdr;
+func ResetSegmentHeader(*VP8Encoder const enc) {
+  *VP8EncSegmentHeader const hdr = &enc.segment_hdr;
   hdr.num_segments = enc.config.segments;
   hdr.update_map = (hdr.num_segments > 1);
   hdr.size = 0;
 }
 
-func ResetFilterHeader(VP8Encoder* const enc) {
-  VP8EncFilterHeader* const hdr = &enc.filter_hdr;
+func ResetFilterHeader(*VP8Encoder const enc) {
+  *VP8EncFilterHeader const hdr = &enc.filter_hdr;
   hdr.simple = 1;
   hdr.level = 0;
   hdr.sharpness = 0;
   hdr.i4x4_lf_delta = 0;
 }
 
-func ResetBoundaryPredictions(VP8Encoder* const enc) {
+func ResetBoundaryPredictions(*VP8Encoder const enc) {
   // init boundary values once for all
   // Note: actually, initializing the 'preds[]' is only needed for intra4.
   int i;
-  uint8* const top = enc.preds - enc.preds_w;
-  uint8* const left = enc.preds - 1;
+  *uint8 const top = enc.preds - enc.preds_w;
+  *uint8 const left = enc.preds - 1;
   for (i = -1; i < 4 * enc.mb_w; ++i) {
     top[i] = B_DC_PRED;
   }
@@ -98,8 +98,8 @@ func ResetBoundaryPredictions(VP8Encoder* const enc) {
 // full-SNS          |   |   |   |   | x | x | x |
 //-------------------+---+---+---+---+---+---+---+
 
-func MapConfigToTools(VP8Encoder* const enc) {
-  const WebPConfig* const config = enc.config;
+func MapConfigToTools(*VP8Encoder const enc) {
+  const *WebPConfig const config = enc.config;
   const int method = config.method;
   const int limit = 100 - config.partition_limit;
   enc.method = method;
@@ -147,8 +147,8 @@ func MapConfigToTools(VP8Encoder* const enc) {
 //              LFStats: 2048
 // Picture size (yuv): 419328
 
-static VP8Encoder* InitVP8Encoder(const WebPConfig* const config, WebPPicture* const picture) {
-  VP8Encoder* enc;
+static *VP8Encoder InitVP8Encoder(const *WebPConfig const config, *WebPPicture const picture) {
+  *VP8Encoder enc;
   const int use_filter =
       (config.filter_strength > 0) || (config.autofilter > 0);
   const int mb_w = (picture.width + 15) >> 4;
@@ -168,7 +168,7 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config, WebPPicture* c
       (config.quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1)
           ? mb_w * sizeof(*enc.top_derr)
           : 0;
-  uint8* mem;
+  *uint8 mem;
   const uint64 size = (uint64)sizeof(*enc)  // main struct
                         + WEBP_ALIGN_CST        // cache alignment
                         + info_size             // modes info
@@ -200,35 +200,35 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config, WebPPicture* c
   printf("Picture size (yuv): %ld\n", mb_w * mb_h * 384 * sizeof(uint8));
   printf("===================================\n");
 #endif
-  mem = (uint8*)WebPSafeMalloc(size, sizeof(*mem));
+  mem = (*uint8)WebPSafeMalloc(size, sizeof(*mem));
   if (mem == nil) {
     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
     return nil;
   }
-  enc = (VP8Encoder*)mem;
-  mem = (uint8*)WEBP_ALIGN(mem + sizeof(*enc));
+  enc = (*VP8Encoder)mem;
+  mem = (*uint8)WEBP_ALIGN(mem + sizeof(*enc));
   memset(enc, 0, sizeof(*enc));
   enc.num_parts = 1 << config.partitions;
   enc.mb_w = mb_w;
   enc.mb_h = mb_h;
   enc.preds_w = preds_w;
-  enc.mb_info = (VP8MBInfo*)mem;
+  enc.mb_info = (*VP8MBInfo)mem;
   mem += info_size;
   enc.preds = mem + 1 + enc.preds_w;
   mem += preds_size;
-  enc.nz = 1 + (uint32*)WEBP_ALIGN(mem);
+  enc.nz = 1 + (*uint32)WEBP_ALIGN(mem);
   mem += nz_size;
-  enc.lf_stats = lf_stats_size ? (LFStats*)WEBP_ALIGN(mem) : nil;
+  enc.lf_stats = lf_stats_size ? (*LFStats)WEBP_ALIGN(mem) : nil;
   mem += lf_stats_size;
 
   // top samples (all 16-aligned)
-  mem = (uint8*)WEBP_ALIGN(mem);
+  mem = (*uint8)WEBP_ALIGN(mem);
   enc.y_top = mem;
   enc.uv_top = enc.y_top + top_stride;
   mem += 2 * top_stride;
-  enc.top_derr = top_derr_size ? (DError*)mem : nil;
+  enc.top_derr = top_derr_size ? (*DError)mem : nil;
   mem += top_derr_size;
-  assert.Assert(mem <= (uint8*)enc + size);
+  assert.Assert(mem <= (*uint8)enc + size);
 
   enc.config = config;
   enc.profile = use_filter ? ((config.filter_type == 1) ? 0 : 1) : 2;
@@ -253,7 +253,7 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config, WebPPicture* c
   return enc;
 }
 
-static int DeleteVP8Encoder(VP8Encoder* enc) {
+static int DeleteVP8Encoder(*VP8Encoder enc) {
   int ok = 1;
   if (enc != nil) {
     ok = VP8EncDeleteAlpha(enc);
@@ -270,10 +270,10 @@ static double GetPSNR(uint64 err, uint64 size) {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
 
-func FinalizePSNR(const VP8Encoder* const enc) {
-  WebPAuxStats* stats = enc.pic.stats;
+func FinalizePSNR(const *VP8Encoder const enc) {
+  *WebPAuxStats stats = enc.pic.stats;
   const uint64 size = enc.sse_count;
-  const uint64* const sse = enc.sse;
+  const *uint64 const sse = enc.sse;
   stats.PSNR[0] = (float)GetPSNR(sse[0], size);
   stats.PSNR[1] = (float)GetPSNR(sse[1], size / 4);
   stats.PSNR[2] = (float)GetPSNR(sse[2], size / 4);
@@ -282,9 +282,9 @@ func FinalizePSNR(const VP8Encoder* const enc) {
 }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
-func StoreStats(VP8Encoder* const enc) {
+func StoreStats(*VP8Encoder const enc) {
 #if !defined(WEBP_DISABLE_STATS)
-  WebPAuxStats* const stats = enc.pic.stats;
+  *WebPAuxStats const stats = enc.pic.stats;
   if (stats != nil) {
     int i, s;
     for (i = 0; i < NUM_MB_SEGMENTS; ++i) {
@@ -305,17 +305,17 @@ func StoreStats(VP8Encoder* const enc) {
 #endif  // !defined(WEBP_DISABLE_STATS)
 }
 
-int WebPEncodingSetError(const WebPPicture* const pic, WebPEncodingError error) {
+int WebPEncodingSetError(const *WebPPicture const pic, WebPEncodingError error) {
   assert.Assert((int)error < VP8_ENC_ERROR_LAST);
   assert.Assert((int)error >= VP8_ENC_OK);
   // The oldest error reported takes precedence over the new one.
   if (pic.error_code == VP8_ENC_OK) {
-    ((WebPPicture*)pic).error_code = error;
+    ((*WebPPicture)pic).error_code = error;
   }
   return 0;
 }
 
-int WebPReportProgress(const WebPPicture* const pic, int percent, int* const percent_store) {
+int WebPReportProgress(const *WebPPicture const pic, int percent, *int const percent_store) {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
     if (pic.progress_hook && !pic.progress_hook(percent, pic)) {
@@ -327,7 +327,7 @@ int WebPReportProgress(const WebPPicture* const pic, int percent, int* const per
 }
 //------------------------------------------------------------------------------
 
-int WebPEncode(const WebPConfig* config, WebPPicture* pic) {
+int WebPEncode(const *WebPConfig config, *WebPPicture pic) {
   int ok = 0;
   if (pic == nil) return 0;
 
@@ -346,7 +346,7 @@ int WebPEncode(const WebPConfig* config, WebPPicture* pic) {
   if (pic.stats != nil) memset(pic.stats, 0, sizeof(*pic.stats));
 
   if (!config.lossless) {
-    VP8Encoder* enc = nil;
+    *VP8Encoder enc = nil;
 
     if (pic.use_argb || pic.y == nil || pic.u == nil || pic.v == nil) {
       // Make sure we have YUVA samples.

@@ -53,8 +53,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int EncodeLossless(const uint8* const data, int width, int height, int effort_level,  // in [0..6] range
-                          int use_quality_100, VP8LBitWriter* const bw, WebPAuxStats* const stats) {
+static int EncodeLossless(const *uint8 const data, int width, int height, int effort_level,  // in [0..6] range
+                          int use_quality_100, *VP8LBitWriter const bw, *WebPAuxStats const stats) {
   int ok = 0;
   WebPConfig config;
   WebPPicture picture;
@@ -106,14 +106,14 @@ type <Foo> struct {
 } FilterTrial;
 
 // This function always returns an initialized 'bw' object, even upon error.
-static int EncodeAlphaInternal(const uint8* const data, int width, int height, int method, int filter, int reduce_levels, int effort_level,  // in [0..6] range
-                               uint8* const tmp_alpha, FilterTrial* result) {
+static int EncodeAlphaInternal(const *uint8 const data, int width, int height, int method, int filter, int reduce_levels, int effort_level,  // in [0..6] range
+                               *uint8 const tmp_alpha, *FilterTrial result) {
   int ok = 0;
-  const uint8* alpha_src;
+  const *uint8 alpha_src;
   WebPFilterFunc filter_func;
   uint8 header;
   const uint64 data_size = width * height;
-  const uint8* output = nil;
+  const *uint8 output = nil;
   uint64 output_size = 0;
   VP8LBitWriter tmp_bw;
 
@@ -178,14 +178,14 @@ static int EncodeAlphaInternal(const uint8* const data, int width, int height, i
 
 // -----------------------------------------------------------------------------
 
-static int GetNumColors(const uint8* data, int width, int height, int stride) {
+static int GetNumColors(const *uint8 data, int width, int height, int stride) {
   int j;
   int colors = 0;
   uint8 color[256] = {0};
 
   for (j = 0; j < height; ++j) {
     int i;
-    const uint8* const p = data + j * stride;
+    const *uint8 const p = data + j * stride;
     for (i = 0; i < width; ++i) {
       color[p[i]] = 1;
     }
@@ -200,7 +200,7 @@ const FILTER_TRY_NONE =(1 << WEBP_FILTER_NONE)
 const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
-static uint32 GetFilterMap(const uint8* alpha, int width, int height, int filter, int effort_level) {
+static uint32 GetFilterMap(const *uint8 alpha, int width, int height, int filter, int effort_level) {
   uint32 bit_map = 0U;
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
@@ -226,19 +226,19 @@ static uint32 GetFilterMap(const uint8* alpha, int width, int height, int filter
   return bit_map;
 }
 
-func InitFilterTrial(FilterTrial* const score) {
+func InitFilterTrial(*FilterTrial const score) {
   score.score = (uint64)~0U;
   VP8BitWriterInit(&score.bw, 0);
 }
 
-static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height, uint64 data_size, int method, int filter, int reduce_levels, int effort_level, uint8** const output, uint64* const output_size, WebPAuxStats* const stats) {
+static int ApplyFiltersAndEncode(const *uint8 alpha, int width, int height, uint64 data_size, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, *uint64 const output_size, *WebPAuxStats const stats) {
   int ok = 1;
   FilterTrial best;
   uint32 try_map = GetFilterMap(alpha, width, height, filter, effort_level);
   InitFilterTrial(&best);
 
   if (try_map != FILTER_TRY_NONE) {
-    uint8* filtered_alpha = (uint8*)WebPSafeMalloc(1ULL, data_size);
+    *uint8 filtered_alpha = (*uint8)WebPSafeMalloc(1ULL, data_size);
     if (filtered_alpha == nil) return 0;
 
     for (filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1) {
@@ -281,12 +281,12 @@ static int ApplyFiltersAndEncode(const uint8* alpha, int width, int height, uint
   return ok;
 }
 
-static int EncodeAlpha(VP8Encoder* const enc, int quality, int method, int filter, int effort_level, uint8** const output, uint64* const output_size) {
-  const WebPPicture* const pic = enc.pic;
+static int EncodeAlpha(*VP8Encoder const enc, int quality, int method, int filter, int effort_level, *uint8* const output, *uint64 const output_size) {
+  const *WebPPicture const pic = enc.pic;
   const int width = pic.width;
   const int height = pic.height;
 
-  uint8* quant_alpha = nil;
+  *uint8 quant_alpha = nil;
   const uint64 data_size = width * height;
   uint64 sse = 0;
   int ok = 1;
@@ -313,7 +313,7 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method, int filte
     filter = WEBP_FILTER_NONE;
   }
 
-  quant_alpha = (uint8*)WebPSafeMalloc(1ULL, data_size);
+  quant_alpha = (*uint8)WebPSafeMalloc(1ULL, data_size);
   if (quant_alpha == nil) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
@@ -351,10 +351,10 @@ static int EncodeAlpha(VP8Encoder* const enc, int quality, int method, int filte
 //------------------------------------------------------------------------------
 // Main calls
 
-static int CompressAlphaJob(void* arg1, void* unused) {
-  VP8Encoder* const enc = (VP8Encoder*)arg1;
-  const WebPConfig* config = enc.config;
-  uint8* alpha_data = nil;
+static int CompressAlphaJob(*void arg1, *void unused) {
+  *VP8Encoder const enc = (*VP8Encoder)arg1;
+  const *WebPConfig config = enc.config;
+  *uint8 alpha_data = nil;
   uint64 alpha_size = 0;
   const int effort_level = config.method;  // maps to [0..6]
   const WEBP_FILTER_TYPE filter =
@@ -374,13 +374,13 @@ static int CompressAlphaJob(void* arg1, void* unused) {
   return 1;
 }
 
-func VP8EncInitAlpha(VP8Encoder* const enc) {
+func VP8EncInitAlpha(*VP8Encoder const enc) {
   WebPInitAlphaProcessing();
   enc.has_alpha = WebPPictureHasTransparency(enc.pic);
   enc.alpha_data = nil;
   enc.alpha_data_size = 0;
   if (enc.thread_level > 0) {
-    WebPWorker* const worker = &enc.alpha_worker;
+    *WebPWorker const worker = &enc.alpha_worker;
     WebPGetWorkerInterface().Init(worker);
     worker.data1 = enc;
     worker.data2 = nil;
@@ -388,10 +388,10 @@ func VP8EncInitAlpha(VP8Encoder* const enc) {
   }
 }
 
-int VP8EncStartAlpha(VP8Encoder* const enc) {
+int VP8EncStartAlpha(*VP8Encoder const enc) {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
-      WebPWorker* const worker = &enc.alpha_worker;
+      *WebPWorker const worker = &enc.alpha_worker;
       // Makes sure worker is good to go.
       if (!WebPGetWorkerInterface().Reset(worker)) {
         return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
@@ -405,20 +405,20 @@ int VP8EncStartAlpha(VP8Encoder* const enc) {
   return 1;
 }
 
-int VP8EncFinishAlpha(VP8Encoder* const enc) {
+int VP8EncFinishAlpha(*VP8Encoder const enc) {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
-      WebPWorker* const worker = &enc.alpha_worker;
+      *WebPWorker const worker = &enc.alpha_worker;
       if (!WebPGetWorkerInterface().Sync(worker)) return 0;  // error
     }
   }
   return WebPReportProgress(enc.pic, enc.percent + 20, &enc.percent);
 }
 
-int VP8EncDeleteAlpha(VP8Encoder* const enc) {
+int VP8EncDeleteAlpha(*VP8Encoder const enc) {
   int ok = 1;
   if (enc.thread_level > 0) {
-    WebPWorker* const worker = &enc.alpha_worker;
+    *WebPWorker const worker = &enc.alpha_worker;
     // finish anything left in flight
     ok = WebPGetWorkerInterface().Sync(worker);
     // still need to end the worker, even if !ok

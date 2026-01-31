@@ -46,7 +46,7 @@ func PrepareMapToPalette(const uint32  palette[], uint32 num_colors, uint32  sor
 // equal to MAX_PALETTE_SIZE, also outputs the actual unique colors into
 // 'palette' in a sorted order. Note: 'palette' is assumed to be an array
 // already allocated with at least MAX_PALETTE_SIZE elements.
-int GetColorPalette(const struct WebPPicture* const pic, uint32* const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE)
+int GetColorPalette(const struct *WebPPicture const pic, *uint32 const WEBP_COUNTED_BY_OR_nil(MAX_PALETTE_SIZE)
                         palette);
 
 // Sorts the palette according to the criterion defined by 'method'.
@@ -54,7 +54,7 @@ int GetColorPalette(const struct WebPPicture* const pic, uint32* const WEBP_COUN
 // PrepareMapToPalette. Returns 0 on memory allocation error.
 // For kSortedDefault and kMinimizeDelta methods, 0 (if present) is set as the
 // last element to optimize later storage.
-int PaletteSort(PaletteSorting method, const struct WebPPicture* const pic, const uint32* const 
-                    palette_sorted, uint32 num_colors, uint32* const  palette);
+int PaletteSort(PaletteSorting method, const struct *WebPPicture const pic, const *uint32 const 
+                    palette_sorted, uint32 num_colors, *uint32 const  palette);
 
 #endif  // WEBP_UTILS_PALETTE_H_
