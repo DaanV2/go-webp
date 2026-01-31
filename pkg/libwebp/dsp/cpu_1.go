@@ -299,7 +299,7 @@ import <pthread.h>
 // #if !defined(WORDS_BIGENDIAN) &&                   \
     (defined(__BIG_ENDIAN__) || defined(_M_PPC) || \
      (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)))
-#define WORDS_BIGENDIAN
+const WORDS_BIGENDIAN = 
 #endif
 
 typedef enum {

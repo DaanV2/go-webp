@@ -36,7 +36,7 @@ static const uint8_t kModeBpp[MODE_LAST] = {3, 4, 3, 4, 4, 2, 2,  //
 
 // Convert to an integer to handle both the unsigned/signed enum cases
 // without the need for casting to remove type limit warnings.
-int IsValidColorspace(int webp_csp_mode) {
+func IsValidColorspace(int webp_csp_mode) int {
   return (webp_csp_mode >= MODE_RGB && webp_csp_mode < MODE_LAST);
 }
 
