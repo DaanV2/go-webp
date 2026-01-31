@@ -141,10 +141,10 @@ int32_t VP8GetSignedValue(VP8BitReader* const br, int num_bits,
 // Bitreader for lossless format
 
 // maximum number of bits (inclusive) the bit-reader can handle:
-#define VP8L_MAX_NUM_BIT_READ 24
+const VP8L_MAX_NUM_BIT_READ =24
 
-#define VP8L_LBITS 64  // Number of bits prefetched (= bit-size of vp8l_val_t).
-#define VP8L_WBITS 32  // Minimum number of bytes ready after VP8LFillBitWindow.
+const VP8L_LBITS =64  // Number of bits prefetched (= bit-size of vp8l_val_t).
+const VP8L_WBITS =32  // Minimum number of bytes ready after VP8LFillBitWindow.
 
 typedef uint64_t vp8l_val_t;  // right now, this bit-reader can only use 64bit.
 

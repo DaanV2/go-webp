@@ -37,10 +37,10 @@ extern "C" {
 // This is the maximum memory amount that libwebp will ever try to allocate.
 #ifndef WEBP_MAX_ALLOCABLE_MEMORY
 #if SIZE_MAX > (1ULL << 34)
-#define WEBP_MAX_ALLOCABLE_MEMORY (1ULL << 34)
+const WEBP_MAX_ALLOCABLE_MEMORY =(1ULL << 34)
 #else
 // For 32-bit targets keep this below INT_MAX to afunc valgrind warnings.
-#define WEBP_MAX_ALLOCABLE_MEMORY ((1ULL << 31) - (1 << 16))
+const WEBP_MAX_ALLOCABLE_MEMORY =((1ULL << 31) - (1 << 16))
 #endif
 #endif  // WEBP_MAX_ALLOCABLE_MEMORY
 
@@ -67,7 +67,7 @@ static  int CheckSizeOverflow(uint64_t size) {
 //------------------------------------------------------------------------------
 // Alignment
 
-#define WEBP_ALIGN_CST 31
+const WEBP_ALIGN_CST =31
 #define WEBP_ALIGN(PTR) \
   (((uintptr_t)(PTR) + WEBP_ALIGN_CST) & ~(uintptr_t)WEBP_ALIGN_CST)
 
@@ -155,7 +155,7 @@ static  int BitsCtz(uint32_t n) {
   return first_set_bit;
 }
 #else                           // default: use the (slow) C-version.
-#define WEBP_HAVE_SLOW_CLZ_CTZ  // signal that the Clz/Ctz function are slow
+const WEBP_HAVE_SLOW_CLZ_CTZ = // signal that the Clz/Ctz function are slow
 // Returns 31 ^ clz(n) = log2(n). This is the default C-implementation, either
 // based on table or not. Can be used as fallback if clz() is not available.
 #define WEBP_NEED_LOG_TABLE_8BIT

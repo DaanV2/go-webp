@@ -25,29 +25,29 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#define DO_TRELLIS_I4 1
-#define DO_TRELLIS_I16 1  // not a huge gain, but ok at low bitrate.
-#define DO_TRELLIS_UV 0   // disable trellis for UV. Risky. Not worth.
-#define USE_TDISTO 1
+const DO_TRELLIS_I4 =1
+const DO_TRELLIS_I16 =1  // not a huge gain, but ok at low bitrate.
+const DO_TRELLIS_UV =0   // disable trellis for UV. Risky. Not worth.
+const USE_TDISTO =1
 
-#define MID_ALPHA 64   // neutral value for susceptibility
-#define MIN_ALPHA 30   // lowest usable value for susceptibility
-#define MAX_ALPHA 100  // higher meaningful value for susceptibility
+const MID_ALPHA =64   // neutral value for susceptibility
+const MIN_ALPHA =30   // lowest usable value for susceptibility
+const MAX_ALPHA =100  // higher meaningful value for susceptibility
 
-#define SNS_TO_DQ \
+const SNS_TO_DQ =\
   0.9  // Scaling constant between the sns value and the QP
        // power-law modulation. Must be strictly less than 1.
 
 // number of non-zero coeffs below which we consider the block very flat
 // (and apply a penalty to complex predictions)
-#define FLATNESS_LIMIT_I16 0  // I16 mode (special case)
-#define FLATNESS_LIMIT_I4 3   // I4 mode
-#define FLATNESS_LIMIT_UV 2   // UV mode
-#define FLATNESS_PENALTY 140  // roughly ~1bit per block
+const FLATNESS_LIMIT_I16 =0  // I16 mode (special case)
+const FLATNESS_LIMIT_I4 =3   // I4 mode
+const FLATNESS_LIMIT_UV =2   // UV mode
+const FLATNESS_PENALTY =140  // roughly ~1bit per block
 
 #define MULT_8B(a, b) (((a) * (b) + 128) >> 8)
 
-#define RD_DISTO_MULT 256  // distortion multiplier (equivalent of lambda)
+const RD_DISTO_MULT =256  // distortion multiplier (equivalent of lambda)
 
 // #define DEBUG_BLOCK
 
@@ -176,7 +176,7 @@ static const uint8_t kBiasMatrices[3][2] = {  // [luma-ac,luma-dc,chroma][dc,ac]
 
 // Sharpening by (slightly) raising the hi-frequency coeffs.
 // Hack-ish but helpful for mid-bitrate range. Use with care.
-#define SHARPEN_BITS 11  // number of descaling bits for sharpening bias
+const SHARPEN_BITS =11  // number of descaling bits for sharpening bias
 static const uint8_t kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90,
                                             60, 90, 90, 90, 90, 90, 90, 90};
 
@@ -269,7 +269,7 @@ func SetupMatrices(VP8Encoder* enc) {
 
 // Very small filter-strength values have close to no visual effect. So we can
 // save a little decoding-CPU by turning filtering off for these.
-#define FSTRENGTH_CUTOFF 2
+const FSTRENGTH_CUTOFF =2
 
 func SetupFilterStrength(VP8Encoder* const enc) {
   int i;
@@ -295,8 +295,8 @@ func SetupFilterStrength(VP8Encoder* const enc) {
 
 // Note: if you change the values below, remember that the max range
 // allowed by the syntax for DQ_UV is [-16,16].
-#define MAX_DQ_UV (6)
-#define MIN_DQ_UV (-4)
+const MAX_DQ_UV =(6)
+const MIN_DQ_UV =(-4)
 
 // We want to emulate jpeg-like behaviour where the expected "good" quality
 // is around q=75. Internally, our "good" middle is around c=50. So we
@@ -550,9 +550,9 @@ typedef struct {
 // If a coefficient was quantized to a value Q (using a neutral bias),
 // we test all alternate possibilities between [Q-MIN_DELTA, Q+MAX_DELTA]
 // We don't test negative values though.
-#define MIN_DELTA 0  // how much lower level to try
-#define MAX_DELTA 1  // how much higher
-#define NUM_NODES (MIN_DELTA + 1 + MAX_DELTA)
+const MIN_DELTA =0  // how much lower level to try
+const MAX_DELTA =1  // how much higher
+const NUM_NODES =(MIN_DELTA + 1 + MAX_DELTA)
 #define NODE(n, l) (nodes[(n)][(l) + MIN_DELTA])
 #define SCORE_STATE(n, l) (score_states[n][(l) + MIN_DELTA])
 

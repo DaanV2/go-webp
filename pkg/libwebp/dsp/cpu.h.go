@@ -23,19 +23,19 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if defined(__GNUC__)
-#define LOCAL_GCC_VERSION ((__GNUC__ << 8) | __GNUC_MINOR__)
+const LOCAL_GCC_VERSION =((__GNUC__ << 8) | __GNUC_MINOR__)
 #define LOCAL_GCC_PREREQ(maj, min) (LOCAL_GCC_VERSION >= (((maj) << 8) | (min)))
 #else
-#define LOCAL_GCC_VERSION 0
+const LOCAL_GCC_VERSION =0
 #define LOCAL_GCC_PREREQ(maj, min) 0
 #endif
 
 #if defined(__clang__)
-#define LOCAL_CLANG_VERSION ((__clang_major__ << 8) | __clang_minor__)
+const LOCAL_CLANG_VERSION =((__clang_major__ << 8) | __clang_minor__)
 #define LOCAL_CLANG_PREREQ(maj, min) \
   (LOCAL_CLANG_VERSION >= (((maj) << 8) | (min)))
 #else
-#define LOCAL_CLANG_VERSION 0
+const LOCAL_CLANG_VERSION =0
 #define LOCAL_CLANG_PREREQ(maj, min) 0
 #endif
 
@@ -47,17 +47,17 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if !defined(HAVE_CONFIG_H)
 #if defined(_MSC_VER) && _MSC_VER > 1310 && \
     (defined(_M_X64) || defined(_M_IX86))
-#define WEBP_MSC_SSE2  // Visual C++ SSE2 targets
+const WEBP_MSC_SSE2 = // Visual C++ SSE2 targets
 #endif
 
 #if defined(_MSC_VER) && _MSC_VER >= 1500 && \
     (defined(_M_X64) || defined(_M_IX86))
-#define WEBP_MSC_SSE41  // Visual C++ SSE4.1 targets
+const WEBP_MSC_SSE41 = // Visual C++ SSE4.1 targets
 #endif
 
 #if defined(_MSC_VER) && _MSC_VER >= 1700 && \
     (defined(_M_X64) || defined(_M_IX86))
-#define WEBP_MSC_AVX2  // Visual C++ AVX2 targets
+const WEBP_MSC_AVX2 = // Visual C++ AVX2 targets
 #endif
 #endif
 
@@ -120,7 +120,7 @@ static  int _mm256_cvtsi256_si32(__m256i a) {
 
 #if !defined(WEBP_USE_NEON) && defined(__ANDROID__) && \
     defined(__ARM_ARCH_7A__) && defined(HAVE_CPU_FEATURES_H)
-#define WEBP_ANDROID_NEON  // Android targets that may have NEON
+const WEBP_ANDROID_NEON = // Android targets that may have NEON
 #define WEBP_USE_NEON
 #endif
 
@@ -136,9 +136,9 @@ static  int _mm256_cvtsi256_si32(__m256i a) {
 #endif
 
 #if defined(__aarch64__) || defined(_M_ARM64) || defined(_M_ARM64EC)
-#define WEBP_AARCH64 1
+const WEBP_AARCH64 =1
 #else
-#define WEBP_AARCH64 0
+const WEBP_AARCH64 =0
 #endif
 
 #if defined(WEBP_USE_NEON) && !defined(WEBP_HAVE_NEON)
@@ -168,15 +168,15 @@ static  int _mm256_cvtsi256_si32(__m256i a) {
 #endif
 
 #if defined(WEBP_USE_NEON) && WEBP_DSP_OMIT_C_CODE
-#define WEBP_NEON_OMIT_C_CODE 1
+const WEBP_NEON_OMIT_C_CODE =1
 #else
-#define WEBP_NEON_OMIT_C_CODE 0
+const WEBP_NEON_OMIT_C_CODE =0
 #endif
 
 #if !(LOCAL_CLANG_PREREQ(3, 8) || LOCAL_GCC_PREREQ(4, 8) || WEBP_AARCH64)
-#define WEBP_NEON_WORK_AROUND_GCC 1
+const WEBP_NEON_WORK_AROUND_GCC =1
 #else
-#define WEBP_NEON_WORK_AROUND_GCC 0
+const WEBP_NEON_WORK_AROUND_GCC =0
 #endif
 
 //------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ static  int _mm256_cvtsi256_si32(__m256i a) {
 #if defined(__has_feature)
 #if __has_feature(thread_sanitizer)
 #undef WEBP_TSAN_IGNORE_FUNCTION
-#define WEBP_TSAN_IGNORE_FUNCTION __attribute__((no_sanitize_thread))
+const WEBP_TSAN_IGNORE_FUNCTION =__attribute__((no_sanitize_thread))
 #endif
 #endif
 
@@ -270,13 +270,13 @@ import "github.com/daanv2/go-webp/pkg/pthread"
 // failures. This is only meant to silence unaligned loads on platforms that
 // are known to support them.
 #undef WEBP_UBSAN_IGNORE_UNDEF
-#define WEBP_UBSAN_IGNORE_UNDEF __attribute__((no_sanitize("undefined")))
+const WEBP_UBSAN_IGNORE_UNDEF =__attribute__((no_sanitize("undefined")))
 
 // This macro prevents the undefined behavior sanitizer from reporting
 // failures related to unsigned integer overflows. This is only meant to
 // silence cases where this well defined behavior is expected.
 #undef WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW
-#define WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW \
+const WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW =\
   __attribute__((no_sanitize("unsigned-integer-overflow")))
 #endif
 #endif
@@ -289,7 +289,7 @@ import "github.com/daanv2/go-webp/pkg/pthread"
 
 // Regularize the definition of WEBP_SWAP_16BIT_CSP (backward compatibility)
 #if !defined(WEBP_SWAP_16BIT_CSP)
-#define WEBP_SWAP_16BIT_CSP 0
+const WEBP_SWAP_16BIT_CSP =0
 #endif
 
 // some endian fix (e.g.: mips-gcc doesn't define __BIG_ENDIAN__)

@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 // Not a trivial literal symbol.
-#define VP8L_NON_TRIVIAL_SYM ((uint16_t)(0xffff))
+const VP8L_NON_TRIVIAL_SYM =((uint16_t)(0xffff))
 
 // A simple container for histograms of data.
 typedef struct {

@@ -22,14 +22,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Tables can be faster on some platform but incur some extra binary size (~2k).
 #if !defined(USE_TABLES_FOR_ALPHA_MULT)
-#define USE_TABLES_FOR_ALPHA_MULT 0  // ALTERNATE_CODE
+const USE_TABLES_FOR_ALPHA_MULT =0  // ALTERNATE_CODE
 #endif
 
 // -----------------------------------------------------------------------------
 
 const MFIX = 24  // 24bit fixed-point arithmetic
 const HALF = ((1u << MFIX) >> 1)
-#define KINV_255 ((1u << MFIX) / 255u)
+const KINV_255 =((1u << MFIX) / 255u)
 
 static uint32_t Mult(uint8_t x, uint32_t mult) {
   const uint32_t v = (x * mult + HALF) >> MFIX;

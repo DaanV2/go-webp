@@ -33,8 +33,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #if !defined(DISABLE_TOKEN_BUFFER)
 
 // we use pages to reduce the number of memcpy()
-#define MIN_PAGE_SIZE 8192  // minimum number of token per page
-#define FIXED_PROBA_BIT (1u << 14)
+const MIN_PAGE_SIZE =8192  // minimum number of token per page
+const FIXED_PROBA_BIT =(1u << 14)
 
 typedef uint16_t token_t;  // bit #15: bit value
                            // bit #14: flags for constant proba or idx

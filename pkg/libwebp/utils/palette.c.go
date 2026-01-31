@@ -99,8 +99,8 @@ func PrepareMapToPalette(const uint32_t WEBP_COUNTED_BY(num_colors) palette[],
 
 //------------------------------------------------------------------------------
 
-#define COLOR_HASH_SIZE (MAX_PALETTE_SIZE * 4)
-#define COLOR_HASH_RIGHT_SHIFT 22  // 32 - log2(COLOR_HASH_SIZE).
+const COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
+const COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
 
 int GetColorPalette(const WebPPicture* const pic,
                     uint32_t* const WEBP_COUNTED_BY_OR_NULL(MAX_PALETTE_SIZE)

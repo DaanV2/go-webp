@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#define MAX_ITERS_K_MEANS 6
+const MAX_ITERS_K_MEANS =6
 
 //------------------------------------------------------------------------------
 // Smooth the segment map by replacing isolated block by the majority of its
@@ -105,9 +105,9 @@ func SetSegmentAlphas(VP8Encoder* const enc,
 // Compute susceptibility based on DCT-coeff histograms:
 // the higher, the "easier" the macroblock is to compress.
 
-#define MAX_ALPHA 255                // 8b of precision for susceptibilities.
-#define ALPHA_SCALE (2 * MAX_ALPHA)  // scaling factor for alpha.
-#define DEFAULT_ALPHA (-1)
+const MAX_ALPHA =255                // 8b of precision for susceptibilities.
+const ALPHA_SCALE =(2 * MAX_ALPHA)  // scaling factor for alpha.
+const DEFAULT_ALPHA =(-1)
 #define IS_BETTER_ALPHA(alpha, best_alpha) ((alpha) > (best_alpha))
 
 static int FinalAlphaValue(int alpha) {
@@ -231,9 +231,9 @@ func AssignSegments(VP8Encoder* const enc,
 // Number of modes to inspect for 'alpha' evaluation. We don't need to test all
 // the possible modes during the analysis phase: we risk falling into a local
 // optimum, or be subject to boundary effect
-#define MAX_INTRA16_MODE 2
-#define MAX_INTRA4_MODE 2
-#define MAX_UV_MODE 2
+const MAX_INTRA16_MODE =2
+const MAX_INTRA4_MODE =2
+const MAX_UV_MODE =2
 
 static int MBAnalyzeBestIntra16Mode(VP8EncIterator* const it) {
   const int max_mode = MAX_INTRA16_MODE;

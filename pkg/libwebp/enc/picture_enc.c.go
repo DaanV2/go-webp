@@ -286,7 +286,7 @@ ENCODE_FUNC(WebPEncodeBGRA, WebPPictureImportBGRA)
 
 #undef ENCODE_FUNC
 
-#define LOSSLESS_DEFAULT_QUALITY 70.
+const LOSSLESS_DEFAULT_QUALITY =70.
 #define LOSSLESS_ENCODE_FUNC(NAME, IMPORTER)                                  \
   size_t NAME(const uint8_t* in, int w, int h, int bps, uint8_t** out) {      \
     return Encode(in, w, h, bps, IMPORTER, LOSSLESS_DEFAULT_QUALITY, 1, out); \

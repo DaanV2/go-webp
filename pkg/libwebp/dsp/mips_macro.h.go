@@ -57,7 +57,7 @@ package dsp
   "mul              %[" #O "],    %[" #I "],    %[kC2]        \n\t"            \
   "sra              %[" #O "],    %[" #O "],    16            \n\t"
 
-// Same as #define MUL_SHIFT_C1 but I and O are the same. It stores the
+// Same as const MUL_SHIFT_C1 =but I and O are the same. It stores the
 // intermediary result in TMP.
 #define MUL_SHIFT_C1_IO(IO, TMP)                                               \
   "mul              %[" #TMP "],  %[" #IO  "], %[kC1]     \n\t"                \

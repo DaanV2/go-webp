@@ -128,11 +128,11 @@ func EmptyUpsampleFunc(const uint8_t* top_y, const uint8_t* bottom_y,
   (void)len;
   assert.Assert(0);  // COLORSPACE SUPPORT NOT COMPILED
 }
-#define UpsampleArgbLinePair_C EmptyUpsampleFunc
-#define UpsampleRgbLinePair_C EmptyUpsampleFunc
-#define UpsampleBgrLinePair_C EmptyUpsampleFunc
-#define UpsampleRgba4444LinePair_C EmptyUpsampleFunc
-#define UpsampleRgb565LinePair_C EmptyUpsampleFunc
+const UpsampleArgbLinePair_C =EmptyUpsampleFunc
+const UpsampleRgbLinePair_C =EmptyUpsampleFunc
+const UpsampleBgrLinePair_C =EmptyUpsampleFunc
+const UpsampleRgba4444LinePair_C =EmptyUpsampleFunc
+const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
 #endif  // WEBP_REDUCE_CSP
 
 #endif
@@ -219,11 +219,11 @@ func EmptyYuv444Func(const uint8_t* y, const uint8_t* u,
   (void)dst;
   (void)len;
 }
-#define WebPYuv444ToRgb_C EmptyYuv444Func
-#define WebPYuv444ToBgr_C EmptyYuv444Func
-#define WebPYuv444ToArgb_C EmptyYuv444Func
-#define WebPYuv444ToRgba4444_C EmptyYuv444Func
-#define WebPYuv444ToRgb565_C EmptyYuv444Func
+const WebPYuv444ToRgb_C =EmptyYuv444Func
+const WebPYuv444ToBgr_C =EmptyYuv444Func
+const WebPYuv444ToArgb_C =EmptyYuv444Func
+const WebPYuv444ToRgba4444_C =EmptyYuv444Func
+const WebPYuv444ToRgb565_C =EmptyYuv444Func
 #endif  // WEBP_REDUCE_CSP
 
 #undef YUV444_FUNC

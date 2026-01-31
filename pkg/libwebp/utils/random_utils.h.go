@@ -25,8 +25,8 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 extern "C" {
 #endif
 
-#define VP8_RANDOM_DITHER_FIX 8  // fixed-point precision for dithering
-#define VP8_RANDOM_TABLE_SIZE 55
+const VP8_RANDOM_DITHER_FIX =8  // fixed-point precision for dithering
+const VP8_RANDOM_TABLE_SIZE =55
 
 typedef struct {
   int index1, index2;

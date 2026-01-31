@@ -26,17 +26,17 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"  // RIFF constants
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#define SEGMENT_VISU 0
-#define DEBUG_SEARCH 0  // useful to track search convergence
+const SEGMENT_VISU =0
+const DEBUG_SEARCH =0  // useful to track search convergence
 
 //------------------------------------------------------------------------------
 // multi-pass convergence
 
-#define HEADER_SIZE_ESTIMATE \
+const HEADER_SIZE_ESTIMATE =\
   (RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE + VP8_FRAME_HEADER_SIZE)
-#define DQ_LIMIT 0.4  // convergence is considered reached if dq < DQ_LIMIT
+const DQ_LIMIT =0.4  // convergence is considered reached if dq < DQ_LIMIT
 // we allow 2k of extra head-room in PARTITION0 limit.
-#define PARTITION0_SIZE_LIMIT ((VP8_MAX_PARTITION0_SIZE - 2048ULL) << 11)
+const PARTITION0_SIZE_LIMIT =((VP8_MAX_PARTITION0_SIZE - 2048ULL) << 11)
 
 static float Clamp(float v, float min, float max) {
   return (v < min) ? min : (v > max) ? max : v;
@@ -110,7 +110,7 @@ func ResetStats(VP8Encoder* const enc) {
 //------------------------------------------------------------------------------
 // Skip decision probability
 
-#define SKIP_PROBA_THRESHOLD 250  // value below which using skip_proba is OK.
+const SKIP_PROBA_THRESHOLD =250  // value below which using skip_proba is OK.
 
 static int CalcSkipProba(uint64_t nb, uint64_t total) {
   return (int)(total ? (total - nb) * 255 / total : 255);
@@ -792,7 +792,7 @@ int VP8EncLoop(VP8Encoder* const enc) {
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
-#define MIN_COUNT 96  // minimum number of macroblocks before updating stats
+const MIN_COUNT =96  // minimum number of macroblocks before updating stats
 
 int VP8EncTokenLoop(VP8Encoder* const enc) {
   // Roughly refresh the proba eight times per pass

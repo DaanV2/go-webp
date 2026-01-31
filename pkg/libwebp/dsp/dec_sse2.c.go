@@ -21,7 +21,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // The 3-coeff sparse transform in SSE2 is not really faster than the plain-C
 // one it seems => disable it by default. Uncomment the following to enable:
 #if !defined(USE_TRANSFORM_AC3)
-#define USE_TRANSFORM_AC3 0  // ALTERNATE_CODE
+const USE_TRANSFORM_AC3 =0  // ALTERNATE_CODE
 #endif
 
 import "github.com/daanv2/go-webp/pkg/emmintrin"

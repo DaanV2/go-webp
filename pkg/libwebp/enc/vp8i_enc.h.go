@@ -33,9 +33,9 @@ extern "C" {
 // Various defines and enums
 
 // version numbers
-#define ENC_MAJ_VERSION 1
-#define ENC_MIN_VERSION 6
-#define ENC_REV_VERSION 0
+const ENC_MAJ_VERSION =1
+const ENC_MIN_VERSION =6
+const ENC_REV_VERSION =0
 
 enum {
   MAX_LF_LEVELS = 64,       // Maximum loop filter level
@@ -73,11 +73,11 @@ typedef enum {            // Rate-distortion optimization levels
 //   Intra 4x4 predictions (4x4 block each)
 //         |I4DC4 I4TM4 I4VE4 I4HE4|I4RD4 I4VR4 I4LD4 I4VL4|
 //         |I4HD4 I4HU4 I4TMP .....|.......................| <- ~31% wasted
-#define YUV_SIZE_ENC (BPS * 16)
-#define PRED_SIZE_ENC (32 * BPS + 16 * BPS + 8 * BPS)  // I16+Chroma+I4 preds
-#define Y_OFF_ENC (0)
-#define U_OFF_ENC (16)
-#define V_OFF_ENC (16 + 8)
+const YUV_SIZE_ENC =(BPS * 16)
+const PRED_SIZE_ENC =(32 * BPS + 16 * BPS + 8 * BPS)  // I16+Chroma+I4 preds
+const Y_OFF_ENC =(0)
+const U_OFF_ENC =(16)
+const V_OFF_ENC =(16 + 8)
 
 extern const uint16_t VP8Scan[16];
 extern const uint16_t VP8UVModeOffsets[4];
@@ -110,7 +110,7 @@ const I4TMP = (I4HD4 + 8)
 typedef int64_t score_t;  // type used for scores, rate, distortion
 // Note that MAX_COST is not the maximum allowed by sizeof(score_t),
 // in order to allow overflowing computations.
-#define MAX_COST ((score_t)0x7fffffffffffffLL)
+const MAX_COST =((score_t)0x7fffffffffffffLL)
 
 const QFIX = 17
 #define BIAS(b) ((b) << (QFIX - 8))
@@ -124,7 +124,7 @@ static  int QUANTDIV(uint32_t n, uint32_t iQ, uint32_t B) {
 // #define DISABLE_TOKEN_BUFFER
 
 // quality below which error-diffusion is enabled
-#define ERROR_DIFFUSION_QUALITY 98
+const ERROR_DIFFUSION_QUALITY =98
 
 //------------------------------------------------------------------------------
 // Headers

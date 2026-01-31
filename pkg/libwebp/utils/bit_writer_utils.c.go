@@ -202,7 +202,7 @@ func VP8BitWriterWipeOut(VP8BitWriter* const bw) {
 
 // This is the minimum amount of size the memory buffer is guaranteed to grow
 // when extra space is needed.
-#define MIN_EXTRA_SIZE (32768ULL)
+const MIN_EXTRA_SIZE =(32768ULL)
 
 // Returns 1 on success.
 static int VP8LBitWriterResize(VP8LBitWriter* const bw, size_t extra_size) {

@@ -193,7 +193,7 @@ static  func PredictLine_MIPSdspR2(const uint8_t* WEBP_RESTRICT src,
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-#define FILTER_LINE_BY_LINE                           \
+const FILTER_LINE_BY_LINE =                          \
   do {                                                \
     for (row = 1; row < height; ++row) {              \
       PREDICT_LINE_ONE_PASS(in, preds - stride, out); \
@@ -232,7 +232,7 @@ func HorizontalFilter_MIPSdspR2(const uint8_t* WEBP_RESTRICT data,
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-#define FILTER_LINE_BY_LINE                               \
+const FILTER_LINE_BY_LINE =                              \
   do {                                                    \
     for (row = 1; row < height; ++row) {                  \
       DO_PREDICT_LINE_VERTICAL(in, preds, out, width, 0); \

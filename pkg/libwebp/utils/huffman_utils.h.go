@@ -26,11 +26,11 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 extern "C" {
 #endif
 
-#define HUFFMAN_TABLE_BITS 8
-#define HUFFMAN_TABLE_MASK ((1 << HUFFMAN_TABLE_BITS) - 1)
+const HUFFMAN_TABLE_BITS =8
+const HUFFMAN_TABLE_MASK =((1 << HUFFMAN_TABLE_BITS) - 1)
 
-#define LENGTHS_TABLE_BITS 7
-#define LENGTHS_TABLE_MASK ((1 << LENGTHS_TABLE_BITS) - 1)
+const LENGTHS_TABLE_BITS =7
+const LENGTHS_TABLE_MASK =((1 << LENGTHS_TABLE_BITS) - 1)
 
 // Huffman lookup table entry
 typedef struct {
@@ -70,8 +70,8 @@ typedef type HuffmanTables struct {
                                              HuffmanTables* huffman_tables);
 func VP8LHuffmanTablesDeallocate(HuffmanTables* const huffman_tables);
 
-#define HUFFMAN_PACKED_BITS 6
-#define HUFFMAN_PACKED_TABLE_SIZE (1u << HUFFMAN_PACKED_BITS)
+const HUFFMAN_PACKED_BITS =6
+const HUFFMAN_PACKED_TABLE_SIZE =(1u << HUFFMAN_PACKED_BITS)
 
 // Huffman table group.
 // Includes special handling for the following cases:

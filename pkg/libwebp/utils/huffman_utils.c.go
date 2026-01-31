@@ -28,7 +28,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // Huffman data read via DecodeImageStream is represented in two (red and green)
 // bytes.
-#define MAX_HTREE_GROUPS 0x10000
+const MAX_HTREE_GROUPS =0x10000
 
 HTreeGroup* VP8LHtreeGroupsNew(int num_htree_groups) {
   HTreeGroup* const htree_groups =
@@ -230,10 +230,10 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
 
 // Maximum code_lengths_size is 2328 (reached for 11-bit color_cache_bits).
 // More commonly, the value is around ~280.
-#define MAX_CODE_LENGTHS_SIZE \
+const MAX_CODE_LENGTHS_SIZE =\
   ((1 << MAX_CACHE_BITS) + NUM_LITERAL_CODES + NUM_LENGTH_CODES)
 // Cut-off value for switching between heap and stack allocation.
-#define SORTED_SIZE_CUTOFF 512
+const SORTED_SIZE_CUTOFF =512
 int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
                           const int WEBP_COUNTED_BY(code_lengths_size)
                               code_lengths[],

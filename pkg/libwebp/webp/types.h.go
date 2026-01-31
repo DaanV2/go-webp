@@ -18,12 +18,6 @@ import "github.com/daanv2/go-webp/pkg/stddef"  // IWYU pragma: export for size_t
 
 #ifndef _MSC_VER
 import "github.com/daanv2/go-webp/pkg/inttypes"  // IWYU pragma: export
-#if defined(__cplusplus) || !defined(__STRICT_ANSI__) || \
-    (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
-#define  inline
-#else
-#define 
-#endif
 #else
 typedef signed char int8_t;
 typedef unsigned char uint8_t;
@@ -76,7 +70,7 @@ import "github.com/daanv2/go-webp/pkg/string"  // For memcpy and friends
 
 import "github.com/daanv2/go-webp/pkg/ptrcheck"
 
-#define WEBP_ASSUME_UNSAFE_INDEXABLE_ABI \
+const WEBP_ASSUME_UNSAFE_INDEXABLE_ABI =\
   __ptrcheck_abi_assume_unsafe_indexable()
 
 #define WEBP_COUNTED_BY(x) __counted_by(x)
@@ -85,8 +79,8 @@ import "github.com/daanv2/go-webp/pkg/ptrcheck"
 #define WEBP_SIZED_BY_OR_NULL(x) __sized_by_or_null(x)
 #define WEBP_ENDED_BY(x) __ended_by(x)
 
-#define WEBP_UNSAFE_INDEXABLE __unsafe_indexable
-#define WEBP_SINGLE __single
+const WEBP_UNSAFE_INDEXABLE =__unsafe_indexable
+const WEBP_SINGLE =__single
 
 #define WEBP_UNSAFE_FORGE_SINGLE(typ, ptr) __unsafe_forge_single(typ, ptr)
 

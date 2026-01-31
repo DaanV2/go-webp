@@ -38,7 +38,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-#define NUM_ARGB_CACHE_ROWS 16
+const NUM_ARGB_CACHE_ROWS =16
 
 static const int kCodeLengthLiterals = 16;
 static const int kCodeLengthRepeatCode = 16;
@@ -60,11 +60,11 @@ static const uint16_t kAlphabetSize[HUFFMAN_CODES_PER_META_CODE] = {
 
 static const uint8_t kLiteralMap[HUFFMAN_CODES_PER_META_CODE] = {0, 1, 1, 1, 0};
 
-#define NUM_CODE_LENGTH_CODES 19
+const NUM_CODE_LENGTH_CODES =19
 static const uint8_t kCodeLengthCodeOrder[NUM_CODE_LENGTH_CODES] = {
     17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
-#define CODE_TO_PLANE_CODES 120
+const CODE_TO_PLANE_CODES =120
 static const uint8_t kCodeToPlane[CODE_TO_PLANE_CODES] = {
     0x18, 0x07, 0x17, 0x19, 0x28, 0x06, 0x27, 0x29, 0x16, 0x1a, 0x26, 0x2a,
     0x38, 0x05, 0x37, 0x39, 0x15, 0x1b, 0x36, 0x3a, 0x25, 0x2b, 0x48, 0x04,
@@ -85,7 +85,7 @@ static const uint8_t kCodeToPlane[CODE_TO_PLANE_CODES] = {
 // + color_cache_size (between 0 and 2048).
 // All values computed for 8-bit first level lookup with Mark Adler's tool:
 // https://github.com/madler/zlib/blob/v1.2.5/examples/enough.c
-#define FIXED_TABLE_SIZE (630 * 3 + 410)
+const FIXED_TABLE_SIZE =(630 * 3 + 410)
 static const uint16_t kTableSize[12] = {
     FIXED_TABLE_SIZE + 654,  FIXED_TABLE_SIZE + 656,  FIXED_TABLE_SIZE + 658,
     FIXED_TABLE_SIZE + 662,  FIXED_TABLE_SIZE + 670,  FIXED_TABLE_SIZE + 686,
@@ -195,8 +195,8 @@ static  int ReadSymbol(const HuffmanCode* table,
 }
 
 // Reads packed symbol depending on GREEN channel
-#define BITS_SPECIAL_MARKER 0x100  // something large enough (and a bit-mask)
-#define PACKED_NON_LITERAL_CODE 0  // must be < NUM_LITERAL_CODES
+const BITS_SPECIAL_MARKER =0x100  // something large enough (and a bit-mask)
+const PACKED_NON_LITERAL_CODE =0  // must be < NUM_LITERAL_CODES
 static  int ReadPackedSymbols(const HTreeGroup* group,
                                          VP8LBitReader* const br,
                                          uint32_t* const dst) {
@@ -1210,7 +1210,7 @@ func RestoreState(VP8LDecoder* const dec) {
   }
 }
 
-#define SYNC_EVERY_N_ROWS 8  // minimum number of rows between check-points
+const SYNC_EVERY_N_ROWS =8  // minimum number of rows between check-points
 static int DecodeImageData(VP8LDecoder* const dec, uint32_t* const data,
                            int width, int height, int last_row,
                            ProcessRowsFunc process_func) {

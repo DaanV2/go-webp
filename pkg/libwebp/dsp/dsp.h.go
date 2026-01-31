@@ -42,9 +42,9 @@ const BPS = 32  // this is the common stride for enc/dec
 // pointer aliasing. See also:
 // https://en.cppreference.com/w/c/language/restrict
 #if defined(__GNUC__)
-#define WEBP_RESTRICT __restrict__
+const WEBP_RESTRICT =__restrict__
 #elif defined(_MSC_VER)
-#define WEBP_RESTRICT __restrict
+const WEBP_RESTRICT =__restrict
 #else
 #define WEBP_RESTRICT
 #endif
@@ -128,7 +128,7 @@ extern VP8QuantizeBlockWHT VP8EncQuantizeBlockWHT;
 extern const int VP8DspScan[16 + 4 + 4];
 
 // Collect histogram for susceptibility calculation.
-#define MAX_COEFF_THRESH 31  // size of histogram used by CollectHistogram.
+const MAX_COEFF_THRESH =31  // size of histogram used by CollectHistogram.
 typedef struct {
   // We only need to store max_value and last_non_zero, not the distribution.
   int max_value;
@@ -183,7 +183,7 @@ typedef struct {
 double VP8SSIMFromStats(const VP8DistoStats* const stats);
 double VP8SSIMFromStatsClipped(const VP8DistoStats* const stats);
 
-#define VP8_SSIM_KERNEL 3  // total size of the kernel: 2 * VP8_SSIM_KERNEL + 1
+const VP8_SSIM_KERNEL =3  // total size of the kernel: 2 * VP8_SSIM_KERNEL + 1
 typedef double (*VP8SSIMGetClippedFunc)(const uint8_t* src1, int stride1,
                                         const uint8_t* src2, int stride2,
                                         int xo, int yo,  // center position
@@ -223,8 +223,8 @@ extern VP8DecIdct VP8TransformDC;
 extern VP8DecIdct VP8TransformDCUV;
 extern VP8WHT VP8TransformWHT;
 
-#define WEBP_TRANSFORM_AC3_C1 20091
-#define WEBP_TRANSFORM_AC3_C2 35468
+const WEBP_TRANSFORM_AC3_C1 =20091
+const WEBP_TRANSFORM_AC3_C2 =35468
 #define WEBP_TRANSFORM_AC3_MUL1(a) ((((a) * WEBP_TRANSFORM_AC3_C1) >> 16) + (a))
 #define WEBP_TRANSFORM_AC3_MUL2(a) (((a) * WEBP_TRANSFORM_AC3_C2) >> 16)
 
@@ -270,10 +270,10 @@ extern VP8ChromaFilterFunc VP8HFilter8i;
 
 // Dithering. Combines dithering values (centered around 128) with dst[],
 // according to: dst[] = clip(dst[] + (((dither[]-128) + 8) >> 4)
-#define VP8_DITHER_DESCALE 4
-#define VP8_DITHER_DESCALE_ROUNDER (1 << (VP8_DITHER_DESCALE - 1))
-#define VP8_DITHER_AMP_BITS 7
-#define VP8_DITHER_AMP_CENTER (1 << VP8_DITHER_AMP_BITS)
+const VP8_DITHER_DESCALE =4
+const VP8_DITHER_DESCALE_ROUNDER =(1 << (VP8_DITHER_DESCALE - 1))
+const VP8_DITHER_AMP_BITS =7
+const VP8_DITHER_AMP_CENTER =(1 << VP8_DITHER_AMP_BITS)
 extern func (*VP8DitherCombine8x8)(const uint8_t* WEBP_RESTRICT dither,
                                    uint8_t* WEBP_RESTRICT dst, int dst_stride);
 
@@ -283,7 +283,7 @@ func VP8DspInit(void);
 //------------------------------------------------------------------------------
 // WebP I/O
 
-#define FANCY_UPSAMPLING  // undefined to remove fancy upsampling support
+const FANCY_UPSAMPLING = // undefined to remove fancy upsampling support
 
 // Convert a pair of y/u/v lines together to the output rgb/a colorspace.
 // bottom_y can be NULL if only one line of output is needed (at top/bottom).

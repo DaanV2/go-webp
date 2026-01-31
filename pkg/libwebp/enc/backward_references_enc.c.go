@@ -28,14 +28,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#define MIN_BLOCK_SIZE 256  // minimum block size for backward references
+const MIN_BLOCK_SIZE =256  // minimum block size for backward references
 
 // 1M window (4M bytes) minus 120 special codes for short distances.
-#define WINDOW_SIZE ((1 << WINDOW_SIZE_BITS) - 120)
+const WINDOW_SIZE =((1 << WINDOW_SIZE_BITS) - 120)
 
 // Minimum number of pixels for which it is cheaper to encode a
 // distance + length instead of each pixel as a literal.
-#define MIN_LENGTH 4
+const MIN_LENGTH =4
 
 // -----------------------------------------------------------------------------
 
@@ -582,7 +582,7 @@ Error:
 // Compute an LZ77 by forcing matches to happen within a given distance cost.
 // We therefore limit the algorithm to the lowest 32 values in the PlaneCode
 // definition.
-#define WINDOW_OFFSETS_SIZE_MAX 32
+const WINDOW_OFFSETS_SIZE_MAX =32
 static int BackwardReferencesLz77Box(int xsize, int ysize,
                                      const uint32_t* const argb, int cache_bits,
                                      const VP8LHashChain* const hash_chain_best,

@@ -34,7 +34,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/pthread"
 #endif
 
-#define ALPHA_OFFSET CHANNEL_OFFSET(0)
+const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 
 //------------------------------------------------------------------------------
 // Detection of non-trivial transparency

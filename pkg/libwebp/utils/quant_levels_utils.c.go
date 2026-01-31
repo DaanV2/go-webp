@@ -22,10 +22,10 @@ import "github.com/daanv2/go-webp/pkg/stddef"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#define NUM_SYMBOLS 256
+const NUM_SYMBOLS =256
 
-#define MAX_ITER 6            // Maximum number of convergence steps.
-#define ERROR_THRESHOLD 1e-4  // MSE stopping criterion.
+const MAX_ITER =6            // Maximum number of convergence steps.
+const ERROR_THRESHOLD =1e-4  // MSE stopping criterion.
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 

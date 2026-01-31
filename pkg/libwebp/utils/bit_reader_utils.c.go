@@ -121,7 +121,7 @@ int32_t VP8GetSignedValue(VP8BitReader* const br, int bits,
 //------------------------------------------------------------------------------
 // VP8LBitReader
 
-#define VP8L_LOG8_WBITS 4  // Number of bytes needed to store VP8L_WBITS bits.
+const VP8L_LOG8_WBITS =4  // Number of bytes needed to store VP8L_WBITS bits.
 
 #if defined(__arm__) || defined(_M_ARM) || WEBP_AARCH64 ||          \
     defined(__i386__) || defined(_M_IX86) || defined(__x86_64__) || \
@@ -228,7 +228,7 @@ import "github.com/daanv2/go-webp/pkg/stdio"
 import "github.com/daanv2/go-webp/pkg/stdlib"  // for atexit()
 import "github.com/daanv2/go-webp/pkg/string"
 
-#define MAX_NUM_LABELS 32
+const MAX_NUM_LABELS =32
 static struct {
   const char* label;
   int size;

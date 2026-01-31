@@ -330,7 +330,7 @@ static uint64_t CombinedShannonEntropy_AVX2(const uint32_t X[256],
 
 #else
 
-#define DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC  // won't be faster
+const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 #endif
 

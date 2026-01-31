@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#define UNDEFINED_CHUNK_SIZE ((uint32_t)(-1))
+const UNDEFINED_CHUNK_SIZE =((uint32_t)(-1))
 
 const ChunkInfo kChunks[] = {
     {MKFOURCC('V', 'P', '8', 'X'), WEBP_CHUNK_VP8X, VP8X_CHUNK_SIZE},
@@ -451,7 +451,7 @@ static int IsNotCompatible(int feature, int num_items) {
   return (feature != 0) != (num_items > 0);
 }
 
-#define NO_FLAG ((WebPFeatureFlags)0)
+const NO_FLAG =((WebPFeatureFlags)0)
 
 // Test basic constraints:
 // retrieval, maximum number of chunks by index (use -1 to skip)

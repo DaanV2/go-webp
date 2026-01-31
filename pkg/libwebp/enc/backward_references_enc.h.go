@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 // The maximum allowed limit is 11.
-#define MAX_COLOR_CACHE_BITS 10
+const MAX_COLOR_CACHE_BITS =10
 
 // -----------------------------------------------------------------------------
 // PixOrCopy
@@ -102,15 +102,15 @@ static  uint32_t PixOrCopyDistance(const PixOrCopy* const p) {
 // -----------------------------------------------------------------------------
 // VP8LHashChain
 
-#define HASH_BITS 18
-#define HASH_SIZE (1 << HASH_BITS)
+const HASH_BITS =18
+const HASH_SIZE =(1 << HASH_BITS)
 
 // If you change this, you need MAX_LENGTH_BITS + WINDOW_SIZE_BITS <= 32 as it
 // is used in VP8LHashChain.
-#define MAX_LENGTH_BITS 12
-#define WINDOW_SIZE_BITS 20
+const MAX_LENGTH_BITS =12
+const WINDOW_SIZE_BITS =20
 // We want the max value to be attainable and stored in MAX_LENGTH_BITS bits.
-#define MAX_LENGTH ((1 << MAX_LENGTH_BITS) - 1)
+const MAX_LENGTH =((1 << MAX_LENGTH_BITS) - 1)
 #if MAX_LENGTH_BITS + WINDOW_SIZE_BITS > 32
 #error "MAX_LENGTH_BITS + WINDOW_SIZE_BITS > 32"
 #endif
@@ -159,7 +159,7 @@ static  func VP8LHashChainFindCopy(const VP8LHashChain* const p,
 // VP8LBackwardRefs (block-based backward-references storage)
 
 // maximum number of reference blocks the image will be segmented into
-#define MAX_REFS_BLOCK_PER_IMAGE 16
+const MAX_REFS_BLOCK_PER_IMAGE =16
 
 typedef struct PixOrCopyBlock PixOrCopyBlock;  // forward declaration
 typedef struct VP8LBackwardRefs VP8LBackwardRefs;

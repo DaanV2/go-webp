@@ -22,7 +22,7 @@ import "."
 extern "C" {
 #endif
 
-#define WEBP_MUX_ABI_VERSION 0x0109  // MAJOR(8b) + MINOR(8b)
+const WEBP_MUX_ABI_VERSION =0x0109  // MAJOR(8b) + MINOR(8b)
 
 //------------------------------------------------------------------------------
 // Mux API

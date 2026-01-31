@@ -203,8 +203,8 @@ static int GetNumColors(const uint8_t* data, int width, int height,
   return colors;
 }
 
-#define FILTER_TRY_NONE (1 << WEBP_FILTER_NONE)
-#define FILTER_TRY_ALL ((1 << WEBP_FILTER_LAST) - 1)
+const FILTER_TRY_NONE =(1 << WEBP_FILTER_NONE)
+const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
 static uint32_t GetFilterMap(const uint8_t* alpha, int width, int height,

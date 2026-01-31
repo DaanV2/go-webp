@@ -31,9 +31,9 @@ extern "C" {
 //------------------------------------------------------------------------------
 // Defines and constants.
 
-#define MUX_MAJ_VERSION 1
-#define MUX_MIN_VERSION 6
-#define MUX_REV_VERSION 0
+const MUX_MAJ_VERSION =1
+const MUX_MIN_VERSION =6
+const MUX_REV_VERSION =0
 
 // Chunk object.
 typedef struct WebPChunk WebPChunk;
@@ -95,7 +95,7 @@ typedef enum {
   IDX_LAST_CHUNK
 } CHUNK_INDEX;
 
-#define NIL_TAG 0x00000000u  // To signal func chunk.
+const NIL_TAG =0x00000000u  // To signal func chunk.
 
 typedef struct {
   uint32_t tag;

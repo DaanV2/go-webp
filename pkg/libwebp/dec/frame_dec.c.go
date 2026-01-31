@@ -334,9 +334,9 @@ func PrecomputeFilterStrengths(VP8Decoder* const dec) {
 // Dithering
 
 // minimal amp that will provide a non-zero dithering effect
-#define MIN_DITHER_AMP 4
+const MIN_DITHER_AMP =4
 
-#define DITHER_AMP_TAB_SIZE 12
+const DITHER_AMP_TAB_SIZE =12
 static const uint8_t kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
     // roughly, it's dqm->uv_mat[1]
     8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1};
@@ -653,8 +653,8 @@ int VP8ExitCritical(VP8Decoder* const dec, VP8Io* const io) {
 // Decode:  [ 0..15][16..31][ 0..15][16..31][...
 // io->put:         [ 0..15][16..31][ 0..15][...
 
-#define MT_CACHE_LINES 3
-#define ST_CACHE_LINES 1  // 1 cache row only for single-threaded case
+const MT_CACHE_LINES =3
+const ST_CACHE_LINES =1  // 1 cache row only for single-threaded case
 
 // Initialize multi/single-thread worker
 static int InitThreadContext(VP8Decoder* const dec) {

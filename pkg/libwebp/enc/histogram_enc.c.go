@@ -31,11 +31,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Number of partitions for the three dominant (literal, red and blue) symbol
 // costs.
-#define NUM_PARTITIONS 4
+const NUM_PARTITIONS =4
 // The size of the bin-hash corresponding to the three dominant costs.
-#define BIN_SIZE (NUM_PARTITIONS * NUM_PARTITIONS * NUM_PARTITIONS)
+const BIN_SIZE =(NUM_PARTITIONS * NUM_PARTITIONS * NUM_PARTITIONS)
 // Maximum number of histograms allowed in greedy combining algorithm.
-#define MAX_HISTO_GREEDY 100
+const MAX_HISTO_GREEDY =100
 
 // Enum to meaningfully access the elements of the Histogram arrays.
 typedef enum { LITERAL = 0, RED, BLUE, ALPHA, DISTANCE } HistogramIndex;

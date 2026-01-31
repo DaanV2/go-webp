@@ -26,12 +26,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
-// #define USE_DITHERING   // uncomment to enable ordered dithering (not vital)
+// const USE_DITHERING =  // uncomment to enable ordered dithering (not vital)
 
 const FIX = 16                            // fix-point precision for averaging
 const LFIX = 2                            // extra precision for look-up table
-#define LUT_SIZE ((1 << (8 + LFIX)) - 1)  // look-up table size
-#define CORRECTION_LUT_SIZE (1 + 2 * LUT_SIZE)
+const LUT_SIZE =((1 << (8 + LFIX)) - 1)  // look-up table size
+const CORRECTION_LUT_SIZE =(1 + 2 * LUT_SIZE)
 
 #if defined(USE_DITHERING)
 
@@ -78,7 +78,7 @@ typedef struct {
 
 //------------------------------------------------------------------------------
 
-#define CLIP_8b_MASK (int)(~0U << (8 + DFIX))
+const CLIP_8b_MASK =(int)(~0U << (8 + DFIX))
 static  uint8_t clip_8b(int v) {
   return (!(v & CLIP_8b_MASK)) ? (uint8_t)(v >> DFIX) : (v < 0) ? 0u : 255u;
 }

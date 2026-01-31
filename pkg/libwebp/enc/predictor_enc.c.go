@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#define HISTO_SIZE (4 * 256)
+const HISTO_SIZE =(4 * 256)
 static const int64_t kSpatialPredictorBias = 15ll << LOG_2_PRECISION_BITS;
 static const int kPredLowEffort = 11;
 static const uint32_t kMaskAlpha = 0xff000000;

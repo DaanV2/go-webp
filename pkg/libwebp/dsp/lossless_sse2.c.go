@@ -299,7 +299,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
     out[i + (OUT)] = (uint32_t)_mm_cvtsi128_si32(L); \
   } while (0)
 
-#define DO_PRED10_SHIFT                                         \
+const DO_PRED10_SHIFT =                                        \
   do {                                                          \
     /* Rotate the pre-computed values for the next iteration.*/ \
     avgTTR = _mm_srli_si128(avgTTR, 4);                         \
@@ -347,7 +347,7 @@ func PredictorAdd10_SSE2(const uint32_t* in, const uint32_t* upper,
     out[i + (OUT)] = (uint32_t)_mm_cvtsi128_si32(L);                     \
   } while (0)
 
-#define DO_PRED11_SHIFT                                       \
+const DO_PRED11_SHIFT =                                      \
   do {                                                        \
     /* Shift the pre-computed value for the next iteration.*/ \
     T = _mm_srli_si128(T, 4);                                 \

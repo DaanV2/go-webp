@@ -170,9 +170,9 @@ int WebPPlaneDistortion(const uint8_t* src, size_t src_stride,
 }
 
 #ifdef WORDS_BIGENDIAN
-#define BLUE_OFFSET 3  // uint32_t 0x000000ff is 0x00,00,00,ff in memory
+const BLUE_OFFSET =3  // uint32_t 0x000000ff is 0x00,00,00,ff in memory
 #else
-#define BLUE_OFFSET 0  // uint32_t 0x000000ff is 0xff,00,00,00 in memory
+const BLUE_OFFSET =0  // uint32_t 0x000000ff is 0xff,00,00,00 in memory
 #endif
 
 int WebPPictureDistortion(const WebPPicture* src, const WebPPicture* ref,

@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 const snprintf = _snprintf
 #endif
 
-#define ERROR_STR_MAX_LENGTH 100
+const ERROR_STR_MAX_LENGTH =100
 
 //------------------------------------------------------------------------------
 // Internal structs.
@@ -127,8 +127,8 @@ type WebPAnimEncoder struct {
 // -----------------------------------------------------------------------------
 // Life of WebPAnimEncoder object.
 
-#define DELTA_INFINITY (1ULL << 32)
-#define KEYFRAME_NONE (-1)
+const DELTA_INFINITY =(1ULL << 32)
+const KEYFRAME_NONE =(-1)
 
 // Reset the counters in the WebPAnimEncoder.
 func ResetCounters(WebPAnimEncoder* const enc) {
@@ -144,7 +144,7 @@ func DisableKeyframes(WebPAnimEncoderOptions* const enc_options) {
   enc_options->kmin = enc_options->kmax - 1;
 }
 
-#define MAX_CACHED_FRAMES 30
+const MAX_CACHED_FRAMES =30
 
 func SanitizeEncoderOptions(WebPAnimEncoderOptions* const enc_options) {
   int print_warning = enc_options->verbose;
@@ -216,7 +216,7 @@ int WebPAnimEncoderOptionsInitInternal(WebPAnimEncoderOptions* enc_options,
 
 // This value is used to match a later call to WebPReplaceTransparentPixels(),
 // making it a no-op for lossless (see WebPEncode()).
-#define TRANSPARENT_COLOR 0x00000000
+const TRANSPARENT_COLOR =0x00000000
 
 func ClearRectangle(WebPPicture* const picture, int left, int top,
                            int width, int height) {
@@ -896,8 +896,8 @@ enum {
   CANDIDATE_COUNT
 };
 
-#define MIN_COLORS_LOSSY 31      // Don't try lossy below this threshold.
-#define MAX_COLORS_LOSSLESS 194  // Don't try lossless above this threshold.
+const MIN_COLORS_LOSSY =31      // Don't try lossy below this threshold.
+const MAX_COLORS_LOSSLESS =194  // Don't try lossless above this threshold.
 
 func GetEncodedData(const WebPMemoryWriter* const memory,
                            WebPData* const encoded_data) {

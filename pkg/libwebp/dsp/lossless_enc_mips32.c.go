@@ -130,7 +130,7 @@ static uint32_t ExtraCost_MIPS32(const uint32_t* const population, int length) {
   return ((int64_t)temp0 << 32 | temp1);
 }
 
-#define HUFFMAN_COST_PASS                                                  \
+const HUFFMAN_COST_PASS =                                                 \
   __asm__ volatile(                                                        \
       "sll   %[temp1],  %[temp0],    3           \n\t"                     \
       "addiu %[temp3],  %[streak],   -3          \n\t"                     \
@@ -229,7 +229,7 @@ func GetCombinedEntropyUnrefined_MIPS32(
   entropy->entropy = VP8LFastSLog2(entropy->sum) - entropy->entropy;
 }
 
-#define ASM_START                                 \
+const ASM_START =                                \
   __asm__ volatile(                                     \
     ".set   push                            \n\t"       \
     ".set   at                              \n\t"       \
@@ -269,23 +269,23 @@ func GetCombinedEntropyUnrefined_MIPS32(
     ".set   pop                             \n\t"
 // clang-format on
 
-#define ASM_END_COMMON_0                        \
+const ASM_END_COMMON_0 =                       \
     : [temp0]"=&r"(temp0), [temp1]"=&r"(temp1),         \
       [temp2]"=&r"(temp2), [temp3]"=&r"(temp3),         \
       [temp4]"=&r"(temp4), [temp5]"=&r"(temp5),         \
       [temp6]"=&r"(temp6), [temp7]"=&r"(temp7),         \
       [pa]"+r"(pa), [pout]"+r"(pout)
 
-#define ASM_END_COMMON_1    \
+const ASM_END_COMMON_1 =   \
     : [LoopEnd]"r"(LoopEnd)                             \
     : "memory", "at"                                    \
   );
 
-#define ASM_END_0  \
+const ASM_END_0 = \
   ASM_END_COMMON_0 \
   , [pb] "+r"(pb)ASM_END_COMMON_1
 
-#define ASM_END_1  \
+const ASM_END_1 = \
   ASM_END_COMMON_0 \
   ASM_END_COMMON_1
 
