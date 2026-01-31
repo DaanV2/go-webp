@@ -411,8 +411,9 @@ static void DitherRow(VP8Decoder* const dec) {
 //    picture of course.
 //  * we must clip the remaining pixels against the cropping area. The VP8Io
 //    struct must have the following fields set correctly before calling put():
-
-#define MACROBLOCK_VPOS(mb_y) ((mb_y) * 16)  // vertical position of a MB
+func MACROBLOCK_VPOS(mb_y int) int {
+	return ((mb_y) * 16)// vertical position of a MB
+}
 
 // Finalize and transmit a complete row. Return false in case of user-abort.
 static int FinishRow(void* arg1, void* arg2) {

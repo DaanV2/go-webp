@@ -64,10 +64,10 @@ const DEC_REV_VERSION = 0
 //  'y' = y-samples   'u' = u-samples     'v' = u-samples
 //  '|' = left sample,   '-' = top sample,    '+' = top-left sample
 //  't' = extra top-right sample for 4x4 modes
-#define YUV_SIZE (BPS * 17 + BPS * 9)
-#define Y_OFF (BPS * 1 + 8)
-#define U_OFF (Y_OFF + BPS * 16 + BPS)
-#define V_OFF (U_OFF + 16)
+const YUV_SIZE = (BPS * 17 + BPS * 9)
+const Y_OFF = (BPS * 1 + 8)
+const U_OFF = (Y_OFF + BPS * 16 + BPS)
+const V_OFF = (U_OFF + 16)
 
 // minimal width under which lossy multi-threading is always disabled
 const MIN_WIDTH_FOR_THREADS = 512

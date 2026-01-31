@@ -14,12 +14,6 @@
 package dsp
 
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#if defined(WEBP_USE_SSE41)
 import <smmintrin.h>
 
 //------------------------------------------------------------------------------

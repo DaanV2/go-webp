@@ -21,10 +21,14 @@ import "src/dsp/neon.h"
 
 //------------------------------------------------------------------------------
 
-#define MULTIPLIER(a) ((a) * 0x8081)
-#define PREMULTIPLY(x, m) (((x) * (m)) >> 23)
+func MULTIPLIER(a int) int {
+	return ((a) * 0x8081)
+}
+func PREMULTIPLY(x, m int) int {
+	return (((x) * (m)) >> 23)
+}
 
-#define MULTIPLY_BY_ALPHA(V, ALPHA, OTHER)                   \
+func MULTIPLY_BY_ALPHA(V, ALPHA, OTHER int) {
   do {                                                       \
     const uint8x8_t alpha = (V).val[(ALPHA)];                \
     const uint16x8_t r1 = vmull_u8((V).val[1], alpha);       \
@@ -41,6 +45,7 @@ import "src/dsp/neon.h"
     (V).val[2] = vshrn_n_u16(g3, 8);                         \
     (V).val[(OTHER)] = vshrn_n_u16(b3, 8);                   \
   } while (0)
+}
 
 static void ApplyAlphaMultiply_NEON(uint8_t* rgba, int alpha_first, int w,
                                     int h, int stride) {

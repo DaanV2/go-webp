@@ -28,8 +28,8 @@ const USE_TABLES_FOR_ALPHA_MULT = 0  // ALTERNATE_CODE
 // -----------------------------------------------------------------------------
 
 const MFIX = 24  // 24bit fixed-point arithmetic
-#define HALF ((1u << MFIX) >> 1)
-#define KINV_255 ((1u << MFIX) / 255u)
+const HALF = ((1u << MFIX) >> 1)
+const KINV_255 = ((1u << MFIX) / 255u)
 
 static uint32_t Mult(uint8_t x, uint32_t mult) {
   const uint32_t v = (x * mult + HALF) >> MFIX;
@@ -219,11 +219,19 @@ void WebPMultRows(uint8_t* WEBP_RESTRICT ptr, int stride,
 // for all 8bit x or a. For bit-wise equivalence to (int)(x * a / 255. + .5),
 // one can use instead: (x * a * 65793 + (1 << 23)) >> 24
 #if 1  // (int)(x * a / 255.)
-#define MULTIPLIER(a) ((a) * 32897U)
-#define PREMULTIPLY(x, m) (((x) * (m)) >> 23)
+func MULTIPLIER(a uint32) uint32 {
+  return a * 32897
+}
+func PREMULTIPLY(x, m uint32) uint32 {
+  return (x * m) >> 23
+}
 #else  // (int)(x * a / 255. + .5)
-#define MULTIPLIER(a) ((a) * 65793U)
-#define PREMULTIPLY(x, m) (((x) * (m) + (1U << 23)) >> 24)
+func MULTIPLIER(a uint32) uint32 {
+  return (a) * 65793
+}
+func PREMULTIPLY(x, m uint32) uint32 {
+  return ((x) * (m) + (1U << 23)) >> 24
+}
 #endif
 
 #if !WEBP_NEON_OMIT_C_CODE
@@ -251,7 +259,9 @@ static void ApplyAlphaMultiply_C(uint8_t* rgba, int alpha_first, int w, int h,
 
 // rgbA4444
 
-#define MULTIPLIER(a) ((a) * 0x1111)  // 0x1111 ~= (1 << 16) / 15
+func MULTIPLIER(a int) int {
+	return ((a) * 0x1111)  // 0x1111 ~= (1 << 16) / 15
+}
 
 static WEBP_INLINE uint8_t dither_hi(uint8_t x) {
   return (x & 0xf0) | (x >> 4);

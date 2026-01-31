@@ -85,7 +85,7 @@ static const uint8_t kCodeToPlane[CODE_TO_PLANE_CODES] = {
 // + color_cache_size (between 0 and 2048).
 // All values computed for 8-bit first level lookup with Mark Adler's tool:
 // https://github.com/madler/zlib/blob/v1.2.5/examples/enough.c
-#define FIXED_TABLE_SIZE (630 * 3 + 410)
+const FIXED_TABLE_SIZE = (630 * 3 + 410)
 static const uint16_t kTableSize[12] = {
     FIXED_TABLE_SIZE + 654,  FIXED_TABLE_SIZE + 656,  FIXED_TABLE_SIZE + 658,
     FIXED_TABLE_SIZE + 662,  FIXED_TABLE_SIZE + 670,  FIXED_TABLE_SIZE + 686,

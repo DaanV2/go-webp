@@ -199,14 +199,18 @@ static void ExtractGreen_SSE2(const uint32_t* WEBP_RESTRICT argb,
 //------------------------------------------------------------------------------
 // Non-dither premultiplied modes
 
-#define MULTIPLIER(a) ((a) * 0x8081)
-#define PREMULTIPLY(x, m) (((x) * (m)) >> 23)
+func MULTIPLIER(a int) int {
+	return ((a) * 0x8081)
+}
+func PREMULTIPLY(x, m int) int {
+	return (((x) * (m)) >> 23)
+}
 
 // We can't use a 'const int' for the SHUFFLE value, because it has to be an
 // immediate in the _mm_shufflexx_epi16() instruction. We really need a macro.
 // We use: v / 255 = (v * 0x8081) >> 23, where v = alpha * {r,g,b} is a 16bit
 // value.
-#define APPLY_ALPHA(RGBX, SHUFFLE)                                     \
+func APPLY_ALPHA(RGBX, SHUFFLE) {
   do {                                                                 \
     const __m128i argb0 = _mm_loadu_si128((const __m128i*)&(RGBX));    \
     const __m128i argb1_lo = _mm_unpacklo_epi8(argb0, zero);           \
@@ -227,6 +231,7 @@ static void ExtractGreen_SSE2(const uint32_t* WEBP_RESTRICT argb,
     const __m128i A3 = _mm_packus_epi16(A2_lo, A2_hi);                 \
     _mm_storeu_si128((__m128i*)&(RGBX), A3);                           \
   } while (0)
+}
 
 static void ApplyAlphaMultiply_SSE2(uint8_t* rgba, int alpha_first, int w,
                                     int h, int stride) {

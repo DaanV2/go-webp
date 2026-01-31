@@ -35,9 +35,12 @@ const NUM_CHANNELS = 4
 // Channel extraction from a uint32_t representation of a uint8_t RGBA/BGRA
 // buffer.
 #ifdef WORDS_BIGENDIAN
-#define CHANNEL_SHIFT(i) (24 - (i) * 8)
+func CHANNEL_SHIFT(i int) int {
+	return (24 - (i) * 8)
+}
 #else
-#define CHANNEL_SHIFT(i) ((i) * 8)
+func CHANNEL_SHIFT(i int) int {((i) * 8) {
+}
 #endif
 
 typedef void (*BlendRowFunc)(uint32_t* const, const uint32_t* const, int);
