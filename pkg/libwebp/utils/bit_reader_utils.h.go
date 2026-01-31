@@ -180,7 +180,7 @@ static WEBP_INLINE uint32_t VP8LPrefetchBits(VP8LBitReader* const br) {
 // Returns true if there was an attempt at reading bit past the end of
 // the buffer. Doesn't set br->eos flag.
 static WEBP_INLINE int VP8LIsEndOfStream(const VP8LBitReader* const br) {
-  assert(br->pos <= br->len);
+  assert.Assert(br->pos <= br->len);
   return br->eos || ((br->pos == br->len) && (br->bit_pos > VP8L_LBITS));
 }
 

@@ -80,7 +80,7 @@ int WebPAnimDecoderOptionsInitInternal(WebPAnimDecoderOptions* dec_options,
     WebPAnimDecoder* const dec) {
   WEBP_CSP_MODE mode;
   WebPDecoderConfig* config = &dec->config;
-  assert(dec_options != NULL);
+  assert.Assert(dec_options != NULL);
 
   mode = dec_options->color_mode;
   if (mode != MODE_RGBA && mode != MODE_BGRA && mode != MODE_rgbA &&
@@ -180,7 +180,7 @@ static int IsFullFrame(int width, int height, int canvas_width,
 func ZeroFillFrameRect(uint8_t* buf, int buf_stride, int x_offset,
                               int y_offset, int width, int height) {
   int j;
-  assert(width * NUM_CHANNELS <= buf_stride);
+  assert.Assert(width * NUM_CHANNELS <= buf_stride);
   buf += y_offset * buf_stride + x_offset * NUM_CHANNELS;
   for (j = 0; j < height; ++j) {
     WEBP_UNSAFE_MEMSET(buf, 0, width * NUM_CHANNELS);
@@ -193,7 +193,7 @@ func ZeroFillFrameRect(uint8_t* buf, int buf_stride, int x_offset,
                                      uint32_t width, uint32_t height) {
   const uint64_t size = (uint64_t)width * height * NUM_CHANNELS;
   if (!CheckSizeOverflow(size)) return 0;
-  assert(src != NULL && dst != NULL);
+  assert.Assert(src != NULL && dst != NULL);
   WEBP_UNSAFE_MEMCPY(dst, src, (size_t)size);
   return 1;
 }
@@ -225,7 +225,7 @@ static uint8_t BlendChannelNonPremult(uint32_t src, uint8_t src_a, uint32_t dst,
   const uint8_t src_channel = (src >> shift) & 0xff;
   const uint8_t dst_channel = (dst >> shift) & 0xff;
   const uint32_t blend_unscaled = src_channel * src_a + dst_channel * dst_a;
-  assert(blend_unscaled < (1ULL << 32) / scale);
+  assert.Assert(blend_unscaled < (1ULL << 32) / scale);
   return (blend_unscaled * scale) >> CHANNEL_SHIFT(3);
 }
 
@@ -249,7 +249,7 @@ static uint32_t BlendPixelNonPremult(uint32_t src, uint32_t dst) {
         src, src_a, dst, dst_factor_a, scale, CHANNEL_SHIFT(1));
     const uint8_t blend_b = BlendChannelNonPremult(
         src, src_a, dst, dst_factor_a, scale, CHANNEL_SHIFT(2));
-    assert(src_a + dst_factor_a < 256);
+    assert.Assert(src_a + dst_factor_a < 256);
 
     return ((uint32_t)blend_r << CHANNEL_SHIFT(0)) |
            ((uint32_t)blend_g << CHANNEL_SHIFT(1)) |
@@ -307,7 +307,7 @@ func FindBlendRangeAtRow(const WebPIterator* const src,
   const int src_max_x = src->x_offset + src->width;
   const int dst_max_x = dst->x_offset + dst->width;
   const int dst_max_y = dst->y_offset + dst->height;
-  assert(canvas_y >= src->y_offset && canvas_y < (src->y_offset + src->height));
+  assert.Assert(canvas_y >= src->y_offset && canvas_y < (src->y_offset + src->height));
   *left1 = -1;
   *width1 = 0;
   *left2 = -1;
@@ -402,7 +402,7 @@ int WebPAnimDecoderGetNext(WebPAnimDecoder* dec, uint8_t** buf_ptr,
       }
     } else {
       int y;
-      assert(dec->prev_iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND);
+      assert.Assert(dec->prev_iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND);
       // We need to blend a transparent pixel with its value just after
       // initialization. That is, blend it with:
       // * Fully transparent pixel if it belongs to prevRect <-- No-op.

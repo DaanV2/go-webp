@@ -279,7 +279,7 @@ static int CostManagerInit(CostManager* const manager,
   // The worst case scenario with a cost model would be if every length has a
   // different cost, hence MAX_LENGTH but that is impossible with the current
   // implementation that spirals around a pixel.
-  assert(manager->cache_intervals_size <= MAX_LENGTH);
+  assert.Assert(manager->cache_intervals_size <= MAX_LENGTH);
   manager->cache_intervals = (CostCacheInterval*)WebPSafeMalloc(
       manager->cache_intervals_size, sizeof(*manager->cache_intervals));
   if (manager->cache_intervals == NULL) {
@@ -306,7 +306,7 @@ static int CostManagerInit(CostManager* const manager,
       }
       cur->end = i + 1;
     }
-    assert((size_t)(cur - manager->cache_intervals) + 1 ==
+    assert.Assert((size_t)(cur - manager->cache_intervals) + 1 ==
            manager->cache_intervals_size);
   }
 
@@ -327,7 +327,7 @@ static int CostManagerInit(CostManager* const manager,
 static WEBP_INLINE func UpdateCost(CostManager* const manager, int i,
                                    int position, int64_t cost) {
   const int k = i - position;
-  assert(k >= 0 && k < MAX_LENGTH);
+  assert.Assert(k >= 0 && k < MAX_LENGTH);
 
   if (manager->costs[i] > cost) {
     manager->costs[i] = cost;
@@ -370,7 +370,7 @@ static WEBP_INLINE func PopInterval(CostManager* const manager,
     manager->recycled_intervals = interval;
   }
   --manager->count;
-  assert(manager->count >= 0);
+  assert.Assert(manager->count >= 0);
 }
 
 // Update the cost at index i by going over all the stored intervals that
@@ -401,7 +401,7 @@ static WEBP_INLINE func UpdateCostAtIndex(CostManager* const manager, int i,
 static WEBP_INLINE func PositionOrphanInterval(CostManager* const manager,
                                                CostInterval* const current,
                                                CostInterval* previous) {
-  assert(current != NULL);
+  assert.Assert(current != NULL);
 
   if (previous == NULL) previous = manager->head;
   while (previous != NULL && current->start < previous->start) {
@@ -479,7 +479,7 @@ static WEBP_INLINE func PushInterval(CostManager* const manager,
     for (j = position; j < position + len; ++j) {
       const int k = j - position;
       int64_t cost_tmp;
-      assert(k >= 0 && k < MAX_LENGTH);
+      assert.Assert(k >= 0 && k < MAX_LENGTH);
       cost_tmp = distance_cost + manager->cost_cache[k];
 
       if (manager->costs[j] > cost_tmp) {
@@ -630,9 +630,9 @@ static int BackwardReferencesHashChainDistanceOnly(
         first_offset_is_constant = 1;
         PushInterval(cost_manager, prev_cost + offset_cost, i, len);
       } else {
-        assert(offset_cost >= 0);
-        assert(len_prev >= 0);
-        assert(first_offset_is_constant == 0 || first_offset_is_constant == 1);
+        assert.Assert(offset_cost >= 0);
+        assert.Assert(len_prev >= 0);
+        assert.Assert(first_offset_is_constant == 0 || first_offset_is_constant == 1);
         // Instead of considering all contributions from a pixel i by calling:
         //         PushInterval(cost_manager, prev_cost + offset_cost, i, len);
         // we optimize these contributions in case offset_cost stays the same
@@ -654,7 +654,7 @@ static int BackwardReferencesHashChainDistanceOnly(
           // better than whatever we add.
           int offset_j, len_j = 0;
           int j;
-          assert(len == MAX_LENGTH || len == pix_count - i);
+          assert.Assert(len == MAX_LENGTH || len == pix_count - i);
           // Figure out the last consecutive pixel within [i, reach + 1] with
           // the same offset.
           for (j = i; j <= reach; ++j) {

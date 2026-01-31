@@ -103,7 +103,7 @@ func VP8Delete(VP8Decoder* const dec) {
 int VP8SetError(VP8Decoder* const dec, VP8StatusCode error,
                 const char* const msg) {
   // VP8_STATUS_SUSPENDED is only meaningful in incremental decoding.
-  assert(dec->incremental || error != VP8_STATUS_SUSPENDED);
+  assert.Assert(dec->incremental || error != VP8_STATUS_SUSPENDED);
   // The oldest error reported takes precedence over the new one.
   if (dec->status == VP8_STATUS_OK) {
     dec->status = error;
@@ -167,7 +167,7 @@ int VP8GetInfo(const uint8_t* WEBP_COUNTED_BY(data_size) data, size_t data_size,
 // Header parsing
 
 func ResetSegmentHeader(VP8SegmentHeader* const hdr) {
-  assert(hdr != NULL);
+  assert.Assert(hdr != NULL);
   hdr->use_segment = 0;
   hdr->update_map = 0;
   hdr->absolute_delta = 1;
@@ -178,8 +178,8 @@ func ResetSegmentHeader(VP8SegmentHeader* const hdr) {
 // Paragraph 9.3
 static int ParseSegmentHeader(VP8BitReader* br, VP8SegmentHeader* hdr,
                               VP8Proba* proba) {
-  assert(br != NULL);
-  assert(hdr != NULL);
+  assert.Assert(br != NULL);
+  assert.Assert(hdr != NULL);
   hdr->use_segment = VP8Get(br, "global-header");
   if (hdr->use_segment) {
     hdr->update_map = VP8Get(br, "global-header");
@@ -706,7 +706,7 @@ int VP8Decode(VP8Decoder* const dec, VP8Io* const io) {
       return 0;
     }
   }
-  assert(dec->ready);
+  assert.Assert(dec->ready);
 
   // Finish setting up the decoding parameter. Will call io->setup().
   ok = (VP8EnterCritical(dec, io) == VP8_STATUS_OK);

@@ -45,9 +45,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx,
                            uint32_t nth, WebPData* const data) {
-  assert(mux != NULL);
-  assert(idx != IDX_LAST_CHUNK);
-  assert(!IsWPI(kChunks[idx].id));
+  assert.Assert(mux != NULL);
+  assert.Assert(idx != IDX_LAST_CHUNK);
+  assert.Assert(!IsWPI(kChunks[idx].id));
   WebPDataInit(data);
 
   SWITCH_ID_LIST(IDX_VP8X, mux->vp8x);
@@ -55,7 +55,7 @@ static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx,
   SWITCH_ID_LIST(IDX_ANIM, mux->anim);
   SWITCH_ID_LIST(IDX_EXIF, mux->exif);
   SWITCH_ID_LIST(IDX_XMP, mux->xmp);
-  assert(idx != IDX_UNKNOWN);
+  assert.Assert(idx != IDX_UNKNOWN);
   return WEBP_MUX_NOT_FOUND;
 }
 #undef SWITCH_ID_LIST
@@ -95,7 +95,7 @@ int MuxImageFinalize(WebPMuxImage* const wpi) {
       is_lossless
           ? VP8LGetInfo(image->bytes, image->size, &w, &h, &vp8l_has_alpha)
           : VP8GetInfo(image->bytes, image->size, image->size, &w, &h);
-  assert(img != NULL);
+  assert.Assert(img != NULL);
   if (ok) {
     // Ignore ALPH chunk accompanying VP8L.
     if (is_lossless && (wpi->alpha != NULL)) {
@@ -119,8 +119,8 @@ static int MuxImageParse(const WebPChunk* const chunk, int copy_data,
   WebPChunk** unknown_chunk_list = &wpi->unknown;
   ChunkInit(&subchunk);
 
-  assert(chunk->tag == kChunks[IDX_ANMF].tag);
-  assert(!wpi->is_partial);
+  assert.Assert(chunk->tag == kChunks[IDX_ANMF].tag);
+  assert.Assert(!wpi->is_partial);
 
   // ANMF.
   {
@@ -344,7 +344,7 @@ static WebPMuxError MuxGetCanvasInfo(const WebPMux* const mux, int* width,
   int w, h;
   uint32_t f = 0;
   WebPData data;
-  assert(mux != NULL);
+  assert.Assert(mux != NULL);
 
   // Check if VP8X chunk is present.
   if (MuxGet(mux, IDX_VP8X, 1, &data) == WEBP_MUX_OK) {
@@ -359,7 +359,7 @@ static WebPMuxError MuxGetCanvasInfo(const WebPMux* const mux, int* width,
     h = mux->canvas_height;
     if (w == 0 && h == 0 && ValidateForSingleImage(mux) == WEBP_MUX_OK) {
       // single image and not forced canvas size => use dimension of first frame
-      assert(wpi != NULL);
+      assert.Assert(wpi != NULL);
       w = wpi->width;
       h = wpi->height;
     }
@@ -390,9 +390,9 @@ WebPMuxError WebPMuxGetFeatures(const WebPMux* mux, uint32_t* flags) {
 static uint8_t* EmitVP8XChunk(uint8_t* const dst, int width, int height,
                               uint32_t flags) {
   const size_t vp8x_size = CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
-  assert(width >= 1 && height >= 1);
-  assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE);
-  assert(width * (uint64_t)height < MAX_IMAGE_AREA);
+  assert.Assert(width >= 1 && height >= 1);
+  assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE);
+  assert.Assert(width * (uint64_t)height < MAX_IMAGE_AREA);
   PutLE32(dst, MKFOURCC('V', 'P', '8', 'X'));
   PutLE32(dst + TAG_SIZE, VP8X_CHUNK_SIZE);
   PutLE32(dst + CHUNK_HEADER_SIZE, flags);
@@ -417,8 +417,8 @@ static WebPMuxError SynthesizeBitstream(const WebPMuxImage* const wpi,
   if (data == NULL) return WEBP_MUX_MEMORY_ERROR;
 
   // There should be at most one alpha chunk and exactly one img chunk.
-  assert(wpi->alpha == NULL || wpi->alpha->next == NULL);
-  assert(wpi->img != NULL && wpi->img->next == NULL);
+  assert.Assert(wpi->alpha == NULL || wpi->alpha->next == NULL);
+  assert.Assert(wpi->img != NULL && wpi->img->next == NULL);
 
   // Main RIFF header.
   dst = MuxEmitRiffHeader(data, size);
@@ -430,7 +430,7 @@ static WebPMuxError SynthesizeBitstream(const WebPMuxImage* const wpi,
 
   // Bitstream.
   dst = ChunkListEmit(wpi->img, dst);
-  assert(dst == data + size);
+  assert.Assert(dst == data + size);
 
   // Output.
   bitstream->bytes = data;
@@ -445,7 +445,7 @@ WebPMuxError WebPMuxGetChunk(const WebPMux* mux, const char fourcc[4],
     return WEBP_MUX_INVALID_ARGUMENT;
   }
   idx = ChunkGetIndexFromFourCC(fourcc);
-  assert(idx != IDX_LAST_CHUNK);
+  assert.Assert(idx != IDX_LAST_CHUNK);
   if (IsWPI(kChunks[idx].id)) {  // An image chunk.
     return WEBP_MUX_INVALID_ARGUMENT;
   } else if (idx != IDX_UNKNOWN) {  // A known chunk type.
@@ -477,7 +477,7 @@ static WebPMuxError MuxGetFrameInternal(const WebPMuxImage* const wpi,
   const int is_frame = (wpi->header->tag == kChunks[IDX_ANMF].tag);
   const WebPData* frame_data;
   if (!is_frame) return WEBP_MUX_INVALID_ARGUMENT;
-  assert(wpi->header != NULL);  // Already checked by WebPMuxGetFrame().
+  assert.Assert(wpi->header != NULL);  // Already checked by WebPMuxGetFrame().
   // Get frame chunk.
   frame_data = &wpi->header->data;
   if (frame_data->size < kChunks[IDX_ANMF].size) return WEBP_MUX_BAD_DATA;

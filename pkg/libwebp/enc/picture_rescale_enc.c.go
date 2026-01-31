@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 // into 'dst'. Mark 'dst' as not owning any memory.
 func PictureGrabSpecs(const WebPPicture* const src,
                              WebPPicture* const dst) {
-  assert(src != NULL && dst != NULL);
+  assert.Assert(src != NULL && dst != NULL);
   *dst = *src;
   WebPPictureResetBuffers(dst);
 }
@@ -191,7 +191,7 @@ static int RescalePlane(const uint8_t* src, int src_width, int src_height,
 }
 
 func AlphaMultiplyARGB(WebPPicture* const pic, int inverse) {
-  assert(pic->argb != NULL);
+  assert.Assert(pic->argb != NULL);
   WebPMultARGBRows((uint8_t*)pic->argb, pic->argb_stride * sizeof(*pic->argb),
                    pic->width, pic->height, inverse);
 }

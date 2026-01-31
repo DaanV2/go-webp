@@ -159,7 +159,7 @@ static WEBP_INLINE func YuvToRgba(uint8_t y, uint8_t u, uint8_t v,
     const int last_pixel_pair = (len - 1) >> 1;                               \
     uint32_t tl_uv = LOAD_UV(top_u[0], top_v[0]); /* top-left sample */       \
     uint32_t l_uv = LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
-    assert(top_y != NULL);                                                    \
+    assert.Assert(top_y != NULL);                                                    \
     {                                                                         \
       const uint32_t uv0 = (3 * tl_uv + l_uv + 0x00020002u) >> 2;             \
       FUNC(top_y[0], uv0 & 0xff, (uv0 >> 16), top_dst);                       \

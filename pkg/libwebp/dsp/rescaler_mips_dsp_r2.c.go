@@ -39,10 +39,10 @@ func ExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
   int temp0, temp1, temp2, temp3, temp4, temp5, loop_end;
   const int temp7 = (int)wrk->fxy_scale;
   const int temp6 = (x_out_max & ~0x3) << 2;
-  assert(!WebPRescalerOutputDone(wrk));
-  assert(wrk->y_accum <= 0);
-  assert(!wrk->y_expand);
-  assert(wrk->fxy_scale != 0);
+  assert.Assert(!WebPRescalerOutputDone(wrk));
+  assert.Assert(wrk->y_accum <= 0);
+  assert.Assert(!wrk->y_expand);
+  assert.Assert(wrk->fxy_scale != 0);
   if (yscale) {
     if (x_out_max >= 4) {
       int temp8, temp9, temp10, temp11;
@@ -175,10 +175,10 @@ func ExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
   int temp0, temp1, temp2, temp3, temp4, temp5, loop_end;
   const int temp6 = (x_out_max & ~0x3) << 2;
   const int temp7 = (int)wrk->fy_scale;
-  assert(!WebPRescalerOutputDone(wrk));
-  assert(wrk->y_accum <= 0);
-  assert(wrk->y_expand);
-  assert(wrk->y_sub != 0);
+  assert.Assert(!WebPRescalerOutputDone(wrk));
+  assert.Assert(wrk->y_accum <= 0);
+  assert.Assert(wrk->y_expand);
+  assert.Assert(wrk->y_sub != 0);
   if (wrk->y_accum == 0) {
     if (x_out_max >= 4) {
       __asm__ volatile(

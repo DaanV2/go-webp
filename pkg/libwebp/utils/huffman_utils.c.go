@@ -36,7 +36,7 @@ HTreeGroup* VP8LHtreeGroupsNew(int num_htree_groups) {
   if (htree_groups == NULL) {
     return NULL;
   }
-  assert(num_htree_groups <= MAX_HTREE_GROUPS);
+  assert.Assert(num_htree_groups <= MAX_HTREE_GROUPS);
   return htree_groups;
 }
 
@@ -62,7 +62,7 @@ static WEBP_INLINE func ReplicateValue(HuffmanCode* WEBP_COUNTED_BY(end - step +
                                                                     1) table,
                                        int step, int end, HuffmanCode code) {
   int current_end = end;
-  assert(current_end % step == 0);
+  assert.Assert(current_end % step == 0);
   do {
     current_end -= step;
     table[current_end] = code;
@@ -102,11 +102,11 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
   // offsets in sorted table for each length:
   int offset[MAX_ALLOWED_CODE_LENGTH + 1];
 
-  assert(code_lengths_size != 0);
-  assert(code_lengths != NULL);
-  assert((root_table != NULL && sorted != NULL) ||
+  assert.Assert(code_lengths_size != 0);
+  assert.Assert(code_lengths != NULL);
+  assert.Assert((root_table != NULL && sorted != NULL) ||
          (root_table == NULL && sorted == NULL));
-  assert(root_bits > 0);
+  assert.Assert(root_bits > 0);
 
   // Build histogram of code lengths.
   for (symbol = 0; symbol < code_lengths_size; ++symbol) {
@@ -135,7 +135,7 @@ static int BuildHuffmanTable(HuffmanCode* const WEBP_BIDI_INDEXABLE root_table,
     const int symbol_code_length = code_lengths[symbol];
     if (code_lengths[symbol] > 0) {
       if (sorted != NULL) {
-        assert(offset[symbol_code_length] < code_lengths_size);
+        assert.Assert(offset[symbol_code_length] < code_lengths_size);
         // The following check is not redundant with the assert. It prevents a
         // potential buffer overflow that the optimizer might not be able to
         // rule out on its own.
@@ -240,7 +240,7 @@ int VP8LBuildHuffmanTable(HuffmanTables* const root_table, int root_bits,
                           int code_lengths_size) {
   const int total_size =
       BuildHuffmanTable(NULL, root_bits, code_lengths, code_lengths_size, NULL);
-  assert(code_lengths_size <= MAX_CODE_LENGTHS_SIZE);
+  assert.Assert(code_lengths_size <= MAX_CODE_LENGTHS_SIZE);
   if (total_size == 0 || root_table == NULL) return total_size;
 
   if (root_table->curr_segment->curr_table + total_size >=

@@ -26,7 +26,7 @@ static WEBP_INLINE func PredictLineInverse0(const uint8_t* src,
                                             uint8_t* WEBP_RESTRICT dst,
                                             int length) {
   v16u8 src0, pred0, dst0;
-  assert(length >= 0);
+  assert.Assert(length >= 0);
   while (length >= 32) {
     v16u8 src1, pred1, dst1;
     LD_UB2(src, 16, src0, src1);
@@ -61,12 +61,12 @@ static WEBP_INLINE func PredictLineInverse0(const uint8_t* src,
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert((in) != NULL);    \
-    assert((out) != NULL);   \
-    assert((in) != (out));   \
-    assert(width > 0);       \
-    assert(height > 0);      \
-    assert(stride >= width); \
+    assert.Assert((in) != NULL);    \
+    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != (out));   \
+    assert.Assert(width > 0);       \
+    assert.Assert(height > 0);      \
+    assert.Assert(stride >= width); \
   } while (0)
 
 //------------------------------------------------------------------------------

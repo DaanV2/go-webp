@@ -36,7 +36,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 func VP8BitReaderSetBuffer(VP8BitReader* const br,
                            const uint8_t* const WEBP_COUNTED_BY(size) start,
                            size_t size) {
-  assert(start != NULL);
+  assert.Assert(start != NULL);
   br->buf = start;
   br->buf_end = start + size;
   br->buf_max =
@@ -46,9 +46,9 @@ func VP8BitReaderSetBuffer(VP8BitReader* const br,
 func VP8InitBitReader(VP8BitReader* const br,
                       const uint8_t* const WEBP_COUNTED_BY(size) start,
                       size_t size) {
-  assert(br != NULL);
-  assert(start != NULL);
-  assert(size < (1u << 31));  // limit ensured by format and upstream checks
+  assert.Assert(br != NULL);
+  assert.Assert(start != NULL);
+  assert.Assert(size < (1u << 31));  // limit ensured by format and upstream checks
   br->range = 255 - 1;
   br->value = 0;
   br->bits = -8;  // to load the very first 8bits
@@ -86,7 +86,7 @@ const uint8_t kVP8NewRange[128] = {
     241, 243, 245, 247, 249, 251, 253, 127};
 
 func VP8LoadFinalBytes(VP8BitReader* const br) {
-  assert(br != NULL && br->buf != NULL);
+  assert.Assert(br != NULL && br->buf != NULL);
   // Only read 8bits at a time
   if (br->buf < br->buf_end) {
     br->bits += 8;
@@ -140,9 +140,9 @@ func VP8LInitBitReader(VP8LBitReader* const br,
                        size_t length) {
   size_t i;
   vp8l_val_t value = 0;
-  assert(br != NULL);
-  assert(start != NULL);
-  assert(length < 0xfffffff8u);  // can't happen with a RIFF chunk.
+  assert.Assert(br != NULL);
+  assert.Assert(start != NULL);
+  assert.Assert(length < 0xfffffff8u);  // can't happen with a RIFF chunk.
 
   br->buf = start;
   br->len = length;
@@ -162,9 +162,9 @@ func VP8LInitBitReader(VP8LBitReader* const br,
 func VP8LBitReaderSetBuffer(VP8LBitReader* const br,
                             const uint8_t* const WEBP_COUNTED_BY(len) buf,
                             size_t len) {
-  assert(br != NULL);
-  assert(buf != NULL);
-  assert(len < 0xfffffff8u);  // can't happen with a RIFF chunk.
+  assert.Assert(br != NULL);
+  assert.Assert(buf != NULL);
+  assert.Assert(len < 0xfffffff8u);  // can't happen with a RIFF chunk.
   br->buf = buf;
   br->len = len;
   // 'pos' > 'len' should be considered a param error.
@@ -190,7 +190,7 @@ func ShiftBytes(VP8LBitReader* const br) {
 }
 
 func VP8LDoFillBitWindow(VP8LBitReader* const br) {
-  assert(br->bit_pos >= VP8L_WBITS);
+  assert.Assert(br->bit_pos >= VP8L_WBITS);
 #if defined(VP8L_USE_FAST_LOAD)
   if (br->pos + sizeof(br->val) < br->len) {
     br->val >>= VP8L_WBITS;
@@ -205,7 +205,7 @@ func VP8LDoFillBitWindow(VP8LBitReader* const br) {
 }
 
 uint32_t VP8LReadBits(VP8LBitReader* const br, int n_bits) {
-  assert(n_bits >= 0);
+  assert.Assert(n_bits >= 0);
   // Flag an error if end_of_stream or n_bits is more than allowed limit.
   if (!br->eos && n_bits <= VP8L_MAX_NUM_BIT_READ) {
     const uint32_t val = VP8LPrefetchBits(br) & kBitMask[n_bits];
@@ -255,7 +255,7 @@ func PrintBitTraces(void) {
   for (i = 0; i < last_label; ++i) {
     const int skip = 16 - (int)strlen(kLabels[i].label);
     const int value = (kLabels[i].size + scale - 1) / scale;
-    assert(skip > 0);
+    assert.Assert(skip > 0);
     printf("%s \%*s: %6d %s   \t[%5.2f%%] [count: %7d]\n", kLabels[i].label,
            skip, "", value, units, 100.f * kLabels[i].size / total,
            kLabels[i].count);

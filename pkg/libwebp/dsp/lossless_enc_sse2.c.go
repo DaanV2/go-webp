@@ -189,8 +189,8 @@ func AddVector_SSE2(const uint32_t* WEBP_RESTRICT a,
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
   // NUM_LITERAL_CODES (256) + NUM_LENGTH_CODES (24) + (0 or a non-zero power of
   // 2). See the usage in VP8LHistogramAdd().
-  assert(size >= 16);
-  assert(size % 2 == 0);
+  assert.Assert(size >= 16);
+  assert.Assert(size % 2 == 0);
 
   do {
     const __m128i a0 = _mm_loadu_si128((const __m128i*)&a[i + 0]);
@@ -237,8 +237,8 @@ func AddVectorEq_SSE2(const uint32_t* WEBP_RESTRICT a,
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
   // NUM_LITERAL_CODES (256) + NUM_LENGTH_CODES (24) + (0 or a non-zero power of
   // 2). See the usage in VP8LHistogramAdd().
-  assert(size >= 16);
-  assert(size % 2 == 0);
+  assert.Assert(size >= 16);
+  assert.Assert(size % 2 == 0);
 
   do {
     const __m128i a0 = _mm_loadu_si128((const __m128i*)&a[i + 0]);
@@ -386,8 +386,8 @@ func BundleColorMap_SSE2(const uint8_t* WEBP_RESTRICT const row,
                                 int width, int xbits,
                                 uint32_t* WEBP_RESTRICT dst) {
   int x;
-  assert(xbits >= 0);
-  assert(xbits <= 3);
+  assert.Assert(xbits >= 0);
+  assert.Assert(xbits <= 3);
   switch (xbits) {
     case 0: {
       const __m128i ff = _mm_set1_epi16((short)0xff00);
@@ -441,7 +441,7 @@ func BundleColorMap_SSE2(const uint8_t* WEBP_RESTRICT const row,
       break;
     }
     default: {
-      assert(xbits == 3);
+      assert.Assert(xbits == 3);
       for (x = 0; x + 16 <= width; x += 16, dst += 2) {
         // 0000000a00000000b... | (where a/b are 1 bit).
         const __m128i in = _mm_loadu_si128((const __m128i*)&row[x]);

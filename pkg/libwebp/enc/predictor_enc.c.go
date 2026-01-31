@@ -406,7 +406,7 @@ func ComputeResidualsForTile(
   int mode;
   // Need pointers to be able to swap arrays.
   uint32_t residuals[1 << MAX_TRANSFORM_BITS];
-  assert(max_x <= (1 << MAX_TRANSFORM_BITS));
+  assert.Assert(max_x <= (1 << MAX_TRANSFORM_BITS));
   for (mode = 0; mode < kNumPredModes; ++mode) {
     int relative_y;
     uint32_t* const histo_argb =

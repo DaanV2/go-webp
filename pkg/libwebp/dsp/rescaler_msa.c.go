@@ -257,10 +257,10 @@ func RescalerExportRowExpand_MIPSdspR2(WebPRescaler* const wrk) {
   rescaler_t* irow = wrk->irow;
   const int x_out_max = wrk->dst_width * wrk->num_channels;
   const rescaler_t* frow = wrk->frow;
-  assert(!WebPRescalerOutputDone(wrk));
-  assert(wrk->y_accum <= 0);
-  assert(wrk->y_expand);
-  assert(wrk->y_sub != 0);
+  assert.Assert(!WebPRescalerOutputDone(wrk));
+  assert.Assert(wrk->y_accum <= 0);
+  assert.Assert(wrk->y_expand);
+  assert.Assert(wrk->y_sub != 0);
   if (wrk->y_accum == 0) {
     ExportRowExpand_0(frow, dst, x_out_max, wrk);
   } else {
@@ -422,9 +422,9 @@ func RescalerExportRowShrink_MIPSdspR2(WebPRescaler* const wrk) {
   const int x_out_max = wrk->dst_width * wrk->num_channels;
   const rescaler_t* frow = wrk->frow;
   const uint32_t yscale = wrk->fy_scale * (-wrk->y_accum);
-  assert(!WebPRescalerOutputDone(wrk));
-  assert(wrk->y_accum <= 0);
-  assert(!wrk->y_expand);
+  assert.Assert(!WebPRescalerOutputDone(wrk));
+  assert.Assert(wrk->y_accum <= 0);
+  assert.Assert(!wrk->y_expand);
   if (yscale) {
     ExportRowShrink_0(frow, irow, dst, x_out_max, yscale, wrk);
   } else {

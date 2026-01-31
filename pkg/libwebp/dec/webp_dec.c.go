@@ -68,9 +68,9 @@ static VP8StatusCode ParseRIFF(const uint8_t* WEBP_COUNTED_BY(*data_size) *
                                size_t* WEBP_SINGLE const data_size,
                                int have_all_data,
                                size_t* WEBP_SINGLE const riff_size) {
-  assert(data != NULL);
-  assert(data_size != NULL);
-  assert(riff_size != NULL);
+  assert.Assert(data != NULL);
+  assert.Assert(data_size != NULL);
+  assert.Assert(riff_size != NULL);
 
   *riff_size = 0;  // Default: no RIFF present.
   if (*data_size >= RIFF_HEADER_SIZE && !memcmp(*data, "RIFF", TAG_SIZE)) {
@@ -112,9 +112,9 @@ static VP8StatusCode ParseVP8X(const uint8_t* WEBP_COUNTED_BY(*data_size) *
                                int* WEBP_SINGLE const height_ptr,
                                uint32_t* WEBP_SINGLE const flags_ptr) {
   const uint32_t vp8x_size = CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
-  assert(data != NULL);
-  assert(data_size != NULL);
-  assert(found_vp8x != NULL);
+  assert.Assert(data != NULL);
+  assert.Assert(data_size != NULL);
+  assert.Assert(found_vp8x != NULL);
 
   *found_vp8x = 0;
 
@@ -169,13 +169,13 @@ static VP8StatusCode ParseOptionalChunks(
   uint32_t total_size = TAG_SIZE +           // "WEBP".
                         CHUNK_HEADER_SIZE +  // "VP8Xnnnn".
                         VP8X_CHUNK_SIZE;     // data.
-  assert(data != NULL);
-  assert(data_size != NULL);
+  assert.Assert(data != NULL);
+  assert.Assert(data_size != NULL);
   buf = *data;
   buf_size = *data_size;
 
-  assert(alpha_data != NULL);
-  assert(alpha_size != NULL);
+  assert.Assert(alpha_data != NULL);
+  assert.Assert(alpha_size != NULL);
   *alpha_data = NULL;
   *alpha_size = 0;
 
@@ -248,10 +248,10 @@ static VP8StatusCode ParseVP8Header(const uint8_t* WEBP_COUNTED_BY(*data_size) *
       TAG_SIZE + CHUNK_HEADER_SIZE;  // "WEBP" + "VP8 nnnn" OR
                                      // "WEBP" + "VP8Lnnnn"
   (void)local_data_size;
-  assert(data != NULL);
-  assert(data_size != NULL);
-  assert(chunk_size != NULL);
-  assert(is_lossless != NULL);
+  assert.Assert(data != NULL);
+  assert.Assert(data_size != NULL);
+  assert.Assert(chunk_size != NULL);
+  assert.Assert(is_lossless != NULL);
 
   if (*data_size < CHUNK_HEADER_SIZE) {
     return VP8_STATUS_NOT_ENOUGH_DATA;  // Insufficient data.
@@ -415,8 +415,8 @@ static VP8StatusCode ParseHeadersInternal(
   if (headers != NULL) {
     *headers = hdrs;
     headers->offset = data - headers->data;
-    assert((uint64_t)(data - headers->data) < MAX_CHUNK_PAYLOAD);
-    assert(headers->offset == headers->data_size - data_size);
+    assert.Assert((uint64_t)(data - headers->data) < MAX_CHUNK_PAYLOAD);
+    assert.Assert(headers->offset == headers->data_size - data_size);
   }
 ReturnWidthHeight:
   if (status == VP8_STATUS_OK ||
@@ -438,7 +438,7 @@ VP8StatusCode WebPParseHeaders(WebPHeaderStructure* const headers) {
   // status is marked volatile as a workaround for a clang-3.8 (aarch64) bug
   volatile VP8StatusCode status;
   int has_animation = 0;
-  assert(headers != NULL);
+  assert.Assert(headers != NULL);
   // fill out headers, ignore width/height/has_alpha.
   {
     const uint8_t* WEBP_BIDI_INDEXABLE const bounded_data =
@@ -486,7 +486,7 @@ func WebPResetDecParams(WebPDecParams* const params) {
     return status;
   }
 
-  assert(params != NULL);
+  assert.Assert(params != NULL);
   if (!VP8InitIo(&io)) {
     return VP8_STATUS_INVALID_PARAM;
   }
@@ -719,14 +719,14 @@ uint8_t* WebPDecodeYUV(const uint8_t* WEBP_COUNTED_BY(data_size) data,
       *v = buf->v;
       *stride = buf->y_stride;
       *uv_stride = buf->u_stride;
-      assert(buf->u_stride == buf->v_stride);
+      assert.Assert(buf->u_stride == buf->v_stride);
     }
     return out;
   }
 }
 
 func DefaultFeatures(WebPBitstreamFeatures* const features) {
-  assert(features != NULL);
+  assert.Assert(features != NULL);
   WEBP_UNSAFE_MEMSET(features, 0, sizeof(*features));
 }
 

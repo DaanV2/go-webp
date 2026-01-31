@@ -72,10 +72,10 @@ func RescalerExportRowExpand_NEON(WebPRescaler* const wrk) {
   const rescaler_t* const frow = wrk->frow;
   const uint32_t fy_scale = wrk->fy_scale;
   const int32x4_t fy_scale_half = MAKE_HALF_CST(fy_scale);
-  assert(!WebPRescalerOutputDone(wrk));
-  assert(wrk->y_accum <= 0);
-  assert(wrk->y_expand);
-  assert(wrk->y_sub != 0);
+  assert.Assert(!WebPRescalerOutputDone(wrk));
+  assert.Assert(wrk->y_accum <= 0);
+  assert.Assert(wrk->y_expand);
+  assert.Assert(wrk->y_sub != 0);
   if (wrk->y_accum == 0) {
     for (x_out = 0; x_out < max_span; x_out += 8) {
       LOAD_32x4(frow + x_out + 0, A0);
@@ -128,9 +128,9 @@ func RescalerExportRowShrink_NEON(WebPRescaler* const wrk) {
   const uint32x4_t zero = vdupq_n_u32(0);
   const int32x4_t yscale_half = MAKE_HALF_CST(yscale);
   const int32x4_t fxy_scale_half = MAKE_HALF_CST(fxy_scale);
-  assert(!WebPRescalerOutputDone(wrk));
-  assert(wrk->y_accum <= 0);
-  assert(!wrk->y_expand);
+  assert.Assert(!WebPRescalerOutputDone(wrk));
+  assert.Assert(wrk->y_accum <= 0);
+  assert.Assert(!wrk->y_expand);
   if (yscale) {
     for (x_out = 0; x_out < max_span; x_out += 8) {
       LOAD_32x8(frow + x_out, in0, in1);

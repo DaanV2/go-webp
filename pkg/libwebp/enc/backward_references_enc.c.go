@@ -87,7 +87,7 @@ struct PixOrCopyBlock {
 
 extern func VP8LClearBackwardRefs(VP8LBackwardRefs* const refs);
 func VP8LClearBackwardRefs(VP8LBackwardRefs* const refs) {
-  assert(refs != NULL);
+  assert.Assert(refs != NULL);
   if (refs->tail != NULL) {
     *refs->tail = refs->free_blocks;  // recycle all blocks at once
   }
@@ -98,7 +98,7 @@ func VP8LClearBackwardRefs(VP8LBackwardRefs* const refs) {
 }
 
 func VP8LBackwardRefsClear(VP8LBackwardRefs* const refs) {
-  assert(refs != NULL);
+  assert.Assert(refs != NULL);
   VP8LClearBackwardRefs(refs);
   while (refs->free_blocks != NULL) {
     PixOrCopyBlock* const next = refs->free_blocks->next;
@@ -122,7 +122,7 @@ func BackwardRefsSwap(VP8LBackwardRefs* const refs1,
 }
 
 func VP8LBackwardRefsInit(VP8LBackwardRefs* const refs, int block_size) {
-  assert(refs != NULL);
+  assert.Assert(refs != NULL);
   memset(refs, 0, sizeof(*refs));
   refs->tail = &refs->refs;
   refs->block_size =
@@ -203,9 +203,9 @@ func VP8LBackwardRefsCursorAdd(VP8LBackwardRefs* const refs,
 // Hash chains
 
 int VP8LHashChainInit(VP8LHashChain* const p, int size) {
-  assert(p->size == 0);
-  assert(p->offset_length == NULL);
-  assert(size > 0);
+  assert.Assert(p->size == 0);
+  assert.Assert(p->offset_length == NULL);
+  assert.Assert(size > 0);
   p->offset_length = (uint32_t*)WebPSafeMalloc(size, sizeof(*p->offset_length));
   if (p->offset_length == NULL) return 0;
   p->size = size;
@@ -214,7 +214,7 @@ int VP8LHashChainInit(VP8LHashChain* const p, int size) {
 }
 
 func VP8LHashChainClear(VP8LHashChain* const p) {
-  assert(p != NULL);
+  assert.Assert(p != NULL);
   WebPSafeFree(p->offset_length);
 
   p->size = 0;
@@ -246,7 +246,7 @@ static int GetWindowSizeForHashChain(int quality, int xsize) {
                               : (quality > 50) ? (xsize << 8)
                               : (quality > 25) ? (xsize << 6)
                                                : (xsize << 4);
-  assert(xsize > 0);
+  assert.Assert(xsize > 0);
   return (max_window_size > WINDOW_SIZE) ? WINDOW_SIZE : max_window_size;
 }
 
@@ -269,9 +269,9 @@ int VP8LHashChainFill(VP8LHashChain* const p, int quality,
   int32_t* hash_to_first_index;
   // Temporarily use the p->offset_length as a hash chain.
   int32_t* chain = (int32_t*)p->offset_length;
-  assert(size > 0);
-  assert(p->size != 0);
-  assert(p->offset_length != NULL);
+  assert.Assert(size > 0);
+  assert.Assert(p->size != 0);
+  assert.Assert(p->offset_length != NULL);
 
   if (size <= 2) {
     p->offset_length[0] = p->offset_length[size - 1] = 0;
@@ -352,7 +352,7 @@ int VP8LHashChainFill(VP8LHashChain* const p, int quality,
   // pixel and a length. The right-most pixel cannot match anything to the right
   // (hence a best length of 0) and the left-most pixel nothing to the left
   // (hence an offset of 0).
-  assert(size > 2);
+  assert.Assert(size > 2);
   p->offset_length[0] = p->offset_length[size - 1] = 0;
   for (base_position = size - 2; base_position > 0;) {
     const int max_len = MaxFindCopyLength(size - 1 - base_position);
@@ -394,7 +394,7 @@ int VP8LHashChainFill(VP8LHashChain* const p, int quality,
 
     for (; pos >= min_pos && --iter; pos = chain[pos]) {
       int curr_length;
-      assert(base_position > (uint32_t)pos);
+      assert.Assert(base_position > (uint32_t)pos);
 
       if (argb[pos + best_length] != best_argb) continue;
 
@@ -411,8 +411,8 @@ int VP8LHashChainFill(VP8LHashChain* const p, int quality,
     // to the left, we have the best matches for the left-extended pixels.
     max_base_position = base_position;
     while (1) {
-      assert(best_length <= MAX_LENGTH);
-      assert(best_distance <= WINDOW_SIZE);
+      assert.Assert(best_length <= MAX_LENGTH);
+      assert.Assert(best_distance <= WINDOW_SIZE);
       p->offset_length[base_position] =
           (best_distance << MAX_LENGTH_BITS) | (uint32_t)best_length;
       --base_position;
@@ -561,7 +561,7 @@ static int BackwardReferencesLz77(int xsize, int ysize,
       len = 1;
     }
     // Go with literal or backward reference.
-    assert(len > 0);
+    assert.Assert(len > 0);
     if (len == 1) {
       AddSingleLiteral(argb[i], use_color_cache, &hashers, refs);
     } else {
@@ -712,8 +712,8 @@ static int BackwardReferencesLz77Box(int xsize, int ysize,
       }
     }
 
-    assert(i + best_length <= pix_count);
-    assert(best_length <= MAX_LENGTH);
+    assert.Assert(i + best_length <= pix_count);
+    assert.Assert(best_length <= MAX_LENGTH);
     if (best_length <= MIN_LENGTH) {
       hash_chain->offset_length[i] = 0;
       best_offset_prev = 0;
@@ -764,7 +764,7 @@ static int CalculateBestCacheSize(const uint32_t* argb, int quality,
   VP8LHistogram* histos[MAX_COLOR_CACHE_BITS + 1] = {NULL};
   int ok = 0;
 
-  assert(cache_bits_max >= 0 && cache_bits_max <= MAX_COLOR_CACHE_BITS);
+  assert.Assert(cache_bits_max >= 0 && cache_bits_max <= MAX_COLOR_CACHE_BITS);
 
   if (cache_bits_max == 0) {
     *best_cache_bits = 0;
@@ -881,7 +881,7 @@ static int BackwardRefsWithLocalCache(const uint32_t* const argb,
     } else {
       // refs was created without local cache, so it can not have cache indexes.
       int k;
-      assert(PixOrCopyIsCopy(v));
+      assert.Assert(PixOrCopyIsCopy(v));
       for (k = 0; k < v->len; ++k) {
         VP8LColorCacheInsert(&hashers, argb[pixel_index++]);
       }
@@ -948,7 +948,7 @@ static int GetBackwardReferences(int width, int height,
                                         &hash_chain_box, refs_tmp);
         break;
       default:
-        assert(0);
+        assert.Assert(0);
     }
     if (!res) goto Error;
 
@@ -991,8 +991,8 @@ static int GetBackwardReferences(int width, int height,
       }
     }
   }
-  assert(lz77_types_best[0] > 0);
-  assert(!do_no_cache || lz77_types_best[1] > 0);
+  assert.Assert(lz77_types_best[0] > 0);
+  assert.Assert(!do_no_cache || lz77_types_best[1] > 0);
 
   // Improve on simple LZ77 but only for high quality (TraceBackwards is
   // costly).

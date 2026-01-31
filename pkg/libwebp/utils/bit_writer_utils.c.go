@@ -50,7 +50,7 @@ static int BitWriterResize(VP8BitWriter* const bw, size_t extra_size) {
     return 0;
   }
   if (bw->pos > 0) {
-    assert(bw->buf != NULL);
+    assert.Assert(bw->buf != NULL);
     WEBP_UNSAFE_MEMCPY(new_buf, bw->buf, bw->pos);
   }
   WebPSafeFree(bw->buf);
@@ -62,7 +62,7 @@ static int BitWriterResize(VP8BitWriter* const bw, size_t extra_size) {
 func Flush(VP8BitWriter* const bw) {
   const int s = 8 + bw->nb_bits;
   const int32_t bits = bw->value >> s;
-  assert(bw->nb_bits >= 0);
+  assert.Assert(bw->nb_bits >= 0);
   bw->value -= bits << s;
   bw->nb_bits -= 8;
   if ((bits & 0xff) != 0xff) {
@@ -144,7 +144,7 @@ int VP8PutBitUniform(VP8BitWriter* const bw, int bit) {
 
 func VP8PutBits(VP8BitWriter* const bw, uint32_t value, int nb_bits) {
   uint32_t mask;
-  assert(nb_bits > 0 && nb_bits < 32);
+  assert.Assert(nb_bits > 0 && nb_bits < 32);
   for (mask = 1u << (nb_bits - 1); mask; mask >>= 1) {
     VP8PutBitUniform(bw, value & mask);
   }
@@ -182,7 +182,7 @@ uint8_t* VP8BitWriterFinish(VP8BitWriter* const bw) {
 
 int VP8BitWriterAppend(VP8BitWriter* const bw, const uint8_t* data,
                        size_t size) {
-  assert(data != NULL);
+  assert.Assert(data != NULL);
   if (bw->nb_bits != -8) return 0;  // Flush() must have been called
   if (!BitWriterResize(bw, size)) return 0;
   WEBP_UNSAFE_MEMCPY(bw->buf + bw->pos, data, size);
@@ -245,7 +245,7 @@ int VP8LBitWriterInit(VP8LBitWriter* const bw, size_t expected_size) {
 int VP8LBitWriterClone(const VP8LBitWriter* const src,
                        VP8LBitWriter* const dst) {
   const size_t current_size = src->cur - src->buf;
-  assert(src->cur >= src->buf && src->cur <= src->end);
+  assert.Assert(src->cur >= src->buf && src->cur <= src->end);
   if (!VP8LBitWriterResize(dst, current_size)) return 0;
   WEBP_UNSAFE_MEMCPY(dst->buf, src->buf, current_size);
   dst->bits = src->bits;
@@ -267,7 +267,7 @@ func VP8LBitWriterReset(const VP8LBitWriter* const bw_init,
   bw->bits = bw_init->bits;
   bw->used = bw_init->used;
   bw->cur = bw->buf + (bw_init->cur - bw_init->buf);
-  assert(bw->cur <= bw->end);
+  assert.Assert(bw->cur <= bw->end);
   bw->error = bw_init->error;
 }
 
@@ -299,7 +299,7 @@ func VP8LPutBitsFlushBits(VP8LBitWriter* const bw, int* used,
 func VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits) {
   vp8l_atype_t lbits = bw->bits;
   int used = bw->used;
-  assert(n_bits <= VP8L_WRITER_MAX_BITS);
+  assert.Assert(n_bits <= VP8L_WRITER_MAX_BITS);
   if (n_bits == 0) return;
   // Special case of overflow handling for 32bit accumulator (2-steps flush).
   if (used + n_bits >= VP8L_WRITER_MAX_BITS) {
@@ -310,12 +310,12 @@ func VP8LPutBitsInternal(VP8LBitWriter* const bw, uint32_t bits, int n_bits) {
     n_bits -= shift;
     if (shift >= (int)sizeof(bits) * 8) {
       // Undefined behavior.
-      assert(shift == (int)sizeof(bits) * 8);
+      assert.Assert(shift == (int)sizeof(bits) * 8);
       bits = 0;
     } else {
       bits >>= shift;
     }
-    assert(n_bits <= VP8L_WRITER_MAX_BITS);
+    assert.Assert(n_bits <= VP8L_WRITER_MAX_BITS);
   }
   // If needed, make some room by flushing some bits out.
   while (used >= VP8L_WRITER_BITS) {

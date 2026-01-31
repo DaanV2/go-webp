@@ -44,7 +44,7 @@ typedef enum { LITERAL = 0, RED, BLUE, ALPHA, DISTANCE } HistogramIndex;
 static int GetHistogramSize(int cache_bits) {
   const int literal_size = VP8LHistogramNumCodes(cache_bits);
   const size_t total_size = sizeof(VP8LHistogram) + sizeof(int) * literal_size;
-  assert(total_size <= (size_t)0x7fffffff);
+  assert.Assert(total_size <= (size_t)0x7fffffff);
   return (int)total_size;
 }
 
@@ -82,7 +82,7 @@ func HistogramCopy(const VP8LHistogram* const src,
   const int dst_cache_bits = dst->palette_code_bits;
   const int literal_size = VP8LHistogramNumCodes(dst_cache_bits);
   const int histo_size = GetHistogramSize(dst_cache_bits);
-  assert(src->palette_code_bits == dst_cache_bits);
+  assert.Assert(src->palette_code_bits == dst_cache_bits);
   memcpy(dst, src, histo_size);
   dst->literal = dst_literal;
   memcpy(dst->literal, src->literal, literal_size * sizeof(*dst->literal));
@@ -191,7 +191,7 @@ func VP8LHistogramSetClear(VP8LHistogramSet* const set) {
 func HistogramSetRemoveHistogram(VP8LHistogramSet* const set, int i) {
   set->histograms[i] = set->histograms[set->size - 1];
   --set->size;
-  assert(set->size > 0);
+  assert.Assert(set->size > 0);
 }
 
 // -----------------------------------------------------------------------------
@@ -207,7 +207,7 @@ func HistogramAddSinglePixOrCopy(
   } else if (PixOrCopyIsCacheIdx(v)) {
     const int literal_ix =
         NUM_LITERAL_CODES + NUM_LENGTH_CODES + PixOrCopyCacheIdx(v);
-    assert(histo->palette_code_bits != 0);
+    assert.Assert(histo->palette_code_bits != 0);
     ++histo->literal[literal_ix];
   } else {
     int code, extra_bits;
@@ -379,7 +379,7 @@ static WEBP_INLINE uint64_t GetCombinedEntropy(const VP8LHistogram* const h1,
     if (is_h1_used) return h1->costs[index];
     return h2->costs[index];
   }
-  assert(is_h1_used && is_h2_used);
+  assert.Assert(is_h1_used && is_h2_used);
 
   GetPopulationInfo(h1, index, &X, &length);
   GetPopulationInfo(h2, index, &Y, &length);
@@ -424,7 +424,7 @@ static WEBP_INLINE func SaturateAdd(uint64_t a, int64_t* b) {
     int64_t cost_threshold_in, uint64_t* cost, uint64_t costs[5]) {
   int i;
   const uint64_t cost_threshold = (uint64_t)cost_threshold_in;
-  assert(a->palette_code_bits == b->palette_code_bits);
+  assert.Assert(a->palette_code_bits == b->palette_code_bits);
   if (cost_threshold_in <= 0) return 0;
   *cost = 0;
 
@@ -443,7 +443,7 @@ static WEBP_INLINE func HistogramAdd(const VP8LHistogram* const h1,
                                      const VP8LHistogram* const h2,
                                      VP8LHistogram* const hout) {
   int i;
-  assert(h1->palette_code_bits == h2->palette_code_bits);
+  assert.Assert(h1->palette_code_bits == h2->palette_code_bits);
 
   for (i = 0; i < 5; ++i) {
     int length;
@@ -527,7 +527,7 @@ func UpdateHistogramCost(uint64_t bit_cost, uint64_t costs[5],
                                              int64_t cost_threshold,
                                              int64_t* cost_out) {
   uint64_t cost, costs[5];
-  assert(a != NULL && b != NULL);
+  assert.Assert(a != NULL && b != NULL);
   SaturateAdd(a->bit_cost, &cost_threshold);
   if (!GetCombinedHistogramEntropy(a, b, cost_threshold, &cost, costs)) {
     return 0;
@@ -598,13 +598,13 @@ static int GetHistoBinIndex(const VP8LHistogram* const h,
                             const DominantCostRange* const c, int low_effort) {
   int bin_id =
       GetBinIdForEntropy(c->literal_min, c->literal_max, h->costs[LITERAL]);
-  assert(bin_id < NUM_PARTITIONS);
+  assert.Assert(bin_id < NUM_PARTITIONS);
   if (!low_effort) {
     bin_id = bin_id * NUM_PARTITIONS +
              GetBinIdForEntropy(c->red_min, c->red_max, h->costs[RED]);
     bin_id = bin_id * NUM_PARTITIONS +
              GetBinIdForEntropy(c->blue_min, c->blue_max, h->costs[BLUE]);
-    assert(bin_id < BIN_SIZE);
+    assert.Assert(bin_id < BIN_SIZE);
   }
   return bin_id;
 }
@@ -617,7 +617,7 @@ func HistogramBuild(int xsize, int histo_bits,
   const int histo_xsize = VP8LSubSampleSize(xsize, histo_bits);
   VP8LHistogram** const histograms = image_histo->histograms;
   VP8LRefsCursor c = VP8LRefsCursorInit(backward_refs);
-  assert(histo_bits > 0);
+  assert.Assert(histo_bits > 0);
   VP8LHistogramSetClear(image_histo);
   while (VP8LRefsCursorOk(&c)) {
     const PixOrCopy* const v = c.cur_pos;
@@ -638,7 +638,7 @@ func HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo,
   int i;
   VP8LHistogram** const orig_histograms = orig_histo->histograms;
   VP8LHistogram** const histograms = image_histo->histograms;
-  assert(image_histo->max_size == orig_histo->max_size);
+  assert.Assert(image_histo->max_size == orig_histo->max_size);
   image_histo->size = 0;
   for (i = 0; i < orig_histo->max_size; ++i) {
     VP8LHistogram* const histo = orig_histograms[i];
@@ -650,7 +650,7 @@ func HistogramCopyAndAnalyze(VP8LHistogramSet* const orig_histo,
         !histo->is_used[BLUE] && !histo->is_used[ALPHA] &&
         !histo->is_used[DISTANCE]) {
       // The first histogram is always used.
-      assert(i > 0);
+      assert.Assert(i > 0);
       orig_histograms[i] = NULL;
     } else {
       // Copy histograms from orig_histo[] to image_histo[].
@@ -698,7 +698,7 @@ func HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo,
     uint16_t num_combine_failures;  // number of combine failures per bin_id
   } bin_info[BIN_SIZE];
 
-  assert(num_bins <= BIN_SIZE);
+  assert.Assert(num_bins <= BIN_SIZE);
   for (idx = 0; idx < num_bins; ++idx) {
     bin_info[idx].first = -1;
     bin_info[idx].num_combine_failures = 0;
@@ -766,7 +766,7 @@ func HistogramCombineEntropyBin(VP8LHistogramSet* const image_histo,
 // 48271 and a modulo constant of 2^31 - 1.
 static uint32_t MyRand(uint32_t* const seed) {
   *seed = (uint32_t)(((uint64_t)(*seed) * 48271u) % 2147483647u);
-  assert(*seed > 0);
+  assert.Assert(*seed > 0);
   return *seed;
 }
 
@@ -799,7 +799,7 @@ static int HistoQueueInit(HistoQueue* const histo_queue, const int max_size) {
 }
 
 func HistoQueueClear(HistoQueue* const histo_queue) {
-  assert(histo_queue != NULL);
+  assert.Assert(histo_queue != NULL);
   WebPSafeFree(histo_queue->queue);
   histo_queue->size = 0;
   histo_queue->max_size = 0;
@@ -809,9 +809,9 @@ func HistoQueueClear(HistoQueue* const histo_queue) {
 // and shrinking the queue.
 func HistoQueuePopPair(HistoQueue* const histo_queue,
                               HistogramPair* const pair) {
-  assert(pair >= histo_queue->queue &&
+  assert.Assert(pair >= histo_queue->queue &&
          pair < (histo_queue->queue + histo_queue->size));
-  assert(histo_queue->size > 0);
+  assert.Assert(histo_queue->size > 0);
   *pair = histo_queue->queue[histo_queue->size - 1];
   --histo_queue->size;
 }
@@ -819,10 +819,10 @@ func HistoQueuePopPair(HistoQueue* const histo_queue,
 // Check whether a pair in the queue should be updated as head or not.
 func HistoQueueUpdateHead(HistoQueue* const histo_queue,
                                  HistogramPair* const pair) {
-  assert(pair->cost_diff < 0);
-  assert(pair >= histo_queue->queue &&
+  assert.Assert(pair->cost_diff < 0);
+  assert.Assert(pair >= histo_queue->queue &&
          pair < (histo_queue->queue + histo_queue->size));
-  assert(histo_queue->size > 0);
+  assert.Assert(histo_queue->size > 0);
   if (pair->cost_diff < histo_queue->queue[0].cost_diff) {
     // Replace the best pair.
     const HistogramPair tmp = histo_queue->queue[0];
@@ -873,7 +873,7 @@ static int64_t HistoQueuePush(HistoQueue* const histo_queue,
 
   // Stop here if the queue is full.
   if (histo_queue->size == histo_queue->max_size) return 0;
-  assert(threshold <= 0);
+  assert.Assert(threshold <= 0);
   if (idx1 > idx2) {
     const int tmp = idx2;
     idx2 = idx1;
@@ -1021,7 +1021,7 @@ static int HistogramCombineStochastic(VP8LHistogramSet* const image_histo,
     // Get the best histograms.
     best_idx1 = histo_queue.queue[0].idx1;
     best_idx2 = histo_queue.queue[0].idx2;
-    assert(best_idx1 < best_idx2);
+    assert.Assert(best_idx1 < best_idx2);
     // Merge the histograms and remove best_idx2 from the queue.
     HistogramAdd(histograms[best_idx2], histograms[best_idx1],
                  histograms[best_idx1]);
@@ -1100,7 +1100,7 @@ func HistogramRemap(const VP8LHistogramSet* const in,
       symbols[i] = best_out;
     }
   } else {
-    assert(out_size == 1);
+    assert.Assert(out_size == 1);
     for (i = 0; i < in_size; ++i) {
       symbols[i] = 0;
     }

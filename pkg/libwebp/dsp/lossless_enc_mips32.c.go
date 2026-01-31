@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/stdlib"
 import "github.com/daanv2/go-webp/pkg/string"
 
 static uint64_t FastSLog2Slow_MIPS32(uint32_t v) {
-  assert(v >= LOG_LOOKUP_IDX_MAX);
+  assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     uint32_t log_cnt, y;
     uint64_t correction;
@@ -61,7 +61,7 @@ static uint64_t FastSLog2Slow_MIPS32(uint32_t v) {
 }
 
 static uint32_t FastLog2Slow_MIPS32(uint32_t v) {
-  assert(v >= LOG_LOOKUP_IDX_MAX);
+  assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     uint32_t log_cnt, y;
     const int c24 = 24;

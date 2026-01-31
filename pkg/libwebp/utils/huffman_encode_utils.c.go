@@ -137,7 +137,7 @@ static int CompareHuffmanTrees(const void* ptr1, const void* ptr2) {
   } else if (t1->total_count < t2->total_count) {
     return 1;
   } else {
-    assert(t1->value != t2->value);
+    assert.Assert(t1->value != t2->value);
     return (t1->value < t2->value) ? -1 : 1;
   }
 }
@@ -198,7 +198,7 @@ func GenerateOptimalTree(
   // second iteration of this loop.
   // If we actually start running inside this loop a lot, we would perhaps
   // be better off with the Katajainen algorithm.
-  assert(tree_size_orig <= (1 << (tree_depth_limit - 1)));
+  assert.Assert(tree_size_orig <= (1 << (tree_depth_limit - 1)));
   for (count_min = 1;; count_min *= 2) {
     int tree_size = tree_size_orig;
     // We need to pack the Huffman tree in tree_depth_limit bits.
@@ -272,7 +272,7 @@ func GenerateOptimalTree(
 static HuffmanTreeToken* WEBP_INDEXABLE
 CodeRepeatedValues(int repetitions, HuffmanTreeToken* WEBP_INDEXABLE tokens,
                    int value, int prev_value) {
-  assert(value <= MAX_ALLOWED_CODE_LENGTH);
+  assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH);
   if (value != prev_value) {
     tokens->code = value;
     tokens->extra_bits = 0;
@@ -343,7 +343,7 @@ int VP8LCreateCompressedHuffmanTree(
   const int depth_size = tree->num_symbols;
   int prev_value = 8;  // 8 is the initial value for rle.
   int i = 0;
-  assert(tokens != NULL);
+  assert.Assert(tokens != NULL);
   while (i < depth_size) {
     const int value = tree->code_lengths[i];
     int k = i + 1;
@@ -358,7 +358,7 @@ int VP8LCreateCompressedHuffmanTree(
       prev_value = value;
     }
     i += runs;
-    assert(current_token <= ending_token);
+    assert.Assert(current_token <= ending_token);
   }
   (void)ending_token;  // suppress 'unused variable' warning
   return (int)(current_token - starting_token);
@@ -391,11 +391,11 @@ func ConvertBitDepthsToSymbols(HuffmanTreeCode* const tree) {
   uint32_t next_code[MAX_ALLOWED_CODE_LENGTH + 1];
   int depth_count[MAX_ALLOWED_CODE_LENGTH + 1] = {0};
 
-  assert(tree != NULL);
+  assert.Assert(tree != NULL);
   len = tree->num_symbols;
   for (i = 0; i < len; ++i) {
     const int code_length = tree->code_lengths[i];
-    assert(code_length <= MAX_ALLOWED_CODE_LENGTH);
+    assert.Assert(code_length <= MAX_ALLOWED_CODE_LENGTH);
     ++depth_count[code_length];
   }
   depth_count[0] = 0;  // ignore unused symbol

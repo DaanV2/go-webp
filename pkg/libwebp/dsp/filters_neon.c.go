@@ -26,12 +26,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert((in) != NULL);    \
-    assert((out) != NULL);   \
-    assert((in) != (out));   \
-    assert(width > 0);       \
-    assert(height > 0);      \
-    assert(stride >= width); \
+    assert.Assert((in) != NULL);    \
+    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != (out));   \
+    assert.Assert(width > 0);       \
+    assert.Assert(height > 0);      \
+    assert.Assert(stride >= width); \
   } while (0)
 
 // load eight u8 and widen to s16
@@ -50,7 +50,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 func PredictLine_NEON(const uint8_t* src, const uint8_t* pred,
                              uint8_t* WEBP_RESTRICT dst, int length) {
   int i;
-  assert(length >= 0);
+  assert.Assert(length >= 0);
   for (i = 0; i + 16 <= length; i += 16) {
     const uint8x16_t A = vld1q_u8(&src[i]);
     const uint8x16_t B = vld1q_u8(&pred[i]);
@@ -218,7 +218,7 @@ func VerticalUnfilter_NEON(const uint8_t* prev, const uint8_t* in,
     HorizontalUnfilter_NEON(NULL, in, out, width);
   } else {
     int i;
-    assert(width >= 0);
+    assert.Assert(width >= 0);
     for (i = 0; i + 16 <= width; i += 16) {
       const uint8x16_t A = vld1q_u8(&in[i]);
       const uint8x16_t B = vld1q_u8(&prev[i]);

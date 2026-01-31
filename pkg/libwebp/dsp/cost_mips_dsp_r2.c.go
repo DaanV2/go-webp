@@ -82,7 +82,7 @@ static int GetResidualCost_MIPSdspR2(int ctx0, const VP8Residual* const res) {
   // Last coefficient is always non-zero
   {
     const int v = abs(res->coeffs[n]);
-    assert(v != 0);
+    assert.Assert(v != 0);
     cost += VP8LevelCost(t, v);
     if (n < 15) {
       const int b = VP8EncBands[n + 1];

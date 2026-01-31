@@ -187,8 +187,8 @@ func AddVector_AVX2(const uint32_t* WEBP_RESTRICT a,
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
   // NUM_LITERAL_CODES (256) + NUM_LENGTH_CODES (24) + (0 or a non-zero power of
   // 2). See the usage in VP8LHistogramAdd().
-  assert(size >= 32);
-  assert(size % 2 == 0);
+  assert.Assert(size >= 32);
+  assert.Assert(size % 2 == 0);
 
   do {
     const __m256i a0 = _mm256_loadu_si256((const __m256i*)&a[i + 0]);
@@ -235,8 +235,8 @@ func AddVectorEq_AVX2(const uint32_t* WEBP_RESTRICT a,
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
   // NUM_LITERAL_CODES (256) + NUM_LENGTH_CODES (24) + (0 or a non-zero power of
   // 2). See the usage in VP8LHistogramAdd().
-  assert(size >= 32);
-  assert(size % 2 == 0);
+  assert.Assert(size >= 32);
+  assert.Assert(size % 2 == 0);
 
   do {
     const __m256i a0 = _mm256_loadu_si256((const __m256i*)&a[i + 0]);
@@ -391,8 +391,8 @@ func BundleColorMap_AVX2(const uint8_t* WEBP_RESTRICT const row,
                                 int width, int xbits,
                                 uint32_t* WEBP_RESTRICT dst) {
   int x = 0;
-  assert(xbits >= 0);
-  assert(xbits <= 3);
+  assert.Assert(xbits >= 0);
+  assert.Assert(xbits <= 3);
   switch (xbits) {
     case 0: {
       const __m256i ff = _mm256_set1_epi16((short)0xff00);
@@ -448,7 +448,7 @@ func BundleColorMap_AVX2(const uint8_t* WEBP_RESTRICT const row,
       break;
     }
     default: {
-      assert(xbits == 3);
+      assert.Assert(xbits == 3);
       for (x = 0; x + 32 <= width; x += 32, dst += 4) {
         // 0000000a00000000b... | (where a/b are 1 bit).
         const __m256i in = _mm256_loadu_si256((const __m256i*)&row[x]);

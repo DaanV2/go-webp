@@ -205,7 +205,7 @@ void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
   void* ptr;
   Increment(&num_malloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) return NULL;
-  assert(nmemb * size > 0);
+  assert.Assert(nmemb * size > 0);
   ptr = malloc((size_t)(nmemb * size));
   AddMem(ptr, (size_t)(nmemb * size));
   return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(void*, ptr, (size_t)(nmemb * size));
@@ -216,7 +216,7 @@ void* WEBP_SIZED_BY_OR_NULL(nmemb* size)
   void* ptr;
   Increment(&num_calloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) return NULL;
-  assert(nmemb * size > 0);
+  assert.Assert(nmemb * size > 0);
   ptr = calloc((size_t)nmemb, size);
   AddMem(ptr, (size_t)(nmemb * size));
   return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(void*, ptr, (size_t)(nmemb * size));
@@ -252,8 +252,8 @@ func WebPFree(void* WEBP_SINGLE ptr) { WebPSafeFree(ptr); }
 
 func WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
                    int dst_stride, int width, int height) {
-  assert(src != NULL && dst != NULL);
-  assert(abs(src_stride) >= width && abs(dst_stride) >= width);
+  assert.Assert(src != NULL && dst != NULL);
+  assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
   while (height-- > 0) {
     WEBP_UNSAFE_MEMCPY(dst, src, width);
     src += src_stride;
@@ -262,9 +262,9 @@ func WebPCopyPlane(const uint8_t* src, int src_stride, uint8_t* dst,
 }
 
 func WebPCopyPixels(const WebPPicture* const src, WebPPicture* const dst) {
-  assert(src != NULL && dst != NULL);
-  assert(src->width == dst->width && src->height == dst->height);
-  assert(src->use_argb && dst->use_argb);
+  assert.Assert(src != NULL && dst != NULL)
+  assert.Assert(src->width == dst->width && src->height == dst->height)
+  assert.Assert(src->use_argb && dst->use_argb)
   WebPCopyPlane((uint8_t*)src->argb, 4 * src->argb_stride, (uint8_t*)dst->argb,
                 4 * dst->argb_stride, 4 * src->width, src->height);
 }

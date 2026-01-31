@@ -62,7 +62,7 @@ func VP8LoadFinalBytes(VP8BitReader* const br);
 // makes sure br->value has at least BITS bits worth of data
 static WEBP_UBSAN_IGNORE_UNDEF WEBP_INLINE func VP8LoadNewBytes(
     VP8BitReader* WEBP_RESTRICT const br) {
-  assert(br != NULL && br->buf != NULL);
+  assert.Assert(br != NULL && br->buf != NULL);
   // Read 'BITS' bits at a time if possible.
   if (br->buf < br->buf_max) {
     // convert memory type to register type (with some zero'ing!)

@@ -33,8 +33,8 @@ func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
   const int x_sub = wrk->x_sub;
   const int x_stride1 = x_stride << 2;
   int channel;
-  assert(!wrk->x_expand);
-  assert(!WebPRescalerInputDone(wrk));
+  assert.Assert(!wrk->x_expand);
+  assert.Assert(!WebPRescalerInputDone(wrk));
 
   for (channel = 0; channel < x_stride; ++channel) {
     const uint8_t* src1 = src + channel;
@@ -79,7 +79,7 @@ func ImportRowShrink_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
           [x_sub] "r"(x_sub), [x_add] "r"(x_add), [loop_c] "r"(loop_c),
           [x_stride1] "r"(x_stride1)
         : "memory", "hi", "lo");
-    assert(accum == 0);
+    assert.Assert(accum == 0);
   }
 }
 
@@ -92,8 +92,8 @@ func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
   const int src_width = wrk->src_width;
   const int x_stride1 = x_stride << 2;
   int channel;
-  assert(wrk->x_expand);
-  assert(!WebPRescalerInputDone(wrk));
+  assert.Assert(wrk->x_expand);
+  assert.Assert(!WebPRescalerInputDone(wrk));
 
   for (channel = 0; channel < x_stride; ++channel) {
     const uint8_t* src1 = src + channel;
@@ -140,7 +140,7 @@ func ImportRowExpand_MIPS32(WebPRescaler* WEBP_RESTRICT const wrk,
           [x_stride1] "r"(x_stride1), [src_width] "r"(src_width),
           [x_out_max] "r"(x_out_max)
         : "memory", "hi", "lo");
-    assert(wrk->x_sub == 0 /* <- special case for src_width=1 */ || accum == 0);
+    assert.Assert(wrk->x_sub == 0 /* <- special case for src_width=1 */ || accum == 0);
   }
 }
 
@@ -155,10 +155,10 @@ func ExportRowExpand_MIPS32(WebPRescaler* const wrk) {
   int temp0, temp1, temp3, temp4, temp5, loop_end;
   const int temp2 = (int)wrk->fy_scale;
   const int temp6 = x_out_max << 2;
-  assert(!WebPRescalerOutputDone(wrk));
-  assert(wrk->y_accum <= 0);
-  assert(wrk->y_expand);
-  assert(wrk->y_sub != 0);
+  assert.Assert(!WebPRescalerOutputDone(wrk));
+  assert.Assert(wrk->y_accum <= 0);
+  assert.Assert(wrk->y_expand);
+  assert.Assert(wrk->y_sub != 0);
   if (wrk->y_accum == 0) {
     __asm__ volatile(
         "li       %[temp3],    0x10000                    \n\t"
@@ -219,10 +219,10 @@ func ExportRowShrink_MIPS32(WebPRescaler* const wrk) {
   const int temp2 = (int)wrk->fxy_scale;
   const int temp6 = x_out_max << 2;
 
-  assert(!WebPRescalerOutputDone(wrk));
-  assert(wrk->y_accum <= 0);
-  assert(!wrk->y_expand);
-  assert(wrk->fxy_scale != 0);
+  assert.Assert(!WebPRescalerOutputDone(wrk));
+  assert.Assert(wrk->y_accum <= 0);
+  assert.Assert(!wrk->y_expand);
+  assert.Assert(wrk->fxy_scale != 0);
   if (yscale) {
     __asm__ volatile(
       "li       %[temp3],    0x10000                    \n\t"

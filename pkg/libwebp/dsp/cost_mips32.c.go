@@ -86,7 +86,7 @@ static int GetResidualCost_MIPS32(int ctx0, const VP8Residual* const res) {
   // Last coefficient is always non-zero
   {
     const int v = abs(res->coeffs[n]);
-    assert(v != 0);
+    assert.Assert(v != 0);
     cost += VP8LevelCost(t, v);
     if (n < 15) {
       const int b = VP8EncBands[n + 1];
@@ -102,7 +102,7 @@ func SetResidualCoeffs_MIPS32(const int16_t* WEBP_RESTRICT const coeffs,
                                      VP8Residual* WEBP_RESTRICT const res) {
   const int16_t* p_coeffs = (int16_t*)coeffs;
   int temp0, temp1, temp2, n, n1;
-  assert(res->first == 0 || coeffs[0] == 0);
+  assert.Assert(res->first == 0 || coeffs[0] == 0);
 
   __asm__ volatile(
       ".set     push                                      \n\t"

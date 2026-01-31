@@ -33,7 +33,7 @@ const HALF = ((1u << MFIX) >> 1)
 
 static uint32_t Mult(uint8_t x, uint32_t mult) {
   const uint32_t v = (x * mult + HALF) >> MFIX;
-  assert(v <= 255);  // <- 24bit precision is enough to ensure that.
+  assert.Assert(v <= 255);  // <- 24bit precision is enough to ensure that.
   return v;
 }
 
@@ -488,19 +488,19 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
   }
 #endif
 
-  assert(WebPMultARGBRow != NULL);
-  assert(WebPMultRow != NULL);
-  assert(WebPApplyAlphaMultiply != NULL);
-  assert(WebPApplyAlphaMultiply4444 != NULL);
-  assert(WebPDispatchAlpha != NULL);
-  assert(WebPDispatchAlphaToGreen != NULL);
-  assert(WebPExtractAlpha != NULL);
-  assert(WebPExtractGreen != NULL);
+  assert.Assert(WebPMultARGBRow != NULL);
+  assert.Assert(WebPMultRow != NULL);
+  assert.Assert(WebPApplyAlphaMultiply != NULL);
+  assert.Assert(WebPApplyAlphaMultiply4444 != NULL);
+  assert.Assert(WebPDispatchAlpha != NULL);
+  assert.Assert(WebPDispatchAlphaToGreen != NULL);
+  assert.Assert(WebPExtractAlpha != NULL);
+  assert.Assert(WebPExtractGreen != NULL);
 #ifdef WORDS_BIGENDIAN
-  assert(WebPPackARGB != NULL);
+  assert.Assert(WebPPackARGB != NULL);
 #endif
-  assert(WebPPackRGB != NULL);
-  assert(WebPHasAlpha8b != NULL);
-  assert(WebPHasAlpha32b != NULL);
-  assert(WebPAlphaReplace != NULL);
+  assert.Assert(WebPPackRGB != NULL);
+  assert.Assert(WebPHasAlpha8b != NULL);
+  assert.Assert(WebPHasAlpha32b != NULL);
+  assert.Assert(WebPAlphaReplace != NULL);
 }

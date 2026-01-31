@@ -228,7 +228,7 @@ func DoFilter(const VP8Decoder* const dec, int mb_x, int mb_y) {
   if (limit == 0) {
     return;
   }
-  assert(limit >= 3);
+  assert.Assert(limit >= 3);
   if (dec->filter_type == 1) {  // simple
     if (mb_x > 0) {
       VP8SimpleHFilter16(y_dst, y_bps, limit + 4);
@@ -270,7 +270,7 @@ func DoFilter(const VP8Decoder* const dec, int mb_x, int mb_y) {
 func FilterRow(const VP8Decoder* const dec) {
   int mb_x;
   const int mb_y = dec->thread_ctx.mb_y;
-  assert(dec->thread_ctx.filter_row);
+  assert.Assert(dec->thread_ctx.filter_row);
   for (mb_x = dec->tl_mb_x; mb_x < dec->br_mb_x; ++mb_x) {
     DoFilter(dec, mb_x, mb_y);
   }
@@ -343,7 +343,7 @@ static const uint8_t kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
 
 func VP8InitDithering(const WebPDecoderOptions* const options,
                       VP8Decoder* const dec) {
-  assert(dec != NULL);
+  assert.Assert(dec != NULL);
   if (options != NULL) {
     const int d = options->dithering_strength;
     const int max_amp = (1 << VP8_RANDOM_DITHER_FIX) - 1;
@@ -386,7 +386,7 @@ func Dither8x8(VP8Random* const rg, uint8_t* dst, int bps, int amp) {
 
 func DitherRow(VP8Decoder* const dec) {
   int mb_x;
-  assert(dec->dither);
+  assert.Assert(dec->dither);
   for (mb_x = dec->tl_mb_x; mb_x < dec->br_mb_x; ++mb_x) {
     const VP8ThreadContext* const ctx = &dec->thread_ctx;
     const VP8MBData* const data = ctx->mb_data + mb_x;
@@ -477,7 +477,7 @@ static int FinishRow(void* arg1, void* arg2) {
     if (y_start < io->crop_top) {
       const int delta_y = io->crop_top - y_start;
       y_start = io->crop_top;
-      assert(!(delta_y & 1));
+      assert.Assert(!(delta_y & 1));
       io->y += dec->cache_y_stride * delta_y;
       io->u += dec->cache_uv_stride * (delta_y >> 1);
       io->v += dec->cache_uv_stride * (delta_y >> 1);
@@ -533,7 +533,7 @@ int VP8ProcessRow(VP8Decoder* const dec, VP8Io* const io) {
     WebPWorker* const worker = &dec->worker;
     // Finish previous job *before* updating context
     ok &= WebPGetWorkerInterface()->Sync(worker);
-    assert(worker->status == OK);
+    assert.Assert(worker->status == OK);
     if (ok) {  // spawn a new deblocking/output job
       ctx->io = *io;
       ctx->id = dec->cache_id;
@@ -685,7 +685,7 @@ int VP8GetThreadMethod(const WebPDecoderOptions* const options,
   (void)headers;
   (void)width;
   (void)height;
-  assert(headers == NULL || !headers->is_lossless);
+  assert.Assert(headers == NULL || !headers->is_lossless);
 #if defined(WEBP_USE_THREAD)
   if (width >= MIN_WIDTH_FOR_THREADS) return 2;
 #endif
@@ -760,7 +760,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
   }
 
   mem = (uint8_t*)WEBP_ALIGN(mem);
-  assert((yuv_size & WEBP_ALIGN_CST) == 0);
+  assert.Assert((yuv_size & WEBP_ALIGN_CST) == 0);
   dec->yuv_b = mem;
   mem += yuv_size;
 
@@ -789,7 +789,7 @@ static int AllocateMemory(VP8Decoder* const dec) {
   // alpha plane
   dec->alpha_plane = alpha_size ? mem : NULL;
   mem += alpha_size;
-  assert(mem <= (uint8_t*)dec->mem + dec->mem_size);
+  assert.Assert(mem <= (uint8_t*)dec->mem + dec->mem_size);
 
   // note: left/top-info is initialized once for all.
   WEBP_UNSAFE_MEMSET(dec->mb_info - 1, 0, mb_info_size);

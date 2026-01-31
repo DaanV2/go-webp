@@ -64,13 +64,13 @@ func ALPHDelete(ALPHDecoder* const dec) {
   int rsrv;
   VP8Io* const io = &dec->io;
 
-  assert(data != NULL && output != NULL && src_io != NULL);
+  assert.Assert(data != NULL && output != NULL && src_io != NULL);
 
   VP8FiltersInit();
   dec->output = output;
   dec->width = src_io->width;
   dec->height = src_io->height;
-  assert(dec->width > 0 && dec->height > 0);
+  assert.Assert(dec->width > 0 && dec->height > 0);
 
   if (data_size <= ALPHA_HEADER_LEN) {
     return 0;
@@ -107,7 +107,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
     const size_t alpha_decoded_size = dec->width * dec->height;
     ok = (alpha_data_size >= alpha_decoded_size);
   } else {
-    assert(dec->method == ALPHA_LOSSLESS_COMPRESSION);
+    assert.Assert(dec->method == ALPHA_LOSSLESS_COMPRESSION);
     {
       const uint8_t* WEBP_BIDI_INDEXABLE const bounded_alpha_data =
           WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const uint8_t*, alpha_data,
@@ -133,8 +133,8 @@ func ALPHDelete(ALPHDecoder* const dec) {
     const uint8_t* prev_line = dec->alpha_prev_line;
     const uint8_t* deltas = dec->alpha_data + ALPHA_HEADER_LEN + row * width;
     uint8_t* dst = dec->alpha_plane + row * width;
-    assert(deltas <= &dec->alpha_data[dec->alpha_data_size]);
-    assert(WebPUnfilters[alph_dec->filter] != NULL);
+    assert.Assert(deltas <= &dec->alpha_data[dec->alpha_data_size]);
+    assert.Assert(WebPUnfilters[alph_dec->filter] != NULL);
     for (y = 0; y < num_rows; ++y) {
       WebPUnfilters[alph_dec->filter](prev_line, deltas, dst, width);
       prev_line = dst;
@@ -143,7 +143,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
     }
     dec->alpha_prev_line = prev_line;
   } else {  // alph_dec->method == ALPHA_LOSSLESS_COMPRESSION
-    assert(alph_dec->vp8l_dec != NULL);
+    assert.Assert(alph_dec->vp8l_dec != NULL);
     if (!VP8LDecodeAlphaImageStream(alph_dec, row + num_rows)) {
       return 0;
     }
@@ -160,7 +160,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
   const int stride = io->width;
   const int height = io->crop_bottom;
   const uint64_t alpha_size = (uint64_t)stride * height;
-  assert(dec->alpha_plane_mem == NULL);
+  assert.Assert(dec->alpha_plane_mem == NULL);
   dec->alpha_plane_mem =
       (uint8_t*)WebPSafeMalloc(alpha_size, sizeof(*dec->alpha_plane));
   if (dec->alpha_plane_mem == NULL) {
@@ -173,7 +173,7 @@ func ALPHDelete(ALPHDecoder* const dec) {
 }
 
 func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
-  assert(dec != NULL);
+  assert.Assert(dec != NULL);
   WebPSafeFree(dec->alpha_plane_mem);
   dec->alpha_plane_mem = NULL;
   dec->alpha_plane = NULL;
@@ -190,7 +190,7 @@ func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
   const int width = io->width;
   const int height = io->crop_bottom;
 
-  assert(dec != NULL && io != NULL);
+  assert.Assert(dec != NULL && io != NULL);
 
   if (row < 0 || num_rows <= 0 || row + num_rows > height) {
     return NULL;
@@ -222,8 +222,8 @@ func WebPDeallocateAlphaMemory(VP8Decoder* const dec) {
       }
     }
 
-    assert(dec->alph_dec != NULL);
-    assert(row + num_rows <= height);
+    assert.Assert(dec->alph_dec != NULL);
+    assert.Assert(row + num_rows <= height);
     if (!ALPHDecode(dec, row, num_rows)) goto Error;
 
     if (dec->is_alpha_decoded) {  // finished?

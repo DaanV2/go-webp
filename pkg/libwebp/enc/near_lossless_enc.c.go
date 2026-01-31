@@ -36,7 +36,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 static uint32_t FindClosestDiscretized(uint32_t a, int bits) {
   const uint32_t mask = (1u << bits) - 1;
   const uint32_t biased = a + (mask >> 1) + ((a >> bits) & 1);
-  assert(bits > 0);
+  assert.Assert(bits > 0);
   if (biased > 0xff) return 0xff;
   return biased & ~mask;
 }
@@ -118,9 +118,9 @@ int VP8ApplyNearLossless(const WebPPicture* const picture, int quality,
   const int ysize = picture->height;
   const int stride = picture->argb_stride;
   const int limit_bits = VP8LNearLosslessBits(quality);
-  assert(argb_dst != NULL);
-  assert(limit_bits > 0);
-  assert(limit_bits <= MAX_LIMIT_BITS);
+  assert.Assert(argb_dst != NULL);
+  assert.Assert(limit_bits > 0);
+  assert.Assert(limit_bits <= MAX_LIMIT_BITS);
 
   // For small icon images, don't attempt to apply near-lossless compression.
   if ((xsize < MIN_DIM_FOR_NEAR_LOSSLESS &&

@@ -141,7 +141,7 @@ static int EmitAlphaYUV(const VP8Io* const io, WebPDecParams* const p,
   uint8_t* dst = buf->a + (ptrdiff_t)io->mb_y * buf->a_stride;
   int j;
   (void)expected_num_lines_out;
-  assert(expected_num_lines_out == mb_h);
+  assert.Assert(expected_num_lines_out == mb_h);
   if (alpha != NULL) {
     for (j = 0; j < mb_h; ++j) {
       WEBP_UNSAFE_MEMCPY(dst, alpha, mb_w * sizeof(*dst));
@@ -197,7 +197,7 @@ static int EmitAlphaRGB(const VP8Io* const io, WebPDecParams* const p,
     const int has_alpha =
         WebPDispatchAlpha(alpha, io->width, mb_w, num_rows, dst, buf->stride);
     (void)expected_num_lines_out;
-    assert(expected_num_lines_out == num_rows);
+    assert.Assert(expected_num_lines_out == num_rows);
     // has_alpha is true if there's non-trivial alpha to premultiply with.
     if (has_alpha && WebPIsPremultipliedMode(colorspace)) {
       WebPApplyAlphaMultiply(base_rgba, alpha_first, mb_w, num_rows,
@@ -235,7 +235,7 @@ static int EmitAlphaRGBA4444(const VP8Io* const io, WebPDecParams* const p,
       alpha_dst += buf->stride;
     }
     (void)expected_num_lines_out;
-    assert(expected_num_lines_out == num_rows);
+    assert.Assert(expected_num_lines_out == num_rows);
     if (alpha_mask != 0x0f && WebPIsPremultipliedMode(colorspace)) {
       WebPApplyAlphaMultiply4444(base_rgba, mb_w, num_rows, buf->stride);
     }
@@ -285,14 +285,14 @@ static int EmitRescaledAlphaYUV(const VP8Io* const io, WebPDecParams* const p,
   if (io->a != NULL) {
     uint8_t* const dst_y = buf->y + (ptrdiff_t)p->last_y * buf->y_stride;
     const int num_lines_out = Rescale(io->a, io->width, io->mb_h, p->scaler_a);
-    assert(expected_num_lines_out == num_lines_out);
+    assert.Assert(expected_num_lines_out == num_lines_out);
     if (num_lines_out > 0) {  // unmultiply the Y
       WebPMultRows(dst_y, buf->y_stride, dst_a, buf->a_stride,
                    p->scaler_a->dst_width, num_lines_out, 1);
     }
   } else if (buf->a != NULL) {
     // the user requested alpha, but there is none, set it to opaque.
-    assert(p->last_y + expected_num_lines_out <= io->scaled_height);
+    assert.Assert(p->last_y + expected_num_lines_out <= io->scaled_height);
     FillAlphaPlane(dst_a, io->scaled_width, expected_num_lines_out,
                    buf->a_stride);
   }
@@ -377,8 +377,8 @@ static int ExportRGB(WebPDecParams* const p, int y_pos) {
   // U/V can be +1/-1 line from the Y one.  Hence the double test.
   while (WebPRescalerHasPendingOutput(p->scaler_y) &&
          WebPRescalerHasPendingOutput(p->scaler_u)) {
-    assert(y_pos + num_lines_out < p->output->height);
-    assert(p->scaler_u->y_accum == p->scaler_v->y_accum);
+    assert.Assert(y_pos + num_lines_out < p->output->height);
+    assert.Assert(p->scaler_u->y_accum == p->scaler_v->y_accum);
     WebPRescalerExportRow(p->scaler_y);
     WebPRescalerExportRow(p->scaler_u);
     WebPRescalerExportRow(p->scaler_v);
@@ -408,7 +408,7 @@ static int EmitRescaledRGB(const VP8Io* const io, WebPDecParams* const p) {
           p->scaler_v, uv_mb_h - uv_j, io->v + (ptrdiff_t)uv_j * io->uv_stride,
           io->uv_stride);
       (void)v_lines_in;  // remove a gcc warning
-      assert(u_lines_in == v_lines_in);
+      assert.Assert(u_lines_in == v_lines_in);
       uv_j += u_lines_in;
     }
     num_lines_out += ExportRGB(p, p->last_y + num_lines_out);
@@ -429,7 +429,7 @@ static int ExportAlpha(WebPDecParams* const p, int y_pos, int max_lines_out) {
 
   while (WebPRescalerHasPendingOutput(p->scaler_a) &&
          num_lines_out < max_lines_out) {
-    assert(y_pos + num_lines_out < p->output->height);
+    assert.Assert(y_pos + num_lines_out < p->output->height);
     WebPRescalerExportRow(p->scaler_a);
     non_opaque |= WebPDispatchAlpha(p->scaler_a->dst, 0, width, 1, dst, 0);
     dst += buf->stride;
@@ -460,7 +460,7 @@ static int ExportAlphaRGBA4444(WebPDecParams* const p, int y_pos,
   while (WebPRescalerHasPendingOutput(p->scaler_a) &&
          num_lines_out < max_lines_out) {
     int i;
-    assert(y_pos + num_lines_out < p->output->height);
+    assert.Assert(y_pos + num_lines_out < p->output->height);
     WebPRescalerExportRow(p->scaler_a);
     for (i = 0; i < width; ++i) {
       // Fill in the alpha value (converted to 4 bits).
@@ -637,7 +637,7 @@ static int CustomPut(const VP8Io* io) {
   const int mb_w = io->mb_w;
   const int mb_h = io->mb_h;
   int num_lines_out;
-  assert(!(io->mb_y & 1));
+  assert.Assert(!(io->mb_y & 1));
 
   if (mb_w <= 0 || mb_h <= 0) {
     return 0;

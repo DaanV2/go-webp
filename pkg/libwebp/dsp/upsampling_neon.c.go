@@ -234,7 +234,7 @@ const v255 = vdup_n_u8(255)
     const int16x8_t B_Rounder = vdupq_n_s16(-17685);                          \
                                                                               \
     /* Treat the first pixel in regular way */                                \
-    assert(top_y != NULL);                                                    \
+    assert.Assert(top_y != NULL);                                                    \
     {                                                                         \
       const int u0 = (top_u[0] + u_diag) >> 1;                                \
       const int v0 = (top_v[0] + v_diag) >> 1;                                \

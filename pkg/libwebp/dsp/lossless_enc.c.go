@@ -251,7 +251,7 @@ const uint8_t kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX] = {
     125, 126};
 
 static uint64_t FastSLog2Slow_C(uint32_t v) {
-  assert(v >= LOG_LOOKUP_IDX_MAX);
+  assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     const uint64_t orig_v = v;
     uint64_t correction;
@@ -283,7 +283,7 @@ static uint64_t FastSLog2Slow_C(uint32_t v) {
 }
 
 static uint32_t FastLog2Slow_C(uint32_t v) {
-  assert(v >= LOG_LOOKUP_IDX_MAX);
+  assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     const uint32_t orig_v = v;
     uint32_t log_2;
@@ -574,7 +574,7 @@ func VP8LBundleColorMap_C(const uint8_t* WEBP_RESTRICT const row, int width,
 static uint32_t ExtraCost_C(const uint32_t* population, int length) {
   int i;
   uint32_t cost = population[4] + population[5];
-  assert(length % 2 == 0);
+  assert.Assert(length % 2 == 0);
   for (i = 2; i < length / 2 - 1; ++i) {
     cost += i * (population[2 * i + 2] + population[2 * i + 3]);
   }
@@ -620,7 +620,7 @@ func PredictorSub1_C(const uint32_t* in, const uint32_t* upper,
       const uint32_t* in, const uint32_t* upper, int num_pixels, \
       uint32_t* WEBP_RESTRICT out) {                             \
     int x;                                                       \
-    assert(upper != NULL);                                       \
+    assert.Assert(upper != NULL);                                       \
     for (x = 0; x < num_pixels; ++x) {                           \
       const uint32_t pred =                                      \
           VP8LPredictor##PREDICTOR_I##_C(&in[x - 1], upper + x); \
@@ -787,53 +787,53 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
   }
 #endif
 
-  assert(VP8LSubtractGreenFromBlueAndRed != NULL);
-  assert(VP8LTransformColor != NULL);
-  assert(VP8LCollectColorBlueTransforms != NULL);
-  assert(VP8LCollectColorRedTransforms != NULL);
-  assert(VP8LFastLog2Slow != NULL);
-  assert(VP8LFastSLog2Slow != NULL);
-  assert(VP8LExtraCost != NULL);
-  assert(VP8LCombinedShannonEntropy != NULL);
-  assert(VP8LShannonEntropy != NULL);
-  assert(VP8LGetEntropyUnrefined != NULL);
-  assert(VP8LGetCombinedEntropyUnrefined != NULL);
-  assert(VP8LAddVector != NULL);
-  assert(VP8LAddVectorEq != NULL);
-  assert(VP8LVectorMismatch != NULL);
-  assert(VP8LBundleColorMap != NULL);
-  assert(VP8LPredictorsSub[0] != NULL);
-  assert(VP8LPredictorsSub[1] != NULL);
-  assert(VP8LPredictorsSub[2] != NULL);
-  assert(VP8LPredictorsSub[3] != NULL);
-  assert(VP8LPredictorsSub[4] != NULL);
-  assert(VP8LPredictorsSub[5] != NULL);
-  assert(VP8LPredictorsSub[6] != NULL);
-  assert(VP8LPredictorsSub[7] != NULL);
-  assert(VP8LPredictorsSub[8] != NULL);
-  assert(VP8LPredictorsSub[9] != NULL);
-  assert(VP8LPredictorsSub[10] != NULL);
-  assert(VP8LPredictorsSub[11] != NULL);
-  assert(VP8LPredictorsSub[12] != NULL);
-  assert(VP8LPredictorsSub[13] != NULL);
-  assert(VP8LPredictorsSub[14] != NULL);
-  assert(VP8LPredictorsSub[15] != NULL);
-  assert(VP8LPredictorsSub_C[0] != NULL);
-  assert(VP8LPredictorsSub_C[1] != NULL);
-  assert(VP8LPredictorsSub_C[2] != NULL);
-  assert(VP8LPredictorsSub_C[3] != NULL);
-  assert(VP8LPredictorsSub_C[4] != NULL);
-  assert(VP8LPredictorsSub_C[5] != NULL);
-  assert(VP8LPredictorsSub_C[6] != NULL);
-  assert(VP8LPredictorsSub_C[7] != NULL);
-  assert(VP8LPredictorsSub_C[8] != NULL);
-  assert(VP8LPredictorsSub_C[9] != NULL);
-  assert(VP8LPredictorsSub_C[10] != NULL);
-  assert(VP8LPredictorsSub_C[11] != NULL);
-  assert(VP8LPredictorsSub_C[12] != NULL);
-  assert(VP8LPredictorsSub_C[13] != NULL);
-  assert(VP8LPredictorsSub_C[14] != NULL);
-  assert(VP8LPredictorsSub_C[15] != NULL);
+  assert.Assert(VP8LSubtractGreenFromBlueAndRed != NULL);
+  assert.Assert(VP8LTransformColor != NULL);
+  assert.Assert(VP8LCollectColorBlueTransforms != NULL);
+  assert.Assert(VP8LCollectColorRedTransforms != NULL);
+  assert.Assert(VP8LFastLog2Slow != NULL);
+  assert.Assert(VP8LFastSLog2Slow != NULL);
+  assert.Assert(VP8LExtraCost != NULL);
+  assert.Assert(VP8LCombinedShannonEntropy != NULL);
+  assert.Assert(VP8LShannonEntropy != NULL);
+  assert.Assert(VP8LGetEntropyUnrefined != NULL);
+  assert.Assert(VP8LGetCombinedEntropyUnrefined != NULL);
+  assert.Assert(VP8LAddVector != NULL);
+  assert.Assert(VP8LAddVectorEq != NULL);
+  assert.Assert(VP8LVectorMismatch != NULL);
+  assert.Assert(VP8LBundleColorMap != NULL);
+  assert.Assert(VP8LPredictorsSub[0] != NULL);
+  assert.Assert(VP8LPredictorsSub[1] != NULL);
+  assert.Assert(VP8LPredictorsSub[2] != NULL);
+  assert.Assert(VP8LPredictorsSub[3] != NULL);
+  assert.Assert(VP8LPredictorsSub[4] != NULL);
+  assert.Assert(VP8LPredictorsSub[5] != NULL);
+  assert.Assert(VP8LPredictorsSub[6] != NULL);
+  assert.Assert(VP8LPredictorsSub[7] != NULL);
+  assert.Assert(VP8LPredictorsSub[8] != NULL);
+  assert.Assert(VP8LPredictorsSub[9] != NULL);
+  assert.Assert(VP8LPredictorsSub[10] != NULL);
+  assert.Assert(VP8LPredictorsSub[11] != NULL);
+  assert.Assert(VP8LPredictorsSub[12] != NULL);
+  assert.Assert(VP8LPredictorsSub[13] != NULL);
+  assert.Assert(VP8LPredictorsSub[14] != NULL);
+  assert.Assert(VP8LPredictorsSub[15] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[0] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[1] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[2] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[3] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[4] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[5] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[6] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[7] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[8] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[9] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[10] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[11] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[12] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[13] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[14] != NULL);
+  assert.Assert(VP8LPredictorsSub_C[15] != NULL);
 }
 
 //------------------------------------------------------------------------------

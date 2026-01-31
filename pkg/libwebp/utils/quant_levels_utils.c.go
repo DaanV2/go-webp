@@ -76,8 +76,8 @@ int QuantizeLevels(uint8_t* const WEBP_COUNTED_BY((size_t)width* height) data,
   // Fixed values. Won't be changed.
   q_level[min_s] = 0;
   q_level[max_s] = num_levels - 1;
-  assert(inv_q_level[0] == min_s);
-  assert(inv_q_level[num_levels - 1] == max_s);
+  assert.Assert(inv_q_level[0] == min_s);
+  assert.Assert(inv_q_level[num_levels - 1] == max_s);
 
   // k-Means iterations.
   for (iter = 0; iter < MAX_ITER; ++iter) {

@@ -36,7 +36,7 @@ static WEBP_INLINE uint32_t HorizontalSum_SSE41(__m128i cost) {
 static uint32_t ExtraCost_SSE41(const uint32_t* const a, int length) {
   int i;
   __m128i cost = _mm_set_epi32(2 * a[7], 2 * a[6], a[5], a[4]);
-  assert(length % 8 == 0);
+  assert.Assert(length % 8 == 0);
 
   for (i = 8; i + 8 <= length; i += 8) {
     const int j = (i - 2) >> 1;

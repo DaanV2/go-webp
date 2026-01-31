@@ -26,12 +26,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert((in) != NULL);    \
-    assert((out) != NULL);   \
-    assert((in) != (out));   \
-    assert(width > 0);       \
-    assert(height > 0);      \
-    assert(stride >= width); \
+    assert.Assert((in) != NULL);    \
+    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != (out));   \
+    assert.Assert(width > 0);       \
+    assert.Assert(height > 0);      \
+    assert.Assert(stride >= width); \
   } while (0)
 
 #if !WEBP_NEON_OMIT_C_CODE
@@ -259,11 +259,11 @@ WEBP_DSP_INIT_FUNC(VP8FiltersInit) {
   }
 #endif
 
-  assert(WebPUnfilters[WEBP_FILTER_NONE] != NULL);
-  assert(WebPUnfilters[WEBP_FILTER_HORIZONTAL] != NULL);
-  assert(WebPUnfilters[WEBP_FILTER_VERTICAL] != NULL);
-  assert(WebPUnfilters[WEBP_FILTER_GRADIENT] != NULL);
-  assert(WebPFilters[WEBP_FILTER_HORIZONTAL] != NULL);
-  assert(WebPFilters[WEBP_FILTER_VERTICAL] != NULL);
-  assert(WebPFilters[WEBP_FILTER_GRADIENT] != NULL);
+  assert.Assert(WebPUnfilters[WEBP_FILTER_NONE] != NULL);
+  assert.Assert(WebPUnfilters[WEBP_FILTER_HORIZONTAL] != NULL);
+  assert.Assert(WebPUnfilters[WEBP_FILTER_VERTICAL] != NULL);
+  assert.Assert(WebPUnfilters[WEBP_FILTER_GRADIENT] != NULL);
+  assert.Assert(WebPFilters[WEBP_FILTER_HORIZONTAL] != NULL);
+  assert.Assert(WebPFilters[WEBP_FILTER_VERTICAL] != NULL);
+  assert.Assert(WebPFilters[WEBP_FILTER_GRADIENT] != NULL);
 }

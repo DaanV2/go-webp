@@ -37,7 +37,7 @@ func SmoothSegmentMap(VP8Encoder* const enc) {
   const int h = enc->mb_h;
   const int majority_cnt_3_x_3_grid = 5;
   uint8_t* const tmp = (uint8_t*)WebPSafeMalloc(w * h, sizeof(*tmp));
-  assert((uint64_t)(w * h) == (uint64_t)w * h);  // no overflow, as per spec
+  assert.Assert((uint64_t)(w * h) == (uint64_t)w * h);  // no overflow, as per spec
 
   if (tmp == NULL) return;
   for (y = 1; y < h - 1; ++y) {
@@ -92,7 +92,7 @@ func SetSegmentAlphas(VP8Encoder* const enc,
     }
   }
   if (max == min) max = min + 1;
-  assert(mid <= max && mid >= min);
+  assert.Assert(mid <= max && mid >= min);
   for (n = 0; n < nb; ++n) {
     const int alpha = 255 * (centers[n] - mid) / (max - min);
     const int beta = 255 * (centers[n] - min) / (max - min);
@@ -150,8 +150,8 @@ func AssignSegments(VP8Encoder* const enc,
   // 'int' type is ok for histo, and won't overflow
   int accum[NUM_MB_SEGMENTS], dist_accum[NUM_MB_SEGMENTS];
 
-  assert(nb >= 1);
-  assert(nb <= NUM_MB_SEGMENTS);
+  assert.Assert(nb >= 1);
+  assert.Assert(nb <= NUM_MB_SEGMENTS);
 
   // bracket the input
   for (n = 0; n <= MAX_ALPHA && alphas[n] == 0; ++n) {
@@ -164,7 +164,7 @@ func AssignSegments(VP8Encoder* const enc,
 
   // Spread initial centers evenly
   for (k = 0, n = 1; k < nb; ++k, n += 2) {
-    assert(n < 2 * nb);
+    assert.Assert(n < 2 * nb);
     centers[k] = min_a + (n * range_a) / (2 * nb);
   }
 

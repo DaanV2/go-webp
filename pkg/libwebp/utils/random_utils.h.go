@@ -43,7 +43,7 @@ func VP8InitRandom(VP8Random* const rg, float dithering);
 static WEBP_INLINE int VP8RandomBits2(VP8Random* const rg, int num_bits,
                                       int amp) {
   int diff;
-  assert(num_bits + VP8_RANDOM_DITHER_FIX <= 31);
+  assert.Assert(num_bits + VP8_RANDOM_DITHER_FIX <= 31);
   diff = rg->tab[rg->index1] - rg->tab[rg->index2];
   if (diff < 0) diff += (1u << 31);
   rg->tab[rg->index1] = diff;

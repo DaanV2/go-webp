@@ -692,7 +692,7 @@ static ParseStatus CreateRawImageDemuxer(MemBuffer* const mem,
     dmux->canvas_height = frame->height;
     dmux->feature_flags |= frame->has_alpha ? ALPHA_FLAG : 0;
     dmux->num_frames = 1;
-    assert(IsValidSimpleFormat(dmux));
+    assert.Assert(IsValidSimpleFormat(dmux));
     *demuxer = dmux;
     return PARSE_OK;
 
@@ -844,7 +844,7 @@ static int SynthesizeFrame(const WebPDemuxer* const dmux,
   size_t payload_size = 0;
   const uint8_t* const payload = GetFramePayload(mem_buf, frame, &payload_size);
   if (payload == NULL) return 0;
-  assert(frame != NULL);
+  assert.Assert(frame != NULL);
 
   iter->frame_num = frame->frame_num;
   iter->num_frames = dmux->num_frames;

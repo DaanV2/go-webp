@@ -275,8 +275,8 @@ func WebPGrabDecBuffer(WebPDecBuffer* const src, WebPDecBuffer* const dst) {
 
 VP8StatusCode WebPCopyDecBufferPixels(const WebPDecBuffer* const src_buf,
                                       WebPDecBuffer* const dst_buf) {
-  assert(src_buf != NULL && dst_buf != NULL);
-  assert(src_buf->colorspace == dst_buf->colorspace);
+  assert.Assert(src_buf != NULL && dst_buf != NULL);
+  assert.Assert(src_buf->colorspace == dst_buf->colorspace);
 
   dst_buf->width = src_buf->width;
   dst_buf->height = src_buf->height;
@@ -308,7 +308,7 @@ VP8StatusCode WebPCopyDecBufferPixels(const WebPDecBuffer* const src_buf,
 
 int WebPAvoidSlowMemory(const WebPDecBuffer* const output,
                         const WebPBitstreamFeatures* const features) {
-  assert(output != NULL);
+  assert.Assert(output != NULL);
   return (output->is_external_memory >= 2) &&
          WebPIsPremultipliedMode(output->colorspace) &&
          (features != NULL && features->has_alpha);

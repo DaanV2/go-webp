@@ -36,7 +36,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 static int PaletteCompareColorsForQsort(const void* p1, const void* p2) {
   const uint32_t a = WebPMemToUint32((uint8_t*)p1);
   const uint32_t b = WebPMemToUint32((uint8_t*)p2);
-  assert(a != b);
+  assert.Assert(a != b);
   return (a < b) ? -1 : 1;
 }
 
@@ -81,7 +81,7 @@ int SearchColorNoIdx(const uint32_t WEBP_COUNTED_BY(num_colors) sorted[],
       hi = mid;
     }
   }
-  assert(0);
+  assert.Assert(0);
   return 0;
 }
 
@@ -114,8 +114,8 @@ int GetColorPalette(const WebPPicture* const pic,
   const int width = pic->width;
   const int height = pic->height;
   uint32_t last_pix = ~argb[0];  // so we're sure that last_pix != argb[0]
-  assert(pic != NULL);
-  assert(pic->use_argb);
+  assert.Assert(pic != NULL);
+  assert.Assert(pic->use_argb);
 
   for (y = 0; y < height; ++y) {
     for (x = 0; x < width; ++x) {
@@ -256,7 +256,7 @@ func CoOccurrenceFindMax(
       *c2 = i;
     }
   }
-  assert(*c1 != *c2);
+  assert.Assert(*c1 != *c2);
 }
 
 // Builds the cooccurrence matrix
@@ -395,7 +395,7 @@ static int PaletteSortModifiedZeng(
       }
     }
   }
-  assert((last + 1) % num_colors == first);
+  assert.Assert((last + 1) % num_colors == first);
   WebPSafeFree(cooccurrence);
 
   // Re-map the palette.
@@ -432,6 +432,6 @@ int PaletteSort(PaletteSorting method, const struct WebPPicture* const pic,
       break;
   }
 
-  assert(0);
+  assert.Assert(0);
   return 0;
 }

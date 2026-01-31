@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Life of a mux object.
 
 func MuxInit(WebPMux* const mux) {
-  assert(mux != NULL);
+  assert.Assert(mux != NULL);
   memset(mux, 0, sizeof(*mux));
   mux->canvas_width = 0;  // just to be explicit
   mux->canvas_height = 0;
@@ -54,7 +54,7 @@ func DeleteAllImages(WebPMuxImage** const wpi_list) {
 }
 
 func MuxRelease(WebPMux* const mux) {
-  assert(mux != NULL);
+  assert.Assert(mux != NULL);
   DeleteAllImages(&mux->images);
   ChunkListDelete(&mux->vp8x);
   ChunkListDelete(&mux->iccp);
@@ -92,8 +92,8 @@ static WebPMuxError MuxSet(WebPMux* const mux, uint32_t tag,
   WebPChunk chunk;
   WebPMuxError err = WEBP_MUX_NOT_FOUND;
   const CHUNK_INDEX idx = ChunkGetIndexFromTag(tag);
-  assert(mux != NULL);
-  assert(!IsWPI(kChunks[idx].id));
+  assert.Assert(mux != NULL);
+  assert.Assert(!IsWPI(kChunks[idx].id));
 
   ChunkInit(&chunk);
   SWITCH_ID_LIST(IDX_VP8X, &mux->vp8x);
@@ -113,8 +113,8 @@ static WebPMuxError CreateFrameData(int width, int height,
   uint8_t* frame_bytes;
   const size_t frame_size = kChunks[IDX_ANMF].size;
 
-  assert(width > 0 && height > 0 && info->duration >= 0);
-  assert(info->dispose_method == (info->dispose_method & 1));
+  assert.Assert(width > 0 && height > 0 && info->duration >= 0);
+  assert.Assert(info->dispose_method == (info->dispose_method & 1));
   // Note: assertion on upper bounds is done in PutLE24().
 
   frame_bytes = (uint8_t*)WebPSafeMalloc(1ULL, frame_size);
@@ -152,7 +152,7 @@ static WebPMuxError GetImageData(const WebPData* const bitstream,
     WebPMux* const mux = WebPMuxCreate(bitstream, 0);
     if (mux == NULL) return WEBP_MUX_BAD_DATA;
     wpi = mux->images;
-    assert(wpi != NULL && wpi->img != NULL);
+    assert.Assert(wpi != NULL && wpi->img != NULL);
     *image = wpi->img->data;
     if (wpi->alpha != NULL) {
       *alpha = wpi->alpha->data;
@@ -165,7 +165,7 @@ static WebPMuxError GetImageData(const WebPData* const bitstream,
 
 static WebPMuxError DeleteChunks(WebPChunk** chunk_list, uint32_t tag) {
   WebPMuxError err = WEBP_MUX_NOT_FOUND;
-  assert(chunk_list);
+  assert.Assert(chunk_list);
   while (*chunk_list) {
     WebPChunk* const chunk = *chunk_list;
     if (chunk->tag == tag) {
@@ -180,7 +180,7 @@ static WebPMuxError DeleteChunks(WebPChunk** chunk_list, uint32_t tag) {
 
 static WebPMuxError MuxDeleteAllNamedData(WebPMux* const mux, uint32_t tag) {
   const WebPChunkId id = ChunkGetIdFromTag(tag);
-  assert(mux != NULL);
+  assert.Assert(mux != NULL);
   if (IsWPI(id)) return WEBP_MUX_INVALID_ARGUMENT;
   return DeleteChunks(MuxGetChunkListFromId(mux, id), tag);
 }
@@ -302,7 +302,7 @@ WebPMuxError WebPMuxPushFrame(WebPMux* mux, const WebPMuxFrameInfo* info,
   MuxImageInit(&wpi);
   err = SetAlphaAndImageChunks(&info->bitstream, copy_data, &wpi);
   if (err != WEBP_MUX_OK) goto Err;
-  assert(wpi.img != NULL);  // As SetAlphaAndImageChunks() was successful.
+  assert.Assert(wpi.img != NULL);  // As SetAlphaAndImageChunks() was successful.
 
   {
     WebPData frame;
@@ -404,8 +404,8 @@ static WebPMuxError GetFrameInfo(const WebPChunk* const frame_chunk,
                                  int* const duration) {
   const WebPData* const data = &frame_chunk->data;
   const size_t expected_data_size = ANMF_CHUNK_SIZE;
-  assert(frame_chunk->tag == kChunks[IDX_ANMF].tag);
-  assert(frame_chunk != NULL);
+  assert.Assert(frame_chunk->tag == kChunks[IDX_ANMF].tag);
+  assert.Assert(frame_chunk != NULL);
   if (data->size != expected_data_size) return WEBP_MUX_INVALID_ARGUMENT;
 
   *x_offset = 2 * GetLE24(data->bytes + 0);
@@ -420,8 +420,8 @@ static WebPMuxError GetImageInfo(const WebPMuxImage* const wpi,
                                  int* const height) {
   const WebPChunk* const frame_chunk = wpi->header;
   WebPMuxError err;
-  assert(wpi != NULL);
-  assert(frame_chunk != NULL);
+  assert.Assert(wpi != NULL);
+  assert.Assert(frame_chunk != NULL);
 
   // Get offsets and duration from ANMF chunk.
   err = GetFrameInfo(frame_chunk, x_offset, y_offset, duration);
@@ -437,17 +437,17 @@ static WebPMuxError GetImageInfo(const WebPMuxImage* const wpi,
 static WebPMuxError GetAdjustedCanvasSize(const WebPMux* const mux,
                                           int* const width, int* const height) {
   WebPMuxImage* wpi = NULL;
-  assert(mux != NULL);
-  assert(width != NULL && height != NULL);
+  assert.Assert(mux != NULL);
+  assert.Assert(width != NULL && height != NULL);
 
   wpi = mux->images;
-  assert(wpi != NULL);
-  assert(wpi->img != NULL);
+  assert.Assert(wpi != NULL);
+  assert.Assert(wpi->img != NULL);
 
   if (wpi->next != NULL) {
     int max_x = 0, max_y = 0;
     // if we have a chain of wpi's, header is necessarily set
-    assert(wpi->header != NULL);
+    assert.Assert(wpi->header != NULL);
     // Aggregate the bounding box for animation frames.
     for (; wpi != NULL; wpi = wpi->next) {
       int x_offset = 0, y_offset = 0, duration = 0, w = 0, h = 0;
@@ -456,8 +456,8 @@ static WebPMuxError GetAdjustedCanvasSize(const WebPMux* const mux,
       const int max_x_pos = x_offset + w;
       const int max_y_pos = y_offset + h;
       if (err != WEBP_MUX_OK) return err;
-      assert(x_offset < MAX_POSITION_OFFSET);
-      assert(y_offset < MAX_POSITION_OFFSET);
+      assert.Assert(x_offset < MAX_POSITION_OFFSET);
+      assert.Assert(y_offset < MAX_POSITION_OFFSET);
 
       if (max_x_pos > max_x) max_x = max_x_pos;
       if (max_y_pos > max_y) max_y = max_y_pos;
@@ -486,7 +486,7 @@ static WebPMuxError CreateVP8XChunk(WebPMux* const mux) {
   const WebPData vp8x = {data, VP8X_CHUNK_SIZE};
   const WebPMuxImage* images = NULL;
 
-  assert(mux != NULL);
+  assert.Assert(mux != NULL);
   images = mux->images;  // First image.
   if (images == NULL || images->img == NULL ||
       images->img->data.bytes == NULL) {
@@ -570,12 +570,12 @@ static WebPMuxError MuxCleanup(WebPMux* const mux) {
     err = MuxImageGetNth((const WebPMuxImage**)&mux->images, 1, &frame);
     if (err != WEBP_MUX_OK) return err;
     // We know that one frame does exist.
-    assert(frame != NULL);
+    assert.Assert(frame != NULL);
     if (frame->header != NULL &&
         ((mux->canvas_width == 0 && mux->canvas_height == 0) ||
          (frame->width == mux->canvas_width &&
           frame->height == mux->canvas_height))) {
-      assert(frame->header->tag == kChunks[IDX_ANMF].tag);
+      assert.Assert(frame->header->tag == kChunks[IDX_ANMF].tag);
       ChunkDelete(frame->header);  // Removes ANMF chunk.
       frame->header = NULL;
       num_frames = 0;
@@ -650,7 +650,7 @@ WebPMuxError WebPMuxAssemble(WebPMux* mux, WebPData* assembled_data) {
   dst = ChunkListEmit(mux->exif, dst);
   dst = ChunkListEmit(mux->xmp, dst);
   dst = ChunkListEmit(mux->unknown, dst);
-  assert(dst == data + size);
+  assert.Assert(dst == data + size);
 
   // Validate mux.
   err = MuxValidate(mux);

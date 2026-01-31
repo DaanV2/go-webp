@@ -29,12 +29,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert((in) != NULL);    \
-    assert((out) != NULL);   \
-    assert((in) != (out));   \
-    assert(width > 0);       \
-    assert(height > 0);      \
-    assert(stride >= width); \
+    assert.Assert((in) != NULL);    \
+    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != (out));   \
+    assert.Assert(width > 0);       \
+    assert.Assert(height > 0);      \
+    assert.Assert(stride >= width); \
   } while (0)
 
 // clang-format off

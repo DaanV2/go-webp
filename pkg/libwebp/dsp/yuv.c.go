@@ -262,7 +262,7 @@ static WEBP_INLINE int Interpolate(int v) {
   const int v0 = kLinearToGammaTab[tab_pos];
   const int v1 = kLinearToGammaTab[tab_pos + 1];
   const int y = v1 * x + v0 * ((kGammaTabScale << 2) - x);  // interpolate
-  assert(tab_pos + 1 < GAMMA_TAB_SIZE + 1);
+  assert.Assert(tab_pos + 1 < GAMMA_TAB_SIZE + 1);
   return y;
 }
 
@@ -441,9 +441,9 @@ static WEBP_INLINE int LinearToGammaWeighted(const uint8_t* src,
       a_ptr[step] * GammaToLinear(src[step]) +
       a_ptr[rgb_stride] * GammaToLinear(src[rgb_stride]) +
       a_ptr[rgb_stride + step] * GammaToLinear(src[rgb_stride + step]);
-  assert(total_a > 0 && total_a <= 4 * 0xff);
+  assert.Assert(total_a > 0 && total_a <= 4 * 0xff);
 #if defined(USE_INVERSE_ALPHA_TABLE)
-  assert((uint64_t)sum * kInvAlpha[total_a] < ((uint64_t)1 << 32));
+  assert.Assert((uint64_t)sum * kInvAlpha[total_a] < ((uint64_t)1 << 32));
 #endif
   return LinearToGamma(DIVIDE_BY_ALPHA(sum, total_a), 0);
 }
@@ -529,7 +529,7 @@ func ImportYUVAFromRGBA_C(const uint8_t* r_ptr, const uint8_t* g_ptr,
   has_alpha &= dst_a != NULL;
   if (has_alpha) {
 #if defined(USE_GAMMA_COMPRESSION) && defined(USE_INVERSE_ALPHA_TABLE)
-    assert(kAlphaFix + GAMMA_FIX <= 31);
+    assert.Assert(kAlphaFix + GAMMA_FIX <= 31);
 #endif
   }
 
@@ -675,9 +675,9 @@ WEBP_DSP_INIT_FUNC(WebPInitConvertARGBToYUV) {
   }
 #endif  // WEBP_HAVE_NEON
 
-  assert(WebPConvertARGBToY != NULL);
-  assert(WebPConvertARGBToUV != NULL);
-  assert(WebPConvertRGBToY != NULL);
-  assert(WebPConvertBGRToY != NULL);
-  assert(WebPConvertRGBA32ToUV != NULL);
+  assert.Assert(WebPConvertARGBToY != NULL);
+  assert.Assert(WebPConvertARGBToUV != NULL);
+  assert.Assert(WebPConvertRGBToY != NULL);
+  assert.Assert(WebPConvertBGRToY != NULL);
+  assert.Assert(WebPConvertRGBA32ToUV != NULL);
 }

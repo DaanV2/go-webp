@@ -64,7 +64,7 @@ static const uint8_t kLevelsFromDelta[8][MAX_DELTA_SIZE] = {
 
 int VP8FilterStrengthFromDelta(int sharpness, int delta) {
   const int pos = (delta < MAX_DELTA_SIZE) ? delta : MAX_DELTA_SIZE - 1;
-  assert(sharpness >= 0 && sharpness <= 7);
+  assert.Assert(sharpness >= 0 && sharpness <= 7);
   return kLevelsFromDelta[sharpness][pos];
 }
 

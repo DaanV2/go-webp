@@ -111,7 +111,7 @@ static int NeedCompressedAlpha(const WebPIDecoder* const idec) {
     return 0;  // ALPH chunk is not present for lossless images.
   } else {
     const VP8Decoder* const dec = (VP8Decoder*)idec->dec;
-    assert(dec != NULL);  // Must be true as idec->state != STATE_WEBP_HEADER.
+    assert.Assert(dec != NULL);  // Must be true as idec->state != STATE_WEBP_HEADER.
     return (dec->alpha_data != NULL) && !dec->is_alpha_decoded;
   }
 }
@@ -164,7 +164,7 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
             size_t data_size;
             const uint8_t* WEBP_BIDI_INDEXABLE bounded_alpha_data;
 
-            assert(dec->alpha_data_size >= ALPHA_HEADER_LEN);
+            assert.Assert(dec->alpha_data_size >= ALPHA_HEADER_LEN);
             data_size = dec->alpha_data_size - ALPHA_HEADER_LEN;
             bounded_alpha_data = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
                 const uint8_t*, dec->alpha_data + ALPHA_HEADER_LEN, data_size);
@@ -197,8 +197,8 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
       (mem->buf == NULL) ? NULL : mem->buf + mem->start;
   const uint8_t* const old_base =
       need_compressed_alpha ? dec->alpha_data : old_start;
-  assert(mem->buf != NULL || mem->start == 0);
-  assert(mem->mode == MEM_MODE_APPEND);
+  assert.Assert(mem->buf != NULL || mem->start == 0);
+  assert.Assert(mem->mode == MEM_MODE_APPEND);
   if (data_size > MAX_CHUNK_PAYLOAD) {
     // security safeguard: trying to allocate more than what the format
     // allows for a chunk should be considered a smoke smell.
@@ -221,10 +221,10 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
     mem->end = current_size;
   }
 
-  assert(mem->buf != NULL);
+  assert.Assert(mem->buf != NULL);
   WEBP_UNSAFE_MEMCPY(mem->buf + mem->end, data, data_size);
   mem->end += data_size;
-  assert(mem->end <= mem->buf_size);
+  assert.Assert(mem->end <= mem->buf_size);
 
   DoRemap(idec, mem->buf + mem->start - old_start);
   return 1;
@@ -237,8 +237,8 @@ func DoRemap(WebPIDecoder* const idec, ptrdiff_t offset) {
   const uint8_t* const old_buf = mem->buf;
   const uint8_t* const old_start =
       (old_buf == NULL) ? NULL : old_buf + mem->start;
-  assert(old_buf != NULL || mem->start == 0);
-  assert(mem->mode == MEM_MODE_MAP);
+  assert.Assert(old_buf != NULL || mem->start == 0);
+  assert.Assert(mem->mode == MEM_MODE_MAP);
 
   if (data_size < mem->buf_size) return 0;  // can't remap to a shorter buffer!
 
@@ -258,7 +258,7 @@ func InitMemBuffer(MemBuffer* const mem) {
 }
 
 func ClearMemBuffer(MemBuffer* const mem) {
-  assert(mem);
+  assert.Assert(mem);
   if (mem->mode == MEM_MODE_APPEND) {
     WebPSafeFree(mem->buf);
     WebPSafeFree((void*)mem->part0_buf);
@@ -272,7 +272,7 @@ func ClearMemBuffer(MemBuffer* const mem) {
   } else if (mem->mode != expected) {
     return 0;  // we mixed the modes => error
   }
-  assert(mem->mode == expected);  // mode is ok
+  assert.Assert(mem->mode == expected);  // mode is ok
   return 1;
 }
 
@@ -330,7 +330,7 @@ func ChangeState(WebPIDecoder* const idec, DecState new_state,
   MemBuffer* const mem = &idec->mem;
   idec->state = new_state;
   mem->start += consumed_bytes;
-  assert(mem->start <= mem->end);
+  assert.Assert(mem->start <= mem->end);
   idec->io.data = mem->buf + mem->start;
   idec->io.data_size = MemDataSize(mem);
 }
@@ -411,10 +411,10 @@ static VP8StatusCode CopyParts0Data(WebPIDecoder* const idec) {
   VP8BitReader* const br = &dec->br;
   const size_t part_size = br->buf_end - br->buf;
   MemBuffer* const mem = &idec->mem;
-  assert(!idec->is_lossless);
-  assert(mem->part0_buf == NULL);
+  assert.Assert(!idec->is_lossless);
+  assert.Assert(mem->part0_buf == NULL);
   // the following is a format limitation, no need for runtime check:
-  assert(part_size <= mem->part0_size);
+  assert.Assert(part_size <= mem->part0_size);
   if (part_size == 0) {  // can't have zero-size partition #0
     return VP8_STATUS_BITSTREAM_ERROR;
   }
@@ -529,7 +529,7 @@ static VP8StatusCode DecodeRemaining(WebPIDecoder* const idec) {
       // Release buffer only if there is only one partition
       if (dec->num_parts_minus_one == 0) {
         idec->mem.start = token_br->buf - idec->mem.buf;
-        assert(idec->mem.start <= idec->mem.end);
+        assert.Assert(idec->mem.start <= idec->mem.end);
       }
     }
     VP8InitScanline(dec);  // Prepare for next scanline
@@ -562,7 +562,7 @@ static VP8StatusCode DecodeVP8LHeader(WebPIDecoder* const idec) {
   const WebPDecParams* const params = &idec->params;
   WebPDecBuffer* const output = params->output;
   size_t curr_size = MemDataSize(&idec->mem);
-  assert(idec->is_lossless);
+  assert.Assert(idec->is_lossless);
 
   // Wait until there's enough data for decoding header.
   if (curr_size < (idec->chunk_size >> 3)) {
@@ -591,7 +591,7 @@ static VP8StatusCode DecodeVP8LHeader(WebPIDecoder* const idec) {
 static VP8StatusCode DecodeVP8LData(WebPIDecoder* const idec) {
   VP8LDecoder* const dec = (VP8LDecoder*)idec->dec;
   const size_t curr_size = MemDataSize(&idec->mem);
-  assert(idec->is_lossless);
+  assert.Assert(idec->is_lossless);
 
   // Switch to incremental decoding if we don't have all the bytes available.
   dec->incremental = (curr_size < idec->chunk_size);
@@ -599,7 +599,7 @@ static VP8StatusCode DecodeVP8LData(WebPIDecoder* const idec) {
   if (!VP8LDecodeImage(dec)) {
     return ErrorStatusLossless(idec, dec->status);
   }
-  assert(dec->status == VP8_STATUS_OK || dec->status == VP8_STATUS_SUSPENDED);
+  assert.Assert(dec->status == VP8_STATUS_OK || dec->status == VP8_STATUS_SUSPENDED);
   return (dec->status == VP8_STATUS_SUSPENDED) ? dec->status
                                                : FinishDecoding(idec);
 }
@@ -823,7 +823,7 @@ WebPIDecoder* WebPINewYUV(uint8_t* WEBP_COUNTED_BY(luma_size) luma,
 //------------------------------------------------------------------------------
 
 static VP8StatusCode IDecCheckStatus(const WebPIDecoder* const idec) {
-  assert(idec);
+  assert.Assert(idec);
   if (idec->state == STATE_ERROR) {
     return VP8_STATUS_BITSTREAM_ERROR;
   }

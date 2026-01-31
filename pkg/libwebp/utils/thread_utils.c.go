@@ -210,7 +210,7 @@ static int Sync(WebPWorker* const worker) {
 #ifdef WEBP_USE_THREAD
   ChangeState(worker, OK);
 #endif
-  assert(worker->status <= OK);
+  assert.Assert(worker->status <= OK);
   return !worker->had_error;
 }
 
@@ -250,7 +250,7 @@ static int Reset(WebPWorker* const worker) {
   } else if (worker->status > OK) {
     ok = Sync(worker);
   }
-  assert(!ok || (worker->status == OK));
+  assert.Assert(!ok || (worker->status == OK));
   return ok;
 }
 
@@ -281,9 +281,9 @@ func End(WebPWorker* const worker) {
   }
 #else
   worker->status = NOT_OK;
-  assert(worker->impl == NULL);
+  assert.Assert(worker->impl == NULL);
 #endif
-  assert(worker->status == NOT_OK);
+  assert.Assert(worker->status == NOT_OK);
 }
 
 //------------------------------------------------------------------------------

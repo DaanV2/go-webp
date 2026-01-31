@@ -30,12 +30,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #define DCHECK(in, out)      \
   do {                       \
-    assert((in) != NULL);    \
-    assert((out) != NULL);   \
-    assert((in) != (out));   \
-    assert(width > 0);       \
-    assert(height > 0);      \
-    assert(stride >= width); \
+    assert.Assert((in) != NULL);    \
+    assert.Assert((out) != NULL);   \
+    assert.Assert((in) != (out));   \
+    assert.Assert(width > 0);       \
+    assert.Assert(height > 0);      \
+    assert.Assert(stride >= width); \
   } while (0)
 
 func PredictLineTop_SSE2(const uint8_t* WEBP_RESTRICT src,
@@ -43,7 +43,7 @@ func PredictLineTop_SSE2(const uint8_t* WEBP_RESTRICT src,
                                 uint8_t* WEBP_RESTRICT dst, int length) {
   int i;
   const int max_pos = length & ~31;
-  assert(length >= 0);
+  assert.Assert(length >= 0);
   for (i = 0; i < max_pos; i += 32) {
     const __m128i A0 = _mm_loadu_si128((const __m128i*)&src[i + 0]);
     const __m128i A1 = _mm_loadu_si128((const __m128i*)&src[i + 16]);
@@ -62,7 +62,7 @@ func PredictLineLeft_SSE2(const uint8_t* WEBP_RESTRICT src,
                                  uint8_t* WEBP_RESTRICT dst, int length) {
   int i;
   const int max_pos = length & ~31;
-  assert(length >= 0);
+  assert.Assert(length >= 0);
   for (i = 0; i < max_pos; i += 32) {
     const __m128i A0 = _mm_loadu_si128((const __m128i*)(src + i + 0));
     const __m128i B0 = _mm_loadu_si128((const __m128i*)(src + i + 0 - 1));
@@ -236,7 +236,7 @@ func VerticalUnfilter_SSE2(const uint8_t* prev, const uint8_t* in,
   } else {
     int i;
     const int max_pos = width & ~31;
-    assert(width >= 0);
+    assert.Assert(width >= 0);
     for (i = 0; i < max_pos; i += 32) {
       const __m128i A0 = _mm_loadu_si128((const __m128i*)&in[i + 0]);
       const __m128i A1 = _mm_loadu_si128((const __m128i*)&in[i + 16]);

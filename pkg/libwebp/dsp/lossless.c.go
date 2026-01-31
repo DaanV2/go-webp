@@ -399,8 +399,8 @@ func VP8LInverseTransform(const VP8LTransform* const transform, int row_start,
                           int row_end, const uint32_t* const in,
                           uint32_t* const out) {
   const int width = transform->xsize;
-  assert(row_start < row_end);
-  assert(row_end <= transform->ysize);
+  assert.Assert(row_start < row_end);
+  assert.Assert(row_end <= transform->ysize);
   switch (transform->type) {
     case SUBTRACT_GREEN_TRANSFORM:
       VP8LAddGreenToBlueAndRed(in, (row_end - row_start) * width, out);
@@ -572,7 +572,7 @@ func VP8LConvertFromBGRA(const uint32_t* const in_data, int num_pixels,
       VP8LConvertBGRAToRGB565(in_data, num_pixels, rgba);
       break;
     default:
-      assert(0);  // Code flow should not reach here.
+      assert.Assert(0);  // Code flow should not reach here.
   }
 }
 
@@ -686,15 +686,15 @@ WEBP_DSP_INIT_FUNC(VP8LDspInit) {
   }
 #endif
 
-  assert(VP8LAddGreenToBlueAndRed != NULL);
-  assert(VP8LTransformColorInverse != NULL);
-  assert(VP8LConvertBGRAToRGBA != NULL);
-  assert(VP8LConvertBGRAToRGB != NULL);
-  assert(VP8LConvertBGRAToBGR != NULL);
-  assert(VP8LConvertBGRAToRGBA4444 != NULL);
-  assert(VP8LConvertBGRAToRGB565 != NULL);
-  assert(VP8LMapColor32b != NULL);
-  assert(VP8LMapColor8b != NULL);
+  assert.Assert(VP8LAddGreenToBlueAndRed != NULL);
+  assert.Assert(VP8LTransformColorInverse != NULL);
+  assert.Assert(VP8LConvertBGRAToRGBA != NULL);
+  assert.Assert(VP8LConvertBGRAToRGB != NULL);
+  assert.Assert(VP8LConvertBGRAToBGR != NULL);
+  assert.Assert(VP8LConvertBGRAToRGBA4444 != NULL);
+  assert.Assert(VP8LConvertBGRAToRGB565 != NULL);
+  assert.Assert(VP8LMapColor32b != NULL);
+  assert.Assert(VP8LMapColor8b != NULL);
 }
 #undef COPY_PREDICTOR_ARRAY
 

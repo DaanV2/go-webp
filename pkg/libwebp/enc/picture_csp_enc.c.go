@@ -145,7 +145,7 @@ static int ImportYUVAFromRGBA(const uint8_t* r_ptr, const uint8_t* g_ptr,
     return 0;
   }
   if (has_alpha) {
-    assert(step == 4);
+    assert.Assert(step == 4);
   }
 
   if (use_iterative_conversion) {
@@ -394,7 +394,7 @@ static int Import(WebPPicture* const picture, const uint8_t* rgb,
     // dst[] byte order is {a,r,g,b} for big-endian, {b,g,r,a} for little endian
     uint32_t* dst = picture->argb;
     const int do_copy = (ALPHA_OFFSET == 3) && swap_rb;
-    assert(step == 4);
+    assert.Assert(step == 4);
     if (do_copy) {
       for (y = 0; y < height; ++y) {
         memcpy(dst, rgb, width * 4);
@@ -420,7 +420,7 @@ static int Import(WebPPicture* const picture, const uint8_t* rgb,
     }
   } else {
     uint32_t* dst = picture->argb;
-    assert(step >= 3);
+    assert.Assert(step >= 3);
     for (y = 0; y < height; ++y) {
       WebPPackRGB(r_ptr, g_ptr, b_ptr, width, step, dst);
       r_ptr += rgb_stride;

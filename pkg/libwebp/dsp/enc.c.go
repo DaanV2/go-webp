@@ -845,24 +845,24 @@ WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
   }
 #endif
 
-  assert(VP8ITransform != NULL);
-  assert(VP8FTransform != NULL);
-  assert(VP8FTransformWHT != NULL);
-  assert(VP8TDisto4x4 != NULL);
-  assert(VP8TDisto16x16 != NULL);
-  assert(VP8CollectHistogram != NULL);
-  assert(VP8SSE16x16 != NULL);
-  assert(VP8SSE16x8 != NULL);
-  assert(VP8SSE8x8 != NULL);
-  assert(VP8SSE4x4 != NULL);
-  assert(VP8EncQuantizeBlock != NULL);
-  assert(VP8EncQuantize2Blocks != NULL);
-  assert(VP8FTransform2 != NULL);
-  assert(VP8EncPredLuma4 != NULL);
-  assert(VP8EncPredLuma16 != NULL);
-  assert(VP8EncPredChroma8 != NULL);
-  assert(VP8Mean16x4 != NULL);
-  assert(VP8EncQuantizeBlockWHT != NULL);
-  assert(VP8Copy4x4 != NULL);
-  assert(VP8Copy16x8 != NULL);
+  assert.Assert(VP8ITransform != NULL);
+  assert.Assert(VP8FTransform != NULL);
+  assert.Assert(VP8FTransformWHT != NULL);
+  assert.Assert(VP8TDisto4x4 != NULL);
+  assert.Assert(VP8TDisto16x16 != NULL);
+  assert.Assert(VP8CollectHistogram != NULL);
+  assert.Assert(VP8SSE16x16 != NULL);
+  assert.Assert(VP8SSE16x8 != NULL);
+  assert.Assert(VP8SSE8x8 != NULL);
+  assert.Assert(VP8SSE4x4 != NULL);
+  assert.Assert(VP8EncQuantizeBlock != NULL);
+  assert.Assert(VP8EncQuantize2Blocks != NULL);
+  assert.Assert(VP8FTransform2 != NULL);
+  assert.Assert(VP8EncPredLuma4 != NULL);
+  assert.Assert(VP8EncPredLuma16 != NULL);
+  assert.Assert(VP8EncPredChroma8 != NULL);
+  assert.Assert(VP8Mean16x4 != NULL);
+  assert.Assert(VP8EncQuantizeBlockWHT != NULL);
+  assert.Assert(VP8Copy4x4 != NULL);
+  assert.Assert(VP8Copy16x8 != NULL);
 }
