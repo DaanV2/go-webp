@@ -13,42 +13,24 @@ package dec
 //
 // Author: Urvang (urvang@google.com)
 
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
-
-
-struct VP8LDecoder;  // Defined in dec/vp8li.h.
-
-typedef struct ALPHDecoder ALPHDecoder;
 type ALPHDecoder struct {
-  int width;
-  int height;
-  int method;
-  WEBP_FILTER_TYPE filter;
-  int pre_processing;
-  struct vp *VP8LDecoder8l_dec;
-  VP8Io io;
-  int use_8b_decode;  // Although alpha channel requires only 1 byte per
-                      // pixel, sometimes VP8LDecoder may need to allocate
-                      // 4 bytes per pixel internally during decode.
-  output *uint8;
-  const prev_line *uint8;  // last output row (or nil)
+	width int
+	height int
+	method int
+	filter WEBP_FILTER_TYPE
+	pre_processing int
+	vp *VP8LDecoder8l_dec
+	io VP8Io
+	// Although alpha channel requires only 1 byte per
+	// pixel, sometimes VP8LDecoder may need to allocate
+	// 4 bytes per pixel internally during decode.
+	use_8b_decode int  
+	output *uint8
+	prev_line *uint8  // last output row (or nil)
 }
 
 //------------------------------------------------------------------------------
 // internal functions. Not public.
 
 // Deallocate memory associated to dec.alpha_plane decoding
-func WebPDeallocateAlphaMemory(const dec *VP8Decoder);
-
-//------------------------------------------------------------------------------
-
-
-
-#endif  // WEBP_DEC_ALPHAI_DEC_H_
+func WebPDeallocateAlphaMemory( dec *VP8Decoder);

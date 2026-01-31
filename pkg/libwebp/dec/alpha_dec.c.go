@@ -54,7 +54,7 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 // Returns false in case of error in alpha header (data too short, invalid
 // compression method or filter, error in lossless header data etc).
  static int ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, uint64 data_size, const src_io *VP8Io, output *uint8) {
-  int ok = 0;
+  ok := 0;
   var alpha_data *uint8 = data + ALPHA_HEADER_LEN;
   alpha_data_size := data_size - ALPHA_HEADER_LEN;
   int rsrv;
@@ -163,7 +163,7 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
   return 1;
 }
 
-func WebPDeallocateAlphaMemory(const dec *VP8Decoder) {
+func WebPDeallocateAlphaMemory(/* const */ dec *VP8Decoder) {
   assert.Assert(dec != nil);
   WebPSafeFree(dec.alpha_plane_mem);
   dec.alpha_plane_mem = nil;
