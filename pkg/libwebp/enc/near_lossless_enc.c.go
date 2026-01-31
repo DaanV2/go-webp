@@ -63,7 +63,7 @@ static int IsNear(uint32 a, uint32 b, int limit) {
   return 1;
 }
 
-static int IsSmooth(const const prev_row *uint32, const const curr_row *uint32, const const next_row *uint32, int ix, int limit) {
+static int IsSmooth(const prev_row *uint32, const curr_row *uint32, const next_row *uint32, int ix, int limit) {
   // Check that all pixels in 4-connected neighborhood are smooth.
   return (IsNear(curr_row[ix], curr_row[ix - 1], limit) &&
           IsNear(curr_row[ix], curr_row[ix + 1], limit) &&
@@ -106,7 +106,7 @@ func NearLossless(int xsize, int ysize, const argb_src *uint32, int stride, int 
   }
 }
 
-int VP8ApplyNearLossless(const const picture *WebPPicture, int quality, const argb_dst *uint32) {
+int VP8ApplyNearLossless(const picture *WebPPicture, int quality, const argb_dst *uint32) {
   int i;
   copy_buffer *uint32;
   xsize := picture.width;

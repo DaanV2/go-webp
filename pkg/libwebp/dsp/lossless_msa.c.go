@@ -245,7 +245,7 @@ func ConvertBGRAToRGB_MSA(const src *uint32, int num_pixels, dst *uint8) {
   }
 }
 
-func AddGreenToBlueAndRed_MSA(const const src *uint32, int num_pixels, dst *uint32) {
+func AddGreenToBlueAndRed_MSA(const src *uint32, int num_pixels, dst *uint32) {
   int i;
   const in *uint8 = (const *uint8)src;
   out *uint8 = (*uint8)dst;
@@ -285,7 +285,7 @@ func AddGreenToBlueAndRed_MSA(const const src *uint32, int num_pixels, dst *uint
   }
 }
 
-func TransformColorInverse_MSA(const const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
+func TransformColorInverse_MSA(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
   v16u8 src0, dst0;
   const v16i8 g2br =
       (v16i8)__msa_fill_w(m.green_to_blue | (m.green_to_red << 16));

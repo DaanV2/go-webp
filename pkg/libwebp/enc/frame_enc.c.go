@@ -51,7 +51,7 @@ type <Foo> struct {  // struct for organizing convergence in either size or PSNR
   int do_size_search;
 } PassStats;
 
-static int InitPassStats(const const enc *VP8Encoder, const s *PassStats) {
+static int InitPassStats(const enc *VP8Encoder, const s *PassStats) {
   target_size := (uint64)enc.config.target_size;
   do_size_search := (target_size != 0);
   const float target_PSNR = enc.config.target_PSNR;
@@ -204,7 +204,7 @@ func SetSegmentProbas(const enc *VP8Encoder) {
   int n;
 
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
-    const const mb *VP8MBInfo = &enc.mb_info[n];
+    const mb *VP8MBInfo = &enc.mb_info[n];
     ++p[mb.segment];
   }
 #if !defined(WEBP_DISABLE_STATS)
@@ -311,7 +311,7 @@ static int PutCoeffs(const bw *VP8BitWriter, int ctx, const res *VP8Residual) {
   return 1;
 }
 
-func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const const rd *VP8ModeScore) {
+func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const rd *VP8ModeScore) {
   int x, y, ch;
   VP8Residual res;
   uint64 pos1, pos2, pos3;
@@ -364,7 +364,7 @@ func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const const
 
 // Same as CodeResiduals, but doesn't actually write anything.
 // Instead, it just records the event distribution.
-func RecordResiduals(const it *VP8EncIterator, const const rd *VP8ModeScore) {
+func RecordResiduals(const it *VP8EncIterator, const rd *VP8ModeScore) {
   int x, y, ch;
   VP8Residual res;
   const enc *VP8Encoder = it.enc;
@@ -411,7 +411,7 @@ func RecordResiduals(const it *VP8EncIterator, const const rd *VP8ModeScore) {
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
-static int RecordTokens(const it *VP8EncIterator, const const rd *VP8ModeScore, const tokens *VP8TBuffer) {
+static int RecordTokens(const it *VP8EncIterator, const rd *VP8ModeScore, const tokens *VP8TBuffer) {
   int x, y, ch;
   VP8Residual res;
   const enc *VP8Encoder = it.enc;
@@ -477,10 +477,10 @@ func ResetSSE(const enc *VP8Encoder) {
   enc.sse_count = 0;
 }
 
-func StoreSSE(const const it *VP8EncIterator) {
+func StoreSSE(const it *VP8EncIterator) {
   const enc *VP8Encoder = it.enc;
-  const const in *uint8 = it.yuv_in;
-  const const out *uint8 = it.yuv_out;
+  const in *uint8 = it.yuv_in;
+  const out *uint8 = it.yuv_out;
   // Note: not totally accurate at boundary. And doesn't include in-loop filter.
   enc.sse[0] += VP8SSE16x16(in + Y_OFF_ENC, out + Y_OFF_ENC);
   enc.sse[1] += VP8SSE8x8(in + U_OFF_ENC, out + U_OFF_ENC);
@@ -488,9 +488,9 @@ func StoreSSE(const const it *VP8EncIterator) {
   enc.sse_count += 16 * 16;
 }
 
-func StoreSideInfo(const const it *VP8EncIterator) {
+func StoreSideInfo(const it *VP8EncIterator) {
   const enc *VP8Encoder = it.enc;
-  const const mb *VP8MBInfo = it.mb;
+  const mb *VP8MBInfo = it.mb;
   const pic *WebPPicture = enc.pic;
 
   if (pic.stats != nil) {
@@ -538,7 +538,7 @@ func StoreSideInfo(const const it *VP8EncIterator) {
 #endif
 }
 
-func ResetSideInfo(const const it *VP8EncIterator) {
+func ResetSideInfo(const it *VP8EncIterator) {
   const enc *VP8Encoder = it.enc;
   const pic *WebPPicture = enc.pic;
   if (pic.stats != nil) {
@@ -548,7 +548,7 @@ func ResetSideInfo(const const it *VP8EncIterator) {
 }
 #else   // defined(WEBP_DISABLE_STATS)
 func ResetSSE(const enc *VP8Encoder) { (void)enc; }
-func StoreSideInfo(const const it *VP8EncIterator) {
+func StoreSideInfo(const it *VP8EncIterator) {
   const enc *VP8Encoder = it.enc;
   const pic *WebPPicture = enc.pic;
   if (pic.extra_info != nil) {
@@ -558,7 +558,7 @@ func StoreSideInfo(const const it *VP8EncIterator) {
   }
 }
 
-func ResetSideInfo(const const it *VP8EncIterator) { (void)it; }
+func ResetSideInfo(const it *VP8EncIterator) { (void)it; }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
 static double GetPSNR(uint64 mse, size uint64 ) {

@@ -93,7 +93,7 @@ func CollectColorBlueTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int strid
     int y, i;
     for (y = 0; y < tile_height; ++y) {
       uint8 values[32];
-      const const src *uint32 = argb + y * stride;
+      const src *uint32 = argb + y * stride;
       const __m256i A1 = _mm256_loadu_si256((const __*m256i)src);
       const __m256i B1 = _mm256_shuffle_epi8(A1, perm);
       const __m256i C1 = _mm256_mulhi_epi16(B1, mult);
@@ -129,7 +129,7 @@ func CollectColorRedTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int stride
     int y, i;
     for (y = 0; y < tile_height; ++y) {
       uint8 values[32];
-      const const src *uint32 = argb + y * stride;
+      const src *uint32 = argb + y * stride;
       const __m256i A1 = _mm256_loadu_si256((const __*m256i)src);
       const __m256i B1 = _mm256_and_si256(A1, mask_g);
       const __m256i C1 = _mm256_madd_epi16(B1, mult);
@@ -314,7 +314,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_AVX2(const const array *uint321, const const array *uint322, int length) {
+static int VectorMismatch_AVX2(const array *uint321, const array *uint322, int length) {
   int match_len;
 
   if (length >= 24) {
@@ -468,7 +468,7 @@ func PredictorSub0_AVX2(const in *uint32, const upper *uint32, int num_pixels, W
 
 #define GENERATE_PREDICTOR_1(X, IN)                                          \
   func PredictorSub##X##_AVX2(                                        \
-      const const in *uint32, const const upper *uint32, int num_pixels, \
+      const in *uint32, const upper *uint32, int num_pixels, \
       WEBP_RESTRICT const out *uint32) {                                   \
     int i;                                                                   \
     for (i = 0; i + 8 <= num_pixels; i += 8) {                               \

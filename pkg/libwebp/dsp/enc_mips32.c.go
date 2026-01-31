@@ -180,7 +180,7 @@ func ITransform_MIPS32(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *i
   "sh           %[level],       " #N "(%[pout])                     \n\t"
 // clang-format on
 
-static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], const const mtx *VP8Matrix) {
+static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], const mtx *VP8Matrix) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   int sign, coeff, level, i;
   int max_level = MAX_LEVEL;
@@ -466,7 +466,7 @@ func FTransform_MIPS32(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *
   int temp17, temp18, temp19, temp20;
   const int c2217 = 2217;
   const int c5352 = 5352;
-  const const args *int[3] = {(const *int)src, (const *int)ref, (const *int)out}
+  const args *int[3] = {(const *int)src, (const *int)ref, (const *int)out}
 
   __asm__ volatile(
     HORIZONTAL_PASS(0, temp0,  temp1,  temp2,  temp3)

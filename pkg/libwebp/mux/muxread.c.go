@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #define SWITCH_ID_LIST(INDEX, LIST)                           \
   for {                                                        \
     if (idx == (INDEX)) {                                     \
-      const const chunk *WebPChunk =                          \
+      const chunk *WebPChunk =                          \
           ChunkSearchList((LIST), nth, kChunks[(INDEX)].tag); \
       if (chunk) {                                            \
         *data = chunk.data;                                  \
@@ -43,7 +43,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
     }                                                         \
   } while (0)
 
-static WebPMuxError MuxGet(const const mux *WebPMux, CHUNK_INDEX idx, uint32 nth, const data *WebPData) {
+static WebPMuxError MuxGet(const mux *WebPMux, CHUNK_INDEX idx, uint32 nth, const data *WebPData) {
   assert.Assert(mux != nil);
   assert.Assert(idx != IDX_LAST_CHUNK);
   assert.Assert(!IsWPI(kChunks[idx].id));
@@ -83,8 +83,8 @@ static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, const data *uint8, ui
 }
 
 int MuxImageFinalize(const wpi *WebPMuxImage) {
-  const const img *WebPChunk = wpi.img;
-  const const image *WebPData = &img.data;
+  const img *WebPChunk = wpi.img;
+  const image *WebPData = &img.data;
   is_lossless := (img.tag == kChunks[IDX_VP8L].tag);
   int w, h;
   int vp8l_has_alpha = 0;
@@ -106,10 +106,10 @@ int MuxImageFinalize(const wpi *WebPMuxImage) {
   return ok;
 }
 
-static int MuxImageParse(const const chunk *WebPChunk, int copy_data, const wpi *WebPMuxImage) {
+static int MuxImageParse(const chunk *WebPChunk, int copy_data, const wpi *WebPMuxImage) {
   const bytes *uint8 = chunk.data.bytes;
   size uint64  = chunk.data.size;
-  const const last *uint8 = (bytes == nil) ? nil : bytes + size;
+  const last *uint8 = (bytes == nil) ? nil : bytes + size;
   WebPChunk subchunk;
   uint64 subchunk_size;
   *WebPChunk* unknown_chunk_list = &wpi.unknown;
@@ -316,7 +316,7 @@ Err:  // Something bad happened.
 // Get API(s).
 
 // Validates that the given mux has a single image.
-static WebPMuxError ValidateForSingleImage(const const mux *WebPMux) {
+static WebPMuxError ValidateForSingleImage(const mux *WebPMux) {
   num_images := MuxImageCount(mux.images, WEBP_CHUNK_IMAGE);
   num_frames := MuxImageCount(mux.images, WEBP_CHUNK_ANMF);
 
@@ -334,7 +334,7 @@ static WebPMuxError ValidateForSingleImage(const const mux *WebPMux) {
 
 // Get the canvas width, height and flags after validating that VP8X/VP8/VP8L
 // chunk and canvas size are valid.
-static WebPMuxError MuxGetCanvasInfo(const const mux *WebPMux, width *int, height *int, flags *uint32) {
+static WebPMuxError MuxGetCanvasInfo(const mux *WebPMux, width *int, height *int, flags *uint32) {
   int w, h;
   uint32 f = 0;
   WebPData data;
@@ -347,7 +347,7 @@ static WebPMuxError MuxGetCanvasInfo(const const mux *WebPMux, width *int, heigh
     w = GetLE24(data.bytes + 4) + 1;
     h = GetLE24(data.bytes + 7) + 1;
   } else {
-    const const wpi *WebPMuxImage = mux.images;
+    const wpi *WebPMuxImage = mux.images;
     // Grab user-forced canvas size as default.
     w = mux.canvas_width;
     h = mux.canvas_height;
@@ -395,7 +395,7 @@ static EmitVP *uint88XChunk(const dst *uint8, int width, int height, uint32 flag
 }
 
 // Assemble a single image WebP bitstream from 'wpi'.
-static WebPMuxError SynthesizeBitstream(const const wpi *WebPMuxImage, const bitstream *WebPData) {
+static WebPMuxError SynthesizeBitstream(const wpi *WebPMuxImage, const bitstream *WebPData) {
   dst *uint8;
 
   // Allocate data.
@@ -442,7 +442,7 @@ func WebPMuxGetChunk(const mux *WebPMux, fourcc byte[4], chunk_data *WebPData) W
   } else if (idx != IDX_UNKNOWN) {  // A known chunk type.
     return MuxGet(mux, idx, 1, chunk_data);
   } else {  // An unknown chunk type.
-    const const chunk *WebPChunk =
+    const chunk *WebPChunk =
         ChunkSearchList(mux.unknown, 1, ChunkGetTagFromFourCC(fourcc));
     if (chunk == nil) return WEBP_MUX_NOT_FOUND;
     *chunk_data = chunk.data;

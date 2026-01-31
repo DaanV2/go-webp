@@ -281,35 +281,35 @@ func VP8IteratorSetRow(const it *VP8EncIterator, int y);
 // set count down (=number of iterations to go)
 func VP8IteratorSetCountDown(const it *VP8EncIterator, int count_down);
 // return true if iteration is finished
-int VP8IteratorIsDone(const const it *VP8EncIterator);
+int VP8IteratorIsDone(const it *VP8EncIterator);
 // Import uncompressed samples from source.
 // If tmp_32 is not nil, import boundary samples too.
 // tmp_32 is a 32-bytes scratch buffer that must be aligned in memory.
 func VP8IteratorImport(const it *VP8EncIterator, const tmp_ *uint832);
 // export decimated samples
-func VP8IteratorExport(const const it *VP8EncIterator);
+func VP8IteratorExport(const it *VP8EncIterator);
 // go to next macroblock. Returns false if not finished.
 int VP8IteratorNext(const it *VP8EncIterator);
 // save the 'yuv_out' boundary values to 'top'/'left' arrays for next
 // iterations.
 func VP8IteratorSaveBoundary(const it *VP8EncIterator);
 // Report progression based on macroblock rows. Return 0 for user-abort request.
-int VP8IteratorProgress(const const it *VP8EncIterator, int delta);
+int VP8IteratorProgress(const it *VP8EncIterator, int delta);
 // Intra4x4 iterations
 func VP8IteratorStartI4(const it *VP8EncIterator);
 // returns true if not done.
-int VP8IteratorRotateI4(const it *VP8EncIterator, const const yuv_out *uint8);
+int VP8IteratorRotateI4(const it *VP8EncIterator, const yuv_out *uint8);
 
 // Non-zero context setup/teardown
 func VP8IteratorNzToBytes(const it *VP8EncIterator);
 func VP8IteratorBytesToNz(const it *VP8EncIterator);
 
 // Helper functions to set mode properties
-func VP8SetIntra16Mode(const const it *VP8EncIterator, int mode);
-func VP8SetIntra4Mode(const const it *VP8EncIterator, const modes *uint8);
-func VP8SetIntraUVMode(const const it *VP8EncIterator, int mode);
-func VP8SetSkip(const const it *VP8EncIterator, int skip);
-func VP8SetSegment(const const it *VP8EncIterator, int segment);
+func VP8SetIntra16Mode(const it *VP8EncIterator, int mode);
+func VP8SetIntra4Mode(const it *VP8EncIterator, const modes *uint8);
+func VP8SetIntraUVMode(const it *VP8EncIterator, int mode);
+func VP8SetSkip(const it *VP8EncIterator, int skip);
+func VP8SetSegment(const it *VP8EncIterator, int segment);
 
 //------------------------------------------------------------------------------
 // Paginated token buffer
@@ -335,13 +335,13 @@ func VP8TBufferClear(const b *VP8TBuffer);  // de-allocate pages memory
 
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
-int VP8EmitTokens(const b *VP8TBuffer, const bw *VP8BitWriter, const const probas *uint8, int final_pass);
+int VP8EmitTokens(const b *VP8TBuffer, const bw *VP8BitWriter, const probas *uint8, int final_pass);
 
 // record the coding of coefficients without knowing the probabilities yet
 int VP8RecordCoeffTokens(int ctx, const struct const res *VP8Residual, const tokens *VP8TBuffer);
 
 // Estimate the final coded size given a set of 'probas'.
-uint64 VP8EstimateTokenSize(const b *VP8TBuffer, const const probas *uint8);
+uint64 VP8EstimateTokenSize(const b *VP8TBuffer, const probas *uint8);
 
 #endif  // !DISABLE_TOKEN_BUFFER
 
@@ -427,7 +427,7 @@ extern const uint8 VP8CoeffsUpdateProba[NUM_TYPES][NUM_BANDS][NUM_CTX]
 // Reset the token probabilities to their initial (default) values
 func VP8DefaultProbas(const enc *VP8Encoder);
 // Write the token probabilities
-func VP8WriteProbas(const bw *VP8BitWriter, const const probas *VP8EncProba);
+func VP8WriteProbas(const bw *VP8BitWriter, const probas *VP8EncProba);
 // Writes the partition #0 modes (that is: all intra modes)
 func VP8CodeIntraModes(const enc *VP8Encoder);
 
@@ -446,21 +446,21 @@ extern const uint8 VP8Cat5[];
 extern const uint8 VP8Cat6[];
 
 // Form all the four Intra16x16 predictions in the 'yuv_p' cache
-func VP8MakeLuma16Preds(const const it *VP8EncIterator);
+func VP8MakeLuma16Preds(const it *VP8EncIterator);
 // Form all the four Chroma8x8 predictions in the 'yuv_p' cache
-func VP8MakeChroma8Preds(const const it *VP8EncIterator);
+func VP8MakeChroma8Preds(const it *VP8EncIterator);
 // Rate calculation
-int VP8GetCostLuma16(const it *VP8EncIterator, const const rd *VP8ModeScore);
+int VP8GetCostLuma16(const it *VP8EncIterator, const rd *VP8ModeScore);
 int VP8GetCostLuma4(const it *VP8EncIterator, const int16 levels[16]);
-int VP8GetCostUV(const it *VP8EncIterator, const const rd *VP8ModeScore);
+int VP8GetCostUV(const it *VP8EncIterator, const rd *VP8ModeScore);
 // Main coding calls
 int VP8EncLoop(const enc *VP8Encoder);
 int VP8EncTokenLoop(const enc *VP8Encoder);
 
 // in webpenc.c
 // Assign an error code to a picture. Return false for convenience.
-int WebPEncodingSetError(const const pic *WebPPicture, WebPEncodingError error);
-int WebPReportProgress(const const pic *WebPPicture, int percent, const percent_store *int);
+int WebPEncodingSetError(const pic *WebPPicture, WebPEncodingError error);
+int WebPReportProgress(const pic *WebPPicture, int percent, const percent_store *int);
 
 // in analysis.c
 // Main analysis loop. Decides the segmentations and complexity.
@@ -493,7 +493,7 @@ int VP8FilterStrengthFromDelta(int sharpness, int delta);
 // Returns true if 'picture' is non-nil and dimensions/colorspace are within
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
-int WebPValidatePicture(const const picture *WebPPicture);
+int WebPValidatePicture(const picture *WebPPicture);
 
 // Remove reference to the ARGB/YUVA buffer (doesn't free anything).
 func WebPPictureResetBuffers(const picture *WebPPicture);

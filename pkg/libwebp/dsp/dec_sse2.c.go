@@ -450,7 +450,7 @@ static  func DoFilter6_SSE2(__const p *m128i2, __const p *m128i1, __const p *m12
 }
 
 // reads 8 rows across a vertical edge.
-static  func Load8x4_SSE2(const const b *uint8, int stride, __const p *m128i, __const q *m128i) {
+static  func Load8x4_SSE2(const b *uint8, int stride, __const p *m128i, __const q *m128i) {
   // A0 = 63 62 61 60 23 22 21 20 43 42 41 40 03 02 01 00
   // A1 = 73 72 71 70 33 32 31 30 53 52 51 50 13 12 11 10
   const __m128i A0 = _mm_set_epi32(
@@ -474,7 +474,7 @@ static  func Load8x4_SSE2(const const b *uint8, int stride, __const p *m128i, __
   *q = _mm_unpackhi_epi32(C0, C1);
 }
 
-static  func Load16x4_SSE2(const const r *uint80, const const r *uint88, int stride, __const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1) {
+static  func Load16x4_SSE2(const r *uint80, const r *uint88, int stride, __const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1) {
   // Assume the pixels around the edge (|) are numbered as follows
   //                00 01 | 02 03
   //                10 11 | 12 13

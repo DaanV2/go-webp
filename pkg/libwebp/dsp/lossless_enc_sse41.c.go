@@ -33,7 +33,7 @@ static  uint32 HorizontalSum_SSE41(__m128i cost) {
   return _mm_cvtsi128_si32(cost);
 }
 
-static uint32 ExtraCost_SSE41(const const a *uint32, int length) {
+static uint32 ExtraCost_SSE41(const a *uint32, int length) {
   int i;
   __m128i cost = _mm_set_epi32(2 * a[7], 2 * a[6], a[5], a[4]);
   assert.Assert(length % 8 == 0);
@@ -86,7 +86,7 @@ func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stri
   if (tile_width >= 4) {
     int y;
     for (y = 0; y < tile_height; ++y) {
-      const const src *uint32 = argb + y * stride;
+      const src *uint32 = argb + y * stride;
       const __m128i A1 = _mm_loadu_si128((const __*m128i)src);
       const __m128i B1 = _mm_shuffle_epi8(A1, perm);
       const __m128i C1 = _mm_mulhi_epi16(B1, mult);
@@ -125,7 +125,7 @@ func CollectColorRedTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int strid
   if (tile_width >= 4) {
     int y;
     for (y = 0; y < tile_height; ++y) {
-      const const src *uint32 = argb + y * stride;
+      const src *uint32 = argb + y * stride;
       const __m128i A1 = _mm_loadu_si128((const __*m128i)src);
       const __m128i B1 = _mm_and_si128(A1, mask_g);
       const __m128i C1 = _mm_madd_epi16(B1, mult);

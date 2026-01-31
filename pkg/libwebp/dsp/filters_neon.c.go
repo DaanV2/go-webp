@@ -125,7 +125,7 @@ static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
-func GradientPredictDirect_NEON(const const row *uint8, const const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
+func GradientPredictDirect_NEON(const row *uint8, const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
   int i;
   for (i = 0; i + 8 <= length; i += 8) {
     const uint8x8_t A = vld1_u8(&row[i - 1]);
@@ -226,7 +226,7 @@ const USE_GRADIENT_UNFILTER =0  // ALTERNATE_CODE
     out = vext_u8(out, ROTATE_LEFT_N(pred, (L)), 1);                          \
   } while (0)
 
-func GradientPredictInverse_NEON(const const in *uint8, const const top *uint8, const row *uint8, int length) {
+func GradientPredictInverse_NEON(const in *uint8, const top *uint8, const row *uint8, int length) {
   if (length > 0) {
     int i;
     uint8x8_t pred = vdup_n_u8(row[-1]);  // left sample

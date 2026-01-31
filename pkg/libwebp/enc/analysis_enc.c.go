@@ -43,7 +43,7 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
   for (y = 1; y < h - 1; ++y) {
     for (x = 1; x < w - 1; ++x) {
       int cnt[NUM_MB_SEGMENTS] = {0}
-      const const mb *VP8MBInfo = &enc.mb_info[x + w * y];
+      const mb *VP8MBInfo = &enc.mb_info[x + w * y];
       int majority_seg = mb.segment;
       // Check the 8 neighbouring segment values.
       cnt[mb[-w - 1].segment]++;  // top-left
@@ -114,7 +114,7 @@ static int FinalAlphaValue(int alpha) {
   return clip(alpha, 0, MAX_ALPHA);
 }
 
-static int GetAlpha(const const histo *VP8Histogram) {
+static int GetAlpha(const histo *VP8Histogram) {
   // 'alpha' will later be clipped to [0..MAX_ALPHA] range, clamping outer
   // values which happen to be mostly noise. This leaves the maximum precision
   // for handling the useful small values which contribute most.
@@ -312,7 +312,7 @@ static int MBAnalyzeBestUVMode(const it *VP8EncIterator) {
 }
 
 func MBAnalyze(const it *VP8EncIterator, int alphas[MAX_ALPHA + 1], const alpha *int, const uv_alpha *int) {
-  const const enc *VP8Encoder = it.enc;
+  const enc *VP8Encoder = it.enc;
   int best_alpha, best_uv_alpha;
 
   VP8SetIntra16Mode(it, 0);  // default: Intra16, DC_PRED
@@ -397,7 +397,7 @@ static int DoSegmentsJob(arg *void1, arg *void2) {
 }
 
 #ifdef WEBP_USE_THREAD
-func MergeJobs(const const src *SegmentJob, const dst *SegmentJob) {
+func MergeJobs(const src *SegmentJob, const dst *SegmentJob) {
   int i;
   for (i = 0; i <= MAX_ALPHA; ++i) dst.alphas[i] += src.alphas[i];
   dst.alpha += src.alpha;
@@ -440,7 +440,7 @@ int VP8EncAnalyze(const enc *VP8Encoder) {
 #else
     do_mt := 0;
 #endif
-    const const worker_interface *WebPWorkerInterface =
+    const worker_interface *WebPWorkerInterface =
         WebPGetWorkerInterface();
     SegmentJob main_job;
     if (do_mt) {

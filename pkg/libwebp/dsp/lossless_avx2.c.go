@@ -330,7 +330,7 @@ func PredictorAdd12_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func AddGreenToBlueAndRed_AVX2(const const src *uint32, int num_pixels, dst *uint32) {
+func AddGreenToBlueAndRed_AVX2(const src *uint32, int num_pixels, dst *uint32) {
   int i;
   const __m256i kCstShuffle = _mm256_set_epi8(
       -1, 29, -1, 29, -1, 25, -1, 25, -1, 21, -1, 21, -1, 17, -1, 17, -1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
@@ -349,7 +349,7 @@ func AddGreenToBlueAndRed_AVX2(const const src *uint32, int num_pixels, dst *uin
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColorInverse_AVX2(const const m *VP8LMultipliers, const const src *uint32, int num_pixels, dst *uint32) {
+func TransformColorInverse_AVX2(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
 // sign-extended multiplying constants, pre-shifted by 5.
 #define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
   const __m256i mults_rb = _mm256_set1_epi32(

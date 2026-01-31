@@ -240,7 +240,7 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
     // Finish with left-overs.
     for (; i < w; ++i) {
       const rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
-      const const alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
+      const alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
       a := alpha[4 * i];
       if (a != 0xff) {
         mult := MULTIPLIER(a);

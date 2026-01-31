@@ -209,8 +209,8 @@ extern func (*WebPImportYUVAFromRGBALastLine)(
     int has_alpha, int width, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 
 // Internal function to that can be *WebPImportYUVAFromRGBA reused.
-func WebPAccumulateRGBA(const const r_ptr *uint8, const const g_ptr *uint8, const const b_ptr *uint8, const const a_ptr *uint8, int rgb_stride, dst *uint16, int width);
-func WebPAccumulateRGB(const const r_ptr *uint8, const const g_ptr *uint8, const const b_ptr *uint8, int step, int rgb_stride, dst *uint16, int width);
+func WebPAccumulateRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, const a_ptr *uint8, int rgb_stride, dst *uint16, int width);
+func WebPAccumulateRGB(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, int step, int rgb_stride, dst *uint16, int width);
 // Must be called before calling *WebPAccumulateRGB.
 func WebPInitGammaTables(void);
 

@@ -126,7 +126,7 @@ static  int GradientPredictor_SSE2(uint8 a, uint8 b, uint8 c) {
   return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
 }
 
-func GradientPredictDirect_SSE2(const const row *uint8, const const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
+func GradientPredictDirect_SSE2(const row *uint8, const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
   max_pos := length & ~7;
   int i;
   const __m128i zero = _mm_setzero_si128();
@@ -230,7 +230,7 @@ func VerticalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int w
   }
 }
 
-func GradientPredictInverse_SSE2(const const in *uint8, const const top *uint8, const row *uint8, int length) {
+func GradientPredictInverse_SSE2(const in *uint8, const top *uint8, const row *uint8, int length) {
   if (length > 0) {
     int i;
     max_pos := length & ~7;

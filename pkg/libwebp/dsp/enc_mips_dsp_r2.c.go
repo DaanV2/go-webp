@@ -151,7 +151,7 @@ func FTransform_MIPSdspR2(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT re
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   int temp9, temp10, temp11, temp12, temp13, temp14, temp15, temp16;
   int temp17, temp18, temp19, temp20;
-  const const args *int[3] = {(const *int)src, (const *int)ref, (const *int)out}
+  const args *int[3] = {(const *int)src, (const *int)ref, (const *int)out}
 
   __asm__ volatile(
     HORIZONTAL_PASS(0, temp0,  temp1,  temp2,  temp3)

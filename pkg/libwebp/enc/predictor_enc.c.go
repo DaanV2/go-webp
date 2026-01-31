@@ -132,7 +132,7 @@ static uint32 AddGreenToBlueAndRed(uint32 argb) {
   return (argb & uint(0xff00ff00)) | red_blue;
 }
 
-func MaxDiffsForRow(int width, int stride, const const argb *uint32, const max_diffs *uint8, int used_subtract_green) {
+func MaxDiffsForRow(int width, int stride, const argb *uint32, const max_diffs *uint8, int used_subtract_green) {
   uint32 current, up, down, left, right;
   int x;
   if (width <= 2) return;
@@ -238,7 +238,7 @@ static uint32 NearLossless(uint32 value, uint32 predict, int max_quantization, i
 // the deviation further to pixels which depend on the current pixel for their
 // predictions.
 static  func GetResidual(
-    int width, int height, const upper_row *uint32, const current_row *uint32, const const max_diffs *uint8, int mode, int x_start, int x_end, int y, int max_quantization, int exact, int used_subtract_green, const out *uint32) {
+    int width, int height, const upper_row *uint32, const current_row *uint32, const max_diffs *uint8, int mode, int x_start, int x_end, int y, int max_quantization, int exact, int used_subtract_green, const out *uint32) {
   if (exact) {
     PredictBatch(mode, x_start, y, x_end - x_start, current_row, upper_row, out);
   } else {
@@ -298,7 +298,7 @@ static  GetHistoArgb *uint32(const all_histos *uint32, int subsampling_index, in
 }
 
 static  const GetHistoArgbConst *uint32(
-    const const all_histos *uint32, int subsampling_index, int mode) {
+    const all_histos *uint32, int subsampling_index, int mode) {
   return &all_histos[subsampling_index * kNumPredModes * HISTO_SIZE +
                      mode * HISTO_SIZE];
 }
@@ -310,7 +310,7 @@ static  GetAccumulatedHisto *uint32(all_accumulated *uint32, int subsampling_ind
 
 // Find and store the best predictor for a tile at subsampling
 // 'subsampling_index'.
-func GetBestPredictorForTile(const const all_argb *uint32, int subsampling_index, int tile_x, int tile_y, int tiles_per_row, all_accumulated_argb *uint32, *uint32* const all_modes, const all_pred_histos *uint32) {
+func GetBestPredictorForTile(const all_argb *uint32, int subsampling_index, int tile_x, int tile_y, int tiles_per_row, all_accumulated_argb *uint32, *uint32* const all_modes, const all_pred_histos *uint32) {
   const accumulated_argb *uint32 =
       GetAccumulatedHisto(all_accumulated_argb, subsampling_index);
   const modes *uint32 = all_modes[subsampling_index];
@@ -329,7 +329,7 @@ func GetBestPredictorForTile(const const all_argb *uint32, int subsampling_index
   const best_histo *uint32 =
       GetHistoArgbConst(all_argb, /*subsampling_index=*/0, best_mode);
   for (mode = 0; mode < kNumPredModes; ++mode) {
-    const const histo_argb *uint32 =
+    const histo_argb *uint32 =
         GetHistoArgbConst(all_argb, subsampling_index, mode);
     cur_diff := PredictionCostSpatialHistogram(
         accumulated_argb, histo_argb, mode, left_mode, above_mode);
@@ -352,7 +352,7 @@ func GetBestPredictorForTile(const const all_argb *uint32, int subsampling_index
 // max_quantization (the actual quantization level depends on smoothness near
 // the given pixel).
 func ComputeResidualsForTile(
-    int width, int height, int tile_x, int tile_y, int min_bits, uint32 update_up_to_index, const all_argb *uint32, const argb_scratch *uint32, const const argb *uint32, int max_quantization, int exact, int used_subtract_green) {
+    int width, int height, int tile_x, int tile_y, int min_bits, uint32 update_up_to_index, const all_argb *uint32, const argb_scratch *uint32, const argb *uint32, int max_quantization, int exact, int used_subtract_green) {
   start_x := tile_x << min_bits;
   start_y := tile_y << min_bits;
   tile_size := 1 << min_bits;
@@ -427,7 +427,7 @@ func ComputeResidualsForTile(
 // If max_quantization > 1, applies near lossless processing, quantizing
 // residuals to multiples of quantization levels up to max_quantization
 // (the actual quantization level depends on smoothness near the given pixel).
-func CopyImageWithPrediction(int width, int height, int bits, const const modes *uint32, const argb_scratch *uint32, const argb *uint32, int low_effort, int max_quantization, int exact, int used_subtract_green) {
+func CopyImageWithPrediction(int width, int height, int bits, const modes *uint32, const argb_scratch *uint32, const argb *uint32, int low_effort, int max_quantization, int exact, int used_subtract_green) {
   tiles_per_row := VP8LSubSampleSize(width, bits);
   // The width of upper_row and current_row is one pixel larger than image width
   // to allow the top right pixel to point to the leftmost pixel of the next row
@@ -564,7 +564,7 @@ func VP8LOptimizeSampling(const image *uint32, int full_width, int full_height, 
 // super-tile is updated. If this super-tile is finished, its histogram is used
 // to update the histogram of the next super-tile and so on up to the max-tile.
 func GetBestPredictorsAndSubSampling(
-    int width, int height, const int min_bits, const int max_bits, const argb_scratch *uint32, const const argb *uint32, int max_quantization, int exact, int used_subtract_green, const const pic *WebPPicture, int percent_range, const percent *int, *uint32* const all_modes, best_bits *int, *uint32* best_mode) {
+    int width, int height, const int min_bits, const int max_bits, const argb_scratch *uint32, const argb *uint32, int max_quantization, int exact, int used_subtract_green, const pic *WebPPicture, int percent_range, const percent *int, *uint32* const all_modes, best_bits *int, *uint32* best_mode) {
   tiles_per_row := VP8LSubSampleSize(width, min_bits);
   tiles_per_col := VP8LSubSampleSize(height, min_bits);
   int64 best_cost;
@@ -682,7 +682,7 @@ func GetBestPredictorsAndSubSampling(
   for (subsampling_index = 0; subsampling_index <= max_subsampling_index;
        ++subsampling_index) {
     int plane;
-    const const accumulated *uint32 =
+    const accumulated *uint32 =
         GetAccumulatedHisto(all_accumulated_argb, subsampling_index);
     int64 cost = VP8LShannonEntropy(
         &all_pred_histos[subsampling_index * kNumPredModes], kNumPredModes);
@@ -705,7 +705,7 @@ func GetBestPredictorsAndSubSampling(
 // with respect to predictions. If near_lossless_quality < 100, applies
 // near lossless processing, shaving off more bits of residuals for lower
 // qualities.
-int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low_effort, const argb *uint32, const argb_scratch *uint32, const image *uint32, int near_lossless_quality, int exact, int used_subtract_green, const const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int) {
+int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low_effort, const argb *uint32, const argb_scratch *uint32, const image *uint32, int near_lossless_quality, int exact, int used_subtract_green, const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int) {
   int percent_start = *percent;
   max_quantization := 1 << VP8LNearLosslessBits(near_lossless_quality);
   if (low_effort) {
@@ -769,7 +769,7 @@ static  func ColorCodeToMultipliers(uint32 color_code, const m *VP8LMultipliers)
 }
 
 static  uint32
-MultipliersToColorCode(const const m *VP8LMultipliers) {
+MultipliersToColorCode(const m *VP8LMultipliers) {
   return uint(0xff000000) | ((uint32)(m.red_to_blue) << 16) |
          ((uint32)(m.green_to_blue) << 8) | m.green_to_red;
 }
@@ -908,7 +908,7 @@ func GetBestGreenRedToBlue(const argb *uint32, int stride, int tile_width, int t
 #undef kGreenRedToBlueNumAxis
 
 static VP8LMultipliers GetBestColorTransformForTile(
-    int tile_x, int tile_y, int bits, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, int xsize, int ysize, const uint32 accumulated_red_histo[256], const uint32 accumulated_blue_histo[256], const const argb *uint32) {
+    int tile_x, int tile_y, int bits, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, int xsize, int ysize, const uint32 accumulated_red_histo[256], const uint32 accumulated_blue_histo[256], const argb *uint32) {
   max_tile_size := 1 << bits;
   tile_y_offset := tile_y * max_tile_size;
   tile_x_offset := tile_x * max_tile_size;
@@ -916,7 +916,7 @@ static VP8LMultipliers GetBestColorTransformForTile(
   all_y_max := GetMin(tile_y_offset + max_tile_size, ysize);
   tile_width := all_x_max - tile_x_offset;
   tile_height := all_y_max - tile_y_offset;
-  const const tile_argb *uint32 =
+  const tile_argb *uint32 =
       argb + tile_y_offset * xsize + tile_x_offset;
   VP8LMultipliers best_tx;
   MultipliersClear(&best_tx);
@@ -936,7 +936,7 @@ func CopyTileWithColorTransform(int xsize, int ysize, int tile_x, int tile_y, in
   }
 }
 
-int VP8LColorSpaceTransform(int width, int height, int bits, int quality, const argb *uint32, image *uint32, const const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int) {
+int VP8LColorSpaceTransform(int width, int height, int bits, int quality, const argb *uint32, image *uint32, const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int) {
   max_tile_size := 1 << bits;
   tile_xsize := VP8LSubSampleSize(width, bits);
   tile_ysize := VP8LSubSampleSize(height, bits);

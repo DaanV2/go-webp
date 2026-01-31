@@ -45,7 +45,7 @@ const uint8 VP8EncBands[16 + 1] = {
 //------------------------------------------------------------------------------
 // Mode costs
 
-static int GetResidualCost_C(int ctx0, const const res *VP8Residual) {
+static int GetResidualCost_C(int ctx0, const res *VP8Residual) {
   int n = res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   const int p0 = res.prob[n][ctx0][0];

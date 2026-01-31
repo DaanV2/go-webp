@@ -324,7 +324,7 @@ func VP8LCollectColorBlueTransforms_C(const WEBP_RESTRICT argb *uint32, int stri
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_C(const const array *uint321, const const array *uint322, int length) {
+static int VectorMismatch_C(const array *uint321, const array *uint322, int length) {
   int match_len = 0;
 
   while (match_len < length && array1[match_len] == array2[match_len]) {

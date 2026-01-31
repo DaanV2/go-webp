@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // WebPPicture
 //------------------------------------------------------------------------------
 
-static int DummyWriter(const data *uint8, uint64 data_size, const const picture *WebPPicture) {
+static int DummyWriter(const data *uint8, uint64 data_size, const picture *WebPPicture) {
   // The following are to prevent 'unused variable' error message.
   (void)data;
   (void)data_size;
@@ -49,7 +49,7 @@ int WebPPictureInitInternal(picture *WebPPicture, int version) {
 
 //------------------------------------------------------------------------------
 
-int WebPValidatePicture(const const picture *WebPPicture) {
+int WebPValidatePicture(const picture *WebPPicture) {
   if (picture == nil) return 0;
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
       picture.height <= 0 || picture.height > INT_MAX / 4) {
@@ -233,7 +233,7 @@ func WebPMemoryWriterClear(writer *WebPMemoryWriter) {
 //------------------------------------------------------------------------------
 // Simplest high-level calls:
 
-typedef int (*Importer)(const *WebPPicture, const const *uint8, int);
+typedef int (*Importer)(const *WebPPicture, const *uint8, int);
 
 static uint64 Encode(const rgba *uint8, int width, int height, int stride, Importer import, float quality_factor, int lossless, *uint8* output) {
   WebPPicture pic;

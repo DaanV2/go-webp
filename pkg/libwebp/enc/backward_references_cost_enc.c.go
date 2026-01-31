@@ -62,7 +62,7 @@ func ConvertPopulationCountTableToBitEstimates(
   }
 }
 
-static int CostModelBuild(const m *CostModel, int xsize, int cache_bits, const const refs *VP8LBackwardRefs) {
+static int CostModelBuild(const m *CostModel, int xsize, int cache_bits, const refs *VP8LBackwardRefs) {
   int ok = 0;
   const histo *VP8LHistogram = VP8LAllocateHistogram(cache_bits);
   if (histo == nil) goto Error;
@@ -85,24 +85,24 @@ Error:
   return ok;
 }
 
-static  int64 GetLiteralCost(const const m *CostModel, uint32 v) {
+static  int64 GetLiteralCost(const m *CostModel, uint32 v) {
   return (int64)m.alpha[v >> 24] + m.red[(v >> 16) & 0xff] +
          m.literal[(v >> 8) & 0xff] + m.blue[v & 0xff];
 }
 
-static  int64 GetCacheCost(const const m *CostModel, uint32 idx) {
+static  int64 GetCacheCost(const m *CostModel, uint32 idx) {
   literal_idx := VALUES_IN_BYTE + NUM_LENGTH_CODES + idx;
   return (int64)m.literal[literal_idx];
 }
 
-static  int64 GetLengthCost(const const m *CostModel, uint32 length) {
+static  int64 GetLengthCost(const m *CostModel, uint32 length) {
   int code, extra_bits;
   VP8LPrefixEncodeBits(length, &code, &extra_bits);
   return (int64)m.literal[VALUES_IN_BYTE + code] +
          ((int64)extra_bits << LOG_2_PRECISION_BITS);
 }
 
-static  int64 GetDistanceCost(const const m *CostModel, uint32 distance) {
+static  int64 GetDistanceCost(const m *CostModel, uint32 distance) {
   int code, extra_bits;
   VP8LPrefixEncodeBits(distance, &code, &extra_bits);
   return (int64)m.distance[code] +
@@ -110,7 +110,7 @@ static  int64 GetDistanceCost(const const m *CostModel, uint32 distance) {
 }
 
 static  func AddSingleLiteralWithCostModel(
-    const const argb *uint32, const hashers *VP8LColorCache, const const cost_model *CostModel, int idx, int use_color_cache, int64 prev_cost, const cost *int64, const dist_array *uint16) {
+    const argb *uint32, const hashers *VP8LColorCache, const cost_model *CostModel, int idx, int use_color_cache, int64 prev_cost, const cost *int64, const dist_array *uint16) {
   int64 cost_val = prev_cost;
   color := argb[idx];
   ix := use_color_cache ? VP8LColorCacheContains(hashers, color) : -1;
@@ -192,7 +192,7 @@ func CostIntervalAddToFreeList(const manager *CostManager, const interval *CostI
   manager.free_intervals = interval;
 }
 
-static int CostIntervalIsInFreeList(const const manager *CostManager, const const interval *CostInterval) {
+static int CostIntervalIsInFreeList(const manager *CostManager, const interval *CostInterval) {
   return (interval >= &manager.intervals[0] &&
           interval <= &manager.intervals[COST_MANAGER_MAX_FREE_LIST - 1]);
 }
@@ -207,7 +207,7 @@ func CostManagerInitFreeList(const manager *CostManager) {
 
 func DeleteIntervalList(const manager *CostManager, const interval *CostInterval) {
   while (interval != nil) {
-    const const next *CostInterval = interval.next;
+    const next *CostInterval = interval.next;
     if (!CostIntervalIsInFreeList(manager, interval)) {
       WebPSafeFree((*void)interval);
     }  // else: do nothing
@@ -232,7 +232,7 @@ func CostManagerClear(const manager *CostManager) {
   CostManagerInitFreeList(manager);
 }
 
-static int CostManagerInit(const manager *CostManager, const dist_array *uint16, int pix_count, const const cost_model *CostModel) {
+static int CostManagerInit(const manager *CostManager, const dist_array *uint16, int pix_count, const cost_model *CostModel) {
   int i;
   cost_cache_size := (pix_count > MAX_LENGTH) ? MAX_LENGTH : pix_count;
 
@@ -437,7 +437,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
   uint64 i;
   interval *CostInterval = manager.head;
   interval_next *CostInterval;
-  const const cost_cache_intervals *CostCacheInterval =
+  const cost_cache_intervals *CostCacheInterval =
       manager.cache_intervals;
   // If the interval is small enough, no need to deal with the heavy
   // interval logic, just serialize it right away. This constant is empirical.
@@ -534,7 +534,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
 }
 
 static int BackwardReferencesHashChainDistanceOnly(
-    int xsize, int ysize, const const argb *uint32, int cache_bits, const const hash_chain *VP8LHashChain, const const refs *VP8LBackwardRefs, const dist_array *uint16) {
+    int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs, const dist_array *uint16) {
   int i;
   int ok = 0;
   int cc_init = 0;
@@ -666,7 +666,7 @@ func TraceBackwards(const dist_array *uint16, int dist_array_size, *uint16* cons
 }
 
 static int BackwardReferencesHashChainFollowChosenPath(
-    const const argb *uint32, int cache_bits, const const chosen_path *uint16, int chosen_path_size, const const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs) {
+    const argb *uint32, int cache_bits, const chosen_path *uint16, int chosen_path_size, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs) {
   use_color_cache := (cache_bits > 0);
   int ix;
   int i = 0;
@@ -716,8 +716,8 @@ Error:
 
 // Returns 1 on success.
 extern int VP8LBackwardReferencesTraceBackwards(
-    int xsize, int ysize, const const argb *uint32, int cache_bits, const const hash_chain *VP8LHashChain, const const refs_src *VP8LBackwardRefs, const refs_dst *VP8LBackwardRefs);
-int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize, const const argb *uint32, int cache_bits, const const hash_chain *VP8LHashChain, const const refs_src *VP8LBackwardRefs, const refs_dst *VP8LBackwardRefs) {
+    int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs_src *VP8LBackwardRefs, const refs_dst *VP8LBackwardRefs);
+int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs_src *VP8LBackwardRefs, const refs_dst *VP8LBackwardRefs) {
   int ok = 0;
   dist_array_size := xsize * ysize;
   chosen_path *uint16 = nil;

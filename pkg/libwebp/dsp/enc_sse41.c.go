@@ -73,7 +73,7 @@ func CollectHistogram_SSE41(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT 
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int TTransform_SSE41(const inA *uint8, const inB *uint8, const const w *uint16) {
+static int TTransform_SSE41(const inA *uint8, const inB *uint8, const w *uint16) {
   int32 sum[4];
   __m128i tmp_0, tmp_1, tmp_2, tmp_3;
 
@@ -196,7 +196,7 @@ static int Disto16x16_SSE41(const WEBP_RESTRICT const a *uint8, const WEBP_RESTR
                2 * (D) + 1, 2 * (D) + 0, 2 * (C) + 1, 2 * (C) + 0, \
                2 * (B) + 1, 2 * (B) + 0, 2 * (A) + 1, 2 * (A) + 0)
 
-static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const const sharpen *uint16, const const mtx *VP8Matrix) {
+static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], const sharpen *uint16, const mtx *VP8Matrix) {
   const __m128i max_coeff_2047 = _mm_set1_epi16(MAX_LEVEL);
   const __m128i zero = _mm_setzero_si128();
   __m128i out0, out8;
@@ -307,7 +307,7 @@ static int QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16], const WEBP_RESTRI
 
 static int Quantize2Blocks_SSE41(int16 in[32], int16 out[32], const WEBP_RESTRICT const mtx *VP8Matrix) {
   int nz;
-  const const sharpen *uint16 = &mtx.sharpen[0];
+  const sharpen *uint16 = &mtx.sharpen[0];
   nz = DoQuantizeBlock_SSE41(in + 0 * 16, out + 0 * 16, sharpen, mtx) << 0;
   nz |= DoQuantizeBlock_SSE41(in + 1 * 16, out + 1 * 16, sharpen, mtx) << 1;
   return nz;

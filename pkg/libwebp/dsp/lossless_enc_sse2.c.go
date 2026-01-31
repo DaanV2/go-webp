@@ -91,7 +91,7 @@ func CollectColorBlueTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int strid
   const __m128i mask_b = _mm_set1_epi32(0x0000ff);  // blue mask
   int y;
   for (y = 0; y < tile_height; ++y) {
-    const const src *uint32 = argb + y * stride;
+    const src *uint32 = argb + y * stride;
     int i, x;
     for (x = 0; x + SPAN <= tile_width; x += SPAN) {
       uint16 values[SPAN];
@@ -133,7 +133,7 @@ func CollectColorRedTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int stride
 
   int y;
   for (y = 0; y < tile_height; ++y) {
-    const const src *uint32 = argb + y * stride;
+    const src *uint32 = argb + y * stride;
     int i, x;
     for (x = 0; x + SPAN <= tile_width; x += SPAN) {
       uint16 values[SPAN];
@@ -314,7 +314,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_SSE2(const const array *uint321, const const array *uint322, int length) {
+static int VectorMismatch_SSE2(const array *uint321, const array *uint322, int length) {
   int match_len;
 
   if (length >= 12) {
@@ -464,7 +464,7 @@ func PredictorSub0_SSE2(const in *uint32, const upper *uint32, int num_pixels, W
 
 #define GENERATE_PREDICTOR_1(X, IN)                                          \
   func PredictorSub##X##_SSE2(                                        \
-      const const in *uint32, const const upper *uint32, int num_pixels, \
+      const in *uint32, const upper *uint32, int num_pixels, \
       WEBP_RESTRICT const out *uint32) {                                   \
     int i;                                                                   \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                               \

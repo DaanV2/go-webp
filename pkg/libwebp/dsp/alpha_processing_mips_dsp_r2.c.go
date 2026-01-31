@@ -118,7 +118,7 @@ func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
 func PackARGB_MIPSdspR2(const a *uint8, const r *uint8, const g *uint8, const b *uint8, int len, out *uint32) {
   int temp0, temp1, temp2, temp3, offset;
   rest := len & 1;
-  const const loop_end *uint32 = out + len - rest;
+  const loop_end *uint32 = out + len - rest;
   step := 4;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
@@ -156,7 +156,7 @@ func PackRGB_MIPSdspR2(const r *uint8, const g *uint8, const b *uint8, int len, 
   int temp0, temp1, temp2, offset;
   rest := len & 1;
   a := 0xff;
-  const const loop_end *uint32 = out + len - rest;
+  const loop_end *uint32 = out + len - rest;
   __asm__ volatile(
       "xor          %[offset],   %[offset], %[offset]    \n\t"
       "beq          %[loop_end], %[out],    0f           \n\t"

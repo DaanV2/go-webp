@@ -49,7 +49,7 @@ static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x8_t sh
 #endif  // USE_VTBLQ
 
 func SubtractGreenFromBlueAndRed_NEON(argb_data *uint32, int num_pixels) {
-  const const end *uint32 = argb_data + (num_pixels & ~3);
+  const end *uint32 = argb_data + (num_pixels & ~3);
 #ifdef USE_VTBLQ
   const uint8x16_t shuffle = vld1q_u8(kGreenShuffle);
 #else

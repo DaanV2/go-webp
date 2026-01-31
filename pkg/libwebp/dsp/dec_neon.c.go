@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 // This intrinsics version makes gcc-4.6.3 crash during Load4x??() compilation
 // (register alloc, probably). The variants somewhat mitigate the problem, but
 // not quite. HFilter16i() remains problematic.
-static  uint8x8x4_t Load4x8_NEON(const const src *uint8, int stride) {
+static  uint8x8x4_t Load4x8_NEON(const src *uint8, int stride) {
   const uint8x8_t zero = vdup_n_u8(0);
   uint8x8x4_t out;
   INIT_VECTOR4(out, zero, zero, zero, zero);
@@ -44,7 +44,7 @@ static  uint8x8x4_t Load4x8_NEON(const const src *uint8, int stride) {
   return out;
 }
 
-static  func Load4x16_NEON(const const src *uint8, int stride, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1) {
+static  func Load4x16_NEON(const src *uint8, int stride, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1) {
   // row0 = p1[0..7]|p0[0..7]|q0[0..7]|q1[0..7]
   // row8 = p1[8..15]|p0[8..15]|q0[8..15]|q1[8..15]
   const uint8x8x4_t row0 = Load4x8_NEON(src - 2 + 0 * stride, stride);
@@ -101,12 +101,12 @@ static  func Load4x16_NEON(const src *uint8, int stride, uint8x16_t* const p1, u
 #endif  // !WORK_AROUND_GCC
 
 static  func Load8x16_NEON(
-    const const src *uint8, int stride, uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2, uint8x16_t* const q3) {
+    const src *uint8, int stride, uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2, uint8x16_t* const q3) {
   Load4x16_NEON(src - 2, stride, p3, p2, p1, p0);
   Load4x16_NEON(src + 2, stride, q0, q1, q2, q3);
 }
 
-static  func Load16x4_NEON(const const src *uint8, int stride, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1) {
+static  func Load16x4_NEON(const src *uint8, int stride, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1) {
   *p1 = vld1q_u8(src - 2 * stride);
   *p0 = vld1q_u8(src - 1 * stride);
   *q0 = vld1q_u8(src + 0 * stride);
@@ -114,13 +114,13 @@ static  func Load16x4_NEON(const const src *uint8, int stride, uint8x16_t* const
 }
 
 static  func Load16x8_NEON(
-    const const src *uint8, int stride, uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2, uint8x16_t* const q3) {
+    const src *uint8, int stride, uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2, uint8x16_t* const q3) {
   Load16x4_NEON(src - 2 * stride, stride, p3, p2, p1, p0);
   Load16x4_NEON(src + 2 * stride, stride, q0, q1, q2, q3);
 }
 
 static  func Load8x8x2_NEON(
-    const const u *uint8, const const v *uint8, int stride, uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2, uint8x16_t* const q3) {
+    const u *uint8, const v *uint8, int stride, uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2, uint8x16_t* const q3) {
   // We pack the 8x8 u-samples in the lower half of the uint8x16_t destination
   // and the v-samples on the higher half.
   *p3 = vcombine_u8(vld1_u8(u - 4 * stride), vld1_u8(v - 4 * stride));
@@ -139,7 +139,7 @@ static  func Load8x8x2_NEON(
   vcombine_u8(vld1_u8(u - 4 + (ROW) * stride), vld1_u8(v - 4 + (ROW) * stride))
 
 static  func Load8x8x2T_NEON(
-    const const u *uint8, const const v *uint8, int stride, uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2, uint8x16_t* const q3) {
+    const u *uint8, const v *uint8, int stride, uint8x16_t* const p3, uint8x16_t* const p2, uint8x16_t* const p1, uint8x16_t* const p0, uint8x16_t* const q0, uint8x16_t* const q1, uint8x16_t* const q2, uint8x16_t* const q3) {
   // We pack the 8x8 u-samples in the lower half of the uint8x16_t destination
   // and the v-samples on the higher half.
   const uint8x16_t row0 = LOAD_UV_8(0);

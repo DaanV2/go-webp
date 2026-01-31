@@ -102,10 +102,10 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
 //     pop += 2;
 //   }
 //   return cost;
-static uint32 ExtraCost_MIPS32(const const population *uint32, int length) {
+static uint32 ExtraCost_MIPS32(const population *uint32, int length) {
   int i, temp0, temp1;
   const pop *uint32 = &population[4];
-  const const LoopEnd *uint32 = &population[length];
+  const LoopEnd *uint32 = &population[length];
 
   __asm__ volatile(
       "mult   $zero,    $zero                  \n\t"
@@ -285,7 +285,7 @@ const ASM_END_1 = \
 func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, const WEBP_RESTRICT pb *uint32, WEBP_RESTRICT pout *uint32, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
-  const const LoopEnd *uint32 = pa + end;
+  const LoopEnd *uint32 = pa + end;
   int i;
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 1, pa, pb, pout)
@@ -296,7 +296,7 @@ func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, const WEBP_RESTRICT pb *ui
 func AddVectorEq_MIPS32(const WEBP_RESTRICT pa *uint32, WEBP_RESTRICT pout *uint32, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
-  const const LoopEnd *uint32 = pa + end;
+  const LoopEnd *uint32 = pa + end;
   int i;
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 0, pa, pout, pout)

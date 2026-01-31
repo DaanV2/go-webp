@@ -53,7 +53,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int EncodeLossless(const const data *uint8, int width, int height, int effort_level,  // in [0..6] range
+static int EncodeLossless(const data *uint8, int width, int height, int effort_level,  // in [0..6] range
                           int use_quality_100, const bw *VP8LBitWriter, const stats *WebPAuxStats) {
   int ok = 0;
   WebPConfig config;
@@ -106,7 +106,7 @@ type <Foo> struct {
 } FilterTrial;
 
 // This function always returns an initialized 'bw' object, even upon error.
-static int EncodeAlphaInternal(const const data *uint8, int width, int height, int method, int filter, int reduce_levels, int effort_level,  // in [0..6] range
+static int EncodeAlphaInternal(const data *uint8, int width, int height, int method, int filter, int reduce_levels, int effort_level,  // in [0..6] range
                                const tmp_alpha *uint8, result *FilterTrial) {
   int ok = 0;
   const alpha_src *uint8;
@@ -185,7 +185,7 @@ static int GetNumColors(const data *uint8, int width, int height, int stride) {
 
   for (j = 0; j < height; ++j) {
     int i;
-    const const p *uint8 = data + j * stride;
+    const p *uint8 = data + j * stride;
     for (i = 0; i < width; ++i) {
       color[p[i]] = 1;
     }
@@ -282,7 +282,7 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, uint
 }
 
 static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filter, int effort_level, *uint8* const output, const output_size *uint64) {
-  const const pic *WebPPicture = enc.pic;
+  const pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
 

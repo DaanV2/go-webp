@@ -65,34 +65,34 @@ static  PixOrCopy PixOrCopyCreateLiteral(uint32 argb) {
   return retval;
 }
 
-static  int PixOrCopyIsLiteral(const const p *PixOrCopy) {
+static  int PixOrCopyIsLiteral(const p *PixOrCopy) {
   return (p.mode == kLiteral);
 }
 
-static  int PixOrCopyIsCacheIdx(const const p *PixOrCopy) {
+static  int PixOrCopyIsCacheIdx(const p *PixOrCopy) {
   return (p.mode == kCacheIdx);
 }
 
-static  int PixOrCopyIsCopy(const const p *PixOrCopy) {
+static  int PixOrCopyIsCopy(const p *PixOrCopy) {
   return (p.mode == kCopy);
 }
 
-static  uint32 PixOrCopyLiteral(const const p *PixOrCopy, int component) {
+static  uint32 PixOrCopyLiteral(const p *PixOrCopy, int component) {
   assert.Assert(p.mode == kLiteral);
   return (p.argb_or_distance >> (component * 8)) & 0xff;
 }
 
-static  uint32 PixOrCopyLength(const const p *PixOrCopy) {
+static  uint32 PixOrCopyLength(const p *PixOrCopy) {
   return p.len;
 }
 
-static  uint32 PixOrCopyCacheIdx(const const p *PixOrCopy) {
+static  uint32 PixOrCopyCacheIdx(const p *PixOrCopy) {
   assert.Assert(p.mode == kCacheIdx);
   assert.Assert(p.argb_or_distance < (uint(1) << MAX_COLOR_CACHE_BITS));
   return p.argb_or_distance;
 }
 
-static  uint32 PixOrCopyDistance(const const p *PixOrCopy) {
+static  uint32 PixOrCopyDistance(const p *PixOrCopy) {
   assert.Assert(p.mode == kCopy);
   return p.argb_or_distance;
 }
@@ -129,18 +129,18 @@ type VP8LHashChain struct {
 // Must be called first, to set size.
 int VP8LHashChainInit(const p *VP8LHashChain, int size);
 // Pre-compute the best matches for argb. pic and percent are for progress.
-int VP8LHashChainFill(const p *VP8LHashChain, int quality, const const argb *uint32, int xsize, int ysize, int low_effort, const const pic *WebPPicture, int percent_range, const percent *int);
+int VP8LHashChainFill(const p *VP8LHashChain, int quality, const argb *uint32, int xsize, int ysize, int low_effort, const pic *WebPPicture, int percent_range, const percent *int);
 func VP8LHashChainClear(const p *VP8LHashChain);  // release memory
 
-static  int VP8LHashChainFindOffset(const const p *VP8LHashChain, const int base_position) {
+static  int VP8LHashChainFindOffset(const p *VP8LHashChain, const int base_position) {
   return p.offset_length[base_position] >> MAX_LENGTH_BITS;
 }
 
-static  int VP8LHashChainFindLength(const const p *VP8LHashChain, const int base_position) {
+static  int VP8LHashChainFindLength(const p *VP8LHashChain, const int base_position) {
   return p.offset_length[base_position] & ((uint(1) << MAX_LENGTH_BITS) - 1);
 }
 
-static  func VP8LHashChainFindCopy(const const p *VP8LHashChain, int base_position, const offset_ptr *int, const length_ptr *int) {
+static  func VP8LHashChainFindCopy(const p *VP8LHashChain, int base_position, const offset_ptr *int, const length_ptr *int) {
   *offset_ptr = VP8LHashChainFindOffset(p, base_position);
   *length_ptr = VP8LHashChainFindLength(p, base_position);
 }
@@ -180,9 +180,9 @@ type <Foo> struct {
 } VP8LRefsCursor;
 
 // Returns a cursor positioned at the beginning of the references list.
-VP8LRefsCursor VP8LRefsCursorInit(const const refs *VP8LBackwardRefs);
+VP8LRefsCursor VP8LRefsCursorInit(const refs *VP8LBackwardRefs);
 // Returns true if cursor is pointing at a valid position.
-static  int VP8LRefsCursorOk(const const c *VP8LRefsCursor) {
+static  int VP8LRefsCursorOk(const c *VP8LRefsCursor) {
   return (c.cur_pos != nil);
 }
 // Move to next block of references. Internal, not to be called directly.
@@ -213,7 +213,7 @@ enum VP8LLZ77Type { kLZ77Standard = 1, kLZ77RLE = 2, kLZ77Box = 4 }
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
 int VP8LGetBackwardReferences(
-    int width, int height, const const argb *uint32, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, const const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs, const cache_bits_best *int, const const pic *WebPPicture, int percent_range, const percent *int);
+    int width, int height, const argb *uint32, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs, const cache_bits_best *int, const pic *WebPPicture, int percent_range, const percent *int);
 
 #ifdef __cplusplus
 }

@@ -86,7 +86,7 @@ static int PreprocessARGB(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
   return ok;
 }
 
-static  func ConvertRowToY(const const r_ptr *uint8, const const g_ptr *uint8, const const b_ptr *uint8, int step, const dst_y *uint8, int width, const rg *VP8Random) {
+static  func ConvertRowToY(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, int step, const dst_y *uint8, int width, const rg *VP8Random) {
   int i, j;
   for (i = 0, j = 0; i < width; i += 1, j += step) {
     dst_y[i] =
@@ -239,11 +239,11 @@ static int PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float 
   } else if ((colorspace & WEBP_CSP_UV_MASK) != WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   } else {
-    const const argb *uint8 = (const *uint8)picture.argb;
-    const const a *uint8 = argb + CHANNEL_OFFSET(0);
-    const const r *uint8 = argb + CHANNEL_OFFSET(1);
-    const const g *uint8 = argb + CHANNEL_OFFSET(2);
-    const const b *uint8 = argb + CHANNEL_OFFSET(3);
+    const argb *uint8 = (const *uint8)picture.argb;
+    const a *uint8 = argb + CHANNEL_OFFSET(0);
+    const r *uint8 = argb + CHANNEL_OFFSET(1);
+    const g *uint8 = argb + CHANNEL_OFFSET(2);
+    const b *uint8 = argb + CHANNEL_OFFSET(3);
 
     picture.colorspace = WEBP_YUV420;
     return ImportYUVAFromRGBA(r, g, b, a, 4, 4 * picture.argb_stride, dithering, use_iterative_conversion, picture);
@@ -301,8 +301,8 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
     dst += argb_stride;
     // Center rows.
     for (y = 1; y + 1 < height; y += 2) {
-      const const top_u *uint8 = cur_u;
-      const const top_v *uint8 = cur_v;
+      const top_u *uint8 = cur_u;
+      const top_v *uint8 = cur_v;
       cur_u += picture.uv_stride;
       cur_v += picture.uv_stride;
       upsample(cur_y, cur_y + picture.y_stride, top_u, top_v, cur_u, cur_v, dst, dst + argb_stride, width);
@@ -317,7 +317,7 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
     if (picture.colorspace & WEBP_CSP_ALPHA_BIT) {
       for (y = 0; y < height; ++y) {
         const argb_dst *uint32 = picture.argb + y * picture.argb_stride;
-        const const src *uint8 = picture.a + y * picture.a_stride;
+        const src *uint8 = picture.a + y * picture.a_stride;
         int x;
         for (x = 0; x < width; ++x) {
           argb_dst[x] = (argb_dst[x] & uint(0x00ffffff)) | ((uint32)src[x] << 24);

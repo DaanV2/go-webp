@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-func TransformColorInverse_SSE41(const const m *VP8LMultipliers, const const src *uint32, int num_pixels, dst *uint32) {
+func TransformColorInverse_SSE41(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
 // sign-extended multiplying constants, pre-shifted by 5.
 #define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
   const __m128i mults_rb = _mm_set1_epi32(

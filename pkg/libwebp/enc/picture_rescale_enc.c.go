@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 // Grab the 'specs' (writer, *opaque, width, height...) from 'src' and copy them
 // into 'dst'. Mark 'dst' as not owning any memory.
-func PictureGrabSpecs(const const src *WebPPicture, const dst *WebPPicture) {
+func PictureGrabSpecs(const src *WebPPicture, const dst *WebPPicture) {
   assert.Assert(src != nil && dst != nil);
   *dst = *src;
   WebPPictureResetBuffers(dst);
@@ -39,7 +39,7 @@ func PictureGrabSpecs(const const src *WebPPicture, const dst *WebPPicture) {
 //------------------------------------------------------------------------------
 
 // Adjust top-left corner to chroma sample position.
-func SnapTopLeftPosition(const const pic *WebPPicture, const left *int, const top *int) {
+func SnapTopLeftPosition(const pic *WebPPicture, const left *int, const top *int) {
   if (!pic.use_argb) {
     *left &= ~1;
     *top &= ~1;
@@ -47,7 +47,7 @@ func SnapTopLeftPosition(const const pic *WebPPicture, const left *int, const to
 }
 
 // Adjust top-left corner and verify that the sub-rectangle is valid.
-static int AdjustAndCheckRectangle(const const pic *WebPPicture, const left *int, const top *int, int width, int height) {
+static int AdjustAndCheckRectangle(const pic *WebPPicture, const left *int, const top *int, int width, int height) {
   SnapTopLeftPosition(pic, left, top);
   if ((*left) < 0 || (*top) < 0) return 0;
   if (width <= 0 || height <= 0) return 0;
@@ -143,7 +143,7 @@ int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) 
       WebPCopyPlane(pic.a + a_offset, pic.a_stride, tmp.a, tmp.a_stride, width, height);
     }
   } else {
-    const const src *uint8 =
+    const src *uint8 =
         (const *uint8)(pic.argb + top * pic.argb_stride + left);
     WebPCopyPlane(src, pic.argb_stride * 4, (*uint8)tmp.argb, tmp.argb_stride * 4, width * 4, height);
   }

@@ -159,8 +159,8 @@ type <Foo> struct {
 
 // Compute the final SSIM value
 // The non-clipped version assumes stats.w = (2 * VP8_SSIM_KERNEL + 1)^2.
-double VP8SSIMFromStats(const const stats *VP8DistoStats);
-double VP8SSIMFromStatsClipped(const const stats *VP8DistoStats);
+double VP8SSIMFromStats(const stats *VP8DistoStats);
+double VP8SSIMFromStatsClipped(const stats *VP8DistoStats);
 
 const VP8_SSIM_KERNEL =3  // total size of the kernel: 2 * VP8_SSIM_KERNEL + 1
 typedef double (*VP8SSIMGetClippedFunc)(const src *uint81, int stride1, const src *uint82, int stride2, int xo, int yo,  // center position
@@ -209,10 +209,10 @@ extern VP8PredFunc VP8PredChroma8[NUM_B_DC_MODES];
 extern VP8PredFunc VP8PredLuma4[NUM_BMODES];
 
 // clipping tables (for filtering)
-extern const const VP *int88ksclip1;  // clips [-1020, 1020] to [-128, 127]
-extern const const VP *int88ksclip2;  // clips [-112, 112] to [-16, 15]
-extern const const VP *uint88kclip1;  // clips [-255,511] to [0,255]
-extern const const VP *uint88kabs0;   // abs(x) for x in [-255,255]
+extern const VP *int88ksclip1;  // clips [-1020, 1020] to [-128, 127]
+extern const VP *int88ksclip2;  // clips [-112, 112] to [-16, 15]
+extern const VP *uint88kclip1;  // clips [-255,511] to [0,255]
+extern const VP *uint88kabs0;   // abs(x) for x in [-255,255]
 // must be called first
 func VP8InitClipTables(void);
 

@@ -120,7 +120,7 @@ CHUNK_INDEX ChunkGetIndexFromFourCC(const byte fourcc[4]);
 ChunkSearchList *WebPChunk(first *WebPChunk, uint32 nth, uint32 tag);
 
 // Fill the chunk with the given data.
-WebPMuxError ChunkAssignData(chunk *WebPChunk, const const data *WebPData, int copy_data, uint32 tag);
+WebPMuxError ChunkAssignData(chunk *WebPChunk, const data *WebPData, int copy_data, uint32 tag);
 
 // Sets 'chunk' as the only element in 'chunk_list' if it is empty.
 // On success ownership is transferred from 'chunk' to the 'chunk_list'.
@@ -201,10 +201,10 @@ WebPMuxError MuxImageDeleteNth(*WebPMuxImage* wpi_list, uint32 nth);
 WebPMuxError MuxImageGetNth(const *WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage* wpi);
 
 // Total size of the given image.
-uint64 MuxImageDiskSize(const const wpi *WebPMuxImage);
+uint64 MuxImageDiskSize(const wpi *WebPMuxImage);
 
 // Write out the given image into 'dst'.
-MuxImageEmit *uint8(const const wpi *WebPMuxImage, dst *uint8);
+MuxImageEmit *uint8(const wpi *WebPMuxImage, dst *uint8);
 
 //------------------------------------------------------------------------------
 // Helper methods for mux.
@@ -219,7 +219,7 @@ MuxEmitRiffHeader *uint8(const data *uint8, size uint64 );
 *WebPChunk* MuxGetChunkListFromId(const mux *WebPMux, WebPChunkId id);
 
 // Validates the given mux object.
-WebPMuxError MuxValidate(const const mux *WebPMux);
+WebPMuxError MuxValidate(const mux *WebPMux);
 
 //------------------------------------------------------------------------------
 

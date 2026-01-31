@@ -41,7 +41,7 @@ import "github.com/daanv2/go-webp/pkg/math"
   func FUNC_NAME(                                                     \
       const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,        \
       const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
-    const const end *uint8 = dst + (len & ~1) * (XSTEP);                   \
+    const end *uint8 = dst + (len & ~1) * (XSTEP);                   \
     while (dst != end) {                                                     \
       FUNC(y[0], u[0], v[0], dst);                                           \
       FUNC(y[1], u[0], v[0], dst + (XSTEP));                                 \
@@ -333,7 +333,7 @@ static  int LinearToGammaWeighted(const src *uint8, const a_ptr *uint8, uint32 t
   return LinearToGamma(DIVIDE_BY_ALPHA(sum, total_a), 0);
 }
 
-func WebPAccumulateRGBA(const const r_ptr *uint8, const const g_ptr *uint8, const const b_ptr *uint8, const const a_ptr *uint8, int rgb_stride, dst *uint16, int width) {
+func WebPAccumulateRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, const a_ptr *uint8, int rgb_stride, dst *uint16, int width) {
   int i, j;
   // we loop over 2x2 blocks and produce one R/G/B/A value for each.
   for (i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * 4, dst += 4) {
@@ -372,7 +372,7 @@ func WebPAccumulateRGBA(const const r_ptr *uint8, const const g_ptr *uint8, cons
   }
 }
 
-func WebPAccumulateRGB(const const r_ptr *uint8, const const g_ptr *uint8, const const b_ptr *uint8, int step, int rgb_stride, dst *uint16, int width) {
+func WebPAccumulateRGB(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, int step, int rgb_stride, dst *uint16, int width) {
   int i, j;
   for (i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * step, dst += 4) {
     dst[0] = SUM4(r_ptr + j, step);

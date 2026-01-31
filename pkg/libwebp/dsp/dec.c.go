@@ -179,10 +179,10 @@ VP8WHT VP8TransformWHT;
 #if !WEBP_NEON_OMIT_C_CODE
 static  func TrueMotion(dst *uint8, int size) {
   const top *uint8 = dst - BPS;
-  const const clip *uint80 = VP8kclip1 - top[-1];
+  const clip *uint80 = VP8kclip1 - top[-1];
   int y;
   for (y = 0; y < size; ++y) {
-    const const clip *uint8 = clip0 + dst[-1];
+    const clip *uint8 = clip0 + dst[-1];
     int x;
     for (x = 0; x < size; ++x) {
       dst[x] = clip[top[x]];

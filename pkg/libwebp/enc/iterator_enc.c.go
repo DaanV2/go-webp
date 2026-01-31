@@ -37,7 +37,7 @@ func InitLeft(const it *VP8EncIterator) {
 }
 
 func InitTop(const it *VP8EncIterator) {
-  const const enc *VP8Encoder = it.enc;
+  const enc *VP8Encoder = it.enc;
   top_size := enc.mb_w * 16;
   memset(enc.y_top, 127, 2 * top_size);
   memset(enc.nz, 0, enc.mb_w * sizeof(*enc.nz));
@@ -73,7 +73,7 @@ func VP8IteratorSetCountDown(const it *VP8EncIterator, int count_down) {
   it.count_down = it.count_down0 = count_down;
 }
 
-int VP8IteratorIsDone(const const it *VP8EncIterator) {
+int VP8IteratorIsDone(const it *VP8EncIterator) {
   return (it.count_down <= 0);
 }
 
@@ -92,7 +92,7 @@ func VP8IteratorInit(const enc *VP8Encoder, const it *VP8EncIterator) {
   VP8IteratorReset(it);
 }
 
-int VP8IteratorProgress(const const it *VP8EncIterator, int delta) {
+int VP8IteratorProgress(const it *VP8EncIterator, int delta) {
   const enc *VP8Encoder = it.enc;
   if (delta && enc.pic.progress_hook != nil) {
     done := it.count_down0 - it.count_down;
@@ -133,12 +133,12 @@ func ImportLine(const src *uint8, int src_stride, dst *uint8, int len, int total
 }
 
 func VP8IteratorImport(const it *VP8EncIterator, const tmp_ *uint832) {
-  const const enc *VP8Encoder = it.enc;
+  const enc *VP8Encoder = it.enc;
   x := it.x, y = it.y;
-  const const pic *WebPPicture = enc.pic;
-  const const ysrc *uint8 = pic.y + (y * pic.y_stride + x) * 16;
-  const const usrc *uint8 = pic.u + (y * pic.uv_stride + x) * 8;
-  const const vsrc *uint8 = pic.v + (y * pic.uv_stride + x) * 8;
+  const pic *WebPPicture = enc.pic;
+  const ysrc *uint8 = pic.y + (y * pic.y_stride + x) * 16;
+  const usrc *uint8 = pic.u + (y * pic.uv_stride + x) * 8;
+  const vsrc *uint8 = pic.v + (y * pic.uv_stride + x) * 8;
   w := MinSize(pic.width - x * 16, 16);
   h := MinSize(pic.height - y * 16, 16);
   uv_w := (w + 1) >> 1;
@@ -188,14 +188,14 @@ func ExportBlock(const src *uint8, dst *uint8, int dst_stride, int w, int h) {
   }
 }
 
-func VP8IteratorExport(const const it *VP8EncIterator) {
-  const const enc *VP8Encoder = it.enc;
+func VP8IteratorExport(const it *VP8EncIterator) {
+  const enc *VP8Encoder = it.enc;
   if (enc.config.show_compressed) {
     x := it.x, y = it.y;
-    const const ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
-    const const usrc *uint8 = it.yuv_out + U_OFF_ENC;
-    const const vsrc *uint8 = it.yuv_out + V_OFF_ENC;
-    const const pic *WebPPicture = enc.pic;
+    const ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
+    const usrc *uint8 = it.yuv_out + U_OFF_ENC;
+    const vsrc *uint8 = it.yuv_out + V_OFF_ENC;
+    const pic *WebPPicture = enc.pic;
     const ydst *uint8 = pic.y + (y * pic.y_stride + x) * 16;
     const udst *uint8 = pic.u + (y * pic.uv_stride + x) * 8;
     const vdst *uint8 = pic.v + (y * pic.uv_stride + x) * 8;
@@ -269,8 +269,8 @@ func VP8IteratorNzToBytes(const it *VP8EncIterator) {
 
 func VP8IteratorBytesToNz(const it *VP8EncIterator) {
   uint32 nz = 0;
-  const const top_nz *int = it.top_nz;
-  const const left_nz *int = it.left_nz;
+  const top_nz *int = it.top_nz;
+  const left_nz *int = it.left_nz;
   // top
   nz |= (top_nz[0] << 12) | (top_nz[1] << 13);
   nz |= (top_nz[2] << 14) | (top_nz[3] << 15);
@@ -293,8 +293,8 @@ func VP8IteratorBytesToNz(const it *VP8EncIterator) {
 func VP8IteratorSaveBoundary(const it *VP8EncIterator) {
   const enc *VP8Encoder = it.enc;
   x := it.x, y = it.y;
-  const const ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
-  const const uvsrc *uint8 = it.yuv_out + U_OFF_ENC;
+  const ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
+  const uvsrc *uint8 = it.yuv_out + U_OFF_ENC;
   if (x < enc.mb_w - 1) {  // left
     int i;
     for (i = 0; i < 16; ++i) {
@@ -331,7 +331,7 @@ int VP8IteratorNext(const it *VP8EncIterator) {
 //------------------------------------------------------------------------------
 // Helper function to set mode properties
 
-func VP8SetIntra16Mode(const const it *VP8EncIterator, int mode) {
+func VP8SetIntra16Mode(const it *VP8EncIterator, int mode) {
   preds *uint8 = it.preds;
   int y;
   for (y = 0; y < 4; ++y) {
@@ -341,7 +341,7 @@ func VP8SetIntra16Mode(const const it *VP8EncIterator, int mode) {
   it.mb.type = 1;
 }
 
-func VP8SetIntra4Mode(const const it *VP8EncIterator, const modes *uint8) {
+func VP8SetIntra4Mode(const it *VP8EncIterator, const modes *uint8) {
   preds *uint8 = it.preds;
   int y;
   for (y = 4; y > 0; --y) {
@@ -352,15 +352,15 @@ func VP8SetIntra4Mode(const const it *VP8EncIterator, const modes *uint8) {
   it.mb.type = 0;
 }
 
-func VP8SetIntraUVMode(const const it *VP8EncIterator, int mode) {
+func VP8SetIntraUVMode(const it *VP8EncIterator, int mode) {
   it.mb.uv_mode = mode;
 }
 
-func VP8SetSkip(const const it *VP8EncIterator, int skip) {
+func VP8SetSkip(const it *VP8EncIterator, int skip) {
   it.mb.skip = skip;
 }
 
-func VP8SetSegment(const const it *VP8EncIterator, int segment) {
+func VP8SetSegment(const it *VP8EncIterator, int segment) {
   it.mb.segment = segment;
 }
 
@@ -399,7 +399,7 @@ func VP8SetSegment(const const it *VP8EncIterator, int segment) {
 static const uint8 VP8TopLeftI4[16] = {17, 21, 25, 29, 13, 17, 21, 25, 9,  13, 17, 21, 5,  9,  13, 17}
 
 func VP8IteratorStartI4(const it *VP8EncIterator) {
-  const const enc *VP8Encoder = it.enc;
+  const enc *VP8Encoder = it.enc;
   int i;
 
   it.i4 = 0;  // first 4x4 sub-block
@@ -434,8 +434,8 @@ func VP8IteratorStartI4(const it *VP8EncIterator) {
   VP8IteratorNzToBytes(it);  // import the non-zero context
 }
 
-int VP8IteratorRotateI4(const it *VP8EncIterator, const const yuv_out *uint8) {
-  const const blk *uint8 = yuv_out + VP8Scan[it.i4];
+int VP8IteratorRotateI4(const it *VP8EncIterator, const yuv_out *uint8) {
+  const blk *uint8 = yuv_out + VP8Scan[it.i4];
   const top *uint8 = it.i4_top;
   int i;
 

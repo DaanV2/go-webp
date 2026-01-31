@@ -33,7 +33,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX_FLOOR(x, y) (((uint64)(x) * (y)) >> WEBP_RESCALER_RFIX)
 
 // input: 8 bytes ABCDEFGH . output: A0E0B0F0C0G0D0H0
-func LoadTwoPixels_SSE2(const const src *uint8, __out *m128i) {
+func LoadTwoPixels_SSE2(const src *uint8, __out *m128i) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i A = _mm_loadl_epi64((const __*m128i)(src));  // ABCDEFGH
   const __m128i B = _mm_unpacklo_epi8(A, zero);              // A0B0C0D0E0F0G0H0
@@ -42,7 +42,7 @@ func LoadTwoPixels_SSE2(const const src *uint8, __out *m128i) {
 }
 
 // input: 8 bytes ABCDEFGH . output: A0B0C0D0E0F0G0H0
-func LoadEightPixels_SSE2(const const src *uint8, __out *m128i) {
+func LoadEightPixels_SSE2(const src *uint8, __out *m128i) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i A = _mm_loadl_epi64((const __*m128i)(src));  // ABCDEFGH
   *out = _mm_unpacklo_epi8(A, zero);
@@ -81,7 +81,7 @@ func RescalerImportRowExpand_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, const W
     }
   } else {
     int left;
-    const const src_limit *uint8 = src + wrk.src_width - 8;
+    const src_limit *uint8 = src + wrk.src_width - 8;
     LoadEightPixels_SSE2(src, &cur_pixels);
     src += 7;
     left = 7;

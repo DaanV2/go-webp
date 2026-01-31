@@ -86,16 +86,16 @@ type <Foo> struct {
 // Encodes the picture.
 // Returns 0 if config or picture is nil or picture doesn't have valid argb
 // input.
-int VP8LEncodeImage(const const config *WebPConfig, const const picture *WebPPicture);
+int VP8LEncodeImage(const config *WebPConfig, const picture *WebPPicture);
 
 // Encodes the main image stream using the supplied bit writer.
 // Returns false in case of error (stored in picture.error_code).
-int VP8LEncodeStream(const const config *WebPConfig, const const picture *WebPPicture, const bw *VP8LBitWriter);
+int VP8LEncodeStream(const config *WebPConfig, const picture *WebPPicture, const bw *VP8LBitWriter);
 
 #if (WEBP_NEAR_LOSSLESS == 1)
 // in near_lossless.c
 // Near lossless preprocessing in RGB color-space.
-int VP8ApplyNearLossless(const const picture *WebPPicture, int quality, const argb_dst *uint32);
+int VP8ApplyNearLossless(const picture *WebPPicture, int quality, const argb_dst *uint32);
 #endif
 
 //------------------------------------------------------------------------------
@@ -103,9 +103,9 @@ int VP8ApplyNearLossless(const const picture *WebPPicture, int quality, const ar
 
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
-int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low_effort, const argb *uint32, const argb_scratch *uint32, const image *uint32, int near_lossless, int exact, int used_subtract_green, const const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int);
+int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low_effort, const argb *uint32, const argb_scratch *uint32, const image *uint32, int near_lossless, int exact, int used_subtract_green, const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int);
 
-int VP8LColorSpaceTransform(int width, int height, int bits, int quality, const argb *uint32, image *uint32, const const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int);
+int VP8LColorSpaceTransform(int width, int height, int bits, int quality, const argb *uint32, image *uint32, const pic *WebPPicture, int percent_range, const percent *int, const best_bits *int);
 
 func VP8LOptimizeSampling(const image *uint32, int full_width, int full_height, int bits, int max_bits, best_bits_out *int);
 

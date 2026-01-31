@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/emmintrin"
 
 #if 0
 import "github.com/daanv2/go-webp/pkg/stdio"
-static  func PrintReg(const __m128i r, const const name *byte, int size) {
+static  func PrintReg(const __m128i r, const name *byte, int size) {
   int n;
   union {
     __m128i r;

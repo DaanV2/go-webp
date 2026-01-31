@@ -57,8 +57,8 @@ static int GetILevel(int sharpness, int level) {
   return level;
 }
 
-func DoFilter(const const it *VP8EncIterator, int level) {
-  const const enc *VP8Encoder = it.enc;
+func DoFilter(const it *VP8EncIterator, int level) {
+  const enc *VP8Encoder = it.enc;
   ilevel := GetILevel(enc.config.filter_sharpness, level);
   limit := 2 * level + ilevel;
 
