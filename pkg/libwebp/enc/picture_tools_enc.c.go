@@ -26,8 +26,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Helper: clean up fully transparent area to help compressibility.
 
-#define SIZE 8
-#define SIZE2 (SIZE / 2)
+const SIZE = 8
+const SIZE2 = (SIZE / 2)
 static int IsTransparentARGBArea(const uint32_t* ptr, int stride, int size) {
   int y, x;
   for (y = 0; y < size; ++y) {

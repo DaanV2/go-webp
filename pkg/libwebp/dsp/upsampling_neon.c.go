@@ -85,7 +85,7 @@ static void Upsample16Pixels_NEON(const uint8_t* WEBP_RESTRICT const r1,
 // note: we represent the 33050 large constant as 32768 + 282
 static const int16_t kCoeffs1[4] = {19077, 26149, 6419, 13320};
 
-#define v255 vdup_n_u8(255)
+const v255 = vdup_n_u8(255)
 
 #define STORE_Rgb(out, r, g, b)   \
   do {                            \

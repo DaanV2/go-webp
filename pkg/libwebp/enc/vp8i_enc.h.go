@@ -85,34 +85,34 @@ extern const uint16_t VP8I16ModeOffsets[4];
 
 // Layout of prediction blocks
 // intra 16x16
-#define I16DC16 (0 * 16 * BPS)
-#define I16TM16 (I16DC16 + 16)
-#define I16VE16 (1 * 16 * BPS)
-#define I16HE16 (I16VE16 + 16)
+const I16DC16 = (0 * 16 * BPS)
+const I16TM16 = (I16DC16 + 16)
+const I16VE16 = (1 * 16 * BPS)
+const I16HE16 = (I16VE16 + 16)
 // chroma 8x8, two U/V blocks side by side (hence: 16x8 each)
-#define C8DC8 (2 * 16 * BPS)
-#define C8TM8 (C8DC8 + 1 * 16)
-#define C8VE8 (2 * 16 * BPS + 8 * BPS)
-#define C8HE8 (C8VE8 + 1 * 16)
+const C8DC8 = (2 * 16 * BPS)
+const C8TM8 = (C8DC8 + 1 * 16)
+const C8VE8 = (2 * 16 * BPS + 8 * BPS)
+const C8HE8 = (C8VE8 + 1 * 16)
 // intra 4x4
-#define I4DC4 (3 * 16 * BPS + 0)
-#define I4TM4 (I4DC4 + 4)
-#define I4VE4 (I4DC4 + 8)
-#define I4HE4 (I4DC4 + 12)
-#define I4RD4 (I4DC4 + 16)
-#define I4VR4 (I4DC4 + 20)
-#define I4LD4 (I4DC4 + 24)
-#define I4VL4 (I4DC4 + 28)
-#define I4HD4 (3 * 16 * BPS + 4 * BPS)
-#define I4HU4 (I4HD4 + 4)
-#define I4TMP (I4HD4 + 8)
+const I4DC4 = (3 * 16 * BPS + 0)
+const I4TM4 = (I4DC4 + 4)
+const I4VE4 = (I4DC4 + 8)
+const I4HE4 = (I4DC4 + 12)
+const I4RD4 = (I4DC4 + 16)
+const I4VR4 = (I4DC4 + 20)
+const I4LD4 = (I4DC4 + 24)
+const I4VL4 = (I4DC4 + 28)
+const I4HD4 = (3 * 16 * BPS + 4 * BPS)
+const I4HU4 = (I4HD4 + 4)
+const I4TMP = (I4HD4 + 8)
 
 typedef int64_t score_t;  // type used for scores, rate, distortion
 // Note that MAX_COST is not the maximum allowed by sizeof(score_t),
 // in order to allow overflowing computations.
 #define MAX_COST ((score_t)0x7fffffffffffffLL)
 
-#define QFIX 17
+const QFIX = 17
 #define BIAS(b) ((b) << (QFIX - 8))
 // Fun fact: this is the _only_ line where we're actually being lossy and
 // discarding bits.

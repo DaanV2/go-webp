@@ -832,10 +832,10 @@ static int ReconstructIntra4(VP8EncIterator* WEBP_RESTRICT const it,
 
 // Diffusion weights. We under-correct a bit (15/16th of the error is actually
 // diffused) to avoid 'rainbow' chessboard pattern of blocks at q~=0.
-#define C1 7  // fraction of error sent to the 4x4 block below
-#define C2 8  // fraction of error sent to the 4x4 block on the right
-#define DSHIFT 4
-#define DSCALE 1  // storage descaling, needed to make the error fit int8_t
+const C1 = 7  // fraction of error sent to the 4x4 block below
+const C2 = 8  // fraction of error sent to the 4x4 block on the right
+const DSHIFT = 4
+const DSCALE = 1  // storage descaling, needed to make the error fit int8_t
 
 // Quantize as usual, but also compute and return the quantization error.
 // Error is already divided by DSHIFT.

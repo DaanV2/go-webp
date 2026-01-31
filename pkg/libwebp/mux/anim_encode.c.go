@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if defined(_MSC_VER) && _MSC_VER < 1900
-#define snprintf _snprintf
+const snprintf = _snprintf
 #endif
 
 #define ERROR_STR_MAX_LENGTH 100

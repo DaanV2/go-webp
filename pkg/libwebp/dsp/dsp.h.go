@@ -30,7 +30,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 extern "C" {
 #endif
 
-#define BPS 32  // this is the common stride for enc/dec
+const BPS = 32  // this is the common stride for enc/dec
 
 //------------------------------------------------------------------------------
 // WEBP_RESTRICT

@@ -88,7 +88,7 @@ static void TransformColor_AVX2(const VP8LMultipliers* WEBP_RESTRICT const m,
 }
 
 //------------------------------------------------------------------------------
-#define SPAN 16
+const SPAN = 16
 static void CollectColorBlueTransforms_AVX2(const uint32_t* WEBP_RESTRICT argb,
                                             int stride, int tile_width,
                                             int tile_height, int green_to_blue,

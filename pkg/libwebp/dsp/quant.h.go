@@ -19,7 +19,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
     !defined(WEBP_HAVE_NEON_RTCD)
 import "github.com/daanv2/go-webp/pkg/arm_neon"
 
-#define IsFlat IsFlat_NEON
+const IsFlat = IsFlat_NEON
 
 static uint32_t horizontal_add_uint32x4(const uint32x4_t a) {
 #if WEBP_AARCH64
@@ -56,7 +56,7 @@ static WEBP_INLINE int IsFlat(const int16_t* levels, int num_blocks,
 
 #else
 
-#define IsFlat IsFlat_C
+const IsFlat = IsFlat_C
 
 static WEBP_INLINE int IsFlat(const int16_t* levels, int num_blocks,
                               int thresh) {

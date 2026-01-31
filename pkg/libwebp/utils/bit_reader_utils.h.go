@@ -29,7 +29,7 @@ WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // Warning! This macro triggers quite some MACRO wizardry around func signature!
 #if !defined(BITTRACE)
-#define BITTRACE 0  // 0 = off, 1 = print bits, 2 = print bytes
+const BITTRACE = 0  // 0 = off, 1 = print bits, 2 = print bytes
 #endif
 
 #if (BITTRACE > 0)
@@ -65,19 +65,19 @@ extern "C" {
 // Pick values that fit natural register size.
 
 #if defined(__i386__) || defined(_M_IX86)  // x86 32bit
-#define BITS 24
+const BITS = 24
 #elif defined(__x86_64__) || defined(_M_X64)  // x86 64bit
-#define BITS 56
+const BITS = 56
 #elif defined(__arm__) || defined(_M_ARM)  // ARM
-#define BITS 24
+const BITS = 24
 #elif WEBP_AARCH64  // ARM 64bit
-#define BITS 56
+const BITS = 56
 #elif defined(__mips__)  // MIPS
-#define BITS 24
+const BITS = 24
 #elif defined(__wasm__)  // WASM
-#define BITS 56
+const BITS = 56
 #else  // reasonable default
-#define BITS 24
+const BITS = 24
 #endif
 
 //------------------------------------------------------------------------------

@@ -35,7 +35,7 @@ typedef double (*AccumulateFunc)(const uint8_t* src, int src_stride,
 // For every pixel in the *reference* picture, we search for the local best
 // match in the compressed image. This is not a symmetrical measure.
 
-#define RADIUS 2  // search radius. Shouldn't be too large.
+const RADIUS = 2  // search radius. Shouldn't be too large.
 
 static double AccumulateLSIM(const uint8_t* src, int src_stride,
                              const uint8_t* ref, int ref_stride, int w, int h) {

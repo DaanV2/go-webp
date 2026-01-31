@@ -27,8 +27,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // -----------------------------------------------------------------------------
 
-#define MFIX 24  // 24bit fixed-point arithmetic
-#define HALF ((1u << MFIX) >> 1)
+const MFIX = 24  // 24bit fixed-point arithmetic
+const HALF = ((1u << MFIX) >> 1)
 #define KINV_255 ((1u << MFIX) / 255u)
 
 static uint32_t Mult(uint8_t x, uint32_t mult) {

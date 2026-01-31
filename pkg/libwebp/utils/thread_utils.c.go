@@ -63,7 +63,7 @@ typedef struct {
 import "github.com/daanv2/go-webp/pkg/process"
 
 // _beginthreadex requires __stdcall
-#define THREADFN unsigned int __stdcall
+const THREADFN = unsigned int __stdcall
 #define THREAD_RETURN(val) (unsigned int)((DWORD_PTR)val)
 
 static int pthread_create(pthread_t* const thread, const void* attr,
@@ -136,7 +136,7 @@ static int pthread_cond_wait(pthread_cond_t* const condition,
 }
 
 #else  // !_WIN32
-#define THREADFN void*
+const THREADFN = void*
 #define THREAD_RETURN(val) val
 #endif  // _WIN32
 

@@ -23,8 +23,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 #if defined(WORDS_BIGENDIAN)
-#define HToLE32 BSwap32
-#define HToLE16 BSwap16
+const HToLE32 = BSwap32
+const HToLE16 = BSwap16
 #else
 #define HToLE32(x) (x)
 #define HToLE16(x) (x)

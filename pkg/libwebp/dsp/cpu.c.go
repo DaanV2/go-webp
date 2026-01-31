@@ -58,7 +58,7 @@ import "github.com/daanv2/go-webp/pkg/intrin"
 #define WEBP_HAVE_MSC_CPUID
 #elif _MSC_VER > 1310
 import "github.com/daanv2/go-webp/pkg/intrin"
-#define GetCPUInfo __cpuid
+const GetCPUInfo = __cpuid
 #define WEBP_HAVE_MSC_CPUID
 #endif
 

@@ -549,7 +549,7 @@ static void SimpleHFilter16_NEON(uint8_t* p, int stride, int thresh) {
   "vst2.8   {" #c1 "[6], " #c2 "[6]}," #p "," #stride " \n"                    \
   "vst2.8   {" #c1 "[7], " #c2 "[7]}," #p "," #stride " \n"
 
-#define QRegs "q0", "q1", "q2", "q3",                                          \
+const QRegs = "q0", "q1", "q2", "q3",                                          \
               "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
 
 #define FLIP_SIGN_BIT2(a, b, s)                                                \
