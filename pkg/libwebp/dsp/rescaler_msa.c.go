@@ -267,7 +267,7 @@ func RescalerExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
 static  func ExportRowShrink_0(
-    const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, int length, const uint32 yscale, WEBP_RESTRICT const wrk *WebPRescaler) {
+    const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, int length, /*const*/ uint32 yscale, WEBP_RESTRICT const wrk *WebPRescaler) {
   const v4u32 y_scale = (v4u32)__msa_fill_w(yscale);
   const v4u32 fxyscale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shiftval = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);

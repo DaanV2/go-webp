@@ -81,7 +81,7 @@ int VP8IteratorIsDone(const it *VP8EncIterator) {
 }
 
 // must be called first
-func VP8IteratorInit(const enc *VP8Encoder, const it *VP8EncIterator) {
+func VP8IteratorInit(const enc *VP8Encoder, /*const*/ it *VP8EncIterator) {
   it.enc = enc;
   it.yuv_in = (*uint8)WEBP_ALIGN(it.yuv_mem);
   it.yuv_out = it.yuv_in + YUV_SIZE_ENC;
@@ -140,7 +140,7 @@ func ImportLine(const src *uint8, int src_stride, dst *uint8, int len, int total
 // Import uncompressed samples from source.
 // If tmp_32 is not nil, import boundary samples too.
 // tmp_32 is a 32-bytes scratch buffer that must be aligned in memory.
-func VP8IteratorImport(const it *VP8EncIterator, const tmp_ *uint832) {
+func VP8IteratorImport(const it *VP8EncIterator, /*const*/ tmp_ *uint832) {
   var enc *VP8Encoder = it.enc;
   x := it.x, y = it.y;
   var pic *WebPPicture = enc.pic;
@@ -353,7 +353,7 @@ func VP8SetIntra16Mode(const it *VP8EncIterator, int mode) {
   it.mb.type = 1;
 }
 
-func VP8SetIntra4Mode(const it *VP8EncIterator, const modes *uint8) {
+func VP8SetIntra4Mode(const it *VP8EncIterator, /*const*/ modes *uint8) {
   preds *uint8 = it.preds;
   var y int
   for y = 4; y > 0; --y {
@@ -448,7 +448,7 @@ func VP8IteratorStartI4(const it *VP8EncIterator) {
 }
 
 // returns true if not done.
-int VP8IteratorRotateI4(const it *VP8EncIterator, const yuv_out *uint8) {
+int VP8IteratorRotateI4(const it *VP8EncIterator, /*const*/ yuv_out *uint8) {
   var blk *uint8 = yuv_out + VP8Scan[it.i4];
   var top *uint8 = it.i4_top;
   var i int

@@ -126,7 +126,7 @@ CHUNK_INDEX ChunkGetIndexFromFourCC(const byte fourcc[4]);
 ChunkSearchList *WebPChunk(first *WebPChunk, uint32 nth, uint32 tag);
 
 // Fill the chunk with the given data.
-WebPMuxError ChunkAssignData(chunk *WebPChunk, const data *WebPData, int copy_data, uint32 tag);
+WebPMuxError ChunkAssignData(chunk *WebPChunk, /*const*/ data *WebPData, int copy_data, uint32 tag);
 
 // Sets 'chunk' as the only element in 'chunk_list' if it is empty.
 // On success ownership is transferred from 'chunk' to the 'chunk_list'.

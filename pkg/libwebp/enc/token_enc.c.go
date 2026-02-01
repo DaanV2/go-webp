@@ -114,7 +114,7 @@ static  func AddConstantToken(const b *VP8TBuffer, uint32 bit, uint32 proba) {
 }
 
 // record the coding of coefficients without knowing the probabilities yet
-int VP8RecordCoeffTokens(int ctx, const struct const res *VP8Residual, const tokens *VP8TBuffer) {
+int VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*const*/ tokens *VP8TBuffer) {
   var coeffs *int16 = res.coeffs;
   coeff_type := res.coeff_type;
   last := res.last;
@@ -203,7 +203,7 @@ int VP8RecordCoeffTokens(int ctx, const struct const res *VP8Residual, const tok
 
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
-int VP8EmitTokens(const b *VP8TBuffer, const bw *VP8BitWriter, const probas *uint8, int final_pass) {
+int VP8EmitTokens(const b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, int final_pass) {
   var p *VP8Tokens = b.pages;
   assert.Assert(!b.error);
   while (p != nil) {
@@ -229,7 +229,7 @@ int VP8EmitTokens(const b *VP8TBuffer, const bw *VP8BitWriter, const probas *uin
 
 // Size estimation
 // Estimate the final coded size given a set of 'probas'.
-uint64 VP8EstimateTokenSize(const b *VP8TBuffer, const probas *uint8) {
+uint64 VP8EstimateTokenSize(const b *VP8TBuffer, /*const*/ probas *uint8) {
   size uint64  = 0;
   var p *VP8Tokens = b.pages;
   assert.Assert(!b.error);

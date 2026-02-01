@@ -95,7 +95,7 @@ const WEBP_MSC_AVX2 = // Visual C++ AVX2 targets
 #if defined(WEBP_MSC_AVX2) && _MSC_VER <= 1900
 import "github.com/daanv2/go-webp/pkg/immintrin"
 
-static  int _mm256_extract_epi32(__m256i a, const int i) {
+static  int _mm256_extract_epi32(__m256i a, /*const*/ int i) {
   return a.m256i_i32[i & 7];
 }
 static  int _mm256_cvtsi256_si32(__m256i a) {

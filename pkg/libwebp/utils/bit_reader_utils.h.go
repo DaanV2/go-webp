@@ -33,7 +33,7 @@ const BITTRACE = 0  // 0 = off, 1 = print bits, 2 = print bytes
 
 #if (BITTRACE > 0)
 struct VP8BitReader;
-extern func BitTrace(const struct const br *VP8BitReader, const byte label[]);
+extern func BitTrace(const struct const br *VP8BitReader, /*const*/ byte label[]);
 #define BT_TRACK(br) BitTrace(br, label)
 #define VP8Get(BR, L) VP8GetValue(BR, 1, L)
 #else
@@ -107,19 +107,19 @@ type VP8BitReader struct {
 }
 
 // Initialize the bit reader and the boolean decoder.
-func VP8InitBitReader(const br *VP8BitReader, const *uint8  start, size uint64 );
+func VP8InitBitReader(const br *VP8BitReader, /*const*/ *uint8  start, size uint64 );
 // Sets the working read buffer.
-func VP8BitReaderSetBuffer(const br *VP8BitReader, const *uint8  start, size uint64 );
+func VP8BitReaderSetBuffer(const br *VP8BitReader, /*const*/ *uint8  start, size uint64 );
 
 // Update internal pointers to displace the byte buffer by the
 // relative offset 'offset'.
 func VP8RemapBitReader(const br *VP8BitReader, ptrdiff_t offset);
 
 // return the next value made of 'num_bits' bits
-uint32 VP8GetValue(const br *VP8BitReader, num_bits int, const byte label[]);
+uint32 VP8GetValue(const br *VP8BitReader, num_bits int, /*const*/ byte label[]);
 
 // return the next value with sign-extension.
-int32 VP8GetSignedValue(const br *VP8BitReader, num_bits int, const byte label[]);
+int32 VP8GetSignedValue(const br *VP8BitReader, num_bits int, /*const*/ byte label[]);
 
 // bit_reader_inl.h will implement the following methods:
 //   static  int VP8GetBit(const br *VP8BitReader, int prob, ...)
@@ -148,10 +148,10 @@ type VP8LBitReader struct {
   int eos;      // true if a bit was read past the end of buffer
 } ;
 
-func VP8LInitBitReader(const br *VP8LBitReader, const *uint8  start, uint64 length);
+func VP8LInitBitReader(const br *VP8LBitReader, /*const*/ *uint8  start, uint64 length);
 
 //  Sets a new data buffer.
-func VP8LBitReaderSetBuffer(const br *VP8LBitReader, const *uint8  buffer, uint64 length);
+func VP8LBitReaderSetBuffer(const br *VP8LBitReader, /*const*/ *uint8  buffer, uint64 length);
 
 // Reads the specified number of bits from read buffer.
 // Flags an error in case end_of_stream or n_bits is more than the allowed limit

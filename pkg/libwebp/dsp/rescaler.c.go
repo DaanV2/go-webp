@@ -31,7 +31,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 //------------------------------------------------------------------------------
 // Row import
 
-func WebPRescalerImportRowExpand_C(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RESTRICT src *uint8) {
+func WebPRescalerImportRowExpand_C(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEBP_RESTRICT src *uint8) {
   x_stride := wrk.num_channels;
   x_out_max := wrk.dst_width * wrk.num_channels;
   int channel;
@@ -63,7 +63,7 @@ func WebPRescalerImportRowExpand_C(WEBP_RESTRICT const wrk *WebPRescaler, const 
   }
 }
 
-func WebPRescalerImportRowShrink_C(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RESTRICT src *uint8) {
+func WebPRescalerImportRowShrink_C(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEBP_RESTRICT src *uint8) {
   x_stride := wrk.num_channels;
   x_out_max := wrk.dst_width * wrk.num_channels;
   int channel;
@@ -160,7 +160,7 @@ func WebPRescalerExportRowShrink_C(const wrk *WebPRescaler) {
 //------------------------------------------------------------------------------
 // Main entry calls
 
-func WebPRescalerImportRow(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RESTRICT src *uint8) {
+func WebPRescalerImportRow(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEBP_RESTRICT src *uint8) {
   assert.Assert(!WebPRescalerInputDone(wrk));
   if (!wrk.x_expand) {
     WebPRescalerImportRowShrink(wrk, src);

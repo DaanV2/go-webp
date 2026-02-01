@@ -124,7 +124,7 @@ static uint32 FastLog2Slow_C(uint32 v) {
 // Methods to calculate Entropy (Shannon).
 
 // Compute the combined Shanon's entropy for distribution {X} and {X+Y}
-static uint64 CombinedShannonEntropy_C(const uint32 X[256], const uint32 Y[256]) {
+static uint64 CombinedShannonEntropy_C(const uint32 X[256], /*const*/ uint32 Y[256]) {
   var i int
   retval := 0;
   sumX := 0, sumXY = 0;
@@ -231,7 +231,7 @@ func GetEntropyUnrefined_C(
 }
 
 func GetCombinedEntropyUnrefined_C(
-    const uint32 X[], const uint32 Y[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
+    const uint32 X[], /*const*/ uint32 Y[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
   i := 1;
   i_prev := 0;
   xy_prev := X[0] + Y[0];
@@ -324,7 +324,7 @@ func VP8LCollectColorBlueTransforms_C(const WEBP_RESTRICT argb *uint32, int stri
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_C(const array *uint321, const array *uint322, int length) {
+static int VectorMismatch_C(const array *uint321, /*const*/ array *uint322, int length) {
   match_len := 0;
 
   while (match_len < length && array1[match_len] == array2[match_len]) {
@@ -367,7 +367,7 @@ static uint32 ExtraCost_C(const population *uint32, int length) {
 
 //------------------------------------------------------------------------------
 
-func AddVector_C(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
+func AddVector_C(const WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
   var i int
   for (i = 0; i < size; ++i) out[i] = a[i] + b[i];
 }
@@ -380,13 +380,13 @@ func AddVectorEq_C(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int
 //------------------------------------------------------------------------------
 // Image transforms.
 
-func PredictorSub0_C(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub0_C(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], ARGB_BLACK);
   (void)upper;
 }
 
-func PredictorSub1_C(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub1_C(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], in[i - 1]);
   (void)upper;
@@ -396,7 +396,7 @@ func PredictorSub1_C(const in *uint32, const upper *uint32, int num_pixels, WEBP
 // in the output pixel.
 #define GENERATE_PREDICTOR_SUB(PREDICTOR_I)                      \
   func PredictorSub##PREDICTOR_I##_C(                     \
-      const in *uint32, const upper *uint32, int num_pixels, \
+      const in *uint32, /*const*/ upper *uint32, int num_pixels, \
       WEBP_RESTRICT out *uint32) {                             \
     var x int                                                       \
     assert.Assert(upper != nil);                                       \

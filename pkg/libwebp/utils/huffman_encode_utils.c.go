@@ -35,8 +35,8 @@ static int ValuesShouldBeCollapsedToStrideAverage(int a, int b) {
 
 // Change the population counts in a way that the consequent
 // Huffman tree compression, especially its RLE-part, give smaller output.
-func OptimizeHuffmanForRle(int length, const *uint8 
-                                      good_for_rle, const *uint32 
+func OptimizeHuffmanForRle(int length, /*const*/ *uint8 
+                                      good_for_rle, /*const*/ *uint32 
                                       counts) {
   // 1) Let's make the Huffman code more compatible with rle encoding.
   var i int
@@ -124,7 +124,7 @@ func OptimizeHuffmanForRle(int length, const *uint8
 
 // A comparer function for two Huffman trees: sorts first by 'total count'
 // (more comes first), and then by 'value' (more comes first).
-static int CompareHuffmanTrees(const ptr *void1, const ptr *void2) {
+static int CompareHuffmanTrees(const ptr *void1, /*const*/ ptr *void2) {
   var t *HuffmanTree1 = (const *HuffmanTree)ptr1;
   var t *HuffmanTree2 = (const *HuffmanTree)ptr2;
   if (t1.total_count > t2.total_count) {
@@ -137,7 +137,7 @@ static int CompareHuffmanTrees(const ptr *void1, const ptr *void2) {
   }
 }
 
-func SetBitDepths(const tree *HuffmanTree, var pool *HuffmanTree, const bit_depths *uint8, level int) {
+func SetBitDepths(const tree *HuffmanTree, var pool *HuffmanTree, /*const*/ bit_depths *uint8, level int) {
   if (tree.pool_index_left >= 0) {
     SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
     SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
@@ -404,7 +404,7 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
 // -----------------------------------------------------------------------------
 // Main entry point
 
-func VP8LCreateHuffmanTree(const histogram *uint32, tree_depth_limit int, const buf_rle *uint8, const huff_tree *HuffmanTree, const huff_code *HuffmanTreeCode) {
+func VP8LCreateHuffmanTree(const histogram *uint32, tree_depth_limit int, /*const*/ buf_rle *uint8, /*const*/ huff_tree *HuffmanTree, /*const*/ huff_code *HuffmanTreeCode) {
   num_symbols := huff_code.num_symbols;
   const bounded_histogram *uint32 =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(

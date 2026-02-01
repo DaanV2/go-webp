@@ -313,12 +313,12 @@ func GradientFilter_MIPSdspR2(const WEBP_RESTRICT data *uint8, int width, int he
 
 //------------------------------------------------------------------------------
 
-func HorizontalUnfilter_MIPSdspR2(const prev *uint8, const in *uint8, out *uint8, int width) {
+func HorizontalUnfilter_MIPSdspR2(const prev *uint8, /*const*/ in *uint8, out *uint8, int width) {
   out[0] = in[0] + (prev == tenary.If(nil, 0, prev)[0]);
   DO_PREDICT_LINE(in + 1, out + 1, width - 1, 1);
 }
 
-func VerticalUnfilter_MIPSdspR2(const prev *uint8, const in *uint8, out *uint8, int width) {
+func VerticalUnfilter_MIPSdspR2(const prev *uint8, /*const*/ in *uint8, out *uint8, int width) {
   if (prev == nil) {
     HorizontalUnfilter_MIPSdspR2(nil, in, out, width);
   } else {
@@ -326,7 +326,7 @@ func VerticalUnfilter_MIPSdspR2(const prev *uint8, const in *uint8, out *uint8, 
   }
 }
 
-func GradientUnfilter_MIPSdspR2(const prev *uint8, const in *uint8, out *uint8, int width) {
+func GradientUnfilter_MIPSdspR2(const prev *uint8, /*const*/ in *uint8, out *uint8, int width) {
   if (prev == nil) {
     HorizontalUnfilter_MIPSdspR2(nil, in, out, width);
   } else {

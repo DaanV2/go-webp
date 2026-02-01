@@ -112,14 +112,14 @@ const WEBP_UINT64_MAX =(~uint64(0))
 // Splitting of distance and length codes into prefixes and
 // extra bits. The prefixes are encoded with an entropy code
 // while the extra bits are stored just as normal bits.
-static  func VP8LPrefixEncodeBitsNoLUT(int distance, const code *int, const extra_bits *int) {
+static  func VP8LPrefixEncodeBitsNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
   highest_bit := BitsLog2Floor(--distance);
   second_highest_bit := (distance >> (highest_bit - 1)) & 1;
   *extra_bits = highest_bit - 1;
   *code = 2 * highest_bit + second_highest_bit;
 }
 
-static  func VP8LPrefixEncodeNoLUT(int distance, const code *int, const extra_bits *int, const extra_bits_value *int) {
+static  func VP8LPrefixEncodeNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
   highest_bit := BitsLog2Floor(--distance);
   second_highest_bit := (distance >> (highest_bit - 1)) & 1;
   *extra_bits = highest_bit - 1;
@@ -136,7 +136,7 @@ type VP8LPrefixCode struct {
 // These tables are derived using VP8LPrefixEncodeNoLUT.
 extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];
 extern const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
-static  func VP8LPrefixEncodeBits(int distance, const code *int, const extra_bits *int) {
+static  func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
     *code = prefix_code.code;
@@ -146,7 +146,7 @@ static  func VP8LPrefixEncodeBits(int distance, const code *int, const extra_bit
   }
 }
 
-static  func VP8LPrefixEncode(int distance, const code *int, const extra_bits *int, const extra_bits_value *int) {
+static  func VP8LPrefixEncode(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
     *code = prefix_code.code;
@@ -184,7 +184,7 @@ VP8LSubPixels(uint32 a, uint32 b) {
 // The predictor is added to the output pixel (which
 // is therefore considered as a residual) to get the final prediction.
 #define GENERATE_PREDICTOR_ADD(PREDICTOR, PREDICTOR_ADD)                   \
-  func PREDICTOR_ADD(const in *uint32, const upper *uint32,     \
+  func PREDICTOR_ADD(const in *uint32, /*const*/ upper *uint32,     \
                             int num_pixels, WEBP_RESTRICT out *uint32) { \
     var x int                                                                 \
     assert.Assert(upper != nil);                                                 \

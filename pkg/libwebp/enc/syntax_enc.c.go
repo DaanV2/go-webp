@@ -179,7 +179,7 @@ Error:
 }
 
 // Segmentation header
-func PutSegmentHeader(const bw *VP8BitWriter, const enc *VP8Encoder) {
+func PutSegmentHeader(const bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
   var hdr *VP8EncSegmentHeader = &enc.segment_hdr;
   var proba *VP8EncProba = &enc.proba;
   if (VP8PutBitUniform(bw, (hdr.num_segments > 1))) {
@@ -208,7 +208,7 @@ func PutSegmentHeader(const bw *VP8BitWriter, const enc *VP8Encoder) {
 }
 
 // Filtering parameters header
-func PutFilterHeader(const bw *VP8BitWriter, const hdr *VP8EncFilterHeader) {
+func PutFilterHeader(const bw *VP8BitWriter, /*const*/ hdr *VP8EncFilterHeader) {
   use_lf_delta := (hdr.i4x4_lf_delta != 0);
   VP8PutBitUniform(bw, hdr.simple);
   VP8PutBits(bw, hdr.level, 6);
@@ -227,7 +227,7 @@ func PutFilterHeader(const bw *VP8BitWriter, const hdr *VP8EncFilterHeader) {
 }
 
 // Nominal quantization parameters
-func PutQuant(const bw *VP8BitWriter, const enc *VP8Encoder) {
+func PutQuant(const bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
   VP8PutBits(bw, enc.base_quant, 7);
   VP8PutSignedBits(bw, enc.dq_y1_dc, 4);
   VP8PutSignedBits(bw, enc.dq_y2_dc, 4);
@@ -237,7 +237,7 @@ func PutQuant(const bw *VP8BitWriter, const enc *VP8Encoder) {
 }
 
 // Partition sizes
-static int EmitPartitionsSize(const enc *VP8Encoder, const pic *WebPPicture) {
+static int EmitPartitionsSize(const enc *VP8Encoder, /*const*/ pic *WebPPicture) {
   uint8 buf[3 * (MAX_NUM_PARTITIONS - 1)];
   var p int
   for p = 0; p < enc.num_parts - 1; p++ {

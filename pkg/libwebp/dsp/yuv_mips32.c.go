@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define ROW_FUNC(FUNC_NAME, XSTEP, R, G, B, A)                               \
   func FUNC_NAME(                                                     \
-      const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,        \
+      const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
       const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
     int i, r, g, b;                                                          \
     int temp0, temp1, temp2, temp3, temp4;                                   \

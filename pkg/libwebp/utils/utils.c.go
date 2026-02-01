@@ -258,7 +258,7 @@ func WebPCopyPlane(const src *uint8, int src_stride, dst *uint8, int dst_stride,
   }
 }
 
-func WebPCopyPixels(const src *WebPPicture, const dst *WebPPicture) {
+func WebPCopyPixels(const src *WebPPicture, /*const*/ dst *WebPPicture) {
   assert.Assert(src != nil && dst != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   assert.Assert(src.use_argb && dst.use_argb)
@@ -268,7 +268,7 @@ func WebPCopyPixels(const src *WebPPicture, const dst *WebPPicture) {
 //------------------------------------------------------------------------------
 
 int WebPGetColorPalette(
-    const pic *WebPPicture, const  *uint32(MAX_PALETTE_SIZE) palette) {
+    const pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE) palette) {
   return GetColorPalette(pic, palette);
 }
 

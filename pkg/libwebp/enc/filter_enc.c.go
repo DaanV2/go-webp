@@ -86,7 +86,7 @@ func DoFilter(const it *VP8EncIterator, level int) {
 //------------------------------------------------------------------------------
 // SSIM metric for one macroblock
 
-static double GetMBSSIM(const yuv *uint81, const yuv *uint82) {
+static double GetMBSSIM(const yuv *uint81, /*const*/ yuv *uint82) {
   int x, y;
   double sum = 0.;
 

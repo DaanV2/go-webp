@@ -46,11 +46,11 @@ static int CheckMode(int mb_x, int mb_y, int mode) {
   return mode;
 }
 
-func Copy32b(const dst *uint8, const src *uint8) {
+func Copy32b(const dst *uint8, /*const*/ src *uint8) {
   WEBP_UNSAFE_MEMCPY(dst, src, 4);
 }
 
-static  func DoTransform(bits uint32, const src *int16, const dst *uint8) {
+static  func DoTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
   switch (bits >> 30) {
     case 3:
       VP8Transform(src, dst, 0);
@@ -66,7 +66,7 @@ static  func DoTransform(bits uint32, const src *int16, const dst *uint8) {
   }
 }
 
-func DoUVTransform(bits uint32, const src *int16, const dst *uint8) {
+func DoUVTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
   if (bits & 0xff) {             // any non-zero coeff at all?
     if (bits & 0xaa) {           // any non-zero AC coefficient?
       VP8TransformUV(src, dst);  // note we don't use the AC3 variant for U/V
@@ -76,7 +76,7 @@ func DoUVTransform(bits uint32, const src *int16, const dst *uint8) {
   }
 }
 
-func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
+func ReconstructRow(const dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext) {
   var j int
   int mb_x;
   mb_y := ctx.mb_y;
@@ -332,7 +332,7 @@ static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
     8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1}
 
 // Initialize dithering post-process if needed.
-func VP8InitDithering(const options *WebPDecoderOptions, const dec *VP8Decoder) {
+func VP8InitDithering(const options *WebPDecoderOptions, /*const*/ dec *VP8Decoder) {
   assert.Assert(dec != nil);
   if (options != nil) {
     d := options.dithering_strength;
@@ -504,7 +504,7 @@ static int FinishRow(arg *void1, arg *void2) {
 //------------------------------------------------------------------------------
 
 // Process the last decoded row (filtering + output).
-int VP8ProcessRow(const dec *VP8Decoder, const io *VP8Io) {
+int VP8ProcessRow(const dec *VP8Decoder, /*const*/ io *VP8Io) {
   ok := 1;
   var ctx *VP8ThreadContext = &dec.thread_ctx;
   filter_row := (dec.filter_type > 0) &&
@@ -555,7 +555,7 @@ int VP8ProcessRow(const dec *VP8Decoder, const io *VP8Io) {
 // After this call returns, one must always call VP8ExitCritical() with the
 // same parameters. Both functions should be used in pair. Returns VP8_STATUS_OK
 // if ok, otherwise sets and returns the error status on *dec.
-VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, const io *VP8Io) {
+VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, /*const*/ io *VP8Io) {
   // Call setup() first. This may trigger additional decoding features on 'io'.
   // Note: Afterward, we must call teardown() no matter what.
   if (io.setup != nil && !io.setup(io)) {
@@ -609,7 +609,7 @@ VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, const io *VP8Io) {
 
 // Must always be called in pair with VP8EnterCritical().
 // Returns false in case of error.
-int VP8ExitCritical(const dec *VP8Decoder, const io *VP8Io) {
+int VP8ExitCritical(const dec *VP8Decoder, /*const*/ io *VP8Io) {
   ok := 1;
   if (dec.mt_method > 0) {
     ok = WebPGetWorkerInterface().Sync(&dec.worker);
@@ -669,7 +669,7 @@ static int InitThreadContext(const dec *VP8Decoder) {
 
 // Return the multi-threading method to use (0=off), depending
 // on options and bitstream size. Only for lossy decoding.
-int VP8GetThreadMethod(const options *WebPDecoderOptions, const headers *WebPHeaderStructure, int width, int height) {
+int VP8GetThreadMethod(const options *WebPDecoderOptions, /*const*/ headers *WebPHeaderStructure, int width, int height) {
   if (options == nil || options.use_threads == 0) {
     return 0;
   }
@@ -804,7 +804,7 @@ func InitIo(const dec *VP8Decoder, io *VP8Io) {
   io.a = nil;
 }
 
-int VP8InitFrame(const dec *VP8Decoder, const io *VP8Io) {
+int VP8InitFrame(const dec *VP8Decoder, /*const*/ io *VP8Io) {
   if !InitThreadContext(dec) {
     return 0  // call first. Sets dec.num_caches.
 }

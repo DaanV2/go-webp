@@ -99,7 +99,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample32Pixels_SSE2(const WEBP_RESTRICT const r *uint81, const WEBP_RESTRICT const r *uint82, WEBP_RESTRICT const out *uint8) {
+func Upsample32Pixels_SSE2(const WEBP_RESTRICT const r *uint81, /*const*/ WEBP_RESTRICT const r *uint82, WEBP_RESTRICT const out *uint8) {
   UPSAMPLE_32PIXELS(r1, r2, out);
 }
 
@@ -129,8 +129,8 @@ func Upsample32Pixels_SSE2(const WEBP_RESTRICT const r *uint81, const WEBP_RESTR
   func FUNC_NAME(                                                      \
       const WEBP_RESTRICT top_y *uint8,                                     \
       const WEBP_RESTRICT bottom_y *uint8,                                  \
-      const WEBP_RESTRICT top_u *uint8, const WEBP_RESTRICT top_v *uint8, \
-      const WEBP_RESTRICT cur_u *uint8, const WEBP_RESTRICT cur_v *uint8, \
+      const WEBP_RESTRICT top_u *uint8, /*const*/ WEBP_RESTRICT top_v *uint8, \
+      const WEBP_RESTRICT cur_u *uint8, /*const*/ WEBP_RESTRICT cur_v *uint8, \
       WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
       int len) {                                                              \
     int uv_pos, pos;                                                          \
@@ -233,10 +233,10 @@ extern func WebPInitYUV444ConvertersSSE2(void);
 
 #define YUV444_FUNC(FUNC_NAME, CALL, CALL_C, XSTEP)                          \
   extern func CALL_C(                                                        \
-      const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,        \
+      const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
       const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len);  \
   func FUNC_NAME(                                                     \
-      const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,        \
+      const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
       const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
     var i int                                                                   \
     max_len := len & ~31;                                           \

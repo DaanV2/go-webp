@@ -21,7 +21,7 @@ import "github.com/daanv2/go-webp/pkg/assert"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-static  func PredictLineInverse0(const src *uint8, const pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
+static  func PredictLineInverse0(const src *uint8, /*const*/ pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
   v16u8 src0, pred0, dst0;
   assert.Assert(length >= 0);
   while (length >= 32) {
@@ -97,7 +97,7 @@ func HorizontalFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height
 //------------------------------------------------------------------------------
 // Gradient filter
 
-static  func PredictLineGradient(const pinput *uint8, const ppred *uint8, WEBP_RESTRICT poutput *uint8, int stride, int size) {
+static  func PredictLineGradient(const pinput *uint8, /*const*/ ppred *uint8, WEBP_RESTRICT poutput *uint8, int stride, int size) {
   var w int
   const v16i8 zero = {0}
   while (size >= 16) {

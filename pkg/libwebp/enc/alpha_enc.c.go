@@ -54,7 +54,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
 static int EncodeLossless(const data *uint8, int width, int height, int effort_level,  // in [0..6] range
-                          int use_quality_100, const bw *VP8LBitWriter, const stats *WebPAuxStats) {
+                          int use_quality_100, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) {
   ok := 0;
   WebPConfig config;
   WebPPicture picture;
@@ -231,7 +231,7 @@ func InitFilterTrial(const score *FilterTrial) {
   VP8BitWriterInit(&score.bw, 0);
 }
 
-static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, const output_size *uint64, const stats *WebPAuxStats) {
+static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) {
   ok := 1;
   FilterTrial best;
   try_map := GetFilterMap(alpha, width, height, filter, effort_level);
@@ -281,7 +281,7 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data
   return ok;
 }
 
-static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filter, int effort_level, *uint8* const output, const output_size *uint64) {
+static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filter, int effort_level, *uint8* const output, /*const*/ output_size *uint64) {
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;

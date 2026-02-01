@@ -170,7 +170,7 @@ VP *uint88BitWriterFinish(const bw *VP8BitWriter) {
   return bw.buf;
 }
 
-int VP8BitWriterAppend(const bw *VP8BitWriter, const data *uint8, size uint64 ) {
+int VP8BitWriterAppend(const bw *VP8BitWriter, /*const*/ data *uint8, size uint64 ) {
   assert.Assert(data != nil);
   if bw.nb_bits != -8 {
     return 0  // Flush() must have been called
@@ -233,7 +233,7 @@ int VP8LBitWriterInit(const bw *VP8LBitWriter, uint64 expected_size) {
   return VP8LBitWriterResize(bw, expected_size);
 }
 
-int VP8LBitWriterClone(const src *VP8LBitWriter, const dst *VP8LBitWriter) {
+int VP8LBitWriterClone(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter) {
   current_size := src.cur - src.buf;
   assert.Assert(src.cur >= src.buf && src.cur <= src.end);
   if (!VP8LBitWriterResize(dst, current_size)) return 0;
@@ -252,7 +252,7 @@ func VP8LBitWriterWipeOut(const bw *VP8LBitWriter) {
   }
 }
 
-func VP8LBitWriterReset(const bw_init *VP8LBitWriter, const bw *VP8LBitWriter) {
+func VP8LBitWriterReset(const bw_init *VP8LBitWriter, /*const*/ bw *VP8LBitWriter) {
   bw.bits = bw_init.bits;
   bw.used = bw_init.used;
   bw.cur = bw.buf + (bw_init.cur - bw_init.buf);
@@ -260,7 +260,7 @@ func VP8LBitWriterReset(const bw_init *VP8LBitWriter, const bw *VP8LBitWriter) {
   bw.error = bw_init.error;
 }
 
-func VP8LBitWriterSwap(const src *VP8LBitWriter, const dst *VP8LBitWriter) {
+func VP8LBitWriterSwap(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter) {
   const VP8LBitWriter tmp = *src;
   *src = *dst;
   *dst = tmp;

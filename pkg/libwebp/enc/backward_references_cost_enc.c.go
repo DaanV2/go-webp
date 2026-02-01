@@ -31,7 +31,7 @@ const VALUES_IN_BYTE =256
 
 extern func VP8LClearBackwardRefs(const refs *VP8LBackwardRefs);
 extern int VP8LDistanceToPlaneCode(int xsize, int dist);
-extern func VP8LBackwardRefsCursorAdd(const refs *VP8LBackwardRefs, const PixOrCopy v);
+extern func VP8LBackwardRefsCursorAdd(const refs *VP8LBackwardRefs, /*const*/ PixOrCopy v);
 
 type CostModel struct {
   uint32 alpha[VALUES_IN_BYTE];
@@ -42,7 +42,7 @@ type CostModel struct {
 }
 
 func ConvertPopulationCountTableToBitEstimates(
-    int num_symbols, const uint32 population_counts[], uint32 output[]) {
+    int num_symbols, /*const*/ uint32 population_counts[], uint32 output[]) {
   sum := 0;
   nonzeros := 0;
   var i int
@@ -62,7 +62,7 @@ func ConvertPopulationCountTableToBitEstimates(
   }
 }
 
-static int CostModelBuild(const m *CostModel, int xsize, int cache_bits, const refs *VP8LBackwardRefs) {
+static int CostModelBuild(const m *CostModel, int xsize, int cache_bits, /*const*/ refs *VP8LBackwardRefs) {
   ok := 0;
   var histo *VP8LHistogram = VP8LAllocateHistogram(cache_bits);
   if (histo == nil) goto Error;
@@ -110,7 +110,7 @@ static  int64 GetDistanceCost(const m *CostModel, uint32 distance) {
 }
 
 static  func AddSingleLiteralWithCostModel(
-    const argb *uint32, const hashers *VP8LColorCache, const cost_model *CostModel, int idx, int use_color_cache, int64 prev_cost, const cost *int64, const dist_array *uint16) {
+    const argb *uint32, /*const*/ hashers *VP8LColorCache, /*const*/ cost_model *CostModel, int idx, int use_color_cache, int64 prev_cost, /*const*/ cost *int64, /*const*/ dist_array *uint16) {
   cost_val := prev_cost;
   color := argb[idx];
   ix := use_color_cache ? VP8LColorCacheContains(hashers, color) : -1;
@@ -187,12 +187,12 @@ type CostManager struct {
   recycled_intervals *CostInterval;
 } ;
 
-func CostIntervalAddToFreeList(const manager *CostManager, const interval *CostInterval) {
+func CostIntervalAddToFreeList(const manager *CostManager, /*const*/ interval *CostInterval) {
   interval.next = manager.free_intervals;
   manager.free_intervals = interval;
 }
 
-static int CostIntervalIsInFreeList(const manager *CostManager, const interval *CostInterval) {
+static int CostIntervalIsInFreeList(const manager *CostManager, /*const*/ interval *CostInterval) {
   return (interval >= &manager.intervals[0] &&
           interval <= &manager.intervals[COST_MANAGER_MAX_FREE_LIST - 1]);
 }
@@ -205,7 +205,7 @@ func CostManagerInitFreeList(const manager *CostManager) {
   }
 }
 
-func DeleteIntervalList(const manager *CostManager, const interval *CostInterval) {
+func DeleteIntervalList(const manager *CostManager, /*const*/ interval *CostInterval) {
   while (interval != nil) {
     var next *CostInterval = interval.next;
     if (!CostIntervalIsInFreeList(manager, interval)) {
@@ -232,7 +232,7 @@ func CostManagerClear(const manager *CostManager) {
   CostManagerInitFreeList(manager);
 }
 
-static int CostManagerInit(const manager *CostManager, const dist_array *uint16, int pix_count, const cost_model *CostModel) {
+static int CostManagerInit(const manager *CostManager, /*const*/ dist_array *uint16, int pix_count, /*const*/ cost_model *CostModel) {
   var i int
   cost_cache_size := (pix_count > MAX_LENGTH) ? MAX_LENGTH : pix_count;
 
@@ -325,7 +325,7 @@ static  func UpdateCostPerInterval(const manager *CostManager, int start, int en
 }
 
 // Given two intervals, make 'prev' be the previous one of 'next' in 'manager'.
-static  func ConnectIntervals(const manager *CostManager, const prev *CostInterval, const next *CostInterval) {
+static  func ConnectIntervals(const manager *CostManager, /*const*/ prev *CostInterval, /*const*/ next *CostInterval) {
   if (prev != nil) {
     prev.next = next;
   } else {
@@ -336,7 +336,7 @@ static  func ConnectIntervals(const manager *CostManager, const prev *CostInterv
 }
 
 // Pop an interval in the manager.
-static  func PopInterval(const manager *CostManager, const interval *CostInterval) {
+static  func PopInterval(const manager *CostManager, /*const*/ interval *CostInterval) {
   if (interval == nil) return;
 
   ConnectIntervals(manager, interval.previous, interval.next);
@@ -374,7 +374,7 @@ static  func UpdateCostAtIndex(const manager *CostManager, int i, int do_clean_i
 // Given a current orphan interval and its previous interval, before
 // it was orphaned (which can be nil), set it at the right place in the list
 // of intervals using the 'start' ordering and the previous interval as a hint.
-static  func PositionOrphanInterval(const manager *CostManager, const current *CostInterval, previous *CostInterval) {
+static  func PositionOrphanInterval(const manager *CostManager, /*const*/ current *CostInterval, previous *CostInterval) {
   assert.Assert(current != nil);
 
   if (previous == nil) previous = manager.head;
@@ -396,7 +396,7 @@ static  func PositionOrphanInterval(const manager *CostManager, const current *C
 
 // Insert an interval in the list contained in the manager by starting at
 // 'interval_in' as a hint. The intervals are sorted by 'start' value.
-static  func InsertInterval(const manager *CostManager, const interval_in *CostInterval, int64 cost, int position, int start, int end) {
+static  func InsertInterval(const manager *CostManager, /*const*/ interval_in *CostInterval, int64 cost, int position, int start, int end) {
   interval_new *CostInterval;
 
   if (start >= end) return;
@@ -534,7 +534,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
 }
 
 static int BackwardReferencesHashChainDistanceOnly(
-    int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs, const dist_array *uint16) {
+    int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ dist_array *uint16) {
   var i int
   ok := 0;
   cc_init := 0;
@@ -652,7 +652,7 @@ Error:
 // We pack the path at the end of and return *dist_array
 // a pointer to this part of the array. Example:
 // dist_array = [1x2xx3x2] => packed [1x2x1232], chosen_path = [1232]
-func TraceBackwards(const dist_array *uint16, int dist_array_size, *uint16* const chosen_path, const chosen_path_size *int) {
+func TraceBackwards(const dist_array *uint16, int dist_array_size, *uint16* const chosen_path, /*const*/ chosen_path_size *int) {
   path *uint16 = dist_array + dist_array_size;
   cur *uint16 = dist_array + dist_array_size - 1;
   while (cur >= dist_array) {
@@ -666,7 +666,7 @@ func TraceBackwards(const dist_array *uint16, int dist_array_size, *uint16* cons
 }
 
 static int BackwardReferencesHashChainFollowChosenPath(
-    const argb *uint32, int cache_bits, const chosen_path *uint16, int chosen_path_size, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs) {
+    const argb *uint32, int cache_bits, /*const*/ chosen_path *uint16, int chosen_path_size, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) {
   use_color_cache := (cache_bits > 0);
   int ix;
   i := 0;
@@ -716,8 +716,8 @@ Error:
 
 // Returns 1 on success.
 extern int VP8LBackwardReferencesTraceBackwards(
-    int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs_src *VP8LBackwardRefs, const refs_dst *VP8LBackwardRefs);
-int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs_src *VP8LBackwardRefs, const refs_dst *VP8LBackwardRefs) {
+    int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs);
+int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs) {
   ok := 0;
   dist_array_size := xsize * ysize;
   chosen_path *uint16 = nil;

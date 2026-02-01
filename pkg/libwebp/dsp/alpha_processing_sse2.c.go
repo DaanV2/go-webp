@@ -368,7 +368,7 @@ func MultARGBRow_SSE2(const ptr *uint32, int width, int inverse) {
   if (width > 0) WebPMultARGBRow_C(ptr + x, width, inverse);
 }
 
-func MultRow_SSE2(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alpha *uint8, int width, int inverse) {
+func MultRow_SSE2(WEBP_RESTRICT const ptr *uint8, /*const*/ WEBP_RESTRICT const alpha *uint8, int width, int inverse) {
   x := 0;
   if (!inverse) {
     const __m128i zero = _mm_setzero_si128();

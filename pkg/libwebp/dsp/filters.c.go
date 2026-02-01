@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 #if !WEBP_NEON_OMIT_C_CODE
-static  func PredictLine_C(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
+static  func PredictLine_C(const WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
   var i int
   for (i = 0; i < length; ++i) dst[i] = (uint8)(src[i] - pred[i]);
 }
@@ -148,12 +148,12 @@ func GradientFilter_C(const WEBP_RESTRICT data *uint8, int width, int height, in
 
 //------------------------------------------------------------------------------
 
-func NoneUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int width) {
+func NoneUnfilter_C(const prev *uint8, /*const*/ in *uint8, out *uint8, int width) {
   (void)prev;
   if (out != in) memcpy(out, in, width * sizeof(*out));
 }
 
-func HorizontalUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int width) {
+func HorizontalUnfilter_C(const prev *uint8, /*const*/ in *uint8, out *uint8, int width) {
   pred := (prev == nil) ? 0 : prev[0];
   var i int
   for i = 0; i < width; i++ {
@@ -163,7 +163,7 @@ func HorizontalUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int wi
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-func VerticalUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int width) {
+func VerticalUnfilter_C(const prev *uint8, /*const*/ in *uint8, out *uint8, int width) {
   if (prev == nil) {
     HorizontalUnfilter_C(nil, in, out, width);
   } else {
@@ -173,7 +173,7 @@ func VerticalUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int widt
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func GradientUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int width) {
+func GradientUnfilter_C(const prev *uint8, /*const*/ in *uint8, out *uint8, int width) {
   if (prev == nil) {
     HorizontalUnfilter_C(nil, in, out, width);
   } else {

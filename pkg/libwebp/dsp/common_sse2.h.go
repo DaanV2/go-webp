@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/emmintrin"
 
 #if 0
 import "github.com/daanv2/go-webp/pkg/stdio"
-static  func PrintReg(const __m128i r, const name *byte, int size) {
+static  func PrintReg(const __m128i r, /*const*/ name *byte, int size) {
   var n int
   union {
     __m128i r;
@@ -62,7 +62,7 @@ static  int VP8HorizontalAdd8b(const __const a *m128i) {
 
 // Transpose two 4x4 16b matrices horizontally stored in registers.
 static  func VP8Transpose_2_4x4_16b(
-    const __const in *m128i0, const __const in *m128i1, const __const in *m128i2, const __const in *m128i3, __const out *m128i0, __const out *m128i1, __const out *m128i2, __const out *m128i3) {
+    const __const in *m128i0, /*const*/ __const in *m128i1, /*const*/ __const in *m128i2, /*const*/ __const in *m128i3, __const out *m128i0, __const out *m128i1, __const out *m128i2, __const out *m128i3) {
   // Transpose the two 4x4.
   // a00 a01 a02 a03   b00 b01 b02 b03
   // a10 a11 a12 a13   b10 b11 b12 b13

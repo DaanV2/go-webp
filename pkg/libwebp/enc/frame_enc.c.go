@@ -51,7 +51,7 @@ type PassStats struct {  // struct for organizing convergence in either size or 
   int do_size_search;
 } ;
 
-static int InitPassStats(const enc *VP8Encoder, const s *PassStats) {
+static int InitPassStats(const enc *VP8Encoder, /*const*/ s *PassStats) {
   target_size := (uint64)enc.config.target_size;
   do_size_search := (target_size != 0);
   const float target_PSNR = enc.config.target_PSNR;
@@ -237,7 +237,7 @@ func SetSegmentProbas(const enc *VP8Encoder) {
 //------------------------------------------------------------------------------
 // Coefficient coding
 
-static int PutCoeffs(const bw *VP8BitWriter, int ctx, const res *VP8Residual) {
+static int PutCoeffs(const bw *VP8BitWriter, int ctx, /*const*/ res *VP8Residual) {
   n := res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   var p *uint8 = res.prob[n][ctx];
@@ -311,7 +311,7 @@ static int PutCoeffs(const bw *VP8BitWriter, int ctx, const res *VP8Residual) {
   return 1;
 }
 
-func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const rd *VP8ModeScore) {
+func CodeResiduals(const bw *VP8BitWriter, /*const*/ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   int x, y, ch;
   VP8Residual res;
   uint64 pos1, pos2, pos3;
@@ -364,7 +364,7 @@ func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const rd *V
 
 // Same as CodeResiduals, but doesn't actually write anything.
 // Instead, it just records the event distribution.
-func RecordResiduals(const it *VP8EncIterator, const rd *VP8ModeScore) {
+func RecordResiduals(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   int x, y, ch;
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
@@ -411,7 +411,7 @@ func RecordResiduals(const it *VP8EncIterator, const rd *VP8ModeScore) {
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
-static int RecordTokens(const it *VP8EncIterator, const rd *VP8ModeScore, const tokens *VP8TBuffer) {
+static int RecordTokens(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore, /*const*/ tokens *VP8TBuffer) {
   int x, y, ch;
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
@@ -581,7 +581,7 @@ func SetLoopParams(const enc *VP8Encoder, float q) {
   ResetSSE(enc);
 }
 
-static uint64 OneStatPass(const enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, const s *PassStats) {
+static uint64 OneStatPass(const enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, /*const*/ s *PassStats) {
   VP8EncIterator it;
   size uint64  = 0;
   uint64 size_p0 = 0;

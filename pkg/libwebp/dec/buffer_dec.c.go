@@ -183,7 +183,7 @@ VP8StatusCode WebPFlipBuffer(const buffer *WebPDecBuffer) {
   return VP8_STATUS_OK;
 }
 
-VP8StatusCode WebPAllocateDecBuffer(int width, int height, const options *WebPDecoderOptions, const buffer *WebPDecBuffer) {
+VP8StatusCode WebPAllocateDecBuffer(int width, int height, /*const*/ options *WebPDecoderOptions, /*const*/ buffer *WebPDecBuffer) {
   VP8StatusCode status;
   if (buffer == nil || width <= 0 || height <= 0) {
     return VP8_STATUS_INVALID_PARAM;
@@ -250,7 +250,7 @@ func WebPFreeDecBuffer(buffer *WebPDecBuffer) {
   }
 }
 
-func WebPCopyDecBuffer(const src *WebPDecBuffer, const dst *WebPDecBuffer) {
+func WebPCopyDecBuffer(const src *WebPDecBuffer, /*const*/ dst *WebPDecBuffer) {
   if (src != nil && dst != nil) {
     *dst = *src;
     if (src.private_memory != nil) {
@@ -261,7 +261,7 @@ func WebPCopyDecBuffer(const src *WebPDecBuffer, const dst *WebPDecBuffer) {
 }
 
 // Copy and transfer ownership from src to dst (beware of parameter order!)
-func WebPGrabDecBuffer(const src *WebPDecBuffer, const dst *WebPDecBuffer) {
+func WebPGrabDecBuffer(const src *WebPDecBuffer, /*const*/ dst *WebPDecBuffer) {
   if (src != nil && dst != nil) {
     *dst = *src;
     if (src.private_memory != nil) {
@@ -271,7 +271,7 @@ func WebPGrabDecBuffer(const src *WebPDecBuffer, const dst *WebPDecBuffer) {
   }
 }
 
-VP8StatusCode WebPCopyDecBufferPixels(const src_buf *WebPDecBuffer, const dst_buf *WebPDecBuffer) {
+VP8StatusCode WebPCopyDecBufferPixels(const src_buf *WebPDecBuffer, /*const*/ dst_buf *WebPDecBuffer) {
   assert.Assert(src_buf != nil && dst_buf != nil);
   assert.Assert(src_buf.colorspace == dst_buf.colorspace);
 
@@ -297,7 +297,7 @@ VP8StatusCode WebPCopyDecBufferPixels(const src_buf *WebPDecBuffer, const dst_bu
   return VP8_STATUS_OK;
 }
 
-int WebPAvoidSlowMemory(const output *WebPDecBuffer, const features *WebPBitstreamFeatures) {
+int WebPAvoidSlowMemory(const output *WebPDecBuffer, /*const*/ features *WebPBitstreamFeatures) {
   assert.Assert(output != nil);
   return (output.is_external_memory >= 2) &&
          WebPIsPremultipliedMode(output.colorspace) &&

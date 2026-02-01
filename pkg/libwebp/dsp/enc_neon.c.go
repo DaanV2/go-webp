@@ -46,7 +46,7 @@ static  int16x8_t ConvertU8ToS16_NEON(uint32x2_t v) {
 
 // Performs unsigned 8b saturation on 'dst01' and 'dst23' storing the result
 // to the corresponding rows of 'dst'.
-static  func SaturateAndStore4x4_NEON(const dst *uint8, const int16x8_t dst01, const int16x8_t dst23) {
+static  func SaturateAndStore4x4_NEON(const dst *uint8, /*const*/ int16x8_t dst01, /*const*/ int16x8_t dst23) {
   // Unsigned saturate to 8b.
   const uint8x8_t dst01_u8 = vqmovun_s16(dst01);
   const uint8x8_t dst23_u8 = vqmovun_s16(dst23);
@@ -58,7 +58,7 @@ static  func SaturateAndStore4x4_NEON(const dst *uint8, const int16x8_t dst01, c
   vst1_lane_u32((*uint32)(dst + 3 * BPS), vreinterpret_u32_u8(dst23_u8), 1);
 }
 
-static  func Add4x4_NEON(const int16x8_t row01, const int16x8_t row23, const WEBP_RESTRICT const ref *uint8, WEBP_RESTRICT const dst *uint8) {
+static  func Add4x4_NEON(const int16x8_t row01, /*const*/ int16x8_t row23, /*const*/ WEBP_RESTRICT const ref *uint8, WEBP_RESTRICT const dst *uint8) {
   uint32x2_t dst01 = vdup_n_u32(0);
   uint32x2_t dst23 = vdup_n_u32(0);
 
@@ -81,7 +81,7 @@ static  func Add4x4_NEON(const int16x8_t row01, const int16x8_t row23, const WEB
   }
 }
 
-static  func Transpose8x2_NEON(const int16x8_t in0, const int16x8_t in1, int16x8x2_t* const out) {
+static  func Transpose8x2_NEON(const int16x8_t in0, /*const*/ int16x8_t in1, int16x8x2_t* const out) {
   // a0 a1 a2 a3 | b0 b1 b2 b3   => a0 b0 c0 d0 | a1 b1 c1 d1
   // c0 c1 c2 c3 | d0 d1 d2 d3      a2 b2 c2 d2 | a3 b3 c3 d3
   const int16x8x2_t tmp0 = vzipq_s16(in0, in1);  // a0 c0 a1 c1 a2 c2 ...
@@ -113,7 +113,7 @@ static  func TransformPass_NEON(int16x8x2_t* const rows) {
   Transpose8x2_NEON(E0, E1, rows);
 }
 
-func ITransformOne_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func ITransformOne_NEON(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int16x8x2_t rows;
   INIT_VECTOR2(rows, vld1q_s16(in + 0), vld1q_s16(in + 8));
   TransformPass_NEON(&rows);
@@ -123,7 +123,7 @@ func ITransformOne_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *
 
 #else
 
-func ITransformOne_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func ITransformOne_NEON(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   kBPS := BPS;
   kC1C2[] := {kC1, kC2, 0, 0}
 
@@ -238,7 +238,7 @@ func ITransformOne_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *
 
 #endif  // WEBP_USE_INTRINSICS
 
-func ITransform_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_NEON(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
   ITransformOne_NEON(ref, in, dst);
   if (do_two) {
     ITransformOne_NEON(ref + 4, in + 16, dst + 4);
@@ -260,7 +260,7 @@ static uint8x16_t Load4x4_NEON(const src *uint8) {
 #if defined(WEBP_USE_INTRINSICS)
 
 static  func Transpose4x4_S16_NEON(
-    const int16x4_t A, const int16x4_t B, const int16x4_t C, const int16x4_t D, int16x8_t* const out01, int16x8_t* const out32) {
+    const int16x4_t A, /*const*/ int16x4_t B, /*const*/ int16x4_t C, /*const*/ int16x4_t D, int16x8_t* const out01, int16x8_t* const out32) {
   const int16x4x2_t AB = vtrn_s16(A, B);
   const int16x4x2_t CD = vtrn_s16(C, D);
   const int32x2x2_t tmp02 = vtrn_s32(vreinterpret_s32_s16(AB.val[0]), vreinterpret_s32_s16(CD.val[0]));
@@ -271,11 +271,11 @@ static  func Transpose4x4_S16_NEON(
       vreinterpret_s64_s32(tmp13.val[1]), vreinterpret_s64_s32(tmp02.val[1])));
 }
 
-static  int16x8_t DiffU8ToS16_NEON(const uint8x8_t a, const uint8x8_t b) {
+static  int16x8_t DiffU8ToS16_NEON(const uint8x8_t a, /*const*/ uint8x8_t b) {
   return vreinterpretq_s16_u16(vsubl_u8(a, b));
 }
 
-func FTransform_NEON(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
+func FTransform_NEON(const WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
   int16x8_t d0d1, d3d2;  // working 4x4 int16 variables
   {
     const uint8x16_t S0 = Load4x4_NEON(src);
@@ -337,7 +337,7 @@ func FTransform_NEON(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *ui
 static const int16 kCoeff16[] = {5352, 5352, 5352, 5352, 2217, 2217, 2217, 2217}
 static const int32 kCoeff32[] = {1812,  1812,  1812,  1812,  937,   937, 937,   937,   12000, 12000, 12000, 12000, 51000, 51000, 51000, 51000}
 
-func FTransform_NEON(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
+func FTransform_NEON(const WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
   kBPS := BPS;
   var src_ptr *uint8 = src;
   var ref_ptr *uint8 = ref;
@@ -592,7 +592,7 @@ static  int16x4x4_t DistoLoadW_NEON(const w *uint16) {
   return d4_w;
 }
 
-static  int32x2_t DistoSum_NEON(const int16x8x4_t q4_in, const int16x4x4_t d4_w) {
+static  int32x2_t DistoSum_NEON(const int16x8x4_t q4_in, /*const*/ int16x4x4_t d4_w) {
   int32x2_t d_sum;
   // sum += w[ 0] * abs(b0);
   // sum += w[ 4] * abs(b1);
@@ -621,7 +621,7 @@ static  int32x2_t DistoSum_NEON(const int16x8x4_t q4_in, const int16x4x4_t d4_w)
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int Disto4x4_NEON(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
+static int Disto4x4_NEON(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   uint32x2_t d_in_ab_0123 = vdup_n_u32(0);
   uint32x2_t d_in_ab_4567 = vdup_n_u32(0);
   uint32x2_t d_in_ab_89ab = vdup_n_u32(0);
@@ -658,7 +658,7 @@ static int Disto4x4_NEON(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT
 }
 #undef LOAD_LANE_32b
 
-static int Disto16x16_NEON(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
+static int Disto16x16_NEON(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   D := 0;
   int x, y;
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -671,7 +671,7 @@ static int Disto16x16_NEON(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRI
 
 //------------------------------------------------------------------------------
 
-func CollectHistogram_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
+func CollectHistogram_NEON(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
   const uint16x8_t max_coeff_thresh = vdupq_n_u16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
@@ -702,7 +702,7 @@ func CollectHistogram_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT p
 //------------------------------------------------------------------------------
 
 static  func AccumulateSSE16_NEON(
-    const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, uint32x4_t* const sum) {
+    const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, uint32x4_t* const sum) {
   const uint8x16_t a0 = vld1q_u8(a);
   const uint8x16_t b0 = vld1q_u8(b);
   const uint8x16_t abs_diff = vabdq_u8(a0, b0);
@@ -727,7 +727,7 @@ static int SumToInt_NEON(uint32x4_t sum) {
 #endif
 }
 
-static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
+static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
   for y = 0; y < 16; y++ {
@@ -736,7 +736,7 @@ static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *ui
   return SumToInt_NEON(sum);
 }
 
-static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
+static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
   for y = 0; y < 8; y++ {
@@ -745,7 +745,7 @@ static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uin
   return SumToInt_NEON(sum);
 }
 
-static int SSE8x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
+static int SSE8x8_NEON(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
   for y = 0; y < 8; y++ {
@@ -758,7 +758,7 @@ static int SSE8x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint
   return SumToInt_NEON(sum);
 }
 
-static int SSE4x4_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
+static int SSE4x4_NEON(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   const uint8x16_t a0 = Load4x4_NEON(a);
   const uint8x16_t b0 = Load4x4_NEON(b);
   const uint8x16_t abs_diff = vabdq_u8(a0, b0);
@@ -777,7 +777,7 @@ static int SSE4x4_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint
 // Compilation with gcc-4.6.x is problematic for now.
 #if !defined(WORK_AROUND_GCC)
 
-static int16x8_t Quantize_NEON(WEBP_RESTRICT const in *int16, const WEBP_RESTRICT const mtx *VP8Matrix, int offset) {
+static int16x8_t Quantize_NEON(WEBP_RESTRICT const in *int16, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, int offset) {
   const uint16x8_t sharp = vld1q_u16(&mtx.sharpen[offset]);
   const uint16x8_t q = vld1q_u16(&mtx.q[offset]);
   const uint16x8_t iq = vld1q_u16(&mtx.iq[offset]);
@@ -805,7 +805,7 @@ static int16x8_t Quantize_NEON(WEBP_RESTRICT const in *int16, const WEBP_RESTRIC
 
 static const uint8 kShuffles[4][8] = {{0, 1, 2, 3, 8, 9, 16, 17}, {10, 11, 4, 5, 6, 7, 12, 13}, {18, 19, 24, 25, 26, 27, 20, 21}, {14, 15, 22, 23, 28, 29, 30, 31}}
 
-static int QuantizeBlock_NEON(int16 in[16], int16 out[16], const WEBP_RESTRICT const mtx *VP8Matrix) {
+static int QuantizeBlock_NEON(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
   const int16x8_t out0 = Quantize_NEON(in, mtx, 0);
   const int16x8_t out1 = Quantize_NEON(in, mtx, 8);
   uint8x8x4_t shuffles;
@@ -834,7 +834,7 @@ static int QuantizeBlock_NEON(int16 in[16], int16 out[16], const WEBP_RESTRICT c
   return 0;
 }
 
-static int Quantize2Blocks_NEON(int16 in[32], int16 out[32], const WEBP_RESTRICT const mtx *VP8Matrix) {
+static int Quantize2Blocks_NEON(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
   int nz;
   nz = QuantizeBlock_NEON(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_NEON(in + 1 * 16, out + 1 * 16, mtx) << 1;
@@ -883,7 +883,7 @@ static  uint8x16x4_t Vld1qU8x4(const ptr *uint8) {
 #endif
 }
 
-func Intra4Preds_NEON(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
+func Intra4Preds_NEON(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   // 0   1   2   3   4   5   6   7   8   9  10  11  12  13
   //     L   K   J   I   X   A   B   C   D   E   F   G   H
   //    -5  -4  -3  -2  -1   0   1   2   3   4   5   6   7
@@ -966,7 +966,7 @@ func Intra4Preds_NEON(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
 }
 #endif  // BPS == 32
 
-static  func Fill_NEON(dst *uint8, const uint8 value) {
+static  func Fill_NEON(dst *uint8, /*const*/ uint8 value) {
   uint8x16_t a = vdupq_n_u8(value);
   var i int
   for i = 0; i < 16; i++ {
@@ -974,7 +974,7 @@ static  func Fill_NEON(dst *uint8, const uint8 value) {
   }
 }
 
-static  func Fill16_NEON(dst *uint8, const src *uint8) {
+static  func Fill16_NEON(dst *uint8, /*const*/ src *uint8) {
   uint8x16_t a = vld1q_u8(src);
   var i int
   for i = 0; i < 16; i++ {
@@ -982,7 +982,7 @@ static  func Fill16_NEON(dst *uint8, const src *uint8) {
   }
 }
 
-static  func HorizontalPred16_NEON(dst *uint8, const left *uint8) {
+static  func HorizontalPred16_NEON(dst *uint8, /*const*/ left *uint8) {
   uint8x16_t a;
 
   if (left == nil) {
@@ -1009,7 +1009,7 @@ static  func HorizontalPred16_NEON(dst *uint8, const left *uint8) {
   vst1q_u8(dst + BPS * 15, vdupq_laneq_u8(a, 15));
 }
 
-static  func VerticalPred16_NEON(dst *uint8, const top *uint8) {
+static  func VerticalPred16_NEON(dst *uint8, /*const*/ top *uint8) {
   if (top != nil) {
     Fill16_NEON(dst, top);
   } else {
@@ -1017,7 +1017,7 @@ static  func VerticalPred16_NEON(dst *uint8, const top *uint8) {
   }
 }
 
-static  func DCMode_NEON(dst *uint8, const left *uint8, const top *uint8) {
+static  func DCMode_NEON(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8) {
   uint8 s;
 
   if (top != nil) {
@@ -1045,7 +1045,7 @@ static  func DCMode_NEON(dst *uint8, const left *uint8, const top *uint8) {
   Fill_NEON(dst, s);
 }
 
-static  func TrueMotionHelper_NEON(dst *uint8, const uint8x8_t outer, const uint8x8x2_t inner, const uint16x8_t a, int i, const int n) {
+static  func TrueMotionHelper_NEON(dst *uint8, /*const*/ uint8x8_t outer, /*const*/ uint8x8x2_t inner, /*const*/ uint16x8_t a, int i, /*const*/ int n) {
   uint8x8_t d1, d2;
   uint16x8_t r1, r2;
 
@@ -1059,7 +1059,7 @@ static  func TrueMotionHelper_NEON(dst *uint8, const uint8x8_t outer, const uint
   vst1_u8(dst + BPS * (i * 4 + n) + 8, d2);
 }
 
-static  func TrueMotion_NEON(dst *uint8, const left *uint8, const top *uint8) {
+static  func TrueMotion_NEON(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8) {
   var i int
   uint16x8_t a;
   uint8x8x2_t inner;
@@ -1097,7 +1097,7 @@ static  func TrueMotion_NEON(dst *uint8, const left *uint8, const top *uint8) {
   }
 }
 
-func Intra16Preds_NEON(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, const WEBP_RESTRICT top *uint8) {
+func Intra16Preds_NEON(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   DCMode_NEON(I16DC16 + dst, left, top);
   VerticalPred16_NEON(I16VE16 + dst, top);
   HorizontalPred16_NEON(I16HE16 + dst, left);

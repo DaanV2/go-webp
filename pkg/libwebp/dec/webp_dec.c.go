@@ -151,7 +151,7 @@ static VP8StatusCode ParseVP8X(const WEBP_COUNTED_BY *uint8(*data_size) *
 // If an alpha chunk is found, and are set *alpha_data *alpha_size
 // appropriately.
 static VP8StatusCode ParseOptionalChunks(
-    const WEBP_COUNTED_BY *uint8(*data_size) * WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, uint64 const riff_size, const WEBP_COUNTED_BY *uint8(*alpha_size) * WEBP_SINGLE const alpha_data, WEBP_SINGLE const alpha_size *uint64) {
+    const WEBP_COUNTED_BY *uint8(*data_size) * WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, uint64 const riff_size, /*const*/ WEBP_COUNTED_BY *uint8(*alpha_size) * WEBP_SINGLE const alpha_data, WEBP_SINGLE const alpha_size *uint64) {
   uint64 buf_size;
   const *uint8  buf;
   total_size := TAG_SIZE +           // "WEBP".
@@ -278,7 +278,7 @@ static VP8StatusCode ParseVP8Header(const WEBP_COUNTED_BY *uint8(*data_size) *
 // ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
 static VP8StatusCode ParseHeadersInternal(
-    const *uint8  data_param, uint64 data_size_param, const width *int, const height *int, const has_alpha *int, const has_animation *int, const format *int, const headers *WebPHeaderStructure) {
+    const *uint8  data_param, uint64 data_size_param, /*const*/ width *int, /*const*/ height *int, /*const*/ has_alpha *int, /*const*/ has_animation *int, /*const*/ format *int, /*const*/ headers *WebPHeaderStructure) {
   data_size := data_size_param;
   const *uint8  data = data_param;
   canvas_width := 0;
@@ -447,7 +447,7 @@ func WebPResetDecParams(const params *WebPDecParams) {
 
 // Main flow
  static VP8StatusCode DecodeInto(
-    data *uint8, data_size uint64, const params *WebPDecParams) {
+    data *uint8, data_size uint64, /*const*/ params *WebPDecParams) {
   VP8StatusCode status;
   VP8Io io;
   WebPHeaderStructure headers;
@@ -589,8 +589,8 @@ WebPDecodeYUVInto *uint8(const *uint8  data, data_size uint64, *uint8  luma, uin
 
 //------------------------------------------------------------------------------
 
- static Decode *uint8(WEBP_CSP_MODE mode, const *uint8 
-                                          const data, data_size uint64, const width *int, const height *int, const keep_info *WebPDecBuffer) {
+ static Decode *uint8(WEBP_CSP_MODE mode, /*const*/ *uint8 
+                                          const data, data_size uint64, /*const*/ width *int, /*const*/ height *int, /*const*/ keep_info *WebPDecBuffer) {
   WebPDecParams params;
   WebPDecBuffer output;
 
@@ -668,7 +668,7 @@ func DefaultFeatures(const features *WebPBitstreamFeatures) {
 }
 
 static VP8StatusCode GetFeatures(const *uint8 
-                                     const data, data_size uint64, const features *WebPBitstreamFeatures) {
+                                     const data, data_size uint64, /*const*/ features *WebPBitstreamFeatures) {
   if (features == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
   }
@@ -828,7 +828,7 @@ int WebPCheckCropDimensions(int image_width, int image_height, int x, int y, int
            y >= image_height || h > image_height || h > image_height - y);
 }
 
-int WebPIoInitFromOptions(const options *WebPDecoderOptions, const io *VP8Io, WEBP_CSP_MODE src_colorspace) {
+int WebPIoInitFromOptions(const options *WebPDecoderOptions, /*const*/ io *VP8Io, WEBP_CSP_MODE src_colorspace) {
   W := io.width;
   H := io.height;
   x := 0, y = 0, w = W, h = H;

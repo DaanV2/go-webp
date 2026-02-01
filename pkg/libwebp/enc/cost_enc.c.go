@@ -31,7 +31,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 static const uint16 VP8LevelCodes[MAX_VARIABLE_LEVEL][2] = {
     {0x001, 0x000}, {0x007, 0x001}, {0x00f, 0x005}, {0x00f, 0x00d}, {0x033, 0x003}, {0x033, 0x003}, {0x033, 0x023}, {0x033, 0x023}, {0x033, 0x023}, {0x033, 0x023}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x153}}
 
-static int VariableLevelCost(level int, const uint8 probas[NUM_PROBAS]) {
+static int VariableLevelCost(level int, /*const*/ uint8 probas[NUM_PROBAS]) {
   pattern := VP8LevelCodes[level - 1][0];
   bits := VP8LevelCodes[level - 1][1];
   cost := 0;
@@ -95,7 +95,7 @@ const uint16 VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES] = {
 //------------------------------------------------------------------------------
 // helper functions for residuals struct VP8Residual.
 
-func VP8InitResidual(int first, int coeff_type, const enc *VP8Encoder, const res *VP8Residual) {
+func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual) {
   res.coeff_type = coeff_type;
   res.prob = enc.proba.coeffs[coeff_type];
   res.stats = enc.proba.stats[coeff_type];
@@ -106,7 +106,7 @@ func VP8InitResidual(int first, int coeff_type, const enc *VP8Encoder, const res
 //------------------------------------------------------------------------------
 // Mode costs
 
-int VP8GetCostLuma4(const it *VP8EncIterator, const int16 levels[16]) {
+int VP8GetCostLuma4(const it *VP8EncIterator, /*const*/ int16 levels[16]) {
   x := (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
@@ -120,7 +120,7 @@ int VP8GetCostLuma4(const it *VP8EncIterator, const int16 levels[16]) {
   return R;
 }
 
-int VP8GetCostLuma16(const it *VP8EncIterator, const rd *VP8ModeScore) {
+int VP8GetCostLuma16(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   int x, y;
@@ -146,7 +146,7 @@ int VP8GetCostLuma16(const it *VP8EncIterator, const rd *VP8ModeScore) {
   return R;
 }
 
-int VP8GetCostUV(const it *VP8EncIterator, const rd *VP8ModeScore) {
+int VP8GetCostUV(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   int ch, x, y;
@@ -176,7 +176,7 @@ int VP8GetCostUV(const it *VP8EncIterator, const rd *VP8ModeScore) {
 
 // Simulate block coding, but only record statistics.
 // Note: no need to record the fixed probas.
-int VP8RecordCoeffs(int ctx, const res *VP8Residual) {
+int VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual) {
   n := res.first;
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
   proba_t* s = res.stats[n][ctx];

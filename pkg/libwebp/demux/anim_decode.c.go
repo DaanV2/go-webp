@@ -240,7 +240,7 @@ func BlendPixelNonPremult(uint32 src, uint32 dst) uint32 {
 
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are NOT pre-multiplied
 // by alpha.
-func BlendPixelRowNonPremult(const src *uint32, const dst *uint32, int num_pixels) {
+func BlendPixelRowNonPremult(const src *uint32, /*const*/ dst *uint32, int num_pixels) {
   var i int
   for i = 0; i < num_pixels; i++ {
     src_alpha := (src[i] >> CHANNEL_SHIFT(3)) & 0xff;

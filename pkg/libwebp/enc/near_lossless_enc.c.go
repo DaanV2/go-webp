@@ -63,7 +63,7 @@ static int IsNear(uint32 a, uint32 b, int limit) {
   return 1;
 }
 
-static int IsSmooth(const prev_row *uint32, const curr_row *uint32, const next_row *uint32, int ix, int limit) {
+static int IsSmooth(const prev_row *uint32, /*const*/ curr_row *uint32, /*const*/ next_row *uint32, int ix, int limit) {
   // Check that all pixels in 4-connected neighborhood are smooth.
   return (IsNear(curr_row[ix], curr_row[ix - 1], limit) &&
           IsNear(curr_row[ix], curr_row[ix + 1], limit) &&
@@ -72,7 +72,7 @@ static int IsSmooth(const prev_row *uint32, const curr_row *uint32, const next_r
 }
 
 // Adjusts pixel values of image with given maximum error.
-func NearLossless(int xsize, int ysize, const argb_src *uint32, int stride, int limit_bits, copy_buffer *uint32, argb_dst *uint32) {
+func NearLossless(int xsize, int ysize, /*const*/ argb_src *uint32, int stride, int limit_bits, copy_buffer *uint32, argb_dst *uint32) {
   int x, y;
   limit := 1 << limit_bits;
   prev_row *uint32 = copy_buffer;
@@ -108,7 +108,7 @@ func NearLossless(int xsize, int ysize, const argb_src *uint32, int stride, int 
 
 // in near_lossless.c
 // Near lossless preprocessing in RGB color-space.
-int VP8ApplyNearLossless(const picture *WebPPicture, int quality, const argb_dst *uint32) {
+int VP8ApplyNearLossless(const picture *WebPPicture, int quality, /*const*/ argb_dst *uint32) {
   var i int
   copy_buffer *uint32;
   xsize := picture.width;

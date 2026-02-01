@@ -79,7 +79,7 @@ static  int clip(int v, int m, int M) {
   return (v < m) ? m : (v > M) ? M : v;
 }
 
-func SetSegmentAlphas(const enc *VP8Encoder, const int centers[NUM_MB_SEGMENTS], int mid) {
+func SetSegmentAlphas(const enc *VP8Encoder, /*const*/ int centers[NUM_MB_SEGMENTS], int mid) {
   nb := enc.segment_hdr.num_segments;
   min := centers[0], max = centers[0];
   var n int
@@ -133,7 +133,7 @@ func InitHistogram(const histo *VP8Histogram) {
 //------------------------------------------------------------------------------
 // Simplified k-Means, to assign Nb segments based on alpha-histogram
 
-func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
+func AssignSegments(const enc *VP8Encoder, /*const*/ int alphas[MAX_ALPHA + 1]) {
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
   // explicit check is needed to afunc spurious warning about 'n + 1' exceeding
   // array bounds of 'centers' with some compilers (noticed with gcc-4.9).
@@ -311,7 +311,7 @@ static int MBAnalyzeBestUVMode(const it *VP8EncIterator) {
   return best_alpha;
 }
 
-func MBAnalyze(const it *VP8EncIterator, int alphas[MAX_ALPHA + 1], const alpha *int, const uv_alpha *int) {
+func MBAnalyze(const it *VP8EncIterator, int alphas[MAX_ALPHA + 1], /*const*/ alpha *int, /*const*/ uv_alpha *int) {
   var enc *VP8Encoder = it.enc;
   int best_alpha, best_uv_alpha;
 
@@ -397,7 +397,7 @@ static int DoSegmentsJob(arg *void1, arg *void2) {
 }
 
 #ifdef WEBP_USE_THREAD
-func MergeJobs(const src *SegmentJob, const dst *SegmentJob) {
+func MergeJobs(const src *SegmentJob, /*const*/ dst *SegmentJob) {
   var i int
   for (i = 0; i <= MAX_ALPHA; ++i) dst.alphas[i] += src.alphas[i];
   dst.alpha += src.alpha;
@@ -406,7 +406,7 @@ func MergeJobs(const src *SegmentJob, const dst *SegmentJob) {
 #endif
 
 // initialize the job struct with some tasks to perform
-func InitSegmentJob(const enc *VP8Encoder, const job *SegmentJob, int start_row, int end_row) {
+func InitSegmentJob(const enc *VP8Encoder, /*const*/ job *SegmentJob, int start_row, int end_row) {
   WebPGetWorkerInterface().Init(&job.worker);
   job.worker.data1 = job;
   job.worker.data2 = &job.it;

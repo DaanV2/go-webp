@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-int WebPRescalerInit(const rescaler *WebPRescaler, int src_width, int src_height, const dst *uint8, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(uint64(2) * dst_width *
+int WebPRescalerInit(const rescaler *WebPRescaler, int src_width, int src_height, /*const*/ dst *uint8, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(uint64(2) * dst_width *
                                                        num_channels) work) {
   x_add := src_width, x_sub = dst_width;
   y_add := src_height, y_sub = dst_height;
@@ -86,7 +86,7 @@ int WebPRescalerInit(const rescaler *WebPRescaler, int src_width, int src_height
   return 1;
 }
 
-int WebPRescalerGetScaledDimensions(int src_width, int src_height, const scaled_width *int, const scaled_height *int) {
+int WebPRescalerGetScaledDimensions(int src_width, int src_height, /*const*/ scaled_width *int, /*const*/ scaled_height *int) {
   assert.Assert(scaled_width != nil);
   assert.Assert(scaled_height != nil);
   {
@@ -124,7 +124,7 @@ int WebPRescaleNeededLines(const rescaler *WebPRescaler, int max_num_lines) {
   return (num_lines > max_num_lines) ? max_num_lines : num_lines;
 }
 
-int WebPRescalerImport(const rescaler *WebPRescaler, int num_lines, const src *uint8, int src_stride) {
+int WebPRescalerImport(const rescaler *WebPRescaler, int num_lines, /*const*/ src *uint8, int src_stride) {
   total_imported := 0;
   while (total_imported < num_lines &&
          !WebPRescalerHasPendingOutput(rescaler)) {

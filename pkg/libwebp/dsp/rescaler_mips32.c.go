@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 //------------------------------------------------------------------------------
 // Row import
 
-func ImportRowShrink_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RESTRICT src *uint8) {
+func ImportRowShrink_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEBP_RESTRICT src *uint8) {
   x_stride := wrk.num_channels;
   x_out_max := wrk.dst_width * wrk.num_channels;
   fx_scale := wrk.fx_scale;
@@ -77,7 +77,7 @@ func ImportRowShrink_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RE
   }
 }
 
-func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, const WEBP_RESTRICT src *uint8) {
+func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEBP_RESTRICT src *uint8) {
   x_stride := wrk.num_channels;
   x_out_max := wrk.dst_width * wrk.num_channels;
   x_add := wrk.x_add;

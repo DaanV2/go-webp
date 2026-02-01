@@ -147,7 +147,7 @@ func MapConfigToTools(const enc *VP8Encoder) {
 //              LFStats: 2048
 // Picture size (yuv): 419328
 
-static InitVP *VP8Encoder8Encoder(const config *WebPConfig, const picture *WebPPicture) {
+static InitVP *VP8Encoder8Encoder(const config *WebPConfig, /*const*/ picture *WebPPicture) {
   enc *VP8Encoder;
   use_filter :=
       (config.filter_strength > 0) || (config.autofilter > 0);
@@ -317,7 +317,7 @@ int WebPEncodingSetError(const pic *WebPPicture, WebPEncodingError error) {
   return 0;
 }
 
-int WebPReportProgress(const pic *WebPPicture, int percent, const percent_store *int) {
+int WebPReportProgress(const pic *WebPPicture, int percent, /*const*/ percent_store *int) {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
     if (pic.progress_hook && !pic.progress_hook(percent, pic)) {

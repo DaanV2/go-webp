@@ -203,7 +203,7 @@ func GetEntropyUnrefined_MIPS32(
 }
 
 func GetCombinedEntropyUnrefined_MIPS32(
-    const uint32 X[], const uint32 Y[], int length, WEBP_RESTRICT const entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
+    const uint32 X[], /*const*/ uint32 Y[], int length, WEBP_RESTRICT const entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
   i := 1;
   i_prev := 0;
   xy_prev := X[0] + Y[0];
@@ -282,7 +282,7 @@ const ASM_END_1 = \
   ASM_END_COMMON_0 \
   ASM_END_COMMON_1
 
-func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, const WEBP_RESTRICT pb *uint32, WEBP_RESTRICT pout *uint32, int size) {
+func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, /*const*/ WEBP_RESTRICT pb *uint32, WEBP_RESTRICT pout *uint32, int size) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
   var LoopEnd *uint32 = pa + end;

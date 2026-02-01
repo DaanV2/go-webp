@@ -187,7 +187,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
 
 // Appends data to the end of MemBuffer.buf. It expands the allocated memory
 // size if required and also updates VP8BitReader's if new memory is allocated.
- static int AppendToMemBuffer(const idec *WebPIDecoder, const data *uint8, data_size uint64) {
+ static int AppendToMemBuffer(const idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) {
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   /* const */ mem *MemBuffer = &idec.mem;
   need_compressed_alpha := NeedCompressedAlpha(idec);
@@ -228,7 +228,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
   return 1;
 }
 
- static int RemapMemBuffer(const idec *WebPIDecoder, const data *uint8, data_size uint64) {
+ static int RemapMemBuffer(const idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) {
   /* const */ mem *MemBuffer = &idec.mem;
   var old_buf *uint8 = mem.buf;
   const old_start *uint8 =
@@ -297,13 +297,13 @@ func ClearMemBuffer(/* const */ mem *MemBuffer) {
 //------------------------------------------------------------------------------
 // Macroblock-decoding contexts
 
-func SaveContext(const dec *VP8Decoder, const token_br *VP8BitReader, const context *MBContext) {
+func SaveContext(const dec *VP8Decoder, /*const*/ token_br *VP8BitReader, /*const*/ context *MBContext) {
   context.left = dec.mb_info[-1];
   context.info = dec.mb_info[dec.mb_x];
   context.token_br = *token_br;
 }
 
-func RestoreContext(const context *MBContext, const dec *VP8Decoder, const token_br *VP8BitReader) {
+func RestoreContext(const context *MBContext, /*const*/ dec *VP8Decoder, /*const*/ token_br *VP8BitReader) {
   dec.mb_info[-1] = context.left;
   dec.mb_info[dec.mb_x] = context.info;
   *token_br = context.token_br;
@@ -632,7 +632,7 @@ static VP8StatusCode IDecode(idec *WebPIDecoder) {
 // Internal constructor
 
  static NewDecoder *WebPIDecoder(
-    const output_buffer *WebPDecBuffer, const features *WebPBitstreamFeatures) {
+    const output_buffer *WebPDecBuffer, /*const*/ features *WebPBitstreamFeatures) {
   idec *WebPIDecoder = (*WebPIDecoder)WebPSafeCalloc(uint64(1), sizeof(*idec));
   if (idec == nil) {
     return nil;
@@ -809,7 +809,7 @@ static VP8StatusCode IDecCheckStatus(const idec *WebPIDecoder) {
   return VP8_STATUS_SUSPENDED;
 }
 
-VP8StatusCode WebPIAppend(idec *WebPIDecoder, const *uint8  data, data_size uint64) {
+VP8StatusCode WebPIAppend(idec *WebPIDecoder, /*const*/ *uint8  data, data_size uint64) {
   VP8StatusCode status;
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
@@ -829,7 +829,7 @@ VP8StatusCode WebPIAppend(idec *WebPIDecoder, const *uint8  data, data_size uint
   return IDecode(idec);
 }
 
-VP8StatusCode WebPIUpdate(idec *WebPIDecoder, const *uint8  data, data_size uint64) {
+VP8StatusCode WebPIUpdate(idec *WebPIDecoder, /*const*/ *uint8  data, data_size uint64) {
   VP8StatusCode status;
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;

@@ -195,7 +195,7 @@ type WebPChunkIterator struct {
 // payloads are accessed through WebPDemuxGetFrame() and related functions.
 // Call WebPDemuxReleaseChunkIterator() when use of the iterator is complete.
 // NOTE: 'dmux' must persist for the lifetime of the iterator.
-  int WebPDemuxGetChunk(const dmux *WebPDemuxer, const byte fourcc[4], int chunk_number, iter *WebPChunkIterator);
+  int WebPDemuxGetChunk(const dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_number, iter *WebPChunkIterator);
 
 // Sets 'iter.chunk' to point to the next ('iter.chunk_num' + 1) or previous
 // ('iter.chunk_num' - 1) chunk. These functions do not loop.
@@ -262,7 +262,7 @@ type WebPAnimDecoderOptions struct {
 
 // Internal, version-checked, entry point.
   WebPAnimDecoderNewInternal *WebPAnimDecoder(
-    const *WebPData, const *WebPAnimDecoderOptions, int);
+    const *WebPData, /*const*/ *WebPAnimDecoderOptions, int);
 
 // Creates and initializes a WebPAnimDecoder object.
 // Parameters:
@@ -275,7 +275,7 @@ type WebPAnimDecoderOptions struct {
 //   A pointer to the newly created WebPAnimDecoder object, or nil in case of
 //   parsing error, invalid option or memory error.
  static  WebPAnimDecoderNew *WebPAnimDecoder(
-    const webp_data *WebPData, const dec_options *WebPAnimDecoderOptions) {
+    const webp_data *WebPData, /*const*/ dec_options *WebPAnimDecoderOptions) {
   return WebPAnimDecoderNewInternal(webp_data, dec_options, WEBP_DEMUX_ABI_VERSION);
 }
 

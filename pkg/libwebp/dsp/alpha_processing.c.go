@@ -76,7 +76,7 @@ func WebPMultARGBRow_C(const ptr *uint32, int width, int inverse) {
   }
 }
 
-func WebPMultRow_C(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alpha *uint8, int width, int inverse) {
+func WebPMultRow_C(WEBP_RESTRICT const ptr *uint8, /*const*/ WEBP_RESTRICT const alpha *uint8, int width, int inverse) {
   var x int
   for x = 0; x < width; x++ {
     a := alpha[x];
@@ -96,7 +96,7 @@ func WebPMultRow_C(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alp
 #undef MFIX
 
 func (*WebPMultARGBRow)(const ptr *uint32, int width, int inverse);
-func (*WebPMultRow)(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alpha *uint8, int width, int inverse);
+func (*WebPMultRow)(WEBP_RESTRICT const ptr *uint8, /*const*/ WEBP_RESTRICT const alpha *uint8, int width, int inverse);
 
 //------------------------------------------------------------------------------
 // Generic per-plane calls
@@ -109,7 +109,7 @@ func WebPMultARGBRows(ptr *uint8, int stride, int width, num_rows int , int inve
   }
 }
 
-func WebPMultRows(WEBP_RESTRICT ptr *uint8, int stride, const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, num_rows int , int inverse) {
+func WebPMultRows(WEBP_RESTRICT ptr *uint8, int stride, /*const*/ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, num_rows int , int inverse) {
   var n int
   for n = 0; n < num_rows; n++ {
     WebPMultRow(ptr, alpha, width, inverse);
@@ -282,7 +282,7 @@ static  uint32 MakeARGB32(int a, int r, int g, int b) {
 }
 
 #ifdef constants.WORDS_BIGENDIAN
-func PackARGB_C(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT r *uint8, const WEBP_RESTRICT g *uint8, const WEBP_RESTRICT b *uint8, int len, WEBP_RESTRICT out *uint32) {
+func PackARGB_C(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT r *uint8, /*const*/ WEBP_RESTRICT g *uint8, /*const*/ WEBP_RESTRICT b *uint8, int len, WEBP_RESTRICT out *uint32) {
   var i int
   for i = 0; i < len; i++ {
     out[i] = MakeARGB32(a[4 * i], r[4 * i], g[4 * i], b[4 * i]);
@@ -290,7 +290,7 @@ func PackARGB_C(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT r *uint8, cons
 }
 #endif
 
-func PackRGB_C(const WEBP_RESTRICT r *uint8, const WEBP_RESTRICT g *uint8, const WEBP_RESTRICT b *uint8, int len, int step, WEBP_RESTRICT out *uint32) {
+func PackRGB_C(const WEBP_RESTRICT r *uint8, /*const*/ WEBP_RESTRICT g *uint8, /*const*/ WEBP_RESTRICT b *uint8, int len, int step, WEBP_RESTRICT out *uint32) {
   int i, offset = 0;
   for i = 0; i < len; i++ {
     out[i] = MakeARGB32(0xff, r[offset], g[offset], b[offset]);
@@ -305,9 +305,9 @@ func (*WebPDispatchAlphaToGreen)(const WEBP_RESTRICT *uint8, int, int, int, WEBP
 int (*WebPExtractAlpha)(const WEBP_RESTRICT *uint8, int, int, int, WEBP_RESTRICT *uint8, int);
 func (*WebPExtractGreen)(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size);
 #ifdef constants.WORDS_BIGENDIAN
-func (*WebPPackARGB)(const a *uint8, const r *uint8, const g *uint8, const b *uint8, int, *uint32);
+func (*WebPPackARGB)(const a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int, *uint32);
 #endif
-func (*WebPPackRGB)(const WEBP_RESTRICT r *uint8, const WEBP_RESTRICT g *uint8, const WEBP_RESTRICT b *uint8, int len, int step, WEBP_RESTRICT out *uint32);
+func (*WebPPackRGB)(const WEBP_RESTRICT r *uint8, /*const*/ WEBP_RESTRICT g *uint8, /*const*/ WEBP_RESTRICT b *uint8, int len, int step, WEBP_RESTRICT out *uint32);
 
 int (*WebPHasAlpha8b)(const src *uint8, int length);
 int (*WebPHasAlpha32b)(const src *uint8, int length);

@@ -115,7 +115,7 @@ func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
 }
 
 #ifdef constants.WORDS_BIGENDIAN
-func PackARGB_MIPSdspR2(const a *uint8, const r *uint8, const g *uint8, const b *uint8, int len, out *uint32) {
+func PackARGB_MIPSdspR2(const a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int len, out *uint32) {
   int temp0, temp1, temp2, temp3, offset;
   rest := len & 1;
   var loop_end *uint32 = out + len - rest;
@@ -152,7 +152,7 @@ func PackARGB_MIPSdspR2(const a *uint8, const r *uint8, const g *uint8, const b 
 }
 #endif  // constants.WORDS_BIGENDIAN
 
-func PackRGB_MIPSdspR2(const r *uint8, const g *uint8, const b *uint8, int len, int step, out *uint32) {
+func PackRGB_MIPSdspR2(const r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int len, int step, out *uint32) {
   int temp0, temp1, temp2, offset;
   rest := len & 1;
   a := 0xff;

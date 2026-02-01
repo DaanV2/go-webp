@@ -166,23 +166,23 @@ static  uint32 Average3_NEON(uint32 a0, uint32 a1, uint32 a2) {
   return avg;
 }
 
-static uint32 Predictor5_NEON(const left *uint32, const top *uint32) {
+static uint32 Predictor5_NEON(const left *uint32, /*const*/ top *uint32) {
   return Average3_NEON(*left, top[0], top[1]);
 }
-static uint32 Predictor6_NEON(const left *uint32, const top *uint32) {
+static uint32 Predictor6_NEON(const left *uint32, /*const*/ top *uint32) {
   return Average2_NEON(*left, top[-1]);
 }
-static uint32 Predictor7_NEON(const left *uint32, const top *uint32) {
+static uint32 Predictor7_NEON(const left *uint32, /*const*/ top *uint32) {
   return Average2_NEON(*left, top[0]);
 }
-static uint32 Predictor13_NEON(const left *uint32, const top *uint32) {
+static uint32 Predictor13_NEON(const left *uint32, /*const*/ top *uint32) {
   return ClampedAddSubtractHalf_NEON(*left, top[0], top[-1]);
 }
 
 // Batch versions of those functions.
 
 // Predictor0: ARGB_BLACK.
-func PredictorAdd0_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd0_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const uint8x16_t black = vreinterpretq_u8_u32(vdupq_n_u32(ARGB_BLACK));
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -194,7 +194,7 @@ func PredictorAdd0_NEON(const in *uint32, const upper *uint32, int num_pixels, W
 }
 
 // Predictor1: left.
-func PredictorAdd1_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd1_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const uint8x16_t zero = LOADQ_U32_AS_U8(0);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -248,7 +248,7 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])
     L = ROTATE32_LEFT(res);                                              \
   } while (0)
 
-func PredictorAdd5_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd5_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -273,7 +273,7 @@ func PredictorAdd5_NEON(const in *uint32, const upper *uint32, int num_pixels, W
   } while (0)
 
 // Predictor6: average(left, TL)
-func PredictorAdd6_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd6_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -288,7 +288,7 @@ func PredictorAdd6_NEON(const in *uint32, const upper *uint32, int num_pixels, W
 }
 
 // Predictor7: average(left, T)
-func PredictorAdd7_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd7_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -334,7 +334,7 @@ GENERATE_PREDICTOR_2(9, upper[i + 1])
     L = ROTATE32_LEFT(res);                                              \
   } while (0)
 
-func PredictorAdd10_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd10_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -366,7 +366,7 @@ func PredictorAdd10_NEON(const in *uint32, const upper *uint32, int num_pixels, 
     L = ROTATE32_LEFT(res);                                              \
   } while (0)
 
-func PredictorAdd11_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd11_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -399,7 +399,7 @@ func PredictorAdd11_NEON(const in *uint32, const upper *uint32, int num_pixels, 
     L = vextq_u16(res16, res16, 4);                                        \
   } while (0)
 
-func PredictorAdd12_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd12_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   uint16x8_t L = vmovl_u8(LOAD_U32_AS_U8(out[-1]));
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -440,7 +440,7 @@ func PredictorAdd12_NEON(const in *uint32, const upper *uint32, int num_pixels, 
     L = ROTATE32_LEFT(res2);                                                  \
   } while (0)
 
-func PredictorAdd13_NEON(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd13_NEON(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   uint8x16_t L = LOADQ_U32_AS_U8(out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -479,14 +479,14 @@ func PredictorAdd13_NEON(const in *uint32, const upper *uint32, int num_pixels, 
 // 255 = byte will be zeroed
 static const uint8 kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255}
 
-static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x16_t shuffle) {
+static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, /*const*/ uint8x16_t shuffle) {
   return vcombine_u8(vtbl1q_u8(argb, vget_low_u8(shuffle)), vtbl1q_u8(argb, vget_high_u8(shuffle)));
 }
 #else   // !USE_VTBLQ
 // 255 = byte will be zeroed
 static const uint8 kGreenShuffle[8] = {1, 255, 1, 255, 5, 255, 5, 255}
 
-static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, const uint8x8_t shuffle) {
+static  uint8x16_t DoGreenShuffle_NEON(const uint8x16_t argb, /*const*/ uint8x8_t shuffle) {
   return vcombine_u8(vtbl1_u8(vget_low_u8(argb), shuffle), vtbl1_u8(vget_high_u8(argb), shuffle));
 }
 #endif  // USE_VTBLQ
@@ -510,7 +510,7 @@ func AddGreenToBlueAndRed_NEON(const src *uint32, int num_pixels, dst *uint32) {
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColorInverse_NEON(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
+func TransformColorInverse_NEON(const m *VP8LMultipliers, /*const*/ src *uint32, int num_pixels, dst *uint32) {
 // sign-extended multiplying constants, pre-shifted by 6.
 #define CST(X) (((int16)(m.X << 8)) >> 6)
   rb[8] := {CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red), CST(green_to_blue), CST(green_to_red)}

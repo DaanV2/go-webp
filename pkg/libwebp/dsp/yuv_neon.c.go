@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 //-----------------------------------------------------------------------------
 
-static uint8x8_t ConvertRGBToYImpl_NEON(const uint8x8_t R, const uint8x8_t G, const uint8x8_t B) {
+static uint8x8_t ConvertRGBToYImpl_NEON(const uint8x8_t R, /*const*/ uint8x8_t G, /*const*/ uint8x8_t B) {
   const uint16x8_t r = vmovl_u8(R);
   const uint16x8_t g = vmovl_u8(G);
   const uint16x8_t b = vmovl_u8(B);

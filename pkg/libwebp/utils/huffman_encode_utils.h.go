@@ -50,7 +50,7 @@ int VP8LCreateCompressedHuffmanTree(
 // Create an optimized tree, and tokenize it.
 // 'buf_rle' and 'huff_tree' are pre-allocated and the 'tree' is the constructed
 // huffman code tree.
-func VP8LCreateHuffmanTree(const histogram *uint32, tree_depth_limit int, const buf_rle *uint8, const huff_tree *HuffmanTree, const huff_code *HuffmanTreeCode);
+func VP8LCreateHuffmanTree(const histogram *uint32, tree_depth_limit int, /*const*/ buf_rle *uint8, /*const*/ huff_tree *HuffmanTree, /*const*/ huff_code *HuffmanTreeCode);
 
 #ifdef __cplusplus
 }

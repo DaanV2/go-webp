@@ -163,7 +163,7 @@ func CollectColorRedTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int stride
 // Note we are adding uint32's as *int *signed32's (using _mm256_add_epi32).
 // But that's ok since the histogram values are less than 1<<28 (max picture
 // size).
-func AddVector_AVX2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
+func AddVector_AVX2(const WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
   i := 0;
   aligned_size := size & ~31;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
@@ -262,7 +262,7 @@ func AddVectorEq_AVX2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, 
 
 #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
 
-static uint64 CombinedShannonEntropy_AVX2(const uint32 X[256], const uint32 Y[256]) {
+static uint64 CombinedShannonEntropy_AVX2(const uint32 X[256], /*const*/ uint32 Y[256]) {
   var i int
   retval := 0;
   sumX := 0, sumXY = 0;
@@ -314,7 +314,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_AVX2(const array *uint321, const array *uint322, int length) {
+static int VectorMismatch_AVX2(const array *uint321, /*const*/ array *uint322, int length) {
   int match_len;
 
   if (length >= 24) {
@@ -443,7 +443,7 @@ func BundleColorMap_AVX2(const WEBP_RESTRICT const row *uint8, int width, int xb
 //------------------------------------------------------------------------------
 // Batch version of Predictor Transform subtraction
 
-static  func Average2_m256i(const __const a *m256i0, const __const a *m256i1, __const avg *m256i) {
+static  func Average2_m256i(const __const a *m256i0, /*const*/ __const a *m256i1, __const avg *m256i) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m256i ones = _mm256_set1_epi8(1);
   const __m256i avg1 = _mm256_avg_epu8(*a0, *a1);
@@ -452,7 +452,7 @@ static  func Average2_m256i(const __const a *m256i0, const __const a *m256i1, __
 }
 
 // Predictor0: ARGB_BLACK.
-func PredictorSub0_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub0_AVX2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const __m256i black = _mm256_set1_epi32((int)ARGB_BLACK);
   for i = 0; i + 8 <= num_pixels; i += 8 {
@@ -468,7 +468,7 @@ func PredictorSub0_AVX2(const in *uint32, const upper *uint32, int num_pixels, W
 
 #define GENERATE_PREDICTOR_1(X, IN)                                          \
   func PredictorSub##X##_AVX2(                                        \
-      const in *uint32, const upper *uint32, int num_pixels, \
+      const in *uint32, /*const*/ upper *uint32, int num_pixels, \
       WEBP_RESTRICT const out *uint32) {                                   \
     var i int                                                                   \
     for i = 0; i + 8 <= num_pixels; i += 8 {                               \
@@ -490,7 +490,7 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])  // Predictor4: TL
 #undef GENERATE_PREDICTOR_1
 
 // Predictor5: avg2(avg2(L, TR), T)
-func PredictorSub5_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub5_AVX2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   for i = 0; i + 8 <= num_pixels; i += 8 {
     const __m256i L = _mm256_loadu_si256((const __*m256i)&in[i - 1]);
@@ -534,7 +534,7 @@ GENERATE_PREDICTOR_2(9, upper[i], upper[i + 1])   // Predictor9: average(T, TR)
 #undef GENERATE_PREDICTOR_2
 
 // Predictor10: avg(avg(L,TL), avg(T, TR)).
-func PredictorSub10_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub10_AVX2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   for i = 0; i + 8 <= num_pixels; i += 8 {
     const __m256i L = _mm256_loadu_si256((const __*m256i)&in[i - 1]);
@@ -555,7 +555,7 @@ func PredictorSub10_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
 }
 
 // Predictor11: select.
-func GetSumAbsDiff32_AVX2(const __const A *m256i, const __const B *m256i, __const out *m256i) {
+func GetSumAbsDiff32_AVX2(const __const A *m256i, /*const*/ __const B *m256i, __const out *m256i) {
   // We can unpack with any value on the upper 32 bits, provided it's the same
   // on both operands (to that their sum of abs diff is zero). Here we use *A.
   const __m256i A_lo = _mm256_unpacklo_epi32(*A, *A);
@@ -567,7 +567,7 @@ func GetSumAbsDiff32_AVX2(const __const A *m256i, const __const B *m256i, __cons
   *out = _mm256_packs_epi32(s_lo, s_hi);
 }
 
-func PredictorSub11_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub11_AVX2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   for i = 0; i + 8 <= num_pixels; i += 8 {
     const __m256i L = _mm256_loadu_si256((const __*m256i)&in[i - 1]);
@@ -592,7 +592,7 @@ func PredictorSub11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
 }
 
 // Predictor12: ClampedSubSubtractFull.
-func PredictorSub12_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub12_AVX2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const __m256i zero = _mm256_setzero_si256();
   for i = 0; i + 8 <= num_pixels; i += 8 {
@@ -620,7 +620,7 @@ func PredictorSub12_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
 }
 
 // Predictors13: ClampedAddSubtractHalf
-func PredictorSub13_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub13_AVX2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const __m256i zero = _mm256_setzero_si256();
   for i = 0; i + 8 <= num_pixels; i += 8 {

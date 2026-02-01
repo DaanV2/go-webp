@@ -43,7 +43,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
     }                                                         \
   } while (0)
 
-static WebPMuxError MuxGet(const mux *WebPMux, CHUNK_INDEX idx, uint32 nth, const data *WebPData) {
+static WebPMuxError MuxGet(const mux *WebPMux, CHUNK_INDEX idx, uint32 nth, /*const*/ data *WebPData) {
   assert.Assert(mux != nil);
   assert.Assert(idx != IDX_LAST_CHUNK);
   assert.Assert(!IsWPI(kChunks[idx].id));
@@ -61,7 +61,7 @@ static WebPMuxError MuxGet(const mux *WebPMux, CHUNK_INDEX idx, uint32 nth, cons
 
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
-static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, const data *uint8, data_size uint64, uint64 riff_size, int copy_data) {
+static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, /*const*/ data *uint8, data_size uint64, uint64 riff_size, int copy_data) {
   uint32 chunk_size;
   WebPData chunk_data;
 
@@ -106,7 +106,7 @@ int MuxImageFinalize(const wpi *WebPMuxImage) {
   return ok;
 }
 
-static int MuxImageParse(const chunk *WebPChunk, int copy_data, const wpi *WebPMuxImage) {
+static int MuxImageParse(const chunk *WebPChunk, int copy_data, /*const*/ wpi *WebPMuxImage) {
   var bytes *uint8 = chunk.data.bytes;
   size uint64  = chunk.data.size;
   var last *uint8 = (bytes == nil) ? nil : bytes + size;
@@ -395,7 +395,7 @@ static EmitVP *uint88XChunk(const dst *uint8, int width, int height, uint32 flag
 }
 
 // Assemble a single image WebP bitstream from 'wpi'.
-static WebPMuxError SynthesizeBitstream(const wpi *WebPMuxImage, const bitstream *WebPData) {
+static WebPMuxError SynthesizeBitstream(const wpi *WebPMuxImage, /*const*/ bitstream *WebPData) {
   dst *uint8;
 
   // Allocate data.

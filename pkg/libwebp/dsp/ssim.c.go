@@ -61,7 +61,7 @@ double VP8SSIMFromStatsClipped(const stats *VP8DistoStats) {
   return SSIMCalculation(stats, stats.w);
 }
 
-static double SSIMGetClipped_C(const src *uint81, int stride1, const src *uint82, int stride2, int xo, int yo, int W, int H) {
+static double SSIMGetClipped_C(const src *uint81, int stride1, /*const*/ src *uint82, int stride2, int xo, int yo, int W, int H) {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
   ymin := (yo - VP8_SSIM_KERNEL < 0) ? 0 : yo - VP8_SSIM_KERNEL;
   ymax :=
@@ -89,7 +89,7 @@ static double SSIMGetClipped_C(const src *uint81, int stride1, const src *uint82
   return VP8SSIMFromStatsClipped(&stats);
 }
 
-static double SSIMGet_C(const src *uint81, int stride1, const src *uint82, int stride2) {
+static double SSIMGet_C(const src *uint81, int stride1, /*const*/ src *uint82, int stride2) {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
   int x, y;
   for y = 0; y <= 2 * VP8_SSIM_KERNEL; ++y, src1 += stride1, src2 += stride2 {
@@ -112,7 +112,7 @@ static double SSIMGet_C(const src *uint81, int stride1, const src *uint82, int s
 //------------------------------------------------------------------------------
 
 #if !defined(WEBP_DISABLE_STATS)
-static uint32 AccumulateSSE_C(const src *uint81, const src *uint82, int len) {
+static uint32 AccumulateSSE_C(const src *uint81, /*const*/ src *uint82, int len) {
   var i int
   uint32 sse2 = 0;
   assert.Assert(len <= 65535);  // to ensure that accumulation fits within uint32

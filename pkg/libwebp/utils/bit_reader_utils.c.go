@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // VP8BitReader
 
-func VP8BitReaderSetBuffer(const br *VP8BitReader, const *uint8  start, size uint64 ) {
+func VP8BitReaderSetBuffer(const br *VP8BitReader, /*const*/ *uint8  start, size uint64 ) {
   assert.Assert(start != nil);
   br.buf = start;
   br.buf_end = start + size;
@@ -40,7 +40,7 @@ func VP8BitReaderSetBuffer(const br *VP8BitReader, const *uint8  start, size uin
       (size >= sizeof(lbit_t)) ? start + size - sizeof(lbit_t) + 1 : start;
 }
 
-func VP8InitBitReader(const br *VP8BitReader, const *uint8  start, size uint64 ) {
+func VP8InitBitReader(const br *VP8BitReader, /*const*/ *uint8  start, size uint64 ) {
   assert.Assert(br != nil);
   assert.Assert(start != nil);
   assert.Assert(size < (uint(1) << 31));  // limit ensured by format and upstream checks
@@ -86,7 +86,7 @@ func VP8LoadFinalBytes(const br *VP8BitReader) {
 //------------------------------------------------------------------------------
 // Higher-level calls
 
-uint32 VP8GetValue(const br *VP8BitReader, int bits, const byte label[]) {
+uint32 VP8GetValue(const br *VP8BitReader, int bits, /*const*/ byte label[]) {
   v := 0;
   while (bits-- > 0) {
     v |= VP8GetBit(br, 0x80, label) << bits;
@@ -94,7 +94,7 @@ uint32 VP8GetValue(const br *VP8BitReader, int bits, const byte label[]) {
   return v;
 }
 
-int32 VP8GetSignedValue(const br *VP8BitReader, int bits, const byte label[]) {
+int32 VP8GetSignedValue(const br *VP8BitReader, int bits, /*const*/ byte label[]) {
   value := VP8GetValue(br, bits, label);
   return VP8Get(br, label) ? -value : value;
 }
@@ -113,7 +113,7 @@ const VP8L_LOG8_WBITS =4  // Number of bytes needed to store VP8L_WBITS bits.
 static const uint32 kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
     0,        0x000001, 0x000003, 0x000007, 0x00000f, 0x00001f, 0x00003f, 0x00007f, 0x0000ff, 0x0001ff, 0x0003ff, 0x0007ff, 0x000fff, 0x001fff, 0x003fff, 0x007fff, 0x00ffff, 0x01ffff, 0x03ffff, 0x07ffff, 0x0fffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff}
 
-func VP8LInitBitReader(const br *VP8LBitReader, const *uint8  start, uint64 length) {
+func VP8LInitBitReader(const br *VP8LBitReader, /*const*/ *uint8  start, uint64 length) {
   uint64 i;
   vp8l_val_t value = 0;
   assert.Assert(br != nil);
@@ -135,7 +135,7 @@ func VP8LInitBitReader(const br *VP8LBitReader, const *uint8  start, uint64 leng
   br.pos = length;
 }
 
-func VP8LBitReaderSetBuffer(const br *VP8LBitReader, const *uint8  buf, uint64 len) {
+func VP8LBitReaderSetBuffer(const br *VP8LBitReader, /*const*/ *uint8  buf, uint64 len) {
   assert.Assert(br != nil);
   assert.Assert(buf != nil);
   assert.Assert(len < uint(0xfffffff8));  // can't happen with a RIFF chunk.
@@ -236,7 +236,7 @@ func PrintBitTraces(){
   printf("Total: %d %s\n", total, units);
 }
 
-func BitTrace(const type const br *VP8BitReader, const byte label[]) struct {
+func BitTrace(const type const br *VP8BitReader, /*const*/ byte label[]) struct {
   int i, pos;
   if (!init_done) {
     WEBP_UNSAFE_MEMSET(kLabels, 0, sizeof(kLabels));

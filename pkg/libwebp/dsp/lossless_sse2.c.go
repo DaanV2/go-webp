@@ -80,7 +80,7 @@ static  uint32 Select_SSE2(uint32 a, uint32 b, uint32 c) {
   return (pa_minus_pb <= 0) ? a : b;
 }
 
-static  func Average2_m128i(const __const a *m128i0, const __const a *m128i1, __const avg *m128i) {
+static  func Average2_m128i(const __const a *m128i0, /*const*/ __const a *m128i1, __const avg *m128i) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m128i ones = _mm_set1_epi8(1);
   const __m128i avg1 = _mm_avg_epu8(*a0, *a1);
@@ -88,7 +88,7 @@ static  func Average2_m128i(const __const a *m128i0, const __const a *m128i1, __
   *avg = _mm_sub_epi8(avg1, one);
 }
 
-static  func Average2_uint32_SSE2(const uint32 a0, const uint32 a1, __const avg *m128i) {
+static  func Average2_uint32_SSE2(const uint32 a0, /*const*/ uint32 a1, __const avg *m128i) {
   // (a + b) >> 1 = ((a + b + 1) >> 1) - ((a ^ b) & 1)
   const __m128i ones = _mm_set1_epi8(1);
   const __m128i A0 = _mm_cvtsi32_si128((int)a0);
@@ -131,41 +131,41 @@ static  uint32 Average4_SSE2(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
   return (uint32)_mm_cvtsi128_si32(A0);
 }
 
-static uint32 Predictor5_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor5_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := Average3_SSE2(*left, top[0], top[1]);
   return pred;
 }
-static uint32 Predictor6_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor6_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := Average2_SSE2(*left, top[-1]);
   return pred;
 }
-static uint32 Predictor7_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor7_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := Average2_SSE2(*left, top[0]);
   return pred;
 }
-static uint32 Predictor8_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor8_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := Average2_SSE2(top[-1], top[0]);
   (void)left;
   return pred;
 }
-static uint32 Predictor9_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor9_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := Average2_SSE2(top[0], top[1]);
   (void)left;
   return pred;
 }
-static uint32 Predictor10_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor10_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := Average4_SSE2(*left, top[-1], top[0], top[1]);
   return pred;
 }
-static uint32 Predictor11_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor11_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := Select_SSE2(top[0], *left, top[-1]);
   return pred;
 }
-static uint32 Predictor12_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor12_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := ClampedAddSubtractFull_SSE2(*left, top[0], top[-1]);
   return pred;
 }
-static uint32 Predictor13_SSE2(const left *uint32, const top *uint32) {
+static uint32 Predictor13_SSE2(const left *uint32, /*const*/ top *uint32) {
   pred := ClampedAddSubtractHalf_SSE2(*left, top[0], top[-1]);
   return pred;
 }
@@ -173,7 +173,7 @@ static uint32 Predictor13_SSE2(const left *uint32, const top *uint32) {
 // Batch versions of those functions.
 
 // Predictor0: ARGB_BLACK.
-func PredictorAdd0_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd0_SSE2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const __m128i black = _mm_set1_epi32((int)ARGB_BLACK);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -188,7 +188,7 @@ func PredictorAdd0_SSE2(const in *uint32, const upper *uint32, int num_pixels, W
 }
 
 // Predictor1: left.
-func PredictorAdd1_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd1_SSE2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   __m128i prev = _mm_set1_epi32((int)out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -286,7 +286,7 @@ const DO_PRED10_SHIFT =                                        \
     src = _mm_srli_si128(src, 4);                               \
   } while (0)
 
-func PredictorAdd10_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd10_SSE2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -334,7 +334,7 @@ const DO_PRED11_SHIFT =                                      \
     pa = _mm_srli_si128(pa, 4);                               \
   } while (0)
 
-func PredictorAdd11_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd11_SSE2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   __m128i pa;
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
@@ -386,7 +386,7 @@ func PredictorAdd11_SSE2(const in *uint32, const upper *uint32, int num_pixels, 
     src = _mm_srli_si128(src, 4);                             \
   } while (0)
 
-func PredictorAdd12_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorAdd12_SSE2(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const __m128i zero = _mm_setzero_si128();
   const __m128i L8 = _mm_cvtsi32_si128((int)out[-1]);
@@ -443,7 +443,7 @@ func AddGreenToBlueAndRed_SSE2(const src *uint32, int num_pixels, dst *uint32) {
 //------------------------------------------------------------------------------
 // Color Transform
 
-func TransformColorInverse_SSE2(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
+func TransformColorInverse_SSE2(const m *VP8LMultipliers, /*const*/ src *uint32, int num_pixels, dst *uint32) {
 // sign-extended multiplying constants, pre-shifted by 5.
 #define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
 #define MK_CST_16(HI, LO) \

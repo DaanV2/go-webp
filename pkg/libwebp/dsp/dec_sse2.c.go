@@ -273,7 +273,7 @@ static  func SignedShift8b_SSE2(__const x *m128i) {
   } while (0)
 
 // input/output is uint8
-static  func GetNotHEV_SSE2(const __const p *m128i1, const __const p *m128i0, const __const q *m128i0, const __const q *m128i1, int hev_thresh, __const not_hev *m128i) {
+static  func GetNotHEV_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int hev_thresh, __const not_hev *m128i) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i t_1 = MM_ABS(*p1, *p0);
   const __m128i t_2 = MM_ABS(*q1, *q0);
@@ -286,7 +286,7 @@ static  func GetNotHEV_SSE2(const __const p *m128i1, const __const p *m128i0, co
 }
 
 // input pixels are int8
-static  func GetBaseDelta_SSE2(const __const p *m128i1, const __const p *m128i0, const __const q *m128i0, const __const q *m128i1, __const delta *m128i) {
+static  func GetBaseDelta_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, __const delta *m128i) {
   // beware of addition order, for saturation!
   const __m128i p1_q1 = _mm_subs_epi8(*p1, *q1);   // p1 - q1
   const __m128i q0_p0 = _mm_subs_epi8(*q0, *p0);   // q0 - p0
@@ -297,7 +297,7 @@ static  func GetBaseDelta_SSE2(const __const p *m128i1, const __const p *m128i0,
 }
 
 // input and output are int8
-static  func DoSimpleFilter_SSE2(__const p *m128i0, __const q *m128i0, const __const fl *m128i) {
+static  func DoSimpleFilter_SSE2(__const p *m128i0, __const q *m128i0, /*const*/ __const fl *m128i) {
   const __m128i k3 = _mm_set1_epi8(3);
   const __m128i k4 = _mm_set1_epi8(4);
   __m128i v3 = _mm_adds_epi8(*fl, k3);
@@ -313,7 +313,7 @@ static  func DoSimpleFilter_SSE2(__const p *m128i0, __const q *m128i0, const __c
 // Update operations:
 // q = q - delta and p = p + delta; where delta = [(a_hi >> 7), (a_lo >> 7)]
 // Pixels 'pi' and 'qi' are int8 on input, uint8 on output (sign flip).
-static  func Update2Pixels_SSE2(__const pi *m128i, __const qi *m128i, const __const a *m128i0_lo, const __const a *m128i0_hi) {
+static  func Update2Pixels_SSE2(__const pi *m128i, __const qi *m128i, /*const*/ __const a *m128i0_lo, /*const*/ __const a *m128i0_hi) {
   const __m128i a1_lo = _mm_srai_epi16(*a0_lo, 7);
   const __m128i a1_hi = _mm_srai_epi16(*a0_hi, 7);
   const __m128i delta = _mm_packs_epi16(a1_lo, a1_hi);
@@ -324,7 +324,7 @@ static  func Update2Pixels_SSE2(__const pi *m128i, __const qi *m128i, const __co
 }
 
 // input pixels are uint8
-static  func NeedsFilter_SSE2(const __const p *m128i1, const __const p *m128i0, const __const q *m128i0, const __const q *m128i1, int thresh, __const mask *m128i) {
+static  func NeedsFilter_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int thresh, __const mask *m128i) {
   const __m128i m_thresh = _mm_set1_epi8((byte)thresh);
   const __m128i t1 = MM_ABS(*p1, *q1);  // abs(p1 - q1)
   const __m128i kFE = _mm_set1_epi8((byte)0xFE);
@@ -360,7 +360,7 @@ static  func DoFilter2_SSE2(__const p *m128i1, __const p *m128i0, __const q *m12
 }
 
 // Applies filter on 4 pixels (p1, p0, q0 and q1)
-static  func DoFilter4_SSE2(__const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1, const __const mask *m128i, int hev_thresh) {
+static  func DoFilter4_SSE2(__const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1, /*const*/ __const mask *m128i, int hev_thresh) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i sign_bit = _mm_set1_epi8((byte)0x80);
   const __m128i k64 = _mm_set1_epi8(64);
@@ -403,7 +403,7 @@ static  func DoFilter4_SSE2(__const p *m128i1, __const p *m128i0, __const q *m12
 }
 
 // Applies filter on 6 pixels (p2, p1, p0, q0, q1 and q2)
-static  func DoFilter6_SSE2(__const p *m128i2, __const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1, __const q *m128i2, const __const mask *m128i, int hev_thresh) {
+static  func DoFilter6_SSE2(__const p *m128i2, __const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1, __const q *m128i2, /*const*/ __const mask *m128i, int hev_thresh) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i sign_bit = _mm_set1_epi8((byte)0x80);
   __m128i a, not_hev;
@@ -474,7 +474,7 @@ static  func Load8x4_SSE2(const b *uint8, int stride, __const p *m128i, __const 
   *q = _mm_unpackhi_epi32(C0, C1);
 }
 
-static  func Load16x4_SSE2(const r *uint80, const r *uint88, int stride, __const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1) {
+static  func Load16x4_SSE2(const r *uint80, /*const*/ r *uint88, int stride, __const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1) {
   // Assume the pixels around the edge (|) are numbered as follows
   //                00 01 | 02 03
   //                10 11 | 12 13
@@ -516,7 +516,7 @@ static  func Store4x4_SSE2(__const x *m128i, dst *uint8, int stride) {
 }
 
 // Transpose back and store
-static  func Store16x4_SSE2(const __const p *m128i1, const __const p *m128i0, const __const q *m128i0, const __const q *m128i1, r *uint80, r *uint88, int stride) {
+static  func Store16x4_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, r *uint80, r *uint88, int stride) {
   __m128i t1, p1_s, p0_s, q0_s, q1_s;
 
   // p0 = 71 70 61 60 51 50 41 40 31 30 21 20 11 10 01 00
@@ -642,7 +642,7 @@ func SimpleHFilter16i_SSE2(p *uint8, int stride, int thresh) {
     _mm_storel_epi64((__*m128i)&(v)[(stride)], p); \
   } while (0)
 
-static  func ComplexMask_SSE2(const __const p *m128i1, const __const p *m128i0, const __const q *m128i0, const __const q *m128i1, int thresh, int ithresh, __const mask *m128i) {
+static  func ComplexMask_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int thresh, int ithresh, __const mask *m128i) {
   const __m128i it = _mm_set1_epi8(ithresh);
   const __m128i diff = _mm_subs_epu8(*mask, it);
   const __m128i thresh_mask = _mm_cmpeq_epi8(diff, _mm_setzero_si128());

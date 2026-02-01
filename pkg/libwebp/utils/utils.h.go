@@ -198,7 +198,7 @@ struct WebPPicture;
 // MAX_PALETTE_SIZE elements.
 // TODO(vrabaud) remove whenever we can break the ABI.
  int WebPGetColorPalette(
-    const struct const pic *WebPPicture, const  *uint32(MAX_PALETTE_SIZE) palette);
+    const struct const pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE) palette);
 
 //------------------------------------------------------------------------------
 

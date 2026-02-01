@@ -70,7 +70,7 @@ static  int VP8LColorCacheContains(const cc *VP8LColorCache, uint32 argb) {
 // Returns false in case of memory error.
 int VP8LColorCacheInit(const color_cache *VP8LColorCache, int hash_bits);
 
-func VP8LColorCacheCopy(const src *VP8LColorCache, const dst *VP8LColorCache);
+func VP8LColorCacheCopy(const src *VP8LColorCache, /*const*/ dst *VP8LColorCache);
 
 // Delete the memory associated to color cache.
 func VP8LColorCacheClear(const color_cache *VP8LColorCache);

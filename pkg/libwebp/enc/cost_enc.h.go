@@ -37,9 +37,9 @@ type VP8Residual struct {
   CostArrayPtr costs;
 }
 
-func VP8InitResidual(int first, int coeff_type, const enc *VP8Encoder, const res *VP8Residual);
+func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual);
 
-int VP8RecordCoeffs(int ctx, const res *VP8Residual);
+int VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual);
 
 // Record proba context used.
 static  int VP8RecordStats(int bit, proba_t* const stats) {

@@ -214,7 +214,7 @@ type WebPAuxStats struct {
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
 // reference (and so one can make use of picture.custom_ptr).
-typedef int (*WebPWriterFunction)(const data *uint8, data_size uint64, const picture *WebPPicture);
+typedef int (*WebPWriterFunction)(const data *uint8, data_size uint64, /*const*/ picture *WebPPicture);
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
 // the following WebPMemoryWriter object (to be set as a custom_ptr).
@@ -234,12 +234,12 @@ type WebPMemoryWriter struct {
 // The custom writer to be used with WebPMemoryWriter as custom_ptr. Upon
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
-  int WebPMemoryWrite(const data *uint8, data_size uint64, const picture *WebPPicture);
+  int WebPMemoryWrite(const data *uint8, data_size uint64, /*const*/ picture *WebPPicture);
 
 // Progress hook, called from time to time to report progress. It can return
 // false to request an abort of the encoding process, or true otherwise if
 // everything is OK.
-typedef int (*WebPProgressHook)(int percent, const picture *WebPPicture);
+typedef int (*WebPProgressHook)(int percent, /*const*/ picture *WebPPicture);
 
 // Color spaces.
 typedef enum WebPEncCSP {
@@ -379,7 +379,7 @@ type WebPPicture struct {
 // 'src/ref_stride' is the byte distance between rows.
 // Returns false in case of error (bad parameter, memory allocation error, ...).
   int WebPPlaneDistortion(
-    const src *uint8, uint64 src_stride, const ref *uint8, uint64 ref_stride, int width, int height, uint64 x_step, int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
+    const src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, int width, int height, uint64 x_step, int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     distortion *float, result *float);
 
 // Compute PSNR, SSIM or LSIM distortion metric between two pictures. Results
@@ -388,7 +388,7 @@ type WebPPicture struct {
 // picture will be internally converted to ARGB (just for the measurement).
 // Warning: this function is rather CPU-intensive.
   int WebPPictureDistortion(
-    const src *WebPPicture, const ref *WebPPicture, int metric_type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
+    const src *WebPPicture, /*const*/ ref *WebPPicture, int metric_type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     float result[5]);
 
 // self-crops a picture to the rectangle defined by top/left/width/height.
@@ -429,18 +429,18 @@ type WebPPicture struct {
 // Previous buffer will be free'd, if any.
 // buffer should have *rgb a size of at least height * rgb_stride.
 // Returns false in case of memory error.
-  int WebPPictureImportRGB(picture *WebPPicture, const rgb *uint8, int rgb_stride);
+  int WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride);
 // Same, but for RGBA buffer.
-  int WebPPictureImportRGBA(picture *WebPPicture, const rgba *uint8, int rgba_stride);
+  int WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, int rgba_stride);
 // Same, but for RGBA buffer. Imports the RGB direct from the 32-bit format
 // input buffer ignoring the alpha channel. Avoids needing to copy the data
 // to a temporary 24-bit RGB buffer to import the RGB only.
-  int WebPPictureImportRGBX(picture *WebPPicture, const rgbx *uint8, int rgbx_stride);
+  int WebPPictureImportRGBX(picture *WebPPicture, /*const*/ rgbx *uint8, int rgbx_stride);
 
 // Variants of the above, but taking BGR(A|X) input.
-  int WebPPictureImportBGR(picture *WebPPicture, const bgr *uint8, int bgr_stride);
-  int WebPPictureImportBGRA(picture *WebPPicture, const bgra *uint8, int bgra_stride);
-  int WebPPictureImportBGRX(picture *WebPPicture, const bgrx *uint8, int bgrx_stride);
+  int WebPPictureImportBGR(picture *WebPPicture, /*const*/ bgr *uint8, int bgr_stride);
+  int WebPPictureImportBGRA(picture *WebPPicture, /*const*/ bgra *uint8, int bgra_stride);
+  int WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, int bgrx_stride);
 
 // Converts picture.argb data to the YUV420A format. The 'colorspace'
 // parameter is deprecated and should be equal to WEBP_YUV420.
