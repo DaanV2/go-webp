@@ -1,4 +1,4 @@
-package utils
+package huffman
 
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
