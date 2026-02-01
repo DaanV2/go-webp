@@ -55,7 +55,7 @@ func SubtractGreenFromBlueAndRed_NEON(argb_data *uint32, int num_pixels) {
 #else
   const uint8x8_t shuffle = vld1_u8(kGreenShuffle);
 #endif
-  for (; argb_data < end; argb_data += 4) {
+  for ; argb_data < end; argb_data += 4 {
     const uint8x16_t argb = vld1q_u8((*uint8)argb_data);
     const uint8x16_t greens = DoGreenShuffle_NEON(argb, shuffle);
     vst1q_u8((*uint8)argb_data, vsubq_u8(argb, greens));
@@ -85,7 +85,7 @@ func TransformColor_NEON(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_REST
 #endif
   const uint32x4_t mask_rb = vdupq_n_u32(uint(0x00ff00ff));  // red-blue masks
   var i int
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     const uint8x16_t in = vld1q_u8((*uint8)(argb_data + i));
     // 0 g 0 g
     const uint8x16_t greens = DoGreenShuffle_NEON(in, shuffle);

@@ -119,7 +119,7 @@ func SubtractGreenFromBlueAndRed_MSA(argb_data *uint32, int num_pixels) {
       ptemp_data += 4 * 4;
       num_pixels -= 4;
     }
-    for (i = 0; i < num_pixels; i++) {
+    for i = 0; i < num_pixels; i++ {
       b := ptemp_data[0];
       g := ptemp_data[1];
       r := ptemp_data[2];

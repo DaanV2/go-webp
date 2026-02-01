@@ -191,7 +191,7 @@ func GetEntropyUnrefined_MIPS32(
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
 
-  for (i = 1; i < length; ++i) {
+  for i = 1; i < length; ++i {
     x := X[i];
     if (x != x_prev) {
       GetEntropyUnrefinedHelper(x, i, &x_prev, &i_prev, bit_entropy, stats);
@@ -211,7 +211,7 @@ func GetCombinedEntropyUnrefined_MIPS32(
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(entropy);
 
-  for (i = 1; i < length; ++i) {
+  for i = 1; i < length; ++i {
     xy := X[i] + Y[i];
     if (xy != xy_prev) {
       GetEntropyUnrefinedHelper(xy, i, &xy_prev, &i_prev, entropy, stats);

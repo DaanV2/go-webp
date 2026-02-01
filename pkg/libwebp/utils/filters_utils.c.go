@@ -41,10 +41,10 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
   WEBP_UNSAFE_MEMSET(bins, 0, sizeof(bins));
 
   // We only sample every other pixels. That's enough.
-  for (j = 2; j < height - 1; j += 2) {
+  for j = 2; j < height - 1; j += 2 {
     var p *uint8 = data + j * width;
     mean := p[0];
-    for (i = 2; i < width - 1; i += 2) {
+    for i = 2; i < width - 1; i += 2 {
       diff0 := SDIFF(p[i], mean);
       diff1 := SDIFF(p[i], p[i - 1]);
       diff2 := SDIFF(p[i], p[i - width]);
@@ -62,9 +62,9 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
     int filter;
     WEBP_FILTER_TYPE best_filter = WEBP_FILTER_NONE;
     best_score := 0x7fffffff;
-    for (filter = WEBP_FILTER_NONE; filter < WEBP_FILTER_LAST; ++filter) {
+    for filter = WEBP_FILTER_NONE; filter < WEBP_FILTER_LAST; ++filter {
       score := 0;
-      for (i = 0; i < SMAX; ++i) {
+      for i = 0; i < SMAX; ++i {
         if (bins[filter][i] > 0) {
           score += i;
         }

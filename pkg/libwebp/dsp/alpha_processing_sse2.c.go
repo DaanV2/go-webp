@@ -37,9 +37,9 @@ static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride
   // We must be able to access 3 extra bytes after the last written byte
   // 'dst[4 * width - 4]', because we don't know if alpha is the first or the
   // last byte of the quadruplet.
-  for (j = 0; j < height; ++j) {
+  for j = 0; j < height; ++j {
     ptr *byte = (*byte)dst;
-    for (i = 0; i + 16 <= width - 1; i += 16) {
+    for i = 0; i + 16 <= width - 1; i += 16 {
       // load 16 alpha bytes
       const __m128i a0 = _mm_loadu_si128((const __*m128i)&alpha[i]);
       const __m128i a1_lo = _mm_unpacklo_epi8(a0, zero);
@@ -68,7 +68,7 @@ static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride
       all_alphas8 = _mm_and_si128(all_alphas8, a0);
       i += 8;
     }
-    for (; i < width; ++i) {
+    for ; i < width; ++i {
       alpha_value := alpha[i];
       dst[4 * i] = alpha_value;
       alpha_and &= alpha_value;
@@ -86,8 +86,8 @@ func DispatchAlphaToGreen_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_strid
   int i, j;
   const __m128i zero = _mm_setzero_si128();
   limit := width & ~15;
-  for (j = 0; j < height; ++j) {
-    for (i = 0; i < limit; i += 16) {  // process 16 alpha bytes
+  for j = 0; j < height; ++j {
+    for i = 0; i < limit; i += 16 {  // process 16 alpha bytes
       const __m128i a0 = _mm_loadu_si128((const __*m128i)&alpha[i]);
       const __m128i a1 = _mm_unpacklo_epi8(zero, a0);  // note the 'zero' first!
       const __m128i b1 = _mm_unpackhi_epi8(zero, a0);
@@ -120,9 +120,9 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
   // last byte of the quadruplet.
   limit := (width - 1) & ~7;
 
-  for (j = 0; j < height; ++j) {
+  for j = 0; j < height; ++j {
     var __src *m128i = (const __*m128i)argb;
-    for (i = 0; i < limit; i += 8) {
+    for i = 0; i < limit; i += 8 {
       // load 32 argb bytes
       const __m128i a0 = _mm_loadu_si128(src + 0);
       const __m128i a1 = _mm_loadu_si128(src + 1);
@@ -136,7 +136,7 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
       all_alphas = _mm_and_si128(all_alphas, d0);
       src += 2;
     }
-    for (; i < width; ++i) {
+    for ; i < width; ++i {
       alpha_value := argb[4 * i];
       alpha[i] = alpha_value;
       alpha_and &= alpha_value;
@@ -154,7 +154,7 @@ func ExtractGreen_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *ui
   const __m128i mask = _mm_set1_epi32(0xff);
   var __src *m128i = (const __*m128i)argb;
 
-  for (i = 0; i + 16 <= size; i += 16, src += 4) {
+  for i = 0; i + 16 <= size; i += 16, src += 4 {
     const __m128i a0 = _mm_loadu_si128(src + 0);
     const __m128i a1 = _mm_loadu_si128(src + 1);
     const __m128i a2 = _mm_loadu_si128(src + 2);
@@ -229,16 +229,16 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
     var rgbx *uint32 = (*uint32)rgba;
     var i int
     if (!alpha_first) {
-      for (i = 0; i + kSpan <= w; i += kSpan) {
+      for i = 0; i + kSpan <= w; i += kSpan {
         APPLY_ALPHA(rgbx[i], _MM_SHUFFLE(2, 3, 3, 3));
       }
     } else {
-      for (i = 0; i + kSpan <= w; i += kSpan) {
+      for i = 0; i + kSpan <= w; i += kSpan {
         APPLY_ALPHA(rgbx[i], _MM_SHUFFLE(0, 0, 0, 1));
       }
     }
     // Finish with left-overs.
-    for (; i < w; ++i) {
+    for ; i < w; ++i {
       var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
       var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
       a := alpha[4 * i];
@@ -261,13 +261,13 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
 static int HasAlpha8b_SSE2(const src *uint8, int length) {
   const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
   i := 0;
-  for (; i + 16 <= length; i += 16) {
+  for ; i + 16 <= length; i += 16 {
     const __m128i v = _mm_loadu_si128((const __*m128i)(src + i));
     const __m128i bits = _mm_cmpeq_epi8(v, all_0xff);
     mask := _mm_movemask_epi8(bits);
     if (mask != 0xffff) return 1;
   }
-  for (; i < length; ++i) {
+  for ; i < length; ++i {
     if (src[i] != 0xff) return 1;
   }
   return 0;
@@ -281,7 +281,7 @@ static int HasAlpha32b_SSE2(const src *uint8, int length) {
   // value 'src[4 * length - 4]' (because we don't know if alpha is the first
   // or the last byte of the quadruplet). Hence the '-3' protection below.
   length = length * 4 - 3;  // size in bytes
-  for (; i + 64 <= length; i += 64) {
+  for ; i + 64 <= length; i += 64 {
     const __m128i a0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
     const __m128i a1 = _mm_loadu_si128((const __*m128i)(src + i + 16));
     const __m128i a2 = _mm_loadu_si128((const __*m128i)(src + i + 32));
@@ -297,7 +297,7 @@ static int HasAlpha32b_SSE2(const src *uint8, int length) {
     mask := _mm_movemask_epi8(bits);
     if (mask != 0xffff) return 1;
   }
-  for (; i + 32 <= length; i += 32) {
+  for ; i + 32 <= length; i += 32 {
     const __m128i a0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
     const __m128i a1 = _mm_loadu_si128((const __*m128i)(src + i + 16));
     const __m128i b0 = _mm_and_si128(a0, alpha_mask);
@@ -308,7 +308,7 @@ static int HasAlpha32b_SSE2(const src *uint8, int length) {
     mask := _mm_movemask_epi8(bits);
     if (mask != 0xffff) return 1;
   }
-  for (; i <= length; i += 4) {
+  for ; i <= length; i += 4 {
     if (src[i] != 0xff) return 1;
   }
   return 0;
@@ -318,7 +318,7 @@ func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
   const __m128i m_color = _mm_set1_epi32((int)color);
   const __m128i zero = _mm_setzero_si128();
   i := 0;
-  for (; i + 8 <= length; i += 8) {
+  for ; i + 8 <= length; i += 8 {
     const __m128i a0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
     const __m128i a1 = _mm_loadu_si128((const __*m128i)(src + i + 4));
     const __m128i b0 = _mm_srai_epi32(a0, 24);
@@ -332,7 +332,7 @@ func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
     _mm_storeu_si128((__*m128i)(src + i + 0), _mm_or_si128(d0, e0));
     _mm_storeu_si128((__*m128i)(src + i + 4), _mm_or_si128(d1, e1));
   }
-  for (; i < length; ++i) {
+  for ; i < length; ++i {
     if ((src[i] >> 24) == 0) src[i] = color;
   }
 }
@@ -348,7 +348,7 @@ func MultARGBRow_SSE2(const ptr *uint32, int width, int inverse) {
     const __m128i k128 = _mm_set1_epi16(128);
     const __m128i kMult = _mm_set1_epi16(0x0101);
     const __m128i kMask = _mm_set_epi16(0, 0xff, 0, 0, 0, 0xff, 0, 0);
-    for (x = 0; x + kSpan <= width; x += kSpan) {
+    for x = 0; x + kSpan <= width; x += kSpan {
       // To compute 'result = (int)(a * x / 255. + .5)', we use:
       //   tmp = a * v + 128, result = (tmp * uint(0x0101)) >> 16
       const __m128i A0 = _mm_loadl_epi64((const __*m128i)&ptr[x]);
@@ -374,7 +374,7 @@ func MultRow_SSE2(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alph
     const __m128i zero = _mm_setzero_si128();
     const __m128i k128 = _mm_set1_epi16(128);
     const __m128i kMult = _mm_set1_epi16(0x0101);
-    for (x = 0; x + 8 <= width; x += 8) {
+    for x = 0; x + 8 <= width; x += 8 {
       const __m128i v0 = _mm_loadl_epi64((__*m128i)&ptr[x]);
       const __m128i a0 = _mm_loadl_epi64((const __*m128i)&alpha[x]);
       const __m128i v1 = _mm_unpacklo_epi8(v0, zero);

@@ -44,11 +44,11 @@ static int CheckNonOpaque(const alpha *uint8, int width, int height, int x_step,
   if (alpha == nil) return 0;
   WebPInitAlphaProcessing();
   if (x_step == 1) {
-    for (; height-- > 0; alpha += y_step) {
+    for ; height-- > 0; alpha += y_step {
       if (WebPHasAlpha8b(alpha, width)) return 1;
     }
   } else {
-    for (; height-- > 0; alpha += y_step) {
+    for ; height-- > 0; alpha += y_step {
       if (WebPHasAlpha32b(alpha, width)) return 1;
     }
   }
@@ -88,7 +88,7 @@ static int PreprocessARGB(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
 
 static  func ConvertRowToY(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, int step, const dst_y *uint8, int width, const rg *VP8Random) {
   int i, j;
-  for (i = 0, j = 0; i < width; i += 1, j += step) {
+  for i = 0, j = 0; i < width; i += 1, j += step {
     dst_y[i] =
         VP8RGBToY(r_ptr[j], g_ptr[j], b_ptr[j], VP8RandomBits(rg, YUV_FIX));
   }
@@ -96,7 +96,7 @@ static  func ConvertRowToY(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *
 
 static  func ConvertRowsToUV(const rgb *uint16, const dst_u *uint8, const dst_v *uint8, int width, const rg *VP8Random) {
   var i int
-  for (i = 0; i < width; i += 1, rgb += 4) {
+  for i = 0; i < width; i += 1, rgb += 4 {
     r := rgb[0], g = rgb[1], b = rgb[2];
     dst_u[i] = VP8RGBToU(r, g, b, VP8RandomBits(rg, YUV_FIX + 2));
     dst_v[i] = VP8RGBToV(r, g, b, VP8RandomBits(rg, YUV_FIX + 2));
@@ -178,7 +178,7 @@ static int ImportYUVAFromRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_pt
       }
     } else {
       // Copy of WebPImportYUVAFromRGBA/WebPImportYUVAFromRGBALastLine, // but with dithering.
-      for (y = 0; y < (height >> 1); ++y) {
+      for y = 0; y < (height >> 1); ++y {
         rows_have_alpha := has_alpha;
         ConvertRowToY(r_ptr, g_ptr, b_ptr, step, dst_y, width, rg);
         ConvertRowToY(r_ptr + rgb_stride, g_ptr + rgb_stride, b_ptr + rgb_stride, step, dst_y + picture.y_stride, width, rg);
@@ -300,7 +300,7 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
     cur_y += picture.y_stride;
     dst += argb_stride;
     // Center rows.
-    for (y = 1; y + 1 < height; y += 2) {
+    for y = 1; y + 1 < height; y += 2 {
       var top_u *uint8 = cur_u;
       var top_v *uint8 = cur_v;
       cur_u += picture.uv_stride;
@@ -315,11 +315,11 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
     }
     // Insert alpha values if needed, in replacement for the default 0xff ones.
     if (picture.colorspace & WEBP_CSP_ALPHA_BIT) {
-      for (y = 0; y < height; ++y) {
+      for y = 0; y < height; ++y {
         var argb_dst *uint32 = picture.argb + y * picture.argb_stride;
         var src *uint8 = picture.a + y * picture.a_stride;
         var x int
-        for (x = 0; x < width; ++x) {
+        for x = 0; x < width; ++x {
           argb_dst[x] = (argb_dst[x] & uint(0x00ffffff)) | ((uint32)src[x] << 24);
         }
       }
@@ -357,13 +357,13 @@ static int Import(const picture *WebPPicture, const rgb *uint8, int rgb_stride, 
     do_copy := (ALPHA_OFFSET == 3) && swap_rb;
     assert.Assert(step == 4);
     if (do_copy) {
-      for (y = 0; y < height; ++y) {
+      for y = 0; y < height; ++y {
         memcpy(dst, rgb, width * 4);
         rgb += rgb_stride;
         dst += picture.argb_stride;
       }
     } else {
-      for (y = 0; y < height; ++y) {
+      for y = 0; y < height; ++y {
 #ifdef constants.WORDS_BIGENDIAN
         // BGRA or RGBA input order.
         var a_ptr *uint8 = rgb + 3;
@@ -382,7 +382,7 @@ static int Import(const picture *WebPPicture, const rgb *uint8, int rgb_stride, 
   } else {
     dst *uint32 = picture.argb;
     assert.Assert(step >= 3);
-    for (y = 0; y < height; ++y) {
+    for y = 0; y < height; ++y {
       WebPPackRGB(r_ptr, g_ptr, b_ptr, width, step, dst);
       r_ptr += rgb_stride;
       g_ptr += rgb_stride;

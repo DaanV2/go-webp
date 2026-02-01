@@ -193,7 +193,7 @@ static  func PredictLine_MIPSdspR2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT
 
 const FILTER_LINE_BY_LINE =                          \
   for {                                                \
-    for (row = 1; row < height; ++row) {              \
+    for row = 1; row < height; ++row {              \
       PREDICT_LINE_ONE_PASS(in, preds - stride, out); \
       DO_PREDICT_LINE(in + 1, out + 1, width - 1, 0); \
       preds += stride;                                \
@@ -229,7 +229,7 @@ func HorizontalFilter_MIPSdspR2(const WEBP_RESTRICT data *uint8, int width, int 
 
 const FILTER_LINE_BY_LINE =                              \
   for {                                                    \
-    for (row = 1; row < height; ++row) {                  \
+    for row = 1; row < height; ++row {                  \
       DO_PREDICT_LINE_VERTICAL(in, preds, out, width, 0); \
       preds += stride;                                    \
       in += stride;                                       \
@@ -277,10 +277,10 @@ static int GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) {
 
 #define FILTER_LINE_BY_LINE(PREDS, OPERATION)                        \
   for {                                                               \
-    for (row = 1; row < height; ++row) {                             \
+    for row = 1; row < height; ++row {                             \
       var w int                                                         \
       PREDICT_LINE_ONE_PASS(in, PREDS - stride, out);                \
-      for (w = 1; w < width; ++w) {                                  \
+      for w = 1; w < width; ++w {                                  \
         pred := GradientPredictor_MIPSdspR2(                \
             PREDS[w - 1], PREDS[w - stride], PREDS[w - stride - 1]); \
         out[w] = in[w] OPERATION pred;                               \
@@ -332,7 +332,7 @@ func GradientUnfilter_MIPSdspR2(const prev *uint8, const in *uint8, out *uint8, 
   } else {
     top := prev[0], top_left = top, left = top;
     var i int
-    for (i = 0; i < width; ++i) {
+    for i = 0; i < width; ++i {
       top = prev[i];  // need to read this first, in case prev==dst
       left = in[i] + GradientPredictor_MIPSdspR2(left, top, top_left);
       top_left = top;

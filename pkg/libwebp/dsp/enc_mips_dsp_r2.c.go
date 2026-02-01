@@ -268,8 +268,8 @@ static int Disto4x4_MIPSdspR2(const WEBP_RESTRICT const a *uint8, const WEBP_RES
 static int Disto16x16_MIPSdspR2(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
   D := 0;
   int x, y;
-  for (y = 0; y < 16 * BPS; y += 4 * BPS) {
-    for (x = 0; x < 16; x += 4) {
+  for y = 0; y < 16 * BPS; y += 4 * BPS {
+    for x = 0; x < 16; x += 4 {
       D += Disto4x4_MIPSdspR2(a + x + y, b + x + y, w);
     }
   }
@@ -339,7 +339,7 @@ VERTICAL_PRED(dst, top, 16)
       WEBP_RESTRICT *uint8(DST), const WEBP_RESTRICT *uint8(LEFT)) { \
     if (LEFT) {                                                          \
       var j int                                                             \
-      for (j = 0; j < (SIZE); ++j) {                                     \
+      for j = 0; j < (SIZE); ++j {                                     \
         memset((DST) + j * BPS, (LEFT)[j], (SIZE));                      \
       }                                                                  \
     } else {                                                             \
@@ -400,7 +400,7 @@ HORIZONTAL_PRED(dst, left, 16)
   for {                                                       \
     var y int                                                   \
     left_1 := ((int)(LEFT)[-1] << 16) + (LEFT)[-1]; \
-    for (y = 0; y < (SIZE); ++y) {                           \
+    for y = 0; y < (SIZE); ++y {                           \
       CLIP_8B_TO_DST((DST), (LEFT), (TOP), (SIZE));          \
       (DST) += BPS;                                          \
     }                                                        \
@@ -1362,7 +1362,7 @@ func CollectHistogram_MIPSdspR2(const ref *uint8, const pred *uint8, int start_b
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   max_coeff := (MAX_COEFF_THRESH << 16) + MAX_COEFF_THRESH;
-  for (j = start_block; j < end_block; ++j) {
+  for j = start_block; j < end_block; ++j {
     int16 out[16];
     int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
 

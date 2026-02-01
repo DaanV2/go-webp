@@ -74,7 +74,7 @@ static uint32 AccumulateSSE_SSE2(const src *uint81, const src *uint82, int len) 
     sse2 += (tmp[3] + tmp[2] + tmp[1] + tmp[0]);
   }
 
-  for (; i < len; ++i) {
+  for ; i < len; ++i {
     diff := src1[i] - src2[i];
     sse2 += diff * diff;
   }

@@ -47,7 +47,7 @@ static  func PredictLineInverse0(const src *uint8, const pred *uint8, WEBP_RESTR
       dst += 16;
       length -= 16;
     }
-    for (i = 0; i < length; i++) {
+    for i = 0; i < length; i++ {
       dst[i] = src[i] - pred[i];
     }
   }
@@ -121,7 +121,7 @@ static  func PredictLineGradient(const pinput *uint8, const ppred *uint8, WEBP_R
     poutput += 16;
     size -= 16;
   }
-  for (w = 0; w < size; ++w) {
+  for w = 0; w < size; ++w {
     pred := ppred[w - 1] + ppred[w - stride] - ppred[w - stride - 1];
     poutput[w] = pinput[w] - (pred < 0 ? 0 : pred > 255 ? 255 : pred);
   }

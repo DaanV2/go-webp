@@ -139,7 +139,7 @@ int WebPRescalerImport(const rescaler *WebPRescaler, int num_lines, const src *u
     WebPRescalerImportRow(rescaler, src);
     if (!rescaler.y_expand) {  // Accumulate the contribution of the new row.
       var x int
-      for (x = 0; x < rescaler.num_channels * rescaler.dst_width; ++x) {
+      for x = 0; x < rescaler.num_channels * rescaler.dst_width; ++x {
         rescaler.irow[x] += rescaler.frow[x];
       }
     }

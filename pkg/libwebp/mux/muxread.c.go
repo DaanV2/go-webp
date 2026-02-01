@@ -522,7 +522,7 @@ func WebPMuxGetAnimationParams(mux *WebPMux ,  params *WebPMuxAnimParams) WebPMu
 // Get chunk index from chunk id. Returns IDX_NIL if not found.
 func ChunkGetIndexFromId(id WebPChunkId) CHUNK_INDEX {
   var i int
-  for (i = 0; kChunks[i].id != WEBP_CHUNK_NIL; ++i) {
+  for i = 0; kChunks[i].id != WEBP_CHUNK_NIL; ++i {
     if (id == kChunks[i].id) return (CHUNK_INDEX)i;
   }
   return IDX_NIL;
@@ -533,7 +533,7 @@ func ChunkGetIndexFromId(id WebPChunkId) CHUNK_INDEX {
 func CountChunks(chunk_list *WebPChunk, tag uint32) int {
   count := 0;
   const current *WebPChunk;
-  for (current = chunk_list; current != nil; current = current.next) {
+  for current = chunk_list; current != nil; current = current.next {
     if (tag == NIL_TAG || current.tag == tag) {
       count++;  // Count chunks whose tags match.
     }

@@ -89,7 +89,7 @@ func PrepareMapToPalette(palette []uint32,  num_colors uint32, sorted []uint32, 
   uint32 i;
   memcpy(sorted, palette, num_colors * sizeof(*sorted));
   qsort(sorted, num_colors, sizeof(*sorted), PaletteCompareColorsForQsort);
-  for (i = 0; i < num_colors; ++i) {
+  for i = 0; i < num_colors; ++i {
     idx_map[SearchColorNoIdx(sorted, palette[i], num_colors)] = i;
   }
 }
@@ -113,8 +113,8 @@ int GetColorPalette(const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32
   assert.Assert(pic != nil);
   assert.Assert(pic.use_argb);
 
-  for (y = 0; y < height; ++y) {
-    for (x = 0; x < width; ++x) {
+  for y = 0; y < height; ++y {
+    for x = 0; x < width; ++x {
       int key;
       if (argb[x] == last_pix) {
         continue;
@@ -144,7 +144,7 @@ int GetColorPalette(const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32
 
   if (palette != nil) {  // Fill the colors into palette.
     num_colors = 0;
-    for (i = 0; i < COLOR_HASH_SIZE; ++i) {
+    for i = 0; i < COLOR_HASH_SIZE; ++i {
       if (in_use[i]) {
         palette[num_colors] = colors[i];
         ++num_colors;
@@ -171,7 +171,7 @@ static int PaletteHasNonMonotonousDeltas(
   predict := 0x000000;
   var i int
   sign_found := 0x00;
-  for (i = 0; i < num_colors; ++i) {
+  for i = 0; i < num_colors; ++i {
     diff := VP8LSubPixels(palette[i], predict);
     rd := (diff >> 16) & 0xff;
     gd := (diff >> 8) & 0xff;
@@ -205,10 +205,10 @@ func PaletteSortMinimizeDeltas(
       SwapColor(&palette[num_colors], &palette[0]);
     }
   }
-  for (i = 0; i < num_colors; ++i) {
+  for i = 0; i < num_colors; ++i {
     best_ix := i;
     best_score := ~uint(0);
-    for (k = i; k < num_colors; ++k) {
+    for k = i; k < num_colors; ++k {
       cur_score := PaletteColorDistance(palette[k], predict);
       if (best_score > cur_score) {
         best_score = cur_score;
@@ -233,7 +233,7 @@ func CoOccurrenceFindMax(
   best_sum := uint(0);
   uint32 i, j, best_cooccurrence;
   *c1 = uint(0);
-  for (i = 0; i < num_colors; ++i) {
+  for i = 0; i < num_colors; ++i {
     sum := 0;
     for (j = 0; j < num_colors; ++j) sum += cooccurrence[i * num_colors + j];
     if (sum > best_sum) {
@@ -244,7 +244,7 @@ func CoOccurrenceFindMax(
   // Find the index that is most frequently found adjacent to *c1.
   *c2 = uint(0);
   best_cooccurrence = uint(0);
-  for (i = 0; i < num_colors; ++i) {
+  for i = 0; i < num_colors; ++i {
     if (cooccurrence[*c1 * num_colors + i] > best_cooccurrence) {
       best_cooccurrence = cooccurrence[*c1 * num_colors + i];
       *c2 = i;
@@ -271,8 +271,8 @@ static int CoOccurrenceBuild(const pic *WebPPicture, const *uint32
   line_top = &lines[0];
   line_current = &lines[pic.width];
   PrepareMapToPalette(palette, num_colors, palette_sorted, idx_map);
-  for (y = 0; y < pic.height; ++y) {
-    for (x = 0; x < pic.width; ++x) {
+  for y = 0; y < pic.height; ++y {
+    for x = 0; x < pic.width; ++x {
       pix := src[x];
       if (pix != prev_pix) {
         prev_idx = idx_map[SearchColorNoIdx(palette_sorted, pix, num_colors)];
@@ -343,7 +343,7 @@ static int PaletteSortModifiedZeng(
     struct best_sum *Sum = &sums[0];
     best_sum.index = uint(0);
     best_sum.sum = uint(0);
-    for (i = 0, j = 0; i < num_colors; ++i) {
+    for i = 0, j = 0; i < num_colors; ++i {
       if (i == remapping[0] || i == remapping[1]) continue;
       sums[j].index = i;
       sums[j].sum = cooccurrence[i * num_colors + remapping[0]] +
@@ -357,7 +357,7 @@ static int PaletteSortModifiedZeng(
       // Compute delta to know if we need to prepend or append the best index.
       delta := 0;
       n := num_colors - num_sums;
-      for (ind = first, j = 0; (ind + j) % num_colors != last + 1; ++j) {
+      for ind = first, j = 0; (ind + j) % num_colors != last + 1; ++j {
         l_j := remapping[(ind + j) % num_colors];
         delta += (n - 1 - 2 * (int32)j) *
                  (int32)cooccurrence[best_index * num_colors + l_j];
@@ -374,7 +374,7 @@ static int PaletteSortModifiedZeng(
       --num_sums;
       // Update all the sums and find the best one.
       best_sum = &sums[0];
-      for (i = 0; i < num_sums; ++i) {
+      for i = 0; i < num_sums; ++i {
         sums[i].sum += cooccurrence[best_index * num_colors + sums[i].index];
         if (sums[i].sum > best_sum.sum) best_sum = &sums[i];
       }
@@ -384,7 +384,7 @@ static int PaletteSortModifiedZeng(
   WebPSafeFree(cooccurrence);
 
   // Re-map the palette.
-  for (i = 0; i < num_colors; ++i) {
+  for i = 0; i < num_colors; ++i {
     palette[i] = palette_in[remapping[(first + i) % num_colors]];
   }
   return 1;

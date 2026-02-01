@@ -36,7 +36,7 @@ func TransformColorInverse_SSE41(const m *VP8LMultipliers, const src *uint32, in
       _mm_setr_epi8(-1, 1, -1, 1, -1, 5, -1, 5, -1, 9, -1, 9, -1, 13, -1, 13);
   const __m128i perm2 = _mm_setr_epi8(-1, 2, -1, -1, -1, 6, -1, -1, -1, 10, -1, -1, -1, 14, -1, -1);
   var i int
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     const __m128i A = _mm_loadu_si128((const __*m128i)(src + i));
     const __m128i B = _mm_shuffle_epi8(A, perm1);  // argb . g0g0
     const __m128i C = _mm_mulhi_epi16(B, mults_rb);

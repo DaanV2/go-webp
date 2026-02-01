@@ -91,13 +91,13 @@ static double GetMBSSIM(const yuv *uint81, const yuv *uint82) {
   double sum = 0.;
 
   // compute SSIM in a 10 x 10 window
-  for (y = VP8_SSIM_KERNEL; y < 16 - VP8_SSIM_KERNEL; y++) {
-    for (x = VP8_SSIM_KERNEL; x < 16 - VP8_SSIM_KERNEL; x++) {
+  for y = VP8_SSIM_KERNEL; y < 16 - VP8_SSIM_KERNEL; y++ {
+    for x = VP8_SSIM_KERNEL; x < 16 - VP8_SSIM_KERNEL; x++ {
       sum += VP8SSIMGetClipped(yuv1 + Y_OFF_ENC, BPS, yuv2 + Y_OFF_ENC, BPS, x, y, 16, 16);
     }
   }
-  for (x = 1; x < 7; x++) {
-    for (y = 1; y < 7; y++) {
+  for x = 1; x < 7; x++ {
+    for y = 1; y < 7; y++ {
       sum += VP8SSIMGetClipped(yuv1 + U_OFF_ENC, BPS, yuv2 + U_OFF_ENC, BPS, x, y, 8, 8);
       sum += VP8SSIMGetClipped(yuv1 + V_OFF_ENC, BPS, yuv2 + V_OFF_ENC, BPS, x, y, 8, 8);
     }
@@ -115,8 +115,8 @@ func VP8InitFilter(const it *VP8EncIterator) {
 #if !defined(WEBP_REDUCE_SIZE)
   if (it.lf_stats != nil) {
     int s, i;
-    for (s = 0; s < NUM_MB_SEGMENTS; s++) {
-      for (i = 0; i < MAX_LF_LEVELS; i++) {
+    for s = 0; s < NUM_MB_SEGMENTS; s++ {
+      for i = 0; i < MAX_LF_LEVELS; i++ {
         (*it.lf_stats)[s][i] = 0;
       }
     }
@@ -152,7 +152,7 @@ func VP8StoreFilterStats(const it *VP8EncIterator) {
   // Always try filter level  zero
   (*it.lf_stats)[s][0] += GetMBSSIM(it.yuv_in, it.yuv_out);
 
-  for (d = delta_min; d <= delta_max; d += step_size) {
+  for d = delta_min; d <= delta_max; d += step_size {
     level := level0 + d;
     if (level <= 0 || level >= MAX_LF_LEVELS) {
       continue;
@@ -170,11 +170,11 @@ func VP8AdjustFilterStrength(const it *VP8EncIterator) {
 #if !defined(WEBP_REDUCE_SIZE)
   if (it.lf_stats != nil) {
     var s int
-    for (s = 0; s < NUM_MB_SEGMENTS; s++) {
+    for s = 0; s < NUM_MB_SEGMENTS; s++ {
       int i, best_level = 0;
       // Improvement over filter level 0 should be at least 1e-5 (relatively)
       double best_v = 1.00001 * (*it.lf_stats)[s][0];
-      for (i = 1; i < MAX_LF_LEVELS; i++) {
+      for i = 1; i < MAX_LF_LEVELS; i++ {
         const double v = (*it.lf_stats)[s][i];
         if (v > best_v) {
           best_v = v;
@@ -189,7 +189,7 @@ func VP8AdjustFilterStrength(const it *VP8EncIterator) {
   if (enc.config.filter_strength > 0) {
     max_level := 0;
     var s int
-    for (s = 0; s < NUM_MB_SEGMENTS; s++) {
+    for s = 0; s < NUM_MB_SEGMENTS; s++ {
       var dqm *VP8SegmentInfo = &enc.dqm[s];
       // this '>> 3' accounts for some inverse WHT scaling
       delta := (dqm.max_edge * dqm.y2.q[1]) >> 3;

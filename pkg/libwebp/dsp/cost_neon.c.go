@@ -82,7 +82,7 @@ static int GetResidualCost_NEON(int ctx0, const res *VP8Residual) {
     vst1q_u16(abs_levels, E0);
     vst1q_u16(abs_levels + 8, E1);
   }
-  for (; n < res.last; ++n) {
+  for ; n < res.last; ++n {
     ctx := ctxs[n];
     level := levels[n];
     flevel := abs_levels[n];               // full level

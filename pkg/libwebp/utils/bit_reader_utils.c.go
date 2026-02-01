@@ -128,7 +128,7 @@ func VP8LInitBitReader(const br *VP8LBitReader, const *uint8  start, uint64 leng
   if (length > sizeof(br.val)) {
     length = sizeof(br.val);
   }
-  for (i = 0; i < length; ++i) {
+  for i = 0; i < length; ++i {
     value |= (vp8l_val_t)start[i] << (8 * i);
   }
   br.val = value;
@@ -226,7 +226,7 @@ func PrintBitTraces(){
   for (i = 0; i < last_label; ++i) total += kLabels[i].size;
   if (total < 1) total = 1;  // afunc rounding errors
   printf("=== Bit traces ===\n");
-  for (i = 0; i < last_label; ++i) {
+  for i = 0; i < last_label; ++i {
     skip := 16 - (int)strlen(kLabels[i].label);
     value := (kLabels[i].size + scale - 1) / scale;
     assert.Assert(skip > 0);
@@ -252,7 +252,7 @@ func BitTrace(const type const br *VP8BitReader, const byte label[]) struct {
     last_pos = 0;
   }
   if (br.range >= 0x7f) pos += kVP8Log2Range[br.range - 0x7f];
-  for (i = 0; i < last_label; ++i) {
+  for i = 0; i < last_label; ++i {
     if (!strcmp(label, kLabels[i].label)) break;
   }
   if (i == MAX_NUM_LABELS) abort();  // overflow!

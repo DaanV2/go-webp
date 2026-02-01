@@ -42,7 +42,7 @@ static  func Average2_m256i(const __const a *m256i0, const __const a *m256i1, __
 func PredictorAdd0_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const __m256i black = _mm256_set1_epi32((int)ARGB_BLACK);
-  for (i = 0; i + 8 <= num_pixels; i += 8) {
+  for i = 0; i + 8 <= num_pixels; i += 8 {
     const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
     const __m256i res = _mm256_add_epi8(src, black);
     _mm256_storeu_si256((__*m256i)&out[i], res);
@@ -57,7 +57,7 @@ func PredictorAdd0_AVX2(const in *uint32, const upper *uint32, int num_pixels, W
 func PredictorAdd1_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   __m256i prev = _mm256_set1_epi32((int)out[-1]);
-  for (i = 0; i + 8 <= num_pixels; i += 8) {
+  for i = 0; i + 8 <= num_pixels; i += 8 {
     // h | g | f | e | d | c | b | a
     const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
     // g | f | e | 0 | c | b | a | 0
@@ -92,7 +92,7 @@ func PredictorAdd1_AVX2(const in *uint32, const upper *uint32, int num_pixels, W
                                      const upper *uint32, int num_pixels,   \
                                      WEBP_RESTRICT out *uint32) {           \
     var i int                                                                    \
-    for (i = 0; i + 8 <= num_pixels; i += 8) {                                \
+    for i = 0; i + 8 <= num_pixels; i += 8 {                                \
       const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);         \
       const __m256i other = _mm256_loadu_si256((const __*m256i)&(IN));        \
       const __m256i res = _mm256_add_epi8(src, other);                        \
@@ -119,7 +119,7 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])
                                      const upper *uint32, int num_pixels,   \
                                      WEBP_RESTRICT out *uint32) {           \
     var i int                                                                    \
-    for (i = 0; i + 8 <= num_pixels; i += 8) {                                \
+    for i = 0; i + 8 <= num_pixels; i += 8 {                                \
       const __m256i Tother = _mm256_loadu_si256((const __*m256i)&(IN));       \
       const __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);        \
       const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);         \
@@ -159,7 +159,7 @@ const DO_PRED10_SHIFT =                                        \
 func PredictorAdd10_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   int i, j;
   __m256i L = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
-  for (i = 0; i + 8 <= num_pixels; i += 8) {
+  for i = 0; i + 8 <= num_pixels; i += 8 {
     __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
     __m256i TL = _mm256_loadu_si256((const __*m256i)&upper[i - 1]);
     const __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);
@@ -170,14 +170,14 @@ func PredictorAdd10_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
       const __m256i avgTTR_bak = avgTTR;
       const __m256i TL_bak = TL;
       const __m256i src_bak = src;
-      for (j = 0; j < 4; ++j) {
+      for j = 0; j < 4; ++j {
         DO_PRED10(j);
         DO_PRED10_SHIFT;
       }
       avgTTR = _mm256_permute2x128_si256(avgTTR_bak, avgTTR_bak, 1);
       TL = _mm256_permute2x128_si256(TL_bak, TL_bak, 1);
       src = _mm256_permute2x128_si256(src_bak, src_bak, 1);
-      for (; j < 8; ++j) {
+      for ; j < 8; ++j {
         DO_PRED10(j);
         DO_PRED10_SHIFT;
       }
@@ -217,7 +217,7 @@ func PredictorAdd11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
   int i, j;
   __m256i pa;
   __m256i L = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
-  for (i = 0; i + 8 <= num_pixels; i += 8) {
+  for i = 0; i + 8 <= num_pixels; i += 8 {
     __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);
     __m256i TL = _mm256_loadu_si256((const __*m256i)&upper[i - 1]);
     __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
@@ -238,7 +238,7 @@ func PredictorAdd11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
       const __m256i TL_bak = TL;
       const __m256i src_bak = src;
       const __m256i pa_bak = pa;
-      for (j = 0; j < 4; ++j) {
+      for j = 0; j < 4; ++j {
         DO_PRED11(j);
         DO_PRED11_SHIFT;
       }
@@ -246,7 +246,7 @@ func PredictorAdd11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
       TL = _mm256_permute2x128_si256(TL_bak, TL_bak, 1);
       src = _mm256_permute2x128_si256(src_bak, src_bak, 1);
       pa = _mm256_permute2x128_si256(pa_bak, pa_bak, 1);
-      for (; j < 8; ++j) {
+      for ; j < 8; ++j {
         DO_PRED11(j);
         DO_PRED11_SHIFT;
       }
@@ -281,7 +281,7 @@ func PredictorAdd12_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
   const __m256i zero = _mm256_setzero_si256();
   const __m256i L8 = _mm256_setr_epi32((int)out[-1], 0, 0, 0, 0, 0, 0, 0);
   __m256i L = _mm256_unpacklo_epi8(L8, zero);
-  for (i = 0; i + 8 <= num_pixels; i += 8) {
+  for i = 0; i + 8 <= num_pixels; i += 8 {
     // Load 8 pixels at a time.
     __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
     const __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);
@@ -334,7 +334,7 @@ func AddGreenToBlueAndRed_AVX2(const src *uint32, int num_pixels, dst *uint32) {
   var i int
   const __m256i kCstShuffle = _mm256_set_epi8(
       -1, 29, -1, 29, -1, 25, -1, 25, -1, 21, -1, 21, -1, 17, -1, 17, -1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
-  for (i = 0; i + 8 <= num_pixels; i += 8) {
+  for i = 0; i + 8 <= num_pixels; i += 8 {
     const __m256i in = _mm256_loadu_si256((const __*m256i)&src[i]);  // argb
     const __m256i in_0g0g = _mm256_shuffle_epi8(in, kCstShuffle);    // 0g0g
     const __m256i out = _mm256_add_epi8(in, in_0g0g);
@@ -362,7 +362,7 @@ func TransformColorInverse_AVX2(const m *VP8LMultipliers, const src *uint32, int
   const __m256i perm2 = _mm256_setr_epi8(
       -1, 2, -1, -1, -1, 6, -1, -1, -1, 10, -1, -1, -1, 14, -1, -1, -1, 18, -1, -1, -1, 22, -1, -1, -1, 26, -1, -1, -1, 30, -1, -1);
   var i int
-  for (i = 0; i + 8 <= num_pixels; i += 8) {
+  for i = 0; i + 8 <= num_pixels; i += 8 {
     const __m256i A = _mm256_loadu_si256((const __*m256i)(src + i));
     const __m256i B = _mm256_shuffle_epi8(A, perm1);  // argb . g0g0
     const __m256i C = _mm256_mulhi_epi16(B, mults_rb);

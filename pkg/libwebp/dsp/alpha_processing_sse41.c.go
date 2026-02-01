@@ -43,9 +43,9 @@ static int ExtractAlpha_SSE41(const WEBP_RESTRICT argb *uint8, int argb_stride, 
       _mm_set_epi8(-1, -1, -1, -1, 12, 8, 4, 0, -1, -1, -1, -1, -1, -1, -1, -1);
   const __m128i kCstAlpha3 =
       _mm_set_epi8(12, 8, 4, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
-  for (j = 0; j < height; ++j) {
+  for j = 0; j < height; ++j {
     var __src *m128i = (const __*m128i)argb;
-    for (i = 0; i < limit; i += 16) {
+    for i = 0; i < limit; i += 16 {
       // load 64 argb bytes
       const __m128i a0 = _mm_loadu_si128(src + 0);
       const __m128i a1 = _mm_loadu_si128(src + 1);
@@ -64,7 +64,7 @@ static int ExtractAlpha_SSE41(const WEBP_RESTRICT argb *uint8, int argb_stride, 
       all_alphas = _mm_and_si128(all_alphas, d0);
       src += 4;
     }
-    for (; i < width; ++i) {
+    for ; i < width; ++i {
       alpha_value := argb[4 * i];
       alpha[i] = alpha_value;
       alpha_and &= alpha_value;

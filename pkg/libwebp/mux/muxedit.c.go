@@ -429,7 +429,7 @@ static WebPMuxError GetAdjustedCanvasSize(const mux *WebPMux, const width *int, 
     // if we have a chain of wpi's, header is necessarily set
     assert.Assert(wpi.header != nil);
     // Aggregate the bounding box for animation frames.
-    for (; wpi != nil; wpi = wpi.next) {
+    for ; wpi != nil; wpi = wpi.next {
       x_offset := 0, y_offset = 0, duration = 0, w = 0, h = 0;
       const WebPMuxError err =
           GetImageInfo(wpi, &x_offset, &y_offset, &duration, &w, &h);

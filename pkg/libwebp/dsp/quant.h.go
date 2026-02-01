@@ -36,7 +36,7 @@ static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
   uint32x4_t sum = vdupq_n_u32(0);
   var i int
 
-  for (i = 0; i < num_blocks; ++i) {
+  for i = 0; i < num_blocks; ++i {
     // Set DC to zero.
     const int16x8_t a_0 = vsetq_lane_s16(0, vld1q_s16(levels), 0);
     const int16x8_t a_1 = vld1q_s16(levels + 8);
@@ -60,7 +60,7 @@ static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
   score := 0;
   while (num_blocks-- > 0) {  // TODO(skal): refine positional scoring?
     var i int
-    for (i = 1; i < 16; ++i) {  // omit DC, we're only interested in AC
+    for i = 1; i < 16; ++i {  // omit DC, we're only interested in AC
       score += (levels[i] != 0);
       if (score > thresh) return 0;
     }
@@ -75,7 +75,7 @@ static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
 static  int IsFlatSource16(const src *uint8) {
   v := src[0] * uint(0x01010101);
   var i int
-  for (i = 0; i < 16; ++i) {
+  for i = 0; i < 16; ++i {
     if (memcmp(src + 0, &v, 4) || memcmp(src + 4, &v, 4) ||
         memcmp(src + 8, &v, 4) || memcmp(src + 12, &v, 4)) {
       return 0;

@@ -661,8 +661,8 @@ static int Disto4x4_NEON(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT
 static int Disto16x16_NEON(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
   D := 0;
   int x, y;
-  for (y = 0; y < 16 * BPS; y += 4 * BPS) {
-    for (x = 0; x < 16; x += 4) {
+  for y = 0; y < 16 * BPS; y += 4 * BPS {
+    for x = 0; x < 16; x += 4 {
       D += Disto4x4_NEON(a + x + y, b + x + y, w);
     }
   }
@@ -675,7 +675,7 @@ func CollectHistogram_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT p
   const uint16x8_t max_coeff_thresh = vdupq_n_u16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
-  for (j = start_block; j < end_block; ++j) {
+  for j = start_block; j < end_block; ++j {
     int16 out[16];
     FTransform_NEON(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
     {
@@ -691,7 +691,7 @@ func CollectHistogram_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT p
       vst1q_s16(out + 0, vreinterpretq_s16_u16(a3));
       vst1q_s16(out + 8, vreinterpretq_s16_u16(b3));
       // Convert coefficients to bin.
-      for (k = 0; k < 16; ++k) {
+      for k = 0; k < 16; ++k {
         ++distribution[out[k]];
       }
     }
@@ -730,7 +730,7 @@ static int SumToInt_NEON(uint32x4_t sum) {
 static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
-  for (y = 0; y < 16; ++y) {
+  for y = 0; y < 16; ++y {
     AccumulateSSE16_NEON(a + y * BPS, b + y * BPS, &sum);
   }
   return SumToInt_NEON(sum);
@@ -739,7 +739,7 @@ static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *ui
 static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
-  for (y = 0; y < 8; ++y) {
+  for y = 0; y < 8; ++y {
     AccumulateSSE16_NEON(a + y * BPS, b + y * BPS, &sum);
   }
   return SumToInt_NEON(sum);
@@ -748,7 +748,7 @@ static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uin
 static int SSE8x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
-  for (y = 0; y < 8; ++y) {
+  for y = 0; y < 8; ++y {
     const uint8x8_t a0 = vld1_u8(a + y * BPS);
     const uint8x8_t b0 = vld1_u8(b + y * BPS);
     const uint8x8_t abs_diff = vabd_u8(a0, b0);
@@ -969,7 +969,7 @@ func Intra4Preds_NEON(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
 static  func Fill_NEON(dst *uint8, const uint8 value) {
   uint8x16_t a = vdupq_n_u8(value);
   var i int
-  for (i = 0; i < 16; i++) {
+  for i = 0; i < 16; i++ {
     vst1q_u8(dst + BPS * i, a);
   }
 }
@@ -977,7 +977,7 @@ static  func Fill_NEON(dst *uint8, const uint8 value) {
 static  func Fill16_NEON(dst *uint8, const src *uint8) {
   uint8x16_t a = vld1q_u8(src);
   var i int
-  for (i = 0; i < 16; i++) {
+  for i = 0; i < 16; i++ {
     vst1q_u8(dst + BPS * i, a);
   }
 }
@@ -1087,7 +1087,7 @@ static  func TrueMotion_NEON(dst *uint8, const left *uint8, const top *uint8) {
   a = vdupq_n_u16(left[-1]);
   inner = Vld1U8x2(top);
 
-  for (i = 0; i < 4; i++) {
+  for i = 0; i < 4; i++ {
     const uint8x8x4_t outer = vld4_dup_u8(&left[i * 4]);
 
     TrueMotionHelper_NEON(dst, outer.val[0], inner, a, i, 0);

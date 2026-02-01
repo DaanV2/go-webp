@@ -59,7 +59,7 @@ static int GetResidualCost_C(int ctx0, const res *VP8Residual) {
   if (res.last < 0) {
     return VP8BitCost(0, p0);
   }
-  for (; n < res.last; ++n) {
+  for ; n < res.last; ++n {
     v := abs(res.coeffs[n]);
     ctx := (v >= 2) ? 2 : v;
     cost += VP8LevelCost(t, v);
@@ -84,7 +84,7 @@ func SetResidualCoeffs_C(const WEBP_RESTRICT const coeffs *int16, WEBP_RESTRICT 
   var n int
   res.last = -1;
   assert.Assert(res.first == 0 || coeffs[0] == 0);
-  for (n = 15; n >= 0; --n) {
+  for n = 15; n >= 0; --n {
     if (coeffs[n]) {
       res.last = n;
       break;

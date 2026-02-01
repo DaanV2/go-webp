@@ -146,7 +146,7 @@ const v255 = vdup_n_u8(255)
 #define CONVERT8(FMT, XSTEP, N, src_y, src_uv, out, cur_x)          \
   for {                                                              \
     var i int                                                          \
-    for (i = 0; i < N; i += 8) {                                    \
+    for i = 0; i < N; i += 8 {                                    \
       off := ((cur_x) + i) * XSTEP;                        \
       const uint8x8_t y = vld1_u8((src_y) + (cur_x) + i);           \
       const uint8x8_t u = vld1_u8((src_uv) + i + 0);                \
@@ -177,7 +177,7 @@ const v255 = vdup_n_u8(255)
 #define CONVERT1(FUNC, XSTEP, N, src_y, src_uv, rgb, cur_x) \
   {                                                         \
     var i int                                                  \
-    for (i = 0; i < N; i++) {                               \
+    for i = 0; i < N; i++ {                               \
       off := ((cur_x) + i) * XSTEP;                \
       y := src_y[(cur_x) + i];                     \
       u := (src_uv)[i];                            \
@@ -244,7 +244,7 @@ const v255 = vdup_n_u8(255)
       VP8YuvTo##FMT(bottom_y[0], u0, v0, bottom_dst);                         \
     }                                                                         \
                                                                               \
-    for (block = 0; block < num_blocks; ++block) {                            \
+    for block = 0; block < num_blocks; ++block {                            \
       UPSAMPLE_16PIXELS(top_u, cur_u, r_uv);                                  \
       UPSAMPLE_16PIXELS(top_v, cur_v, r_uv + 16);                             \
       CONVERT2RGB_8(FMT, XSTEP, top_y, bottom_y, r_uv, top_dst, bottom_dst,   \

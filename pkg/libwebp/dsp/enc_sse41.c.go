@@ -32,7 +32,7 @@ func CollectHistogram_SSE41(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT 
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
-  for (j = start_block; j < end_block; ++j) {
+  for j = start_block; j < end_block; ++j {
     int16 out[16];
     var k int
 
@@ -57,7 +57,7 @@ func CollectHistogram_SSE41(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT 
     }
 
     // Convert coefficients to bin.
-    for (k = 0; k < 16; ++k) {
+    for k = 0; k < 16; ++k {
       ++distribution[out[k]];
     }
   }
@@ -177,8 +177,8 @@ static int Disto4x4_SSE41(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRIC
 static int Disto16x16_SSE41(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
   D := 0;
   int x, y;
-  for (y = 0; y < 16 * BPS; y += 4 * BPS) {
-    for (x = 0; x < 16; x += 4) {
+  for y = 0; y < 16 * BPS; y += 4 * BPS {
+    for x = 0; x < 16; x += 4 {
       D += Disto4x4_SSE41(a + x + y, b + x + y, w);
     }
   }

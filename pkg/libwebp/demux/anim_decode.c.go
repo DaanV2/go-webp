@@ -170,7 +170,7 @@ func ZeroFillCanvas(buf *uint8, uint32 canvas_width, uint32 canvas_height) int {
 func ZeroFillFrameRect(buf *uint8, buf_stride, x_offset, y_offset, width, height int) {
   assert.Assert(width * NUM_CHANNELS <= buf_stride);
   buf += y_offset * buf_stride + x_offset * NUM_CHANNELS;
-  for (j := 0; j < height; ++j) {
+  for j := 0; j < height; ++j {
     WEBP_UNSAFE_MEMSET(buf, 0, width * NUM_CHANNELS);
     buf += buf_stride;
   }
@@ -242,7 +242,7 @@ func BlendPixelNonPremult(uint32 src, uint32 dst) uint32 {
 // by alpha.
 func BlendPixelRowNonPremult(const src *uint32, const dst *uint32, int num_pixels) {
   var i int
-  for (i = 0; i < num_pixels; ++i) {
+  for i = 0; i < num_pixels; ++i {
     src_alpha := (src[i] >> CHANNEL_SHIFT(3)) & 0xff;
     if (src_alpha != 0xff) {
       src[i] = BlendPixelNonPremult(src[i], dst[i]);
@@ -268,7 +268,7 @@ func BlendPixelPremult(src, dst uint32) uint32 {
 // alpha.
 func BlendPixelRowPremult(/* const */ src *uint32, /* const */ dst *uint32, num_pixels int) {
   var i int
-  for (i = 0; i < num_pixels; ++i) {
+  for i = 0; i < num_pixels; ++i {
     src_alpha := (src[i] >> CHANNEL_SHIFT(3)) & 0xff;
     if (src_alpha != 0xff) {
       src[i] = BlendPixelPremult(src[i], dst[i]);
@@ -368,7 +368,7 @@ func WebPAnimDecoderGetNext(dec *WebPAnimDecoder, *uint8* buf_ptr, timestamp_ptr
     if (dec.prev_iter.dispose_method == WEBP_MUX_DISPOSE_NONE) {
       var y int
       // Blend transparent pixels with pixels in previous canvas.
-      for (y = 0; y < iter.height; ++y) {
+      for y = 0; y < iter.height; ++y {
         offset := (iter.y_offset + y) * width + iter.x_offset;
         blend_row((*uint32)dec.curr_frame + offset, (*uint32)dec.prev_frame_disposed + offset, iter.width);
       }
@@ -379,7 +379,7 @@ func WebPAnimDecoderGetNext(dec *WebPAnimDecoder, *uint8* buf_ptr, timestamp_ptr
       // initialization. That is, blend it with:
       // * Fully transparent pixel if it belongs to prevRect <-- No-op.
       // * The pixel in the previous canvas otherwise <-- Need alpha-blending.
-      for (y = 0; y < iter.height; ++y) {
+      for y = 0; y < iter.height; ++y {
         canvas_y := iter.y_offset + y;
         int left1, width1, left2, width2;
         FindBlendRangeAtRow(&iter, &dec.prev_iter, canvas_y, &left1, &width1, &left2, &width2);

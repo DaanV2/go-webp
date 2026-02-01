@@ -103,7 +103,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
   assert.Assert(root_bits > 0);
 
   // Build histogram of code lengths.
-  for (symbol = 0; symbol < code_lengths_size; ++symbol) {
+  for symbol = 0; symbol < code_lengths_size; ++symbol {
     if (code_lengths[symbol] > MAX_ALLOWED_CODE_LENGTH) {
       return 0;
     }
@@ -117,7 +117,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
 
   // Generate offsets into sorted symbol table by code length.
   offset[1] = 0;
-  for (len = 1; len < MAX_ALLOWED_CODE_LENGTH; ++len) {
+  for len = 1; len < MAX_ALLOWED_CODE_LENGTH; ++len {
     if (count[len] > (1 << len)) {
       return 0;
     }
@@ -125,7 +125,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
   }
 
   // Sort symbols by length, by symbol order within each length.
-  for (symbol = 0; symbol < code_lengths_size; ++symbol) {
+  for symbol = 0; symbol < code_lengths_size; ++symbol {
     symbol_code_length := code_lengths[symbol];
     if (code_lengths[symbol] > 0) {
       if (sorted != nil) {
@@ -166,7 +166,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
     table_size := 1 << table_bits;  // size of current table
     symbol = 0;
     // Fill in root table.
-    for (len = 1, step = 2; len <= root_bits; ++len, step <<= 1) {
+    for len = 1, step = 2; len <= root_bits; ++len, step <<= 1 {
       num_open <<= 1;
       num_nodes += num_open;
       num_open -= count[len];
@@ -174,7 +174,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
         return 0;
       }
       if (root_table == nil) continue;
-      for (; count[len] > 0; --count[len]) {
+      for ; count[len] > 0; --count[len] {
         HuffmanCode code;
         code.bits = (uint8)len;
         code.value = (uint16)sorted[symbol];
@@ -193,7 +193,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
       if (num_open < 0) {
         return 0;
       }
-      for (; count[len] > 0; --count[len]) {
+      for ; count[len] > 0; --count[len] {
         HuffmanCode code;
         if ((key & mask) != low) {
           if (root_table != nil) table += table_size;

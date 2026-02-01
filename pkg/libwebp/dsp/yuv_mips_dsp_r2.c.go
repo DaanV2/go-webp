@@ -88,7 +88,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     t_con_6 := 14234;                                                 \
     t_con_7 := 8708;                                                  \
     t_con_8 := 17685;                                                 \
-    for (i = 0; i < (len >> 1); i++) {                                         \
+    for i = 0; i < (len >> 1); i++ {                                         \
       __asm__ volatile(                                                        \
         ROW_FUNC_PART_1()                                                      \
         ROW_FUNC_PART_2(R, G, B, 1)                                            \

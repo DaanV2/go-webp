@@ -50,7 +50,7 @@ func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int C[4 * 4], *tmp;
   var i int
   tmp = C;
-  for (i = 0; i < 4; ++i) {       // vertical pass
+  for i = 0; i < 4; ++i {       // vertical pass
     a := in[0] + in[8];  // [-4096, 4094]
     b := in[0] - in[8];  // [-4095, 4095]
     c := WEBP_TRANSFORM_AC3_MUL2(in[4]) -
@@ -72,7 +72,7 @@ func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   // In the worst case scenario, the input to clip_8b() can be as large as
   // [-60713, 60968].
   tmp = C;
-  for (i = 0; i < 4; ++i) {  // horizontal pass
+  for i = 0; i < 4; ++i {  // horizontal pass
     dc := tmp[0] + 4;
     a := dc + tmp[8];
     b := dc - tmp[8];
@@ -120,8 +120,8 @@ func TransformUV_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 func TransformDC_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   DC := in[0] + 4;
   int i, j;
-  for (j = 0; j < 4; ++j) {
-    for (i = 0; i < 4; ++i) {
+  for j = 0; j < 4; ++j {
+    for i = 0; i < 4; ++i {
       STORE(i, j, DC);
     }
   }
@@ -144,7 +144,7 @@ func TransformDCUV_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 func TransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   int tmp[16];
   var i int
-  for (i = 0; i < 4; ++i) {
+  for i = 0; i < 4; ++i {
     a0 := in[0 + i] + in[12 + i];
     a1 := in[4 + i] + in[8 + i];
     a2 := in[4 + i] - in[8 + i];
@@ -154,7 +154,7 @@ func TransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
     tmp[4 + i] = a3 + a2;
     tmp[12 + i] = a3 - a2;
   }
-  for (i = 0; i < 4; ++i) {
+  for i = 0; i < 4; ++i {
     dc := tmp[0 + i * 4] + 3;  // w/ rounder
     a0 := dc + tmp[3 + i * 4];
     a1 := tmp[1 + i * 4] + tmp[2 + i * 4];
@@ -181,10 +181,10 @@ static  func TrueMotion(dst *uint8, int size) {
   var top *uint8 = dst - BPS;
   var clip *uint80 = VP8kclip1 - top[-1];
   var y int
-  for (y = 0; y < size; ++y) {
+  for y = 0; y < size; ++y {
     var clip *uint8 = clip0 + dst[-1];
     var x int
-    for (x = 0; x < size; ++x) {
+    for x = 0; x < size; ++x {
       dst[x] = clip[top[x]];
     }
     dst += BPS;
@@ -199,14 +199,14 @@ func TM16_C(dst *uint8) { TrueMotion(dst, 16); }
 
 func VE16_C(dst *uint8) {  // vertical
   var j int
-  for (j = 0; j < 16; ++j) {
+  for j = 0; j < 16; ++j {
     memcpy(dst + j * BPS, dst - BPS, 16);
   }
 }
 
 func HE16_C(dst *uint8) {  // horizontal
   var j int
-  for (j = 16; j > 0; --j) {
+  for j = 16; j > 0; --j {
     memset(dst, dst[-1], 16);
     dst += BPS;
   }
@@ -214,7 +214,7 @@ func HE16_C(dst *uint8) {  // horizontal
 
 static  func Put16(int v, dst *uint8) {
   var j int
-  for (j = 0; j < 16; ++j) {
+  for j = 0; j < 16; ++j {
     memset(dst + j * BPS, v, 16);
   }
 }
@@ -222,7 +222,7 @@ static  func Put16(int v, dst *uint8) {
 func DC16_C(dst *uint8) {  // DC
   DC := 16;
   var j int
-  for (j = 0; j < 16; ++j) {
+  for j = 0; j < 16; ++j {
     DC += dst[-1 + j * BPS] + dst[j - BPS];
   }
   Put16(DC >> 5, dst);
@@ -231,7 +231,7 @@ func DC16_C(dst *uint8) {  // DC
 func DC16NoTop_C(dst *uint8) {  // DC with top samples not available
   DC := 8;
   var j int
-  for (j = 0; j < 16; ++j) {
+  for j = 0; j < 16; ++j {
     DC += dst[-1 + j * BPS];
   }
   Put16(DC >> 4, dst);
@@ -240,7 +240,7 @@ func DC16NoTop_C(dst *uint8) {  // DC with top samples not available
 func DC16NoLeft_C(dst *uint8) {  // DC with left samples not available
   DC := 8;
   var i int
-  for (i = 0; i < 16; ++i) {
+  for i = 0; i < 16; ++i {
     DC += dst[i - BPS];
   }
   Put16(DC >> 4, dst);
@@ -265,7 +265,7 @@ func VE4_C(dst *uint8) {  // vertical
   vals[4] := {
       AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
   var i int
-  for (i = 0; i < 4; ++i) {
+  for i = 0; i < 4; ++i {
     memcpy(dst + i * BPS, vals, sizeof(vals));
   }
 }
@@ -423,14 +423,14 @@ VP8PredFunc VP8PredLuma4[NUM_BMODES];
 #if !WEBP_NEON_OMIT_C_CODE
 func VE8uv_C(dst *uint8) {  // vertical
   var j int
-  for (j = 0; j < 8; ++j) {
+  for j = 0; j < 8; ++j {
     memcpy(dst + j * BPS, dst - BPS, 8);
   }
 }
 
 func HE8uv_C(dst *uint8) {  // horizontal
   var j int
-  for (j = 0; j < 8; ++j) {
+  for j = 0; j < 8; ++j {
     memset(dst, dst[-1], 8);
     dst += BPS;
   }
@@ -439,7 +439,7 @@ func HE8uv_C(dst *uint8) {  // horizontal
 // helper for chroma-DC predictions
 static  func Put8x8uv(uint8 value, dst *uint8) {
   var j int
-  for (j = 0; j < 8; ++j) {
+  for j = 0; j < 8; ++j {
     memset(dst + j * BPS, value, 8);
   }
 }
@@ -447,7 +447,7 @@ static  func Put8x8uv(uint8 value, dst *uint8) {
 func DC8uv_C(dst *uint8) {  // DC
   int dc0 = 8;
   var i int
-  for (i = 0; i < 8; ++i) {
+  for i = 0; i < 8; ++i {
     dc0 += dst[i - BPS] + dst[-1 + i * BPS];
   }
   Put8x8uv(dc0 >> 4, dst);
@@ -456,7 +456,7 @@ func DC8uv_C(dst *uint8) {  // DC
 func DC8uvNoLeft_C(dst *uint8) {  // DC with no left samples
   int dc0 = 4;
   var i int
-  for (i = 0; i < 8; ++i) {
+  for i = 0; i < 8; ++i {
     dc0 += dst[i - BPS];
   }
   Put8x8uv(dc0 >> 3, dst);
@@ -465,7 +465,7 @@ func DC8uvNoLeft_C(dst *uint8) {  // DC with no left samples
 func DC8uvNoTop_C(dst *uint8) {  // DC with no top samples
   int dc0 = 4;
   var i int
-  for (i = 0; i < 8; ++i) {
+  for i = 0; i < 8; ++i {
     dc0 += dst[-1 + i * BPS];
   }
   Put8x8uv(dc0 >> 3, dst);
@@ -554,7 +554,7 @@ static  int NeedsFilter2_C(const p *uint8, int step, int t, int it) {
 func SimpleVFilter16_C(p *uint8, int stride, int thresh) {
   var i int
   thresh2 := 2 * thresh + 1;
-  for (i = 0; i < 16; ++i) {
+  for i = 0; i < 16; ++i {
     if (NeedsFilter_C(p + i, stride, thresh2)) {
       DoFilter2_C(p + i, stride);
     }
@@ -564,7 +564,7 @@ func SimpleVFilter16_C(p *uint8, int stride, int thresh) {
 func SimpleHFilter16_C(p *uint8, int stride, int thresh) {
   var i int
   thresh2 := 2 * thresh + 1;
-  for (i = 0; i < 16; ++i) {
+  for i = 0; i < 16; ++i {
     if (NeedsFilter_C(p + i * stride, 1, thresh2)) {
       DoFilter2_C(p + i * stride, 1);
     }
@@ -573,7 +573,7 @@ func SimpleHFilter16_C(p *uint8, int stride, int thresh) {
 
 func SimpleVFilter16i_C(p *uint8, int stride, int thresh) {
   var k int
-  for (k = 3; k > 0; --k) {
+  for k = 3; k > 0; --k {
     p += 4 * stride;
     SimpleVFilter16_C(p, stride, thresh);
   }
@@ -581,7 +581,7 @@ func SimpleVFilter16i_C(p *uint8, int stride, int thresh) {
 
 func SimpleHFilter16i_C(p *uint8, int stride, int thresh) {
   var k int
-  for (k = 3; k > 0; --k) {
+  for k = 3; k > 0; --k {
     p += 4;
     SimpleHFilter16_C(p, stride, thresh);
   }
@@ -634,7 +634,7 @@ func HFilter16_C(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) 
 // on three inner edges
 func VFilter16i_C(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
   var k int
-  for (k = 3; k > 0; --k) {
+  for k = 3; k > 0; --k {
     p += 4 * stride;
     FilterLoop24_C(p, stride, 1, 16, thresh, ithresh, hev_thresh);
   }
@@ -644,7 +644,7 @@ func VFilter16i_C(p *uint8, int stride, int thresh, int ithresh, int hev_thresh)
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 func HFilter16i_C(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
   var k int
-  for (k = 3; k > 0; --k) {
+  for k = 3; k > 0; --k {
     p += 4;
     FilterLoop24_C(p, 1, stride, 16, thresh, ithresh, hev_thresh);
   }
@@ -684,8 +684,8 @@ func HFilter8i_C(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int
 
 func DitherCombine8x8_C(const WEBP_RESTRICT dither *uint8, WEBP_RESTRICT dst *uint8, int dst_stride) {
   int i, j;
-  for (j = 0; j < 8; ++j) {
-    for (i = 0; i < 8; ++i) {
+  for j = 0; j < 8; ++j {
+    for i = 0; i < 8; ++i {
       delta0 := dither[i] - VP8_DITHER_AMP_CENTER;
       delta1 :=
           (delta0 + VP8_DITHER_DESCALE_ROUNDER) >> VP8_DITHER_DESCALE;

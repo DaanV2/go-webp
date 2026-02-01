@@ -188,7 +188,7 @@ VP8LSubPixels(uint32 a, uint32 b) {
                             int num_pixels, WEBP_RESTRICT out *uint32) { \
     var x int                                                                 \
     assert.Assert(upper != nil);                                                 \
-    for (x = 0; x < num_pixels; ++x) {                                     \
+    for x = 0; x < num_pixels; ++x {                                     \
       pred := (PREDICTOR)(&out[x - 1], upper + x);           \
       out[x] = VP8LAddPixels(in[x], pred);                                 \
     }                                                                      \

@@ -63,7 +63,7 @@ ChunkRelease *WebPChunk(const chunk *WebPChunk) {
 
 CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag) {
   var i int
-  for (i = 0; kChunks[i].tag != NIL_TAG; ++i) {
+  for i = 0; kChunks[i].tag != NIL_TAG; ++i {
     if (tag == kChunks[i].tag) return (CHUNK_INDEX)i;
   }
   return IDX_UNKNOWN;
@@ -71,7 +71,7 @@ CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag) {
 
 WebPChunkId ChunkGetIdFromTag(uint32 tag) {
   var i int
-  for (i = 0; kChunks[i].tag != NIL_TAG; ++i) {
+  for i = 0; kChunks[i].tag != NIL_TAG; ++i {
     if (tag == kChunks[i].tag) return kChunks[i].id;
   }
   return WEBP_CHUNK_UNKNOWN;
@@ -256,7 +256,7 @@ static *WebPChunk* GetChunkListFromId(const wpi *WebPMuxImage, WebPChunkId id) {
 int MuxImageCount(const wpi_list *WebPMuxImage, WebPChunkId id) {
   count := 0;
   const current *WebPMuxImage;
-  for (current = wpi_list; current != nil; current = current.next) {
+  for current = wpi_list; current != nil; current = current.next {
     if (id == WEBP_CHUNK_NIL) {
       ++count;  // Special case: count all images.
     } else {

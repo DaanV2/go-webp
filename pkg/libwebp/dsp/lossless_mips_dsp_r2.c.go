@@ -28,9 +28,9 @@ func FUNC_NAME(const src *TYPE,                                         \
                       dst *TYPE, int y_start, int y_end,                       \
                       int width) {                                             \
   var y int                                                                       \
-  for (y = y_start; y < y_end; ++y) {                                          \
+  for y = y_start; y < y_end; ++y {                                          \
     var x int                                                                     \
-    for (x = 0; x < (width >> 2); ++x) {                                       \
+    for x = 0; x < (width >> 2); ++x {                                       \
       int tmp1, tmp2, tmp3, tmp4;                                              \
       __asm__ volatile(                                                        \
       ".ifc        " #TYPE ",  uint8                  \n\t"                  \
@@ -83,7 +83,7 @@ func FUNC_NAME(const src *TYPE,                                         \
         : "memory"                                                             \
       );                                                                       \
     }                                                                          \
-    for (x = 0; x < (width & 3); ++x) {                                        \
+    for x = 0; x < (width & 3); ++x {                                        \
       *dst++ = GET_VALUE(color_map[GET_INDEX(*src++)]);                        \
     }                                                                          \
   }                                                                            \

@@ -22,10 +22,10 @@ static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int wid
   alpha_mask := 0xffffffff;
   int i, j, temp0;
 
-  for (j = 0; j < height; ++j) {
+  for j = 0; j < height; ++j {
     pdst *uint8 = dst;
     var palpha *uint8 = alpha;
-    for (i = 0; i < (width >> 2); ++i) {
+    for i = 0; i < (width >> 2); ++i {
       int temp1, temp2, temp3;
 
       __asm__ volatile(
@@ -45,7 +45,7 @@ static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int wid
           : "memory");
     }
 
-    for (i = 0; i < (width & 3); ++i) {
+    for i = 0; i < (width & 3); ++i {
       __asm__ volatile(
           "luint(b)    %[temp0],      0(%[palpha])                \n\t"
           "addiu  %[palpha],     %[palpha],     1            \n\t"
@@ -79,7 +79,7 @@ func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
   c_ff000000 := uint(0xff000000);
   c_8000000 := uint(0x00800000);
   c_8000080 := uint(0x00800080);
-  for (x = 0; x < width; ++x) {
+  for x = 0; x < width; ++x {
     argb := ptr[x];
     if (argb < uint(0xff000000)) {     // alpha < 255
       if (argb <= uint(0x00ffffff)) {  // alpha == 0

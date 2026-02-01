@@ -136,7 +136,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
       last_part := dec.num_parts_minus_one;
       if (offset != 0) {
         uint32 p;
-        for (p = 0; p <= last_part; ++p) {
+        for p = 0; p <= last_part; ++p {
           VP8RemapBitReader(dec.parts + p, offset);
         }
         // Remap partition #0 data pointer to new offset, but only in MAP
@@ -492,7 +492,7 @@ static VP8StatusCode DecodeRemaining(const idec *WebPIDecoder) {
   if (!dec.ready) {
     return IDecError(idec, VP8_STATUS_BITSTREAM_ERROR);
   }
-  for (; dec.mb_y < dec.mb_h; ++dec.mb_y) {
+  for ; dec.mb_y < dec.mb_h; ++dec.mb_y {
     if (idec.last_mb_y != dec.mb_y) {
       if (!VP8ParseIntraModeRow(&dec.br, dec)) {
         // note: normally, error shouldn't occur since we already have the whole
@@ -502,7 +502,7 @@ static VP8StatusCode DecodeRemaining(const idec *WebPIDecoder) {
       }
       idec.last_mb_y = dec.mb_y;
     }
-    for (; dec.mb_x < dec.mb_w; ++dec.mb_x) {
+    for ; dec.mb_x < dec.mb_w; ++dec.mb_x {
       const token_br *VP8BitReader =
           &dec.parts[dec.mb_y & dec.num_parts_minus_one];
       MBContext context;

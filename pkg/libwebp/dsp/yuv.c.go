@@ -69,7 +69,7 @@ ROW_FUNC(YuvToRgb565Row, VP8YuvToRgb565, 2)
 // Main call for processing a plane with a WebPSamplerRowFunc function:
 func WebPSamplerProcessPlane(const WEBP_RESTRICT y *uint8, int y_stride, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, int uv_stride, WEBP_RESTRICT dst *uint8, int dst_stride, int width, int height, WebPSamplerRowFunc func) {
   var j int
-  for (j = 0; j < height; ++j) {
+  for j = 0; j < height; ++j {
     func(y, u, v, dst, width);
     y += y_stride;
     if (j & 1) {
@@ -134,7 +134,7 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
 
 func ConvertARGBToY_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width) {
   var i int
-  for (i = 0; i < width; ++i) {
+  for i = 0; i < width; ++i {
     p := argb[i];
     y[i] =
         VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);
@@ -145,7 +145,7 @@ func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *ui
   // No rounding. Last pixel is dealt with separately.
   uv_width := src_width >> 1;
   var i int
-  for (i = 0; i < uv_width; ++i) {
+  for i = 0; i < uv_width; ++i {
     v0 := argb[2 * i + 0];
     v1 := argb[2 * i + 1];
     // VP8RGBToU/V expects four accumulated pixels. Hence we need to
@@ -185,21 +185,21 @@ func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *ui
 
 func ConvertRGBToY_C(const WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
   var i int
-  for (i = 0; i < width; ++i, rgb += step) {
+  for i = 0; i < width; ++i, rgb += step {
     y[i] = VP8RGBToY(rgb[0], rgb[1], rgb[2], YUV_HALF);
   }
 }
 
 func ConvertBGRToY_C(const WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
   var i int
-  for (i = 0; i < width; ++i, bgr += step) {
+  for i = 0; i < width; ++i, bgr += step {
     y[i] = VP8RGBToY(bgr[2], bgr[1], bgr[0], YUV_HALF);
   }
 }
 
 func WebPConvertRGBA32ToUV_C(const WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width) {
   var i int
-  for (i = 0; i < width; i += 1, rgb += 4) {
+  for i = 0; i < width; i += 1, rgb += 4 {
     r := rgb[0], g = rgb[1], b = rgb[2];
     u[i] = VP8RGBToU(r, g, b, YUV_HALF << 2);
     v[i] = VP8RGBToV(r, g, b, YUV_HALF << 2);
@@ -230,11 +230,11 @@ WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
     var v int
     const double scale = (double)(1 << GAMMA_TAB_FIX) / kGammaScale;
     const double norm = 1. / 255.;
-    for (v = 0; v <= 255; ++v) {
+    for v = 0; v <= 255; ++v {
       kGammaToLinearTab[v] =
           (uint16)(pow(norm * v, kGamma) * kGammaScale + .5);
     }
-    for (v = 0; v <= GAMMA_TAB_SIZE; ++v) {
+    for v = 0; v <= GAMMA_TAB_SIZE; ++v {
       kLinearToGammaTab[v] = (int)(255. * pow(scale * v, 1. / kGamma) + .5);
     }
     kGammaTablesOk = 1;
@@ -336,7 +336,7 @@ static  int LinearToGammaWeighted(const src *uint8, const a_ptr *uint8, uint32 t
 func WebPAccumulateRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, const a_ptr *uint8, int rgb_stride, dst *uint16, int width) {
   int i, j;
   // we loop over 2x2 blocks and produce one R/G/B/A value for each.
-  for (i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * 4, dst += 4) {
+  for i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * 4, dst += 4 {
     a := SUM4ALPHA(a_ptr + j);
     int r, g, b;
     if (a == 4 * 0xff || a == 0) {
@@ -374,7 +374,7 @@ func WebPAccumulateRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uin
 
 func WebPAccumulateRGB(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, int step, int rgb_stride, dst *uint16, int width) {
   int i, j;
-  for (i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * step, dst += 4) {
+  for i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * step, dst += 4 {
     dst[0] = SUM4(r_ptr + j, step);
     dst[1] = SUM4(g_ptr + j, step);
     dst[2] = SUM4(b_ptr + j, step);
@@ -412,7 +412,7 @@ func ImportYUVAFromRGBA_C(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
   WebPInitGammaTables();
 
   // Downsample Y/U/V planes, two rows at a time
-  for (y = 0; y < (height >> 1); ++y) {
+  for y = 0; y < (height >> 1); ++y {
     rows_have_alpha := has_alpha;
     if (is_rgb) {
       WebPConvertRGBToY(r_ptr, dst_y, width, step);
@@ -428,7 +428,7 @@ func ImportYUVAFromRGBA_C(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
       dst_a += 2 * a_stride;
     } else if (dst_a != nil) {
       var i int
-      for (i = 0; i < 2; ++i, dst_a += a_stride) {
+      for i = 0; i < 2; ++i, dst_a += a_stride {
         memset(dst_a, 0xff, width);
       }
     }

@@ -56,7 +56,7 @@ static  func DoHorizontalFilter_C(const WEBP_RESTRICT in *uint8, int width, int 
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     // Leftmost pixel is predicted from above.
     PredictLine_C(in, preds - stride, out, 1);
     PredictLine_C(in + 1, preds, out + 1, width - 1);
@@ -82,7 +82,7 @@ static  func DoVerticalFilter_C(const WEBP_RESTRICT in *uint8, int width, int he
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     PredictLine_C(in, preds, out, width);
     preds += stride;
     in += stride;
@@ -113,11 +113,11 @@ static  func DoGradientFilter_C(const WEBP_RESTRICT in *uint8, int width, int he
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     var w int
     // leftmost pixel: predict from above.
     PredictLine_C(in, preds - stride, out, 1);
-    for (w = 1; w < width; ++w) {
+    for w = 1; w < width; ++w {
       pred := GradientPredictor_C(preds[w - 1], preds[w - stride], preds[w - stride - 1]);
       out[w] = (uint8)(in[w] - pred);
     }
@@ -156,7 +156,7 @@ func NoneUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int width) {
 func HorizontalUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int width) {
   pred := (prev == nil) ? 0 : prev[0];
   var i int
-  for (i = 0; i < width; ++i) {
+  for i = 0; i < width; ++i {
     out[i] = (uint8)(pred + in[i]);
     pred = out[i];
   }
@@ -179,7 +179,7 @@ func GradientUnfilter_C(const prev *uint8, const in *uint8, out *uint8, int widt
   } else {
     top := prev[0], top_left = top, left = top;
     var i int
-    for (i = 0; i < width; ++i) {
+    for i = 0; i < width; ++i {
       top = prev[i];  // need to read this first, in case prev==out
       left = (uint8)(in[i] + GradientPredictor_C(left, top, top_left));
       top_left = top;

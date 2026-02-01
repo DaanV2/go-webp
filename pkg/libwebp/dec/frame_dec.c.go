@@ -86,10 +86,10 @@ func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
   var v_dst *uint8 = dec.yuv_b + V_OFF;
 
   // Initialize left-most block.
-  for (j = 0; j < 16; ++j) {
+  for j = 0; j < 16; ++j {
     y_dst[j * BPS - 1] = 129;
   }
-  for (j = 0; j < 8; ++j) {
+  for j = 0; j < 8; ++j {
     u_dst[j * BPS - 1] = 129;
     v_dst[j * BPS - 1] = 129;
   }
@@ -106,16 +106,16 @@ func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
   }
 
   // Reconstruct one row.
-  for (mb_x = 0; mb_x < dec.mb_w; ++mb_x) {
+  for mb_x = 0; mb_x < dec.mb_w; ++mb_x {
     var block *VP8MBData = ctx.mb_data + mb_x;
 
     // Rotate in the left samples from previously decoded block. We move four
     // pixels at a time for alignment reason, and because of in-loop filter.
     if (mb_x > 0) {
-      for (j = -1; j < 16; ++j) {
+      for j = -1; j < 16; ++j {
         Copy32b(&y_dst[j * BPS - 4], &y_dst[j * BPS + 12]);
       }
-      for (j = -1; j < 8; ++j) {
+      for j = -1; j < 8; ++j {
         Copy32b(&u_dst[j * BPS - 4], &u_dst[j * BPS + 4]);
         Copy32b(&v_dst[j * BPS - 4], &v_dst[j * BPS + 4]);
       }
@@ -148,7 +148,7 @@ func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
         top_right[BPS] = top_right[2 * BPS] = top_right[3 * BPS] = top_right[0];
 
         // predict and add residuals for all 4x4 blocks in turn.
-        for (n = 0; n < 16; ++n, bits <<= 2) {
+        for n = 0; n < 16; ++n, bits <<= 2 {
           var dst *uint8 = y_dst + kScan[n];
           VP8PredLuma4[block.imodes[n]](dst);
           DoTransform(bits, coeffs + n * 16, dst);
@@ -157,7 +157,7 @@ func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
         pred_func := CheckMode(mb_x, mb_y, block.imodes[0]);
         VP8PredLuma16[pred_func](y_dst);
         if (bits != 0) {
-          for (n = 0; n < 16; ++n, bits <<= 2) {
+          for n = 0; n < 16; ++n, bits <<= 2 {
             DoTransform(bits, coeffs + n * 16, y_dst + kScan[n]);
           }
         }
@@ -186,10 +186,10 @@ func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
       var y_out *uint8 = dec.cache_y + mb_x * 16 + y_offset;
       var u_out *uint8 = dec.cache_u + mb_x * 8 + uv_offset;
       var v_out *uint8 = dec.cache_v + mb_x * 8 + uv_offset;
-      for (j = 0; j < 16; ++j) {
+      for j = 0; j < 16; ++j {
         WEBP_UNSAFE_MEMCPY(y_out + j * dec.cache_y_stride, y_dst + j * BPS, 16);
       }
-      for (j = 0; j < 8; ++j) {
+      for j = 0; j < 8; ++j {
         WEBP_UNSAFE_MEMCPY(u_out + j * dec.cache_uv_stride, u_dst + j * BPS, 8);
         WEBP_UNSAFE_MEMCPY(v_out + j * dec.cache_uv_stride, v_dst + j * BPS, 8);
       }
@@ -261,7 +261,7 @@ func FilterRow(const dec *VP8Decoder) {
   int mb_x;
   mb_y := dec.thread_ctx.mb_y;
   assert.Assert(dec.thread_ctx.filter_row);
-  for (mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; ++mb_x) {
+  for mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; ++mb_x {
     DoFilter(dec, mb_x, mb_y);
   }
 }
@@ -273,7 +273,7 @@ func PrecomputeFilterStrengths(const dec *VP8Decoder) {
   if (dec.filter_type > 0) {
     var s int
     var hdr *VP8FilterHeader = &dec.filter_hdr;
-    for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
+    for s = 0; s < NUM_MB_SEGMENTS; ++s {
       int i4x4;
       // First, compute the initial level
       int base_level;
@@ -285,7 +285,7 @@ func PrecomputeFilterStrengths(const dec *VP8Decoder) {
       } else {
         base_level = hdr.level;
       }
-      for (i4x4 = 0; i4x4 <= 1; ++i4x4) {
+      for i4x4 = 0; i4x4 <= 1; ++i4x4 {
         var info *VP8FInfo = &dec.fstrengths[s][i4x4];
         level := base_level;
         if (hdr.use_lf_delta) {
@@ -341,7 +341,7 @@ func VP8InitDithering(const options *WebPDecoderOptions, const dec *VP8Decoder) 
     if (f > 0) {
       var s int
       all_amp := 0;
-      for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
+      for s = 0; s < NUM_MB_SEGMENTS; ++s {
         var dqm *VP8QuantMatrix = &dec.dqm[s];
         if (dqm.uv_quant < DITHER_AMP_TAB_SIZE) {
           idx := (dqm.uv_quant < 0) ? 0 : dqm.uv_quant;
@@ -368,7 +368,7 @@ func VP8InitDithering(const options *WebPDecoderOptions, const dec *VP8Decoder) 
 func Dither8x8(const rg *VP8Random, dst *uint8, int bps, int amp) {
   uint8 dither[64];
   var i int
-  for (i = 0; i < 8 * 8; ++i) {
+  for i = 0; i < 8 * 8; ++i {
     dither[i] = VP8RandomBits2(rg, VP8_DITHER_AMP_BITS + 1, amp);
   }
   VP8DitherCombine8x8(dither, dst, bps);
@@ -377,7 +377,7 @@ func Dither8x8(const rg *VP8Random, dst *uint8, int bps, int amp) {
 func DitherRow(const dec *VP8Decoder) {
   int mb_x;
   assert.Assert(dec.dither);
-  for (mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; ++mb_x) {
+  for mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; ++mb_x {
     var ctx *VP8ThreadContext = &dec.thread_ctx;
     var data *VP8MBData = ctx.mb_data + mb_x;
     cache_id := ctx.id;

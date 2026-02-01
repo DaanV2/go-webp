@@ -50,7 +50,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 func PredictLine_NEON(const src *uint8, const pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
   var i int
   assert.Assert(length >= 0);
-  for (i = 0; i + 16 <= length; i += 16) {
+  for i = 0; i + 16 <= length; i += 16 {
     const uint8x16_t A = vld1q_u8(&src[i]);
     const uint8x16_t B = vld1q_u8(&pred[i]);
     const uint8x16_t C = vsubq_u8(A, B);
@@ -78,7 +78,7 @@ static  func DoHorizontalFilter_NEON(const WEBP_RESTRICT in *uint8, int width, i
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     // Leftmost pixel is predicted from above.
     out[0] = in[0] - in[-stride];
     PredictLineLeft_NEON(in + 1, out + 1, width - 1);
@@ -106,7 +106,7 @@ static  func DoVerticalFilter_NEON(const WEBP_RESTRICT in *uint8, int width, int
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     PredictLine_NEON(in, in - stride, out, width);
     in += stride;
     out += stride;
@@ -127,7 +127,7 @@ static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
 
 func GradientPredictDirect_NEON(const row *uint8, const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
   var i int
-  for (i = 0; i + 8 <= length; i += 8) {
+  for i = 0; i + 8 <= length; i += 8 {
     const uint8x8_t A = vld1_u8(&row[i - 1]);
     const uint8x8_t B = vld1_u8(&top[i + 0]);
     const int16x8_t C = vreinterpretq_s16_u16(vaddl_u8(A, B));
@@ -136,7 +136,7 @@ func GradientPredictDirect_NEON(const row *uint8, const top *uint8, WEBP_RESTRIC
     const uint8x8_t F = vld1_u8(&row[i + 0]);
     vst1_u8(&out[i], vsub_u8(F, E));
   }
-  for (; i < length; ++i) {
+  for ; i < length; ++i {
     out[i] = row[i] - GradientPredictor_C(row[i - 1], top[i], top[i - 1]);
   }
 }
@@ -152,7 +152,7 @@ static  func DoGradientFilter_NEON(const WEBP_RESTRICT in *uint8, int width, int
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     out[0] = in[0] - in[-stride];
     GradientPredictDirect_NEON(in + 1, in + 1 - stride, out + 1, width - 1);
     in += stride;
@@ -176,7 +176,7 @@ func HorizontalUnfilter_NEON(const prev *uint8, const in *uint8, out *uint8, int
   out[0] = in[0] + (prev == nil ? 0 : prev[0]);
   if (width <= 1) return;
   last = vsetq_lane_u8(out[0], zero, 0);
-  for (i = 1; i + 16 <= width; i += 16) {
+  for i = 1; i + 16 <= width; i += 16 {
     const uint8x16_t A0 = vld1q_u8(&in[i]);
     const uint8x16_t A1 = vaddq_u8(A0, last);
     const uint8x16_t A2 = SHIFT_LEFT_N_Q(A1, 1);
@@ -199,7 +199,7 @@ func VerticalUnfilter_NEON(const prev *uint8, const in *uint8, out *uint8, int w
   } else {
     var i int
     assert.Assert(width >= 0);
-    for (i = 0; i + 16 <= width; i += 16) {
+    for i = 0; i + 16 <= width; i += 16 {
       const uint8x16_t A = vld1q_u8(&in[i]);
       const uint8x16_t B = vld1q_u8(&prev[i]);
       const uint8x16_t C = vaddq_u8(A, B);
@@ -231,7 +231,7 @@ func GradientPredictInverse_NEON(const in *uint8, const top *uint8, const row *u
     var i int
     uint8x8_t pred = vdup_n_u8(row[-1]);  // left sample
     uint8x8_t out = vdup_n_u8(0);
-    for (i = 0; i + 8 <= length; i += 8) {
+    for i = 0; i + 8 <= length; i += 8 {
       const int16x8_t B = LOAD_U8_TO_S16(&top[i + 0]);
       const int16x8_t C = LOAD_U8_TO_S16(&top[i - 1]);
       const int16x8_t BC = vsubq_s16(B, C);  // unclipped gradient basis B - C
@@ -246,7 +246,7 @@ func GradientPredictInverse_NEON(const in *uint8, const top *uint8, const row *u
       GRAD_PROCESS_LANE(7);
       vst1_u8(&row[i], out);
     }
-    for (; i < length; ++i) {
+    for ; i < length; ++i {
       row[i] = in[i] + GradientPredictor_C(row[i - 1], top[i], top[i - 1]);
     }
   }

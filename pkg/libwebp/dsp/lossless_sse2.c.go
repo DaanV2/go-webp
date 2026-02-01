@@ -176,7 +176,7 @@ static uint32 Predictor13_SSE2(const left *uint32, const top *uint32) {
 func PredictorAdd0_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   const __m128i black = _mm_set1_epi32((int)ARGB_BLACK);
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
     const __m128i res = _mm_add_epi8(src, black);
     _mm_storeu_si128((__*m128i)&out[i], res);
@@ -191,7 +191,7 @@ func PredictorAdd0_SSE2(const in *uint32, const upper *uint32, int num_pixels, W
 func PredictorAdd1_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   __m128i prev = _mm_set1_epi32((int)out[-1]);
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     // a | b | c | d
     const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
     // 0 | a | b | c
@@ -219,7 +219,7 @@ func PredictorAdd1_SSE2(const in *uint32, const upper *uint32, int num_pixels, W
                                      const upper *uint32, int num_pixels, \
                                      WEBP_RESTRICT out *uint32) {         \
     var i int                                                                  \
-    for (i = 0; i + 4 <= num_pixels; i += 4) {                              \
+    for i = 0; i + 4 <= num_pixels; i += 4 {                              \
       const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);          \
       const __m128i other = _mm_loadu_si128((const __*m128i)&(IN));         \
       const __m128i res = _mm_add_epi8(src, other);                         \
@@ -249,7 +249,7 @@ GENERATE_PREDICTOR_ADD(Predictor7_SSE2, PredictorAdd7_SSE2)
                                      const upper *uint32, int num_pixels, \
                                      WEBP_RESTRICT out *uint32) {         \
     var i int                                                                  \
-    for (i = 0; i + 4 <= num_pixels; i += 4) {                              \
+    for i = 0; i + 4 <= num_pixels; i += 4 {                              \
       const __m128i Tother = _mm_loadu_si128((const __*m128i)&(IN));        \
       const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);         \
       const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);          \
@@ -289,7 +289,7 @@ const DO_PRED10_SHIFT =                                        \
 func PredictorAdd10_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
   var i int
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
     __m128i TL = _mm_loadu_si128((const __*m128i)&upper[i - 1]);
     const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);
@@ -338,7 +338,7 @@ func PredictorAdd11_SSE2(const in *uint32, const upper *uint32, int num_pixels, 
   var i int
   __m128i pa;
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);
     __m128i TL = _mm_loadu_si128((const __*m128i)&upper[i - 1]);
     __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
@@ -391,7 +391,7 @@ func PredictorAdd12_SSE2(const in *uint32, const upper *uint32, int num_pixels, 
   const __m128i zero = _mm_setzero_si128();
   const __m128i L8 = _mm_cvtsi32_si128((int)out[-1]);
   __m128i L = _mm_unpacklo_epi8(L8, zero);
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     // Load 4 pixels at a time.
     __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
     const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);
@@ -426,7 +426,7 @@ GENERATE_PREDICTOR_ADD(Predictor13_SSE2, PredictorAdd13_SSE2)
 
 func AddGreenToBlueAndRed_SSE2(const src *uint32, int num_pixels, dst *uint32) {
   var i int
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     const __m128i in = _mm_loadu_si128((const __*m128i)&src[i]);  // argb
     const __m128i A = _mm_srli_epi16(in, 8);                      // 0 a 0 g
     const __m128i B = _mm_shufflelo_epi16(A, _MM_SHUFFLE(2, 2, 0, 0));
@@ -454,7 +454,7 @@ func TransformColorInverse_SSE2(const m *VP8LMultipliers, const src *uint32, int
 #undef CST
   const __m128i mask_ag = _mm_set1_epi32((int)0xff00ff00);  // alpha-green masks
   var i int
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     const __m128i in = _mm_loadu_si128((const __*m128i)&src[i]);  // argb
     const __m128i A = _mm_and_si128(in, mask_ag);  // a   0   g   0
     const __m128i B = _mm_shufflelo_epi16(A, _MM_SHUFFLE(2, 2, 0, 0));

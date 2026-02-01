@@ -216,7 +216,7 @@ static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], const mtx *VP8Matri
       : "memory", "hi", "lo");
 
   // moved out from macro to increase possibility for earlier breaking
-  for (i = 15; i >= 0; i--) {
+  for i = 15; i >= 0; i-- {
     if (out[i]) return 1;
   }
   return 0;
@@ -380,8 +380,8 @@ static int Disto4x4_MIPS32(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRI
 static int Disto16x16_MIPS32(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRICT const b *uint8, const WEBP_RESTRICT const w *uint16) {
   D := 0;
   int x, y;
-  for (y = 0; y < 16 * BPS; y += 4 * BPS) {
-    for (x = 0; x < 16; x += 4) {
+  for y = 0; y < 16 * BPS; y += 4 * BPS {
+    for x = 0; x < 16; x += 4 {
       D += Disto4x4_MIPS32(a + x + y, b + x + y, w);
     }
   }

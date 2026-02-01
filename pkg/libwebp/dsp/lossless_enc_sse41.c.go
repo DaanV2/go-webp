@@ -38,7 +38,7 @@ static uint32 ExtraCost_SSE41(const a *uint32, int length) {
   __m128i cost = _mm_set_epi32(2 * a[7], 2 * a[6], a[5], a[4]);
   assert.Assert(length % 8 == 0);
 
-  for (i = 8; i + 8 <= length; i += 8) {
+  for i = 8; i + 8 <= length; i += 8 {
     j := (i - 2) >> 1;
     const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i]);
     const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
@@ -57,7 +57,7 @@ func SubtractGreenFromBlueAndRed_SSE41(argb_data *uint32, int num_pixels) {
   var i int
   const __m128i kCstShuffle =
       _mm_set_epi8(-1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
-  for (i = 0; i + 4 <= num_pixels; i += 4) {
+  for i = 0; i + 4 <= num_pixels; i += 4 {
     const __m128i in = _mm_loadu_si128((__*m128i)&argb_data[i]);
     const __m128i in_0g0g = _mm_shuffle_epi8(in, kCstShuffle);
     const __m128i out = _mm_sub_epi8(in, in_0g0g);
@@ -85,7 +85,7 @@ func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stri
       _mm_setr_epi8(-1, 1, -1, 2, -1, 5, -1, 6, -1, 9, -1, 10, -1, 13, -1, 14);
   if (tile_width >= 4) {
     var y int
-    for (y = 0; y < tile_height; ++y) {
+    for y = 0; y < tile_height; ++y {
       var src *uint32 = argb + y * stride;
       const __m128i A1 = _mm_loadu_si128((const __*m128i)src);
       const __m128i B1 = _mm_shuffle_epi8(A1, perm);
@@ -93,7 +93,7 @@ func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stri
       const __m128i D1 = _mm_sub_epi16(A1, C1);
       __m128i E = _mm_add_epi16(_mm_srli_epi32(D1, 16), D1);
       var x int
-      for (x = 4; x + 4 <= tile_width; x += 4) {
+      for x = 4; x + 4 <= tile_width; x += 4 {
         const __m128i A2 = _mm_loadu_si128((const __*m128i)(src + x));
         __m128i B2, C2, D2;
         ++histo[_mm_extract_epi8(E, 0)];
@@ -124,14 +124,14 @@ func CollectColorRedTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int strid
   const __m128i mask_g = _mm_set1_epi32(0x0000ff00);
   if (tile_width >= 4) {
     var y int
-    for (y = 0; y < tile_height; ++y) {
+    for y = 0; y < tile_height; ++y {
       var src *uint32 = argb + y * stride;
       const __m128i A1 = _mm_loadu_si128((const __*m128i)src);
       const __m128i B1 = _mm_and_si128(A1, mask_g);
       const __m128i C1 = _mm_madd_epi16(B1, mult);
       __m128i D = _mm_sub_epi16(A1, C1);
       var x int
-      for (x = 4; x + 4 <= tile_width; x += 4) {
+      for x = 4; x + 4 <= tile_width; x += 4 {
         const __m128i A2 = _mm_loadu_si128((const __*m128i)(src + x));
         __m128i B2, C2;
         ++histo[_mm_extract_epi8(D, 2)];

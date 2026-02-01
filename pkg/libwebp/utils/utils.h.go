@@ -166,7 +166,7 @@ static  int BitsLog2Floor(uint32 n) { return WebPLog2FloorC(n); }
 
 static  int BitsCtz(uint32 n) {
   var i int
-  for (i = 0; i < 32; ++i, n >>= 1) {
+  for i = 0; i < 32; ++i, n >>= 1 {
     if (n & 1) return i;
   }
   return 32;

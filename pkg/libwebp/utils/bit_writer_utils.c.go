@@ -74,7 +74,7 @@ func Flush(const bw *VP8BitWriter) {
     }
     if (bw.run > 0) {
       value := (bits & 0x100) ? 0x00 : 0xff;
-      for (; bw.run > 0; --bw.run) {
+      for ; bw.run > 0; --bw.run {
 		bw.buf[pos] = value;
 		pos++
 	}
@@ -135,7 +135,7 @@ int VP8PutBitUniform(const bw *VP8BitWriter, int bit) {
 func VP8PutBits(const bw *VP8BitWriter, uint32 value, int nb_bits) {
   uint32 mask;
   assert.Assert(nb_bits > 0 && nb_bits < 32);
-  for (mask = uint(1) << (nb_bits - 1); mask; mask >>= 1) {
+  for mask = uint(1) << (nb_bits - 1); mask; mask >>= 1 {
     VP8PutBitUniform(bw, value & mask);
   }
 }

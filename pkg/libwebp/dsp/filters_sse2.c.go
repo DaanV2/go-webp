@@ -42,7 +42,7 @@ func PredictLineTop_SSE2(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT pre
   var i int
   max_pos := length & ~31;
   assert.Assert(length >= 0);
-  for (i = 0; i < max_pos; i += 32) {
+  for i = 0; i < max_pos; i += 32 {
     const __m128i A0 = _mm_loadu_si128((const __*m128i)&src[i + 0]);
     const __m128i A1 = _mm_loadu_si128((const __*m128i)&src[i + 16]);
     const __m128i B0 = _mm_loadu_si128((const __*m128i)&pred[i + 0]);
@@ -60,7 +60,7 @@ func PredictLineLeft_SSE2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uin
   var i int
   max_pos := length & ~31;
   assert.Assert(length >= 0);
-  for (i = 0; i < max_pos; i += 32) {
+  for i = 0; i < max_pos; i += 32 {
     const __m128i A0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
     const __m128i B0 = _mm_loadu_si128((const __*m128i)(src + i + 0 - 1));
     const __m128i A1 = _mm_loadu_si128((const __*m128i)(src + i + 16));
@@ -87,7 +87,7 @@ static  func DoHorizontalFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, i
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     // Leftmost pixel is predicted from above.
     out[0] = in[0] - in[-stride];
     PredictLineLeft_SSE2(in + 1, out + 1, width - 1);
@@ -111,7 +111,7 @@ static  func DoVerticalFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, int
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     PredictLineTop_SSE2(in, in - stride, out, width);
     in += stride;
     out += stride;
@@ -130,7 +130,7 @@ func GradientPredictDirect_SSE2(const row *uint8, const top *uint8, WEBP_RESTRIC
   max_pos := length & ~7;
   var i int
   const __m128i zero = _mm_setzero_si128();
-  for (i = 0; i < max_pos; i += 8) {
+  for i = 0; i < max_pos; i += 8 {
     const __m128i A0 = _mm_loadl_epi64((const __*m128i)&row[i - 1]);
     const __m128i B0 = _mm_loadl_epi64((const __*m128i)&top[i]);
     const __m128i C0 = _mm_loadl_epi64((const __*m128i)&top[i - 1]);
@@ -144,7 +144,7 @@ func GradientPredictDirect_SSE2(const row *uint8, const top *uint8, WEBP_RESTRIC
     const __m128i H = _mm_sub_epi8(D, G);
     _mm_storel_epi64((__*m128i)(out + i), H);
   }
-  for (; i < length; ++i) {
+  for ; i < length; ++i {
     delta := GradientPredictor_SSE2(row[i - 1], top[i], top[i - 1]);
     out[i] = (uint8)(row[i] - delta);
   }
@@ -161,7 +161,7 @@ static  func DoGradientFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, int
   out += stride;
 
   // Filter line-by-line.
-  for (row = 1; row < height; ++row) {
+  for row = 1; row < height; ++row {
     out[0] = (uint8)(in[0] - in[-stride]);
     GradientPredictDirect_SSE2(in + 1, in + 1 - stride, out + 1, width - 1);
     in += stride;
@@ -194,7 +194,7 @@ func HorizontalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int
   out[0] = (uint8)(in[0] + (prev == nil ? 0 : prev[0]));
   if (width <= 1) return;
   last = _mm_set_epi32(0, 0, 0, out[0]);
-  for (i = 1; i + 8 <= width; i += 8) {
+  for i = 1; i + 8 <= width; i += 8 {
     const __m128i A0 = _mm_loadl_epi64((const __*m128i)(in + i));
     const __m128i A1 = _mm_add_epi8(A0, last);
     const __m128i A2 = _mm_slli_si128(A1, 1);
@@ -216,7 +216,7 @@ func VerticalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int w
     var i int
     max_pos := width & ~31;
     assert.Assert(width >= 0);
-    for (i = 0; i < max_pos; i += 32) {
+    for i = 0; i < max_pos; i += 32 {
       const __m128i A0 = _mm_loadu_si128((const __*m128i)&in[i + 0]);
       const __m128i A1 = _mm_loadu_si128((const __*m128i)&in[i + 16]);
       const __m128i B0 = _mm_loadu_si128((const __*m128i)&prev[i + 0]);
@@ -236,7 +236,7 @@ func GradientPredictInverse_SSE2(const in *uint8, const top *uint8, const row *u
     max_pos := length & ~7;
     const __m128i zero = _mm_setzero_si128();
     __m128i A = _mm_set_epi32(0, 0, 0, row[-1]);  // left sample
-    for (i = 0; i < max_pos; i += 8) {
+    for i = 0; i < max_pos; i += 8 {
       const __m128i tmp0 = _mm_loadl_epi64((const __*m128i)&top[i]);
       const __m128i tmp1 = _mm_loadl_epi64((const __*m128i)&top[i - 1]);
       const __m128i B = _mm_unpacklo_epi8(tmp0, zero);
@@ -260,7 +260,7 @@ func GradientPredictInverse_SSE2(const in *uint8, const top *uint8, const row *u
       A = _mm_srli_si128(A, 7);  // prepare left sample for next iteration
       _mm_storel_epi64((__*m128i)&row[i], out);
     }
-    for (; i < length; ++i) {
+    for ; i < length; ++i {
       delta := GradientPredictor_SSE2(row[i - 1], top[i], top[i - 1]);
       row[i] = (uint8)(in[i] + delta);
     }

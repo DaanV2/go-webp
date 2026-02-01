@@ -177,7 +177,7 @@ func PredictorAdd1_C(const in *uint32, const upper *uint32, int num_pixels, WEBP
   var i int
   left := out[-1];
   (void)upper;
-  for (i = 0; i < num_pixels; ++i) {
+  for i = 0; i < num_pixels; ++i {
     out[i] = left = VP8LAddPixels(in[i], left);
   }
 }
@@ -243,7 +243,7 @@ func PredictorInverseTransform_C(const transform *VP8LTransform, int y_start, in
 // 'subtract green').
 func VP8LAddGreenToBlueAndRed_C(const src *uint32, int num_pixels, dst *uint32) {
   var i int
-  for (i = 0; i < num_pixels; ++i) {
+  for i = 0; i < num_pixels; ++i {
     argb := src[i];
     green := ((argb >> 8) & 0xff);
     red_blue := (argb & uint(0x00ff00ff));
@@ -265,7 +265,7 @@ static  func ColorCodeToMultipliers(uint32 color_code, const m *VP8LMultipliers)
 
 func VP8LTransformColorInverse_C(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
   var i int
-  for (i = 0; i < num_pixels; ++i) {
+  for i = 0; i < num_pixels; ++i {
     argb := src[i];
     green := (int8)(argb >> 8);
     red := argb >> 16;
@@ -322,9 +322,9 @@ func ColorSpaceInverseTransform_C(const transform *VP8LTransform, int y_start, i
 func F_NAME(const src *TYPE, const color_map *uint32,           \
                    dst *TYPE, int y_start, int y_end, int width) {             \
   var y int                                                                       \
-  for (y = y_start; y < y_end; ++y) {                                          \
+  for y = y_start; y < y_end; ++y {                                          \
     var x int                                                                     \
-    for (x = 0; x < width; ++x) {                                              \
+    for x = 0; x < width; ++x {                                              \
       *dst++ = GET_VALUE(color_map[GET_INDEX(*src++)]);                        \
     }                                                                          \
   }                                                                            \
@@ -340,10 +340,10 @@ STATIC_DECL func FUNC_NAME(const transform *VP8LTransform,               \
     pixels_per_byte := 1 << transform.bits;                          \
     count_mask := pixels_per_byte - 1;                                \
     bit_mask := (1 << bits_per_pixel) - 1;                       \
-    for (y = y_start; y < y_end; ++y) {                                        \
+    for y = y_start; y < y_end; ++y {                                        \
       packed_pixels := 0;                                              \
       var x int                                                                   \
-      for (x = 0; x < width; ++x) {                                            \
+      for x = 0; x < width; ++x {                                            \
         /* We need to load fresh 'packed_pixels' once every                */  \
         /* 'pixels_per_byte' increments of x. Fortunately, pixels_per_byte */  \
         /* is a power of 2, so can just use a mask for that, instead of    */  \

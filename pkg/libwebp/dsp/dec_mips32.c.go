@@ -151,7 +151,7 @@ func HFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int t
 // on three inner edges
 func VFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
   var k int
-  for (k = 3; k > 0; --k) {
+  for k = 3; k > 0; --k {
     p += 4 * stride;
     FilterLoop24(p, stride, 1, 16, thresh, ithresh, hev_thresh);
   }
@@ -159,7 +159,7 @@ func VFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
 
 func HFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
   var k int
-  for (k = 3; k > 0; --k) {
+  for k = 3; k > 0; --k {
     p += 4;
     FilterLoop24(p, 1, stride, 16, thresh, ithresh, hev_thresh);
   }
@@ -171,7 +171,7 @@ func HFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
 func SimpleVFilter16(p *uint8, int stride, int thresh) {
   var i int
   thresh2 := 2 * thresh + 1;
-  for (i = 0; i < 16; ++i) {
+  for i = 0; i < 16; ++i {
     if (needs_filter(p + i, stride, thresh2)) {
       do_filter2(p + i, stride);
     }
@@ -181,7 +181,7 @@ func SimpleVFilter16(p *uint8, int stride, int thresh) {
 func SimpleHFilter16(p *uint8, int stride, int thresh) {
   var i int
   thresh2 := 2 * thresh + 1;
-  for (i = 0; i < 16; ++i) {
+  for i = 0; i < 16; ++i {
     if (needs_filter(p + i * stride, 1, thresh2)) {
       do_filter2(p + i * stride, 1);
     }
@@ -190,7 +190,7 @@ func SimpleHFilter16(p *uint8, int stride, int thresh) {
 
 func SimpleVFilter16i(p *uint8, int stride, int thresh) {
   var k int
-  for (k = 3; k > 0; --k) {
+  for k = 3; k > 0; --k {
     p += 4 * stride;
     SimpleVFilter16(p, stride, thresh);
   }
@@ -198,7 +198,7 @@ func SimpleVFilter16i(p *uint8, int stride, int thresh) {
 
 func SimpleHFilter16i(p *uint8, int stride, int thresh) {
   var k int
-  for (k = 3; k > 0; --k) {
+  for k = 3; k > 0; --k {
     p += 4;
     SimpleHFilter16(p, stride, thresh);
   }

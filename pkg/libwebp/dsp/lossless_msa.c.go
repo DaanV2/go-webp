@@ -144,7 +144,7 @@ func ConvertBGRAToRGBA_MSA(const src *uint32, int num_pixels, dst *uint8) {
       ptemp_dst += 16;
       num_pixels -= 4;
     }
-    for (i = 0; i < num_pixels; i++) {
+    for i = 0; i < num_pixels; i++ {
       b := ptemp_src[2];
       g := ptemp_src[1];
       r := ptemp_src[0];
@@ -272,7 +272,7 @@ func AddGreenToBlueAndRed_MSA(const src *uint32, int num_pixels, dst *uint32) {
       out += 16;
       num_pixels -= 4;
     }
-    for (i = 0; i < num_pixels; i++) {
+    for i = 0; i < num_pixels; i++ {
       b := in[0];
       g := in[1];
       r := in[2];

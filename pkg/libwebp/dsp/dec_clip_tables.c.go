@@ -59,16 +59,16 @@ WEBP_TSAN_IGNORE_FUNCTION func VP8InitClipTables(){
 #if (USE_STATIC_TABLES == 0)
   var i int
   if (!tables_ok) {
-    for (i = -255; i <= 255; ++i) {
+    for i = -255; i <= 255; ++i {
       abs0[255 + i] = (i < 0) ? -i : i;
     }
-    for (i = -893; i <= 892; ++i) {
+    for i = -893; i <= 892; ++i {
       sclip1[893 + i] = (i < -128) ? -128 : (i > 127) ? 127 : i;
     }
-    for (i = -112; i <= 112; ++i) {
+    for i = -112; i <= 112; ++i {
       sclip2[112 + i] = (i < -16) ? -16 : (i > 15) ? 15 : i;
     }
-    for (i = -255; i <= 511; ++i) {
+    for i = -255; i <= 511; ++i {
       clip1[255 + i] = (i < 0) ? 0 : (i > 255) ? 255 : i;
     }
     tables_ok = 1;

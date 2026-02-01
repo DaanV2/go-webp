@@ -183,14 +183,14 @@ static int GetNumColors(const data *uint8, int width, int height, int stride) {
   colors := 0;
   uint8 color[256] = {0}
 
-  for (j = 0; j < height; ++j) {
+  for j = 0; j < height; ++j {
     var i int
     var p *uint8 = data + j * stride;
-    for (i = 0; i < width; ++i) {
+    for i = 0; i < width; ++i {
       color[p[i]] = 1;
     }
   }
-  for (j = 0; j < 256; ++j) {
+  for j = 0; j < 256; ++j {
     if (color[j] > 0) ++colors;
   }
   return colors;
@@ -241,7 +241,7 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data
     filtered_alpha *uint8 = (*uint8)WebPSafeMalloc(uint64(1), data_size);
     if (filtered_alpha == nil) return 0;
 
-    for (filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1) {
+    for filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1 {
       if (try_map & 1) {
         FilterTrial trial;
         ok = EncodeAlphaInternal(alpha, width, height, method, filter, reduce_levels, effort_level, filtered_alpha, &trial);

@@ -213,7 +213,7 @@ static int AccumulateHCode(HuffmanCode hcode, int shift, const huff *HuffmanCode
 
 func BuildPackedTable(const htree_group *HTreeGroup) {
   uint32 code;
-  for (code = 0; code < HUFFMAN_PACKED_TABLE_SIZE; ++code) {
+  for code = 0; code < HUFFMAN_PACKED_TABLE_SIZE; ++code {
     bits := code;
     var huff *HuffmanCode32 = &htree_group.packed_table[bits];
     HuffmanCode hcode = htree_group.htrees[GREEN][bits];
@@ -281,7 +281,7 @@ static int ReadHuffmanCodeLengths(const dec *VP8LDecoder, const code_length_code
         goto End;
       } else {
         length := tenary.If(use_prev, prev_code_len,  0);
-        for (repeat > 0) {
+        for repeat > 0 {
 			symbol++
 			code_lengths[symbol] = length
 			repeat--
@@ -325,7 +325,7 @@ static int ReadHuffmanCode(int alphabet_size, const dec *VP8LDecoder, const code
     num_codes := VP8LReadBits(br, 4) + 4;
     assert.Assert(num_codes <= NUM_CODE_LENGTH_CODES);
 
-    for (i = 0; i < num_codes; ++i) {
+    for i = 0; i < num_codes; ++i {
       code_length_code_lengths[kCodeLengthCodeOrder[i]] = VP8LReadBits(br, 3);
     }
     ok = ReadHuffmanCodeLengths(dec, code_length_code_lengths, alphabet_size, code_lengths);
@@ -370,7 +370,7 @@ static int ReadHuffmanCodes(const dec *VP8LDecoder, int xsize, int ysize, int co
       goto Error;
     }
     hdr.huffman_subsample_bits = huffman_precision;
-    for (i = 0; i < huffman_pixs; ++i) {
+    for i = 0; i < huffman_pixs; ++i {
       // The huffman data is stored in red and green bytes.
       group := (huffman_image[i] >> 8) & 0xffff;
       huffman_image[i] = group;
@@ -395,7 +395,7 @@ static int ReadHuffmanCodes(const dec *VP8LDecoder, int xsize, int ysize, int co
       // -1 means a value is unmapped, and therefore unused in the Huffman
       // image.
       WEBP_UNSAFE_MEMSET(mapping, 0xff, num_htree_groups_max * sizeof(*mapping));
-      for (num_htree_groups = 0, i = 0; i < huffman_pixs; ++i) {
+      for num_htree_groups = 0, i = 0; i < huffman_pixs; ++i {
         // Get the current mapping for the group and remap the Huffman image.
         var mapped_group *int = &mapping[huffman_image[i]];
         if (*mapped_group == -1) *mapped_group = num_htree_groups++;
@@ -457,11 +457,11 @@ int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_h
     goto Error;
   }
 
-  for (i = 0; i < num_htree_groups_max; ++i) {
+  for i = 0; i < num_htree_groups_max; ++i {
     // If the index "i" is unused in the Huffman image, just make sure the
     // coefficients are valid but do not store them.
     if (mapping != nil && mapping[i] == -1) {
-      for (j = 0; j < HUFFMAN_CODES_PER_META_CODE; ++j) {
+      for j = 0; j < HUFFMAN_CODES_PER_META_CODE; ++j {
         alphabet_size := kAlphabetSize[j];
         if (j == 0 && color_cache_bits > 0) {
           alphabet_size += (1 << color_cache_bits);
@@ -479,7 +479,7 @@ int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_h
       total_size := 0;
       is_trivial_literal := 1;
       max_bits := 0;
-      for (j = 0; j < HUFFMAN_CODES_PER_META_CODE; ++j) {
+      for j = 0; j < HUFFMAN_CODES_PER_META_CODE; ++j {
         alphabet_size := kAlphabetSize[j];
         if (j == 0 && color_cache_bits > 0) {
           alphabet_size += (1 << color_cache_bits);
@@ -498,7 +498,7 @@ int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_h
         if (j <= ALPHA) {
           local_max_bits := code_lengths[0];
           var k int
-          for (k = 1; k < alphabet_size; ++k) {
+          for k = 1; k < alphabet_size; ++k {
             if (code_lengths[k] > local_max_bits) {
               local_max_bits = code_lengths[k];
             }
@@ -695,7 +695,7 @@ func EmitRescaledRowsYUVA(/* const */ dec *VP8LDecoder, in *uint8, in_stride, mb
 // Returns true if alpha[] has non-0xff values.
 func CheckNonOpaque(/* const */ alpha *uint8, width, height, y_step int) int {
   WebPInitAlphaProcessing();
-  for (; height-- > 0; alpha += y_step) {
+  for ; height-- > 0; alpha += y_step {
     if (WebPHasAlpha8b(alpha, width)) return 1;
   }
   return 0;
@@ -895,7 +895,7 @@ static int Is8bOptimizable(const hdr *VP8LMetadata) {
   if (hdr.color_cache_size > 0) return 0;
   // When the Huffman tree contains only one symbol, we can skip the
   // call to ReadSymbol() for red/blue/alpha channels.
-  for (i = 0; i < hdr.num_htree_groups; ++i) {
+  for i = 0; i < hdr.num_htree_groups; ++i {
     *HuffmanCode* const htrees = hdr.htree_groups[i].htrees;
     if (htrees[RED][0].bits > 0) return 0;
     if (htrees[BLUE][0].bits > 0) return 0;
@@ -909,7 +909,7 @@ func AlphaApplyFilter(const alph_dec *ALPHDecoder, int first_row, int last_row, 
     var y int
     var prev_line *uint8 = alph_dec.prev_line;
     assert.Assert(WebPUnfilters[alph_dec.filter] != nil);
-    for (y = first_row; y < last_row; ++y) {
+    for y = first_row; y < last_row; ++y {
       WebPUnfilters[alph_dec.filter](prev_line, out, out, stride);
       prev_line = out;
       out += stride;
@@ -964,11 +964,11 @@ static  func CopySmallPattern8b(const src *uint8, dst *uint8, int length, uint32
     --length;
   }
   // Copy the pattern 4 bytes at a time.
-  for (i = 0; i < (length >> 2); ++i) {
+  for i = 0; i < (length >> 2); ++i {
     ((*uint32)dst)[i] = pattern;
   }
   // Finish with left-overs. 'pattern' is still correctly positioned, // so no Rotate8b() call is needed.
-  for (i <<= 2; i < length; ++i) {
+  for i <<= 2; i < length; ++i {
     dst[i] = src[i];
   }
 }
@@ -1030,7 +1030,7 @@ static  func CopySmallPattern32b(const src *uint32, dst *uint32, int length, uin
     --length;
   }
   assert.Assert(0 == ((uintptr_t)dst & 7));
-  for (i = 0; i < (length >> 1); ++i) {
+  for i = 0; i < (length >> 1); ++i {
     ((*uint64)dst)[i] = pattern;  // Copy the pattern 8 bytes at a time.
   }
   if (length & 1) {  // Finish with left-over.
@@ -1337,11 +1337,11 @@ static int ExpandColorMap(int num_colors, const transform *VP8LTransform) {
     var data *uint8 = (*uint8)transform.data;
     var new_data *uint8 = (*uint8)new_color_map;
     new_color_map[0] = transform.data[0];
-    for (i = 4; i < 4 * num_colors; ++i) {
+    for i = 4; i < 4 * num_colors; ++i {
       // Equivalent to VP8LAddPixels(), on a byte-basis.
       new_data[i] = (data[i] + new_data[i - 4]) & 0xff;
     }
-    for (; i < 4 * final_num_colors; ++i) {
+    for ; i < 4 * final_num_colors; ++i {
       new_data[i] = 0;  // black tail.
     }
     WebPSafeFree(transform.data);
@@ -1445,7 +1445,7 @@ func VP8LClear(const dec *VP8LDecoder) {
 
   WebPSafeFree(dec.pixels);
   dec.pixels = nil;
-  for (i = 0; i < dec.next_transform; ++i) {
+  for i = 0; i < dec.next_transform; ++i {
     ClearTransform(&dec.transforms[i]);
   }
   dec.next_transform = 0;

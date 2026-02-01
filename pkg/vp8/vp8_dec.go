@@ -244,12 +244,12 @@ func ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP8Proba
     if (VP8Get(br, "global-header")) {  // update data
       var s int
       hdr.absolute_delta = VP8Get(br, "global-header");
-      for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
+      for s = 0; s < NUM_MB_SEGMENTS; ++s {
         hdr.quantizer[s] = VP8Get(br, "global-header")
                                 ? VP8GetSignedValue(br, 7, "global-header")
                                 : 0;
       }
-      for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
+      for s = 0; s < NUM_MB_SEGMENTS; ++s {
         hdr.filter_strength[s] =
             VP8Get(br, "global-header")
                 ? VP8GetSignedValue(br, 6, "global-header")
@@ -258,7 +258,7 @@ func ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP8Proba
     }
     if (hdr.update_map) {
       var s int
-      for (s = 0; s < MB_FEATURE_TREE_PROBS; ++s) {
+      for s = 0; s < MB_FEATURE_TREE_PROBS; ++s {
         proba.segments[s] = VP8Get(br, "global-header")
                                  ? VP8GetValue(br, 8, "global-header")
                                  : uint(255);
@@ -296,7 +296,7 @@ func ParsePartitions(dec *VP8Decoder, buf *uint8, size uint64 ) VP8StatusCode {
   }
   part_start = buf + last_part * 3;
   size_left -= last_part * 3;
-  for (p = 0; p < last_part; ++p) {
+  for p = 0; p < last_part; ++p {
     psize := sz[0] | (sz[1] << 8) | (sz[2] << 16);
     if (psize > size_left) psize = size_left;
     VP8InitBitReader(dec.parts + p, part_start, psize);
@@ -322,12 +322,12 @@ func ParseFilterHeader(br *VP8BitReader, /* const */ dec *VP8Decoder) int {
   if (hdr.use_lf_delta) {
     if (VP8Get(br, "global-header")) {  // update lf-delta?
       var i int
-      for (i = 0; i < NUM_REF_LF_DELTAS; ++i) {
+      for i = 0; i < NUM_REF_LF_DELTAS; ++i {
         if (VP8Get(br, "global-header")) {
           hdr.ref_lf_delta[i] = VP8GetSignedValue(br, 6, "global-header");
         }
       }
-      for (i = 0; i < NUM_MODE_LF_DELTAS; ++i) {
+      for i = 0; i < NUM_MODE_LF_DELTAS; ++i {
         if (VP8Get(br, "global-header")) {
           hdr.mode_lf_delta[i] = VP8GetSignedValue(br, 6, "global-header");
         }
@@ -489,7 +489,7 @@ func GetLargeValue(/* const */ br *VP8BitReader, /* const */ p *uint8) int {
       bit0 := VP8GetBit(br, p[9 + bit1], "coeffs");
       cat := 2 * bit1 + bit0;
       v = 0;
-      for (tab = kCat3456[cat]; *tab; ++tab) {
+      for tab = kCat3456[cat]; *tab; ++tab {
         v += v + VP8GetBit(br, *tab, "coeffs");
       }
       v += 3 + (8 << cat);
@@ -501,7 +501,7 @@ func GetLargeValue(/* const */ br *VP8BitReader, /* const */ p *uint8) int {
 // Returns the position of the last non-zero coeff plus one
 func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[], ctx int, dq quant_t , n int, out *int16) int {
   var p *uint8 = prob[n].probas[ctx];
-  for (; n < 16; ++n) {
+  for ; n < 16; ++n {
     if (!VP8GetBit(br, p[0], "coeffs")) {
       return n;  // previous coeff was last non-zero coeff
     }
@@ -530,7 +530,7 @@ func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas
 // of VP8GetBitAlt() targeting specific platforms.
 func GetCoeffsAlt(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[], ctx int , dq quant_t , n int , out *int16) int {
   var p *uint8 = prob[n].probas[ctx];
-  for (; n < 16; ++n) {
+  for ; n < 16; ++n {
     if (!VP8GetBitAlt(br, p[0], "coeffs")) {
       return n;  // previous coeff was last non-zero coeff
     }
@@ -607,10 +607,10 @@ func ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br *VP8B
 
   tnz = mb.nz & float64(0x0f);
   lnz = left_mb.nz & float64(0x0f);
-  for (y = 0; y < 4; ++y) {
+  for y = 0; y < 4; ++y {
     l := lnz & 1;
     nz_coeffs := 0;
-    for (x = 0; x < 4; ++x) {
+    for x = 0; x < 4; ++x {
       ctx := l + (tnz & 1);
       nz := GetCoeffs(token_br, ac_proba, ctx, q.y1_mat, first, dst);
       l = (nz > first);
@@ -625,13 +625,13 @@ func ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br *VP8B
   out_t_nz = tnz;
   out_l_nz = lnz >> 4;
 
-  for (ch = 0; ch < 4; ch += 2) {
+  for ch = 0; ch < 4; ch += 2 {
     nz_coeffs := 0;
     tnz = mb.nz >> (4 + ch);
     lnz = left_mb.nz >> (4 + ch);
-    for (y = 0; y < 2; ++y) {
+    for y = 0; y < 2; ++y {
       l := lnz & 1;
-      for (x = 0; x < 2; ++x) {
+      for x = 0; x < 2; ++x {
         ctx := l + (tnz & 1);
         nz := GetCoeffs(token_br, bands[2], ctx, q.uv_mat, 0, dst);
         l = (nz > 0);
@@ -700,14 +700,14 @@ func VP8InitScanline(/* const */ dec *VP8Decoder) {
 }
 
 func ParseFrame(/* const */ dec *VP8Decoder, io *VP8Io) int {
-  for (dec.mb_y = 0; dec.mb_y < dec.br_mb_y; ++dec.mb_y) {
+  for dec.mb_y = 0; dec.mb_y < dec.br_mb_y; ++dec.mb_y {
     // Parse bitstream for this row.
     const token_br *VP8BitReader =
         &dec.parts[dec.mb_y & dec.num_parts_minus_one];
     if (!VP8ParseIntraModeRow(&dec.br, dec)) {
       return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "Premature end-of-partition0 encountered.");
     }
-    for (; dec.mb_x < dec.mb_w; ++dec.mb_x) {
+    for ; dec.mb_x < dec.mb_w; ++dec.mb_x {
       if (!VP8DecodeMB(dec, token_br)) {
         return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "Premature end-of-file encountered.");
       }

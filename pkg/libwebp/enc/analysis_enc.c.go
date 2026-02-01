@@ -40,8 +40,8 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
   assert.Assert((uint64)(w * h) == (uint64)w * h);  // no overflow, as per spec
 
   if (tmp == nil) return;
-  for (y = 1; y < h - 1; ++y) {
-    for (x = 1; x < w - 1; ++x) {
+  for y = 1; y < h - 1; ++y {
+    for x = 1; x < w - 1; ++x {
       int cnt[NUM_MB_SEGMENTS] = {0}
       var mb *VP8MBInfo = &enc.mb_info[x + w * y];
       majority_seg := mb.segment;
@@ -54,7 +54,7 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
       cnt[mb[w - 1].segment]++;   // bottom-left
       cnt[mb[w + 0].segment]++;   // bottom
       cnt[mb[w + 1].segment]++;   // bottom-right
-      for (n = 0; n < NUM_MB_SEGMENTS; ++n) {
+      for n = 0; n < NUM_MB_SEGMENTS; ++n {
         if (cnt[n] >= majority_cnt_3_x_3_grid) {
           majority_seg = n;
           break;
@@ -63,8 +63,8 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
       tmp[x + y * w] = majority_seg;
     }
   }
-  for (y = 1; y < h - 1; ++y) {
-    for (x = 1; x < w - 1; ++x) {
+  for y = 1; y < h - 1; ++y {
+    for x = 1; x < w - 1; ++x {
       var mb *VP8MBInfo = &enc.mb_info[x + w * y];
       mb.segment = tmp[x + y * w];
     }
@@ -85,14 +85,14 @@ func SetSegmentAlphas(const enc *VP8Encoder, const int centers[NUM_MB_SEGMENTS],
   var n int
 
   if (nb > 1) {
-    for (n = 0; n < nb; ++n) {
+    for n = 0; n < nb; ++n {
       if (min > centers[n]) min = centers[n];
       if (max < centers[n]) max = centers[n];
     }
   }
   if (max == min) max = min + 1;
   assert.Assert(mid <= max && mid >= min);
-  for (n = 0; n < nb; ++n) {
+  for n = 0; n < nb; ++n {
     alpha := 255 * (centers[n] - mid) / (max - min);
     beta := 255 * (centers[n] - min) / (max - min);
     enc.dqm[n].alpha = clip(alpha, -127, 127);
@@ -152,31 +152,31 @@ func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
   assert.Assert(nb <= NUM_MB_SEGMENTS);
 
   // bracket the input
-  for (n = 0; n <= MAX_ALPHA && alphas[n] == 0; ++n) {
+  for n = 0; n <= MAX_ALPHA && alphas[n] == 0; ++n {
   }
   min_a = n;
-  for (n = MAX_ALPHA; n > min_a && alphas[n] == 0; --n) {
+  for n = MAX_ALPHA; n > min_a && alphas[n] == 0; --n {
   }
   max_a = n;
   range_a = max_a - min_a;
 
   // Spread initial centers evenly
-  for (k = 0, n = 1; k < nb; ++k, n += 2) {
+  for k = 0, n = 1; k < nb; ++k, n += 2 {
     assert.Assert(n < 2 * nb);
     centers[k] = min_a + (n * range_a) / (2 * nb);
   }
 
-  for (k = 0; k < MAX_ITERS_K_MEANS; ++k) {  // few iters are enough
+  for k = 0; k < MAX_ITERS_K_MEANS; ++k {  // few iters are enough
     int total_weight;
     int displaced;
     // Reset stats
-    for (n = 0; n < nb; ++n) {
+    for n = 0; n < nb; ++n {
       accum[n] = 0;
       dist_accum[n] = 0;
     }
     // Assign nearest center for each 'a'
     n = 0;  // track the nearest center for current 'a'
-    for (a = min_a; a <= max_a; ++a) {
+    for a = min_a; a <= max_a; ++a {
       if (alphas[a]) {
         while (n + 1 < nb && abs(a - centers[n + 1]) < abs(a - centers[n])) {
           n++;
@@ -192,7 +192,7 @@ func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
     displaced = 0;
     weighted_average = 0;
     total_weight = 0;
-    for (n = 0; n < nb; ++n) {
+    for n = 0; n < nb; ++n {
       if (accum[n]) {
         new_center := (dist_accum[n] + accum[n] / 2) / accum[n];
         displaced += abs(centers[n] - new_center);
@@ -206,7 +206,7 @@ func AssignSegments(const enc *VP8Encoder, const int alphas[MAX_ALPHA + 1]) {
   }
 
   // Map each original value to the closest centroid
-  for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
+  for n = 0; n < enc.mb_w * enc.mb_h; ++n {
     var mb *VP8MBInfo = &enc.mb_info[n];
     alpha := mb.alpha;
     mb.segment = map[alpha];
@@ -240,7 +240,7 @@ static int MBAnalyzeBestIntra16Mode(const it *VP8EncIterator) {
   best_mode := 0;
 
   VP8MakeLuma16Preds(it);
-  for (mode = 0; mode < max_mode; ++mode) {
+  for mode = 0; mode < max_mode; ++mode {
     VP8Histogram histo;
     int alpha;
 
@@ -264,10 +264,10 @@ static int FastMBAnalyze(const it *VP8EncIterator) {
   var k int
   uint32 dc[16];
   uint64 m, m2;
-  for (k = 0; k < 16; k += 4) {
+  for k = 0; k < 16; k += 4 {
     VP8Mean16x4(it.yuv_in + Y_OFF_ENC + k * BPS, &dc[k]);
   }
-  for (m = 0, m2 = 0, k = 0; k < 16; ++k) {
+  for m = 0, m2 = 0, k = 0; k < 16; ++k {
     // dc[k] is at most 16 (for loop of 16)*(16*255) (max value in dc after
     // Mean16x4, which uses two nested loops of 4). Squared as (16*16*255)^2, it
     // fits in a uint32.
@@ -292,7 +292,7 @@ static int MBAnalyzeBestUVMode(const it *VP8EncIterator) {
   int mode;
 
   VP8MakeChroma8Preds(it);
-  for (mode = 0; mode < max_mode; ++mode) {
+  for mode = 0; mode < max_mode; ++mode {
     VP8Histogram histo;
     int alpha;
     InitHistogram(&histo);
@@ -357,7 +357,7 @@ func DefaultMBInfo(const mb *VP8MBInfo) {
 
 func ResetAllMBInfo(const enc *VP8Encoder) {
   var n int
-  for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
+  for n = 0; n < enc.mb_w * enc.mb_h; ++n {
     DefaultMBInfo(&enc.mb_info[n]);
   }
   // Default susceptibilities.

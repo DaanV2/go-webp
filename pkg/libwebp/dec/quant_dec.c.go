@@ -54,7 +54,7 @@ func VP8ParseQuant(const dec *VP8Decoder) {
   var hdr *VP8SegmentHeader = &dec.segment_hdr;
   var i int
 
-  for (i = 0; i < NUM_MB_SEGMENTS; ++i) {
+  for i = 0; i < NUM_MB_SEGMENTS; ++i {
     var q int
     if (hdr.use_segment) {
       q = hdr.quantizer[i];

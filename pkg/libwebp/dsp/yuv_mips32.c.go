@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
       const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
     int i, r, g, b;                                                          \
     int temp0, temp1, temp2, temp3, temp4;                                   \
-    for (i = 0; i < (len >> 1); i++) {                                       \
+    for i = 0; i < (len >> 1); i++ {                                       \
       temp1 = MultHi(v[0], 26149);                                           \
       temp3 = MultHi(v[0], 13320);                                           \
       temp2 = MultHi(u[0], 6419);                                            \

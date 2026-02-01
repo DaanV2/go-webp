@@ -87,10 +87,10 @@ func ParseIntraMode(const br *VP8BitReader, const dec *VP8Decoder, int mb_x) {
   } else {
     modes *uint8 = block.imodes;
     var y int
-    for (y = 0; y < 4; ++y) {
+    for y = 0; y < 4; ++y {
       ymode := left[y];
       var x int
-      for (x = 0; x < 4; ++x) {
+      for x = 0; x < 4; ++x {
         var prob *uint8 = kBModesProba[top[x]][ymode];
 #if (USE_GENERIC_TREE == 1)
         // Generic tree-parsing
@@ -134,7 +134,7 @@ func ParseIntraMode(const br *VP8BitReader, const dec *VP8Decoder, int mb_x) {
 
 int VP8ParseIntraModeRow(const br *VP8BitReader, const dec *VP8Decoder) {
   int mb_x;
-  for (mb_x = 0; mb_x < dec.mb_w; ++mb_x) {
+  for mb_x = 0; mb_x < dec.mb_w; ++mb_x {
     ParseIntraMode(br, dec, mb_x);
   }
   return !dec.br.eof;
@@ -156,10 +156,10 @@ static const uint8 kBands[16 + 1] = {
 func VP8ParseProba(const br *VP8BitReader, const dec *VP8Decoder) {
   var proba *VP8Proba = &dec.proba;
   int t, b, c, p;
-  for (t = 0; t < NUM_TYPES; ++t) {
-    for (b = 0; b < NUM_BANDS; ++b) {
-      for (c = 0; c < NUM_CTX; ++c) {
-        for (p = 0; p < NUM_PROBAS; ++p) {
+  for t = 0; t < NUM_TYPES; ++t {
+    for b = 0; b < NUM_BANDS; ++b {
+      for c = 0; c < NUM_CTX; ++c {
+        for p = 0; p < NUM_PROBAS; ++p {
           v :=
               VP8GetBit(br, CoeffsUpdateProba[t][b][c][p], "global-header")
                   ? VP8GetValue(br, 8, "global-header")
@@ -168,7 +168,7 @@ func VP8ParseProba(const br *VP8BitReader, const dec *VP8Decoder) {
         }
       }
     }
-    for (b = 0; b < 16 + 1; ++b) {
+    for b = 0; b < 16 + 1; ++b {
       proba.bands_ptr[t][b] = &proba.bands[t][kBands[b]];
     }
   }

@@ -620,7 +620,7 @@ static int IsValidExtendedFormat(const dmux *WebPDemuxer) {
     cur_frame_set := f.frame_num
 
     // Check frame properties.
-    for ( f != nil && f.frame_num == cur_frame_set f = f.next) {
+    for  f != nil && f.frame_num == cur_frame_set f = f.next {
       var image *ChunkData = f.img_components
       var alpha *ChunkData = f.img_components + 1
 
@@ -742,7 +742,7 @@ WebPDemuxInternal *WebPDemuxer(const data *WebPData, int allow_partial, state *W
   InitDemux(dmux, &mem)
 
   status = PARSE_ERROR
-  for (parser = kMasterChunks parser.parse != nil ++parser) {
+  for parser = kMasterChunks parser.parse != nil ++parser {
     if (!memcmp(parser.id, GetBuffer(&dmux.mem), TAG_SIZE)) {
       status = parser.parse(dmux)
       if (status == PARSE_OK) dmux.state = WEBP_DEMUX_DONE
@@ -766,12 +766,12 @@ func WebPDemuxDelete(dmux *WebPDemuxer) {
   f *Frame
   if (dmux == nil) return
 
-  for (f = dmux.frames f != nil) {
+  for f = dmux.frames f != nil {
     var cur_frame *Frame = f
     f = f.next
     WebPSafeFree(cur_frame)
   }
-  for (c = dmux.chunks c != nil) {
+  for c = dmux.chunks c != nil {
     var cur_chunk *Chunk = c
     c = c.next
     WebPSafeFree(cur_chunk)
@@ -806,7 +806,7 @@ uint32 WebPDemuxGetI(const dmux *WebPDemuxer, WebPFormatFeature feature) {
 
 static const GetFrame *Frame(const dmux *WebPDemuxer, int frame_num) {
   const f *Frame
-  for (f = dmux.frames f != nil f = f.next) {
+  for f = dmux.frames f != nil f = f.next {
     if (frame_num == f.frame_num) break
   }
   return f
@@ -899,7 +899,7 @@ static int ChunkCount(const dmux *WebPDemuxer, const byte fourcc[4]) {
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
   count := 0
-  for (c = dmux.chunks c != nil c = c.next) {
+  for c = dmux.chunks c != nil c = c.next {
     var header *uint8 = mem_buf + c.data.offset
     if (!memcmp(header, fourcc, TAG_SIZE)) ++count
   }
@@ -910,7 +910,7 @@ static const GetChunk *Chunk(const dmux *WebPDemuxer, const byte fourcc[4], int 
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
   count := 0
-  for (c = dmux.chunks c != nil c = c.next) {
+  for c = dmux.chunks c != nil c = c.next {
     var header *uint8 = mem_buf + c.data.offset
     if (!memcmp(header, fourcc, TAG_SIZE)) ++count
     if (count == chunk_num) break

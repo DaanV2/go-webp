@@ -754,7 +754,7 @@ func DC16(dst *uint8) {  // DC
   const v8u16 dctop = __msa_hadd_u_h(rtop, rtop);
   v16u8 out;
 
-  for (i = 0; i < 16; ++i) {
+  for i = 0; i < 16; ++i {
     dc += dst[-1 + i * BPS];
   }
   dc += HADD_UH_U32(dctop);
@@ -772,7 +772,7 @@ func TM16(dst *uint8) {
 
   ILVRL_B2_SH(zero, T, d1, d2);
   SUB2(d1, TL, d2, TL, d1, d2);
-  for (j = 0; j < 16; j += 4) {
+  for j = 0; j < 16; j += 4 {
     v16i8 t0, t1, t2, t3;
     v8i16 r0, r1, r2, r3, r4, r5, r6, r7;
     const v8i16 L0 = (v8i16)__msa_fill_h(dst[-1 + 0 * BPS]);
@@ -797,7 +797,7 @@ func VE16(dst *uint8) {  // vertical
 
 func HE16(dst *uint8) {  // horizontal
   var j int
-  for (j = 16; j > 0; j -= 4) {
+  for j = 16; j > 0; j -= 4 {
     const v16u8 L0 = (v16u8)__msa_fill_b(dst[-1 + 0 * BPS]);
     const v16u8 L1 = (v16u8)__msa_fill_b(dst[-1 + 1 * BPS]);
     const v16u8 L2 = (v16u8)__msa_fill_b(dst[-1 + 2 * BPS]);
@@ -812,7 +812,7 @@ func DC16NoTop(dst *uint8) {  // DC with top samples not available
   dc := 8;
   v16u8 out;
 
-  for (j = 0; j < 16; ++j) {
+  for j = 0; j < 16; ++j {
     dc += dst[-1 + j * BPS];
   }
   out = (v16u8)__msa_fill_b(dc >> 4);
@@ -856,7 +856,7 @@ func DC8uv(dst *uint8) {  // DC
   const v2u64 temp2 = __msa_hadd_u_d(temp1, temp1);
   v16u8 dctemp;
 
-  for (i = 0; i < 8; ++i) {
+  for i = 0; i < 8; ++i {
     dc += dst[-1 + i * BPS];
   }
   dc += __msa_copy_s_w((v4i32)temp2, 0);
@@ -873,7 +873,7 @@ func TM8uv(dst *uint8) {
   const v8i16 TL = (v8i16)__msa_fill_h(dst[-1 - BPS]);
   const v8i16 d = T - TL;
 
-  for (j = 0; j < 8; j += 4) {
+  for j = 0; j < 8; j += 4 {
     v16i8 t0, t1;
     v8i16 r0 = (v8i16)__msa_fill_h(dst[-1 + 0 * BPS]);
     v8i16 r1 = (v8i16)__msa_fill_h(dst[-1 + 1 * BPS]);
@@ -896,7 +896,7 @@ func VE8uv(dst *uint8) {  // vertical
 
 func HE8uv(dst *uint8) {  // horizontal
   var j int
-  for (j = 0; j < 8; j += 4) {
+  for j = 0; j < 8; j += 4 {
     const v16u8 L0 = (v16u8)__msa_fill_b(dst[-1 + 0 * BPS]);
     const v16u8 L1 = (v16u8)__msa_fill_b(dst[-1 + 1 * BPS]);
     const v16u8 L2 = (v16u8)__msa_fill_b(dst[-1 + 2 * BPS]);
@@ -928,7 +928,7 @@ func DC8uvNoTop(dst *uint8) {  // DC with no top samples
   uint64 out;
   v16u8 dctemp;
 
-  for (i = 0; i < 8; ++i) {
+  for i = 0; i < 8; ++i {
     dc += dst[-1 + i * BPS];
   }
   dctemp = (v16u8)__msa_fill_b(dc >> 3);

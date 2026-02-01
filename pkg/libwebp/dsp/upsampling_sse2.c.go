@@ -155,7 +155,7 @@ func Upsample32Pixels_SSE2(const WEBP_RESTRICT const r *uint81, const WEBP_RESTR
     }                                                                         \
     /* For UPSAMPLE_32PIXELS, 17 u/v values must be read-able for each block  \
      */                                                                       \
-    for (pos = 1, uv_pos = 0; pos + 32 + 1 <= len; pos += 32, uv_pos += 16) { \
+    for pos = 1, uv_pos = 0; pos + 32 + 1 <= len; pos += 32, uv_pos += 16 { \
       UPSAMPLE_32PIXELS(top_u + uv_pos, cur_u + uv_pos, r_u);                 \
       UPSAMPLE_32PIXELS(top_v + uv_pos, cur_v + uv_pos, r_v);                 \
       CONVERT2RGB_32(FUNC, XSTEP, top_y, bottom_y, top_dst, bottom_dst, pos); \
@@ -240,7 +240,7 @@ extern func WebPInitYUV444ConvertersSSE2(void);
       const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
     var i int                                                                   \
     max_len := len & ~31;                                           \
-    for (i = 0; i < max_len; i += 32) {                                      \
+    for i = 0; i < max_len; i += 32 {                                      \
       CALL(y + i, u + i, v + i, dst + i * (XSTEP));                          \
     }                                                                        \
     if (i < len) { /* C-fallback */                                          \

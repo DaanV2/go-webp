@@ -164,7 +164,7 @@ static  func YuvToRgba(uint8 y, uint8 u, uint8 v, const rgba *uint8) {
       uv0 := (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
-    for (x = 1; x <= last_pixel_pair; ++x) {                                  \
+    for x = 1; x <= last_pixel_pair; ++x {                                  \
       t_uv := LOAD_UV(top_u[x], top_v[x]); /* top sample */     \
       uv := LOAD_UV(cur_u[x], cur_v[x]);   /* sample */         \
       /* precompute invariant values associated with first and second         \
