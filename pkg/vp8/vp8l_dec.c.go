@@ -1637,7 +1637,7 @@ func ExtractAlphaRows(const dec *VP8LDecoder, int last_row, int wait_for_biggest
 
 // Decodes image header for alpha data stored using lossless compression.
 // Returns false in case of error.
-int VP8LDecodeAlphaHeader(const alph_dec *ALPHDecoder, const *uint8  data, uint64 data_size) {
+int VP8LDecodeAlphaHeader(const alph_dec *ALPHDecoder, const *uint8  data, data_size uint64) {
   ok := 0;
   dec *VP8LDecoder = VP8LNew();
 

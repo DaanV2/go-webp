@@ -214,7 +214,7 @@ type WebPAuxStats struct {
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
 // reference (and so one can make use of picture.custom_ptr).
-typedef int (*WebPWriterFunction)(const data *uint8, uint64 data_size, const picture *WebPPicture);
+typedef int (*WebPWriterFunction)(const data *uint8, data_size uint64, const picture *WebPPicture);
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
 // the following WebPMemoryWriter object (to be set as a custom_ptr).
@@ -234,7 +234,7 @@ type WebPMemoryWriter struct {
 // The custom writer to be used with WebPMemoryWriter as custom_ptr. Upon
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
-  int WebPMemoryWrite(const data *uint8, uint64 data_size, const picture *WebPPicture);
+  int WebPMemoryWrite(const data *uint8, data_size uint64, const picture *WebPPicture);
 
 // Progress hook, called from time to time to report progress. It can return
 // false to request an abort of the encoding process, or true otherwise if

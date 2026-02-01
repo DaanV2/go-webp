@@ -57,7 +57,7 @@ func WebPResetDecParams(const params *WebPDecParams);
 // Structure storing a description of the RIFF headers.
 type WebPHeaderStructure struct {
   const *uint8  data;  // input buffer
-  uint64 data_size;                                // input buffer size
+  data_size uint64;                                // input buffer size
   int have_all_data;  // true if all data is known to be available
   uint64 offset;      // offset to main data chunk (VP8 or VP8L)
   const *uint8 

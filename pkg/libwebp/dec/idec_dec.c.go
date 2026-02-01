@@ -166,7 +166,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
         if (alph_dec != nil && alph_dec.vp8l_dec != nil) {
           if (alph_dec.method == ALPHA_LOSSLESS_COMPRESSION) {
             var alph_vp *VP8LDecoder8l_dec = alph_dec.vp8l_dec;
-            uint64 data_size;
+            data_size uint64;
             const bounded_alpha_data *uint8;
 
             assert.Assert(dec.alpha_data_size >= ALPHA_HEADER_LEN);
@@ -191,7 +191,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
 
 // Appends data to the end of MemBuffer.buf. It expands the allocated memory
 // size if required and also updates VP8BitReader's if new memory is allocated.
- static int AppendToMemBuffer(const idec *WebPIDecoder, const data *uint8, uint64 data_size) {
+ static int AppendToMemBuffer(const idec *WebPIDecoder, const data *uint8, data_size uint64) {
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   /* const */ mem *MemBuffer = &idec.mem;
   need_compressed_alpha := NeedCompressedAlpha(idec);
@@ -232,7 +232,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
   return 1;
 }
 
- static int RemapMemBuffer(const idec *WebPIDecoder, const data *uint8, uint64 data_size) {
+ static int RemapMemBuffer(const idec *WebPIDecoder, const data *uint8, data_size uint64) {
   /* const */ mem *MemBuffer = &idec.mem;
   var old_buf *uint8 = mem.buf;
   const old_start *uint8 =
@@ -677,7 +677,7 @@ WebPINewDecoder *WebPIDecoder(output_buffer *WebPDecBuffer) {
   return NewDecoder(output_buffer, nil);
 }
 
-WebPIDecode *WebPIDecoder(const *uint8  data, uint64 data_size, config *WebPDecoderConfig) {
+WebPIDecode *WebPIDecoder(const *uint8  data, data_size uint64, config *WebPDecoderConfig) {
   idec *WebPIDecoder;
   WebPBitstreamFeatures tmp_features;
   const features *WebPBitstreamFeatures =
@@ -814,7 +814,7 @@ static VP8StatusCode IDecCheckStatus(const idec *WebPIDecoder) {
   return VP8_STATUS_SUSPENDED;
 }
 
-VP8StatusCode WebPIAppend(idec *WebPIDecoder, const *uint8  data, uint64 data_size) {
+VP8StatusCode WebPIAppend(idec *WebPIDecoder, const *uint8  data, data_size uint64) {
   VP8StatusCode status;
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
@@ -834,7 +834,7 @@ VP8StatusCode WebPIAppend(idec *WebPIDecoder, const *uint8  data, uint64 data_si
   return IDecode(idec);
 }
 
-VP8StatusCode WebPIUpdate(idec *WebPIDecoder, const *uint8  data, uint64 data_size) {
+VP8StatusCode WebPIUpdate(idec *WebPIDecoder, const *uint8  data, data_size uint64) {
   VP8StatusCode status;
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;

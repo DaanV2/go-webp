@@ -66,7 +66,7 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
 // header for alpha data stored using lossless compression.
 // Returns false in case of error in alpha header (data too short, invalid
 // compression method or filter, error in lossless header data etc).
-func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, uint64 data_size, src_io *VP8Io, output *uint8) int {
+func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, data_size uint64, src_io *VP8Io, output *uint8) int {
   ok := 0;
   var alpha_data *uint8 = data + ALPHA_HEADER_LEN;
   alpha_data_size := data_size - ALPHA_HEADER_LEN;
@@ -161,7 +161,7 @@ func ALPHDecode(/* const  */dec *VP8Decoder, row, num_rows int) int {
   return 1;
 }
 
- static int AllocateAlphaPlane(const dec *VP8Decoder, const io *VP8Io) {
+func AllocateAlphaPlane(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   stride := io.width;
   height := io.crop_bottom;
   alpha_size := (uint64)stride * height;

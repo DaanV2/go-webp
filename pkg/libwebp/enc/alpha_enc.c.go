@@ -231,7 +231,7 @@ func InitFilterTrial(const score *FilterTrial) {
   VP8BitWriterInit(&score.bw, 0);
 }
 
-static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, uint64 data_size, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, const output_size *uint64, const stats *WebPAuxStats) {
+static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, const output_size *uint64, const stats *WebPAuxStats) {
   ok := 1;
   FilterTrial best;
   try_map := GetFilterMap(alpha, width, height, filter, effort_level);

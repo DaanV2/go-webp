@@ -61,7 +61,7 @@ static WebPMuxError MuxGet(const mux *WebPMux, CHUNK_INDEX idx, uint32 nth, cons
 
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
-static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, const data *uint8, uint64 data_size, uint64 riff_size, int copy_data) {
+static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, const data *uint8, data_size uint64, uint64 riff_size, int copy_data) {
   uint32 chunk_size;
   WebPData chunk_data;
 
@@ -246,7 +246,7 @@ WebPMuxCreateInternal *WebPMux(const bitstream *WebPData, int copy_data, int ver
 
   // Loop over chunks.
   while (data != end) {
-    uint64 data_size;
+    data_size uint64;
     WebPChunkId id;
     if (ChunkVerifyAndAssign(&chunk, data, size, riff_size, copy_data) !=
         WEBP_MUX_OK) {
