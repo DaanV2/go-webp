@@ -9,21 +9,21 @@ package dec
 // be found in the AUTHORS file in the root of the source tree.
 
 
-
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/libwebp/dec"
+	"github.com/daanv2/go-webp/pkg/libwebp/dec"
+	"github.com/daanv2/go-webp/pkg/libwebp/dec"
+	"github.com/daanv2/go-webp/pkg/libwebp/dec"
+	"github.com/daanv2/go-webp/pkg/libwebp/dec"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+)
 
 
 //------------------------------------------------------------------------------
