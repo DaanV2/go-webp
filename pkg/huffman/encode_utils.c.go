@@ -29,18 +29,15 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Util function to optimize the symbol map for RLE coding
 
 // Heuristics for selecting the stride ranges to collapse.
-static int ValuesShouldBeCollapsedToStrideAverage(int a, int b) {
+func ValuesShouldBeCollapsedToStrideAverage(a, b int) int {
   return abs(a - b) < 4;
 }
 
 // Change the population counts in a way that the consequent
 // Huffman tree compression, especially its RLE-part, give smaller output.
-func OptimizeHuffmanForRle(int length, const *uint8 
-                                      good_for_rle, const *uint32 
-                                      counts) {
+func OptimizeHuffmanForRle( length int , good_for_rle  *uint8, counts *uint32) {
   // 1) Let's make the Huffman code more compatible with rle encoding.
-  int i;
-  for (; length >= 0; --length) {
+  for ; length >= 0; length-- {
     if (length == 0) {
       return;  // All zeros.
     }
@@ -57,11 +54,10 @@ func OptimizeHuffmanForRle(int length, const *uint8
     // Mark any seq of non-0's that is longer as 7 as a good_for_rle.
     symbol := counts[0];
     stride := 0;
-    for (i = 0; i < length + 1; ++i) {
+    for i := 0; i < length + 1; i++ {
       if (i == length || counts[i] != symbol) {
         if ((symbol == 0 && stride >= 5) || (symbol != 0 && stride >= 7)) {
-          int k;
-          for (k = 0; k < stride; ++k) {
+          for k := 0; k < stride; k++ {
             good_for_rle[i - k - 1] = 1;
           }
         }
@@ -70,7 +66,7 @@ func OptimizeHuffmanForRle(int length, const *uint8
           symbol = counts[i];
         }
       } else {
-        ++stride;
+        stride++
       }
     }
   }
@@ -79,11 +75,10 @@ func OptimizeHuffmanForRle(int length, const *uint8
     stride := 0;
     limit := counts[0];
     sum := 0;
-    for (i = 0; i < length + 1; ++i) {
+    for i := 0; i < length + 1; i++ {
       if (i == length || good_for_rle[i] || (i != 0 && good_for_rle[i - 1]) ||
           !ValuesShouldBeCollapsedToStrideAverage(counts[i], limit)) {
         if (stride >= 4 || (stride >= 3 && sum == 0)) {
-          uint32 k;
           // The stride must end, collapse what we have, if we have enough (4).
           count := (sum + stride / 2) / stride;
           if (count < 1) {
@@ -93,7 +88,7 @@ func OptimizeHuffmanForRle(int length, const *uint8
             // Don't make an all zeros stride to be upgraded to ones.
             count = 0;
           }
-          for (k = 0; k < stride; ++k) {
+          for k := uint32(0); k < stride; k++ {
             // We don't want to change value at counts[i], // that is already belonging to the next stride. Thus - 1.
             counts[i - k - 1] = count;
           }
@@ -111,7 +106,7 @@ func OptimizeHuffmanForRle(int length, const *uint8
           limit = 0;
         }
       }
-      ++stride;
+      stride++
       if (i != length) {
         sum += counts[i];
         if (stride >= 4) {
@@ -124,20 +119,20 @@ func OptimizeHuffmanForRle(int length, const *uint8
 
 // A comparer function for two Huffman trees: sorts first by 'total count'
 // (more comes first), and then by 'value' (more comes first).
-static int CompareHuffmanTrees(const ptr *void1, const ptr *void2) {
-  var t *HuffmanTree1 = (const *HuffmanTree)ptr1;
-  var t *HuffmanTree2 = (const *HuffmanTree)ptr2;
+func CompareHuffmanTrees(ptr1 , ptr2 *HuffmanTree) int {
+  var t1 *HuffmanTree = ptr1;
+  var t2 *HuffmanTree = ptr2;
   if (t1.total_count > t2.total_count) {
     return -1;
   } else if (t1.total_count < t2.total_count) {
     return 1;
   } else {
     assert.Assert(t1.value != t2.value);
-    return (t1.value < t2.value) ? -1 : 1;
+    return tenary.If(t1.value < t2.value,  -1, 1)
   }
 }
 
-func SetBitDepths(const tree *HuffmanTree, const const pool *HuffmanTree, WEBP_INDEXABLE const bit_depths *uint8, int level) {
+func SetBitDepths(tree *HuffmanTree, pool *HuffmanTree, const bit_depths *uint8, int level) {
   if (tree.pool_index_left >= 0) {
     SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
     SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
@@ -261,8 +256,8 @@ func GenerateOptimalTree(
 // -----------------------------------------------------------------------------
 // Coding of the Huffman tree values
 
-static WEBP_INDEXABLE *HuffmanTreeToken
-CodeRepeatedValues(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken, int value, int prev_value) {
+static *HuffmanTreeToken
+CodeRepeatedValues(int repetitions, tokens *HuffmanTreeToken, int value, int prev_value) {
   assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH);
   if (value != prev_value) {
     tokens.code = value;
@@ -294,8 +289,8 @@ CodeRepeatedValues(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken, int
   return tokens;
 }
 
-static WEBP_INDEXABLE *HuffmanTreeToken
-CodeRepeatedZeros(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken) {
+static *HuffmanTreeToken
+CodeRepeatedZeros(int repetitions, tokens *HuffmanTreeToken) {
   while (repetitions >= 1) {
     if (repetitions < 3) {
       int i;
@@ -327,7 +322,7 @@ CodeRepeatedZeros(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken) {
 
 int VP8LCreateCompressedHuffmanTree(
     const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, int max_tokens) {
-  WEBP_INDEXABLE current_token *HuffmanTreeToken = tokens;
+  current_token *HuffmanTreeToken = tokens;
   var starting_token *HuffmanTreeToken = tokens;
   var ending_token *HuffmanTreeToken = tokens + max_tokens;
   depth_size := tree.num_symbols;

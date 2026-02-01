@@ -19,28 +19,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 
 
-// Struct for holding the tree header in coded form.
-type HuffmanTreeToken struct {
-  uint8 code;        // value (0..15) or escape code (16,17,18)
-  uint8 extra_bits;  // extra bits for escape codes
-} ;
 
-// Struct to represent the tree codes (depth and bits array).
-type HuffmanTreeCode struct {
-  int num_symbols;  // Number of symbols.
-  // Code lengths of the symbols.
-  *uint8  code_lengths;
-  // Symbol Codes.
-  *uint16  codes;
-} ;
 
-// Struct to represent the Huffman tree.
-type HuffmanTree struct {
-  uint32 total_count;  // Symbol frequency.
-  int value;             // Symbol value.
-  int pool_index_left;   // Index for the left sub-tree.
-  int pool_index_right;  // Index for the right sub-tree.
-} ;
+
 
 // Turn the Huffman tree into a token sequence.
 // Returns the number of tokens used.
