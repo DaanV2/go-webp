@@ -99,7 +99,7 @@ func ConvertARGBToY_NEON(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint
         ConvertRGBToYImpl_NEON(RGB.val[2], RGB.val[1], RGB.val[0]);
     vst1_u8(y + i, Y);
   }
-  for ; i < width; ++i {  // left-over
+  for ; i < width; i++ {  // left-over
     p := argb[i];
     y[i] =
         VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);

@@ -90,7 +90,7 @@ func CollectColorBlueTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int strid
   const __m128i mask_g = _mm_set1_epi32(0x00ff00);  // green mask
   const __m128i mask_b = _mm_set1_epi32(0x0000ff);  // blue mask
   var y int
-  for y = 0; y < tile_height; ++y {
+  for y = 0; y < tile_height; y++ {
     var src *uint32 = argb + y * stride;
     int i, x;
     for x = 0; x + SPAN <= tile_width; x += SPAN {
@@ -132,7 +132,7 @@ func CollectColorRedTransforms_SSE2(const WEBP_RESTRICT argb *uint32, int stride
   const __m128i mask = _mm_set1_epi32(0xff);
 
   var y int
-  for y = 0; y < tile_height; ++y {
+  for y = 0; y < tile_height; y++ {
     var src *uint32 = argb + y * stride;
     int i, x;
     for x = 0; x + SPAN <= tile_width; x += SPAN {

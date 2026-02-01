@@ -37,7 +37,7 @@ static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride
   // We must be able to access 3 extra bytes after the last written byte
   // 'dst[4 * width - 4]', because we don't know if alpha is the first or the
   // last byte of the quadruplet.
-  for j = 0; j < height; ++j {
+  for j = 0; j < height; j++ {
     ptr *byte = (*byte)dst;
     for i = 0; i + 16 <= width - 1; i += 16 {
       // load 16 alpha bytes
@@ -68,7 +68,7 @@ static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride
       all_alphas8 = _mm_and_si128(all_alphas8, a0);
       i += 8;
     }
-    for ; i < width; ++i {
+    for ; i < width; i++ {
       alpha_value := alpha[i];
       dst[4 * i] = alpha_value;
       alpha_and &= alpha_value;
@@ -86,7 +86,7 @@ func DispatchAlphaToGreen_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_strid
   int i, j;
   const __m128i zero = _mm_setzero_si128();
   limit := width & ~15;
-  for j = 0; j < height; ++j {
+  for j = 0; j < height; j++ {
     for i = 0; i < limit; i += 16 {  // process 16 alpha bytes
       const __m128i a0 = _mm_loadu_si128((const __*m128i)&alpha[i]);
       const __m128i a1 = _mm_unpacklo_epi8(zero, a0);  // note the 'zero' first!
@@ -120,7 +120,7 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
   // last byte of the quadruplet.
   limit := (width - 1) & ~7;
 
-  for j = 0; j < height; ++j {
+  for j = 0; j < height; j++ {
     var __src *m128i = (const __*m128i)argb;
     for i = 0; i < limit; i += 8 {
       // load 32 argb bytes
@@ -136,7 +136,7 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
       all_alphas = _mm_and_si128(all_alphas, d0);
       src += 2;
     }
-    for ; i < width; ++i {
+    for ; i < width; i++ {
       alpha_value := argb[4 * i];
       alpha[i] = alpha_value;
       alpha_and &= alpha_value;
@@ -238,7 +238,7 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
       }
     }
     // Finish with left-overs.
-    for ; i < w; ++i {
+    for ; i < w; i++ {
       var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
       var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
       a := alpha[4 * i];
@@ -267,7 +267,7 @@ static int HasAlpha8b_SSE2(const src *uint8, int length) {
     mask := _mm_movemask_epi8(bits);
     if (mask != 0xffff) return 1;
   }
-  for ; i < length; ++i {
+  for ; i < length; i++ {
     if (src[i] != 0xff) return 1;
   }
   return 0;
@@ -332,7 +332,7 @@ func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
     _mm_storeu_si128((__*m128i)(src + i + 0), _mm_or_si128(d0, e0));
     _mm_storeu_si128((__*m128i)(src + i + 4), _mm_or_si128(d1, e1));
   }
-  for ; i < length; ++i {
+  for ; i < length; i++ {
     if ((src[i] >> 24) == 0) src[i] = color;
   }
 }

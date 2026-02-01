@@ -170,14 +170,14 @@ func PredictorAdd10_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
       const __m256i avgTTR_bak = avgTTR;
       const __m256i TL_bak = TL;
       const __m256i src_bak = src;
-      for j = 0; j < 4; ++j {
+      for j = 0; j < 4; j++ {
         DO_PRED10(j);
         DO_PRED10_SHIFT;
       }
       avgTTR = _mm256_permute2x128_si256(avgTTR_bak, avgTTR_bak, 1);
       TL = _mm256_permute2x128_si256(TL_bak, TL_bak, 1);
       src = _mm256_permute2x128_si256(src_bak, src_bak, 1);
-      for ; j < 8; ++j {
+      for ; j < 8; j++ {
         DO_PRED10(j);
         DO_PRED10_SHIFT;
       }
@@ -238,7 +238,7 @@ func PredictorAdd11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
       const __m256i TL_bak = TL;
       const __m256i src_bak = src;
       const __m256i pa_bak = pa;
-      for j = 0; j < 4; ++j {
+      for j = 0; j < 4; j++ {
         DO_PRED11(j);
         DO_PRED11_SHIFT;
       }
@@ -246,7 +246,7 @@ func PredictorAdd11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
       TL = _mm256_permute2x128_si256(TL_bak, TL_bak, 1);
       src = _mm256_permute2x128_si256(src_bak, src_bak, 1);
       pa = _mm256_permute2x128_si256(pa_bak, pa_bak, 1);
-      for ; j < 8; ++j {
+      for ; j < 8; j++ {
         DO_PRED11(j);
         DO_PRED11_SHIFT;
       }

@@ -136,7 +136,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
       last_part := dec.num_parts_minus_one;
       if (offset != 0) {
         uint32 p;
-        for p = 0; p <= last_part; ++p {
+        for p = 0; p <= last_part; p++ {
           VP8RemapBitReader(dec.parts + p, offset);
         }
         // Remap partition #0 data pointer to new offset, but only in MAP

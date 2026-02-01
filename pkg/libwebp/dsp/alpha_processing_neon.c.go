@@ -62,7 +62,7 @@ func ApplyAlphaMultiply_NEON(rgba *uint8, int alpha_first, int w, int h, int str
       }
     }
     // Finish with left-overs.
-    for ; i < w; ++i {
+    for ; i < w; i++ {
       var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
       var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
       a := alpha[4 * i];
@@ -87,7 +87,7 @@ static int DispatchAlpha_NEON(const WEBP_RESTRICT alpha *uint8, int alpha_stride
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
   int i, j;
-  for j = 0; j < height; ++j {
+  for j = 0; j < height; j++ {
     // We don't know if alpha is first or last in dst[] (depending on rgbA/Argb
     // mode). So we must be sure dst[4*i + 8 - 1] is writable for the store.
     // Hence the test with 'width - 1' instead of just 'width'.
@@ -98,7 +98,7 @@ static int DispatchAlpha_NEON(const WEBP_RESTRICT alpha *uint8, int alpha_stride
       vst4_u8((*uint8)(dst + 4 * i), rgbX);
       mask8 = vand_u8(mask8, alphas);
     }
-    for ; i < width; ++i {
+    for ; i < width; i++ {
       alpha_value := alpha[i];
       dst[4 * i] = alpha_value;
       alpha_mask &= alpha_value;
@@ -119,7 +119,7 @@ func DispatchAlphaToGreen_NEON(const WEBP_RESTRICT alpha *uint8, int alpha_strid
   greens.val[0] = vdup_n_u8(0);
   greens.val[2] = vdup_n_u8(0);
   greens.val[3] = vdup_n_u8(0);
-  for j = 0; j < height; ++j {
+  for j = 0; j < height; j++ {
     for i = 0; i + 8 <= width; i += 8 {
       greens.val[1] = vld1_u8(alpha + i);
       vst4_u8((*uint8)(dst + i), greens);
@@ -135,7 +135,7 @@ static int ExtractAlpha_NEON(const WEBP_RESTRICT argb *uint8, int argb_stride, i
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
   int i, j;
-  for j = 0; j < height; ++j {
+  for j = 0; j < height; j++ {
     // We don't know if alpha is first or last in dst[] (depending on rgbA/Argb
     // mode). So we must be sure dst[4*i + 8 - 1] is writable for the store.
     // Hence the test with 'width - 1' instead of just 'width'.
@@ -145,7 +145,7 @@ static int ExtractAlpha_NEON(const WEBP_RESTRICT argb *uint8, int argb_stride, i
       vst1_u8((*uint8)(alpha + i), alphas);
       mask8 = vand_u8(mask8, alphas);
     }
-    for ; i < width; ++i {
+    for ; i < width; i++ {
       alpha[i] = argb[4 * i];
       alpha_mask &= alpha[i];
     }

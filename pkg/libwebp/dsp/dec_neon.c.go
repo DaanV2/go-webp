@@ -1174,7 +1174,7 @@ func DC4_NEON(dst *uint8) {       // DC
   const uint8x8_t dc0 = vrshrn_n_u16(sum, 3);  // (sum + 4) >> 3
   const uint8x8_t dc = vdup_lane_u8(dc0, 0);
   var i int
-  for i = 0; i < 4; ++i {
+  for i = 0; i < 4; i++ {
     vst1_lane_u32((*uint32)(dst + i * BPS), vreinterpret_u32_u8(dc), 0);
   }
 }
@@ -1229,7 +1229,7 @@ func VE4_NEON(dst *uint8) {  // vertical
   const uint8x8_t b = vhadd_u8(ABCDEFGH, CDEFGH00);
   const uint8x8_t avg = vrhadd_u8(b, BCDEFGH0);
   var i int
-  for i = 0; i < 4; ++i {
+  for i = 0; i < 4; i++ {
     vst1_lane_u32((*uint32)(dst + i * BPS), vreinterpret_u32_u8(avg), 0);
   }
 }
@@ -1288,14 +1288,14 @@ func LD4_NEON(dst *uint8) {  // Down-left
 func VE8uv_NEON(dst *uint8) {  // vertical
   const uint8x8_t top = vld1_u8(dst - BPS);
   var j int
-  for j = 0; j < 8; ++j {
+  for j = 0; j < 8; j++ {
     vst1_u8(dst + j * BPS, top);
   }
 }
 
 func HE8uv_NEON(dst *uint8) {  // horizontal
   var j int
-  for j = 0; j < 8; ++j {
+  for j = 0; j < 8; j++ {
     const uint8x8_t left = vld1_dup_u8(dst - 1);
     vst1_u8(dst, left);
     dst += BPS;
@@ -1352,7 +1352,7 @@ static  func DC8_NEON(dst *uint8, int do_top, int do_left) {
   {
     const uint8x8_t dc = vdup_lane_u8(dc0, 0);
     var i int
-    for i = 0; i < 8; ++i {
+    for i = 0; i < 8; i++ {
       vst1_u32((*uint32)(dst + i * BPS), vreinterpret_u32_u8(dc));
     }
   }
@@ -1371,14 +1371,14 @@ func TM8uv_NEON(dst *uint8) { TrueMotion_NEON(dst, 8); }
 func VE16_NEON(dst *uint8) {  // vertical
   const uint8x16_t top = vld1q_u8(dst - BPS);
   var j int
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     vst1q_u8(dst + j * BPS, top);
   }
 }
 
 func HE16_NEON(dst *uint8) {  // horizontal
   var j int
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     const uint8x16_t left = vld1q_dup_u8(dst - 1);
     vst1q_u8(dst, left);
     dst += BPS;
@@ -1441,7 +1441,7 @@ static  func DC16_NEON(dst *uint8, int do_top, int do_left) {
   {
     const uint8x16_t dc = vdupq_lane_u8(dc0, 0);
     var i int
-    for i = 0; i < 16; ++i {
+    for i = 0; i < 16; i++ {
       vst1q_u8(dst + i * BPS, dc);
     }
   }

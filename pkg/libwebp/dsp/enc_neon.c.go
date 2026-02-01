@@ -675,7 +675,7 @@ func CollectHistogram_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT p
   const uint16x8_t max_coeff_thresh = vdupq_n_u16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
-  for j = start_block; j < end_block; ++j {
+  for j = start_block; j < end_block; j++ {
     int16 out[16];
     FTransform_NEON(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
     {
@@ -691,7 +691,7 @@ func CollectHistogram_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT p
       vst1q_s16(out + 0, vreinterpretq_s16_u16(a3));
       vst1q_s16(out + 8, vreinterpretq_s16_u16(b3));
       // Convert coefficients to bin.
-      for k = 0; k < 16; ++k {
+      for k = 0; k < 16; k++ {
         ++distribution[out[k]];
       }
     }
@@ -730,7 +730,7 @@ static int SumToInt_NEON(uint32x4_t sum) {
 static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
-  for y = 0; y < 16; ++y {
+  for y = 0; y < 16; y++ {
     AccumulateSSE16_NEON(a + y * BPS, b + y * BPS, &sum);
   }
   return SumToInt_NEON(sum);
@@ -739,7 +739,7 @@ static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *ui
 static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
-  for y = 0; y < 8; ++y {
+  for y = 0; y < 8; y++ {
     AccumulateSSE16_NEON(a + y * BPS, b + y * BPS, &sum);
   }
   return SumToInt_NEON(sum);
@@ -748,7 +748,7 @@ static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uin
 static int SSE8x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
-  for y = 0; y < 8; ++y {
+  for y = 0; y < 8; y++ {
     const uint8x8_t a0 = vld1_u8(a + y * BPS);
     const uint8x8_t b0 = vld1_u8(b + y * BPS);
     const uint8x8_t abs_diff = vabd_u8(a0, b0);

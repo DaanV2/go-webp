@@ -37,7 +37,7 @@ func WebPRescalerImportRowExpand_C(WEBP_RESTRICT const wrk *WebPRescaler, const 
   int channel;
   assert.Assert(!WebPRescalerInputDone(wrk));
   assert.Assert(wrk.x_expand);
-  for channel = 0; channel < x_stride; ++channel {
+  for channel = 0; channel < x_stride; channel++ {
     x_in := channel;
     x_out := channel;
     // simple bilinear interpolation
@@ -69,7 +69,7 @@ func WebPRescalerImportRowShrink_C(WEBP_RESTRICT const wrk *WebPRescaler, const 
   int channel;
   assert.Assert(!WebPRescalerInputDone(wrk));
   assert.Assert(!wrk.x_expand);
-  for channel = 0; channel < x_stride; ++channel {
+  for channel = 0; channel < x_stride; channel++ {
     x_in := channel;
     x_out := channel;
     sum := 0;
@@ -110,7 +110,7 @@ func WebPRescalerExportRowExpand_C(const wrk *WebPRescaler) {
   assert.Assert(wrk.y_expand);
   assert.Assert(wrk.y_sub != 0);
   if (wrk.y_accum == 0) {
-    for x_out = 0; x_out < x_out_max; ++x_out {
+    for x_out = 0; x_out < x_out_max; x_out++ {
       J := frow[x_out];
       v := (int)MULT_FIX(J, wrk.fy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
@@ -118,7 +118,7 @@ func WebPRescalerExportRowExpand_C(const wrk *WebPRescaler) {
   } else {
     B := WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
     A := (uint32)(WEBP_RESCALER_ONE - B);
-    for x_out = 0; x_out < x_out_max; ++x_out {
+    for x_out = 0; x_out < x_out_max; x_out++ {
       I := (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
       J := (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       v := (int)MULT_FIX(J, wrk.fy_scale);
@@ -138,14 +138,14 @@ func WebPRescalerExportRowShrink_C(const wrk *WebPRescaler) {
   assert.Assert(wrk.y_accum <= 0);
   assert.Assert(!wrk.y_expand);
   if (yscale) {
-    for x_out = 0; x_out < x_out_max; ++x_out {
+    for x_out = 0; x_out < x_out_max; x_out++ {
       frac := (uint32)MULT_FIX_FLOOR(frow[x_out], yscale);
       v := (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
       irow[x_out] = frac;  // new fractional start
     }
   } else {
-    for x_out = 0; x_out < x_out_max; ++x_out {
+    for x_out = 0; x_out < x_out_max; x_out++ {
       v := (int)MULT_FIX(irow[x_out], wrk.fxy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
       irow[x_out] = 0;
@@ -180,7 +180,7 @@ func WebPRescalerExportRow(const wrk *WebPRescaler) {
       var i int
       assert.Assert(wrk.src_height == wrk.dst_height && wrk.x_add == 1);
       assert.Assert(wrk.src_width == 1 && wrk.dst_width <= 2);
-      for i = 0; i < wrk.num_channels * wrk.dst_width; ++i {
+      for i = 0; i < wrk.num_channels * wrk.dst_width; i++ {
         wrk.dst[i] = wrk.irow[i];
         wrk.irow[i] = 0;
       }

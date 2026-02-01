@@ -53,7 +53,7 @@ static uint32 ClosestDiscretizedArgb(uint32 a, int bits) {
 // is within the given limit.
 static int IsNear(uint32 a, uint32 b, int limit) {
   var k int
-  for k = 0; k < 4; ++k {
+  for k = 0; k < 4; k++ {
     delta :=
         (int)((a >> (k * 8)) & 0xff) - (int)((b >> (k * 8)) & 0xff);
     if (delta >= limit || delta <= -limit) {
@@ -88,7 +88,7 @@ func NearLossless(int xsize, int ysize, const argb_src *uint32, int stride, int 
       memcpy(next_row, argb_src + stride, xsize * sizeof(argb_src[0]));
       argb_dst[0] = argb_src[0];
       argb_dst[xsize - 1] = argb_src[xsize - 1];
-      for x = 1; x < xsize - 1; ++x {
+      for x = 1; x < xsize - 1; x++ {
         if (IsSmooth(prev_row, curr_row, next_row, x, limit)) {
           argb_dst[x] = curr_row[x];
         } else {
@@ -123,7 +123,7 @@ int VP8ApplyNearLossless(const picture *WebPPicture, int quality, const argb_dst
   if ((xsize < MIN_DIM_FOR_NEAR_LOSSLESS &&
        ysize < MIN_DIM_FOR_NEAR_LOSSLESS) ||
       ysize < 3) {
-    for i = 0; i < ysize; ++i {
+    for i = 0; i < ysize; i++ {
       memcpy(argb_dst + i * xsize, picture.argb + i * picture.argb_stride, xsize * sizeof(*argb_dst));
     }
     return 1;

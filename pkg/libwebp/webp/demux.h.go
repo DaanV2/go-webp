@@ -221,7 +221,7 @@ type WebPChunkIterator struct {
   dec *WebPAnimDecoder = WebPAnimDecoderNew(webp_data, &dec_options);
   WebPAnimInfo anim_info;
   WebPAnimDecoderGetInfo(dec, &anim_info);
-  for i := 0; i < anim_info.loop_count; ++i {
+  for i := 0; i < anim_info.loop_count; i++ {
     while (WebPAnimDecoderHasMoreFrames(dec)) {
       buf *uint8;
       int timestamp;

@@ -62,9 +62,9 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
     int filter;
     WEBP_FILTER_TYPE best_filter = WEBP_FILTER_NONE;
     best_score := 0x7fffffff;
-    for filter = WEBP_FILTER_NONE; filter < WEBP_FILTER_LAST; ++filter {
+    for filter = WEBP_FILTER_NONE; filter < WEBP_FILTER_LAST; filter++ {
       score := 0;
-      for i = 0; i < SMAX; ++i {
+      for i = 0; i < SMAX; i++ {
         if (bins[filter][i] > 0) {
           score += i;
         }

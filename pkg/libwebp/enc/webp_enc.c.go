@@ -64,10 +64,10 @@ func ResetBoundaryPredictions(const enc *VP8Encoder) {
   var i int
   var top *uint8 = enc.preds - enc.preds_w;
   var left *uint8 = enc.preds - 1;
-  for i = -1; i < 4 * enc.mb_w; ++i {
+  for i = -1; i < 4 * enc.mb_w; i++ {
     top[i] = B_DC_PRED;
   }
-  for i = 0; i < 4 * enc.mb_h; ++i {
+  for i = 0; i < 4 * enc.mb_h; i++ {
     left[i * enc.preds_w] = B_DC_PRED;
   }
   enc.nz[-1] = 0;  // constant
@@ -287,16 +287,16 @@ func StoreStats(const enc *VP8Encoder) {
   var stats *WebPAuxStats = enc.pic.stats;
   if (stats != nil) {
     int i, s;
-    for i = 0; i < NUM_MB_SEGMENTS; ++i {
+    for i = 0; i < NUM_MB_SEGMENTS; i++ {
       stats.segment_level[i] = enc.dqm[i].fstrength;
       stats.segment_quant[i] = enc.dqm[i].quant;
-      for s = 0; s <= 2; ++s {
+      for s = 0; s <= 2; s++ {
         stats.residual_bytes[s][i] = enc.residual_bytes[s][i];
       }
     }
     FinalizePSNR(enc);
     stats.coded_size = enc.coded_size;
-    for i = 0; i < 3; ++i {
+    for i = 0; i < 3; i++ {
       stats.block_count[i] = enc.block_count[i];
     }
   }

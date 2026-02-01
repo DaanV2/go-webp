@@ -222,7 +222,7 @@ static int Disto16x16_MSA(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRIC
 func CollectHistogram_MSA(const ref *uint8, const pred *uint8, int start_block, int end_block, const histo *VP8Histogram) {
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
-  for j = start_block; j < end_block; ++j {
+  for j = start_block; j < end_block; j++ {
     int16 out[16];
     VP8FTransform(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
     {
@@ -237,7 +237,7 @@ func CollectHistogram_MSA(const ref *uint8, const pred *uint8, int start_block, 
       coeff0 = __msa_min_s_h(coeff0, max_coeff_thr);
       coeff1 = __msa_min_s_h(coeff1, max_coeff_thr);
       ST_SH2(coeff0, coeff1, &out[0], 8);
-      for k = 0; k < 16; ++k {
+      for k = 0; k < 16; k++ {
         ++distribution[out[k]];
       }
     }

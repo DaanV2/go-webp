@@ -78,7 +78,7 @@ static  func DoHorizontalFilter_NEON(const WEBP_RESTRICT in *uint8, int width, i
   out += stride;
 
   // Filter line-by-line.
-  for row = 1; row < height; ++row {
+  for row = 1; row < height; row++ {
     // Leftmost pixel is predicted from above.
     out[0] = in[0] - in[-stride];
     PredictLineLeft_NEON(in + 1, out + 1, width - 1);
@@ -106,7 +106,7 @@ static  func DoVerticalFilter_NEON(const WEBP_RESTRICT in *uint8, int width, int
   out += stride;
 
   // Filter line-by-line.
-  for row = 1; row < height; ++row {
+  for row = 1; row < height; row++ {
     PredictLine_NEON(in, in - stride, out, width);
     in += stride;
     out += stride;
@@ -136,7 +136,7 @@ func GradientPredictDirect_NEON(const row *uint8, const top *uint8, WEBP_RESTRIC
     const uint8x8_t F = vld1_u8(&row[i + 0]);
     vst1_u8(&out[i], vsub_u8(F, E));
   }
-  for ; i < length; ++i {
+  for ; i < length; i++ {
     out[i] = row[i] - GradientPredictor_C(row[i - 1], top[i], top[i - 1]);
   }
 }
@@ -152,7 +152,7 @@ static  func DoGradientFilter_NEON(const WEBP_RESTRICT in *uint8, int width, int
   out += stride;
 
   // Filter line-by-line.
-  for row = 1; row < height; ++row {
+  for row = 1; row < height; row++ {
     out[0] = in[0] - in[-stride];
     GradientPredictDirect_NEON(in + 1, in + 1 - stride, out + 1, width - 1);
     in += stride;
@@ -246,7 +246,7 @@ func GradientPredictInverse_NEON(const in *uint8, const top *uint8, const row *u
       GRAD_PROCESS_LANE(7);
       vst1_u8(&row[i], out);
     }
-    for ; i < length; ++i {
+    for ; i < length; i++ {
       row[i] = in[i] + GradientPredictor_C(row[i - 1], top[i], top[i - 1]);
     }
   }

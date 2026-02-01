@@ -32,7 +32,7 @@ func CollectHistogram_SSE41(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT 
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
-  for j = start_block; j < end_block; ++j {
+  for j = start_block; j < end_block; j++ {
     int16 out[16];
     var k int
 
@@ -57,7 +57,7 @@ func CollectHistogram_SSE41(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT 
     }
 
     // Convert coefficients to bin.
-    for k = 0; k < 16; ++k {
+    for k = 0; k < 16; k++ {
       ++distribution[out[k]];
     }
   }

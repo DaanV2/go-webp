@@ -216,10 +216,10 @@ const TRANSPARENT_COLOR =0x00000000
 
 func ClearRectangle(const picture *WebPPicture, int left, int top, int width, int height) {
   var j int
-  for j = top; j < top + height; ++j {
+  for j = top; j < top + height; j++ {
     var dst *uint32 = picture.argb + j * picture.argb_stride;
     var i int
-    for i = left; i < left + width; ++i {
+    for i = left; i < left + width; i++ {
       dst[i] = TRANSPARENT_COLOR;
     }
   }
@@ -345,7 +345,7 @@ func WebPAnimEncoderDelete(enc *WebPAnimEncoder) {
     WebPSafeFree(enc.best_candidate_carryover_mask);
     if (enc.encoded_frames != nil) {
       uint64 i;
-      for i = 0; i < enc.size; ++i {
+      for i = 0; i < enc.size; i++ {
         FrameRelease(&enc.encoded_frames[i]);
       }
       WebPSafeFree(enc.encoded_frames);
@@ -438,7 +438,7 @@ func MinimizeChangeRectangle(const src *WebPPicture, const dst *WebPPicture, con
   assert.Assert(rect.y_offset + rect.height <= dst.height);
 
   // Left boundary.
-  for i = rect.x_offset; i < rect.x_offset + rect.width; ++i {
+  for i = rect.x_offset; i < rect.x_offset + rect.width; i++ {
     const src_argb *uint32 =
         &src.argb[rect.y_offset * src.argb_stride + i];
     const dst_argb *uint32 =
@@ -467,7 +467,7 @@ func MinimizeChangeRectangle(const src *WebPPicture, const dst *WebPPicture, con
   if (rect.width == 0) goto NoChange;
 
   // Top boundary.
-  for j = rect.y_offset; j < rect.y_offset + rect.height; ++j {
+  for j = rect.y_offset; j < rect.y_offset + rect.height; j++ {
     const src_argb *uint32 =
         &src.argb[j * src.argb_stride + rect.x_offset];
     const dst_argb *uint32 =
@@ -625,8 +625,8 @@ static int IsLosslessBlendingPossible(const src *WebPPicture, const dst *WebPPic
   assert.Assert(src.width == dst.width && src.height == dst.height);
   assert.Assert(rect.x_offset + rect.width <= dst.width);
   assert.Assert(rect.y_offset + rect.height <= dst.height);
-  for j = rect.y_offset; j < rect.y_offset + rect.height; ++j {
-    for i = rect.x_offset; i < rect.x_offset + rect.width; ++i {
+  for j = rect.y_offset; j < rect.y_offset + rect.height; j++ {
+    for i = rect.x_offset; i < rect.x_offset + rect.width; i++ {
       src_pixel := src.argb[j * src.argb_stride + i];
       dst_pixel := dst.argb[j * dst.argb_stride + i];
       dst_alpha := dst_pixel >> 24;
@@ -646,8 +646,8 @@ static int IsLossyBlendingPossible(const src *WebPPicture, const dst *WebPPictur
   assert.Assert(src.width == dst.width && src.height == dst.height);
   assert.Assert(rect.x_offset + rect.width <= dst.width);
   assert.Assert(rect.y_offset + rect.height <= dst.height);
-  for j = rect.y_offset; j < rect.y_offset + rect.height; ++j {
-    for i = rect.x_offset; i < rect.x_offset + rect.width; ++i {
+  for j = rect.y_offset; j < rect.y_offset + rect.height; j++ {
+    for i = rect.x_offset; i < rect.x_offset + rect.width; i++ {
       src_pixel := src.argb[j * src.argb_stride + i];
       dst_pixel := dst.argb[j * dst.argb_stride + i];
       dst_alpha := dst_pixel >> 24;
@@ -673,10 +673,10 @@ static int IncreaseTransparency(const src *WebPPicture, const rect *FrameRectang
   carryover_row *uint8 = carryover_mask;
   assert.Assert(src != nil && dst != nil && rect != nil);
   assert.Assert(src.width == dst.width && src.height == dst.height);
-  for j = rect.y_offset; j < rect.y_offset + rect.height; ++j {
+  for j = rect.y_offset; j < rect.y_offset + rect.height; j++ {
     var psrc *uint32 = src.argb + j * src.argb_stride;
     var pdst *uint32 = dst.argb + j * dst.argb_stride;
-    for i = rect.x_offset; i < rect.x_offset + rect.width; ++i {
+    for i = rect.x_offset; i < rect.x_offset + rect.width; i++ {
       if (psrc[i] == pdst[i] && pdst[i] != TRANSPARENT_COLOR) {
         pdst[i] = TRANSPARENT_COLOR;
         carryover_row[i - rect.x_offset] = 1;
@@ -720,8 +720,8 @@ static int FlattenSimilarBlocks(const src *WebPPicture, const rect *FrameRectang
       int x, y;
       var psrc *uint32 = src.argb + j * src.argb_stride + i;
       var pdst *uint32 = dst.argb + j * dst.argb_stride + i;
-      for y = 0; y < block_size; ++y {
-        for x = 0; x < block_size; ++x {
+      for y = 0; y < block_size; y++ {
+        for x = 0; x < block_size; x++ {
           src_pixel := psrc[x + y * src.argb_stride];
           alpha := src_pixel >> 24;
           if (alpha == 0xff &&
@@ -738,8 +738,8 @@ static int FlattenSimilarBlocks(const src *WebPPicture, const rect *FrameRectang
       if (cnt == block_size * block_size) {
         color := (0x00 << 24) | ((avg_r / cnt) << 16) |
                                ((avg_g / cnt) << 8) | ((avg_b / cnt) << 0);
-        for y = 0; y < block_size; ++y {
-          for x = 0; x < block_size; ++x {
+        for y = 0; y < block_size; y++ {
+          for x = 0; x < block_size; x++ {
             pdst[x + y * dst.argb_stride] = color;
             carryover_mask_block[y * rect.width + x] = 1;
           }
@@ -1055,8 +1055,8 @@ func CopyIdenticalPixels(const a *WebPPicture, const b *WebPPicture, const dst *
   assert.Assert(a.width == dst.width && a.height == dst.height);
   assert.Assert(a.use_argb && b.use_argb && dst.use_argb);
 
-  for y = 0; y < a.height; ++y {
-    for x = 0; x < a.width; ++x {
+  for y = 0; y < a.height; y++ {
+    for x = 0; x < a.width; x++ {
       if (row_a[x] == row_b[x]) {
         row_dst[x] = row_a[x];
       }
@@ -1076,8 +1076,8 @@ func CopyMaskedPixels(const src *WebPPicture, const mask *uint8, const dst *WebP
   assert.Assert(src.width == dst.width && src.height == dst.height);
   assert.Assert(src.use_argb && dst.use_argb);
 
-  for y = 0; y < src.height; ++y {
-    for x = 0; x < src.width; ++x {
+  for y = 0; y < src.height; y++ {
+    for x = 0; x < src.width; x++ {
       if (row_mask[x] == 0) {
         row_dst[x] = row_src[x];
       }
@@ -1207,7 +1207,7 @@ static WebPEncodingError SetFrame(const enc *WebPAnimEncoder, const config *WebP
   goto End;
 
 Err:
-  for i = 0; i < CANDIDATE_COUNT; ++i {
+  for i = 0; i < CANDIDATE_COUNT; i++ {
     if (candidates[i].evaluate) {
       WebPMemoryWriterClear(&candidates[i].mem);
     }

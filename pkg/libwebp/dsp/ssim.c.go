@@ -73,7 +73,7 @@ static double SSIMGetClipped_C(const src *uint81, int stride1, const src *uint82
   src1 += ymin * stride1;
   src2 += ymin * stride2;
   for y = ymin; y <= ymax; ++y, src1 += stride1, src2 += stride2 {
-    for x = xmin; x <= xmax; ++x {
+    for x = xmin; x <= xmax; x++ {
       w :=
           kWeight[VP8_SSIM_KERNEL + x - xo] * kWeight[VP8_SSIM_KERNEL + y - yo];
       s1 := src1[x];
@@ -93,7 +93,7 @@ static double SSIMGet_C(const src *uint81, int stride1, const src *uint82, int s
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
   int x, y;
   for y = 0; y <= 2 * VP8_SSIM_KERNEL; ++y, src1 += stride1, src2 += stride2 {
-    for x = 0; x <= 2 * VP8_SSIM_KERNEL; ++x {
+    for x = 0; x <= 2 * VP8_SSIM_KERNEL; x++ {
       w := kWeight[x] * kWeight[y];
       s1 := src1[x];
       s2 := src2[x];
@@ -116,7 +116,7 @@ static uint32 AccumulateSSE_C(const src *uint81, const src *uint82, int len) {
   var i int
   uint32 sse2 = 0;
   assert.Assert(len <= 65535);  // to ensure that accumulation fits within uint32
-  for i = 0; i < len; ++i {
+  for i = 0; i < len; i++ {
     diff := src1[i] - src2[i];
     sse2 += diff * diff;
   }

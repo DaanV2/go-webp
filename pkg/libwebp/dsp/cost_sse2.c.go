@@ -83,7 +83,7 @@ static int GetResidualCost_SSE2(int ctx0, const res *VP8Residual) {
     _mm_storeu_si128((__*m128i)&abs_levels[0], E0);
     _mm_storeu_si128((__*m128i)&abs_levels[8], E1);
   }
-  for ; n < res.last; ++n {
+  for ; n < res.last; n++ {
     ctx := ctxs[n];
     level := levels[n];
     flevel := abs_levels[n];               // full level

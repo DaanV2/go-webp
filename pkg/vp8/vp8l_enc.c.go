@@ -122,8 +122,8 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
     var prev_row *uint32 = nil;
     var curr_row *uint32 = argb;
     pix_prev := argb[0];  // Skip the first pixel.
-    for y = 0; y < height; ++y {
-      for x = 0; x < width; ++x {
+    for y = 0; y < height; y++ {
+      for x = 0; x < width; x++ {
         pix := curr_row[x];
         pix_diff := VP8LSubPixels(pix, pix_prev);
         pix_prev = pix;
@@ -159,7 +159,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
       histo.category[kHistoBluePred][0]++
       histo.category[kHistoAlphaPred][0]++
 
-      for j = 0; j < kHistoTotal; ++j {
+      for j = 0; j < kHistoTotal; j++ {
         entropy_comp[j] = VP8LBitsEntropy(histo.category[j], NUM_BUCKETS);
       }
       entropy[kDirect] = entropy_comp[kHistoAlpha] + entropy_comp[kHistoRed] +
@@ -193,7 +193,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
       entropy[kPalette] += (palette_size * uint64(8)) << LOG_2_PRECISION_BITS;
 
       *min_entropy_ix = kDirect;
-      for k = kDirect + 1; k <= last_mode_to_analyze; ++k {
+      for k = kDirect + 1; k <= last_mode_to_analyze; k++ {
         if (entropy[*min_entropy_ix] > entropy[k]) {
           *min_entropy_ix = (EntropyIx)k;
         }
@@ -210,7 +210,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
             &histo.category[kHistoPairs[*min_entropy_ix][0]];
         const blue_histo *HistogramBuckets =
             &histo.category[kHistoPairs[*min_entropy_ix][1]];
-        for i = 1; i < NUM_BUCKETS; ++i {
+        for i = 1; i < NUM_BUCKETS; i++ {
           if (((*red_histo)[i] | (*blue_histo)[i]) != 0) {
             *red_and_blue_always_zero = 0;
             break;
@@ -323,7 +323,7 @@ static int EncoderAnalyze(const enc *VP8LEncoder, CrunchConfig crunch_configs[CR
       do_no_cache = 1;
       // Go brute force on all transforms.
       *crunch_configs_size = 0;
-      for i = 0; i < kNumEntropyIx; ++i {
+      for i = 0; i < kNumEntropyIx; i++ {
         // We can only apply kPalette or kPaletteAndSpatial if we can indeed use
         // a palette.
         if ((i != kPalette && i != kPaletteAndSpatial) || use_palette) {
@@ -373,9 +373,9 @@ static int EncoderAnalyze(const enc *VP8LEncoder, CrunchConfig crunch_configs[CR
   }
   // Fill in the different LZ77s.
   assert.Assert(n_lz77s <= CRUNCH_SUBCONFIGS_MAX);
-  for i = 0; i < *crunch_configs_size; ++i {
+  for i = 0; i < *crunch_configs_size; i++ {
     var j int
-    for j = 0; j < n_lz77s; ++j {
+    for j = 0; j < n_lz77s; j++ {
       assert.Assert(j < CRUNCH_SUBCONFIGS_MAX);
       crunch_configs[i].sub_configs[j].lz77 =
           (j == 0) ? kLZ77Standard | kLZ77RLE : kLZ77Box;
@@ -415,11 +415,11 @@ static int GetHuffBitLengthsAndCodes(
   huff_tree *HuffmanTree = nil;
 
   // Iterate over all histograms and get the aggregate number of codes used.
-  for i = 0; i < histogram_image_size; ++i {
+  for i = 0; i < histogram_image_size; i++ {
     var histo *VP8LHistogram = histogram_image.histograms[i];
     var codes *HuffmanTreeCode = &huffman_codes[5 * i];
     assert.Assert(histo != nil);
-    for k = 0; k < 5; ++k {
+    for k = 0; k < 5; k++ {
       num_symbols :=
           (k == 0)   ? VP8LHistogramNumCodes(histo.palette_code_bits)
           : (k == 4) ? NUM_DISTANCE_CODES
@@ -438,7 +438,7 @@ static int GetHuffBitLengthsAndCodes(
 
     codes = (*uint16)mem_buf;
     lengths = (*uint8)&codes[total_length_size];
-    for i = 0; i < 5 * histogram_image_size; ++i {
+    for i = 0; i < 5 * histogram_image_size; i++ {
       bit_length := huffman_codes[i].num_symbols;
       huffman_codes[i].codes = codes;
       huffman_codes[i].code_lengths = lengths;
@@ -456,7 +456,7 @@ static int GetHuffBitLengthsAndCodes(
   if (buf_rle == nil || huff_tree == nil) goto End;
 
   // Create Huffman trees.
-  for i = 0; i < histogram_image_size; ++i {
+  for i = 0; i < histogram_image_size; i++ {
     var codes *HuffmanTreeCode = &huffman_codes[5 * i];
     var histo *VP8LHistogram = histogram_image.histograms[i];
     VP8LCreateHuffmanTree(histo.literal, 15, buf_rle, huff_tree, codes + 0);
@@ -490,7 +490,7 @@ func StoreHuffmanTreeOfHuffmanTreeToBitMask(/* const */ bw *VP8LBitWriter, /* co
     }
   }
   VP8LPutBits(bw, codes_to_store - 4, 4);
-  for i = 0; i < codes_to_store; ++i {
+  for i = 0; i < codes_to_store; i++ {
     VP8LPutBits(bw, code_length_bitdepth[kStorageOrder[i]], 3);
   }
 }
@@ -498,13 +498,13 @@ func StoreHuffmanTreeOfHuffmanTreeToBitMask(/* const */ bw *VP8LBitWriter, /* co
 func ClearHuffmanTreeIfOnlyOneSymbol(/* const */ huffman_code *HuffmanTreeCode) {
   var k int
   count := 0;
-  for k = 0; k < huffman_code.num_symbols; ++k {
+  for k = 0; k < huffman_code.num_symbols; k++ {
     if (huffman_code.code_lengths[k] != 0) {
       ++count;
       if (count > 1) return;
     }
   }
-  for k = 0; k < huffman_code.num_symbols; ++k {
+  for k = 0; k < huffman_code.num_symbols; k++ {
     huffman_code.code_lengths[k] = 0;
     huffman_code.codes[k] = 0;
   }
@@ -512,7 +512,7 @@ func ClearHuffmanTreeIfOnlyOneSymbol(/* const */ huffman_code *HuffmanTreeCode) 
 
 func StoreHuffmanTreeToBitMask(/* const */ bw *VP8LBitWriter, /* const */ tokens *HuffmanTreeToken, /* const */ num_tokens int , /* const */ huffman_code *HuffmanTreeCode) {
   var i int
-  for i = 0; i < num_tokens; ++i {
+  for i = 0; i < num_tokens; i++ {
     ix := tokens[i].code;
     extra_bits := tokens[i].extra_bits;
     VP8LPutBits(bw, huffman_code.codes[ix], huffman_code.code_lengths[ix]);
@@ -547,7 +547,7 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
     uint32 histogram[CODE_LENGTH_CODES] = {0}
     uint8 buf_rle[CODE_LENGTH_CODES] = {0}
     var i int
-    for i = 0; i < num_tokens; ++i {
+    for i = 0; i < num_tokens; i++ {
       ++histogram[tokens[i].code];
     }
 
@@ -604,7 +604,7 @@ func StoreHuffmanCode(const bw *VP8LBitWriter, const huff_tree *HuffmanTree, con
   kMaxSymbol := 1 << kMaxBits;
 
   // Check whether it's a small tree.
-  for i = 0; i < huffman_code.num_symbols && count < 3; ++i {
+  for i = 0; i < huffman_code.num_symbols && count < 3; i++ {
     if (huffman_code.code_lengths[i] != 0) {
       if (count < 2) symbols[count] = i;
       ++count;
@@ -669,7 +669,7 @@ static int StoreImageToBitMask(const bw *VP8LBitWriter, int width, int histo_bit
     }
     if (PixOrCopyIsLiteral(v)) {
       order = []uint8{1, 2, 0, 3}
-      for k := 0; k < 4; ++k {
+      for k := 0; k < 4; k++ {
         code := PixOrCopyLiteral(v, order[k]);
         WriteHuffmanCode(bw, codes + k, code);
       }
@@ -752,7 +752,7 @@ static int EncodeImageNoHuffman(const bw *VP8LBitWriter, const argb *uint32, con
   VP8LPutBits(bw, 0, 1);
 
   // Find maximum number of symbols for the huffman tree-set.
-  for i = 0; i < 5; ++i {
+  for i = 0; i < 5; i++ {
     var codes *HuffmanTreeCode = &huffman_codes[i];
     if (max_tokens < codes.num_symbols) {
       max_tokens = codes.num_symbols;
@@ -766,7 +766,7 @@ static int EncodeImageNoHuffman(const bw *VP8LBitWriter, const argb *uint32, con
   }
 
   // Store Huffman codes.
-  for i = 0; i < 5; ++i {
+  for i = 0; i < 5; i++ {
     var codes *HuffmanTreeCode = &huffman_codes[i];
     StoreHuffmanCode(bw, huff_tree, tokens, codes);
     ClearHuffmanTreeIfOnlyOneSymbol(codes);
@@ -858,7 +858,7 @@ static int EncodeImageInternal(
       goto Error;
     }
 
-    for i_cache = 0; i_cache < (sub_config.do_no_cache ? 2 : 1); ++i_cache {
+    for i_cache = 0; i_cache < (sub_config.do_no_cache ? 2 : 1); i_cache++ {
       cache_bits_tmp := (i_cache == 0) ? cache_bits_best : 0;
       histogram_bits := histogram_bits_in;
       // Speed-up: no need to study the no-cache case if it was already studied
@@ -913,7 +913,7 @@ static int EncodeImageInternal(
 
       // Huffman image + meta huffman.
       histogram_image_size = 0;
-      for i = 0; i < histogram_image_xysize; ++i {
+      for i = 0; i < histogram_image_xysize; i++ {
         if (histogram_argb[i] >= histogram_image_size) {
           histogram_image_size = histogram_argb[i] + 1;
         }
@@ -937,7 +937,7 @@ static int EncodeImageInternal(
       {
         max_tokens := 0;
         // Find maximum number of symbols for the huffman tree-set.
-        for i = 0; i < 5 * histogram_image_size; ++i {
+        for i = 0; i < 5 * histogram_image_size; i++ {
           var codes *HuffmanTreeCode = &huffman_codes[i];
           if (max_tokens < codes.num_symbols) {
             max_tokens = codes.num_symbols;
@@ -948,7 +948,7 @@ static int EncodeImageInternal(
           WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
           goto Error;
         }
-        for i = 0; i < 5 * histogram_image_size; ++i {
+        for i = 0; i < 5 * histogram_image_size; i++ {
           var codes *HuffmanTreeCode = &huffman_codes[i];
           StoreHuffmanCode(bw, huff_tree, tokens, codes);
           ClearHuffmanTreeIfOnlyOneSymbol(codes);
@@ -1157,7 +1157,7 @@ static int MakeInputImageCopy(const enc *VP8LEncoder) {
     dst *uint32 = enc.argb;
     var src *uint32 = picture.argb;
     var y int
-    for y = 0; y < height; ++y {
+    for y = 0; y < height; y++ {
       memcpy(dst, src, width * sizeof(*dst));
       dst += width;
       src += picture.argb_stride;
@@ -1205,8 +1205,8 @@ func APPLY_PALETTE_FOR(COLOR_INDEX int) {
 //   do {
     prev_pix := palette[0];
     prev_idx := 0;
-    for y = 0; y < height; ++y {
-      for x = 0; x < width; ++x {
+    for y = 0; y < height; y++ {
+      for x = 0; x < width; x++ {
         pix := src[x];
         if (pix != prev_pix) {
           prev_idx = COLOR_INDEX;
@@ -1246,11 +1246,11 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
     // Try to find a perfect hash function able to go from a color to an index
     // within 1 << PALETTE_INV_SIZE_BITS in order to build a hash map to go
     // from color to index in palette.
-    for i = 0; i < 3; ++i {
+    for i = 0; i < 3; i++ {
       use_LUT := 1;
       // Set each element in buffer to max uint16.
       memset(buffer, 0xff, sizeof(buffer));
-      for j = 0; j < palette_size; ++j {
+      for j = 0; j < palette_size; j++ {
         ind := hash_functions[i](palette[j]);
         if (buffer[ind] != uint(0xffff)) {
           use_LUT = 0;
@@ -1413,7 +1413,7 @@ static int EncodeStreamHook(input *void, data *void2) {
     goto Error;
   }
 
-  for idx = 0; idx < num_crunch_configs; ++idx {
+  for idx = 0; idx < num_crunch_configs; idx++ {
     entropy_idx := crunch_configs[idx].entropy_idx;
     remaining_percent := 97 / num_crunch_configs, percent_range;
     predictor_transform_bits := 0, cross_color_transform_bits = 0;
@@ -1583,7 +1583,7 @@ int VP8LEncodeStream(const config *WebPConfig, const picture *WebPPicture, const
   // Split the configs between the main and side threads (if any).
   if (config.thread_level > 0) {
     num_crunch_configs_side = num_crunch_configs_main / 2;
-    for idx = 0; idx < num_crunch_configs_side; ++idx {
+    for idx = 0; idx < num_crunch_configs_side; idx++ {
       params_side.crunch_configs[idx] =
           crunch_configs[num_crunch_configs_main - num_crunch_configs_side +
                          idx];
@@ -1591,7 +1591,7 @@ int VP8LEncodeStream(const config *WebPConfig, const picture *WebPPicture, const
     params_side.num_crunch_configs = num_crunch_configs_side;
   }
   num_crunch_configs_main -= num_crunch_configs_side;
-  for idx = 0; idx < num_crunch_configs_main; ++idx {
+  for idx = 0; idx < num_crunch_configs_main; idx++ {
     params_main.crunch_configs[idx] = crunch_configs[idx];
   }
   params_main.num_crunch_configs = num_crunch_configs_main;
@@ -1599,7 +1599,7 @@ int VP8LEncodeStream(const config *WebPConfig, const picture *WebPPicture, const
   // Fill in the parameters for the thread workers.
   {
     params_size := (num_crunch_configs_side > 0) ? 2 : 1;
-    for idx = 0; idx < params_size; ++idx {
+    for idx = 0; idx < params_size; idx++ {
       // Create the parameters for each worker.
       var worker *WebPWorker = (idx == 0) ? &worker_main : &worker_side;
       const param *StreamEncodeContext =

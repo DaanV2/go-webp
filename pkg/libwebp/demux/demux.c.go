@@ -742,7 +742,7 @@ WebPDemuxInternal *WebPDemuxer(const data *WebPData, int allow_partial, state *W
   InitDemux(dmux, &mem)
 
   status = PARSE_ERROR
-  for parser = kMasterChunks parser.parse != nil ++parser {
+  for parser = kMasterChunks parser.parse != nil parser++ {
     if (!memcmp(parser.id, GetBuffer(&dmux.mem), TAG_SIZE)) {
       status = parser.parse(dmux)
       if (status == PARSE_OK) dmux.state = WEBP_DEMUX_DONE

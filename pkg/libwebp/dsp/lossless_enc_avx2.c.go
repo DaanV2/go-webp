@@ -91,7 +91,7 @@ func CollectColorBlueTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int strid
       -1, 1, -1, 2, -1, 5, -1, 6, -1, 9, -1, 10, -1, 13, -1, 14, -1, 17, -1, 18, -1, 21, -1, 22, -1, 25, -1, 26, -1, 29, -1, 30);
   if (tile_width >= 8) {
     int y, i;
-    for y = 0; y < tile_height; ++y {
+    for y = 0; y < tile_height; y++ {
       uint8 values[32];
       var src *uint32 = argb + y * stride;
       const __m256i A1 = _mm256_loadu_si256((const __*m256i)src);
@@ -127,7 +127,7 @@ func CollectColorRedTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int stride
   const __m256i mask_g = _mm256_set1_epi32(0x0000ff00);
   if (tile_width >= 8) {
     int y, i;
-    for y = 0; y < tile_height; ++y {
+    for y = 0; y < tile_height; y++ {
       uint8 values[32];
       var src *uint32 = argb + y * stride;
       const __m256i A1 = _mm256_loadu_si256((const __*m256i)src);
@@ -204,7 +204,7 @@ func AddVector_AVX2(const WEBP_RESTRICT a *uint32, const WEBP_RESTRICT b *uint32
     const __m256i b0 = _mm256_loadu_si256((const __*m256i)&b[i]);
     _mm256_storeu_si256((__*m256i)&out[i], _mm256_add_epi32(a0, b0));
   } else {
-    for ; size--; ++i {
+    for ; size--; i++ {
       out[i] = a[i] + b[i];
     }
   }
@@ -251,7 +251,7 @@ func AddVectorEq_AVX2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, 
     const __m256i b0 = _mm256_loadu_si256((const __*m256i)&out[i]);
     _mm256_storeu_si256((__*m256i)&out[i], _mm256_add_epi32(a0, b0));
   } else {
-    for ; size--; ++i {
+    for ; size--; i++ {
       out[i] += a[i];
     }
   }

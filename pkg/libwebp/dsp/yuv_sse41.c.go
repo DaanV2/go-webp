@@ -191,7 +191,7 @@ func YuvToRgbRow_SSE41(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint
     u += 16;
     v += 16;
   }
-  for ; n < len; ++n {  // Finish off
+  for ; n < len; n++ {  // Finish off
     VP8YuvToRgb(y[0], u[0], v[0], dst);
     dst += 3;
     y += 1;
@@ -226,7 +226,7 @@ func YuvToBgrRow_SSE41(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint
     u += 16;
     v += 16;
   }
-  for ; n < len; ++n {  // Finish off
+  for ; n < len; n++ {  // Finish off
     VP8YuvToBgr(y[0], u[0], v[0], dst);
     dst += 3;
     y += 1;
@@ -469,7 +469,7 @@ func ConvertARGBToY_SSE41(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uin
     ConvertRGBToYImpl_SSE41(&rgb[1], &rgb[3], &rgb[5], &Y1);
     STORE_16(_mm_packus_epi16(Y0, Y1), y + i);
   }
-  for ; i < width; ++i {  // left-over
+  for ; i < width; i++ {  // left-over
     p := argb[i];
     y[i] =
         VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);

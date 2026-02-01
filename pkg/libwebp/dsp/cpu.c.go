@@ -108,7 +108,7 @@ static int CheckSlowModel(int info) {
   family := (info >> 8) & 0xf;
   if (family == 0x06) {
     uint64 i;
-    for i = 0; i < sizeof(kSlowModels) / sizeof(kSlowModels[0]); ++i {
+    for i = 0; i < sizeof(kSlowModels) / sizeof(kSlowModels[0]); i++ {
       if (model == kSlowModels[i]) return 1;
     }
   }

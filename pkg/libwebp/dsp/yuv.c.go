@@ -69,7 +69,7 @@ ROW_FUNC(YuvToRgb565Row, VP8YuvToRgb565, 2)
 // Main call for processing a plane with a WebPSamplerRowFunc function:
 func WebPSamplerProcessPlane(const WEBP_RESTRICT y *uint8, int y_stride, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, int uv_stride, WEBP_RESTRICT dst *uint8, int dst_stride, int width, int height, WebPSamplerRowFunc func) {
   var j int
-  for j = 0; j < height; ++j {
+  for j = 0; j < height; j++ {
     func(y, u, v, dst, width);
     y += y_stride;
     if (j & 1) {
@@ -134,7 +134,7 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
 
 func ConvertARGBToY_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width) {
   var i int
-  for i = 0; i < width; ++i {
+  for i = 0; i < width; i++ {
     p := argb[i];
     y[i] =
         VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);
@@ -145,7 +145,7 @@ func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *ui
   // No rounding. Last pixel is dealt with separately.
   uv_width := src_width >> 1;
   var i int
-  for i = 0; i < uv_width; ++i {
+  for i = 0; i < uv_width; i++ {
     v0 := argb[2 * i + 0];
     v1 := argb[2 * i + 1];
     // VP8RGBToU/V expects four accumulated pixels. Hence we need to
@@ -230,11 +230,11 @@ WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
     var v int
     const double scale = (double)(1 << GAMMA_TAB_FIX) / kGammaScale;
     const double norm = 1. / 255.;
-    for v = 0; v <= 255; ++v {
+    for v = 0; v <= 255; v++ {
       kGammaToLinearTab[v] =
           (uint16)(pow(norm * v, kGamma) * kGammaScale + .5);
     }
-    for v = 0; v <= GAMMA_TAB_SIZE; ++v {
+    for v = 0; v <= GAMMA_TAB_SIZE; v++ {
       kLinearToGammaTab[v] = (int)(255. * pow(scale * v, 1. / kGamma) + .5);
     }
     kGammaTablesOk = 1;
@@ -412,7 +412,7 @@ func ImportYUVAFromRGBA_C(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
   WebPInitGammaTables();
 
   // Downsample Y/U/V planes, two rows at a time
-  for y = 0; y < (height >> 1); ++y {
+  for y = 0; y < (height >> 1); y++ {
     rows_have_alpha := has_alpha;
     if (is_rgb) {
       WebPConvertRGBToY(r_ptr, dst_y, width, step);

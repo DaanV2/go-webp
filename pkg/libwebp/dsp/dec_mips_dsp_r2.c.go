@@ -856,7 +856,7 @@ func DC8uvNoTop(dst *uint8) {  // DC with no top samples
     var y int                                            \
     var top *uint8 = (DST) - BPS;                 \
     top_1 := ((int)top[-1] << 16) + top[-1]; \
-    for y = 0; y < (SIZE); ++y {                    \
+    for y = 0; y < (SIZE); y++ {                    \
       CLIP_8B_TO_DST((DST), top, (SIZE));             \
       (DST) += BPS;                                   \
     }                                                 \

@@ -169,7 +169,7 @@ static  func ExportRowExpand_0(
       frow += 4;
       dst += 4;
     }
-    for x_out = 0; x_out < length; ++x_out {
+    for x_out = 0; x_out < length; x_out++ {
       J := frow[x_out];
       v := (int)MULT_FIX(J, wrk.fy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
@@ -240,7 +240,7 @@ static  func ExportRowExpand_1(
       dst += 4;
       length -= 4;
     }
-    for x_out = 0; x_out < length; ++x_out {
+    for x_out = 0; x_out < length; x_out++ {
       I := (uint64)A * frow[x_out] + (uint64)B * irow[x_out];
       J := (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       v := (int)MULT_FIX(J, wrk.fy_scale);
@@ -339,7 +339,7 @@ static  func ExportRowShrink_0(
       dst    += 4;
       length -= 4;
     }
-    for x_out = 0; x_out < length; ++x_out {
+    for x_out = 0; x_out < length; x_out++ {
       frac := (uint32)MULT_FIX_FLOOR(frow[x_out], yscale);
       v := (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
@@ -400,7 +400,7 @@ static  func ExportRowShrink_1(
       irow   += 4;
       dst    += 4;
     }
-    for x_out = 0; x_out < length; ++x_out {
+    for x_out = 0; x_out < length; x_out++ {
       v := (int)MULT_FIX(irow[x_out], wrk.fxy_scale);
       dst[x_out] = (v > 255) ? uint(255) : (uint8)v;
       irow[x_out] = 0;

@@ -169,7 +169,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
     var x int
     var p_argb *uint32 = argb;
     argb += stride;
-    for x = 0; x < (tile_width >> 1); ++x {
+    for x = 0; x < (tile_width >> 1); x++ {
       int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
       __asm__ volatile(
           "lw           %[temp0],  0(%[p_argb])             \n\t"
@@ -212,7 +212,7 @@ func CollectColorRedTransforms_MIPSdspR2(
     var x int
     var p_argb *uint32 = argb;
     argb += stride;
-    for x = 0; x < (tile_width >> 1); ++x {
+    for x = 0; x < (tile_width >> 1); x++ {
       int temp0, temp1, temp2, temp3, temp4;
       __asm__ volatile(
           "lw           %[temp0],  0(%[p_argb])             \n\t"

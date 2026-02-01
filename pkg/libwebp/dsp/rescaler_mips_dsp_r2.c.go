@@ -104,7 +104,7 @@ func ExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
         : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo"
       );
     }
-    for i = 0; i < (x_out_max & 0x3); ++i {
+    for i = 0; i < (x_out_max & 0x3); i++ {
       frac := (uint32)MULT_FIX_FLOOR(*frow++, yscale);
       v := (int)MULT_FIX(*irow - frac, wrk.fxy_scale);
       *dst++ = (v > 255) ? 255u : (uint8)v;
@@ -149,7 +149,7 @@ func ExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
         : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo"
       );
     }
-    for i = 0; i < (x_out_max & 0x3); ++i {
+    for i = 0; i < (x_out_max & 0x3); i++ {
       v := (int)MULT_FIX_FLOOR(*irow, wrk.fxy_scale);
       *dst++ = (v > 255) ? uint(255) : (uint8)v;
       *irow++ = 0;
@@ -205,7 +205,7 @@ func ExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
           : [temp7] "r"(temp7), [temp6] "r"(temp6)
           : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo");
     }
-    for i = 0; i < (x_out_max & 0x3); ++i {
+    for i = 0; i < (x_out_max & 0x3); i++ {
       J := *frow++;
       v := (int)MULT_FIX(J, wrk.fy_scale);
       *dst++ = (v > 255) ? uint(255) : (uint8)v;
@@ -268,7 +268,7 @@ func ExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
           : [temp7] "r"(temp7), [temp6] "r"(temp6), [A] "r"(A), [B] "r"(B)
           : "memory", "hi", "lo", "$ac1hi", "$ac1lo", "$ac2hi", "$ac2lo", "$ac3hi", "$ac3lo");
     }
-    for i = 0; i < (x_out_max & 0x3); ++i {
+    for i = 0; i < (x_out_max & 0x3); i++ {
       I := (uint64)A * *frow++ + (uint64)B * *irow++;
       J := (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX);
       v := (int)MULT_FIX(J, wrk.fy_scale);

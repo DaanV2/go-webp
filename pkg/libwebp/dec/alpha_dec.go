@@ -141,7 +141,7 @@ func ALPHDecode(/* const  */dec *VP8Decoder, row, num_rows int) int {
     dst *uint8 = dec.alpha_plane + row * width;
     assert.Assert(deltas <= &dec.alpha_data[dec.alpha_data_size]);
     assert.Assert(WebPUnfilters[alph_dec.filter] != nil);
-    for y = 0; y < num_rows; ++y {
+    for y = 0; y < num_rows; y++ {
       WebPUnfilters[alph_dec.filter](prev_line, deltas, dst, width);
       prev_line = dst;
       dst += width;

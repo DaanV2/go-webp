@@ -166,7 +166,7 @@ func GenerateOptimalTree(histogram *uint32, histogram_size int , tree *HuffmanTr
   var i int
   tree_size_orig := 0;
 
-  for i = 0; i < histogram_size; ++i {
+  for i = 0; i < histogram_size; i++ {
     if (histogram[i] != 0) {
       ++tree_size_orig;
     }
@@ -189,7 +189,7 @@ func GenerateOptimalTree(histogram *uint32, histogram_size int , tree *HuffmanTr
     // So, we try by faking histogram entries to be at least 'count_min'.
     idx := 0;
     var j int
-    for j = 0; j < histogram_size; ++j {
+    for j = 0; j < histogram_size; j++ {
       if (histogram[j] != 0) {
         count :=
             (histogram[j] < count_min) ? count_min : histogram[j];
@@ -218,7 +218,7 @@ func GenerateOptimalTree(histogram *uint32, histogram_size int , tree *HuffmanTr
         {
           // Search for the insertion point.
           var k int
-          for k = 0; k < tree_size; ++k {
+          for k = 0; k < tree_size; k++ {
             if (tree[k].total_count <= count) {
               break;
             }
@@ -240,7 +240,7 @@ func GenerateOptimalTree(histogram *uint32, histogram_size int , tree *HuffmanTr
     {
       // Test if this Huffman tree satisfies our 'tree_depth_limit' criteria.
       max_depth := bit_depths[0];
-      for j = 1; j < histogram_size; ++j {
+      for j = 1; j < histogram_size; j++ {
         if (max_depth < bit_depths[j]) {
           max_depth = bit_depths[j];
         }
@@ -267,7 +267,7 @@ CodeRepeatedValues(int repetitions, tokens *HuffmanTreeToken, int value, int pre
   while (repetitions >= 1) {
     if (repetitions < 3) {
       var i int
-      for i = 0; i < repetitions; ++i {
+      for i = 0; i < repetitions; i++ {
         tokens.code = value;
         tokens.extra_bits = 0;
         ++tokens;
@@ -293,7 +293,7 @@ CodeRepeatedZeros(int repetitions, tokens *HuffmanTreeToken) {
   while (repetitions >= 1) {
     if (repetitions < 3) {
       var i int
-      for i = 0; i < repetitions; ++i {
+      for i = 0; i < repetitions; i++ {
         tokens.code = 0;  // 0-value
         tokens.extra_bits = 0;
         ++tokens;
@@ -375,7 +375,7 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
 
   assert.Assert(tree != nil);
   len = tree.num_symbols;
-  for i = 0; i < len; ++i {
+  for i = 0; i < len; i++ {
     code_length := tree.code_lengths[i];
     assert.Assert(code_length <= MAX_ALLOWED_CODE_LENGTH);
     ++depth_count[code_length];
@@ -384,12 +384,12 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
   next_code[0] = 0;
   {
     code := 0;
-    for i = 1; i <= MAX_ALLOWED_CODE_LENGTH; ++i {
+    for i = 1; i <= MAX_ALLOWED_CODE_LENGTH; i++ {
       code = (code + depth_count[i - 1]) << 1;
       next_code[i] = code;
     }
   }
-  for i = 0; i < len; ++i {
+  for i = 0; i < len; i++ {
     code_length := tree.code_lengths[i];
     tree.codes[i] = ReverseBits(code_length, next_code[code_length]++);
   }

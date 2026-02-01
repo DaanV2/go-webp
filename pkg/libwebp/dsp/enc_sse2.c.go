@@ -566,7 +566,7 @@ func CollectHistogram_SSE2(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT p
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
-  for j = start_block; j < end_block; ++j {
+  for j = start_block; j < end_block; j++ {
     int16 out[16];
     var k int
 
@@ -593,7 +593,7 @@ func CollectHistogram_SSE2(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT p
     }
 
     // Convert coefficients to bin.
-    for k = 0; k < 16; ++k {
+    for k = 0; k < 16; k++ {
       ++distribution[out[k]];
     }
   }
@@ -607,7 +607,7 @@ func CollectHistogram_SSE2(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT p
 static  func Put8x8uv_SSE2(uint8 v, dst *uint8) {
   var j int
   const __m128i values = _mm_set1_epi8((byte)v);
-  for j = 0; j < 8; ++j {
+  for j = 0; j < 8; j++ {
     _mm_storel_epi64((__*m128i)(dst + j * BPS), values);
   }
 }
@@ -615,7 +615,7 @@ static  func Put8x8uv_SSE2(uint8 v, dst *uint8) {
 static  func Put16_SSE2(uint8 v, dst *uint8) {
   var j int
   const __m128i values = _mm_set1_epi8((byte)v);
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     _mm_store_si128((__*m128i)(dst + j * BPS), values);
   }
 }
@@ -623,7 +623,7 @@ static  func Put16_SSE2(uint8 v, dst *uint8) {
 static  func Fill_SSE2(dst *uint8, int value, int size) {
   if (size == 4) {
     var j int
-    for j = 0; j < 4; ++j {
+    for j = 0; j < 4; j++ {
       memset(dst + j * BPS, value, 4);
     }
   } else if (size == 8) {
@@ -636,7 +636,7 @@ static  func Fill_SSE2(dst *uint8, int value, int size) {
 static  func VE8uv_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   var j int
   const __m128i top_values = _mm_loadl_epi64((const __*m128i)top);
-  for j = 0; j < 8; ++j {
+  for j = 0; j < 8; j++ {
     _mm_storel_epi64((__*m128i)(dst + j * BPS), top_values);
   }
 }
@@ -644,7 +644,7 @@ static  func VE8uv_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8
 static  func VE16_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   const __m128i top_values = _mm_load_si128((const __*m128i)top);
   var j int
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     _mm_store_si128((__*m128i)(dst + j * BPS), top_values);
   }
 }
@@ -663,7 +663,7 @@ static  func VerticalPred_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top
 
 static  func HE8uv_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8) {
   var j int
-  for j = 0; j < 8; ++j {
+  for j = 0; j < 8; j++ {
     const __m128i values = _mm_set1_epi8((byte)left[j]);
     _mm_storel_epi64((__*m128i)dst, values);
     dst += BPS;
@@ -672,7 +672,7 @@ static  func HE8uv_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint
 
 static  func HE16_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8) {
   var j int
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     const __m128i values = _mm_set1_epi8((byte)left[j]);
     _mm_store_si128((__*m128i)dst, values);
     dst += BPS;
@@ -841,7 +841,7 @@ static  func VE4_SSE2(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
   const __m128i avg = _mm_avg_epu8(b, BCDEFGH0);
   vals := _mm_cvtsi128_si32(avg);
   var i int
-  for i = 0; i < 4; ++i {
+  for i = 0; i < 4; i++ {
     WebPInt32ToMem(dst + i * BPS, vals);
   }
 }
@@ -1077,7 +1077,7 @@ static  int SSE_16xN_SSE2(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *u
   int32 tmp[4];
   var i int
 
-  for i = 0; i < num_pairs; ++i {
+  for i = 0; i < num_pairs; i++ {
     const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[BPS * 0]);
     const __m128i b0 = _mm_loadu_si128((const __*m128i)&b[BPS * 0]);
     const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[BPS * 1]);

@@ -61,7 +61,7 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
       uv0 := (3 * l_uv + tl_uv + uint(0x00020002)) >> 2;             \
       FUNC(bottom_y[0], uv0 & 0xff, (uv0 >> 16), bottom_dst);                 \
     }                                                                         \
-    for x = 1; x <= last_pixel_pair; ++x {                                  \
+    for x = 1; x <= last_pixel_pair; x++ {                                  \
       t_uv := LOAD_UV(top_u[x], top_v[x]); /* top sample */     \
       uv := LOAD_UV(cur_u[x], cur_v[x]);   /* sample */         \
       /* precompute invariant values associated with first and second         \
@@ -153,7 +153,7 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
     var x int                                                                    \
     assert.Assert(top_dst != nil);                                                  \
     {                                                                         \
-      for x = 0; x < half_len; ++x {                                        \
+      for x = 0; x < half_len; x++ {                                        \
         FUNC(top_y[2 * x + 0], top_u[x], top_v[x], top_dst + 8 * x + 0);      \
         FUNC(top_y[2 * x + 1], top_u[x], top_v[x], top_dst + 8 * x + 4);      \
       }                                                                       \
@@ -161,7 +161,7 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
         FUNC(top_y[2 * x + 0], top_u[x], top_v[x], top_dst + 8 * x);          \
     }                                                                         \
     if (bot_dst != nil) {                                                    \
-      for x = 0; x < half_len; ++x {                                        \
+      for x = 0; x < half_len; x++ {                                        \
         FUNC(bot_y[2 * x + 0], bot_u[x], bot_v[x], bot_dst + 8 * x + 0);      \
         FUNC(bot_y[2 * x + 1], bot_u[x], bot_v[x], bot_dst + 8 * x + 4);      \
       }                                                                       \

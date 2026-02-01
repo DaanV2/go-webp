@@ -36,7 +36,7 @@ static int VariableLevelCost(level int, const uint8 probas[NUM_PROBAS]) {
   bits := VP8LevelCodes[level - 1][1];
   cost := 0;
   var i int
-  for i = 2; pattern; ++i {
+  for i = 2; pattern; i++ {
     if (pattern & 1) {
       cost += VP8BitCost(bits & 1, probas[i]);
     }
@@ -54,25 +54,25 @@ func VP8CalculateLevelCosts(const proba *VP8EncProba) {
 
   if (!proba.dirty) return;  // nothing to do.
 
-  for ctype = 0; ctype < NUM_TYPES; ++ctype {
+  for ctype = 0; ctype < NUM_TYPES; ctype++ {
     var n int
-    for band = 0; band < NUM_BANDS; ++band {
-      for ctx = 0; ctx < NUM_CTX; ++ctx {
+    for band = 0; band < NUM_BANDS; band++ {
+      for ctx = 0; ctx < NUM_CTX; ctx++ {
         var p *uint8 = proba.coeffs[ctype][band][ctx];
         var table *uint16 = proba.level_cost[ctype][band][ctx];
         cost0 := (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
         cost_base := VP8BitCost(1, p[1]) + cost0;
         var v int
         table[0] = VP8BitCost(0, p[1]) + cost0;
-        for v = 1; v <= MAX_VARIABLE_LEVEL; ++v {
+        for v = 1; v <= MAX_VARIABLE_LEVEL; v++ {
           table[v] = cost_base + VariableLevelCost(v, p);
         }
         // Starting at level 67 and up, the variable part of the cost is
         // actually constant.
       }
     }
-    for n = 0; n < 16; ++n {  // replicate bands. We don't need to sentinel.
-      for ctx = 0; ctx < NUM_CTX; ++ctx {
+    for n = 0; n < 16; n++ {  // replicate bands. We don't need to sentinel.
+      for ctx = 0; ctx < NUM_CTX; ctx++ {
         proba.remapped_costs[ctype][n][ctx] =
             proba.level_cost[ctype][VP8EncBands[n]][ctx];
       }
@@ -135,8 +135,8 @@ int VP8GetCostLuma16(const it *VP8EncIterator, const rd *VP8ModeScore) {
 
   // AC
   VP8InitResidual(1, 0, enc, &res);
-  for y = 0; y < 4; ++y {
-    for x = 0; x < 4; ++x {
+  for y = 0; y < 4; y++ {
+    for x = 0; x < 4; x++ {
       ctx := it.top_nz[x] + it.left_nz[y];
       VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       R += VP8GetResidualCost(ctx, &res);
@@ -156,8 +156,8 @@ int VP8GetCostUV(const it *VP8EncIterator, const rd *VP8ModeScore) {
 
   VP8InitResidual(0, 2, enc, &res);
   for ch = 0; ch <= 2; ch += 2 {
-    for y = 0; y < 2; ++y {
-      for x = 0; x < 2; ++x {
+    for y = 0; y < 2; y++ {
+      for x = 0; x < 2; x++ {
         ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         R += VP8GetResidualCost(ctx, &res);
@@ -222,7 +222,7 @@ int VP8RecordCoeffs(int ctx, const res *VP8Residual) {
         bits := VP8LevelCodes[v - 1][1];
         pattern := VP8LevelCodes[v - 1][0];
         var i int
-        for i = 0; (pattern >>= 1) != 0; ++i {
+        for i = 0; (pattern >>= 1) != 0; i++ {
           mask := 2 << i;
           if (pattern & 1) VP8RecordStats(!!(bits & mask), s + 3 + i);
         }

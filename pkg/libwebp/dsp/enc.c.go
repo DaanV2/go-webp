@@ -47,7 +47,7 @@ const int VP8DspScan[16 + 4 + 4] = {
 func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], const histo *VP8Histogram) {
   max_value := 0, last_non_zero = 1;
   var k int
-  for k = 0; k <= MAX_COEFF_THRESH; ++k {
+  for k = 0; k <= MAX_COEFF_THRESH; k++ {
     value := distribution[k];
     if (value > 0) {
       if (value > max_value) max_value = value;
@@ -62,14 +62,14 @@ func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], const his
 func CollectHistogram_C(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
-  for j = start_block; j < end_block; ++j {
+  for j = start_block; j < end_block; j++ {
     var k int
     int16 out[16];
 
     VP8FTransform(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
 
     // Convert coefficients to bin.
-    for k = 0; k < 16; ++k {
+    for k = 0; k < 16; k++ {
       v := abs(out[k]) >> 3;
       clipped_value := clip_max(v, MAX_COEFF_THRESH);
       ++distribution[clipped_value];
@@ -91,7 +91,7 @@ static volatile tables_ok := 0;
 static WEBP_TSAN_IGNORE_FUNCTION func InitTables(){
   if (!tables_ok) {
     var i int
-    for i = -255; i <= 255 + 255; ++i {
+    for i = -255; i <= 255 + 255; i++ {
       clip1[255 + i] = clip_8b(i);
     }
     tables_ok = 1;
@@ -110,7 +110,7 @@ static  func ITransformOne(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT i
   int C[4 * 4], *tmp;
   var i int
   tmp = C;
-  for i = 0; i < 4; ++i {  // vertical pass
+  for i = 0; i < 4; i++ {  // vertical pass
     a := in[0] + in[8];
     b := in[0] - in[8];
     c :=
@@ -126,7 +126,7 @@ static  func ITransformOne(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT i
   }
 
   tmp = C;
-  for i = 0; i < 4; ++i {  // horizontal pass
+  for i = 0; i < 4; i++ {  // horizontal pass
     dc := tmp[0] + 4;
     a := dc + tmp[8];
     b := dc - tmp[8];
@@ -166,7 +166,7 @@ func FTransform_C(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint8
     tmp[2 + i * 4] = (a0 - a1) * 8;
     tmp[3 + i * 4] = (a3 * 2217 - a2 * 5352 + 937) >> 9;
   }
-  for i = 0; i < 4; ++i {
+  for i = 0; i < 4; i++ {
     a0 := (tmp[0 + i] + tmp[12 + i]);  // 15b
     a1 := (tmp[4 + i] + tmp[8 + i]);
     a2 := (tmp[4 + i] - tmp[8 + i]);
@@ -199,7 +199,7 @@ func FTransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
     tmp[2 + i * 4] = a3 - a2;
     tmp[3 + i * 4] = a0 - a1;
   }
-  for i = 0; i < 4; ++i {
+  for i = 0; i < 4; i++ {
     a0 := (tmp[0 + i] + tmp[8 + i]);  // 15b
     a1 := (tmp[4 + i] + tmp[12 + i]);
     a2 := (tmp[4 + i] - tmp[12 + i]);
@@ -223,7 +223,7 @@ func FTransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
 
 static  func Fill(dst *uint8, int value, int size) {
   var j int
-  for j = 0; j < size; ++j {
+  for j = 0; j < size; j++ {
     memset(dst + j * BPS, value, size);
   }
 }
@@ -240,7 +240,7 @@ static  func VerticalPred(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uin
 static  func HorizontalPred(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, int size) {
   if (left != nil) {
     var j int
-    for j = 0; j < size; ++j {
+    for j = 0; j < size; j++ {
       memset(dst + j * BPS, left[j], size);
     }
   } else {
@@ -253,10 +253,10 @@ static  func TrueMotion(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint
   if (left != nil) {
     if (top != nil) {
       var clip *uint8 = clip1 + 255 - left[-1];
-      for y = 0; y < size; ++y {
+      for y = 0; y < size; y++ {
         var clip_table *uint8 = clip + left[y];
         var x int
-        for x = 0; x < size; ++x {
+        for x = 0; x < size; x++ {
           dst[x] = clip_table[top[x]];
         }
         dst += BPS;
@@ -343,7 +343,7 @@ func VE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   vals[4] := {
       AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
   var i int
-  for i = 0; i < 4; ++i {
+  for i = 0; i < 4; i++ {
     memcpy(dst + i * BPS, vals, 4);
   }
 }
@@ -489,9 +489,9 @@ func HD4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 func TM4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   int x, y;
   var clip *uint8 = clip1 + 255 - top[-1];
-  for y = 0; y < 4; ++y {
+  for y = 0; y < 4; y++ {
     var clip_table *uint8 = clip + top[-2 - y];
-    for x = 0; x < 4; ++x {
+    for x = 0; x < 4; x++ {
       dst[x] = clip_table[top[x]];
     }
     dst += BPS;
@@ -526,8 +526,8 @@ func Intra4Preds_C(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 static  int GetSSE(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8, int w, int h) {
   count := 0;
   int y, x;
-  for y = 0; y < h; ++y {
-    for x = 0; x < w; ++x {
+  for y = 0; y < h; y++ {
+    for x = 0; x < w; x++ {
       diff := (int)a[x] - b[x];
       count += diff * diff;
     }
@@ -553,10 +553,10 @@ static int SSE4x4_C(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) 
 
 func Mean16x4_C(const WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
   int k, x, y;
-  for k = 0; k < 4; ++k {
+  for k = 0; k < 4; k++ {
     avg := 0;
-    for y = 0; y < 4; ++y {
-      for x = 0; x < 4; ++x {
+    for y = 0; y < 4; y++ {
+      for x = 0; x < 4; x++ {
         avg += ref[x + y * BPS];
       }
     }
@@ -591,7 +591,7 @@ static int TTransform(const WEBP_RESTRICT in *uint8, const WEBP_RESTRICT w *uint
     tmp[3 + i * 4] = a0 - a1;
   }
   // vertical pass
-  for i = 0; i < 4; ++i, ++w {
+  for i = 0; i < 4; ++i, w++ {
     a0 := tmp[0 + i] + tmp[8 + i];
     a1 := tmp[4 + i] + tmp[12 + i];
     a2 := tmp[4 + i] - tmp[12 + i];
@@ -638,7 +638,7 @@ static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7,
 static int QuantizeBlock_C(int16 in[16], int16 out[16], const WEBP_RESTRICT const mtx *VP8Matrix) {
   last := -1;
   var n int
-  for n = 0; n < 16; ++n {
+  for n = 0; n < 16; n++ {
     j := kZigzag[n];
     sign := (in[j] < 0);
     coeff := (sign ? -in[j] : in[j]) + mtx.sharpen[j];
@@ -673,7 +673,7 @@ static int Quantize2Blocks_C(int16 in[32], int16 out[32], const WEBP_RESTRICT co
 
 static  func Copy(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int w, int h) {
   var y int
-  for y = 0; y < h; ++y {
+  for y = 0; y < h; y++ {
     memcpy(dst, src, w);
     src += BPS;
     dst += BPS;

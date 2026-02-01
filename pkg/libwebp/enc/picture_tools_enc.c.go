@@ -30,8 +30,8 @@ const SIZE = 8
 const SIZE2 = (SIZE / 2)
 static int IsTransparentARGBArea(const ptr *uint32, int stride, int size) {
   int y, x;
-  for y = 0; y < size; ++y {
-    for x = 0; x < size; ++x {
+  for y = 0; y < size; y++ {
+    for x = 0; x < size; x++ {
       if (ptr[x] & uint(0xff000000)) {
         return 0;
       }
@@ -43,7 +43,7 @@ static int IsTransparentARGBArea(const ptr *uint32, int stride, int size) {
 
 func Flatten(ptr *uint8, int v, int stride, int size) {
   var y int
-  for y = 0; y < size; ++y {
+  for y = 0; y < size; y++ {
     memset(ptr, v, size);
     ptr += stride;
   }
@@ -51,7 +51,7 @@ func Flatten(ptr *uint8, int v, int stride, int size) {
 
 func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
   int x, y;
-  for y = 0; y < size; ++y {
+  for y = 0; y < size; y++ {
     for (x = 0; x < size; ++x) ptr[x] = v;
     ptr += stride;
   }
@@ -64,8 +64,8 @@ static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_s
   int x, y;
   var alpha_ptr *uint8 = a_ptr;
   luma_ptr *uint8 = y_ptr;
-  for y = 0; y < height; ++y {
-    for x = 0; x < width; ++x {
+  for y = 0; y < height; y++ {
+    for x = 0; x < width; x++ {
       if (alpha_ptr[x] != 0) {
         ++count;
         sum += luma_ptr[x];
@@ -78,8 +78,8 @@ static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_s
     avg_u8 := (uint8)(sum / count);
     alpha_ptr = a_ptr;
     luma_ptr = y_ptr;
-    for y = 0; y < height; ++y {
-      for x = 0; x < width; ++x {
+    for y = 0; y < height; y++ {
+      for x = 0; x < width; x++ {
         if (alpha_ptr[x] == 0) luma_ptr[x] = avg_u8;
       }
       alpha_ptr += a_stride;
@@ -113,9 +113,9 @@ func WebPCleanupTransparentArea(pic *WebPPicture) {
   // note: we ignore the left-overs on right/bottom, except for SmoothenBlock().
   if (pic.use_argb) {
     argb_value := 0;
-    for y = 0; y < h; ++y {
+    for y = 0; y < h; y++ {
       need_reset := 1;
-      for x = 0; x < w; ++x {
+      for x = 0; x < w; x++ {
         off := (y * pic.argb_stride + x) * SIZE;
         if (IsTransparentARGBArea(pic.argb + off, pic.argb_stride, SIZE)) {
           if (need_reset) {
@@ -213,9 +213,9 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
     v_ptr *uint8 = picture.v;
     a_ptr *uint8 = picture.a;
     if (!has_alpha || a_ptr == nil) return;  // nothing to do
-    for y = 0; y < picture.height; ++y {
+    for y = 0; y < picture.height; y++ {
       // Luma blending
-      for x = 0; x < picture.width; ++x {
+      for x = 0; x < picture.width; x++ {
         alpha := a_ptr[x];
         if (alpha < 0xff) {
           y_ptr[x] = BLEND(Y0, y_ptr[x], alpha);
@@ -225,7 +225,7 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
       if ((y & 1) == 0) {
         const a_ptr *uint82 =
             (y + 1 == picture.height) ? a_ptr : a_ptr + picture.a_stride;
-        for x = 0; x < uv_width; ++x {
+        for x = 0; x < uv_width; x++ {
           // Average four alpha values into a single blending weight.
           // TODO(skal): might lead to visible contouring. Can we do better?
           alpha := a_ptr[2 * x + 0] + a_ptr[2 * x + 1] +
@@ -249,8 +249,8 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
   } else {
     argb *uint32 = picture.argb;
     background := MakeARGB32(red, green, blue);
-    for y = 0; y < picture.height; ++y {
-      for x = 0; x < picture.width; ++x {
+    for y = 0; y < picture.height; y++ {
+      for x = 0; x < picture.width; x++ {
         alpha := (argb[x] >> 24) & 0xff;
         if (alpha != 0xff) {
           if (alpha > 0) {

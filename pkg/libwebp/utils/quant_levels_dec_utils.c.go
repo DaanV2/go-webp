@@ -91,7 +91,7 @@ func VFilter(const p *SmoothParams) {
   sum := 0;  // all arithmetic is modulo 16bit
   var x int
 
-  for x = 0; x < w; ++x {
+  for x = 0; x < w; x++ {
     uint16 new_value;
     sum += src[x];
     new_value = top[x] + sum;
@@ -119,15 +119,15 @@ func HFilter(const p *SmoothParams) {
   r := p.radius;
 
   var x int
-  for x = 0; x <= r; ++x {  // left mirroring
+  for x = 0; x <= r; x++ {  // left mirroring
     delta := in[x + r - 1] + in[r - x];
     out[x] = (delta * scale) >> FIX;
   }
-  for ; x < w - r; ++x {  // bulk middle run
+  for ; x < w - r; x++ {  // bulk middle run
     delta := in[x + r] - in[x - r - 1];
     out[x] = (delta * scale) >> FIX;
   }
-  for ; x < w; ++x {  // right mirroring
+  for ; x < w; x++ {  // right mirroring
     delta :=
         2 * in[w - 1] - in[2 * w - 2 - r - x] - in[x - r - 1];
     out[x] = (delta * scale) >> FIX;
@@ -147,7 +147,7 @@ func ApplyFilter(const p *SmoothParams) {
 #endif
   const dst *uint8 = p.dst;
   var x int
-  for x = 0; x < w; ++x {
+  for x = 0; x < w; x++ {
     v := dst[x];
     if (v < p.max && v > p.min) {
       c := (v << DFIX) + correction[average[x] - (v << LFIX)];
@@ -180,7 +180,7 @@ func InitCorrectionLUT(
   // We need the middle pointer (lut) for negative indexing.
   const lut *int16 = lut_ptr + LUT_SIZE;
   var i int
-  for i = 1; i <= LUT_SIZE; ++i {
+  for i = 1; i <= LUT_SIZE; i++ {
     c := (i <= threshold2)  ? (i << DFIX)
             : (i < threshold1) ? max_threshold * (threshold1 - i) / delta
                                : 0;
@@ -197,8 +197,8 @@ func CountLevels(const p *SmoothParams) {
   const data *uint8 = p.src;
   p.min = 255;
   p.max = 0;
-  for j = 0; j < p.height; ++j {
-    for i = 0; i < p.width; ++i {
+  for j = 0; j < p.height; j++ {
+    for i = 0; i < p.width; i++ {
       v := data[i];
       if (v < p.min) p.min = v;
       if (v > p.max) p.max = v;
@@ -209,7 +209,7 @@ func CountLevels(const p *SmoothParams) {
   // Compute the mininum distance between two non-zero levels.
   p.min_level_dist = p.max - p.min;
   last_level = -1;
-  for i = 0; i < 256; ++i {
+  for i = 0; i < 256; i++ {
     if (used_levels[i]) {
       ++p.num_levels;
       if (last_level >= 0) {

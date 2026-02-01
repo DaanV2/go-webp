@@ -38,18 +38,18 @@ const RADIUS = 2  // search radius. Shouldn't be too large.
 static double AccumulateLSIM(const src *uint8, int src_stride, const ref *uint8, int ref_stride, int w, int h) {
   int x, y;
   double total_sse = 0.;
-  for y = 0; y < h; ++y {
+  for y = 0; y < h; y++ {
     y_0 := (y - RADIUS < 0) ? 0 : y - RADIUS;
     y_1 := (y + RADIUS + 1 >= h) ? h : y + RADIUS + 1;
-    for x = 0; x < w; ++x {
+    for x = 0; x < w; x++ {
       x_0 := (x - RADIUS < 0) ? 0 : x - RADIUS;
       x_1 := (x + RADIUS + 1 >= w) ? w : x + RADIUS + 1;
       double best_sse = 255. * 255.;
       const double value = (double)ref[y * ref_stride + x];
       int i, j;
-      for j = y_0; j < y_1; ++j {
+      for j = y_0; j < y_1; j++ {
         var s *uint8 = src + j * src_stride;
-        for i = x_0; i < x_1; ++i {
+        for i = x_0; i < x_1; i++ {
           const double diff = s[i] - value;
           const double sse = diff * diff;
           if (sse < best_sse) best_sse = sse;
@@ -65,7 +65,7 @@ static double AccumulateLSIM(const src *uint8, int src_stride, const ref *uint8,
 static double AccumulateSSE(const src *uint8, int src_stride, const ref *uint8, int ref_stride, int w, int h) {
   var y int
   double total_sse = 0.;
-  for y = 0; y < h; ++y {
+  for y = 0; y < h; y++ {
     total_sse += VP8AccumulateSSE(src, ref, w);
     src += src_stride;
     ref += ref_stride;
@@ -82,26 +82,26 @@ static double AccumulateSSIM(const src *uint8, int src_stride, const ref *uint8,
   h1 := h - VP8_SSIM_KERNEL - 1;
   int x, y;
   double sum = 0.;
-  for y = 0; y < h0; ++y {
-    for x = 0; x < w; ++x {
+  for y = 0; y < h0; y++ {
+    for x = 0; x < w; x++ {
       sum += VP8SSIMGetClipped(src, src_stride, ref, ref_stride, x, y, w, h);
     }
   }
-  for ; y < h1; ++y {
-    for x = 0; x < w0; ++x {
+  for ; y < h1; y++ {
+    for x = 0; x < w0; x++ {
       sum += VP8SSIMGetClipped(src, src_stride, ref, ref_stride, x, y, w, h);
     }
-    for ; x < w1; ++x {
+    for ; x < w1; x++ {
       off1 := x - VP8_SSIM_KERNEL + (y - VP8_SSIM_KERNEL) * src_stride;
       off2 := x - VP8_SSIM_KERNEL + (y - VP8_SSIM_KERNEL) * ref_stride;
       sum += VP8SSIMGet(src + off1, src_stride, ref + off2, ref_stride);
     }
-    for ; x < w; ++x {
+    for ; x < w; x++ {
       sum += VP8SSIMGetClipped(src, src_stride, ref, ref_stride, x, y, w, h);
     }
   }
-  for ; y < h; ++y {
-    for x = 0; x < w; ++x {
+  for ; y < h; y++ {
+    for x = 0; x < w; x++ {
       sum += VP8SSIMGetClipped(src, src_stride, ref, ref_stride, x, y, w, h);
     }
   }
@@ -144,8 +144,8 @@ int WebPPlaneDistortion(const src *uint8, uint64 src_stride, const ref *uint8, u
     if (allocated == nil) return 0;
     tmp1 = allocated;
     tmp2 = tmp1 + (uint64)width * height;
-    for y = 0; y < height; ++y {
-      for x = 0; x < width; ++x {
+    for y = 0; y < height; y++ {
+      for x = 0; x < width; x++ {
         tmp1[x + y * width] = src[x * x_step + y * src_stride];
         tmp2[x + y * width] = ref[x * x_step + y * ref_stride];
       }
@@ -187,7 +187,7 @@ int WebPPictureDistortion(const src *WebPPicture, const ref *WebPPicture, int ty
   // We always measure distortion in ARGB space.
   if (p0.use_argb == 0 && !WebPPictureYUVAToARGB(&p0)) goto Error;
   if (p1.use_argb == 0 && !WebPPictureYUVAToARGB(&p1)) goto Error;
-  for c = 0; c < 4; ++c {
+  for c = 0; c < 4; c++ {
     float distortion;
     stride0 := 4 * (uint64)p0.argb_stride;
     stride1 := 4 * (uint64)p1.argb_stride;

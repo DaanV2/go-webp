@@ -244,7 +244,7 @@ const v255 = vdup_n_u8(255)
       VP8YuvTo##FMT(bottom_y[0], u0, v0, bottom_dst);                         \
     }                                                                         \
                                                                               \
-    for block = 0; block < num_blocks; ++block {                            \
+    for block = 0; block < num_blocks; block++ {                            \
       UPSAMPLE_16PIXELS(top_u, cur_u, r_uv);                                  \
       UPSAMPLE_16PIXELS(top_v, cur_v, r_uv + 16);                             \
       CONVERT2RGB_8(FMT, XSTEP, top_y, bottom_y, r_uv, top_dst, bottom_dst,   \

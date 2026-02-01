@@ -103,7 +103,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
   assert.Assert(root_bits > 0);
 
   // Build histogram of code lengths.
-  for symbol = 0; symbol < code_lengths_size; ++symbol {
+  for symbol = 0; symbol < code_lengths_size; symbol++ {
     if (code_lengths[symbol] > MAX_ALLOWED_CODE_LENGTH) {
       return 0;
     }
@@ -117,7 +117,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
 
   // Generate offsets into sorted symbol table by code length.
   offset[1] = 0;
-  for len = 1; len < MAX_ALLOWED_CODE_LENGTH; ++len {
+  for len = 1; len < MAX_ALLOWED_CODE_LENGTH; len++ {
     if (count[len] > (1 << len)) {
       return 0;
     }
@@ -125,7 +125,7 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
   }
 
   // Sort symbols by length, by symbol order within each length.
-  for symbol = 0; symbol < code_lengths_size; ++symbol {
+  for symbol = 0; symbol < code_lengths_size; symbol++ {
     symbol_code_length := code_lengths[symbol];
     if (code_lengths[symbol] > 0) {
       if (sorted != nil) {

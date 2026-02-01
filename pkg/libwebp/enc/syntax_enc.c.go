@@ -190,15 +190,15 @@ func PutSegmentHeader(const bw *VP8BitWriter, const enc *VP8Encoder) {
     if (VP8PutBitUniform(bw, update_data)) {
       // we always use absolute values, not relative ones
       VP8PutBitUniform(bw, 1);  // (segment_feature_mode = 1. Paragraph 9.3.)
-      for s = 0; s < NUM_MB_SEGMENTS; ++s {
+      for s = 0; s < NUM_MB_SEGMENTS; s++ {
         VP8PutSignedBits(bw, enc.dqm[s].quant, 7);
       }
-      for s = 0; s < NUM_MB_SEGMENTS; ++s {
+      for s = 0; s < NUM_MB_SEGMENTS; s++ {
         VP8PutSignedBits(bw, enc.dqm[s].fstrength, 6);
       }
     }
     if (hdr.update_map) {
-      for s = 0; s < 3; ++s {
+      for s = 0; s < 3; s++ {
         if (VP8PutBitUniform(bw, (proba.segments[s] != uint(255)))) {
           VP8PutBits(bw, proba.segments[s], 8);
         }
@@ -240,7 +240,7 @@ func PutQuant(const bw *VP8BitWriter, const enc *VP8Encoder) {
 static int EmitPartitionsSize(const enc *VP8Encoder, const pic *WebPPicture) {
   uint8 buf[3 * (MAX_NUM_PARTITIONS - 1)];
   var p int
-  for p = 0; p < enc.num_parts - 1; ++p {
+  for p = 0; p < enc.num_parts - 1; p++ {
     part_size := VP8BitWriterSize(enc.parts + p);
     if (part_size >= VP8_MAX_PARTITION_SIZE) {
       return WebPEncodingSetError(pic, VP8_ENC_ERROR_PARTITION_OVERFLOW);
@@ -305,7 +305,7 @@ static int GeneratePartition0(const enc *VP8Encoder) {
 func VP8EncFreeBitWriters(const enc *VP8Encoder) {
   var p int
   VP8BitWriterWipeOut(&enc.bw);
-  for p = 0; p < enc.num_parts; ++p {
+  for p = 0; p < enc.num_parts; p++ {
     VP8BitWriterWipeOut(enc.parts + p);
   }
 }
@@ -330,7 +330,7 @@ int VP8EncWrite(const enc *VP8Encoder) {
   // Compute VP8 size
   vp8_size =
       VP8_FRAME_HEADER_SIZE + VP8BitWriterSize(bw) + 3 * (enc.num_parts - 1);
-  for p = 0; p < enc.num_parts; ++p {
+  for p = 0; p < enc.num_parts; p++ {
     vp8_size += VP8BitWriterSize(enc.parts + p);
   }
   pad = vp8_size & 1;
@@ -362,7 +362,7 @@ int VP8EncWrite(const enc *VP8Encoder) {
   }
 
   // Token partitions
-  for p = 0; p < enc.num_parts; ++p {
+  for p = 0; p < enc.num_parts; p++ {
     var buf *uint8 = VP8BitWriterBuf(enc.parts + p);
     const size uint64  = VP8BitWriterSize(enc.parts + p);
     if (size) ok = ok && pic.writer(buf, size, pic);

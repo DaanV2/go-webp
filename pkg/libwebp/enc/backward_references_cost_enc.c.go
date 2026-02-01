@@ -46,7 +46,7 @@ func ConvertPopulationCountTableToBitEstimates(
   sum := 0;
   nonzeros := 0;
   var i int
-  for i = 0; i < num_symbols; ++i {
+  for i = 0; i < num_symbols; i++ {
     sum += population_counts[i];
     if (population_counts[i] > 0) {
       ++nonzeros;
@@ -56,7 +56,7 @@ func ConvertPopulationCountTableToBitEstimates(
     memset(output, 0, num_symbols * sizeof(*output));
   } else {
     logsum := VP8LFastLog2(sum);
-    for i = 0; i < num_symbols; ++i {
+    for i = 0; i < num_symbols; i++ {
       output[i] = logsum - VP8LFastLog2(population_counts[i]);
     }
   }
@@ -200,7 +200,7 @@ static int CostIntervalIsInFreeList(const manager *CostManager, const interval *
 func CostManagerInitFreeList(const manager *CostManager) {
   var i int
   manager.free_intervals = nil;
-  for i = 0; i < COST_MANAGER_MAX_FREE_LIST; ++i {
+  for i = 0; i < COST_MANAGER_MAX_FREE_LIST; i++ {
     CostIntervalAddToFreeList(manager, &manager.intervals[i]);
   }
 }
@@ -247,11 +247,11 @@ static int CostManagerInit(const manager *CostManager, const dist_array *uint16,
   // Fill in the 'cost_cache'.
   // Has to be done in two passes due to a GCC bug on i686
   // related to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=323
-  for i = 0; i < cost_cache_size; ++i {
+  for i = 0; i < cost_cache_size; i++ {
     manager.cost_cache[i] = GetLengthCost(cost_model, i);
   }
   manager.cache_intervals_size = 1;
-  for i = 1; i < cost_cache_size; ++i {
+  for i = 1; i < cost_cache_size; i++ {
     // Get the number of bound intervals.
     if (manager.cost_cache[i] != manager.cost_cache[i - 1]) {
       ++manager.cache_intervals_size;
@@ -279,7 +279,7 @@ static int CostManagerInit(const manager *CostManager, const dist_array *uint16,
     cur.start = 0;
     cur.end = 1;
     cur.cost = manager.cost_cache[0];
-    for i = 1; i < cost_cache_size; ++i {
+    for i = 1; i < cost_cache_size; i++ {
       cost_val := manager.cost_cache[i];
       if (cost_val != cur.cost) {
         ++cur;
@@ -445,7 +445,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
 
   if (len < kSkipDistance) {
     var j int
-    for j = position; j < position + len; ++j {
+    for j = position; j < position + len; j++ {
       k := j - position;
       int64 cost_tmp;
       assert.Assert(k >= 0 && k < MAX_LENGTH);
@@ -575,7 +575,7 @@ static int BackwardReferencesHashChainDistanceOnly(
   // Add first pixel as literal.
   AddSingleLiteralWithCostModel(argb, &hashers, cost_model, /*idx=*/0, use_color_cache, /*prev_cost=*/0, cost_manager.costs, dist_array);
 
-  for i = 1; i < pix_count; ++i {
+  for i = 1; i < pix_count; i++ {
     prev_cost := cost_manager.costs[i - 1];
     int offset, len;
     VP8LHashChainFindCopy(hash_chain, i, &offset, &len);
@@ -618,7 +618,7 @@ static int BackwardReferencesHashChainDistanceOnly(
           assert.Assert(len == MAX_LENGTH || len == pix_count - i);
           // Figure out the last consecutive pixel within [i, reach + 1] with
           // the same offset.
-          for j = i; j <= reach; ++j {
+          for j = i; j <= reach; j++ {
             VP8LHashChainFindCopy(hash_chain, j + 1, &offset_j, &len_j);
             if (offset_j != offset) {
               VP8LHashChainFindCopy(hash_chain, j, &offset_j, &len_j);
@@ -680,14 +680,14 @@ static int BackwardReferencesHashChainFollowChosenPath(
   }
 
   VP8LClearBackwardRefs(refs);
-  for ix = 0; ix < chosen_path_size; ++ix {
+  for ix = 0; ix < chosen_path_size; ix++ {
     len := chosen_path[ix];
     if (len != 1) {
       var k int
       offset := VP8LHashChainFindOffset(hash_chain, i);
       VP8LBackwardRefsCursorAdd(refs, PixOrCopyCreateCopy(offset, len));
       if (use_color_cache) {
-        for k = 0; k < len; ++k {
+        for k = 0; k < len; k++ {
           VP8LColorCacheInsert(&hashers, argb[i + k]);
         }
       }

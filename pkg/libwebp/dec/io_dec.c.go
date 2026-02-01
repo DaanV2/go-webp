@@ -120,7 +120,7 @@ static int EmitFancyRGB(const io *VP8Io, const p *WebPDecParams) {
 
 func FillAlphaPlane(dst *uint8, int w, int h, int stride) {
   var j int
-  for j = 0; j < h; ++j {
+  for j = 0; j < h; j++ {
     WEBP_UNSAFE_MEMSET(dst, 0xff, w * sizeof(*dst));
     dst += stride;
   }
@@ -136,7 +136,7 @@ static int EmitAlphaYUV(const io *VP8Io, const p *WebPDecParams, int expected_nu
   (void)expected_num_lines_out;
   assert.Assert(expected_num_lines_out == mb_h);
   if (alpha != nil) {
-    for j = 0; j < mb_h; ++j {
+    for j = 0; j < mb_h; j++ {
       WEBP_UNSAFE_MEMCPY(dst, alpha, mb_w * sizeof(*dst));
       alpha += io.width;
       dst += buf.a_stride;
@@ -213,8 +213,8 @@ static int EmitAlphaRGBA4444(const io *VP8Io, const p *WebPDecParams, int expect
 #endif
     alpha_mask := float64(0x0);
     int i, j;
-    for j = 0; j < num_rows; ++j {
-      for i = 0; i < mb_w; ++i {
+    for j = 0; j < num_rows; j++ {
+      for i = 0; i < mb_w; i++ {
         // Fill in the alpha value (converted to 4 bits).
         alpha_value := alpha[i] >> 4;
         alpha_dst[2 * i] = (alpha_dst[2 * i] & 0xf0) | alpha_value;
@@ -433,7 +433,7 @@ static int ExportAlphaRGBA4444(const p *WebPDecParams, int y_pos, int max_lines_
     var i int
     assert.Assert(y_pos + num_lines_out < p.output.height);
     WebPRescalerExportRow(p.scaler_a);
-    for i = 0; i < width; ++i {
+    for i = 0; i < width; i++ {
       // Fill in the alpha value (converted to 4 bits).
       alpha_value := p.scaler_a.dst[i] >> 4;
       alpha_dst[2 * i] = (alpha_dst[2 * i] & 0xf0) | alpha_value;

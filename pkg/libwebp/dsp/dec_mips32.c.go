@@ -171,7 +171,7 @@ func HFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
 func SimpleVFilter16(p *uint8, int stride, int thresh) {
   var i int
   thresh2 := 2 * thresh + 1;
-  for i = 0; i < 16; ++i {
+  for i = 0; i < 16; i++ {
     if (needs_filter(p + i, stride, thresh2)) {
       do_filter2(p + i, stride);
     }
@@ -181,7 +181,7 @@ func SimpleVFilter16(p *uint8, int stride, int thresh) {
 func SimpleHFilter16(p *uint8, int stride, int thresh) {
   var i int
   thresh2 := 2 * thresh + 1;
-  for i = 0; i < 16; ++i {
+  for i = 0; i < 16; i++ {
     if (needs_filter(p + i * stride, 1, thresh2)) {
       do_filter2(p + i * stride, 1);
     }

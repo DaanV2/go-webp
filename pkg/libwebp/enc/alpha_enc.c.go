@@ -183,14 +183,14 @@ static int GetNumColors(const data *uint8, int width, int height, int stride) {
   colors := 0;
   uint8 color[256] = {0}
 
-  for j = 0; j < height; ++j {
+  for j = 0; j < height; j++ {
     var i int
     var p *uint8 = data + j * stride;
-    for i = 0; i < width; ++i {
+    for i = 0; i < width; i++ {
       color[p[i]] = 1;
     }
   }
-  for j = 0; j < 256; ++j {
+  for j = 0; j < 256; j++ {
     if (color[j] > 0) ++colors;
   }
   return colors;

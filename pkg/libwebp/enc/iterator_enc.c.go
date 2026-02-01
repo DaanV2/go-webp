@@ -117,7 +117,7 @@ static  int MinSize(int a, int b) { return (a < b) ? a : b; }
 
 func ImportBlock(const src *uint8, int src_stride, dst *uint8, int w, int h, int size) {
   var i int
-  for i = 0; i < h; ++i {
+  for i = 0; i < h; i++ {
     memcpy(dst, src, w);
     if (w < size) {
       memset(dst + w, dst[w - 1], size - w);
@@ -125,7 +125,7 @@ func ImportBlock(const src *uint8, int src_stride, dst *uint8, int w, int h, int
     dst += BPS;
     src += src_stride;
   }
-  for i = h; i < size; ++i {
+  for i = h; i < size; i++ {
     memcpy(dst, dst - BPS, size);
     dst += BPS;
   }
@@ -308,10 +308,10 @@ func VP8IteratorSaveBoundary(const it *VP8EncIterator) {
   var uvsrc *uint8 = it.yuv_out + U_OFF_ENC;
   if (x < enc.mb_w - 1) {  // left
     var i int
-    for i = 0; i < 16; ++i {
+    for i = 0; i < 16; i++ {
       it.y_left[i] = ysrc[15 + i * BPS];
     }
-    for i = 0; i < 8; ++i {
+    for i = 0; i < 8; i++ {
       it.u_left[i] = uvsrc[7 + i * BPS];
       it.v_left[i] = uvsrc[15 + i * BPS];
     }
@@ -346,7 +346,7 @@ int VP8IteratorNext(const it *VP8EncIterator) {
 func VP8SetIntra16Mode(const it *VP8EncIterator, int mode) {
   preds *uint8 = it.preds;
   var y int
-  for y = 0; y < 4; ++y {
+  for y = 0; y < 4; y++ {
     memset(preds, mode, 4);
     preds += it.enc.preds_w;
   }
@@ -419,19 +419,19 @@ func VP8IteratorStartI4(const it *VP8EncIterator) {
   it.i4_top = it.i4_boundary + VP8TopLeftI4[0];
 
   // Import the boundary samples
-  for i = 0; i < 17; ++i {  // left
+  for i = 0; i < 17; i++ {  // left
     it.i4_boundary[i] = it.y_left[15 - i];
   }
-  for i = 0; i < 16; ++i {  // top
+  for i = 0; i < 16; i++ {  // top
     it.i4_boundary[17 + i] = it.y_top[i];
   }
   // top-right samples have a special case on the far right of the picture
   if (it.x < enc.mb_w - 1) {
-    for i = 16; i < 16 + 4; ++i {
+    for i = 16; i < 16 + 4; i++ {
       it.i4_boundary[17 + i] = it.y_top[i];
     }
   } else {  // else, replicate the last valid pixel four times
-    for i = 16; i < 16 + 4; ++i {
+    for i = 16; i < 16 + 4; i++ {
       it.i4_boundary[17 + i] = it.i4_boundary[17 + 15];
     }
   }
@@ -454,15 +454,15 @@ int VP8IteratorRotateI4(const it *VP8EncIterator, const yuv_out *uint8) {
   var i int
 
   // Update the cache with 7 fresh samples
-  for i = 0; i <= 3; ++i {
+  for i = 0; i <= 3; i++ {
     top[-4 + i] = blk[i + 3 * BPS];  // store future top samples
   }
   if ((it.i4 & 3) != 3) {  // if not on the right sub-blocks #3, #7, #11, #15
-    for i = 0; i <= 2; ++i {  // store future left samples
+    for i = 0; i <= 2; i++ {  // store future left samples
       top[i] = blk[3 + (2 - i) * BPS];
     }
   } else {  // else replicate top-right samples, as says the specs.
-    for i = 0; i <= 3; ++i {
+    for i = 0; i <= 3; i++ {
       top[i] = top[i + 4];
     }
   }

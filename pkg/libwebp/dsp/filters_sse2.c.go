@@ -87,7 +87,7 @@ static  func DoHorizontalFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, i
   out += stride;
 
   // Filter line-by-line.
-  for row = 1; row < height; ++row {
+  for row = 1; row < height; row++ {
     // Leftmost pixel is predicted from above.
     out[0] = in[0] - in[-stride];
     PredictLineLeft_SSE2(in + 1, out + 1, width - 1);
@@ -111,7 +111,7 @@ static  func DoVerticalFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, int
   out += stride;
 
   // Filter line-by-line.
-  for row = 1; row < height; ++row {
+  for row = 1; row < height; row++ {
     PredictLineTop_SSE2(in, in - stride, out, width);
     in += stride;
     out += stride;
@@ -144,7 +144,7 @@ func GradientPredictDirect_SSE2(const row *uint8, const top *uint8, WEBP_RESTRIC
     const __m128i H = _mm_sub_epi8(D, G);
     _mm_storel_epi64((__*m128i)(out + i), H);
   }
-  for ; i < length; ++i {
+  for ; i < length; i++ {
     delta := GradientPredictor_SSE2(row[i - 1], top[i], top[i - 1]);
     out[i] = (uint8)(row[i] - delta);
   }
@@ -161,7 +161,7 @@ static  func DoGradientFilter_SSE2(const WEBP_RESTRICT in *uint8, int width, int
   out += stride;
 
   // Filter line-by-line.
-  for row = 1; row < height; ++row {
+  for row = 1; row < height; row++ {
     out[0] = (uint8)(in[0] - in[-stride]);
     GradientPredictDirect_SSE2(in + 1, in + 1 - stride, out + 1, width - 1);
     in += stride;
@@ -260,7 +260,7 @@ func GradientPredictInverse_SSE2(const in *uint8, const top *uint8, const row *u
       A = _mm_srli_si128(A, 7);  // prepare left sample for next iteration
       _mm_storel_epi64((__*m128i)&row[i], out);
     }
-    for ; i < length; ++i {
+    for ; i < length; i++ {
       delta := GradientPredictor_SSE2(row[i - 1], top[i], top[i - 1]);
       row[i] = (uint8)(in[i] + delta);
     }

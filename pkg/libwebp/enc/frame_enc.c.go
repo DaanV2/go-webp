@@ -152,10 +152,10 @@ static int FinalizeTokenProbas(const proba *VP8EncProba) {
   has_changed := 0;
   size := 0;
   int t, b, c, p;
-  for t = 0; t < NUM_TYPES; ++t {
-    for b = 0; b < NUM_BANDS; ++b {
-      for c = 0; c < NUM_CTX; ++c {
-        for p = 0; p < NUM_PROBAS; ++p {
+  for t = 0; t < NUM_TYPES; t++ {
+    for b = 0; b < NUM_BANDS; b++ {
+      for c = 0; c < NUM_CTX; c++ {
+        for p = 0; p < NUM_PROBAS; p++ {
           const proba_t stats = proba.stats[t][b][c][p];
           nb := (stats >> 0) & 0xffff;
           total := (stats >> 16) & 0xffff;
@@ -194,7 +194,7 @@ static int GetProba(int a, int b) {
 
 func ResetSegments(const enc *VP8Encoder) {
   var n int
-  for n = 0; n < enc.mb_w * enc.mb_h; ++n {
+  for n = 0; n < enc.mb_w * enc.mb_h; n++ {
     enc.mb_info[n].segment = 0;
   }
 }
@@ -203,13 +203,13 @@ func SetSegmentProbas(const enc *VP8Encoder) {
   int p[NUM_MB_SEGMENTS] = {0}
   var n int
 
-  for n = 0; n < enc.mb_w * enc.mb_h; ++n {
+  for n = 0; n < enc.mb_w * enc.mb_h; n++ {
     var mb *VP8MBInfo = &enc.mb_info[n];
     ++p[mb.segment];
   }
 #if !defined(WEBP_DISABLE_STATS)
   if (enc.pic.stats != nil) {
-    for n = 0; n < NUM_MB_SEGMENTS; ++n {
+    for n = 0; n < NUM_MB_SEGMENTS; n++ {
       enc.pic.stats.segment_size[n] = p[n];
     }
   }
@@ -333,8 +333,8 @@ func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const rd *V
   }
 
   // luma-AC
-  for y = 0; y < 4; ++y {
-    for x = 0; x < 4; ++x {
+  for y = 0; y < 4; y++ {
+    for x = 0; x < 4; x++ {
       ctx := it.top_nz[x] + it.left_nz[y];
       VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       it.top_nz[x] = it.left_nz[y] = PutCoeffs(bw, ctx, &res);
@@ -345,8 +345,8 @@ func CodeResiduals(const bw *VP8BitWriter, const it *VP8EncIterator, const rd *V
   // U/V
   VP8InitResidual(0, 2, enc, &res);
   for ch = 0; ch <= 2; ch += 2 {
-    for y = 0; y < 2; ++y {
-      for x = 0; x < 2; ++x {
+    for y = 0; y < 2; y++ {
+      for x = 0; x < 2; x++ {
         ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
@@ -382,8 +382,8 @@ func RecordResiduals(const it *VP8EncIterator, const rd *VP8ModeScore) {
   }
 
   // luma-AC
-  for y = 0; y < 4; ++y {
-    for x = 0; x < 4; ++x {
+  for y = 0; y < 4; y++ {
+    for x = 0; x < 4; x++ {
       ctx := it.top_nz[x] + it.left_nz[y];
       VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       it.top_nz[x] = it.left_nz[y] = VP8RecordCoeffs(ctx, &res);
@@ -393,8 +393,8 @@ func RecordResiduals(const it *VP8EncIterator, const rd *VP8ModeScore) {
   // U/V
   VP8InitResidual(0, 2, enc, &res);
   for ch = 0; ch <= 2; ch += 2 {
-    for y = 0; y < 2; ++y {
-      for x = 0; x < 2; ++x {
+    for y = 0; y < 2; y++ {
+      for x = 0; x < 2; x++ {
         ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
@@ -428,8 +428,8 @@ static int RecordTokens(const it *VP8EncIterator, const rd *VP8ModeScore, const 
   }
 
   // luma-AC
-  for y = 0; y < 4; ++y {
-    for x = 0; x < 4; ++x {
+  for y = 0; y < 4; y++ {
+    for x = 0; x < 4; x++ {
       ctx := it.top_nz[x] + it.left_nz[y];
       VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
       it.top_nz[x] = it.left_nz[y] = VP8RecordCoeffTokens(ctx, &res, tokens);
@@ -439,8 +439,8 @@ static int RecordTokens(const it *VP8EncIterator, const rd *VP8ModeScore, const 
   // U/V
   VP8InitResidual(0, 2, enc, &res);
   for ch = 0; ch <= 2; ch += 2 {
-    for y = 0; y < 2; ++y {
-      for x = 0; x < 2; ++x {
+    for y = 0; y < 2; y++ {
+      for x = 0; x < 2; x++ {
         ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
         it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
@@ -462,7 +462,7 @@ static int RecordTokens(const it *VP8EncIterator, const rd *VP8ModeScore, const 
 #if SEGMENT_VISU
 func SetBlock(p *uint8, int value, int size) {
   var y int
-  for y = 0; y < size; ++y {
+  for y = 0; y < size; y++ {
     memset(p, value, size);
     p += BPS;
   }
@@ -691,7 +691,7 @@ static int PreLoopInitialize(const enc *VP8Encoder) {
   bytes_per_parts :=
       enc.mb_w * enc.mb_h * average_bytes_per_MB / enc.num_parts;
   // Initialize the bit-writers
-  for p = 0; ok && p < enc.num_parts; ++p {
+  for p = 0; ok && p < enc.num_parts; p++ {
     ok = VP8BitWriterInit(enc.parts + p, bytes_per_parts);
   }
   if (!ok) {
@@ -705,7 +705,7 @@ static int PostLoopFinalize(const it *VP8EncIterator, int ok) {
   var enc *VP8Encoder = it.enc;
   if (ok) {  // Finalize the partitions, check for extra errors.
     var p int
-    for p = 0; p < enc.num_parts; ++p {
+    for p = 0; p < enc.num_parts; p++ {
       VP8BitWriterFinish(enc.parts + p);
       ok &= !enc.parts[p].error;
     }
@@ -715,8 +715,8 @@ static int PostLoopFinalize(const it *VP8EncIterator, int ok) {
 #if !defined(WEBP_DISABLE_STATS)
     if (enc.pic.stats != nil) {  // finalize byte counters...
       int i, s;
-      for i = 0; i <= 2; ++i {
-        for s = 0; s < NUM_MB_SEGMENTS; ++s {
+      for i = 0; i <= 2; i++ {
+        for s = 0; s < NUM_MB_SEGMENTS; s++ {
           enc.residual_bytes[i][s] = (int)((it.bit_count[s][i] + 7) >> 3);
         }
       }

@@ -59,7 +59,7 @@ static int GetResidualCost_C(int ctx0, const res *VP8Residual) {
   if (res.last < 0) {
     return VP8BitCost(0, p0);
   }
-  for ; n < res.last; ++n {
+  for ; n < res.last; n++ {
     v := abs(res.coeffs[n]);
     ctx := (v >= 2) ? 2 : v;
     cost += VP8LevelCost(t, v);

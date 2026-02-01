@@ -868,7 +868,7 @@ func VE4_SSE2(dst *uint8) {  // vertical
   const __m128i avg = _mm_avg_epu8(b, BCDEFGH0);
   vals := _mm_cvtsi128_si32(avg);
   var i int
-  for i = 0; i < 4; ++i {
+  for i = 0; i < 4; i++ {
     WebPInt32ToMem(dst + i * BPS, vals);
   }
 }
@@ -1013,7 +1013,7 @@ func TM16_SSE2(dst *uint8) { TrueMotion_SSE2(dst, 16); }
 func VE16_SSE2(dst *uint8) {
   const __m128i top = _mm_loadu_si128((const __*m128i)(dst - BPS));
   var j int
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     _mm_storeu_si128((__*m128i)(dst + j * BPS), top);
   }
 }
@@ -1030,7 +1030,7 @@ func HE16_SSE2(dst *uint8) {  // horizontal
 static  func Put16_SSE2(uint8 v, dst *uint8) {
   var j int
   const __m128i values = _mm_set1_epi8((byte)v);
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     _mm_storeu_si128((__*m128i)(dst + j * BPS), values);
   }
 }
@@ -1043,7 +1043,7 @@ func DC16_SSE2(dst *uint8) {  // DC
   const __m128i sum = _mm_add_epi16(sad8x2, _mm_shuffle_epi32(sad8x2, 2));
   left := 0;
   var j int
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     left += dst[-1 + j * BPS];
   }
   {
@@ -1055,7 +1055,7 @@ func DC16_SSE2(dst *uint8) {  // DC
 func DC16NoTop_SSE2(dst *uint8) {  // DC with top samples unavailable
   DC := 8;
   var j int
-  for j = 0; j < 16; ++j {
+  for j = 0; j < 16; j++ {
     DC += dst[-1 + j * BPS];
   }
   Put16_SSE2(DC >> 4, dst);
@@ -1081,7 +1081,7 @@ func DC16NoTopLeft_SSE2(dst *uint8) {  // DC with no top & left samples
 func VE8uv_SSE2(dst *uint8) {  // vertical
   var j int
   const __m128i top = _mm_loadl_epi64((const __*m128i)(dst - BPS));
-  for j = 0; j < 8; ++j {
+  for j = 0; j < 8; j++ {
     _mm_storel_epi64((__*m128i)(dst + j * BPS), top);
   }
 }
@@ -1090,7 +1090,7 @@ func VE8uv_SSE2(dst *uint8) {  // vertical
 static  func Put8x8uv_SSE2(uint8 v, dst *uint8) {
   var j int
   const __m128i values = _mm_set1_epi8((byte)v);
-  for j = 0; j < 8; ++j {
+  for j = 0; j < 8; j++ {
     _mm_storel_epi64((__*m128i)(dst + j * BPS), values);
   }
 }
@@ -1101,7 +1101,7 @@ func DC8uv_SSE2(dst *uint8) {  // DC
   const __m128i sum = _mm_sad_epu8(top, zero);
   left := 0;
   var j int
-  for j = 0; j < 8; ++j {
+  for j = 0; j < 8; j++ {
     left += dst[-1 + j * BPS];
   }
   {
@@ -1121,7 +1121,7 @@ func DC8uvNoLeft_SSE2(dst *uint8) {  // DC with no left samples
 func DC8uvNoTop_SSE2(dst *uint8) {  // DC with no top samples
   int dc0 = 4;
   var i int
-  for i = 0; i < 8; ++i {
+  for i = 0; i < 8; i++ {
     dc0 += dst[-1 + i * BPS];
   }
   Put8x8uv_SSE2(dc0 >> 3, dst);

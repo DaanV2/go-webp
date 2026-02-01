@@ -128,7 +128,7 @@ static uint64 CombinedShannonEntropy_C(const uint32 X[256], const uint32 Y[256])
   var i int
   retval := 0;
   sumX := 0, sumXY = 0;
-  for i = 0; i < 256; ++i {
+  for i = 0; i < 256; i++ {
     x := X[i];
     if (x != 0) {
       xy := x + Y[i];
@@ -149,7 +149,7 @@ static uint64 ShannonEntropy_C(const X *uint32, int n) {
   var i int
   retval := 0;
   sumX := 0;
-  for i = 0; i < n; ++i {
+  for i = 0; i < n; i++ {
     x := X[i];
     if (x != 0) {
       sumX += x;
@@ -173,7 +173,7 @@ func VP8LBitsEntropyUnrefined(const WEBP_RESTRICT const array *uint32, int n, WE
 
   VP8LBitEntropyInit(entropy);
 
-  for i = 0; i < n; ++i {
+  for i = 0; i < n; i++ {
     if (array[i] != 0) {
       entropy.sum += array[i];
       entropy.nonzero_code = i;
@@ -219,7 +219,7 @@ func GetEntropyUnrefined_C(
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
 
-  for i = 1; i < length; ++i {
+  for i = 1; i < length; i++ {
     x := X[i];
     if (x != x_prev) {
       GetEntropyUnrefinedHelper(x, i, &x_prev, &i_prev, bit_entropy, stats);
@@ -239,7 +239,7 @@ func GetCombinedEntropyUnrefined_C(
   memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
 
-  for i = 1; i < length; ++i {
+  for i = 1; i < length; i++ {
     xy := X[i] + Y[i];
     if (xy != xy_prev) {
       GetEntropyUnrefinedHelper(xy, i, &xy_prev, &i_prev, bit_entropy, stats);
@@ -254,7 +254,7 @@ func GetCombinedEntropyUnrefined_C(
 
 func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, int num_pixels) {
   var i int
-  for i = 0; i < num_pixels; ++i {
+  for i = 0; i < num_pixels; i++ {
     argb := (int)argb_data[i];
     green := (argb >> 8) & 0xff;
     new_r := (((argb >> 16) & 0xff) - green) & 0xff;
@@ -271,7 +271,7 @@ static  int8 U32ToS8(uint32 v) { return (int8)(v & 0xff); }
 
 func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, int num_pixels) {
   var i int
-  for i = 0; i < num_pixels; ++i {
+  for i = 0; i < num_pixels; i++ {
     argb := data[i];
     green := U32ToS8(argb >> 8);
     red := U32ToS8(argb >> 16);
@@ -305,7 +305,7 @@ static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 
 func VP8LCollectColorRedTransforms_C(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
   while (tile_height-- > 0) {
     var x int
-    for x = 0; x < tile_width; ++x {
+    for x = 0; x < tile_width; x++ {
       ++histo[TransformColorRed((uint8)green_to_red, argb[x])];
     }
     argb += stride;
@@ -315,7 +315,7 @@ func VP8LCollectColorRedTransforms_C(const WEBP_RESTRICT argb *uint32, int strid
 func VP8LCollectColorBlueTransforms_C(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   while (tile_height-- > 0) {
     var x int
-    for x = 0; x < tile_width; ++x {
+    for x = 0; x < tile_width; x++ {
       ++histo[TransformColorBlue((uint8)green_to_blue, (uint8)red_to_blue, argb[x])];
     }
     argb += stride;
@@ -340,7 +340,7 @@ func VP8LBundleColorMap_C(const WEBP_RESTRICT const row *uint8, int width, int x
     bit_depth := 1 << (3 - xbits);
     mask := (1 << xbits) - 1;
     code := 0xff000000;
-    for x = 0; x < width; ++x {
+    for x = 0; x < width; x++ {
       xsub := x & mask;
       if (xsub == 0) {
         code = 0xff000000;
@@ -359,7 +359,7 @@ static uint32 ExtraCost_C(const population *uint32, int length) {
   var i int
   cost := population[4] + population[5];
   assert.Assert(length % 2 == 0);
-  for i = 2; i < length / 2 - 1; ++i {
+  for i = 2; i < length / 2 - 1; i++ {
     cost += i * (population[2 * i + 2] + population[2 * i + 3]);
   }
   return cost;
@@ -400,7 +400,7 @@ func PredictorSub1_C(const in *uint32, const upper *uint32, int num_pixels, WEBP
       WEBP_RESTRICT out *uint32) {                             \
     var x int                                                       \
     assert.Assert(upper != nil);                                       \
-    for x = 0; x < num_pixels; ++x {                           \
+    for x = 0; x < num_pixels; x++ {                           \
       pred :=                                      \
           VP8LPredictor##PREDICTOR_I##_C(&in[x - 1], upper + x); \
       out[x] = VP8LSubPixels(in[x], pred);                       \
