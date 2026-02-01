@@ -45,7 +45,7 @@ static  func PredictLine_C(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT p
 
 static  func DoHorizontalFilter_C(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
-  int row;
+  row int;
   DCHECK(in, out);
 
   // Leftmost pixel is the same as input for topmost scanline.
@@ -71,7 +71,7 @@ static  func DoHorizontalFilter_C(const WEBP_RESTRICT in *uint8, int width, int 
 
 static  func DoVerticalFilter_C(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
-  int row;
+  row int;
   DCHECK(in, out);
 
   // Very first top-left pixel is copied.
@@ -102,7 +102,7 @@ static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
 #if !WEBP_NEON_OMIT_C_CODE
 static  func DoGradientFilter_C(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
-  int row;
+  row int;
   DCHECK(in, out);
 
   // left prediction for top scan-line

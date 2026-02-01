@@ -21,7 +21,6 @@ import "github.com/daanv2/go-webp/pkg/string"  // for memset()
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 #ifdef WEBP_USE_THREAD
 

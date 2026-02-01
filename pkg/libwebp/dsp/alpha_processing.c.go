@@ -101,7 +101,7 @@ func (*WebPMultRow)(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const al
 //------------------------------------------------------------------------------
 // Generic per-plane calls
 
-func WebPMultARGBRows(ptr *uint8, int stride, int width, int num_rows, int inverse) {
+func WebPMultARGBRows(ptr *uint8, int stride, int width, num_rows int , int inverse) {
   int n;
   for (n = 0; n < num_rows; ++n) {
     WebPMultARGBRow((*uint32)ptr, width, inverse);
@@ -109,7 +109,7 @@ func WebPMultARGBRows(ptr *uint8, int stride, int width, int num_rows, int inver
   }
 }
 
-func WebPMultRows(WEBP_RESTRICT ptr *uint8, int stride, const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int num_rows, int inverse) {
+func WebPMultRows(WEBP_RESTRICT ptr *uint8, int stride, const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, num_rows int , int inverse) {
   int n;
   for (n = 0; n < num_rows; ++n) {
     WebPMultRow(ptr, alpha, width, inverse);

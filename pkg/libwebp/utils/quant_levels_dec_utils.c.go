@@ -24,7 +24,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 // const USE_DITHERING =  // uncomment to enable ordered dithering (not vital)
 
@@ -49,7 +48,7 @@ const DFIX = 0
 type SmoothParams struct {
   int width, height;            // dimension
   int stride;                   // stride in bytes
-  int row;                      // current input row being processed
+  row int;                      // current input row being processed
   WEBP_INDEXABLE src *uint8;  // input pointer
   WEBP_INDEXABLE dst *uint8;  // output pointer
 

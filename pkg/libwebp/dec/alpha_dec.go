@@ -188,7 +188,7 @@ func WebPDeallocateAlphaMemory(/* const */ dec *VP8Decoder) {
 //------------------------------------------------------------------------------
 // Main entry point.
 
- const VP *uint88DecompressAlphaRows(const dec *VP8Decoder, const io *VP8Io, int row, int num_rows) {
+func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8Io, row int, num_rows int ) *VP {
   width := io.width;
   height := io.crop_bottom;
 

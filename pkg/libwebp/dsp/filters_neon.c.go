@@ -68,7 +68,7 @@ func PredictLineLeft_NEON(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uin
 // Horizontal filter.
 
 static  func DoHorizontalFilter_NEON(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  int row;
+  row int;
   DCHECK(in, out);
 
   // Leftmost pixel is the same as input for topmost scanline.
@@ -95,7 +95,7 @@ func HorizontalFilter_NEON(const WEBP_RESTRICT data *uint8, int width, int heigh
 // Vertical filter.
 
 static  func DoVerticalFilter_NEON(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  int row;
+  row int;
   DCHECK(in, out);
 
   // Very first top-left pixel is copied.
@@ -142,7 +142,7 @@ func GradientPredictDirect_NEON(const row *uint8, const top *uint8, WEBP_RESTRIC
 }
 
 static  func DoGradientFilter_NEON(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
-  int row;
+  row int;
   DCHECK(in, out);
 
   // left prediction for top scan-line

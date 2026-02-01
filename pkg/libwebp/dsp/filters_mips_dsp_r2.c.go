@@ -205,7 +205,7 @@ const FILTER_LINE_BY_LINE =                          \
 static  func DoHorizontalFilter_MIPSdspR2(
     const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
-  int row;
+  row int;
   DCHECK(in, out);
 
   // Leftmost pixel is the same as input for topmost scanline.
@@ -240,7 +240,7 @@ const FILTER_LINE_BY_LINE =                              \
 static  func DoVerticalFilter_MIPSdspR2(
     const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
-  int row;
+  row int;
   DCHECK(in, out);
 
   // Very first top-left pixel is copied.
@@ -292,7 +292,7 @@ static int GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) {
 
 func DoGradientFilter_MIPSdspR2(const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
-  int row;
+  row int;
   DCHECK(in, out);
 
   // left prediction for top scan-line

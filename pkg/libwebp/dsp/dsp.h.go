@@ -24,7 +24,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 
 const BPS = 32  // this is the common stride for enc/dec
@@ -384,13 +383,13 @@ extern func (*WebPExtractGreen)(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT 
 extern func (*WebPMultARGBRow)(const ptr *uint32, int width, int inverse);
 
 // Same a WebPMultARGBRow(), but for several rows.
-func WebPMultARGBRows(ptr *uint8, int stride, int width, int num_rows, int inverse);
+func WebPMultARGBRows(ptr *uint8, int stride, int width, num_rows int , int inverse);
 
 // Same for a row of single values, with side alpha values.
 extern func (*WebPMultRow)(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alpha *uint8, int width, int inverse);
 
 // Same a WebPMultRow(), but for several 'num_rows' rows.
-func WebPMultRows(WEBP_RESTRICT ptr *uint8, int stride, const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int num_rows, int inverse);
+func WebPMultRows(WEBP_RESTRICT ptr *uint8, int stride, const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, num_rows int , int inverse);
 
 // Plain-C versions, used as fallback by some implementations.
 func WebPMultRow_C(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alpha *uint8, int width, int inverse);

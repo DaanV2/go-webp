@@ -29,7 +29,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 //------------------------------------------------------------------------------
 // Main YUV<.RGB conversion functions
@@ -182,7 +181,7 @@ static int EmitAlphaRGB(const io *VP8Io, const p *WebPDecParams, int expected_nu
     alpha_first =
         (colorspace == MODE_ARGB || colorspace == MODE_Argb);
     var buf *WebPRGBABuffer = &p.output.u.RGBA;
-    int num_rows;
+    num_rows int ;
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows);
     var base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride;
     var dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3));
@@ -204,7 +203,7 @@ static int EmitAlphaRGBA4444(const io *VP8Io, const p *WebPDecParams, int expect
     mb_w := io.mb_w;
     const WEBP_CSP_MODE colorspace = p.output.colorspace;
     var buf *WebPRGBABuffer = &p.output.u.RGBA;
-    int num_rows;
+    num_rows int ;
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows);
     var base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride;
 #if (WEBP_SWAP_16BIT_CSP == 1)

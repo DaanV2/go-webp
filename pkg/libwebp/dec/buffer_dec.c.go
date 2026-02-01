@@ -29,25 +29,26 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // WebPDecBuffer
 
 // Number of bytes per pixel for the different color-spaces.
-static const uint8 kModeBpp[MODE_LAST] = {3, 4, 3, 4, 4, 2, 2,  //
+const kModeBpp = [MODE_LAST]uint8{3, 4, 3, 4, 4, 2, 2,  //
                                             4, 4, 4, 2,  // pre-multiplied modes
                                             1, 1}
 
 // Convert to an integer to handle both the unsigned/signed enum cases
 // without the need for casting to remove type limit warnings.
 // Check that webp_csp_mode is within the bounds of WEBP_CSP_MODE.
-int IsValidColorspace(int webp_csp_mode) {
-  return (webp_csp_mode >= MODE_RGB && webp_csp_mode < MODE_LAST);
+func IsValidColorspace(int webp_csp_mode) int {
+  return (webp_csp_mode >= MODE_RGB && webp_csp_mode < MODE_LAST)
 }
 
 // strictly speaking, the very last (or first, if flipped) row
 // doesn't require padding.
-#define MIN_BUFFER_SIZE(WIDTH, HEIGHT, STRIDE) \
-  ((uint64)(STRIDE) * ((HEIGHT) - 1) + (WIDTH))
+func MIN_BUFFER_SIZE(WIDTH, HEIGHT, STRIDE uint64) uint64 {
+  return ((uint64)(STRIDE) * ((HEIGHT) - 1) + (WIDTH))
+}
 
-static VP8StatusCode CheckDecBuffer(const buffer *WebPDecBuffer) {
+func CheckDecBuffer(/* const */ buffer *WebPDecBuffer) VP8StatusCode {
   ok := 1;
-  const WEBP_CSP_MODE mode = buffer.colorspace;
+  mode := buffer.colorspace;
   width := buffer.width;
   height := buffer.height;
   if (!IsValidColorspace(mode)) {
@@ -81,45 +82,46 @@ static VP8StatusCode CheckDecBuffer(const buffer *WebPDecBuffer) {
   } else {  // RGB checks
     var buf *WebPRGBABuffer = &buffer.u.RGBA;
     stride := abs(buf.stride);
-    const size uint64  =
-        MIN_BUFFER_SIZE((uint64)width * kModeBpp[mode], height, stride);
+    size :=
+        MIN_BUFFER_SIZE(width * kModeBpp[mode], height, stride);
     ok &= (size <= buf.size);
     ok &= (stride >= width * kModeBpp[mode]);
     ok &= (buf.rgba != nil);
   }
   return tenary.If(ok, VP8_STATUS_OK, VP8_STATUS_INVALID_PARAM);
 }
-#undef MIN_BUFFER_SIZE
 
-static VP8StatusCode AllocateBuffer(const buffer *WebPDecBuffer) {
+func AllocateBuffer(/* const */ buffer *WebPDecBuffer)  VP8StatusCode {
   w := buffer.width;
   h := buffer.height;
-  const WEBP_CSP_MODE mode = buffer.colorspace;
+  mode := buffer.colorspace;
 
   if (w <= 0 || h <= 0 || !IsValidColorspace(mode)) {
     return VP8_STATUS_INVALID_PARAM;
   }
 
   if (buffer.is_external_memory <= 0 && buffer.private_memory == nil) {
-    output *uint8;
-    uv_stride := 0, a_stride = 0;
-    uv_size := 0, a_size = 0, total_size;
+    var output *uint8
+    uv_stride := 0
+	a_stride := 0
+    uv_size := 0 
+	a_size := 0 
     // We need memory and it hasn't been allocated yet.
     // => initialize output buffer, now that dimensions are known.
-    int stride;
-    size uint64 ;
+    var stride int
+    var size uint64
 
-    if ((uint64)w * kModeBpp[mode] >= (uint64(1) << 31)) {
+    if (w * kModeBpp[mode] >= (uint64(1) << 31)) {
       return VP8_STATUS_INVALID_PARAM;
     }
     stride = w * kModeBpp[mode];
-    size = (uint64)stride * h;
+    size = uint64(stride * h);
     if (!WebPIsRGBMode(mode)) {
       uv_stride = (w + 1) / 2;
-      uv_size = (uint64)uv_stride * ((h + 1) / 2);
+      uv_size = uint64(uv_stride * ((h + 1) / 2));
       if (mode == MODE_YUVA) {
         a_stride = w;
-        a_size = (uint64)a_stride * h;
+        a_size = uint64(a_stride * h);
       }
     }
     total_size = size + 2 * uv_size + a_size;

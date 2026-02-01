@@ -18,7 +18,6 @@ package utils
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 const WEBP_RESCALER_RFIX =32  // fixed-point precision for multiplies
 const WEBP_RESCALER_ONE =(uint64(1) << WEBP_RESCALER_RFIX)
@@ -65,7 +64,7 @@ int WebPRescaleNeededLines(const rescaler *WebPRescaler, int max_num_lines);
 
 // Import multiple rows over all channels, until at least one row is ready to
 // be exported. Returns the actual number of lines that were imported.
-int WebPRescalerImport(const rescaler *WebPRescaler, int num_rows, const src *uint8, int src_stride);
+int WebPRescalerImport(const rescaler *WebPRescaler, num_rows int , const src *uint8, int src_stride);
 
 // Export as many rows as possible. Return the numbers of rows written.
 int WebPRescalerExport(const rescaler *WebPRescaler);

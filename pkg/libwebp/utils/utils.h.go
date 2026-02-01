@@ -25,7 +25,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-WEBP_ASSUME_UNSAFE_INDEXABLE_ABI
 
 
 //------------------------------------------------------------------------------
@@ -51,12 +50,12 @@ static  int CheckSizeOverflow(size uint64 ) {
 // somewhere (like: malloc(num_pixels * sizeof(*something))). That's why this
 // safe malloc() borrows the signature from calloc(), pointing at the dangerous
 // underlying multiply involved.
-// Deprecated: WebPSafeMalloc is just new in golang.
-// *void(size *nmemb) WebPSafeMalloc(uint64 nmemb, size uint64 );
+// Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
+func WebPSafeMalloc(uint64 nmemb, size uint64 ) *int {}
 // Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
-// Deprecated: WebPSafeMalloc is just new in golang.
-// *void(size *nmemb) WebPSafeCalloc(uint64 nmemb, size uint64 );
+// Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
+func WebPSafeCalloc(uint64 nmemb, size uint64 )  *int {}
 
 // Companion deallocation function to the above allocations.
  func WebPSafeFree(const ptr *void);

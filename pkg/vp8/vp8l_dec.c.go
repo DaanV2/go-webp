@@ -803,9 +803,9 @@ static  GetHtreeGroupForPos *HTreeGroup(const hdr *VP8LMetadata, int x, int y) {
 
 // If 'wait_for_biggest_batch' is true, wait for enough data to fill the
 // argb_cache as much as possible (usually NUM_ARGB_CACHE_ROWS).
-typedef func (*ProcessRowsFunc)(const dec *VP8LDecoder, int row, int wait_for_biggest_batch);
+typedef func (*ProcessRowsFunc)(const dec *VP8LDecoder, row int, int wait_for_biggest_batch);
 
-func ApplyInverseTransforms(const dec *VP8LDecoder, int start_row, int num_rows, const rows *uint32) {
+func ApplyInverseTransforms(const dec *VP8LDecoder, int start_row, num_rows int , const rows *uint32) {
   n := dec.next_transform;
   cache_pixs := dec.width * num_rows;
   end_row := start_row + num_rows;
@@ -826,9 +826,9 @@ func ApplyInverseTransforms(const dec *VP8LDecoder, int start_row, int num_rows,
 
 // Processes (transforms, scales & color-converts) the rows decoded after the
 // last call.
-func ProcessRows(const dec *VP8LDecoder, int row, int wait_for_biggest_batch) {
+func ProcessRows(const dec *VP8LDecoder, row int, int wait_for_biggest_batch) {
   var rows *uint32 = dec.pixels + dec.width * dec.last_row;
-  int num_rows;
+  num_rows int ;
 
   // In case of YUV conversion and if we do not need to get to the last row.
   if (wait_for_biggest_batch) {
