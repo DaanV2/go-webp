@@ -356,7 +356,7 @@ func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
     return VP8SetError(dec, VP8_STATUS_INVALID_PARAM, "nil VP8Io passed to VP8GetHeaders()");
   }
   buf_size = io.data_size;
-  buf = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, io.data, io.data_size);
+  buf = io.data // bidi index -> io.data_size;
   if (buf_size < 4) {
     return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "Truncated header.");
   }

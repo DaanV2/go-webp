@@ -382,7 +382,7 @@ static VP8StatusCode DecodeVP8FrameHeader(const idec *WebPIDecoder) {
   }
   {
     var bounded_data *uint8 =
-        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, data, curr_size);
+        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, , curr_size);
     if (!VP8GetInfo(bounded_data, curr_size, idec.chunk_size, &width, &height)) {
       return IDecError(idec, VP8_STATUS_BITSTREAM_ERROR);
     }

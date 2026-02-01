@@ -84,8 +84,6 @@ func WEBP_UNSAFE_MEMCMP(s1, s2, size any) {/* memcmp(s1, s2, size) */}
 // Deprecated: Use golang std code
 func WEBP_UNSAFE_FORGE_SINGLE(typ, ptr any) {/* ((typ)(ptr)) */}
 
-// Deprecated: replace with var <variable> <typ> = <ptr>
-func WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(typ, ptr, size any) {/* ((typ)(ptr)) */}
 
 // This macro exists to indicate intentionality with self-assignments and
 // silence -Wself-assign compiler warnings.

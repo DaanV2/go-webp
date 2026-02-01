@@ -419,7 +419,7 @@ VP8StatusCode WebPParseHeaders(const headers *WebPHeaderStructure) {
   // fill out headers, ignore width/height/has_alpha.
   {
     var bounded_data *uint8 =
-        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, headers.data, headers.data_size);
+        headers.data // bidi index -> headers.data_size;
     status = ParseHeadersInternal(bounded_data, headers.data_size, nil, nil, nil, &has_animation, nil, headers);
   }
   if (status == VP8_STATUS_OK || status == VP8_STATUS_NOT_ENOUGH_DATA) {

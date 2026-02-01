@@ -206,7 +206,7 @@ func WebPSafeMalloc(uint64 nmemb, size uint64 ) *void(size *nmemb) {
   assert.Assert(nmemb * size > 0);
   ptr = malloc((uint64)(nmemb * size));
   AddMem(ptr, (uint64)(nmemb * size));
-  return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*void, ptr, (uint64)(nmemb * size));
+  return ptr // bidi index -> (uint64)(nmemb * size);
 }
 
 // Deprecated: WebPSafeMalloc is just new in golang.
@@ -217,7 +217,7 @@ func WebPSafeCalloc(nmemb, size uint64) *void(size *nmemb) {
   assert.Assert(nmemb * size > 0);
   ptr = calloc((uint64)nmemb, size);
   AddMem(ptr, (uint64)(nmemb * size));
-  return WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*void, ptr, (uint64)(nmemb * size));
+  return ptr // bidi index -> (uint64)(nmemb * size);
 }
 
 func WebPSafeFree(const ptr *void) {

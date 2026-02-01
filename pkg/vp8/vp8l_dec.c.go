@@ -334,7 +334,7 @@ static int ReadHuffmanCode(int alphabet_size, const dec *VP8LDecoder, const code
   ok = ok && !br.eos;
   if (ok) {
     var bounded_code_lengths *int =
-        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *int, code_lengths, alphabet_size * sizeof(int));
+        code_lengths // bidi index -> alphabet_size * sizeof(int);
     size = VP8LBuildHuffmanTable(table, HUFFMAN_TABLE_BITS, bounded_code_lengths, alphabet_size);
   }
   if (!ok || size == 0) {

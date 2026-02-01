@@ -410,12 +410,12 @@ func VP8LCreateHuffmanTree(const histogram *uint32, tree_depth_limit int, const 
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           *uint32, histogram, (uint64)num_symbols * sizeof(*histogram));
   const bounded_buf_rle *uint8 =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*uint8, buf_rle, (uint64)num_symbols * sizeof(*buf_rle));
+      buf_rle // bidi index -> (uint64)num_symbols * sizeof(*buf_rle);
 
   stdlib.Memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));
   OptimizeHuffmanForRle(num_symbols, bounded_buf_rle, bounded_histogram);
   GenerateOptimalTree(
-      bounded_histogram, num_symbols, WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*HuffmanTree, huff_tree, 3 * num_symbols * sizeof(*huff_tree)), tree_depth_limit, huff_code.code_lengths);
+      bounded_histogram, num_symbols, tree_depth_limit // bidi index -> huff_code.code_lengths;
   // Create the actual bit codes for the bit lengths.
   ConvertBitDepthsToSymbols(huff_code);
 }
