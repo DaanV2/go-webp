@@ -34,7 +34,7 @@ static uint32 horizontal_add_uint32x4(const uint32x4_t a) {
 static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
   const int16x8_t tst_ones = vdupq_n_s16(-1);
   uint32x4_t sum = vdupq_n_u32(0);
-  int i;
+  var i int
 
   for (i = 0; i < num_blocks; ++i) {
     // Set DC to zero.
@@ -59,7 +59,7 @@ const IsFlat = IsFlat_C
 static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
   score := 0;
   while (num_blocks-- > 0) {  // TODO(skal): refine positional scoring?
-    int i;
+    var i int
     for (i = 1; i < 16; ++i) {  // omit DC, we're only interested in AC
       score += (levels[i] != 0);
       if (score > thresh) return 0;
@@ -74,7 +74,7 @@ static  int IsFlat(const levels *int16, int num_blocks, int thresh) {
 
 static  int IsFlatSource16(const src *uint8) {
   v := src[0] * uint(0x01010101);
-  int i;
+  var i int
   for (i = 0; i < 16; ++i) {
     if (memcmp(src + 0, &v, 4) || memcmp(src + 4, &v, 4) ||
         memcmp(src + 8, &v, 4) || memcmp(src + 12, &v, 4)) {

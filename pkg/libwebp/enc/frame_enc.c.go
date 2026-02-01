@@ -193,7 +193,7 @@ static int GetProba(int a, int b) {
 }
 
 func ResetSegments(const enc *VP8Encoder) {
-  int n;
+  var n int
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
     enc.mb_info[n].segment = 0;
   }
@@ -201,7 +201,7 @@ func ResetSegments(const enc *VP8Encoder) {
 
 func SetSegmentProbas(const enc *VP8Encoder) {
   int p[NUM_MB_SEGMENTS] = {0}
-  int n;
+  var n int
 
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
     var mb *VP8MBInfo = &enc.mb_info[n];
@@ -461,7 +461,7 @@ static int RecordTokens(const it *VP8EncIterator, const rd *VP8ModeScore, const 
 
 #if SEGMENT_VISU
 func SetBlock(p *uint8, int value, int size) {
-  int y;
+  var y int
   for (y = 0; y < size; ++y) {
     memset(p, value, size);
     p += BPS;
@@ -685,7 +685,7 @@ static int StatLoop(const enc *VP8Encoder) {
 static const uint8 kAverageBytesPerMB[8] = {50, 24, 16, 9, 7, 5, 3, 2}
 
 static int PreLoopInitialize(const enc *VP8Encoder) {
-  int p;
+  var p int
   ok := 1;
   average_bytes_per_MB := kAverageBytesPerMB[enc.base_quant >> 4];
   bytes_per_parts :=
@@ -704,7 +704,7 @@ static int PreLoopInitialize(const enc *VP8Encoder) {
 static int PostLoopFinalize(const it *VP8EncIterator, int ok) {
   var enc *VP8Encoder = it.enc;
   if (ok) {  // Finalize the partitions, check for extra errors.
-    int p;
+    var p int
     for (p = 0; p < enc.num_parts; ++p) {
       VP8BitWriterFinish(enc.parts + p);
       ok &= !enc.parts[p].error;

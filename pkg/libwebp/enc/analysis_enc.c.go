@@ -82,7 +82,7 @@ static  int clip(int v, int m, int M) {
 func SetSegmentAlphas(const enc *VP8Encoder, const int centers[NUM_MB_SEGMENTS], int mid) {
   nb := enc.segment_hdr.num_segments;
   min := centers[0], max = centers[0];
-  int n;
+  var n int
 
   if (nb > 1) {
     for (n = 0; n < nb; ++n) {
@@ -261,7 +261,7 @@ static int FastMBAnalyze(const it *VP8EncIterator) {
   // [8-17] range and favor intra4 at high quality, intra16 for low quality.
   q := (int)it.enc.config.quality;
   kThreshold := 8 + (17 - 8) * q / 100;
-  int k;
+  var k int
   uint32 dc[16];
   uint64 m, m2;
   for (k = 0; k < 16; k += 4) {
@@ -356,7 +356,7 @@ func DefaultMBInfo(const mb *VP8MBInfo) {
 // this stage.
 
 func ResetAllMBInfo(const enc *VP8Encoder) {
-  int n;
+  var n int
   for (n = 0; n < enc.mb_w * enc.mb_h; ++n) {
     DefaultMBInfo(&enc.mb_info[n]);
   }
@@ -398,7 +398,7 @@ static int DoSegmentsJob(arg *void1, arg *void2) {
 
 #ifdef WEBP_USE_THREAD
 func MergeJobs(const src *SegmentJob, const dst *SegmentJob) {
-  int i;
+  var i int
   for (i = 0; i <= MAX_ALPHA; ++i) dst.alphas[i] += src.alphas[i];
   dst.alpha += src.alpha;
   dst.uv_alpha += src.uv_alpha;

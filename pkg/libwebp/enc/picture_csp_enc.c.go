@@ -95,7 +95,7 @@ static  func ConvertRowToY(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *
 }
 
 static  func ConvertRowsToUV(const rgb *uint16, const dst_u *uint8, const dst_v *uint8, int width, const rg *VP8Random) {
-  int i;
+  var i int
   for (i = 0; i < width; i += 1, rgb += 4) {
     r := rgb[0], g = rgb[1], b = rgb[2];
     dst_u[i] = VP8RGBToU(r, g, b, VP8RandomBits(rg, YUV_FIX + 2));
@@ -108,7 +108,7 @@ extern func SharpYuvInit(VP8CPUInfo cpu_info_func);
 static int ImportYUVAFromRGBA(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *uint8, const a_ptr *uint8, int step,        // bytes per pixel
                               int rgb_stride,  // bytes per scanline
                               float dithering, int use_iterative_conversion, const picture *WebPPicture) {
-  int y;
+  var y int
   width := picture.width;
   height := picture.height;
   has_alpha := CheckNonOpaque(a_ptr, width, height, step, rgb_stride);
@@ -286,7 +286,7 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
 
   // Convert
   {
-    int y;
+    var y int
     width := picture.width;
     height := picture.height;
     argb_stride := 4 * picture.argb_stride;
@@ -318,7 +318,7 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
       for (y = 0; y < height; ++y) {
         var argb_dst *uint32 = picture.argb + y * picture.argb_stride;
         var src *uint8 = picture.a + y * picture.a_stride;
-        int x;
+        var x int
         for (x = 0; x < width; ++x) {
           argb_dst[x] = (argb_dst[x] & uint(0x00ffffff)) | ((uint32)src[x] << 24);
         }
@@ -332,7 +332,7 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
 // automatic import / conversion
 
 static int Import(const picture *WebPPicture, const rgb *uint8, int rgb_stride, int step, int swap_rb, int import_alpha) {
-  int y;
+  var y int
   // swap_rb . b,g,r,a , !swap_rb . r,g,b,a
   var r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));
   var g_ptr *uint8 = rgb + 1;

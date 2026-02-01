@@ -48,7 +48,7 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
       const WEBP_RESTRICT cur_u *uint8, const WEBP_RESTRICT cur_v *uint8, \
       WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
       int len) {                                                              \
-    int x;                                                                    \
+    var x int                                                                    \
     last_pixel_pair := (len - 1) >> 1;                               \
     tl_uv := LOAD_UV(top_u[0], top_v[0]); /* top-left sample */       \
     l_uv := LOAD_UV(cur_u[0], cur_v[0]);  /* left-sample */           \
@@ -150,7 +150,7 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
       WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bot_dst *uint8,         \
       int len) {                                                              \
     half_len := len >> 1;                                            \
-    int x;                                                                    \
+    var x int                                                                    \
     assert.Assert(top_dst != nil);                                                  \
     {                                                                         \
       for (x = 0; x < half_len; ++x) {                                        \
@@ -195,7 +195,7 @@ WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last) {
   func FUNC_NAME(                                                            \
       const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,        \
       const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
-    int i;                                                                   \
+    var i int                                                                   \
     for (i = 0; i < len; ++i) FUNC(y[i], u[i], v[i], &dst[i * (XSTEP)]);     \
   }
 

@@ -89,7 +89,7 @@ func VFilter(const p *SmoothParams) {
   const top *uint16 = p.top;
   const out *uint16 = p.end;
   sum := 0;  // all arithmetic is modulo 16bit
-  int x;
+  var x int
 
   for (x = 0; x < w; ++x) {
     uint16 new_value;
@@ -118,7 +118,7 @@ func HFilter(const p *SmoothParams) {
   w := p.width;
   r := p.radius;
 
-  int x;
+  var x int
   for (x = 0; x <= r; ++x) {  // left mirroring
     delta := in[x + r - 1] + in[r - x];
     out[x] = (delta * scale) >> FIX;
@@ -146,7 +146,7 @@ func ApplyFilter(const p *SmoothParams) {
   var dither *uint8 = kOrderedDither[p.row % DSIZE];
 #endif
   const dst *uint8 = p.dst;
-  int x;
+  var x int
   for (x = 0; x < w; ++x) {
     v := dst[x];
     if (v < p.max && v > p.min) {
@@ -179,7 +179,7 @@ func InitCorrectionLUT(
   // lut_ptr is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer (lut) for negative indexing.
   const lut *int16 = lut_ptr + LUT_SIZE;
-  int i;
+  var i int
   for (i = 1; i <= LUT_SIZE; ++i) {
     c := (i <= threshold2)  ? (i << DFIX)
             : (i < threshold1) ? max_threshold * (threshold1 - i) / delta

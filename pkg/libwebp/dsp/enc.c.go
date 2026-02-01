@@ -46,7 +46,7 @@ const int VP8DspScan[16 + 4 + 4] = {
 // general-purpose util function
 func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], const histo *VP8Histogram) {
   max_value := 0, last_non_zero = 1;
-  int k;
+  var k int
   for (k = 0; k <= MAX_COEFF_THRESH; ++k) {
     value := distribution[k];
     if (value > 0) {
@@ -60,10 +60,10 @@ func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], const his
 
 #if !WEBP_NEON_OMIT_C_CODE
 func CollectHistogram_C(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
-  int j;
+  var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   for (j = start_block; j < end_block; ++j) {
-    int k;
+    var k int
     int16 out[16];
 
     VP8FTransform(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
@@ -90,7 +90,7 @@ static volatile tables_ok := 0;
 
 static WEBP_TSAN_IGNORE_FUNCTION func InitTables(){
   if (!tables_ok) {
-    int i;
+    var i int
     for (i = -255; i <= 255 + 255; ++i) {
       clip1[255 + i] = clip_8b(i);
     }
@@ -108,7 +108,7 @@ static WEBP_TSAN_IGNORE_FUNCTION func InitTables(){
 
 static  func ITransformOne(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int C[4 * 4], *tmp;
-  int i;
+  var i int
   tmp = C;
   for (i = 0; i < 4; ++i) {  // vertical pass
     a := in[0] + in[8];
@@ -150,7 +150,7 @@ func ITransform_C(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT in *int16,
 }
 
 func FTransform_C(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
-  int i;
+  var i int
   int tmp[16];
   for (i = 0; i < 4; ++i, src += BPS, ref += BPS) {
     d0 := src[0] - ref[0];  // 9bit dynamic range ([-255,255])
@@ -188,7 +188,7 @@ func FTransform2_C(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT ref *uint
 func FTransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   // input is 12b signed
   int32 tmp[16];
-  int i;
+  var i int
   for (i = 0; i < 4; ++i, in += 64) {
     a0 := (in[0 * 16] + in[2 * 16]);  // 13b
     a1 := (in[1 * 16] + in[3 * 16]);
@@ -222,14 +222,14 @@ func FTransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
 // Intra predictions
 
 static  func Fill(dst *uint8, int value, int size) {
-  int j;
+  var j int
   for (j = 0; j < size; ++j) {
     memset(dst + j * BPS, value, size);
   }
 }
 
 static  func VerticalPred(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8, int size) {
-  int j;
+  var j int
   if (top != nil) {
     for (j = 0; j < size; ++j) memcpy(dst + j * BPS, top, size);
   } else {
@@ -239,7 +239,7 @@ static  func VerticalPred(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uin
 
 static  func HorizontalPred(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, int size) {
   if (left != nil) {
-    int j;
+    var j int
     for (j = 0; j < size; ++j) {
       memset(dst + j * BPS, left[j], size);
     }
@@ -249,13 +249,13 @@ static  func HorizontalPred(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *
 }
 
 static  func TrueMotion(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, const WEBP_RESTRICT top *uint8, int size) {
-  int y;
+  var y int
   if (left != nil) {
     if (top != nil) {
       var clip *uint8 = clip1 + 255 - left[-1];
       for (y = 0; y < size; ++y) {
         var clip_table *uint8 = clip + left[y];
-        int x;
+        var x int
         for (x = 0; x < size; ++x) {
           dst[x] = clip_table[top[x]];
         }
@@ -279,7 +279,7 @@ static  func TrueMotion(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint
 
 static  func DCMode(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, const WEBP_RESTRICT top *uint8, int size, int round, int shift) {
   DC := 0;
-  int j;
+  var j int
   if (top != nil) {
     for (j = 0; j < size; ++j) DC += top[j];
     if (left != nil) {  // top and left present
@@ -342,7 +342,7 @@ func Intra16Preds_C(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, c
 func VE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   vals[4] := {
       AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
-  int i;
+  var i int
   for (i = 0; i < 4; ++i) {
     memcpy(dst + i * BPS, vals, 4);
   }
@@ -363,7 +363,7 @@ func HE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 func DC4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   dc := 4;
-  int i;
+  var i int
   for (i = 0; i < 4; ++i) dc += top[i] + top[-5 + i];
   Fill(dst, dc >> 3, 4);
 }
@@ -578,7 +578,7 @@ func Mean16x4_C(const WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
 static int TTransform(const WEBP_RESTRICT in *uint8, const WEBP_RESTRICT w *uint16) {
   sum := 0;
   int tmp[16];
-  int i;
+  var i int
   // horizontal pass
   for (i = 0; i < 4; ++i, in += BPS) {
     a0 := in[0] + in[2];
@@ -637,7 +637,7 @@ static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7,
 // Simple quantization
 static int QuantizeBlock_C(int16 in[16], int16 out[16], const WEBP_RESTRICT const mtx *VP8Matrix) {
   last := -1;
-  int n;
+  var n int
   for (n = 0; n < 16; ++n) {
     j := kZigzag[n];
     sign := (in[j] < 0);
@@ -672,7 +672,7 @@ static int Quantize2Blocks_C(int16 in[32], int16 out[32], const WEBP_RESTRICT co
 // Block copy
 
 static  func Copy(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int w, int h) {
-  int y;
+  var y int
   for (y = 0; y < h; ++y) {
     memcpy(dst, src, w);
     src += BPS;

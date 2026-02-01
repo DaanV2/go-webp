@@ -86,10 +86,10 @@ func ParseIntraMode(const br *VP8BitReader, const dec *VP8Decoder, int mb_x) {
     WEBP_UNSAFE_MEMSET(left, ymode, 4 * sizeof(*left));
   } else {
     modes *uint8 = block.imodes;
-    int y;
+    var y int
     for (y = 0; y < 4; ++y) {
       ymode := left[y];
-      int x;
+      var x int
       for (x = 0; x < 4; ++x) {
         var prob *uint8 = kBModesProba[top[x]][ymode];
 #if (USE_GENERIC_TREE == 1)

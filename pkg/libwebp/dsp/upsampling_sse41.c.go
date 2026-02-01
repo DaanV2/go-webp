@@ -226,7 +226,7 @@ extern func WebPInitYUV444ConvertersSSE41(void);
   func FUNC_NAME(                                                     \
       const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8,        \
       const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
-    int i;                                                                   \
+    var i int                                                                   \
     max_len := len & ~31;                                           \
     for (i = 0; i < max_len; i += 32) {                                      \
       CALL(y + i, u + i, v + i, dst + i * (XSTEP));                          \

@@ -215,7 +215,7 @@ static var buf_start *uint8 = nil;
 static init_done := 0;
 
 func PrintBitTraces(){
-  int i;
+  var i int
   scale := 1;
   total := 0;
   var units *byte = "bits";

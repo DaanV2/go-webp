@@ -36,7 +36,7 @@ static  func PredictLineInverse0(const src *uint8, const pred *uint8, WEBP_RESTR
     length -= 32;
   }
   if (length > 0) {
-    int i;
+    var i int
     if (length >= 16) {
       src0 = LD_UB(src);
       pred0 = LD_UB(pred);
@@ -98,7 +98,7 @@ func HorizontalFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height
 // Gradient filter
 
 static  func PredictLineGradient(const pinput *uint8, const ppred *uint8, WEBP_RESTRICT poutput *uint8, int stride, int size) {
-  int w;
+  var w int
   const v16i8 zero = {0}
   while (size >= 16) {
     v16u8 pred0, dst0;

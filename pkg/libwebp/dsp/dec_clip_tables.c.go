@@ -57,7 +57,7 @@ var VP *uint88kabs0 = &abs0[255];
 
 WEBP_TSAN_IGNORE_FUNCTION func VP8InitClipTables(){
 #if (USE_STATIC_TABLES == 0)
-  int i;
+  var i int
   if (!tables_ok) {
     for (i = -255; i <= 255; ++i) {
       abs0[255 + i] = (i < 0) ? -i : i;

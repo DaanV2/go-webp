@@ -45,7 +45,7 @@ func ConvertPopulationCountTableToBitEstimates(
     int num_symbols, const uint32 population_counts[], uint32 output[]) {
   sum := 0;
   nonzeros := 0;
-  int i;
+  var i int
   for (i = 0; i < num_symbols; ++i) {
     sum += population_counts[i];
     if (population_counts[i] > 0) {
@@ -198,7 +198,7 @@ static int CostIntervalIsInFreeList(const manager *CostManager, const interval *
 }
 
 func CostManagerInitFreeList(const manager *CostManager) {
-  int i;
+  var i int
   manager.free_intervals = nil;
   for (i = 0; i < COST_MANAGER_MAX_FREE_LIST; ++i) {
     CostIntervalAddToFreeList(manager, &manager.intervals[i]);
@@ -233,7 +233,7 @@ func CostManagerClear(const manager *CostManager) {
 }
 
 static int CostManagerInit(const manager *CostManager, const dist_array *uint16, int pix_count, const cost_model *CostModel) {
-  int i;
+  var i int
   cost_cache_size := (pix_count > MAX_LENGTH) ? MAX_LENGTH : pix_count;
 
   manager.costs = nil;
@@ -320,7 +320,7 @@ static  func UpdateCost(const manager *CostManager, int i, int position, int64 c
 // Given the cost and the position that define an interval, update the cost for
 // all the pixels between 'start' and 'end' excluded.
 static  func UpdateCostPerInterval(const manager *CostManager, int start, int end, int position, int64 cost) {
-  int i;
+  var i int
   for (i = start; i < end; ++i) UpdateCost(manager, i, position, cost);
 }
 
@@ -444,7 +444,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
   kSkipDistance := 10;
 
   if (len < kSkipDistance) {
-    int j;
+    var j int
     for (j = position; j < position + len; ++j) {
       k := j - position;
       int64 cost_tmp;
@@ -535,7 +535,7 @@ static  func PushInterval(const manager *CostManager, int64 distance_cost, int p
 
 static int BackwardReferencesHashChainDistanceOnly(
     int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs, const dist_array *uint16) {
-  int i;
+  var i int
   ok := 0;
   cc_init := 0;
   pix_count := xsize * ysize;
@@ -614,7 +614,7 @@ static int BackwardReferencesHashChainDistanceOnly(
           // Already consider the pixel at "reach" to add intervals that are
           // better than whatever we add.
           int offset_j, len_j = 0;
-          int j;
+          var j int
           assert.Assert(len == MAX_LENGTH || len == pix_count - i);
           // Figure out the last consecutive pixel within [i, reach + 1] with
           // the same offset.
@@ -683,7 +683,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
   for (ix = 0; ix < chosen_path_size; ++ix) {
     len := chosen_path[ix];
     if (len != 1) {
-      int k;
+      var k int
       offset := VP8LHashChainFindOffset(hash_chain, i);
       VP8LBackwardRefsCursorAdd(refs, PixOrCopyCreateCopy(offset, len));
       if (use_color_cache) {

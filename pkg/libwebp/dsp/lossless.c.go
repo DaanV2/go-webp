@@ -169,12 +169,12 @@ uint32 VP8LPredictor13_C(const left *uint32, const top *uint32) {
 }
 
 func PredictorAdd0_C(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int x;
+  var x int
   (void)upper;
   for (x = 0; x < num_pixels; ++x) out[x] = VP8LAddPixels(in[x], ARGB_BLACK);
 }
 func PredictorAdd1_C(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   left := out[-1];
   (void)upper;
   for (i = 0; i < num_pixels; ++i) {
@@ -242,7 +242,7 @@ func PredictorInverseTransform_C(const transform *VP8LTransform, int y_start, in
 // Add green to blue and red channels (i.e. perform the inverse transform of
 // 'subtract green').
 func VP8LAddGreenToBlueAndRed_C(const src *uint32, int num_pixels, dst *uint32) {
-  int i;
+  var i int
   for (i = 0; i < num_pixels; ++i) {
     argb := src[i];
     green := ((argb >> 8) & 0xff);
@@ -264,7 +264,7 @@ static  func ColorCodeToMultipliers(uint32 color_code, const m *VP8LMultipliers)
 }
 
 func VP8LTransformColorInverse_C(const m *VP8LMultipliers, const src *uint32, int num_pixels, dst *uint32) {
-  int i;
+  var i int
   for (i = 0; i < num_pixels; ++i) {
     argb := src[i];
     green := (int8)(argb >> 8);
@@ -321,9 +321,9 @@ func ColorSpaceInverseTransform_C(const transform *VP8LTransform, int y_start, i
                             GET_INDEX, GET_VALUE)                              \
 func F_NAME(const src *TYPE, const color_map *uint32,           \
                    dst *TYPE, int y_start, int y_end, int width) {             \
-  int y;                                                                       \
+  var y int                                                                       \
   for (y = y_start; y < y_end; ++y) {                                          \
-    int x;                                                                     \
+    var x int                                                                     \
     for (x = 0; x < width; ++x) {                                              \
       *dst++ = GET_VALUE(color_map[GET_INDEX(*src++)]);                        \
     }                                                                          \
@@ -332,7 +332,7 @@ func F_NAME(const src *TYPE, const color_map *uint32,           \
 STATIC_DECL func FUNC_NAME(const transform *VP8LTransform,               \
                            int y_start, int y_end, const src *TYPE,            \
                            dst *TYPE) {                                        \
-  int y;                                                                       \
+  var y int                                                                       \
   bits_per_pixel := 8 >> transform.bits;                             \
   width := transform.xsize;                                          \
   var color_map *uint32 = transform.data;                           \
@@ -342,7 +342,7 @@ STATIC_DECL func FUNC_NAME(const transform *VP8LTransform,               \
     bit_mask := (1 << bits_per_pixel) - 1;                       \
     for (y = y_start; y < y_end; ++y) {                                        \
       packed_pixels := 0;                                              \
-      int x;                                                                   \
+      var x int                                                                   \
       for (x = 0; x < width; ++x) {                                            \
         /* We need to load fresh 'packed_pixels' once every                */  \
         /* 'pixels_per_byte' increments of x. Fortunately, pixels_per_byte */  \

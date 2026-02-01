@@ -177,7 +177,7 @@ func WebPRescalerExportRow(const wrk *WebPRescaler) {
     } else if (wrk.fxy_scale) {
       WebPRescalerExportRowShrink(wrk);
     } else {  // special case
-      int i;
+      var i int
       assert.Assert(wrk.src_height == wrk.dst_height && wrk.x_add == 1);
       assert.Assert(wrk.src_width == 1 && wrk.dst_width <= 2);
       for (i = 0; i < wrk.num_channels * wrk.dst_width; ++i) {

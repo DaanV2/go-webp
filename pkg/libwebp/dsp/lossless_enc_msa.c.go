@@ -96,7 +96,7 @@ func TransformColor_MSA(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTR
 }
 
 func SubtractGreenFromBlueAndRed_MSA(argb_data *uint32, int num_pixels) {
-  int i;
+  var i int
   ptemp_data *uint8 = (*uint8)argb_data;
   v16u8 src0, dst0, tmp0;
   const v16u8 mask = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255}

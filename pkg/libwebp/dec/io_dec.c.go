@@ -119,7 +119,7 @@ static int EmitFancyRGB(const io *VP8Io, const p *WebPDecParams) {
 //------------------------------------------------------------------------------
 
 func FillAlphaPlane(dst *uint8, int w, int h, int stride) {
-  int j;
+  var j int
   for (j = 0; j < h; ++j) {
     WEBP_UNSAFE_MEMSET(dst, 0xff, w * sizeof(*dst));
     dst += stride;
@@ -132,7 +132,7 @@ static int EmitAlphaYUV(const io *VP8Io, const p *WebPDecParams, int expected_nu
   mb_w := io.mb_w;
   mb_h := io.mb_h;
   dst *uint8 = buf.a + (ptrdiff_t)io.mb_y * buf.a_stride;
-  int j;
+  var j int
   (void)expected_num_lines_out;
   assert.Assert(expected_num_lines_out == mb_h);
   if (alpha != nil) {
@@ -430,7 +430,7 @@ static int ExportAlphaRGBA4444(const p *WebPDecParams, int y_pos, int max_lines_
 
   while (WebPRescalerHasPendingOutput(p.scaler_a) &&
          num_lines_out < max_lines_out) {
-    int i;
+    var i int
     assert.Assert(y_pos + num_lines_out < p.output.height);
     WebPRescalerExportRow(p.scaler_a);
     for (i = 0; i < width; ++i) {

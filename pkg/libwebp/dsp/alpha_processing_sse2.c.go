@@ -150,7 +150,7 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
 }
 
 func ExtractGreen_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
-  int i;
+  var i int
   const __m128i mask = _mm_set1_epi32(0xff);
   var __src *m128i = (const __*m128i)argb;
 
@@ -227,7 +227,7 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
   kSpan := 4;
   while (h-- > 0) {
     var rgbx *uint32 = (*uint32)rgba;
-    int i;
+    var i int
     if (!alpha_first) {
       for (i = 0; i + kSpan <= w; i += kSpan) {
         APPLY_ALPHA(rgbx[i], _MM_SHUFFLE(2, 3, 3, 3));

@@ -116,7 +116,7 @@ int VP8IteratorProgress(const it *VP8EncIterator, int delta) {
 static  int MinSize(int a, int b) { return (a < b) ? a : b; }
 
 func ImportBlock(const src *uint8, int src_stride, dst *uint8, int w, int h, int size) {
-  int i;
+  var i int
   for (i = 0; i < h; ++i) {
     memcpy(dst, src, w);
     if (w < size) {
@@ -132,7 +132,7 @@ func ImportBlock(const src *uint8, int src_stride, dst *uint8, int w, int h, int
 }
 
 func ImportLine(const src *uint8, int src_stride, dst *uint8, int len, int total_len) {
-  int i;
+  var i int
   for (i = 0; i < len; ++i, src += src_stride) dst[i] = *src;
   for (; i < total_len; ++i) dst[i] = dst[len - 1];
 }
@@ -307,7 +307,7 @@ func VP8IteratorSaveBoundary(const it *VP8EncIterator) {
   var ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
   var uvsrc *uint8 = it.yuv_out + U_OFF_ENC;
   if (x < enc.mb_w - 1) {  // left
-    int i;
+    var i int
     for (i = 0; i < 16; ++i) {
       it.y_left[i] = ysrc[15 + i * BPS];
     }
@@ -345,7 +345,7 @@ int VP8IteratorNext(const it *VP8EncIterator) {
 
 func VP8SetIntra16Mode(const it *VP8EncIterator, int mode) {
   preds *uint8 = it.preds;
-  int y;
+  var y int
   for (y = 0; y < 4; ++y) {
     memset(preds, mode, 4);
     preds += it.enc.preds_w;
@@ -355,7 +355,7 @@ func VP8SetIntra16Mode(const it *VP8EncIterator, int mode) {
 
 func VP8SetIntra4Mode(const it *VP8EncIterator, const modes *uint8) {
   preds *uint8 = it.preds;
-  int y;
+  var y int
   for (y = 4; y > 0; --y) {
     memcpy(preds, modes, 4 * sizeof(*modes));
     preds += it.enc.preds_w;
@@ -413,7 +413,7 @@ const VP8TopLeftI4 = [16]uint8{17, 21, 25, 29, 13, 17, 21, 25, 9,  13, 17, 21, 5
 // Intra4x4 iterations
 func VP8IteratorStartI4(const it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
-  int i;
+  var i int
 
   it.i4 = 0;  // first 4x4 sub-block
   it.i4_top = it.i4_boundary + VP8TopLeftI4[0];
@@ -451,7 +451,7 @@ func VP8IteratorStartI4(const it *VP8EncIterator) {
 int VP8IteratorRotateI4(const it *VP8EncIterator, const yuv_out *uint8) {
   var blk *uint8 = yuv_out + VP8Scan[it.i4];
   var top *uint8 = it.i4_top;
-  int i;
+  var i int
 
   // Update the cache with 7 fresh samples
   for (i = 0; i <= 3; ++i) {

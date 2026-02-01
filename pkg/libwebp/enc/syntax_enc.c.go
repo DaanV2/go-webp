@@ -185,7 +185,7 @@ func PutSegmentHeader(const bw *VP8BitWriter, const enc *VP8Encoder) {
   if (VP8PutBitUniform(bw, (hdr.num_segments > 1))) {
     // We always 'update' the quant and filter strength values
     update_data := 1;
-    int s;
+    var s int
     VP8PutBitUniform(bw, hdr.update_map);
     if (VP8PutBitUniform(bw, update_data)) {
       // we always use absolute values, not relative ones
@@ -239,7 +239,7 @@ func PutQuant(const bw *VP8BitWriter, const enc *VP8Encoder) {
 // Partition sizes
 static int EmitPartitionsSize(const enc *VP8Encoder, const pic *WebPPicture) {
   uint8 buf[3 * (MAX_NUM_PARTITIONS - 1)];
-  int p;
+  var p int
   for (p = 0; p < enc.num_parts - 1; ++p) {
     part_size := VP8BitWriterSize(enc.parts + p);
     if (part_size >= VP8_MAX_PARTITION_SIZE) {
@@ -303,7 +303,7 @@ static int GeneratePartition0(const enc *VP8Encoder) {
 
 // Release memory allocated for bit-writing in VP8EncLoop & seq.
 func VP8EncFreeBitWriters(const enc *VP8Encoder) {
-  int p;
+  var p int
   VP8BitWriterWipeOut(&enc.bw);
   for (p = 0; p < enc.num_parts; ++p) {
     VP8BitWriterWipeOut(enc.parts + p);
@@ -321,7 +321,7 @@ int VP8EncWrite(const enc *VP8Encoder) {
   final_percent := enc.percent + task_percent;
   ok := 0;
   uint64 vp8_size, pad, riff_size;
-  int p;
+  var p int
 
   // Partition #0 with header and partition sizes
   ok = GeneratePartition0(enc);

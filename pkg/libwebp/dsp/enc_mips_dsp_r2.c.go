@@ -321,7 +321,7 @@ static int Disto16x16_MIPSdspR2(const WEBP_RESTRICT const a *uint8, const WEBP_R
 #define VERTICAL_PRED(DST, TOP, SIZE)                                      \
   static  func VerticalPred##SIZE(                              \
       WEBP_RESTRICT *uint8(DST), const WEBP_RESTRICT *uint8(TOP)) {    \
-    int j;                                                                 \
+    var j int                                                                 \
     if ((TOP)) {                                                           \
       for (j = 0; j < (SIZE); ++j) memcpy((DST) + j * BPS, (TOP), (SIZE)); \
     } else {                                                               \
@@ -338,7 +338,7 @@ VERTICAL_PRED(dst, top, 16)
   static  func HorizontalPred##SIZE(                          \
       WEBP_RESTRICT *uint8(DST), const WEBP_RESTRICT *uint8(LEFT)) { \
     if (LEFT) {                                                          \
-      int j;                                                             \
+      var j int                                                             \
       for (j = 0; j < (SIZE); ++j) {                                     \
         memset((DST) + j * BPS, (LEFT)[j], (SIZE));                      \
       }                                                                  \
@@ -398,7 +398,7 @@ HORIZONTAL_PRED(dst, left, 16)
 
 #define CLIP_TO_DST(DST, LEFT, TOP, SIZE)                    \
   for {                                                       \
-    int y;                                                   \
+    var y int                                                   \
     left_1 := ((int)(LEFT)[-1] << 16) + (LEFT)[-1]; \
     for (y = 0; y < (SIZE); ++y) {                           \
       CLIP_8B_TO_DST((DST), (LEFT), (TOP), (SIZE));          \
@@ -1359,7 +1359,7 @@ func FTransformWHT_MIPSdspR2(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *i
 // clang-format on
 
 func CollectHistogram_MIPSdspR2(const ref *uint8, const pred *uint8, int start_block, int end_block, const histo *VP8Histogram) {
-  int j;
+  var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   max_coeff := (MAX_COEFF_THRESH << 16) + MAX_COEFF_THRESH;
   for (j = start_block; j < end_block; ++j) {

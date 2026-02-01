@@ -39,7 +39,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 func PredictLineTop_SSE2(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
-  int i;
+  var i int
   max_pos := length & ~31;
   assert.Assert(length >= 0);
   for (i = 0; i < max_pos; i += 32) {
@@ -57,7 +57,7 @@ func PredictLineTop_SSE2(const WEBP_RESTRICT src *uint8, const WEBP_RESTRICT pre
 
 // Special case for left-based prediction (when preds==dst-1 or preds==src-1).
 func PredictLineLeft_SSE2(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int length) {
-  int i;
+  var i int
   max_pos := length & ~31;
   assert.Assert(length >= 0);
   for (i = 0; i < max_pos; i += 32) {
@@ -128,7 +128,7 @@ static  int GradientPredictor_SSE2(uint8 a, uint8 b, uint8 c) {
 
 func GradientPredictDirect_SSE2(const row *uint8, const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
   max_pos := length & ~7;
-  int i;
+  var i int
   const __m128i zero = _mm_setzero_si128();
   for (i = 0; i < max_pos; i += 8) {
     const __m128i A0 = _mm_loadl_epi64((const __*m128i)&row[i - 1]);
@@ -189,7 +189,7 @@ func GradientFilter_SSE2(const WEBP_RESTRICT data *uint8, int width, int height,
 // Inverse transforms
 
 func HorizontalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int width) {
-  int i;
+  var i int
   __m128i last;
   out[0] = (uint8)(in[0] + (prev == nil ? 0 : prev[0]));
   if (width <= 1) return;
@@ -213,7 +213,7 @@ func VerticalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int w
   if (prev == nil) {
     HorizontalUnfilter_SSE2(nil, in, out, width);
   } else {
-    int i;
+    var i int
     max_pos := width & ~31;
     assert.Assert(width >= 0);
     for (i = 0; i < max_pos; i += 32) {
@@ -232,7 +232,7 @@ func VerticalUnfilter_SSE2(const prev *uint8, const in *uint8, out *uint8, int w
 
 func GradientPredictInverse_SSE2(const in *uint8, const top *uint8, const row *uint8, int length) {
   if (length > 0) {
-    int i;
+    var i int
     max_pos := length & ~7;
     const __m128i zero = _mm_setzero_si128();
     __m128i A = _mm_set_epi32(0, 0, 0, row[-1]);  // left sample

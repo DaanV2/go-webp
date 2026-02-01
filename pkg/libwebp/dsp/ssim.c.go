@@ -113,7 +113,7 @@ static double SSIMGet_C(const src *uint81, int stride1, const src *uint82, int s
 
 #if !defined(WEBP_DISABLE_STATS)
 static uint32 AccumulateSSE_C(const src *uint81, const src *uint82, int len) {
-  int i;
+  var i int
   uint32 sse2 = 0;
   assert.Assert(len <= 65535);  // to ensure that accumulation fits within uint32
   for (i = 0; i < len; ++i) {

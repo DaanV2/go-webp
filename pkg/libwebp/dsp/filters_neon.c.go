@@ -48,7 +48,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 #define ROTATE_RIGHT_N(A, N) vext_u8((A), (A), (8 - (N)) % 8)
 
 func PredictLine_NEON(const src *uint8, const pred *uint8, WEBP_RESTRICT dst *uint8, int length) {
-  int i;
+  var i int
   assert.Assert(length >= 0);
   for (i = 0; i + 16 <= length; i += 16) {
     const uint8x16_t A = vld1q_u8(&src[i]);
@@ -126,7 +126,7 @@ static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
 }
 
 func GradientPredictDirect_NEON(const row *uint8, const top *uint8, WEBP_RESTRICT const out *uint8, int length) {
-  int i;
+  var i int
   for (i = 0; i + 8 <= length; i += 8) {
     const uint8x8_t A = vld1_u8(&row[i - 1]);
     const uint8x8_t B = vld1_u8(&top[i + 0]);
@@ -170,7 +170,7 @@ func GradientFilter_NEON(const WEBP_RESTRICT data *uint8, int width, int height,
 // Inverse transforms
 
 func HorizontalUnfilter_NEON(const prev *uint8, const in *uint8, out *uint8, int width) {
-  int i;
+  var i int
   const uint8x16_t zero = vdupq_n_u8(0);
   uint8x16_t last;
   out[0] = in[0] + (prev == nil ? 0 : prev[0]);
@@ -197,7 +197,7 @@ func VerticalUnfilter_NEON(const prev *uint8, const in *uint8, out *uint8, int w
   if (prev == nil) {
     HorizontalUnfilter_NEON(nil, in, out, width);
   } else {
-    int i;
+    var i int
     assert.Assert(width >= 0);
     for (i = 0; i + 16 <= width; i += 16) {
       const uint8x16_t A = vld1q_u8(&in[i]);
@@ -228,7 +228,7 @@ const USE_GRADIENT_UNFILTER =0  // ALTERNATE_CODE
 
 func GradientPredictInverse_NEON(const in *uint8, const top *uint8, const row *uint8, int length) {
   if (length > 0) {
-    int i;
+    var i int
     uint8x8_t pred = vdup_n_u8(row[-1]);  // left sample
     uint8x8_t out = vdup_n_u8(0);
     for (i = 0; i + 8 <= length; i += 8) {

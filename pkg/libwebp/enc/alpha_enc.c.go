@@ -179,12 +179,12 @@ static int EncodeAlphaInternal(const data *uint8, int width, int height, int met
 // -----------------------------------------------------------------------------
 
 static int GetNumColors(const data *uint8, int width, int height, int stride) {
-  int j;
+  var j int
   colors := 0;
   uint8 color[256] = {0}
 
   for (j = 0; j < height; ++j) {
-    int i;
+    var i int
     var p *uint8 = data + j * stride;
     for (i = 0; i < width; ++i) {
       color[p[i]] = 1;

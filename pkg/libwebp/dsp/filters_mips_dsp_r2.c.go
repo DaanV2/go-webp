@@ -278,7 +278,7 @@ static int GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) {
 #define FILTER_LINE_BY_LINE(PREDS, OPERATION)                        \
   for {                                                               \
     for (row = 1; row < height; ++row) {                             \
-      int w;                                                         \
+      var w int                                                         \
       PREDICT_LINE_ONE_PASS(in, PREDS - stride, out);                \
       for (w = 1; w < width; ++w) {                                  \
         pred := GradientPredictor_MIPSdspR2(                \
@@ -331,7 +331,7 @@ func GradientUnfilter_MIPSdspR2(const prev *uint8, const in *uint8, out *uint8, 
     HorizontalUnfilter_MIPSdspR2(nil, in, out, width);
   } else {
     top := prev[0], top_left = top, left = top;
-    int i;
+    var i int
     for (i = 0; i < width; ++i) {
       top = prev[i];  // need to read this first, in case prev==dst
       left = in[i] + GradientPredictor_MIPSdspR2(left, top, top_left);

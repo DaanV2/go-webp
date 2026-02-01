@@ -44,7 +44,7 @@ func VP8FilterStrengthFromDelta(int sharpness, int delta) int {
 
 #if !defined(WEBP_REDUCE_SIZE)
 
-static int GetILevel(int sharpness, int level) {
+static int GetILevel(int sharpness, level int) {
   if (sharpness > 0) {
     if (sharpness > 4) {
       level >>= 2;
@@ -59,7 +59,7 @@ static int GetILevel(int sharpness, int level) {
   return level;
 }
 
-func DoFilter(const it *VP8EncIterator, int level) {
+func DoFilter(const it *VP8EncIterator, level int) {
   var enc *VP8Encoder = it.enc;
   ilevel := GetILevel(enc.config.filter_sharpness, level);
   limit := 2 * level + ilevel;
@@ -129,7 +129,7 @@ func VP8InitFilter(const it *VP8EncIterator) {
 
 func VP8StoreFilterStats(const it *VP8EncIterator) {
 #if !defined(WEBP_REDUCE_SIZE)
-  int d;
+  var d int
   var enc *VP8Encoder = it.enc;
   s := it.mb.segment;
   level0 := enc.dqm[s].fstrength;
@@ -169,7 +169,7 @@ func VP8AdjustFilterStrength(const it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
 #if !defined(WEBP_REDUCE_SIZE)
   if (it.lf_stats != nil) {
-    int s;
+    var s int
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
       int i, best_level = 0;
       // Improvement over filter level 0 should be at least 1e-5 (relatively)
@@ -188,7 +188,7 @@ func VP8AdjustFilterStrength(const it *VP8EncIterator) {
 #endif  // !defined(WEBP_REDUCE_SIZE)
   if (enc.config.filter_strength > 0) {
     max_level := 0;
-    int s;
+    var s int
     for (s = 0; s < NUM_MB_SEGMENTS; s++) {
       var dqm *VP8SegmentInfo = &enc.dqm[s];
       // this '>> 3' accounts for some inverse WHT scaling

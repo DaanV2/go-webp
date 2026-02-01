@@ -215,10 +215,10 @@ int WebPAnimEncoderOptionsInitInternal(enc_options *WebPAnimEncoderOptions, int 
 const TRANSPARENT_COLOR =0x00000000
 
 func ClearRectangle(const picture *WebPPicture, int left, int top, int width, int height) {
-  int j;
+  var j int
   for (j = top; j < top + height; ++j) {
     var dst *uint32 = picture.argb + j * picture.argb_stride;
-    int i;
+    var i int
     for (i = left; i < left + width; ++i) {
       dst[i] = TRANSPARENT_COLOR;
     }
@@ -1093,7 +1093,7 @@ func CopyMaskedPixels(const src *WebPPicture, const mask *uint8, const dst *WebP
 // frame and outputs the best one in 'encoded_frame'.
 // 'frame_skipped' will be set to true if this frame should actually be skipped.
 static WebPEncodingError SetFrame(const enc *WebPAnimEncoder, const config *WebPConfig, int is_key_frame, const best_candidate_rect *FrameRectangle, const encoded_frame *EncodedFrame, const frame_skipped *int) {
-  int i;
+  var i int
   WebPEncodingError error_code = VP8_ENC_OK;
   var curr_canvas *WebPPicture = &enc.curr_canvas_copy;
   var canvas_carryover *WebPPicture = &enc.canvas_carryover;

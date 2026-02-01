@@ -81,7 +81,7 @@ static int GetResidualCost_C(int ctx0, const res *VP8Residual) {
 }
 
 func SetResidualCoeffs_C(const WEBP_RESTRICT const coeffs *int16, WEBP_RESTRICT const res *VP8Residual) {
-  int n;
+  var n int
   res.last = -1;
   assert.Assert(res.first == 0 || coeffs[0] == 0);
   for (n = 15; n >= 0; --n) {

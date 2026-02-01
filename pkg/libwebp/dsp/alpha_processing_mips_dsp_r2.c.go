@@ -74,7 +74,7 @@ static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int wid
 }
 
 func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
-  int x;
+  var x int
   c_00ffffff := uint(0x00ffffff);
   c_ff000000 := uint(0xff000000);
   c_8000000 := uint(0x00800000);

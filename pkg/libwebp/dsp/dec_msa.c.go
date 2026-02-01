@@ -651,7 +651,7 @@ func SimpleHFilter16i(src_y *uint8, int stride, int b_limit_in) {
 
 func DC4(dst *uint8) {  // DC
   dc := 4;
-  int i;
+  var i int
   for (i = 0; i < 4; ++i) dc += dst[i - BPS] + dst[-1 + i * BPS];
   dc >>= 3;
   dc = dc | (dc << 8) | (dc << 16) | (dc << 24);
@@ -749,7 +749,7 @@ func LD4(dst *uint8) {  // Down-Left
 
 func DC16(dst *uint8) {  // DC
   dc := 16;
-  int i;
+  var i int
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 dctop = __msa_hadd_u_h(rtop, rtop);
   v16u8 out;
@@ -764,7 +764,7 @@ func DC16(dst *uint8) {  // DC
 }
 
 func TM16(dst *uint8) {
-  int j;
+  var j int
   v8i16 d1, d2;
   const v16i8 zero = {0}
   const v8i16 TL = (v8i16)__msa_fill_h(dst[-1 - BPS]);
@@ -796,7 +796,7 @@ func VE16(dst *uint8) {  // vertical
 }
 
 func HE16(dst *uint8) {  // horizontal
-  int j;
+  var j int
   for (j = 16; j > 0; j -= 4) {
     const v16u8 L0 = (v16u8)__msa_fill_b(dst[-1 + 0 * BPS]);
     const v16u8 L1 = (v16u8)__msa_fill_b(dst[-1 + 1 * BPS]);
@@ -808,7 +808,7 @@ func HE16(dst *uint8) {  // horizontal
 }
 
 func DC16NoTop(dst *uint8) {  // DC with top samples not available
-  int j;
+  var j int
   dc := 8;
   v16u8 out;
 
@@ -848,7 +848,7 @@ func DC16NoTopLeft(dst *uint8) {  // DC with nothing
 
 func DC8uv(dst *uint8) {  // DC
   dc := 8;
-  int i;
+  var i int
   uint64 out;
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 temp0 = __msa_hadd_u_h(rtop, rtop);
@@ -866,7 +866,7 @@ func DC8uv(dst *uint8) {  // DC
 }
 
 func TM8uv(dst *uint8) {
-  int j;
+  var j int
   const v16i8 T1 = LD_SB(dst - BPS);
   const v16i8 zero = {0}
   const v8i16 T = (v8i16)__msa_ilvr_b(zero, T1);
@@ -895,7 +895,7 @@ func VE8uv(dst *uint8) {  // vertical
 }
 
 func HE8uv(dst *uint8) {  // horizontal
-  int j;
+  var j int
   for (j = 0; j < 8; j += 4) {
     const v16u8 L0 = (v16u8)__msa_fill_b(dst[-1 + 0 * BPS]);
     const v16u8 L1 = (v16u8)__msa_fill_b(dst[-1 + 1 * BPS]);
@@ -924,7 +924,7 @@ func DC8uvNoLeft(dst *uint8) {  // DC with no left samples
 
 func DC8uvNoTop(dst *uint8) {  // DC with no top samples
   dc := 4;
-  int i;
+  var i int
   uint64 out;
   v16u8 dctemp;
 

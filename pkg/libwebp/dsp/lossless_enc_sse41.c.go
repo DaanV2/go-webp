@@ -34,7 +34,7 @@ static  uint32 HorizontalSum_SSE41(__m128i cost) {
 }
 
 static uint32 ExtraCost_SSE41(const a *uint32, int length) {
-  int i;
+  var i int
   __m128i cost = _mm_set_epi32(2 * a[7], 2 * a[6], a[5], a[4]);
   assert.Assert(length % 8 == 0);
 
@@ -54,7 +54,7 @@ static uint32 ExtraCost_SSE41(const a *uint32, int length) {
 // Subtract-Green Transform
 
 func SubtractGreenFromBlueAndRed_SSE41(argb_data *uint32, int num_pixels) {
-  int i;
+  var i int
   const __m128i kCstShuffle =
       _mm_set_epi8(-1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
@@ -84,7 +84,7 @@ func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stri
   const __m128i perm =
       _mm_setr_epi8(-1, 1, -1, 2, -1, 5, -1, 6, -1, 9, -1, 10, -1, 13, -1, 14);
   if (tile_width >= 4) {
-    int y;
+    var y int
     for (y = 0; y < tile_height; ++y) {
       var src *uint32 = argb + y * stride;
       const __m128i A1 = _mm_loadu_si128((const __*m128i)src);
@@ -92,7 +92,7 @@ func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stri
       const __m128i C1 = _mm_mulhi_epi16(B1, mult);
       const __m128i D1 = _mm_sub_epi16(A1, C1);
       __m128i E = _mm_add_epi16(_mm_srli_epi32(D1, 16), D1);
-      int x;
+      var x int
       for (x = 4; x + 4 <= tile_width; x += 4) {
         const __m128i A2 = _mm_loadu_si128((const __*m128i)(src + x));
         __m128i B2, C2, D2;
@@ -123,14 +123,14 @@ func CollectColorRedTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int strid
   const __m128i mult = MK_CST_16(0, CST_5b(green_to_red));
   const __m128i mask_g = _mm_set1_epi32(0x0000ff00);
   if (tile_width >= 4) {
-    int y;
+    var y int
     for (y = 0; y < tile_height; ++y) {
       var src *uint32 = argb + y * stride;
       const __m128i A1 = _mm_loadu_si128((const __*m128i)src);
       const __m128i B1 = _mm_and_si128(A1, mask_g);
       const __m128i C1 = _mm_madd_epi16(B1, mult);
       __m128i D = _mm_sub_epi16(A1, C1);
-      int x;
+      var x int
       for (x = 4; x + 4 <= tile_width; x += 4) {
         const __m128i A2 = _mm_loadu_si128((const __*m128i)(src + x));
         __m128i B2, C2;

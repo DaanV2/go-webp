@@ -57,7 +57,7 @@ static  uint32 GetScale(uint32 a, int inverse) {
 #endif  // USE_TABLES_FOR_ALPHA_MULT
 
 func WebPMultARGBRow_C(const ptr *uint32, int width, int inverse) {
-  int x;
+  var x int
   for (x = 0; x < width; ++x) {
     argb := ptr[x];
     if (argb < uint(0xff000000)) {     // alpha < 255
@@ -77,7 +77,7 @@ func WebPMultARGBRow_C(const ptr *uint32, int width, int inverse) {
 }
 
 func WebPMultRow_C(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const alpha *uint8, int width, int inverse) {
-  int x;
+  var x int
   for (x = 0; x < width; ++x) {
     a := alpha[x];
     if (a != 255) {
@@ -102,7 +102,7 @@ func (*WebPMultRow)(WEBP_RESTRICT const ptr *uint8, const WEBP_RESTRICT const al
 // Generic per-plane calls
 
 func WebPMultARGBRows(ptr *uint8, int stride, int width, num_rows int , int inverse) {
-  int n;
+  var n int
   for (n = 0; n < num_rows; ++n) {
     WebPMultARGBRow((*uint32)ptr, width, inverse);
     ptr += stride;
@@ -110,7 +110,7 @@ func WebPMultARGBRows(ptr *uint8, int stride, int width, num_rows int , int inve
 }
 
 func WebPMultRows(WEBP_RESTRICT ptr *uint8, int stride, const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, num_rows int , int inverse) {
-  int n;
+  var n int
   for (n = 0; n < num_rows; ++n) {
     WebPMultRow(ptr, alpha, width, inverse);
     ptr += stride;
@@ -139,7 +139,7 @@ func ApplyAlphaMultiply_C(rgba *uint8, int alpha_first, int w, int h, int stride
   while (h-- > 0) {
     var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0));
     var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3));
-    int i;
+    var i int
     for (i = 0; i < w; ++i) {
       a := alpha[4 * i];
       if (a != 0xff) {
@@ -174,7 +174,7 @@ static  uint8 multiply(uint8 x, uint32 m) {
 
 static  func ApplyAlphaMultiply4444_C(rgba *uint84444, int w, int h, int stride, int rg_byte_pos /* 0 or 1 */) {
   while (h-- > 0) {
-    int i;
+    var i int
     for (i = 0; i < w; ++i) {
       rg := rgba4444[2 * i + rg_byte_pos];
       ba := rgba4444[2 * i + (rg_byte_pos ^ 1)];
@@ -245,7 +245,7 @@ static int ExtractAlpha_C(const WEBP_RESTRICT argb *uint8, int argb_stride, int 
 }
 
 func ExtractGreen_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
-  int i;
+  var i int
   for (i = 0; i < size; ++i) alpha[i] = argb[i] >> 8;
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
@@ -260,7 +260,7 @@ static int HasAlpha8b_C(const src *uint8, int length) {
 }
 
 static int HasAlpha32b_C(const src *uint8, int length) {
-  int x;
+  var x int
   for (x = 0; length-- > 0; x += 4) {
     if (src[x] != 0xff) return 1;
   }
@@ -268,7 +268,7 @@ static int HasAlpha32b_C(const src *uint8, int length) {
 }
 
 func AlphaReplace_C(src *uint32, int length, uint32 color) {
-  int x;
+  var x int
   for (x = 0; x < length; ++x) {
     if ((src[x] >> 24) == 0) src[x] = color;
   }
@@ -283,7 +283,7 @@ static  uint32 MakeARGB32(int a, int r, int g, int b) {
 
 #ifdef constants.WORDS_BIGENDIAN
 func PackARGB_C(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT r *uint8, const WEBP_RESTRICT g *uint8, const WEBP_RESTRICT b *uint8, int len, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   for (i = 0; i < len; ++i) {
     out[i] = MakeARGB32(a[4 * i], r[4 * i], g[4 * i], b[4 * i]);
   }

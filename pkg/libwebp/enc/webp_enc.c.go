@@ -61,7 +61,7 @@ func ResetFilterHeader(const enc *VP8Encoder) {
 func ResetBoundaryPredictions(const enc *VP8Encoder) {
   // init boundary values once for all
   // Note: actually, initializing the 'preds[]' is only needed for intra4.
-  int i;
+  var i int
   var top *uint8 = enc.preds - enc.preds_w;
   var left *uint8 = enc.preds - 1;
   for (i = -1; i < 4 * enc.mb_w; ++i) {

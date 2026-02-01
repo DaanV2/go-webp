@@ -188,7 +188,7 @@ func CheckLambdaValue(const v *int) {
 }
 
 func SetupMatrices(enc *VP8Encoder) {
-  int i;
+  var i int
   tlambda_scale := (enc.method >= 4) ? enc.config.sns_strength : 0;
   num_segments := enc.segment_hdr.num_segments;
   for (i = 0; i < num_segments; ++i) {
@@ -242,7 +242,7 @@ func SetupMatrices(enc *VP8Encoder) {
 const FSTRENGTH_CUTOFF =2
 
 func SetupFilterStrength(const enc *VP8Encoder) {
-  int i;
+  var i int
   // level0 is in [0..500]. Using '-f 50' as filter_strength is mid-filtering.
   level0 := 5 * enc.config.filter_strength;
   for (i = 0; i < NUM_MB_SEGMENTS; ++i) {
@@ -348,7 +348,7 @@ func SimplifySegments(const enc *VP8Encoder) {
 
 // Sets up segment's quantization values, 'base_quant' and filter strengths.
 func VP8SetSegmentParams(const enc *VP8Encoder, float quality) {
-  int i;
+  var i int
   int dq_uv_ac, dq_uv_dc;
   num_segments := enc.segment_hdr.num_segments;
   const double amp = SNS_TO_DQ * enc.config.sns_strength / 100. / 128.;
@@ -584,7 +584,7 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
     // note: it's important to take sign of the _original_ coeff, // so we don't have to consider level < 0 afterward.
     sign := (in[j] < 0);
     coeff0 := (sign ? -in[j] : in[j]) + mtx.sharpen[j];
-    int level0 = QUANTDIV(coeff0, iQ, B);
+    level int0 = QUANTDIV(coeff0, iQ, B);
     thresh_level := QUANTDIV(coeff0, iQ, BIAS(0x80));
     if (thresh_level > MAX_LEVEL) thresh_level = MAX_LEVEL;
     if (level0 > MAX_LEVEL) level0 = MAX_LEVEL;
@@ -717,7 +717,7 @@ static int ReconstructIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTR
   var src *uint8 = it.yuv_in + Y_OFF_ENC;
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment];
   nz := 0;
-  int n;
+  var n int
   int16 tmp[16][16], dc_tmp[16];
 
   for (n = 0; n < 16; n += 2) {
@@ -860,7 +860,7 @@ static int ReconstructUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT c
   var src *uint8 = it.yuv_in + U_OFF_ENC;
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment];
   nz := 0;
-  int n;
+  var n int
   int16 tmp[8][16];
 
   for (n = 0; n < 8; n += 2) {

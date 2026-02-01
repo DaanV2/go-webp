@@ -63,7 +63,7 @@ static double AccumulateLSIM(const src *uint8, int src_stride, const ref *uint8,
 #undef RADIUS
 
 static double AccumulateSSE(const src *uint8, int src_stride, const ref *uint8, int ref_stride, int w, int h) {
-  int y;
+  var y int
   double total_sse = 0.;
   for (y = 0; y < h; ++y) {
     total_sse += VP8AccumulateSSE(src, ref, w);
@@ -229,7 +229,7 @@ int WebPPlaneDistortion(const src *uint8, uint64 src_stride, const ref *uint8, u
 }
 
 int WebPPictureDistortion(const src *WebPPicture, const ref *WebPPicture, int type, float results[5]) {
-  int i;
+  var i int
   (void)src;
   (void)ref;
   (void)type;

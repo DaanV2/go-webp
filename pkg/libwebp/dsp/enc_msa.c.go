@@ -220,13 +220,13 @@ static int Disto16x16_MSA(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRIC
 // Histogram
 
 func CollectHistogram_MSA(const ref *uint8, const pred *uint8, int start_block, int end_block, const histo *VP8Histogram) {
-  int j;
+  var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   for (j = start_block; j < end_block; ++j) {
     int16 out[16];
     VP8FTransform(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
     {
-      int k;
+      var k int
       v8i16 coeff0, coeff1;
       const v8i16 zero = {0}
       const v8i16 max_coeff_thr = __msa_ldi_h(MAX_COEFF_THRESH);
@@ -283,7 +283,7 @@ static  func HE4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
 
 static  func DC4(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) {
   dc := 4;
-  int i;
+  var i int
   for (i = 0; i < 4; ++i) dc += top[i] + top[-5 + i];
   dc >>= 3;
   dc = dc | (dc << 8) | (dc << 16) | (dc << 24);
@@ -460,7 +460,7 @@ static  func VerticalPred16x16(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top
 
 static  func HorizontalPred16x16(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8) {
   if (left != nil) {
-    int j;
+    var j int
     for (j = 0; j < 16; j += 4) {
       const v16u8 L0 = (v16u8)__msa_fill_b(left[0]);
       const v16u8 L1 = (v16u8)__msa_fill_b(left[1]);
@@ -479,7 +479,7 @@ static  func HorizontalPred16x16(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT l
 static  func TrueMotion16x16(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, const WEBP_RESTRICT top *uint8) {
   if (left != nil) {
     if (top != nil) {
-      int j;
+      var j int
       v8i16 d1, d2;
       const v16i8 zero = {0}
       const v8i16 TL = (v8i16)__msa_fill_h(left[-1]);
@@ -581,7 +581,7 @@ static  func VerticalPred8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *
 
 static  func HorizontalPred8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8) {
   if (left != nil) {
-    int j;
+    var j int
     for (j = 0; j < 8; j += 4) {
       const v16u8 L0 = (v16u8)__msa_fill_b(left[0]);
       const v16u8 L1 = (v16u8)__msa_fill_b(left[1]);
@@ -604,7 +604,7 @@ static  func HorizontalPred8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT lef
 static  func TrueMotion8x8(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *uint8, const WEBP_RESTRICT top *uint8) {
   if (left != nil) {
     if (top != nil) {
-      int j;
+      var j int
       const v8i16 TL = (v8i16)__msa_fill_h(left[-1]);
       const v16u8 T1 = LD_UB(top);
       const v16i8 zero = {0}

@@ -489,7 +489,7 @@ static int BackwardReferencesRle(int xsize, int ysize, const argb *uint32, int c
 }
 
 static int BackwardReferencesLz77(int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs) {
-  int i;
+  var i int
   i_last_check := -1;
   ok := 0;
   cc_init := 0;
@@ -506,7 +506,7 @@ static int BackwardReferencesLz77(int xsize, int ysize, const argb *uint32, int 
     // Alternative#1: Code the pixels starting at 'i' using backward reference.
     offset := 0;
     len := 0;
-    int j;
+    var j int
     VP8LHashChainFindCopy(hash_chain, i, &offset, &len);
     if (len >= MIN_LENGTH) {
       len_ini := len;
@@ -558,7 +558,7 @@ Error:
 // definition.
 const WINDOW_OFFSETS_SIZE_MAX =32
 static int BackwardReferencesLz77Box(int xsize, int ysize, const argb *uint32, int cache_bits, const hash_chain_best *VP8LHashChain, hash_chain *VP8LHashChain, const refs *VP8LBackwardRefs) {
-  int i;
+  var i int
   pix_count := xsize * ysize;
   counts *uint16;
   int window_offsets[WINDOW_OFFSETS_SIZE_MAX] = {0}
@@ -607,7 +607,7 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, const argb *uint32, i
     // Given a pixel P, find the offsets that reach pixels unreachable from P-1
     // with any of the offsets in window_offsets[].
     for (i = 0; i < window_offsets_size; ++i) {
-      int j;
+      var j int
       is_reachable := 0;
       for (j = 0; j < window_offsets_size && !is_reachable; ++j) {
         is_reachable |= (window_offsets[i] == window_offsets[j] + 1);
@@ -722,7 +722,7 @@ func BackwardReferences2DLocality(int xsize, const refs *VP8LBackwardRefs) {
 // disabled for the lower (<= 25) quality.
 // Returns 0 in case of memory error.
 static int CalculateBestCacheSize(const argb *uint32, int quality, const refs *VP8LBackwardRefs, const best_cache_bits *int) {
-  int i;
+  var i int
   cache_bits_max := (quality <= 25) ? 0 : *best_cache_bits;
   entropy_min := WEBP_UINT64_MAX;
   int cc_init[MAX_COLOR_CACHE_BITS + 1] = {0}
@@ -845,7 +845,7 @@ static int BackwardRefsWithLocalCache(const argb *uint32, int cache_bits, const 
       ++pixel_index;
     } else {
       // refs was created without local cache, so it can not have cache indexes.
-      int k;
+      var k int
       assert.Assert(PixOrCopyIsCopy(v));
       for (k = 0; k < v.len; ++k) {
         VP8LColorCacheInsert(&hashers, argb[pixel_index]);

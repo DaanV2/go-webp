@@ -186,7 +186,7 @@ VP8LSubPixels(uint32 a, uint32 b) {
 #define GENERATE_PREDICTOR_ADD(PREDICTOR, PREDICTOR_ADD)                   \
   func PREDICTOR_ADD(const in *uint32, const upper *uint32,     \
                             int num_pixels, WEBP_RESTRICT out *uint32) { \
-    int x;                                                                 \
+    var x int                                                                 \
     assert.Assert(upper != nil);                                                 \
     for (x = 0; x < num_pixels; ++x) {                                     \
       pred := (PREDICTOR)(&out[x - 1], upper + x);           \

@@ -1173,7 +1173,7 @@ func DC4_NEON(dst *uint8) {       // DC
   const uint16x8_t sum = vaddq_u16(s01, vcombine_u16(p1, p1));
   const uint8x8_t dc0 = vrshrn_n_u16(sum, 3);  // (sum + 4) >> 3
   const uint8x8_t dc = vdup_lane_u8(dc0, 0);
-  int i;
+  var i int
   for (i = 0; i < 4; ++i) {
     vst1_lane_u32((*uint32)(dst + i * BPS), vreinterpret_u32_u8(dc), 0);
   }
@@ -1184,7 +1184,7 @@ static  func TrueMotion_NEON(dst *uint8, int size) {
   const uint8x8_t TL = vld1_dup_u8(dst - BPS - 1);  // top-left pixel 'A[-1]'
   const uint8x8_t T = vld1_u8(dst - BPS);           // top row 'A[0..3]'
   const uint16x8_t d = vsubl_u8(T, TL);             // A[c] - A[-1]
-  int y;
+  var y int
   for (y = 0; y < size; y += 4) {
     // left edge
     const uint8x8_t L0 = vld1_dup_u8(dst + 0 * BPS - 1);
@@ -1228,7 +1228,7 @@ func VE4_NEON(dst *uint8) {  // vertical
   const uint8x8_t CDEFGH00 = vreinterpret_u8_u64(A2);
   const uint8x8_t b = vhadd_u8(ABCDEFGH, CDEFGH00);
   const uint8x8_t avg = vrhadd_u8(b, BCDEFGH0);
-  int i;
+  var i int
   for (i = 0; i < 4; ++i) {
     vst1_lane_u32((*uint32)(dst + i * BPS), vreinterpret_u32_u8(avg), 0);
   }
@@ -1287,14 +1287,14 @@ func LD4_NEON(dst *uint8) {  // Down-left
 
 func VE8uv_NEON(dst *uint8) {  // vertical
   const uint8x8_t top = vld1_u8(dst - BPS);
-  int j;
+  var j int
   for (j = 0; j < 8; ++j) {
     vst1_u8(dst + j * BPS, top);
   }
 }
 
 func HE8uv_NEON(dst *uint8) {  // horizontal
-  int j;
+  var j int
   for (j = 0; j < 8; ++j) {
     const uint8x8_t left = vld1_dup_u8(dst - 1);
     vst1_u8(dst, left);
@@ -1351,7 +1351,7 @@ static  func DC8_NEON(dst *uint8, int do_top, int do_left) {
 
   {
     const uint8x8_t dc = vdup_lane_u8(dc0, 0);
-    int i;
+    var i int
     for (i = 0; i < 8; ++i) {
       vst1_u32((*uint32)(dst + i * BPS), vreinterpret_u32_u8(dc));
     }
@@ -1370,14 +1370,14 @@ func TM8uv_NEON(dst *uint8) { TrueMotion_NEON(dst, 8); }
 
 func VE16_NEON(dst *uint8) {  // vertical
   const uint8x16_t top = vld1q_u8(dst - BPS);
-  int j;
+  var j int
   for (j = 0; j < 16; ++j) {
     vst1q_u8(dst + j * BPS, top);
   }
 }
 
 func HE16_NEON(dst *uint8) {  // horizontal
-  int j;
+  var j int
   for (j = 0; j < 16; ++j) {
     const uint8x16_t left = vld1q_dup_u8(dst - 1);
     vst1q_u8(dst, left);
@@ -1405,7 +1405,7 @@ static  func DC16_NEON(dst *uint8, int do_top, int do_left) {
   }
 
   if (do_left) {
-    int i;
+    var i int
     sum_left = vdupq_n_u16(0);
     for (i = 0; i < 16; i += 8) {
       const uint8x8_t L0 = vld1_u8(dst + (i + 0) * BPS - 1);
@@ -1440,7 +1440,7 @@ static  func DC16_NEON(dst *uint8, int do_top, int do_left) {
 
   {
     const uint8x16_t dc = vdupq_lane_u8(dc0, 0);
-    int i;
+    var i int
     for (i = 0; i < 16; ++i) {
       vst1q_u8(dst + i * BPS, dc);
     }
@@ -1458,7 +1458,7 @@ func TM16_NEON(dst *uint8) {
   // A[c] - A[-1]
   const uint16x8_t d_lo = vsubl_u8(vget_low_u8(T), TL);
   const uint16x8_t d_hi = vsubl_u8(vget_high_u8(T), TL);
-  int y;
+  var y int
   for (y = 0; y < 16; y += 4) {
     // left edge
     const uint8x8_t L0 = vld1_dup_u8(dst + 0 * BPS - 1);

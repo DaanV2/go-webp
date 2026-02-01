@@ -120,7 +120,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 func ConvertBGRAToRGBA_MSA(const src *uint32, int num_pixels, dst *uint8) {
-  int i;
+  var i int
   var ptemp_src *uint8 = (const *uint8)src;
   ptemp_dst *uint8 = (*uint8)dst;
   v16u8 src0, dst0;
@@ -246,7 +246,7 @@ func ConvertBGRAToRGB_MSA(const src *uint32, int num_pixels, dst *uint8) {
 }
 
 func AddGreenToBlueAndRed_MSA(const src *uint32, int num_pixels, dst *uint32) {
-  int i;
+  var i int
   var in *uint8 = (const *uint8)src;
   out *uint8 = (*uint8)dst;
   v16u8 src0, dst0, tmp0;

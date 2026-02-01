@@ -49,7 +49,7 @@ static int64 PredictionCostBias(const uint32 counts[256], uint64 weight_0, uint6
   significant_symbols := 256 >> 4;
   exp_decay_factor := 6;  // has a scaling factor of 1/10
   bits := (weight_0 * counts[0]) << LOG_2_PRECISION_BITS;
-  int i;
+  var i int
   exp_val <<= LOG_2_PRECISION_BITS;
   for (i = 1; i < significant_symbols; ++i) {
     bits += DivRound(exp_val * (counts[i] + counts[256 - i]), 100);
@@ -60,7 +60,7 @@ static int64 PredictionCostBias(const uint32 counts[256], uint64 weight_0, uint6
 
 static int64 PredictionCostSpatialHistogram(
     const uint32 accumulated[HISTO_SIZE], const uint32 tile[HISTO_SIZE], int mode, int left_mode, int above_mode) {
-  int i;
+  var i int
   retval := 0;
   for (i = 0; i < 4; ++i) {
     kExpValue := 94;
@@ -134,7 +134,7 @@ static uint32 AddGreenToBlueAndRed(uint32 argb) {
 
 func MaxDiffsForRow(int width, int stride, const argb *uint32, const max_diffs *uint8, int used_subtract_green) {
   uint32 current, up, down, left, right;
-  int x;
+  var x int
   if (width <= 2) return;
   current = argb[0];
   right = argb[1];
@@ -243,7 +243,7 @@ static  func GetResidual(
     PredictBatch(mode, x_start, y, x_end - x_start, current_row, upper_row, out);
   } else {
     const VP8LPredictorFunc pred_func = VP8LPredictors[mode];
-    int x;
+    var x int
     for (x = x_start; x < x_end; ++x) {
       uint32 predict;
       uint32 residual;
@@ -438,10 +438,10 @@ func CopyImageWithPrediction(int width, int height, int bits, const modes *uint3
 #if (WEBP_NEAR_LOSSLESS == 1)
   lower_max_diffs *uint8 = current_max_diffs + width;
 #endif
-  int y;
+  var y int
 
   for (y = 0; y < height; ++y) {
-    int x;
+    var x int
     var tmp *uint3232 = upper_row;
     upper_row = current_row;
     current_row = tmp32;
@@ -509,7 +509,7 @@ func VP8LOptimizeSampling(const image *uint32, int full_width, int full_height, 
     square_size = 1 << (best_bits - bits);
     for (y = 0; is_good && y < height; ++y) {
       for (x = 0; is_good && x < width; x += square_size) {
-        int i;
+        var i int
         for (i = x + 1; i < GetMin(x + square_size, width); ++i) {
           if (image[y * width + i] != image[y * width + x]) {
             is_good = 0;
@@ -713,7 +713,7 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low
   if (low_effort) {
     tiles_per_row := VP8LSubSampleSize(width, max_bits);
     tiles_per_col := VP8LSubSampleSize(height, max_bits);
-    int i;
+    var i int
     for (i = 0; i < tiles_per_row * tiles_per_col; ++i) {
       image[i] = ARGB_BLACK | (kPredLowEffort << 8);
     }
@@ -951,7 +951,7 @@ int VP8LColorSpaceTransform(int width, int height, int bits, int quality, const 
   MultipliersClear(&prev_x);
   for (tile_y = 0; tile_y < tile_ysize; ++tile_y) {
     for (tile_x = 0; tile_x < tile_xsize; ++tile_x) {
-      int y;
+      var y int
       tile_x_offset := tile_x * max_tile_size;
       tile_y_offset := tile_y * max_tile_size;
       all_x_max := GetMin(tile_x_offset + max_tile_size, width);

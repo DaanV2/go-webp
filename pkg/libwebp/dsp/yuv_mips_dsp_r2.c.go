@@ -78,7 +78,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
                         const WEBP_RESTRICT u *uint8,                        \
                         const WEBP_RESTRICT v *uint8,                        \
                         WEBP_RESTRICT dst *uint8, int len) {                 \
-    int i;                                                                     \
+    var i int                                                                     \
     uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;           \
     t_con_1 := 26149;                                                 \
     t_con_2 := 13320;                                                 \

@@ -160,7 +160,7 @@ static int ExtractAlpha_NEON(const WEBP_RESTRICT argb *uint8, int argb_stride, i
 }
 
 func ExtractGreen_NEON(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
-  int i;
+  var i int
   for (i = 0; i + 16 <= size; i += 16) {
     const uint8x16x4_t rgbX = vld4q_u8((const *uint8)(argb + i));
     const uint8x16_t greens = rgbX.val[1];

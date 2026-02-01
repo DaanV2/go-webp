@@ -241,7 +241,7 @@ func BlendPixelNonPremult(uint32 src, uint32 dst) uint32 {
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are NOT pre-multiplied
 // by alpha.
 func BlendPixelRowNonPremult(const src *uint32, const dst *uint32, int num_pixels) {
-  int i;
+  var i int
   for (i = 0; i < num_pixels; ++i) {
     src_alpha := (src[i] >> CHANNEL_SHIFT(3)) & 0xff;
     if (src_alpha != 0xff) {
@@ -267,7 +267,7 @@ func BlendPixelPremult(src, dst uint32) uint32 {
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are pre-multiplied by
 // alpha.
 func BlendPixelRowPremult(/* const */ src *uint32, /* const */ dst *uint32, num_pixels int) {
-  int i;
+  var i int
   for (i = 0; i < num_pixels; ++i) {
     src_alpha := (src[i] >> CHANNEL_SHIFT(3)) & 0xff;
     if (src_alpha != 0xff) {
@@ -366,14 +366,14 @@ func WebPAnimDecoderGetNext(dec *WebPAnimDecoder, *uint8* buf_ptr, timestamp_ptr
   if (iter.frame_num > 1 && iter.blend_method == WEBP_MUX_BLEND &&
       !is_key_frame) {
     if (dec.prev_iter.dispose_method == WEBP_MUX_DISPOSE_NONE) {
-      int y;
+      var y int
       // Blend transparent pixels with pixels in previous canvas.
       for (y = 0; y < iter.height; ++y) {
         offset := (iter.y_offset + y) * width + iter.x_offset;
         blend_row((*uint32)dec.curr_frame + offset, (*uint32)dec.prev_frame_disposed + offset, iter.width);
       }
     } else {
-      int y;
+      var y int
       assert.Assert(dec.prev_iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND);
       // We need to blend a transparent pixel with its value just after
       // initialization. That is, blend it with:

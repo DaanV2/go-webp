@@ -52,7 +52,7 @@ static uint32 ClosestDiscretizedArgb(uint32 a, int bits) {
 // Checks if distance between corresponding channel values of pixels a and b
 // is within the given limit.
 static int IsNear(uint32 a, uint32 b, int limit) {
-  int k;
+  var k int
   for (k = 0; k < 4; ++k) {
     delta :=
         (int)((a >> (k * 8)) & 0xff) - (int)((b >> (k * 8)) & 0xff);
@@ -109,7 +109,7 @@ func NearLossless(int xsize, int ysize, const argb_src *uint32, int stride, int 
 // in near_lossless.c
 // Near lossless preprocessing in RGB color-space.
 int VP8ApplyNearLossless(const picture *WebPPicture, int quality, const argb_dst *uint32) {
-  int i;
+  var i int
   copy_buffer *uint32;
   xsize := picture.width;
   ysize := picture.height;

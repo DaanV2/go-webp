@@ -174,7 +174,7 @@ static uint32 Predictor13_SSE2(const left *uint32, const top *uint32) {
 
 // Predictor0: ARGB_BLACK.
 func PredictorAdd0_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   const __m128i black = _mm_set1_epi32((int)ARGB_BLACK);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
@@ -189,7 +189,7 @@ func PredictorAdd0_SSE2(const in *uint32, const upper *uint32, int num_pixels, W
 
 // Predictor1: left.
 func PredictorAdd1_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   __m128i prev = _mm_set1_epi32((int)out[-1]);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     // a | b | c | d
@@ -218,7 +218,7 @@ func PredictorAdd1_SSE2(const in *uint32, const upper *uint32, int num_pixels, W
   func PredictorAdd##X##_SSE2(const in *uint32,                    \
                                      const upper *uint32, int num_pixels, \
                                      WEBP_RESTRICT out *uint32) {         \
-    int i;                                                                  \
+    var i int                                                                  \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                              \
       const __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);          \
       const __m128i other = _mm_loadu_si128((const __*m128i)&(IN));         \
@@ -248,7 +248,7 @@ GENERATE_PREDICTOR_ADD(Predictor7_SSE2, PredictorAdd7_SSE2)
   func PredictorAdd##X##_SSE2(const in *uint32,                    \
                                      const upper *uint32, int num_pixels, \
                                      WEBP_RESTRICT out *uint32) {         \
-    int i;                                                                  \
+    var i int                                                                  \
     for (i = 0; i + 4 <= num_pixels; i += 4) {                              \
       const __m128i Tother = _mm_loadu_si128((const __*m128i)&(IN));        \
       const __m128i T = _mm_loadu_si128((const __*m128i)&upper[i]);         \
@@ -287,7 +287,7 @@ const DO_PRED10_SHIFT =                                        \
   } while (0)
 
 func PredictorAdd10_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     __m128i src = _mm_loadu_si128((const __*m128i)&in[i]);
@@ -335,7 +335,7 @@ const DO_PRED11_SHIFT =                                      \
   } while (0)
 
 func PredictorAdd11_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   __m128i pa;
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
   for (i = 0; i + 4 <= num_pixels; i += 4) {
@@ -387,7 +387,7 @@ func PredictorAdd11_SSE2(const in *uint32, const upper *uint32, int num_pixels, 
   } while (0)
 
 func PredictorAdd12_SSE2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   const __m128i zero = _mm_setzero_si128();
   const __m128i L8 = _mm_cvtsi32_si128((int)out[-1]);
   __m128i L = _mm_unpacklo_epi8(L8, zero);
@@ -425,7 +425,7 @@ GENERATE_PREDICTOR_ADD(Predictor13_SSE2, PredictorAdd13_SSE2)
 // Subtract-Green Transform
 
 func AddGreenToBlueAndRed_SSE2(const src *uint32, int num_pixels, dst *uint32) {
-  int i;
+  var i int
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i in = _mm_loadu_si128((const __*m128i)&src[i]);  // argb
     const __m128i A = _mm_srli_epi16(in, 8);                      // 0 a 0 g
@@ -453,7 +453,7 @@ func TransformColorInverse_SSE2(const m *VP8LMultipliers, const src *uint32, int
 #undef MK_CST_16
 #undef CST
   const __m128i mask_ag = _mm_set1_epi32((int)0xff00ff00);  // alpha-green masks
-  int i;
+  var i int
   for (i = 0; i + 4 <= num_pixels; i += 4) {
     const __m128i in = _mm_loadu_si128((const __*m128i)&src[i]);  // argb
     const __m128i A = _mm_and_si128(in, mask_ag);  // a   0   g   0

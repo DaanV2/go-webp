@@ -145,7 +145,7 @@ const v255 = vdup_n_u8(255)
 
 #define CONVERT8(FMT, XSTEP, N, src_y, src_uv, out, cur_x)          \
   for {                                                              \
-    int i;                                                          \
+    var i int                                                          \
     for (i = 0; i < N; i += 8) {                                    \
       off := ((cur_x) + i) * XSTEP;                        \
       const uint8x8_t y = vld1_u8((src_y) + (cur_x) + i);           \
@@ -176,7 +176,7 @@ const v255 = vdup_n_u8(255)
 
 #define CONVERT1(FUNC, XSTEP, N, src_y, src_uv, rgb, cur_x) \
   {                                                         \
-    int i;                                                  \
+    var i int                                                  \
     for (i = 0; i < N; i++) {                               \
       off := ((cur_x) + i) * XSTEP;                \
       y := src_y[(cur_x) + i];                     \

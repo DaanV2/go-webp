@@ -673,13 +673,13 @@ static int Disto16x16_NEON(const WEBP_RESTRICT const a *uint8, const WEBP_RESTRI
 
 func CollectHistogram_NEON(const WEBP_RESTRICT ref *uint8, const WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
   const uint16x8_t max_coeff_thresh = vdupq_n_u16(MAX_COEFF_THRESH);
-  int j;
+  var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   for (j = start_block; j < end_block; ++j) {
     int16 out[16];
     FTransform_NEON(ref + VP8DspScan[j], pred + VP8DspScan[j], out);
     {
-      int k;
+      var k int
       const int16x8_t a0 = vld1q_s16(out + 0);
       const int16x8_t b0 = vld1q_s16(out + 8);
       const uint16x8_t a1 = vreinterpretq_u16_s16(vabsq_s16(a0));
@@ -729,7 +729,7 @@ static int SumToInt_NEON(uint32x4_t sum) {
 
 static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
-  int y;
+  var y int
   for (y = 0; y < 16; ++y) {
     AccumulateSSE16_NEON(a + y * BPS, b + y * BPS, &sum);
   }
@@ -738,7 +738,7 @@ static int SSE16x16_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *ui
 
 static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
-  int y;
+  var y int
   for (y = 0; y < 8; ++y) {
     AccumulateSSE16_NEON(a + y * BPS, b + y * BPS, &sum);
   }
@@ -747,7 +747,7 @@ static int SSE16x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uin
 
 static int SSE8x8_NEON(const WEBP_RESTRICT a *uint8, const WEBP_RESTRICT b *uint8) {
   uint32x4_t sum = vdupq_n_u32(0);
-  int y;
+  var y int
   for (y = 0; y < 8; ++y) {
     const uint8x8_t a0 = vld1_u8(a + y * BPS);
     const uint8x8_t b0 = vld1_u8(b + y * BPS);
@@ -968,7 +968,7 @@ func Intra4Preds_NEON(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT top *uint8) 
 
 static  func Fill_NEON(dst *uint8, const uint8 value) {
   uint8x16_t a = vdupq_n_u8(value);
-  int i;
+  var i int
   for (i = 0; i < 16; i++) {
     vst1q_u8(dst + BPS * i, a);
   }
@@ -976,7 +976,7 @@ static  func Fill_NEON(dst *uint8, const uint8 value) {
 
 static  func Fill16_NEON(dst *uint8, const src *uint8) {
   uint8x16_t a = vld1q_u8(src);
-  int i;
+  var i int
   for (i = 0; i < 16; i++) {
     vst1q_u8(dst + BPS * i, a);
   }
@@ -1060,7 +1060,7 @@ static  func TrueMotionHelper_NEON(dst *uint8, const uint8x8_t outer, const uint
 }
 
 static  func TrueMotion_NEON(dst *uint8, const left *uint8, const top *uint8) {
-  int i;
+  var i int
   uint16x8_t a;
   uint8x8x2_t inner;
 

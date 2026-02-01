@@ -242,7 +242,7 @@ func ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP8Proba
   if (hdr.use_segment) {
     hdr.update_map = VP8Get(br, "global-header");
     if (VP8Get(br, "global-header")) {  // update data
-      int s;
+      var s int
       hdr.absolute_delta = VP8Get(br, "global-header");
       for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
         hdr.quantizer[s] = VP8Get(br, "global-header")
@@ -257,7 +257,7 @@ func ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP8Proba
       }
     }
     if (hdr.update_map) {
-      int s;
+      var s int
       for (s = 0; s < MB_FEATURE_TREE_PROBS; ++s) {
         proba.segments[s] = VP8Get(br, "global-header")
                                  ? VP8GetValue(br, 8, "global-header")
@@ -321,7 +321,7 @@ func ParseFilterHeader(br *VP8BitReader, /* const */ dec *VP8Decoder) int {
   hdr.use_lf_delta = VP8Get(br, "global-header");
   if (hdr.use_lf_delta) {
     if (VP8Get(br, "global-header")) {  // update lf-delta?
-      int i;
+      var i int
       for (i = 0; i < NUM_REF_LF_DELTAS; ++i) {
         if (VP8Get(br, "global-header")) {
           hdr.ref_lf_delta[i] = VP8GetSignedValue(br, 6, "global-header");
@@ -468,7 +468,7 @@ func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
 
 // See section 13-2: https://datatracker.ietf.org/doc/html/rfc6386#section-13.2
 func GetLargeValue(/* const */ br *VP8BitReader, /* const */ p *uint8) int {
-  int v;
+  var v int
   if (!VP8GetBit(br, p[3], "coeffs")) {
     if (!VP8GetBit(br, p[4], "coeffs")) {
       v = 2;
@@ -512,7 +512,7 @@ func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas
     }
     {  // non zero coeff
       var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
-      int v;
+      var v int
       if (!VP8GetBit(br, p[2], "coeffs")) {
         v = 1;
         p = p_ctx[1];
@@ -541,7 +541,7 @@ func GetCoeffsAlt(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[
     }
     {  // non zero coeff
       var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
-      int v;
+      var v int
       if (!VP8GetBitAlt(br, p[2], "coeffs")) {
         v = 1;
         p = p_ctx[1];
@@ -594,7 +594,7 @@ func ParseResiduals(const dec *VP8Decoder, const mb *VP8MB, const token_br *VP8B
     if (nz > 1) {  // more than just the DC . perform the full transform
       VP8TransformWHT(dc, dst);
     } else {  // only DC is non-zero . inlined simplified transform
-      int i;
+      var i int
       dc0 := (dc[0] + 3) >> 3;
       for (i = 0; i < 16 * 16; i += 16) dst[i] = dc0;
     }

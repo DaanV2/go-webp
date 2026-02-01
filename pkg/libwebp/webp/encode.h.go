@@ -170,7 +170,7 @@ typedef enum WebPPreset {
 // speed and final compressed size.
 // This function will overwrite several fields from config: 'method', 'quality'
 // and 'lossless'. Returns false in case of parameter error.
-  int WebPConfigLosslessPreset(config *WebPConfig, int level);
+  int WebPConfigLosslessPreset(config *WebPConfig, level int);
 
 // Returns true if 'config' is non-nil and all configuration parameters are
 // within their valid ranges.

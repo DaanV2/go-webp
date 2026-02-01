@@ -171,7 +171,7 @@ static  func PlanarTo24b_SSE2(__const in *m128i0, __const in *m128i1, __const in
 
 func VP8YuvToRgba32_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8) {
   const __m128i kAlpha = _mm_set1_epi16(255);
-  int n;
+  var n int
   for (n = 0; n < 32; n += 8, dst += 32) {
     __m128i R, G, B;
     YUV444ToRGB_SSE2(y + n, u + n, v + n, &R, &G, &B);
@@ -181,7 +181,7 @@ func VP8YuvToRgba32_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *ui
 
 func VP8YuvToBgra32_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8) {
   const __m128i kAlpha = _mm_set1_epi16(255);
-  int n;
+  var n int
   for (n = 0; n < 32; n += 8, dst += 32) {
     __m128i R, G, B;
     YUV444ToRGB_SSE2(y + n, u + n, v + n, &R, &G, &B);
@@ -191,7 +191,7 @@ func VP8YuvToBgra32_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *ui
 
 func VP8YuvToArgb32_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8) {
   const __m128i kAlpha = _mm_set1_epi16(255);
-  int n;
+  var n int
   for (n = 0; n < 32; n += 8, dst += 32) {
     __m128i R, G, B;
     YUV444ToRGB_SSE2(y + n, u + n, v + n, &R, &G, &B);
@@ -201,7 +201,7 @@ func VP8YuvToArgb32_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *ui
 
 func VP8YuvToRgba444432_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8) {
   const __m128i kAlpha = _mm_set1_epi16(255);
-  int n;
+  var n int
   for (n = 0; n < 32; n += 8, dst += 16) {
     __m128i R, G, B;
     YUV444ToRGB_SSE2(y + n, u + n, v + n, &R, &G, &B);
@@ -210,7 +210,7 @@ func VP8YuvToRgba444432_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u
 }
 
 func VP8YuvToRgb56532_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8) {
-  int n;
+  var n int
   for (n = 0; n < 32; n += 8, dst += 16) {
     __m128i R, G, B;
     YUV444ToRGB_SSE2(y + n, u + n, v + n, &R, &G, &B);
@@ -265,7 +265,7 @@ func VP8YuvToBgr32_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uin
 
 func YuvToRgbaRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
   const __m128i kAlpha = _mm_set1_epi16(255);
-  int n;
+  var n int
   for (n = 0; n + 8 <= len; n += 8, dst += 32) {
     __m128i R, G, B;
     YUV420ToRGB_SSE2(y, u, v, &R, &G, &B);
@@ -285,7 +285,7 @@ func YuvToRgbaRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint
 
 func YuvToBgraRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
   const __m128i kAlpha = _mm_set1_epi16(255);
-  int n;
+  var n int
   for (n = 0; n + 8 <= len; n += 8, dst += 32) {
     __m128i R, G, B;
     YUV420ToRGB_SSE2(y, u, v, &R, &G, &B);
@@ -305,7 +305,7 @@ func YuvToBgraRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint
 
 func YuvToArgbRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
   const __m128i kAlpha = _mm_set1_epi16(255);
-  int n;
+  var n int
   for (n = 0; n + 8 <= len; n += 8, dst += 32) {
     __m128i R, G, B;
     YUV420ToRGB_SSE2(y, u, v, &R, &G, &B);
@@ -324,7 +324,7 @@ func YuvToArgbRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint
 }
 
 func YuvToRgbRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
-  int n;
+  var n int
   for (n = 0; n + 32 <= len; n += 32, dst += 32 * 3) {
     __m128i R0, R1, R2, R3, G0, G1, G2, G3, B0, B1, B2, B3;
     __m128i rgb0, rgb1, rgb2, rgb3, rgb4, rgb5;
@@ -359,7 +359,7 @@ func YuvToRgbRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8
 }
 
 func YuvToBgrRow_SSE2(const WEBP_RESTRICT y *uint8, const WEBP_RESTRICT u *uint8, const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
-  int n;
+  var n int
   for (n = 0; n + 32 <= len; n += 32, dst += 32 * 3) {
     __m128i R0, R1, R2, R3, G0, G1, G2, G3, B0, B1, B2, B3;
     __m128i bgr0, bgr1, bgr2, bgr3, bgr4, bgr5;
@@ -538,7 +538,7 @@ static  func ConvertRGBToUV_SSE2(const __const R *m128i, const __const G *m128i,
 
 static  func ConvertRGBToYHelper_SSE2(
     const __const rgb_plane *m128i /*in[6]*/, int swap_rb, i *int, WEBP_RESTRICT y *uint8) {
-  int j;
+  var j int
 
   for (j = 0; j < 2; ++j, *i += 16) {
     const __m128i zero = _mm_setzero_si128();
@@ -563,7 +563,7 @@ static  func ConvertRGBToYHelper_SSE2(
 
 func ConvertRGBToY_SSE2(const WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
   max_width := width & ~31;
-  int i;
+  var i int
   __m128i rgb_plane[6];
   if (step == 3) {
     for (i = 0; i < max_width; rgb += 3 * 16 * 2) {
@@ -583,7 +583,7 @@ func ConvertRGBToY_SSE2(const WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, 
 
 func ConvertBGRToY_SSE2(const WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
   max_width := width & ~31;
-  int i;
+  var i int
   __m128i bgr_plane[6];
   if (step == 3) {
     for (i = 0; i < max_width; bgr += 3 * 16 * 2) {
@@ -603,7 +603,7 @@ func ConvertBGRToY_SSE2(const WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, 
 
 func ConvertARGBToY_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width) {
   max_width := width & ~15;
-  int i;
+  var i int
   for (i = 0; i < max_width; i += 16) {
     __m128i Y0, Y1, rgb[6];
     RGB32PackedToPlanar16_SSE2(&argb[i], rgb);
@@ -629,7 +629,7 @@ func HorizontalAddPack_SSE2(const __const A *m128i, const __const B *m128i, __co
 
 func ConvertARGBToUV_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int src_width, int do_store) {
   max_width := src_width & ~31;
-  int i;
+  var i int
   for (i = 0; i < max_width; i += 32, u += 16, v += 16) {
     __m128i rgb[6], U0, V0, U1, V1;
     RGB32PackedToPlanar16_SSE2(&argb[i], rgb);

@@ -31,11 +31,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 static const uint16 VP8LevelCodes[MAX_VARIABLE_LEVEL][2] = {
     {0x001, 0x000}, {0x007, 0x001}, {0x00f, 0x005}, {0x00f, 0x00d}, {0x033, 0x003}, {0x033, 0x003}, {0x033, 0x023}, {0x033, 0x023}, {0x033, 0x023}, {0x033, 0x023}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x013}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x0d3, 0x093}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x053}, {0x153, 0x153}}
 
-static int VariableLevelCost(int level, const uint8 probas[NUM_PROBAS]) {
+static int VariableLevelCost(level int, const uint8 probas[NUM_PROBAS]) {
   pattern := VP8LevelCodes[level - 1][0];
   bits := VP8LevelCodes[level - 1][1];
   cost := 0;
-  int i;
+  var i int
   for (i = 2; pattern; ++i) {
     if (pattern & 1) {
       cost += VP8BitCost(bits & 1, probas[i]);
@@ -55,14 +55,14 @@ func VP8CalculateLevelCosts(const proba *VP8EncProba) {
   if (!proba.dirty) return;  // nothing to do.
 
   for (ctype = 0; ctype < NUM_TYPES; ++ctype) {
-    int n;
+    var n int
     for (band = 0; band < NUM_BANDS; ++band) {
       for (ctx = 0; ctx < NUM_CTX; ++ctx) {
         var p *uint8 = proba.coeffs[ctype][band][ctx];
         var table *uint16 = proba.level_cost[ctype][band][ctx];
         cost0 := (ctx > 0) ? VP8BitCost(1, p[0]) : 0;
         cost_base := VP8BitCost(1, p[1]) + cost0;
-        int v;
+        var v int
         table[0] = VP8BitCost(0, p[1]) + cost0;
         for (v = 1; v <= MAX_VARIABLE_LEVEL; ++v) {
           table[v] = cost_base + VariableLevelCost(v, p);
@@ -185,7 +185,7 @@ int VP8RecordCoeffs(int ctx, const res *VP8Residual) {
     return 0;
   }
   while (n <= res.last) {
-    int v;
+    var v int
     VP8RecordStats(1, s + 0);  // order of record doesn't matter
 
 	for  {
@@ -221,7 +221,7 @@ int VP8RecordCoeffs(int ctx, const res *VP8Residual) {
       {
         bits := VP8LevelCodes[v - 1][1];
         pattern := VP8LevelCodes[v - 1][0];
-        int i;
+        var i int
         for (i = 0; (pattern >>= 1) != 0; ++i) {
           mask := 2 << i;
           if (pattern & 1) VP8RecordStats(!!(bits & mask), s + 3 + i);

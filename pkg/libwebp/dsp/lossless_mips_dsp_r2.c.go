@@ -27,9 +27,9 @@ func FUNC_NAME(const src *TYPE,                                         \
                       const color_map *uint32,                         \
                       dst *TYPE, int y_start, int y_end,                       \
                       int width) {                                             \
-  int y;                                                                       \
+  var y int                                                                       \
   for (y = y_start; y < y_end; ++y) {                                          \
-    int x;                                                                     \
+    var x int                                                                     \
     for (x = 0; x < (width >> 2); ++x) {                                       \
       int tmp1, tmp2, tmp3, tmp4;                                              \
       __asm__ volatile(                                                        \

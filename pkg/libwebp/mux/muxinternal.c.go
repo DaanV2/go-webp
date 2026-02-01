@@ -62,7 +62,7 @@ ChunkRelease *WebPChunk(const chunk *WebPChunk) {
 // Chunk misc methods.
 
 CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag) {
-  int i;
+  var i int
   for (i = 0; kChunks[i].tag != NIL_TAG; ++i) {
     if (tag == kChunks[i].tag) return (CHUNK_INDEX)i;
   }
@@ -70,7 +70,7 @@ CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag) {
 }
 
 WebPChunkId ChunkGetIdFromTag(uint32 tag) {
-  int i;
+  var i int
   for (i = 0; kChunks[i].tag != NIL_TAG; ++i) {
     if (tag == kChunks[i].tag) return kChunks[i].id;
   }

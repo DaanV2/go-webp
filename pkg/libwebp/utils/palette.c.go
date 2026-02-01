@@ -101,7 +101,7 @@ const COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
 
 int GetColorPalette(const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32(MAX_PALETTE_SIZE)
                         palette) {
-  int i;
+  var i int
   int x, y;
   num_colors := 0;
   uint8 in_use[COLOR_HASH_SIZE] = {0}
@@ -169,7 +169,7 @@ int GetColorPalette(const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32
 static int PaletteHasNonMonotonousDeltas(
     const *uint32  palette, int num_colors) {
   predict := 0x000000;
-  int i;
+  var i int
   sign_found := 0x00;
   for (i = 0; i < num_colors; ++i) {
     diff := VP8LSubPixels(palette[i], predict);

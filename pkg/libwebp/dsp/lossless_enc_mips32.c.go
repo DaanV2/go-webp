@@ -184,7 +184,7 @@ static  func GetEntropyUnrefinedHelper(
 
 func GetEntropyUnrefined_MIPS32(
     const uint32 X[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
-  int i;
+  var i int
   i_prev := 0;
   x_prev := X[0];
 
@@ -286,7 +286,7 @@ func AddVector_MIPS32(const WEBP_RESTRICT pa *uint32, const WEBP_RESTRICT pb *ui
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
   var LoopEnd *uint32 = pa + end;
-  int i;
+  var i int
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 1, pa, pb, pout)
   ASM_END_0
@@ -297,7 +297,7 @@ func AddVectorEq_MIPS32(const WEBP_RESTRICT pa *uint32, WEBP_RESTRICT pout *uint
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
   var LoopEnd *uint32 = pa + end;
-  int i;
+  var i int
   ASM_START
   ADD_TO_OUT(0, 4, 8, 12, 0, pa, pout, pout)
   ASM_END_1

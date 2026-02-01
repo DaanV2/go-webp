@@ -146,9 +146,9 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
     {
       uint64 entropy_comp[kHistoTotal];
       uint64 entropy[kNumEntropyIx];
-      int k;
+      var k int
       last_mode_to_analyze := use_palette ? kPalette : kSpatialSubGreen;
-      int j;
+      var j int
       // Let's add one zero to the predicted histograms. The zeros are removed
       // too efficiently by the pix_diff == 0 comparison, at least one of the
       // zeros is likely to exist.
@@ -284,7 +284,7 @@ static int EncoderAnalyze(const enc *VP8LEncoder, CrunchConfig crunch_configs[CR
   var config *WebPConfig = enc.config;
   method := config.method;
   low_effort := (config.method == 0);
-  int i;
+  var i int
   int use_palette, transform_bits;
   int n_lz77s;
   // If set to 0, analyze the cache with the computed cache value. If 1, also
@@ -374,7 +374,7 @@ static int EncoderAnalyze(const enc *VP8LEncoder, CrunchConfig crunch_configs[CR
   // Fill in the different LZ77s.
   assert.Assert(n_lz77s <= CRUNCH_SUBCONFIGS_MAX);
   for (i = 0; i < *crunch_configs_size; ++i) {
-    int j;
+    var j int
     for (j = 0; j < n_lz77s; ++j) {
       assert.Assert(j < CRUNCH_SUBCONFIGS_MAX);
       crunch_configs[i].sub_configs[j].lz77 =
@@ -394,7 +394,7 @@ static int EncoderInit(const enc *VP8LEncoder) {
   // we round the block size up, so we're guaranteed to have
   // at most MAX_REFS_BLOCK_PER_IMAGE blocks used:
   refs_block_size := (pix_cnt - 1) / MAX_REFS_BLOCK_PER_IMAGE + 1;
-  int i;
+  var i int
   if (!VP8LHashChainInit(&enc.hash_chain, pix_cnt)) return 0;
 
   for (i = 0; i < 4; ++i) VP8LBackwardRefsInit(&enc.refs[i], refs_block_size);
@@ -496,7 +496,7 @@ func StoreHuffmanTreeOfHuffmanTreeToBitMask(/* const */ bw *VP8LBitWriter, /* co
 }
 
 func ClearHuffmanTreeIfOnlyOneSymbol(/* const */ huffman_code *HuffmanTreeCode) {
-  int k;
+  var k int
   count := 0;
   for (k = 0; k < huffman_code.num_symbols; ++k) {
     if (huffman_code.code_lengths[k] != 0) {
@@ -511,7 +511,7 @@ func ClearHuffmanTreeIfOnlyOneSymbol(/* const */ huffman_code *HuffmanTreeCode) 
 }
 
 func StoreHuffmanTreeToBitMask(/* const */ bw *VP8LBitWriter, /* const */ tokens *HuffmanTreeToken, /* const */ num_tokens int , /* const */ huffman_code *HuffmanTreeCode) {
-  int i;
+  var i int
   for (i = 0; i < num_tokens; ++i) {
     ix := tokens[i].code;
     extra_bits := tokens[i].extra_bits;
@@ -546,7 +546,7 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
   {
     uint32 histogram[CODE_LENGTH_CODES] = {0}
     uint8 buf_rle[CODE_LENGTH_CODES] = {0}
-    int i;
+    var i int
     for (i = 0; i < num_tokens; ++i) {
       ++histogram[tokens[i].code];
     }
@@ -597,7 +597,7 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
 
 // 'huff_tree' and 'tokens' are pre-alloacted buffers.
 func StoreHuffmanCode(const bw *VP8LBitWriter, const huff_tree *HuffmanTree, const tokens *HuffmanTreeToken, const huffman_code *HuffmanTreeCode) {
-  int i;
+  var i int
   count := 0;
   int symbols[2] = {0, 0}
   kMaxBits := 8;
@@ -708,7 +708,7 @@ static int StoreImageToBitMask(const bw *VP8LBitWriter, int width, int histo_bit
 // Special case of EncodeImageInternal() for cache-bits=0, histo_bits=31.
 // pic and percent are for progress.
 static int EncodeImageNoHuffman(const bw *VP8LBitWriter, const argb *uint32, const hash_chain *VP8LHashChain, const refs_array *VP8LBackwardRefs, int width, int height, int quality, int low_effort, const pic *WebPPicture, int percent_range, const percent *int) {
-  int i;
+  var i int
   max_tokens := 0;
   refs *VP8LBackwardRefs;
   tokens *HuffmanTreeToken = nil;
@@ -1156,7 +1156,7 @@ static int MakeInputImageCopy(const enc *VP8LEncoder) {
   {
     dst *uint32 = enc.argb;
     var src *uint32 = picture.argb;
-    int y;
+    var y int
     for (y = 0; y < height; ++y) {
       memcpy(dst, src, width * sizeof(*dst));
       dst += width;
@@ -1313,7 +1313,7 @@ static int MapImageFromPalette(const enc *VP8LEncoder) {
 
 // Save palette[] to bitstream.
 static int EncodePalette(const bw *VP8LBitWriter, int low_effort, const enc *VP8LEncoder, int percent_range, const percent *int) {
-  int i;
+  var i int
   uint32 tmp_palette[MAX_PALETTE_SIZE];
   palette_size := enc.palette_size;
   var palette *uint32 = enc.palette;
@@ -1355,7 +1355,7 @@ static VP *VP8LEncoder8LEncoderNew(const config *WebPConfig, const picture *WebP
 
 func VP8LEncoderDelete(enc *VP8LEncoder) {
   if (enc != nil) {
-    int i;
+    var i int
     VP8LHashChainClear(&enc.hash_chain);
     for (i = 0; i < 4; ++i) VP8LBackwardRefsClear(&enc.refs[i]);
     ClearTransformBuffer(enc);

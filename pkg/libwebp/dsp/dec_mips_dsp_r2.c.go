@@ -394,7 +394,7 @@ func HFilter8(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int th
 
 // on three inner edges
 func VFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
-  int k;
+  var k int
   for (k = 3; k > 0; --k) {
     p += 4 * stride;
     FilterLoop24(p, stride, 1, 16, thresh, ithresh, hev_thresh);
@@ -402,7 +402,7 @@ func VFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
 }
 
 func HFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
-  int k;
+  var k int
   for (k = 3; k > 0; --k) {
     p += 4;
     FilterLoop24(p, 1, stride, 16, thresh, ithresh, hev_thresh);
@@ -423,7 +423,7 @@ func HFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int t
 // Simple In-loop filtering (Paragraph 15.2)
 
 func SimpleVFilter16(p *uint8, int stride, int thresh) {
-  int i;
+  var i int
   thresh2 := 2 * thresh + 1;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   p *uint81 = p - stride;
@@ -490,7 +490,7 @@ func SimpleVFilter16(p *uint8, int stride, int thresh) {
 // clang-format on
 
 func SimpleHFilter16(p *uint8, int stride, int thresh) {
-  int i;
+  var i int
   thresh2 := 2 * thresh + 1;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
   __asm__ volatile(
@@ -538,7 +538,7 @@ func SimpleHFilter16(p *uint8, int stride, int thresh) {
 }
 
 func SimpleVFilter16i(p *uint8, int stride, int thresh) {
-  int k;
+  var k int
   for (k = 3; k > 0; --k) {
     p += 4 * stride;
     SimpleVFilter16(p, stride, thresh);
@@ -546,7 +546,7 @@ func SimpleVFilter16i(p *uint8, int stride, int thresh) {
 }
 
 func SimpleHFilter16i(p *uint8, int stride, int thresh) {
-  int k;
+  var k int
   for (k = 3; k > 0; --k) {
     p += 4;
     SimpleHFilter16(p, stride, thresh);
@@ -853,7 +853,7 @@ func DC8uvNoTop(dst *uint8) {  // DC with no top samples
 
 #define CLIP_TO_DST(DST, SIZE)                        \
   for {                                                \
-    int y;                                            \
+    var y int                                            \
     var top *uint8 = (DST) - BPS;                 \
     top_1 := ((int)top[-1] << 16) + top[-1]; \
     for (y = 0; y < (SIZE); ++y) {                    \

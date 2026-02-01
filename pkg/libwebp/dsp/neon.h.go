@@ -87,7 +87,7 @@ static  int32x4x4_t Transpose4x4_NEON(const int32x4x4_t rows) {
 import "github.com/daanv2/go-webp/pkg/stdio"
 #define PRINT_REG(REG, SIZE)                            \
   for {                                                  \
-    int i;                                              \
+    var i int                                              \
     printf("%s \t[%d]: 0x", #REG, SIZE);                \
     if (SIZE == 8) {                                    \
       uint8 _tmp[8];                                  \

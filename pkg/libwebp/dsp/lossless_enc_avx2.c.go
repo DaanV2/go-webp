@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Subtract-Green Transform
 
 func SubtractGreenFromBlueAndRed_AVX2(argb_data *uint32, int num_pixels) {
-  int i;
+  var i int
   const __m256i kCstShuffle = _mm256_set_epi8(
       -1, 29, -1, 29, -1, 25, -1, 25, -1, 21, -1, 21, -1, 17, -1, 17, -1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
@@ -63,7 +63,7 @@ func TransformColor_AVX2(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_REST
   const __m256i mask_rb = _mm256_set1_epi32(0x00ff00ff);  // red-blue masks
   const __m256i kCstShuffle = _mm256_set_epi8(
       29, -1, 29, -1, 25, -1, 25, -1, 21, -1, 21, -1, 17, -1, 17, -1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1, -1);
-  int i;
+  var i int
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i in = _mm256_loadu_si256((__*m256i)&argb_data[i]);  // argb
     const __m256i A = _mm256_shuffle_epi8(in, kCstShuffle);          // g0g0
@@ -99,7 +99,7 @@ func CollectColorBlueTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int strid
       const __m256i C1 = _mm256_mulhi_epi16(B1, mult);
       const __m256i D1 = _mm256_sub_epi16(A1, C1);
       __m256i E = _mm256_add_epi16(_mm256_srli_epi32(D1, 16), D1);
-      int x;
+      var x int
       for (x = 8; x + 8 <= tile_width; x += 8) {
         const __m256i A2 = _mm256_loadu_si256((const __*m256i)(src + x));
         __m256i B2, C2, D2;
@@ -134,7 +134,7 @@ func CollectColorRedTransforms_AVX2(const WEBP_RESTRICT argb *uint32, int stride
       const __m256i B1 = _mm256_and_si256(A1, mask_g);
       const __m256i C1 = _mm256_madd_epi16(B1, mult);
       __m256i D = _mm256_sub_epi16(A1, C1);
-      int x;
+      var x int
       for (x = 8; x + 8 <= tile_width; x += 8) {
         const __m256i A2 = _mm256_loadu_si256((const __*m256i)(src + x));
         __m256i B2, C2;
@@ -263,7 +263,7 @@ func AddVectorEq_AVX2(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, 
 #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
 
 static uint64 CombinedShannonEntropy_AVX2(const uint32 X[256], const uint32 Y[256]) {
-  int i;
+  var i int
   retval := 0;
   sumX := 0, sumXY = 0;
   const __m256i zero = _mm256_setzero_si256();
@@ -453,7 +453,7 @@ static  func Average2_m256i(const __const a *m256i0, const __const a *m256i1, __
 
 // Predictor0: ARGB_BLACK.
 func PredictorSub0_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   const __m256i black = _mm256_set1_epi32((int)ARGB_BLACK);
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
@@ -470,7 +470,7 @@ func PredictorSub0_AVX2(const in *uint32, const upper *uint32, int num_pixels, W
   func PredictorSub##X##_AVX2(                                        \
       const in *uint32, const upper *uint32, int num_pixels, \
       WEBP_RESTRICT const out *uint32) {                                   \
-    int i;                                                                   \
+    var i int                                                                   \
     for (i = 0; i + 8 <= num_pixels; i += 8) {                               \
       const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);        \
       const __m256i pred = _mm256_loadu_si256((const __*m256i)&(IN));        \
@@ -491,7 +491,7 @@ GENERATE_PREDICTOR_1(4, upper[i - 1])  // Predictor4: TL
 
 // Predictor5: avg2(avg2(L, TR), T)
 func PredictorSub5_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i L = _mm256_loadu_si256((const __*m256i)&in[i - 1]);
     const __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);
@@ -512,7 +512,7 @@ func PredictorSub5_AVX2(const in *uint32, const upper *uint32, int num_pixels, W
   func PredictorSub##X##_AVX2(const in *uint32,                      \
                                      const upper *uint32, int num_pixels,   \
                                      WEBP_RESTRICT out *uint32) {           \
-    int i;                                                                    \
+    var i int                                                                    \
     for (i = 0; i + 8 <= num_pixels; i += 8) {                                \
       const __m256i tA = _mm256_loadu_si256((const __*m256i)&(A));            \
       const __m256i tB = _mm256_loadu_si256((const __*m256i)&(B));            \
@@ -535,7 +535,7 @@ GENERATE_PREDICTOR_2(9, upper[i], upper[i + 1])   // Predictor9: average(T, TR)
 
 // Predictor10: avg(avg(L,TL), avg(T, TR)).
 func PredictorSub10_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i L = _mm256_loadu_si256((const __*m256i)&in[i - 1]);
     const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
@@ -568,7 +568,7 @@ func GetSumAbsDiff32_AVX2(const __const A *m256i, const __const B *m256i, __cons
 }
 
 func PredictorSub11_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i L = _mm256_loadu_si256((const __*m256i)&in[i - 1]);
     const __m256i T = _mm256_loadu_si256((const __*m256i)&upper[i]);
@@ -593,7 +593,7 @@ func PredictorSub11_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictor12: ClampedSubSubtractFull.
 func PredictorSub12_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   const __m256i zero = _mm256_setzero_si256();
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i src = _mm256_loadu_si256((const __*m256i)&in[i]);
@@ -621,7 +621,7 @@ func PredictorSub12_AVX2(const in *uint32, const upper *uint32, int num_pixels, 
 
 // Predictors13: ClampedAddSubtractHalf
 func PredictorSub13_AVX2(const in *uint32, const upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
-  int i;
+  var i int
   const __m256i zero = _mm256_setzero_si256();
   for (i = 0; i + 8 <= num_pixels; i += 8) {
     const __m256i L = _mm256_loadu_si256((const __*m256i)&in[i - 1]);

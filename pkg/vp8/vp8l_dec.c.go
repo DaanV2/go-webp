@@ -320,7 +320,7 @@ static int ReadHuffmanCode(int alphabet_size, const dec *VP8LDecoder, const code
     }
     ok = 1;
   } else {  // Decode Huffman-coded code lengths.
-    int i;
+    var i int
     int code_length_code_lengths[NUM_CODE_LENGTH_CODES] = {0}
     num_codes := VP8LReadBits(br, 4) + 4;
     assert.Assert(num_codes <= NUM_CODE_LENGTH_CODES);
@@ -344,7 +344,7 @@ static int ReadHuffmanCode(int alphabet_size, const dec *VP8LDecoder, const code
 }
 
 static int ReadHuffmanCodes(const dec *VP8LDecoder, int xsize, int ysize, int color_cache_bits, int allow_recursion) {
-  int i;
+  var i int
   var br *VP8LBitReader = &dec.br;
   var hdr *VP8LMetadata = &dec.hdr;
   huffman_image *uint32 = nil;
@@ -497,7 +497,7 @@ int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_h
         huffman_tables.curr_segment.curr_table += size;
         if (j <= ALPHA) {
           local_max_bits := code_lengths[0];
-          int k;
+          var k int
           for (k = 1; k < alphabet_size; ++k) {
             if (code_lengths[k] > local_max_bits) {
               local_max_bits = code_lengths[k];
@@ -891,7 +891,7 @@ func ProcessRows(const dec *VP8LDecoder, row int, int wait_for_biggest_batch) {
 // Row-processing for the special case when alpha data contains only one
 // transform (color indexing), and trivial non-green literals.
 static int Is8bOptimizable(const hdr *VP8LMetadata) {
-  int i;
+  var i int
   if (hdr.color_cache_size > 0) return 0;
   // When the Huffman tree contains only one symbol, we can skip the
   // call to ReadSymbol() for red/blue/alpha channels.
@@ -906,7 +906,7 @@ static int Is8bOptimizable(const hdr *VP8LMetadata) {
 
 func AlphaApplyFilter(const alph_dec *ALPHDecoder, int first_row, int last_row, out *uint8, int stride) {
   if (alph_dec.filter != WEBP_FILTER_NONE) {
-    int y;
+    var y int
     var prev_line *uint8 = alph_dec.prev_line;
     assert.Assert(WebPUnfilters[alph_dec.filter] != nil);
     for (y = first_row; y < last_row; ++y) {
@@ -956,7 +956,7 @@ static  uint32 Rotate8b(uint32 V) {
 
 // copy 1, 2 or 4-bytes pattern
 static  func CopySmallPattern8b(const src *uint8, dst *uint8, int length, uint32 pattern) {
-  int i;
+  var i int
   // align 'dst' to 4-bytes boundary. Adjust the pattern along the way.
   while ((uintptr_t)dst & 3) {
     *dst++ = *src++;
@@ -1016,14 +1016,14 @@ Copy:
   if (dist >= length) {  // no overlap . use WEBP_UNSAFE_MEMCPY()
     WEBP_UNSAFE_MEMCPY(dst, src, length * sizeof(*dst));
   } else {
-    int i;
+    var i int
     for (i = 0; i < length; ++i) dst[i] = src[i];
   }
 }
 
 // copy pattern of 1 or 2 uint32's
 static  func CopySmallPattern32b(const src *uint32, dst *uint32, int length, uint64 pattern) {
-  int i;
+  var i int
   if ((uintptr_t)dst & 4) {  // Align 'dst' to 8-bytes boundary.
     *dst++ = *src++;
     pattern = (pattern >> 32) | (pattern << 32);
@@ -1052,7 +1052,7 @@ static  func CopyBlock32b(const dst *uint32, int dist, int length) {
   } else if (dist >= length) {  // no overlap
     WEBP_UNSAFE_MEMCPY(dst, src, length * sizeof(*dst));
   } else {
-    int i;
+    var i int
     for (i = 0; i < length; ++i) dst[i] = src[i];
   }
 }
@@ -1327,7 +1327,7 @@ func ClearTransform(const transform *VP8LTransform) {
 // For security reason, we need to remap the color map to span
 // the total possible bundled values, and not just the num_colors.
 static int ExpandColorMap(int num_colors, const transform *VP8LTransform) {
-  int i;
+  var i int
   final_num_colors := 1 << (8 >> transform.bits);
   var new_color_map *uint32 = (*uint32)WebPSafeMalloc(
       (uint64)final_num_colors, sizeof(*new_color_map));
@@ -1439,7 +1439,7 @@ VP *VP8LDecoder8LNew(){
 // Resets the decoder in its initial state, reclaiming memory.
 // Preserves the dec.status value.
 func VP8LClear(const dec *VP8LDecoder) {
-  int i;
+  var i int
   if (dec == nil) return;
   ClearMetadata(&dec.hdr);
 

@@ -77,7 +77,7 @@ func DoUVTransform(uint32 bits, const src *int16, const dst *uint8) {
 }
 
 func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
-  int j;
+  var j int
   int mb_x;
   mb_y := ctx.mb_y;
   cache_id := ctx.id;
@@ -125,7 +125,7 @@ func ReconstructRow(const dec *VP8Decoder, const ctx *VP8ThreadContext) {
       var top_yuv *VP8TopSamples = dec.yuv_t + mb_x;
       var coeffs *int16 = block.coeffs;
       bits := block.non_zero_y;
-      int n;
+      var n int
 
       if (mb_y > 0) {
         WEBP_UNSAFE_MEMCPY(y_dst - BPS, top_yuv[0].y, 16);
@@ -271,7 +271,7 @@ func FilterRow(const dec *VP8Decoder) {
 
 func PrecomputeFilterStrengths(const dec *VP8Decoder) {
   if (dec.filter_type > 0) {
-    int s;
+    var s int
     var hdr *VP8FilterHeader = &dec.filter_hdr;
     for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
       int i4x4;
@@ -339,7 +339,7 @@ func VP8InitDithering(const options *WebPDecoderOptions, const dec *VP8Decoder) 
     max_amp := (1 << VP8_RANDOM_DITHER_FIX) - 1;
     f := (d < 0) ? 0 : (d > 100) ? max_amp : (d * max_amp / 100);
     if (f > 0) {
-      int s;
+      var s int
       all_amp := 0;
       for (s = 0; s < NUM_MB_SEGMENTS; ++s) {
         var dqm *VP8QuantMatrix = &dec.dqm[s];
@@ -367,7 +367,7 @@ func VP8InitDithering(const options *WebPDecoderOptions, const dec *VP8Decoder) 
 // Convert to range: [-2,2] for dither=50, [-4,4] for dither=100
 func Dither8x8(const rg *VP8Random, dst *uint8, int bps, int amp) {
   uint8 dither[64];
-  int i;
+  var i int
   for (i = 0; i < 8 * 8; ++i) {
     dither[i] = VP8RandomBits2(rg, VP8_DITHER_AMP_BITS + 1, amp);
   }

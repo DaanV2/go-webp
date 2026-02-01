@@ -126,7 +126,7 @@ int QuantizeLevels(const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int
     // once for all before remapping. We also perform the data[] . slot
     // mapping, while at it (afunc one indirection in the final loop).
     uint8 map[NUM_SYMBOLS];
-    int s;
+    var s int
     uint64 n;
     for (s = min_s; s <= max_s; ++s) {
       slot := q_level[s];

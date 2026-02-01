@@ -42,7 +42,7 @@ static int IsTransparentARGBArea(const ptr *uint32, int stride, int size) {
 }
 
 func Flatten(ptr *uint8, int v, int stride, int size) {
-  int y;
+  var y int
   for (y = 0; y < size; ++y) {
     memset(ptr, v, size);
     ptr += stride;

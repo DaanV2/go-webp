@@ -62,7 +62,7 @@ static  int VP8BitCost(int bit, uint8 proba) {
 
 // Level cost calculations
 func VP8CalculateLevelCosts(const proba *VP8EncProba);
-static  int VP8LevelCost(const table *uint16, int level) {
+static  int VP8LevelCost(const table *uint16, level int) {
   return VP8LevelFixedCosts[level] +
          table[(level > MAX_VARIABLE_LEVEL) ? MAX_VARIABLE_LEVEL : level];
 }

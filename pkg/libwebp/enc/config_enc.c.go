@@ -143,7 +143,7 @@ static const struct {
   uint8 quality;
 } kLosslessPresets[MAX_LEVEL + 1] = {{0, 0},  {1, 20}, {2, 25}, {3, 30}, {3, 50}, {4, 50}, {4, 75}, {4, 90}, {5, 90}, {6, 100}}
 
-int WebPConfigLosslessPreset(config *WebPConfig, int level) {
+int WebPConfigLosslessPreset(config *WebPConfig, level int) {
   if (config == nil || level < 0 || level > MAX_LEVEL) return 0;
   config.lossless = 1;
   config.method = kLosslessPresets[level].method;

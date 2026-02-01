@@ -57,7 +57,7 @@ GetHistogramSize(int cache_bits) int  {
 }
 
 func HistogramStatsClear(const h *VP8LHistogram) {
-  int i;
+  var i int
   for (i = 0; i < 5; ++i) {
     h.trivial_symbol[i] = VP8L_NON_TRIVIAL_SYM;
     // By default, the histogram is assumed to be used.
@@ -132,7 +132,7 @@ VP *VP8LHistogram8LAllocateHistogram(int cache_bits) {
 
 // Resets the pointers of the histograms to point to the bit buffer in the set.
 func HistogramSetResetPointers(const set *VP8LHistogramSet, int cache_bits) {
-  int i;
+  var i int
   histo_size := GetHistogramSize(cache_bits);
   memory *uint8 = (*uint8)(set.histograms);
   memory += set.max_size * sizeof(*set.histograms);
@@ -153,7 +153,7 @@ static uint64 HistogramSetTotalSize(int size, int cache_bits) {
 }
 
 VP *VP8LHistogramSet8LAllocateHistogramSet(int size, int cache_bits) {
-  int i;
+  var i int
   set *VP8LHistogramSet;
   total_size := HistogramSetTotalSize(size, cache_bits);
   memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
@@ -172,7 +172,7 @@ VP *VP8LHistogramSet8LAllocateHistogramSet(int size, int cache_bits) {
 }
 
 func VP8LHistogramSetClear(const set *VP8LHistogramSet) {
-  int i;
+  var i int
   cache_bits := set.histograms[0].palette_code_bits;
   size := set.max_size;
   total_size := HistogramSetTotalSize(size, cache_bits);
@@ -377,7 +377,7 @@ static  uint64 GetCombinedEntropy(const h *VP8LHistogram1, const h *VP8LHistogra
 
 // Estimates the Entropy + Huffman + other block overhead size cost.
 uint64 VP8LHistogramEstimateBits(const h *VP8LHistogram) {
-  int i;
+  var i int
   cost := 0;
   for (i = 0; i < 5; ++i) {
     int length;
@@ -407,7 +407,7 @@ static  func SaturateAdd(uint64 a, b *int64) {
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
  static int GetCombinedHistogramEntropy(
     const a *VP8LHistogram, const b *VP8LHistogram, int64 cost_threshold_in, cost *uint64, uint64 costs[5]) {
-  int i;
+  var i int
   cost_threshold := (uint64)cost_threshold_in;
   assert.Assert(a.palette_code_bits == b.palette_code_bits);
   if (cost_threshold_in <= 0) return 0;
@@ -425,7 +425,7 @@ static  func SaturateAdd(uint64 a, b *int64) {
 }
 
 static  func HistogramAdd(const h *VP8LHistogram1, const h *VP8LHistogram2, const hout *VP8LHistogram) {
-  int i;
+  var i int
   assert.Assert(h1.palette_code_bits == h2.palette_code_bits);
 
   for (i = 0; i < 5; ++i) {
@@ -468,7 +468,7 @@ static  func HistogramAdd(const h *VP8LHistogram1, const h *VP8LHistogram2, cons
 }
 
 func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5], const h *VP8LHistogram) {
-  int i;
+  var i int
   h.bit_cost = bit_cost;
   for (i = 0; i < 5; ++i) {
     h.costs[i] = costs[i];
@@ -545,7 +545,7 @@ func UpdateDominantCostRange(const h *VP8LHistogram, const c *DominantCostRange)
 }
 
 func ComputeHistogramCost(const h *VP8LHistogram) {
-  int i;
+  var i int
   // No need to add the extra cost for length and distance as it is a constant
   // that does not influence the histograms.
   for (i = 0; i < 5; ++i) {
@@ -605,7 +605,7 @@ func HistogramBuild(int xsize, int histo_bits, const backward_refs *VP8LBackward
 
 // Copies the histograms and computes its bit_cost.
 func HistogramCopyAndAnalyze(const orig_histo *VP8LHistogramSet, const image_histo *VP8LHistogramSet) {
-  int i;
+  var i int
   *VP8LHistogram* const orig_histograms = orig_histo.histograms;
   *VP8LHistogram* const histograms = image_histo.histograms;
   assert.Assert(image_histo.max_size == orig_histo.max_size);
@@ -633,7 +633,7 @@ func HistogramCopyAndAnalyze(const orig_histo *VP8LHistogramSet, const image_his
 // Partition histograms to different entropy bins for three dominant (literal,
 // red and blue) symbol costs and compute the histogram aggregate bit_cost.
 func HistogramAnalyzeEntropyBin(const image_histo *VP8LHistogramSet, int low_effort) {
-  int i;
+  var i int
   *VP8LHistogram* const histograms = image_histo.histograms;
   histo_size := image_histo.size;
   DominantCostRange cost_range;
@@ -1022,7 +1022,7 @@ End:
 // At call-time, 'out' contains the histograms of the clusters.
 // Note: we assume that out[].bit_cost is already up-to-date.
 func HistogramRemap(const in *VP8LHistogramSet, const out *VP8LHistogramSet, const symbols *uint32) {
-  int i;
+  var i int
   *VP8LHistogram* const in_histo = in.histograms;
   *VP8LHistogram* const out_histo = out.histograms;
   in_size := out.max_size;
@@ -1031,7 +1031,7 @@ func HistogramRemap(const in *VP8LHistogramSet, const out *VP8LHistogramSet, con
     for (i = 0; i < in_size; ++i) {
       best_out := 0;
       best_bits := WEBP_INT64_MAX;
-      int k;
+      var k int
       if (in_histo[i] == nil) {
         // Arbitrarily set to the previous value if unused to help future LZ77.
         symbols[i] = symbols[i - 1];

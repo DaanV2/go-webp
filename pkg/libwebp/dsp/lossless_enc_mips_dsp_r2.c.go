@@ -166,7 +166,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
   gtb := (green_to_blue << 16) | (green_to_blue & 0xffff);
   mask := uint(0xff00ff);
   while (tile_height-- > 0) {
-    int x;
+    var x int
     var p_argb *uint32 = argb;
     argb += stride;
     for (x = 0; x < (tile_width >> 1); ++x) {
@@ -209,7 +209,7 @@ func CollectColorRedTransforms_MIPSdspR2(
     const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
   gtr := (green_to_red << 16) | (green_to_red & 0xffff);
   while (tile_height-- > 0) {
-    int x;
+    var x int
     var p_argb *uint32 = argb;
     argb += stride;
     for (x = 0; x < (tile_width >> 1); ++x) {
