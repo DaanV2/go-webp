@@ -111,7 +111,7 @@ static WebPEncodingError PutVP8Header(const pic *WebPPicture, uint64 vp8_size) {
 
 static WebPEncodingError PutVP8FrameHeader(const pic *WebPPicture, int profile, uint64 size0) {
   uint8 vp8_frm_hdr[VP8_FRAME_HEADER_SIZE];
-  uint32 bits;
+  bits uint32;
 
   if (size0 >= VP8_MAX_PARTITION0_SIZE) {  // partition #0 is too big to fit
     return VP8_ENC_ERROR_PARTITION0_OVERFLOW;

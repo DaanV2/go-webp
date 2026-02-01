@@ -116,10 +116,10 @@ func VP8BitReaderSetBuffer(const br *VP8BitReader, const *uint8  start, size uin
 func VP8RemapBitReader(const br *VP8BitReader, ptrdiff_t offset);
 
 // return the next value made of 'num_bits' bits
-uint32 VP8GetValue(const br *VP8BitReader, int num_bits, const byte label[]);
+uint32 VP8GetValue(const br *VP8BitReader, num_bits int, const byte label[]);
 
 // return the next value with sign-extension.
-int32 VP8GetSignedValue(const br *VP8BitReader, int num_bits, const byte label[]);
+int32 VP8GetSignedValue(const br *VP8BitReader, num_bits int, const byte label[]);
 
 // bit_reader_inl.h will implement the following methods:
 //   static  int VP8GetBit(const br *VP8BitReader, int prob, ...)

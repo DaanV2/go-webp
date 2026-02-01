@@ -20,29 +20,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-
-
-const HUFFMAN_TABLE_BITS =8
-const HUFFMAN_TABLE_MASK =((1 << HUFFMAN_TABLE_BITS) - 1)
-
-const LENGTHS_TABLE_BITS =7
-const LENGTHS_TABLE_MASK =((1 << LENGTHS_TABLE_BITS) - 1)
-
-// Huffman lookup table entry
-type HuffmanCode struct {
-  uint8 bits;    // number of bits used for this symbol
-  uint16 value;  // symbol value or table offset
-} ;
-
-// long version for holding 32b values
-type HuffmanCode32 struct {
-  int bits;        // number of bits used for this symbol, // or an impossible value if not a literal code.
-  uint32 value;  // 32b packed ARGB value if literal, // or non-literal symbol otherwise
-} ;
-
 // Contiguous memory segment of HuffmanCodes.
-typedef type HuffmanTablesSegment struct {
-  WEBP_COUNTED_BY_OR_nil *HuffmanCode(size) start;
+type HuffmanTablesSegment struct {
+   startWEBP_COUNTED_BY_OR_nil *HuffmanCode(size)
   // Pointer to where we are writing into the segment. Starts at 'start' and
   // cannot go beyond 'start' + 'size'.
   WEBP_UNSAFE_INDEXABLE curr_table *HuffmanCode;

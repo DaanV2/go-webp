@@ -284,7 +284,7 @@ func VP8LPutBitsFlushBits(const bw *VP8LBitWriter, used *int, vp8l_atype_t* bits
 }
 
 #if VP8L_WRITER_BITS == 16
-func VP8LPutBitsInternal(const bw *VP8LBitWriter, uint32 bits, int n_bits) {
+func VP8LPutBitsInternal(const bw *VP8LBitWriter, bits uint32, int n_bits) {
   vp8l_atype_t lbits = bw.bits;
   used := bw.used;
   assert.Assert(n_bits <= VP8L_WRITER_MAX_BITS);

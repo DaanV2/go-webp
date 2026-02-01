@@ -22,3 +22,15 @@ type HuffmanTree struct {
 	pool_index_left  int    // Index for the left sub-tree.
 	pool_index_right int    // Index for the right sub-tree.
 }
+
+// Huffman lookup table entry
+type HuffmanCode struct {
+	bits  uint8  // number of bits used for this symbol
+	value uint16 // symbol value or table offset
+}
+
+// long version for holding 32b values
+type HuffmanCode32 struct {
+	bits  int    // number of bits used for this symbol, // or an impossible value if not a literal code.
+	value uint32 // 32b packed ARGB value if literal, // or non-literal symbol otherwise
+}

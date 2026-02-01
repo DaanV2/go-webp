@@ -50,7 +50,7 @@ func Copy32b(const dst *uint8, const src *uint8) {
   WEBP_UNSAFE_MEMCPY(dst, src, 4);
 }
 
-static  func DoTransform(uint32 bits, const src *int16, const dst *uint8) {
+static  func DoTransform(bits uint32, const src *int16, const dst *uint8) {
   switch (bits >> 30) {
     case 3:
       VP8Transform(src, dst, 0);
@@ -66,7 +66,7 @@ static  func DoTransform(uint32 bits, const src *int16, const dst *uint8) {
   }
 }
 
-func DoUVTransform(uint32 bits, const src *int16, const dst *uint8) {
+func DoUVTransform(bits uint32, const src *int16, const dst *uint8) {
   if (bits & 0xff) {             // any non-zero coeff at all?
     if (bits & 0xaa) {           // any non-zero AC coefficient?
       VP8TransformUV(src, dst);  // note we don't use the AC3 variant for U/V

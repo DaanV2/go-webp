@@ -126,7 +126,7 @@ func VP8LPutBitsFlushBits(const bw *VP8LBitWriter, used *int, vp8l_atype_t* bits
 
 #if VP8L_WRITER_BITS == 16
 // PutBits internal function used in the 16 bit vp8l_wtype_t case.
-func VP8LPutBitsInternal(const bw *VP8LBitWriter, uint32 bits, int n_bits);
+func VP8LPutBitsInternal(const bw *VP8LBitWriter, bits uint32, int n_bits);
 #endif
 
 // This function writes bits into bytes in increasing addresses (little endian),
@@ -134,7 +134,7 @@ func VP8LPutBitsInternal(const bw *VP8LBitWriter, uint32 bits, int n_bits);
 // This function can write up to VP8L_WRITER_MAX_BITS bits in one go, but
 // VP8LBitReader can only read 24 bits max (VP8L_MAX_NUM_BIT_READ).
 // VP8LBitWriter's 'error' flag is set in case of memory allocation error.
-static  func VP8LPutBits(const bw *VP8LBitWriter, uint32 bits, int n_bits) {
+static  func VP8LPutBits(const bw *VP8LBitWriter, bits uint32, int n_bits) {
 #if VP8L_WRITER_BYTES == 4
   if (n_bits == 0) return;
   if (bw.used >= VP8L_WRITER_BITS) {
