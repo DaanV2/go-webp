@@ -268,7 +268,7 @@ func WebPCopyPixels(const src *WebPPicture, const dst *WebPPicture) {
 //------------------------------------------------------------------------------
 
 int WebPGetColorPalette(
-    const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32(MAX_PALETTE_SIZE) palette) {
+    const pic *WebPPicture, const  *uint32(MAX_PALETTE_SIZE) palette) {
   return GetColorPalette(pic, palette);
 }
 

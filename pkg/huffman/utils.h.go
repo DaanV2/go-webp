@@ -22,7 +22,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Contiguous memory segment of HuffmanCodes.
 type HuffmanTablesSegment struct {
-   startWEBP_COUNTED_BY_OR_nil *HuffmanCode(size)
+   start  *HuffmanCode(size)
   // Pointer to where we are writing into the segment. Starts at 'start' and
   // cannot go beyond 'start' + 'size'.
   WEBP_UNSAFE_INDEXABLE curr_table *HuffmanCode;

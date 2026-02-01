@@ -99,7 +99,7 @@ func PrepareMapToPalette(palette []uint32,  num_colors uint32, sorted []uint32, 
 const COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
 const COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
 
-int GetColorPalette(const pic *WebPPicture, const WEBP_COUNTED_BY_OR_nil *uint32(MAX_PALETTE_SIZE)
+int GetColorPalette(const pic *WebPPicture, const  *uint32(MAX_PALETTE_SIZE)
                         palette) {
   var i int
   int x, y;

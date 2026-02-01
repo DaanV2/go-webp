@@ -70,7 +70,7 @@ type SmoothParams struct {
   int min_level_dist;  // smallest distance between two consecutive levels
 
   // size = 1 + 2*LUT_SIZE  . ~4k memory
-  WEBP_COUNTED_BY_OR_nil *int16(CORRECTION_LUT_SIZE) correction;
+   *int16(CORRECTION_LUT_SIZE) correction;
 } ;
 
 //------------------------------------------------------------------------------

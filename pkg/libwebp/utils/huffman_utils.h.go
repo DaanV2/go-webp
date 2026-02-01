@@ -42,7 +42,7 @@ type HuffmanCode32 struct {
 
 // Contiguous memory segment of HuffmanCodes.
 typedef type HuffmanTablesSegment struct {
-  WEBP_COUNTED_BY_OR_nil *HuffmanCode(size) start;
+   *HuffmanCode(size) start;
   // Pointer to where we are writing into the segment. Starts at 'start' and
   // cannot go beyond 'start' + 'size'.
   WEBP_UNSAFE_INDEXABLE curr_table *HuffmanCode;
