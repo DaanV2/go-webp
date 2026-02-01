@@ -1,3 +1,4 @@
+// Entropy encoding (Huffman) for webp lossless.
 package huffman
 
 // Copyright 2011 Google Inc. All Rights Reserved.
@@ -7,30 +8,20 @@ package huffman
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Author: Jyrki Alakuijala (jyrki@google.com)
-//
-// Entropy encoding (Huffman) for webp lossless.
 
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
 
 // -----------------------------------------------------------------------------
 // Util function to optimize the symbol map for RLE coding
 
 // Heuristics for selecting the stride ranges to collapse.
-func ValuesShouldBeCollapsedToStrideAverage(a, b int) int {
-  return abs(a - b) < 4;
+func ValuesShouldBeCollapsedToStrideAverage(a, b int) bool {
+  return stdlib.Abs(a - b) < 4;
 }
 
 // Change the population counts in a way that the consequent
@@ -119,9 +110,7 @@ func OptimizeHuffmanForRle( length int , good_for_rle  *uint8, counts *uint32) {
 
 // A comparer function for two Huffman trees: sorts first by 'total count'
 // (more comes first), and then by 'value' (more comes first).
-func CompareHuffmanTrees(ptr1 , ptr2 *HuffmanTree) int {
-  var t1 *HuffmanTree = ptr1;
-  var t2 *HuffmanTree = ptr2;
+func CompareHuffmanTrees(t1 , t2 *HuffmanTree) int {
   if (t1.total_count > t2.total_count) {
     return -1;
   } else if (t1.total_count < t2.total_count) {
@@ -205,8 +194,8 @@ func GenerateOptimalTree(histogram *uint32, histogram_size int , tree *HuffmanTr
 
     if (tree_size > 1) {  // Normal case.
       tree_pool_size := 0;
-      while (tree_size > 1) {  // Finish when we have only one root.
-        uint32 count;
+      for ;;tree_size > 1 {  // Finish when we have only one root.
+        var count uint32
         tree_pool[tree_pool_size] = tree[tree_size - 1]
 		tree_pool_size++
         tree_pool[tree_pool_size] = tree[tree_size - 2]
@@ -254,16 +243,15 @@ func GenerateOptimalTree(histogram *uint32, histogram_size int , tree *HuffmanTr
 // -----------------------------------------------------------------------------
 // Coding of the Huffman tree values
 
-static *HuffmanTreeToken
-CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, prev_value int) {
+func CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, prev_value int) *HuffmanTreeToken {
   assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH);
   if (value != prev_value) {
     tokens.code = value;
     tokens.extra_bits = 0;
     tokens++
-    --repetitions;
+    repetitions--
   }
-  while (repetitions >= 1) {
+  for ;;repetitions >= 1 {
     if (repetitions < 3) {
       var i int
       for i = 0; i < repetitions; i++ {
@@ -287,9 +275,8 @@ CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, prev_va
   return tokens;
 }
 
-static *HuffmanTreeToken
-CodeRepeatedZeros(repetitions int, tokens *HuffmanTreeToken) {
-  while (repetitions >= 1) {
+func CodeRepeatedZeros(repetitions int, tokens *HuffmanTreeToken) *HuffmanTreeToken {
+  for ;;repetitions >= 1 {
     if (repetitions < 3) {
       var i int
       for i = 0; i < repetitions; i++ {
@@ -328,10 +315,10 @@ func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeT
   prev_value := 8;  // 8 is the initial value for rle.
   i := 0;
   assert.Assert(tokens != nil);
-  while (i < depth_size) {
+  for ;;i < depth_size {
     value := tree.code_lengths[i];
     k := i + 1;
-    runs int;
+    var runs int
     for (k < depth_size && tree.code_lengths[k] == value) {k++}
     runs = k - i;
     if (value == 0) {
@@ -344,24 +331,24 @@ func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeT
     i += runs;
     assert.Assert(current_token <= ending_token);
   }
-  (void)ending_token;  // suppress 'unused variable' warning
+//   (void)ending_token;  // suppress 'unused variable' warning
   return (int)(current_token - starting_token);
 }
 
 // -----------------------------------------------------------------------------
 
 // Pre-reversed 4-bit values.
-const kReversedBits = [16]uint8{0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe, 0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf}
+var kReversedBits = [16]uint8{0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe, 0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf}
 
 func ReverseBits(num_bits int, bits uint32) uint32 {
   retval := 0
   i := 0
   for i < num_bits {
     i += 4
-    retval |= kReversedBits[bits & 0xf] << (MAX_ALLOWED_CODE_LENGTH + 1 - i)
+    retval |= kReversedBits[bits & 0xf] << (constants.MAX_ALLOWED_CODE_LENGTH + 1 - i)
     bits >>= 4
   }
-  retval >>= (MAX_ALLOWED_CODE_LENGTH + 1 - num_bits)
+  retval >>= (constants.MAX_ALLOWED_CODE_LENGTH + 1 - num_bits)
   return retval
 }
 
@@ -370,8 +357,8 @@ func ConvertBitDepthsToSymbols(/* const */ tree *HuffmanTreeCode) {
   // 0 bit-depth means that the symbol does not exist.
 	var i int
 	var len int
-	var next_code[MAX_ALLOWED_CODE_LENGTH + 1] uint32
-	var depth_count[MAX_ALLOWED_CODE_LENGTH + 1] int = {0};
+	var next_code [constants.MAX_ALLOWED_CODE_LENGTH + 1]uint32
+	var depth_count [constants.MAX_ALLOWED_CODE_LENGTH + 1]int = [constants.MAX_ALLOWED_CODE_LENGTH + 1]int{0};
 
   assert.Assert(tree != nil);
   len = tree.num_symbols;

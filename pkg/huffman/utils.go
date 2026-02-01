@@ -25,13 +25,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 
-// Huffman data read via DecodeImageStream is represented in two (red and green)
-// bytes.
-const MAX_HTREE_GROUPS =0x10000
 
-VP *HTreeGroup8LHtreeGroupsNew(int num_htree_groups) {
-  const htree_groups *HTreeGroup =
-      (*HTreeGroup)WebPSafeMalloc(num_htree_groups, sizeof(*htree_groups));
+
+// Creates the instance of HTreeGroup with specified number of tree-groups.
+func HTreeGroup8LHtreeGroupsNew(int num_htree_groups) *VP {
+  var htree_groups *HTreeGroup = (*HTreeGroup)WebPSafeMalloc(num_htree_groups, sizeof(*htree_groups));
   if (htree_groups == nil) {
     return nil;
   }
@@ -39,6 +37,7 @@ VP *HTreeGroup8LHtreeGroupsNew(int num_htree_groups) {
   return htree_groups;
 }
 
+// Releases the memory allocated for HTreeGroup.
 func VP8LHtreeGroupsFree(const htree_groups *HTreeGroup) {
   if (htree_groups != nil) {
     WebPSafeFree(htree_groups);
@@ -47,18 +46,17 @@ func VP8LHtreeGroupsFree(const htree_groups *HTreeGroup) {
 
 // Returns reverse(reverse(key, len) + 1, len), where reverse(key, len) is the
 // bit-wise reversal of the len least significant bits of key.
-static  uint32 GetNextKey(uint32 key, int len) {
+func GetNextKey(key uint32 , len int)  uint32 {
   step := 1 << (len - 1);
-  while (key & step) {
+  for ;;(key & step) != 0 {
     step >>= 1;
   }
-  return step ? (key & (step - 1)) + step : key;
+  return tenary.If(step, (key & (step - 1)) + step, key);
 }
 
 // Stores code in table[0], table[step], table[2*step], ..., table[end-step].
 // Assumes that end is an integer multiple of step.
-static  func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +
-                                                                    1) table, int step, int end, HuffmanCode code) {
+func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +1) table, step int , end int ,  code HuffmanCode) {
   current_end := end;
   assert.Assert(current_end % step == 0);
   for {
@@ -70,10 +68,9 @@ static  func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +
 // Returns the table width of the next 2nd level table. count is the histogram
 // of bit lengths for the remaining symbols, len is the code length of the next
 // processed symbol
-static  int NextTableBitSize(
-    const WEBP_COUNTED_BY *int(MAX_ALLOWED_CODE_LENGTH + 1) count, int len, int root_bits) {
+func NextTableBitSize(WEBP_COUNTED_BY *int(MAX_ALLOWED_CODE_LENGTH + 1) count, int len, int root_bits) int {
   left := 1 << (len - root_bits);
-  while (len < MAX_ALLOWED_CODE_LENGTH) {
+  for ;; len < MAX_ALLOWED_CODE_LENGTH {
     left -= count[len];
     if (left <= 0) break;
     len++
@@ -84,22 +81,20 @@ static  int NextTableBitSize(
 
 // sorted[code_lengths_size] is a pre-allocated array for sorting symbols
 // by code length.
-static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits, /* const */ int code_lengths[], int code_lengths_size, uint16 (code_lengths_size)
-                                 sorted[]) {
+func BuildHuffmanTable(/* const */ root_table *HuffmanCode, root_bits int , /* const */  code_lengths []int, code_lengths_size int ,  sorted []uint16 ) int {
   // next available space in table
-  table *HuffmanCode = root_table;
+  var table *HuffmanCode = root_table;
   total_size := 1 << root_bits;  // total size root table + 2nd level table
   int len;                          // current code length
   int symbol;                       // symbol index in original or sorted table
   // number of codes of each length:
-  int count[MAX_ALLOWED_CODE_LENGTH + 1] = {0}
+  var  count [MAX_ALLOWED_CODE_LENGTH + 1]int = {0}
   // offsets in sorted table for each length:
-  int offset[MAX_ALLOWED_CODE_LENGTH + 1];
+  var offset [MAX_ALLOWED_CODE_LENGTH + 1]int;
 
   assert.Assert(code_lengths_size != 0);
   assert.Assert(code_lengths != nil);
-  assert.Assert((root_table != nil && sorted != nil) ||
-         (root_table == nil && sorted == nil));
+  assert.Assert((root_table != nil && sorted != nil) || (root_table == nil && sorted == nil));
   assert.Assert(root_bits > 0);
 
   // Build histogram of code lengths.
@@ -225,18 +220,17 @@ static int BuildHuffmanTable(/* const */ root_table *HuffmanCode, int root_bits,
   return total_size;
 }
 
-// Maximum code_lengths_size is 2328 (reached for 11-bit color_cache_bits).
-// More commonly, the value is around ~280.
-const MAX_CODE_LENGTHS_SIZE =\
-  ((1 << MAX_CACHE_BITS) + NUM_LITERAL_CODES + NUM_LENGTH_CODES)
-// Cut-off value for switching between heap and stack allocation.
-const SORTED_SIZE_CUTOFF =512
-int VP8LBuildHuffmanTable(root_table *HuffmanTables, int root_bits, int 
-                              code_lengths[], int code_lengths_size) {
-  total_size :=
-      BuildHuffmanTable(nil, root_bits, code_lengths, code_lengths_size, nil);
+
+
+// Builds Huffman lookup table assuming code lengths are in symbol order.
+// The 'code_lengths' is pre-allocated temporary memory buffer used for creating
+// the huffman table.
+// Returns built table size or 0 in case of error (invalid tree or
+// memory error).
+func VP8LBuildHuffmanTable(root_table *HuffmanTables,  root_bits int,  code_lengths []int,  code_lengths_size int) int {
+  total_size := BuildHuffmanTable(nil, root_bits, code_lengths, code_lengths_size, nil);
   assert.Assert(code_lengths_size <= MAX_CODE_LENGTHS_SIZE);
-  if (total_size == 0 || root_table == nil) return total_size;
+  if (total_size == 0 || root_table == nil) {return total_size;}
 
   if (root_table.curr_segment.curr_table + total_size >=
       root_table.curr_segment.start + root_table.curr_segment.size) {
@@ -244,7 +238,7 @@ int VP8LBuildHuffmanTable(root_table *HuffmanTables, int root_bits, int
     // The available part of root_table.curr_segment is left unused because we
     // need a contiguous buffer.
     segment_size := root_table.curr_segment.size;
-    struct next *HuffmanTablesSegment =
+    next *HuffmanTablesSegment =
         (*HuffmanTablesSegment)WebPSafeMalloc(1, sizeof(*next));
     if (next == nil) return 0;
     // Fill the new segment.
@@ -252,9 +246,8 @@ int VP8LBuildHuffmanTable(root_table *HuffmanTables, int root_bits, int
     // allocate a big chunk to prevent more allocations later. 'segment_size' is
     // therefore chosen (any other arbitrary value could be chosen).
     {
-      next_size :=
-          total_size > tenary.If(segment_size, total_size, segment_size);
-      const next_start *HuffmanCode =
+      next_size := tenary.If(total_size > segment_size, total_size, segment_size);
+      var next_start *HuffmanCode =
           (*HuffmanCode)WebPSafeMalloc(next_size, sizeof(*next_start));
       if (next_start == nil) {
         WebPSafeFree(next);
@@ -271,7 +264,7 @@ int VP8LBuildHuffmanTable(root_table *HuffmanTables, int root_bits, int
   }
   if (code_lengths_size <= SORTED_SIZE_CUTOFF) {
     // use local stack-allocated array.
-    uint16 sorted[SORTED_SIZE_CUTOFF];
+    var sorted [SORTED_SIZE_CUTOFF]uint16
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
     BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
   } else {  // rare case. Use heap allocation.
@@ -286,7 +279,9 @@ int VP8LBuildHuffmanTable(root_table *HuffmanTables, int root_bits, int
   return total_size;
 }
 
-int VP8LHuffmanTablesAllocate(int size, huffman_tables *HuffmanTables) {
+// Allocates a HuffmanTables with 'size' contiguous HuffmanCodes. Returns 0 on
+// memory allocation error, 1 otherwise.
+func VP8LHuffmanTablesAllocate(int size, huffman_tables *HuffmanTables) int {
   // Have 'segment' point to the first segment for now, 'root'.
   var root *HuffmanTablesSegment = &huffman_tables.root;
   huffman_tables.curr_segment = root;
@@ -308,7 +303,7 @@ int VP8LHuffmanTablesAllocate(int size, huffman_tables *HuffmanTables) {
 }
 
 func VP8LHuffmanTablesDeallocate(const huffman_tables *HuffmanTables) {
-  HuffmanTablesSegment *current, *next;
+  var current, next *HuffmanTablesSegment;
   if (huffman_tables == nil) return;
   // Free the root node.
   current = &huffman_tables.root;
