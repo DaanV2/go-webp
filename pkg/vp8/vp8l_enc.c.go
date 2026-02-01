@@ -1229,7 +1229,7 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
   // TODO(skal): this tmp buffer is not needed if VP8LBundleColorMap() can be
   // made to work in-place.
   var tmp_row *uint8 = (*uint8)WebPSafeMalloc(width, sizeof(*tmp_row));
-  int x, y;
+  var x, y int
 
   if (tmp_row == nil) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
@@ -1238,7 +1238,7 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
   if (palette_size < APPLY_PALETTE_GREEDY_MAX) {
     APPLY_PALETTE_FOR(SearchColorGreedy(palette, palette_size, pix));
   } else {
-    int i, j;
+    var i, j int
     uint16 buffer[PALETTE_INV_SIZE];
     uint32 (hash_functions *const[])(uint32) = {
         ApplyPaletteHash0, ApplyPaletteHash1, ApplyPaletteHash2}
@@ -1704,11 +1704,11 @@ Error:
 // Returns 0 if config or picture is nil or picture doesn't have valid argb
 // input.
 int VP8LEncodeImage(const config *WebPConfig, /*const*/ picture *WebPPicture) {
-  int width, height;
-  int has_alpha;
-  uint64 coded_size;
+  var  width, height int
+  var  has_alpha int
+  var coded_size uint64
   percent := 0;
-  int initial_size;
+  var initial_size int;
   VP8LBitWriter bw;
 
   if (picture == nil) return 0;

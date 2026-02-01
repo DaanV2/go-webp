@@ -36,7 +36,7 @@ const kModeBpp = [MODE_LAST]uint8{3, 4, 3, 4, 4, 2, 2,  //
 // Convert to an integer to handle both the unsigned/signed enum cases
 // without the need for casting to remove type limit warnings.
 // Check that webp_csp_mode is within the bounds of WEBP_CSP_MODE.
-func IsValidColorspace(int webp_csp_mode) int {
+func IsValidColorspace(webp_csp_mode int) int {
   return (webp_csp_mode >= MODE_RGB && webp_csp_mode < MODE_LAST)
 }
 
@@ -183,7 +183,7 @@ VP8StatusCode WebPFlipBuffer(const buffer *WebPDecBuffer) {
   return VP8_STATUS_OK;
 }
 
-VP8StatusCode WebPAllocateDecBuffer(int width, int height, /*const*/ options *WebPDecoderOptions, /*const*/ buffer *WebPDecBuffer) {
+VP8StatusCode WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoderOptions, /*const*/ buffer *WebPDecBuffer) {
   VP8StatusCode status;
   if (buffer == nil || width <= 0 || height <= 0) {
     return VP8_STATUS_INVALID_PARAM;
@@ -232,7 +232,7 @@ VP8StatusCode WebPAllocateDecBuffer(int width, int height, /*const*/ options *We
 //------------------------------------------------------------------------------
 // constructors / destructors
 
-int WebPInitDecBufferInternal(buffer *WebPDecBuffer, int version) {
+int WebPInitDecBufferInternal(buffer *WebPDecBuffer, version int) {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION)) {
     return 0;  // version mismatch
   }

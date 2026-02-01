@@ -373,8 +373,8 @@ func DecodeWebPHeaders(/* const */ idec *WebPIDecoder) VP8StatusCode {
 static VP8StatusCode DecodeVP8FrameHeader(const idec *WebPIDecoder) {
   var data *uint8 = idec.mem.buf + idec.mem.start;
   curr_size := MemDataSize(&idec.mem);
-  int width, height;
-  bits uint32;
+  var width, height int
+  var bits uint32;
 
   if (curr_size < VP8_FRAME_HEADER_SIZE) {
     // Not enough data bytes to extract VP8 Frame Header.

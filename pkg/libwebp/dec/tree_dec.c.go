@@ -133,7 +133,7 @@ func ParseIntraMode(const br *VP8BitReader, /*const*/ dec *VP8Decoder, int mb_x)
 }
 
 int VP8ParseIntraModeRow(const br *VP8BitReader, /*const*/ dec *VP8Decoder) {
-  int mb_x;
+  var mb_x int
   for mb_x = 0; mb_x < dec.mb_w; mb_x++ {
     ParseIntraMode(br, dec, mb_x);
   }
@@ -155,7 +155,7 @@ static const uint8 kBands[16 + 1] = {
 
 func VP8ParseProba(const br *VP8BitReader, /*const*/ dec *VP8Decoder) {
   var proba *VP8Proba = &dec.proba;
-  int t, b, c, p;
+  var t, b, c, p int
   for t = 0; t < NUM_TYPES; t++ {
     for b = 0; b < NUM_BANDS; b++ {
       for c = 0; c < NUM_CTX; c++ {

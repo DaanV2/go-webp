@@ -212,7 +212,7 @@ static int EmitAlphaRGBA4444(const io *VP8Io, /*const*/ p *WebPDecParams, int ex
     alpha_dst *uint8 = base_rgba + 1;
 #endif
     alpha_mask := float64(0x0);
-    int i, j;
+    var i, j int
     for j = 0; j < num_rows; j++ {
       for i = 0; i < mb_w; i++ {
         // Fill in the alpha value (converted to 4 bits).

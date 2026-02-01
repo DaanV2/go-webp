@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 static const uint16 kScan[16] = {
     0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS, 0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS, 0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS, 0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS}
 
-static int CheckMode(int mb_x, int mb_y, int mode) {
+static int CheckMode(mb_x int, mb_y int, mode int) {
   if (mode == B_DC_PRED) {
     if (mb_x == 0) {
       return (mb_y == 0) ? B_DC_PRED_NOTOPLEFT : B_DC_PRED_NOLEFT;
@@ -78,7 +78,7 @@ func DoUVTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
 
 func ReconstructRow(const dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext) {
   var j int
-  int mb_x;
+  mb_x int;
   mb_y := ctx.mb_y;
   cache_id := ctx.id;
   var y_dst *uint8 = dec.yuv_b + Y_OFF;
@@ -207,7 +207,7 @@ func ReconstructRow(const dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext) {
 //                 U/V, so it's 8 samples total (because of the 2x upsampling).
 static const uint8 kFilterExtraRows[3] = {0, 2, 8}
 
-func DoFilter(const dec *VP8Decoder, int mb_x, int mb_y) {
+func DoFilter(const dec *VP8Decoder, mb_x int, mb_y int) {
   var ctx *VP8ThreadContext = &dec.thread_ctx;
   cache_id := ctx.id;
   y_bps := dec.cache_y_stride;
@@ -258,7 +258,7 @@ func DoFilter(const dec *VP8Decoder, int mb_x, int mb_y) {
 
 // Filter the decoded macroblock row (if needed)
 func FilterRow(const dec *VP8Decoder) {
-  int mb_x;
+  mb_x int;
   mb_y := dec.thread_ctx.mb_y;
   assert.Assert(dec.thread_ctx.filter_row);
   for mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; mb_x++ {
@@ -276,7 +276,7 @@ func PrecomputeFilterStrengths(const dec *VP8Decoder) {
     for s = 0; s < NUM_MB_SEGMENTS; s++ {
       int i4x4;
       // First, compute the initial level
-      int base_level;
+      base_level int;
       if (dec.segment_hdr.use_segment) {
         base_level = dec.segment_hdr.filter_strength[s];
         if (!dec.segment_hdr.absolute_delta) {
@@ -365,7 +365,7 @@ func VP8InitDithering(const options *WebPDecoderOptions, /*const*/ dec *VP8Decod
 }
 
 // Convert to range: [-2,2] for dither=50, [-4,4] for dither=100
-func Dither8x8(const rg *VP8Random, dst *uint8, int bps, int amp) {
+func Dither8x8(const rg *VP8Random, dst *uint8, bps int, amp int) {
   uint8 dither[64];
   var i int
   for i = 0; i < 8 * 8; i++ {
@@ -375,7 +375,7 @@ func Dither8x8(const rg *VP8Random, dst *uint8, int bps, int amp) {
 }
 
 func DitherRow(const dec *VP8Decoder) {
-  int mb_x;
+  mb_x int;
   assert.Assert(dec.dither);
   for mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; mb_x++ {
     var ctx *VP8ThreadContext = &dec.thread_ctx;
@@ -669,7 +669,7 @@ static int InitThreadContext(const dec *VP8Decoder) {
 
 // Return the multi-threading method to use (0=off), depending
 // on options and bitstream size. Only for lossy decoding.
-int VP8GetThreadMethod(const options *WebPDecoderOptions, /*const*/ headers *WebPHeaderStructure, int width, int height) {
+int VP8GetThreadMethod(const options *WebPDecoderOptions, /*const*/ headers *WebPHeaderStructure, width int, height int) {
   if (options == nil || options.use_threads == 0) {
     return 0;
   }

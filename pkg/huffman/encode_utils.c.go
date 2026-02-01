@@ -256,7 +256,7 @@ func GenerateOptimalTree(histogram *uint32, histogram_size int , tree *HuffmanTr
 // Coding of the Huffman tree values
 
 static *HuffmanTreeToken
-CodeRepeatedValues(int repetitions, tokens *HuffmanTreeToken, int value, int prev_value) {
+CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, prev_value int) {
   assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH);
   if (value != prev_value) {
     tokens.code = value;
@@ -289,7 +289,7 @@ CodeRepeatedValues(int repetitions, tokens *HuffmanTreeToken, int value, int pre
 }
 
 static *HuffmanTreeToken
-CodeRepeatedZeros(int repetitions, tokens *HuffmanTreeToken) {
+CodeRepeatedZeros(repetitions int, tokens *HuffmanTreeToken) {
   while (repetitions >= 1) {
     if (repetitions < 3) {
       var i int
@@ -320,7 +320,7 @@ CodeRepeatedZeros(int repetitions, tokens *HuffmanTreeToken) {
 }
 
 int VP8LCreateCompressedHuffmanTree(
-    const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, int max_tokens) {
+    const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, max_tokens int) {
   current_token *HuffmanTreeToken = tokens;
   var starting_token *HuffmanTreeToken = tokens;
   var ending_token *HuffmanTreeToken = tokens + max_tokens;
@@ -331,7 +331,7 @@ int VP8LCreateCompressedHuffmanTree(
   while (i < depth_size) {
     value := tree.code_lengths[i];
     k := i + 1;
-    int runs;
+    runs int;
     while (k < depth_size && tree.code_lengths[k] == value) ++k;
     runs = k - i;
     if (value == 0) {

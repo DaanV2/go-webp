@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Turn the Huffman tree into a token sequence.
 // Returns the number of tokens used.
 int VP8LCreateCompressedHuffmanTree(
-    const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, int max_tokens);
+    const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, max_tokens int);
 
 // Create an optimized tree, and tokenize it.
 // 'buf_rle' and 'huff_tree' are pre-allocated and the 'tree' is the constructed

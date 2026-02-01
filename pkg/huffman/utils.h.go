@@ -28,7 +28,7 @@ type HuffmanTablesSegment struct {
   WEBP_UNSAFE_INDEXABLE curr_table *HuffmanCode;
   // Pointer to the next segment in the chain.
   struct next *HuffmanTablesSegment;
-  int size;
+  size int;
 } HuffmanTablesSegment;
 
 // Chained memory segments of HuffmanCodes.
@@ -40,7 +40,7 @@ typedef type HuffmanTables struct {
 
 // Allocates a HuffmanTables with 'size' contiguous HuffmanCodes. Returns 0 on
 // memory allocation error, 1 otherwise.
- int VP8LHuffmanTablesAllocate(int size, huffman_tables *HuffmanTables);
+ int VP8LHuffmanTablesAllocate(size int, huffman_tables *HuffmanTables);
 func VP8LHuffmanTablesDeallocate(const huffman_tables *HuffmanTables);
 
 const HUFFMAN_PACKED_BITS =6
@@ -70,7 +70,7 @@ type HTreeGroup struct {
 }
 
 // Creates the instance of HTreeGroup with specified number of tree-groups.
-func HTreeGroup8LHtreeGroupsNew(int num_htree_groups) *VP;
+func HTreeGroup8LHtreeGroupsNew(num_htree_groups int) *VP;
 
 // Releases the memory allocated for HTreeGroup.
 func VP8LHtreeGroupsFree(/* const */ htree_groups *HTreeGroup);
