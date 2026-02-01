@@ -597,7 +597,7 @@ func HistogramBuild(int xsize, int histo_bits, /*const*/ backward_refs *VP8LBack
     x += PixOrCopyLength(v);
     while (x >= xsize) {
       x -= xsize;
-      ++y;
+      y++
     }
     VP8LRefsCursorNext(&c);
   }
@@ -675,7 +675,7 @@ func HistogramCombineEntropyBin(const image_histo *VP8LHistogramSet, cur_combo *
     first := bin_info[bin_id].first;
     if (first == -1) {
       bin_info[bin_id].first = idx;
-      ++idx;
+      idx++
     } else if (low_effort) {
       HistogramAdd(histograms[idx], histograms[first], histograms[first]);
       HistogramSetRemoveHistogram(image_histo, idx);
@@ -712,10 +712,10 @@ func HistogramCombineEntropyBin(const image_histo *VP8LHistogramSet, cur_combo *
           HistogramSetRemoveHistogram(image_histo, idx);
         } else {
           ++bin_info[bin_id].num_combine_failures;
-          ++idx;
+          idx++
         }
       } else {
-        ++idx;
+        idx++
       }
     }
   }
@@ -898,7 +898,7 @@ static int HistogramCombineGreedy(const image_histo *VP8LHistogramSet) {
       } else {
         HistoQueueFixPair(image_histo.size, idx2, p);
         HistoQueueUpdateHead(&histo_queue, p);
-        ++i;
+        i++
       }
     }
 
@@ -1003,7 +1003,7 @@ static int HistogramCombineStochastic(const image_histo *VP8LHistogramSet, int m
       }
       HistoQueueFixPair(image_histo.size, best_idx2, p);
       HistoQueueUpdateHead(&histo_queue, p);
-      ++j;
+      j++
     }
     tries_with_no_success = 0;
   }

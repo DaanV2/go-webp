@@ -76,7 +76,7 @@ static  int NextTableBitSize(
   while (len < MAX_ALLOWED_CODE_LENGTH) {
     left -= count[len];
     if (left <= 0) break;
-    ++len;
+    len++
     left <<= 1;
   }
   return len - root_bits;

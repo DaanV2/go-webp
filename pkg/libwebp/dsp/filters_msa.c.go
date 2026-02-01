@@ -87,7 +87,7 @@ func HorizontalFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height
     // Leftmost pixel is predicted from above.
     PredictLineInverse0(in, preds - stride, out, 1);
     PredictLineInverse0(in + 1, preds, out + 1, width - 1);
-    ++row;
+    row++
     preds += stride;
     in += stride;
     out += stride;
@@ -144,7 +144,7 @@ func GradientFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height, 
   while (row < height) {
     out[0] = in[0] - preds[-stride];
     PredictLineGradient(preds + 1, in + 1, out + 1, stride, width - 1);
-    ++row;
+    row++
     preds += stride;
     in += stride;
     out += stride;
@@ -171,7 +171,7 @@ func VerticalFilter_MSA(const WEBP_RESTRICT data *uint8, int width, int height, 
   // Filter line-by-line.
   while (row < height) {
     PredictLineInverse0(in, preds, out, width);
-    ++row;
+    row++
     preds += stride;
     in += stride;
     out += stride;

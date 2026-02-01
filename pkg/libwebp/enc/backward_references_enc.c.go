@@ -290,7 +290,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, /*const*/ argb *uint3
       // not have the same color, so we just need to get to the last pixel equal
       // to its follower.
       while (pos + (int)len + 2 < size && argb[pos + len + 2] == argb[pos]) {
-        ++len;
+        len++
       }
       if (len > MAX_LENGTH) {
         // Skip the pixels that match for distance=1 and length>MAX_LENGTH
@@ -415,7 +415,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, /*const*/ argb *uint3
         break;
       }
       if (best_length < MAX_LENGTH) {
-        ++best_length;
+        best_length++
         max_base_position = base_position;
       }
     }
@@ -614,7 +614,7 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint3
       }
       if (!is_reachable) {
         window_offsets_new[window_offsets_new_size] = window_offsets[i];
-        ++window_offsets_new_size;
+        window_offsets_new_size++
       }
     }
   }
@@ -842,7 +842,7 @@ static int BackwardRefsWithLocalCache(const argb *uint32, int cache_bits, /*cons
       } else {
         VP8LColorCacheInsert(&hashers, argb_literal);
       }
-      ++pixel_index;
+      pixel_index++
     } else {
       // refs was created without local cache, so it can not have cache indexes.
       var k int

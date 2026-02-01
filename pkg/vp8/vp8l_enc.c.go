@@ -231,7 +231,7 @@ static int ClampBits(int width, int height, int bits, int min_bits, int max_bits
   bits = (bits < min_bits) ? min_bits : (bits > max_bits) ? max_bits : bits;
   image_size = VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits);
   while (bits < max_bits && image_size > image_size_max) {
-    ++bits;
+    bits++
     image_size =
         VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits);
   }
@@ -500,7 +500,7 @@ func ClearHuffmanTreeIfOnlyOneSymbol(/* const */ huffman_code *HuffmanTreeCode) 
   count := 0;
   for k = 0; k < huffman_code.num_symbols; k++ {
     if (huffman_code.code_lengths[k] != 0) {
-      ++count;
+      count++
       if (count > 1) return;
     }
   }
@@ -607,7 +607,7 @@ func StoreHuffmanCode(const bw *VP8LBitWriter, /*const*/ huff_tree *HuffmanTree,
   for i = 0; i < huffman_code.num_symbols && count < 3; i++ {
     if (huffman_code.code_lengths[i] != 0) {
       if (count < 2) symbols[count] = i;
-      ++count;
+      count++
     }
   }
 
@@ -695,7 +695,7 @@ static int StoreImageToBitMask(const bw *VP8LBitWriter, int width, int histo_bit
     x += PixOrCopyLength(v);
     while (x >= width) {
       x -= width;
-      ++y;
+      y++
     }
     VP8LRefsCursorNext(&c);
   }

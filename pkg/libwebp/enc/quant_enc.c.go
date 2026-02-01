@@ -332,7 +332,7 @@ func SimplifySegments(const enc *VP8Encoder) {
       if (num_final_segments != s1) {
         enc.dqm[num_final_segments] = enc.dqm[s1];
       }
-      ++num_final_segments;
+      num_final_segments++
     }
   }
   if (num_final_segments < num_segments) {  // Remap
@@ -561,7 +561,7 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
     }
     // we don't need to go inspect up to n = 16 coeffs. We can just go up
     // to last + 1 (inclusive) without losing much.
-    if (last < 15) ++last;
+    if (last < 15) {last++}
 
     // compute 'skip' score. This is the max score one can do.
     cost = VP8BitCost(0, last_proba);

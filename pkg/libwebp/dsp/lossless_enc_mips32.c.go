@@ -96,7 +96,7 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
 //   var pop *uint32 = &population[4];
 //   var LoopEnd *uint32 = &population[length];
 //   while (pop != LoopEnd) {
-//     ++i;
+//     i++
 //     cost += i * *pop;
 //     cost += i * *(pop + 1);
 //     pop += 2;

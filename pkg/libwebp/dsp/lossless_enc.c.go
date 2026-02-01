@@ -70,7 +70,7 @@ static uint64 FastSLog2Slow_C(uint32 v) {
     log_cnt := 0;
     y := 1;
     for {
-      ++log_cnt;
+      log_cnt++
       v = v >> 1;
       y = y << 1;
     } while (v >= LOG_LOOKUP_IDX_MAX);
@@ -102,7 +102,7 @@ static uint32 FastLog2Slow_C(uint32 v) {
     log_cnt := 0;
     y := 1;
     for {
-      ++log_cnt;
+      log_cnt++
       v = v >> 1;
       y = y << 1;
     } while (v >= LOG_LOOKUP_IDX_MAX);
@@ -328,7 +328,7 @@ static int VectorMismatch_C(const array *uint321, /*const*/ array *uint322, int 
   match_len := 0;
 
   while (match_len < length && array1[match_len] == array2[match_len]) {
-    ++match_len;
+    match_len++
   }
   return match_len;
 }

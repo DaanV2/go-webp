@@ -125,7 +125,7 @@ int GetColorPalette(const pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE)
         if (!in_use[key]) {
           colors[key] = last_pix;
           in_use[key] = 1;
-          ++num_colors;
+          num_colors++
           if (num_colors > MAX_PALETTE_SIZE) {
             return MAX_PALETTE_SIZE + 1;  // Exact count not needed.
           }
@@ -134,7 +134,7 @@ int GetColorPalette(const pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE)
           break;  // The color is already there.
         } else {
           // Some other color sits here, so do linear conflict resolution.
-          ++key;
+          key++
           key &= (COLOR_HASH_SIZE - 1);  // Key mask.
         }
       }
@@ -147,7 +147,7 @@ int GetColorPalette(const pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE)
     for i = 0; i < COLOR_HASH_SIZE; i++ {
       if (in_use[i]) {
         palette[num_colors] = colors[i];
-        ++num_colors;
+        num_colors++
       }
     }
     qsort(palette, num_colors, sizeof(*palette), PaletteCompareColorsForQsort);
@@ -349,7 +349,7 @@ static int PaletteSortModifiedZeng(
       sums[j].sum = cooccurrence[i * num_colors + remapping[0]] +
                     cooccurrence[i * num_colors + remapping[1]];
       if (sums[j].sum > best_sum.sum) best_sum = &sums[j];
-      ++j;
+      j++
     }
 
     while (num_sums > 0) {
@@ -366,7 +366,7 @@ static int PaletteSortModifiedZeng(
         first = (first == 0) ? num_colors - 1 : first - 1;
         remapping[first] = best_index;
       } else {
-        ++last;
+        last++
         remapping[last] = best_index;
       }
       // Remove best_sum from sums.

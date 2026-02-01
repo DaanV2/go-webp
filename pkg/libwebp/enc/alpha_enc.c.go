@@ -191,7 +191,7 @@ static int GetNumColors(const data *uint8, int width, int height, int stride) {
     }
   }
   for j = 0; j < 256; j++ {
-    if (color[j] > 0) ++colors;
+    if (color[j] > 0) colors++
   }
   return colors;
 }

@@ -590,7 +590,7 @@ static int Export(const rescaler *WebPRescaler, WEBP_CSP_MODE colorspace, int rg
     WebPMultARGBRow(src, dst_width, 1);
     VP8LConvertFromBGRA(src, dst_width, colorspace, dst);
     dst += rgba_stride;
-    ++num_lines_out;
+    num_lines_out++
   }
   return num_lines_out;
 }
@@ -668,8 +668,8 @@ static int ExportYUVA(const dec *VP8LDecoder, int y_pos) {
     WebPRescalerExportRow(rescaler);
     WebPMultARGBRow(src, dst_width, 1);
     ConvertToYUVA(src, dst_width, y_pos, dec.output);
-    ++y_pos;
-    ++num_lines_out;
+    y_pos++
+    num_lines_out++
   }
   return num_lines_out;
 }
@@ -1087,11 +1087,11 @@ static int DecodeAlphaData(const dec *VP8LDecoder, /*const*/ data *uint8, int wi
     code = ReadSymbol(htree_group.htrees[GREEN], br);
     if (code < NUM_LITERAL_CODES) {  // Literal
       data[pos] = code;
-      ++pos;
-      ++col;
+      pos++
+      col++
       if (col >= width) {
         col = 0;
-        ++row;
+        row++
         if (row <= last_row && (row % NUM_ARGB_CACHE_ROWS == 0)) {
           ExtractPalettedAlphaRows(dec, row);
         }
@@ -1114,7 +1114,7 @@ static int DecodeAlphaData(const dec *VP8LDecoder, /*const*/ data *uint8, int wi
       col += length;
       while (col >= width) {
         col -= width;
-        ++row;
+        row++
         if (row <= last_row && (row % NUM_ARGB_CACHE_ROWS == 0)) {
           ExtractPalettedAlphaRows(dec, row);
         }
@@ -1220,11 +1220,11 @@ static int DecodeImageData(const dec *VP8LDecoder, /*const*/ data *uint32, int w
         *src = ((uint32)alpha << 24) | (red << 16) | (code << 8) | blue;
       }
     AdvanceByOne:
-      ++src;
-      ++col;
+      src++
+      col++
       if (col >= width) {
         col = 0;
-        ++row;
+        row++
         if (process_func != nil) {
           if (row <= last_row) {
             process_func(dec, row, /*wait_for_biggest_batch=*/1);
@@ -1255,7 +1255,7 @@ static int DecodeImageData(const dec *VP8LDecoder, /*const*/ data *uint32, int w
       col += length;
       while (col >= width) {
         col -= width;
-        ++row;
+        row++
         if (process_func != nil) {
           if (row <= last_row) {
             process_func(dec, row, /*wait_for_biggest_batch=*/1);

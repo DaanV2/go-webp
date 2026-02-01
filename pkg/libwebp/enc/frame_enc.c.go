@@ -656,7 +656,7 @@ static int StatLoop(const enc *VP8Encoder) {
     printf("#%d value:%.1lf . %.1lf   q:%.2f . %.2f\n", num_pass_left, stats.last_value, stats.value, stats.last_q, stats.q);
 #endif
     if (enc.max_i4_header_bits > 0 && size_p0 > PARTITION0_SIZE_LIMIT) {
-      ++num_pass_left;
+      num_pass_left++
       enc.max_i4_header_bits >>= 1;  // strengthen header bit limitation...
       continue;                       // ...and start over
     }
@@ -872,7 +872,7 @@ int VP8EncTokenLoop(const enc *VP8Encoder) {
         " range:[%.1f, %.1f]\n", num_pass_left, stats.last_value, stats.value, stats.last_q, stats.q, stats.dq, stats.qmin, stats.qmax);
 #endif
     if (enc.max_i4_header_bits > 0 && size_p0 > PARTITION0_SIZE_LIMIT) {
-      ++num_pass_left;
+      num_pass_left++
       enc.max_i4_header_bits >>= 1;  // strengthen header bit limitation...
       if (is_last_pass) {
         ResetSideInfo(&it);

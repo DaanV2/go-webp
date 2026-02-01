@@ -97,8 +97,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
       );                                                                       \
       if (A) dst[A] = dst[A + XSTEP] = 0xff;                                   \
       y += 2;                                                                  \
-      ++u;                                                                     \
-      ++v;                                                                     \
+      u++                                                                     \
+      v++                                                                     \
       dst += 2 * XSTEP;                                                        \
     }                                                                          \
     if (len & 1) {                                                             \

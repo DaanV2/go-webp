@@ -356,7 +356,7 @@ static int VectorMismatch_SSE2(const array *uint321, /*const*/ array *uint322, i
   }
 
   while (match_len < length && array1[match_len] == array2[match_len]) {
-    ++match_len;
+    match_len++
   }
   return match_len;
 }

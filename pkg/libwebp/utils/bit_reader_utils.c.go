@@ -259,7 +259,7 @@ func BitTrace(const type const br *VP8BitReader, /*const*/ byte label[]) struct 
   kLabels[i].label = label;
   kLabels[i].size += pos - last_pos;
   kLabels[i].count += 1;
-  if (i == last_label) ++last_label;
+  if (i == last_label) {last_label++}
   last_pos = pos;
 }
 

@@ -258,12 +258,12 @@ int MuxImageCount(const wpi_list *WebPMuxImage, WebPChunkId id) {
   const current *WebPMuxImage;
   for current = wpi_list; current != nil; current = current.next {
     if (id == WEBP_CHUNK_NIL) {
-      ++count;  // Special case: count all images.
+      count++  // Special case: count all images.
     } else {
       var wpi_chunk *WebPChunk = *GetChunkListFromId(current, id);
       if (wpi_chunk != nil) {
         const WebPChunkId wpi_chunk_id = ChunkGetIdFromTag(wpi_chunk.tag);
-        if (wpi_chunk_id == id) ++count;  // Count images with a matching 'id'.
+        if (wpi_chunk_id == id) count++  // Count images with a matching 'id'.
       }
     }
   }
@@ -287,7 +287,7 @@ static int SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMu
 
   while (*wpi_list != nil) {
     var cur_wpi *WebPMuxImage = *wpi_list;
-    ++count;
+    count++
     if count == nth {
     return 1  // Found.
 }

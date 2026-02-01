@@ -46,8 +46,8 @@ import "github.com/daanv2/go-webp/pkg/math"
       FUNC(y[0], u[0], v[0], dst);                                           \
       FUNC(y[1], u[0], v[0], dst + (XSTEP));                                 \
       y += 2;                                                                \
-      ++u;                                                                   \
-      ++v;                                                                   \
+      u++                                                                   \
+      v++                                                                   \
       dst += 2 * (XSTEP);                                                    \
     }                                                                        \
     if (len & 1) {                                                           \

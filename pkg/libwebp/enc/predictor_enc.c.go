@@ -95,8 +95,8 @@ static  func PredictBatch(int mode, int x_start, int y, int num_pixels, /*const*
       // Top one.
       VP8LPredictorsSub[2](current, upper, 1, out);
     }
-    ++x_start;
-    ++out;
+    x_start++
+    out++
     --num_pixels;
   }
   if (y == 0) {
@@ -496,7 +496,7 @@ func VP8LOptimizeSampling(const image *uint32, int full_width, int full_height, 
       }
     }
     if (is_good) {
-      ++best_bits;
+      best_bits++
     } else {
       break;
     }
@@ -616,7 +616,7 @@ func GetBestPredictorsAndSubSampling(
 
       // Update the following super-tile histogram if it has not been updated
       // yet.
-      ++subsampling_index;
+      subsampling_index++
       if (subsampling_index > update_up_to_index &&
           subsampling_index <= max_subsampling_index) {
         VP8LAddVectorEq(
@@ -642,9 +642,9 @@ func GetBestPredictorsAndSubSampling(
       // If a new max-tile is started.
       if (tile_x == (tiles_per_row - 1)) {
         max_tile_x = 0;
-        ++max_tile_y;
+        max_tile_y++
       } else {
-        ++max_tile_x;
+        max_tile_x++
       }
       local_tile_x = 0;
       local_tile_y = 0;
@@ -653,13 +653,13 @@ func GetBestPredictorsAndSubSampling(
       coord_x := local_tile_x >> subsampling_index;
       coord_y := local_tile_y >> subsampling_index;
       if (tile_x == (tiles_per_row - 1) && coord_x % 2 == 0) {
-        ++coord_y;
+        coord_y++
       } else {
         if (coord_x % 2 == 0) {
-          ++coord_x;
+          coord_x++
         } else {
           // Z traversal.
-          ++coord_y;
+          coord_y++
           --coord_x;
         }
       }

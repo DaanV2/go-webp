@@ -49,7 +49,7 @@ func ConvertPopulationCountTableToBitEstimates(
   for i = 0; i < num_symbols; i++ {
     sum += population_counts[i];
     if (population_counts[i] > 0) {
-      ++nonzeros;
+      nonzeros++
     }
   }
   if (nonzeros <= 1) {
@@ -282,7 +282,7 @@ static int CostManagerInit(const manager *CostManager, /*const*/ dist_array *uin
     for i = 1; i < cost_cache_size; i++ {
       cost_val := manager.cost_cache[i];
       if (cost_val != cur.cost) {
-        ++cur;
+        cur++
         // Initialize an interval.
         cur.start = i;
         cur.cost = cost_val;
@@ -705,7 +705,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
         v = PixOrCopyCreateLiteral(argb[i]);
       }
       VP8LBackwardRefsCursorAdd(refs, v);
-      ++i;
+      i++
     }
   }
   ok = !refs.error;

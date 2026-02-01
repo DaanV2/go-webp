@@ -726,7 +726,7 @@ static int FlattenSimilarBlocks(const src *WebPPicture, /*const*/ rect *FrameRec
           alpha := src_pixel >> 24;
           if (alpha == 0xff &&
               PixelsAreSimilar(src_pixel, pdst[x + y * dst.argb_stride], max_allowed_diff_lossy)) {
-            ++cnt;
+            cnt++
             avg_r += (src_pixel >> 16) & 0xff;
             avg_g += (src_pixel >> 8) & 0xff;
             avg_b += (src_pixel >> 0) & 0xff;

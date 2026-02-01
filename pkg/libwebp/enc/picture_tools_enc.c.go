@@ -67,7 +67,7 @@ static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_s
   for y = 0; y < height; y++ {
     for x = 0; x < width; x++ {
       if (alpha_ptr[x] != 0) {
-        ++count;
+        count++
         sum += luma_ptr[x];
       }
     }

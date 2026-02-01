@@ -145,7 +145,7 @@ int WebPRescalerImport(const rescaler *WebPRescaler, int num_lines, /*const*/ sr
     }
     ++rescaler.src_y;
     src += src_stride;
-    ++total_imported;
+    total_imported++
     rescaler.y_accum -= rescaler.y_sub;
   }
   return total_imported;
@@ -155,7 +155,7 @@ int WebPRescalerExport(const rescaler *WebPRescaler) {
   total_exported := 0;
   while (WebPRescalerHasPendingOutput(rescaler)) {
     WebPRescalerExportRow(rescaler);
-    ++total_exported;
+    total_exported++
   }
   return total_exported;
 }

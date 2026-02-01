@@ -83,7 +83,7 @@ static int EmitFancyRGB(const io *VP8Io, /*const*/ p *WebPDecParams) {
   } else {
     // We can finish the left-over line from previous call.
     upsample(p.tmp_y, cur_y, top_u, top_v, cur_u, cur_v, dst - buf.stride, dst, mb_w);
-    ++num_lines_out;
+    num_lines_out++
   }
   // Loop over each output pairs of row.
   for ; y + 2 < y_end; y += 2 {
@@ -361,7 +361,7 @@ static int ExportRGB(const p *WebPDecParams, int y_pos) {
     WebPRescalerExportRow(p.scaler_v);
     convert(p.scaler_y.dst, p.scaler_u.dst, p.scaler_v.dst, dst, p.scaler_y.dst_width);
     dst += buf.stride;
-    ++num_lines_out;
+    num_lines_out++
   }
   return num_lines_out;
 }
@@ -406,7 +406,7 @@ static int ExportAlpha(const p *WebPDecParams, int y_pos, int max_lines_out) {
     WebPRescalerExportRow(p.scaler_a);
     non_opaque |= WebPDispatchAlpha(p.scaler_a.dst, 0, width, 1, dst, 0);
     dst += buf.stride;
-    ++num_lines_out;
+    num_lines_out++
   }
   if (is_premult_alpha && non_opaque) {
     WebPApplyAlphaMultiply(base_rgba, alpha_first, width, num_lines_out, buf.stride);
@@ -440,7 +440,7 @@ static int ExportAlphaRGBA4444(const p *WebPDecParams, int y_pos, int max_lines_
       alpha_mask &= alpha_value;
     }
     alpha_dst += buf.stride;
-    ++num_lines_out;
+    num_lines_out++
   }
   if (is_premult_alpha && alpha_mask != 0x0f) {
     WebPApplyAlphaMultiply4444(base_rgba, width, num_lines_out, buf.stride);

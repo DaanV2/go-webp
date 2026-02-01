@@ -88,7 +88,7 @@ int QuantizeLevels(const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int
       // Keep track of the nearest neighbour 'slot'
       while (slot < num_levels - 1 &&
              2 * s > inv_q_level[slot] + inv_q_level[slot + 1]) {
-        ++slot;
+        slot++
       }
       if (freq[s] > 0) {
         q_sum[slot] += s * freq[s];

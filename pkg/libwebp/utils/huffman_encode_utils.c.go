@@ -70,7 +70,7 @@ func OptimizeHuffmanForRle(int length, /*const*/ *uint8
           symbol = counts[i];
         }
       } else {
-        ++stride;
+        stride++
       }
     }
   }
@@ -111,7 +111,7 @@ func OptimizeHuffmanForRle(int length, /*const*/ *uint8
           limit = 0;
         }
       }
-      ++stride;
+      stride++
       if (i != length) {
         sum += counts[i];
         if (stride >= 4) {
@@ -174,7 +174,7 @@ func GenerateOptimalTree(
 
   for i = 0; i < histogram_size; i++ {
     if (histogram[i] != 0) {
-      ++tree_size_orig;
+      tree_size_orig++
     }
   }
 
@@ -203,7 +203,7 @@ func GenerateOptimalTree(
         tree[idx].value = j;
         tree[idx].pool_index_left = -1;
         tree[idx].pool_index_right = -1;
-        ++idx;
+        idx++
       }
     }
 
@@ -267,7 +267,7 @@ CodeRepeatedValues(int repetitions, tokens *HuffmanTreeToken, int value, int pre
   if (value != prev_value) {
     tokens.code = value;
     tokens.extra_bits = 0;
-    ++tokens;
+    tokens++
     --repetitions;
   }
   while (repetitions >= 1) {
@@ -276,18 +276,18 @@ CodeRepeatedValues(int repetitions, tokens *HuffmanTreeToken, int value, int pre
       for i = 0; i < repetitions; i++ {
         tokens.code = value;
         tokens.extra_bits = 0;
-        ++tokens;
+        tokens++
       }
       break;
     } else if (repetitions < 7) {
       tokens.code = 16;
       tokens.extra_bits = repetitions - 3;
-      ++tokens;
+      tokens++
       break;
     } else {
       tokens.code = 16;
       tokens.extra_bits = 3;
-      ++tokens;
+      tokens++
       repetitions -= 6;
     }
   }
@@ -302,23 +302,23 @@ CodeRepeatedZeros(int repetitions, tokens *HuffmanTreeToken) {
       for i = 0; i < repetitions; i++ {
         tokens.code = 0;  // 0-value
         tokens.extra_bits = 0;
-        ++tokens;
+        tokens++
       }
       break;
     } else if (repetitions < 11) {
       tokens.code = 17;
       tokens.extra_bits = repetitions - 3;
-      ++tokens;
+      tokens++
       break;
     } else if (repetitions < 139) {
       tokens.code = 18;
       tokens.extra_bits = repetitions - 11;
-      ++tokens;
+      tokens++
       break;
     } else {
       tokens.code = 18;
       tokens.extra_bits = 0x7f;  // 138 repeated 0s
-      ++tokens;
+      tokens++
       repetitions -= 138;
     }
   }
@@ -338,7 +338,7 @@ int VP8LCreateCompressedHuffmanTree(
     value := tree.code_lengths[i];
     k := i + 1;
     int runs;
-    while (k < depth_size && tree.code_lengths[k] == value) ++k;
+    for (k < depth_size && tree.code_lengths[k] == value) {k++}
     runs = k - i;
     if (value == 0) {
       current_token = CodeRepeatedZeros(runs, current_token);

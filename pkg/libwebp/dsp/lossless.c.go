@@ -204,7 +204,7 @@ func PredictorInverseTransform_C(const transform *VP8LTransform, int y_start, in
     PredictorAdd1_C(in + 1, nil, width - 1, out + 1);
     in += width;
     out += width;
-    ++y_start;
+    y_start++
   }
 
   {
@@ -231,7 +231,7 @@ func PredictorInverseTransform_C(const transform *VP8LTransform, int y_start, in
       }
       in += width;
       out += width;
-      ++y;
+      y++
       if ((y & mask) == 0) {  // Use the same mask, since tiles are squares.
         pred_mode_base += tiles_per_row;
       }
@@ -309,7 +309,7 @@ func ColorSpaceInverseTransform_C(const transform *VP8LTransform, int y_start, i
       src += remaining_width;
       dst += remaining_width;
     }
-    ++y;
+    y++
     if ((y & mask) == 0) pred_row += tiles_per_row;
   }
 }

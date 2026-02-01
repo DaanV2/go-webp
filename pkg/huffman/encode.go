@@ -191,13 +191,12 @@ func GenerateOptimalTree(histogram *uint32, histogram_size int , tree *HuffmanTr
     var j int
     for j = 0; j < histogram_size; j++ {
       if (histogram[j] != 0) {
-        count :=
-            (histogram[j] < count_min) ? count_min : histogram[j];
+        count := tenary.If(histogram[j] < count_min, count_min, histogram[j])
         tree[idx].total_count = count;
         tree[idx].value = j;
         tree[idx].pool_index_left = -1;
         tree[idx].pool_index_right = -1;
-        ++idx;
+        idx++
       }
     }
 
@@ -261,7 +260,7 @@ CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, prev_va
   if (value != prev_value) {
     tokens.code = value;
     tokens.extra_bits = 0;
-    ++tokens;
+    tokens++
     --repetitions;
   }
   while (repetitions >= 1) {
@@ -270,18 +269,18 @@ CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, prev_va
       for i = 0; i < repetitions; i++ {
         tokens.code = value;
         tokens.extra_bits = 0;
-        ++tokens;
+        tokens++
       }
       break;
     } else if (repetitions < 7) {
       tokens.code = 16;
       tokens.extra_bits = repetitions - 3;
-      ++tokens;
+      tokens++
       break;
     } else {
       tokens.code = 16;
       tokens.extra_bits = 3;
-      ++tokens;
+      tokens++
       repetitions -= 6;
     }
   }
@@ -296,32 +295,33 @@ CodeRepeatedZeros(repetitions int, tokens *HuffmanTreeToken) {
       for i = 0; i < repetitions; i++ {
         tokens.code = 0;  // 0-value
         tokens.extra_bits = 0;
-        ++tokens;
+        tokens++
       }
       break;
     } else if (repetitions < 11) {
       tokens.code = 17;
       tokens.extra_bits = repetitions - 3;
-      ++tokens;
+      tokens++
       break;
     } else if (repetitions < 139) {
       tokens.code = 18;
       tokens.extra_bits = repetitions - 11;
-      ++tokens;
+      tokens++
       break;
     } else {
       tokens.code = 18;
       tokens.extra_bits = 0x7f;  // 138 repeated 0s
-      ++tokens;
+      tokens++
       repetitions -= 138;
     }
   }
   return tokens;
 }
 
-int VP8LCreateCompressedHuffmanTree(
-    const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, max_tokens int) {
-  current_token *HuffmanTreeToken = tokens;
+// Turn the Huffman tree into a token sequence.
+// Returns the number of tokens used.
+func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeToken, max_tokens int) int {
+  var current_token *HuffmanTreeToken = tokens;
   var starting_token *HuffmanTreeToken = tokens;
   var ending_token *HuffmanTreeToken = tokens + max_tokens;
   depth_size := tree.num_symbols;
@@ -332,7 +332,7 @@ int VP8LCreateCompressedHuffmanTree(
     value := tree.code_lengths[i];
     k := i + 1;
     runs int;
-    while (k < depth_size && tree.code_lengths[k] == value) ++k;
+    for (k < depth_size && tree.code_lengths[k] == value) {k++}
     runs = k - i;
     if (value == 0) {
       current_token = CodeRepeatedZeros(runs, current_token);
@@ -356,7 +356,7 @@ const kReversedBits = [16]uint8{0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe, 0x1, 0x9
 func ReverseBits(num_bits int, bits uint32) uint32 {
   retval := 0
   i := 0
-  for (i < num_bits) {
+  for i < num_bits {
     i += 4
     retval |= kReversedBits[bits & 0xf] << (MAX_ALLOWED_CODE_LENGTH + 1 - i)
     bits >>= 4
@@ -397,9 +397,10 @@ func ConvertBitDepthsToSymbols(/* const */ tree *HuffmanTreeCode) {
   }
 }
 
-// -----------------------------------------------------------------------------
 // Main entry point
-
+// Create an optimized tree, and tokenize it.
+// 'buf_rle' and 'huff_tree' are pre-allocated and the 'tree' is the constructed
+// huffman code tree.
 func VP8LCreateHuffmanTree(/* const */ histogram *uint32, tree_depth_limit int, /* const */ buf_rle *uint8, /* const */ huff_tree *HuffmanTree, /* const */ huff_code *HuffmanTreeCode) {
   num_symbols := huff_code.num_symbols;
   var bounded_histogram *uint32 = histogram // bidi index -> (uint64)num_symbols * sizeof(*histogram)
