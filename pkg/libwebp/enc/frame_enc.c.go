@@ -143,15 +143,15 @@ static int BranchCost(int nb, int total, int proba) {
   return nb * VP8BitCost(1, proba) + (total - nb) * VP8BitCost(0, proba);
 }
 
-func ResetTokenStats(const enc *VP8Encoder) {
+func ResetTokenStats(/* const */ enc *VP8Encoder) {
   var proba *VP8EncProba = &enc.proba;
-  memset(proba.stats, 0, sizeof(proba.stats));
+  stdlib.Memset(proba.stats, 0, sizeof(proba.stats));
 }
 
-static int FinalizeTokenProbas(const proba *VP8EncProba) {
+func FinalizeTokenProbas(/* const */ proba *VP8EncProba) int {
   has_changed := 0;
   size := 0;
-  int t, b, c, p;
+  var t, b, c, p int 
   for t = 0; t < NUM_TYPES; t++ {
     for b = 0; b < NUM_BANDS; b++ {
       for c = 0; c < NUM_CTX; c++ {
@@ -463,7 +463,7 @@ static int RecordTokens(const it *VP8EncIterator, const rd *VP8ModeScore, const 
 func SetBlock(p *uint8, int value, int size) {
   var y int
   for y = 0; y < size; y++ {
-    memset(p, value, size);
+    stdlib.Memset(p, value, size);
     p += BPS;
   }
 }
@@ -542,7 +542,7 @@ func ResetSideInfo(const it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
   var pic *WebPPicture = enc.pic;
   if (pic.stats != nil) {
-    memset(enc.block_count, 0, sizeof(enc.block_count));
+    stdlib.Memset(enc.block_count, 0, sizeof(enc.block_count));
   }
   ResetSSE(enc);
 }
@@ -553,7 +553,7 @@ func StoreSideInfo(const it *VP8EncIterator) {
   var pic *WebPPicture = enc.pic;
   if (pic.extra_info != nil) {
     if (it.x == 0 && it.y == 0) {  // only do it once, at start
-      memset(pic.extra_info, 0, enc.mb_w * enc.mb_h * sizeof(*pic.extra_info));
+      stdlib.Memset(pic.extra_info, 0, enc.mb_w * enc.mb_h * sizeof(*pic.extra_info));
     }
   }
 }

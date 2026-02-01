@@ -44,7 +44,7 @@ static int IsTransparentARGBArea(const ptr *uint32, int stride, int size) {
 func Flatten(ptr *uint8, int v, int stride, int size) {
   var y int
   for y = 0; y < size; y++ {
-    memset(ptr, v, size);
+    stdlib.Memset(ptr, v, size);
     ptr += stride;
   }
 }
@@ -242,7 +242,7 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
         u_ptr += picture.uv_stride;
         v_ptr += picture.uv_stride;
       }
-      memset(a_ptr, 0xff, picture.width);  // reset alpha value to opaque
+      stdlib.Memset(a_ptr, 0xff, picture.width);  // reset alpha value to opaque
       a_ptr += picture.a_stride;
       y_ptr += picture.y_stride;
     }

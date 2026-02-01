@@ -27,22 +27,22 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 func InitLeft(const it *VP8EncIterator) {
   it.y_left[-1] = it.u_left[-1] = it.v_left[-1] = (it.y > 0) ? 129 : 127;
-  memset(it.y_left, 129, 16);
-  memset(it.u_left, 129, 8);
-  memset(it.v_left, 129, 8);
+  stdlib.Memset(it.y_left, 129, 16);
+  stdlib.Memset(it.u_left, 129, 8);
+  stdlib.Memset(it.v_left, 129, 8);
   it.left_nz[8] = 0;
   if (it.top_derr != nil) {
-    memset(&it.left_derr, 0, sizeof(it.left_derr));
+    stdlib.Memset(&it.left_derr, 0, sizeof(it.left_derr));
   }
 }
 
 func InitTop(const it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
   top_size := enc.mb_w * 16;
-  memset(enc.y_top, 127, 2 * top_size);
-  memset(enc.nz, 0, enc.mb_w * sizeof(*enc.nz));
+  stdlib.Memset(enc.y_top, 127, 2 * top_size);
+  stdlib.Memset(enc.nz, 0, enc.mb_w * sizeof(*enc.nz));
   if (enc.top_derr != nil) {
-    memset(enc.top_derr, 0, enc.mb_w * sizeof(*enc.top_derr));
+    stdlib.Memset(enc.top_derr, 0, enc.mb_w * sizeof(*enc.top_derr));
   }
 }
 
@@ -66,7 +66,7 @@ func VP8IteratorReset(const it *VP8EncIterator) {
   VP8IteratorSetRow(it, 0);
   VP8IteratorSetCountDown(it, enc.mb_w * enc.mb_h);  // default
   InitTop(it);
-  memset(it.bit_count, 0, sizeof(it.bit_count));
+  stdlib.Memset(it.bit_count, 0, sizeof(it.bit_count));
   it.do_trellis = 0;
 }
 
@@ -120,7 +120,7 @@ func ImportBlock(const src *uint8, int src_stride, dst *uint8, int w, int h, int
   for i = 0; i < h; i++ {
     memcpy(dst, src, w);
     if (w < size) {
-      memset(dst + w, dst[w - 1], size - w);
+      stdlib.Memset(dst + w, dst[w - 1], size - w);
     }
     dst += BPS;
     src += src_stride;
@@ -177,7 +177,7 @@ func VP8IteratorImport(const it *VP8EncIterator, const tmp_ *uint832) {
   it.y_top = tmp_32 + 0;
   it.uv_top = tmp_32 + 16;
   if (y == 0) {
-    memset(tmp_32, 127, 32 * sizeof(*tmp_32));
+    stdlib.Memset(tmp_32, 127, 32 * sizeof(*tmp_32));
   } else {
     ImportLine(ysrc - pic.y_stride, 1, tmp_32, w, 16);
     ImportLine(usrc - pic.uv_stride, 1, tmp_32 + 16, uv_w, 8);
@@ -347,7 +347,7 @@ func VP8SetIntra16Mode(const it *VP8EncIterator, int mode) {
   preds *uint8 = it.preds;
   var y int
   for y = 0; y < 4; y++ {
-    memset(preds, mode, 4);
+    stdlib.Memset(preds, mode, 4);
     preds += it.enc.preds_w;
   }
   it.mb.type = 1;
@@ -442,7 +442,7 @@ func VP8IteratorStartI4(const it *VP8EncIterator) {
   // modeling of tbl instructions, a warning will be issued. This can be
   // removed if MSan is updated to support the instructions. See
   // https://issues.webmproject.org/372109644.
-  memset(it.i4_boundary + sizeof(it.i4_boundary) - 3, 0xaa, 3);
+  stdlib.Memset(it.i4_boundary + sizeof(it.i4_boundary) - 3, 0xaa, 3);
 #endif
   VP8IteratorNzToBytes(it);  // import the non-zero context
 }

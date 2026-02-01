@@ -33,7 +33,7 @@ const uint8 VP8CoeffsProba0[NUM_TYPES][NUM_BANDS][NUM_CTX][NUM_PROBAS] = {
 func VP8DefaultProbas(const enc *VP8Encoder) {
   var probas *VP8EncProba = &enc.proba;
   probas.use_skip_proba = 0;
-  memset(probas.segments, uint(255), sizeof(probas.segments));
+  stdlib.Memset(probas.segments, uint(255), sizeof(probas.segments));
   memcpy(probas.coeffs, VP8CoeffsProba0, sizeof(VP8CoeffsProba0));
   // Note: we could hard-code the level_costs corresponding to VP8CoeffsProba0, // but that's ~11k of static data. Better call VP8CalculateLevelCosts() later.
   probas.dirty = 1;

@@ -635,7 +635,7 @@ func GetBestPredictorsAndSubSampling(
       }
     }
     // Reset all the histograms belonging to finished tiles.
-    memset(all_argb, 0, HISTO_SIZE * kNumPredModes * (subsampling_index + 1) *
+    stdlib.Memset(all_argb, 0, HISTO_SIZE * kNumPredModes * (subsampling_index + 1) *
                sizeof(*all_argb));
 
     if (subsampling_index == max_subsampling_index) {

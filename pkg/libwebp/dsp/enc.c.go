@@ -224,7 +224,7 @@ func FTransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
 static  func Fill(dst *uint8, int value, int size) {
   var j int
   for j = 0; j < size; j++ {
-    memset(dst + j * BPS, value, size);
+    stdlib.Memset(dst + j * BPS, value, size);
   }
 }
 
@@ -241,7 +241,7 @@ static  func HorizontalPred(WEBP_RESTRICT dst *uint8, const WEBP_RESTRICT left *
   if (left != nil) {
     var j int
     for j = 0; j < size; j++ {
-      memset(dst + j * BPS, left[j], size);
+      stdlib.Memset(dst + j * BPS, left[j], size);
     }
   } else {
     Fill(dst, 129, size);

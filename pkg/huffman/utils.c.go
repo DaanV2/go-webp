@@ -272,17 +272,15 @@ int VP8LBuildHuffmanTable(root_table *HuffmanTables, int root_bits, int
   if (code_lengths_size <= SORTED_SIZE_CUTOFF) {
     // use local stack-allocated array.
     uint16 sorted[SORTED_SIZE_CUTOFF];
-    BuildHuffmanTable(
-        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-            *HuffmanCode, root_table.curr_segment.curr_table, total_size * sizeof(*root_table.curr_segment.curr_table)), root_bits, code_lengths, code_lengths_size, sorted);
+	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
+    BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
   } else {  // rare case. Use heap allocation.
     const sorted *uint16 =
         (*uint16)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
     if (sorted == nil) return 0;
-    BuildHuffmanTable(
-        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-            *HuffmanCode, root_table.curr_segment.curr_table, total_size * sizeof(*root_table.curr_segment.curr_table)), root_bits, code_lengths, code_lengths_size, WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-            *uint16, sorted, (uint64)code_lengths_size * sizeof(*sorted)));
+	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
+    // sorted bidi index -> (uint64)code_lengths_size * sizeof(*sorted)
+	BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
     WebPSafeFree(sorted);
   }
   return total_size;

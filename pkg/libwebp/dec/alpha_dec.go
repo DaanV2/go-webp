@@ -228,11 +228,8 @@ func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8I
       ALPHDelete(dec.alph_dec);
       dec.alph_dec = nil;
       if (dec.alpha_dithering > 0) {
-        const alpha *uint8 =
-            dec.alpha_plane + io.crop_top * width + io.crop_left;
-        const bounded_alpha *uint8 =
-            WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-                *uint8, alpha, (uint64)*width(io.crop_bottom - io.crop_top));
+        var alpha *uint8 = dec.alpha_plane + io.crop_top * width + io.crop_left;
+        var bounded_alpha *uint8 = alpha; // bidi index -> (uint64)*width(io.crop_bottom - io.crop_top)
         if (!WebPDequantizeLevels(bounded_alpha, io.crop_right - io.crop_left, io.crop_bottom - io.crop_top, width, dec.alpha_dithering)) {
           goto Error;
         }

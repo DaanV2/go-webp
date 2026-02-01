@@ -429,7 +429,7 @@ func ImportYUVAFromRGBA_C(const r_ptr *uint8, const g_ptr *uint8, const b_ptr *u
     } else if (dst_a != nil) {
       var i int
       for i = 0; i < 2; ++i, dst_a += a_stride {
-        memset(dst_a, 0xff, width);
+        stdlib.Memset(dst_a, 0xff, width);
       }
     }
 
@@ -465,7 +465,7 @@ func ImportYUVAFromRGBALastLine_C(
   if (row_has_alpha) {
     row_has_alpha &= !WebPExtractAlpha(a_ptr, 0, width, 1, dst_a, 0);
   } else if (dst_a != nil) {
-    memset(dst_a, 0xff, width);
+    stdlib.Memset(dst_a, 0xff, width);
   }
 
   // Collect averaged R/G/B(/A)

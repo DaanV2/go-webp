@@ -138,7 +138,7 @@ static int EncodeAlphaInternal(const data *uint8, int width, int height, int met
       output = VP8LBitWriterFinish(&tmp_bw);
       if (tmp_bw.error) {
         VP8LBitWriterWipeOut(&tmp_bw);
-        memset(&result.bw, 0, sizeof(result.bw));
+        stdlib.Memset(&result.bw, 0, sizeof(result.bw));
         return 0;
       }
       output_size = VP8LBitWriterNumBytes(&tmp_bw);
@@ -149,7 +149,7 @@ static int EncodeAlphaInternal(const data *uint8, int width, int height, int met
       }
     } else {
       VP8LBitWriterWipeOut(&tmp_bw);
-      memset(&result.bw, 0, sizeof(result.bw));
+      stdlib.Memset(&result.bw, 0, sizeof(result.bw));
       return 0;
     }
   }

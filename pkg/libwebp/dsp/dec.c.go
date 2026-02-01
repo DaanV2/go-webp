@@ -207,7 +207,7 @@ func VE16_C(dst *uint8) {  // vertical
 func HE16_C(dst *uint8) {  // horizontal
   var j int
   for j = 16; j > 0; --j {
-    memset(dst, dst[-1], 16);
+    stdlib.Memset(dst, dst[-1], 16);
     dst += BPS;
   }
 }
@@ -215,7 +215,7 @@ func HE16_C(dst *uint8) {  // horizontal
 static  func Put16(int v, dst *uint8) {
   var j int
   for j = 0; j < 16; j++ {
-    memset(dst + j * BPS, v, 16);
+    stdlib.Memset(dst + j * BPS, v, 16);
   }
 }
 
@@ -289,7 +289,7 @@ func DC4_C(dst *uint8) {  // DC
   var i int
   for (i = 0; i < 4; ++i) dc += dst[i - BPS] + dst[-1 + i * BPS];
   dc >>= 3;
-  for (i = 0; i < 4; ++i) memset(dst + i * BPS, dc, 4);
+  for (i = 0; i < 4; ++i) stdlib.Memset(dst + i * BPS, dc, 4);
 }
 
 func RD4_C(dst *uint8) {  // Down-right
@@ -431,7 +431,7 @@ func VE8uv_C(dst *uint8) {  // vertical
 func HE8uv_C(dst *uint8) {  // horizontal
   var j int
   for j = 0; j < 8; j++ {
-    memset(dst, dst[-1], 8);
+    stdlib.Memset(dst, dst[-1], 8);
     dst += BPS;
   }
 }
@@ -440,7 +440,7 @@ func HE8uv_C(dst *uint8) {  // horizontal
 static  func Put8x8uv(uint8 value, dst *uint8) {
   var j int
   for j = 0; j < 8; j++ {
-    memset(dst + j * BPS, value, 8);
+    stdlib.Memset(dst + j * BPS, value, 8);
   }
 }
 

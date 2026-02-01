@@ -340,7 +340,7 @@ VERTICAL_PRED(dst, top, 16)
     if (LEFT) {                                                          \
       var j int                                                             \
       for j = 0; j < (SIZE); j++ {                                     \
-        memset((DST) + j * BPS, (LEFT)[j], (SIZE));                      \
+        stdlib.Memset((DST) + j * BPS, (LEFT)[j], (SIZE));                      \
       }                                                                  \
     } else {                                                             \
       FILL_8_OR_16((DST), 129, (SIZE));                                  \

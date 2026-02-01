@@ -354,31 +354,31 @@ int VP8LCreateCompressedHuffmanTree(
 const kReversedBits = [16]uint8{0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe, 0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf}
 
 func ReverseBits(num_bits int, bits uint32) uint32 {
-  retval := 0;
-  i := 0;
-  while (i < num_bits) {
-    i += 4;
-    retval |= kReversedBits[bits & 0xf] << (MAX_ALLOWED_CODE_LENGTH + 1 - i);
-    bits >>= 4;
+  retval := 0
+  i := 0
+  for (i < num_bits) {
+    i += 4
+    retval |= kReversedBits[bits & 0xf] << (MAX_ALLOWED_CODE_LENGTH + 1 - i)
+    bits >>= 4
   }
-  retval >>= (MAX_ALLOWED_CODE_LENGTH + 1 - num_bits);
-  return retval;
+  retval >>= (MAX_ALLOWED_CODE_LENGTH + 1 - num_bits)
+  return retval
 }
 
 // Get the actual bit values for a tree of bit depths.
-func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
+func ConvertBitDepthsToSymbols(/* const */ tree *HuffmanTreeCode) {
   // 0 bit-depth means that the symbol does not exist.
-  var i int
-  int len;
-  uint32 next_code[MAX_ALLOWED_CODE_LENGTH + 1];
-  int depth_count[MAX_ALLOWED_CODE_LENGTH + 1] = {0}
+	var i int
+	var len int
+	var next_code[MAX_ALLOWED_CODE_LENGTH + 1] uint32
+	var depth_count[MAX_ALLOWED_CODE_LENGTH + 1] int = {0};
 
   assert.Assert(tree != nil);
   len = tree.num_symbols;
   for i = 0; i < len; i++ {
     code_length := tree.code_lengths[i];
     assert.Assert(code_length <= MAX_ALLOWED_CODE_LENGTH);
-    ++depth_count[code_length];
+    depth_count[code_length] = depth_count[code_length] + 1;
   }
   depth_count[0] = 0;  // ignore unused symbol
   next_code[0] = 0;
@@ -391,25 +391,25 @@ func ConvertBitDepthsToSymbols(const tree *HuffmanTreeCode) {
   }
   for i = 0; i < len; i++ {
     code_length := tree.code_lengths[i];
-    tree.codes[i] = ReverseBits(code_length, next_code[code_length]++);
+	ncode := next_code[code_length]
+	next_code[code_length] = next_code[code_length] + 1;
+    tree.codes[i] = ReverseBits(code_length, ncode);
   }
 }
 
 // -----------------------------------------------------------------------------
 // Main entry point
 
-func VP8LCreateHuffmanTree(const histogram *uint32, tree_depth_limit int, const buf_rle *uint8, const huff_tree *HuffmanTree, const huff_code *HuffmanTreeCode) {
+func VP8LCreateHuffmanTree(/* const */ histogram *uint32, tree_depth_limit int, /* const */ buf_rle *uint8, /* const */ huff_tree *HuffmanTree, /* const */ huff_code *HuffmanTreeCode) {
   num_symbols := huff_code.num_symbols;
-  const bounded_histogram *uint32 =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-          *uint32, histogram, (uint64)num_symbols * sizeof(*histogram));
-  const bounded_buf_rle *uint8 =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*uint8, buf_rle, (uint64)num_symbols * sizeof(*buf_rle));
+  var bounded_histogram *uint32 = histogram // bidi index -> (uint64)num_symbols * sizeof(*histogram)
+  var bounded_buf_rle *uint8 = buf_rle // bidi index -> (uint64)num_symbols * sizeof(*buf_rle)
 
-  memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));
+  stdlib.Memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));
+
   OptimizeHuffmanForRle(num_symbols, bounded_buf_rle, bounded_histogram);
-  GenerateOptimalTree(
-      bounded_histogram, num_symbols, WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*HuffmanTree, huff_tree, 3 * num_symbols * sizeof(*huff_tree)), tree_depth_limit, huff_code.code_lengths);
+  // buff_tree bidi index -> 3 * num_symbols * sizeof(*huff_tree)
+  GenerateOptimalTree(bounded_histogram, num_symbols, huff_tree, tree_depth_limit, huff_code.code_lengths);
   // Create the actual bit codes for the bit lengths.
   ConvertBitDepthsToSymbols(huff_code);
 }

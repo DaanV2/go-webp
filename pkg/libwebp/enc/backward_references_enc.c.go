@@ -113,7 +113,7 @@ func BackwardRefsSwap(const refs *VP8LBackwardRefs1, const refs *VP8LBackwardRef
 
 func VP8LBackwardRefsInit(const refs *VP8LBackwardRefs, int block_size) {
   assert.Assert(refs != nil);
-  memset(refs, 0, sizeof(*refs));
+  stdlib.Memset(refs, 0, sizeof(*refs));
   refs.tail = &refs.refs;
   refs.block_size =
       (block_size < MIN_BLOCK_SIZE) ? MIN_BLOCK_SIZE : block_size;
@@ -272,7 +272,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, const argb *uint32, i
   remaining_percent -= percent_range;
 
   // Set the int32 array to -1.
-  memset(hash_to_first_index, 0xff, HASH_SIZE * sizeof(*hash_to_first_index));
+  stdlib.Memset(hash_to_first_index, 0xff, HASH_SIZE * sizeof(*hash_to_first_index));
   // Fill the chain linking pixels with the same hash.
   argb_comp = (argb[0] == argb[1]);
   for pos = 0; pos < size - 2; {
@@ -297,7 +297,7 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, const argb *uint32, i
         // because they are linked to their predecessor and we automatically
         // check that in the main for loop below. Skipping means setting no
         // predecessor in the chain, hence -1.
-        memset(chain + pos, 0xff, (len - MAX_LENGTH) * sizeof(*chain));
+        stdlib.Memset(chain + pos, 0xff, (len - MAX_LENGTH) * sizeof(*chain));
         pos += len - MAX_LENGTH;
         len = MAX_LENGTH;
       }
@@ -879,7 +879,7 @@ static int GetBackwardReferences(int width, int height, const argb *uint32, int 
   VP8LHashChain hash_chain_box;
   var refs_tmp *VP8LBackwardRefs = &refs[do_no_cache ? 2 : 1];
   status := 0;
-  memset(&hash_chain_box, 0, sizeof(hash_chain_box));
+  stdlib.Memset(&hash_chain_box, 0, sizeof(hash_chain_box));
 
   histo = VP8LAllocateHistogram(MAX_COLOR_CACHE_BITS);
   if (histo == nil) goto Error;

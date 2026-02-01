@@ -153,8 +153,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
         // there is enough data to begin parsing partition 0.
         if (last_start != nil) {
           part_size := mem.buf + mem.end - last_start;
-          const const bounded_last_start *uint8 =
-              WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, last_start, part_size);
+          var bounded_last_start *uint8 = last_start // bidi index -> part_size
           VP8BitReaderSetBuffer(&dec.parts[last_part], bounded_last_start, part_size);
         }
       }
@@ -170,8 +169,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
 
             assert.Assert(dec.alpha_data_size >= ALPHA_HEADER_LEN);
             data_size = dec.alpha_data_size - ALPHA_HEADER_LEN;
-            bounded_alpha_data = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-                const *uint8, dec.alpha_data + ALPHA_HEADER_LEN, data_size);
+            bounded_alpha_data = dec.alpha_data + ALPHA_HEADER_LEN // bidi index -> data_size
             VP8LBitReaderSetBuffer(&alph_vp8l_dec.br, bounded_alpha_data, data_size);
           } else {  // alph_dec.method == ALPHA_NO_COMPRESSION
             // Nothing special to do in this case.
@@ -181,8 +179,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
     } else {  // Resize lossless bitreader
       var dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
       data_size := MemDataSize(mem);
-      const const bounded_new_base *uint8 =
-          WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, new_base, data_size);
+      var bounded_new_base *uint8 = new_base // bidi index -> data_size
       VP8LBitReaderSetBuffer(&dec.br, bounded_new_base, data_size);
     }
   }
@@ -333,15 +330,14 @@ func ChangeState(const idec *WebPIDecoder, DecState new_state, uint64 consumed_b
 }
 
 // Headers
-static VP8StatusCode DecodeWebPHeaders(const idec *WebPIDecoder) {
+func DecodeWebPHeaders(/* const */ idec *WebPIDecoder) VP8StatusCode {
   /* const */ mem *MemBuffer = &idec.mem;
   var data *uint8 = mem.buf + mem.start;
   curr_size := MemDataSize(mem);
   VP8StatusCode status;
   WebPHeaderStructure headers;
 
-  headers.data =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, data, curr_size);
+  headers.data = data // bidi index -> curr_size
   headers.data_size = curr_size;
   headers.have_all_data = 0;
   status = WebPParseHeaders(&headers);
@@ -385,7 +381,7 @@ static VP8StatusCode DecodeVP8FrameHeader(const idec *WebPIDecoder) {
     return VP8_STATUS_SUSPENDED;
   }
   {
-    const const bounded_data *uint8 =
+    var bounded_data *uint8 =
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, data, curr_size);
     if (!VP8GetInfo(bounded_data, curr_size, idec.chunk_size, &width, &height)) {
       return IDecError(idec, VP8_STATUS_BITSTREAM_ERROR);
@@ -681,7 +677,7 @@ WebPIDecode *WebPIDecoder(const *uint8  data, data_size uint64, config *WebPDeco
   WebPBitstreamFeatures tmp_features;
   const features *WebPBitstreamFeatures =
       (config == nil) ? &tmp_features : &config.input;
-  memset(&tmp_features, 0, sizeof(tmp_features));
+  stdlib.Memset(&tmp_features, 0, sizeof(tmp_features));
 
   // Parse the bitstream's features, if requested:
   if (data != nil && data_size > 0) {

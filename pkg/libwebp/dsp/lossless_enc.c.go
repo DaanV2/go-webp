@@ -216,7 +216,7 @@ func GetEntropyUnrefined_C(
   i_prev := 0;
   x_prev := X[0];
 
-  memset(stats, 0, sizeof(*stats));
+  stdlib.Memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
 
   for i = 1; i < length; i++ {
@@ -236,7 +236,7 @@ func GetCombinedEntropyUnrefined_C(
   i_prev := 0;
   xy_prev := X[0] + Y[0];
 
-  memset(stats, 0, sizeof(*stats));
+  stdlib.Memset(stats, 0, sizeof(*stats));
   VP8LBitEntropyInit(bit_entropy);
 
   for i = 1; i < length; i++ {

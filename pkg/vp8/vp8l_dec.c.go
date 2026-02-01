@@ -239,7 +239,7 @@ static int ReadHuffmanCodeLengths(const dec *VP8LDecoder, const code_length_code
   int max_symbol;
   prev_code_len := DEFAULT_CODE_LENGTH;
   HuffmanTables tables;
-  const const bounded_code_lengths *int =
+  var bounded_code_lengths *int =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           const *int, code_length_code_lengths, NUM_CODE_LENGTH_CODES * sizeof(*code_length_code_lengths));
 
@@ -333,7 +333,7 @@ static int ReadHuffmanCode(int alphabet_size, const dec *VP8LDecoder, const code
 
   ok = ok && !br.eos;
   if (ok) {
-    const const bounded_code_lengths *int =
+    var bounded_code_lengths *int =
         WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *int, code_lengths, alphabet_size * sizeof(int));
     size = VP8LBuildHuffmanTable(table, HUFFMAN_TABLE_BITS, bounded_code_lengths, alphabet_size);
   }
@@ -1708,7 +1708,7 @@ int VP8LDecodeAlphaImageStream(const alph_dec *ALPHDecoder, int last_row) {
 //------------------------------------------------------------------------------
 
 // Decodes the image header. Returns false in case of error.
-int VP8LDecodeHeader(const dec *VP8LDecoder, const io *VP8Io) {
+int VP8LDecodeHeader(/* const */ dec *VP8LDecoder, /* const */ io *VP8Io) {
   int width, height, has_alpha;
 
   if (dec == nil) return 0;
@@ -1719,8 +1719,7 @@ int VP8LDecodeHeader(const dec *VP8LDecoder, const io *VP8Io) {
   dec.io = io;
   dec.status = VP8_STATUS_OK;
   {
-    const const bounded_data *uint8 =
-        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(const *uint8, io.data, io.data_size);
+    var bounded_data *uint8 = io.data;
     VP8LInitBitReader(&dec.br, bounded_data, io.data_size);
   }
   if (!ReadImageInfo(&dec.br, &width, &height, &has_alpha)) {

@@ -73,7 +73,7 @@ func WEBP_ENDED_BY(x any) {}
 func WEBP_UNSAFE_MEMCPY(dst, src, size any) {}
 
 // Deprecated: Use golang std code
-func WEBP_UNSAFE_MEMSET(dst, c, size any) {/* memset(dst, c, size) */}
+func WEBP_UNSAFE_MEMSET(dst, c, size any) {/* stdlib.Memset(dst, c, size) */}
 
 // Deprecated: Use golang std code
 func  WEBP_UNSAFE_MEMMOVE(dst, src, size any) {/* memmove(dst, src, size) */}
@@ -84,7 +84,7 @@ func WEBP_UNSAFE_MEMCMP(s1, s2, size any) {/* memcmp(s1, s2, size) */}
 // Deprecated: Use golang std code
 func WEBP_UNSAFE_FORGE_SINGLE(typ, ptr any) {/* ((typ)(ptr)) */}
 
-// Deprecated: Use golang std code
+// Deprecated: replace with var <variable> <typ> = <ptr>
 func WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(typ, ptr, size any) {/* ((typ)(ptr)) */}
 
 // This macro exists to indicate intentionality with self-assignments and

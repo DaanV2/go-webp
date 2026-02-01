@@ -64,14 +64,14 @@ func HistogramStatsClear(const h *VP8LHistogram) {
     h.is_used[i] = 1;
   }
   h.bit_cost = 0;
-  memset(h.costs, 0, sizeof(h.costs));
+  stdlib.Memset(h.costs, 0, sizeof(h.costs));
 }
 
 func HistogramClear(const h *VP8LHistogram) {
   var literal *uint32 = h.literal;
   cache_bits := h.palette_code_bits;
   histo_size := GetHistogramSize(cache_bits);
-  memset(h, 0, histo_size);
+  stdlib.Memset(h, 0, histo_size);
   h.palette_code_bits = cache_bits;
   h.literal = literal;
   HistogramStatsClear(h);
@@ -178,7 +178,7 @@ func VP8LHistogramSetClear(const set *VP8LHistogramSet) {
   total_size := HistogramSetTotalSize(size, cache_bits);
   memory *uint8 = (*uint8)set;
 
-  memset(memory, 0, total_size);
+  stdlib.Memset(memory, 0, total_size);
   memory += sizeof(*set);
   set.histograms = (*VP8LHistogram*)memory;
   set.max_size = size;
@@ -454,7 +454,7 @@ static  func HistogramAdd(const h *VP8LHistogram1, const h *VP8LHistogram2, cons
       } else if (h2.is_used[i]) {
         memcpy(pout, p2, length * sizeof(pout[0]));
       } else {
-        memset(pout, 0, length * sizeof(pout[0]));
+        stdlib.Memset(pout, 0, length * sizeof(pout[0]));
       }
     }
   }

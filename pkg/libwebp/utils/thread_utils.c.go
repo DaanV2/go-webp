@@ -16,7 +16,7 @@ package utils
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/string"  // for memset()
+import "github.com/daanv2/go-webp/pkg/string"  // for stdlib.Memset()
 
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"

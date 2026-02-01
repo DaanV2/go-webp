@@ -53,7 +53,7 @@ func ConvertPopulationCountTableToBitEstimates(
     }
   }
   if (nonzeros <= 1) {
-    memset(output, 0, num_symbols * sizeof(*output));
+    stdlib.Memset(output, 0, num_symbols * sizeof(*output));
   } else {
     logsum := VP8LFastLog2(sum);
     for i = 0; i < num_symbols; i++ {
@@ -228,7 +228,7 @@ func CostManagerClear(const manager *CostManager) {
   manager.recycled_intervals = nil;
 
   // Reset pointers, 'count' and 'cache_intervals_size'.
-  memset(manager, 0, sizeof(*manager));
+  stdlib.Memset(manager, 0, sizeof(*manager));
   CostManagerInitFreeList(manager);
 }
 

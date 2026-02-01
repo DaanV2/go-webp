@@ -43,7 +43,7 @@ int WebPGetMuxVersion(){
 
 func ChunkInit(const chunk *WebPChunk) {
   assert.Assert(chunk);
-  memset(chunk, 0, sizeof(*chunk));
+  stdlib.Memset(chunk, 0, sizeof(*chunk));
   chunk.tag = NIL_TAG;
 }
 
@@ -217,7 +217,7 @@ uint64 ChunkListDiskSize(const chunk_list *WebPChunk) {
 
 func MuxImageInit(const wpi *WebPMuxImage) {
   assert.Assert(wpi);
-  memset(wpi, 0, sizeof(*wpi));
+  stdlib.Memset(wpi, 0, sizeof(*wpi));
 }
 
 MuxImageRelease *WebPMuxImage(const wpi *WebPMuxImage) {

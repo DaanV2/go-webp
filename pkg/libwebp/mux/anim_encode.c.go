@@ -332,7 +332,7 @@ func FrameRelease(const encoded_frame *EncodedFrame) {
   if (encoded_frame != nil) {
     WebPDataClear(&encoded_frame.sub_frame.bitstream);
     WebPDataClear(&encoded_frame.key_frame.bitstream);
-    memset(encoded_frame, 0, sizeof(*encoded_frame));
+    stdlib.Memset(encoded_frame, 0, sizeof(*encoded_frame));
   }
 }
 
@@ -781,7 +781,7 @@ static WebPEncodingError EncodeCandidate(const sub_frame *WebPPicture, const rec
   WebPConfig config = *encoder_config;
   WebPEncodingError error_code = VP8_ENC_OK;
   assert.Assert(candidate != nil);
-  memset(candidate, 0, sizeof(*candidate));
+  stdlib.Memset(candidate, 0, sizeof(*candidate));
 
   // Set frame rect and info.
   candidate.rect = *rect;
@@ -964,7 +964,7 @@ static WebPEncodingError GenerateCandidates(
     if (use_blending_ll) {
       // Reset the whole carryover mask to "all pixels are explicitly encoded in
       // this current frame".
-      memset(enc.candidate_carryover_mask, 0, params.rect_ll.width * params.rect_ll.height);
+      stdlib.Memset(enc.candidate_carryover_mask, 0, params.rect_ll.width * params.rect_ll.height);
       enc.curr_canvas_copy_modified =
           IncreaseTransparency(canvas_carryover, &params.rect_ll, curr_canvas, enc.candidate_carryover_mask);
     }
@@ -978,7 +978,7 @@ static WebPEncodingError GenerateCandidates(
     if (use_blending_lossy) {
       // Reset the whole carryover mask to "all pixels are explicitly encoded in
       // this current frame".
-      memset(enc.candidate_carryover_mask, 0, params.rect_lossy.width * params.rect_lossy.height);
+      stdlib.Memset(enc.candidate_carryover_mask, 0, params.rect_lossy.width * params.rect_lossy.height);
       enc.curr_canvas_copy_modified = FlattenSimilarBlocks(
           canvas_carryover, &params.rect_lossy, curr_canvas, config_lossy.quality, enc.candidate_carryover_mask);
     }
@@ -1142,7 +1142,7 @@ static WebPEncodingError SetFrame(const enc *WebPAnimEncoder, const config *WebP
     return VP8_ENC_ERROR_INVALID_CONFIGURATION;
   }
 
-  memset(candidates, 0, sizeof(candidates));
+  stdlib.Memset(candidates, 0, sizeof(candidates));
 
   // Change-rectangle assuming previous frame was DISPOSE_NONE.
   if (!GetSubRects(canvas_carryover, curr_canvas, is_key_frame, is_first_frame, config_lossy.quality, &dispose_none_params)) {

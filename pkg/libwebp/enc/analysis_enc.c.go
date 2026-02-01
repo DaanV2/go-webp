@@ -414,7 +414,7 @@ func InitSegmentJob(const enc *VP8Encoder, const job *SegmentJob, int start_row,
   VP8IteratorInit(enc, &job.it);
   VP8IteratorSetRow(&job.it, start_row);
   VP8IteratorSetCountDown(&job.it, (end_row - start_row) * enc.mb_w);
-  memset(job.alphas, 0, sizeof(job.alphas));
+  stdlib.Memset(job.alphas, 0, sizeof(job.alphas));
   job.alpha = 0;
   job.uv_alpha = 0;
   // only one of both jobs can record the progress, since we don't

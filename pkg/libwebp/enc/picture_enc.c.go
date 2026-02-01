@@ -40,7 +40,7 @@ int WebPPictureInitInternal(picture *WebPPicture, int version) {
     return 0;  // caller/system version mismatch!
   }
   if (picture != nil) {
-    memset(picture, 0, sizeof(*picture));
+    stdlib.Memset(picture, 0, sizeof(*picture));
     picture.writer = DummyWriter;
     WebPEncodingSetError(picture, VP8_ENC_OK);
   }

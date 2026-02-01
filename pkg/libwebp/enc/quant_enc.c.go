@@ -673,11 +673,11 @@ static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16
   // Fresh start
   // Beware! We must preserve in[0]/out[0] value for TYPE_I16_AC case.
   if (coeff_type == TYPE_I16_AC) {
-    memset(in + 1, 0, 15 * sizeof(*in));
-    memset(out + 1, 0, 15 * sizeof(*out));
+    stdlib.Memset(in + 1, 0, 15 * sizeof(*in));
+    stdlib.Memset(out + 1, 0, 15 * sizeof(*out));
   } else {
-    memset(in, 0, 16 * sizeof(*in));
-    memset(out, 0, 16 * sizeof(*out));
+    stdlib.Memset(in, 0, 16 * sizeof(*in));
+    stdlib.Memset(out, 0, 16 * sizeof(*out));
   }
   if (best_path[0] == -1) {
     return 0;  // skip!

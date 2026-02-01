@@ -72,8 +72,8 @@ func Upsample16Pixels_NEON(const WEBP_RESTRICT const r *uint81, const WEBP_RESTR
     memcpy(r1, (tb), (num_pixels));                                    \
     memcpy(r2, (bb), (num_pixels));                                    \
     /* replicate last byte */                                          \
-    memset(r1 + (num_pixels), r1[(num_pixels) - 1], 9 - (num_pixels)); \
-    memset(r2 + (num_pixels), r2[(num_pixels) - 1], 9 - (num_pixels)); \
+    stdlib.Memset(r1 + (num_pixels), r1[(num_pixels) - 1], 9 - (num_pixels)); \
+    stdlib.Memset(r2 + (num_pixels), r2[(num_pixels) - 1], 9 - (num_pixels)); \
     Upsample16Pixels_NEON(r1, r2, out);                                \
   }
 

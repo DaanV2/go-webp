@@ -111,8 +111,8 @@ func Upsample32Pixels_SSE41(const WEBP_RESTRICT const r *uint81, const WEBP_REST
     memcpy(r1, (tb), (num_pixels));                                          \
     memcpy(r2, (bb), (num_pixels));                                          \
     /* replicate last byte */                                                \
-    memset(r1 + (num_pixels), r1[(num_pixels) - 1], 17 - (num_pixels));      \
-    memset(r2 + (num_pixels), r2[(num_pixels) - 1], 17 - (num_pixels));      \
+    stdlib.Memset(r1 + (num_pixels), r1[(num_pixels) - 1], 17 - (num_pixels));      \
+    stdlib.Memset(r2 + (num_pixels), r2[(num_pixels) - 1], 17 - (num_pixels));      \
     /* using the shared function instead of the macro saves ~3k code size */ \
     Upsample32Pixels_SSE41(r1, r2, out);                                     \
   }

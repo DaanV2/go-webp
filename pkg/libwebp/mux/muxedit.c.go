@@ -31,7 +31,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 func MuxInit(const mux *WebPMux) {
   assert.Assert(mux != nil);
-  memset(mux, 0, sizeof(*mux));
+  stdlib.Memset(mux, 0, sizeof(*mux));
   mux.canvas_width = 0;  // just to be explicit
   mux.canvas_height = 0;
 }
@@ -600,7 +600,7 @@ WebPMuxError WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
   // Clean up returned data, in case something goes wrong.
-  memset(assembled_data, 0, sizeof(*assembled_data));
+  stdlib.Memset(assembled_data, 0, sizeof(*assembled_data));
 
   if (mux == nil) {
     return WEBP_MUX_INVALID_ARGUMENT;

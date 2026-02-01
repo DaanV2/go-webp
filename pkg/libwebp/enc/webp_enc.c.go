@@ -207,7 +207,7 @@ static InitVP *VP8Encoder8Encoder(const config *WebPConfig, const picture *WebPP
   }
   enc = (*VP8Encoder)mem;
   mem = (*uint8)WEBP_ALIGN(mem + sizeof(*enc));
-  memset(enc, 0, sizeof(*enc));
+  stdlib.Memset(enc, 0, sizeof(*enc));
   enc.num_parts = 1 << config.partitions;
   enc.mb_w = mb_w;
   enc.mb_h = mb_h;
@@ -345,7 +345,7 @@ int WebPEncode(const config *WebPConfig, pic *WebPPicture) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_DIMENSION);
   }
 
-  if (pic.stats != nil) memset(pic.stats, 0, sizeof(*pic.stats));
+  if (pic.stats != nil) stdlib.Memset(pic.stats, 0, sizeof(*pic.stats));
 
   if (!config.lossless) {
     enc *VP8Encoder = nil;

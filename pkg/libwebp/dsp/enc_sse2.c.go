@@ -624,7 +624,7 @@ static  func Fill_SSE2(dst *uint8, int value, int size) {
   if (size == 4) {
     var j int
     for j = 0; j < 4; j++ {
-      memset(dst + j * BPS, value, 4);
+      stdlib.Memset(dst + j * BPS, value, 4);
     }
   } else if (size == 8) {
     Put8x8uv_SSE2(value, dst);

@@ -471,7 +471,7 @@ End:
   WebPSafeFree(buf_rle);
   if (!ok) {
     WebPSafeFree(mem_buf);
-    memset(huffman_codes, 0, 5 * histogram_image_size * sizeof(*huffman_codes));
+    stdlib.Memset(huffman_codes, 0, 5 * histogram_image_size * sizeof(*huffman_codes));
   }
   return ok;
 }
@@ -814,7 +814,7 @@ static int EncodeImageInternal(
   assert.Assert(hdr_size != nil);
   assert.Assert(data_size != nil);
 
-  memset(&hash_chain_histogram, 0, sizeof(hash_chain_histogram));
+  stdlib.Memset(&hash_chain_histogram, 0, sizeof(hash_chain_histogram));
   if (!VP8LBitWriterInit(&bw_best, 0)) {
     WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
     goto Error;
@@ -1249,7 +1249,7 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
     for i = 0; i < 3; i++ {
       use_LUT := 1;
       // Set each element in buffer to max uint16.
-      memset(buffer, 0xff, sizeof(buffer));
+      stdlib.Memset(buffer, 0xff, sizeof(buffer));
       for j = 0; j < palette_size; j++ {
         ind := hash_functions[i](palette[j]);
         if (buffer[ind] != uint(0xffff)) {
@@ -1736,7 +1736,7 @@ int VP8LEncodeImage(const config *WebPConfig, const picture *WebPPicture) {
   // Reset stats (for pure lossless coding)
   if (picture.stats != nil) {
     var stats *WebPAuxStats = picture.stats;
-    memset(stats, 0, sizeof(*stats));
+    stdlib.Memset(stats, 0, sizeof(*stats));
     stats.PSNR[0] = 99.f;
     stats.PSNR[1] = 99.f;
     stats.PSNR[2] = 99.f;
@@ -1780,7 +1780,7 @@ int VP8LEncodeImage(const config *WebPConfig, const picture *WebPPicture) {
   if (picture.extra_info != nil) {
     mb_w := (width + 15) >> 4;
     mb_h := (height + 15) >> 4;
-    memset(picture.extra_info, 0, mb_w * mb_h * sizeof(*picture.extra_info));
+    stdlib.Memset(picture.extra_info, 0, mb_w * mb_h * sizeof(*picture.extra_info));
   }
 
 Error:

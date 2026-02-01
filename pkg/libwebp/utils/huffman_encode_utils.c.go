@@ -137,7 +137,7 @@ static int CompareHuffmanTrees(const ptr *void1, const ptr *void2) {
   }
 }
 
-func SetBitDepths(const tree *HuffmanTree, const const pool *HuffmanTree, const bit_depths *uint8, level int) {
+func SetBitDepths(const tree *HuffmanTree, var pool *HuffmanTree, const bit_depths *uint8, level int) {
   if (tree.pool_index_left >= 0) {
     SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
     SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
@@ -412,7 +412,7 @@ func VP8LCreateHuffmanTree(const histogram *uint32, tree_depth_limit int, const 
   const bounded_buf_rle *uint8 =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*uint8, buf_rle, (uint64)num_symbols * sizeof(*buf_rle));
 
-  memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));
+  stdlib.Memset(bounded_buf_rle, 0, num_symbols * sizeof(*buf_rle));
   OptimizeHuffmanForRle(num_symbols, bounded_buf_rle, bounded_histogram);
   GenerateOptimalTree(
       bounded_histogram, num_symbols, WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(*HuffmanTree, huff_tree, 3 * num_symbols * sizeof(*huff_tree)), tree_depth_limit, huff_code.code_lengths);
