@@ -236,7 +236,7 @@ WEBP_SINGLE WebPMalloc *void(size uint64 ) {
   // pointers they accept/return is __single.
   //
   // All callers will need to immediately cast the returned pointer to
-  // or WEBP_INDEXABLE via
+  // or via
   // WEBP_UNSAFE_FORGE_BIDI_INDEXABLE.
   //
   // TODO: https://issues.webmproject.org/432511225 - Remove this once we can

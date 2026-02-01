@@ -137,7 +137,7 @@ static int CompareHuffmanTrees(const ptr *void1, const ptr *void2) {
   }
 }
 
-func SetBitDepths(const tree *HuffmanTree, const const pool *HuffmanTree, WEBP_INDEXABLE const bit_depths *uint8, int level) {
+func SetBitDepths(const tree *HuffmanTree, const const pool *HuffmanTree, const bit_depths *uint8, int level) {
   if (tree.pool_index_left >= 0) {
     SetBitDepths(&pool[tree.pool_index_left], pool, bit_depths, level + 1);
     SetBitDepths(&pool[tree.pool_index_right], pool, bit_depths, level + 1);
@@ -261,8 +261,8 @@ func GenerateOptimalTree(
 // -----------------------------------------------------------------------------
 // Coding of the Huffman tree values
 
-static WEBP_INDEXABLE *HuffmanTreeToken
-CodeRepeatedValues(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken, int value, int prev_value) {
+static *HuffmanTreeToken
+CodeRepeatedValues(int repetitions, tokens *HuffmanTreeToken, int value, int prev_value) {
   assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH);
   if (value != prev_value) {
     tokens.code = value;
@@ -294,8 +294,8 @@ CodeRepeatedValues(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken, int
   return tokens;
 }
 
-static WEBP_INDEXABLE *HuffmanTreeToken
-CodeRepeatedZeros(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken) {
+static *HuffmanTreeToken
+CodeRepeatedZeros(int repetitions, tokens *HuffmanTreeToken) {
   while (repetitions >= 1) {
     if (repetitions < 3) {
       int i;
@@ -327,7 +327,7 @@ CodeRepeatedZeros(int repetitions, WEBP_INDEXABLE tokens *HuffmanTreeToken) {
 
 int VP8LCreateCompressedHuffmanTree(
     const tree *HuffmanTreeCode, *HuffmanTreeToken  tokens, int max_tokens) {
-  WEBP_INDEXABLE current_token *HuffmanTreeToken = tokens;
+  current_token *HuffmanTreeToken = tokens;
   var starting_token *HuffmanTreeToken = tokens;
   var ending_token *HuffmanTreeToken = tokens + max_tokens;
   depth_size := tree.num_symbols;

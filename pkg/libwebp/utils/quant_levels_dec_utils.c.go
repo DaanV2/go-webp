@@ -49,8 +49,8 @@ type SmoothParams struct {
   int width, height;            // dimension
   int stride;                   // stride in bytes
   row int;                      // current input row being processed
-  WEBP_INDEXABLE src *uint8;  // input pointer
-  WEBP_INDEXABLE dst *uint8;  // output pointer
+  src *uint8;  // input pointer
+  dst *uint8;  // output pointer
 
   int radius;  // filter radius (=delay)
   int scale;   // normalization factor, in FIX bits precision
@@ -58,10 +58,10 @@ type SmoothParams struct {
   mem *void;  // all memory
 
   // various scratch buffers
-  WEBP_INDEXABLE start *uint16;
-  WEBP_INDEXABLE cur *uint16;
+  start *uint16;
+  cur *uint16;
   end *uint16;
-  WEBP_INDEXABLE top *uint16;
+  top *uint16;
   *uint16  average;
 
   // input levels distribution
@@ -83,11 +83,11 @@ static  uint8 clip_8b(int v) {
 
 // vertical accumulation
 func VFilter(const p *SmoothParams) {
-  const WEBP_INDEXABLE src *uint8 = p.src;
+  const src *uint8 = p.src;
   w := p.width;
-  const WEBP_INDEXABLE cur *uint16 = p.cur;
-  const WEBP_INDEXABLE top *uint16 = p.top;
-  const WEBP_INDEXABLE out *uint16 = p.end;
+  const cur *uint16 = p.cur;
+  const top *uint16 = p.top;
+  const out *uint16 = p.end;
   sum := 0;  // all arithmetic is modulo 16bit
   int x;
 
@@ -112,8 +112,8 @@ func VFilter(const p *SmoothParams) {
 // horizontal accumulation. We use mirror replication of missing pixels, as it's
 // a little easier to implement (surprisingly).
 func HFilter(const p *SmoothParams) {
-  const WEBP_INDEXABLE in *uint16 = p.end;
-  const WEBP_INDEXABLE out *uint16 = p.average;
+  const in *uint16 = p.end;
+  const out *uint16 = p.average;
   scale := p.scale;
   w := p.width;
   r := p.radius;
@@ -136,7 +136,7 @@ func HFilter(const p *SmoothParams) {
 
 // emit one filtered output row
 func ApplyFilter(const p *SmoothParams) {
-  const WEBP_INDEXABLE average *uint16 = p.average;
+  const average *uint16 = p.average;
   w := p.width;
   // correction is WEBP_COUNTED_BY, pointing to the start of the LUT.
   // We need the middle pointer for negative indexing.
@@ -145,7 +145,7 @@ func ApplyFilter(const p *SmoothParams) {
 #if defined(USE_DITHERING)
   var dither *uint8 = kOrderedDither[p.row % DSIZE];
 #endif
-  const WEBP_INDEXABLE dst *uint8 = p.dst;
+  const dst *uint8 = p.dst;
   int x;
   for (x = 0; x < w; ++x) {
     v := dst[x];
@@ -194,7 +194,7 @@ func InitCorrectionLUT(
 func CountLevels(const p *SmoothParams) {
   int i, j, last_level;
   uint8 used_levels[256] = {0}
-  const WEBP_INDEXABLE data *uint8 = p.src;
+  const data *uint8 = p.src;
   p.min = 255;
   p.max = 0;
   for (j = 0; j < p.height; ++j) {
