@@ -33,18 +33,19 @@ typedef int (*OutputRowFunc)(const p *WebPDecParams, int y_pos, int max_out_line
 
 type WebPDecParams struct {
   output *WebPDecBuffer;           // output buffer.
-  uint8 *tmp_y, *tmp_u, *tmp_v;  // cache for the fancy upsampler
-                                   // or used for tmp rescaling
+  // cache for the fancy upsampler
+                                   // or used for tmp rescaling buffers
+  *tmp_y, *tmp_u, *tmp_v uint8;  
 
-  int last_y;  // coordinate of the line that was last output
-  const options *WebPDecoderOptions;  // if not nil, use alt decoding features
+   last_y int;  // coordinate of the line that was last output
+  options *WebPDecoderOptions;  // if not nil, use alt decoding features
 
-  WebPRescaler *scaler_y, *scaler_u, *scaler_v, *scaler_a;  // rescalers
+  scaler_y, scaler_u, scaler_v, scaler_a *WebPRescaler;  // rescalers
   memory *void;  // overall scratch memory for the output work.
 
-  OutputFunc emit;               // output RGB or YUV samples
-  OutputAlphaFunc emit_alpha;    // output alpha channel
-  OutputRowFunc emit_alpha_row;  // output one line of rescaled alpha values
+  emit OutputFunc                // output RGB or YUV samples
+  emit_alpha OutputAlphaFunc     // output alpha channel
+  emit_alpha_row OutputRowFunc   // output one line of rescaled alpha values
 }
 
 // Should be called first, before any use of the WebPDecParams object.
@@ -55,16 +56,15 @@ func WebPResetDecParams(const params *WebPDecParams);
 
 // Structure storing a description of the RIFF headers.
 type WebPHeaderStructure struct {
-  const *uint8  data;  // input buffer
-  data_size uint64;                                // input buffer size
-  int have_all_data;  // true if all data is known to be available
-  uint64 offset;      // offset to main data chunk (VP8 or VP8L)
-  const *uint8 
-      alpha_data;          // points to alpha chunk (if present)
-  uint64 alpha_data_size;  // alpha chunk size
-  uint64 compressed_size;  // VP8/VP8L compressed data size
-  uint64 riff_size;        // size of the riff payload (or 0 if absent)
-  int is_lossless;         // true if a VP8L chunk is present
+	data *uint8  // input buffer
+	data_size uint64;                                // input buffer size
+	have_all_data int  // true if all data is known to be available
+	offset uint64      // offset to main data chunk (VP8 or VP8L)
+	alpha_data *uint8;          // points to alpha chunk (if present)
+	alpha_data_size uint64  // alpha chunk size
+	compressed_size uint64  // VP8/VP8L compressed data size
+	riff_size uint64        // size of the riff payload (or 0 if absent)
+	is_lossless int         // true if a VP8L chunk is present
 }
 
 // Skips over all valid chunks prior to the first VP8/VP8L frame header.
@@ -73,7 +73,7 @@ type WebPHeaderStructure struct {
 // in the case of non-decodable features (animation for instance).
 // In 'headers', compressed_size, offset, alpha_data, alpha_size, and lossless
 // fields are updated appropriately upon success.
-VP8StatusCode WebPParseHeaders(const headers *WebPHeaderStructure);
+func WebPParseHeaders(const headers *WebPHeaderStructure) VP8StatusCode;
 
 //------------------------------------------------------------------------------
 // Misc utils
