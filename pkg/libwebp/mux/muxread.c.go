@@ -183,7 +183,7 @@ Fail:
 //------------------------------------------------------------------------------
 // Create a mux object from WebP-RIFF data.
 
-WebPMuxCreateInternal *WebPMux(const bitstream *WebPData, int copy_data, int version) {
+WebPMuxCreateInternal *WebPMux(const bitstream *WebPData, int copy_data, version int) {
   uint64 riff_size;
   uint32 tag;
   const end *uint8;

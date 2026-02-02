@@ -78,13 +78,13 @@ type MemBuffer struct {
 
 type WebPIDecoder struct {
   DecState state;        // current decoding state
-  WebPDecParams params;  // Params to store output info
+  var params WebPDecParams  // Params to store output info
   int is_lossless;       // for down-casting 'dec'.
   dec *void;             // either a VP8Decoder or a VP8LDecoder instance
-  VP8Io io;
+  var io VP8Io
 
   MemBuffer mem;         // input memory buffer.
-  WebPDecBuffer output;  // output buffer (when no external one is supplied, // or if the external one has slow-memory)
+  var output WebPDecBuffer ;  // output buffer (when no external one is supplied, // or if the external one has slow-memory)
   final_output *WebPDecBuffer;  // Slow-memory output to copy to eventually.
   uint64 chunk_size;  // Compressed VP8/VP8L size extracted from Header.
 
@@ -334,8 +334,8 @@ func DecodeWebPHeaders(/* const */ idec *WebPIDecoder) VP8StatusCode {
   /* const */ mem *MemBuffer = &idec.mem;
   var data *uint8 = mem.buf + mem.start;
   curr_size := MemDataSize(mem);
-  VP8StatusCode status;
-  WebPHeaderStructure headers;
+  var status VP8StatusCode
+  var headers WebPHeaderStructure
 
   headers.data = data // bidi index -> curr_size
   headers.data_size = curr_size;
@@ -810,7 +810,7 @@ static VP8StatusCode IDecCheckStatus(const idec *WebPIDecoder) {
 }
 
 VP8StatusCode WebPIAppend(idec *WebPIDecoder, /*const*/ *uint8  data, data_size uint64) {
-  VP8StatusCode status;
+  var status VP8StatusCode
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
   }
@@ -830,7 +830,7 @@ VP8StatusCode WebPIAppend(idec *WebPIDecoder, /*const*/ *uint8  data, data_size 
 }
 
 VP8StatusCode WebPIUpdate(idec *WebPIDecoder, /*const*/ *uint8  data, data_size uint64) {
-  VP8StatusCode status;
+  var status VP8StatusCode
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
   }

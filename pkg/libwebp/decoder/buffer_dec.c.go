@@ -194,7 +194,7 @@ func WebPFlipBuffer(/* const */ buffer *WebPDecBuffer) VP8StatusCode {
 // Also incorporates the options.flip flag to flip the buffer parameters if
 // needed.
 func WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoderOptions, /*const*/ buffer *WebPDecBuffer) VP8StatusCode {
-  VP8StatusCode status;
+  var status VP8StatusCode
   if (buffer == nil || width <= 0 || height <= 0) {
     return VP8_STATUS_INVALID_PARAM;
   }

@@ -703,7 +703,7 @@ static ParseStatus CreateRawImageDemuxer(/* const */ mem *MemBuffer, *WebPDemuxe
   }
 }
 
-WebPDemuxInternal *WebPDemuxer(const data *WebPData, int allow_partial, state *WebPDemuxState, int version) {
+WebPDemuxInternal *WebPDemuxer(const data *WebPData, int allow_partial, state *WebPDemuxState, version int) {
   const parser *ChunkParser
   int partial
   ParseStatus status = PARSE_ERROR

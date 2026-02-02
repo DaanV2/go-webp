@@ -418,7 +418,7 @@ type WebPDecoderOptions struct {
 // Main object storing the configuration for advanced decoding.
 type WebPDecoderConfig struct {
   WebPBitstreamFeatures input;  // Immutable bitstream features (optional)
-  WebPDecBuffer output;         // Output buffer (can point to external mem)
+  var output WebPDecBuffer ;         // Output buffer (can point to external mem)
   WebPDecoderOptions options;   // Decoding options
 }
 

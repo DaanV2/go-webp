@@ -36,7 +36,7 @@ func MuxInit(const mux *WebPMux) {
   mux.canvas_height = 0;
 }
 
-WebPNewInternal *WebPMux(int version) {
+WebPNewInternal *WebPMux(version int) {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_MUX_ABI_VERSION)) {
     return nil;
   } else {
