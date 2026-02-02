@@ -19,10 +19,10 @@ import "github.com/daanv2/go-webp/pkg/stddef"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 import "github.com/daanv2/go-webp/pkg/string"
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
@@ -234,7 +234,7 @@ func BuildPackedTable(const htree_group *HTreeGroup) {
 
 static int ReadHuffmanCodeLengths(const dec *VP8LDecoder, /*const*/ code_length_code_lengths *int, int num_symbols, /*const*/ code_lengths *int) {
   ok := 0;
-  var br *VP8LBitReader = &dec.br;
+  var br *VP8LBitReader = &decoder.br;
   int symbol;
   int max_symbol;
   prev_code_len := DEFAULT_CODE_LENGTH;
@@ -302,7 +302,7 @@ End:
 static int ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*const*/ code_lengths *int, /*const*/ table *HuffmanTables) {
   ok := 0;
   size := 0;
-  var br *VP8LBitReader = &dec.br;
+  var br *VP8LBitReader = &decoder.br;
   simple_code := VP8LReadBits(br, 1);
 
   WEBP_UNSAFE_MEMSET(code_lengths, 0, alphabet_size * sizeof(*code_lengths));
@@ -345,8 +345,8 @@ static int ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*cons
 
 static int ReadHuffmanCodes(const dec *VP8LDecoder, int xsize, int ysize, int color_cache_bits, int allow_recursion) {
   var i int
-  var br *VP8LBitReader = &dec.br;
-  var hdr *VP8LMetadata = &dec.hdr;
+  var br *VP8LBitReader = &decoder.br;
+  var hdr *VP8LMetadata = &decoder.hdr;
   huffman_image *uint32 = nil;
   htree_groups *HTreeGroup = nil;
   huffman_tables *HuffmanTables = &hdr.huffman_tables;
@@ -660,7 +660,7 @@ if constants.WORDS_BIGENDIAN {
 }
 
 static int ExportYUVA(const dec *VP8LDecoder, int y_pos) {
-  var rescaler *WebPRescaler = dec.rescaler;
+  var rescaler *WebPRescaler = decoder.rescaler;
   var src *uint32 = (*uint32)rescaler.dst;
   dst_width := rescaler.dst_width;
   num_lines_out := 0;
@@ -810,11 +810,11 @@ func ApplyInverseTransforms(const dec *VP8LDecoder, int start_row, num_rows int 
   cache_pixs := dec.width * num_rows;
   end_row := start_row + num_rows;
   var rows_in *uint32 = rows;
-  var rows_out *uint32 = dec.argb_cache;
+  var rows_out *uint32 = decoder.argb_cache;
 
   // Inverse transforms.
   while (n-- > 0) {
-    var transform *VP8LTransform = &dec.transforms[n];
+    var transform *VP8LTransform = &decoder.transforms[n];
     VP8LInverseTransform(transform, start_row, end_row, rows_in, rows_out);
     rows_in = rows_out;
   }
@@ -827,7 +827,7 @@ func ApplyInverseTransforms(const dec *VP8LDecoder, int start_row, num_rows int 
 // Processes (transforms, scales & color-converts) the rows decoded after the
 // last call.
 func ProcessRows(const dec *VP8LDecoder, row int, int wait_for_biggest_batch) {
-  var rows *uint32 = dec.pixels + dec.width * dec.last_row;
+  var rows *uint32 = decoder.pixels + decoder.width * decoder.last_row;
   num_rows int ;
 
   // In case of YUV conversion and if we do not need to get to the last row.
@@ -853,14 +853,14 @@ func ProcessRows(const dec *VP8LDecoder, row int, int wait_for_biggest_batch) {
   // of argb_cache), but we currently don't need more than that.
   assert.Assert(num_rows <= NUM_ARGB_CACHE_ROWS);
   if (num_rows > 0) {  // Emit output.
-    var io *VP8Io = dec.io;
+    var io *VP8Io = decoder.io;
     rows_data *uint8 = (*uint8)dec.argb_cache;
     in_stride := io.width * sizeof(uint32);  // in unit of RGBA
     ApplyInverseTransforms(dec, dec.last_row, num_rows, rows);
     if (!SetCropWindow(io, dec.last_row, row, &rows_data, in_stride)) {
       // Nothing to output (this time).
     } else {
-      var output *WebPDecBuffer = dec.output;
+      var output *WebPDecBuffer = decoder.output;
       if (WebPIsRGBMode(output.colorspace)) {  // convert to RGBA
         var buf *WebPRGBABuffer = &output.u.RGBA;
         const rgba *uint8 =
@@ -933,7 +933,7 @@ func ExtractPalettedAlphaRows(const dec *VP8LDecoder, int last_row) {
     width := dec.io.width;
     out *uint8 = alph_dec.output + width * first_row;
     var in *uint8 = (*uint8)dec.pixels + dec.width * first_row;
-    var transform *VP8LTransform = &dec.transforms[0];
+    var transform *VP8LTransform = &decoder.transforms[0];
     assert.Assert(dec.next_transform == 1);
     assert.Assert(transform.type == COLOR_INDEXING_TRANSFORM);
     VP8LColorIndexInverseTransformAlpha(transform, first_row, last_row, in, out);
@@ -1063,8 +1063,8 @@ static int DecodeAlphaData(const dec *VP8LDecoder, /*const*/ data *uint8, int wi
   ok := 1;
   row := dec.last_pixel / width;
   col := dec.last_pixel % width;
-  var br *VP8LBitReader = &dec.br;
-  var hdr *VP8LMetadata = &dec.hdr;
+  var br *VP8LBitReader = &decoder.br;
+  var hdr *VP8LMetadata = &decoder.hdr;
   pos := dec.last_pixel;          // current position
   end := width * height;     // End of data
   last := width * last_row;  // Last pixel to decode
@@ -1164,8 +1164,8 @@ const SYNC_EVERY_N_ROWS =8  // minimum number of rows between check-points
 static int DecodeImageData(const dec *VP8LDecoder, /*const*/ data *uint32, int width, int height, int last_row, ProcessRowsFunc process_func) {
   row := dec.last_pixel / width;
   col := dec.last_pixel % width;
-  var br *VP8LBitReader = &dec.br;
-  var hdr *VP8LMetadata = &dec.hdr;
+  var br *VP8LBitReader = &decoder.br;
+  var hdr *VP8LMetadata = &decoder.hdr;
   src *uint32 = data + dec.last_pixel;
   last_cached *uint32 = src;
   var src_end *uint32 = data + width * height;     // End of data
@@ -1350,9 +1350,9 @@ static int ExpandColorMap(int num_colors, /*const*/ transform *VP8LTransform) {
   return 1;
 }
 
-static int ReadTransform(const xsize *int, int ysize *const, /*const*/ dec *VP8LDecoder) {
+static int ReadTransform(const xsize *int, int ysize *const, /*const*/ decoder *VP8LDecoder) {
   ok := 1;
-  var br *VP8LBitReader = &dec.br;
+  var br *VP8LBitReader = &decoder.br;
   transform *VP8LTransform = &dec.transforms[dec.next_transform];
   const VP8LImageTransformType type =
       (VP8LImageTransformType)VP8LReadBits(br, 2);
@@ -1466,7 +1466,7 @@ func VP8LDelete(const dec *VP8LDecoder) {
 }
 
 func UpdateDecoder(const dec *VP8LDecoder, int width, int height) {
-  var hdr *VP8LMetadata = &dec.hdr;
+  var hdr *VP8LMetadata = &decoder.hdr;
   num_bits := hdr.huffman_subsample_bits;
   dec.width = width;
   dec.height = height;
@@ -1479,8 +1479,8 @@ static int DecodeImageStream(int xsize, int ysize, int is_level0, /*const*/ dec 
   ok := 1;
   transform_xsize := xsize;
   transform_ysize := ysize;
-  var br *VP8LBitReader = &dec.br;
-  var hdr *VP8LMetadata = &dec.hdr;
+  var br *VP8LBitReader = &decoder.br;
+  var hdr *VP8LMetadata = &decoder.hdr;
   data *uint32 = nil;
   color_cache_bits := 0;
 
@@ -1608,7 +1608,7 @@ static int AllocateInternalBuffers8b(const dec *VP8LDecoder) {
 func ExtractAlphaRows(const dec *VP8LDecoder, int last_row, int wait_for_biggest_batch) {
   cur_row := dec.last_row;
   num_rows := last_row - cur_row;
-  var in *uint32 = dec.pixels + dec.width * cur_row;
+  var in *uint32 = decoder.pixels + decoder.width * cur_row;
 
   if (wait_for_biggest_batch && last_row % NUM_ARGB_CACHE_ROWS != 0) {
     return;
@@ -1623,7 +1623,7 @@ func ExtractAlphaRows(const dec *VP8LDecoder, int last_row, int wait_for_biggest
     width := dec.io.width;  // the final width (!= dec.width)
     cache_pixs := width * num_rows_to_process;
     var dst *uint8 = output + width * cur_row;
-    var src *uint32 = dec.argb_cache;
+    var src *uint32 = decoder.argb_cache;
     ApplyInverseTransforms(dec, cur_row, num_rows_to_process, in);
     WebPExtractGreen(src, dst, cache_pixs);
     AlphaApplyFilter(alph_dec, cur_row, cur_row + num_rows_to_process, dst, width);

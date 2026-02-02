@@ -8,15 +8,15 @@
 // be found in the AUTHORS file in the root of the source tree.
 
 package vp8
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 import "github.com/daanv2/go-webp/pkg/string"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"

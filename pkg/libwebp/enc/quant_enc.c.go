@@ -18,7 +18,7 @@ import "github.com/daanv2/go-webp/pkg/math"
 import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
 import "github.com/daanv2/go-webp/pkg/string"
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
+import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
