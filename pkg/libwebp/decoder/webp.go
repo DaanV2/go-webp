@@ -7,22 +7,18 @@ package decoder
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Main decoding functions for WEBP images.
-//
-// Author: Skal (pascal.massimino@gmail.com)
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
 	"github.com/daanv2/go-webp/pkg/constants" // ALPHA_FLAG
 	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
+	"github.com/daanv2/go-webp/pkg/vp8"
 )
 
-type OutputFunc = func( /* const */ io *VP8Io /*const*/, p *WebPDecParams) int
-type OutputAlphaFunc = func( /* const */ io *VP8Io /*const*/, p *WebPDecParams, int expected_num_out_lines) int
-type OutputRowFunc = func( /* const */ p *WebPDecParams, int y_pos, int max_out_lines) int
+type OutputFunc = func( /* const */ io *vp8.VP8Io /*const*/, p *WebPDecParams) int
+type OutputAlphaFunc = func( /* const */ io *vp8.VP8Io /*const*/, p *WebPDecParams, expected_num_out_lines int) int
+type OutputRowFunc = func( /* const */ p *WebPDecParams, y_pos int, max_out_lines int) int
 
 type WebPDecParams struct {
 	output *WebPDecBuffer // output buffer.
@@ -81,12 +77,12 @@ type WebPHeaderStructure struct {
 
 // Validates the RIFF container (if detected) and skips over it.
 // If a RIFF container is detected, returns:
-//     VP8_STATUS_BITSTREAM_ERROR for invalid header,
-//     VP8_STATUS_NOT_ENOUGH_DATA for truncated data if have_all_data is true,
-// and VP8_STATUS_OK otherwise.
+//     vp8.VP8_STATUS_BITSTREAM_ERROR for invalid header,
+//     vp8.VP8_STATUS_NOT_ENOUGH_DATA for truncated data if have_all_data is true,
+// and vp8.VP8_STATUS_OK otherwise.
 // In case there are not enough bytes (partial RIFF container), return 0 for
 // *riff_size. Else return the RIFF size extracted from the header.
-func ParseRIFF( /* const */ data *uint8 /* (*data_size) */ /* const */, data_size *uint64, have_all_data int /* const */, riff_size *uint64) VP8StatusCode {
+func ParseRIFF( /* const */ data *uint8 /* (*data_size) */ /* const */, data_size *uint64, have_all_data int /* const */, riff_size *uint64) vp8.VP8StatusCode {
 	assert.Assert(data != nil)
 	assert.Assert(data_size != nil)
 	assert.Assert(riff_size != nil)
@@ -94,18 +90,18 @@ func ParseRIFF( /* const */ data *uint8 /* (*data_size) */ /* const */, data_siz
 	*riff_size = 0 // Default: no RIFF present.
 	if *data_size >= RIFF_HEADER_SIZE && !memcmp(*data, "RIFF", TAG_SIZE) {
 		if memcmp(*data+8, "WEBP", TAG_SIZE) {
-			return VP8_STATUS_BITSTREAM_ERROR // Wrong image file signature.
+			return vp8.VP8_STATUS_BITSTREAM_ERROR // Wrong image file signature.
 		} else {
 			size := GetLE32(*data + TAG_SIZE)
 			// Check that we have at least one chunk (i.e "WEBP" + "VP8?nnnn").
 			if size < TAG_SIZE+CHUNK_HEADER_SIZE {
-				return VP8_STATUS_BITSTREAM_ERROR
+				return vp8.VP8_STATUS_BITSTREAM_ERROR
 			}
 			if size > MAX_CHUNK_PAYLOAD {
-				return VP8_STATUS_BITSTREAM_ERROR
+				return vp8.VP8_STATUS_BITSTREAM_ERROR
 			}
 			if have_all_data && (size > *data_size-CHUNK_HEADER_SIZE) {
-				return VP8_STATUS_NOT_ENOUGH_DATA // Truncated bitstream.
+				return vp8.VP8_STATUS_NOT_ENOUGH_DATA // Truncated bitstream.
 			}
 			// We have a RIFF container. Skip it.
 			*riff_size = size
@@ -113,18 +109,18 @@ func ParseRIFF( /* const */ data *uint8 /* (*data_size) */ /* const */, data_siz
 			*data += RIFF_HEADER_SIZE
 		}
 	}
-	return VP8_STATUS_OK
+	return vp8.VP8_STATUS_OK
 }
 
 // Validates the VP8X header and skips over it.
-// Returns VP8_STATUS_BITSTREAM_ERROR for invalid VP8X header,
-//         VP8_STATUS_NOT_ENOUGH_DATA in case of insufficient data, and
-//         VP8_STATUS_OK otherwise.
+// Returns vp8.VP8_STATUS_BITSTREAM_ERROR for invalid VP8X header,
+//         vp8.VP8_STATUS_NOT_ENOUGH_DATA in case of insufficient data, and
+//         vp8.VP8_STATUS_OK otherwise.
 // If a VP8X chunk is found, found_vp8x is set to true and *width_ptr,
 // and are set *height_ptr to *flags_ptr the corresponding values extracted
 // from the VP8X chunk.
-func ParseVP8X( /* const */ data *uint8 /* const */, data_size *uint64 /* const */, found_vp *int8x /* const */, width_ptr *int /* const */, height_ptr *int /* const */, flags_ptr *uint32) VP8StatusCode {
-	vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE
+func ParseVP8X( /* const */ data *uint8 /* const */, data_size *uint64 /* const */, found_vp8x *int/* const */, width_ptr *int /* const */, height_ptr *int /* const */, flags_ptr *uint32) vp8.VP8StatusCode {
+	vp8x_size := CHUNK_HEADER_SIZE + constants.VP8X_CHUNK_SIZE
 	assert.Assert(data != nil)
 	assert.Assert(data_size != nil)
 	assert.Assert(found_vp8x != nil)
@@ -132,7 +128,7 @@ func ParseVP8X( /* const */ data *uint8 /* const */, data_size *uint64 /* const 
 	*found_vp8x = 0
 
 	if *data_size < CHUNK_HEADER_SIZE {
-		return VP8_STATUS_NOT_ENOUGH_DATA // Insufficient data.
+		return vp8.VP8_STATUS_NOT_ENOUGH_DATA // Insufficient data.
 	}
 
 	if !memcmp(*data, "VP8X", TAG_SIZE) {
@@ -140,18 +136,18 @@ func ParseVP8X( /* const */ data *uint8 /* const */, data_size *uint64 /* const 
 		var flags uint32
 		chunk_size := GetLE32(*data + TAG_SIZE)
 		if chunk_size != VP8X_CHUNK_SIZE {
-			return VP8_STATUS_BITSTREAM_ERROR // Wrong chunk size.
+			return vp8.VP8_STATUS_BITSTREAM_ERROR // Wrong chunk size.
 		}
 
 		// Verify if enough data is available to validate the VP8X chunk.
 		if *data_size < vp8x_size {
-			return VP8_STATUS_NOT_ENOUGH_DATA // Insufficient data.
+			return vp8.VP8_STATUS_NOT_ENOUGH_DATA // Insufficient data.
 		}
 		flags = GetLE32(*data + 8)
 		width = 1 + GetLE24(*data+12)
 		height = 1 + GetLE24(*data+15)
 		if width*height >= MAX_IMAGE_AREA {
-			return VP8_STATUS_BITSTREAM_ERROR // image is too large
+			return vp8.VP8_STATUS_BITSTREAM_ERROR // image is too large
 		}
 
 		if flags_ptr != nil {
@@ -168,22 +164,22 @@ func ParseVP8X( /* const */ data *uint8 /* const */, data_size *uint64 /* const 
 		*data += vp8x_size
 		*found_vp8x = 1
 	}
-	return VP8_STATUS_OK
+	return vp8.VP8_STATUS_OK
 }
 
 // Skips to the next VP8/VP8L chunk header in the data given the size of the
 // RIFF chunk 'riff_size'.
-// Returns VP8_STATUS_BITSTREAM_ERROR if any invalid chunk size is encountered,
-//         VP8_STATUS_NOT_ENOUGH_DATA in case of insufficient data, and
-//         VP8_STATUS_OK otherwise.
+// Returns vp8.VP8_STATUS_BITSTREAM_ERROR if any invalid chunk size is encountered,
+//         vp8.VP8_STATUS_NOT_ENOUGH_DATA in case of insufficient data, and
+//         vp8.VP8_STATUS_OK otherwise.
 // If an alpha chunk is found, and are set *alpha_data *alpha_size
 // appropriately.
-func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint64, riff_size uint64 /*const*/, alpha_data *uint8 /* const */, alpha_size *uint64) VP8StatusCode {
+func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint64, riff_size uint64 /*const*/, alpha_data *uint8 /* const */, alpha_size *uint64) vp8.VP8StatusCode {
 	var buf_size uint64
 	var buf *uint8
 	total_size := TAG_SIZE + // "WEBP".
 		CHUNK_HEADER_SIZE + // "VP8Xnnnn".
-		VP8X_CHUNK_SIZE // data.
+		constants.VP8X_CHUNK_SIZE // data.
 	assert.Assert(data != nil)
 	assert.Assert(data_size != nil)
 	buf = *data
@@ -201,12 +197,12 @@ func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint6
 		*data = buf
 
 		if buf_size < CHUNK_HEADER_SIZE { // Insufficient data.
-			return VP8_STATUS_NOT_ENOUGH_DATA
+			return vp8.VP8_STATUS_NOT_ENOUGH_DATA
 		}
 
 		chunk_size = GetLE32(buf + TAG_SIZE)
 		if chunk_size > MAX_CHUNK_PAYLOAD {
-			return VP8_STATUS_BITSTREAM_ERROR // Not a valid chunk size.
+			return vp8.VP8_STATUS_BITSTREAM_ERROR // Not a valid chunk size.
 		}
 		// For odd-sized chunk-payload, there's one byte padding at the end.
 		disk_chunk_size = (CHUNK_HEADER_SIZE + chunk_size + 1) & ~uint(1)
@@ -214,7 +210,7 @@ func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint6
 
 		// Check that total bytes skipped so far does not exceed riff_size.
 		if riff_size > 0 && (total_size > riff_size) {
-			return VP8_STATUS_BITSTREAM_ERROR // Not a valid chunk size.
+			return vp8.VP8_STATUS_BITSTREAM_ERROR // Not a valid chunk size.
 		}
 
 		// Start of a (possibly incomplete) VP8/VP8L chunk implies that we have
@@ -222,11 +218,11 @@ func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint6
 		// Note: This check must occur before the check 'buf_size < disk_chunk_size'
 		// below to allow incomplete VP8/VP8L chunks.
 		if !memcmp(buf, "VP8 ", TAG_SIZE) || !memcmp(buf, "VP8L", TAG_SIZE) {
-			return VP8_STATUS_OK
+			return vp8.VP8_STATUS_OK
 		}
 
 		if buf_size < disk_chunk_size { // Insufficient data.
-			return VP8_STATUS_NOT_ENOUGH_DATA
+			return vp8.VP8_STATUS_NOT_ENOUGH_DATA
 		}
 
 		if !memcmp(buf, "ALPH", TAG_SIZE) { // A valid ALPH header.
@@ -241,14 +237,14 @@ func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint6
 }
 
 // Validates the VP8/VP8L Header ("VP8 nnnn" or "VP8L nnnn") and skips over it.
-// Returns VP8_STATUS_BITSTREAM_ERROR for invalid (chunk larger than
+// Returns vp8.VP8_STATUS_BITSTREAM_ERROR for invalid (chunk larger than
 //         riff_size) VP8/VP8L header,
-//         VP8_STATUS_NOT_ENOUGH_DATA in case of insufficient data, and
-//         VP8_STATUS_OK otherwise.
+//         vp8.VP8_STATUS_NOT_ENOUGH_DATA in case of insufficient data, and
+//         vp8.VP8_STATUS_OK otherwise.
 // If a VP8/VP8L chunk is found, is set to *chunk_size the total number of bytes
 // extracted from the VP8/VP8L chunk header.
 // The flag '*is_lossless' is set to 1 in case of VP8L chunk / raw VP8L data.
-func ParseVP8Header( /* const */ data_ptr *uint8 /* const */, data_size *uint64, have_all_data int, riff_size uint64 /* const */, chunk_size *uint64 /* const */, is_lossless *int) VP8StatusCode {
+func ParseVP8Header( /* const */ data_ptr *uint8 /* const */, data_size *uint64, have_all_data int, riff_size uint64 /* const */, chunk_size *uint64 /* const */, is_lossless *int) vp8.VP8StatusCode {
 	local_data_size := *data_size
 	data * uint8 = *data_ptr
 	is_vp8 := !memcmp(data, "VP8 ", TAG_SIZE)
@@ -263,17 +259,17 @@ func ParseVP8Header( /* const */ data_ptr *uint8 /* const */, data_size *uint64,
 	assert.Assert(is_lossless != nil)
 
 	if *data_size < CHUNK_HEADER_SIZE {
-		return VP8_STATUS_NOT_ENOUGH_DATA // Insufficient data.
+		return vp8.VP8_STATUS_NOT_ENOUGH_DATA // Insufficient data.
 	}
 
 	if is_vp8 || is_vp8l {
 		// Bitstream contains VP8/VP8L header.
 		size := GetLE32(data + TAG_SIZE)
 		if (riff_size >= minimal_size) && (size > riff_size-minimal_size) {
-			return VP8_STATUS_BITSTREAM_ERROR // Inconsistent size information.
+			return vp8.VP8_STATUS_BITSTREAM_ERROR // Inconsistent size information.
 		}
 		if have_all_data && (size > *data_size-CHUNK_HEADER_SIZE) {
-			return VP8_STATUS_NOT_ENOUGH_DATA // Truncated bitstream.
+			return vp8.VP8_STATUS_NOT_ENOUGH_DATA // Truncated bitstream.
 		}
 		// Skip over CHUNK_HEADER_SIZE bytes from VP8/VP8L Header.
 		*chunk_size = size
@@ -282,11 +278,11 @@ func ParseVP8Header( /* const */ data_ptr *uint8 /* const */, data_size *uint64,
 		*is_lossless = is_vp8l
 	} else {
 		// Raw VP8/VP8L bitstream (no header).
-		*is_lossless = VP8LCheckSignature(data, *data_size)
+		*is_lossless = vp8.VP8LCheckSignature(data, *data_size)
 		*chunk_size = *data_size
 	}
 
-	return VP8_STATUS_OK
+	return vp8.VP8_STATUS_OK
 }
 
 //------------------------------------------------------------------------------
@@ -302,7 +298,7 @@ func ParseVP8Header( /* const */ data_ptr *uint8 /* const */, data_size *uint64,
 // RIFF + VP8X + (optional chunks) + VP8(L)
 // ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
 // VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
-func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64 /*const*/, width *int /*const*/, height *int /*const*/, has_alpha *int /*const*/, has_animation *int /*const*/, format *int /*const*/, headers *WebPHeaderStructure) VP8StatusCode {
+func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64 /*const*/, width *int /*const*/, height *int /*const*/, has_alpha *int /*const*/, has_animation *int /*const*/, format *int /*const*/, headers *WebPHeaderStructure) vp8.VP8StatusCode {
 	data_size := data_size_param
 	data := data_param
 	canvas_width := 0
@@ -314,11 +310,11 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 	animation_present := 0
 	have_all_data := tenary.If(headers != nil, headers.have_all_data, 0)
 
-	var status VP8StatusCode
+	var status vp8.VP8StatusCode
 	var hdrs WebPHeaderStructure
 
 	if data == nil || data_size < RIFF_HEADER_SIZE {
-		return VP8_STATUS_NOT_ENOUGH_DATA
+		return vp8.VP8_STATUS_NOT_ENOUGH_DATA
 	}
 	stdlib.Memset(&hdrs, 0, sizeof(hdrs))
 	hdrs.data = data
@@ -326,7 +322,7 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 
 	// Skip over RIFF header.
 	status = ParseRIFF(&data, &data_size, have_all_data, &hdrs.riff_size)
-	if status != VP8_STATUS_OK {
+	if status != vp8.VP8_STATUS_OK {
 		return status // Wrong RIFF header / insufficient data.
 	}
 	found_riff = (hdrs.riff_size > 0)
@@ -335,14 +331,14 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 	{
 		flags := 0
 		status = ParseVP8X(&data, &data_size, &found_vp8x, &canvas_width, &canvas_height, &flags)
-		if status != VP8_STATUS_OK {
+		if status != vp8.VP8_STATUS_OK {
 			return status // Wrong VP8X / insufficient data.
 		}
 		animation_present = !!(flags & ANIMATION_FLAG)
 		if !found_riff && found_vp8x {
 			// Note: This restriction may be removed in the future, if it becomes
 			// necessary to send VP8X chunk to the decoder.
-			return VP8_STATUS_BITSTREAM_ERROR
+			return vp8.VP8_STATUS_BITSTREAM_ERROR
 		}
 		if has_alpha != nil {
 			*has_alpha = !!(flags & ALPHA_FLAG)
@@ -357,13 +353,13 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 		image_width = canvas_width
 		image_height = canvas_height
 		if found_vp8x && animation_present && headers == nil {
-			status = VP8_STATUS_OK
+			status = vp8.VP8_STATUS_OK
 			goto ReturnWidthHeight // Just return features from VP8X header.
 		}
 	}
 
 	if data_size < TAG_SIZE {
-		status = VP8_STATUS_NOT_ENOUGH_DATA
+		status = vp8.VP8_STATUS_NOT_ENOUGH_DATA
 		goto ReturnWidthHeight
 	}
 
@@ -373,7 +369,7 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 		local_alpha_data_size := 0
 		local_alpha_data := nil
 		status = ParseOptionalChunks(&data, &data_size, hdrs.riff_size, &local_alpha_data, &local_alpha_data_size)
-		if status != VP8_STATUS_OK {
+		if status != vp8.VP8_STATUS_OK {
 			goto ReturnWidthHeight // Invalid chunk size / insufficient data.
 		}
 		hdrs.alpha_data = local_alpha_data
@@ -382,11 +378,11 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 
 	// Skip over VP8/VP8L header.
 	status = ParseVP8Header(&data, &data_size, have_all_data, hdrs.riff_size, &hdrs.compressed_size, &hdrs.is_lossless)
-	if status != VP8_STATUS_OK {
+	if status != vp8.VP8_STATUS_OK {
 		goto ReturnWidthHeight // Wrong VP8/VP8L chunk-header / insufficient data.
 	}
 	if hdrs.compressed_size > MAX_CHUNK_PAYLOAD {
-		return VP8_STATUS_BITSTREAM_ERROR
+		return vp8.VP8_STATUS_BITSTREAM_ERROR
 	}
 
 	if format != nil && !animation_present {
@@ -394,28 +390,28 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 	}
 
 	if !hdrs.is_lossless {
-		if data_size < VP8_FRAME_HEADER_SIZE {
-			status = VP8_STATUS_NOT_ENOUGH_DATA
+		if data_size < vp8.VP8_FRAME_HEADER_SIZE {
+			status = vp8.VP8_STATUS_NOT_ENOUGH_DATA
 			goto ReturnWidthHeight
 		}
 		// Validates raw VP8 data.
-		if !VP8GetInfo(data, data_size, hdrs.compressed_size, &image_width, &image_height) {
-			return VP8_STATUS_BITSTREAM_ERROR
+		if !vp8.VP8GetInfo(data, data_size, hdrs.compressed_size, &image_width, &image_height) {
+			return vp8.VP8_STATUS_BITSTREAM_ERROR
 		}
 	} else {
 		if data_size < VP8L_FRAME_HEADER_SIZE {
-			status = VP8_STATUS_NOT_ENOUGH_DATA
+			status = vp8.VP8_STATUS_NOT_ENOUGH_DATA
 			goto ReturnWidthHeight
 		}
 		// Validates raw VP8L data.
-		if !VP8LGetInfo(data, data_size, &image_width, &image_height, has_alpha) {
-			return VP8_STATUS_BITSTREAM_ERROR
+		if !vp8.VP8LGetInfo(data, data_size, &image_width, &image_height, has_alpha) {
+			return vp8.VP8_STATUS_BITSTREAM_ERROR
 		}
 	}
 	// Validates image size coherency.
 	if found_vp8x {
 		if canvas_width != image_width || canvas_height != image_height {
-			return VP8_STATUS_BITSTREAM_ERROR
+			return vp8.VP8_STATUS_BITSTREAM_ERROR
 		}
 	}
 	if headers != nil {
@@ -425,8 +421,8 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 		assert.Assert(headers.offset == headers.data_size-data_size)
 	}
 ReturnWidthHeight:
-	if status == VP8_STATUS_OK ||
-		(status == VP8_STATUS_NOT_ENOUGH_DATA && found_vp8x && headers == nil) {
+	if status == vp8.VP8_STATUS_OK ||
+		(status == vp8.VP8_STATUS_NOT_ENOUGH_DATA && found_vp8x && headers == nil) {
 		if has_alpha != nil {
 			// If the data did not contain a VP8X/VP8L chunk the only definitive way
 			// to set this is by looking for alpha data (from an ALPH chunk).
@@ -438,21 +434,21 @@ ReturnWidthHeight:
 		if height != nil {
 			*height = image_height
 		}
-		return VP8_STATUS_OK
+		return vp8.VP8_STATUS_OK
 	} else {
 		return status
 	}
 }
 
 // Skips over all valid chunks prior to the first VP8/VP8L frame header.
-// Returns: VP8_STATUS_OK, VP8_STATUS_BITSTREAM_ERROR (invalid header/chunk),
-// VP8_STATUS_NOT_ENOUGH_DATA (partial input) or VP8_STATUS_UNSUPPORTED_FEATURE
+// Returns: vp8.VP8_STATUS_OK, vp8.VP8_STATUS_BITSTREAM_ERROR (invalid header/chunk),
+// vp8.VP8_STATUS_NOT_ENOUGH_DATA (partial input) or vp8.VP8_STATUS_UNSUPPORTED_FEATURE
 // in the case of non-decodable features (animation for instance).
 // In 'headers', compressed_size, offset, alpha_data, alpha_size, and lossless
 // fields are updated appropriately upon success.
-func WebPParseHeaders( /* const */ headers *WebPHeaderStructure) VP8StatusCode {
+func WebPParseHeaders( /* const */ headers *WebPHeaderStructure) vp8.VP8StatusCode {
 	// status is marked volatile as a workaround for a clang-3.8 (aarch64) bug
-	var status VP8StatusCode
+	var status vp8.VP8StatusCode
 	has_animation := 0
 	assert.Assert(headers != nil)
 	// fill out headers, ignore width/height/has_alpha.
@@ -460,12 +456,12 @@ func WebPParseHeaders( /* const */ headers *WebPHeaderStructure) VP8StatusCode {
 		var bounded_data *uint8 = headers.data // bidi index -> headers.data_size;
 		status = ParseHeadersInternal(bounded_data, headers.data_size, nil, nil, nil, &has_animation, nil, headers)
 	}
-	if status == VP8_STATUS_OK || status == VP8_STATUS_NOT_ENOUGH_DATA {
+	if status == vp8.VP8_STATUS_OK || status == vp8.VP8_STATUS_NOT_ENOUGH_DATA {
 		// The WebPDemux API + libwebp can be used to decode individual
 		// uncomposited frames or the WebPAnimDecoder can be used to fully
 		// reconstruct them (see webp/demux.h).
 		if has_animation {
-			status = VP8_STATUS_UNSUPPORTED_FEATURE
+			status = vp8.VP8_STATUS_UNSUPPORTED_FEATURE
 		}
 	}
 	return status
@@ -485,8 +481,8 @@ func WebPResetDecParams( /* const */ params *WebPDecParams) {
 // "Into" decoding variants
 
 // Main flow
-func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) VP8StatusCode {
-	var status VP8StatusCode
+func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) vp8.VP8StatusCode {
+	var status vp8.VP8StatusCode
 	var io VP8Io
 	var headers WebPHeaderStructure
 
@@ -494,13 +490,13 @@ func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) 
 	headers.data_size = data_size
 	headers.have_all_data = 1
 	status = WebPParseHeaders(&headers) // Process Pre-VP8 chunks.
-	if status != VP8_STATUS_OK {
+	if status != vp8.VP8_STATUS_OK {
 		return status
 	}
 
 	assert.Assert(params != nil)
 	if !VP8InitIo(&io) {
-		return VP8_STATUS_INVALID_PARAM
+		return vp8.VP8_STATUS_INVALID_PARAM
 	}
 	io.data = headers.data + headers.offset
 	io.data_size = headers.data_size - headers.offset
@@ -509,7 +505,7 @@ func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) 
 	if !headers.is_lossless {
 		var dec *VP8Decoder = VP8New()
 		if dec == nil {
-			return VP8_STATUS_OUT_OF_MEMORY
+			return vp8.VP8_STATUS_OUT_OF_MEMORY
 		}
 		dec.alpha_data = headers.alpha_data
 		dec.alpha_data_size = headers.alpha_data_size
@@ -520,7 +516,7 @@ func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) 
 		} else {
 			// Allocate/check output buffers.
 			status = WebPAllocateDecBuffer(io.width, io.height, params.options, params.output)
-			if status == VP8_STATUS_OK { // Decode
+			if status == vp8.VP8_STATUS_OK { // Decode
 				// This change must be done before calling VP8Decode()
 				dec.mt_method =
 					VP8GetThreadMethod(params.options, &headers, io.width, io.height)
@@ -534,14 +530,14 @@ func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) 
 	} else {
 		var dec *VP8LDecoder = VP8LNew()
 		if dec == nil {
-			return VP8_STATUS_OUT_OF_MEMORY
+			return vp8.VP8_STATUS_OUT_OF_MEMORY
 		}
 		if !VP8LDecodeHeader(dec, &io) {
 			status = dec.status // An error occurred. Grab error status.
 		} else {
 			// Allocate/check output buffers.
 			status = WebPAllocateDecBuffer(io.width, io.height, params.options, params.output)
-			if status == VP8_STATUS_OK { // Decode
+			if status == vp8.VP8_STATUS_OK { // Decode
 				if !VP8LDecodeImage(dec) {
 					status = dec.status
 				}
@@ -550,7 +546,7 @@ func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) 
 		VP8LDelete(dec)
 	}
 
-	if status != VP8_STATUS_OK {
+	if status != vp8.VP8_STATUS_OK {
 		WebPFreeDecBuffer(params.output)
 	} else {
 		if params.options != nil && params.options.flip {
@@ -576,7 +572,7 @@ func DecodeIntoRGBABuffer(colorspace WEBP_CSP_MODE, data *uint8, data_size uint6
 	buf.u.RGBA.stride = stride
 	buf.u.RGBA.size = size
 	buf.is_external_memory = 1
-	if DecodeInto(data, data_size, &params) != VP8_STATUS_OK {
+	if DecodeInto(data, data_size, &params) != vp8.VP8_STATUS_OK {
 		return nil
 	}
 	return rgba
@@ -621,7 +617,7 @@ func WebPDecodeYUVInto( /* const */ data *uint8, data_size uint64, luma *uint8, 
 	output.u.YUVA.v_stride = v_stride
 	output.u.YUVA.v_size = v_size
 	output.is_external_memory = 1
-	if DecodeInto(data, data_size, &params) != VP8_STATUS_OK {
+	if DecodeInto(data, data_size, &params) != vp8.VP8_STATUS_OK {
 		return nil
 	}
 	return luma
@@ -652,7 +648,7 @@ func Decode(mode WEBP_CSP_MODE /*const*/, data *uint8, data_size uint64 /*const*
 	}
 
 	// Decode
-	if DecodeInto(data, data_size, &params) != VP8_STATUS_OK {
+	if DecodeInto(data, data_size, &params) != vp8.VP8_STATUS_OK {
 		return nil
 	}
 	if keep_info != nil { // keep track of the side-info
@@ -709,9 +705,9 @@ func DefaultFeatures( /* const */ features *WebPBitstreamFeatures) {
 	stdlib.Memset(features, 0, sizeof(*features))
 }
 
-func GetFeatures( /* const */ data *uint8, data_size uint64 /*const*/, features *WebPBitstreamFeatures) VP8StatusCode {
+func GetFeatures( /* const */ data *uint8, data_size uint64 /*const*/, features *WebPBitstreamFeatures) vp8.VP8StatusCode {
 	if features == nil || data == nil {
-		return VP8_STATUS_INVALID_PARAM
+		return vp8.VP8_STATUS_INVALID_PARAM
 	}
 	DefaultFeatures(features)
 
@@ -726,7 +722,7 @@ func GetFeatures( /* const */ data *uint8, data_size uint64 /*const*/, features 
 func WebPGetInfo( /* const */ data *uint8, data_size uint64, width *int, height *int) int {
 	var features WebPBitstreamFeatures
 
-	if GetFeatures(data, data_size, &features) != VP8_STATUS_OK {
+	if GetFeatures(data, data_size, &features) != vp8.VP8_STATUS_OK {
 		return 0
 	}
 
@@ -811,28 +807,28 @@ func WebPValidateDecoderConfig( /* const */ config *WebPDecoderConfig) int {
 	return 1
 }
 
-func WebPGetFeaturesInternal( /* const */ data *uint8, data_size uint64, features *WebPBitstreamFeatures, version int) VP8StatusCode {
+func WebPGetFeaturesInternal( /* const */ data *uint8, data_size uint64, features *WebPBitstreamFeatures, version int) vp8.VP8StatusCode {
 	if WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION) {
-		return VP8_STATUS_INVALID_PARAM // version mismatch
+		return vp8.VP8_STATUS_INVALID_PARAM // version mismatch
 	}
 	if features == nil {
-		return VP8_STATUS_INVALID_PARAM
+		return vp8.VP8_STATUS_INVALID_PARAM
 	}
 	return GetFeatures(data, data_size, features)
 }
 
-func WebPDecode( /* const */ data *uint8, data_size uint64, config *WebPDecoderConfig) VP8StatusCode {
+func WebPDecode( /* const */ data *uint8, data_size uint64, config *WebPDecoderConfig) vp8.VP8StatusCode {
 	var params WebPDecParams
-	var status VP8StatusCode
+	var status vp8.VP8StatusCode
 
 	if config == nil {
-		return VP8_STATUS_INVALID_PARAM
+		return vp8.VP8_STATUS_INVALID_PARAM
 	}
 
 	status = GetFeatures(data, data_size, &config.input)
-	if status != VP8_STATUS_OK {
-		if status == VP8_STATUS_NOT_ENOUGH_DATA {
-			return VP8_STATUS_BITSTREAM_ERROR // Not-enough-data treated as error.
+	if status != vp8.VP8_STATUS_OK {
+		if status == vp8.VP8_STATUS_NOT_ENOUGH_DATA {
+			return vp8.VP8_STATUS_BITSTREAM_ERROR // Not-enough-data treated as error.
 		}
 		return status
 	}
@@ -844,14 +840,14 @@ func WebPDecode( /* const */ data *uint8, data_size uint64, config *WebPDecoderC
 		// decoding to slow memory: use a temporary in-mem buffer to decode into.
 		var in_mem_buffer WebPDecBuffer
 		if !WebPInitDecBuffer(&in_mem_buffer) {
-			return VP8_STATUS_INVALID_PARAM
+			return vp8.VP8_STATUS_INVALID_PARAM
 		}
 		in_mem_buffer.colorspace = config.output.colorspace
 		in_mem_buffer.width = config.input.width
 		in_mem_buffer.height = config.input.height
 		params.output = &in_mem_buffer
 		status = DecodeInto(data, data_size, &params)
-		if status == VP8_STATUS_OK { // do the slow-copy
+		if status == vp8.VP8_STATUS_OK { // do the slow-copy
 			status = WebPCopyDecBufferPixels(&in_mem_buffer, &config.output)
 		}
 		WebPFreeDecBuffer(&in_mem_buffer)

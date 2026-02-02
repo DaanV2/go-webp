@@ -8,6 +8,7 @@
 // be found in the AUTHORS file in the root of the source tree.
 
 package vp8
+
 import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stdlib"

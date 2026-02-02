@@ -205,9 +205,9 @@ func ReconstructRow(const dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext) {
 // Simple filter:  up to 2 luma samples are read and 1 is written.
 // Complex filter: up to 4 luma samples are read and 3 are written. Same for
 //                 U/V, so it's 8 samples total (because of the 2x upsampling).
-static const uint8 kFilterExtraRows[3] = {0, 2, 8}
+var kFilterExtraRows = [3]int{0, 2, 8}
 
-func DoFilter(const dec *VP8Decoder, mb_x int, mb_y int) {
+func DoFilter(/* const */ dec *VP8Decoder, mb_x int, mb_y int) {
   var ctx *VP8ThreadContext = &dec.thread_ctx;
   cache_id := ctx.id;
   y_bps := dec.cache_y_stride;
