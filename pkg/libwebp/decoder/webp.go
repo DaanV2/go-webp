@@ -13,22 +13,56 @@ package decoder
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
+import (
+	 "github.com/daanv2/go-webp/pkg/assert"
+	 "github.com/daanv2/go-webp/pkg/stdlib"
+	 "github.com/daanv2/go-webp/pkg/string"
+	 "github.com/daanv2/go-webp/pkg/libwebp/dec"
+	 "github.com/daanv2/go-webp/pkg/libwebp/dec"
+	 "github.com/daanv2/go-webp/pkg/libwebp/dec"
+	 "github.com/daanv2/go-webp/pkg/libwebp/dec"
+	 "github.com/daanv2/go-webp/pkg/libwebp/dec"
+	 "github.com/daanv2/go-webp/pkg/libwebp/utils"
+	 "github.com/daanv2/go-webp/pkg/libwebp/utils"
+	 "github.com/daanv2/go-webp/pkg/libwebp/webp"
+	 "github.com/daanv2/go-webp/pkg/libwebp/webp"
+	 "github.com/daanv2/go-webp/pkg/libwebp/webp"  // ALPHA_FLAG
+	 "github.com/daanv2/go-webp/pkg/libwebp/webp"
+)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"  // ALPHA_FLAG
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+type OutputFunc = func(/* const */ io *VP8Io, /*const*/ p *WebPDecParams)int 
+type OutputAlphaFunc = func(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, int expected_num_out_lines)int 
+type OutputRowFunc = func(/* const */ p *WebPDecParams, int y_pos, int max_out_lines)int 
 
+type WebPDecParams struct {
+  output *WebPDecBuffer;           // output buffer.
+  // cache for the fancy upsampler
+                                   // or used for tmp rescaling buffers
+  tmp_y, tmp_u, tmp_v *uint8;  
+
+   last_y int;  // coordinate of the line that was last output
+  options *WebPDecoderOptions;  // if not nil, use alt decoding features
+
+  scaler_y, scaler_u, scaler_v, scaler_a *WebPRescaler;  // rescalers
+  memory *void;  // overall scratch memory for the output work.
+
+  emit OutputFunc                // output RGB or YUV samples
+  emit_alpha OutputAlphaFunc     // output alpha channel
+  emit_alpha_row OutputRowFunc   // output one line of rescaled alpha values
+}
+
+// Structure storing a description of the RIFF headers.
+type WebPHeaderStructure struct {
+	data *uint8  // input buffer
+	data_size uint64 // input buffer size
+	have_all_data int  // true if all data is known to be available
+	offset uint64      // offset to main data chunk (VP8 or VP8L)
+	alpha_data *uint8          // points to alpha chunk (if present)
+	alpha_data_size uint64  // alpha chunk size
+	compressed_size uint64  // VP8/VP8L compressed data size
+	riff_size uint64        // size of the riff payload (or 0 if absent)
+	is_lossless int         // true if a VP8L chunk is present
+}
 
 //------------------------------------------------------------------------------
 // RIFF layout is:
@@ -62,8 +96,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // and VP8_STATUS_OK otherwise.
 // In case there are not enough bytes (partial RIFF container), return 0 for
 // *riff_size. Else return the RIFF size extracted from the header.
-static VP8StatusCode ParseRIFF(const  *uint8(*data_size) *
-                                   WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, int have_all_data, WEBP_SINGLE const riff_size *uint64) {
+func ParseRIFF(/* const */ data *uint8/* (*data_size) */ , WEBP_SINGLE /* const */ data_size *uint64, have_all_data int , WEBP_SINGLE /* const */ riff_size *uint64) VP8StatusCode {
   assert.Assert(data != nil);
   assert.Assert(data_size != nil);
   assert.Assert(riff_size != nil);
@@ -411,15 +444,20 @@ ReturnWidthHeight:
   }
 }
 
-VP8StatusCode WebPParseHeaders(const headers *WebPHeaderStructure) {
+// Skips over all valid chunks prior to the first VP8/VP8L frame header.
+// Returns: VP8_STATUS_OK, VP8_STATUS_BITSTREAM_ERROR (invalid header/chunk),
+// VP8_STATUS_NOT_ENOUGH_DATA (partial input) or VP8_STATUS_UNSUPPORTED_FEATURE
+// in the case of non-decodable features (animation for instance).
+// In 'headers', compressed_size, offset, alpha_data, alpha_size, and lossless
+// fields are updated appropriately upon success.
+func WebPParseHeaders(/* const */ headers *WebPHeaderStructure) VP8StatusCode {
   // status is marked volatile as a workaround for a clang-3.8 (aarch64) bug
-  volatile VP8StatusCode status;
+  var status VP8StatusCode
   has_animation := 0;
   assert.Assert(headers != nil);
   // fill out headers, ignore width/height/has_alpha.
   {
-    var bounded_data *uint8 =
-        headers.data // bidi index -> headers.data_size;
+    var bounded_data *uint8 = headers.data // bidi index -> headers.data_size;
     status = ParseHeadersInternal(bounded_data, headers.data_size, nil, nil, nil, &has_animation, nil, headers);
   }
   if (status == VP8_STATUS_OK || status == VP8_STATUS_NOT_ENOUGH_DATA) {
@@ -436,7 +474,8 @@ VP8StatusCode WebPParseHeaders(const headers *WebPHeaderStructure) {
 //------------------------------------------------------------------------------
 // WebPDecParams
 
-func WebPResetDecParams(const params *WebPDecParams) {
+// Should be called first, before any use of the WebPDecParams object.
+func WebPResetDecParams(/* const */ params *WebPDecParams) {
   if (params != nil) {
     WEBP_UNSAFE_MEMSET(params, 0, sizeof(*params));
   }
@@ -717,8 +756,9 @@ int WebPInitDecoderConfigInternal(config *WebPDecoderConfig, int version) {
   return 1;
 }
 
-static int WebPCheckCropDimensionsBasic(int x, int y, int w, int h) {
-  return !(x < 0 || y < 0 || w <= 0 || h <= 0);
+// Returns true if crop dimensions are within image bounds.
+func WebPCheckCropDimensionsBasic(x, y, w, h int) bool {
+  return (x < 0 || y < 0 || w <= 0 || h <= 0)
 }
 
 int WebPValidateDecoderConfig(const config *WebPDecoderConfig) {
@@ -778,7 +818,7 @@ VP8StatusCode WebPGetFeaturesInternal(const *uint8
   return GetFeatures(data, data_size, features);
 }
 
-VP8StatusCode WebPDecode(const *uint8  data, data_size uint64, config *WebPDecoderConfig) {
+func WebPDecode(/* const */   data *uint8, data_size uint64, config *WebPDecoderConfig) VP8StatusCode {
   WebPDecParams params;
   VP8StatusCode status;
 
@@ -822,13 +862,16 @@ VP8StatusCode WebPDecode(const *uint8  data, data_size uint64, config *WebPDecod
 //------------------------------------------------------------------------------
 // Cropping and rescaling.
 
-int WebPCheckCropDimensions(int image_width, int image_height, int x, int y, int w, int h) {
+int WebPCheckCropDimensions(image_width, image_height, x, y, w, h int) {
   return WebPCheckCropDimensionsBasic(x, y, w, h) &&
          !(x >= image_width || w > image_width || w > image_width - x ||
            y >= image_height || h > image_height || h > image_height - y);
 }
 
-int WebPIoInitFromOptions(const options *WebPDecoderOptions, /*const*/ io *VP8Io, WEBP_CSP_MODE src_colorspace) {
+
+// Setup crop_xxx fields, mb_w and mb_h in io. 'src_colorspace' refers
+// to the *format *compressed, not the output one.
+func WebPIoInitFromOptions(/* const */ options *WebPDecoderOptions, /*const*/ io *VP8Io, src_colorspace WEBP_CSP_MODE) int {
   W := io.width;
   H := io.height;
   x := 0, y = 0, w = W, h = H;

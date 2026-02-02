@@ -615,20 +615,18 @@ static int CustomPut(const io *VP8Io) {
 
 //------------------------------------------------------------------------------
 
-func CustomTeardown(const io *VP8Io) {
+func CustomTeardown(/* const */ io *VP8Io) {
   var p *WebPDecParams = (*WebPDecParams)io.opaque;
   WebPSafeFree(p.memory);
   p.memory = nil;
 }
 
-//------------------------------------------------------------------------------
 // Main entry point
-
-func WebPInitCustomIo(const params *WebPDecParams, /*const*/ io *VP8Io) {
+// Initializes VP8Io with custom setup, io and teardown functions. The default
+// hooks will use the supplied 'params' as io.opaque handle.
+func WebPInitCustomIo(/* const */ params *WebPDecParams, /*const*/ io *VP8Io) {
   io.put = CustomPut;
   io.setup = CustomSetup;
   io.teardown = CustomTeardown;
   io.opaque = params;
 }
-
-//------------------------------------------------------------------------------

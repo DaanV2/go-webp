@@ -158,7 +158,8 @@ func AllocateBuffer(/* const */ buffer *WebPDecBuffer)  VP8StatusCode {
   return CheckDecBuffer(buffer);
 }
 
-VP8StatusCode WebPFlipBuffer(const buffer *WebPDecBuffer) {
+// Flip buffer vertically by negating the various strides.
+func WebPFlipBuffer(/* const */ buffer *WebPDecBuffer) VP8StatusCode {
   if (buffer == nil) {
     return VP8_STATUS_INVALID_PARAM;
   }
@@ -183,7 +184,16 @@ VP8StatusCode WebPFlipBuffer(const buffer *WebPDecBuffer) {
   return VP8_STATUS_OK;
 }
 
-VP8StatusCode WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoderOptions, /*const*/ buffer *WebPDecBuffer) {
+// Prepare 'buffer' with the requested initial dimensions width/height.
+// If no external storage is supplied, initializes buffer by allocating output
+// memory and setting up the stride information. Validate the parameters. Return
+// an error code in case of problem (no memory, or invalid stride / size /
+// dimension / etc.). If is not nil *options, also verify that the options'
+// parameters are valid and apply them to the width/height dimensions of the
+// output buffer. This takes cropping / scaling / rotation into account.
+// Also incorporates the options.flip flag to flip the buffer parameters if
+// needed.
+func WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoderOptions, /*const*/ buffer *WebPDecBuffer) VP8StatusCode {
   VP8StatusCode status;
   if (buffer == nil || width <= 0 || height <= 0) {
     return VP8_STATUS_INVALID_PARAM;
@@ -232,7 +242,7 @@ VP8StatusCode WebPAllocateDecBuffer(width int, height int, /*const*/ options *We
 //------------------------------------------------------------------------------
 // constructors / destructors
 
-int WebPInitDecBufferInternal(buffer *WebPDecBuffer, version int) {
+func WebPInitDecBufferInternal(buffer *WebPDecBuffer, version int) int {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION)) {
     return 0;  // version mismatch
   }
@@ -250,7 +260,9 @@ func WebPFreeDecBuffer(buffer *WebPDecBuffer) {
   }
 }
 
-func WebPCopyDecBuffer(const src *WebPDecBuffer, /*const*/ dst *WebPDecBuffer) {
+// Copy 'src' into 'dst' buffer, making sure 'dst' is not marked as owner of the
+// memory (still held by 'src'). No pixels are copied.
+func WebPCopyDecBuffer(/* const */ src *WebPDecBuffer, /*const*/ dst *WebPDecBuffer) {
   if (src != nil && dst != nil) {
     *dst = *src;
     if (src.private_memory != nil) {
@@ -271,7 +283,9 @@ func WebPGrabDecBuffer(const src *WebPDecBuffer, /*const*/ dst *WebPDecBuffer) {
   }
 }
 
-VP8StatusCode WebPCopyDecBufferPixels(const src_buf *WebPDecBuffer, /*const*/ dst_buf *WebPDecBuffer) {
+// Copy pixels from 'src' into a **preallocated 'dst' buffer. Returns
+// VP8_STATUS_INVALID_PARAM if the 'dst' is not set up correctly for the copy.
+func WebPCopyDecBufferPixels(/* const */ src_buf *WebPDecBuffer, /*const*/ dst_buf *WebPDecBuffer) VP8StatusCode {
   assert.Assert(src_buf != nil && dst_buf != nil);
   assert.Assert(src_buf.colorspace == dst_buf.colorspace);
 
@@ -297,7 +311,9 @@ VP8StatusCode WebPCopyDecBufferPixels(const src_buf *WebPDecBuffer, /*const*/ ds
   return VP8_STATUS_OK;
 }
 
-int WebPAvoidSlowMemory(const output *WebPDecBuffer, /*const*/ features *WebPBitstreamFeatures) {
+// Returns true if decoding will be slow with the current configuration
+// and bitstream features.
+func WebPAvoidSlowMemory(/* const */ output *WebPDecBuffer, /*const*/ features *WebPBitstreamFeatures) int {
   assert.Assert(output != nil);
   return (output.is_external_memory >= 2) &&
          WebPIsPremultipliedMode(output.colorspace) &&
