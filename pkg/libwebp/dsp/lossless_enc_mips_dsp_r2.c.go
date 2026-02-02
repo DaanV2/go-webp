@@ -20,7 +20,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-func SubtractGreenFromBlueAndRed_MIPSdspR2(argb_data *uint32, int num_pixels) {
+func SubtractGreenFromBlueAndRed_MIPSdspR2(argb_data *uint32, num_pixels int) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   var p_loop *uint321_end = argb_data + (num_pixels & ~3);
   var p_loop *uint322_end = p_loop1_end + (num_pixels & 3);
@@ -75,7 +75,7 @@ static  uint32 ColorTransformDelta(int8 color_pred, int8 color) {
 }
 
 func TransformColor_MIPSdspR2(
-    const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, int num_pixels) {
+    const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, num_pixels int) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   uint32 argb, argb1, new_red, new_red1;
   G_to_R := m.green_to_red;

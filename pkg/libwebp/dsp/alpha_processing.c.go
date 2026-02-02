@@ -254,7 +254,7 @@ func ExtractGreen_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8
 
 static int HasAlpha8b_C(const src *uint8, int length) {
   while (length-- > 0) {
-    if (*src++ != 0xff) return 1;
+    if (*src++ != 0xff) { return 1; }
   }
   return 0;
 }
@@ -262,7 +262,7 @@ static int HasAlpha8b_C(const src *uint8, int length) {
 static int HasAlpha32b_C(const src *uint8, int length) {
   var x int
   for x = 0; length-- > 0; x += 4 {
-    if (src[x] != 0xff) return 1;
+    if (src[x] != 0xff) { return 1; }
   }
   return 0;
 }

@@ -52,7 +52,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     dst = VSHF_UB(src, t0, mask1);                        \
   } while (0)
 
-func TransformColor_MSA(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, int num_pixels) {
+func TransformColor_MSA(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, num_pixels int) {
   v16u8 src0, dst0;
   const v16i8 g2br =
       (v16i8)__msa_fill_w(m.green_to_blue | (m.green_to_red << 16));
@@ -95,7 +95,7 @@ func TransformColor_MSA(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTR
   }
 }
 
-func SubtractGreenFromBlueAndRed_MSA(argb_data *uint32, int num_pixels) {
+func SubtractGreenFromBlueAndRed_MSA(argb_data *uint32, num_pixels int) {
   var i int
   ptemp_data *uint8 = (*uint8)argb_data;
   v16u8 src0, dst0, tmp0;

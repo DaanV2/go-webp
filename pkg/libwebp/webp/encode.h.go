@@ -122,7 +122,7 @@ type WebPConfig struct {
 
   int near_lossless;  // Near lossless encoding [0 = max loss .. 100 = off
                       // (default)].
-  int exact;          // if non-zero, preserve the exact RGB values under
+  exact int;          // if non-zero, preserve the exact RGB values under
                       // transparent area. Otherwise, discard this invisible
                       // RGB information for better compression. The default
                       // value is 0.

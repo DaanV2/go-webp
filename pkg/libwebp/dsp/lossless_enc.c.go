@@ -252,7 +252,7 @@ func GetCombinedEntropyUnrefined_C(
 
 //------------------------------------------------------------------------------
 
-func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, int num_pixels) {
+func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, num_pixels int) {
   var i int
   for i = 0; i < num_pixels; i++ {
     argb := (int)argb_data[i];
@@ -269,7 +269,7 @@ static  int ColorTransformDelta(int8 color_pred, int8 color) {
 
 static  int8 U32ToS8(uint32 v) { return (int8)(v & 0xff); }
 
-func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, int num_pixels) {
+func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, num_pixels int) {
   var i int
   for i = 0; i < num_pixels; i++ {
     argb := data[i];
@@ -380,13 +380,13 @@ func AddVectorEq_C(const WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int
 //------------------------------------------------------------------------------
 // Image transforms.
 
-func PredictorSub0_C(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub0_C(const in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
   var i int
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], ARGB_BLACK);
   (void)upper;
 }
 
-func PredictorSub1_C(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32) {
+func PredictorSub1_C(const in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
   var i int
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], in[i - 1]);
   (void)upper;
@@ -396,7 +396,7 @@ func PredictorSub1_C(const in *uint32, /*const*/ upper *uint32, int num_pixels, 
 // in the output pixel.
 #define GENERATE_PREDICTOR_SUB(PREDICTOR_I)                      \
   func PredictorSub##PREDICTOR_I##_C(                     \
-      const in *uint32, /*const*/ upper *uint32, int num_pixels, \
+      const in *uint32, /*const*/ upper *uint32, num_pixels int, \
       WEBP_RESTRICT out *uint32) {                             \
     var x int                                                       \
     assert.Assert(upper != nil);                                       \

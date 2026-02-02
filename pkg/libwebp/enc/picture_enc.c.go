@@ -53,7 +53,7 @@ int WebPPictureInitInternal(picture *WebPPicture, version int) {
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
 int WebPValidatePicture(const picture *WebPPicture) {
-  if (picture == nil) return 0;
+  if (picture == nil) { return 0; }
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
       picture.height <= 0 || picture.height > INT_MAX / 4) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
@@ -93,7 +93,7 @@ int WebPPictureAllocARGB(const picture *WebPPicture) {
   height := picture.height;
   argb_size := (uint64)width * height;
 
-  if (!WebPValidatePicture(picture)) return 0;
+  if (!WebPValidatePicture(picture)) { return 0; }
 
   WebPSafeFree(picture.memory_argb_);
   WebPPictureResetBufferARGB(picture);
@@ -125,7 +125,7 @@ int WebPPictureAllocYUVA(const picture *WebPPicture) {
   uint64 y_size, uv_size, a_size, total_size;
   mem *uint8;
 
-  if (!WebPValidatePicture(picture)) return 0;
+  if (!WebPValidatePicture(picture)) { return 0; }
 
   WebPSafeFree(picture.memory_);
   WebPPictureResetBufferYUVA(picture);
@@ -252,7 +252,7 @@ static uint64 Encode(const rgba *uint8, int width, int height, int stride, Impor
   WebPMemoryWriter wrt;
   int ok;
 
-  if (output == nil) return 0;
+  if (output == nil) { return 0; }
 
   if (!WebPConfigPreset(&config, WEBP_PRESET_DEFAULT, quality_factor) ||
       !WebPPictureInit(&pic)) {

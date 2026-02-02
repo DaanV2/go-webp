@@ -217,7 +217,7 @@ static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], /*const*/ mtx *VP8M
 
   // moved out from macro to increase possibility for earlier breaking
   for i = 15; i >= 0; i-- {
-    if (out[i]) return 1;
+    if (out[i]) { return 1; }
   }
   return 0;
 }

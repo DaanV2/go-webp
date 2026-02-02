@@ -53,7 +53,7 @@ static uint32 ExtraCost_SSE41(const a *uint32, int length) {
 //------------------------------------------------------------------------------
 // Subtract-Green Transform
 
-func SubtractGreenFromBlueAndRed_SSE41(argb_data *uint32, int num_pixels) {
+func SubtractGreenFromBlueAndRed_SSE41(argb_data *uint32, num_pixels int) {
   var i int
   const __m128i kCstShuffle =
       _mm_set_epi8(-1, 13, -1, 13, -1, 9, -1, 9, -1, 5, -1, 5, -1, 1, -1, 1);

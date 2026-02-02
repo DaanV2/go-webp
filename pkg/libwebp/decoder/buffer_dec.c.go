@@ -230,7 +230,7 @@ func WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoder
 
   // Then, allocate buffer for real.
   status = AllocateBuffer(buffer);
-  if (status != VP8_STATUS_OK) return status;
+  if status != VP8_STATUS_OK { return status; }
 
   // Use the stride trick if vertical flip is needed.
   if (options != nil && options.flip) {
@@ -246,7 +246,7 @@ func WebPInitDecBufferInternal(buffer *WebPDecBuffer, version int) int {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION)) {
     return 0;  // version mismatch
   }
-  if (buffer == nil) return 0;
+  if buffer == nil { return 0; }
   stdlib.Memset(buffer, 0, sizeof(*buffer));
   return 1;
 }

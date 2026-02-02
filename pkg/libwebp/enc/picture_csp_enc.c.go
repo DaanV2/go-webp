@@ -41,15 +41,15 @@ const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 
 // Returns true if alpha[] has non-0xff values.
 static int CheckNonOpaque(const alpha *uint8, int width, int height, int x_step, int y_step) {
-  if (alpha == nil) return 0;
+  if (alpha == nil) { return 0; }
   WebPInitAlphaProcessing();
   if (x_step == 1) {
     for ; height-- > 0; alpha += y_step {
-      if (WebPHasAlpha8b(alpha, width)) return 1;
+      if (WebPHasAlpha8b(alpha, width)) { return 1; }
     }
   } else {
     for ; height-- > 0; alpha += y_step {
-      if (WebPHasAlpha32b(alpha, width)) return 1;
+      if (WebPHasAlpha32b(alpha, width)) { return 1; }
     }
   }
   return 0;
@@ -57,7 +57,7 @@ static int CheckNonOpaque(const alpha *uint8, int width, int height, int x_step,
 
 // Checking for the presence of non-opaque alpha.
 int WebPPictureHasTransparency(const picture *WebPPicture) {
-  if (picture == nil) return 0;
+  if (picture == nil) { return 0; }
   if (picture.use_argb) {
     if (picture.argb != nil) {
       return CheckNonOpaque((const *uint8)picture.argb + ALPHA_OFFSET, picture.width, picture.height, 4, picture.argb_stride * sizeof(*picture.argb));
@@ -233,7 +233,7 @@ static int ImportYUVAFromRGBA(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*cons
 // call for ARGB.YUVA conversion
 
 static int PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float dithering, int use_iterative_conversion) {
-  if (picture == nil) return 0;
+  if (picture == nil) { return 0; }
   if (picture.argb == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   } else if ((colorspace & WEBP_CSP_UV_MASK) != WEBP_YUV420) {
@@ -270,7 +270,7 @@ int WebPPictureSmartARGBToYUVA(picture *WebPPicture) {
 // call for YUVA . ARGB conversion
 
 int WebPPictureYUVAToARGB(picture *WebPPicture) {
-  if (picture == nil) return 0;
+  if (picture == nil) { return 0; }
   if (picture.y == nil || picture.u == nil || picture.v == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   }
@@ -281,7 +281,7 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
   // Allocate a new argb buffer (discarding the previous one).
-  if (!WebPPictureAllocARGB(picture)) return 0;
+  if (!WebPPictureAllocARGB(picture)) { return 0; }
   picture.use_argb = 1;
 
   // Convert
@@ -340,13 +340,13 @@ static int Import(const picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stri
   width := picture.width;
   height := picture.height;
 
-  if (abs(rgb_stride) < (tenary.If(import_alpha, 4, 3)) * width) return 0;
+  if (abs(rgb_stride) < (tenary.If(import_alpha, 4, 3)) * width) { return 0; }
 
   if (!picture.use_argb) {
     var a_ptr *uint8 = import_alpha ? rgb + 3 : nil;
     return ImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, 0.f /* no dithering */, 0, picture);
   }
-  if (!WebPPictureAlloc(picture)) return 0;
+  if (!WebPPictureAlloc(picture)) { return 0; }
 
   VP8LDspInit();
   WebPInitAlphaProcessing();

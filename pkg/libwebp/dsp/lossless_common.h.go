@@ -44,7 +44,7 @@ static  uint8 VP8GetAlphaValue(uint32 val) {
 // Misc methods.
 
 // Computes sampled size of 'size' when sampling using 'sampling bits'.
-static  uint32 VP8LSubSampleSize(uint32 size, uint32 sampling_bits) {
+static  uint32 VP8LSubSampleSize(size uint32, uint32 sampling_bits) {
   return (size + (1 << sampling_bits) - 1) >> sampling_bits;
 }
 
@@ -185,7 +185,7 @@ VP8LSubPixels(uint32 a, uint32 b) {
 // is therefore considered as a residual) to get the final prediction.
 #define GENERATE_PREDICTOR_ADD(PREDICTOR, PREDICTOR_ADD)                   \
   func PREDICTOR_ADD(const in *uint32, /*const*/ upper *uint32,     \
-                            int num_pixels, WEBP_RESTRICT out *uint32) { \
+                            num_pixels int, WEBP_RESTRICT out *uint32) { \
     var x int                                                                 \
     assert.Assert(upper != nil);                                                 \
     for x = 0; x < num_pixels; x++ {                                     \

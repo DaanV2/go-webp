@@ -59,17 +59,17 @@ static int EncodeLossless(const data *uint8, int width, int height, int effort_l
   WebPConfig config;
   WebPPicture picture;
 
-  if (!WebPPictureInit(&picture)) return 0;
+  if (!WebPPictureInit(&picture)) { return 0; }
   picture.width = width;
   picture.height = height;
   picture.use_argb = 1;
   picture.stats = stats;
-  if (!WebPPictureAlloc(&picture)) return 0;
+  if (!WebPPictureAlloc(&picture)) { return 0; }
 
   // Transfer the alpha values to the green channel.
   WebPDispatchAlphaToGreen(data, width, picture.width, picture.height, picture.argb, picture.argb_stride);
 
-  if (!WebPConfigInit(&config)) return 0;
+  if (!WebPConfigInit(&config)) { return 0; }
   config.lossless = 1;
   // Enable exact, or it would alter RGB values of transparent alpha, which is
   // normally OK but not here since we are not encoding the input image but  an
@@ -239,7 +239,7 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data
 
   if (try_map != FILTER_TRY_NONE) {
     filtered_alpha *uint8 = (*uint8)WebPSafeMalloc(uint64(1), data_size);
-    if (filtered_alpha == nil) return 0;
+    if (filtered_alpha == nil) { return 0; }
 
     for filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1 {
       if (try_map & 1) {

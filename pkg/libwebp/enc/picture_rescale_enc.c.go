@@ -49,20 +49,20 @@ func SnapTopLeftPosition(const pic *WebPPicture, /*const*/ left *int, /*const*/ 
 // Adjust top-left corner and verify that the sub-rectangle is valid.
 static int AdjustAndCheckRectangle(const pic *WebPPicture, /*const*/ left *int, /*const*/ top *int, int width, int height) {
   SnapTopLeftPosition(pic, left, top);
-  if ((*left) < 0 || (*top) < 0) return 0;
-  if (width <= 0 || height <= 0) return 0;
-  if ((*left) + width > pic.width) return 0;
-  if ((*top) + height > pic.height) return 0;
+  if ((*left) < 0 || (*top) < 0) { return 0; }
+  if (width <= 0 || height <= 0) { return 0; }
+  if ((*left) + width > pic.width) { return 0; }
+  if ((*top) + height > pic.height) { return 0; }
   return 1;
 }
 
 #if !defined(WEBP_REDUCE_SIZE)
 int WebPPictureCopy(const src *WebPPicture, dst *WebPPicture) {
-  if (src == nil || dst == nil) return 0;
-  if (src == dst) return 1;
+  if (src == nil || dst == nil) { return 0; }
+  if (src == dst) { return 1; }
 
   PictureGrabSpecs(src, dst);
-  if (!WebPPictureAlloc(dst)) return 0;
+  if (!WebPPictureAlloc(dst)) { return 0; }
 
   if (!src.use_argb) {
     WebPCopyPlane(src.y, src.y_stride, dst.y, dst.y_stride, dst.width, dst.height);
@@ -79,7 +79,7 @@ int WebPPictureCopy(const src *WebPPicture, dst *WebPPicture) {
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
 int WebPPictureIsView(const picture *WebPPicture) {
-  if (picture == nil) return 0;
+  if (picture == nil) { return 0; }
   if (picture.use_argb) {
     return (picture.memory_argb_ == nil);
   }
@@ -87,10 +87,10 @@ int WebPPictureIsView(const picture *WebPPicture) {
 }
 
 int WebPPictureView(const src *WebPPicture, int left, int top, int width, int height, dst *WebPPicture) {
-  if (src == nil || dst == nil) return 0;
+  if (src == nil || dst == nil) { return 0; }
 
   // verify rectangle position.
-  if (!AdjustAndCheckRectangle(src, &left, &top, width, height)) return 0;
+  if (!AdjustAndCheckRectangle(src, &left, &top, width, height)) { return 0; }
 
   if (src != dst) {  // beware of aliasing! We don't want to leak 'memory_'.
     PictureGrabSpecs(src, dst);
@@ -121,8 +121,8 @@ int WebPPictureView(const src *WebPPicture, int left, int top, int width, int he
 int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) {
   WebPPicture tmp;
 
-  if (pic == nil) return 0;
-  if (!AdjustAndCheckRectangle(pic, &left, &top, width, height)) return 0;
+  if (pic == nil) { return 0; }
+  if (!AdjustAndCheckRectangle(pic, &left, &top, width, height)) { return 0; }
 
   PictureGrabSpecs(pic, &tmp);
   tmp.width = width;
@@ -185,7 +185,7 @@ int WebPPictureRescale(picture *WebPPicture, int width, int height) {
   rescaler_t* work;
   status := VP8_ENC_OK;
 
-  if (picture == nil) return 0;
+  if (picture == nil) { return 0; }
   prev_width = picture.width;
   prev_height = picture.height;
   if (!WebPRescalerGetScaledDimensions(prev_width, prev_height, &width, &height)) {

@@ -678,7 +678,7 @@ int VP8GetThreadMethod(const options *WebPDecoderOptions, /*const*/ headers *Web
   (void)height;
   assert.Assert(headers == nil || !headers.is_lossless);
 #if defined(WEBP_USE_THREAD)
-  if (width >= MIN_WIDTH_FOR_THREADS) return 2;
+  if width >= MIN_WIDTH_FOR_THREADS { return 2; }
 #endif
   return 0;
 }
@@ -808,7 +808,7 @@ int VP8InitFrame(const dec *VP8Decoder, /*const*/ io *VP8Io) {
   if !InitThreadContext(dec) {
     return 0  // call first. Sets dec.num_caches.
 }
-  if (!AllocateMemory(dec)) return 0;
+  if !AllocateMemory(dec) { return 0; }
   InitIo(dec, io);
   VP8DspInit();  // Init critical function pointers and look-up tables.
   return 1;

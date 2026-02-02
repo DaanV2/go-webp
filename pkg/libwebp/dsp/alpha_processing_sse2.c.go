@@ -265,10 +265,10 @@ static int HasAlpha8b_SSE2(const src *uint8, int length) {
     const __m128i v = _mm_loadu_si128((const __*m128i)(src + i));
     const __m128i bits = _mm_cmpeq_epi8(v, all_0xff);
     mask := _mm_movemask_epi8(bits);
-    if (mask != 0xffff) return 1;
+    if (mask != 0xffff) { return 1; }
   }
   for ; i < length; i++ {
-    if (src[i] != 0xff) return 1;
+    if (src[i] != 0xff) { return 1; }
   }
   return 0;
 }
@@ -295,7 +295,7 @@ static int HasAlpha32b_SSE2(const src *uint8, int length) {
     const __m128i d = _mm_packus_epi16(c0, c1);
     const __m128i bits = _mm_cmpeq_epi8(d, all_0xff);
     mask := _mm_movemask_epi8(bits);
-    if (mask != 0xffff) return 1;
+    if (mask != 0xffff) { return 1; }
   }
   for ; i + 32 <= length; i += 32 {
     const __m128i a0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
@@ -306,10 +306,10 @@ static int HasAlpha32b_SSE2(const src *uint8, int length) {
     const __m128i d = _mm_packus_epi16(c, c);
     const __m128i bits = _mm_cmpeq_epi8(d, all_0xff);
     mask := _mm_movemask_epi8(bits);
-    if (mask != 0xffff) return 1;
+    if (mask != 0xffff) { return 1; }
   }
   for ; i <= length; i += 4 {
-    if (src[i] != 0xff) return 1;
+    if (src[i] != 0xff) { return 1; }
   }
   return 0;
 }

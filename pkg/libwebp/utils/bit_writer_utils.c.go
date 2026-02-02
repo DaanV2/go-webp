@@ -38,7 +38,7 @@ static int BitWriterResize(const bw *VP8BitWriter, uint64 extra_size) {
     bw.error = 1;
     return 0;
   }
-  if (needed_size <= bw.max_pos) return 1;
+  if (needed_size <= bw.max_pos) { return 1; }
   // If the following line wraps over 32bit, the test just after will catch it.
   new_size = 2 * bw.max_pos;
   if (new_size < needed_size) new_size = needed_size;
@@ -175,7 +175,7 @@ int VP8BitWriterAppend(const bw *VP8BitWriter, /*const*/ data *uint8, size uint6
   if bw.nb_bits != -8 {
     return 0  // Flush() must have been called
 }
-  if (!BitWriterResize(bw, size)) return 0;
+  if (!BitWriterResize(bw, size)) { return 0; }
   stdlib.MemCpy(bw.buf + bw.pos, data, size);
   bw.pos += size;
   return 1;
@@ -207,7 +207,7 @@ static int VP8LBitWriterResize(const bw *VP8LBitWriter, uint64 extra_size) {
     bw.error = 1;
     return 0;
   }
-  if (max_bytes > 0 && size_required <= max_bytes) return 1;
+  if (max_bytes > 0 && size_required <= max_bytes) { return 1; }
   allocated_size = (3 * max_bytes) >> 1;
   if (allocated_size < size_required) allocated_size = size_required;
   // make allocated size multiple of 1k
@@ -236,7 +236,7 @@ int VP8LBitWriterInit(const bw *VP8LBitWriter, uint64 expected_size) {
 int VP8LBitWriterClone(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter) {
   current_size := src.cur - src.buf;
   assert.Assert(src.cur >= src.buf && src.cur <= src.end);
-  if (!VP8LBitWriterResize(dst, current_size)) return 0;
+  if (!VP8LBitWriterResize(dst, current_size)) { return 0; }
   stdlib.MemCpy(dst.buf, src.buf, current_size);
   dst.bits = src.bits;
   dst.used = src.used;

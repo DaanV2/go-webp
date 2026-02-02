@@ -141,7 +141,7 @@ int WebPPlaneDistortion(const src *uint8, uint64 src_stride, /*const*/ ref *uint
     tmp *uint82;
     allocated =
         (*uint8)WebPSafeMalloc(uint64(2) * width * height, sizeof(*allocated));
-    if (allocated == nil) return 0;
+    if (allocated == nil) { return 0; }
     tmp1 = allocated;
     tmp2 = tmp1 + (uint64)width * height;
     for y = 0; y < height; y++ {
@@ -178,7 +178,7 @@ int WebPPictureDistortion(const src *WebPPicture, /*const*/ ref *WebPPicture, in
   }
 
   VP8SSIMDspInit();
-  if (!WebPPictureInit(&p0) || !WebPPictureInit(&p1)) return 0;
+  if (!WebPPictureInit(&p0) || !WebPPictureInit(&p1)) { return 0; }
   w = src.width;
   h = src.height;
   if (!WebPPictureView(src, 0, 0, w, h, &p0)) goto Error;
@@ -222,7 +222,7 @@ int WebPPlaneDistortion(const src *uint8, uint64 src_stride, /*const*/ ref *uint
   (void)height;
   (void)x_step;
   (void)type;
-  if (distortion == nil || result == nil) return 0;
+  if (distortion == nil || result == nil) { return 0; }
   *distortion = 0.f;
   *result = 0.f;
   return 1;
@@ -233,7 +233,7 @@ int WebPPictureDistortion(const src *WebPPicture, /*const*/ ref *WebPPicture, in
   (void)src;
   (void)ref;
   (void)type;
-  if (results == nil) return 0;
+  if (results == nil) { return 0; }
   for (i = 0; i < 5; ++i) results[i] = 0.f;
   return 1;
 }

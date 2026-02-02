@@ -86,7 +86,7 @@ static  func UpdateHisto(uint32 histo_argb[HISTO_SIZE], uint32 argb) {
 //------------------------------------------------------------------------------
 // Spatial transform functions.
 
-static  func PredictBatch(int mode, int x_start, int y, int num_pixels, /*const*/ current *uint32, /*const*/ upper *uint32, out *uint32) {
+static  func PredictBatch(int mode, int x_start, int y, num_pixels int, /*const*/ current *uint32, /*const*/ upper *uint32, out *uint32) {
   if (x_start == 0) {
     if (y == 0) {
       // ARGB_BLACK.
@@ -238,7 +238,7 @@ static uint32 NearLossless(uint32 value, uint32 predict, int max_quantization, i
 // the deviation further to pixels which depend on the current pixel for their
 // predictions.
 static  func GetResidual(
-    int width, int height, /*const*/ upper_row *uint32, /*const*/ current_row *uint32, /*const*/ max_diffs *uint8, int mode, int x_start, int x_end, int y, int max_quantization, int exact, int used_subtract_green, /*const*/ out *uint32) {
+    int width, int height, /*const*/ upper_row *uint32, /*const*/ current_row *uint32, /*const*/ max_diffs *uint8, int mode, int x_start, int x_end, int y, int max_quantization, exact int, int used_subtract_green, /*const*/ out *uint32) {
   if (exact) {
     PredictBatch(mode, x_start, y, x_end - x_start, current_row, upper_row, out);
   } else {
@@ -352,7 +352,7 @@ func GetBestPredictorForTile(const all_argb *uint32, int subsampling_index, int 
 // max_quantization (the actual quantization level depends on smoothness near
 // the given pixel).
 func ComputeResidualsForTile(
-    int width, int height, int tile_x, int tile_y, int min_bits, uint32 update_up_to_index, /*const*/ all_argb *uint32, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int max_quantization, int exact, int used_subtract_green) {
+    int width, int height, int tile_x, int tile_y, int min_bits, uint32 update_up_to_index, /*const*/ all_argb *uint32, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int max_quantization, exact int, int used_subtract_green) {
   start_x := tile_x << min_bits;
   start_y := tile_y << min_bits;
   tile_size := 1 << min_bits;
@@ -427,7 +427,7 @@ func ComputeResidualsForTile(
 // If max_quantization > 1, applies near lossless processing, quantizing
 // residuals to multiples of quantization levels up to max_quantization
 // (the actual quantization level depends on smoothness near the given pixel).
-func CopyImageWithPrediction(int width, int height, int bits, /*const*/ modes *uint32, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int low_effort, int max_quantization, int exact, int used_subtract_green) {
+func CopyImageWithPrediction(int width, int height, int bits, /*const*/ modes *uint32, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int low_effort, int max_quantization, exact int, int used_subtract_green) {
   tiles_per_row := VP8LSubSampleSize(width, bits);
   // The width of upper_row and current_row is one pixel larger than image width
   // to allow the top right pixel to point to the leftmost pixel of the next row
@@ -564,7 +564,7 @@ func VP8LOptimizeSampling(const image *uint32, int full_width, int full_height, 
 // super-tile is updated. If this super-tile is finished, its histogram is used
 // to update the histogram of the next super-tile and so on up to the max-tile.
 func GetBestPredictorsAndSubSampling(
-    int width, int height, /*const*/ int min_bits, /*const*/ int max_bits, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int max_quantization, int exact, int used_subtract_green, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int, *uint32* const all_modes, best_bits *int, *uint32* best_mode) {
+    int width, int height, /*const*/ int min_bits, /*const*/ int max_bits, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int max_quantization, exact int, int used_subtract_green, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int, *uint32* const all_modes, best_bits *int, *uint32* best_mode) {
   tiles_per_row := VP8LSubSampleSize(width, min_bits);
   tiles_per_col := VP8LSubSampleSize(height, min_bits);
   int64 best_cost;
@@ -707,7 +707,7 @@ func GetBestPredictorsAndSubSampling(
 // qualities.
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
-int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low_effort, /*const*/ argb *uint32, /*const*/ argb_scratch *uint32, /*const*/ image *uint32, int near_lossless_quality, int exact, int used_subtract_green, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low_effort, /*const*/ argb *uint32, /*const*/ argb_scratch *uint32, /*const*/ image *uint32, int near_lossless_quality, exact int, int used_subtract_green, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
   percent_start := *percent;
   max_quantization := 1 << VP8LNearLosslessBits(near_lossless_quality);
   if (low_effort) {
@@ -732,7 +732,7 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low
       sum_num_pixels += num_pixels[bits];
     }
     modes_raw = (*uint32)WebPSafeMalloc(sum_num_pixels, sizeof(*modes_raw));
-    if (modes_raw == nil) return 0;
+    if (modes_raw == nil) { return 0; }
     // Have modes point to the right global memory modes_raw.
     modes[min_bits] = modes_raw;
     for bits = min_bits + 1; bits <= max_bits; bits++ {

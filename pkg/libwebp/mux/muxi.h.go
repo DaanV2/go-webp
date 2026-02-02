@@ -68,8 +68,8 @@ type WebPMux struct {
   vp *WebPChunk8x;
 
   unknown *WebPChunk;
-  int canvas_width;
-  int canvas_height;
+  canvas_width int;
+  canvas_height int;
 }
 
 // CHUNK_INDEX enum: used for indexing within 'kChunks' (defined below) only.
@@ -98,7 +98,7 @@ const NIL_TAG =uint(0x00000000)  // To signal func chunk.
 type ChunkInfo struct {
   uint32 tag;
   WebPChunkId id;
-  uint32 size;
+  size uint32;
 } ;
 
 extern const ChunkInfo kChunks[IDX_LAST_CHUNK];

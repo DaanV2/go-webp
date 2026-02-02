@@ -220,7 +220,7 @@ static uint32 Predictor13_MIPSdspR2(const left *uint32, /*const*/ top *uint32) {
 
 // Add green to blue and red channels (i.e. perform the inverse transform of
 // 'subtract green').
-func AddGreenToBlueAndRed_MIPSdspR2(const src *uint32, int num_pixels, dst *uint32) {
+func AddGreenToBlueAndRed_MIPSdspR2(const src *uint32, num_pixels int, dst *uint32) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   var p_loop *uint321_end = src + (num_pixels & ~3);
   var p_loop *uint322_end = src + num_pixels;
@@ -272,7 +272,7 @@ func AddGreenToBlueAndRed_MIPSdspR2(const src *uint32, int num_pixels, dst *uint
       : "memory");
 }
 
-func TransformColorInverse_MIPSdspR2(const m *VP8LMultipliers, /*const*/ src *uint32, int num_pixels, dst *uint32) {
+func TransformColorInverse_MIPSdspR2(const m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   uint32 argb, argb1, new_red;
   G_to_R := m.green_to_red;
@@ -336,7 +336,7 @@ func TransformColorInverse_MIPSdspR2(const m *VP8LMultipliers, /*const*/ src *ui
   if (num_pixels & 1) VP8LTransformColorInverse_C(m, src, 1, dst);
 }
 
-func ConvertBGRAToRGB_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
+func ConvertBGRAToRGB_MIPSdspR2(const src *uint32, num_pixels int, dst *uint8) {
   int temp0, temp1, temp2, temp3;
   var p_loop *uint321_end = src + (num_pixels & ~3);
   var p_loop *uint322_end = src + num_pixels;
@@ -385,7 +385,7 @@ func ConvertBGRAToRGB_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
       : "memory");
 }
 
-func ConvertBGRAToRGBA_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
+func ConvertBGRAToRGBA_MIPSdspR2(const src *uint32, num_pixels int, dst *uint8) {
   int temp0, temp1, temp2, temp3;
   var p_loop *uint321_end = src + (num_pixels & ~3);
   var p_loop *uint322_end = src + num_pixels;
@@ -432,7 +432,7 @@ func ConvertBGRAToRGBA_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) 
       : "memory");
 }
 
-func ConvertBGRAToRGBA4444_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
+func ConvertBGRAToRGBA4444_MIPSdspR2(const src *uint32, num_pixels int, dst *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   var p_loop *uint321_end = src + (num_pixels & ~3);
   var p_loop *uint322_end = src + num_pixels;
@@ -502,7 +502,7 @@ func ConvertBGRAToRGBA4444_MIPSdspR2(const src *uint32, int num_pixels, dst *uin
       : "memory");
 }
 
-func ConvertBGRAToRGB565_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
+func ConvertBGRAToRGB565_MIPSdspR2(const src *uint32, num_pixels int, dst *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   var p_loop *uint321_end = src + (num_pixels & ~3);
   var p_loop *uint322_end = src + num_pixels;
@@ -576,7 +576,7 @@ func ConvertBGRAToRGB565_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8
       : "memory");
 }
 
-func ConvertBGRAToBGR_MIPSdspR2(const src *uint32, int num_pixels, dst *uint8) {
+func ConvertBGRAToBGR_MIPSdspR2(const src *uint32, num_pixels int, dst *uint8) {
   int temp0, temp1, temp2, temp3;
   var p_loop *uint321_end = src + (num_pixels & ~3);
   var p_loop *uint322_end = src + num_pixels;

@@ -37,7 +37,7 @@ static uint32 FindClosestDiscretized(uint32 a, int bits) {
   mask := (uint(1) << bits) - 1;
   biased := a + (mask >> 1) + ((a >> bits) & 1);
   assert.Assert(bits > 0);
-  if (biased > 0xff) return 0xff;
+  if (biased > 0xff) { return 0xff; }
   return biased & ~mask;
 }
 

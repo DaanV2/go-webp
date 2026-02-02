@@ -5,41 +5,25 @@
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-//  AnimDecoder implementation.
-//
 
 package demux
 
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+ "github.com/daanv2/go-webp/pkg/libwebp/webp"
+ "github.com/daanv2/go-webp/pkg/assert"
+ "github.com/daanv2/go-webp/pkg/string"
+ "github.com/daanv2/go-webp/pkg/libwebp/utils"
+ "github.com/daanv2/go-webp/pkg/libwebp/webp"
+ "github.com/daanv2/go-webp/pkg/libwebp/webp"
+ "github.com/daanv2/go-webp/pkg/libwebp/webp"
+ "github.com/daanv2/go-webp/pkg/libwebp/webp"
+ "github.com/daanv2/go-webp/pkg/libwebp/webp"
+)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-
-const NUM_CHANNELS = 4
-
-// Channel extraction from a uint32 representation of a uint8 RGBA/BGRA
-// buffer.
-func CHANNEL_SHIFT(i int) int {
-	if constants.WORDS_BIGENDIAN {
-		return (24 - (i) * 8)
-	}
-
-	return((i) * 8)
-}
 
 type BlendRowFunc = func(/* const */ *uint32, /* const */ *uint32, int)
-type BlendPixelRowNonPremult = func(/* const */ src *uint32, /* const */ dst *uint32, int num_pixels);
-type BlendPixelRowPremult = func(/* const */ src *uint32, /* const */ dst *uint32, int num_pixels);
+type BlendPixelRowNonPremult = func(/* const */ src *uint32, /* const */ dst *uint32, num_pixels int);
+type BlendPixelRowPremult = func(/* const */ src *uint32, /* const */ dst *uint32, num_pixels int);
 
 type WebPAnimDecoder struct {
 	demux *WebPDemuxer        // Demuxer created from given WebP bitstream.
@@ -146,7 +130,7 @@ Error:
 }
 
 func WebPAnimDecoderGetInfo(/* const */ dec *WebPAnimDecoder, info *WebPAnimInfo) int {
-  if (dec == nil || info == nil) return 0;
+  if (dec == nil || info == nil) { return 0; }
   *info = dec.info;
   return 1;
 }
@@ -160,7 +144,7 @@ func IsFullFrame(width, height, canvas_width, canvas_height int) int {
 func ZeroFillCanvas(buf *uint8, uint32 canvas_width, uint32 canvas_height) int {
   size = (uint64)canvas_width * canvas_height * NUM_CHANNELS * sizeof(*buf);
   
-  if (!CheckSizeOverflow(size)) return 0;
+  if (!CheckSizeOverflow(size)) { return 0; }
  
   stdlib.Memset(buf, 0, (uint64)size);
   return 1;
@@ -179,7 +163,7 @@ func ZeroFillFrameRect(buf *uint8, buf_stride, x_offset, y_offset, width, height
 // Copy width * height pixels from 'src' to 'dst'.
 func CopyCanvas(/* const */ src *uint8, dst *uint8, width, height uint32 ) int {
   size := (uint64)width * height * NUM_CHANNELS;
-  if (!CheckSizeOverflow(size)) return 0;
+  if (!CheckSizeOverflow(size)) { return 0; }
   assert.Assert(src != nil && dst != nil);
   stdlib.MemCpy(dst, src, (uint64)size);
   return 1;
@@ -240,7 +224,7 @@ func BlendPixelNonPremult(uint32 src, uint32 dst) uint32 {
 
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are NOT pre-multiplied
 // by alpha.
-func BlendPixelRowNonPremult(const src *uint32, /*const*/ dst *uint32, int num_pixels) {
+func BlendPixelRowNonPremult(const src *uint32, /*const*/ dst *uint32, num_pixels int) {
   var i int
   for i = 0; i < num_pixels; i++ {
     src_alpha := (src[i] >> CHANNEL_SHIFT(3)) & 0xff;
@@ -314,8 +298,8 @@ func WebPAnimDecoderGetNext(dec *WebPAnimDecoder, *uint8* buf_ptr, timestamp_ptr
   var timestamp int
   var blend_row BlendRowFunc
 
-  if (dec == nil || buf_ptr == nil || timestamp_ptr == nil) return 0;
-  if (!WebPAnimDecoderHasMoreFrames(dec)) return 0;
+  if (dec == nil || buf_ptr == nil || timestamp_ptr == nil) { return 0; }
+  if (!WebPAnimDecoderHasMoreFrames(dec)) { return 0; }
 
   width = dec.info.canvas_width;
   height = dec.info.canvas_height;
@@ -419,7 +403,7 @@ Error:
 }
 
 func WebPAnimDecoderHasMoreFrames(/* const  */dec *WebPAnimDecoder) int {
-  if (dec == nil) return 0;
+  if (dec == nil) { return 0; }
   return (dec.next_frame <= (int)dec.info.frame_count);
 }
 

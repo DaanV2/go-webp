@@ -41,12 +41,12 @@ uint32 VP8LPredictor12_C(const left *uint32, /*const*/ top *uint32);
 uint32 VP8LPredictor13_C(const left *uint32, /*const*/ top *uint32);
 
 // These Add/Sub function expects upper[-1] and out[-1] to be readable.
-typedef func (*VP8LPredictorAddSubFunc)(const in *uint32, /*const*/ upper *uint32, int num_pixels, WEBP_RESTRICT out *uint32);
+typedef func (*VP8LPredictorAddSubFunc)(const in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32);
 extern VP8LPredictorAddSubFunc VP8LPredictorsAdd[16];
 extern VP8LPredictorAddSubFunc VP8LPredictorsAdd_C[16];
 extern VP8LPredictorAddSubFunc VP8LPredictorsAdd_SSE[16];
 
-typedef func (*VP8LProcessDecBlueAndRedFunc)(const src *uint32, int num_pixels, dst *uint32);
+typedef func (*VP8LProcessDecBlueAndRedFunc)(const src *uint32, num_pixels int, dst *uint32);
 extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed;
 extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed_SSE;
 
@@ -57,7 +57,7 @@ type VP8LMultipliers struct {
   uint8 green_to_blue;
   uint8 red_to_blue;
 } ;
-typedef func (*VP8LTransformColorInverseFunc)(const m *VP8LMultipliers, /*const*/ src *uint32, int num_pixels, dst *uint32);
+typedef func (*VP8LTransformColorInverseFunc)(const m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32);
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse;
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse_SSE;
 
@@ -70,7 +70,7 @@ struct VP8LTransform;  // Defined in dec/vp8li.h.
 func VP8LInverseTransform(const struct const transform *VP8LTransform, int row_start, int row_end, /*const*/ in *uint32, /*const*/ out *uint32);
 
 // Color space conversion.
-typedef func (*VP8LConvertFunc)(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8);
+typedef func (*VP8LConvertFunc)(const WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8);
 extern VP8LConvertFunc VP8LConvertBGRAToRGB;
 extern VP8LConvertFunc VP8LConvertBGRAToRGBA;
 extern VP8LConvertFunc VP8LConvertBGRAToRGBA4444;
@@ -80,7 +80,7 @@ extern VP8LConvertFunc VP8LConvertBGRAToRGB_SSE;
 extern VP8LConvertFunc VP8LConvertBGRAToRGBA_SSE;
 
 // Converts from BGRA to other color spaces.
-func VP8LConvertFromBGRA(const in_data *uint32, int num_pixels, WEBP_CSP_MODE out_colorspace, /*const*/ rgba *uint8);
+func VP8LConvertFromBGRA(const in_data *uint32, num_pixels int, WEBP_CSP_MODE out_colorspace, /*const*/ rgba *uint8);
 
 typedef func (*VP8LMapARGBFunc)(const src *uint32, /*const*/ color_map *uint32, dst *uint32, int y_start, int y_end, int width);
 typedef func (*VP8LMapAlphaFunc)(const src *uint8, /*const*/ color_map *uint32, dst *uint8, int y_start, int y_end, int width);
@@ -95,14 +95,14 @@ func VP8LColorIndexInverseTransformAlpha(
     const struct const transform *VP8LTransform, int y_start, int y_end, /*const*/ src *uint8, dst *uint8);
 
 // Expose some C-only fallback functions
-func VP8LTransformColorInverse_C(const m *VP8LMultipliers, /*const*/ src *uint32, int num_pixels, dst *uint32);
+func VP8LTransformColorInverse_C(const m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32);
 
-func VP8LConvertBGRAToRGB_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8);
-func VP8LConvertBGRAToRGBA_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8);
-func VP8LConvertBGRAToRGBA4444_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8);
-func VP8LConvertBGRAToRGB565_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8);
-func VP8LConvertBGRAToBGR_C(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8);
-func VP8LAddGreenToBlueAndRed_C(const src *uint32, int num_pixels, dst *uint32);
+func VP8LConvertBGRAToRGB_C(const WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8);
+func VP8LConvertBGRAToRGBA_C(const WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8);
+func VP8LConvertBGRAToRGBA4444_C(const WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8);
+func VP8LConvertBGRAToRGB565_C(const WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8);
+func VP8LConvertBGRAToBGR_C(const WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8);
+func VP8LAddGreenToBlueAndRed_C(const src *uint32, num_pixels int, dst *uint32);
 
 // Must be called before calling any of the above methods.
 func VP8LDspInit(void);
@@ -110,11 +110,11 @@ func VP8LDspInit(void);
 //------------------------------------------------------------------------------
 // Encoding
 
-typedef func (*VP8LProcessEncBlueAndRedFunc)(dst *uint32, int num_pixels);
+typedef func (*VP8LProcessEncBlueAndRedFunc)(dst *uint32, num_pixels int);
 extern VP8LProcessEncBlueAndRedFunc VP8LSubtractGreenFromBlueAndRed;
 extern VP8LProcessEncBlueAndRedFunc VP8LSubtractGreenFromBlueAndRed_SSE;
 typedef func (*VP8LTransformColorFunc)(
-    const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT dst *uint32, int num_pixels);
+    const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT dst *uint32, num_pixels int);
 extern VP8LTransformColorFunc VP8LTransformColor;
 extern VP8LTransformColorFunc VP8LTransformColor_SSE;
 typedef func (*VP8LCollectColorBlueTransformsFunc)(
@@ -128,8 +128,8 @@ extern VP8LCollectColorRedTransformsFunc VP8LCollectColorRedTransforms;
 extern VP8LCollectColorRedTransformsFunc VP8LCollectColorRedTransforms_SSE;
 
 // Expose some C-only fallback functions
-func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, int num_pixels);
-func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, int num_pixels);
+func VP8LTransformColor_C(const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, num_pixels int);
+func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, num_pixels int);
 func VP8LCollectColorRedTransforms_C(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]);
 func VP8LCollectColorBlueTransforms_C(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]);
 

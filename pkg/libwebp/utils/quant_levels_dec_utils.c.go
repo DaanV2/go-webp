@@ -233,7 +233,7 @@ func InitParams( *uint8((uint64)height *stride) data, width, height, stride, rad
   total_size := size_scratch_m + size_m + size_lut;
   mem *uint8 = (*uint8)WebPSafeMalloc(uint(1), total_size);
 
-  if (mem == nil) return 0;
+  if (mem == nil) { return 0; }
   p.mem = (*void)mem;
 
   p.start = (*uint16)mem;
@@ -272,7 +272,7 @@ int WebPDequantizeLevels( *uint8((uint64)height *stride)
                              const data, int width, int height, int stride, int strength) {
   radius := 4 * strength / 100;
 
-  if (strength < 0 || strength > 100) return 0;
+  if (strength < 0 || strength > 100) { return 0; }
   if data == nil || width <= 0 || height <= 0 {
     return 0  // bad params
 }
@@ -284,7 +284,7 @@ int WebPDequantizeLevels( *uint8((uint64)height *stride)
   if (radius > 0) {
     SmoothParams p;
     stdlib.Memset(&p, 0, sizeof(p));
-    if (!InitParams(data, width, height, stride, radius, &p)) return 0;
+    if (!InitParams(data, width, height, stride, radius, &p)) { return 0; }
     if (p.num_levels > 2) {
       for ; p.row < p.height; ++p.row {
         VFilter(&p);  // accumulate average of input

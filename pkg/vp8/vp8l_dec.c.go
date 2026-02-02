@@ -293,7 +293,7 @@ static int ReadHuffmanCodeLengths(const dec *VP8LDecoder, /*const*/ code_length_
 
 End:
   VP8LHuffmanTablesDeallocate(&tables);
-  if (!ok) return VP8LSetError(dec, VP8_STATUS_BITSTREAM_ERROR);
+  if (!ok) { return VP8LSetError(dec, VP8_STATUS_BITSTREAM_ERROR); }
   return ok;
 }
 
@@ -696,7 +696,7 @@ func EmitRescaledRowsYUVA(/* const */ dec *VP8LDecoder, in *uint8, in_stride, mb
 func CheckNonOpaque(/* const */ alpha *uint8, width, height, y_step int) int {
   WebPInitAlphaProcessing();
   for ; height-- > 0; alpha += y_step {
-    if (WebPHasAlpha8b(alpha, width)) return 1;
+    if (WebPHasAlpha8b(alpha, width)) { return 1; }
   }
   return 0;
 }
@@ -788,7 +788,7 @@ func SetCropWindow(/* const */ io *VP8Io,  y_start int, y_end int, in_data *uint
 //------------------------------------------------------------------------------
 
 static  int GetMetaIndex(const image *uint32, int xsize, int bits, int x, int y) {
-  if (bits == 0) return 0;
+  if (bits == 0) { return 0; }
   return image[xsize * (y >> bits) + (x >> bits)];
 }
 
@@ -892,14 +892,14 @@ func ProcessRows(const dec *VP8LDecoder, row int, int wait_for_biggest_batch) {
 // transform (color indexing), and trivial non-green literals.
 static int Is8bOptimizable(const hdr *VP8LMetadata) {
   var i int
-  if (hdr.color_cache_size > 0) return 0;
+  if (hdr.color_cache_size > 0) { return 0; }
   // When the Huffman tree contains only one symbol, we can skip the
   // call to ReadSymbol() for red/blue/alpha channels.
   for i = 0; i < hdr.num_htree_groups; i++ {
     *HuffmanCode* const htrees = hdr.htree_groups[i].htrees;
-    if (htrees[RED][0].bits > 0) return 0;
-    if (htrees[BLUE][0].bits > 0) return 0;
-    if (htrees[ALPHA][0].bits > 0) return 0;
+    if (htrees[RED][0].bits > 0) { return 0; }
+    if (htrees[BLUE][0].bits > 0) { return 0; }
+    if (htrees[ALPHA][0].bits > 0) { return 0; }
   }
   return 1;
 }
@@ -1427,7 +1427,7 @@ func ClearMetadata(const hdr *VP8LMetadata) {
 // Allocates and initialize a new lossless decoder instance.
 VP *VP8LDecoder8LNew(){
   var dec *VP8LDecoder = (*VP8LDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
-  if (dec == nil) return nil;
+  if (dec == nil) { return nil; }
   dec.status = VP8_STATUS_OK;
   dec.state = READ_DIM;
 
@@ -1641,7 +1641,7 @@ int VP8LDecodeAlphaHeader(const alph_dec *ALPHDecoder, /*const*/ *uint8  data, d
   ok := 0;
   dec *VP8LDecoder = VP8LNew();
 
-  if (dec == nil) return 0;
+  if (dec == nil) { return 0; }
 
   assert.Assert(alph_dec != nil);
 
@@ -1711,7 +1711,7 @@ int VP8LDecodeAlphaImageStream(const alph_dec *ALPHDecoder, int last_row) {
 int VP8LDecodeHeader(/* const */ dec *VP8LDecoder, /* const */ io *VP8Io) {
   int width, height, has_alpha;
 
-  if (dec == nil) return 0;
+  if (dec == nil) { return 0; }
   if (io == nil) {
     return VP8LSetError(dec, VP8_STATUS_INVALID_PARAM);
   }
@@ -1747,7 +1747,7 @@ int VP8LDecodeImage(const dec *VP8LDecoder) {
   io *VP8Io = nil;
   params *WebPDecParams = nil;
 
-  if (dec == nil) return 0;
+  if (dec == nil) { return 0; }
 
   assert.Assert(dec.hdr.huffman_tables.root.start != nil);
   assert.Assert(dec.hdr.htree_groups != nil);

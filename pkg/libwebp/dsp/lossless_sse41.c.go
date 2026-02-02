@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-func TransformColorInverse_SSE41(const m *VP8LMultipliers, /*const*/ src *uint32, int num_pixels, dst *uint32) {
+func TransformColorInverse_SSE41(const m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32) {
 // sign-extended multiplying constants, pre-shifted by 5.
 #define CST(X) (((int16)(m.X << 8)) >> 5)  // sign-extend
   const __m128i mults_rb = _mm_set1_epi32(
@@ -78,7 +78,7 @@ const ARGB_TO_RGB_SSE41 =                              \
     }                                                   \
   } while (0)
 
-func ConvertBGRAToRGB_SSE41(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToRGB_SSE41(const WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
   var __in *m128i = (const __*m128i)src;
   __out *m128i = (__*m128i)dst;
   const __m128i perm0 =
@@ -95,7 +95,7 @@ func ConvertBGRAToRGB_SSE41(const WEBP_RESTRICT src *uint32, int num_pixels, WEB
   }
 }
 
-func ConvertBGRAToBGR_SSE41(const WEBP_RESTRICT src *uint32, int num_pixels, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToBGR_SSE41(const WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
   var __in *m128i = (const __*m128i)src;
   __out *m128i = (__*m128i)dst;
   const __m128i perm0 =
