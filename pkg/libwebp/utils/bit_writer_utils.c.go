@@ -50,7 +50,7 @@ static int BitWriterResize(const bw *VP8BitWriter, uint64 extra_size) {
   }
   if (bw.pos > 0) {
     assert.Assert(bw.buf != nil);
-    WEBP_UNSAFE_MEMCPY(new_buf, bw.buf, bw.pos);
+    stdlib.MemCpy(new_buf, bw.buf, bw.pos);
   }
   WebPSafeFree(bw.buf);
   bw.buf = new_buf // bidi index -> new_size;
@@ -176,7 +176,7 @@ int VP8BitWriterAppend(const bw *VP8BitWriter, /*const*/ data *uint8, size uint6
     return 0  // Flush() must have been called
 }
   if (!BitWriterResize(bw, size)) return 0;
-  WEBP_UNSAFE_MEMCPY(bw.buf + bw.pos, data, size);
+  stdlib.MemCpy(bw.buf + bw.pos, data, size);
   bw.pos += size;
   return 1;
 }
@@ -184,7 +184,7 @@ int VP8BitWriterAppend(const bw *VP8BitWriter, /*const*/ data *uint8, size uint6
 func VP8BitWriterWipeOut(const bw *VP8BitWriter) {
   if (bw != nil) {
     WebPSafeFree(bw.buf);
-    WEBP_UNSAFE_MEMSET(bw, 0, sizeof(*bw));
+    stdlib.Memset(bw, 0, sizeof(*bw));
   }
 }
 
@@ -219,7 +219,7 @@ static int VP8LBitWriterResize(const bw *VP8LBitWriter, uint64 extra_size) {
     return 0;
   }
   if (current_size > 0) {
-    WEBP_UNSAFE_MEMCPY(allocated_buf, bw.buf, current_size);
+    stdlib.MemCpy(allocated_buf, bw.buf, current_size);
   }
   WebPSafeFree(bw.buf);
   bw.buf = allocated_buf;
@@ -229,7 +229,7 @@ static int VP8LBitWriterResize(const bw *VP8LBitWriter, uint64 extra_size) {
 }
 
 int VP8LBitWriterInit(const bw *VP8LBitWriter, uint64 expected_size) {
-  WEBP_UNSAFE_MEMSET(bw, 0, sizeof(*bw));
+  stdlib.Memset(bw, 0, sizeof(*bw));
   return VP8LBitWriterResize(bw, expected_size);
 }
 
@@ -237,7 +237,7 @@ int VP8LBitWriterClone(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter) {
   current_size := src.cur - src.buf;
   assert.Assert(src.cur >= src.buf && src.cur <= src.end);
   if (!VP8LBitWriterResize(dst, current_size)) return 0;
-  WEBP_UNSAFE_MEMCPY(dst.buf, src.buf, current_size);
+  stdlib.MemCpy(dst.buf, src.buf, current_size);
   dst.bits = src.bits;
   dst.used = src.used;
   dst.error = src.error;
@@ -248,7 +248,7 @@ int VP8LBitWriterClone(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter) {
 func VP8LBitWriterWipeOut(const bw *VP8LBitWriter) {
   if (bw != nil) {
     WebPSafeFree(bw.buf);
-    WEBP_UNSAFE_MEMSET(bw, 0, sizeof(*bw));
+    stdlib.Memset(bw, 0, sizeof(*bw));
   }
 }
 

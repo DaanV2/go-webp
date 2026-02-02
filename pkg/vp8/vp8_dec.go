@@ -124,7 +124,7 @@ func VP8InitIoInternal(/* const */ io *VP8Io, version int) int {
     return 0;  // mismatch error
   }
   if (io != nil) {
-    WEBP_UNSAFE_MEMSET(io, 0, sizeof(*io));
+    stdlib.Memset(io, 0, sizeof(*io));
   }
   return 1;
 }
@@ -230,8 +230,8 @@ func ResetSegmentHeader(/* const */ hdr *VP8SegmentHeader) {
   hdr.use_segment = 0;
   hdr.update_map = 0;
   hdr.absolute_delta = 1;
-  WEBP_UNSAFE_MEMSET(hdr.quantizer, 0, sizeof(hdr.quantizer));
-  WEBP_UNSAFE_MEMSET(hdr.filter_strength, 0, sizeof(hdr.filter_strength));
+  stdlib.Memset(hdr.quantizer, 0, sizeof(hdr.quantizer));
+  stdlib.Memset(hdr.filter_strength, 0, sizeof(hdr.filter_strength));
 }
 
 // Paragraph 9.3
@@ -585,7 +585,7 @@ func ParseResiduals(const dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ token_
   uint32 out_t_nz, out_l_nz;
   int first;
 
-  WEBP_UNSAFE_MEMSET(dst, 0, 384 * sizeof(*dst));
+  stdlib.Memset(dst, 0, 384 * sizeof(*dst));
   if (!block.is_i4x4) {  // parse DC
     int16 dc[16] = {0}
     ctx := mb.nz_dc + left_mb.nz_dc;
@@ -695,7 +695,7 @@ func VP8InitScanline(/* const */ dec *VP8Decoder) {
   var left *VP8MB = dec.mb_info - 1;
   left.nz = 0;
   left.nz_dc = 0;
-  WEBP_UNSAFE_MEMSET(dec.intra_l, B_DC_PRED, sizeof(dec.intra_l));
+  stdlib.Memset(dec.intra_l, B_DC_PRED, sizeof(dec.intra_l));
   dec.mb_x = 0;
 }
 
@@ -778,6 +778,6 @@ func VP8Clear(/* const */ dec *VP8Decoder) {
   WebPSafeFree(dec.mem);
   dec.mem = nil;
   dec.mem_size = 0;
-  WEBP_UNSAFE_MEMSET(&dec.br, 0, sizeof(dec.br));
+  stdlib.Memset(&dec.br, 0, sizeof(dec.br));
   dec.ready = 0;
 }

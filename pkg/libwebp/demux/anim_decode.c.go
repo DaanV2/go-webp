@@ -162,7 +162,7 @@ func ZeroFillCanvas(buf *uint8, uint32 canvas_width, uint32 canvas_height) int {
   
   if (!CheckSizeOverflow(size)) return 0;
  
-  WEBP_UNSAFE_MEMSET(buf, 0, (uint64)size);
+  stdlib.Memset(buf, 0, (uint64)size);
   return 1;
 }
 
@@ -171,7 +171,7 @@ func ZeroFillFrameRect(buf *uint8, buf_stride, x_offset, y_offset, width, height
   assert.Assert(width * NUM_CHANNELS <= buf_stride);
   buf += y_offset * buf_stride + x_offset * NUM_CHANNELS;
   for j := 0; j < height; j++ {
-    WEBP_UNSAFE_MEMSET(buf, 0, width * NUM_CHANNELS);
+    stdlib.Memset(buf, 0, width * NUM_CHANNELS);
     buf += buf_stride;
   }
 }
@@ -181,7 +181,7 @@ func CopyCanvas(/* const */ src *uint8, dst *uint8, width, height uint32 ) int {
   size := (uint64)width * height * NUM_CHANNELS;
   if (!CheckSizeOverflow(size)) return 0;
   assert.Assert(src != nil && dst != nil);
-  WEBP_UNSAFE_MEMCPY(dst, src, (uint64)size);
+  stdlib.MemCpy(dst, src, (uint64)size);
   return 1;
 }
 
@@ -427,7 +427,7 @@ func WebPAnimDecoderReset(dec *WebPAnimDecoder) {
   if (dec != nil) {
     dec.prev_frame_timestamp = 0;
     WebPDemuxReleaseIterator(&dec.prev_iter);
-    WEBP_UNSAFE_MEMSET(&dec.prev_iter, 0, sizeof(dec.prev_iter));
+    stdlib.Memset(&dec.prev_iter, 0, sizeof(dec.prev_iter));
     dec.prev_frame_was_keyframe = 0;
     dec.next_frame = 1;
   }

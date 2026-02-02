@@ -211,7 +211,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
     const new_buf *uint8 =
         (*uint8)WebPSafeMalloc(extra_size, sizeof(*new_buf));
     if (new_buf == nil) return 0;
-    if (old_base != nil) WEBP_UNSAFE_MEMCPY(new_buf, old_base, current_size);
+    if (old_base != nil) stdlib.MemCpy(new_buf, old_base, current_size);
     WebPSafeFree(mem.buf);
     mem.buf = new_buf;
     mem.buf_size = (uint64)extra_size;
@@ -220,7 +220,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
   }
 
   assert.Assert(mem.buf != nil);
-  WEBP_UNSAFE_MEMCPY(mem.buf + mem.end, data, data_size);
+  stdlib.MemCpy(mem.buf + mem.end, data, data_size);
   mem.end += data_size;
   assert.Assert(mem.end <= mem.buf_size);
 
@@ -417,7 +417,7 @@ static VP8StatusCode CopyParts0Data(const idec *WebPIDecoder) {
     if (part0_buf == nil) {
       return VP8_STATUS_OUT_OF_MEMORY;
     }
-    WEBP_UNSAFE_MEMCPY(part0_buf, br.buf, part_size);
+    stdlib.MemCpy(part0_buf, br.buf, part_size);
     mem.part0_buf = part0_buf;
     VP8BitReaderSetBuffer(br, part0_buf, part_size);
   } else {

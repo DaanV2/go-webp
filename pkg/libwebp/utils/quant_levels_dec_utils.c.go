@@ -240,7 +240,7 @@ func InitParams( *uint8((uint64)height *stride) data, width, height, stride, rad
   p.cur = p.start;
   p.end = p.start + R * width;
   p.top = p.end - width;
-  WEBP_UNSAFE_MEMSET(p.top, 0, width * sizeof(*p.top));
+  stdlib.Memset(p.top, 0, width * sizeof(*p.top));
   mem += size_scratch_m;
 
   p.width = width;
@@ -283,7 +283,7 @@ int WebPDequantizeLevels( *uint8((uint64)height *stride)
 
   if (radius > 0) {
     SmoothParams p;
-    WEBP_UNSAFE_MEMSET(&p, 0, sizeof(p));
+    stdlib.Memset(&p, 0, sizeof(p));
     if (!InitParams(data, width, height, stride, radius, &p)) return 0;
     if (p.num_levels > 2) {
       for ; p.row < p.height; ++p.row {

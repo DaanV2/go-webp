@@ -38,7 +38,7 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
     const  *uint8((uint64)height *width) data, int width, int height) {
   int i, j;
   int bins[WEBP_FILTER_LAST][SMAX];
-  WEBP_UNSAFE_MEMSET(bins, 0, sizeof(bins));
+  stdlib.Memset(bins, 0, sizeof(bins));
 
   // We only sample every other pixels. That's enough.
   for j = 2; j < height - 1; j += 2 {

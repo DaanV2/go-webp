@@ -239,7 +239,7 @@ func PrintBitTraces(){
 func BitTrace(const type const br *VP8BitReader, /*const*/ byte label[]) struct {
   int i, pos;
   if (!init_done) {
-    WEBP_UNSAFE_MEMSET(kLabels, 0, sizeof(kLabels));
+    stdlib.Memset(kLabels, 0, sizeof(kLabels));
     atexit(PrintBitTraces);
     buf_start = br.buf;
     init_done = 1;

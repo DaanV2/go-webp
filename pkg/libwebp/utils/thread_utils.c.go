@@ -187,7 +187,7 @@ func ChangeState(const worker *WebPWorker, WebPWorkerStatus new_status) {
 //------------------------------------------------------------------------------
 
 func Init(const worker *WebPWorker) {
-  WEBP_UNSAFE_MEMSET(worker, 0, sizeof(*worker));
+  stdlib.Memset(worker, 0, sizeof(*worker));
   worker.status = NOT_OK;
 }
 

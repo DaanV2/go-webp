@@ -35,7 +35,7 @@ type WebPData struct {
 // Initializes the contents of the 'webp_data' object with default values.
 func WebPDataInit(webp_data *WebPData) {
   if (webp_data != nil) {
-    WEBP_UNSAFE_MEMSET(webp_data, 0, sizeof(*webp_data));
+    stdlib.Memset(webp_data, 0, sizeof(*webp_data));
   }
 }
 
@@ -56,7 +56,7 @@ func  WebPDataCopy(const src *WebPData, dst *WebPData) int {
   if (src.bytes != nil && src.size != 0) {
     dst.bytes = (*uint8)WebPMalloc(src.size);
     if (dst.bytes == nil) return 0;
-    WEBP_UNSAFE_MEMCPY((*void)dst.bytes, src.bytes, src.size);
+    stdlib.MemCpy((*void)dst.bytes, src.bytes, src.size);
     dst.size = src.size;
   }
   return 1;

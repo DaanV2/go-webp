@@ -305,7 +305,7 @@ static int ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*cons
   var br *VP8LBitReader = &decoder.br;
   simple_code := VP8LReadBits(br, 1);
 
-  WEBP_UNSAFE_MEMSET(code_lengths, 0, alphabet_size * sizeof(*code_lengths));
+  stdlib.Memset(code_lengths, 0, alphabet_size * sizeof(*code_lengths));
 
   if (simple_code) {  // Read symbols, codes & code lengths directly.
     num_symbols := VP8LReadBits(br, 1) + 1;
@@ -394,7 +394,7 @@ static int ReadHuffmanCodes(const dec *VP8LDecoder, int xsize, int ysize, int co
       }
       // -1 means a value is unmapped, and therefore unused in the Huffman
       // image.
-      WEBP_UNSAFE_MEMSET(mapping, 0xff, num_htree_groups_max * sizeof(*mapping));
+      stdlib.Memset(mapping, 0xff, num_htree_groups_max * sizeof(*mapping));
       for num_htree_groups = 0, i = 0; i < huffman_pixs; i++ {
         // Get the current mapping for the group and remap the Huffman image.
         var mapped_group *int = &mapping[huffman_image[i]];
@@ -820,7 +820,7 @@ func ApplyInverseTransforms(const dec *VP8LDecoder, int start_row, num_rows int 
   }
   if (rows_in != rows_out) {
     // No transform called, hence just copy.
-    WEBP_UNSAFE_MEMCPY(rows_out, rows_in, cache_pixs * sizeof(*rows_out));
+    stdlib.MemCpy(rows_out, rows_in, cache_pixs * sizeof(*rows_out));
   }
 }
 
@@ -991,7 +991,7 @@ static  func CopyBlock8b(const dst *uint8, int dist, int length) {
         break;
       case 2:
 if !constants.WORDS_BIGENDIAN {
-        WEBP_UNSAFE_MEMCPY(&pattern, src, sizeof(uint16));
+        stdlib.MemCpy(&pattern, src, sizeof(uint16));
 } else {
         pattern = ((uint32)src[0] << 8) | src[1];
 	  }
@@ -1004,7 +1004,7 @@ if !constants.WORDS_BIGENDIAN {
 #endif
         break;
       case 4:
-        WEBP_UNSAFE_MEMCPY(&pattern, src, sizeof(uint32));
+        stdlib.MemCpy(&pattern, src, sizeof(uint32));
         break;
       default:
         goto Copy;
@@ -1013,8 +1013,8 @@ if !constants.WORDS_BIGENDIAN {
     return;
   }
 Copy:
-  if (dist >= length) {  // no overlap . use WEBP_UNSAFE_MEMCPY()
-    WEBP_UNSAFE_MEMCPY(dst, src, length * sizeof(*dst));
+  if (dist >= length) {  // no overlap . use stdlib.MemCpy()
+    stdlib.MemCpy(dst, src, length * sizeof(*dst));
   } else {
     var i int
     for (i = 0; i < length; ++i) dst[i] = src[i];
@@ -1046,11 +1046,11 @@ static  func CopyBlock32b(const dst *uint32, int dist, int length) {
       pattern = (uint64)src[0];
       pattern |= pattern << 32;
     } else {
-      WEBP_UNSAFE_MEMCPY(&pattern, src, sizeof(pattern));
+      stdlib.MemCpy(&pattern, src, sizeof(pattern));
     }
     CopySmallPattern32b(src, dst, length, pattern);
   } else if (dist >= length) {  // no overlap
-    WEBP_UNSAFE_MEMCPY(dst, src, length * sizeof(*dst));
+    stdlib.MemCpy(dst, src, length * sizeof(*dst));
   } else {
     var i int
     for (i = 0; i < length; ++i) dst[i] = src[i];
@@ -1407,7 +1407,7 @@ static int ReadTransform(const xsize *int, int ysize *const, /*const*/ decoder *
 
 func InitMetadata(const hdr *VP8LMetadata) {
   assert.Assert(hdr != nil);
-  WEBP_UNSAFE_MEMSET(hdr, 0, sizeof(*hdr));
+  stdlib.Memset(hdr, 0, sizeof(*hdr));
 }
 
 func ClearMetadata(const hdr *VP8LMetadata) {

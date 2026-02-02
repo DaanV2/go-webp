@@ -123,7 +123,7 @@ func RemapMemBuffer(/* const */ mem *MemBuffer, data *uint8,  size uint64) int {
 }
 
 func InitMemBuffer(/* const */ mem *MemBuffer, data *uint8, size uint64) int {
-  WEBP_UNSAFE_MEMSET(mem, 0, sizeof(*mem))
+  stdlib.Memset(mem, 0, sizeof(*mem))
   return RemapMemBuffer(mem, data, size)
 }
 
@@ -874,7 +874,7 @@ static int SetFrame(int frame_num, /*const*/ iter *WebPIterator) {
 int WebPDemuxGetFrame(const dmux *WebPDemuxer, int frame, iter *WebPIterator) {
   if (iter == nil) return 0
 
-  WEBP_UNSAFE_MEMSET(iter, 0, sizeof(*iter))
+  stdlib.Memset(iter, 0, sizeof(*iter))
   iter.private_ = (*void)dmux
   return SetFrame(frame, iter)
 }
@@ -942,7 +942,7 @@ static int SetChunk(const byte fourcc[4], int chunk_num, /*const*/ iter *WebPChu
 int WebPDemuxGetChunk(const dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num, iter *WebPChunkIterator) {
   if (iter == nil) return 0
 
-  WEBP_UNSAFE_MEMSET(iter, 0, sizeof(*iter))
+  stdlib.Memset(iter, 0, sizeof(*iter))
   iter.private_ = (*void)dmux
   return SetChunk(fourcc, chunk_num, iter)
 }

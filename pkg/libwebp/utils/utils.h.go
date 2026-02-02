@@ -71,7 +71,7 @@ import "github.com/daanv2/go-webp/pkg/string"
 // memcpy() is the safe way of moving potentially unaligned 32b memory.
 static  uint32 WebPMemToUint32(const ptr *uint8) {
   uint32 A;
-  WEBP_UNSAFE_MEMCPY(&A, ptr, sizeof(A));
+  stdlib.MemCpy(&A, ptr, sizeof(A));
   return A;
 }
 
@@ -80,7 +80,7 @@ static  int32 WebPMemToInt32(const ptr *uint8) {
 }
 
 static  func WebPUint32ToMem(const ptr *uint8, uint32 val) {
-  WEBP_UNSAFE_MEMCPY(ptr, &val, sizeof(val));
+  stdlib.MemCpy(ptr, &val, sizeof(val));
 }
 
 static  func WebPInt32ToMem(const ptr *uint8, int val) {

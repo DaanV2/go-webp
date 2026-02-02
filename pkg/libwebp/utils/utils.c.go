@@ -252,7 +252,7 @@ func WebPCopyPlane(const src *uint8, int src_stride, dst *uint8, int dst_stride,
   assert.Assert(src != nil && dst != nil);
   assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
   while (height-- > 0) {
-    WEBP_UNSAFE_MEMCPY(dst, src, width);
+    stdlib.MemCpy(dst, src, width);
     src += src_stride;
     dst += dst_stride;
   }

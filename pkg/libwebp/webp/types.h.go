@@ -56,14 +56,6 @@ func WebPFree(ptr any) {
 
 
 
-
-
-// Deprecated: Use golang [std.WEBP_UNSAFE_MEMCPY]
-func WEBP_UNSAFE_MEMCPY(dst, src, size any) {}
-
-// Deprecated: Use golang std code
-func WEBP_UNSAFE_MEMSET(dst, c, size any) {/* stdlib.Memset(dst, c, size) */}
-
 // Deprecated: Use golang std code
 func  WEBP_UNSAFE_MEMMOVE(dst, src, size any) {/* memmove(dst, src, size) */}
 

@@ -99,9 +99,9 @@ static int EmitFancyRGB(const io *VP8Io, /*const*/ p *WebPDecParams) {
   cur_y += io.y_stride;
   if (io.crop_top + y_end < io.crop_bottom) {
     // Save the unfinished samples for next call (as we're not done yet).
-    WEBP_UNSAFE_MEMCPY(p.tmp_y, cur_y, mb_w * sizeof(*p.tmp_y));
-    WEBP_UNSAFE_MEMCPY(p.tmp_u, cur_u, uv_w * sizeof(*p.tmp_u));
-    WEBP_UNSAFE_MEMCPY(p.tmp_v, cur_v, uv_w * sizeof(*p.tmp_v));
+    stdlib.MemCpy(p.tmp_y, cur_y, mb_w * sizeof(*p.tmp_y));
+    stdlib.MemCpy(p.tmp_u, cur_u, uv_w * sizeof(*p.tmp_u));
+    stdlib.MemCpy(p.tmp_v, cur_v, uv_w * sizeof(*p.tmp_v));
     // The fancy upsampler leaves a row unfinished behind
     // (except for the very last row)
     num_lines_out--;
@@ -121,7 +121,7 @@ static int EmitFancyRGB(const io *VP8Io, /*const*/ p *WebPDecParams) {
 func FillAlphaPlane(dst *uint8, int w, int h, int stride) {
   var j int
   for j = 0; j < h; j++ {
-    WEBP_UNSAFE_MEMSET(dst, 0xff, w * sizeof(*dst));
+    stdlib.Memset(dst, 0xff, w * sizeof(*dst));
     dst += stride;
   }
 }
@@ -137,7 +137,7 @@ static int EmitAlphaYUV(const io *VP8Io, /*const*/ p *WebPDecParams, int expecte
   assert.Assert(expected_num_lines_out == mb_h);
   if (alpha != nil) {
     for j = 0; j < mb_h; j++ {
-      WEBP_UNSAFE_MEMCPY(dst, alpha, mb_w * sizeof(*dst));
+      stdlib.MemCpy(dst, alpha, mb_w * sizeof(*dst));
       alpha += io.width;
       dst += buf.a_stride;
     }

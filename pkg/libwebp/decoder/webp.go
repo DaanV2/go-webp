@@ -329,7 +329,7 @@ static VP8StatusCode ParseHeadersInternal(
   if (data == nil || data_size < RIFF_HEADER_SIZE) {
     return VP8_STATUS_NOT_ENOUGH_DATA;
   }
-  WEBP_UNSAFE_MEMSET(&hdrs, 0, sizeof(hdrs));
+  stdlib.Memset(&hdrs, 0, sizeof(hdrs));
   hdrs.data = data;
   hdrs.data_size = data_size;
 
@@ -477,7 +477,7 @@ func WebPParseHeaders(/* const */ headers *WebPHeaderStructure) VP8StatusCode {
 // Should be called first, before any use of the WebPDecParams object.
 func WebPResetDecParams(/* const */ params *WebPDecParams) {
   if (params != nil) {
-    WEBP_UNSAFE_MEMSET(params, 0, sizeof(*params));
+    stdlib.Memset(params, 0, sizeof(*params));
   }
 }
 
@@ -703,7 +703,7 @@ WebPDecodeYUV *uint8(const *uint8  data, data_size uint64, width *int, height *i
 
 func DefaultFeatures(const features *WebPBitstreamFeatures) {
   assert.Assert(features != nil);
-  WEBP_UNSAFE_MEMSET(features, 0, sizeof(*features));
+  stdlib.Memset(features, 0, sizeof(*features));
 }
 
 static VP8StatusCode GetFeatures(const *uint8 
@@ -748,7 +748,7 @@ int WebPInitDecoderConfigInternal(config *WebPDecoderConfig, int version) {
   if (config == nil) {
     return 0;
   }
-  WEBP_UNSAFE_MEMSET(config, 0, sizeof(*config));
+  stdlib.Memset(config, 0, sizeof(*config));
   DefaultFeatures(&config.input);
   if (!WebPInitDecBuffer(&config.output)) {
     return 0;

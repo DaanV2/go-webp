@@ -247,7 +247,7 @@ func WebPInitDecBufferInternal(buffer *WebPDecBuffer, version int) int {
     return 0;  // version mismatch
   }
   if (buffer == nil) return 0;
-  WEBP_UNSAFE_MEMSET(buffer, 0, sizeof(*buffer));
+  stdlib.Memset(buffer, 0, sizeof(*buffer));
   return 1;
 }
 

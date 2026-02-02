@@ -78,7 +78,7 @@ static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
         : "memory", "at");
 #else
     lbit_t in_bits;
-    WEBP_UNSAFE_MEMCPY(&in_bits, br.buf, sizeof(in_bits));
+    stdlib.MemCpy(&in_bits, br.buf, sizeof(in_bits));
 #endif
     br.buf += BITS >> 3;
     WEBP_SELF_ASSIGN(br.buf_end);
