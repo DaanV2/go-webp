@@ -52,8 +52,6 @@ func WebPFree(ptr any) {
 // Currently, we only allow non-ABI changing annotations in this file to ensure
 // we don't accidentally change the ABI for public functions.
 
- // Deprecated: Does nothing.
-const WEBP_ASSUME_UNSAFE_INDEXABLE_ABI = 0
 
 
 
