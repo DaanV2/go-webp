@@ -224,7 +224,7 @@ func CountLevels(const p *SmoothParams) {
 }
 
 // Initialize all params.
-func InitParams(WEBP_SIZED_BY *uint8((uint64)height *stride) data, width, height, stride, radius int, p *SmoothParams) int {
+func InitParams( *uint8((uint64)height *stride) data, width, height, stride, radius int, p *SmoothParams) int {
   R := 2 * radius + 1;  // total size of the kernel
 
   size_scratch_m := (R + 1) * width * sizeof(*p.start);
@@ -268,7 +268,7 @@ func InitParams(WEBP_SIZED_BY *uint8((uint64)height *stride) data, width, height
 
 func CleanupParams(const p *SmoothParams) { WebPSafeFree(p.mem); }
 
-int WebPDequantizeLevels(WEBP_SIZED_BY *uint8((uint64)height *stride)
+int WebPDequantizeLevels( *uint8((uint64)height *stride)
                              const data, int width, int height, int stride, int strength) {
   radius := 4 * strength / 100;
 
