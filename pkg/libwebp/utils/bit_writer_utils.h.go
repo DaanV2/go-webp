@@ -93,7 +93,7 @@ type VP8LBitWriter struct {
   vp8l_atype_t bits;                   // bit accumulator
   int used;                            // number of bits used in accumulator
   WEBP_ENDED_BY *uint8(end) buf;     // start of buffer
-  WEBP_UNSAFE_INDEXABLE cur *uint8;  // current write position
+   cur *uint8;  // current write position
   end *uint8;                        // end of buffer
 
   // After all bits are written (VP8LBitWriterFinish()), the caller must observe

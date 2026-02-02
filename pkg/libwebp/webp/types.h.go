@@ -55,8 +55,6 @@ func WebPFree(ptr any) {
  // Deprecated: Does nothing.
 const WEBP_ASSUME_UNSAFE_INDEXABLE_ABI = 0
 
-// Deprecated: Use golang std code
-const WEBP_UNSAFE_INDEXABLE = 0
 
 
 

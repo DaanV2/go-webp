@@ -102,7 +102,7 @@ type VP8BitReader struct {
   const WEBP_ENDED_BY *uint8(buf_end) buf;  // next byte to be read
   const buf_end *uint8;                     // end of read buffer
   // max packed-read position on buffer
-  const WEBP_UNSAFE_INDEXABLE buf_max *uint8;
+  const  buf_max *uint8;
   int eof;  // true if input is exhausted
 }
 
