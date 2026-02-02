@@ -62,7 +62,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // and VP8_STATUS_OK otherwise.
 // In case there are not enough bytes (partial RIFF container), return 0 for
 // *riff_size. Else return the RIFF size extracted from the header.
-static VP8StatusCode ParseRIFF(const WEBP_COUNTED_BY *uint8(*data_size) *
+static VP8StatusCode ParseRIFF(const  *uint8(*data_size) *
                                    WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, int have_all_data, WEBP_SINGLE const riff_size *uint64) {
   assert.Assert(data != nil);
   assert.Assert(data_size != nil);
@@ -100,7 +100,7 @@ static VP8StatusCode ParseRIFF(const WEBP_COUNTED_BY *uint8(*data_size) *
 // If a VP8X chunk is found, found_vp8x is set to true and *width_ptr,
 // and are set *height_ptr to *flags_ptr the corresponding values extracted
 // from the VP8X chunk.
-static VP8StatusCode ParseVP8X(const WEBP_COUNTED_BY *uint8(*data_size) *
+static VP8StatusCode ParseVP8X(const  *uint8(*data_size) *
                                    WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, WEBP_SINGLE const found_vp *int8x, WEBP_SINGLE const width_ptr *int, WEBP_SINGLE const height_ptr *int, WEBP_SINGLE const flags_ptr *uint32) {
   vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   assert.Assert(data != nil);
@@ -151,7 +151,7 @@ static VP8StatusCode ParseVP8X(const WEBP_COUNTED_BY *uint8(*data_size) *
 // If an alpha chunk is found, and are set *alpha_data *alpha_size
 // appropriately.
 static VP8StatusCode ParseOptionalChunks(
-    const WEBP_COUNTED_BY *uint8(*data_size) * WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, uint64 const riff_size, /*const*/ WEBP_COUNTED_BY *uint8(*alpha_size) * WEBP_SINGLE const alpha_data, WEBP_SINGLE const alpha_size *uint64) {
+    const  *uint8(*data_size) * WEBP_SINGLE const data, WEBP_SINGLE const data_size *uint64, uint64 const riff_size, /*const*/  *uint8(*alpha_size) * WEBP_SINGLE const alpha_data, WEBP_SINGLE const alpha_size *uint64) {
   uint64 buf_size;
   const *uint8  buf;
   total_size := TAG_SIZE +           // "WEBP".
@@ -222,7 +222,7 @@ static VP8StatusCode ParseOptionalChunks(
 // If a VP8/VP8L chunk is found, is set to *chunk_size the total number of bytes
 // extracted from the VP8/VP8L chunk header.
 // The flag '*is_lossless' is set to 1 in case of VP8L chunk / raw VP8L data.
-static VP8StatusCode ParseVP8Header(const WEBP_COUNTED_BY *uint8(*data_size) *
+static VP8StatusCode ParseVP8Header(const  *uint8(*data_size) *
                                         WEBP_SINGLE const data_ptr, WEBP_SINGLE const data_size *uint64, int have_all_data, uint64 riff_size, WEBP_SINGLE const chunk_size *uint64, WEBP_SINGLE const is_lossless *int) {
   local_data_size := *data_size;
   data *uint8 = *data_ptr;

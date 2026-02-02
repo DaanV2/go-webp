@@ -43,13 +43,13 @@ type WebPRescaler struct {
   dst *uint8;
   int dst_stride;
   // work buffer
-  rescaler_t* WEBP_COUNTED_BY(dst_num_channels *width) irow;
-  rescaler_t* WEBP_COUNTED_BY(dst_num_channels *width) frow;
+  rescaler_t* (dst_num_channels *width) irow;
+  rescaler_t* (dst_num_channels *width) frow;
 }
 
 // Initialize a rescaler given scratch area 'work' and dimensions of src & dst.
 // Returns false in case of error.
-int WebPRescalerInit(const rescaler *WebPRescaler, int src_width, int src_height, /*const*/ dst *uint8, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const WEBP_COUNTED_BY(uint64(2) * dst_width *
+int WebPRescalerInit(const rescaler *WebPRescaler, int src_width, int src_height, /*const*/ dst *uint8, int dst_width, int dst_height, int dst_stride, int num_channels, rescaler_t* const (uint64(2) * dst_width *
                                                        num_channels) work);
 
 // If either 'scaled_width' or 'scaled_height' (but not both) is 0 the value

@@ -138,7 +138,7 @@ func HFilter(const p *SmoothParams) {
 func ApplyFilter(const p *SmoothParams) {
   const average *uint16 = p.average;
   w := p.width;
-  // correction is WEBP_COUNTED_BY, pointing to the start of the LUT.
+  // correction is , pointing to the start of the LUT.
   // We need the middle pointer for negative indexing.
   const correction *int16 =
       p.correction + LUT_SIZE;
@@ -176,7 +176,7 @@ func InitCorrectionLUT(
   threshold2 := (3 * threshold1) >> 2;
   max_threshold := threshold2 << DFIX;
   delta := threshold1 - threshold2;
-  // lut_ptr is WEBP_COUNTED_BY, pointing to the start of the LUT.
+  // lut_ptr is , pointing to the start of the LUT.
   // We need the middle pointer (lut) for negative indexing.
   const lut *int16 = lut_ptr + LUT_SIZE;
   var i int

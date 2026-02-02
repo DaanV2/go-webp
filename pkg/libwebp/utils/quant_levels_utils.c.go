@@ -31,7 +31,7 @@ const ERROR_THRESHOLD =1e-4  // MSE stopping criterion.
 // -----------------------------------------------------------------------------
 // Quantize levels.
 
-int QuantizeLevels(const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int width, int height, int num_levels, /*const*/ sse *uint64) {
+int QuantizeLevels(const  *uint8((uint64)height *width) data, int width, int height, int num_levels, /*const*/ sse *uint64) {
   int freq[NUM_SYMBOLS] = {0}
   int q_level[NUM_SYMBOLS] = {0}
   double inv_q_level[NUM_SYMBOLS] = {0}

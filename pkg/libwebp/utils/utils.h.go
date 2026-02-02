@@ -91,33 +91,33 @@ static  func WebPInt32ToMem(const ptr *uint8, int val) {
 // Reading/writing data.
 
 // Read 16, 24 or 32 bits stored in little-endian order.
-static  int GetLE16(const WEBP_COUNTED_BY *uint8(2) data) {
+static  int GetLE16(const  *uint8(2) data) {
   return (int)(data[0] << 0) | (data[1] << 8);
 }
 
-static  int GetLE24(const WEBP_COUNTED_BY *uint8(3) data) {
+static  int GetLE24(const  *uint8(3) data) {
   return GetLE16(data) | (data[2] << 16);
 }
 
-static  uint32 GetLE32(const WEBP_COUNTED_BY *uint8(4)
+static  uint32 GetLE32(const  *uint8(4)
                                         data) {
   return GetLE16(data) | ((uint32)GetLE16(data + 2) << 16);
 }
 
 // Store 16, 24 or 32 bits in little-endian order.
-static  func PutLE16(const WEBP_COUNTED_BY *uint8(2) data, int val) {
+static  func PutLE16(const  *uint8(2) data, int val) {
   assert.Assert(val < (1 << 16));
   data[0] = (val >> 0) & 0xff;
   data[1] = (val >> 8) & 0xff;
 }
 
-static  func PutLE24(const WEBP_COUNTED_BY *uint8(3) data, int val) {
+static  func PutLE24(const  *uint8(3) data, int val) {
   assert.Assert(val < (1 << 24));
   PutLE16(data, val & 0xffff);
   data[2] = (val >> 16) & 0xff;
 }
 
-static  func PutLE32(const WEBP_COUNTED_BY *uint8(4) data, uint32 val) {
+static  func PutLE32(const  *uint8(4) data, uint32 val) {
   PutLE16(data, (int)(val & 0xffff));
   PutLE16(data + 2, (int)(val >> 16));
 }

@@ -227,7 +227,7 @@ func PaletteSortMinimizeDeltas(
 
 // Finds the biggest cooccurrence in the matrix.
 func CoOccurrenceFindMax(
-    const WEBP_COUNTED_BY *uint32(num_num_colors *colors) cooccurrence, uint32 num_colors, /*const*/ c *uint81, /*const*/ c *uint82) {
+    const  *uint32(num_num_colors *colors) cooccurrence, uint32 num_colors, /*const*/ c *uint81, /*const*/ c *uint82) {
   // Find the index that is most frequently located adjacent to other
   // (different) indexes.
   best_sum := uint(0);
@@ -255,7 +255,7 @@ func CoOccurrenceFindMax(
 
 // Builds the cooccurrence matrix
 static int CoOccurrenceBuild(const pic *WebPPicture, /*const*/ *uint32 
-                                 palette, uint32 num_colors, WEBP_COUNTED_BY *uint32(num_num_colors *colors)
+                                 palette, uint32 num_colors,  *uint32(num_num_colors *colors)
                                  cooccurrence) {
   uint32 *lines, *line_top, *line_current, *line_tmp;
   int x, y;

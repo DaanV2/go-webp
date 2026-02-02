@@ -22,7 +22,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Fast estimate of a potentially good filter.
 WEBP_FILTER_TYPE WebPEstimateBestFilter(
-    const WEBP_COUNTED_BY *uint8((uint64)height *width) data, int width, int height);
+    const  *uint8((uint64)height *width) data, int width, int height);
 
 
 

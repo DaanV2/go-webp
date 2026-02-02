@@ -57,7 +57,7 @@ func GetNextKey(key uint32 , len int)  uint32 {
 
 // Stores code in table[0], table[step], table[2*step], ..., table[end-step].
 // Assumes that end is an integer multiple of step.
-func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +1) table, step int , end int ,  code HuffmanCode) {
+func ReplicateValue( *HuffmanCode(end - step +1) table, step int , end int ,  code HuffmanCode) {
   current_end := end;
   assert.Assert(current_end % step == 0);
   for {
@@ -69,7 +69,7 @@ func ReplicateValue(WEBP_COUNTED_BY *HuffmanCode(end - step +1) table, step int 
 // Returns the table width of the next 2nd level table. count is the histogram
 // of bit lengths for the remaining symbols, len is the code length of the next
 // processed symbol
-func NextTableBitSize(WEBP_COUNTED_BY *int(MAX_ALLOWED_CODE_LENGTH + 1) count, int len, int root_bits) int {
+func NextTableBitSize( *int(MAX_ALLOWED_CODE_LENGTH + 1) count, int len, int root_bits) int {
   left := 1 << (len - root_bits);
   for ;; len < MAX_ALLOWED_CODE_LENGTH {
     left -= count[len];

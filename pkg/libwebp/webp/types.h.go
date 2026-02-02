@@ -63,8 +63,6 @@ const WEBP_SINGLE = 0
 
 
 // Deprecated: Use golang std code
-func WEBP_COUNTED_BY(x any) {}
-// Deprecated: Use golang std code
 func WEBP_SIZED_BY(x any) {}
 // Deprecated: Use golang std code
 func WEBP_ENDED_BY(x any) {}
