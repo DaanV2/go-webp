@@ -92,7 +92,7 @@ const VP8L_WRITER_MAX_BITS =32
 type VP8LBitWriter struct {
   vp8l_atype_t bits;                   // bit accumulator
   int used;                            // number of bits used in accumulator
-  WEBP_ENDED_BY *uint8(end) buf;     // start of buffer
+   *uint8(end) buf;     // start of buffer
    cur *uint8;  // current write position
   end *uint8;                        // end of buffer
 

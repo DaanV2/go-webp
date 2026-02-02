@@ -58,9 +58,7 @@ func WebPFree(ptr any) {
 
 
 // Deprecated: Use golang std code
-func WEBP_SIZED_BY(x any) {}
-// Deprecated: Use golang std code
-func WEBP_ENDED_BY(x any) {}
+func (x any) {}
 
 // Deprecated: Use golang [std.WEBP_UNSAFE_MEMCPY]
 func WEBP_UNSAFE_MEMCPY(dst, src, size any) {}

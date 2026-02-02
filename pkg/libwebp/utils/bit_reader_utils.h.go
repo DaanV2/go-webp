@@ -99,7 +99,7 @@ type VP8BitReader struct {
   range_t range;  // current range minus 1. In [127, 254] interval.
   int bits;       // number of valid bits left
   // read buffer
-  const WEBP_ENDED_BY *uint8(buf_end) buf;  // next byte to be read
+  const  *uint8(buf_end) buf;  // next byte to be read
   const buf_end *uint8;                     // end of read buffer
   // max packed-read position on buffer
   const  buf_max *uint8;
