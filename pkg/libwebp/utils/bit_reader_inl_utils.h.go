@@ -32,22 +32,10 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 
+type lbit_t = uint64
 
-//------------------------------------------------------------------------------
-// Derived type lbit_t = natural type for memory I/O
-
-#if (BITS > 32)
-typedef uint64 lbit_t;
-#elif (BITS > 16)
-typedef uint32 lbit_t;
-#elif (BITS > 8)
-typedef uint16 lbit_t;
-#else
-typedef uint8 lbit_t;
-#endif
-
-extern const uint8 kVP8Log2Range[128];
-extern const uint8 kVP8NewRange[128];
+var kVP8Log2Range [128]uint8
+var kVP8NewRange [128]uint8
 
 // special case for the tail byte-reading
 func VP8LoadFinalBytes(const br *VP8BitReader);
