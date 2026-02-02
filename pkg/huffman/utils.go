@@ -47,10 +47,11 @@ func VP8LHtreeGroupsFree(const htree_groups *HTreeGroup) {
 // Returns reverse(reverse(key, len) + 1, len), where reverse(key, len) is the
 // bit-wise reversal of the len least significant bits of key.
 func GetNextKey(key uint32 , len int)  uint32 {
-  step := 1 << (len - 1);
-  for ;;(key & step) != 0 {
+  step := uint32(1 << uint32(len - 1))
+  for (key & step) != 0 {
     step >>= 1;
   }
+
   return tenary.If(step, (key & (step - 1)) + step, key);
 }
 
@@ -79,146 +80,6 @@ func NextTableBitSize(WEBP_COUNTED_BY *int(MAX_ALLOWED_CODE_LENGTH + 1) count, i
   return len - root_bits;
 }
 
-// sorted[code_lengths_size] is a pre-allocated array for sorting symbols
-// by code length.
-func BuildHuffmanTable(/* const */ root_table *HuffmanCode, root_bits int , /* const */  code_lengths []int, code_lengths_size int ,  sorted []uint16 ) int {
-  // next available space in table
-  var table *HuffmanCode = root_table;
-  total_size := 1 << root_bits;  // total size root table + 2nd level table
-  int len;                          // current code length
-  int symbol;                       // symbol index in original or sorted table
-  // number of codes of each length:
-  var  count [MAX_ALLOWED_CODE_LENGTH + 1]int = {0}
-  // offsets in sorted table for each length:
-  var offset [MAX_ALLOWED_CODE_LENGTH + 1]int;
-
-  assert.Assert(code_lengths_size != 0);
-  assert.Assert(code_lengths != nil);
-  assert.Assert((root_table != nil && sorted != nil) || (root_table == nil && sorted == nil));
-  assert.Assert(root_bits > 0);
-
-  // Build histogram of code lengths.
-  for symbol = 0; symbol < code_lengths_size; symbol++ {
-    if (code_lengths[symbol] > MAX_ALLOWED_CODE_LENGTH) {
-      return 0;
-    }
-    ++count[code_lengths[symbol]];
-  }
-
-  // Error, all code lengths are zeros.
-  if (count[0] == code_lengths_size) {
-    return 0;
-  }
-
-  // Generate offsets into sorted symbol table by code length.
-  offset[1] = 0;
-  for len = 1; len < MAX_ALLOWED_CODE_LENGTH; len++ {
-    if (count[len] > (1 << len)) {
-      return 0;
-    }
-    offset[len + 1] = offset[len] + count[len];
-  }
-
-  // Sort symbols by length, by symbol order within each length.
-  for symbol = 0; symbol < code_lengths_size; symbol++ {
-    symbol_code_length := code_lengths[symbol];
-    if (code_lengths[symbol] > 0) {
-      if (sorted != nil) {
-        assert.Assert(offset[symbol_code_length] < code_lengths_size);
-        // The following check is not redundant with the assert. It prevents a
-        // potential buffer overflow that the optimizer might not be able to
-        // rule out on its own.
-        if (offset[symbol_code_length] >= code_lengths_size) {
-          return 0;
-        }
-        sorted[offset[symbol_code_length]] = symbol;
-		offset[symbol_code_length] = offset[symbol_code_length] + 1
-      } else {
-        offset[symbol_code_length]++;
-      }
-    }
-  }
-
-  // Special case code with only one value.
-  if (offset[MAX_ALLOWED_CODE_LENGTH] == 1) {
-    if (sorted != nil) {
-      HuffmanCode code;
-      code.bits = 0;
-      code.value = (uint16)sorted[0];
-      ReplicateValue(table, 1, total_size, code);
-    }
-    return total_size;
-  }
-
-  {
-    int step;  // step size to replicate values in current table
-    low := uint32(0xffffffff);      // low bits for current root entry
-    mask := total_size - 1;  // mask for low bits
-    key := 0;                // reversed prefix code
-    num_nodes := 1;               // number of Huffman tree nodes
-    num_open := 1;  // number of open branches in current tree level
-    table_bits := root_bits;        // key length of current table
-    table_size := 1 << table_bits;  // size of current table
-    symbol = 0;
-    // Fill in root table.
-    for len = 1, step = 2; len <= root_bits; ++len, step <<= 1 {
-      num_open <<= 1;
-      num_nodes += num_open;
-      num_open -= count[len];
-      if (num_open < 0) {
-        return 0;
-      }
-      if (root_table == nil) continue;
-      for ; count[len] > 0; --count[len] {
-        HuffmanCode code;
-        code.bits = (uint8)len;
-        code.value = (uint16)sorted[symbol];
-		symbol++
-        ReplicateValue(&table[key], step, table_size, code);
-        key = GetNextKey(key, len);
-      }
-    }
-
-    // Fill in 2nd level tables and add pointers to root table.
-    for (len = root_bits + 1, step = 2; len <= MAX_ALLOWED_CODE_LENGTH;
-         ++len, step <<= 1) {
-      num_open <<= 1;
-      num_nodes += num_open;
-      num_open -= count[len];
-      if (num_open < 0) {
-        return 0;
-      }
-      for ; count[len] > 0; --count[len] {
-        HuffmanCode code;
-        if ((key & mask) != low) {
-          if (root_table != nil) table += table_size;
-          table_bits = NextTableBitSize(count, len, root_bits);
-          table_size = 1 << table_bits;
-          total_size += table_size;
-          low = key & mask;
-          if (root_table != nil) {
-            root_table[low].bits = (uint8)(table_bits + root_bits);
-            root_table[low].value = (uint16)((table - root_table) - low);
-          }
-        }
-        if (root_table != nil) {
-          code.bits = (uint8)(len - root_bits);
-          code.value = (uint16)sorted[symbol];
-		  symbol++
-          ReplicateValue(&table[key >> root_bits], step, table_size, code);
-        }
-        key = GetNextKey(key, len);
-      }
-    }
-
-    // Check if tree is full.
-    if (num_nodes != 2 * offset[MAX_ALLOWED_CODE_LENGTH] - 1) {
-      return 0;
-    }
-  }
-
-  return total_size;
-}
 
 
 

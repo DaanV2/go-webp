@@ -18,7 +18,9 @@ const (
 
 	// Maximum code_lengths_size is 2328 (reached for 11-bit color_cache_bits).
 	// More commonly, the value is around ~280.
-	MAX_CODE_LENGTHS_SIZE = ((1 << constants.MAX_CACHE_BITS) + constants.NUM_LITERAL_CODES + constants.NUM_LENGTH_CODES)
+	MAX_CODE_LENGTHS_SIZE   = ((1 << constants.MAX_CACHE_BITS) + constants.NUM_LITERAL_CODES + constants.NUM_LENGTH_CODES)
+	MAX_ALLOWED_CODE_LENGTH = constants.MAX_ALLOWED_CODE_LENGTH
+
 	// Cut-off value for switching between heap and stack allocation.
 	SORTED_SIZE_CUTOFF = 512
 )
