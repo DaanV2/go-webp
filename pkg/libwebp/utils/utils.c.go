@@ -230,7 +230,7 @@ func WebPSafeFree(const ptr *void) {
 
 // Public API functions.
 
-WEBP_SINGLE WebPMalloc *void(size uint64 ) {
+ WebPMalloc *void(size uint64 ) {
   // Currently WebPMalloc/WebPFree are declared in src/webp/types.h, which does
   // not include bounds_safety.h. As such, the "default" annotation for the
   // pointers they accept/return is __single.
@@ -244,7 +244,7 @@ WEBP_SINGLE WebPMalloc *void(size uint64 ) {
   return WEBP_UNSAFE_FORGE_SINGLE(*void, WebPSafeMalloc(1, size));
 }
 
-func WebPFree(WEBP_SINGLE ptr *void) { WebPSafeFree(ptr); }
+func WebPFree( ptr *void) { WebPSafeFree(ptr); }
 
 //------------------------------------------------------------------------------
 
