@@ -14,7 +14,7 @@ const VP8_RANDOM_DITHER_FIX = 8  // fixed-point precision for dithering
 const VP8_RANDOM_TABLE_SIZE = 55
 
 // 31b-range values
-const kRandomTable = [VP8_RANDOM_TABLE_SIZE]uint32{
+var kRandomTable = [VP8_RANDOM_TABLE_SIZE]uint32{
     0x0de15230, 0x03b31886, 0x775faccb, 0x1c88626a,
 	0x68385c55, 0x14b3b828, 0x4a85fef8, 0x49ddb84b,
 	0x64fcf397, 0x5c550289, 0x4a290000, 0x0d7ec1da,
