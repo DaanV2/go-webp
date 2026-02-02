@@ -620,7 +620,7 @@ static  func Put16_SSE2(uint8 v, dst *uint8) {
   }
 }
 
-static  func Fill_SSE2(dst *uint8, int value, int size) {
+static  func Fill_SSE2(dst *uint8, value int, int size) {
   if (size == 4) {
     var j int
     for j = 0; j < 4; j++ {

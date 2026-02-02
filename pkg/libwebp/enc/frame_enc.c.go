@@ -460,7 +460,7 @@ static int RecordTokens(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore, /*
 #if !defined(WEBP_DISABLE_STATS)
 
 #if SEGMENT_VISU
-func SetBlock(p *uint8, int value, int size) {
+func SetBlock(p *uint8, value int, int size) {
   var y int
   for y = 0; y < size; y++ {
     stdlib.Memset(p, value, size);

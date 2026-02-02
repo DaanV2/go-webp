@@ -175,7 +175,7 @@ static  int VP8LIsEndOfStream(const br *VP8LBitReader) {
 // VP8LPrefetchBits and VP8LFillBitWindow.
 // This function does br *set *not.eos, since it's speed-critical.
 // Use with extreme care!
-static  func VP8LSetBitPos(const br *VP8LBitReader, int val) {
+static  func VP8LSetBitPos(const br *VP8LBitReader, val int) {
   br.bit_pos = val;
 }
 

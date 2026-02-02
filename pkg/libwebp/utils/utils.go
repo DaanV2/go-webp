@@ -24,6 +24,70 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
+func CheckSizeOverflow(size uint64) bool {
+	return size == size_t(size)
+}
+
+func WEBP_ALIGN(PTR any) {
+//   (((uintptr_t)(PTR) + WEBP_ALIGN_CST) & ~(uintptr_t)WEBP_ALIGN_CST)
+}
+
+// Returns (int)floor(log2(n)). n must be > 0.
+func BitsLog2Floor(n uint32) int  {
+  return 31 ^ gcc.Builtin_CLZ(n);
+}
+// counts the number of trailing zero
+func BitsCtz(n uint32) int { return gcc.Builtin_CTZ(n); }
+
+// memcpy() is the safe way of moving potentially unaligned 32b memory.
+func WebPMemToUint32(/* const */ ptr *uint8) uint32 {
+  var A uint32
+  stdlib.MemCpy(&A, ptr, sizeof(A))
+  return A
+}
+
+func WebPMemToInt32(/* const */ ptr *uint8) int32 {
+  return int32(WebPMemToUint32(ptr))
+}
+
+func WebPUint32ToMem(/* const */ ptr *uint8, uint32 val) {
+  stdlib.MemCpy(ptr, &val, sizeof(val))
+}
+
+func WebPInt32ToMem(/* const */ ptr *uint8, val int) {
+  WebPUint32ToMem(ptr, uint32(val))
+}
+
+// Read 16, 24 or 32 bits stored in little-endian order.
+func GetLE16(/* const */ data []uint8/* (2) */ )  int {
+  return int(data[0] << 0) | (data[1] << 8);
+}
+
+func GetLE24(/* const */  data []uint8/* (3) */ )  int {
+  return GetLE16(data) | (data[2] << 16);
+}
+
+func GetLE32(/* const */ data []uint8/* (4) */) uint32 {
+  return uint32(GetLE16(data)) | uint32(GetLE16(data[2:]) << 16);
+}
+
+// Store 16, 24 or 32 bits in little-endian order.
+func PutLE16(/* const */ data []uint8/* (2) */, val int) {
+  assert.Assert(val < (1 << 16));
+  data[0] = (val >> 0) & 0xff
+  data[1] = (val >> 8) & 0xff
+}
+
+func PutLE24(/* const */ data []uint8/* (3) */, val int) {
+  assert.Assert(val < (1 << 24))
+  PutLE16(data, val & 0xffff)
+  data[2] = (val >> 16) & 0xff
+}
+
+func PutLE32(/* const */ data []uint8/* (4) */, val uint32 ) {
+  PutLE16(data, (int)(val & 0xffff))
+  PutLE16(data[2:], (int)(val >> 16))
+}
 
 // If PRINT_MEM_INFO is defined, extra info (like total memory used, number of
 // alloc/free etc) is printed. For debugging/tuning purpose only (it's slow,
@@ -55,27 +119,23 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Checked memory allocation
 
-
-import "github.com/daanv2/go-webp/pkg/stdio"
-
-var num_malloc_calls := 0;
-var num_calloc_calls := 0;
-var num_free_calls := 0;
-var countdown_to_fail := 0;  // 0 = off
+var num_malloc_calls = 0
+var num_calloc_calls = 0
+var num_free_calls = 0
+var countdown_to_fail = 0  // 0 = off
 
 type MemBlock struct {
-  ptr *void;
-  size uint64 ;
-  next *MemBlock;
+  ptr *void
+  size uint64 
+  next *MemBlock
 }
 
-var all_blocks *MemBlock = nil;
-var total_mem := 0;
-var total_mem_allocated := 0;
-var high_water_mark := 0;
-var mem_limit := 0;
-
-var exit_registered := 0;
+var all_blocks *MemBlock = nil
+var total_mem = 0
+var total_mem_allocated = 0
+var high_water_mark = 0
+var mem_limit = 0
+var exit_registered = 0
 
 func PrintMemInfo(){
   fprintf(stderr, "\nMEMORY INFO:\n");
@@ -85,7 +145,7 @@ func PrintMemInfo(){
   fprintf(stderr, "total_mem: %u\n", (uint32)total_mem);
   fprintf(stderr, "total_mem allocated: %u\n", (uint32)total_mem_allocated);
   fprintf(stderr, "high-water mark: %u\n", (uint32)high_water_mark);
-  while (all_blocks != nil) {
+  for (all_blocks != nil) {
     b *MemBlock = all_blocks;
     all_blocks = b.next;
     free(b);
@@ -94,25 +154,25 @@ func PrintMemInfo(){
 
 func Increment(const v *int) {
   if (!exit_registered) {
-#if defined(MALLOC_FAIL_AT)
+// #if defined(MALLOC_FAIL_AT)
     {
       var malloc_fail_at_str *byte = getenv("MALLOC_FAIL_AT");
       if (malloc_fail_at_str != nil) {
         countdown_to_fail = atoi(malloc_fail_at_str);
       }
     }
-#endif
-#if defined(MALLOC_LIMIT)
+// #endif
+// #if defined(MALLOC_LIMIT)
     {
       var malloc_limit_str *byte = getenv("MALLOC_LIMIT");
-#if MALLOC_LIMIT > 1
+// #if MALLOC_LIMIT > 1
       mem_limit = (uint64)MALLOC_LIMIT;
-#endif
+// #endif
       if (malloc_limit_str != nil) {
         mem_limit = atoi(malloc_limit_str);
       }
     }
-#endif
+// #endif
     (void)countdown_to_fail;
     (void)mem_limit;
     atexit(PrintMemInfo);
@@ -124,20 +184,20 @@ func Increment(const v *int) {
 func AddMem(ptr *void, size uint64 ) {
   if (ptr != nil) {
     var b *MemBlock = (*MemBlock)malloc(sizeof(*b));
-    if (b == nil) abort();
+    if (b == nil) {abort();}
     b.next = all_blocks;
     all_blocks = b;
     b.ptr = ptr;
     b.size = size;
     total_mem += size;
     total_mem_allocated += size;
-#if defined(PRINT_MEM_TRAFFIC)
-#if defined(MALLOC_FAIL_AT)
+// #if defined(PRINT_MEM_TRAFFIC)
+// #if defined(MALLOC_FAIL_AT)
     fprintf(stderr, "fail-count: %5d [mem=%u]\n", num_malloc_calls + num_calloc_calls, (uint32)total_mem);
-#else
+// #else
     fprintf(stderr, "Mem: %u (+%u)\n", (uint32)total_mem, (uint32)size);
-#endif
-#endif
+// #endif
+// #endif
     if (total_mem > high_water_mark) high_water_mark = total_mem;
   }
 }
@@ -155,52 +215,50 @@ func SubMem(ptr *void) {
       var block *MemBlock = *b;
       *b = block.next;
       total_mem -= block.size;
-#if defined(PRINT_MEM_TRAFFIC)
+// #if defined(PRINT_MEM_TRAFFIC)
       fprintf(stderr, "Mem: %u (-%u)\n", (uint32)total_mem, (uint32)block.size);
-#endif
+// #endif
       free(block);
     }
   }
 }
 
-#else
-#define Increment(v) \
-  for {               \
-  } while (0)
-#define AddMem(p, s) \
-  for {               \
-  } while (0)
-#define SubMem(p) \
-  for {            \
-  } while (0)
-#endif
+func CheckSizeOverflow(size uint64 ) bool {
+  return size == (uint64)size;
+}
 
 // Returns 0 in case of overflow of nmemb * size.
-static int CheckSizeArgumentsOverflow(uint64 nmemb, size uint64 ) {
+func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
   total_size := nmemb * size;
   if (nmemb == 0) { return 1; }
   if ((uint64)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb) { return 0; }
   if (!CheckSizeOverflow(total_size)) { return 0; }
-#if defined(PRINT_MEM_INFO) && defined(MALLOC_FAIL_AT)
+// #if defined(PRINT_MEM_INFO) && defined(MALLOC_FAIL_AT)
   if (countdown_to_fail > 0 && --countdown_to_fail == 0) {
     return 0;  // fake fail!
   }
-#endif
-#if defined(PRINT_MEM_INFO) && defined(MALLOC_LIMIT)
+// #endif
+// #if defined(PRINT_MEM_INFO) && defined(MALLOC_LIMIT)
   if (mem_limit > 0) {
     new_total_mem := (uint64)total_mem + total_size;
     if (!CheckSizeOverflow(new_total_mem) || new_total_mem > mem_limit) {
       return 0;  // fake fail!
     }
   }
-#endif
+// #endif
 
   return 1;
 }
 
-// Deprecated: WebPSafeMalloc is just new in golang.
-func WebPSafeMalloc(uint64 nmemb, size uint64 ) *void(size *nmemb) {
-  ptr *void;
+// size-checking safe malloc/calloc: verify that the requested size is not too
+// large, or return nil. You don't need to call these for constructs like
+// malloc(sizeof(foo)), but only if there's picture-dependent size involved
+// somewhere (like: malloc(num_pixels * sizeof(*something))). That's why this
+// safe malloc() borrows the signature from calloc(), pointing at the dangerous
+// underlying multiply involved.
+// Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
+func WebPSafeMalloc(nmemb uint64, size uint64 ) *void/* (size *nmemb) */ {
+  var ptr *void;
   Increment(&num_malloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) { return nil; }
   assert.Assert(nmemb * size > 0);
@@ -209,8 +267,10 @@ func WebPSafeMalloc(uint64 nmemb, size uint64 ) *void(size *nmemb) {
   return ptr // bidi index -> (uint64)(nmemb * size);
 }
 
-// Deprecated: WebPSafeMalloc is just new in golang.
-func WebPSafeCalloc(nmemb, size uint64) *void(size *nmemb) {
+// Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
+// in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
+// Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
+func WebPSafeCalloc(nmemb, size uint64) *void/* (size *nmemb) */ {
   ptr *void;
   Increment(&num_calloc_calls);
   if (!CheckSizeArgumentsOverflow(nmemb, size)) { return nil; }
@@ -220,6 +280,7 @@ func WebPSafeCalloc(nmemb, size uint64) *void(size *nmemb) {
   return ptr // bidi index -> (uint64)(nmemb * size);
 }
 
+// Companion deallocation function to the above allocations.
 func WebPSafeFree(const ptr *void) {
   if (ptr != nil) {
     Increment(&num_free_calls);
@@ -230,7 +291,7 @@ func WebPSafeFree(const ptr *void) {
 
 // Public API functions.
 
- WebPMalloc *void(size uint64 ) {
+func WebPMalloc(size uint64 ) *void {
   // Currently WebPMalloc/WebPFree are declared in src/webp/types.h, which does
   // not include bounds_safety.h. As such, the "default" annotation for the
   // pointers they accept/return is __single.
@@ -246,18 +307,20 @@ func WebPSafeFree(const ptr *void) {
 
 func WebPFree( ptr *void) { WebPSafeFree(ptr); }
 
-//------------------------------------------------------------------------------
 
+// Copy width x height pixels from 'src' to 'dst' honoring the strides.
 func WebPCopyPlane(const src *uint8, int src_stride, dst *uint8, int dst_stride, int width, int height) {
   assert.Assert(src != nil && dst != nil);
   assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
-  while (height-- > 0) {
+  for (height-- > 0) {
     stdlib.MemCpy(dst, src, width);
     src += src_stride;
     dst += dst_stride;
   }
 }
 
+// Copy ARGB pixels from 'src' to 'dst' honoring strides. 'src' and 'dst' are
+// assumed to be already allocated and using ARGB data.
 func WebPCopyPixels(const src *WebPPicture, /*const*/ dst *WebPPicture) {
   assert.Assert(src != nil && dst != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
@@ -265,18 +328,24 @@ func WebPCopyPixels(const src *WebPPicture, /*const*/ dst *WebPPicture) {
   WebPCopyPlane((*uint8)src.argb, 4 * src.argb_stride, (*uint8)dst.argb, 4 * dst.argb_stride, 4 * src.width, src.height);
 }
 
-//------------------------------------------------------------------------------
 
-int WebPGetColorPalette(
-    const pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE) palette) {
+// Returns count of unique colors in 'pic', assuming pic.use_argb is true.
+// If the unique color count is more than MAX_PALETTE_SIZE, returns
+// MAX_PALETTE_SIZE+1.
+// If 'palette' is not nil and number of unique colors is less than or equal to
+// MAX_PALETTE_SIZE, also outputs the actual unique colors into 'palette'.
+// Note: 'palette' is assumed to be an array already allocated with at least
+// MAX_PALETTE_SIZE elements.
+// TODO(vrabaud) remove whenever we can break the ABI.
+func WebPGetColorPalette(/* const  */pic *WebPPicture, /*const*/  palette []uint32/* (MAX_PALETTE_SIZE) */) int {
   return GetColorPalette(pic, palette);
 }
 
 //------------------------------------------------------------------------------
 
-#if defined(WEBP_NEED_LOG_TABLE_8BIT)
-const uint8 WebPLogTable8bit[256] = {  // 31 ^ clz(i)
+// 31 ^ clz(i)
+var  WebPLogTable8bit = [256]uint8{  
     0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}
-#endif
+
 
 //------------------------------------------------------------------------------

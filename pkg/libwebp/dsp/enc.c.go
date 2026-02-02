@@ -221,7 +221,7 @@ func FTransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
 //------------------------------------------------------------------------------
 // Intra predictions
 
-static  func Fill(dst *uint8, int value, int size) {
+static  func Fill(dst *uint8, value int, int size) {
   var j int
   for j = 0; j < size; j++ {
     stdlib.Memset(dst + j * BPS, value, size);

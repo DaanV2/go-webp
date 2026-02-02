@@ -7,13 +7,6 @@ package utils
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Specific inlined methods for boolean decoder [VP8GetBit() ...]
-// This file should be included by the .c sources that actually need to call
-// these methods.
-//
-// Author: Skal (pascal.massimino@gmail.com)
 
 
 #ifdef HAVE_CONFIG_H

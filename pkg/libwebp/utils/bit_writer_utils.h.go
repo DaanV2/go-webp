@@ -49,7 +49,7 @@ func VP8BitWriterWipeOut(const bw *VP8BitWriter);
 int VP8PutBit(const bw *VP8BitWriter, int bit, int prob);
 int VP8PutBitUniform(const bw *VP8BitWriter, int bit);
 func VP8PutBits(const bw *VP8BitWriter, uint32 value, int nb_bits);
-func VP8PutSignedBits(const bw *VP8BitWriter, int value, int nb_bits);
+func VP8PutSignedBits(const bw *VP8BitWriter, value int, int nb_bits);
 
 // Appends some bytes to the internal buffer. Data is copied.
 int VP8BitWriterAppend(const bw *VP8BitWriter, /*const*/ data *uint8, size uint64 );
