@@ -160,7 +160,6 @@ func byte8StatusMessage(/* const */ dec *VP8Decoder) *VP {
 func VP8Delete(/* const */ dec *VP8Decoder) {
   if (dec != nil) {
     VP8Clear(dec);
-    WebPSafeFree(dec);
   }
 }
 
@@ -776,7 +775,6 @@ func VP8Clear(/* const */ dec *VP8Decoder) {
   }
   WebPGetWorkerInterface().End(&dec.worker);
   WebPDeallocateAlphaMemory(dec);
-  WebPSafeFree(dec.mem);
   dec.mem = nil;
   dec.mem_size = 0;
   stdlib.Memset(&dec.br, 0, sizeof(dec.br));
