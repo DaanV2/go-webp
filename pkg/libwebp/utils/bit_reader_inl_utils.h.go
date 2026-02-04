@@ -87,7 +87,7 @@ static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
 }
 
 // Read a bit with proba 'prob'. Speed-critical function!
-static  int VP8GetBit(WEBP_RESTRICT const br *VP8BitReader, int prob, /*const*/ byte label[]) {
+static  int VP8GetBit(WEBP_RESTRICT const br *VP8BitReader, prob int, /*const*/ byte label[]) {
   // Don't move this declaration! It makes a big speed difference to store
   // 'range' VP *calling *before8LoadNewBytes(), even if this function doesn't
   // alter br.range value.
@@ -137,7 +137,7 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8GetSigned(
   }
 }
 
-static  int VP8GetBitAlt(WEBP_RESTRICT const br *VP8BitReader, int prob, /*const*/ byte label[]) {
+static  int VP8GetBitAlt(WEBP_RESTRICT const br *VP8BitReader, prob int, /*const*/ byte label[]) {
   // Don't move this declaration! It makes a big speed difference to store
   // 'range' VP *calling *before8LoadNewBytes(), even if this function doesn't
   // alter br.range value.
@@ -149,7 +149,7 @@ static  int VP8GetBitAlt(WEBP_RESTRICT const br *VP8BitReader, int prob, /*const
     pos := br.bits;
     const range_t split = (range * prob) >> 8;
     const range_t value = (range_t)(br.value >> pos);
-    int bit;  // Don't use 'bit := (value > split);", it's slower.
+    bit int;  // Don't use 'bit := (value > split);", it's slower.
     if (value > split) {
       range -= split + 1;
       br.value -= (bit_t)(split + 1) << pos;

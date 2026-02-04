@@ -42,8 +42,8 @@ int VP8BitWriterInit(/* const */ bw *VP8BitWriter, uint64 expected_size);
 // Finalize the bitstream coding. Returns a pointer to the internal buffer.
 VP *uint88BitWriterFinish(/* const */ bw *VP8BitWriter);
 
-int VP8PutBit(/* const */ bw *VP8BitWriter, int bit, int prob);
-int VP8PutBitUniform(/* const */ bw *VP8BitWriter, int bit);
+int VP8PutBit(/* const */ bw *VP8BitWriter, bit int, prob int);
+int VP8PutBitUniform(/* const */ bw *VP8BitWriter, bit int);
 func VP8PutBits(/* const */ bw *VP8BitWriter, uint32 value, int nb_bits);
 func VP8PutSignedBits(/* const */ bw *VP8BitWriter, value int, int nb_bits);
 

@@ -122,7 +122,7 @@ uint32 VP8GetValue(/* const */ br *VP8BitReader, num_bits int, /*const*/ byte la
 int32 VP8GetSignedValue(/* const */ br *VP8BitReader, num_bits int, /*const*/ byte label[]);
 
 // bit_reader_inl.h will implement the following methods:
-//   static  int VP8GetBit(/* const */ br *VP8BitReader, int prob, ...)
+//   static  int VP8GetBit(/* const */ br *VP8BitReader, prob int, ...)
 //   static  int VP8GetSigned(/* const */ br *VP8BitReader, int v, ...)
 // and should be included by the .c files that actually need them.
 // This is to afunc recompiling the whole library whenever this file is touched,

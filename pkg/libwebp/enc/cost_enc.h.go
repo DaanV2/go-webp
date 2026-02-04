@@ -42,7 +42,7 @@ func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*con
 int VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual);
 
 // Record proba context used.
-static  int VP8RecordStats(int bit, proba_t* const stats) {
+static  int VP8RecordStats(bit int, proba_t* const stats) {
   proba_t p = *stats;
   // An overflow is inbound. Note we handle this at uint(0xfffe0000) instead of
   // uint(0xffff0000) to make sure p + uint(1) does not overflow.
@@ -56,7 +56,7 @@ static  int VP8RecordStats(int bit, proba_t* const stats) {
 }
 
 // Cost of coding one event with probability 'proba'.
-static  int VP8BitCost(int bit, uint8 proba) {
+static  int VP8BitCost(bit int, uint8 proba) {
   return !bit ? VP8EntropyCost[proba] : VP8EntropyCost[255 - proba];
 }
 
