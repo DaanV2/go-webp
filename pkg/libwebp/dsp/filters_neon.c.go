@@ -67,7 +67,7 @@ func PredictLineLeft_NEON(/* const */ WEBP_RESTRICT src *uint8, WEBP_RESTRICT ds
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static  func DoHorizontalFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+static  func DoHorizontalFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   row int;
   DCHECK(in, out);
 
@@ -87,14 +87,14 @@ static  func DoHorizontalFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, int wi
   }
 }
 
-func HorizontalFilter_NEON(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func HorizontalFilter_NEON(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoHorizontalFilter_NEON(data, width, height, stride, filtered_data);
 }
 
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static  func DoVerticalFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+static  func DoVerticalFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   row int;
   DCHECK(in, out);
 
@@ -113,7 +113,7 @@ static  func DoVerticalFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, int widt
   }
 }
 
-func VerticalFilter_NEON(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func VerticalFilter_NEON(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoVerticalFilter_NEON(data, width, height, stride, filtered_data);
 }
 
@@ -141,7 +141,7 @@ func GradientPredictDirect_NEON(/* const */ row *uint8, /*const*/ top *uint8, WE
   }
 }
 
-static  func DoGradientFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+static  func DoGradientFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   row int;
   DCHECK(in, out);
 
@@ -160,7 +160,7 @@ static  func DoGradientFilter_NEON(/* const */ WEBP_RESTRICT in *uint8, int widt
   }
 }
 
-func GradientFilter_NEON(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func GradientFilter_NEON(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoGradientFilter_NEON(data, width, height, stride, filtered_data);
 }
 

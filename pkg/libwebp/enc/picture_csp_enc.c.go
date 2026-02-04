@@ -40,7 +40,7 @@ const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 // Detection of non-trivial transparency
 
 // Returns true if alpha[] has non-0xff values.
-static int CheckNonOpaque(/* const */ alpha *uint8, int width, int height, int x_step, int y_step) {
+static int CheckNonOpaque(/* const */ alpha *uint8, width, height int, int x_step, int y_step) {
   if (alpha == nil) { return 0; }
   WebPInitAlphaProcessing();
   if (x_step == 1) {

@@ -67,7 +67,7 @@ ROW_FUNC(YuvToRgb565Row, VP8YuvToRgb565, 2)
 #undef ROW_FUNC
 
 // Main call for processing a plane with a WebPSamplerRowFunc function:
-func WebPSamplerProcessPlane(/* const */ WEBP_RESTRICT y *uint8, int y_stride, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, int uv_stride, WEBP_RESTRICT dst *uint8, int dst_stride, int width, int height, WebPSamplerRowFunc func) {
+func WebPSamplerProcessPlane(/* const */ WEBP_RESTRICT y *uint8, int y_stride, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, int uv_stride, WEBP_RESTRICT dst *uint8, int dst_stride, width, height int, WebPSamplerRowFunc func) {
   var j int
   for j = 0; j < height; j++ {
     func(y, u, v, dst, width);
@@ -397,7 +397,7 @@ func WebPAccumulateRGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const
 
 func ImportYUVAFromRGBA_C(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
                                  int rgb_stride,  // bytes per scanline
-                                 int has_alpha, int width, int height, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
+                                 int has_alpha, width, height int, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
   var y int
   is_rgb := (r_ptr < b_ptr);  // otherwise it's bgr
   uv_width := (width + 1) >> 1;
@@ -486,7 +486,7 @@ func (*WebPConvertRGBA32ToUV)(/* const */ WEBP_RESTRICT rgb *uint16, WEBP_RESTRI
 
 func (*WebPImportYUVAFromRGBA)(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
                                int rgb_stride,  // bytes per scanline
-                               int has_alpha, int width, int height, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
+                               int has_alpha, width, height int, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 func (*WebPImportYUVAFromRGBALastLine)(
     const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,  // bytes per pixel
     int has_alpha, int width, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);

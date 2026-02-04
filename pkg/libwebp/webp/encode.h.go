@@ -45,10 +45,10 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // These functions compress using the lossy format, and the quality_factor
 // can go from 0 (smaller output, lower quality) to 100 (best quality,
 // larger output).
- uint64 WebPEncodeRGB(/* const */ rgb *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGR(/* const */ bgr *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeRGBA(/* const */ rgba *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGRA(/* const */ bgra *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeRGB(/* const */ rgb *uint8, width, height int, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeBGR(/* const */ bgr *uint8, width, height int, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeRGBA(/* const */ rgba *uint8, width, height int, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeBGRA(/* const */ bgra *uint8, width, height int, int stride, float quality_factor, *uint8* output);
 
 // These functions are the equivalent of the above, but compressing in a
 // lossless manner. Files are usually larger than lossy format, but will
@@ -58,10 +58,10 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // transparent areas (that is, areas with alpha values equal to 0) will be
 // modified to improve compression. To afunc this, use WebPEncode() and set
 // WebPConfig::exact to 1.
- uint64 WebPEncodeLosslessRGB(/* const */ rgb *uint8, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessBGR(/* const */ bgr *uint8, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessRGBA(/* const */ rgba *uint8, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessBGRA(/* const */ bgra *uint8, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessRGB(/* const */ rgb *uint8, width, height int, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessBGR(/* const */ bgr *uint8, width, height int, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessRGBA(/* const */ rgba *uint8, width, height int, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessBGRA(/* const */ bgra *uint8, width, height int, int stride, *uint8* output);
 
 //------------------------------------------------------------------------------
 // Coding parameters
@@ -379,7 +379,7 @@ type WebPPicture struct {
 // 'src/ref_stride' is the byte distance between rows.
 // Returns false in case of error (bad parameter, memory allocation error, ...).
   int WebPPlaneDistortion(
-    const src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, int width, int height, uint64 x_step, int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
+    const src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     distortion *float, result *float);
 
 // Compute PSNR, SSIM or LSIM distortion metric between two pictures. Results
@@ -399,7 +399,7 @@ type WebPPicture struct {
 // must be fully be comprised inside the 'src' source picture. If the source
 // picture uses the YUV420 colorspace, the top and left coordinates will be
 // snapped to even values.
-  int WebPPictureCrop(picture *WebPPicture, int left, int top, int width, int height);
+  int WebPPictureCrop(picture *WebPPicture, int left, int top, width, height int);
 
 // Extracts a view from 'src' picture into 'dst'. The rectangle for the view
 // is defined by the top-left corner pixel coordinates (left, top) as well
@@ -412,7 +412,7 @@ type WebPPicture struct {
 // with WebPPictureInit() if it is different from 'src', since its content will
 // be overwritten.
 // Returns false in case of invalid parameters.
-  int WebPPictureView(/* const */ src *WebPPicture, int left, int top, int width, int height, dst *WebPPicture);
+  int WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, height int, dst *WebPPicture);
 
 // Returns true if the 'picture' is actually a view and therefore does
 // not own the memory for pixels.
@@ -423,7 +423,7 @@ type WebPPicture struct {
 // dimension will be calculated preserving the aspect ratio.
 // No gamma correction is applied.
 // Returns false in case of error (invalid parameter or insufficient memory).
-  int WebPPictureRescale(picture *WebPPicture, int width, int height);
+  int WebPPictureRescale(picture *WebPPicture, width, height int);
 
 // Colorspace conversion function to import RGB samples.
 // Previous buffer will be free'd, if any.

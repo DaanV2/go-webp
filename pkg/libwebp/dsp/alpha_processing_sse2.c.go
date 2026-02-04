@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-static int DispatchAlpha_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint8, int dst_stride) {
+static int DispatchAlpha_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint8, int dst_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
   alpha_and := 0xff;
@@ -82,7 +82,7 @@ static int DispatchAlpha_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_
           _mm_movemask_epi8(_mm_cmpeq_epi8(all_alphas16, all_0xff)) != 0xffff);
 }
 
-func DispatchAlphaToGreen_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint32, int dst_stride) {
+func DispatchAlphaToGreen_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint32, int dst_stride) {
   int i, j;
   const __m128i zero = _mm_setzero_si128();
   limit := width & ~15;
@@ -106,7 +106,7 @@ func DispatchAlphaToGreen_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha
   }
 }
 
-static int ExtractAlpha_SSE2(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, int width, int height, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
+static int ExtractAlpha_SSE2(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
   alpha_and := 0xff;

@@ -630,7 +630,7 @@ static int EmitRows(WEBP_CSP_MODE colorspace, /*const*/ row_in *uint8, int in_st
 //------------------------------------------------------------------------------
 // Export to YUVA
 
-func ConvertToYUVA(/* const */ src *uint32, int width, int y_pos, /*const*/ output *WebPDecBuffer) {
+func ConvertToYUVA(/* const */ src *uint32, int width, y_pos int, /*const*/ output *WebPDecBuffer) {
   var buf *WebPYUVABuffer = &output.u.YUVA;
 
   // first, the luma plane
@@ -655,7 +655,7 @@ if constants.WORDS_BIGENDIAN {
   }
 }
 
-static int ExportYUVA(/* const */ dec *VP8LDecoder, int y_pos) {
+static int ExportYUVA(/* const */ dec *VP8LDecoder, y_pos int) {
   var rescaler *WebPRescaler = decoder.rescaler;
   var src *uint32 = (*uint32)rescaler.dst;
   dst_width := rescaler.dst_width;
@@ -1055,7 +1055,7 @@ static  func CopyBlock32b(/* const */ dst *uint32, int dist, int length) {
 
 //------------------------------------------------------------------------------
 
-static int DecodeAlphaData(/* const */ dec *VP8LDecoder, /*const*/ data *uint8, int width, int height, int last_row) {
+static int DecodeAlphaData(/* const */ dec *VP8LDecoder, /*const*/ data *uint8, width, height int, int last_row) {
   ok := 1;
   row := dec.last_pixel / width;
   col := dec.last_pixel % width;
@@ -1157,7 +1157,7 @@ func RestoreState(/* const */ dec *VP8LDecoder) {
 }
 
 const SYNC_EVERY_N_ROWS =8  // minimum number of rows between check-points
-static int DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, int width, int height, int last_row, ProcessRowsFunc process_func) {
+static int DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width, height int, int last_row, ProcessRowsFunc process_func) {
   row := dec.last_pixel / width;
   col := dec.last_pixel % width;
   var br *VP8LBitReader = &decoder.br;
@@ -1440,7 +1440,7 @@ func VP8LClear(/* const */ dec *VP8LDecoder) {
   dec.transforms_seen = 0;
 }
 
-func UpdateDecoder(/* const */ dec *VP8LDecoder, int width, int height) {
+func UpdateDecoder(/* const */ dec *VP8LDecoder, width, height int) {
   var hdr *VP8LMetadata = &decoder.hdr;
   num_bits := hdr.huffman_subsample_bits;
   dec.width = width;

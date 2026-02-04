@@ -200,7 +200,7 @@ static  int VP8RGBToV(int r, int g, int b, int rounding) {
 extern func (*WebPImportYUVAFromRGBA)(
     const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
     int rgb_stride,  // bytes per scanline
-    int has_alpha, int width, int height, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
+    int has_alpha, width, height int, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 extern func (*WebPImportYUVAFromRGBALastLine)(
     const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,  // bytes per pixel
     int has_alpha, int width, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);

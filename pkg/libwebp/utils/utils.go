@@ -266,7 +266,7 @@ func WebPMalloc(size uint64 ) *void {
 
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
-func WebPCopyPlane(/* const */ src *uint8, int src_stride, dst *uint8, int dst_stride, int width, int height) {
+func WebPCopyPlane(/* const */ src *uint8, int src_stride, dst *uint8, int dst_stride, width, height int) {
   assert.Assert(src != nil && dst != nil);
   assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
   for (height-- > 0) {

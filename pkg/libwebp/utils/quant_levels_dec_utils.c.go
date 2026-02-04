@@ -267,7 +267,7 @@ func InitParams( *uint8((uint64)height *stride) data, width, height, stride, rad
 }
 
 int WebPDequantizeLevels( *uint8((uint64)height *stride)
-                             const data, int width, int height, int stride, int strength) {
+                             const data, width, height int, int stride, int strength) {
   radius := 4 * strength / 100;
 
   if (strength < 0 || strength > 100) { return 0; }

@@ -47,7 +47,7 @@ func SnapTopLeftPosition(/* const */ pic *WebPPicture, /*const*/ left *int, /*co
 }
 
 // Adjust top-left corner and verify that the sub-rectangle is valid.
-static int AdjustAndCheckRectangle(/* const */ pic *WebPPicture, /*const*/ left *int, /*const*/ top *int, int width, int height) {
+static int AdjustAndCheckRectangle(/* const */ pic *WebPPicture, /*const*/ left *int, /*const*/ top *int, width, height int) {
   SnapTopLeftPosition(pic, left, top);
   if ((*left) < 0 || (*top) < 0) { return 0; }
   if (width <= 0 || height <= 0) { return 0; }
@@ -86,7 +86,7 @@ int WebPPictureIsView(/* const */ picture *WebPPicture) {
   return (picture.memory_ == nil);
 }
 
-int WebPPictureView(/* const */ src *WebPPicture, int left, int top, int width, int height, dst *WebPPicture) {
+int WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, height int, dst *WebPPicture) {
   if (src == nil || dst == nil) { return 0; }
 
   // verify rectangle position.
@@ -118,7 +118,7 @@ int WebPPictureView(/* const */ src *WebPPicture, int left, int top, int width, 
 //------------------------------------------------------------------------------
 // Picture cropping
 
-int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) {
+int WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) {
   WebPPicture tmp;
 
   if (pic == nil) { return 0; }
@@ -179,7 +179,7 @@ func AlphaMultiplyY(/* const */ pic *WebPPicture, int inverse) {
   }
 }
 
-int WebPPictureRescale(picture *WebPPicture, int width, int height) {
+int WebPPictureRescale(picture *WebPPicture, width, height int) {
   WebPPicture tmp;
   int prev_width, prev_height;
   rescaler_t* work;
@@ -261,7 +261,7 @@ int WebPPictureCopy(/* const */ src *WebPPicture, dst *WebPPicture) {
   return 0;
 }
 
-int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) {
+int WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) {
   (void)pic;
   (void)left;
   (void)top;
@@ -270,7 +270,7 @@ int WebPPictureCrop(pic *WebPPicture, int left, int top, int width, int height) 
   return 0;
 }
 
-int WebPPictureRescale(pic *WebPPicture, int width, int height) {
+int WebPPictureRescale(pic *WebPPicture, width, height int) {
   (void)pic;
   (void)width;
   (void)height;

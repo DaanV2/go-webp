@@ -210,7 +210,7 @@ enum VP8LLZ77Type { kLZ77Standard = 1, kLZ77RLE = 2, kLZ77Box = 4 }
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
 int VP8LGetBackwardReferences(
-    int width, int height, /*const*/ argb *uint32, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int);
+    width, height int, /*const*/ argb *uint32, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int);
 
 #ifdef __cplusplus
 }

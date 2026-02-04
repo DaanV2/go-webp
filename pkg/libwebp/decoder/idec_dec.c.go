@@ -62,7 +62,7 @@ const (
 	MEM_MODE_NONE MemBufferMode = iota
 	MEM_MODE_APPEND
 	MEM_MODE_MAP 
-	)
+)
 
 // storage for partition #0 and partial data (in a rolling fashion)
 type MemBuffer struct {
@@ -77,18 +77,18 @@ type MemBuffer struct {
 }
 
 type WebPIDecoder struct {
-  DecState state;        // current decoding state
-  var params WebPDecParams  // Params to store output info
-  int is_lossless;       // for down-casting 'dec'.
+  state DecState;        // current decoding state
+  params WebPDecParams  // Params to store output info
+   is_lossless int       // for down-casting 'dec'.
   dec *void;             // either a VP8Decoder or a VP8LDecoder instance
-  var io VP8Io
+  io VP8Io
 
   MemBuffer mem;         // input memory buffer.
-  var output WebPDecBuffer ;  // output buffer (when no external one is supplied, // or if the external one has slow-memory)
+  output WebPDecBuffer ;  // output buffer (when no external one is supplied, // or if the external one has slow-memory)
   final_output *WebPDecBuffer;  // Slow-memory output to copy to eventually.
-  uint64 chunk_size;  // Compressed VP8/VP8L size extracted from Header.
+   chunk_size uint64  // Compressed VP8/VP8L size extracted from Header.
 
-  int last_mb_y;  // last row reached for intra-mode decoding
+  last_mb_y int ;  // last row reached for intra-mode decoding
 }
 
 // MB context to restore in case VP8DecodeMB() fails
@@ -101,13 +101,13 @@ type MBContext struct {
 //------------------------------------------------------------------------------
 // MemBuffer: incoming data handling
 
-static  uint64 MemDataSize(/* const */ mem *MemBuffer) {
+func MemDataSize(/* const */ mem *MemBuffer) uint64 {
   return (mem.end - mem.start);
 }
 
 // Check if we need to preserve the compressed alpha data, as it may not have
 // been decoded yet.
-static int NeedCompressedAlpha(/* const */ idec *WebPIDecoder) {
+func NeedCompressedAlpha(/* const */ idec *WebPIDecoder) int {
   if (idec.state == STATE_WEBP_HEADER) {
     // We haven't parsed the headers yet, so we don't know whether the image is
     // lossy or lossless. This also means that we haven't parsed the ALPH chunk.
@@ -116,7 +116,7 @@ static int NeedCompressedAlpha(/* const */ idec *WebPIDecoder) {
   if (idec.is_lossless) {
     return 0;  // ALPH chunk is not present for lossless images.
   } else {
-    var dec *VP8Decoder = (*VP8Decoder)idec.dec;
+    var dec *vp8.VP8Decoder = (*vp8.VP8Decoder)idec.dec;
     assert.Assert(dec != nil);  // Must be true as idec.state != STATE_WEBP_HEADER.
     return (dec.alpha_data != nil) && !dec.is_alpha_decoded;
   }

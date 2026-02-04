@@ -214,7 +214,7 @@ int WebPAnimEncoderOptionsInitInternal(enc_options *WebPAnimEncoderOptions, int 
 // making it a no-op for lossless (see WebPEncode()).
 const TRANSPARENT_COLOR =0x00000000
 
-func ClearRectangle(/* const */ picture *WebPPicture, int left, int top, int width, int height) {
+func ClearRectangle(/* const */ picture *WebPPicture, int left, int top, width, height int) {
   var j int
   for j = top; j < top + height; j++ {
     var dst *uint32 = picture.argb + j * picture.argb_stride;
@@ -250,7 +250,7 @@ func MarkError2(/* const */ enc *WebPAnimEncoder, /*const*/ str *byte, int error
 }
 
 WebPAnimEncoderNewInternal *WebPAnimEncoder(
-    int width, int height, /*const*/ enc_options *WebPAnimEncoderOptions, int abi_version) {
+    width, height int, /*const*/ enc_options *WebPAnimEncoderOptions, int abi_version) {
   enc *WebPAnimEncoder;
 
   if (WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_MUX_ABI_VERSION)) {

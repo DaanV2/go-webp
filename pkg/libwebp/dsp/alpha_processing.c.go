@@ -200,7 +200,7 @@ func ApplyAlphaMultiply_16b_C(rgba *uint84444, int w, int h, int stride) {
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-static int DispatchAlpha_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint8, int dst_stride) {
+static int DispatchAlpha_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint8, int dst_stride) {
   alpha_mask := 0xff;
   int i, j;
 
@@ -217,7 +217,7 @@ static int DispatchAlpha_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_str
   return (alpha_mask != 0xff);
 }
 
-func DispatchAlphaToGreen_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint32, int dst_stride) {
+func DispatchAlphaToGreen_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint32, int dst_stride) {
   int i, j;
   for j = 0; j < height; j++ {
     for i = 0; i < width; i++ {
@@ -228,7 +228,7 @@ func DispatchAlphaToGreen_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_st
   }
 }
 
-static int ExtractAlpha_C(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, int width, int height, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
+static int ExtractAlpha_C(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
   alpha_mask := 0xff;
   int i, j;
 

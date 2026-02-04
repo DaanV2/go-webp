@@ -381,7 +381,7 @@ WebPMuxError WebPMuxGetFeatures(/* const */ mux *WebPMux, flags *uint32) {
   return MuxGetCanvasInfo(mux, nil, nil, flags);
 }
 
-static EmitVP *uint88XChunk(/* const */ dst *uint8, int width, int height, uint32 flags) {
+static EmitVP *uint88XChunk(/* const */ dst *uint8, width, height int, uint32 flags) {
   vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   assert.Assert(width >= 1 && height >= 1);
   assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE);

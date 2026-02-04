@@ -856,7 +856,7 @@ static int BackwardRefsWithLocalCache(/* const */ argb *uint32, int cache_bits, 
 }
 
 static GetBackwardReferencesLowEffort *VP8LBackwardRefs(
-    int width, int height, /*const*/ argb *uint32, /*const*/ cache_bits *int, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_lz *VP8LBackwardRefs77) {
+    width, height int, /*const*/ argb *uint32, /*const*/ cache_bits *int, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_lz *VP8LBackwardRefs77) {
   *cache_bits = 0;
   if (!BackwardReferencesLz77(width, height, argb, 0, hash_chain, refs_lz77)) {
     return nil;
@@ -867,7 +867,7 @@ static GetBackwardReferencesLowEffort *VP8LBackwardRefs(
 
 extern int VP8LBackwardReferencesTraceBackwards(
     int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs);
-static int GetBackwardReferences(int width, int height, /*const*/ argb *uint32, int quality, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int) {
+static int GetBackwardReferences(width, height int, /*const*/ argb *uint32, int quality, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int) {
   histo *VP8LHistogram = nil;
   int i, lz77_type;
   // Index 0 is for a color cache, index 1 for no cache (if needed).
@@ -985,7 +985,7 @@ Error:
 }
 
 int VP8LGetBackwardReferences(
-    int width, int height, /*const*/ argb *uint32, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+    width, height int, /*const*/ argb *uint32, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
   if (low_effort) {
     refs_best *VP8LBackwardRefs;
     *cache_bits_best = cache_bits_max;

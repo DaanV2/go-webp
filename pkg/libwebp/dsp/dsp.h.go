@@ -265,7 +265,7 @@ extern WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
 // Per-row point-sampling methods.
 typedef func (*WebPSamplerRowFunc)(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len);
 // Generic function to apply 'WebPSamplerRowFunc' to the whole plane:
-func WebPSamplerProcessPlane(/* const */ WEBP_RESTRICT y *uint8, int y_stride, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, int uv_stride, WEBP_RESTRICT dst *uint8, int dst_stride, int width, int height, WebPSamplerRowFunc func);
+func WebPSamplerProcessPlane(/* const */ WEBP_RESTRICT y *uint8, int y_stride, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, int uv_stride, WEBP_RESTRICT dst *uint8, int dst_stride, width, height int, WebPSamplerRowFunc func);
 
 // Sampling functions to convert rows of YUV to RGB(A)
 extern WebPSamplerRowFunc WebPSamplers[MODE_LAST];
@@ -361,16 +361,16 @@ extern func (*WebPApplyAlphaMultiply4444)(rgba *uint84444, int w, int h, int str
 
 // Dispatch the values from alpha[] plane to the ARGB destination 'dst'.
 // Returns true if alpha[] plane has non-trivial values different from 0xff.
-extern int (*WebPDispatchAlpha)(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint8, int dst_stride);
+extern int (*WebPDispatchAlpha)(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint8, int dst_stride);
 
 // Transfer packed 8b alpha[] values to green channel in dst[], zero'ing the
 // A/R/B values. 'dst_stride' is the stride for dst[] in uint32 units.
-extern func (*WebPDispatchAlphaToGreen)(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint32, int dst_stride);
+extern func (*WebPDispatchAlphaToGreen)(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint32, int dst_stride);
 
 // Extract the alpha values from 32b values in argb[] and pack them into alpha[]
 // (this is the opposite of WebPDispatchAlpha).
 // Returns true if there's only trivial 0xff alpha values.
-extern int (*WebPExtractAlpha)(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, int width, int height, WEBP_RESTRICT alpha *uint8, int alpha_stride);
+extern int (*WebPExtractAlpha)(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride);
 
 // Extract the green values from 32b values in argb[] and pack them into alpha[]
 // (this is the opposite of WebPDispatchAlphaToGreen).
@@ -424,7 +424,7 @@ const (  // Filter types.
   WEBP_FILTER_FAST
 } WEBP_FILTER_TYPE;
 
-typedef func (*WebPFilterFunc)(/* const */ WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8);
+typedef func (*WebPFilterFunc)(/* const */ WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8);
 // In-place un-filtering.
 // Warning! 'prev_line' pointer can be equal to 'cur_line' or 'preds'.
 typedef func (*WebPUnfilterFunc)(/* const */ prev_line *uint8, /*const*/ preds *uint8, cur_line *uint8, int width);

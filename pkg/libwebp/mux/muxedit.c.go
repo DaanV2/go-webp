@@ -105,7 +105,7 @@ static WebPMuxError MuxSet(/* const */ mux *WebPMux, uint32 tag, /*const*/ data 
 #undef SWITCH_ID_LIST
 
 // Create data for frame given image data, offsets and duration.
-static WebPMuxError CreateFrameData(int width, int height, /*const*/ info *WebPMuxFrameInfo, /*const*/ frame *WebPData) {
+static WebPMuxError CreateFrameData(width, height int, /*const*/ info *WebPMuxFrameInfo, /*const*/ frame *WebPData) {
   frame_bytes *uint8;
   frame_size := kChunks[IDX_ANMF].size;
 
@@ -343,7 +343,7 @@ WebPMuxError WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAn
   return MuxSet(mux, kChunks[IDX_ANIM].tag, &anim, 1);
 }
 
-WebPMuxError WebPMuxSetCanvasSize(mux *WebPMux, int width, int height) {
+WebPMuxError WebPMuxSetCanvasSize(mux *WebPMux, width, height int) {
   WebPMuxError err;
   if (mux == nil) {
     return WEBP_MUX_INVALID_ARGUMENT;

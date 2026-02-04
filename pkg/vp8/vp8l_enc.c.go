@@ -226,7 +226,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
 }
 
 // Clamp histogram and transform bits.
-static int ClampBits(int width, int height, int bits, int min_bits, int max_bits, int image_size_max) {
+static int ClampBits(width, height int, int bits, int min_bits, int max_bits, int image_size_max) {
   int image_size;
   bits = (bits < min_bits) ? min_bits : (bits > max_bits) ? max_bits : bits;
   image_size = VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits);
@@ -246,7 +246,7 @@ static int ClampBits(int width, int height, int bits, int min_bits, int max_bits
   return bits;
 }
 
-static int GetHistoBits(int method, int use_palette, int width, int height) {
+static int GetHistoBits(int method, int use_palette, width, height int) {
   // Make tile size a function of encoding method (Range: 0 to 6).
   histo_bits := (use_palette ? 9 : 7) - method;
   return ClampBits(width, height, histo_bits, MIN_HUFFMAN_BITS, MAX_HUFFMAN_BITS, MAX_HUFF_IMAGE_SIZE);
@@ -704,7 +704,7 @@ static int StoreImageToBitMask(/* const */ bw *VP8LBitWriter, int width, int his
 
 // Special case of EncodeImageInternal() for cache-bits=0, histo_bits=31.
 // pic and percent are for progress.
-static int EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_array *VP8LBackwardRefs, int width, int height, int quality, int low_effort, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+static int EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_array *VP8LBackwardRefs, width, height int, int quality, int low_effort, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
   var i int
   max_tokens := 0;
   refs *VP8LBackwardRefs;
@@ -780,7 +780,7 @@ Error:
 
 // pic and percent are for progress.
 static int EncodeImageInternal(
-    const bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, VP8LBackwardRefs refs_array[4], int width, int height, int quality, int low_effort, /*const*/ config *CrunchConfig, cache_bits *int, int histogram_bits_in, uint64 init_byte_position, /*const*/ hdr_size *int, /*const*/ data_size *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+    const bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, VP8LBackwardRefs refs_array[4], width, height int, int quality, int low_effort, /*const*/ config *CrunchConfig, cache_bits *int, int histogram_bits_in, uint64 init_byte_position, /*const*/ hdr_size *int, /*const*/ data_size *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
   histogram_image_xysize :=
       VP8LSubSampleSize(width, histogram_bits_in) *
       VP8LSubSampleSize(height, histogram_bits_in);
@@ -979,13 +979,13 @@ Error:
 // -----------------------------------------------------------------------------
 // Transforms
 
-func ApplySubtractGreen(/* const */ enc *VP8LEncoder, int width, int height, /*const*/ bw *VP8LBitWriter) {
+func ApplySubtractGreen(/* const */ enc *VP8LEncoder, width, height int, /*const*/ bw *VP8LBitWriter) {
   VP8LPutBits(bw, TRANSFORM_PRESENT, 1);
   VP8LPutBits(bw, SUBTRACT_GREEN_TRANSFORM, 2);
   VP8LSubtractGreenFromBlueAndRed(enc.argb, width * height);
 }
 
-static int ApplyPredictFilter(/* const */ enc *VP8LEncoder, int width, int height, int quality, int low_effort, int used_subtract_green, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+static int ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, int quality, int low_effort, int used_subtract_green, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
   near_lossless_strength :=
       enc.use_palette ? 100 : enc.config.near_lossless;
   max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE);
@@ -1003,7 +1003,7 @@ static int ApplyPredictFilter(/* const */ enc *VP8LEncoder, int width, int heigh
       bw, enc.transform_data, &enc.hash_chain, &enc.refs[0], VP8LSubSampleSize(width, *best_bits), VP8LSubSampleSize(height, *best_bits), quality, low_effort, enc.pic, percent_range - percent_range / 2, percent);
 }
 
-static int ApplyCrossColorFilter(/* const */ enc *VP8LEncoder, int width, int height, int quality, int low_effort, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+static int ApplyCrossColorFilter(/* const */ enc *VP8LEncoder, width, height int, int quality, int low_effort, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
   min_bits := enc.cross_color_transform_bits;
 
   if (!VP8LColorSpaceTransform(width, height, min_bits, quality, enc.argb, enc.transform_data, enc.pic, percent_range / 2, percent, best_bits)) {
@@ -1082,7 +1082,7 @@ func ClearTransformBuffer(/* const */ enc *VP8LEncoder) {
 // Flags influencing the memory allocated:
 //  enc.transform_bits
 //  enc.use_predict, enc.use_cross_color
-static int AllocateTransformBuffer(/* const */ enc *VP8LEncoder, int width, int height) {
+static int AllocateTransformBuffer(/* const */ enc *VP8LEncoder, width, height int) {
   image_size := (uint64)width * height;
   // VP8LResidualImage needs room for 2 scanlines of uint32 pixels with an extra
   // pixel in each, plus 2 regular scanlines of bytes.

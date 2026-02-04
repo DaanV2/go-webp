@@ -124,7 +124,7 @@ static double GetLogSSIM(double v, double size) {
   return (v < 1.) ? -10.0 * log10(1. - v) : kMinDistortion_dB;
 }
 
-int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, int width, int height, uint64 x_step, int type, distortion *float, result *float) {
+int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) {
   allocated *uint8 = nil;
   const AccumulateFunc metric = (type == 0)   ? AccumulateSSE
                                 : (type == 1) ? AccumulateSSIM
@@ -212,7 +212,7 @@ Error:
 #undef BLUE_OFFSET
 
 #else  // defined(WEBP_DISABLE_STATS)
-int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, int width, int height, uint64 x_step, int type, distortion *float, result *float) {
+int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) {
   (void)src;
   (void)src_stride;
   (void)ref;

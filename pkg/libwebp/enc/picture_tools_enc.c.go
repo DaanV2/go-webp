@@ -59,7 +59,7 @@ func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
 
 // Smoothen the luma components of transparent pixels. Return true if the whole
 // block is transparent.
-static int SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, int y_stride, int width, int height) {
+static int SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, int y_stride, width, height int) {
   sum := 0, count = 0;
   int x, y;
   var alpha_ptr *uint8 = a_ptr;

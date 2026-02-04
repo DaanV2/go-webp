@@ -135,7 +135,7 @@ typedef enum WebPFormatFeature {
 // Frame iteration.
 
 type WebPIterator struct {
-  int frame_num;
+  frame_num int;
   int num_frames;                     // equivalent to WEBP_FF_FRAME_COUNT.
   int x_offset, y_offset;             // offset relative to the canvas.
   int width, height;                  // dimensions of this frame.

@@ -203,7 +203,7 @@ const FILTER_LINE_BY_LINE =                          \
   } while (0)
 
 static  func DoHorizontalFilter_MIPSdspR2(
-    const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+    const WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
   row int;
   DCHECK(in, out);
@@ -220,7 +220,7 @@ static  func DoHorizontalFilter_MIPSdspR2(
 }
 #undef FILTER_LINE_BY_LINE
 
-func HorizontalFilter_MIPSdspR2(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func HorizontalFilter_MIPSdspR2(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoHorizontalFilter_MIPSdspR2(data, width, height, stride, filtered_data);
 }
 
@@ -238,7 +238,7 @@ const FILTER_LINE_BY_LINE =                              \
   } while (0)
 
 static  func DoVerticalFilter_MIPSdspR2(
-    const WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+    const WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
   row int;
   DCHECK(in, out);
@@ -255,7 +255,7 @@ static  func DoVerticalFilter_MIPSdspR2(
 }
 #undef FILTER_LINE_BY_LINE
 
-func VerticalFilter_MIPSdspR2(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func VerticalFilter_MIPSdspR2(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoVerticalFilter_MIPSdspR2(data, width, height, stride, filtered_data);
 }
 
@@ -290,7 +290,7 @@ static int GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) {
     }                                                                \
   } while (0)
 
-func DoGradientFilter_MIPSdspR2(/* const */ WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+func DoGradientFilter_MIPSdspR2(/* const */ WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   var preds *uint8 = in;
   row int;
   DCHECK(in, out);
@@ -307,7 +307,7 @@ func DoGradientFilter_MIPSdspR2(/* const */ WEBP_RESTRICT in *uint8, int width, 
 }
 #undef FILTER_LINE_BY_LINE
 
-func GradientFilter_MIPSdspR2(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func GradientFilter_MIPSdspR2(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoGradientFilter_MIPSdspR2(data, width, height, stride, filtered_data);
 }
 

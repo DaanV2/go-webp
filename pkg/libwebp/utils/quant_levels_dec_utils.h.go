@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Returns false in case of error (data is nil, invalid parameters,
 // malloc failure, ...).
 int WebPDequantizeLevels( *uint8((uint64)height *stride)
-                             const data, int width, int height, int stride, int strength);
+                             const data, width, height int, int stride, int strength);
 
 
 

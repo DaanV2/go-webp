@@ -52,7 +52,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int EncodeLossless(/* const */ data *uint8, int width, int height, int effort_level,  // in [0..6] range
+static int EncodeLossless(/* const */ data *uint8, width, height int, int effort_level,  // in [0..6] range
                           int use_quality_100, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) {
   ok := 0;
   WebPConfig config;
@@ -170,7 +170,7 @@ static int EncodeAlphaInternal(/* const */ data *uint8, width, height, method, f
 
 // -----------------------------------------------------------------------------
 
-static int GetNumColors(/* const */ data *uint8, int width, int height, int stride) {
+static int GetNumColors(/* const */ data *uint8, width, height int, int stride) {
   var j int
   colors := 0;
   uint8 color[256] = {0}
@@ -192,7 +192,7 @@ const FILTER_TRY_NONE =(1 << WEBP_FILTER_NONE)
 const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
-static uint32 GetFilterMap(/* const */ alpha *uint8, int width, int height, int filter, int effort_level) {
+static uint32 GetFilterMap(/* const */ alpha *uint8, width, height int, int filter, int effort_level) {
   bit_map := uint(0);
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
@@ -223,7 +223,7 @@ func InitFilterTrial(/* const */ score *FilterTrial) {
   VP8BitWriterInit(&score.bw, 0);
 }
 
-static int ApplyFiltersAndEncode(/* const */ alpha *uint8, int width, int height, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) {
+static int ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) {
   ok := 1;
   FilterTrial best;
   try_map := GetFilterMap(alpha, width, height, filter, effort_level);

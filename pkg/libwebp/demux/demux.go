@@ -736,7 +736,7 @@ func WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature) uin
 // -----------------------------------------------------------------------------
 // Frame iteration
 
-func GetFrame (/* const */ dmux *WebPDemuxer, int frame_num) *Frame {
+func GetFrame (/* const */ dmux *WebPDemuxer, frame_num int) *Frame {
   const f *Frame
   for f = dmux.frames f != nil f = f.next {
     if (frame_num == f.frame_num) break
@@ -790,7 +790,7 @@ static int SynthesizeFrame(/* const */ dmux *WebPDemuxer, /*const*/ frame *Frame
   return 1
 }
 
-static int SetFrame(int frame_num, /*const*/ iter *WebPIterator) {
+static int SetFrame(frame_num int, /*const*/ iter *WebPIterator) {
   const frame *Frame
   var dmux *WebPDemuxer = (*WebPDemuxer)iter.private_
   if (dmux == nil || frame_num < 0) { return 0 }

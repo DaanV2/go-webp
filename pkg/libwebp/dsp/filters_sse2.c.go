@@ -76,7 +76,7 @@ func PredictLineLeft_SSE2(/* const */ WEBP_RESTRICT src *uint8, WEBP_RESTRICT ds
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static  func DoHorizontalFilter_SSE2(/* const */ WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+static  func DoHorizontalFilter_SSE2(/* const */ WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   row int;
   DCHECK(in, out);
 
@@ -99,7 +99,7 @@ static  func DoHorizontalFilter_SSE2(/* const */ WEBP_RESTRICT in *uint8, int wi
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static  func DoVerticalFilter_SSE2(/* const */ WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+static  func DoVerticalFilter_SSE2(/* const */ WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   row int;
   DCHECK(in, out);
 
@@ -150,7 +150,7 @@ func GradientPredictDirect_SSE2(/* const */ row *uint8, /*const*/ top *uint8, WE
   }
 }
 
-static  func DoGradientFilter_SSE2(/* const */ WEBP_RESTRICT in *uint8, int width, int height, int stride, WEBP_RESTRICT out *uint8) {
+static  func DoGradientFilter_SSE2(/* const */ WEBP_RESTRICT in *uint8, width, height int, int stride, WEBP_RESTRICT out *uint8) {
   row int;
   DCHECK(in, out);
 
@@ -173,15 +173,15 @@ static  func DoGradientFilter_SSE2(/* const */ WEBP_RESTRICT in *uint8, int widt
 
 //------------------------------------------------------------------------------
 
-func HorizontalFilter_SSE2(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func HorizontalFilter_SSE2(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoHorizontalFilter_SSE2(data, width, height, stride, filtered_data);
 }
 
-func VerticalFilter_SSE2(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func VerticalFilter_SSE2(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoVerticalFilter_SSE2(data, width, height, stride, filtered_data);
 }
 
-func GradientFilter_SSE2(/* const */ WEBP_RESTRICT data *uint8, int width, int height, int stride, WEBP_RESTRICT filtered_data *uint8) {
+func GradientFilter_SSE2(/* const */ WEBP_RESTRICT data *uint8, width, height int, int stride, WEBP_RESTRICT filtered_data *uint8) {
   DoGradientFilter_SSE2(data, width, height, stride, filtered_data);
 }
 
