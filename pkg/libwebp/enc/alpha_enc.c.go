@@ -89,7 +89,6 @@ static int EncodeLossless(const data *uint8, int width, int height, int effort_l
   WebPPictureFree(&picture);
   ok = ok && !bw.error;
   if (!ok) {
-    VP8LBitWriterWipeOut(bw);
     return 0;
   }
   return 1;
@@ -105,16 +104,16 @@ type FilterTrial struct {
 } 
 
 // This function always returns an initialized 'bw' object, even upon error.
-static int EncodeAlphaInternal(const data *uint8, int width, int height, int method, int filter, int reduce_levels, int effort_level,  // in [0..6] range
-                               const tmp_alpha *uint8, result *FilterTrial) {
+static int EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter, reduce_levels, effort_level int,  // in [0..6] range
+                               /* const */ tmp_alpha *uint8, result *FilterTrial) {
   ok := 0;
-  const alpha_src *uint8;
-  WebPFilterFunc filter_func;
-  uint8 header;
-  data_size := width * height;
-  var output *uint8 = nil;
   output_size := 0;
-  VP8LBitWriter tmp_bw;
+  data_size := width * height;
+  var alpha_src *uint8;
+  var filter_func WebPFilterFunc;
+  var header uint8;
+  var output *uint8 = nil;
+  var tmp_bw VP8LBitWriter
 
   assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
   assert.Assert(filter >= 0 && filter < WEBP_FILTER_LAST);
@@ -136,7 +135,6 @@ static int EncodeAlphaInternal(const data *uint8, int width, int height, int met
     if (ok) {
       output = VP8LBitWriterFinish(&tmp_bw);
       if (tmp_bw.error) {
-        VP8LBitWriterWipeOut(&tmp_bw);
         stdlib.Memset(&result.bw, 0, sizeof(result.bw));
         return 0;
       }
@@ -144,10 +142,8 @@ static int EncodeAlphaInternal(const data *uint8, int width, int height, int met
       if (output_size > data_size) {
         // compressed size is larger than source! Revert to uncompressed mode.
         method = ALPHA_NO_COMPRESSION;
-        VP8LBitWriterWipeOut(&tmp_bw);
       }
     } else {
-      VP8LBitWriterWipeOut(&tmp_bw);
       stdlib.Memset(&result.bw, 0, sizeof(result.bw));
       return 0;
     }
@@ -167,9 +163,6 @@ static int EncodeAlphaInternal(const data *uint8, int width, int height, int met
   ok = ok && VP8BitWriterAppend(&result.bw, &header, ALPHA_HEADER_LEN);
   ok = ok && VP8BitWriterAppend(&result.bw, output, output_size);
 
-  if (method != ALPHA_NO_COMPRESSION) {
-    VP8LBitWriterWipeOut(&tmp_bw);
-  }
   ok = ok && !result.bw.error;
   result.score = VP8BitWriterSize(&result.bw);
   return ok;

@@ -973,7 +973,6 @@ static int EncodeImageInternal(
 
 Error:
   VP8LHashChainClear(&hash_chain_histogram);
-  VP8LBitWriterWipeOut(&bw_best);
   return (pic.error_code == VP8_ENC_OK);
 }
 
@@ -1516,7 +1515,6 @@ static int EncodeStreamHook(input *void, data *void2) {
   VP8LBitWriterSwap(&bw_best, bw);
 
 Error:
-  VP8LBitWriterWipeOut(&bw_best);
   // The hook should return false in case of error.
   return (params.picture.error_code == VP8_ENC_OK);
 }
@@ -1667,7 +1665,6 @@ int VP8LEncodeStream(const config *WebPConfig, /*const*/ picture *WebPPicture, /
   }
 
 Error:
-  VP8LBitWriterWipeOut(&bw_side);
   VP8LEncoderDelete(enc_main);
   VP8LEncoderDelete(enc_side);
   return (picture.error_code == VP8_ENC_OK);
@@ -1763,7 +1760,6 @@ Error:
   if (bw.error) {
     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
-  VP8LBitWriterWipeOut(&bw);
   return (picture.error_code == VP8_ENC_OK);
 }
 

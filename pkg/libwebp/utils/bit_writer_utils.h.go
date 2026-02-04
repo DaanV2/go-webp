@@ -109,8 +109,6 @@ int VP8LBitWriterInit(const bw *VP8LBitWriter, uint64 expected_size);
 int VP8LBitWriterClone(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter);
 // Finalize the bitstream coding. Returns a pointer to the internal buffer.
 VP *uint88LBitWriterFinish(const bw *VP8LBitWriter);
-// Release any pending memory and zeroes the object.
-func VP8LBitWriterWipeOut(const bw *VP8LBitWriter);
 // Resets the cursor of the BitWriter bw to when it was like in bw_init.
 func VP8LBitWriterReset(const bw_init *VP8LBitWriter, /*const*/ bw *VP8LBitWriter);
 // Swaps the memory held by two BitWriters.

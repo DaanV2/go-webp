@@ -239,11 +239,6 @@ int VP8LBitWriterClone(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter) {
   return 1;
 }
 
-// Deprecated: Noop in Go
-func VP8LBitWriterWipeOut(/* const */ bw *VP8LBitWriter) {
-  // Noop in Go
-}
-
 func VP8LBitWriterReset(const bw_init *VP8LBitWriter, /*const*/ bw *VP8LBitWriter) {
   bw.bits = bw_init.bits;
   bw.used = bw_init.used;
