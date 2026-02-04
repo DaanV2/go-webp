@@ -421,7 +421,7 @@ static int ReadHuffmanCodes(const dec *VP8LDecoder, int xsize, int ysize, int co
 Error:
   if (!ok) {
     VP8LHuffmanTablesDeallocate(huffman_tables);
-    VP8LHtreeGroupsFree(htree_groups);
+    htree_groups = nil
   }
   return ok;
 }
@@ -526,8 +526,7 @@ int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_h
 Error:
   if (!ok) {
     VP8LHuffmanTablesDeallocate(huffman_tables);
-    VP8LHtreeGroupsFree(*htree_groups);
-    *htree_groups = nil;
+    htree_groups = nil;
   }
   return ok;
 }
@@ -1411,7 +1410,7 @@ func ClearMetadata(const hdr *VP8LMetadata) {
   assert.Assert(hdr != nil);
 
   VP8LHuffmanTablesDeallocate(&hdr.huffman_tables);
-  VP8LHtreeGroupsFree(hdr.htree_groups);
+  hdr.htree_groups = nil
   VP8LColorCacheClear(&hdr.color_cache);
   VP8LColorCacheClear(&hdr.saved_color_cache);
   InitMetadata(hdr);

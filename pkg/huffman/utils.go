@@ -29,10 +29,6 @@ func HTreeGroup8LHtreeGroupsNew(num_htree_groups int) []HTreeGroup {
 	return htree_groups
 }
 
-// Releases the memory allocated for HTreeGroup.
-func VP8LHtreeGroupsFree( /* const */ htree_groups []*HTreeGroup) {
-	// Noop in Go
-}
 
 // Returns reverse(reverse(key, len) + 1, len), where reverse(key, len) is the
 // bit-wise reversal of the len least significant bits of key.
