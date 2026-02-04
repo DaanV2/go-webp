@@ -28,12 +28,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Helper functions
 
-static int IsVP8XNeeded(const enc *VP8Encoder) {
+static int IsVP8XNeeded(/* const */ enc *VP8Encoder) {
   return !!enc.has_alpha;  // Currently the only case when VP8X is needed.
                             // This could change in the future.
 }
 
-static int PutPaddingByte(const pic *WebPPicture) {
+static int PutPaddingByte(/* const */ pic *WebPPicture) {
   pad_byte[1] := {0}
   return !!pic.writer(pad_byte, 1, pic);
 }
@@ -41,7 +41,7 @@ static int PutPaddingByte(const pic *WebPPicture) {
 //------------------------------------------------------------------------------
 // Writers for header's various pieces (in order of appearance)
 
-static WebPEncodingError PutRIFFHeader(const enc *VP8Encoder, uint64 riff_size) {
+static WebPEncodingError PutRIFFHeader(/* const */ enc *VP8Encoder, uint64 riff_size) {
   var pic *WebPPicture = enc.pic;
   uint8 riff[RIFF_HEADER_SIZE] = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
   assert.Assert(riff_size == (uint32)riff_size);
@@ -52,7 +52,7 @@ static WebPEncodingError PutRIFFHeader(const enc *VP8Encoder, uint64 riff_size) 
   return VP8_ENC_OK;
 }
 
-static WebPEncodingError PutVP8XHeader(const enc *VP8Encoder) {
+static WebPEncodingError PutVP8XHeader(/* const */ enc *VP8Encoder) {
   var pic *WebPPicture = enc.pic;
   uint8 vp8x[CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE] = {'V', 'P', '8', 'X'}
   flags := 0;
@@ -75,7 +75,7 @@ static WebPEncodingError PutVP8XHeader(const enc *VP8Encoder) {
   return VP8_ENC_OK;
 }
 
-static WebPEncodingError PutAlphaChunk(const enc *VP8Encoder) {
+static WebPEncodingError PutAlphaChunk(/* const */ enc *VP8Encoder) {
   var pic *WebPPicture = enc.pic;
   uint8 alpha_chunk_hdr[CHUNK_HEADER_SIZE] = {'A', 'L', 'P', 'H'}
 
@@ -99,7 +99,7 @@ static WebPEncodingError PutAlphaChunk(const enc *VP8Encoder) {
   return VP8_ENC_OK;
 }
 
-static WebPEncodingError PutVP8Header(const pic *WebPPicture, uint64 vp8_size) {
+static WebPEncodingError PutVP8Header(/* const */ pic *WebPPicture, uint64 vp8_size) {
   uint8 vp8_chunk_hdr[CHUNK_HEADER_SIZE] = {'V', 'P', '8', ' '}
   assert.Assert(vp8_size == (uint32)vp8_size);
   PutLE32(vp8_chunk_hdr + TAG_SIZE, (uint32)vp8_size);
@@ -109,7 +109,7 @@ static WebPEncodingError PutVP8Header(const pic *WebPPicture, uint64 vp8_size) {
   return VP8_ENC_OK;
 }
 
-static WebPEncodingError PutVP8FrameHeader(const pic *WebPPicture, int profile, uint64 size0) {
+static WebPEncodingError PutVP8FrameHeader(/* const */ pic *WebPPicture, int profile, uint64 size0) {
   uint8 vp8_frm_hdr[VP8_FRAME_HEADER_SIZE];
   bits uint32;
 
@@ -142,7 +142,7 @@ static WebPEncodingError PutVP8FrameHeader(const pic *WebPPicture, int profile, 
 }
 
 // WebP Headers.
-static int PutWebPHeaders(const enc *VP8Encoder, uint64 size0, uint64 vp8_size, uint64 riff_size) {
+static int PutWebPHeaders(/* const */ enc *VP8Encoder, uint64 size0, uint64 vp8_size, uint64 riff_size) {
   var pic *WebPPicture = enc.pic;
   WebPEncodingError err = VP8_ENC_OK;
 
@@ -179,7 +179,7 @@ Error:
 }
 
 // Segmentation header
-func PutSegmentHeader(const bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
+func PutSegmentHeader(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
   var hdr *VP8EncSegmentHeader = &enc.segment_hdr;
   var proba *VP8EncProba = &enc.proba;
   if (VP8PutBitUniform(bw, (hdr.num_segments > 1))) {
@@ -208,7 +208,7 @@ func PutSegmentHeader(const bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
 }
 
 // Filtering parameters header
-func PutFilterHeader(const bw *VP8BitWriter, /*const*/ hdr *VP8EncFilterHeader) {
+func PutFilterHeader(/* const */ bw *VP8BitWriter, /*const*/ hdr *VP8EncFilterHeader) {
   use_lf_delta := (hdr.i4x4_lf_delta != 0);
   VP8PutBitUniform(bw, hdr.simple);
   VP8PutBits(bw, hdr.level, 6);
@@ -227,7 +227,7 @@ func PutFilterHeader(const bw *VP8BitWriter, /*const*/ hdr *VP8EncFilterHeader) 
 }
 
 // Nominal quantization parameters
-func PutQuant(const bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
+func PutQuant(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
   VP8PutBits(bw, enc.base_quant, 7);
   VP8PutSignedBits(bw, enc.dq_y1_dc, 4);
   VP8PutSignedBits(bw, enc.dq_y2_dc, 4);
@@ -237,7 +237,7 @@ func PutQuant(const bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
 }
 
 // Partition sizes
-static int EmitPartitionsSize(const enc *VP8Encoder, /*const*/ pic *WebPPicture) {
+static int EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *WebPPicture) {
   uint8 buf[3 * (MAX_NUM_PARTITIONS - 1)];
   var p int
   for p = 0; p < enc.num_parts - 1; p++ {
@@ -257,7 +257,7 @@ static int EmitPartitionsSize(const enc *VP8Encoder, /*const*/ pic *WebPPicture)
 
 //------------------------------------------------------------------------------
 
-static int GeneratePartition0(const enc *VP8Encoder) {
+static int GeneratePartition0(/* const */ enc *VP8Encoder) {
   var bw *VP8BitWriter = &enc.bw;
   mb_size := enc.mb_w * enc.mb_h;
   uint64 pos1, pos2, pos3;
@@ -304,7 +304,7 @@ static int GeneratePartition0(const enc *VP8Encoder) {
 // Generates the final bitstream by coding the partition0 and headers,
 // and appending an assembly of all the pre-coded token partitions.
 // Return true if everything is ok.
-int VP8EncWrite(const enc *VP8Encoder) {
+int VP8EncWrite(/* const */ enc *VP8Encoder) {
   var pic *WebPPicture = enc.pic;
   var bw *VP8BitWriter = &enc.bw;
   task_percent := 19;

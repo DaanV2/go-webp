@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // VP8BitReader
 
-func VP8BitReaderSetBuffer(const br *VP8BitReader, /*const*/ *uint8  start, size uint64 ) {
+func VP8BitReaderSetBuffer(/* const */ br *VP8BitReader, /*const*/ *uint8  start, size uint64 ) {
   assert.Assert(start != nil);
   br.buf = start;
   br.buf_end = start + size;
@@ -40,7 +40,7 @@ func VP8BitReaderSetBuffer(const br *VP8BitReader, /*const*/ *uint8  start, size
       (size >= sizeof(lbit_t)) ? start + size - sizeof(lbit_t) + 1 : start;
 }
 
-func VP8InitBitReader(const br *VP8BitReader, /*const*/ *uint8  start, size uint64 ) {
+func VP8InitBitReader(/* const */ br *VP8BitReader, /*const*/ *uint8  start, size uint64 ) {
   assert.Assert(br != nil);
   assert.Assert(start != nil);
   assert.Assert(size < (uint(1) << 31));  // limit ensured by format and upstream checks
@@ -52,7 +52,7 @@ func VP8InitBitReader(const br *VP8BitReader, /*const*/ *uint8  start, size uint
   VP8LoadNewBytes(br);
 }
 
-func VP8RemapBitReader(const br *VP8BitReader, ptrdiff_t offset) {
+func VP8RemapBitReader(/* const */ br *VP8BitReader, ptrdiff_t offset) {
   if (br.buf != nil) {
     br.buf += offset;
     br.buf_end += offset;
@@ -67,7 +67,7 @@ const uint8 kVP8Log2Range[128] = {
 const uint8 kVP8NewRange[128] = {
     127, 127, 191, 127, 159, 191, 223, 127, 143, 159, 175, 191, 207, 223, 239, 127, 135, 143, 151, 159, 167, 175, 183, 191, 199, 207, 215, 223, 231, 239, 247, 127, 131, 135, 139, 143, 147, 151, 155, 159, 163, 167, 171, 175, 179, 183, 187, 191, 195, 199, 203, 207, 211, 215, 219, 223, 227, 231, 235, 239, 243, 247, 251, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239, 241, 243, 245, 247, 249, 251, 253, 127}
 
-func VP8LoadFinalBytes(const br *VP8BitReader) {
+func VP8LoadFinalBytes(/* const */ br *VP8BitReader) {
   assert.Assert(br != nil && br.buf != nil);
   // Only read 8bits at a time
   if (br.buf < br.buf_end) {
@@ -86,7 +86,7 @@ func VP8LoadFinalBytes(const br *VP8BitReader) {
 //------------------------------------------------------------------------------
 // Higher-level calls
 
-uint32 VP8GetValue(const br *VP8BitReader, int bits, /*const*/ byte label[]) {
+uint32 VP8GetValue(/* const */ br *VP8BitReader, int bits, /*const*/ byte label[]) {
   v := 0;
   while (bits-- > 0) {
     v |= VP8GetBit(br, 0x80, label) << bits;
@@ -94,7 +94,7 @@ uint32 VP8GetValue(const br *VP8BitReader, int bits, /*const*/ byte label[]) {
   return v;
 }
 
-int32 VP8GetSignedValue(const br *VP8BitReader, int bits, /*const*/ byte label[]) {
+int32 VP8GetSignedValue(/* const */ br *VP8BitReader, int bits, /*const*/ byte label[]) {
   value := VP8GetValue(br, bits, label);
   return VP8Get(br, label) ? -value : value;
 }
@@ -113,7 +113,7 @@ const VP8L_LOG8_WBITS =4  // Number of bytes needed to store VP8L_WBITS bits.
 static const uint32 kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
     0,        0x000001, 0x000003, 0x000007, 0x00000f, 0x00001f, 0x00003f, 0x00007f, 0x0000ff, 0x0001ff, 0x0003ff, 0x0007ff, 0x000fff, 0x001fff, 0x003fff, 0x007fff, 0x00ffff, 0x01ffff, 0x03ffff, 0x07ffff, 0x0fffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff}
 
-func VP8LInitBitReader(const br *VP8LBitReader, /*const*/ *uint8  start, uint64 length) {
+func VP8LInitBitReader(/* const */ br *VP8LBitReader, /*const*/ *uint8  start, uint64 length) {
   uint64 i;
   vp8l_val_t value = 0;
   assert.Assert(br != nil);
@@ -135,7 +135,7 @@ func VP8LInitBitReader(const br *VP8LBitReader, /*const*/ *uint8  start, uint64 
   br.pos = length;
 }
 
-func VP8LBitReaderSetBuffer(const br *VP8LBitReader, /*const*/ *uint8  buf, uint64 len) {
+func VP8LBitReaderSetBuffer(/* const */ br *VP8LBitReader, /*const*/ *uint8  buf, uint64 len) {
   assert.Assert(br != nil);
   assert.Assert(buf != nil);
   assert.Assert(len < uint(0xfffffff8));  // can't happen with a RIFF chunk.
@@ -145,13 +145,13 @@ func VP8LBitReaderSetBuffer(const br *VP8LBitReader, /*const*/ *uint8  buf, uint
   br.eos = (br.pos > br.len) || VP8LIsEndOfStream(br);
 }
 
-func VP8LSetEndOfStream(const br *VP8LBitReader) {
+func VP8LSetEndOfStream(/* const */ br *VP8LBitReader) {
   br.eos = 1;
   br.bit_pos = 0;  // To afunc undefined behaviour with shifts.
 }
 
 // If not at EOS, reload up to VP8L_LBITS byte-by-byte
-func ShiftBytes(const br *VP8LBitReader) {
+func ShiftBytes(/* const */ br *VP8LBitReader) {
   while (br.bit_pos >= 8 && br.pos < br.len) {
     br.val >>= 8;
     br.val |= ((vp8l_val_t)br.buf[br.pos]) << (VP8L_LBITS - 8);
@@ -163,7 +163,7 @@ func ShiftBytes(const br *VP8LBitReader) {
   }
 }
 
-func VP8LDoFillBitWindow(const br *VP8LBitReader) {
+func VP8LDoFillBitWindow(/* const */ br *VP8LBitReader) {
   assert.Assert(br.bit_pos >= VP8L_WBITS);
 #if defined(VP8L_USE_FAST_LOAD)
   if (br.pos + sizeof(br.val) < br.len) {
@@ -178,7 +178,7 @@ func VP8LDoFillBitWindow(const br *VP8LBitReader) {
   ShiftBytes(br);  // Slow path.
 }
 
-uint32 VP8LReadBits(const br *VP8LBitReader, int n_bits) {
+uint32 VP8LReadBits(/* const */ br *VP8LBitReader, int n_bits) {
   assert.Assert(n_bits >= 0);
   // Flag an error if end_of_stream or n_bits is more than allowed limit.
   if (!br.eos && n_bits <= VP8L_MAX_NUM_BIT_READ) {
@@ -236,7 +236,7 @@ func PrintBitTraces(){
   printf("Total: %d %s\n", total, units);
 }
 
-func BitTrace(const type const br *VP8BitReader, /*const*/ byte label[]) struct {
+func BitTrace(/* const */ type const br *VP8BitReader, /*const*/ byte label[]) struct {
   int i, pos;
   if (!init_done) {
     stdlib.Memset(kLabels, 0, sizeof(kLabels));

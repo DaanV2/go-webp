@@ -40,7 +40,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     BUTTERFLY_4(a1_m, b1_m, c1_m, d1_m, out0, out1, out2, out3); \
   }
 
-func TransformOne(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   v8i16 input0, input1;
   v4i32 in0, in1, in2, in3, hz0, hz1, hz2, hz3, vt0, vt1, vt2, vt3;
   v4i32 res0, res1, res2, res3;
@@ -65,14 +65,14 @@ func TransformOne(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   ST4x4_UB(res0, res0, 3, 2, 1, 0, dst, BPS);
 }
 
-func TransformTwo(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);
   }
 }
 
-func TransformWHT(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
+func TransformWHT(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   v8i16 input0, input1;
   const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11}
   const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15}
@@ -114,13 +114,13 @@ func TransformWHT(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   out[240] = __msa_copy_s_h(out1, 7);
 }
 
-func TransformDC(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformDC(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   DC := (in[0] + 4) >> 3;
   const v8i16 tmp0 = __msa_fill_h(DC);
   ADDBLK_ST4x4_UB(tmp0, tmp0, tmp0, tmp0, dst, BPS);
 }
 
-func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformAC3(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   a := in[0] + 4;
   c4 := WEBP_TRANSFORM_AC3_MUL2(in[4]);
   d4 := WEBP_TRANSFORM_AC3_MUL1(in[4]);

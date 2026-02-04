@@ -52,7 +52,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int EncodeLossless(const data *uint8, int width, int height, int effort_level,  // in [0..6] range
+static int EncodeLossless(/* const */ data *uint8, int width, int height, int effort_level,  // in [0..6] range
                           int use_quality_100, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) {
   ok := 0;
   WebPConfig config;
@@ -170,7 +170,7 @@ static int EncodeAlphaInternal(/* const */ data *uint8, width, height, method, f
 
 // -----------------------------------------------------------------------------
 
-static int GetNumColors(const data *uint8, int width, int height, int stride) {
+static int GetNumColors(/* const */ data *uint8, int width, int height, int stride) {
   var j int
   colors := 0;
   uint8 color[256] = {0}
@@ -192,7 +192,7 @@ const FILTER_TRY_NONE =(1 << WEBP_FILTER_NONE)
 const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
-static uint32 GetFilterMap(const alpha *uint8, int width, int height, int filter, int effort_level) {
+static uint32 GetFilterMap(/* const */ alpha *uint8, int width, int height, int filter, int effort_level) {
   bit_map := uint(0);
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
@@ -218,12 +218,12 @@ static uint32 GetFilterMap(const alpha *uint8, int width, int height, int filter
   return bit_map;
 }
 
-func InitFilterTrial(const score *FilterTrial) {
+func InitFilterTrial(/* const */ score *FilterTrial) {
   score.score = (uint64)~uint(0);
   VP8BitWriterInit(&score.bw, 0);
 }
 
-static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) {
+static int ApplyFiltersAndEncode(/* const */ alpha *uint8, int width, int height, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) {
   ok := 1;
   FilterTrial best;
   try_map := GetFilterMap(alpha, width, height, filter, effort_level);
@@ -267,7 +267,7 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data
   return ok;
 }
 
-static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filter, int effort_level, *uint8* const output, /*const*/ output_size *uint64) {
+static int EncodeAlpha(/* const */ enc *VP8Encoder, int quality, int method, int filter, int effort_level, *uint8* const output, /*const*/ output_size *uint64) {
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
@@ -358,7 +358,7 @@ static int CompressAlphaJob(arg *void1, unused *void) {
   return 1;
 }
 
-func VP8EncInitAlpha(const enc *VP8Encoder) {
+func VP8EncInitAlpha(/* const */ enc *VP8Encoder) {
   WebPInitAlphaProcessing();
   enc.has_alpha = WebPPictureHasTransparency(enc.pic);
   enc.alpha_data = nil;
@@ -372,7 +372,7 @@ func VP8EncInitAlpha(const enc *VP8Encoder) {
   }
 }
 
-int VP8EncStartAlpha(const enc *VP8Encoder) {
+int VP8EncStartAlpha(/* const */ enc *VP8Encoder) {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
       var worker *WebPWorker = &enc.alpha_worker;
@@ -389,7 +389,7 @@ int VP8EncStartAlpha(const enc *VP8Encoder) {
   return 1;
 }
 
-int VP8EncFinishAlpha(const enc *VP8Encoder) {
+int VP8EncFinishAlpha(/* const */ enc *VP8Encoder) {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
       var worker *WebPWorker = &enc.alpha_worker;
@@ -401,7 +401,7 @@ int VP8EncFinishAlpha(const enc *VP8Encoder) {
   return WebPReportProgress(enc.pic, enc.percent + 20, &enc.percent);
 }
 
-int VP8EncDeleteAlpha(const enc *VP8Encoder) {
+int VP8EncDeleteAlpha(/* const */ enc *VP8Encoder) {
   ok := 1;
   if (enc.thread_level > 0) {
     var worker *WebPWorker = &enc.alpha_worker;

@@ -33,18 +33,18 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 #define MULT_FIX_FLOOR(x, y) (((uint64)(x) * (y)) >> WEBP_RESCALER_RFIX)
 
 // input: 8 bytes ABCDEFGH . output: A0E0B0F0C0G0D0H0
-func LoadTwoPixels_SSE2(const src *uint8, __out *m128i) {
+func LoadTwoPixels_SSE2(/* const */ src *uint8, __out *m128i) {
   const __m128i zero = _mm_setzero_si128();
-  const __m128i A = _mm_loadl_epi64((const __*m128i)(src));  // ABCDEFGH
+  const __m128i A = _mm_loadl_epi64((/* const */ __*m128i)(src));  // ABCDEFGH
   const __m128i B = _mm_unpacklo_epi8(A, zero);              // A0B0C0D0E0F0G0H0
   const __m128i C = _mm_srli_si128(B, 8);                    // E0F0G0H0
   *out = _mm_unpacklo_epi16(B, C);
 }
 
 // input: 8 bytes ABCDEFGH . output: A0B0C0D0E0F0G0H0
-func LoadEightPixels_SSE2(const src *uint8, __out *m128i) {
+func LoadEightPixels_SSE2(/* const */ src *uint8, __out *m128i) {
   const __m128i zero = _mm_setzero_si128();
-  const __m128i A = _mm_loadl_epi64((const __*m128i)(src));  // ABCDEFGH
+  const __m128i A = _mm_loadl_epi64((/* const */ __*m128i)(src));  // ABCDEFGH
   *out = _mm_unpacklo_epi8(A, zero);
 }
 
@@ -173,8 +173,8 @@ func RescalerImportRowShrink_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, /*const
 // load as epi *src64, multiply by mult and store result in [out0 ... out3]
 static  func LoadDispatchAndMult_SSE2(
     const rescaler_t* WEBP_RESTRICT const src, /*const*/ __const mult *m128i, __const out *m128i0, __const out *m128i1, __const out *m128i2, __const out *m128i3) {
-  const __m128i A0 = _mm_loadu_si128((const __*m128i)(src + 0));
-  const __m128i A1 = _mm_loadu_si128((const __*m128i)(src + 4));
+  const __m128i A0 = _mm_loadu_si128((/* const */ __*m128i)(src + 0));
+  const __m128i A1 = _mm_loadu_si128((/* const */ __*m128i)(src + 4));
   const __m128i A2 = _mm_srli_epi64(A0, 32);
   const __m128i A3 = _mm_srli_epi64(A1, 32);
   if (mult != nil) {
@@ -220,7 +220,7 @@ static  func ProcessRow_SSE2(
   _mm_storel_epi64((__*m128i)dst, G);
 }
 
-func RescalerExportRowExpand_SSE2(const wrk *WebPRescaler) {
+func RescalerExportRowExpand_SSE2(/* const */ wrk *WebPRescaler) {
   int x_out;
   var dst *uint8 = wrk.dst;
   rescaler_t* const irow = wrk.irow;
@@ -277,7 +277,7 @@ func RescalerExportRowExpand_SSE2(const wrk *WebPRescaler) {
   }
 }
 
-func RescalerExportRowShrink_SSE2(const wrk *WebPRescaler) {
+func RescalerExportRowShrink_SSE2(/* const */ wrk *WebPRescaler) {
   int x_out;
   var dst *uint8 = wrk.dst;
   rescaler_t* const irow = wrk.irow;

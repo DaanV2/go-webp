@@ -107,7 +107,7 @@ extern const ChunkInfo kChunks[IDX_LAST_CHUNK];
 // Chunk object management.
 
 // Initialize.
-func ChunkInit(const chunk *WebPChunk);
+func ChunkInit(/* const */ chunk *WebPChunk);
 
 // Get chunk index from chunk tag. Returns IDX_UNKNOWN if not found.
 CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag);
@@ -116,10 +116,10 @@ CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag);
 WebPChunkId ChunkGetIdFromTag(uint32 tag);
 
 // Convert a fourcc string to a tag.
-uint32 ChunkGetTagFromFourCC(const byte fourcc[4]);
+uint32 ChunkGetTagFromFourCC(/* const */ byte fourcc[4]);
 
 // Get chunk index from fourcc. Returns IDX_UNKNOWN if given fourcc is unknown.
-CHUNK_INDEX ChunkGetIndexFromFourCC(const byte fourcc[4]);
+CHUNK_INDEX ChunkGetIndexFromFourCC(/* const */ byte fourcc[4]);
 
 // Search for nth chunk with given 'tag' in the chunk list.
 // nth = 0 means "last of the list".
@@ -130,18 +130,18 @@ WebPMuxError ChunkAssignData(chunk *WebPChunk, /*const*/ data *WebPData, int cop
 
 // Sets 'chunk' as the only element in 'chunk_list' if it is empty.
 // On success ownership is transferred from 'chunk' to the 'chunk_list'.
-WebPMuxError ChunkSetHead(const chunk *WebPChunk, *WebPChunk* const chunk_list);
+WebPMuxError ChunkSetHead(/* const */ chunk *WebPChunk, *WebPChunk* const chunk_list);
 // Sets 'chunk' at last position in the 'chunk_list'.
 // On success ownership is transferred from 'chunk' to the 'chunk_list'.
 // also points towards *chunk_list the last valid element of the initial
 // *chunk_list.
-WebPMuxError ChunkAppend(const chunk *WebPChunk, *WebPChunk** const chunk_list);
+WebPMuxError ChunkAppend(/* const */ chunk *WebPChunk, *WebPChunk** const chunk_list);
 
 // Releases chunk and returns chunk.next.
-ChunkRelease *WebPChunk(const chunk *WebPChunk);
+ChunkRelease *WebPChunk(/* const */ chunk *WebPChunk);
 
 // Deletes given chunk & returns chunk.next.
-ChunkDelete *WebPChunk(const chunk *WebPChunk);
+ChunkDelete *WebPChunk(/* const */ chunk *WebPChunk);
 
 // Deletes all chunks in the given chunk list.
 func ChunkListDelete(*WebPChunk* const chunk_list);
@@ -153,37 +153,37 @@ static  uint64 SizeWithPadding(uint64 chunk_size) {
 }
 
 // Size of a chunk including header and padding.
-static  uint64 ChunkDiskSize(const chunk *WebPChunk) {
+static  uint64 ChunkDiskSize(/* const */ chunk *WebPChunk) {
   data_size := chunk.data.size;
   return SizeWithPadding(data_size);
 }
 
 // Total size of a list of chunks.
-uint64 ChunkListDiskSize(const chunk_list *WebPChunk);
+uint64 ChunkListDiskSize(/* const */ chunk_list *WebPChunk);
 
 // Write out the given list of chunks into 'dst'.
-ChunkListEmit *uint8(const chunk_list *WebPChunk, dst *uint8);
+ChunkListEmit *uint8(/* const */ chunk_list *WebPChunk, dst *uint8);
 
 //------------------------------------------------------------------------------
 // MuxImage object management.
 
 // Initialize.
-func MuxImageInit(const wpi *WebPMuxImage);
+func MuxImageInit(/* const */ wpi *WebPMuxImage);
 
 // Releases image 'wpi' and returns wpi.next.
-MuxImageRelease *WebPMuxImage(const wpi *WebPMuxImage);
+MuxImageRelease *WebPMuxImage(/* const */ wpi *WebPMuxImage);
 
 // Delete image 'wpi' and return the next image in the list or nil.
 // 'wpi' can be nil.
-MuxImageDelete *WebPMuxImage(const wpi *WebPMuxImage);
+MuxImageDelete *WebPMuxImage(/* const */ wpi *WebPMuxImage);
 
 // Count number of images matching the given tag id in the 'wpi_list'.
 // If id == WEBP_CHUNK_NIL, all images will be matched.
-int MuxImageCount(const wpi_list *WebPMuxImage, WebPChunkId id);
+int MuxImageCount(/* const */ wpi_list *WebPMuxImage, WebPChunkId id);
 
 // Update width/height/has_alpha info from chunks within wpi.
 // Also remove ALPH chunk if not needed.
-int MuxImageFinalize(const wpi *WebPMuxImage);
+int MuxImageFinalize(/* const */ wpi *WebPMuxImage);
 
 // Check if given ID corresponds to an image related chunk.
 static  int IsWPI(WebPChunkId id) {
@@ -198,34 +198,34 @@ static  int IsWPI(WebPChunkId id) {
 }
 
 // Pushes 'wpi' at the end of 'wpi_list'.
-WebPMuxError MuxImagePush(const wpi *WebPMuxImage, *WebPMuxImage* wpi_list);
+WebPMuxError MuxImagePush(/* const */ wpi *WebPMuxImage, *WebPMuxImage* wpi_list);
 
 // Delete nth image in the image list.
 WebPMuxError MuxImageDeleteNth(*WebPMuxImage* wpi_list, uint32 nth);
 
 // Get nth image in the image list.
-WebPMuxError MuxImageGetNth(const *WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage* wpi);
+WebPMuxError MuxImageGetNth(/* const */ *WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage* wpi);
 
 // Total size of the given image.
-uint64 MuxImageDiskSize(const wpi *WebPMuxImage);
+uint64 MuxImageDiskSize(/* const */ wpi *WebPMuxImage);
 
 // Write out the given image into 'dst'.
-MuxImageEmit *uint8(const wpi *WebPMuxImage, dst *uint8);
+MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst *uint8);
 
 //------------------------------------------------------------------------------
 // Helper methods for mux.
 
 // Checks if the given image list contains at least one image with alpha.
-int MuxHasAlpha(const images *WebPMuxImage);
+int MuxHasAlpha(/* const */ images *WebPMuxImage);
 
 // Write out RIFF header into 'data', given total data size 'size'.
-MuxEmitRiffHeader *uint8(const data *uint8, size uint64 );
+MuxEmitRiffHeader *uint8(/* const */ data *uint8, size uint64 );
 
 // Returns the list where chunk with given ID is to be inserted in mux.
-*WebPChunk* MuxGetChunkListFromId(const mux *WebPMux, WebPChunkId id);
+*WebPChunk* MuxGetChunkListFromId(/* const */ mux *WebPMux, WebPChunkId id);
 
 // Validates the given mux object.
-WebPMuxError MuxValidate(const mux *WebPMux);
+WebPMuxError MuxValidate(/* const */ mux *WebPMux);
 
 //------------------------------------------------------------------------------
 

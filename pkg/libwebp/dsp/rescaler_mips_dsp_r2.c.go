@@ -29,7 +29,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
 // Row export
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
-func ExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
+func ExportRowShrink_MIPSdspR2(/* const */ wrk *WebPRescaler) {
   var i int
   x_out_max := wrk.dst_width * wrk.num_channels;
   dst *uint8 = wrk.dst;
@@ -158,7 +158,7 @@ func ExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
 }
 #endif  // 0
 
-func ExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
+func ExportRowExpand_MIPSdspR2(/* const */ wrk *WebPRescaler) {
   var i int
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;

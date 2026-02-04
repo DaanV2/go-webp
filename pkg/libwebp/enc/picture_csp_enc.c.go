@@ -40,7 +40,7 @@ const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 // Detection of non-trivial transparency
 
 // Returns true if alpha[] has non-0xff values.
-static int CheckNonOpaque(const alpha *uint8, int width, int height, int x_step, int y_step) {
+static int CheckNonOpaque(/* const */ alpha *uint8, int width, int height, int x_step, int y_step) {
   if (alpha == nil) { return 0; }
   WebPInitAlphaProcessing();
   if (x_step == 1) {
@@ -56,11 +56,11 @@ static int CheckNonOpaque(const alpha *uint8, int width, int height, int x_step,
 }
 
 // Checking for the presence of non-opaque alpha.
-int WebPPictureHasTransparency(const picture *WebPPicture) {
+int WebPPictureHasTransparency(/* const */ picture *WebPPicture) {
   if (picture == nil) { return 0; }
   if (picture.use_argb) {
     if (picture.argb != nil) {
-      return CheckNonOpaque((const *uint8)picture.argb + ALPHA_OFFSET, picture.width, picture.height, 4, picture.argb_stride * sizeof(*picture.argb));
+      return CheckNonOpaque((/* const */ *uint8)picture.argb + ALPHA_OFFSET, picture.width, picture.height, 4, picture.argb_stride * sizeof(*picture.argb));
     }
     return 0;
   }
@@ -77,7 +77,7 @@ static const kMinDimensionIterativeConversion := 4;
 //------------------------------------------------------------------------------
 // Main function
 
-static int PreprocessARGB(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, int rgb_stride, /*const*/ picture *WebPPicture) {
+static int PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, int rgb_stride, /*const*/ picture *WebPPicture) {
   ok := SharpYuvConvert(
       r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.y, picture.y_stride, picture.u, picture.uv_stride, picture.v, picture.uv_stride, /*yuv_bit_depth=*/8, picture.width, picture.height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
@@ -86,7 +86,7 @@ static int PreprocessARGB(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ 
   return ok;
 }
 
-static  func ConvertRowToY(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, /*const*/ dst_y *uint8, int width, /*const*/ rg *VP8Random) {
+static  func ConvertRowToY(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, /*const*/ dst_y *uint8, int width, /*const*/ rg *VP8Random) {
   int i, j;
   for i = 0, j = 0; i < width; i += 1, j += step {
     dst_y[i] =
@@ -94,7 +94,7 @@ static  func ConvertRowToY(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/
   }
 }
 
-static  func ConvertRowsToUV(const rgb *uint16, /*const*/ dst_u *uint8, /*const*/ dst_v *uint8, int width, /*const*/ rg *VP8Random) {
+static  func ConvertRowsToUV(/* const */ rgb *uint16, /*const*/ dst_u *uint8, /*const*/ dst_v *uint8, int width, /*const*/ rg *VP8Random) {
   var i int
   for i = 0; i < width; i += 1, rgb += 4 {
     r := rgb[0], g = rgb[1], b = rgb[2];
@@ -105,7 +105,7 @@ static  func ConvertRowsToUV(const rgb *uint16, /*const*/ dst_u *uint8, /*const*
 
 extern func SharpYuvInit(VP8CPUInfo cpu_info_func);
 
-static int ImportYUVAFromRGBA(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
+static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
                               int rgb_stride,  // bytes per scanline
                               float dithering, int use_iterative_conversion, /*const*/ picture *WebPPicture) {
   var y int
@@ -238,7 +238,7 @@ static int PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float 
   } else if ((colorspace & WEBP_CSP_UV_MASK) != WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   } else {
-    var argb *uint8 = (const *uint8)picture.argb;
+    var argb *uint8 = (/* const */ *uint8)picture.argb;
     var a *uint8 = argb + CHANNEL_OFFSET(0);
     var r *uint8 = argb + CHANNEL_OFFSET(1);
     var g *uint8 = argb + CHANNEL_OFFSET(2);
@@ -330,7 +330,7 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
 //------------------------------------------------------------------------------
 // automatic import / conversion
 
-static int Import(const picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride, int step, int swap_rb, int import_alpha) {
+static int Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride, int step, int swap_rb, int import_alpha) {
   var y int
   // swap_rb . b,g,r,a , !swap_rb . r,g,b,a
   var r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));
@@ -372,7 +372,7 @@ static int Import(const picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stri
         b_ptr += rgb_stride;
 #else
         // RGBA input order. Need to swap R and B.
-        VP8LConvertBGRAToRGBA((const *uint32)rgb, width, (*uint8)dst);
+        VP8LConvertBGRAToRGBA((/* const */ *uint32)rgb, width, (*uint8)dst);
 #endif
         rgb += rgb_stride;
         dst += picture.argb_stride;

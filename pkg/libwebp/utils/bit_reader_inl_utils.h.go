@@ -31,7 +31,7 @@ var kVP8Log2Range [128]uint8
 var kVP8NewRange [128]uint8
 
 // special case for the tail byte-reading
-func VP8LoadFinalBytes(const br *VP8BitReader);
+func VP8LoadFinalBytes(/* const */ br *VP8BitReader);
 
 //------------------------------------------------------------------------------
 // Inlined critical functions

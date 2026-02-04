@@ -99,7 +99,7 @@ func WebPRescalerImportRowShrink_C(WEBP_RESTRICT const wrk *WebPRescaler, /*cons
 //------------------------------------------------------------------------------
 // Row export
 
-func WebPRescalerExportRowExpand_C(const wrk *WebPRescaler) {
+func WebPRescalerExportRowExpand_C(/* const */ wrk *WebPRescaler) {
   int x_out;
   var dst *uint8 = wrk.dst;
   rescaler_t* const irow = wrk.irow;
@@ -127,7 +127,7 @@ func WebPRescalerExportRowExpand_C(const wrk *WebPRescaler) {
   }
 }
 
-func WebPRescalerExportRowShrink_C(const wrk *WebPRescaler) {
+func WebPRescalerExportRowShrink_C(/* const */ wrk *WebPRescaler) {
   int x_out;
   var dst *uint8 = wrk.dst;
   rescaler_t* const irow = wrk.irow;
@@ -169,7 +169,7 @@ func WebPRescalerImportRow(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEBP
   }
 }
 
-func WebPRescalerExportRow(const wrk *WebPRescaler) {
+func WebPRescalerExportRow(/* const */ wrk *WebPRescaler) {
   if (wrk.y_accum <= 0) {
     assert.Assert(!WebPRescalerOutputDone(wrk));
     if (wrk.y_expand) {

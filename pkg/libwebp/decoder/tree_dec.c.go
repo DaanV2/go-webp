@@ -56,7 +56,7 @@ func VP8ResetProba(/* const */ proba *VP8Proba) {
   // proba.bands[][] is initialized later
 }
 
-func ParseIntraMode(const br *VP8BitReader, /*const*/ dec *VP8Decoder, int mb_x) {
+func ParseIntraMode(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder, int mb_x) {
   var top *uint8 = dec.intra_t + 4 * mb_x;
   var left *uint8 = dec.intra_l;
   var block *VP8MBData = dec.mb_data + mb_x;
@@ -132,7 +132,7 @@ func ParseIntraMode(const br *VP8BitReader, /*const*/ dec *VP8Decoder, int mb_x)
                                                          : H_PRED;
 }
 
-int VP8ParseIntraModeRow(const br *VP8BitReader, /*const*/ dec *VP8Decoder) {
+int VP8ParseIntraModeRow(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder) {
   var mb_x int
   for mb_x = 0; mb_x < dec.mb_w; mb_x++ {
     ParseIntraMode(br, dec, mb_x);
@@ -153,7 +153,7 @@ static const uint8 kBands[16 + 1] = {
     0, 1, 2, 3, 6, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7, 0  // extra entry as sentinel
 }
 
-func VP8ParseProba(const br *VP8BitReader, /*const*/ dec *VP8Decoder) {
+func VP8ParseProba(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder) {
   var proba *VP8Proba = &dec.proba;
   var t, b, c, p int
   for t = 0; t < NUM_TYPES; t++ {

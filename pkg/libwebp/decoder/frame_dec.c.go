@@ -46,7 +46,7 @@ static int CheckMode(mb_x int, mb_y int, mode int) {
   return mode;
 }
 
-func Copy32b(const dst *uint8, /*const*/ src *uint8) {
+func Copy32b(/* const */ dst *uint8, /*const*/ src *uint8) {
   stdlib.MemCpy(dst, src, 4);
 }
 
@@ -76,7 +76,7 @@ func DoUVTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
   }
 }
 
-func ReconstructRow(const dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext) {
+func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext) {
   var j int
   mb_x int;
   mb_y := ctx.mb_y;
@@ -257,7 +257,7 @@ func DoFilter(/* const */ dec *VP8Decoder, mb_x int, mb_y int) {
 }
 
 // Filter the decoded macroblock row (if needed)
-func FilterRow(const dec *VP8Decoder) {
+func FilterRow(/* const */ dec *VP8Decoder) {
   mb_x int;
   mb_y := dec.thread_ctx.mb_y;
   assert.Assert(dec.thread_ctx.filter_row);
@@ -269,12 +269,12 @@ func FilterRow(const dec *VP8Decoder) {
 //------------------------------------------------------------------------------
 // Precompute the filtering strength for each segment and each i4x4/i16x16 mode.
 
-func PrecomputeFilterStrengths(const dec *VP8Decoder) {
+func PrecomputeFilterStrengths(/* const */ dec *VP8Decoder) {
   if (dec.filter_type > 0) {
     var s int
     var hdr *VP8FilterHeader = &dec.filter_hdr;
     for s = 0; s < NUM_MB_SEGMENTS; s++ {
-      int i4x4;
+      var i4x4 int;
       // First, compute the initial level
       base_level int;
       if (dec.segment_hdr.use_segment) {
@@ -332,7 +332,7 @@ static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
     8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1}
 
 // Initialize dithering post-process if needed.
-func VP8InitDithering(const options *WebPDecoderOptions, /*const*/ dec *VP8Decoder) {
+func VP8InitDithering(/* const */ options *WebPDecoderOptions, /*const*/ dec *VP8Decoder) {
   assert.Assert(dec != nil);
   if (options != nil) {
     d := options.dithering_strength;
@@ -365,7 +365,7 @@ func VP8InitDithering(const options *WebPDecoderOptions, /*const*/ dec *VP8Decod
 }
 
 // Convert to range: [-2,2] for dither=50, [-4,4] for dither=100
-func Dither8x8(const rg *VP8Random, dst *uint8, bps int, amp int) {
+func Dither8x8(/* const */ rg *VP8Random, dst *uint8, bps int, amp int) {
   uint8 dither[64];
   var i int
   for i = 0; i < 8 * 8; i++ {
@@ -374,7 +374,7 @@ func Dither8x8(const rg *VP8Random, dst *uint8, bps int, amp int) {
   VP8DitherCombine8x8(dither, dst, bps);
 }
 
-func DitherRow(const dec *VP8Decoder) {
+func DitherRow(/* const */ dec *VP8Decoder) {
   mb_x int;
   assert.Assert(dec.dither);
   for mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; mb_x++ {
@@ -504,7 +504,7 @@ static int FinishRow(arg *void1, arg *void2) {
 //------------------------------------------------------------------------------
 
 // Process the last decoded row (filtering + output).
-int VP8ProcessRow(const dec *VP8Decoder, /*const*/ io *VP8Io) {
+int VP8ProcessRow(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
   ok := 1;
   var ctx *VP8ThreadContext = &dec.thread_ctx;
   filter_row := (dec.filter_type > 0) &&
@@ -555,7 +555,7 @@ int VP8ProcessRow(const dec *VP8Decoder, /*const*/ io *VP8Io) {
 // After this call returns, one must always call VP8ExitCritical() with the
 // same parameters. Both functions should be used in pair. Returns VP8_STATUS_OK
 // if ok, otherwise sets and returns the error status on *dec.
-VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, /*const*/ io *VP8Io) {
+VP8StatusCode VP8EnterCritical(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
   // Call setup() first. This may trigger additional decoding features on 'io'.
   // Note: Afterward, we must call teardown() no matter what.
   if (io.setup != nil && !io.setup(io)) {
@@ -609,7 +609,7 @@ VP8StatusCode VP8EnterCritical(const dec *VP8Decoder, /*const*/ io *VP8Io) {
 
 // Must always be called in pair with VP8EnterCritical().
 // Returns false in case of error.
-int VP8ExitCritical(const dec *VP8Decoder, /*const*/ io *VP8Io) {
+int VP8ExitCritical(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
   ok := 1;
   if (dec.mt_method > 0) {
     ok = WebPGetWorkerInterface().Sync(&dec.worker);
@@ -649,7 +649,7 @@ const MT_CACHE_LINES =3
 const ST_CACHE_LINES =1  // 1 cache row only for single-threaded case
 
 // Initialize multi/single-thread worker
-static int InitThreadContext(const dec *VP8Decoder) {
+static int InitThreadContext(/* const */ dec *VP8Decoder) {
   dec.cache_id = 0;
   if (dec.mt_method > 0) {
     var worker *WebPWorker = &dec.worker;
@@ -669,7 +669,7 @@ static int InitThreadContext(const dec *VP8Decoder) {
 
 // Return the multi-threading method to use (0=off), depending
 // on options and bitstream size. Only for lossy decoding.
-int VP8GetThreadMethod(const options *WebPDecoderOptions, /*const*/ headers *WebPHeaderStructure, width int, height int) {
+int VP8GetThreadMethod(/* const */ options *WebPDecoderOptions, /*const*/ headers *WebPHeaderStructure, width int, height int) {
   if (options == nil || options.use_threads == 0) {
     return 0;
   }
@@ -689,7 +689,7 @@ int VP8GetThreadMethod(const options *WebPDecoderOptions, /*const*/ headers *Web
 //------------------------------------------------------------------------------
 // Memory setup
 
-static int AllocateMemory(const dec *VP8Decoder) {
+static int AllocateMemory(/* const */ dec *VP8Decoder) {
   num_caches := dec.num_caches;
   mb_w := dec.mb_w;
   // Note: we use 'uint64' when there's no overflow risk, uint64 otherwise.
@@ -792,7 +792,7 @@ static int AllocateMemory(const dec *VP8Decoder) {
   return 1;
 }
 
-func InitIo(const dec *VP8Decoder, io *VP8Io) {
+func InitIo(/* const */ dec *VP8Decoder, io *VP8Io) {
   // prepare 'io'
   io.mb_y = 0;
   io.y = dec.cache_y;
@@ -803,7 +803,7 @@ func InitIo(const dec *VP8Decoder, io *VP8Io) {
   io.a = nil;
 }
 
-int VP8InitFrame(const dec *VP8Decoder, /*const*/ io *VP8Io) {
+int VP8InitFrame(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
   if !InitThreadContext(dec) {
     return 0  // call first. Sets dec.num_caches.
 }

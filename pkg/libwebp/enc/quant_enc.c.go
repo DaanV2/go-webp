@@ -58,7 +58,7 @@ const RD_DISTO_MULT =256  // distortion multiplier (equivalent of lambda)
 import "github.com/daanv2/go-webp/pkg/stdio"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 
-func PrintBlockInfo(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
+func PrintBlockInfo(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   int i, j;
   is_i16 = (it.mb.type :== 1);
   var y_in *uint8 = it.yuv_in + Y_OFF_ENC;
@@ -154,7 +154,7 @@ static const uint8 kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90, 60, 90
 // Initialize quantization parameters in VP8Matrix
 
 // Returns the average quantizer
-static int ExpandMatrix(const m *VP8Matrix, int type) {
+static int ExpandMatrix(/* const */ m *VP8Matrix, int type) {
   int i, sum;
   for i = 0; i < 2; i++ {
     is_ac_coeff := (i > 0);
@@ -183,7 +183,7 @@ static int ExpandMatrix(const m *VP8Matrix, int type) {
   return (sum + 8) >> 4;
 }
 
-func CheckLambdaValue(const v *int) {
+func CheckLambdaValue(/* const */ v *int) {
   if (*v < 1) *v = 1;
 }
 
@@ -241,7 +241,7 @@ func SetupMatrices(enc *VP8Encoder) {
 // save a little decoding-CPU by turning filtering off for these.
 const FSTRENGTH_CUTOFF =2
 
-func SetupFilterStrength(const enc *VP8Encoder) {
+func SetupFilterStrength(/* const */ enc *VP8Encoder) {
   var i int
   // level0 is in [0..500]. Using '-f 50' as filter_strength is mid-filtering.
   level0 := 5 * enc.config.filter_strength;
@@ -302,11 +302,11 @@ static double QualityToJPEGCompression(double c, double alpha) {
   return v;
 }
 
-static int SegmentsAreEquivalent(const S *VP8SegmentInfo1, /*const*/ S *VP8SegmentInfo2) {
+static int SegmentsAreEquivalent(/* const */ S *VP8SegmentInfo1, /*const*/ S *VP8SegmentInfo2) {
   return (S1.quant == S2.quant) && (S1.fstrength == S2.fstrength);
 }
 
-func SimplifySegments(const enc *VP8Encoder) {
+func SimplifySegments(/* const */ enc *VP8Encoder) {
   int map[NUM_MB_SEGMENTS] = {0, 1, 2, 3}
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
   // explicit check is needed to afunc a spurious warning about 'i' exceeding
@@ -347,7 +347,7 @@ func SimplifySegments(const enc *VP8Encoder) {
 }
 
 // Sets up segment's quantization values, 'base_quant' and filter strengths.
-func VP8SetSegmentParams(const enc *VP8Encoder, float quality) {
+func VP8SetSegmentParams(/* const */ enc *VP8Encoder, float quality) {
   var i int
   int dq_uv_ac, dq_uv_dc;
   num_segments := enc.segment_hdr.num_segments;
@@ -414,14 +414,14 @@ const VP8I4ModeOffsets = [NUM_BMODES]uint16{
     I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4}
 
 	//Form all the four Intra16x16 predictions in the 'yuv_p' cache
-func VP8MakeLuma16Preds(const it *VP8EncIterator) {
+func VP8MakeLuma16Preds(/* const */ it *VP8EncIterator) {
   var left *uint8 = it.x ? it.y_left : nil;
   var top *uint8 = it.y ? it.y_top : nil;
   VP8EncPredLuma16(it.yuv_p, left, top);
 }
 
 // Form all the four Chroma8x8 predictions in the 'yuv_p' cache
-func VP8MakeChroma8Preds(const it *VP8EncIterator) {
+func VP8MakeChroma8Preds(/* const */ it *VP8EncIterator) {
   var left *uint8 = it.x ? it.u_left : nil;
   var top *uint8 = it.y ? it.uv_top : nil;
   VP8EncPredChroma8(it.yuv_p, left, top);
@@ -429,7 +429,7 @@ func VP8MakeChroma8Preds(const it *VP8EncIterator) {
 
 // Form all the ten Intra4x4 predictions in the 'yuv_p' cache
 // for the 4x4 block it.i4
-func MakeIntra4Preds(const it *VP8EncIterator) {
+func MakeIntra4Preds(/* const */ it *VP8EncIterator) {
   VP8EncPredLuma4(it.yuv_p, it.i4_top);
 }
 
@@ -468,7 +468,7 @@ static const uint16 kWeightTrellis[16] = {
 }
 
 // Init/Copy the common fields in score.
-func InitScore(const rd *VP8ModeScore) {
+func InitScore(/* const */ rd *VP8ModeScore) {
   rd.D = 0;
   rd.SD = 0;
   rd.R = 0;
@@ -531,7 +531,7 @@ static  score_t RDScoreTrellis(int lambda, score_t rate, score_t distortion) {
 // Coefficient type.
 enum { TYPE_I16_AC = 0, TYPE_I16_DC = 1, TYPE_CHROMA_A = 2, TYPE_I4_AC = 3 }
 
-static int TrellisQuantizeBlock(const WEBP_RESTRICT const enc *VP8Encoder, int16 in[16], int16 out[16], int ctx0, int coeff_type, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, int lambda) {
+static int TrellisQuantizeBlock(/* const */ WEBP_RESTRICT const enc *VP8Encoder, int16 in[16], int16 out[16], int ctx0, int coeff_type, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, int lambda) {
   var probas *ProbaArray = enc.proba.coeffs[coeff_type];
   CostArrayPtr const costs =
       (CostArrayPtr)enc.proba.remapped_costs[coeff_type];
@@ -804,7 +804,7 @@ static int QuantizeSingle(WEBP_RESTRICT const v *int16, /*const*/ WEBP_RESTRICT 
   return (sign ? -V : V) >> DSCALE;
 }
 
-func CorrectDCValues(const WEBP_RESTRICT const it *VP8EncIterator, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, int16 tmp[][16], WEBP_RESTRICT const rd *VP8ModeScore) {
+func CorrectDCValues(/* const */ WEBP_RESTRICT const it *VP8EncIterator, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, int16 tmp[][16], WEBP_RESTRICT const rd *VP8ModeScore) {
   //         | top[0] | top[1]
   // --------+--------+---------
   // left[0] | tmp[0]   tmp[1]  <.   err0 err1
@@ -897,7 +897,7 @@ static int ReconstructUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT c
 // RD-opt decision. Reconstruct each modes, evalue distortion and bit-cost.
 // Pick the mode is lower RD-cost = Rate + lambda * Distortion.
 
-func StoreMaxDelta(const dqm *VP8SegmentInfo, /*const*/ int16 DCs[16]) {
+func StoreMaxDelta(/* const */ dqm *VP8SegmentInfo, /*const*/ int16 DCs[16]) {
   // We look at the first three AC coefficients to determine what is the average
   // delta between each sub-4x4 block.
   v0 := abs(DCs[1]);
@@ -920,7 +920,7 @@ func SwapPtr(*uint8* a, *uint8* b) {
   *b = tmp;
 }
 
-func SwapOut(const it *VP8EncIterator) {
+func SwapOut(/* const */ it *VP8EncIterator) {
   SwapPtr(&it.yuv_out, &it.yuv_out2);
 }
 

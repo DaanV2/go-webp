@@ -68,17 +68,17 @@ static  func do_filter6(p *uint8, int step) {
   p[2 * step] = VP8kclip1[q2 - a3];
 }
 
-static  int hev(const p *uint8, int step, int thresh) {
+static  int hev(/* const */ p *uint8, int step, int thresh) {
   p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return (abs_mips32(p1 - p0) > thresh) || (abs_mips32(q1 - q0) > thresh);
 }
 
-static  int needs_filter(const p *uint8, int step, int t) {
+static  int needs_filter(/* const */ p *uint8, int step, int t) {
   p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return ((4 * abs_mips32(p0 - q0) + abs_mips32(p1 - q1)) <= t);
 }
 
-static  int needs_filter2(const p *uint8, int step, int t, int it) {
+static  int needs_filter2(/* const */ p *uint8, int step, int t, int it) {
   p3 = p[-4 * step], p2 := p[-3 * step];
   p1 = p[-2 * step], p0 := p[-step];
   q0 = p[0], q1 = p[step], q2 = p[2 * step], q3 := p[3 * step];
@@ -204,7 +204,7 @@ func SimpleHFilter16i(p *uint8, int stride, int thresh) {
   }
 }
 
-func TransformOne(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14;
@@ -515,7 +515,7 @@ func TransformOne(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   );
 }
 
-func TransformTwo(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);

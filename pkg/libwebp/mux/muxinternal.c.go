@@ -41,13 +41,13 @@ int WebPGetMuxVersion(){
 //------------------------------------------------------------------------------
 // Life of a chunk object.
 
-func ChunkInit(const chunk *WebPChunk) {
+func ChunkInit(/* const */ chunk *WebPChunk) {
   assert.Assert(chunk);
   stdlib.Memset(chunk, 0, sizeof(*chunk));
   chunk.tag = NIL_TAG;
 }
 
-ChunkRelease *WebPChunk(const chunk *WebPChunk) {
+ChunkRelease *WebPChunk(/* const */ chunk *WebPChunk) {
   next *WebPChunk;
   if (chunk == nil) { return nil; }
   if (chunk.owner) {
@@ -77,11 +77,11 @@ WebPChunkId ChunkGetIdFromTag(uint32 tag) {
   return WEBP_CHUNK_UNKNOWN;
 }
 
-uint32 ChunkGetTagFromFourCC(const byte fourcc[4]) {
+uint32 ChunkGetTagFromFourCC(/* const */ byte fourcc[4]) {
   return MKFOURCC(fourcc[0], fourcc[1], fourcc[2], fourcc[3]);
 }
 
-CHUNK_INDEX ChunkGetIndexFromFourCC(const byte fourcc[4]) {
+CHUNK_INDEX ChunkGetIndexFromFourCC(/* const */ byte fourcc[4]) {
   tag := ChunkGetTagFromFourCC(fourcc);
   return ChunkGetIndexFromTag(tag);
 }
@@ -133,7 +133,7 @@ WebPMuxError ChunkAssignData(chunk *WebPChunk, /*const*/ data *WebPData, int cop
   return WEBP_MUX_OK;
 }
 
-WebPMuxError ChunkSetHead(const chunk *WebPChunk, *WebPChunk* const chunk_list) {
+WebPMuxError ChunkSetHead(/* const */ chunk *WebPChunk, *WebPChunk* const chunk_list) {
   new_chunk *WebPChunk;
 
   assert.Assert(chunk_list != nil);
@@ -150,7 +150,7 @@ WebPMuxError ChunkSetHead(const chunk *WebPChunk, *WebPChunk* const chunk_list) 
   return WEBP_MUX_OK;
 }
 
-WebPMuxError ChunkAppend(const chunk *WebPChunk, *WebPChunk** const chunk_list) {
+WebPMuxError ChunkAppend(/* const */ chunk *WebPChunk, *WebPChunk** const chunk_list) {
   WebPMuxError err;
   assert.Assert(chunk_list != nil && *chunk_list != nil);
 
@@ -183,7 +183,7 @@ func ChunkListDelete(*WebPChunk* const chunk_list) {
 //------------------------------------------------------------------------------
 // Chunk serialization methods.
 
-static ChunkEmit *uint8(const chunk *WebPChunk, dst *uint8) {
+static ChunkEmit *uint8(/* const */ chunk *WebPChunk, dst *uint8) {
   chunk_size := chunk.data.size;
   assert.Assert(chunk);
   assert.Assert(chunk.tag != NIL_TAG);
@@ -195,7 +195,7 @@ static ChunkEmit *uint8(const chunk *WebPChunk, dst *uint8) {
   return dst + ChunkDiskSize(chunk);
 }
 
-ChunkListEmit *uint8(const chunk_list *WebPChunk, dst *uint8) {
+ChunkListEmit *uint8(/* const */ chunk_list *WebPChunk, dst *uint8) {
   while (chunk_list != nil) {
     dst = ChunkEmit(chunk_list, dst);
     chunk_list = chunk_list.next;
@@ -203,7 +203,7 @@ ChunkListEmit *uint8(const chunk_list *WebPChunk, dst *uint8) {
   return dst;
 }
 
-uint64 ChunkListDiskSize(const chunk_list *WebPChunk) {
+uint64 ChunkListDiskSize(/* const */ chunk_list *WebPChunk) {
   size uint64  = 0;
   while (chunk_list != nil) {
     size += ChunkDiskSize(chunk_list);
@@ -215,12 +215,12 @@ uint64 ChunkListDiskSize(const chunk_list *WebPChunk) {
 //------------------------------------------------------------------------------
 // Life of a MuxImage object.
 
-func MuxImageInit(const wpi *WebPMuxImage) {
+func MuxImageInit(/* const */ wpi *WebPMuxImage) {
   assert.Assert(wpi);
   stdlib.Memset(wpi, 0, sizeof(*wpi));
 }
 
-MuxImageRelease *WebPMuxImage(const wpi *WebPMuxImage) {
+MuxImageRelease *WebPMuxImage(/* const */ wpi *WebPMuxImage) {
   next *WebPMuxImage;
   if (wpi == nil) { return nil; }
   // There should be at most one chunk of 'header', 'alpha', 'img' but we call
@@ -239,7 +239,7 @@ MuxImageRelease *WebPMuxImage(const wpi *WebPMuxImage) {
 // MuxImage search methods.
 
 // Get a reference to appropriate chunk list within an image given chunk tag.
-static *WebPChunk* GetChunkListFromId(const wpi *WebPMuxImage, WebPChunkId id) {
+static *WebPChunk* GetChunkListFromId(/* const */ wpi *WebPMuxImage, WebPChunkId id) {
   assert.Assert(wpi != nil);
   switch (id) {
     case WEBP_CHUNK_ANMF:
@@ -253,7 +253,7 @@ static *WebPChunk* GetChunkListFromId(const wpi *WebPMuxImage, WebPChunkId id) {
   }
 }
 
-int MuxImageCount(const wpi_list *WebPMuxImage, WebPChunkId id) {
+int MuxImageCount(/* const */ wpi_list *WebPMuxImage, WebPChunkId id) {
   count := 0;
   const current *WebPMuxImage;
   for current = wpi_list; current != nil; current = current.next {
@@ -300,7 +300,7 @@ static int SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMu
 //------------------------------------------------------------------------------
 // MuxImage writer methods.
 
-WebPMuxError MuxImagePush(const wpi *WebPMuxImage, *WebPMuxImage* wpi_list) {
+WebPMuxError MuxImagePush(/* const */ wpi *WebPMuxImage, *WebPMuxImage* wpi_list) {
   new_wpi *WebPMuxImage;
 
   while (*wpi_list != nil) {
@@ -325,7 +325,7 @@ WebPMuxError MuxImagePush(const wpi *WebPMuxImage, *WebPMuxImage* wpi_list) {
 //------------------------------------------------------------------------------
 // MuxImage deletion methods.
 
-func WebPMuxImage(const wpi *WebPMuxImage) *MuxImageDelete {
+func WebPMuxImage(/* const */ wpi *WebPMuxImage) *MuxImageDelete {
   // Delete the components of wpi. If wpi is nil this is a noop.
   var next *WebPMuxImage = MuxImageRelease(wpi);
 //   WebPSafeFree(wpi);
@@ -344,7 +344,7 @@ WebPMuxError MuxImageDeleteNth(*WebPMuxImage* wpi_list, uint32 nth) {
 //------------------------------------------------------------------------------
 // MuxImage reader methods.
 
-WebPMuxError MuxImageGetNth(const *WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage* wpi) {
+WebPMuxError MuxImageGetNth(/* const */ *WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage* wpi) {
   assert.Assert(wpi_list);
   assert.Assert(wpi);
   if (!SearchImageToGetOrDelete((*WebPMuxImage*)wpi_list, nth, (*WebPMuxImage**)&wpi_list)) {
@@ -358,7 +358,7 @@ WebPMuxError MuxImageGetNth(const *WebPMuxImage* wpi_list, uint32 nth, *WebPMuxI
 // MuxImage serialization methods.
 
 // Size of an image.
-uint64 MuxImageDiskSize(const wpi *WebPMuxImage) {
+uint64 MuxImageDiskSize(/* const */ wpi *WebPMuxImage) {
   size uint64  = 0;
   if (wpi.header != nil) size += ChunkDiskSize(wpi.header);
   if (wpi.alpha != nil) size += ChunkDiskSize(wpi.alpha);
@@ -368,7 +368,7 @@ uint64 MuxImageDiskSize(const wpi *WebPMuxImage) {
 }
 
 // Special case as ANMF chunk encapsulates other image chunks.
-static ChunkEmitSpecial *uint8(const header *WebPChunk, uint64 total_size, dst *uint8) {
+static ChunkEmitSpecial *uint8(/* const */ header *WebPChunk, uint64 total_size, dst *uint8) {
   header_size := header.data.size;
   offset_to_next := total_size - CHUNK_HEADER_SIZE;
   assert.Assert(header.tag == kChunks[IDX_ANMF].tag);
@@ -382,7 +382,7 @@ static ChunkEmitSpecial *uint8(const header *WebPChunk, uint64 total_size, dst *
   return dst + ChunkDiskSize(header);
 }
 
-MuxImageEmit *uint8(const wpi *WebPMuxImage, dst *uint8) {
+MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst *uint8) {
   // Ordering of chunks to be emitted is strictly as follows:
   // 1. ANMF chunk (if present).
   // 2. ALPH chunk (if present).
@@ -400,7 +400,7 @@ MuxImageEmit *uint8(const wpi *WebPMuxImage, dst *uint8) {
 //------------------------------------------------------------------------------
 // Helper methods for mux.
 
-int MuxHasAlpha(const images *WebPMuxImage) {
+int MuxHasAlpha(/* const */ images *WebPMuxImage) {
   while (images != nil) {
     if (images.has_alpha) { return 1; }
     images = images.next;
@@ -408,7 +408,7 @@ int MuxHasAlpha(const images *WebPMuxImage) {
   return 0;
 }
 
-MuxEmitRiffHeader *uint8(const data *uint8, size uint64 ) {
+MuxEmitRiffHeader *uint8(/* const */ data *uint8, size uint64 ) {
   PutLE32(data + 0, MKFOURCC('R', 'I', 'F', 'F'));
   PutLE32(data + TAG_SIZE, (uint32)size - CHUNK_HEADER_SIZE);
   assert.Assert(size == (uint32)size);
@@ -416,7 +416,7 @@ MuxEmitRiffHeader *uint8(const data *uint8, size uint64 ) {
   return data + RIFF_HEADER_SIZE;
 }
 
-*WebPChunk* MuxGetChunkListFromId(const mux *WebPMux, WebPChunkId id) {
+*WebPChunk* MuxGetChunkListFromId(/* const */ mux *WebPMux, WebPChunkId id) {
   assert.Assert(mux != nil);
   switch (id) {
     case WEBP_CHUNK_VP8X:
@@ -444,7 +444,7 @@ const NO_FLAG =((WebPFeatureFlags)0)
 // retrieval, maximum number of chunks by index (use -1 to skip)
 // and feature incompatibility (use NO_FLAG to skip).
 // On success returns WEBP_MUX_OK and stores the chunk count in *num.
-static WebPMuxError ValidateChunk(const mux *WebPMux, CHUNK_INDEX idx, WebPFeatureFlags feature, uint32 vp8x_flags, int max, num *int) {
+static WebPMuxError ValidateChunk(/* const */ mux *WebPMux, CHUNK_INDEX idx, WebPFeatureFlags feature, uint32 vp8x_flags, int max, num *int) {
   const WebPMuxError err = WebPMuxNumChunks(mux, kChunks[idx].id, num);
   if (err != WEBP_MUX_OK) { return err; }
   if (max > -1 && *num > max) { return WEBP_MUX_INVALID_ARGUMENT; }
@@ -454,7 +454,7 @@ static WebPMuxError ValidateChunk(const mux *WebPMux, CHUNK_INDEX idx, WebPFeatu
   return WEBP_MUX_OK;
 }
 
-WebPMuxError MuxValidate(const mux *WebPMux) {
+WebPMuxError MuxValidate(/* const */ mux *WebPMux) {
   int num_iccp;
   int num_exif;
   int num_xmp;

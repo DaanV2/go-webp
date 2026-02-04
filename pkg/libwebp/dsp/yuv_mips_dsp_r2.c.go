@@ -74,7 +74,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 // clang-format off
 #define ROW_FUNC(FUNC_NAME, XSTEP, R, G, B, A)                                 \
-  func FUNC_NAME(const WEBP_RESTRICT y *uint8,                        \
+  func FUNC_NAME(/* const */ WEBP_RESTRICT y *uint8,                        \
                         const WEBP_RESTRICT u *uint8,                        \
                         const WEBP_RESTRICT v *uint8,                        \
                         WEBP_RESTRICT dst *uint8, int len) {                 \

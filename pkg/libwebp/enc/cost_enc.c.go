@@ -49,7 +49,7 @@ static int VariableLevelCost(level int, /*const*/ uint8 probas[NUM_PROBAS]) {
 //------------------------------------------------------------------------------
 // Pre-calc level costs once for all
 
-func VP8CalculateLevelCosts(const proba *VP8EncProba) {
+func VP8CalculateLevelCosts(/* const */ proba *VP8EncProba) {
   int ctype, band, ctx;
 
   if (!proba.dirty) return;  // nothing to do.
@@ -106,7 +106,7 @@ func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*con
 //------------------------------------------------------------------------------
 // Mode costs
 
-int VP8GetCostLuma4(const it *VP8EncIterator, /*const*/ int16 levels[16]) {
+int VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ int16 levels[16]) {
   x := (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
@@ -120,7 +120,7 @@ int VP8GetCostLuma4(const it *VP8EncIterator, /*const*/ int16 levels[16]) {
   return R;
 }
 
-int VP8GetCostLuma16(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
+int VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   int x, y;
@@ -146,7 +146,7 @@ int VP8GetCostLuma16(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   return R;
 }
 
-int VP8GetCostUV(const it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
+int VP8GetCostUV(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   int ch, x, y;

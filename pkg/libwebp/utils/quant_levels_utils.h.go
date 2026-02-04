@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // quantized values. If not nil, 'sse' will contain the sum of squared error.
 // Valid range for 'num_levels' is [2, 256].
 // Returns false in case of error (data is nil, or parameters are invalid).
-int QuantizeLevels(const  *uint8((uint64)height *width) data, int width, int height, int num_levels, /*const*/ sse *uint64);
+int QuantizeLevels(/* const */  *uint8((uint64)height *width) data, int width, int height, int num_levels, /*const*/ sse *uint64);
 
 
 

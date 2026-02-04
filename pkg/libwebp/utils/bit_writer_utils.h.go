@@ -38,30 +38,30 @@ type VP8BitWriter struct {
 }
 
 // Initialize the object. Allocates some initial memory based on expected_size.
-int VP8BitWriterInit(const bw *VP8BitWriter, uint64 expected_size);
+int VP8BitWriterInit(/* const */ bw *VP8BitWriter, uint64 expected_size);
 // Finalize the bitstream coding. Returns a pointer to the internal buffer.
-VP *uint88BitWriterFinish(const bw *VP8BitWriter);
+VP *uint88BitWriterFinish(/* const */ bw *VP8BitWriter);
 
-int VP8PutBit(const bw *VP8BitWriter, int bit, int prob);
-int VP8PutBitUniform(const bw *VP8BitWriter, int bit);
-func VP8PutBits(const bw *VP8BitWriter, uint32 value, int nb_bits);
-func VP8PutSignedBits(const bw *VP8BitWriter, value int, int nb_bits);
+int VP8PutBit(/* const */ bw *VP8BitWriter, int bit, int prob);
+int VP8PutBitUniform(/* const */ bw *VP8BitWriter, int bit);
+func VP8PutBits(/* const */ bw *VP8BitWriter, uint32 value, int nb_bits);
+func VP8PutSignedBits(/* const */ bw *VP8BitWriter, value int, int nb_bits);
 
 // Appends some bytes to the internal buffer. Data is copied.
-int VP8BitWriterAppend(const bw *VP8BitWriter, /*const*/ data *uint8, size uint64 );
+int VP8BitWriterAppend(/* const */ bw *VP8BitWriter, /*const*/ data *uint8, size uint64 );
 
 // return approximate write position (in bits)
-static  uint64 VP8BitWriterPos(const bw *VP8BitWriter) {
+static  uint64 VP8BitWriterPos(/* const */ bw *VP8BitWriter) {
   nb_bits := 8 + bw.nb_bits;  // bw.nb_bits is <= 0, note
   return (bw.pos + bw.run) * 8 + nb_bits;
 }
 
 // Returns a pointer to the internal buffer.
-static  VP *uint88BitWriterBuf(const bw *VP8BitWriter) {
+static  VP *uint88BitWriterBuf(/* const */ bw *VP8BitWriter) {
   return bw.buf;
 }
 // Returns the size of the internal buffer.
-static  uint64 VP8BitWriterSize(const bw *VP8BitWriter) {
+static  uint64 VP8BitWriterSize(/* const */ bw *VP8BitWriter) {
   return bw.pos;
 }
 
@@ -99,28 +99,28 @@ type VP8LBitWriter struct {
   int error;
 } ;
 
-static  uint64 VP8LBitWriterNumBytes(const bw *VP8LBitWriter) {
+static  uint64 VP8LBitWriterNumBytes(/* const */ bw *VP8LBitWriter) {
   return (bw.cur - bw.buf) + ((bw.used + 7) >> 3);
 }
 
 // Returns false in case of memory allocation error.
-int VP8LBitWriterInit(const bw *VP8LBitWriter, uint64 expected_size);
+int VP8LBitWriterInit(/* const */ bw *VP8LBitWriter, uint64 expected_size);
 // Returns false in case of memory allocation error.
-int VP8LBitWriterClone(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter);
+int VP8LBitWriterClone(/* const */ src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter);
 // Finalize the bitstream coding. Returns a pointer to the internal buffer.
-VP *uint88LBitWriterFinish(const bw *VP8LBitWriter);
+VP *uint88LBitWriterFinish(/* const */ bw *VP8LBitWriter);
 // Resets the cursor of the BitWriter bw to when it was like in bw_init.
-func VP8LBitWriterReset(const bw_init *VP8LBitWriter, /*const*/ bw *VP8LBitWriter);
+func VP8LBitWriterReset(/* const */ bw_init *VP8LBitWriter, /*const*/ bw *VP8LBitWriter);
 // Swaps the memory held by two BitWriters.
-func VP8LBitWriterSwap(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter);
+func VP8LBitWriterSwap(/* const */ src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter);
 
 // Internal function for VP8LPutBits flushing VP8L_WRITER_BITS bits from the
 // written state.
-func VP8LPutBitsFlushBits(const bw *VP8LBitWriter, used *int, vp8l_atype_t* bits);
+func VP8LPutBitsFlushBits(/* const */ bw *VP8LBitWriter, used *int, vp8l_atype_t* bits);
 
 #if VP8L_WRITER_BITS == 16
 // PutBits internal function used in the 16 bit vp8l_wtype_t case.
-func VP8LPutBitsInternal(const bw *VP8LBitWriter, bits uint32, int n_bits);
+func VP8LPutBitsInternal(/* const */ bw *VP8LBitWriter, bits uint32, int n_bits);
 #endif
 
 // This function writes bits into bytes in increasing addresses (little endian),
@@ -128,7 +128,7 @@ func VP8LPutBitsInternal(const bw *VP8LBitWriter, bits uint32, int n_bits);
 // This function can write up to VP8L_WRITER_MAX_BITS bits in one go, but
 // VP8LBitReader can only read 24 bits max (VP8L_MAX_NUM_BIT_READ).
 // VP8LBitWriter's 'error' flag is set in case of memory allocation error.
-static  func VP8LPutBits(const bw *VP8LBitWriter, bits uint32, int n_bits) {
+static  func VP8LPutBits(/* const */ bw *VP8LBitWriter, bits uint32, int n_bits) {
 #if VP8L_WRITER_BYTES == 4
   if (n_bits == 0) return;
   if (bw.used >= VP8L_WRITER_BITS) {

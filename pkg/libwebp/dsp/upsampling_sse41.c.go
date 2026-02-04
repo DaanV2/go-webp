@@ -73,10 +73,10 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #define UPSAMPLE_32PIXELS(r1, r2, out)                                         \
   for {                                                                         \
     const __m128i one = _mm_set1_epi8(1);                                      \
-    const __m128i a = _mm_loadu_si128((const __*m128i)&(r1)[0]);               \
-    const __m128i b = _mm_loadu_si128((const __*m128i)&(r1)[1]);               \
-    const __m128i c = _mm_loadu_si128((const __*m128i)&(r2)[0]);               \
-    const __m128i d = _mm_loadu_si128((const __*m128i)&(r2)[1]);               \
+    const __m128i a = _mm_loadu_si128((/* const */ __*m128i)&(r1)[0]);               \
+    const __m128i b = _mm_loadu_si128((/* const */ __*m128i)&(r1)[1]);               \
+    const __m128i c = _mm_loadu_si128((/* const */ __*m128i)&(r2)[0]);               \
+    const __m128i d = _mm_loadu_si128((/* const */ __*m128i)&(r2)[1]);               \
                                                                                \
     const __m128i s = _mm_avg_epu8(a, d);   /* s = (a + d + 1) / 2 */          \
     const __m128i t = _mm_avg_epu8(b, c);   /* t = (b + c + 1) / 2 */          \
@@ -101,7 +101,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample32Pixels_SSE41(const WEBP_RESTRICT const r *uint81, /*const*/ WEBP_RESTRICT const r *uint82, WEBP_RESTRICT const out *uint8) {
+func Upsample32Pixels_SSE41(/* const */ WEBP_RESTRICT const r *uint81, /*const*/ WEBP_RESTRICT const r *uint82, WEBP_RESTRICT const out *uint8) {
   UPSAMPLE_32PIXELS(r1, r2, out);
 }
 

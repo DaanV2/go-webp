@@ -571,7 +571,7 @@ func NzCodeBits(nz_coeffs uint32, nz, dc_nz int) uint32 {
   return nz_coeffs;
 }
 
-func ParseResiduals(const dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ token_br *VP8BitReader)int {
+func ParseResiduals(/* const */ dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ token_br *VP8BitReader)int {
   const *VP8BandProbas(bands *const)[16 + 1] = dec.proba.bands_ptr;
   const ac_proba *VP8BandProbas *const;
   var block *VP8MBData = dec.mb_data + dec.mb_x;

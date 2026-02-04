@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //   x_offset, y_offset, width, height - (in/out) rectangle between the two
 //                                                input pictures.
 // Returns true on success.
-int WebPAnimEncoderRefineRect(const struct const prev_canvas *WebPPicture, /*const*/ struct const curr_canvas *WebPPicture, int is_lossless, float quality, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ width *int, /*const*/ height *int);
+int WebPAnimEncoderRefineRect(/* const */ struct const prev_canvas *WebPPicture, /*const*/ struct const curr_canvas *WebPPicture, int is_lossless, float quality, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ width *int, /*const*/ height *int);
 
 
 

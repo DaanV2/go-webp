@@ -83,12 +83,12 @@ typedef enum WebPDemuxState {
 } WebPDemuxState;
 
 // Internal, version-checked, entry point
-  WebPDemuxInternal *WebPDemuxer(const *WebPData, int, *WebPDemuxState, int);
+  WebPDemuxInternal *WebPDemuxer(/* const */ *WebPData, int, *WebPDemuxState, int);
 
 // Parses the full WebP file given by 'data'. For single images the WebP file
 // header alone or the file header and the chunk header may be absent.
 // Returns a WebPDemuxer object on successful parse, nil otherwise.
- static  WebPDemux *WebPDemuxer(const data *WebPData) {
+ static  WebPDemux *WebPDemuxer(/* const */ data *WebPData) {
   return WebPDemuxInternal(data, 0, nil, WEBP_DEMUX_ABI_VERSION);
 }
 
@@ -129,7 +129,7 @@ typedef enum WebPFormatFeature {
 // combination of WebPFeatureFlags values.
 // If 'feature' is WEBP_FF_LOOP_COUNT, WEBP_FF_BACKGROUND_COLOR, the returned
 // value is only meaningful if the bitstream is animated.
- uint32 WebPDemuxGetI(const dmux *WebPDemuxer, WebPFormatFeature feature);
+ uint32 WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature);
 
 //------------------------------------------------------------------------------
 // Frame iteration.
@@ -158,7 +158,7 @@ type WebPIterator struct {
 // Returns false if 'dmux' is nil or frame 'frame_number' is not present.
 // Call WebPDemuxReleaseIterator() when use of the iterator is complete.
 // NOTE: 'dmux' must persist for the lifetime of 'iter'.
-  int WebPDemuxGetFrame(const dmux *WebPDemuxer, int frame_number, iter *WebPIterator);
+  int WebPDemuxGetFrame(/* const */ dmux *WebPDemuxer, int frame_number, iter *WebPIterator);
 
 // Sets 'iter.fragment' to point to the next ('iter.frame_num' + 1) or
 // previous ('iter.frame_num' - 1) frame. These functions do not loop.
@@ -195,7 +195,7 @@ type WebPChunkIterator struct {
 // payloads are accessed through WebPDemuxGetFrame() and related functions.
 // Call WebPDemuxReleaseChunkIterator() when use of the iterator is complete.
 // NOTE: 'dmux' must persist for the lifetime of the iterator.
-  int WebPDemuxGetChunk(const dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_number, iter *WebPChunkIterator);
+  int WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_number, iter *WebPChunkIterator);
 
 // Sets 'iter.chunk' to point to the next ('iter.chunk_num' + 1) or previous
 // ('iter.chunk_num' - 1) chunk. These functions do not loop.

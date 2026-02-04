@@ -277,7 +277,7 @@ type CrunchConfig struct {
 // kPaletteAndSpatial.
 const CRUNCH_CONFIGS_MAX =(kNumEntropyIx + 2 * kPaletteSortingNum)
 
-static int EncoderAnalyze(const enc *VP8LEncoder, CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX], /*const*/ crunch_configs_size *int, /*const*/ red_and_blue_always_zero *int) {
+static int EncoderAnalyze(/* const */ enc *VP8LEncoder, CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX], /*const*/ crunch_configs_size *int, /*const*/ red_and_blue_always_zero *int) {
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
@@ -386,7 +386,7 @@ static int EncoderAnalyze(const enc *VP8LEncoder, CrunchConfig crunch_configs[CR
   return 1;
 }
 
-static int EncoderInit(const enc *VP8LEncoder) {
+static int EncoderInit(/* const */ enc *VP8LEncoder) {
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
@@ -593,7 +593,7 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
 }
 
 // 'huff_tree' and 'tokens' are pre-alloacted buffers.
-func StoreHuffmanCode(const bw *VP8LBitWriter, /*const*/ huff_tree *HuffmanTree, /*const*/ tokens *HuffmanTreeToken, /*const*/ huffman_code *HuffmanTreeCode) {
+func StoreHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ huff_tree *HuffmanTree, /*const*/ tokens *HuffmanTreeToken, /*const*/ huffman_code *HuffmanTreeCode) {
   var i int
   count := 0;
   int symbols[2] = {0, 0}
@@ -629,7 +629,7 @@ func StoreHuffmanCode(const bw *VP8LBitWriter, /*const*/ huff_tree *HuffmanTree,
   }
 }
 
-static  func WriteHuffmanCode(const bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, int code_index) {
+static  func WriteHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, int code_index) {
   depth := code.code_lengths[code_index];
   symbol := code.codes[code_index];
   VP8LPutBits(bw, symbol, depth);
@@ -642,7 +642,7 @@ static  func WriteHuffmanCodeWithExtraBits(
   VP8LPutBits(bw, (bits << depth) | symbol, depth + n_bits);
 }
 
-static int StoreImageToBitMask(const bw *VP8LBitWriter, int width, int histo_bits, /*const*/ refs *VP8LBackwardRefs, /*const*/ histogram_symbols *uint32, /*const*/ huffman_codes *HuffmanTreeCode, /*const*/ pic *WebPPicture) {
+static int StoreImageToBitMask(/* const */ bw *VP8LBitWriter, int width, int histo_bits, /*const*/ refs *VP8LBackwardRefs, /*const*/ histogram_symbols *uint32, /*const*/ huffman_codes *HuffmanTreeCode, /*const*/ pic *WebPPicture) {
   histo_xsize := histo_bits ? VP8LSubSampleSize(width, histo_bits) : 1;
   tile_mask := (histo_bits == 0) ? 0 : -(1 << histo_bits);
   // x and y trace the position in the image.
@@ -704,7 +704,7 @@ static int StoreImageToBitMask(const bw *VP8LBitWriter, int width, int histo_bit
 
 // Special case of EncodeImageInternal() for cache-bits=0, histo_bits=31.
 // pic and percent are for progress.
-static int EncodeImageNoHuffman(const bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_array *VP8LBackwardRefs, int width, int height, int quality, int low_effort, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+static int EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_array *VP8LBackwardRefs, int width, int height, int quality, int low_effort, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
   var i int
   max_tokens := 0;
   refs *VP8LBackwardRefs;
@@ -979,13 +979,13 @@ Error:
 // -----------------------------------------------------------------------------
 // Transforms
 
-func ApplySubtractGreen(const enc *VP8LEncoder, int width, int height, /*const*/ bw *VP8LBitWriter) {
+func ApplySubtractGreen(/* const */ enc *VP8LEncoder, int width, int height, /*const*/ bw *VP8LBitWriter) {
   VP8LPutBits(bw, TRANSFORM_PRESENT, 1);
   VP8LPutBits(bw, SUBTRACT_GREEN_TRANSFORM, 2);
   VP8LSubtractGreenFromBlueAndRed(enc.argb, width * height);
 }
 
-static int ApplyPredictFilter(const enc *VP8LEncoder, int width, int height, int quality, int low_effort, int used_subtract_green, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+static int ApplyPredictFilter(/* const */ enc *VP8LEncoder, int width, int height, int quality, int low_effort, int used_subtract_green, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
   near_lossless_strength :=
       enc.use_palette ? 100 : enc.config.near_lossless;
   max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE);
@@ -1003,7 +1003,7 @@ static int ApplyPredictFilter(const enc *VP8LEncoder, int width, int height, int
       bw, enc.transform_data, &enc.hash_chain, &enc.refs[0], VP8LSubSampleSize(width, *best_bits), VP8LSubSampleSize(height, *best_bits), quality, low_effort, enc.pic, percent_range - percent_range / 2, percent);
 }
 
-static int ApplyCrossColorFilter(const enc *VP8LEncoder, int width, int height, int quality, int low_effort, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+static int ApplyCrossColorFilter(/* const */ enc *VP8LEncoder, int width, int height, int quality, int low_effort, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
   min_bits := enc.cross_color_transform_bits;
 
   if (!VP8LColorSpaceTransform(width, height, min_bits, quality, enc.argb, enc.transform_data, enc.pic, percent_range / 2, percent, best_bits)) {
@@ -1019,7 +1019,7 @@ static int ApplyCrossColorFilter(const enc *VP8LEncoder, int width, int height, 
 
 // -----------------------------------------------------------------------------
 
-static int WriteRiffHeader(const pic *WebPPicture, uint64 riff_size, uint64 vp8l_size) {
+static int WriteRiffHeader(/* const */ pic *WebPPicture, uint64 riff_size, uint64 vp8l_size) {
   uint8 riff[RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE + VP8L_SIGNATURE_SIZE] = {
       'R', 'I', 'F', 'F', 0,   0,   0, 0,   'W', 'E', 'B', 'P', 'V', 'P', '8', 'L', 0,   0,   0,   0,   VP8L_MAGIC_BYTE, }
   PutLE32(riff + TAG_SIZE, (uint32)riff_size);
@@ -1027,7 +1027,7 @@ static int WriteRiffHeader(const pic *WebPPicture, uint64 riff_size, uint64 vp8l
   return pic.writer(riff, sizeof(riff), pic);
 }
 
-static int WriteImageSize(const pic *WebPPicture, /*const*/ bw *VP8LBitWriter) {
+static int WriteImageSize(/* const */ pic *WebPPicture, /*const*/ bw *VP8LBitWriter) {
   width := pic.width - 1;
   height := pic.height - 1;
   assert.Assert(width < WEBP_MAX_DIMENSION && height < WEBP_MAX_DIMENSION);
@@ -1037,13 +1037,13 @@ static int WriteImageSize(const pic *WebPPicture, /*const*/ bw *VP8LBitWriter) {
   return !bw.error;
 }
 
-static int WriteRealAlphaAndVersion(const bw *VP8LBitWriter, int has_alpha) {
+static int WriteRealAlphaAndVersion(/* const */ bw *VP8LBitWriter, int has_alpha) {
   VP8LPutBits(bw, has_alpha, 1);
   VP8LPutBits(bw, VP8L_VERSION, VP8L_VERSION_BITS);
   return !bw.error;
 }
 
-static int WriteImage(const pic *WebPPicture, /*const*/ bw *VP8LBitWriter, /*const*/ coded_size *uint64) {
+static int WriteImage(/* const */ pic *WebPPicture, /*const*/ bw *VP8LBitWriter, /*const*/ coded_size *uint64) {
   var webpll_data *uint8 = VP8LBitWriterFinish(bw);
   webpll_size := VP8LBitWriterNumBytes(bw);
   vp8l_size := VP8L_SIGNATURE_SIZE + webpll_size;
@@ -1072,7 +1072,7 @@ static int WriteImage(const pic *WebPPicture, /*const*/ bw *VP8LBitWriter, /*con
 
 // -----------------------------------------------------------------------------
 
-func ClearTransformBuffer(const enc *VP8LEncoder) {
+func ClearTransformBuffer(/* const */ enc *VP8LEncoder) {
   enc.transform_mem = nil;
   enc.transform_mem_size = 0;
 }
@@ -1082,7 +1082,7 @@ func ClearTransformBuffer(const enc *VP8LEncoder) {
 // Flags influencing the memory allocated:
 //  enc.transform_bits
 //  enc.use_predict, enc.use_cross_color
-static int AllocateTransformBuffer(const enc *VP8LEncoder, int width, int height) {
+static int AllocateTransformBuffer(/* const */ enc *VP8LEncoder, int width, int height) {
   image_size := (uint64)width * height;
   // VP8LResidualImage needs room for 2 scanlines of uint32 pixels with an extra
   // pixel in each, plus 2 regular scanlines of bytes.
@@ -1122,7 +1122,7 @@ static int AllocateTransformBuffer(const enc *VP8LEncoder, int width, int height
   return 1;
 }
 
-static int MakeInputImageCopy(const enc *VP8LEncoder) {
+static int MakeInputImageCopy(/* const */ enc *VP8LEncoder) {
   var picture *WebPPicture = enc.pic;
   width := picture.width;
   height := picture.height;
@@ -1261,7 +1261,7 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
 #undef APPLY_PALETTE_GREEDY_MAX
 
 // Note: Expects "enc.palette" to be set properly.
-static int MapImageFromPalette(const enc *VP8LEncoder) {
+static int MapImageFromPalette(/* const */ enc *VP8LEncoder) {
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
@@ -1288,7 +1288,7 @@ static int MapImageFromPalette(const enc *VP8LEncoder) {
 }
 
 // Save palette[] to bitstream.
-static int EncodePalette(const bw *VP8LBitWriter, int low_effort, /*const*/ enc *VP8LEncoder, int percent_range, /*const*/ percent *int) {
+static int EncodePalette(/* const */ bw *VP8LBitWriter, int low_effort, /*const*/ enc *VP8LEncoder, int percent_range, /*const*/ percent *int) {
   var i int
   uint32 tmp_palette[MAX_PALETTE_SIZE];
   palette_size := enc.palette_size;
@@ -1314,7 +1314,7 @@ static int EncodePalette(const bw *VP8LBitWriter, int low_effort, /*const*/ enc 
 // -----------------------------------------------------------------------------
 // VP8LEncoder
 
-static VP *VP8LEncoder8LEncoderNew(const config *WebPConfig, /*const*/ picture *WebPPicture) {
+static VP *VP8LEncoder8LEncoderNew(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture) {
   var enc *VP8LEncoder = (*VP8LEncoder)WebPSafeCalloc(uint64(1), sizeof(*enc));
   if (enc == nil) {
     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
@@ -1521,7 +1521,7 @@ Error:
 
 // Encodes the main image stream using the supplied bit writer.
 // Returns false in case of error (stored in picture.error_code).
-int VP8LEncodeStream(const config *WebPConfig, /*const*/ picture *WebPPicture, /*const*/ bw_main *VP8LBitWriter) {
+int VP8LEncodeStream(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture, /*const*/ bw_main *VP8LBitWriter) {
   var enc_main *VP8LEncoder = VP8LEncoderNew(config, picture);
   enc_side *VP8LEncoder = nil;
   CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX];
@@ -1676,7 +1676,7 @@ Error:
 // Encodes the picture.
 // Returns 0 if config or picture is nil or picture doesn't have valid argb
 // input.
-int VP8LEncodeImage(const config *WebPConfig, /*const*/ picture *WebPPicture) {
+int VP8LEncodeImage(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture) {
   var  width, height int
   var  has_alpha int
   var coded_size uint64

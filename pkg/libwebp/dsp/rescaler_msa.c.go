@@ -249,7 +249,7 @@ static  func ExportRowExpand_1(
   }
 }
 
-func RescalerExportRowExpand_MIPSdspR2(const wrk *WebPRescaler) {
+func RescalerExportRowExpand_MIPSdspR2(/* const */ wrk *WebPRescaler) {
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
   x_out_max := wrk.dst_width * wrk.num_channels;
@@ -408,7 +408,7 @@ static  func ExportRowShrink_1(
   }
 }
 
-func RescalerExportRowShrink_MIPSdspR2(const wrk *WebPRescaler) {
+func RescalerExportRowShrink_MIPSdspR2(/* const */ wrk *WebPRescaler) {
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
   x_out_max := wrk.dst_width * wrk.num_channels;

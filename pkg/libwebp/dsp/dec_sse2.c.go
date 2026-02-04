@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)
 
-func Transform_SSE2(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func Transform_SSE2(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
   // This implementation makes use of 16-bit fixed point versions of two
   // multiply constants:
   //    K1 = sqrt(2) * cos (pi/8) ~= 85627 / 2^16
@@ -61,19 +61,19 @@ func Transform_SSE2(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int
   // vectors will just contain random value we'll never use nor store.
   __m128i in0, in1, in2, in3;
   {
-    in0 = _mm_loadl_epi64((const __*m128i)&in[0]);
-    in1 = _mm_loadl_epi64((const __*m128i)&in[4]);
-    in2 = _mm_loadl_epi64((const __*m128i)&in[8]);
-    in3 = _mm_loadl_epi64((const __*m128i)&in[12]);
+    in0 = _mm_loadl_epi64((/* const */ __*m128i)&in[0]);
+    in1 = _mm_loadl_epi64((/* const */ __*m128i)&in[4]);
+    in2 = _mm_loadl_epi64((/* const */ __*m128i)&in[8]);
+    in3 = _mm_loadl_epi64((/* const */ __*m128i)&in[12]);
     // a00 a10 a20 a30   x x x x
     // a01 a11 a21 a31   x x x x
     // a02 a12 a22 a32   x x x x
     // a03 a13 a23 a33   x x x x
     if (do_two) {
-      const __m128i inB0 = _mm_loadl_epi64((const __*m128i)&in[16]);
-      const __m128i inB1 = _mm_loadl_epi64((const __*m128i)&in[20]);
-      const __m128i inB2 = _mm_loadl_epi64((const __*m128i)&in[24]);
-      const __m128i inB3 = _mm_loadl_epi64((const __*m128i)&in[28]);
+      const __m128i inB0 = _mm_loadl_epi64((/* const */ __*m128i)&in[16]);
+      const __m128i inB1 = _mm_loadl_epi64((/* const */ __*m128i)&in[20]);
+      const __m128i inB2 = _mm_loadl_epi64((/* const */ __*m128i)&in[24]);
+      const __m128i inB3 = _mm_loadl_epi64((/* const */ __*m128i)&in[28]);
       in0 = _mm_unpacklo_epi64(in0, inB0);
       in1 = _mm_unpacklo_epi64(in1, inB1);
       in2 = _mm_unpacklo_epi64(in2, inB2);
@@ -201,7 +201,7 @@ func Transform_SSE2(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int
 
 #if (USE_TRANSFORM_AC3 == 1)
 
-func TransformAC3_SSE2(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformAC3_SSE2(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   const __m128i A = _mm_set1_epi16(in[0] + 4);
   const __m128i c4 = _mm_set1_epi16(WEBP_TRANSFORM_AC3_MUL2(in[4]));
   const __m128i d4 = _mm_set1_epi16(WEBP_TRANSFORM_AC3_MUL1(in[4]));
@@ -273,7 +273,7 @@ static  func SignedShift8b_SSE2(__const x *m128i) {
   } while (0)
 
 // input/output is uint8
-static  func GetNotHEV_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int hev_thresh, __const not_hev *m128i) {
+static  func GetNotHEV_SSE2(/* const */ __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int hev_thresh, __const not_hev *m128i) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i t_1 = MM_ABS(*p1, *p0);
   const __m128i t_2 = MM_ABS(*q1, *q0);
@@ -286,7 +286,7 @@ static  func GetNotHEV_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0
 }
 
 // input pixels are int8
-static  func GetBaseDelta_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, __const delta *m128i) {
+static  func GetBaseDelta_SSE2(/* const */ __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, __const delta *m128i) {
   // beware of addition order, for saturation!
   const __m128i p1_q1 = _mm_subs_epi8(*p1, *q1);   // p1 - q1
   const __m128i q0_p0 = _mm_subs_epi8(*q0, *p0);   // q0 - p0
@@ -324,7 +324,7 @@ static  func Update2Pixels_SSE2(__const pi *m128i, __const qi *m128i, /*const*/ 
 }
 
 // input pixels are uint8
-static  func NeedsFilter_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int thresh, __const mask *m128i) {
+static  func NeedsFilter_SSE2(/* const */ __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int thresh, __const mask *m128i) {
   const __m128i m_thresh = _mm_set1_epi8((byte)thresh);
   const __m128i t1 = MM_ABS(*p1, *q1);  // abs(p1 - q1)
   const __m128i kFE = _mm_set1_epi8((byte)0xFE);
@@ -450,7 +450,7 @@ static  func DoFilter6_SSE2(__const p *m128i2, __const p *m128i1, __const p *m12
 }
 
 // reads 8 rows across a vertical edge.
-static  func Load8x4_SSE2(const b *uint8, int stride, __const p *m128i, __const q *m128i) {
+static  func Load8x4_SSE2(/* const */ b *uint8, int stride, __const p *m128i, __const q *m128i) {
   // A0 = 63 62 61 60 23 22 21 20 43 42 41 40 03 02 01 00
   // A1 = 73 72 71 70 33 32 31 30 53 52 51 50 13 12 11 10
   const __m128i A0 = _mm_set_epi32(
@@ -474,7 +474,7 @@ static  func Load8x4_SSE2(const b *uint8, int stride, __const p *m128i, __const 
   *q = _mm_unpackhi_epi32(C0, C1);
 }
 
-static  func Load16x4_SSE2(const r *uint80, /*const*/ r *uint88, int stride, __const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1) {
+static  func Load16x4_SSE2(/* const */ r *uint80, /*const*/ r *uint88, int stride, __const p *m128i1, __const p *m128i0, __const q *m128i0, __const q *m128i1) {
   // Assume the pixels around the edge (|) are numbered as follows
   //                00 01 | 02 03
   //                10 11 | 12 13
@@ -516,7 +516,7 @@ static  func Store4x4_SSE2(__const x *m128i, dst *uint8, int stride) {
 }
 
 // Transpose back and store
-static  func Store16x4_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, r *uint80, r *uint88, int stride) {
+static  func Store16x4_SSE2(/* const */ __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, r *uint80, r *uint88, int stride) {
   __m128i t1, p1_s, p0_s, q0_s, q1_s;
 
   // p0 = 71 70 61 60 51 50 41 40 31 30 21 20 11 10 01 00
@@ -642,7 +642,7 @@ func SimpleHFilter16i_SSE2(p *uint8, int stride, int thresh) {
     _mm_storel_epi64((__*m128i)&(v)[(stride)], p); \
   } while (0)
 
-static  func ComplexMask_SSE2(const __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int thresh, int ithresh, __const mask *m128i) {
+static  func ComplexMask_SSE2(/* const */ __const p *m128i1, /*const*/ __const p *m128i0, /*const*/ __const q *m128i0, /*const*/ __const q *m128i1, int thresh, int ithresh, __const mask *m128i) {
   const __m128i it = _mm_set1_epi8(ithresh);
   const __m128i diff = _mm_subs_epu8(*mask, it);
   const __m128i thresh_mask = _mm_cmpeq_epi8(diff, _mm_setzero_si128());
@@ -983,7 +983,7 @@ static  func TrueMotion_SSE2(dst *uint8, int size) {
       WebPInt32ToMem(dst, _mm_cvtsi128_si32(out));
     }
   } else if (size == 8) {
-    const __m128i top_values = _mm_loadl_epi64((const __*m128i)top);
+    const __m128i top_values = _mm_loadl_epi64((/* const */ __*m128i)top);
     const __m128i top_base = _mm_unpacklo_epi8(top_values, zero);
     for y = 0; y < 8; ++y, dst += BPS {
       val := dst[-1] - top[-1];
@@ -992,7 +992,7 @@ static  func TrueMotion_SSE2(dst *uint8, int size) {
       _mm_storel_epi64((__*m128i)dst, out);
     }
   } else {
-    const __m128i top_values = _mm_loadu_si128((const __*m128i)top);
+    const __m128i top_values = _mm_loadu_si128((/* const */ __*m128i)top);
     const __m128i top_base_0 = _mm_unpacklo_epi8(top_values, zero);
     const __m128i top_base_1 = _mm_unpackhi_epi8(top_values, zero);
     for y = 0; y < 16; ++y, dst += BPS {
@@ -1011,7 +1011,7 @@ func TM8uv_SSE2(dst *uint8) { TrueMotion_SSE2(dst, 8); }
 func TM16_SSE2(dst *uint8) { TrueMotion_SSE2(dst, 16); }
 
 func VE16_SSE2(dst *uint8) {
-  const __m128i top = _mm_loadu_si128((const __*m128i)(dst - BPS));
+  const __m128i top = _mm_loadu_si128((/* const */ __*m128i)(dst - BPS));
   var j int
   for j = 0; j < 16; j++ {
     _mm_storeu_si128((__*m128i)(dst + j * BPS), top);
@@ -1037,7 +1037,7 @@ static  func Put16_SSE2(uint8 v, dst *uint8) {
 
 func DC16_SSE2(dst *uint8) {  // DC
   const __m128i zero = _mm_setzero_si128();
-  const __m128i top = _mm_loadu_si128((const __*m128i)(dst - BPS));
+  const __m128i top = _mm_loadu_si128((/* const */ __*m128i)(dst - BPS));
   const __m128i sad8x2 = _mm_sad_epu8(top, zero);
   // sum the two sads: sad8x2[0:1] + sad8x2[8:9]
   const __m128i sum = _mm_add_epi16(sad8x2, _mm_shuffle_epi32(sad8x2, 2));
@@ -1063,7 +1063,7 @@ func DC16NoTop_SSE2(dst *uint8) {  // DC with top samples unavailable
 
 func DC16NoLeft_SSE2(dst *uint8) {  // DC with left samples unavailable
   const __m128i zero = _mm_setzero_si128();
-  const __m128i top = _mm_loadu_si128((const __*m128i)(dst - BPS));
+  const __m128i top = _mm_loadu_si128((/* const */ __*m128i)(dst - BPS));
   const __m128i sad8x2 = _mm_sad_epu8(top, zero);
   // sum the two sads: sad8x2[0:1] + sad8x2[8:9]
   const __m128i sum = _mm_add_epi16(sad8x2, _mm_shuffle_epi32(sad8x2, 2));
@@ -1080,7 +1080,7 @@ func DC16NoTopLeft_SSE2(dst *uint8) {  // DC with no top & left samples
 
 func VE8uv_SSE2(dst *uint8) {  // vertical
   var j int
-  const __m128i top = _mm_loadl_epi64((const __*m128i)(dst - BPS));
+  const __m128i top = _mm_loadl_epi64((/* const */ __*m128i)(dst - BPS));
   for j = 0; j < 8; j++ {
     _mm_storel_epi64((__*m128i)(dst + j * BPS), top);
   }
@@ -1097,7 +1097,7 @@ static  func Put8x8uv_SSE2(uint8 v, dst *uint8) {
 
 func DC8uv_SSE2(dst *uint8) {  // DC
   const __m128i zero = _mm_setzero_si128();
-  const __m128i top = _mm_loadl_epi64((const __*m128i)(dst - BPS));
+  const __m128i top = _mm_loadl_epi64((/* const */ __*m128i)(dst - BPS));
   const __m128i sum = _mm_sad_epu8(top, zero);
   left := 0;
   var j int
@@ -1112,7 +1112,7 @@ func DC8uv_SSE2(dst *uint8) {  // DC
 
 func DC8uvNoLeft_SSE2(dst *uint8) {  // DC with no left samples
   const __m128i zero = _mm_setzero_si128();
-  const __m128i top = _mm_loadl_epi64((const __*m128i)(dst - BPS));
+  const __m128i top = _mm_loadl_epi64((/* const */ __*m128i)(dst - BPS));
   const __m128i sum = _mm_sad_epu8(top, zero);
   DC := _mm_cvtsi128_si32(sum) + 4;
   Put8x8uv_SSE2(DC >> 3, dst);

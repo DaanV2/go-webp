@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 static const int kC1 = WEBP_TRANSFORM_AC3_C1;
 static const int kC2 = WEBP_TRANSFORM_AC3_C2;
 
-func TransformDC(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformDC(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10;
 
   __asm__ volatile(
@@ -41,7 +41,7 @@ func TransformDC(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   );
 }
 
-func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformAC3(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   a := in[0] + 4;
   int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
   d4 := WEBP_TRANSFORM_AC3_MUL1(in[4]);
@@ -68,7 +68,7 @@ func TransformAC3(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   );
 }
 
-func TransformOne(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17, temp18;
 
@@ -118,7 +118,7 @@ func TransformOne(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   );
 }
 
-func TransformTwo(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);

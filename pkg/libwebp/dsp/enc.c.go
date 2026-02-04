@@ -44,7 +44,7 @@ const int VP8DspScan[16 + 4 + 4] = {
 }
 
 // general-purpose util function
-func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], /*const*/ histo *VP8Histogram) {
+func VP8SetHistogramData(/* const */ int distribution[MAX_COEFF_THRESH + 1], /*const*/ histo *VP8Histogram) {
   max_value := 0, last_non_zero = 1;
   var k int
   for k = 0; k <= MAX_COEFF_THRESH; k++ {
@@ -59,7 +59,7 @@ func VP8SetHistogramData(const int distribution[MAX_COEFF_THRESH + 1], /*const*/
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-func CollectHistogram_C(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
+func CollectHistogram_C(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   for j = start_block; j < end_block; j++ {
@@ -106,7 +106,7 @@ static WEBP_TSAN_IGNORE_FUNCTION func InitTables(){
 #define STORE(x, y, v) \
   dst[(x) + (y) * BPS] = clip_8b(ref[(x) + (y) * BPS] + ((v) >> 3))
 
-static  func ITransformOne(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+static  func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int C[4 * 4], *tmp;
   var i int
   tmp = C;
@@ -142,14 +142,14 @@ static  func ITransformOne(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRI
   }
 }
 
-func ITransform_C(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_C(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
   ITransformOne(ref, in, dst);
   if (do_two) {
     ITransformOne(ref + 4, in + 16, dst + 4);
   }
 }
 
-func FTransform_C(const WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
+func FTransform_C(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
   var i int
   int tmp[16];
   for i = 0; i < 4; ++i, src += BPS, ref += BPS {
@@ -179,13 +179,13 @@ func FTransform_C(const WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *u
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func FTransform2_C(const WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
+func FTransform2_C(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
   VP8FTransform(src, ref, out);
   VP8FTransform(src + 4, ref + 4, out + 16);
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-func FTransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
+func FTransformWHT_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   // input is 12b signed
   int32 tmp[16];
   var i int
@@ -523,7 +523,7 @@ func Intra4Preds_C(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8)
 // Metric
 
 #if !WEBP_NEON_OMIT_C_CODE
-static  int GetSSE(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8, int w, int h) {
+static  int GetSSE(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8, int w, int h) {
   count := 0;
   int y, x;
   for y = 0; y < h; y++ {
@@ -537,21 +537,21 @@ static  int GetSSE(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint
   return count;
 }
 
-static int SSE16x16_C(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+static int SSE16x16_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   return GetSSE(a, b, 16, 16);
 }
-static int SSE16x8_C(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+static int SSE16x8_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   return GetSSE(a, b, 16, 8);
 }
-static int SSE8x8_C(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+static int SSE8x8_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   return GetSSE(a, b, 8, 8);
 }
-static int SSE4x4_C(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+static int SSE4x4_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   return GetSSE(a, b, 4, 4);
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func Mean16x4_C(const WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
+func Mean16x4_C(/* const */ WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
   int k, x, y;
   for k = 0; k < 4; k++ {
     avg := 0;
@@ -575,7 +575,7 @@ func Mean16x4_C(const WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int TTransform(const WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) {
+static int TTransform(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) {
   sum := 0;
   int tmp[16];
   var i int
@@ -609,13 +609,13 @@ static int TTransform(const WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *
   return sum;
 }
 
-static int Disto4x4_C(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+static int Disto4x4_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   sum1 := TTransform(a, w);
   sum2 := TTransform(b, w);
   return abs(sum2 - sum1) >> 5;
 }
 
-static int Disto16x16_C(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+static int Disto16x16_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   D := 0;
   int x, y;
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -671,7 +671,7 @@ static int Quantize2Blocks_C(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRIC
 //------------------------------------------------------------------------------
 // Block copy
 
-static  func Copy(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int w, int h) {
+static  func Copy(/* const */ WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int w, int h) {
   var y int
   for y = 0; y < h; y++ {
     memcpy(dst, src, w);
@@ -680,11 +680,11 @@ static  func Copy(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int 
   }
 }
 
-func Copy4x4_C(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8) {
+func Copy4x4_C(/* const */ WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8) {
   Copy(src, dst, 4, 4);
 }
 
-func Copy16x8_C(const WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8) {
+func Copy16x8_C(/* const */ WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8) {
   Copy(src, dst, 16, 8);
 }
 

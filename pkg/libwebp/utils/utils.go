@@ -120,7 +120,7 @@ func PrintMemInfo(){
   }
 }
 
-func Increment(const v *int) {
+func Increment(/* const */ v *int) {
   if (!exit_registered) {
 // #if defined(MALLOC_FAIL_AT)
     {
@@ -266,7 +266,7 @@ func WebPMalloc(size uint64 ) *void {
 
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
-func WebPCopyPlane(const src *uint8, int src_stride, dst *uint8, int dst_stride, int width, int height) {
+func WebPCopyPlane(/* const */ src *uint8, int src_stride, dst *uint8, int dst_stride, int width, int height) {
   assert.Assert(src != nil && dst != nil);
   assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
   for (height-- > 0) {
@@ -278,7 +278,7 @@ func WebPCopyPlane(const src *uint8, int src_stride, dst *uint8, int dst_stride,
 
 // Copy ARGB pixels from 'src' to 'dst' honoring strides. 'src' and 'dst' are
 // assumed to be already allocated and using ARGB data.
-func WebPCopyPixels(const src *WebPPicture, /*const*/ dst *WebPPicture) {
+func WebPCopyPixels(/* const */ src *WebPPicture, /*const*/ dst *WebPPicture) {
   assert.Assert(src != nil && dst != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   assert.Assert(src.use_argb && dst.use_argb)

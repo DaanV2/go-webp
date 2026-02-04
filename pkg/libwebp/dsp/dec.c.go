@@ -46,7 +46,7 @@ static  uint8 clip_8b(int v) {
   } while (0)
 
 #if !WEBP_NEON_OMIT_C_CODE
-func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformOne_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int C[4 * 4], *tmp;
   var i int
   tmp = C;
@@ -90,7 +90,7 @@ func TransformOne_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 }
 
 // Simplified transform when only in[0], in[1] and in[4] are non-zero
-func TransformAC3_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformAC3_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   a := in[0] + 4;
   c4 := WEBP_TRANSFORM_AC3_MUL2(in[4]);
   d4 := WEBP_TRANSFORM_AC3_MUL1(in[4]);
@@ -103,7 +103,7 @@ func TransformAC3_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 }
 #undef STORE2
 
-func TransformTwo_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func TransformTwo_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
   TransformOne_C(in, dst);
   if (do_two) {
     TransformOne_C(in + 16, dst + 4);
@@ -111,13 +111,13 @@ func TransformTwo_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func TransformUV_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformUV_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   VP8Transform(in + 0 * 16, dst, 1);
   VP8Transform(in + 2 * 16, dst + 4 * BPS, 1);
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-func TransformDC_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformDC_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   DC := in[0] + 4;
   int i, j;
   for j = 0; j < 4; j++ {
@@ -128,7 +128,7 @@ func TransformDC_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func TransformDCUV_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformDCUV_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   if (in[0 * 16]) VP8TransformDC(in + 0 * 16, dst);
   if (in[1 * 16]) VP8TransformDC(in + 1 * 16, dst + 4);
   if (in[2 * 16]) VP8TransformDC(in + 2 * 16, dst + 4 * BPS);
@@ -141,7 +141,7 @@ func TransformDCUV_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
 // Paragraph 14.3
 
 #if !WEBP_NEON_OMIT_C_CODE
-func TransformWHT_C(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
+func TransformWHT_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   int tmp[16];
   var i int
   for i = 0; i < 4; i++ {
@@ -522,21 +522,21 @@ static  func DoFilter6_C(p *uint8, int step) {
   p[2 * step] = VP8kclip1[q2 - a3];
 }
 
-static  int Hev(const p *uint8, int step, int thresh) {
+static  int Hev(/* const */ p *uint8, int step, int thresh) {
   p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return (VP8kabs0[p1 - p0] > thresh) || (VP8kabs0[q1 - q0] > thresh);
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 
 #if !WEBP_NEON_OMIT_C_CODE
-static  int NeedsFilter_C(const p *uint8, int step, int t) {
+static  int NeedsFilter_C(/* const */ p *uint8, int step, int t) {
   p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return ((4 * VP8kabs0[p0 - q0] + VP8kabs0[p1 - q1]) <= t);
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
-static  int NeedsFilter2_C(const p *uint8, int step, int t, int it) {
+static  int NeedsFilter2_C(/* const */ p *uint8, int step, int t, int it) {
   p3 = p[-4 * step], p2 = p[-3 * step], p1 := p[-2 * step];
   p0 = p[-step], q0 := p[0];
   q1 = p[step], q2 = p[2 * step], q3 := p[3 * step];
@@ -682,7 +682,7 @@ func HFilter8i_C(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int
 
 //------------------------------------------------------------------------------
 
-func DitherCombine8x8_C(const WEBP_RESTRICT dither *uint8, WEBP_RESTRICT dst *uint8, int dst_stride) {
+func DitherCombine8x8_C(/* const */ WEBP_RESTRICT dither *uint8, WEBP_RESTRICT dst *uint8, int dst_stride) {
   int i, j;
   for j = 0; j < 8; j++ {
     for i = 0; i < 8; i++ {
@@ -717,7 +717,7 @@ VP8SimpleFilterFunc VP8SimpleHFilter16;
 VP8SimpleFilterFunc VP8SimpleVFilter16i;
 VP8SimpleFilterFunc VP8SimpleHFilter16i;
 
-func (*VP8DitherCombine8x8)(const WEBP_RESTRICT dither *uint8, WEBP_RESTRICT dst *uint8, int dst_stride);
+func (*VP8DitherCombine8x8)(/* const */ WEBP_RESTRICT dither *uint8, WEBP_RESTRICT dst *uint8, int dst_stride);
 
 extern VP8CPUInfo VP8GetCPUInfo;
 extern func VP8DspInitSSE2(void);

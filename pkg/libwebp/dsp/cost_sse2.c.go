@@ -27,9 +27,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-func SetResidualCoeffs_SSE2(const WEBP_RESTRICT const coeffs *int16, WEBP_RESTRICT const res *VP8Residual) {
-  const __m128i c0 = _mm_loadu_si128((const __*m128i)(coeffs + 0));
-  const __m128i c1 = _mm_loadu_si128((const __*m128i)(coeffs + 8));
+func SetResidualCoeffs_SSE2(/* const */ WEBP_RESTRICT const coeffs *int16, WEBP_RESTRICT const res *VP8Residual) {
+  const __m128i c0 = _mm_loadu_si128((/* const */ __*m128i)(coeffs + 0));
+  const __m128i c1 = _mm_loadu_si128((/* const */ __*m128i)(coeffs + 8));
   // Use SSE2 to compare 16 values with a single instruction.
   const __m128i zero = _mm_setzero_si128();
   const __m128i m0 = _mm_packs_epi16(c0, c1);
@@ -67,8 +67,8 @@ static int GetResidualCost_SSE2(int ctx0, /*const*/ res *VP8Residual) {
     const __m128i zero = _mm_setzero_si128();
     const __m128i kCst2 = _mm_set1_epi8(2);
     const __m128i kCst67 = _mm_set1_epi8(MAX_VARIABLE_LEVEL);
-    const __m128i c0 = _mm_loadu_si128((const __*m128i)&res.coeffs[0]);
-    const __m128i c1 = _mm_loadu_si128((const __*m128i)&res.coeffs[8]);
+    const __m128i c0 = _mm_loadu_si128((/* const */ __*m128i)&res.coeffs[0]);
+    const __m128i c1 = _mm_loadu_si128((/* const */ __*m128i)&res.coeffs[8]);
     const __m128i D0 = _mm_sub_epi16(zero, c0);
     const __m128i D1 = _mm_sub_epi16(zero, c1);
     const __m128i E0 = _mm_max_epi16(c0, D0);  // abs(v), 16b

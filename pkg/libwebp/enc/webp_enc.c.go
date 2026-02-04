@@ -43,14 +43,14 @@ int WebPGetEncoderVersion(){
 // VP8Encoder
 //------------------------------------------------------------------------------
 
-func ResetSegmentHeader(const enc *VP8Encoder) {
+func ResetSegmentHeader(/* const */ enc *VP8Encoder) {
   var hdr *VP8EncSegmentHeader = &enc.segment_hdr;
   hdr.num_segments = enc.config.segments;
   hdr.update_map = (hdr.num_segments > 1);
   hdr.size = 0;
 }
 
-func ResetFilterHeader(const enc *VP8Encoder) {
+func ResetFilterHeader(/* const */ enc *VP8Encoder) {
   var hdr *VP8EncFilterHeader = &enc.filter_hdr;
   hdr.simple = 1;
   hdr.level = 0;
@@ -58,7 +58,7 @@ func ResetFilterHeader(const enc *VP8Encoder) {
   hdr.i4x4_lf_delta = 0;
 }
 
-func ResetBoundaryPredictions(const enc *VP8Encoder) {
+func ResetBoundaryPredictions(/* const */ enc *VP8Encoder) {
   // init boundary values once for all
   // Note: actually, initializing the 'preds[]' is only needed for intra4.
   var i int
@@ -98,7 +98,7 @@ func ResetBoundaryPredictions(const enc *VP8Encoder) {
 // full-SNS          |   |   |   |   | x | x | x |
 //-------------------+---+---+---+---+---+---+---+
 
-func MapConfigToTools(const enc *VP8Encoder) {
+func MapConfigToTools(/* const */ enc *VP8Encoder) {
   var config *WebPConfig = enc.config;
   method := config.method;
   limit := 100 - config.partition_limit;
@@ -147,7 +147,7 @@ func MapConfigToTools(const enc *VP8Encoder) {
 //              LFStats: 2048
 // Picture size (yuv): 419328
 
-static InitVP *VP8Encoder8Encoder(const config *WebPConfig, /*const*/ picture *WebPPicture) {
+static InitVP *VP8Encoder8Encoder(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture) {
   enc *VP8Encoder;
   use_filter :=
       (config.filter_strength > 0) || (config.autofilter > 0);
@@ -269,7 +269,7 @@ static double GetPSNR(uint64 err, size uint64 ) {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
 
-func FinalizePSNR(const enc *VP8Encoder) {
+func FinalizePSNR(/* const */ enc *VP8Encoder) {
   stats *WebPAuxStats = enc.pic.stats;
   const size uint64  = enc.sse_count;
   var sse *uint64 = enc.sse;
@@ -281,7 +281,7 @@ func FinalizePSNR(const enc *VP8Encoder) {
 }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
-func StoreStats(const enc *VP8Encoder) {
+func StoreStats(/* const */ enc *VP8Encoder) {
 #if !defined(WEBP_DISABLE_STATS)
   var stats *WebPAuxStats = enc.pic.stats;
   if (stats != nil) {
@@ -306,7 +306,7 @@ func StoreStats(const enc *VP8Encoder) {
 
 // Assign an error code to a picture. Return false for convenience.
 // Deprecated: time to start using golang errors
-int WebPEncodingSetError(const pic *WebPPicture, WebPEncodingError error) {
+int WebPEncodingSetError(/* const */ pic *WebPPicture, WebPEncodingError error) {
   assert.Assert((int)error < VP8_ENC_ERROR_LAST);
   assert.Assert((int)error >= VP8_ENC_OK);
   // The oldest error reported takes precedence over the new one.
@@ -316,7 +316,7 @@ int WebPEncodingSetError(const pic *WebPPicture, WebPEncodingError error) {
   return 0;
 }
 
-int WebPReportProgress(const pic *WebPPicture, int percent, /*const*/ percent_store *int) {
+int WebPReportProgress(/* const */ pic *WebPPicture, int percent, /*const*/ percent_store *int) {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
     if (pic.progress_hook && !pic.progress_hook(percent, pic)) {
@@ -328,7 +328,7 @@ int WebPReportProgress(const pic *WebPPicture, int percent, /*const*/ percent_st
 }
 //------------------------------------------------------------------------------
 
-int WebPEncode(const config *WebPConfig, pic *WebPPicture) {
+int WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) {
   ok := 0;
   if (pic == nil) { return 0; }
 

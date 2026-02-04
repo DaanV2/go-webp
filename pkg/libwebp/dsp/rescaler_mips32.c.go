@@ -136,7 +136,7 @@ func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEB
 //------------------------------------------------------------------------------
 // Row export
 
-func ExportRowExpand_MIPS32(const wrk *WebPRescaler) {
+func ExportRowExpand_MIPS32(/* const */ wrk *WebPRescaler) {
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;
   x_out_max := wrk.dst_width * wrk.num_channels;
@@ -194,7 +194,7 @@ func ExportRowExpand_MIPS32(const wrk *WebPRescaler) {
 }
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
-func ExportRowShrink_MIPS32(const wrk *WebPRescaler) {
+func ExportRowShrink_MIPS32(/* const */ wrk *WebPRescaler) {
   x_out_max := wrk.dst_width * wrk.num_channels;
   dst *uint8 = wrk.dst;
   rescaler_t* irow = wrk.irow;

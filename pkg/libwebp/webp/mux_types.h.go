@@ -49,7 +49,7 @@ func WebPDataInit(webp_data *WebPData) {
 
 // Allocates necessary storage for 'dst' and copies the contents of 'src'.
 // Returns true on success.
-func  WebPDataCopy(const src *WebPData, dst *WebPData) int {
+func  WebPDataCopy(/* const */ src *WebPData, dst *WebPData) int {
   if (src == nil || dst == nil) { return 0; }
   WebPDataInit(dst);
   if (src.bytes != nil && src.size != 0) {

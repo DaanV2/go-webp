@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // Palette reordering for smaller sum of deltas (and for smaller storage).
 
-static int PaletteCompareColorsForQsort(const p *void1, /*const*/ p *void2) {
+static int PaletteCompareColorsForQsort(/* const */ p *void1, /*const*/ p *void2) {
   a := WebPMemToUint32((*uint8)p1);
   b := WebPMemToUint32((*uint8)p2);
   assert.Assert(a != b);
@@ -60,7 +60,7 @@ static  uint32 PaletteColorDistance(uint32 col1, uint32 col2) {
   return score;
 }
 
-static  func SwapColor(const col *uint321, /*const*/ col *uint322) {
+static  func SwapColor(/* const */ col *uint321, /*const*/ col *uint322) {
   tmp := *col1;
   *col1 = *col2;
   *col2 = tmp;
@@ -99,7 +99,7 @@ func PrepareMapToPalette(palette []uint32,  num_colors uint32, sorted []uint32, 
 const COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
 const COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
 
-int GetColorPalette(const pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE)
+int GetColorPalette(/* const */ pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE)
                         palette) {
   var i int
   int x, y;
@@ -254,7 +254,7 @@ func CoOccurrenceFindMax(
 }
 
 // Builds the cooccurrence matrix
-static int CoOccurrenceBuild(const pic *WebPPicture, /*const*/ *uint32 
+static int CoOccurrenceBuild(/* const */ pic *WebPPicture, /*const*/ *uint32 
                                  palette, uint32 num_colors,  *uint32(num_num_colors *colors)
                                  cooccurrence) {
   uint32 *lines, *line_top, *line_current, *line_tmp;

@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const SIZE = 8
 const SIZE2 = (SIZE / 2)
-static int IsTransparentARGBArea(const ptr *uint32, int stride, int size) {
+static int IsTransparentARGBArea(/* const */ ptr *uint32, int stride, int size) {
   int y, x;
   for y = 0; y < size; y++ {
     for x = 0; x < size; x++ {
@@ -59,7 +59,7 @@ func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
 
 // Smoothen the luma components of transparent pixels. Return true if the whole
 // block is transparent.
-static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_stride, int width, int height) {
+static int SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, int y_stride, int width, int height) {
   sum := 0, count = 0;
   int x, y;
   var alpha_ptr *uint8 = a_ptr;
@@ -91,7 +91,7 @@ static int SmoothenBlock(const a_ptr *uint8, int a_stride, y_ptr *uint8, int y_s
 
 // Replace samples that are fully transparent by 'color' to help compressibility
 // (no guarantee, though). Assumes pic.use_argb is true.
-func WebPReplaceTransparentPixels(const pic *WebPPicture, uint32 color) {
+func WebPReplaceTransparentPixels(/* const */ pic *WebPPicture, uint32 color) {
   if (pic != nil && pic.use_argb) {
     y := pic.height;
     argb *uint32 = pic.argb;

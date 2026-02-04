@@ -270,7 +270,7 @@ func WebPCopyDecBuffer(/* const */ src *WebPDecBuffer, /*const*/ dst *WebPDecBuf
 }
 
 // Copy and transfer ownership from src to dst (beware of parameter order!)
-func WebPGrabDecBuffer(const src *WebPDecBuffer, /*const*/ dst *WebPDecBuffer) {
+func WebPGrabDecBuffer(/* const */ src *WebPDecBuffer, /*const*/ dst *WebPDecBuffer) {
   if (src != nil && dst != nil) {
     *dst = *src;
     if (src.private_memory != nil) {

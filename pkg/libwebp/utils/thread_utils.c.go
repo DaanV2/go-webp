@@ -154,7 +154,7 @@ static THREADFN ThreadLoop(ptr *void) {
 }
 
 // main thread state control
-func ChangeState(const worker *WebPWorker, WebPWorkerStatus new_status) {
+func ChangeState(/* const */ worker *WebPWorker, WebPWorkerStatus new_status) {
   // No-op when attempting to change state on a thread that didn't come up.
   // Checking 'status' without acquiring the lock first would result in a data
   // race.
@@ -186,12 +186,12 @@ func ChangeState(const worker *WebPWorker, WebPWorkerStatus new_status) {
 
 //------------------------------------------------------------------------------
 
-func Init(const worker *WebPWorker) {
+func Init(/* const */ worker *WebPWorker) {
   stdlib.Memset(worker, 0, sizeof(*worker));
   worker.status = NOT_OK;
 }
 
-static int Sync(const worker *WebPWorker) {
+static int Sync(/* const */ worker *WebPWorker) {
 #ifdef WEBP_USE_THREAD
   ChangeState(worker, OK);
 #endif
@@ -199,7 +199,7 @@ static int Sync(const worker *WebPWorker) {
   return !worker.had_error;
 }
 
-static int Reset(const worker *WebPWorker) {
+static int Reset(/* const */ worker *WebPWorker) {
   ok := 1;
   worker.had_error = 0;
   if (worker.status < OK) {
@@ -238,13 +238,13 @@ static int Reset(const worker *WebPWorker) {
   return ok;
 }
 
-func Execute(const worker *WebPWorker) {
+func Execute(/* const */ worker *WebPWorker) {
   if (worker.hook != nil) {
     worker.had_error |= !worker.hook(worker.data1, worker.data2);
   }
 }
 
-func Launch(const worker *WebPWorker) {
+func Launch(/* const */ worker *WebPWorker) {
 #ifdef WEBP_USE_THREAD
   ChangeState(worker, WORK);
 #else
@@ -252,7 +252,7 @@ func Launch(const worker *WebPWorker) {
 #endif
 }
 
-func End(const worker *WebPWorker) {
+func End(/* const */ worker *WebPWorker) {
 #ifdef WEBP_USE_THREAD
   if (worker.impl != nil) {
     var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
@@ -273,7 +273,7 @@ func End(const worker *WebPWorker) {
 
 static WebPWorkerInterface g_worker_interface = {Init,   Reset,   Sync, Launch, Execute, End}
 
-int WebPSetWorkerInterface(const winterface *WebPWorkerInterface) {
+int WebPSetWorkerInterface(/* const */ winterface *WebPWorkerInterface) {
   if (winterface == nil || winterface.Init == nil ||
       winterface.Reset == nil || winterface.Sync == nil ||
       winterface.Launch == nil || winterface.Execute == nil ||

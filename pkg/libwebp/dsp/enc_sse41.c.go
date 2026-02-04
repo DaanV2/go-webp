@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Compute susceptibility based on DCT-coeff histograms.
 
-func CollectHistogram_SSE41(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
+func CollectHistogram_SSE41(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
@@ -73,23 +73,23 @@ func CollectHistogram_SSE41(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTR
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int TTransform_SSE41(const inA *uint8, /*const*/ inB *uint8, /*const*/ w *uint16) {
+static int TTransform_SSE41(/* const */ inA *uint8, /*const*/ inB *uint8, /*const*/ w *uint16) {
   int32 sum[4];
   __m128i tmp_0, tmp_1, tmp_2, tmp_3;
 
   // Load and combine inputs.
   {
-    const __m128i inA_0 = _mm_loadu_si128((const __*m128i)&inA[BPS * 0]);
-    const __m128i inA_1 = _mm_loadu_si128((const __*m128i)&inA[BPS * 1]);
-    const __m128i inA_2 = _mm_loadu_si128((const __*m128i)&inA[BPS * 2]);
+    const __m128i inA_0 = _mm_loadu_si128((/* const */ __*m128i)&inA[BPS * 0]);
+    const __m128i inA_1 = _mm_loadu_si128((/* const */ __*m128i)&inA[BPS * 1]);
+    const __m128i inA_2 = _mm_loadu_si128((/* const */ __*m128i)&inA[BPS * 2]);
     // In SSE4.1, with gcc 4.8 at least (maybe other versions), // _mm_loadu_si128 is faster than _mm_loadl_epi64. But for the last lump
     // of inA and inB, _mm_loadl_epi64 is still used not to have an out of
     // bound read.
-    const __m128i inA_3 = _mm_loadl_epi64((const __*m128i)&inA[BPS * 3]);
-    const __m128i inB_0 = _mm_loadu_si128((const __*m128i)&inB[BPS * 0]);
-    const __m128i inB_1 = _mm_loadu_si128((const __*m128i)&inB[BPS * 1]);
-    const __m128i inB_2 = _mm_loadu_si128((const __*m128i)&inB[BPS * 2]);
-    const __m128i inB_3 = _mm_loadl_epi64((const __*m128i)&inB[BPS * 3]);
+    const __m128i inA_3 = _mm_loadl_epi64((/* const */ __*m128i)&inA[BPS * 3]);
+    const __m128i inB_0 = _mm_loadu_si128((/* const */ __*m128i)&inB[BPS * 0]);
+    const __m128i inB_1 = _mm_loadu_si128((/* const */ __*m128i)&inB[BPS * 1]);
+    const __m128i inB_2 = _mm_loadu_si128((/* const */ __*m128i)&inB[BPS * 2]);
+    const __m128i inB_3 = _mm_loadl_epi64((/* const */ __*m128i)&inB[BPS * 3]);
 
     // Combine inA and inB (we'll do two transforms in parallel).
     const __m128i inAB_0 = _mm_unpacklo_epi32(inA_0, inB_0);
@@ -130,8 +130,8 @@ static int TTransform_SSE41(const inA *uint8, /*const*/ inB *uint8, /*const*/ w 
   // Horizontal pass and difference of weighted sums.
   {
     // Load all inputs.
-    const __m128i w_0 = _mm_loadu_si128((const __*m128i)&w[0]);
-    const __m128i w_8 = _mm_loadu_si128((const __*m128i)&w[8]);
+    const __m128i w_0 = _mm_loadu_si128((/* const */ __*m128i)&w[0]);
+    const __m128i w_8 = _mm_loadu_si128((/* const */ __*m128i)&w[8]);
 
     // Calculate a and b (two 4x4 at once).
     const __m128i a0 = _mm_add_epi16(tmp_0, tmp_2);
@@ -169,12 +169,12 @@ static int TTransform_SSE41(const inA *uint8, /*const*/ inB *uint8, /*const*/ w 
   return sum[0] + sum[1] + sum[2] + sum[3];
 }
 
-static int Disto4x4_SSE41(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+static int Disto4x4_SSE41(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   diff_sum := TTransform_SSE41(a, b, w);
   return abs(diff_sum) >> 5;
 }
 
-static int Disto16x16_SSE41(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+static int Disto16x16_SSE41(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   D := 0;
   int x, y;
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -205,10 +205,10 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], /*const*/ sharpen
   // Load all inputs.
   __m128i in0 = _mm_loadu_si128((__*m128i)&in[0]);
   __m128i in8 = _mm_loadu_si128((__*m128i)&in[8]);
-  const __m128i iq0 = _mm_loadu_si128((const __*m128i)&mtx.iq[0]);
-  const __m128i iq8 = _mm_loadu_si128((const __*m128i)&mtx.iq[8]);
-  const __m128i q0 = _mm_loadu_si128((const __*m128i)&mtx.q[0]);
-  const __m128i q8 = _mm_loadu_si128((const __*m128i)&mtx.q[8]);
+  const __m128i iq0 = _mm_loadu_si128((/* const */ __*m128i)&mtx.iq[0]);
+  const __m128i iq8 = _mm_loadu_si128((/* const */ __*m128i)&mtx.iq[8]);
+  const __m128i q0 = _mm_loadu_si128((/* const */ __*m128i)&mtx.q[0]);
+  const __m128i q8 = _mm_loadu_si128((/* const */ __*m128i)&mtx.q[8]);
 
   // coeff = abs(in)
   __m128i coeff0 = _mm_abs_epi16(in0);
@@ -216,8 +216,8 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], /*const*/ sharpen
 
   // coeff = abs(in) + sharpen
   if (sharpen != nil) {
-    const __m128i sharpen0 = _mm_loadu_si128((const __*m128i)&sharpen[0]);
-    const __m128i sharpen8 = _mm_loadu_si128((const __*m128i)&sharpen[8]);
+    const __m128i sharpen0 = _mm_loadu_si128((/* const */ __*m128i)&sharpen[0]);
+    const __m128i sharpen8 = _mm_loadu_si128((/* const */ __*m128i)&sharpen[8]);
     coeff0 = _mm_add_epi16(coeff0, sharpen0);
     coeff8 = _mm_add_epi16(coeff8, sharpen8);
   }
@@ -235,10 +235,10 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], /*const*/ sharpen
     __m128i out_08 = _mm_unpacklo_epi16(coeff_iQ8L, coeff_iQ8H);
     __m128i out_12 = _mm_unpackhi_epi16(coeff_iQ8L, coeff_iQ8H);
     // out = (coeff * iQ + B)
-    const __m128i bias_00 = _mm_loadu_si128((const __*m128i)&mtx.bias[0]);
-    const __m128i bias_04 = _mm_loadu_si128((const __*m128i)&mtx.bias[4]);
-    const __m128i bias_08 = _mm_loadu_si128((const __*m128i)&mtx.bias[8]);
-    const __m128i bias_12 = _mm_loadu_si128((const __*m128i)&mtx.bias[12]);
+    const __m128i bias_00 = _mm_loadu_si128((/* const */ __*m128i)&mtx.bias[0]);
+    const __m128i bias_04 = _mm_loadu_si128((/* const */ __*m128i)&mtx.bias[4]);
+    const __m128i bias_08 = _mm_loadu_si128((/* const */ __*m128i)&mtx.bias[8]);
+    const __m128i bias_12 = _mm_loadu_si128((/* const */ __*m128i)&mtx.bias[12]);
     out_00 = _mm_add_epi32(out_00, bias_00);
     out_04 = _mm_add_epi32(out_04, bias_04);
     out_08 = _mm_add_epi32(out_08, bias_08);

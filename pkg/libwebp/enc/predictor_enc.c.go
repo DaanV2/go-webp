@@ -45,7 +45,7 @@ static  int GetMax(int a, int b) { return (a < b) ? b : a; }
 // Compute a bias for prediction entropy using a global heuristic to favor
 // values closer to 0. Hence the final negative sign.
 // 'exp_val' has a scaling factor of 1/100.
-static int64 PredictionCostBias(const uint32 counts[256], uint64 weight_0, uint64 exp_val) {
+static int64 PredictionCostBias(/* const */ uint32 counts[256], uint64 weight_0, uint64 exp_val) {
   significant_symbols := 256 >> 4;
   exp_decay_factor := 6;  // has a scaling factor of 1/10
   bits := (weight_0 * counts[0]) << LOG_2_PRECISION_BITS;
@@ -293,7 +293,7 @@ static  func GetResidual(
 }
 
 // Accessors to residual histograms.
-static  GetHistoArgb *uint32(const all_histos *uint32, int subsampling_index, int mode) {
+static  GetHistoArgb *uint32(/* const */ all_histos *uint32, int subsampling_index, int mode) {
   return &all_histos[(subsampling_index * kNumPredModes + mode) * HISTO_SIZE];
 }
 
@@ -310,7 +310,7 @@ static  GetAccumulatedHisto *uint32(all_accumulated *uint32, int subsampling_ind
 
 // Find and store the best predictor for a tile at subsampling
 // 'subsampling_index'.
-func GetBestPredictorForTile(const all_argb *uint32, int subsampling_index, int tile_x, int tile_y, int tiles_per_row, all_accumulated_argb *uint32, *uint32* const all_modes, /*const*/ all_pred_histos *uint32) {
+func GetBestPredictorForTile(/* const */ all_argb *uint32, int subsampling_index, int tile_x, int tile_y, int tiles_per_row, all_accumulated_argb *uint32, *uint32* const all_modes, /*const*/ all_pred_histos *uint32) {
   const accumulated_argb *uint32 =
       GetAccumulatedHisto(all_accumulated_argb, subsampling_index);
   var modes *uint32 = all_modes[subsampling_index];
@@ -477,7 +477,7 @@ func CopyImageWithPrediction(int width, int height, int bits, /*const*/ modes *u
 
 // Checks whether 'image' can be subsampled by finding the biggest power of 2
 // squares (defined by 'best_bits') of uniform value it is made out of.
-func VP8LOptimizeSampling(const image *uint32, int full_width, int full_height, int bits, int max_bits, best_bits_out *int) {
+func VP8LOptimizeSampling(/* const */ image *uint32, int full_width, int full_height, int bits, int max_bits, best_bits_out *int) {
   width := VP8LSubSampleSize(full_width, bits);
   height := VP8LSubSampleSize(full_height, bits);
   int old_width, x, y, square_size;
@@ -753,7 +753,7 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low
 //------------------------------------------------------------------------------
 // Color transform functions.
 
-static  func MultipliersClear(const m *VP8LMultipliers) {
+static  func MultipliersClear(/* const */ m *VP8LMultipliers) {
   m.green_to_red = 0;
   m.green_to_blue = 0;
   m.red_to_blue = 0;
@@ -766,12 +766,12 @@ static  func ColorCodeToMultipliers(uint32 color_code, /*const*/ m *VP8LMultipli
 }
 
 static  uint32
-MultipliersToColorCode(const m *VP8LMultipliers) {
+MultipliersToColorCode(/* const */ m *VP8LMultipliers) {
   return uint(0xff000000) | ((uint32)(m.red_to_blue) << 16) |
          ((uint32)(m.green_to_blue) << 8) | m.green_to_red;
 }
 
-static int64 PredictionCostCrossColor(const uint32 accumulated[256], /*const*/ uint32 counts[256]) {
+static int64 PredictionCostCrossColor(/* const */ uint32 accumulated[256], /*const*/ uint32 counts[256]) {
   // Favor low entropy, locally and globally.
   // Favor small absolute values for PredictionCostSpatial
   static const kExpValue := 240;
@@ -801,7 +801,7 @@ static int64 GetPredictionCostCrossColorRed(
   return cur_diff;
 }
 
-func GetBestGreenToRed(const argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, /*const*/ uint32 accumulated_red_histo[256], /*const*/ best_tx *VP8LMultipliers) {
+func GetBestGreenToRed(/* const */ argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, /*const*/ uint32 accumulated_red_histo[256], /*const*/ best_tx *VP8LMultipliers) {
   kMaxIters := 4 + ((7 * quality) >> 8);  // in range [4..6]
   green_to_red_best := 0;
   int iter, offset;
@@ -861,7 +861,7 @@ static int64 GetPredictionCostCrossColorBlue(
 
 const kGreenRedToBlueNumAxis = 8
 const kGreenRedToBlueMaxIters = 7
-func GetBestGreenRedToBlue(const argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, /*const*/ uint32 accumulated_blue_histo[256], /*const*/ best_tx *VP8LMultipliers) {
+func GetBestGreenRedToBlue(/* const */ argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, /*const*/ uint32 accumulated_blue_histo[256], /*const*/ best_tx *VP8LMultipliers) {
   offset[kGreenRedToBlueNumAxis][2] := {
       {0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}}
   delta_lut[kGreenRedToBlueMaxIters] := {16, 16, 8, 4, 2, 2, 2}

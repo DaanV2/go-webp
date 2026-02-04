@@ -144,7 +144,7 @@ func WebPDecodeBGRInto(    data *uint8, data_size uint64,output_buffer *uint8  ,
 // 'u_size' and 'v_size' respectively.
 // Pointer to the luma plane ('*luma') is returned or nil if an error occurred
 // during decoding (or because some buffers were found to be too small).
-func WebPDecodeYUVInto(    data *uint8, data_size uint64,  luma *uint8,  luma_size uint64,  luma_stride int,   u *uint8,  u_size uint64,  u_stride int,   v *uint8,  v_size uint64, int v_stride) *uint8 {
+func WebPDecodeYUVInto(    data *uint8, data_size uint64,  luma *uint8,  luma_size uint64,  luma_stride int,   u *uint8,  u_size uint64,  u_stride int,   v *uint8,  v_size uint64, v_stride int) *uint8 {
 	//TODO: implement
 	return nil
 }
@@ -276,12 +276,12 @@ func WebPINewDecoder(output_buffer *WebPDecBuffer ) *WebPIDecoder {
 // MODE_YUVA) when decoding starts. All parameters are then ignored.
 // Returns nil if the allocation failed or if a parameter is invalid.
   WebPINewYUVA *WebPIDecoder(
-    *uint8  luma, uint64 luma_size, int luma_stride, *uint8  u, uint64 u_size, int u_stride, *uint8  v, uint64 v_size, int v_stride, *uint8  a, uint64 a_size, int a_stride);
+    *uint8  luma, uint64 luma_size, int luma_stride, u *uint8, u_size uint64, u_stride int, v *uint8, v_size uint64, v_stride int, a *uint8, a_size uint64, a_stride int);
 
 // Deprecated version of the above, without the alpha plane.
 // Kept for backward compatibility.
   WebPINewYUV *WebPIDecoder(
-    *uint8  luma, uint64 luma_size, int luma_stride, *uint8  u, uint64 u_size, int u_stride, *uint8  v, uint64 v_size, int v_stride);
+    *uint8  luma, uint64 luma_size, int luma_stride, u *uint8, u_size uint64, u_stride int, v *uint8, v_size uint64, v_stride int);
 
 // Deletes the WebPIDecoder object and associated memory. Must always be called
 // if WebPINewDecoder, WebPINewRGB or WebPINewYUV succeeded.
@@ -308,12 +308,12 @@ func WebPINewDecoder(output_buffer *WebPDecBuffer ) *WebPIDecoder {
 // (*last_y, etc *width.) can be nil if corresponding information is not
 // needed. The values in these pointers are only valid on successful (non-nil)
 // return.
-  WebPIDecGetRGB *uint8(const idec *WebPIDecoder, last_y *int, width *int, height *int, stride *int);
+  WebPIDecGetRGB *uint8(/* const */ idec *WebPIDecoder, last_y *int, width *int, height *int, stride *int);
 
 // Same as above function to get a YUVA image. Returns pointer to the luma
 // plane or nil in case of error. If there is no alpha information
 // the alpha pointer '*a' will be returned nil.
-  WebPIDecGetYUVA *uint8(const idec *WebPIDecoder, last_y *int, *uint8* u, *uint8* v, *uint8* a, width *int, height *int, stride *int, uv_stride *int, a_stride *int);
+  WebPIDecGetYUVA *uint8(/* const */ idec *WebPIDecoder, last_y *int, *uint8* u, *uint8* v, *uint8* a, width *int, height *int, stride *int, uv_stride *int, a_stride *int);
 
 // Deprecated alpha-less version of WebPIDecGetYUVA(): it will ignore the
 // alpha information (if present). Kept for backward compatibility.

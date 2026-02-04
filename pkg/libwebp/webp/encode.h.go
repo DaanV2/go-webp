@@ -45,10 +45,10 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // These functions compress using the lossy format, and the quality_factor
 // can go from 0 (smaller output, lower quality) to 100 (best quality,
 // larger output).
- uint64 WebPEncodeRGB(const rgb *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGR(const bgr *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeRGBA(const rgba *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGRA(const bgra *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeRGB(/* const */ rgb *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeBGR(/* const */ bgr *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeRGBA(/* const */ rgba *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeBGRA(/* const */ bgra *uint8, int width, int height, int stride, float quality_factor, *uint8* output);
 
 // These functions are the equivalent of the above, but compressing in a
 // lossless manner. Files are usually larger than lossy format, but will
@@ -58,10 +58,10 @@ typedef struct WebPMemoryWriter WebPMemoryWriter;
 // transparent areas (that is, areas with alpha values equal to 0) will be
 // modified to improve compression. To afunc this, use WebPEncode() and set
 // WebPConfig::exact to 1.
- uint64 WebPEncodeLosslessRGB(const rgb *uint8, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessBGR(const bgr *uint8, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessRGBA(const rgba *uint8, int width, int height, int stride, *uint8* output);
- uint64 WebPEncodeLosslessBGRA(const bgra *uint8, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessRGB(/* const */ rgb *uint8, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessBGR(/* const */ bgr *uint8, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessRGBA(/* const */ rgba *uint8, int width, int height, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessBGRA(/* const */ bgra *uint8, int width, int height, int stride, *uint8* output);
 
 //------------------------------------------------------------------------------
 // Coding parameters
@@ -174,7 +174,7 @@ typedef enum WebPPreset {
 
 // Returns true if 'config' is non-nil and all configuration parameters are
 // within their valid ranges.
-  int WebPValidateConfig(const config *WebPConfig);
+  int WebPValidateConfig(/* const */ config *WebPConfig);
 
 //------------------------------------------------------------------------------
 // Input / Output
@@ -214,7 +214,7 @@ type WebPAuxStats struct {
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
 // reference (and so one can make use of picture.custom_ptr).
-typedef int (*WebPWriterFunction)(const data *uint8, data_size uint64, /*const*/ picture *WebPPicture);
+typedef int (*WebPWriterFunction)(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture);
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
 // the following WebPMemoryWriter object (to be set as a custom_ptr).
@@ -234,7 +234,7 @@ type WebPMemoryWriter struct {
 // The custom writer to be used with WebPMemoryWriter as custom_ptr. Upon
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
-  int WebPMemoryWrite(const data *uint8, data_size uint64, /*const*/ picture *WebPPicture);
+  int WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture);
 
 // Progress hook, called from time to time to report progress. It can return
 // false to request an abort of the encoding process, or true otherwise if
@@ -289,7 +289,7 @@ type WebPPicture struct {
   uint8 *y, *u, *v;       // pointers to luma/chroma planes.
   int y_stride, uv_stride;  // luma/chroma strides.
   a *uint8;               // pointer to the alpha plane
-  int a_stride;             // stride of the alpha plane
+  a_stride int;             // stride of the alpha plane
   uint32 pad1[2];         // padding for later use
 
   // ARGB input (mostly used for input to lossless compression)
@@ -369,7 +369,7 @@ type WebPPicture struct {
 // will fully own the copied pixels (this is not a view). The 'dst' picture need
 // not be initialized as its content is overwritten.
 // Returns false in case of memory allocation error.
-  int WebPPictureCopy(const src *WebPPicture, dst *WebPPicture);
+  int WebPPictureCopy(/* const */ src *WebPPicture, dst *WebPPicture);
 
 // Compute the single distortion for packed planes of samples.
 // 'src' will be compared to 'ref', and the raw distortion stored into
@@ -412,11 +412,11 @@ type WebPPicture struct {
 // with WebPPictureInit() if it is different from 'src', since its content will
 // be overwritten.
 // Returns false in case of invalid parameters.
-  int WebPPictureView(const src *WebPPicture, int left, int top, int width, int height, dst *WebPPicture);
+  int WebPPictureView(/* const */ src *WebPPicture, int left, int top, int width, int height, dst *WebPPicture);
 
 // Returns true if the 'picture' is actually a view and therefore does
 // not own the memory for pixels.
- int WebPPictureIsView(const picture *WebPPicture);
+ int WebPPictureIsView(/* const */ picture *WebPPicture);
 
 // Rescale a picture to new dimension width x height.
 // If either 'width' or 'height' (but not both) is 0 the corresponding
@@ -483,7 +483,7 @@ type WebPPicture struct {
 // Scan the picture 'picture' for the presence of non fully opaque alpha values.
 // Returns true in such case. Otherwise returns false (indicating that the
 // alpha plane can be ignored altogether e.g.).
- int WebPPictureHasTransparency(const picture *WebPPicture);
+ int WebPPictureHasTransparency(/* const */ picture *WebPPicture);
 
 // Remove the transparency information (if present) by blending the color with
 // the background color 'background_rgb' (specified as 24bit RGB triplet).
@@ -503,7 +503,7 @@ type WebPPicture struct {
 // the former for lossy encoding, and the latter for lossless encoding
 // (when config.lossless is true). Automatic conversion from one format to
 // another is provided but they both incur some loss.
-  int WebPEncode(const config *WebPConfig, picture *WebPPicture);
+  int WebPEncode(/* const */ config *WebPConfig, picture *WebPPicture);
 
 //------------------------------------------------------------------------------
 

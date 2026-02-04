@@ -67,7 +67,7 @@ ROW_FUNC(YuvToRgb565Row, VP8YuvToRgb565, 2)
 #undef ROW_FUNC
 
 // Main call for processing a plane with a WebPSamplerRowFunc function:
-func WebPSamplerProcessPlane(const WEBP_RESTRICT y *uint8, int y_stride, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, int uv_stride, WEBP_RESTRICT dst *uint8, int dst_stride, int width, int height, WebPSamplerRowFunc func) {
+func WebPSamplerProcessPlane(/* const */ WEBP_RESTRICT y *uint8, int y_stride, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, int uv_stride, WEBP_RESTRICT dst *uint8, int dst_stride, int width, int height, WebPSamplerRowFunc func) {
   var j int
   for j = 0; j < height; j++ {
     func(y, u, v, dst, width);
@@ -132,7 +132,7 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
 //-----------------------------------------------------------------------------
 // ARGB . YUV converters
 
-func ConvertARGBToY_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width) {
+func ConvertARGBToY_C(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width) {
   var i int
   for i = 0; i < width; i++ {
     p := argb[i];
@@ -141,7 +141,7 @@ func ConvertARGBToY_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, 
   }
 }
 
-func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int src_width, int do_store) {
+func WebPConvertARGBToUV_C(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int src_width, int do_store) {
   // No rounding. Last pixel is dealt with separately.
   uv_width := src_width >> 1;
   var i int
@@ -183,21 +183,21 @@ func WebPConvertARGBToUV_C(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *ui
 
 //-----------------------------------------------------------------------------
 
-func ConvertRGBToY_C(const WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
+func ConvertRGBToY_C(/* const */ WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
   var i int
   for i = 0; i < width; ++i, rgb += step {
     y[i] = VP8RGBToY(rgb[0], rgb[1], rgb[2], YUV_HALF);
   }
 }
 
-func ConvertBGRToY_C(const WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
+func ConvertBGRToY_C(/* const */ WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
   var i int
   for i = 0; i < width; ++i, bgr += step {
     y[i] = VP8RGBToY(bgr[2], bgr[1], bgr[0], YUV_HALF);
   }
 }
 
-func WebPConvertRGBA32ToUV_C(const WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width) {
+func WebPConvertRGBA32ToUV_C(/* const */ WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width) {
   var i int
   for i = 0; i < width; i += 1, rgb += 4 {
     r := rgb[0], g = rgb[1], b = rgb[2];
@@ -320,7 +320,7 @@ static const uint32 kInvAlpha[4 * 0xff + 1] = {
 
 #endif  // USE_INVERSE_ALPHA_TABLE
 
-static  int LinearToGammaWeighted(const src *uint8, /*const*/ a_ptr *uint8, uint32 total_a, int step, int rgb_stride) {
+static  int LinearToGammaWeighted(/* const */ src *uint8, /*const*/ a_ptr *uint8, uint32 total_a, int step, int rgb_stride) {
   sum :=
       a_ptr[0] * GammaToLinear(src[0]) +
       a_ptr[step] * GammaToLinear(src[step]) +
@@ -333,7 +333,7 @@ static  int LinearToGammaWeighted(const src *uint8, /*const*/ a_ptr *uint8, uint
   return LinearToGamma(DIVIDE_BY_ALPHA(sum, total_a), 0);
 }
 
-func WebPAccumulateRGBA(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int rgb_stride, dst *uint16, int width) {
+func WebPAccumulateRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int rgb_stride, dst *uint16, int width) {
   int i, j;
   // we loop over 2x2 blocks and produce one R/G/B/A value for each.
   for i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * 4, dst += 4 {
@@ -372,7 +372,7 @@ func WebPAccumulateRGBA(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_
   }
 }
 
-func WebPAccumulateRGB(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, int rgb_stride, dst *uint16, int width) {
+func WebPAccumulateRGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, int rgb_stride, dst *uint16, int width) {
   int i, j;
   for i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * step, dst += 4 {
     dst[0] = SUM4(r_ptr + j, step);
@@ -395,9 +395,9 @@ func WebPAccumulateRGB(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_p
   }
 }
 
-func ImportYUVAFromRGBA_C(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
+func ImportYUVAFromRGBA_C(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
                                  int rgb_stride,  // bytes per scanline
-                                 int has_alpha, int width, int height, tmp_rgb *uint16, int y_stride, int uv_stride, int a_stride, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
+                                 int has_alpha, int width, int height, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
   var y int
   is_rgb := (r_ptr < b_ptr);  // otherwise it's bgr
   uv_width := (width + 1) >> 1;
@@ -480,19 +480,19 @@ func ImportYUVAFromRGBALastLine_C(
 
 //-----------------------------------------------------------------------------
 
-func (*WebPConvertRGBToY)(const WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, int width, int step);
-func (*WebPConvertBGRToY)(const WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int width, int step);
-func (*WebPConvertRGBA32ToUV)(const WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width);
+func (*WebPConvertRGBToY)(/* const */ WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, int width, int step);
+func (*WebPConvertBGRToY)(/* const */ WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int width, int step);
+func (*WebPConvertRGBA32ToUV)(/* const */ WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width);
 
-func (*WebPImportYUVAFromRGBA)(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
+func (*WebPImportYUVAFromRGBA)(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
                                int rgb_stride,  // bytes per scanline
-                               int has_alpha, int width, int height, tmp_rgb *uint16, int y_stride, int uv_stride, int a_stride, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
+                               int has_alpha, int width, int height, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 func (*WebPImportYUVAFromRGBALastLine)(
     const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,  // bytes per pixel
     int has_alpha, int width, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 
-func (*WebPConvertARGBToY)(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width);
-func (*WebPConvertARGBToUV)(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int src_width, int do_store);
+func (*WebPConvertARGBToY)(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width);
+func (*WebPConvertARGBToUV)(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int src_width, int do_store);
 
 extern func WebPInitConvertARGBToYUVSSE2(void);
 extern func WebPInitConvertARGBToYUVSSE41(void);

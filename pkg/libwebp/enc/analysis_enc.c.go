@@ -31,7 +31,7 @@ const MAX_ITERS_K_MEANS =6
 // Smooth the segment map by replacing isolated block by the majority of its
 // neighbours.
 
-func SmoothSegmentMap(const enc *VP8Encoder) {
+func SmoothSegmentMap(/* const */ enc *VP8Encoder) {
   int n, x, y;
   w := enc.mb_w;
   h := enc.mb_h;
@@ -78,7 +78,7 @@ static  int clip(int v, int m, int M) {
   return (v < m) ? m : (v > M) ? M : v;
 }
 
-func SetSegmentAlphas(const enc *VP8Encoder, /*const*/ int centers[NUM_MB_SEGMENTS], int mid) {
+func SetSegmentAlphas(/* const */ enc *VP8Encoder, /*const*/ int centers[NUM_MB_SEGMENTS], int mid) {
   nb := enc.segment_hdr.num_segments;
   min := centers[0], max = centers[0];
   var n int
@@ -113,7 +113,7 @@ static int FinalAlphaValue(int alpha) {
   return clip(alpha, 0, MAX_ALPHA);
 }
 
-static int GetAlpha(const histo *VP8Histogram) {
+static int GetAlpha(/* const */ histo *VP8Histogram) {
   // 'alpha' will later be clipped to [0..MAX_ALPHA] range, clamping outer
   // values which happen to be mostly noise. This leaves the maximum precision
   // for handling the useful small values which contribute most.
@@ -124,7 +124,7 @@ static int GetAlpha(const histo *VP8Histogram) {
   return alpha;
 }
 
-func InitHistogram(const histo *VP8Histogram) {
+func InitHistogram(/* const */ histo *VP8Histogram) {
   histo.max_value = 0;
   histo.last_non_zero = 1;
 }
@@ -132,7 +132,7 @@ func InitHistogram(const histo *VP8Histogram) {
 //------------------------------------------------------------------------------
 // Simplified k-Means, to assign Nb segments based on alpha-histogram
 
-func AssignSegments(const enc *VP8Encoder, /*const*/ int alphas[MAX_ALPHA + 1]) {
+func AssignSegments(/* const */ enc *VP8Encoder, /*const*/ int alphas[MAX_ALPHA + 1]) {
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
   // explicit check is needed to afunc spurious warning about 'n + 1' exceeding
   // array bounds of 'centers' with some compilers (noticed with gcc-4.9).
@@ -232,7 +232,7 @@ const MAX_INTRA16_MODE =2
 const MAX_INTRA4_MODE =2
 const MAX_UV_MODE =2
 
-static int MBAnalyzeBestIntra16Mode(const it *VP8EncIterator) {
+static int MBAnalyzeBestIntra16Mode(/* const */ it *VP8EncIterator) {
   max_mode := MAX_INTRA16_MODE;
   int mode;
   best_alpha := DEFAULT_ALPHA;
@@ -255,7 +255,7 @@ static int MBAnalyzeBestIntra16Mode(const it *VP8EncIterator) {
   return best_alpha;
 }
 
-static int FastMBAnalyze(const it *VP8EncIterator) {
+static int FastMBAnalyze(/* const */ it *VP8EncIterator) {
   // Empirical cut-off value, should be around 16 (~=block size). We use the
   // [8-17] range and favor intra4 at high quality, intra16 for low quality.
   q := (int)it.enc.config.quality;
@@ -283,7 +283,7 @@ static int FastMBAnalyze(const it *VP8EncIterator) {
   return 0;
 }
 
-static int MBAnalyzeBestUVMode(const it *VP8EncIterator) {
+static int MBAnalyzeBestUVMode(/* const */ it *VP8EncIterator) {
   best_alpha := DEFAULT_ALPHA;
   smallest_alpha := 0;
   best_mode := 0;
@@ -310,7 +310,7 @@ static int MBAnalyzeBestUVMode(const it *VP8EncIterator) {
   return best_alpha;
 }
 
-func MBAnalyze(const it *VP8EncIterator, int alphas[MAX_ALPHA + 1], /*const*/ alpha *int, /*const*/ uv_alpha *int) {
+func MBAnalyze(/* const */ it *VP8EncIterator, int alphas[MAX_ALPHA + 1], /*const*/ alpha *int, /*const*/ uv_alpha *int) {
   var enc *VP8Encoder = it.enc;
   int best_alpha, best_uv_alpha;
 
@@ -336,7 +336,7 @@ func MBAnalyze(const it *VP8EncIterator, int alphas[MAX_ALPHA + 1], /*const*/ al
   *uv_alpha += best_uv_alpha;
 }
 
-func DefaultMBInfo(const mb *VP8MBInfo) {
+func DefaultMBInfo(/* const */ mb *VP8MBInfo) {
   mb.type = 1;  // I16x16
   mb.uv_mode = 0;
   mb.skip = 0;     // not skipped
@@ -354,7 +354,7 @@ func DefaultMBInfo(const mb *VP8MBInfo) {
 // and decide intra4/intra16, but that's usually almost always a bad choice at
 // this stage.
 
-func ResetAllMBInfo(const enc *VP8Encoder) {
+func ResetAllMBInfo(/* const */ enc *VP8Encoder) {
   var n int
   for n = 0; n < enc.mb_w * enc.mb_h; n++ {
     DefaultMBInfo(&enc.mb_info[n]);
@@ -396,7 +396,7 @@ static int DoSegmentsJob(arg *void1, arg *void2) {
 }
 
 #ifdef WEBP_USE_THREAD
-func MergeJobs(const src *SegmentJob, /*const*/ dst *SegmentJob) {
+func MergeJobs(/* const */ src *SegmentJob, /*const*/ dst *SegmentJob) {
   var i int
   for (i = 0; i <= MAX_ALPHA; ++i) dst.alphas[i] += src.alphas[i];
   dst.alpha += src.alpha;
@@ -405,7 +405,7 @@ func MergeJobs(const src *SegmentJob, /*const*/ dst *SegmentJob) {
 #endif
 
 // initialize the job struct with some tasks to perform
-func InitSegmentJob(const enc *VP8Encoder, /*const*/ job *SegmentJob, int start_row, int end_row) {
+func InitSegmentJob(/* const */ enc *VP8Encoder, /*const*/ job *SegmentJob, int start_row, int end_row) {
   WebPGetWorkerInterface().Init(&job.worker);
   job.worker.data1 = job;
   job.worker.data2 = &job.it;
@@ -424,7 +424,7 @@ func InitSegmentJob(const enc *VP8Encoder, /*const*/ job *SegmentJob, int start_
 // main entry point
 // Main analysis loop. Decides the segmentations and complexity.
 // Assigns a first guess for Intra16 and 'uvmode' prediction modes
-int VP8EncAnalyze(const enc *VP8Encoder) {
+int VP8EncAnalyze(/* const */ enc *VP8Encoder) {
   ok := 1;
   do_segments :=
       enc.config.emulate_jpeg_size ||  // We need the complexity evaluation.

@@ -98,7 +98,7 @@ int WebPConfigInitInternal(config *WebPConfig, WebPPreset preset, float quality,
   return WebPValidateConfig(config);
 }
 
-int WebPValidateConfig(const config *WebPConfig) {
+int WebPValidateConfig(/* const */ config *WebPConfig) {
   if (config == nil) { return 0; }
   if (config.quality < 0 || config.quality > 100) { return 0; }
   if (config.target_size < 0) { return 0; }

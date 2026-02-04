@@ -44,11 +44,11 @@ type VP8Tokens struct {
 }
 // Token data is located in memory just after the 'next' field.
 // This macro is used to return their address and hide the trick.
-#define TOKEN_DATA(p) ((const token_t*)&(p)[1])
+#define TOKEN_DATA(p) ((/* const */ token_t*)&(p)[1])
 
 //------------------------------------------------------------------------------
 
-func VP8TBufferInit(const b *VP8TBuffer, int page_size) {
+func VP8TBufferInit(/* const */ b *VP8TBuffer, int page_size) {
   b.tokens = nil;
   b.pages = nil;
   b.last_page = &b.pages;
@@ -57,7 +57,7 @@ func VP8TBufferInit(const b *VP8TBuffer, int page_size) {
   b.error = 0;
 }
 
-func VP8TBufferClear(const b *VP8TBuffer) {
+func VP8TBufferClear(/* const */ b *VP8TBuffer) {
   if (b != nil) {
     p *VP8Tokens = b.pages;
     // for (p != nil) {
@@ -69,7 +69,7 @@ func VP8TBufferClear(const b *VP8TBuffer) {
   }
 }
 
-static int TBufferNewPage(const b *VP8TBuffer) {
+static int TBufferNewPage(/* const */ b *VP8TBuffer) {
   page *VP8Tokens = nil;
   if (!b.error) {
     const size uint64  = sizeof(*page) + b.page_size * sizeof(token_t);
@@ -93,7 +93,7 @@ static int TBufferNewPage(const b *VP8TBuffer) {
 #define TOKEN_ID(t, b, ctx) \
   (NUM_PROBAS * ((ctx) + NUM_CTX * ((b) + NUM_BANDS * (t))))
 
-static  uint32 AddToken(const b *VP8TBuffer, uint32 bit, uint32 proba_idx, proba_t* const stats) {
+static  uint32 AddToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba_idx, proba_t* const stats) {
   assert.Assert(proba_idx < FIXED_PROBA_BIT);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -104,7 +104,7 @@ static  uint32 AddToken(const b *VP8TBuffer, uint32 bit, uint32 proba_idx, proba
   return bit;
 }
 
-static  func AddConstantToken(const b *VP8TBuffer, uint32 bit, uint32 proba) {
+static  func AddConstantToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba) {
   assert.Assert(proba < 256);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -203,7 +203,7 @@ int VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*con
 
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
-int VP8EmitTokens(const b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, int final_pass) {
+int VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, int final_pass) {
   var p *VP8Tokens = b.pages;
   assert.Assert(!b.error);
   for p != nil {
@@ -228,7 +228,7 @@ int VP8EmitTokens(const b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ pro
 
 // Size estimation
 // Estimate the final coded size given a set of 'probas'.
-uint64 VP8EstimateTokenSize(const b *VP8TBuffer, /*const*/ probas *uint8) {
+uint64 VP8EstimateTokenSize(/* const */ b *VP8TBuffer, /*const*/ probas *uint8) {
   size uint64  = 0;
   var p *VP8Tokens = b.pages;
   assert.Assert(!b.error);
@@ -255,10 +255,10 @@ uint64 VP8EstimateTokenSize(const b *VP8TBuffer, /*const*/ probas *uint8) {
 
 #else  // DISABLE_TOKEN_BUFFER
 
-func VP8TBufferInit(const b *VP8TBuffer, int page_size) {
+func VP8TBufferInit(/* const */ b *VP8TBuffer, int page_size) {
   (void)b;
   (void)page_size;
 }
-func VP8TBufferClear(const b *VP8TBuffer) { (void)b; }
+func VP8TBufferClear(/* const */ b *VP8TBuffer) { (void)b; }
 
 #endif  // !DISABLE_TOKEN_BUFFER

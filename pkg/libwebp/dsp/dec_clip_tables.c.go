@@ -50,8 +50,8 @@ static volatile tables_ok := 0;
 
 #endif  // USE_STATIC_TABLES
 
-var VP *int88ksclip1 = (const *int8)&sclip1[893];
-var VP *int88ksclip2 = (const *int8)&sclip2[112];
+var VP *int88ksclip1 = (/* const */ *int8)&sclip1[893];
+var VP *int88ksclip2 = (/* const */ *int8)&sclip2[112];
 var VP *uint88kclip1 = &clip1[255];
 var VP *uint88kabs0 = &abs0[255];
 

@@ -82,7 +82,7 @@ static  uint8 clip_8b(int v) {
 #undef CLIP_8b_MASK
 
 // vertical accumulation
-func VFilter(const p *SmoothParams) {
+func VFilter(/* const */ p *SmoothParams) {
   const src *uint8 = p.src;
   w := p.width;
   const cur *uint16 = p.cur;
@@ -111,7 +111,7 @@ func VFilter(const p *SmoothParams) {
 
 // horizontal accumulation. We use mirror replication of missing pixels, as it's
 // a little easier to implement (surprisingly).
-func HFilter(const p *SmoothParams) {
+func HFilter(/* const */ p *SmoothParams) {
   const in *uint16 = p.end;
   const out *uint16 = p.average;
   scale := p.scale;
@@ -135,7 +135,7 @@ func HFilter(const p *SmoothParams) {
 }
 
 // emit one filtered output row
-func ApplyFilter(const p *SmoothParams) {
+func ApplyFilter(/* const */ p *SmoothParams) {
   const average *uint16 = p.average;
   w := p.width;
   // correction is , pointing to the start of the LUT.
@@ -191,7 +191,7 @@ func InitCorrectionLUT(
   lut[0] = 0;
 }
 
-func CountLevels(const p *SmoothParams) {
+func CountLevels(/* const */ p *SmoothParams) {
   int i, j, last_level;
   uint8 used_levels[256] = {0}
   const data *uint8 = p.src;

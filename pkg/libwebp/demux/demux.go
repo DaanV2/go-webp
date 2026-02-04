@@ -323,7 +323,7 @@ func ReadHeader(/* const */ mem *MemBuffer) ParseStatus {
   return PARSE_OK
 }
 
-static ParseStatus ParseSingleImage(const dmux *WebPDemuxer) {
+static ParseStatus ParseSingleImage(/* const */ dmux *WebPDemuxer) {
   min_size := CHUNK_HEADER_SIZE
   /* const */ var mem *MemBuffer = &dmux.mem
   var frame *Frame
@@ -368,7 +368,7 @@ static ParseStatus ParseSingleImage(const dmux *WebPDemuxer) {
   return status
 }
 
-static ParseStatus ParseVP8XChunks(const dmux *WebPDemuxer) {
+static ParseStatus ParseVP8XChunks(/* const */ dmux *WebPDemuxer) {
   is_animation := !!(dmux.feature_flags & ANIMATION_FLAG)
   /* const */ mem *MemBuffer = &dmux.mem
   anim_chunks := 0
@@ -515,7 +515,7 @@ func IsValidSimpleFormat(/* const */ dmux *WebPDemuxer) int {
 
 // If 'exact' is true, check that the image resolution matches the canvas.
 // If 'exact' is false, check that the x/y offsets do not exceed the canvas.
-func CheckFrameBounds(const frame *Frame, exact int, canvas_width int, canvas_height int) int {
+func CheckFrameBounds(/* const */ frame *Frame, exact int, canvas_width int, canvas_height int) int {
   if (exact) {
     if (frame.x_offset != 0 || frame.y_offset != 0) {
       return 0
@@ -703,7 +703,7 @@ func WebPDemuxDelete(dmux *WebPDemuxer) {
 
 // -----------------------------------------------------------------------------
 
-uint32 WebPDemuxGetI(const dmux *WebPDemuxer, WebPFormatFeature feature) {
+uint32 WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature) {
   if (dmux == nil) { return 0 }
 
   switch (feature) {
@@ -726,7 +726,7 @@ uint32 WebPDemuxGetI(const dmux *WebPDemuxer, WebPFormatFeature feature) {
 // -----------------------------------------------------------------------------
 // Frame iteration
 
-static const GetFrame *Frame(const dmux *WebPDemuxer, int frame_num) {
+static const GetFrame *Frame(/* const */ dmux *WebPDemuxer, int frame_num) {
   const f *Frame
   for f = dmux.frames f != nil f = f.next {
     if (frame_num == f.frame_num) break
@@ -734,7 +734,7 @@ static const GetFrame *Frame(const dmux *WebPDemuxer, int frame_num) {
   return f
 }
 
-static const GetFramePayload *uint8(const mem_buf *uint8, /*const*/ frame *Frame, /*const*/ data_size *uint64) {
+static const GetFramePayload *uint8(/* const */ mem_buf *uint8, /*const*/ frame *Frame, /*const*/ data_size *uint64) {
   *data_size = 0
   if (frame != nil) {
     var image *ChunkData = frame.img_components
@@ -757,7 +757,7 @@ static const GetFramePayload *uint8(const mem_buf *uint8, /*const*/ frame *Frame
 }
 
 // Create a whole 'frame' from VP8 (+ alpha) or lossless.
-static int SynthesizeFrame(const dmux *WebPDemuxer, /*const*/ frame *Frame, /*const*/ iter *WebPIterator) {
+static int SynthesizeFrame(/* const */ dmux *WebPDemuxer, /*const*/ frame *Frame, /*const*/ iter *WebPIterator) {
   var mem_buf *uint8 = dmux.mem.buf
   payload_size := 0
   var payload *uint8 = GetFramePayload(mem_buf, frame, &payload_size)
@@ -793,7 +793,7 @@ static int SetFrame(int frame_num, /*const*/ iter *WebPIterator) {
   return SynthesizeFrame(dmux, frame, iter)
 }
 
-int WebPDemuxGetFrame(const dmux *WebPDemuxer, int frame, iter *WebPIterator) {
+int WebPDemuxGetFrame(/* const */ dmux *WebPDemuxer, int frame, iter *WebPIterator) {
   if (iter == nil) { return 0 }
 
   stdlib.Memset(iter, 0, sizeof(*iter))
@@ -817,7 +817,7 @@ func WebPDemuxReleaseIterator(iter *WebPIterator) { (void)iter }
 // -----------------------------------------------------------------------------
 // Chunk iteration
 
-static int ChunkCount(const dmux *WebPDemuxer, /*const*/ byte fourcc[4]) {
+static int ChunkCount(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4]) {
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
   count := 0
@@ -828,7 +828,7 @@ static int ChunkCount(const dmux *WebPDemuxer, /*const*/ byte fourcc[4]) {
   return count
 }
 
-static const GetChunk *Chunk(const dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num) {
+static const GetChunk *Chunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num) {
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
   count := 0
@@ -840,7 +840,7 @@ static const GetChunk *Chunk(const dmux *WebPDemuxer, /*const*/ byte fourcc[4], 
   return c
 }
 
-static int SetChunk(const byte fourcc[4], int chunk_num, /*const*/ iter *WebPChunkIterator) {
+static int SetChunk(/* const */ byte fourcc[4], int chunk_num, /*const*/ iter *WebPChunkIterator) {
   var dmux *WebPDemuxer = (*WebPDemuxer)iter.private_
   int count
 
@@ -861,7 +861,7 @@ static int SetChunk(const byte fourcc[4], int chunk_num, /*const*/ iter *WebPChu
   return 0
 }
 
-int WebPDemuxGetChunk(const dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num, iter *WebPChunkIterator) {
+int WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num, iter *WebPChunkIterator) {
   if (iter == nil) { return 0 }
 
   stdlib.Memset(iter, 0, sizeof(*iter))
@@ -872,7 +872,7 @@ int WebPDemuxGetChunk(const dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chu
 func WebPDemuxNextChunk( iter *WebPChunkIterator) int {
   if (iter != nil) {
     const fourcc *byte =
-        (const *byte)iter.chunk.bytes - CHUNK_HEADER_SIZE
+        (/* const */ *byte)iter.chunk.bytes - CHUNK_HEADER_SIZE
     return SetChunk(fourcc, iter.chunk_num + 1, iter)
   }
   return 0
@@ -881,7 +881,7 @@ func WebPDemuxNextChunk( iter *WebPChunkIterator) int {
 func WebPDemuxPrevChunk( iter *WebPChunkIterator) int {
   if (iter != nil && iter.chunk_num > 1) {
     const fourcc *byte =
-        (const *byte)iter.chunk.bytes - CHUNK_HEADER_SIZE
+        (/* const */ *byte)iter.chunk.bytes - CHUNK_HEADER_SIZE
     return SetChunk(fourcc, iter.chunk_num - 1, iter)
   }
   return 0

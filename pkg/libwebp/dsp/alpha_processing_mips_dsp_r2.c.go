@@ -18,7 +18,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #if defined(WEBP_USE_MIPS_DSP_R2)
 
-static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int width, int height, dst *uint8, int dst_stride) {
+static int DispatchAlpha_MIPSdspR2(/* const */ alpha *uint8, int alpha_stride, int width, int height, dst *uint8, int dst_stride) {
   alpha_mask := 0xffffffff;
   int i, j, temp0;
 
@@ -73,7 +73,7 @@ static int DispatchAlpha_MIPSdspR2(const alpha *uint8, int alpha_stride, int wid
   return (alpha_mask != 0xff);
 }
 
-func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
+func MultARGBRow_MIPSdspR2(/* const */ ptr *uint32, int width, int inverse) {
   var x int
   c_00ffffff := uint(0x00ffffff);
   c_ff000000 := uint(0xff000000);
@@ -115,7 +115,7 @@ func MultARGBRow_MIPSdspR2(const ptr *uint32, int width, int inverse) {
 }
 
 #ifdef constants.WORDS_BIGENDIAN
-func PackARGB_MIPSdspR2(const a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int len, out *uint32) {
+func PackARGB_MIPSdspR2(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int len, out *uint32) {
   int temp0, temp1, temp2, temp3, offset;
   rest := len & 1;
   var loop_end *uint32 = out + len - rest;
@@ -152,7 +152,7 @@ func PackARGB_MIPSdspR2(const a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, 
 }
 #endif  // constants.WORDS_BIGENDIAN
 
-func PackRGB_MIPSdspR2(const r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int len, int step, out *uint32) {
+func PackRGB_MIPSdspR2(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int len, int step, out *uint32) {
   int temp0, temp1, temp2, offset;
   rest := len & 1;
   a := 0xff;

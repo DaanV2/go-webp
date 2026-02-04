@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // WebPPicture
 //------------------------------------------------------------------------------
 
-static int DummyWriter(const data *uint8, data_size uint64, /*const*/ picture *WebPPicture) {
+static int DummyWriter(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture) {
   // The following are to prevent 'unused variable' error message.
   (void)data;
   (void)data_size;
@@ -52,7 +52,7 @@ int WebPPictureInitInternal(picture *WebPPicture, version int) {
 // Returns true if 'picture' is non-nil and dimensions/colorspace are within
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
-int WebPValidatePicture(const picture *WebPPicture) {
+int WebPValidatePicture(/* const */ picture *WebPPicture) {
   if (picture == nil) { return 0; }
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
       picture.height <= 0 || picture.height > INT_MAX / 4) {
@@ -65,13 +65,13 @@ int WebPValidatePicture(const picture *WebPPicture) {
   return 1;
 }
 
-func WebPPictureResetBufferARGB(const picture *WebPPicture) {
+func WebPPictureResetBufferARGB(/* const */ picture *WebPPicture) {
   picture.memory_argb_ = nil;
   picture.argb = nil;
   picture.argb_stride = 0;
 }
 
-func WebPPictureResetBufferYUVA(const picture *WebPPicture) {
+func WebPPictureResetBufferYUVA(/* const */ picture *WebPPicture) {
   picture.memory_ = nil;
   picture.y = picture.u = picture.v = picture.a = nil;
   picture.y_stride = picture.uv_stride = 0;
@@ -79,7 +79,7 @@ func WebPPictureResetBufferYUVA(const picture *WebPPicture) {
 }
 
 // Remove reference to the ARGB/YUVA buffer (doesn't free anything).
-func WebPPictureResetBuffers(const picture *WebPPicture) {
+func WebPPictureResetBuffers(/* const */ picture *WebPPicture) {
   WebPPictureResetBufferARGB(picture);
   WebPPictureResetBufferYUVA(picture);
 }
@@ -87,7 +87,7 @@ func WebPPictureResetBuffers(const picture *WebPPicture) {
 // Allocates ARGB buffer according to set width/height (previous one is
 // always free'd). Preserves the YUV(A) buffer. Returns false in case of error
 // (invalid param, out-of-memory).
-int WebPPictureAllocARGB(const picture *WebPPicture) {
+int WebPPictureAllocARGB(/* const */ picture *WebPPicture) {
   memory *void;
   width := picture.width;
   height := picture.height;
@@ -112,7 +112,7 @@ int WebPPictureAllocARGB(const picture *WebPPicture) {
 // free'd). Uses picture.csp to determine whether an alpha buffer is needed.
 // Preserves the ARGB buffer.
 // Returns false in case of error (invalid param, out-of-memory).
-int WebPPictureAllocYUVA(const picture *WebPPicture) {
+int WebPPictureAllocYUVA(/* const */ picture *WebPPicture) {
   has_alpha := (int)picture.colorspace & WEBP_CSP_ALPHA_BIT;
   width := picture.width;
   height := picture.height;
@@ -199,7 +199,7 @@ func WebPMemoryWriterInit(writer *WebPMemoryWriter) {
   writer.max_size = 0;
 }
 
-int WebPMemoryWrite(const data *uint8, data_size uint64, /*const*/ picture *WebPPicture) {
+int WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture) {
   var w *WebPMemoryWriter = (*WebPMemoryWriter)picture.custom_ptr;
   uint64 next_size;
   if (w == nil) {
@@ -238,9 +238,9 @@ func WebPMemoryWriterClear(writer *WebPMemoryWriter) {
 //------------------------------------------------------------------------------
 // Simplest high-level calls:
 
-typedef int (*Importer)(const *WebPPicture, /*const*/ *uint8, int);
+typedef int (*Importer)(/* const */ *WebPPicture, /*const*/ *uint8, int);
 
-static uint64 Encode(const rgba *uint8, int width, int height, int stride, Importer import, float quality_factor, int lossless, *uint8* output) {
+static uint64 Encode(/* const */ rgba *uint8, int width, int height, int stride, Importer import, float quality_factor, int lossless, *uint8* output) {
   WebPPicture pic;
   WebPConfig config;
   WebPMemoryWriter wrt;
@@ -273,7 +273,7 @@ static uint64 Encode(const rgba *uint8, int width, int height, int stride, Impor
 }
 
 #define ENCODE_FUNC(NAME, IMPORTER)                              \
-  uint64 NAME(const in *uint8, int w, int h, int bps, float q, \
+  uint64 NAME(/* const */ in *uint8, int w, int h, int bps, float q, \
               *uint8* out) {                                   \
     return Encode(in, w, h, bps, IMPORTER, q, 0, out);           \
   }
@@ -289,7 +289,7 @@ ENCODE_FUNC(WebPEncodeBGRA, WebPPictureImportBGRA)
 
 const LOSSLESS_DEFAULT_QUALITY =70.
 #define LOSSLESS_ENCODE_FUNC(NAME, IMPORTER)                                  \
-  uint64 NAME(const in *uint8, int w, int h, int bps, *uint8* out) {      \
+  uint64 NAME(/* const */ in *uint8, int w, int h, int bps, *uint8* out) {      \
     return Encode(in, w, h, bps, IMPORTER, LOSSLESS_DEFAULT_QUALITY, 1, out); \
   }
 

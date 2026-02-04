@@ -29,9 +29,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const VALUES_IN_BYTE =256
 
-extern func VP8LClearBackwardRefs(const refs *VP8LBackwardRefs);
+extern func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs);
 extern int VP8LDistanceToPlaneCode(int xsize, int dist);
-extern func VP8LBackwardRefsCursorAdd(const refs *VP8LBackwardRefs, /*const*/ PixOrCopy v);
+extern func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ PixOrCopy v);
 
 type CostModel struct {
   uint32 alpha[VALUES_IN_BYTE];
@@ -85,24 +85,24 @@ Error:
   return ok;
 }
 
-static  int64 GetLiteralCost(const m *CostModel, uint32 v) {
+static  int64 GetLiteralCost(/* const */ m *CostModel, uint32 v) {
   return (int64)m.alpha[v >> 24] + m.red[(v >> 16) & 0xff] +
          m.literal[(v >> 8) & 0xff] + m.blue[v & 0xff];
 }
 
-static  int64 GetCacheCost(const m *CostModel, uint32 idx) {
+static  int64 GetCacheCost(/* const */ m *CostModel, uint32 idx) {
   literal_idx := VALUES_IN_BYTE + NUM_LENGTH_CODES + idx;
   return (int64)m.literal[literal_idx];
 }
 
-static  int64 GetLengthCost(const m *CostModel, uint32 length) {
+static  int64 GetLengthCost(/* const */ m *CostModel, uint32 length) {
   int code, extra_bits;
   VP8LPrefixEncodeBits(length, &code, &extra_bits);
   return (int64)m.literal[VALUES_IN_BYTE + code] +
          ((int64)extra_bits << LOG_2_PRECISION_BITS);
 }
 
-static  int64 GetDistanceCost(const m *CostModel, uint32 distance) {
+static  int64 GetDistanceCost(/* const */ m *CostModel, uint32 distance) {
   int code, extra_bits;
   VP8LPrefixEncodeBits(distance, &code, &extra_bits);
   return (int64)m.distance[code] +
@@ -187,17 +187,17 @@ type CostManager struct {
   recycled_intervals *CostInterval;
 } ;
 
-func CostIntervalAddToFreeList(const manager *CostManager, /*const*/ interval *CostInterval) {
+func CostIntervalAddToFreeList(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
   interval.next = manager.free_intervals;
   manager.free_intervals = interval;
 }
 
-static int CostIntervalIsInFreeList(const manager *CostManager, /*const*/ interval *CostInterval) {
+static int CostIntervalIsInFreeList(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
   return (interval >= &manager.intervals[0] &&
           interval <= &manager.intervals[COST_MANAGER_MAX_FREE_LIST - 1]);
 }
 
-func CostManagerInitFreeList(const manager *CostManager) {
+func CostManagerInitFreeList(/* const */ manager *CostManager) {
   var i int
   manager.free_intervals = nil;
   for i = 0; i < COST_MANAGER_MAX_FREE_LIST; i++ {
@@ -205,7 +205,7 @@ func CostManagerInitFreeList(const manager *CostManager) {
   }
 }
 
-func DeleteIntervalList(const manager *CostManager, /*const*/ interval *CostInterval) {
+func DeleteIntervalList(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
   while (interval != nil) {
     var next *CostInterval = interval.next;
 
@@ -227,7 +227,7 @@ func CostManagerClear(/* const */ manager *CostManager) {
   CostManagerInitFreeList(manager);
 }
 
-static int CostManagerInit(const manager *CostManager, /*const*/ dist_array *uint16, int pix_count, /*const*/ cost_model *CostModel) {
+static int CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uint16, int pix_count, /*const*/ cost_model *CostModel) {
   var i int
   cost_cache_size := (pix_count > MAX_LENGTH) ? MAX_LENGTH : pix_count;
 
@@ -302,7 +302,7 @@ static int CostManagerInit(const manager *CostManager, /*const*/ dist_array *uin
 
 // Given the cost and the position that define an interval, update the cost at
 // pixel 'i' if it is smaller than the previously computed value.
-static  func UpdateCost(const manager *CostManager, int i, int position, int64 cost) {
+static  func UpdateCost(/* const */ manager *CostManager, int i, int position, int64 cost) {
   k := i - position;
   assert.Assert(k >= 0 && k < MAX_LENGTH);
 
@@ -314,13 +314,13 @@ static  func UpdateCost(const manager *CostManager, int i, int position, int64 c
 
 // Given the cost and the position that define an interval, update the cost for
 // all the pixels between 'start' and 'end' excluded.
-static  func UpdateCostPerInterval(const manager *CostManager, int start, int end, int position, int64 cost) {
+static  func UpdateCostPerInterval(/* const */ manager *CostManager, int start, int end, int position, int64 cost) {
   var i int
   for (i = start; i < end; ++i) UpdateCost(manager, i, position, cost);
 }
 
 // Given two intervals, make 'prev' be the previous one of 'next' in 'manager'.
-static  func ConnectIntervals(const manager *CostManager, /*const*/ prev *CostInterval, /*const*/ next *CostInterval) {
+static  func ConnectIntervals(/* const */ manager *CostManager, /*const*/ prev *CostInterval, /*const*/ next *CostInterval) {
   if (prev != nil) {
     prev.next = next;
   } else {
@@ -331,7 +331,7 @@ static  func ConnectIntervals(const manager *CostManager, /*const*/ prev *CostIn
 }
 
 // Pop an interval in the manager.
-static  func PopInterval(const manager *CostManager, /*const*/ interval *CostInterval) {
+static  func PopInterval(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
   if (interval == nil) return;
 
   ConnectIntervals(manager, interval.previous, interval.next);
@@ -349,7 +349,7 @@ static  func PopInterval(const manager *CostManager, /*const*/ interval *CostInt
 // overlap with i.
 // If 'do_clean_intervals' is set to something different than 0, intervals that
 // end before 'i' will be popped.
-static  func UpdateCostAtIndex(const manager *CostManager, int i, int do_clean_intervals) {
+static  func UpdateCostAtIndex(/* const */ manager *CostManager, int i, int do_clean_intervals) {
   current *CostInterval = manager.head;
 
   while (current != nil && current.start <= i) {
@@ -369,7 +369,7 @@ static  func UpdateCostAtIndex(const manager *CostManager, int i, int do_clean_i
 // Given a current orphan interval and its previous interval, before
 // it was orphaned (which can be nil), set it at the right place in the list
 // of intervals using the 'start' ordering and the previous interval as a hint.
-static  func PositionOrphanInterval(const manager *CostManager, /*const*/ current *CostInterval, previous *CostInterval) {
+static  func PositionOrphanInterval(/* const */ manager *CostManager, /*const*/ current *CostInterval, previous *CostInterval) {
   assert.Assert(current != nil);
 
   if (previous == nil) previous = manager.head;
@@ -391,7 +391,7 @@ static  func PositionOrphanInterval(const manager *CostManager, /*const*/ curren
 
 // Insert an interval in the list contained in the manager by starting at
 // 'interval_in' as a hint. The intervals are sorted by 'start' value.
-static  func InsertInterval(const manager *CostManager, /*const*/ interval_in *CostInterval, int64 cost, int position, int start, int end) {
+static  func InsertInterval(/* const */ manager *CostManager, /*const*/ interval_in *CostInterval, int64 cost, int position, int start, int end) {
   interval_new *CostInterval;
 
   if (start >= end) return;
@@ -428,7 +428,7 @@ static  func InsertInterval(const manager *CostManager, /*const*/ interval_in *C
 // and distance_cost, add its contributions to the previous intervals and costs.
 // If handling the interval or one of its subintervals becomes to heavy, its
 // contribution is added to the costs right away.
-static  func PushInterval(const manager *CostManager, int64 distance_cost, int position, int len) {
+static  func PushInterval(/* const */ manager *CostManager, int64 distance_cost, int position, int len) {
   uint64 i;
   interval *CostInterval = manager.head;
   interval_next *CostInterval;
@@ -646,7 +646,7 @@ Error:
 // We pack the path at the end of and return *dist_array
 // a pointer to this part of the array. Example:
 // dist_array = [1x2xx3x2] => packed [1x2x1232], chosen_path = [1232]
-func TraceBackwards(const dist_array *uint16, int dist_array_size, *uint16* const chosen_path, /*const*/ chosen_path_size *int) {
+func TraceBackwards(/* const */ dist_array *uint16, int dist_array_size, *uint16* const chosen_path, /*const*/ chosen_path_size *int) {
   path *uint16 = dist_array + dist_array_size;
   cur *uint16 = dist_array + dist_array_size - 1;
   while (cur >= dist_array) {

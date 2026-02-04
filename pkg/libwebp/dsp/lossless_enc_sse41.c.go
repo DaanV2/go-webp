@@ -33,15 +33,15 @@ static  uint32 HorizontalSum_SSE41(__m128i cost) {
   return _mm_cvtsi128_si32(cost);
 }
 
-static uint32 ExtraCost_SSE41(const a *uint32, int length) {
+static uint32 ExtraCost_SSE41(/* const */ a *uint32, int length) {
   var i int
   __m128i cost = _mm_set_epi32(2 * a[7], 2 * a[6], a[5], a[4]);
   assert.Assert(length % 8 == 0);
 
   for i = 8; i + 8 <= length; i += 8 {
     j := (i - 2) >> 1;
-    const __m128i a0 = _mm_loadu_si128((const __*m128i)&a[i]);
-    const __m128i a1 = _mm_loadu_si128((const __*m128i)&a[i + 4]);
+    const __m128i a0 = _mm_loadu_si128((/* const */ __*m128i)&a[i]);
+    const __m128i a1 = _mm_loadu_si128((/* const */ __*m128i)&a[i + 4]);
     const __m128i w = _mm_set_epi32(j + 3, j + 2, j + 1, j);
     const __m128i a2 = _mm_hadd_epi32(a0, a1);
     const __m128i mul = _mm_mullo_epi32(a2, w);
@@ -78,7 +78,7 @@ func SubtractGreenFromBlueAndRed_SSE41(argb_data *uint32, num_pixels int) {
 #define MK_CST_16(HI, LO) \
   _mm_set1_epi32((int)(((uint32)(HI) << 16) | ((LO) & 0xffff)))
 
-func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
+func CollectColorBlueTransforms_SSE41(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
   const __m128i mult =
       MK_CST_16(CST_5b(red_to_blue) + 256, CST_5b(green_to_blue));
   const __m128i perm =
@@ -87,14 +87,14 @@ func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stri
     var y int
     for y = 0; y < tile_height; y++ {
       var src *uint32 = argb + y * stride;
-      const __m128i A1 = _mm_loadu_si128((const __*m128i)src);
+      const __m128i A1 = _mm_loadu_si128((/* const */ __*m128i)src);
       const __m128i B1 = _mm_shuffle_epi8(A1, perm);
       const __m128i C1 = _mm_mulhi_epi16(B1, mult);
       const __m128i D1 = _mm_sub_epi16(A1, C1);
       __m128i E = _mm_add_epi16(_mm_srli_epi32(D1, 16), D1);
       var x int
       for x = 4; x + 4 <= tile_width; x += 4 {
-        const __m128i A2 = _mm_loadu_si128((const __*m128i)(src + x));
+        const __m128i A2 = _mm_loadu_si128((/* const */ __*m128i)(src + x));
         __m128i B2, C2, D2;
         ++histo[_mm_extract_epi8(E, 0)];
         B2 = _mm_shuffle_epi8(A2, perm);
@@ -119,20 +119,20 @@ func CollectColorBlueTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stri
   }
 }
 
-func CollectColorRedTransforms_SSE41(const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
+func CollectColorRedTransforms_SSE41(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
   const __m128i mult = MK_CST_16(0, CST_5b(green_to_red));
   const __m128i mask_g = _mm_set1_epi32(0x0000ff00);
   if (tile_width >= 4) {
     var y int
     for y = 0; y < tile_height; y++ {
       var src *uint32 = argb + y * stride;
-      const __m128i A1 = _mm_loadu_si128((const __*m128i)src);
+      const __m128i A1 = _mm_loadu_si128((/* const */ __*m128i)src);
       const __m128i B1 = _mm_and_si128(A1, mask_g);
       const __m128i C1 = _mm_madd_epi16(B1, mult);
       __m128i D = _mm_sub_epi16(A1, C1);
       var x int
       for x = 4; x + 4 <= tile_width; x += 4 {
-        const __m128i A2 = _mm_loadu_si128((const __*m128i)(src + x));
+        const __m128i A2 = _mm_loadu_si128((/* const */ __*m128i)(src + x));
         __m128i B2, C2;
         ++histo[_mm_extract_epi8(D, 2)];
         B2 = _mm_and_si128(A2, mask_g);

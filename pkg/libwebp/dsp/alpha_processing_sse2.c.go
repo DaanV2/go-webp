@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint8, int dst_stride) {
+static int DispatchAlpha_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint8, int dst_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
   alpha_and := 0xff;
@@ -41,7 +41,7 @@ static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride
     ptr *byte = (*byte)dst;
     for i = 0; i + 16 <= width - 1; i += 16 {
       // load 16 alpha bytes
-      const __m128i a0 = _mm_loadu_si128((const __*m128i)&alpha[i]);
+      const __m128i a0 = _mm_loadu_si128((/* const */ __*m128i)&alpha[i]);
       const __m128i a1_lo = _mm_unpacklo_epi8(a0, zero);
       const __m128i a1_hi = _mm_unpackhi_epi8(a0, zero);
       const __m128i a2_lo_lo = _mm_unpacklo_epi16(a1_lo, zero);
@@ -58,7 +58,7 @@ static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride
     }
     if (i + 8 <= width - 1) {
       // load 8 alpha bytes
-      const __m128i a0 = _mm_loadl_epi64((const __*m128i)&alpha[i]);
+      const __m128i a0 = _mm_loadl_epi64((/* const */ __*m128i)&alpha[i]);
       const __m128i a1 = _mm_unpacklo_epi8(a0, zero);
       const __m128i a2_lo = _mm_unpacklo_epi16(a1, zero);
       const __m128i a2_hi = _mm_unpackhi_epi16(a1, zero);
@@ -82,13 +82,13 @@ static int DispatchAlpha_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride
           _mm_movemask_epi8(_mm_cmpeq_epi8(all_alphas16, all_0xff)) != 0xffff);
 }
 
-func DispatchAlphaToGreen_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint32, int dst_stride) {
+func DispatchAlphaToGreen_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, int width, int height, WEBP_RESTRICT dst *uint32, int dst_stride) {
   int i, j;
   const __m128i zero = _mm_setzero_si128();
   limit := width & ~15;
   for j = 0; j < height; j++ {
     for i = 0; i < limit; i += 16 {  // process 16 alpha bytes
-      const __m128i a0 = _mm_loadu_si128((const __*m128i)&alpha[i]);
+      const __m128i a0 = _mm_loadu_si128((/* const */ __*m128i)&alpha[i]);
       const __m128i a1 = _mm_unpacklo_epi8(zero, a0);  // note the 'zero' first!
       const __m128i b1 = _mm_unpackhi_epi8(zero, a0);
       const __m128i a2_lo = _mm_unpacklo_epi16(a1, zero);
@@ -106,7 +106,7 @@ func DispatchAlphaToGreen_SSE2(const WEBP_RESTRICT alpha *uint8, int alpha_strid
   }
 }
 
-static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, int width, int height, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
+static int ExtractAlpha_SSE2(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, int width, int height, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
   alpha_and := 0xff;
@@ -121,7 +121,7 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
   limit := (width - 1) & ~7;
 
   for j = 0; j < height; j++ {
-    var __src *m128i = (const __*m128i)argb;
+    var __src *m128i = (/* const */ __*m128i)argb;
     for i = 0; i < limit; i += 8 {
       // load 32 argb bytes
       const __m128i a0 = _mm_loadu_si128(src + 0);
@@ -149,10 +149,10 @@ static int ExtractAlpha_SSE2(const WEBP_RESTRICT argb *uint8, int argb_stride, i
   return (alpha_and == 0xff);
 }
 
-func ExtractGreen_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
+func ExtractGreen_SSE2(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
   var i int
   const __m128i mask = _mm_set1_epi32(0xff);
-  var __src *m128i = (const __*m128i)argb;
+  var __src *m128i = (/* const */ __*m128i)argb;
 
   for i = 0; i + 16 <= size; i += 16, src += 4 {
     const __m128i a0 = _mm_loadu_si128(src + 0);
@@ -200,7 +200,7 @@ func ExtractGreen_SSE2(const WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *ui
 // value.
 #define APPLY_ALPHA(RGBX, SHUFFLE)                                     \
   for {                                                                 \
-    const __m128i argb0 = _mm_loadu_si128((const __*m128i)&(RGBX));    \
+    const __m128i argb0 = _mm_loadu_si128((/* const */ __*m128i)&(RGBX));    \
     const __m128i argb1_lo = _mm_unpacklo_epi8(argb0, zero);           \
     const __m128i argb1_hi = _mm_unpackhi_epi8(argb0, zero);           \
     const __m128i alpha0_lo = _mm_or_si128(argb1_lo, kMask);           \
@@ -258,11 +258,11 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
 //------------------------------------------------------------------------------
 // Alpha detection
 
-static int HasAlpha8b_SSE2(const src *uint8, int length) {
+static int HasAlpha8b_SSE2(/* const */ src *uint8, int length) {
   const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
   i := 0;
   for ; i + 16 <= length; i += 16 {
-    const __m128i v = _mm_loadu_si128((const __*m128i)(src + i));
+    const __m128i v = _mm_loadu_si128((/* const */ __*m128i)(src + i));
     const __m128i bits = _mm_cmpeq_epi8(v, all_0xff);
     mask := _mm_movemask_epi8(bits);
     if (mask != 0xffff) { return 1; }
@@ -273,7 +273,7 @@ static int HasAlpha8b_SSE2(const src *uint8, int length) {
   return 0;
 }
 
-static int HasAlpha32b_SSE2(const src *uint8, int length) {
+static int HasAlpha32b_SSE2(/* const */ src *uint8, int length) {
   const __m128i alpha_mask = _mm_set1_epi32(0xff);
   const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
   i := 0;
@@ -282,10 +282,10 @@ static int HasAlpha32b_SSE2(const src *uint8, int length) {
   // or the last byte of the quadruplet). Hence the '-3' protection below.
   length = length * 4 - 3;  // size in bytes
   for ; i + 64 <= length; i += 64 {
-    const __m128i a0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
-    const __m128i a1 = _mm_loadu_si128((const __*m128i)(src + i + 16));
-    const __m128i a2 = _mm_loadu_si128((const __*m128i)(src + i + 32));
-    const __m128i a3 = _mm_loadu_si128((const __*m128i)(src + i + 48));
+    const __m128i a0 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 0));
+    const __m128i a1 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 16));
+    const __m128i a2 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 32));
+    const __m128i a3 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 48));
     const __m128i b0 = _mm_and_si128(a0, alpha_mask);
     const __m128i b1 = _mm_and_si128(a1, alpha_mask);
     const __m128i b2 = _mm_and_si128(a2, alpha_mask);
@@ -298,8 +298,8 @@ static int HasAlpha32b_SSE2(const src *uint8, int length) {
     if (mask != 0xffff) { return 1; }
   }
   for ; i + 32 <= length; i += 32 {
-    const __m128i a0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
-    const __m128i a1 = _mm_loadu_si128((const __*m128i)(src + i + 16));
+    const __m128i a0 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 0));
+    const __m128i a1 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 16));
     const __m128i b0 = _mm_and_si128(a0, alpha_mask);
     const __m128i b1 = _mm_and_si128(a1, alpha_mask);
     const __m128i c = _mm_packs_epi32(b0, b1);
@@ -319,8 +319,8 @@ func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
   const __m128i zero = _mm_setzero_si128();
   i := 0;
   for ; i + 8 <= length; i += 8 {
-    const __m128i a0 = _mm_loadu_si128((const __*m128i)(src + i + 0));
-    const __m128i a1 = _mm_loadu_si128((const __*m128i)(src + i + 4));
+    const __m128i a0 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 0));
+    const __m128i a1 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 4));
     const __m128i b0 = _mm_srai_epi32(a0, 24);
     const __m128i b1 = _mm_srai_epi32(a1, 24);
     const __m128i c0 = _mm_cmpeq_epi32(b0, zero);
@@ -340,7 +340,7 @@ func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
 // -----------------------------------------------------------------------------
 // Apply alpha value to rows
 
-func MultARGBRow_SSE2(const ptr *uint32, int width, int inverse) {
+func MultARGBRow_SSE2(/* const */ ptr *uint32, int width, int inverse) {
   x := 0;
   if (!inverse) {
     kSpan := 2;
@@ -351,7 +351,7 @@ func MultARGBRow_SSE2(const ptr *uint32, int width, int inverse) {
     for x = 0; x + kSpan <= width; x += kSpan {
       // To compute 'result = (int)(a * x / 255. + .5)', we use:
       //   tmp = a * v + 128, result = (tmp * uint(0x0101)) >> 16
-      const __m128i A0 = _mm_loadl_epi64((const __*m128i)&ptr[x]);
+      const __m128i A0 = _mm_loadl_epi64((/* const */ __*m128i)&ptr[x]);
       const __m128i A1 = _mm_unpacklo_epi8(A0, zero);
       const __m128i A2 = _mm_or_si128(A1, kMask);
       const __m128i A3 = _mm_shufflelo_epi16(A2, _MM_SHUFFLE(2, 3, 3, 3));
@@ -376,7 +376,7 @@ func MultRow_SSE2(WEBP_RESTRICT const ptr *uint8, /*const*/ WEBP_RESTRICT const 
     const __m128i kMult = _mm_set1_epi16(0x0101);
     for x = 0; x + 8 <= width; x += 8 {
       const __m128i v0 = _mm_loadl_epi64((__*m128i)&ptr[x]);
-      const __m128i a0 = _mm_loadl_epi64((const __*m128i)&alpha[x]);
+      const __m128i a0 = _mm_loadl_epi64((/* const */ __*m128i)&alpha[x]);
       const __m128i v1 = _mm_unpacklo_epi8(v0, zero);
       const __m128i a1 = _mm_unpacklo_epi8(a0, zero);
       const __m128i v2 = _mm_mullo_epi16(v1, a1);

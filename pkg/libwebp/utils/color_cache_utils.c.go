@@ -44,14 +44,14 @@ func VP8LColorCacheInit(/* const */ color_cache *VP8LColorCache, int hash_bits) 
   return 1;
 }
 
-func VP8LColorCacheClear(const color_cache *VP8LColorCache) {
+func VP8LColorCacheClear(/* const */ color_cache *VP8LColorCache) {
   if (color_cache != nil) {
     color_cache.colors = nil;
     WEBP_SELF_ASSIGN(color_cache.hash_bits);
   }
 }
 
-func VP8LColorCacheCopy(const src *VP8LColorCache, /*const*/ dst *VP8LColorCache) {
+func VP8LColorCacheCopy(/* const */ src *VP8LColorCache, /*const*/ dst *VP8LColorCache) {
   assert.Assert(src != nil);
   assert.Assert(dst != nil);
   assert.Assert(src.hash_bits == dst.hash_bits);

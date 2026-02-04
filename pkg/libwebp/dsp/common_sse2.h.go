@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/emmintrin"
 
 #if 0
 import "github.com/daanv2/go-webp/pkg/stdio"
-static  func PrintReg(const __m128i r, /*const*/ name *byte, int size) {
+static  func PrintReg(/* const */ __m128i r, /*const*/ name *byte, int size) {
   var n int
   union {
     __m128i r;
@@ -52,7 +52,7 @@ static  func PrintReg(const __m128i r, /*const*/ name *byte, int size) {
 // Math functions.
 
 // Return the sum of all the 8b in the register.
-static  int VP8HorizontalAdd8b(const __const a *m128i) {
+static  int VP8HorizontalAdd8b(/* const */ __const a *m128i) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i sad8x2 = _mm_sad_epu8(*a, zero);
   // sum the two sads: sad8x2[0:1] + sad8x2[8:9]

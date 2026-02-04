@@ -45,7 +45,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
     BUTTERFLY_4(a1_m, b1_m, c1_m, d1_m, out0, out1, out2, out3); \
   } while (0)
 
-static  func ITransformOne(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+static  func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   v8i16 input0, input1;
   v4i32 in0, in1, in2, in3, hz0, hz1, hz2, hz3, vt0, vt1, vt2, vt3;
   v4i32 res0, res1, res2, res3;
@@ -70,14 +70,14 @@ static  func ITransformOne(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRI
   ST4x4_UB(res0, res0, 3, 2, 1, 0, dst, BPS);
 }
 
-func ITransform_MSA(const WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_MSA(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
   ITransformOne(ref, in, dst);
   if (do_two) {
     ITransformOne(ref + 4, in + 16, dst + 4);
   }
 }
 
-func FTransform_MSA(const WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
+func FTransform_MSA(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
   uint64 out0, out1, out2, out3;
   uint32 in0, in1, in2, in3;
   v4i32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5;
@@ -130,7 +130,7 @@ func FTransform_MSA(const WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref 
   SD4(out0, out1, out2, out3, out, 8);
 }
 
-func FTransformWHT_MSA(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
+func FTransformWHT_MSA(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
   v8i16 in0 = {0}
   v8i16 in1 = {0}
   v8i16 tmp0, tmp1, tmp2, tmp3;
@@ -167,7 +167,7 @@ func FTransformWHT_MSA(const WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) 
   ST_SH2(out0, out1, out, 8);
 }
 
-static int TTransform_MSA(const WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) {
+static int TTransform_MSA(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) {
   int sum;
   uint32 in0_m, in1_m, in2_m, in3_m;
   v16i8 src0 = {0}
@@ -199,13 +199,13 @@ static int TTransform_MSA(const WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT
   return sum;
 }
 
-static int Disto4x4_MSA(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+static int Disto4x4_MSA(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   sum1 := TTransform_MSA(a, w);
   sum2 := TTransform_MSA(b, w);
   return abs(sum2 - sum1) >> 5;
 }
 
-static int Disto16x16_MSA(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+static int Disto16x16_MSA(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   D := 0;
   int x, y;
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -219,7 +219,7 @@ static int Disto16x16_MSA(const WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RES
 //------------------------------------------------------------------------------
 // Histogram
 
-func CollectHistogram_MSA(const ref *uint8, /*const*/ pred *uint8, int start_block, int end_block, /*const*/ histo *VP8Histogram) {
+func CollectHistogram_MSA(/* const */ ref *uint8, /*const*/ pred *uint8, int start_block, int end_block, /*const*/ histo *VP8Histogram) {
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   for j = start_block; j < end_block; j++ {
@@ -706,7 +706,7 @@ func IntraChromaPreds_MSA(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left
     DPADD_SH2_SW(tmp2, tmp3, tmp2, tmp3, out2, out3);                 \
   } while (0)
 
-static int SSE16x16_MSA(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+static int SSE16x16_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   uint32 sum;
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
@@ -733,7 +733,7 @@ static int SSE16x16_MSA(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b 
   return sum;
 }
 
-static int SSE16x8_MSA(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+static int SSE16x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   uint32 sum;
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
@@ -752,7 +752,7 @@ static int SSE16x8_MSA(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *
   return sum;
 }
 
-static int SSE8x8_MSA(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+static int SSE8x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   uint32 sum;
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
@@ -772,7 +772,7 @@ static int SSE8x8_MSA(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *u
   return sum;
 }
 
-static int SSE4x4_MSA(const WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+static int SSE4x4_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
   sum := 0;
   uint32 src0, src1, src2, src3, ref0, ref1, ref2, ref3;
   v16u8 src = {0}, ref = {0}, tmp0, tmp1;
