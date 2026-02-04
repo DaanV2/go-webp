@@ -85,13 +85,8 @@ func VP8RemapBitReader(/* const */ br *VP8BitReader, ptrdiff_t offset) {
   }
 }
 
-const uint8 kVP8Log2Range[128] = {
-    7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}
 
-// range = ((range - 1) << kVP8Log2Range[range]) + 1
-const uint8 kVP8NewRange[128] = {
-    127, 127, 191, 127, 159, 191, 223, 127, 143, 159, 175, 191, 207, 223, 239, 127, 135, 143, 151, 159, 167, 175, 183, 191, 199, 207, 215, 223, 231, 239, 247, 127, 131, 135, 139, 143, 147, 151, 155, 159, 163, 167, 171, 175, 179, 183, 187, 191, 195, 199, 203, 207, 211, 215, 219, 223, 227, 231, 235, 239, 243, 247, 251, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239, 241, 243, 245, 247, 249, 251, 253, 127}
-
+// special case for the tail byte-reading
 func VP8LoadFinalBytes(/* const */ br *VP8BitReader) {
   assert.Assert(br != nil && br.buf != nil);
   // Only read 8bits at a time
@@ -116,25 +111,12 @@ func VP8GetValue(/* const */ br *VP8BitReader, bits int, /*const*/ label []byte)
   }
   return v;
 }
+
 // return the next value with sign-extension.
 func VP8GetSignedValue(/* const */ br *VP8BitReader, bits int, /*const*/ label []byte) int {
   value := VP8GetValue(br, bits, label);
   return VP8Get(br, label) ? -value : value;
 }
-
-//------------------------------------------------------------------------------
-// VP8LBitReader
-
-const VP8L_LOG8_WBITS =4  // Number of bytes needed to store VP8L_WBITS bits.
-
-#if defined(__arm__) || defined(_M_ARM) || WEBP_AARCH64 ||          \
-    defined(__i386__) || defined(_M_IX86) || defined(__x86_64__) || \
-    defined(_M_X64) || defined(__wasm__)
-#define VP8L_USE_FAST_LOAD
-#endif
-
-static const uint32 kBitMask[VP8L_MAX_NUM_BIT_READ + 1] = {
-    0,        0x000001, 0x000003, 0x000007, 0x00000f, 0x00001f, 0x00003f, 0x00007f, 0x0000ff, 0x0001ff, 0x0003ff, 0x0007ff, 0x000fff, 0x001fff, 0x003fff, 0x007fff, 0x00ffff, 0x01ffff, 0x03ffff, 0x07ffff, 0x0fffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff}
 
 func VP8LInitBitReader(/* const */ br *VP8LBitReader, /*const*/ *uint8  start, uint64 length) {
   uint64 i;
@@ -248,76 +230,121 @@ func VP8LFillBitWindow(/* const */ br *VP8LBitReader) {
   if (br.bit_pos >= VP8L_WBITS) VP8LDoFillBitWindow(br);
 }
 
-//------------------------------------------------------------------------------
-// Bit-tracing tool
+// makes sure br.value has at least BITS bits worth of data
+func VP8LoadNewBytes(/* const */ br *VP8BitReader) {
+  assert.Assert(br != nil && br.buf != nil);
+  // Read 'BITS' bits at a time if possible.
+  if (br.buf < br.buf_max) {
+    // convert memory type to register type (with some zero'ing!)
+    var bits bit_t
+    var in_bits lbit_t
+    stdlib.MemCpy(&in_bits, br.buf, sizeof(in_bits));
+	
+    br.buf += BITS >> 3;
+    WEBP_SELF_ASSIGN(br.buf_end);
 
-#if (BITTRACE > 0)
 
-import "github.com/daanv2/go-webp/pkg/stdio"
-import "github.com/daanv2/go-webp/pkg/stdlib"  // for atexit()
-import "github.com/daanv2/go-webp/pkg/string"
-
-const MAX_NUM_LABELS =32
-static struct {
-  const label *byte;
-  int size;
-  int count;
-} kLabels[MAX_NUM_LABELS];
-
-static last_label := 0;
-static last_pos := 0;
-static var buf_start *uint8 = nil;
-static init_done := 0;
-
-func PrintBitTraces(){
-  var i int
-  scale := 1;
-  total := 0;
-  var units *byte = "bits";
-#if (BITTRACE == 2)
-  scale = 8;
-  units = "bytes";
-#endif
-  for (i = 0; i < last_label; ++i) total += kLabels[i].size;
-  if (total < 1) total = 1;  // afunc rounding errors
-  printf("=== Bit traces ===\n");
-  for i = 0; i < last_label; i++ {
-    skip := 16 - (int)strlen(kLabels[i].label);
-    value := (kLabels[i].size + scale - 1) / scale;
-    assert.Assert(skip > 0);
-    printf("%s \%*s: %6d %s   \t[%5.2f%%] [count: %7d]\n", kLabels[i].label, skip, "", value, units, 100.f * kLabels[i].size / total, kLabels[i].count);
+	if !constants.WORDS_BIGENDIAN{
+	if (BITS > 32){
+		bits = BSwap64(in_bits);
+		bits >>= 64 - BITS;
+	}else if (BITS >= 24){
+		bits = BSwap32(in_bits);
+		bits >>= (32 - BITS);
+	}else if (BITS == 16){
+		bits = BSwap16(in_bits);
+	}else{   // BITS == 8
+		bits = (bit_t)in_bits;
+	// BITS > 32
+	}else{   // constants.WORDS_BIGENDIAN
+		bits = (bit_t)in_bits;
+		if (BITS != 8 * sizeof(bit_t)) {bits >>= (8 * sizeof(bit_t) - BITS);}
+	}
+    br.value = bits | (br.value << BITS);
+    br.bits += BITS;
+  } else {
+    VP8LoadFinalBytes(br);  // no need to be inlined
   }
-  total = (total + scale - 1) / scale;
-  printf("Total: %d %s\n", total, units);
 }
 
-func BitTrace(/* const */ type const br *VP8BitReader, /*const*/ label []byte) struct {
-  int i, pos;
-  if (!init_done) {
-    stdlib.Memset(kLabels, 0, sizeof(kLabels));
-    atexit(PrintBitTraces);
-    buf_start = br.buf;
-    init_done = 1;
+// Read a bit with proba 'prob'. Speed-critical function!
+func VP8GetBit(/* const */ br *VP8BitReader, prob int, /*const*/ label []byte) int {
+  // Don't move this declaration! It makes a big speed difference to store
+  // 'range' VP *calling *before8LoadNewBytes(), even if this function doesn't
+  // alter br.range value.
+  range_t range = br.range;
+  if (br.bits < 0) {
+    VP8LoadNewBytes(br);
   }
-  pos = (int)(br.buf - buf_start) * 8 - br.bits;
-  // if there's a too large jump, we've changed partition . reset counter
-  if (abs(pos - last_pos) > 32) {
-    buf_start = br.buf;
-    pos = 0;
-    last_pos = 0;
+  {
+    pos := br.bits;
+    const range_t split = (range * prob) >> 8;
+    const range_t value = (range_t)(br.value >> pos);
+    bit := (value > split);
+    if (bit) {
+      range -= split;
+      br.value -= (bit_t)(split + 1) << pos;
+    } else {
+      range = split + 1;
+    }
+    {
+      shift := 7 ^ BitsLog2Floor(range);
+      range <<= shift;
+      br.bits -= shift;
+    }
+    br.range = range - 1;
+    BT_TRACK(br);
+    return bit;
   }
-  if (br.range >= 0x7f) pos += kVP8Log2Range[br.range - 0x7f];
-  for i = 0; i < last_label; i++ {
-    if (!strcmp(label, kLabels[i].label)) break;
-  }
-  if (i == MAX_NUM_LABELS) abort();  // overflow!
-  kLabels[i].label = label;
-  kLabels[i].size += pos - last_pos;
-  kLabels[i].count += 1;
-  if (i == last_label) {last_label++}
-  last_pos = pos;
 }
 
-#endif  // BITTRACE > 0
+// simplified version of VP8GetBit() for prob=0x80 (note shift is always 1 here)
+func VP8GetSigned(/* const */ br *VP8BitReader, int v, /*const*/ label []byte) int {
+  if (br.bits < 0) {
+    VP8LoadNewBytes(br);
+  }
+  {
+    pos := br.bits;
+    const range_t split = br.range >> 1;
+    const range_t value = (range_t)(br.value >> pos);
+    mask := (int32)(split - value) >> 31;  // -1 or 0
+    br.bits -= 1;
+    br.range += (range_t)mask;
+    br.range |= 1;
+    br.value -= (bit_t)((split + 1) & (uint32)mask) << pos;
+    BT_TRACK(br);
+    return (v ^ mask) - mask;
+  }
+}
 
-//------------------------------------------------------------------------------
+func VP8GetBitAlt(/* const  */br *VP8BitReader, prob int, /*const*/ label []byte) int  {
+  // Don't move this declaration! It makes a big speed difference to store
+  // 'range' VP *calling *before8LoadNewBytes(), even if this function doesn't
+  // alter br.range value.
+  range_t range = br.range;
+  if (br.bits < 0) {
+    VP8LoadNewBytes(br);
+  }
+  {
+    pos := br.bits;
+    const range_t split = (range * prob) >> 8;
+    const range_t value = (range_t)(br.value >> pos);
+    bit int;  // Don't use 'bit := (value > split);", it's slower.
+    if (value > split) {
+      range -= split + 1;
+      br.value -= (bit_t)(split + 1) << pos;
+      bit = 1;
+    } else {
+      range = split;
+      bit = 0;
+    }
+    if (range <= (range_t)0x7e) {
+      shift := kVP8Log2Range[range];
+      range = kVP8NewRange[range];
+      br.bits -= shift;
+    }
+    br.range = range;
+    BT_TRACK(br);
+    return bit;
+  }
+}

@@ -34,15 +34,14 @@ const VP8L_MAX_NUM_BIT_READ = 24
 const VP8L_LBITS = 64 // Number of bits prefetched (= bit-size of vp8l_val_t).
 const VP8L_WBITS = 32 // Minimum number of bytes ready after VP8LFillBitWindow.
 
-// #if (BITS > 24)
-//------------------------------------------------------------------------------
-// Derived types and constants:
-//   bit_t = natural register type for storing 'value' (which is BITS+8 bits)
-//   range_t = register for 'range' (which is 8bits only)
-type bit_t uint64
+const VP8L_LOG8_WBITS = 4 // Number of bytes needed to store VP8L_WBITS bits.
 
-// #else
-// typedef uint32 bit_t;
-// #endif
+var kVP8Log2Range = [128]uint8{
+	7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}
 
-// typedef uint32 range_t;
+// range = ((range - 1) << kVP8Log2Range[range]) + 1
+var kVP8NewRange = [128]uint8{
+	127, 127, 191, 127, 159, 191, 223, 127, 143, 159, 175, 191, 207, 223, 239, 127, 135, 143, 151, 159, 167, 175, 183, 191, 199, 207, 215, 223, 231, 239, 247, 127, 131, 135, 139, 143, 147, 151, 155, 159, 163, 167, 171, 175, 179, 183, 187, 191, 195, 199, 203, 207, 211, 215, 219, 223, 227, 231, 235, 239, 243, 247, 251, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 233, 235, 237, 239, 241, 243, 245, 247, 249, 251, 253, 127}
+
+var kBitMask = [VP8L_MAX_NUM_BIT_READ + 1]uint32{
+	0, 0x000001, 0x000003, 0x000007, 0x00000f, 0x00001f, 0x00003f, 0x00007f, 0x0000ff, 0x0001ff, 0x0003ff, 0x0007ff, 0x000fff, 0x001fff, 0x003fff, 0x007fff, 0x00ffff, 0x01ffff, 0x03ffff, 0x07ffff, 0x0fffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff}
