@@ -62,7 +62,7 @@ func ConvertPopulationCountTableToBitEstimates(
   }
 }
 
-static int CostModelBuild(const m *CostModel, int xsize, int cache_bits, /*const*/ refs *VP8LBackwardRefs) {
+static int CostModelBuild(/* const */ m *CostModel,  xsize , cache_bits int, /*const*/ refs *VP8LBackwardRefs) {
   ok := 0;
   var histo *VP8LHistogram = VP8LAllocateHistogram(cache_bits);
   if (histo == nil) goto Error;
@@ -81,7 +81,7 @@ static int CostModelBuild(const m *CostModel, int xsize, int cache_bits, /*const
   ok = 1;
 
 Error:
-  VP8LFreeHistogram(histo);
+  histo = nil
   return ok;
 }
 

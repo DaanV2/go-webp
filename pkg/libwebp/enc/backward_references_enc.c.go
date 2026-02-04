@@ -815,8 +815,8 @@ static int CalculateBestCacheSize(const argb *uint32, int quality, /*const*/ ref
   ok = 1;
 Error:
   for i = 0; i <= cache_bits_max; i++ {
-    if (cc_init[i]) VP8LColorCacheClear(&hashers[i]);
-    VP8LFreeHistogram(histos[i]);
+    if (cc_init[i]) {VP8LColorCacheClear(&hashers[i]);}
+    histos[i] = nil
   }
   return ok;
 }
@@ -981,7 +981,6 @@ static int GetBackwardReferences(int width, int height, /*const*/ argb *uint32, 
 
 Error:
   VP8LHashChainClear(&hash_chain_box);
-  VP8LFreeHistogram(histo);
   return status;
 }
 

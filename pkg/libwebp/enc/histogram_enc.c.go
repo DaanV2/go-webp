@@ -95,16 +95,6 @@ func HistogramCopy(const src *VP8LHistogram, /*const*/ dst *VP8LHistogram) {
   memcpy(dst.literal, src.literal, literal_size * sizeof(*dst.literal));
 }
 
-// Deprecated: no-op in Go.
-func VP8LFreeHistogram(/* const */ h *VP8LHistogram) { 
-  // Noop in Go
-}
-
-// Deprecated: no-op in Go.
-func VP8LFreeHistogramSet(/* const */ histograms *VP8LHistogramSet) {
-  // Noop in Go
-}
-
 func VP8LHistogramCreate(const h *VP8LHistogram, /*const*/ refs *VP8LBackwardRefs, int palette_code_bits) {
   if (palette_code_bits >= 0) {
     h.palette_code_bits = palette_code_bits;
@@ -1086,7 +1076,7 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize, /*const*/ refs *VP8LBackwardR
   histo_ysize :=
       histogram_bits ? VP8LSubSampleSize(ysize, histogram_bits) : 1;
   image_histo_raw_size := histo_xsize * histo_ysize;
-  const orig_histo *VP8LHistogramSet =
+  var orig_histo *VP8LHistogramSet =
       VP8LAllocateHistogramSet(image_histo_raw_size, cache_bits);
   // Don't attempt linear bin-partition heuristic for
   // histograms of small sizes (as bin_map will be very sparse) and
@@ -1140,6 +1130,5 @@ int VP8LGetHistoImageSymbols(int xsize, int ysize, /*const*/ refs *VP8LBackwardR
   }
 
 Error:
-  VP8LFreeHistogramSet(orig_histo);
   return (pic.error_code == VP8_ENC_OK);
 }

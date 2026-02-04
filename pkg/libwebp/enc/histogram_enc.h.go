@@ -70,12 +70,6 @@ func VP8LHistogramInit(const h *VP8LHistogram, int palette_code_bits, int init_a
 // the histogram is updated. It can be nil.
 func VP8LHistogramStoreRefs(const refs *VP8LBackwardRefs, int (distance_modifier *const)(int, int), int distance_modifier_arg0, /*const*/ histo *VP8LHistogram);
 
-// Free the memory allocated for the histogram.
-func VP8LFreeHistogram(const histo *VP8LHistogram);
-
-// Free the memory allocated for the histogram set.
-func VP8LFreeHistogramSet(const histo *VP8LHistogramSet);
-
 // Allocate an array of pointer to histograms, allocated and initialized
 // using 'cache_bits'. Return nil in case of memory error.
 VP *VP8LHistogramSet8LAllocateHistogramSet(int size, int cache_bits);

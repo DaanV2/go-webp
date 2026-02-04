@@ -775,7 +775,6 @@ static int EncodeImageNoHuffman(const bw *VP8LBitWriter, /*const*/ argb *uint32,
   }
 
 Error:
-  VP8LFreeHistogramSet(histogram_image);
   return (pic.error_code == VP8_ENC_OK);
 }
 
@@ -890,12 +889,10 @@ static int EncodeImageInternal(
         goto Error;
       }
       // Free combined histograms.
-      VP8LFreeHistogramSet(histogram_image);
-      histogram_image = nil;
+      histogram_image = nil
 
       // Free scratch histograms.
-      VP8LFreeHistogram(tmp_histo);
-      tmp_histo = nil;
+      tmp_histo = nil
 
       // Color Cache parameters.
       if (cache_bits_tmp > 0) {
@@ -975,8 +972,6 @@ static int EncodeImageInternal(
   }
 
 Error:
-  VP8LFreeHistogramSet(histogram_image);
-  VP8LFreeHistogram(tmp_histo);
   VP8LHashChainClear(&hash_chain_histogram);
   VP8LBitWriterWipeOut(&bw_best);
   return (pic.error_code == VP8_ENC_OK);
