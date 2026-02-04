@@ -306,10 +306,11 @@ static int InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) {
     return 0;
   }
 
-  work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size);
-  if (work == nil) {
-    return 0;  // memory error
-  }
+//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size);
+//   if (work == nil) {
+//     return 0;  // memory error
+//   }
+  work = &rescaler_t{}
   p.memory = work;
 
   scalers = (*WebPRescaler)WEBP_ALIGN((/* const */ *uint8)work + total_size -

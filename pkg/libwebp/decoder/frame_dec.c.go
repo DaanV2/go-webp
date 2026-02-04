@@ -721,10 +721,12 @@ static int AllocateMemory(/* const */ dec *VP8Decoder) {
 }
   if (needed > dec.mem_size) {
     dec.mem_size = 0;
-    dec.mem = WebPSafeMalloc(needed, sizeof(uint8));
-    if (dec.mem == nil) {
-      return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "no memory during frame initialization.");
-    }
+    // dec.mem = WebPSafeMalloc(needed, sizeof(uint8));
+    // if (dec.mem == nil) {
+    //   return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "no memory during frame initialization.");
+    // }
+	dec.mem = make([]uint8, needed)
+
     // down-cast is ok, thanks to WebPSafeMalloc() above.
     dec.mem_size = (uint64)needed;
   }

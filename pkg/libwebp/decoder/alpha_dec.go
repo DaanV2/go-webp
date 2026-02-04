@@ -152,18 +152,19 @@ func ALPHDecode(/* const  */dec *VP8Decoder, row, num_rows int) int {
   return 1;
 }
 
-func AllocateAlphaPlane(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
-  stride := io.width;
-  height := io.crop_bottom;
-  alpha_size := (uint64)stride * height;
-  assert.Assert(dec.alpha_plane_mem == nil);
-  dec.alpha_plane_mem = (*uint8)WebPSafeMalloc(alpha_size, sizeof(*dec.alpha_plane));
-  if (dec.alpha_plane_mem == nil) {
-    return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "Alpha decoder initialization failed.");
-  }
-  dec.alpha_plane = dec.alpha_plane_mem;
-  dec.alpha_prev_line = nil;
-  return 1;
+func AllocateAlphaPlane(/* const */ dec *vp8.VP8Decoder, /* const */ io *VP8Io) {
+	stride := io.width;
+	height := io.crop_bottom;
+	alpha_size := uint64(stride * height);
+	assert.Assert(dec.alpha_plane_mem == nil);
+	//   dec.alpha_plane_mem = (*uint8)WebPSafeMalloc(alpha_size, sizeof(*dec.alpha_plane));
+	//   if (dec.alpha_plane_mem == nil) {
+	//     return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "Alpha decoder initialization failed.");
+	//   }
+	dec.alpha_plane_mem = make([]uint8, alpha_size)
+
+	dec.alpha_plane = dec.alpha_plane_mem;
+	dec.alpha_prev_line = nil;
 }
 
 //------------------------------------------------------------------------------

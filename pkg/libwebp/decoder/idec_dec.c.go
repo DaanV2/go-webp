@@ -208,10 +208,12 @@ func DoRemap(/* const */ idec *WebPIDecoder, ptrdiff_t offset) {
     current_size := MemDataSize(mem) + new_mem_start;
     new_size := (uint64)current_size + data_size;
     extra_size := (new_size + CHUNK_SIZE - 1) & ~(CHUNK_SIZE - 1);
-    const new_buf *uint8 =
-        (*uint8)WebPSafeMalloc(extra_size, sizeof(*new_buf));
-    if (new_buf == nil) { return 0; }
-    if (old_base != nil) stdlib.MemCpy(new_buf, old_base, current_size);
+
+	// var new_buf *uint8 = (*uint8)WebPSafeMalloc(extra_size, sizeof(*new_buf));
+    // if (new_buf == nil) { return 0; }
+	new_buf := make([]uint8, extra_size)
+
+	if (old_base != nil) {stdlib.MemCpy(new_buf, old_base, current_size);}
 
     mem.buf = new_buf;
     mem.buf_size = (uint64)extra_size;
@@ -404,11 +406,12 @@ static VP8StatusCode CopyParts0Data(/* const */ idec *WebPIDecoder) {
   }
   if (mem.mode == MEM_MODE_APPEND) {
     // We copy and grab ownership of the partition #0 data.
-    const part *uint80_buf =
-        (*uint8)WebPSafeMalloc(uint64(1), part_size);
-    if (part0_buf == nil) {
-      return VP8_STATUS_OUT_OF_MEMORY;
-    }
+    // var part0_buf *uint8 = (*uint8)WebPSafeMalloc(uint64(1), part_size);
+	// if (part0_buf == nil) {
+    //   return VP8_STATUS_OUT_OF_MEMORY;
+    // }
+	part0_buf := make([]uint8, part_size)
+
     stdlib.MemCpy(part0_buf, br.buf, part_size);
     mem.part0_buf = part0_buf;
     VP8BitReaderSetBuffer(br, part0_buf, part_size);

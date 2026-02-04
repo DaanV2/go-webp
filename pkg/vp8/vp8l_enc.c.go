@@ -14,24 +14,16 @@ package vp8
 // Author: Vikas Arora (vikaas.arora@gmail.com)
 //
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+	"github.com/bufbuild/buf/private/pkg/tmp"
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/enc"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/string"
+)
 
 // Maximum number of histogram images (sub-blocks).
 const MAX_HUFF_IMAGE_SIZE =2600
@@ -780,7 +772,7 @@ Error:
 
 // pic and percent are for progress.
 static int EncodeImageInternal(
-    const bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, VP8LBackwardRefs refs_array[4], width, height int, int quality, int low_effort, /*const*/ config *CrunchConfig, cache_bits *int, int histogram_bits_in, uint64 init_byte_position, /*const*/ hdr_size *int, /*const*/ data_size *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+    /* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, refs_array [4]VP8LBackwardRefs, width, height int, int quality, int low_effort, /*const*/ config *CrunchConfig, cache_bits *int, int histogram_bits_in, uint64 init_byte_position, /*const*/ hdr_size *int, /*const*/ data_size *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
   histogram_image_xysize :=
       VP8LSubSampleSize(width, histogram_bits_in) *
       VP8LSubSampleSize(height, histogram_bits_in);
@@ -790,12 +782,14 @@ static int EncodeImageInternal(
   tmp_histo *VP8LHistogram = nil;
   uint32 i, histogram_image_size = 0;
   bit_array_size := 0;
-  var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(
-      uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
   tokens *HuffmanTreeToken = nil;
   huffman_codes *HuffmanTreeCode = nil;
-  var histogram_argb *uint32 = (*uint32)WebPSafeMalloc(
-      histogram_image_xysize, sizeof(*histogram_argb));
+
+//   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
+//   var histogram_argb *uint32 = (*uint32)WebPSafeMalloc(histogram_image_xysize, sizeof(*histogram_argb));
+	huff_tree := make([]HuffmanTree, 3*CODE_LENGTH_CODES)
+	histogram_argb := make([]uint32, histogram_image_xysize)
+
   int sub_configs_idx;
   int cache_bits_init, write_histogram_image;
   VP8LBitWriter bw_init = *bw, bw_best;
@@ -934,11 +928,14 @@ static int EncodeImageInternal(
             max_tokens = codes.num_symbols;
           }
         }
-        tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens));
-        if (tokens == nil) {
-          WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
-          goto Error;
-        }
+
+        // tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens));
+        // if (tokens == nil) {
+        //   WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+        //   goto Error;
+        // }
+		tokens = make([]HuffmanTreeToken, max_tokens)
+
         for i = 0; i < 5 * histogram_image_size; i++ {
           var codes *HuffmanTreeCode = &huffman_codes[i];
           StoreHuffmanCode(bw, huff_tree, tokens, codes);
@@ -1082,8 +1079,8 @@ func ClearTransformBuffer(/* const */ enc *VP8LEncoder) {
 // Flags influencing the memory allocated:
 //  enc.transform_bits
 //  enc.use_predict, enc.use_cross_color
-static int AllocateTransformBuffer(/* const */ enc *VP8LEncoder, width, height int) {
-  image_size := (uint64)width * height;
+func AllocateTransformBuffer(/* const */ enc *VP8LEncoder, width, height int) int {
+  image_size := uint64(width * height);
   // VP8LResidualImage needs room for 2 scanlines of uint32 pixels with an extra
   // pixel in each, plus 2 regular scanlines of bytes.
   // TODO(skal): Clean up by using arithmetic in bytes instead of words.
@@ -1096,19 +1093,21 @@ static int AllocateTransformBuffer(/* const */ enc *VP8LEncoder, width, height i
           ? (uint64)VP8LSubSampleSize(width, MIN_TRANSFORM_BITS) *
                 VP8LSubSampleSize(height, MIN_TRANSFORM_BITS)
           : 0;
-  max_alignment_in_words :=
-      (WEBP_ALIGN_CST + sizeof(uint32) - 1) / sizeof(uint32);
+  max_alignment_in_words := (WEBP_ALIGN_CST + sizeof(uint32) - 1) / sizeof(uint32);
   mem_size := image_size + max_alignment_in_words +
                             argb_scratch_size + max_alignment_in_words +
                             transform_data_size;
   mem *uint32 = enc.transform_mem;
   if (mem == nil || mem_size > enc.transform_mem_size) {
     ClearTransformBuffer(enc);
-    mem = (*uint32)WebPSafeMalloc(mem_size, sizeof(*mem));
-    if (mem == nil) {
-      return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
-    }
-    enc.transform_mem = mem;
+
+    // mem = (*uint32)WebPSafeMalloc(mem_size, sizeof(*mem));
+    // if (mem == nil) {
+    //   return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    // }
+	mem = make([]uint32, mem_size)
+
+	enc.transform_mem = mem;
     enc.transform_mem_size = (uint64)mem_size;
     enc.argb_content = kEncoderNone;
   }
@@ -1205,18 +1204,19 @@ func APPLY_PALETTE_FOR(COLOR_INDEX int) {
 func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst_stride uint32, /* const */ palette *uint32, palette_size, width, height,  xbits int, /* const */ pic *WebPPicture) int {
   // TODO(skal): this tmp buffer is not needed if VP8LBundleColorMap() can be
   // made to work in-place.
-  var tmp_row *uint8 = (*uint8)WebPSafeMalloc(width, sizeof(*tmp_row));
   var x, y int
-
-  if (tmp_row == nil) {
-    return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
-  }
+  
+//   var tmp_row *uint8 = (*uint8)WebPSafeMalloc(width, sizeof(*tmp_row));
+//   if (tmp_row == nil) {
+//     return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//   }
+	tmp_row := make([]uint8, width)
 
   if (palette_size < APPLY_PALETTE_GREEDY_MAX) {
     APPLY_PALETTE_FOR(SearchColorGreedy(palette, palette_size, pix));
   } else {
     var i, j int
-    uint16 buffer[PALETTE_INV_SIZE];
+    var buffer [PALETTE_INV_SIZE]uint16
     uint32 (hash_functions *const[])(uint32) = {
         ApplyPaletteHash0, ApplyPaletteHash1, ApplyPaletteHash2}
 

@@ -13,17 +13,12 @@ package decoder
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+	"github.com/daanv2/go-webp/pkg/vp8"
+)
 
 //------------------------------------------------------------------------------
 // WebPDecBuffer
@@ -126,33 +121,35 @@ func AllocateBuffer(/* const */ buffer *WebPDecBuffer)  VP8StatusCode {
     }
     total_size = size + 2 * uv_size + a_size;
 
-    output = (*uint8)WebPSafeMalloc(total_size, sizeof(*output));
-    if (output == nil) {
-      return VP8_STATUS_OUT_OF_MEMORY;
-    }
+    // output = (*uint8)WebPSafeMalloc(total_size, sizeof(*output));
+    // if (output == nil) {
+    //   return VP8_STATUS_OUT_OF_MEMORY;
+    // }
+	ouput = make([]uint8, total_size)
+
     buffer.private_memory = output;
 
     if (!WebPIsRGBMode(mode)) {  // YUVA initialization
       var buf *WebPYUVABuffer = &buffer.u.YUVA;
       buf.y = output;
       buf.y_stride = stride;
-      buf.y_size = (uint64)size;
+      buf.y_size = uint64(size);
       buf.u = output + size;
       buf.u_stride = uv_stride;
-      buf.u_size = (uint64)uv_size;
+      buf.u_size = uint64(uv_size);
       buf.v = output + size + uv_size;
       buf.v_stride = uv_stride;
-      buf.v_size = (uint64)uv_size;
+      buf.v_size = uint64(uv_size);
       if (mode == MODE_YUVA) {
         buf.a = output + size + 2 * uv_size;
       }
-      buf.a_size = (uint64)a_size;
+      buf.a_size = uint64(a_size);
       buf.a_stride = a_stride;
     } else {  // RGBA initialization
       var buf *WebPRGBABuffer = &buffer.u.RGBA;
       buf.rgba = output;
       buf.stride = stride;
-      buf.size = (uint64)size;
+      buf.size = uint64(size);
     }
   }
   return CheckDecBuffer(buffer);
@@ -193,10 +190,10 @@ func WebPFlipBuffer(/* const */ buffer *WebPDecBuffer) VP8StatusCode {
 // output buffer. This takes cropping / scaling / rotation into account.
 // Also incorporates the options.flip flag to flip the buffer parameters if
 // needed.
-func WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoderOptions, /*const*/ buffer *WebPDecBuffer) VP8StatusCode {
-  var status VP8StatusCode
+func WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoderOptions, /*const*/ buffer *WebPDecBuffer) vp8.VP8StatusCode {
+  var status vp8.VP8StatusCode
   if (buffer == nil || width <= 0 || height <= 0) {
-    return VP8_STATUS_INVALID_PARAM;
+    return vp8.VP8_STATUS_INVALID_PARAM;
   }
   if (options != nil) {  // First, apply options if there is any.
     if (options.use_cropping) {
@@ -205,24 +202,20 @@ func WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoder
       x := options.crop_left & ~1;
       y := options.crop_top & ~1;
       if (!WebPCheckCropDimensions(width, height, x, y, cw, ch)) {
-        return VP8_STATUS_INVALID_PARAM;  // out of frame boundary.
+        return vp8.VP8_STATUS_INVALID_PARAM;  // out of frame boundary.
       }
       width = cw;
       height = ch;
     }
 
     if (options.use_scaling) {
-#if !defined(WEBP_REDUCE_SIZE)
       scaled_width := options.scaled_width;
       scaled_height := options.scaled_height;
       if (!WebPRescalerGetScaledDimensions(width, height, &scaled_width, &scaled_height)) {
-        return VP8_STATUS_INVALID_PARAM;
+        return vp8.VP8_STATUS_INVALID_PARAM;
       }
       width = scaled_width;
       height = scaled_height;
-#else
-      return VP8_STATUS_INVALID_PARAM;  // rescaling not supported
-#endif
     }
   }
   buffer.width = width;
@@ -230,7 +223,7 @@ func WebPAllocateDecBuffer(width int, height int, /*const*/ options *WebPDecoder
 
   // Then, allocate buffer for real.
   status = AllocateBuffer(buffer);
-  if status != VP8_STATUS_OK { return status; }
+  if status != vp8.VP8_STATUS_OK { return status; }
 
   // Use the stride trick if vertical flip is needed.
   if (options != nil && options.flip) {
