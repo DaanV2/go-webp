@@ -10,11 +10,12 @@ type HuffmanTreeToken struct {
 
 // Struct to represent the tree codes (depth and bits array).
 type HuffmanTreeCode struct {
-	num_symbols int // Number of symbols.
+	// Number of symbols.
+	num_symbols int
 	// Code lengths of the symbols.
 	code_lengths *uint8
-	// Symbol Codes.
-	codes *uint16
+	// Symbol Codes. used to be uint16*
+	codes []uint16
 }
 
 // Struct to represent the Huffman tree.
@@ -39,12 +40,13 @@ type HuffmanCode32 struct {
 
 // Contiguous memory segment of HuffmanCodes.
 type HuffmanTablesSegment struct {
-	start *HuffmanCode //(size)
+	start []*HuffmanCode // NOTE: used to be a pointer in C with length of 'size'
 	// Pointer to where we are writing into the segment. Starts at 'start' and
 	// cannot go beyond 'start' + 'size'.
 	curr_table *HuffmanCode
 	// Pointer to the next segment in the chain.
 	next *HuffmanTablesSegment
+	// Deprecated: use len(start) instead.
 	size int
 }
 

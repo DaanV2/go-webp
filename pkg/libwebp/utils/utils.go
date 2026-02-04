@@ -24,6 +24,7 @@ func CheckSizeOverflow(size uint64) bool {
 	return size == size_t(size)
 }
 
+// DaanV2: This aligns a ptr, don't we need to use the aligned ptr?, but maybe its a ptr in an array of bytes
 func WEBP_ALIGN(PTR any) {
 //   (((uintptr_t)(PTR) + WEBP_ALIGN_CST) & ~(uintptr_t)WEBP_ALIGN_CST)
 }
@@ -32,6 +33,7 @@ func WEBP_ALIGN(PTR any) {
 func BitsLog2Floor(n uint32) int  {
   return 31 ^ gcc.Builtin_CLZ(n);
 }
+
 // counts the number of trailing zero
 func BitsCtz(n uint32) int { return gcc.Builtin_CTZ(n); }
 

@@ -14,9 +14,9 @@ import (
 
 // sorted[code_lengths_size] is a pre-allocated array for sorting symbols
 // by code length.
-func BuildHuffmanTable( /* const */ root_table *HuffmanCode, root_bits int /* const */, code_lengths []int, code_lengths_size int, sorted []uint16) int {
+func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* const */, code_lengths []int, code_lengths_size int, sorted []uint16) int {
 	// next available space in table
-	var table *HuffmanCode = root_table
+	var table []*HuffmanCode = root_table
 	total_size := 1 << root_bits // total size root table + 2nd level table
 	var len int                  // current code length
 	var symbol int               // symbol index in original or sorted table
@@ -108,13 +108,14 @@ func BuildHuffmanTable( /* const */ root_table *HuffmanCode, root_bits int /* co
 			if root_table != nil {
 				for ; count[len] > 0; count[len]-- {
 					code := HuffmanCode{
-						bits:  len,
+						bits:  uint8(len),
 						value: sorted[symbol],
 					}
 
 					symbol++
-					ReplicateValue(&table[key], step, table_size, code)
-					key = GetNextKey(key, len)
+					// NOTE: old was &table[key], suspecting it was grabbing the address of the pointer at key as start
+					ReplicateValue(table[key:], step, table_size, code)
+					key = int(GetNextKey(uint32(key), len)) //NOTE: key used to be uint32
 				}
 			}
 
@@ -134,9 +135,10 @@ func BuildHuffmanTable( /* const */ root_table *HuffmanCode, root_bits int /* co
 			}
 			for ; count[len] > 0; count[len]-- {
 				var code HuffmanCode
-				if (key & mask) != low {
+				if uint32(key & mask) != low {
 					if root_table != nil {
-						table += table_size
+						// This was moving the pointer
+						table = table[table_size:]
 					}
 					table_bits = NextTableBitSize(count, len, root_bits)
 					table_size = 1 << table_bits
@@ -153,7 +155,7 @@ func BuildHuffmanTable( /* const */ root_table *HuffmanCode, root_bits int /* co
 					symbol++
 					ReplicateValue(&table[key>>root_bits], step, table_size, code)
 				}
-				key = GetNextKey(key, len)
+				key = int(GetNextKey(uint32(key), len))
 			}
 
 			len++
