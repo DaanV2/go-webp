@@ -50,13 +50,6 @@ func ALPHNew() *ALPHDecoder {
   return &ALPHDecoder{}
 }
 
-// Clears and deallocates an alpha decoder instance.
-func ALPHDelete(/* const */ dec *ALPHDecoder) {
-  if (dec != nil) {
-    dec.vp8l_dec = nil;
-  }
-}
-
 //------------------------------------------------------------------------------
 // Decoding.
 
@@ -174,12 +167,9 @@ func AllocateAlphaPlane(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int 
 }
 
 // Deallocate memory associated to dec.alpha_plane decoding
+// Deprecated: Not needed in Go, use built-in memory management.
 func WebPDeallocateAlphaMemory(/* const */ dec *VP8Decoder) {
-  assert.Assert(dec != nil);
-  dec.alpha_plane_mem = nil;
-  dec.alpha_plane = nil;
-  ALPHDelete(dec.alph_dec);
-  dec.alph_dec = nil;
+
 }
 
 //------------------------------------------------------------------------------
@@ -222,7 +212,6 @@ func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8I
     if (!ALPHDecode(dec, row, num_rows)) goto Error;
 
     if (dec.is_alpha_decoded) {  // finished?
-      ALPHDelete(dec.alph_dec);
       dec.alph_dec = nil;
       if (dec.alpha_dithering > 0) {
         var alpha *uint8 = dec.alpha_plane + io.crop_top * width + io.crop_left;
