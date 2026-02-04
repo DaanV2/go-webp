@@ -255,10 +255,6 @@ func InitMemBuffer(/* const */ mem *MemBuffer) {
   mem.part0_size = 0;
 }
 
-func ClearMemBuffer(/* const */ mem *MemBuffer) {
-  // Noop in Go
-}
-
  static int CheckMemBufferMode(/* const */ mem *MemBuffer, MemBufferMode expected) {
   if (mem.mode == MEM_MODE_NONE) {
     mem.mode = expected;  // switch to the expected mode
@@ -708,7 +704,7 @@ func WebPIDelete(idec *WebPIDecoder) {
       VP8LDelete((*VP8LDecoder)idec.dec);
     }
   }
-  ClearMemBuffer(&idec.mem);
+  idec.mem = nil
   WebPFreeDecBuffer(&idec.output);
 }
 
