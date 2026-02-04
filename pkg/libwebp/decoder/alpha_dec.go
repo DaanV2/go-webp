@@ -59,8 +59,8 @@ func ALPHNew() *ALPHDecoder {
 // compression method or filter, error in lossless header data etc).
 func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, data_size uint64, src_io *VP8Io, output *uint8) int {
   ok := 0;
-  var alpha_data *uint8 = data + ALPHA_HEADER_LEN;
-  alpha_data_size := data_size - ALPHA_HEADER_LEN;
+  var alpha_data *uint8 = data + constants.ALPHA_HEADER_LEN;
+  alpha_data_size := data_size - constants.ALPHA_HEADER_LEN;
   var rsrv int
   var io *VP8Io = &dec.io
 
@@ -72,7 +72,7 @@ func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, data_size u
   dec.height = src_io.height;
   assert.Assert(dec.width > 0 && dec.height > 0);
 
-  if (data_size <= ALPHA_HEADER_LEN) {
+  if (data_size <= constants.ALPHA_HEADER_LEN) {
     return 0;
   }
 
@@ -80,10 +80,10 @@ func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, data_size u
   dec.filter = (WEBP_FILTER_TYPE)((data[0] >> 2) & 0x03);
   dec.pre_processing = (data[0] >> 4) & 0x03;
   rsrv = (data[0] >> 6) & 0x03;
-  if (dec.method < ALPHA_NO_COMPRESSION ||
-      dec.method > ALPHA_LOSSLESS_COMPRESSION ||
-      dec.filter >= WEBP_FILTER_LAST ||
-      dec.pre_processing > ALPHA_PREPROCESSED_LEVELS || rsrv != 0) {
+  if (dec.method < constants.ALPHA_NO_COMPRESSION ||
+      dec.method > constants.ALPHA_LOSSLESS_COMPRESSION ||
+      dec.filter >= constants.WEBP_FILTER_LAST ||
+      dec.pre_processing > constants.ALPHA_PREPROCESSED_LEVELS || rsrv != 0) {
     return 0;
   }
 
@@ -103,11 +103,11 @@ func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, data_size u
   io.crop_bottom = src_io.crop_bottom;
   // No need to copy the scaling parameters.
 
-  if (dec.method == ALPHA_NO_COMPRESSION) {
+  if (dec.method == constants.ALPHA_NO_COMPRESSION) {
     alpha_decoded_size := dec.width * dec.height;
     ok = (alpha_data_size >= alpha_decoded_size);
   } else {
-    assert.Assert(dec.method == ALPHA_LOSSLESS_COMPRESSION);
+    assert.Assert(dec.method == constants.ALPHA_LOSSLESS_COMPRESSION);
     {
       var bounded_alpha_data *uint8 = alpha_data
       ok = VP8LDecodeAlphaHeader(dec, bounded_alpha_data, alpha_data_size);

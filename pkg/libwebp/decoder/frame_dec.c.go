@@ -13,34 +13,24 @@ package decoder
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/libwebp/dec"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/string"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
 
 
-//------------------------------------------------------------------------------
-// Main reconstruction function.
-
-static const uint16 kScan[16] = {
-    0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS, 0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS, 0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS, 0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS}
-
-static int CheckMode(mb_x int, mb_y int, mode int) {
+func CheckMode(mb_x, mb_y, mode int) int {
   if (mode == B_DC_PRED) {
     if (mb_x == 0) {
-      return (mb_y == 0) ? B_DC_PRED_NOTOPLEFT : B_DC_PRED_NOLEFT;
+      return tenary.If(mb_y == 0, B_DC_PRED_NOTOPLEFT, B_DC_PRED_NOLEFT)
     } else {
-      return (mb_y == 0) ? B_DC_PRED_NOTOP : B_DC_PRED;
+      return tenary.If(mb_y == 0, B_DC_PRED_NOTOP, B_DC_PRED)
     }
   }
   return mode;
@@ -50,7 +40,7 @@ func Copy32b(/* const */ dst *uint8, /*const*/ src *uint8) {
   stdlib.MemCpy(dst, src, 4);
 }
 
-static  func DoTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
+func DoTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
   switch (bits >> 30) {
     case 3:
       VP8Transform(src, dst, 0);
@@ -78,31 +68,33 @@ func DoUVTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
 
 func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext) {
   var j int
-  mb_x int;
-  mb_y := ctx.mb_y;
-  cache_id := ctx.id;
-  var y_dst *uint8 = dec.yuv_b + Y_OFF;
-  var u_dst *uint8 = dec.yuv_b + U_OFF;
-  var v_dst *uint8 = dec.yuv_b + V_OFF;
+  var mb_x int
+  mb_y := ctx.mb_y
+  cache_id := ctx.id
+  var y_dst *uint8 = dec.yuv_b + Y_OFF
+  var u_dst *uint8 = dec.yuv_b + U_OFF
+  var v_dst *uint8 = dec.yuv_b + V_OFF
 
   // Initialize left-most block.
   for j = 0; j < 16; j++ {
-    y_dst[j * BPS - 1] = 129;
+    y_dst[j *constants.BPS - 1] = 129;
   }
   for j = 0; j < 8; j++ {
-    u_dst[j * BPS - 1] = 129;
-    v_dst[j * BPS - 1] = 129;
+    u_dst[j *constants.BPS - 1] = 129;
+    v_dst[j *constants.BPS - 1] = 129;
   }
 
   // Init top-left sample on left column too.
   if (mb_y > 0) {
-    y_dst[-1 - BPS] = u_dst[-1 - BPS] = v_dst[-1 - BPS] = 129;
+	u_dst[-1 -constants.BPS] = 129
+	v_dst[-1 -constants.BPS] = 129
+    y_dst[-1 -constants.BPS] = 129
   } else {
     // we only need to do this init once at block (0,0).
     // Afterward, it remains valid for the whole topmost row.
-    stdlib.Memset(y_dst - BPS - 1, 127, 16 + 4 + 1);
-    stdlib.Memset(u_dst - BPS - 1, 127, 8 + 1);
-    stdlib.Memset(v_dst - BPS - 1, 127, 8 + 1);
+    stdlib.Memset(y_dst -constants.BPS - 1, 127, 16 + 4 + 1);
+    stdlib.Memset(u_dst -constants.BPS - 1, 127, 8 + 1);
+    stdlib.Memset(v_dst -constants.BPS - 1, 127, 8 + 1);
   }
 
   // Reconstruct one row.
@@ -113,11 +105,11 @@ func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext
     // pixels at a time for alignment reason, and because of in-loop filter.
     if (mb_x > 0) {
       for j = -1; j < 16; j++ {
-        Copy32b(&y_dst[j * BPS - 4], &y_dst[j * BPS + 12]);
+        Copy32b(&y_dst[j *constants.BPS - 4], &y_dst[j *constants.BPS + 12]);
       }
       for j = -1; j < 8; j++ {
-        Copy32b(&u_dst[j * BPS - 4], &u_dst[j * BPS + 4]);
-        Copy32b(&v_dst[j * BPS - 4], &v_dst[j * BPS + 4]);
+        Copy32b(&u_dst[j *constants.BPS - 4], &u_dst[j *constants.BPS + 4]);
+        Copy32b(&v_dst[j *constants.BPS - 4], &v_dst[j *constants.BPS + 4]);
       }
     }
     {
@@ -128,14 +120,14 @@ func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext
       var n int
 
       if (mb_y > 0) {
-        stdlib.MemCpy(y_dst - BPS, top_yuv[0].y, 16);
-        stdlib.MemCpy(u_dst - BPS, top_yuv[0].u, 8);
-        stdlib.MemCpy(v_dst - BPS, top_yuv[0].v, 8);
+        stdlib.MemCpy(y_dst -constants.BPS, top_yuv[0].y, 16);
+        stdlib.MemCpy(u_dst -constants.BPS, top_yuv[0].u, 8);
+        stdlib.MemCpy(v_dst -constants.BPS, top_yuv[0].v, 8);
       }
 
       // predict and add residuals
       if (block.is_i4x4) {  // 4x4
-        var top_right *uint32 = (*uint32)(y_dst - BPS + 16);
+        var top_right *uint32 = (*uint32)(y_dst -constants.BPS + 16);
 
         if (mb_y > 0) {
           if (mb_x >= dec.mb_w - 1) {  // on rightmost border
@@ -145,20 +137,27 @@ func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext
           }
         }
         // replicate the top-right pixels below
-        top_right[BPS] = top_right[2 * BPS] = top_right[3 * BPS] = top_right[0];
+        top_right[BPS] = top_right[0]
+		top_right[2 *constants.BPS] = top_right[0]
+		top_right[3 *constants.BPS] = top_right[0]
 
         // predict and add residuals for all 4x4 blocks in turn.
-        for n = 0; n < 16; ++n, bits <<= 2 {
+        for n = 0; n < 16;  {
           var dst *uint8 = y_dst + kScan[n];
           VP8PredLuma4[block.imodes[n]](dst);
           DoTransform(bits, coeffs + n * 16, dst);
+		  n++
+		  bits <<= 2
         }
       } else {  // 16x16
         pred_func := CheckMode(mb_x, mb_y, block.imodes[0]);
         VP8PredLuma16[pred_func](y_dst);
         if (bits != 0) {
-          for n = 0; n < 16; ++n, bits <<= 2 {
+          for n = 0; n < 16;  {
             DoTransform(bits, coeffs + n * 16, y_dst + kScan[n]);
+
+			n++
+			 bits <<= 2
           }
         }
       }
@@ -174,9 +173,9 @@ func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext
 
       // stash away top samples for next block
       if (mb_y < dec.mb_h - 1) {
-        stdlib.MemCpy(top_yuv[0].y, y_dst + 15 * BPS, 16);
-        stdlib.MemCpy(top_yuv[0].u, u_dst + 7 * BPS, 8);
-        stdlib.MemCpy(top_yuv[0].v, v_dst + 7 * BPS, 8);
+        stdlib.MemCpy(top_yuv[0].y, y_dst + 15 *constants.BPS, 16);
+        stdlib.MemCpy(top_yuv[0].u, u_dst + 7 *constants.BPS, 8);
+        stdlib.MemCpy(top_yuv[0].v, v_dst + 7 *constants.BPS, 8);
       }
     }
     // Transfer reconstructed samples from yuv_b cache to final destination.
@@ -187,11 +186,11 @@ func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext
       var u_out *uint8 = dec.cache_u + mb_x * 8 + uv_offset;
       var v_out *uint8 = dec.cache_v + mb_x * 8 + uv_offset;
       for j = 0; j < 16; j++ {
-        stdlib.MemCpy(y_out + j * dec.cache_y_stride, y_dst + j * BPS, 16);
+        stdlib.MemCpy(y_out + j * dec.cache_y_stride, y_dst + j *constants.BPS, 16);
       }
       for j = 0; j < 8; j++ {
-        stdlib.MemCpy(u_out + j * dec.cache_uv_stride, u_dst + j * BPS, 8);
-        stdlib.MemCpy(v_out + j * dec.cache_uv_stride, v_dst + j * BPS, 8);
+        stdlib.MemCpy(u_out + j * dec.cache_uv_stride, u_dst + j *constants.BPS, 8);
+        stdlib.MemCpy(v_out + j * dec.cache_uv_stride, v_dst + j *constants.BPS, 8);
       }
     }
   }
@@ -200,12 +199,7 @@ func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext
 //------------------------------------------------------------------------------
 // Filtering
 
-// kFilterExtraRows[] = How many extra lines are needed on the MB boundary
-// for caching, given a filtering level.
-// Simple filter:  up to 2 luma samples are read and 1 is written.
-// Complex filter: up to 4 luma samples are read and 3 are written. Same for
-//                 U/V, so it's 8 samples total (because of the 2x upsampling).
-var kFilterExtraRows = [3]int{0, 2, 8}
+
 
 func DoFilter(/* const */ dec *VP8Decoder, mb_x int, mb_y int) {
   var ctx *VP8ThreadContext = &dec.thread_ctx;
@@ -258,7 +252,7 @@ func DoFilter(/* const */ dec *VP8Decoder, mb_x int, mb_y int) {
 
 // Filter the decoded macroblock row (if needed)
 func FilterRow(/* const */ dec *VP8Decoder) {
-  mb_x int;
+  var mb_x int
   mb_y := dec.thread_ctx.mb_y;
   assert.Assert(dec.thread_ctx.filter_row);
   for mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; mb_x++ {
@@ -276,7 +270,7 @@ func PrecomputeFilterStrengths(/* const */ dec *VP8Decoder) {
     for s = 0; s < NUM_MB_SEGMENTS; s++ {
       var i4x4 int;
       // First, compute the initial level
-      base_level int;
+      var base_level int;
       if (dec.segment_hdr.use_segment) {
         base_level = dec.segment_hdr.filter_strength[s];
         if (!dec.segment_hdr.absolute_delta) {
@@ -285,7 +279,7 @@ func PrecomputeFilterStrengths(/* const */ dec *VP8Decoder) {
       } else {
         base_level = hdr.level;
       }
-      for i4x4 = 0; i4x4 <= 1; ++i4x4 {
+      for i4x4 = 0; i4x4 <= 1; i4x4++ {
         var info *VP8FInfo = &dec.fstrengths[s][i4x4];
         level := base_level;
         if (hdr.use_lf_delta) {
@@ -294,7 +288,7 @@ func PrecomputeFilterStrengths(/* const */ dec *VP8Decoder) {
             level += hdr.mode_lf_delta[0];
           }
         }
-        level = (level < 0) ? 0 : (level > 63) ? 63 : level;
+        level = tenary.If(level < 0, 0, tenary.If(level > 63, 63, level))
         if (level > 0) {
           ilevel := level;
           if (hdr.sharpness > 0) {
@@ -307,10 +301,10 @@ func PrecomputeFilterStrengths(/* const */ dec *VP8Decoder) {
               ilevel = 9 - hdr.sharpness;
             }
           }
-          if (ilevel < 1) ilevel = 1;
+          if (ilevel < 1) {ilevel = 1;}
           info.f_ilevel = ilevel;
           info.f_limit = 2 * level + ilevel;
-          info.hev_thresh = (level >= 40) ? 2 : (level >= 15) ? 1 : 0;
+          info.hev_thresh = tenary.If(level >= 40, 2, tenary.If(level >= 15, 1, 0))
         } else {
           info.f_limit = 0;  // no filtering
         }
@@ -323,13 +317,7 @@ func PrecomputeFilterStrengths(/* const */ dec *VP8Decoder) {
 //------------------------------------------------------------------------------
 // Dithering
 
-// minimal amp that will provide a non-zero dithering effect
-const MIN_DITHER_AMP =4
 
-const DITHER_AMP_TAB_SIZE =12
-static const uint8 kQuantToDitherAmp[DITHER_AMP_TAB_SIZE] = {
-    // roughly, it's dqm.uv_mat[1]
-    8, 7, 6, 4, 4, 2, 2, 2, 1, 1, 1, 1}
 
 // Initialize dithering post-process if needed.
 func VP8InitDithering(/* const */ options *WebPDecoderOptions, /*const*/ dec *VP8Decoder) {
@@ -337,14 +325,14 @@ func VP8InitDithering(/* const */ options *WebPDecoderOptions, /*const*/ dec *VP
   if (options != nil) {
     d := options.dithering_strength;
     max_amp := (1 << VP8_RANDOM_DITHER_FIX) - 1;
-    f := (d < 0) ? 0 : (d > 100) ? max_amp : (d * max_amp / 100);
+    f := tenary.If(d < 0, 0, tenary.If(d > 100, max_amp ,  (d * max_amp / 100)))
     if (f > 0) {
       var s int
       all_amp := 0;
       for s = 0; s < NUM_MB_SEGMENTS; s++ {
         var dqm *VP8QuantMatrix = &dec.dqm[s];
         if (dqm.uv_quant < DITHER_AMP_TAB_SIZE) {
-          idx := (dqm.uv_quant < 0) ? 0 : dqm.uv_quant;
+          idx := tenary.If(dqm.uv_quant < 0, 0, dqm.uv_quant);
           dqm.dither = (f * kQuantToDitherAmp[idx]) >> 3;
         }
         all_amp |= dqm.dither;
@@ -366,16 +354,15 @@ func VP8InitDithering(/* const */ options *WebPDecoderOptions, /*const*/ dec *VP
 
 // Convert to range: [-2,2] for dither=50, [-4,4] for dither=100
 func Dither8x8(/* const */ rg *VP8Random, dst *uint8, bps int, amp int) {
-  uint8 dither[64];
-  var i int
-  for i = 0; i < 8 * 8; i++ {
+  var dither [64]uint8
+  for i := 0; i < 8 * 8; i++ {
     dither[i] = VP8RandomBits2(rg, VP8_DITHER_AMP_BITS + 1, amp);
   }
   VP8DitherCombine8x8(dither, dst, bps);
 }
 
 func DitherRow(/* const */ dec *VP8Decoder) {
-  mb_x int;
+  var mb_x int;
   assert.Assert(dec.dither);
   for mb_x = dec.tl_mb_x; mb_x < dec.br_mb_x; mb_x++ {
     var ctx *VP8ThreadContext = &dec.thread_ctx;
@@ -402,12 +389,15 @@ func DitherRow(/* const */ dec *VP8Decoder) {
 //  * we must clip the remaining pixels against the cropping area. The VP8Io
 //    struct must have the following fields set correctly before calling put():
 
-#define MACROBLOCK_VPOS(mb_y) ((mb_y) * 16)  // vertical position of a MB
+// vertical position of a MB
+func MACROBLOCK_VPOS(mb_y uint64) uint64 { 
+	return (mb_y) * 16
+}
 
 // Finalize and transmit a complete row. Return false in case of user-abort.
-static int FinishRow(arg *void1, arg *void2) {
-  var dec *VP8Decoder = (*VP8Decoder)arg1;
-  var io *VP8Io = (*VP8Io)arg2;
+func FinishRow(arg *vp8.VP8Decoder, arg *vp8.VP8Io) int {
+  var dec *vp8.VP8Decoder = arg1;
+  var io *vp8.VP8Io = arg2;
   ok := 1;
   var ctx *VP8ThreadContext = &dec.thread_ctx;
   cache_id := ctx.id;
@@ -499,12 +489,8 @@ static int FinishRow(arg *void1, arg *void2) {
   return ok;
 }
 
-#undef MACROBLOCK_VPOS
-
-//------------------------------------------------------------------------------
-
 // Process the last decoded row (filtering + output).
-int VP8ProcessRow(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
+func VP8ProcessRow(/* const */ dec *vp8.VP8Decoder, /*const*/ io *vp8.VP8Io) int {
   ok := 1;
   var ctx *VP8ThreadContext = &dec.thread_ctx;
   filter_row := (dec.filter_type > 0) &&
@@ -555,7 +541,7 @@ int VP8ProcessRow(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
 // After this call returns, one must always call VP8ExitCritical() with the
 // same parameters. Both functions should be used in pair. Returns VP8_STATUS_OK
 // if ok, otherwise sets and returns the error status on *dec.
-VP8StatusCode VP8EnterCritical(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
+func VP8EnterCritical(/* const */ dec *vp8.VP8Decoder, /*const*/ io *vp8.VP8Io) vp8.VP8StatusCode {
   // Call setup() first. This may trigger additional decoding features on 'io'.
   // Note: Afterward, we must call teardown() no matter what.
   if (io.setup != nil && !io.setup(io)) {
@@ -609,7 +595,7 @@ VP8StatusCode VP8EnterCritical(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io)
 
 // Must always be called in pair with VP8EnterCritical().
 // Returns false in case of error.
-int VP8ExitCritical(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
+func VP8ExitCritical(/* const */ dec *vp8.VP8Decoder, /*const*/ io *vp8.VP8Io) int {
   ok := 1;
   if (dec.mt_method > 0) {
     ok = WebPGetWorkerInterface().Sync(&dec.worker);
@@ -645,11 +631,9 @@ int VP8ExitCritical(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
 // Decode:  [ 0..15][16..31][ 0..15][16..31][...
 // io.put:         [ 0..15][16..31][ 0..15][...
 
-const MT_CACHE_LINES =3
-const ST_CACHE_LINES =1  // 1 cache row only for single-threaded case
 
 // Initialize multi/single-thread worker
-static int InitThreadContext(/* const */ dec *VP8Decoder) {
+func InitThreadContext(/* const */ dec *vp8.VP8Decoder) int  {
   dec.cache_id = 0;
   if (dec.mt_method > 0) {
     var worker *WebPWorker = &dec.worker;
