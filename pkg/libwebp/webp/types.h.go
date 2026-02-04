@@ -22,7 +22,6 @@ func WEBP_ABI_IS_INCOMPATIBLE(a, b int) bool {
 	return (((a) >> 8) != ((b) >> 8))
 }
 
-
 // Allocates 'size' bytes of memory. Returns nil upon error. Memory
 // must be deallocated by calling WebPFree(). This function is made available
 // by the core 'libwebp' library.
@@ -30,13 +29,6 @@ func WEBP_ABI_IS_INCOMPATIBLE(a, b int) bool {
 func WebPMalloc(size uint64) {
 	panic("not implemented")
 }
-
-// Releases memory returned by the *WebPDecode() functions (from decode.h).
-// Deprecated: Not needed in Go, use built-in memory management.
-func WebPFree(ptr any) {
-	panic("not implemented")
-}
-
 
 // As explained in src/utils/bounds_safety.h, the below macros are defined
 // somewhat delicately to handle a three-state setup:
@@ -52,21 +44,16 @@ func WebPFree(ptr any) {
 // Currently, we only allow non-ABI changing annotations in this file to ensure
 // we don't accidentally change the ABI for public functions.
 
-
-
-
+// Deprecated: Use golang std code
+func WEBP_UNSAFE_MEMMOVE(dst, src, size any) { /* memmove(dst, src, size) */ }
 
 // Deprecated: Use golang std code
-func  WEBP_UNSAFE_MEMMOVE(dst, src, size any) {/* memmove(dst, src, size) */}
+func WEBP_UNSAFE_MEMCMP(s1, s2, size any) { /* memcmp(s1, s2, size) */ }
 
 // Deprecated: Use golang std code
-func WEBP_UNSAFE_MEMCMP(s1, s2, size any) {/* memcmp(s1, s2, size) */}
-
-// Deprecated: Use golang std code
-func WEBP_UNSAFE_FORGE_SINGLE(typ, ptr any) {/* ((typ)(ptr)) */}
-
+func WEBP_UNSAFE_FORGE_SINGLE(typ, ptr any) { /* ((typ)(ptr)) */ }
 
 // This macro exists to indicate intentionality with self-assignments and
 // silence -Wself-assign compiler warnings.
 // Deprecated: Not needed in Go.
-func WEBP_SELF_ASSIGN(x any) {/*x = x*/}
+func WEBP_SELF_ASSIGN(x any) { /*x = x*/ }

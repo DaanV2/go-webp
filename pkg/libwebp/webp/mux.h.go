@@ -50,7 +50,6 @@ const WEBP_MUX_ABI_VERSION = 0x0109  // MAJOR(8b) + MINOR(8b)
   WebPMuxGetChunk(mux, "ICCP", &icc_profile);
   // ... (Consume icc_data).
   WebPMuxDelete(mux);
-  WebPFree(data);
 */
 
 // Note: forward declaring enumerations is not allowed in (strict) C and C++,

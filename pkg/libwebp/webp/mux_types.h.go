@@ -43,7 +43,6 @@ func WebPDataInit(webp_data *WebPData) {
 // Does not deallocate the object itself.
  func WebPDataClear(webp_data *WebPData) {
   if (webp_data != nil) {
-    WebPFree((*void)webp_data.bytes);
     WebPDataInit(webp_data);
   }
 }

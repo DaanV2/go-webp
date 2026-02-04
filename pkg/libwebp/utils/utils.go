@@ -264,9 +264,6 @@ func WebPMalloc(size uint64 ) *void {
   return WEBP_UNSAFE_FORGE_SINGLE(*void, WebPSafeMalloc(1, size));
 }
 
-// Deprecated: Noop in go
-func WebPFree( ptr *void) { /* Noop in go*/ }
-
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
 func WebPCopyPlane(const src *uint8, int src_stride, dst *uint8, int dst_stride, int width, int height) {
