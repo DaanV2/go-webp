@@ -695,7 +695,6 @@ static int PreLoopInitialize(const enc *VP8Encoder) {
     ok = VP8BitWriterInit(enc.parts + p, bytes_per_parts);
   }
   if (!ok) {
-    VP8EncFreeBitWriters(enc);  // malloc error occurred
     return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
   return ok;
@@ -724,8 +723,6 @@ static int PostLoopFinalize(const it *VP8EncIterator, int ok) {
 #endif
     VP8AdjustFilterStrength(it);  // ...and store filter stats.
   } else {
-    // Something bad happened . need to do some memory cleanup.
-    VP8EncFreeBitWriters(enc);
     return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
   return ok;
