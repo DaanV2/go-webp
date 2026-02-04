@@ -225,7 +225,6 @@ static int Reset(const worker *WebPWorker) {
       pthread_mutex_destroy(&impl.mutex);
       pthread_cond_destroy(&impl.condition);
     Error:
-      WebPSafeFree(impl);
       worker.impl = nil;
       return 0;
     }
@@ -261,7 +260,6 @@ func End(const worker *WebPWorker) {
     pthread_join(impl.thread, nil);
     pthread_mutex_destroy(&impl.mutex);
     pthread_cond_destroy(&impl.condition);
-    WebPSafeFree(impl);
     worker.impl = nil;
   }
 #else

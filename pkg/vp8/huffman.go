@@ -35,7 +35,6 @@ func VP8LBuildHuffmanTable(root_table *HuffmanTables, root_bits int, code_length
       var next_start *HuffmanCode =
           (*HuffmanCode)WebPSafeMalloc(next_size, sizeof(*next_start));
       if (next_start == nil) {
-        WebPSafeFree(next);
         return 0;
       }
       next.size = next_size;
@@ -59,7 +58,6 @@ func VP8LBuildHuffmanTable(root_table *HuffmanTables, root_bits int, code_length
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
     // sorted bidi index -> (uint64)code_lengths_size * sizeof(*sorted)
 	BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
-    WebPSafeFree(sorted);
   }
   return total_size;
 }
@@ -93,7 +91,6 @@ func VP8LHuffmanTablesDeallocate(/* const */ huffman_tables *HuffmanTables) {
   // Free the root node.
   current = &huffman_tables.root;
   next = current.next;
-  WebPSafeFree(current.start);
   current.start = nil;
   current.size = 0;
   current.next = nil;
@@ -101,8 +98,6 @@ func VP8LHuffmanTablesDeallocate(/* const */ huffman_tables *HuffmanTables) {
   // Free the following nodes.
   while (current != nil) {
     next = current.next;
-    WebPSafeFree(current.start);
-    WebPSafeFree(current);
     current = next;
   }
 }

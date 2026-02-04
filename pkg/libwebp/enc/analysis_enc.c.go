@@ -69,7 +69,6 @@ func SmoothSegmentMap(const enc *VP8Encoder) {
       mb.segment = tmp[x + y * w];
     }
   }
-  WebPSafeFree(tmp);
 }
 
 //------------------------------------------------------------------------------

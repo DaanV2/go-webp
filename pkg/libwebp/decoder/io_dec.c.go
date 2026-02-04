@@ -617,7 +617,7 @@ static int CustomPut(const io *VP8Io) {
 
 func CustomTeardown(/* const */ io *VP8Io) {
   var p *WebPDecParams = (*WebPDecParams)io.opaque;
-  WebPSafeFree(p.memory);
+
   p.memory = nil;
 }
 

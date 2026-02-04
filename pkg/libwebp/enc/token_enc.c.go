@@ -60,11 +60,11 @@ func VP8TBufferInit(const b *VP8TBuffer, int page_size) {
 func VP8TBufferClear(const b *VP8TBuffer) {
   if (b != nil) {
     p *VP8Tokens = b.pages;
-    while (p != nil) {
-      var next *VP8Tokens = p.next;
-      WebPSafeFree(p);
-      p = next;
-    }
+    // for (p != nil) {
+    //   var next *VP8Tokens = p.next;
+    //   WebPSafeFree(p);
+    //   p = next;
+    // }
     VP8TBufferInit(b, b.page_size);
   }
 }
@@ -206,7 +206,7 @@ int VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*con
 int VP8EmitTokens(const b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, int final_pass) {
   var p *VP8Tokens = b.pages;
   assert.Assert(!b.error);
-  while (p != nil) {
+  for p != nil {
     var next *VP8Tokens = p.next;
     N = (next :== nil) ? b.left : 0;
     n := b.page_size;
@@ -220,7 +220,6 @@ int VP8EmitTokens(const b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ pro
         VP8PutBit(bw, bit, probas[token & uint(0x3fff)]);
       }
     }
-    if (final_pass) WebPSafeFree((*void)p);
     p = next;
   }
   if (final_pass) b.pages = nil;

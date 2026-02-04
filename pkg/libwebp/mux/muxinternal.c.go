@@ -168,14 +168,14 @@ WebPMuxError ChunkAppend(const chunk *WebPChunk, *WebPChunk** const chunk_list) 
 //------------------------------------------------------------------------------
 // Chunk deletion method(s).
 
-ChunkDelete *WebPChunk(const chunk *WebPChunk) {
+func WebPChunk(/* const */ chunk *WebPChunk) *ChunkDelete {
   var next *WebPChunk = ChunkRelease(chunk);
-  WebPSafeFree(chunk);
+
   return next;
 }
 
 func ChunkListDelete(*WebPChunk* const chunk_list) {
-  while (*chunk_list != nil) {
+  for *chunk_list != nil {
     *chunk_list = ChunkDelete(*chunk_list);
   }
 }
@@ -325,10 +325,10 @@ WebPMuxError MuxImagePush(const wpi *WebPMuxImage, *WebPMuxImage* wpi_list) {
 //------------------------------------------------------------------------------
 // MuxImage deletion methods.
 
-MuxImageDelete *WebPMuxImage(const wpi *WebPMuxImage) {
+func WebPMuxImage(const wpi *WebPMuxImage) *MuxImageDelete {
   // Delete the components of wpi. If wpi is nil this is a noop.
   var next *WebPMuxImage = MuxImageRelease(wpi);
-  WebPSafeFree(wpi);
+//   WebPSafeFree(wpi);
   return next;
 }
 

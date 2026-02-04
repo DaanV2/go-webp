@@ -419,9 +419,7 @@ static int ReadHuffmanCodes(const dec *VP8LDecoder, int xsize, int ysize, int co
   hdr.htree_groups = htree_groups;
 
 Error:
-  WebPSafeFree(mapping);
   if (!ok) {
-    WebPSafeFree(huffman_image);
     VP8LHuffmanTablesDeallocate(huffman_tables);
     VP8LHtreeGroupsFree(htree_groups);
   }
@@ -526,7 +524,6 @@ int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_h
   ok = 1;
 
 Error:
-  WebPSafeFree(code_lengths);
   if (!ok) {
     VP8LHuffmanTablesDeallocate(huffman_tables);
     VP8LHtreeGroupsFree(*htree_groups);
@@ -1319,9 +1316,9 @@ Error:
 // -----------------------------------------------------------------------------
 // VP8LTransform
 
-func ClearTransform(const transform *VP8LTransform) {
-  WebPSafeFree(transform.data);
-  transform.data = nil;
+// Deprecated: Noop in Go; memory is managed by garbage collector.
+func ClearTransform(transform *VP8LTransform) {
+	// Noop in Go; memory is managed by garbage collector.
 }
 
 // For security reason, we need to remap the color map to span
@@ -1344,7 +1341,7 @@ static int ExpandColorMap(int num_colors, /*const*/ transform *VP8LTransform) {
     for ; i < 4 * final_num_colors; i++ {
       new_data[i] = 0;  // black tail.
     }
-    WebPSafeFree(transform.data);
+	
     transform.data = new_color_map;
   }
   return 1;
@@ -1413,7 +1410,6 @@ func InitMetadata(const hdr *VP8LMetadata) {
 func ClearMetadata(const hdr *VP8LMetadata) {
   assert.Assert(hdr != nil);
 
-  WebPSafeFree(hdr.huffman_image);
   VP8LHuffmanTablesDeallocate(&hdr.huffman_tables);
   VP8LHtreeGroupsFree(hdr.htree_groups);
   VP8LColorCacheClear(&hdr.color_cache);
@@ -1443,7 +1439,6 @@ func VP8LClear(const dec *VP8LDecoder) {
   if (dec == nil) return;
   ClearMetadata(&dec.hdr);
 
-  WebPSafeFree(dec.pixels);
   dec.pixels = nil;
   for i = 0; i < dec.next_transform; i++ {
     ClearTransform(&dec.transforms[i]);
@@ -1451,7 +1446,6 @@ func VP8LClear(const dec *VP8LDecoder) {
   dec.next_transform = 0;
   dec.transforms_seen = 0;
 
-  WebPSafeFree(dec.rescaler_memory);
   dec.rescaler_memory = nil;
 
   dec.output = nil;  // leave no trace behind
@@ -1461,7 +1455,6 @@ func VP8LClear(const dec *VP8LDecoder) {
 func VP8LDelete(const dec *VP8LDecoder) {
   if (dec != nil) {
     VP8LClear(dec);
-    WebPSafeFree(dec);
   }
 }
 
@@ -1540,7 +1533,7 @@ static int DecodeImageStream(int xsize, int ysize, int is_level0, /*const*/ dec 
 
 End:
   if (!ok) {
-    WebPSafeFree(data);
+	
     ClearMetadata(hdr);
   } else {
     if (decoded_data != nil) {

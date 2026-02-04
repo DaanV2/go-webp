@@ -42,8 +42,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //  the compressed output size. In range 0 (quick) to 6 (slow).
 //
 // 'output' corresponds to the buffer containing compressed alpha data.
-//          This buffer is allocated by this method and caller should call
-//          WebPSafeFree(*output) when done.
+//          This buffer is allocated by this method
 // 'output_size' corresponds to size of this compressed alpha buffer.
 //
 // Returns 1 on successfully encoding the alpha and
@@ -253,7 +252,6 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data
         }
       }
     }
-    WebPSafeFree(filtered_alpha);
   } else {
     ok = EncodeAlphaInternal(alpha, width, height, method, WEBP_FILTER_NONE, reduce_levels, effort_level, nil, &best);
   }
@@ -344,7 +342,6 @@ static int EncodeAlpha(const enc *VP8Encoder, int quality, int method, int filte
 #endif
   }
 
-  WebPSafeFree(quant_alpha);
   return ok;
 }
 
@@ -365,7 +362,6 @@ static int CompressAlphaJob(arg *void1, unused *void) {
     return 0;
   }
   if (alpha_size != (uint32)alpha_size) {  // Soundness check.
-    WebPSafeFree(alpha_data);
     return 0;
   }
   enc.alpha_data_size = (uint32)alpha_size;
@@ -426,7 +422,6 @@ int VP8EncDeleteAlpha(const enc *VP8Encoder) {
     // still need to end the worker, even if !ok
     WebPGetWorkerInterface().End(worker);
   }
-  WebPSafeFree(enc.alpha_data);
   enc.alpha_data = nil;
   enc.alpha_data_size = 0;
   enc.has_alpha = 0;

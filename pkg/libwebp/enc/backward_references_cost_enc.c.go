@@ -208,18 +208,13 @@ func CostManagerInitFreeList(const manager *CostManager) {
 func DeleteIntervalList(const manager *CostManager, /*const*/ interval *CostInterval) {
   while (interval != nil) {
     var next *CostInterval = interval.next;
-    if (!CostIntervalIsInFreeList(manager, interval)) {
-      WebPSafeFree((*void)interval);
-    }  // else: do nothing
+
     interval = next;
   }
 }
 
-func CostManagerClear(const manager *CostManager) {
-  if (manager == nil) return;
-
-  WebPSafeFree(manager.costs);
-  WebPSafeFree(manager.cache_intervals);
+func CostManagerClear(/* const */ manager *CostManager) {
+  if (manager == nil){ return;}
 
   // Clear the interval lists.
   DeleteIntervalList(manager, manager.head);
@@ -644,8 +639,7 @@ static int BackwardReferencesHashChainDistanceOnly(
 Error:
   if (cc_init) VP8LColorCacheClear(&hashers);
   CostManagerClear(cost_manager);
-  WebPSafeFree(cost_model);
-  WebPSafeFree(cost_manager);
+
   return ok;
 }
 
@@ -738,6 +732,5 @@ int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize, /*const*/ argb *u
   }
   ok = 1;
 Error:
-  WebPSafeFree(dist_array);
   return ok;
 }

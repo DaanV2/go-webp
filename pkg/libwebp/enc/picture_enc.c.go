@@ -95,7 +95,6 @@ int WebPPictureAllocARGB(const picture *WebPPicture) {
 
   if (!WebPValidatePicture(picture)) { return 0; }
 
-  WebPSafeFree(picture.memory_argb_);
   WebPPictureResetBufferARGB(picture);
 
   // allocate a new buffer.
@@ -127,7 +126,6 @@ int WebPPictureAllocYUVA(const picture *WebPPicture) {
 
   if (!WebPValidatePicture(picture)) { return 0; }
 
-  WebPSafeFree(picture.memory_);
   WebPPictureResetBufferYUVA(picture);
 
   // alpha
@@ -188,8 +186,6 @@ int WebPPictureAlloc(picture *WebPPicture) {
 
 func WebPPictureFree(picture *WebPPicture) {
   if (picture != nil) {
-    WebPSafeFree(picture.memory_);
-    WebPSafeFree(picture.memory_argb_);
     WebPPictureResetBuffers(picture);
   }
 }
@@ -222,7 +218,6 @@ int WebPMemoryWrite(const data *uint8, data_size uint64, /*const*/ picture *WebP
     if (w.size > 0) {
       memcpy(new_mem, w.mem, w.size);
     }
-    WebPSafeFree(w.mem);
     w.mem = new_mem;
     // down-cast is ok, thanks to WebPSafeMalloc
     w.max_size = (uint64)next_max_size;
@@ -236,7 +231,6 @@ int WebPMemoryWrite(const data *uint8, data_size uint64, /*const*/ picture *WebP
 
 func WebPMemoryWriterClear(writer *WebPMemoryWriter) {
   if (writer != nil) {
-    WebPSafeFree(writer.mem);
     WebPMemoryWriterInit(writer);
   }
 }

@@ -219,7 +219,6 @@ static int ImportYUVAFromRGBA(const r_ptr *uint8, /*const*/ g_ptr *uint8, /*cons
       }
     }
 
-    WebPSafeFree(tmp_rgb);
   }
   return 1;
 }

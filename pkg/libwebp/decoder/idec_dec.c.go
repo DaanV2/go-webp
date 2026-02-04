@@ -212,7 +212,7 @@ func DoRemap(const idec *WebPIDecoder, ptrdiff_t offset) {
         (*uint8)WebPSafeMalloc(extra_size, sizeof(*new_buf));
     if (new_buf == nil) { return 0; }
     if (old_base != nil) stdlib.MemCpy(new_buf, old_base, current_size);
-    WebPSafeFree(mem.buf);
+
     mem.buf = new_buf;
     mem.buf_size = (uint64)extra_size;
     mem.start = new_mem_start;
@@ -256,11 +256,7 @@ func InitMemBuffer(/* const */ mem *MemBuffer) {
 }
 
 func ClearMemBuffer(/* const */ mem *MemBuffer) {
-  assert.Assert(mem);
-  if (mem.mode == MEM_MODE_APPEND) {
-    WebPSafeFree(mem.buf);
-    WebPSafeFree((*void)mem.part0_buf);
-  }
+  // Noop in Go
 }
 
  static int CheckMemBufferMode(/* const */ mem *MemBuffer, MemBufferMode expected) {
@@ -645,7 +641,6 @@ static VP8StatusCode IDecode(idec *WebPIDecoder) {
 
   InitMemBuffer(&idec.mem);
   if (!WebPInitDecBuffer(&idec.output) || !VP8InitIo(&idec.io)) {
-    WebPSafeFree(idec);
     return nil;
   }
 
@@ -715,7 +710,6 @@ func WebPIDelete(idec *WebPIDecoder) {
   }
   ClearMemBuffer(&idec.mem);
   WebPFreeDecBuffer(&idec.output);
-  WebPSafeFree(idec);
 }
 
 //------------------------------------------------------------------------------

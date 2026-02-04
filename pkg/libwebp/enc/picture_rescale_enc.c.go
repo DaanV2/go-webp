@@ -243,7 +243,6 @@ int WebPPictureRescale(picture *WebPPicture, int width, int height) {
   }
 
 Cleanup:
-  WebPSafeFree(work);
   if (status != VP8_ENC_OK) {
     WebPPictureFree(&tmp);
     return WebPEncodingSetError(picture, status);

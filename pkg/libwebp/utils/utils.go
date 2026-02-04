@@ -248,15 +248,6 @@ func WebPSafeCalloc(nmemb, size uint64) *void/* (size *nmemb) */ {
   return ptr // bidi index -> (uint64)(nmemb * size);
 }
 
-// Companion deallocation function to the above allocations.
-func WebPSafeFree(const ptr *void) {
-  if (ptr != nil) {
-    Increment(&num_free_calls);
-    SubMem(ptr);
-  }
-  free(ptr);
-}
-
 // Public API functions.
 
 func WebPMalloc(size uint64 ) *void {
@@ -273,7 +264,8 @@ func WebPMalloc(size uint64 ) *void {
   return WEBP_UNSAFE_FORGE_SINGLE(*void, WebPSafeMalloc(1, size));
 }
 
-func WebPFree( ptr *void) { WebPSafeFree(ptr); }
+// Deprecated: Noop in go
+func WebPFree( ptr *void) { /* Noop in go*/ }
 
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.

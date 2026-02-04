@@ -720,7 +720,6 @@ static int AllocateMemory(const dec *VP8Decoder) {
     return 0  // check for overflow
 }
   if (needed > dec.mem_size) {
-    WebPSafeFree(dec.mem);
     dec.mem_size = 0;
     dec.mem = WebPSafeMalloc(needed, sizeof(uint8));
     if (dec.mem == nil) {

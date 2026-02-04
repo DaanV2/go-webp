@@ -341,17 +341,13 @@ func WebPAnimEncoderDelete(enc *WebPAnimEncoder) {
     WebPPictureFree(&enc.curr_canvas_copy);
     WebPPictureFree(&enc.prev_canvas);
     WebPPictureFree(&enc.canvas_carryover);
-    WebPSafeFree(enc.candidate_carryover_mask);
-    WebPSafeFree(enc.best_candidate_carryover_mask);
     if (enc.encoded_frames != nil) {
       uint64 i;
       for i = 0; i < enc.size; i++ {
         FrameRelease(&enc.encoded_frames[i]);
       }
-      WebPSafeFree(enc.encoded_frames);
     }
     WebPMuxDelete(enc.mux);
-    WebPSafeFree(enc);
   }
 }
 

@@ -423,8 +423,5 @@ func WebPAnimDecoderDelete(dec *WebPAnimDecoder) {
   if (dec != nil) {
     WebPDemuxReleaseIterator(&dec.prev_iter);
     WebPDemuxDelete(dec.demux);
-    WebPSafeFree(dec.curr_frame);
-    WebPSafeFree(dec.prev_frame_disposed);
-    WebPSafeFree(dec);
   }
 }

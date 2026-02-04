@@ -218,7 +218,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
         }
       }
     }
-    WebPSafeFree(histo);
+
     return 1;
   } else {
     return 0;
@@ -467,10 +467,7 @@ static int GetHuffBitLengthsAndCodes(
   }
   ok = 1;
 End:
-  WebPSafeFree(huff_tree);
-  WebPSafeFree(buf_rle);
   if (!ok) {
-    WebPSafeFree(mem_buf);
     stdlib.Memset(huffman_codes, 0, 5 * histogram_image_size * sizeof(*huffman_codes));
   }
   return ok;
@@ -778,10 +775,7 @@ static int EncodeImageNoHuffman(const bw *VP8LBitWriter, /*const*/ argb *uint32,
   }
 
 Error:
-  WebPSafeFree(tokens);
-  WebPSafeFree(huff_tree);
   VP8LFreeHistogramSet(histogram_image);
-  WebPSafeFree(huffman_codes[0].codes);
   return (pic.error_code == VP8_ENC_OK);
 }
 
@@ -968,11 +962,8 @@ static int EncodeImageInternal(
             (int)(VP8LBitWriterNumBytes(bw) - init_byte_position - *hdr_size);
         VP8LBitWriterSwap(bw, &bw_best);
       }
-      WebPSafeFree(tokens);
       tokens = nil;
       if (huffman_codes != nil) {
-        WebPSafeFree(huffman_codes.codes);
-        WebPSafeFree(huffman_codes);
         huffman_codes = nil;
       }
     }
@@ -984,16 +975,9 @@ static int EncodeImageInternal(
   }
 
 Error:
-  WebPSafeFree(tokens);
-  WebPSafeFree(huff_tree);
   VP8LFreeHistogramSet(histogram_image);
   VP8LFreeHistogram(tmp_histo);
   VP8LHashChainClear(&hash_chain_histogram);
-  if (huffman_codes != nil) {
-    WebPSafeFree(huffman_codes.codes);
-    WebPSafeFree(huffman_codes);
-  }
-  WebPSafeFree(histogram_argb);
   VP8LBitWriterWipeOut(&bw_best);
   return (pic.error_code == VP8_ENC_OK);
 }
@@ -1095,7 +1079,6 @@ static int WriteImage(const pic *WebPPicture, /*const*/ bw *VP8LBitWriter, /*con
 // -----------------------------------------------------------------------------
 
 func ClearTransformBuffer(const enc *VP8LEncoder) {
-  WebPSafeFree(enc.transform_mem);
   enc.transform_mem = nil;
   enc.transform_mem_size = 0;
 }
@@ -1276,7 +1259,6 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
           idx_map[SearchColorNoIdx(palette_sorted, pix, palette_size)]);
     }
   }
-  WebPSafeFree(tmp_row);
   return 1;
 }
 #undef APPLY_PALETTE_FOR
@@ -1359,7 +1341,6 @@ func VP8LEncoderDelete(enc *VP8LEncoder) {
     VP8LHashChainClear(&enc.hash_chain);
     for (i = 0; i < 4; ++i) VP8LBackwardRefsClear(&enc.refs[i]);
     ClearTransformBuffer(enc);
-    WebPSafeFree(enc);
   }
 }
 

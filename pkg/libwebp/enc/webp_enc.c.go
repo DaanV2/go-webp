@@ -247,18 +247,17 @@ static InitVP *VP8Encoder8Encoder(const config *WebPConfig, /*const*/ picture *W
   // lower quality means smaller output . we modulate a little the page
   // size based on quality. This is just a crude 1rst-order prediction.
   {
-    const float scale = 1.f + config.quality * 5.f / 100.f;  // in [1,6]
+    const float scale = 1.0 + config.quality * 5.0 / 100.0;  // in [1,6]
     VP8TBufferInit(&enc.tokens, (int)(mb_w * mb_h * 4 * scale));
   }
   return enc;
 }
 
-static int DeleteVP8Encoder(enc *VP8Encoder) {
+func DeleteVP8Encoder(enc *VP8Encoder) int {
   ok := 1;
   if (enc != nil) {
     ok = VP8EncDeleteAlpha(enc);
     VP8TBufferClear(&enc.tokens);
-    WebPSafeFree(enc);
   }
   return ok;
 }

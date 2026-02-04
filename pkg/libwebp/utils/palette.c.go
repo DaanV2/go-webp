@@ -297,7 +297,7 @@ static int CoOccurrenceBuild(const pic *WebPPicture, /*const*/ *uint32
     line_current = line_tmp;
     src += pic.argb_stride;
   }
-  WebPSafeFree(lines);
+
   return 1;
 }
 
@@ -324,7 +324,6 @@ static int PaletteSortModifiedZeng(
   }
   if (!CoOccurrenceBuild(pic, palette_in, num_colors, WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
                              *uint32, cooccurrence, num_num_colors *colors * sizeof(*cooccurrence)))) {
-    WebPSafeFree(cooccurrence);
     return 0;
   }
 
@@ -381,7 +380,6 @@ static int PaletteSortModifiedZeng(
     }
   }
   assert.Assert((last + 1) % num_colors == first);
-  WebPSafeFree(cooccurrence);
 
   // Re-map the palette.
   for i = 0; i < num_colors; i++ {

@@ -138,7 +138,7 @@ int VP8ApplyNearLossless(const picture *WebPPicture, int quality, /*const*/ argb
   for i = limit_bits - 1; i != 0; --i {
     NearLossless(xsize, ysize, argb_dst, xsize, i, copy_buffer, argb_dst);
   }
-  WebPSafeFree(copy_buffer);
+  
   return 1;
 }
 #else  // (WEBP_NEAR_LOSSLESS == 1)

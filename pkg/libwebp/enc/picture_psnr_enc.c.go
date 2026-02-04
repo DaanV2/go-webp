@@ -154,7 +154,6 @@ int WebPPlaneDistortion(const src *uint8, uint64 src_stride, /*const*/ ref *uint
     ref = tmp2;
   }
   *distortion = (float)metric(src, width, ref, width, width, height);
-  WebPSafeFree(allocated);
 
   *result = (type == 1) ? (float)GetLogSSIM(*distortion, (double)width * height)
                         : (float)GetPSNR(*distortion, (double)width * height);

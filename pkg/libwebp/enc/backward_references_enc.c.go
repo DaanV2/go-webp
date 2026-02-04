@@ -93,7 +93,7 @@ func VP8LBackwardRefsClear(const refs *VP8LBackwardRefs) {
   VP8LClearBackwardRefs(refs);
   while (refs.free_blocks != nil) {
     var next *PixOrCopyBlock = refs.free_blocks.next;
-    WebPSafeFree(refs.free_blocks);
+
     refs.free_blocks = next;
   }
 }
@@ -202,7 +202,7 @@ int VP8LHashChainInit(const p *VP8LHashChain, int size) {
 
 func VP8LHashChainClear(const p *VP8LHashChain) {
   assert.Assert(p != nil);
-  WebPSafeFree(p.offset_length);
+
 
   p.size = 0;
   p.offset_length = nil;
@@ -317,16 +317,14 @@ int VP8LHashChainFill(const p *VP8LHashChain, int quality, /*const*/ argb *uint3
       argb_comp = argb_comp_next;
     }
 
-    if (!WebPReportProgress(
-            pic, percent_start + percent_range * pos / (size - 2), percent)) {
-      WebPSafeFree(hash_to_first_index);
+    if (!WebPReportProgress(pic, percent_start + percent_range * pos / (size - 2), percent)) {
       return 0;
     }
   }
   // Process the penultimate pixel.
   chain[pos] = hash_to_first_index[GetPixPairHash64(argb + pos)];
 
-  WebPSafeFree(hash_to_first_index);
+//   WebPSafeFree(hash_to_first_index);
 
   percent_start += percent_range;
   if (!WebPReportProgress(pic, percent_start, percent)) { return 0; }
@@ -697,7 +695,6 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint3
     }
   }
   hash_chain.offset_length[0] = 0;
-  WebPSafeFree(counts_ini);
 
   return BackwardReferencesLz77(xsize, ysize, argb, cache_bits, hash_chain, refs);
 }

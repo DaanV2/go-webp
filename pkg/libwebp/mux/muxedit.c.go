@@ -67,7 +67,6 @@ func MuxRelease(const mux *WebPMux) {
 func WebPMuxDelete(mux *WebPMux) {
   if (mux != nil) {
     MuxRelease(mux);
-    WebPSafeFree(mux);
   }
 }
 
@@ -635,7 +634,6 @@ WebPMuxError WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) {
   // Validate mux.
   err = MuxValidate(mux);
   if (err != WEBP_MUX_OK) {
-    WebPSafeFree(data);
     data = nil;
     size = 0;
   }

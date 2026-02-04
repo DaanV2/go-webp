@@ -52,7 +52,7 @@ static int BitWriterResize(const bw *VP8BitWriter, uint64 extra_size) {
     assert.Assert(bw.buf != nil);
     stdlib.MemCpy(new_buf, bw.buf, bw.pos);
   }
-  WebPSafeFree(bw.buf);
+  
   bw.buf = new_buf // bidi index -> new_size;
   bw.max_pos = new_size;
   return 1;
@@ -181,11 +181,9 @@ int VP8BitWriterAppend(const bw *VP8BitWriter, /*const*/ data *uint8, size uint6
   return 1;
 }
 
+// Deprecated: Noop in Go
 func VP8BitWriterWipeOut(const bw *VP8BitWriter) {
-  if (bw != nil) {
-    WebPSafeFree(bw.buf);
-    stdlib.Memset(bw, 0, sizeof(*bw));
-  }
+  // Noop in Go
 }
 
 //------------------------------------------------------------------------------
@@ -221,7 +219,7 @@ static int VP8LBitWriterResize(const bw *VP8LBitWriter, uint64 extra_size) {
   if (current_size > 0) {
     stdlib.MemCpy(allocated_buf, bw.buf, current_size);
   }
-  WebPSafeFree(bw.buf);
+  
   bw.buf = allocated_buf;
   bw.end = allocated_buf + allocated_size;
   bw.cur = allocated_buf + current_size;
@@ -245,11 +243,9 @@ int VP8LBitWriterClone(const src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter) {
   return 1;
 }
 
-func VP8LBitWriterWipeOut(const bw *VP8LBitWriter) {
-  if (bw != nil) {
-    WebPSafeFree(bw.buf);
-    stdlib.Memset(bw, 0, sizeof(*bw));
-  }
+// Deprecated: Noop in Go
+func VP8LBitWriterWipeOut(/* const */ bw *VP8LBitWriter) {
+  // Noop in Go
 }
 
 func VP8LBitWriterReset(const bw_init *VP8LBitWriter, /*const*/ bw *VP8LBitWriter) {

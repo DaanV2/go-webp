@@ -672,7 +672,6 @@ func GetBestPredictorsAndSubSampling(
     if (tile_x == 0 &&
         !WebPReportProgress(
             pic, percent_start + percent_range * tile_y / tiles_per_col, percent)) {
-      WebPSafeFree(raw_data);
       return;
     }
   }
@@ -695,8 +694,6 @@ func GetBestPredictorsAndSubSampling(
       *best_mode = all_modes[subsampling_index];
     }
   }
-
-  WebPSafeFree(raw_data);
 
   VP8LOptimizeSampling(*best_mode, width, height, *best_bits, MAX_TRANSFORM_BITS, best_bits);
 }
@@ -742,13 +739,11 @@ int VP8LResidualImage(int width, int height, int min_bits, int max_bits, int low
     GetBestPredictorsAndSubSampling(
         width, height, min_bits, max_bits, argb_scratch, argb, max_quantization, exact, used_subtract_green, pic, percent_range, percent, &modes[min_bits], best_bits, &best_mode);
     if (*best_bits == 0) {
-      WebPSafeFree(modes_raw);
       return 0;
     }
     // Keep the best predictor image.
     memcpy(image, best_mode, VP8LSubSampleSize(width, *best_bits) *
                VP8LSubSampleSize(height, *best_bits) * sizeof(*image));
-    WebPSafeFree(modes_raw);
   }
 
   CopyImageWithPrediction(width, height, *best_bits, image, argb_scratch, argb, low_effort, max_quantization, exact, used_subtract_green);

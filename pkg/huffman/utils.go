@@ -32,9 +32,6 @@ func HTreeGroup8LHtreeGroupsNew(num_htree_groups int) []HTreeGroup {
 // Releases the memory allocated for HTreeGroup.
 func VP8LHtreeGroupsFree( /* const */ htree_groups []*HTreeGroup) {
 	// Noop in Go
-	//   if (htree_groups != nil) {
-	//     WebPSafeFree(htree_groups);
-	//   }
 }
 
 // Returns reverse(reverse(key, len) + 1, len), where reverse(key, len) is the

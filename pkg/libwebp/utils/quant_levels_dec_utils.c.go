@@ -266,7 +266,8 @@ func InitParams( *uint8((uint64)height *stride) data, width, height, stride, rad
   return 1;
 }
 
-func CleanupParams(const p *SmoothParams) { WebPSafeFree(p.mem); }
+// Deprecated: Noop in go
+func CleanupParams(const p *SmoothParams) { /* Noop in go */ }
 
 int WebPDequantizeLevels( *uint8((uint64)height *stride)
                              const data, int width, int height, int stride, int strength) {

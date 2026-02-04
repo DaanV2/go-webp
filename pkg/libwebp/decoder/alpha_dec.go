@@ -55,7 +55,6 @@ func ALPHDelete(/* const */ dec *ALPHDecoder) {
   if (dec != nil) {
     VP8LDelete(dec.vp8l_dec);
     dec.vp8l_dec = nil;
-    WebPSafeFree(dec);
   }
 }
 
@@ -178,7 +177,6 @@ func AllocateAlphaPlane(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int 
 // Deallocate memory associated to dec.alpha_plane decoding
 func WebPDeallocateAlphaMemory(/* const */ dec *VP8Decoder) {
   assert.Assert(dec != nil);
-  WebPSafeFree(dec.alpha_plane_mem);
   dec.alpha_plane_mem = nil;
   dec.alpha_plane = nil;
   ALPHDelete(dec.alph_dec);

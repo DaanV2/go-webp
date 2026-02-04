@@ -259,7 +259,6 @@ func ParseAnimationFrame(/* const */ dmux *WebPDemuxer, frame_chunk_size uint32 
       (bits & 1) ? WEBP_MUX_DISPOSE_BACKGROUND : WEBP_MUX_DISPOSE_NONE
   frame.blend_method = (bits & 2) ? WEBP_MUX_NO_BLEND : WEBP_MUX_BLEND
   if (frame.width * (uint64)frame.height >= MAX_IMAGE_AREA) {
-    WebPSafeFree(frame)
     return PARSE_ERROR
   }
 
@@ -279,7 +278,6 @@ func ParseAnimationFrame(/* const */ dmux *WebPDemuxer, frame_chunk_size uint32 
     }
   }
 
-  if (!added_frame) {WebPSafeFree(frame)}
   return status
 }
 
@@ -367,7 +365,6 @@ static ParseStatus ParseSingleImage(const dmux *WebPDemuxer) {
     }
   }
 
-  if (!image_added){ WebPSafeFree(frame)}
   return status
 }
 
@@ -627,8 +624,6 @@ func CreateRawImageDemuxer(/* const */ mem *MemBuffer, demuxer *WebPDemuxer) Par
     return PARSE_OK
 
   Error:
-    WebPSafeFree(dmux)
-    WebPSafeFree(frame)
     return PARSE_ERROR
   }
 }
@@ -699,14 +694,11 @@ func WebPDemuxDelete(dmux *WebPDemuxer) {
   for f = dmux.frames f != nil {
     var cur_frame *Frame = f
     f = f.next
-    WebPSafeFree(cur_frame)
   }
   for c = dmux.chunks c != nil {
     var cur_chunk *Chunk = c
     c = c.next
-    WebPSafeFree(cur_chunk)
   }
-  WebPSafeFree(dmux)
 }
 
 // -----------------------------------------------------------------------------

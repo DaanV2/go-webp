@@ -253,9 +253,6 @@ func WebPInitDecBufferInternal(buffer *WebPDecBuffer, version int) int {
 
 func WebPFreeDecBuffer(buffer *WebPDecBuffer) {
   if (buffer != nil) {
-    if (buffer.is_external_memory <= 0) {
-      WebPSafeFree(buffer.private_memory);
-    }
     buffer.private_memory = nil;
   }
 }

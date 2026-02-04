@@ -95,10 +95,14 @@ func HistogramCopy(const src *VP8LHistogram, /*const*/ dst *VP8LHistogram) {
   memcpy(dst.literal, src.literal, literal_size * sizeof(*dst.literal));
 }
 
-func VP8LFreeHistogram(const h *VP8LHistogram) { WebPSafeFree(h); }
+// Deprecated: no-op in Go.
+func VP8LFreeHistogram(/* const */ h *VP8LHistogram) { 
+  // Noop in Go
+}
 
-func VP8LFreeHistogramSet(const histograms *VP8LHistogramSet) {
-  WebPSafeFree(histograms);
+// Deprecated: no-op in Go.
+func VP8LFreeHistogramSet(/* const */ histograms *VP8LHistogramSet) {
+  // Noop in Go
 }
 
 func VP8LHistogramCreate(const h *VP8LHistogram, /*const*/ refs *VP8LBackwardRefs, int palette_code_bits) {
@@ -753,7 +757,7 @@ type HistoQueue struct {
   int max_size;
 } ;
 
-static int HistoQueueInit(const histo_queue *HistoQueue, /*const*/ int max_size) {
+static int HistoQueueInit(/* const */ histo_queue *HistoQueue, /*const*/ int max_size) {
   histo_queue.size = 0;
   histo_queue.max_size = max_size;
   // We allocate max_size + 1 because the last element at index "size" is
@@ -763,9 +767,9 @@ static int HistoQueueInit(const histo_queue *HistoQueue, /*const*/ int max_size)
   return histo_queue.queue != nil;
 }
 
-func HistoQueueClear(const histo_queue *HistoQueue) {
+func HistoQueueClear(/* const */ histo_queue *HistoQueue) {
   assert.Assert(histo_queue != nil);
-  WebPSafeFree(histo_queue.queue);
+
   histo_queue.size = 0;
   histo_queue.max_size = 0;
 }

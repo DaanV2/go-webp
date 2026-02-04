@@ -47,7 +47,7 @@ type VP8LHistogram struct {
 } ;
 
 // Collection of histograms with fixed capacity, allocated as one
-// big memory chunk. Can be destroyed by calling WebPSafeFree().
+// big memory chunk.
 type VP8LHistogramSet struct {
   int size;      // number of slots currently in use
   int max_size;  // maximum capacity
