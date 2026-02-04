@@ -774,7 +774,6 @@ func VP8Clear(/* const */ dec *VP8Decoder) {
     return;
   }
   WebPGetWorkerInterface().End(&dec.worker);
-  WebPDeallocateAlphaMemory(dec);
   dec.mem = nil;
   dec.mem_size = 0;
   stdlib.Memset(&dec.br, 0, sizeof(dec.br));

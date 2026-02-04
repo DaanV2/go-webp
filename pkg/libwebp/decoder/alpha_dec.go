@@ -166,12 +166,6 @@ func AllocateAlphaPlane(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int 
   return 1;
 }
 
-// Deallocate memory associated to dec.alpha_plane decoding
-// Deprecated: Not needed in Go, use built-in memory management.
-func WebPDeallocateAlphaMemory(/* const */ dec *VP8Decoder) {
-
-}
-
 //------------------------------------------------------------------------------
 // Main entry point.
 
@@ -227,6 +221,5 @@ func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8I
   return dec.alpha_plane + row * width;
 
 Error:
-  WebPDeallocateAlphaMemory(dec);
   return nil;
 }
