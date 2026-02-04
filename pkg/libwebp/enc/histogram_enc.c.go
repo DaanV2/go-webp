@@ -562,7 +562,7 @@ static int GetBinIdForEntropy(uint64 min, uint64 max, uint64 val) {
   }
 }
 
-static int GetHistoBinIndex(/* const */ h *VP8LHistogram, /*const*/ c *DominantCostRange, int low_effort) {
+static int GetHistoBinIndex(/* const */ h *VP8LHistogram, /*const*/ c *DominantCostRange, low_effort int) {
   int bin_id =
       GetBinIdForEntropy(c.literal_min, c.literal_max, h.costs[LITERAL]);
   assert.Assert(bin_id < NUM_PARTITIONS);
@@ -626,7 +626,7 @@ func HistogramCopyAndAnalyze(/* const */ orig_histo *VP8LHistogramSet, /*const*/
 
 // Partition histograms to different entropy bins for three dominant (literal,
 // red and blue) symbol costs and compute the histogram aggregate bit_cost.
-func HistogramAnalyzeEntropyBin(/* const */ image_histo *VP8LHistogramSet, int low_effort) {
+func HistogramAnalyzeEntropyBin(/* const */ image_histo *VP8LHistogramSet, low_effort int) {
   var i int
   *VP8LHistogram* const histograms = image_histo.histograms;
   histo_size := image_histo.size;
@@ -649,7 +649,7 @@ func HistogramAnalyzeEntropyBin(/* const */ image_histo *VP8LHistogramSet, int l
 // Merges some histograms with same bin_id together if it's advantageous.
 // Sets the remaining histograms to nil.
 // 'combine_cost_factor' has to be divided by 100.
-func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_combo *VP8LHistogram, int num_bins, int32 combine_cost_factor, int low_effort) {
+func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_combo *VP8LHistogram, int num_bins, int32 combine_cost_factor, low_effort int) {
   *VP8LHistogram* const histograms = image_histo.histograms;
   int idx;
   struct {
@@ -1059,7 +1059,7 @@ func HistogramRemap(/* const */ in *VP8LHistogramSet, /*const*/ out *VP8LHistogr
   }
 }
 
-static int32 GetCombineCostFactor(int histo_size, int quality) {
+static int32 GetCombineCostFactor(int histo_size, quality int) {
   combine_cost_factor := 16;
   if (quality < 90) {
     if (histo_size > 256) combine_cost_factor /= 2;
@@ -1070,7 +1070,7 @@ static int32 GetCombineCostFactor(int histo_size, int quality) {
   return combine_cost_factor;
 }
 
-int VP8LGetHistoImageSymbols(int xsize, int ysize, /*const*/ refs *VP8LBackwardRefs, int quality, int low_effort, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+int VP8LGetHistoImageSymbols(int xsize, int ysize, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
   histo_xsize :=
       histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1;
   histo_ysize :=

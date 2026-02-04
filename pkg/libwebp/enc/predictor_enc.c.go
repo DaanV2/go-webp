@@ -427,7 +427,7 @@ func ComputeResidualsForTile(
 // If max_quantization > 1, applies near lossless processing, quantizing
 // residuals to multiples of quantization levels up to max_quantization
 // (the actual quantization level depends on smoothness near the given pixel).
-func CopyImageWithPrediction(width, height int, int bits, /*const*/ modes *uint32, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int low_effort, int max_quantization, exact int, int used_subtract_green) {
+func CopyImageWithPrediction(width, height int, int bits, /*const*/ modes *uint32, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, low_effort int, int max_quantization, exact int, int used_subtract_green) {
   tiles_per_row := VP8LSubSampleSize(width, bits);
   // The width of upper_row and current_row is one pixel larger than image width
   // to allow the top right pixel to point to the leftmost pixel of the next row
@@ -564,7 +564,7 @@ func VP8LOptimizeSampling(/* const */ image *uint32, int full_width, int full_he
 // super-tile is updated. If this super-tile is finished, its histogram is used
 // to update the histogram of the next super-tile and so on up to the max-tile.
 func GetBestPredictorsAndSubSampling(
-    width, height int, /*const*/ int min_bits, /*const*/ int max_bits, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int max_quantization, exact int, int used_subtract_green, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int, *uint32* const all_modes, best_bits *int, *uint32* best_mode) {
+    width, height int, /*const*/ int min_bits, /*const*/ int max_bits, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, int max_quantization, exact int, int used_subtract_green, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int, *uint32* const all_modes, best_bits *int, *uint32* best_mode) {
   tiles_per_row := VP8LSubSampleSize(width, min_bits);
   tiles_per_col := VP8LSubSampleSize(height, min_bits);
   int64 best_cost;
@@ -704,7 +704,7 @@ func GetBestPredictorsAndSubSampling(
 // qualities.
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
-int VP8LResidualImage(width, height int, int min_bits, int max_bits, int low_effort, /*const*/ argb *uint32, /*const*/ argb_scratch *uint32, /*const*/ image *uint32, int near_lossless_quality, exact int, int used_subtract_green, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+int VP8LResidualImage(width, height int, int min_bits, int max_bits, low_effort int, /*const*/ argb *uint32, /*const*/ argb_scratch *uint32, /*const*/ image *uint32, int near_lossless_quality, exact int, int used_subtract_green, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) {
   percent_start := *percent;
   max_quantization := 1 << VP8LNearLosslessBits(near_lossless_quality);
   if (low_effort) {
@@ -801,7 +801,7 @@ static int64 GetPredictionCostCrossColorRed(
   return cur_diff;
 }
 
-func GetBestGreenToRed(/* const */ argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, /*const*/ uint32 accumulated_red_histo[256], /*const*/ best_tx *VP8LMultipliers) {
+func GetBestGreenToRed(/* const */ argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, quality int, /*const*/ uint32 accumulated_red_histo[256], /*const*/ best_tx *VP8LMultipliers) {
   kMaxIters := 4 + ((7 * quality) >> 8);  // in range [4..6]
   green_to_red_best := 0;
   int iter, offset;
@@ -861,7 +861,7 @@ static int64 GetPredictionCostCrossColorBlue(
 
 const kGreenRedToBlueNumAxis = 8
 const kGreenRedToBlueMaxIters = 7
-func GetBestGreenRedToBlue(/* const */ argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, /*const*/ uint32 accumulated_blue_histo[256], /*const*/ best_tx *VP8LMultipliers) {
+func GetBestGreenRedToBlue(/* const */ argb *uint32, int stride, int tile_width, int tile_height, VP8LMultipliers prev_x, VP8LMultipliers prev_y, quality int, /*const*/ uint32 accumulated_blue_histo[256], /*const*/ best_tx *VP8LMultipliers) {
   offset[kGreenRedToBlueNumAxis][2] := {
       {0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}}
   delta_lut[kGreenRedToBlueMaxIters] := {16, 16, 8, 4, 2, 2, 2}
@@ -905,7 +905,7 @@ func GetBestGreenRedToBlue(/* const */ argb *uint32, int stride, int tile_width,
 #undef kGreenRedToBlueNumAxis
 
 static VP8LMultipliers GetBestColorTransformForTile(
-    int tile_x, int tile_y, int bits, VP8LMultipliers prev_x, VP8LMultipliers prev_y, int quality, int xsize, int ysize, /*const*/ uint32 accumulated_red_histo[256], /*const*/ uint32 accumulated_blue_histo[256], /*const*/ argb *uint32) {
+    int tile_x, int tile_y, int bits, VP8LMultipliers prev_x, VP8LMultipliers prev_y, quality int, int xsize, int ysize, /*const*/ uint32 accumulated_red_histo[256], /*const*/ uint32 accumulated_blue_histo[256], /*const*/ argb *uint32) {
   max_tile_size := 1 << bits;
   tile_y_offset := tile_y * max_tile_size;
   tile_x_offset := tile_x * max_tile_size;
@@ -933,7 +933,7 @@ func CopyTileWithColorTransform(int xsize, int ysize, int tile_x, int tile_y, in
   }
 }
 
-int VP8LColorSpaceTransform(width, height int, int bits, int quality, /*const*/ argb *uint32, image *uint32, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+int VP8LColorSpaceTransform(width, height int, int bits, quality int, /*const*/ argb *uint32, image *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) {
   max_tile_size := 1 << bits;
   tile_xsize := VP8LSubSampleSize(width, bits);
   tile_ysize := VP8LSubSampleSize(height, bits);

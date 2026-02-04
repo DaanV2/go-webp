@@ -23,65 +23,6 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#if !defined(WEBP_DISABLE_STATS)
-
-// Helper function
-static  func SubtractAndSquare_SSE2(/* const */ __m128i a, /*const*/ __m128i b, __const sum *m128i) {
-  // take abs(a-b) in 8b
-  const __m128i a_b = _mm_subs_epu8(a, b);
-  const __m128i b_a = _mm_subs_epu8(b, a);
-  const __m128i abs_a_b = _mm_or_si128(a_b, b_a);
-  // zero-extend to 16b
-  const __m128i zero = _mm_setzero_si128();
-  const __m128i C0 = _mm_unpacklo_epi8(abs_a_b, zero);
-  const __m128i C1 = _mm_unpackhi_epi8(abs_a_b, zero);
-  // multiply with self
-  const __m128i sum1 = _mm_madd_epi16(C0, C0);
-  const __m128i sum2 = _mm_madd_epi16(C1, C1);
-  *sum = _mm_add_epi32(sum1, sum2);
-}
-
-//------------------------------------------------------------------------------
-// SSIM / PSNR entry point
-
-static uint32 AccumulateSSE_SSE2(/* const */ src *uint81, /*const*/ src *uint82, int len) {
-  i := 0;
-  uint32 sse2 = 0;
-  if (len >= 16) {
-    limit := len - 32;
-    int32 tmp[4];
-    __m128i sum1;
-    __m128i sum = _mm_setzero_si128();
-    __m128i a0 = _mm_loadu_si128((/* const */ __*m128i)&src1[i]);
-    __m128i b0 = _mm_loadu_si128((/* const */ __*m128i)&src2[i]);
-    i += 16;
-    while (i <= limit) {
-      const __m128i a1 = _mm_loadu_si128((/* const */ __*m128i)&src1[i]);
-      const __m128i b1 = _mm_loadu_si128((/* const */ __*m128i)&src2[i]);
-      __m128i sum2;
-      i += 16;
-      SubtractAndSquare_SSE2(a0, b0, &sum1);
-      sum = _mm_add_epi32(sum, sum1);
-      a0 = _mm_loadu_si128((/* const */ __*m128i)&src1[i]);
-      b0 = _mm_loadu_si128((/* const */ __*m128i)&src2[i]);
-      i += 16;
-      SubtractAndSquare_SSE2(a1, b1, &sum2);
-      sum = _mm_add_epi32(sum, sum2);
-    }
-    SubtractAndSquare_SSE2(a0, b0, &sum1);
-    sum = _mm_add_epi32(sum, sum1);
-    _mm_storeu_si128((__*m128i)tmp, sum);
-    sse2 += (tmp[3] + tmp[2] + tmp[1] + tmp[0]);
-  }
-
-  for ; i < len; i++ {
-    diff := src1[i] - src2[i];
-    sse2 += diff * diff;
-  }
-  return sse2;
-}
-#endif  // !defined(WEBP_DISABLE_STATS)
-
 #if !defined(WEBP_REDUCE_SIZE)
 
 static uint32 HorizontalAdd16b_SSE2(/* const */ __const m *m128i) {
@@ -151,9 +92,6 @@ static double SSIMGet_SSE2(/* const */ src *uint81, int stride1, /*const*/ src *
 extern func VP8SSIMDspInitSSE2(void);
 
 WEBP_TSAN_IGNORE_FUNCTION func VP8SSIMDspInitSSE2(){
-#if !defined(WEBP_DISABLE_STATS)
-  VP8AccumulateSSE = AccumulateSSE_SSE2;
-#endif
 #if !defined(WEBP_REDUCE_SIZE)
   VP8SSIMGet = SSIMGet_SSE2;
 #endif

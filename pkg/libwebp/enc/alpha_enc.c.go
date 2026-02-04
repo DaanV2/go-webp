@@ -267,7 +267,7 @@ static int ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, da
   return ok;
 }
 
-static int EncodeAlpha(/* const */ enc *VP8Encoder, int quality, int method, int filter, int effort_level, *uint8* const output, /*const*/ output_size *uint64) {
+func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, int method, int filter, int effort_level, *uint8* const output, /*const*/ output_size *uint64) int  {
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
@@ -322,12 +322,6 @@ static int EncodeAlpha(/* const */ enc *VP8Encoder, int quality, int method, int
     if (!ok) {
       WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);  // imprecise
     }
-#if !defined(WEBP_DISABLE_STATS)
-    if (pic.stats != nil) {  // need stats?
-      pic.stats.coded_size += (int)(*output_size);
-      enc.sse[3] = sse;
-    }
-#endif
   }
 
   return ok;
@@ -336,25 +330,24 @@ static int EncodeAlpha(/* const */ enc *VP8Encoder, int quality, int method, int
 //------------------------------------------------------------------------------
 // Main calls
 
-static int CompressAlphaJob(arg *void1, unused *void) {
+func CompressAlphaJob(arg *void1, unused *void) int {
   var enc *VP8Encoder = (*VP8Encoder)arg1;
   var config *WebPConfig = enc.config;
   alpha_data *uint8 = nil;
   alpha_size := 0;
   effort_level := config.method;  // maps to [0..6]
-  const WEBP_FILTER_TYPE filter =
+  var WEBP_FILTER_TYPE filter =
       (config.alpha_filtering == 0)   ? WEBP_FILTER_NONE
       : (config.alpha_filtering == 1) ? WEBP_FILTER_FAST
                                        : WEBP_FILTER_BEST;
   if (!EncodeAlpha(enc, config.alpha_quality, config.alpha_compression, filter, effort_level, &alpha_data, &alpha_size)) {
     return 0;
   }
-  if (alpha_size != (uint32)alpha_size) {  // Soundness check.
+  if (alpha_size != uint32(alpha_size)) {  // Soundness check.
     return 0;
   }
-  enc.alpha_data_size = (uint32)alpha_size;
+  enc.alpha_data_size = uint32(alpha_size);
   enc.alpha_data = alpha_data;
-  (void)unused;
   return 1;
 }
 
@@ -372,7 +365,7 @@ func VP8EncInitAlpha(/* const */ enc *VP8Encoder) {
   }
 }
 
-int VP8EncStartAlpha(/* const */ enc *VP8Encoder) {
+func VP8EncStartAlpha(/* const */ enc *VP8Encoder) int {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
       var worker *WebPWorker = &enc.alpha_worker;
@@ -389,7 +382,7 @@ int VP8EncStartAlpha(/* const */ enc *VP8Encoder) {
   return 1;
 }
 
-int VP8EncFinishAlpha(/* const */ enc *VP8Encoder) {
+func VP8EncFinishAlpha(/* const */ enc *VP8Encoder) int  {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
       var worker *WebPWorker = &enc.alpha_worker;
@@ -401,7 +394,7 @@ int VP8EncFinishAlpha(/* const */ enc *VP8Encoder) {
   return WebPReportProgress(enc.pic, enc.percent + 20, &enc.percent);
 }
 
-int VP8EncDeleteAlpha(/* const */ enc *VP8Encoder) {
+func VP8EncDeleteAlpha(/* const */ enc *VP8Encoder) int  {
   ok := 1;
   if (enc.thread_level > 0) {
     var worker *WebPWorker = &enc.alpha_worker;

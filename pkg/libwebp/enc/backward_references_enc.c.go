@@ -224,11 +224,11 @@ GetPixPairHash64(/* const */ argb *uint32) {
 
 // Returns the maximum number of hash chain lookups to do for a
 // given compression quality. Return value in range [8, 86].
-static int GetMaxItersForQuality(int quality) {
+static int GetMaxItersForQuality(quality int) {
   return 8 + (quality * quality) / 128;
 }
 
-static int GetWindowSizeForHashChain(int quality, int xsize) {
+static int GetWindowSizeForHashChain(quality int, int xsize) {
   max_window_size := (quality > 75)   ? WINDOW_SIZE
                               : (quality > 50) ? (xsize << 8)
                               : (quality > 25) ? (xsize << 6)
@@ -241,7 +241,7 @@ static  int MaxFindCopyLength(int len) {
   return (len < MAX_LENGTH) ? len : MAX_LENGTH;
 }
 
-int VP8LHashChainFill(/* const */ p *VP8LHashChain, int quality, /*const*/ argb *uint32, int xsize, int ysize, int low_effort, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, int xsize, int ysize, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
   size := xsize * ysize;
   iter_max := GetMaxItersForQuality(quality);
   window_size := GetWindowSizeForHashChain(quality, xsize);
@@ -718,7 +718,7 @@ func BackwardReferences2DLocality(int xsize, /*const*/ refs *VP8LBackwardRefs) {
 // implies disabling the local color cache). The local color cache is also
 // disabled for the lower (<= 25) quality.
 // Returns 0 in case of memory error.
-static int CalculateBestCacheSize(/* const */ argb *uint32, int quality, /*const*/ refs *VP8LBackwardRefs, /*const*/ best_cache_bits *int) {
+static int CalculateBestCacheSize(/* const */ argb *uint32, quality int, /*const*/ refs *VP8LBackwardRefs, /*const*/ best_cache_bits *int) {
   var i int
   cache_bits_max := (quality <= 25) ? 0 : *best_cache_bits;
   entropy_min := WEBP_UINT64_MAX;
@@ -867,7 +867,7 @@ static GetBackwardReferencesLowEffort *VP8LBackwardRefs(
 
 extern int VP8LBackwardReferencesTraceBackwards(
     int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs);
-static int GetBackwardReferences(width, height int, /*const*/ argb *uint32, int quality, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int) {
+static int GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality int, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int) {
   histo *VP8LHistogram = nil;
   int i, lz77_type;
   // Index 0 is for a color cache, index 1 for no cache (if needed).
@@ -985,7 +985,7 @@ Error:
 }
 
 int VP8LGetBackwardReferences(
-    width, height int, /*const*/ argb *uint32, int quality, int low_effort, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+    width, height int, /*const*/ argb *uint32, quality int, low_effort int, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
   if (low_effort) {
     refs_best *VP8LBackwardRefs;
     *cache_bits_best = cache_bits_max;

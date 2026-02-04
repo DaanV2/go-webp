@@ -696,7 +696,7 @@ static int StoreImageToBitMask(/* const */ bw *VP8LBitWriter, int width, int his
 
 // Special case of EncodeImageInternal() for cache-bits=0, histo_bits=31.
 // pic and percent are for progress.
-static int EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_array *VP8LBackwardRefs, width, height int, int quality, int low_effort, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+static int EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_array *VP8LBackwardRefs, width, height int, quality int, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
   var i int
   max_tokens := 0;
   refs *VP8LBackwardRefs;
@@ -771,8 +771,13 @@ Error:
 }
 
 // pic and percent are for progress.
-static int EncodeImageInternal(
-    /* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, refs_array [4]VP8LBackwardRefs, width, height int, int quality, int low_effort, /*const*/ config *CrunchConfig, cache_bits *int, int histogram_bits_in, uint64 init_byte_position, /*const*/ hdr_size *int, /*const*/ data_size *int, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int) {
+func EncodeImageInternal(
+    /* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, refs_array [4]VP8LBackwardRefs,
+	width, height int, quality int, low_effort int, /*const*/ 
+	config *CrunchConfig, cache_bits *int, histogram_bits_in int, 
+	init_byte_position uint64 , /*const*/ hdr_size *int, /*const*/ data_size *int,
+	 /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) int {
+
   histogram_image_xysize :=
       VP8LSubSampleSize(width, histogram_bits_in) *
       VP8LSubSampleSize(height, histogram_bits_in);
@@ -807,12 +812,12 @@ static int EncodeImageInternal(
     goto Error;
   }
 
-  // Make sure we can allocate the different objects.
-  if (huff_tree == nil || histogram_argb == nil ||
-      !VP8LHashChainInit(&hash_chain_histogram, histogram_image_xysize)) {
-    WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
-    goto Error;
-  }
+//   // Make sure we can allocate the different objects.
+//   if (huff_tree == nil || histogram_argb == nil ||
+//       !VP8LHashChainInit(&hash_chain_histogram, histogram_image_xysize)) {
+//     WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//     goto Error;
+//   }
 
   percent_range = remaining_percent / 5;
   if (!VP8LHashChainFill(hash_chain, quality, argb, width, height, low_effort, pic, percent_range, percent)) {
@@ -982,7 +987,7 @@ func ApplySubtractGreen(/* const */ enc *VP8LEncoder, width, height int, /*const
   VP8LSubtractGreenFromBlueAndRed(enc.argb, width * height);
 }
 
-static int ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, int quality, int low_effort, int used_subtract_green, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+static int ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, quality int, low_effort int, int used_subtract_green, /*const*/ bw *VP8LBitWriter, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) {
   near_lossless_strength :=
       enc.use_palette ? 100 : enc.config.near_lossless;
   max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE);
@@ -1000,7 +1005,7 @@ static int ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, i
       bw, enc.transform_data, &enc.hash_chain, &enc.refs[0], VP8LSubSampleSize(width, *best_bits), VP8LSubSampleSize(height, *best_bits), quality, low_effort, enc.pic, percent_range - percent_range / 2, percent);
 }
 
-static int ApplyCrossColorFilter(/* const */ enc *VP8LEncoder, width, height int, int quality, int low_effort, /*const*/ bw *VP8LBitWriter, int percent_range, /*const*/ percent *int, /*const*/ best_bits *int) {
+static int ApplyCrossColorFilter(/* const */ enc *VP8LEncoder, width, height int, quality int, low_effort int, /*const*/ bw *VP8LBitWriter, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) {
   min_bits := enc.cross_color_transform_bits;
 
   if (!VP8LColorSpaceTransform(width, height, min_bits, quality, enc.argb, enc.transform_data, enc.pic, percent_range / 2, percent, best_bits)) {
@@ -1288,7 +1293,7 @@ static int MapImageFromPalette(/* const */ enc *VP8LEncoder) {
 }
 
 // Save palette[] to bitstream.
-static int EncodePalette(/* const */ bw *VP8LBitWriter, int low_effort, /*const*/ enc *VP8LEncoder, int percent_range, /*const*/ percent *int) {
+static int EncodePalette(/* const */ bw *VP8LBitWriter, low_effort int, /*const*/ enc *VP8LEncoder, percent_range int, /*const*/ percent *int) {
   var i int
   uint32 tmp_palette[MAX_PALETTE_SIZE];
   palette_size := enc.palette_size;

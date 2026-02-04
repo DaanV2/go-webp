@@ -89,7 +89,7 @@ static  int VP8LHistogramNumCodes(int palette_code_bits) {
 
 // Builds the histogram image. pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
-int VP8LGetHistoImageSymbols(int xsize, int ysize, /*const*/ refs *VP8LBackwardRefs, int quality, int low_effort, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, int percent_range, /*const*/ percent *int);
+int VP8LGetHistoImageSymbols(int xsize, int ysize, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int);
 
 // Returns the entropy for the symbols in the input array.
 uint64 VP8LBitsEntropy(/* const */ array *uint32, int n);

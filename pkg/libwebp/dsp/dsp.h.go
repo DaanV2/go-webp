@@ -171,10 +171,7 @@ extern VP8SSIMGetFunc VP8SSIMGet;                // unclipped / unchecked
 extern VP8SSIMGetClippedFunc VP8SSIMGetClipped;  // with clipping
 #endif
 
-#if !defined(WEBP_DISABLE_STATS)
-typedef uint32 (*VP8AccumulateSSEFunc)(/* const */ src *uint81, /*const*/ src *uint82, int len);
-extern VP8AccumulateSSEFunc VP8AccumulateSSE;
-#endif
+
 
 // must be called before using any of the above directly
 func VP8SSIMDspInit(void);
