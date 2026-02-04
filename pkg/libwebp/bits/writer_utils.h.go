@@ -1,4 +1,4 @@
-package utils
+package bits
 
 // Copyright 2011 Google Inc. All Rights Reserved.
 //

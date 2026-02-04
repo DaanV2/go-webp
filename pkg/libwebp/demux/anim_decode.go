@@ -426,7 +426,7 @@ func WebPAnimDecoderReset(dec *WebPAnimDecoder) {
 	}
 }
 
-func WebPDemuxer( /* const */ dec *WebPAnimDecoder) *WebPAnimDecoderGetDemuxer {
+func WebPDemuxerFn( /* const */ dec *WebPAnimDecoder) *WebPAnimDecoderGetDemuxer {
 	if dec == nil {
 		return nil
 	}

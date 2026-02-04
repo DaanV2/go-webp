@@ -638,7 +638,7 @@ func CreateRawImageDemuxer(/* const */ mem *MemBuffer, demuxer *WebPDemuxer) Par
   }
 }
 
-func WebPDemuxer(/* const */ data *WebPData, allow_partial int, state *WebPDemuxState, version int) *WebPDemuxInternal {
+func WebPDemuxerFn(/* const */ data *WebPData, allow_partial int, state *WebPDemuxState, version int) *WebPDemuxInternal {
   var parser *ChunkParser
   var partial int 
   var status ParseStatus = PARSE_ERROR
@@ -736,7 +736,7 @@ func WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature) uin
 // -----------------------------------------------------------------------------
 // Frame iteration
 
-func GetFrame (/* const */ dmux *WebPDemuxer, frame_num int) *Frame {
+func GetFrame(/* const */ dmux *WebPDemuxer, frame_num int) *Frame {
   const f *Frame
   for f = dmux.frames f != nil f = f.next {
     if (frame_num == f.frame_num) break
@@ -744,7 +744,7 @@ func GetFrame (/* const */ dmux *WebPDemuxer, frame_num int) *Frame {
   return f
 }
 
-func GetFramePayload (/* const */ mem_buf *uint8, /*const*/ frame *Frame, /*const*/ data_size *uint64) *uint8 {
+func GetFramePayload(/* const */ mem_buf *uint8, /*const*/ frame *Frame, /*const*/ data_size *uint64) *uint8 {
   *data_size = 0
   if (frame != nil) {
     var image *ChunkData = frame.img_components
