@@ -232,8 +232,10 @@ func NewFrame(/* const */ mem *MemBuffer, min_size uint32 , actual_size uint32, 
   if (actual_size < min_size) {return PARSE_ERROR}
   if (MemDataSize(mem) < min_size) {return PARSE_NEED_MORE_DATA}
 
-  *frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(**frame))
-  return tenary.If(*frame == nil, PARSE_ERROR, PARSE_OK)
+//   *frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(**frame))
+  frame = &Frame{}
+
+  return PARSE_OK
 }
 
 // Parse a 'ANMF' chunk and any image bearing chunks that immediately follow.
@@ -255,10 +257,9 @@ func ParseAnimationFrame(/* const */ dmux *WebPDemuxer, frame_chunk_size uint32 
   frame.height = 1 + ReadLE24s(mem)
   frame.duration = ReadLE24s(mem)
   bits = ReadByte(mem)
-  frame.dispose_method =
-      (bits & 1) ? WEBP_MUX_DISPOSE_BACKGROUND : WEBP_MUX_DISPOSE_NONE
-  frame.blend_method = (bits & 2) ? WEBP_MUX_NO_BLEND : WEBP_MUX_BLEND
-  if (frame.width * (uint64)frame.height >= MAX_IMAGE_AREA) {
+  frame.dispose_method = tenary.If(bits & 1, WEBP_MUX_DISPOSE_BACKGROUND, WEBP_MUX_DISPOSE_NONE)
+  frame.blend_method = tenary.If(bits & 2, WEBP_MUX_NO_BLEND, WEBP_MUX_BLEND)
+  if (frame.width * frame.height >= MAX_IMAGE_AREA) {
     return PARSE_ERROR
   }
 
@@ -272,7 +273,7 @@ func ParseAnimationFrame(/* const */ dmux *WebPDemuxer, frame_chunk_size uint32 
   if (status != PARSE_ERROR && is_animation && frame.frame_num > 0) {
     added_frame = AddFrame(dmux, frame)
     if (added_frame) {
-      ++dmux.num_frames
+      dmux.num_frames++
     } else {
       status = PARSE_ERROR
     }
@@ -286,11 +287,15 @@ func ParseAnimationFrame(/* const */ dmux *WebPDemuxer, frame_chunk_size uint32 
 // header and the unpadded payload size.
 // Returns true on success, false otherwise.
 func StoreChunk(/* const */ dmux *WebPDemuxer, start_offset uint64 , size uint32) int {
-  var chunk *Chunk = (*Chunk)WebPSafeCalloc(uint64(1), sizeof(*chunk))
-  if (chunk == nil){ return 0}
+//   var chunk *Chunk = (*Chunk)WebPSafeCalloc(uint64(1), sizeof(*chunk))
+//   if (chunk == nil){ return 0}
+  chunk := &Chunk{
+	data: ChunkData{
+		offset: start_offset,
+		size:   size,
+	},
+  }
 
-  chunk.data.offset = start_offset
-  chunk.data.size = size
   AddChunk(dmux, chunk)
   return 1
 }
@@ -316,14 +321,15 @@ func ReadHeader(/* const */ mem *MemBuffer) ParseStatus {
   // There's no point in reading past the end of the RIFF chunk
   mem.riff_end = riff_size + CHUNK_HEADER_SIZE
   if (mem.buf_size > mem.riff_end) {
-    mem.buf_size = mem.end = mem.riff_end
+    mem.end = mem.riff_end
+	mem.buf_size = mem.riff_end
   }
 
   Skip(mem, RIFF_HEADER_SIZE)
   return PARSE_OK
 }
 
-static ParseStatus ParseSingleImage(/* const */ dmux *WebPDemuxer) {
+func ParseSingleImage(/* const */ dmux *WebPDemuxer) ParseStatus {
   min_size := CHUNK_HEADER_SIZE
   /* const */ var mem *MemBuffer = &dmux.mem
   var frame *Frame
@@ -334,8 +340,9 @@ static ParseStatus ParseSingleImage(/* const */ dmux *WebPDemuxer) {
   if (SizeIsInvalid(mem, min_size)) {return PARSE_ERROR}
   if (MemDataSize(mem) < min_size) {return PARSE_NEED_MORE_DATA}
 
-  frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(*frame))
-  if (frame == nil) {return PARSE_ERROR}
+//   frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(*frame))
+//   if (frame == nil) {return PARSE_ERROR}
+	frame = &Frame{}
 
   // For the single image case we allow parsing of a partial frame, so no
   // minimum size is imposed here.
@@ -368,11 +375,11 @@ static ParseStatus ParseSingleImage(/* const */ dmux *WebPDemuxer) {
   return status
 }
 
-static ParseStatus ParseVP8XChunks(/* const */ dmux *WebPDemuxer) {
+func ParseVP8XChunks(/* const */ dmux *WebPDemuxer) ParseStatus {
   is_animation := !!(dmux.feature_flags & ANIMATION_FLAG)
-  /* const */ mem *MemBuffer = &dmux.mem
+  var mem *MemBuffer = &dmux.mem
   anim_chunks := 0
-  ParseStatus status = PARSE_OK
+  var status ParseStatus = PARSE_OK
 
   for {
     store_chunk := 1
@@ -406,7 +413,7 @@ static ParseStatus ParseVP8XChunks(/* const */ dmux *WebPDemuxer) {
         if (MemDataSize(mem) < chunk_size_padded) {
           status = PARSE_NEED_MORE_DATA
         } else if (anim_chunks == 0) {
-          ++anim_chunks
+          anim_chunks++
           dmux.bgcolor = ReadLE32(mem)
           dmux.loop_count = ReadLE16s(mem)
           Skip(mem, chunk_size_padded - ANIM_CHUNK_SIZE)
@@ -435,8 +442,8 @@ static ParseStatus ParseVP8XChunks(/* const */ dmux *WebPDemuxer) {
         store_chunk = !!(dmux.feature_flags & XMP_FLAG)
         goto Skip
       }
-      Skip:
       default: {
+      Skip:
         if (chunk_size_padded <= MemDataSize(mem)) {
           if (store_chunk) {
             // Store only the chunk header and unpadded size as only the payload
@@ -487,7 +494,7 @@ func ParseVP8X(/* const */ dmux *WebPDemuxer) ParseStatus {
   Skip(mem, 3)  // Reserved.
   dmux.canvas_width = 1 + ReadLE24s(mem)
   dmux.canvas_height = 1 + ReadLE24s(mem)
-  if (dmux.canvas_width * (uint64)dmux.canvas_height >= MAX_IMAGE_AREA) {
+  if (dmux.canvas_width * dmux.canvas_height >= MAX_IMAGE_AREA) {
     return PARSE_ERROR  // image final dimension is too large
   }
   Skip(mem, vp8x_size - VP8X_CHUNK_SIZE)  // skip any trailing data.
@@ -608,12 +615,15 @@ func CreateRawImageDemuxer(/* const */ mem *MemBuffer, demuxer *WebPDemuxer) Par
   }
 
   {
-    var dmux *WebPDemuxer = (*WebPDemuxer)WebPSafeCalloc(uint64(1), sizeof(*dmux))
-    var frame *Frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(*frame))
-    if (dmux == nil || frame == nil) goto Error
+    // var dmux *WebPDemuxer = (*WebPDemuxer)WebPSafeCalloc(uint64(1), sizeof(*dmux))
+    // var frame *Frame = (*Frame)WebPSafeCalloc(uint64(1), sizeof(*frame))
+    // if (dmux == nil || frame == nil) goto Error
+	dmux := &WebPDemuxer{}
+	frame := &Frame{}
+
     InitDemux(dmux, mem)
     SetFrameInfo(0, mem.buf_size, 1 /*frame_num*/, 1 /*complete*/, &features, frame);
-    if (!AddFrame(dmux, frame)) goto Error
+    if (!AddFrame(dmux, frame)) {goto Error}
     dmux.state = WEBP_DEMUX_DONE
     dmux.canvas_width = frame.width
     dmux.canvas_height = frame.height
@@ -635,7 +645,7 @@ func WebPDemuxer(/* const */ data *WebPData, allow_partial int, state *WebPDemux
   var mem MemBuffer
    var dmux *WebPDemuxer
 
-  if (state != nil) *state = WEBP_DEMUX_PARSE_ERROR
+  if (state != nil) {*state = WEBP_DEMUX_PARSE_ERROR}
 
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DEMUX_ABI_VERSION)) { return nil }
   if (data == nil || data.bytes == nil || data.size == 0) { return nil }
@@ -648,13 +658,12 @@ func WebPDemuxer(/* const */ data *WebPData, allow_partial int, state *WebPDemux
     if (status == PARSE_ERROR) {
       status = CreateRawImageDemuxer(&mem, &dmux)
       if (status == PARSE_OK) {
-        if (state != nil) *state = WEBP_DEMUX_DONE
+        if (state != nil) {*state = WEBP_DEMUX_DONE}
         return dmux
       }
     }
     if (state != nil) {
-      *state = (status == PARSE_NEED_MORE_DATA) ? WEBP_DEMUX_PARSING_HEADER
-                                                : WEBP_DEMUX_PARSE_ERROR
+      *state = tenary.If(status == PARSE_NEED_MORE_DATA, constants.WEBP_DEMUX_PARSING_HEADER, constants.WEBP_DEMUX_PARSE_ERROR)
     }
     return nil
   }
@@ -662,22 +671,23 @@ func WebPDemuxer(/* const */ data *WebPData, allow_partial int, state *WebPDemux
   partial = (mem.buf_size < mem.riff_end)
   if (!allow_partial && partial) { return nil }
 
-  dmux = (*WebPDemuxer)WebPSafeCalloc(uint64(1), sizeof(*dmux))
-  if (dmux == nil) { return nil }
-  InitDemux(dmux, &mem)
+//   dmux = (*WebPDemuxer)WebPSafeCalloc(uint64(1), sizeof(*dmux))
+//   if (dmux == nil) { return nil }
+  	dmux = &WebPDemuxer{}
+	InitDemux(dmux, &mem)
 
   status = PARSE_ERROR
-  for parser = kMasterChunks parser.parse != nil parser++ {
+  for parser = kMasterChunks; parser.parse != nil; parser++ {
     if (!memcmp(parser.id, GetBuffer(&dmux.mem), TAG_SIZE)) {
       status = parser.parse(dmux)
-      if (status == PARSE_OK) dmux.state = WEBP_DEMUX_DONE
-      if (status == PARSE_NEED_MORE_DATA && !partial) status = PARSE_ERROR
-      if (status != PARSE_ERROR && !parser.valid(dmux)) status = PARSE_ERROR
-      if (status == PARSE_ERROR) dmux.state = WEBP_DEMUX_PARSE_ERROR
+      if (status == PARSE_OK) {dmux.state = WEBP_DEMUX_DONE}
+      if (status == PARSE_NEED_MORE_DATA && !partial) {status = PARSE_ERROR}
+      if (status != PARSE_ERROR && !parser.valid(dmux)) {status = PARSE_ERROR}
+      if (status == PARSE_ERROR) {dmux.state = WEBP_DEMUX_PARSE_ERROR}
       break
     }
   }
-  if (state != nil) *state = dmux.state
+  if (state != nil) {*state = dmux.state}
 
   if (status == PARSE_ERROR) {
     WebPDemuxDelete(dmux)
@@ -689,13 +699,13 @@ func WebPDemuxer(/* const */ data *WebPData, allow_partial int, state *WebPDemux
 func WebPDemuxDelete(dmux *WebPDemuxer) {
   c *Chunk
   f *Frame
-  if (dmux == nil) return
+  if (dmux == nil) {return}
 
-  for f = dmux.frames f != nil {
+  for f = dmux.frames; f != nil; {
     var cur_frame *Frame = f
     f = f.next
   }
-  for c = dmux.chunks c != nil {
+  for c = dmux.chunks; c != nil; {
     var cur_chunk *Chunk = c
     c = c.next
   }
@@ -703,21 +713,21 @@ func WebPDemuxDelete(dmux *WebPDemuxer) {
 
 // -----------------------------------------------------------------------------
 
-uint32 WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature) {
+func WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature) uint32 {
   if (dmux == nil) { return 0 }
 
   switch (feature) {
-    case WEBP_FF_FORMAT_FLAGS:
+    case constants.WEBP_FF_FORMAT_FLAGS:
       return dmux.feature_flags
-    case WEBP_FF_CANVAS_WIDTH:
+    case constants.WEBP_FF_CANVAS_WIDTH:
       return (uint32)dmux.canvas_width
-    case WEBP_FF_CANVAS_HEIGHT:
+    case constants.WEBP_FF_CANVAS_HEIGHT:
       return (uint32)dmux.canvas_height
-    case WEBP_FF_LOOP_COUNT:
+    case constants.WEBP_FF_LOOP_COUNT:
       return (uint32)dmux.loop_count
-    case WEBP_FF_BACKGROUND_COLOR:
+    case constants.WEBP_FF_BACKGROUND_COLOR:
       return dmux.bgcolor
-    case WEBP_FF_FRAME_COUNT:
+    case constants.WEBP_FF_FRAME_COUNT:
       return (uint32)dmux.num_frames
   }
   return 0
@@ -726,7 +736,7 @@ uint32 WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature) {
 // -----------------------------------------------------------------------------
 // Frame iteration
 
-static const GetFrame *Frame(/* const */ dmux *WebPDemuxer, int frame_num) {
+func GetFrame (/* const */ dmux *WebPDemuxer, int frame_num) *Frame {
   const f *Frame
   for f = dmux.frames f != nil f = f.next {
     if (frame_num == f.frame_num) break
@@ -734,7 +744,7 @@ static const GetFrame *Frame(/* const */ dmux *WebPDemuxer, int frame_num) {
   return f
 }
 
-static const GetFramePayload *uint8(/* const */ mem_buf *uint8, /*const*/ frame *Frame, /*const*/ data_size *uint64) {
+func GetFramePayload (/* const */ mem_buf *uint8, /*const*/ frame *Frame, /*const*/ data_size *uint64) *uint8 {
   *data_size = 0
   if (frame != nil) {
     var image *ChunkData = frame.img_components
