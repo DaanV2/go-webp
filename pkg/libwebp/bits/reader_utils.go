@@ -13,10 +13,8 @@ package bits
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-#ifdef HAVE_CONFIG_H
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-#endif
 
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stddef"
 
@@ -29,10 +27,34 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 
-//------------------------------------------------------------------------------
-// VP8BitReader
+type vp8l_val_t uint64 ;  // right now, this bit-reader can only use 64bit.
 
-func VP8BitReaderSetBuffer(/* const */ br *VP8BitReader, /*const*/ *uint8  start, size uint64 ) {
+type VP8BitReader struct {
+  // boolean decoder  (keep the field ordering as is!)
+   value bit_t;    // current value
+   vrange range_t;  // current range minus 1. In [127, 254] interval.
+   bits int;       // number of valid bits left
+  // read buffer
+  buf *uint8/* (buf_end) */;  // next byte to be read
+  // end of read buffer
+  // max packed-read position on buffer
+  buf_end *uint8;                     
+  buf_max *uint8;
+  eof bool;  // true if input is exhausted
+}
+
+
+type VP8LBitReader struct {
+   val vp8l_val_t;                           // pre-fetched bits
+  buf *uint8  ;  // input byte buffer
+   len uint64;                               // buffer length
+   pos uint64;                               // byte position in buf
+   bit_pos int;  // current bit-reading position in val
+   eos int;      // true if a bit was read past the end of buffer
+}
+
+// Sets the working read buffer.
+func VP8BitReaderSetBuffer(/* const */ br *VP8BitReader, /*const*/ start *uint8 , size uint64 ) {
   assert.Assert(start != nil);
   br.buf = start;
   br.buf_end = start + size;
@@ -40,6 +62,7 @@ func VP8BitReaderSetBuffer(/* const */ br *VP8BitReader, /*const*/ *uint8  start
       (size >= sizeof(lbit_t)) ? start + size - sizeof(lbit_t) + 1 : start;
 }
 
+// Initialize the bit reader and the boolean decoder.
 func VP8InitBitReader(/* const */ br *VP8BitReader, /*const*/ *uint8  start, size uint64 ) {
   assert.Assert(br != nil);
   assert.Assert(start != nil);
@@ -52,6 +75,8 @@ func VP8InitBitReader(/* const */ br *VP8BitReader, /*const*/ *uint8  start, siz
   VP8LoadNewBytes(br);
 }
 
+// Update internal pointers to displace the byte buffer by the
+// relative offset 'offset'.
 func VP8RemapBitReader(/* const */ br *VP8BitReader, ptrdiff_t offset) {
   if (br.buf != nil) {
     br.buf += offset;
@@ -83,18 +108,16 @@ func VP8LoadFinalBytes(/* const */ br *VP8BitReader) {
   }
 }
 
-//------------------------------------------------------------------------------
-// Higher-level calls
-
-uint32 VP8GetValue(/* const */ br *VP8BitReader, int bits, /*const*/ byte label[]) {
+// return the next value made of 'num_bits' bits
+func VP8GetValue(/* const */ br *VP8BitReader, bits int, /*const*/ label []byte) uint32 {
   v := 0;
   while (bits-- > 0) {
     v |= VP8GetBit(br, 0x80, label) << bits;
   }
   return v;
 }
-
-int32 VP8GetSignedValue(/* const */ br *VP8BitReader, int bits, /*const*/ byte label[]) {
+// return the next value with sign-extension.
+func VP8GetSignedValue(/* const */ br *VP8BitReader, bits int, /*const*/ label []byte) int {
   value := VP8GetValue(br, bits, label);
   return VP8Get(br, label) ? -value : value;
 }
@@ -135,6 +158,7 @@ func VP8LInitBitReader(/* const */ br *VP8LBitReader, /*const*/ *uint8  start, u
   br.pos = length;
 }
 
+//  Sets a new data buffer.
 func VP8LBitReaderSetBuffer(/* const */ br *VP8LBitReader, /*const*/ *uint8  buf, uint64 len) {
   assert.Assert(br != nil);
   assert.Assert(buf != nil);
@@ -163,6 +187,8 @@ func ShiftBytes(/* const */ br *VP8LBitReader) {
   }
 }
 
+// Advances the read buffer by 4 bytes to make room for reading next 32 bits.
+// Speed critical, but infrequent part of the code can be non-inlined.
 func VP8LDoFillBitWindow(/* const */ br *VP8LBitReader) {
   assert.Assert(br.bit_pos >= VP8L_WBITS);
 #if defined(VP8L_USE_FAST_LOAD)
@@ -178,7 +204,11 @@ func VP8LDoFillBitWindow(/* const */ br *VP8LBitReader) {
   ShiftBytes(br);  // Slow path.
 }
 
-uint32 VP8LReadBits(/* const */ br *VP8LBitReader, int n_bits) {
+// Reads the specified number of bits from read buffer.
+// Flags an error in case end_of_stream or n_bits is more than the allowed limit
+// of VP8L_MAX_NUM_BIT_READ (inclusive).
+// Flags 'eos' if this read attempt is going to cross the read buffer.
+func VP8LReadBits(/* const */ br *VP8LBitReader, int n_bits) uint32 {
   assert.Assert(n_bits >= 0);
   // Flag an error if end_of_stream or n_bits is more than allowed limit.
   if (!br.eos && n_bits <= VP8L_MAX_NUM_BIT_READ) {
@@ -191,6 +221,31 @@ uint32 VP8LReadBits(/* const */ br *VP8LBitReader, int n_bits) {
     VP8LSetEndOfStream(br);
     return 0;
   }
+}
+
+// Return the prefetched bits, so they can be looked up.
+func VP8LPrefetchBits(/* const */ br *VP8LBitReader) uint32 {
+  return (uint32)(br.val >> (br.bit_pos & (VP8L_LBITS - 1)));
+}
+
+// Returns true if there was an attempt at reading bit past the end of
+// the buffer. Doesn't set br.eos flag.
+func VP8LIsEndOfStream(/* const */ br *VP8LBitReader) int {
+  assert.Assert(br.pos <= br.len);
+  return br.eos || ((br.pos == br.len) && (br.bit_pos > VP8L_LBITS));
+}
+
+// For jumping over a number of bits in the bit stream when accessed with
+// VP8LPrefetchBits and VP8LFillBitWindow.
+// This function does br *set *not.eos, since it's speed-critical.
+// Use with extreme care!
+func VP8LSetBitPos(/* const */ br *VP8LBitReader, val int) {
+  br.bit_pos = val;
+}
+
+
+func VP8LFillBitWindow(/* const */ br *VP8LBitReader) {
+  if (br.bit_pos >= VP8L_WBITS) VP8LDoFillBitWindow(br);
 }
 
 //------------------------------------------------------------------------------
@@ -236,7 +291,7 @@ func PrintBitTraces(){
   printf("Total: %d %s\n", total, units);
 }
 
-func BitTrace(/* const */ type const br *VP8BitReader, /*const*/ byte label[]) struct {
+func BitTrace(/* const */ type const br *VP8BitReader, /*const*/ label []byte) struct {
   int i, pos;
   if (!init_done) {
     stdlib.Memset(kLabels, 0, sizeof(kLabels));

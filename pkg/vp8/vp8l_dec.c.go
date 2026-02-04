@@ -783,7 +783,7 @@ func SetCropWindow(/* const */ io *VP8Io,  y_start int, y_end int, in_data *uint
 
 //------------------------------------------------------------------------------
 
-static  int GetMetaIndex(/* const */ image *uint32, int xsize, int bits, int x, int y) {
+static  int GetMetaIndex(/* const */ image *uint32, int xsize, bits int, int x, int y) {
   if (bits == 0) { return 0; }
   return image[xsize * (y >> bits) + (x >> bits)];
 }

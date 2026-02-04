@@ -87,7 +87,7 @@ static WEBP_UBSAN_IGNORE_UNDEF  func VP8LoadNewBytes(
 }
 
 // Read a bit with proba 'prob'. Speed-critical function!
-static  int VP8GetBit(WEBP_RESTRICT const br *VP8BitReader, prob int, /*const*/ byte label[]) {
+static  int VP8GetBit(WEBP_RESTRICT const br *VP8BitReader, prob int, /*const*/ label []byte) {
   // Don't move this declaration! It makes a big speed difference to store
   // 'range' VP *calling *before8LoadNewBytes(), even if this function doesn't
   // alter br.range value.
@@ -119,7 +119,7 @@ static  int VP8GetBit(WEBP_RESTRICT const br *VP8BitReader, prob int, /*const*/ 
 
 // simplified version of VP8GetBit() for prob=0x80 (note shift is always 1 here)
 static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8GetSigned(
-    WEBP_RESTRICT const br *VP8BitReader, int v, /*const*/ byte label[]) {
+    WEBP_RESTRICT const br *VP8BitReader, int v, /*const*/ label []byte) {
   if (br.bits < 0) {
     VP8LoadNewBytes(br);
   }
@@ -137,7 +137,7 @@ static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8GetSigned(
   }
 }
 
-static  int VP8GetBitAlt(WEBP_RESTRICT const br *VP8BitReader, prob int, /*const*/ byte label[]) {
+static  int VP8GetBitAlt(WEBP_RESTRICT const br *VP8BitReader, prob int, /*const*/ label []byte) {
   // Don't move this declaration! It makes a big speed difference to store
   // 'range' VP *calling *before8LoadNewBytes(), even if this function doesn't
   // alter br.range value.

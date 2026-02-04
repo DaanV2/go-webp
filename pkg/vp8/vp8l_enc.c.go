@@ -218,7 +218,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
 }
 
 // Clamp histogram and transform bits.
-static int ClampBits(width, height int, int bits, int min_bits, int max_bits, int image_size_max) {
+static int ClampBits(width, height int, bits int, int min_bits, int max_bits, int image_size_max) {
   int image_size;
   bits = (bits < min_bits) ? min_bits : (bits > max_bits) ? max_bits : bits;
   image_size = VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits);
@@ -628,7 +628,7 @@ static  func WriteHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ code *Huf
 }
 
 static  func WriteHuffmanCodeWithExtraBits(
-    const bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, int code_index, int bits, int n_bits) {
+    const bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, int code_index, bits int, int n_bits) {
   depth := code.code_lengths[code_index];
   symbol := code.codes[code_index];
   VP8LPutBits(bw, (bits << depth) | symbol, depth + n_bits);
@@ -667,7 +667,7 @@ static int StoreImageToBitMask(/* const */ bw *VP8LBitWriter, int width, int his
       literal_ix := 256 + NUM_LENGTH_CODES + code;
       WriteHuffmanCode(bw, codes, literal_ix);
     } else {
-      int bits, n_bits;
+      bits int, n_bits;
       int code;
 
       distance := PixOrCopyDistance(v);

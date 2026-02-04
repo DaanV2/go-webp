@@ -427,7 +427,7 @@ func ComputeResidualsForTile(
 // If max_quantization > 1, applies near lossless processing, quantizing
 // residuals to multiples of quantization levels up to max_quantization
 // (the actual quantization level depends on smoothness near the given pixel).
-func CopyImageWithPrediction(width, height int, int bits, /*const*/ modes *uint32, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, low_effort int, int max_quantization, exact int, int used_subtract_green) {
+func CopyImageWithPrediction(width, height int, bits int, /*const*/ modes *uint32, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, low_effort int, int max_quantization, exact int, int used_subtract_green) {
   tiles_per_row := VP8LSubSampleSize(width, bits);
   // The width of upper_row and current_row is one pixel larger than image width
   // to allow the top right pixel to point to the leftmost pixel of the next row
@@ -477,7 +477,7 @@ func CopyImageWithPrediction(width, height int, int bits, /*const*/ modes *uint3
 
 // Checks whether 'image' can be subsampled by finding the biggest power of 2
 // squares (defined by 'best_bits') of uniform value it is made out of.
-func VP8LOptimizeSampling(/* const */ image *uint32, int full_width, int full_height, int bits, int max_bits, best_bits_out *int) {
+func VP8LOptimizeSampling(/* const */ image *uint32, int full_width, int full_height, bits int, int max_bits, best_bits_out *int) {
   width := VP8LSubSampleSize(full_width, bits);
   height := VP8LSubSampleSize(full_height, bits);
   int old_width, x, y, square_size;
@@ -717,7 +717,7 @@ int VP8LResidualImage(width, height int, int min_bits, int max_bits, low_effort 
     *best_bits = max_bits;
   } else {
     // Allocate data to try all samplings from min_bits to max_bits.
-    int bits;
+    bits int;
     sum_num_pixels := uint(0);
     uint32 *modes_raw, *best_mode;
     modes *uint32[MAX_TRANSFORM_BITS + 1];
@@ -905,7 +905,7 @@ func GetBestGreenRedToBlue(/* const */ argb *uint32, int stride, int tile_width,
 #undef kGreenRedToBlueNumAxis
 
 static VP8LMultipliers GetBestColorTransformForTile(
-    int tile_x, int tile_y, int bits, VP8LMultipliers prev_x, VP8LMultipliers prev_y, quality int, int xsize, int ysize, /*const*/ uint32 accumulated_red_histo[256], /*const*/ uint32 accumulated_blue_histo[256], /*const*/ argb *uint32) {
+    int tile_x, int tile_y, bits int, VP8LMultipliers prev_x, VP8LMultipliers prev_y, quality int, int xsize, int ysize, /*const*/ uint32 accumulated_red_histo[256], /*const*/ uint32 accumulated_blue_histo[256], /*const*/ argb *uint32) {
   max_tile_size := 1 << bits;
   tile_y_offset := tile_y * max_tile_size;
   tile_x_offset := tile_x * max_tile_size;
@@ -933,7 +933,7 @@ func CopyTileWithColorTransform(int xsize, int ysize, int tile_x, int tile_y, in
   }
 }
 
-int VP8LColorSpaceTransform(width, height int, int bits, quality int, /*const*/ argb *uint32, image *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) {
+int VP8LColorSpaceTransform(width, height int, bits int, quality int, /*const*/ argb *uint32, image *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) {
   max_tile_size := 1 << bits;
   tile_xsize := VP8LSubSampleSize(width, bits);
   tile_ysize := VP8LSubSampleSize(height, bits);

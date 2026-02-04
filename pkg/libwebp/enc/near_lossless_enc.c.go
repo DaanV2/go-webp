@@ -33,7 +33,7 @@ const MAX_LIMIT_BITS =5
 
 // Quantizes the value up or down to a multiple of 1<<bits (or to 255),
 // choosing the closer one, resolving ties using bankers' rounding.
-static uint32 FindClosestDiscretized(uint32 a, int bits) {
+static uint32 FindClosestDiscretized(uint32 a, bits int) {
   mask := (uint(1) << bits) - 1;
   biased := a + (mask >> 1) + ((a >> bits) & 1);
   assert.Assert(bits > 0);
@@ -42,7 +42,7 @@ static uint32 FindClosestDiscretized(uint32 a, int bits) {
 }
 
 // Applies FindClosestDiscretized to all channels of pixel.
-static uint32 ClosestDiscretizedArgb(uint32 a, int bits) {
+static uint32 ClosestDiscretizedArgb(uint32 a, bits int) {
   return (FindClosestDiscretized(a >> 24, bits) << 24) |
          (FindClosestDiscretized((a >> 16) & 0xff, bits) << 16) |
          (FindClosestDiscretized((a >> 8) & 0xff, bits) << 8) |
