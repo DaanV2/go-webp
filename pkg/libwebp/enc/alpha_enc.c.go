@@ -245,10 +245,7 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data
         FilterTrial trial;
         ok = EncodeAlphaInternal(alpha, width, height, method, filter, reduce_levels, effort_level, filtered_alpha, &trial);
         if (ok && trial.score < best.score) {
-          VP8BitWriterWipeOut(&best.bw);
           best = trial;
-        } else {
-          VP8BitWriterWipeOut(&trial.bw);
         }
       }
     }
@@ -273,8 +270,6 @@ static int ApplyFiltersAndEncode(const alpha *uint8, int width, int height, data
 #endif
     *output_size = VP8BitWriterSize(&best.bw);
     *output = VP8BitWriterBuf(&best.bw);
-  } else {
-    VP8BitWriterWipeOut(&best.bw);
   }
   return ok;
 }

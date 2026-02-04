@@ -25,26 +25,22 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Bit-writing
 
-typedef struct VP8BitWriter VP8BitWriter;
 type VP8BitWriter struct {
-  int32 range;  // range-1
-  int32 value;
-  int run;      // number of outstanding bits
-  int nb_bits;  // number of pending bits
+   vrange int32  // range-1
+   value int32
+   run int      // number of outstanding bits
+   nb_bits int  // number of pending bits
   // internal buffer. Re-allocated regularly. Not owned.
-  buf *uint8(max_pos);
-  uint64 pos;
-  uint64 max_pos;
-  int error;  // true in case of error
+  buf *uint8/* (max_pos) */;
+   pos uint64
+   max_pos uint64
+   error int  // true in case of error
 }
 
 // Initialize the object. Allocates some initial memory based on expected_size.
 int VP8BitWriterInit(const bw *VP8BitWriter, uint64 expected_size);
 // Finalize the bitstream coding. Returns a pointer to the internal buffer.
 VP *uint88BitWriterFinish(const bw *VP8BitWriter);
-// Release any pending memory and zeroes the object. Not a mandatory call.
-// Only useful in case of error, when the internal buffer hasn't been grabbed!
-func VP8BitWriterWipeOut(const bw *VP8BitWriter);
 
 int VP8PutBit(const bw *VP8BitWriter, int bit, int prob);
 int VP8PutBitUniform(const bw *VP8BitWriter, int bit);

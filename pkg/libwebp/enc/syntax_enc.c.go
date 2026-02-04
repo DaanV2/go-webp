@@ -301,15 +301,6 @@ static int GeneratePartition0(const enc *VP8Encoder) {
   return 1;
 }
 
-// Release memory allocated for bit-writing in VP8EncLoop & seq.
-func VP8EncFreeBitWriters(const enc *VP8Encoder) {
-  var p int
-  VP8BitWriterWipeOut(&enc.bw);
-  for p = 0; p < enc.num_parts; p++ {
-    VP8BitWriterWipeOut(enc.parts + p);
-  }
-}
-
 // Generates the final bitstream by coding the partition0 and headers,
 // and appending an assembly of all the pre-coded token partitions.
 // Return true if everything is ok.
@@ -358,15 +349,14 @@ int VP8EncWrite(const enc *VP8Encoder) {
     size0 := VP8BitWriterSize(bw);
     ok = ok && PutWebPHeaders(enc, size0, vp8_size, riff_size) &&
          pic.writer(part0, size0, pic) && EmitPartitionsSize(enc, pic);
-    VP8BitWriterWipeOut(bw);  // will free the internal buffer.
+    
   }
 
   // Token partitions
   for p = 0; p < enc.num_parts; p++ {
     var buf *uint8 = VP8BitWriterBuf(enc.parts + p);
     const size uint64  = VP8BitWriterSize(enc.parts + p);
-    if (size) ok = ok && pic.writer(buf, size, pic);
-    VP8BitWriterWipeOut(enc.parts + p);  // will free the internal buffer.
+    if (size) {ok = ok && pic.writer(buf, size, pic);}
     ok = ok && WebPReportProgress(pic, enc.percent + percent_per_part, &enc.percent);
   }
 

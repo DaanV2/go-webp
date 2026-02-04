@@ -392,9 +392,6 @@ int WebPEncode(const config *WebPConfig, pic *WebPPicture) {
 
     ok = ok && VP8EncWrite(enc);
     StoreStats(enc);
-    if (!ok) {
-      VP8EncFreeBitWriters(enc);
-    }
     ok &= DeleteVP8Encoder(enc);  // must always be called, even if !ok
   } else {
     // Make sure we have ARGB samples.

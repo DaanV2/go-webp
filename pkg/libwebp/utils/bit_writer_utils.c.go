@@ -181,10 +181,6 @@ int VP8BitWriterAppend(const bw *VP8BitWriter, /*const*/ data *uint8, size uint6
   return 1;
 }
 
-// Deprecated: Noop in Go
-func VP8BitWriterWipeOut(const bw *VP8BitWriter) {
-  // Noop in Go
-}
 
 //------------------------------------------------------------------------------
 // VP8LBitWriter
