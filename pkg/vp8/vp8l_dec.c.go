@@ -1315,11 +1315,6 @@ Error:
 // -----------------------------------------------------------------------------
 // VP8LTransform
 
-// Deprecated: Noop in Go; memory is managed by garbage collector.
-func ClearTransform(transform *VP8LTransform) {
-	// Noop in Go; memory is managed by garbage collector.
-}
-
 // For security reason, we need to remap the color map to span
 // the total possible bundled values, and not just the num_colors.
 static int ExpandColorMap(int num_colors, /*const*/ transform *VP8LTransform) {
@@ -1433,25 +1428,20 @@ VP *VP8LDecoder8LNew(){
 
 // Resets the decoder in its initial state, reclaiming memory.
 // Preserves the dec.status value.
-func VP8LClear(const dec *VP8LDecoder) {
-  var i int
-  if (dec == nil) return;
+func VP8LClear(/* const */ dec *VP8LDecoder) {
+  if (dec == nil) {return;}
   ClearMetadata(&dec.hdr);
 
   dec.pixels = nil;
-  for i = 0; i < dec.next_transform; i++ {
-    ClearTransform(&dec.transforms[i]);
-  }
+  dec.rescaler_memory = nil;
+  dec.output = nil;  // leave no trace behind
+  
   dec.next_transform = 0;
   dec.transforms_seen = 0;
-
-  dec.rescaler_memory = nil;
-
-  dec.output = nil;  // leave no trace behind
 }
 
 // Clears and deallocate a lossless decoder instance.
-func VP8LDelete(const dec *VP8LDecoder) {
+func VP8LDelete(/* const */ dec *VP8LDecoder) {
   if (dec != nil) {
     VP8LClear(dec);
   }
