@@ -53,7 +53,6 @@ func ALPHNew() *ALPHDecoder {
 // Clears and deallocates an alpha decoder instance.
 func ALPHDelete(/* const */ dec *ALPHDecoder) {
   if (dec != nil) {
-    VP8LDelete(dec.vp8l_dec);
     dec.vp8l_dec = nil;
   }
 }

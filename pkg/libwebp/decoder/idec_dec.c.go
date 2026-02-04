@@ -700,8 +700,6 @@ func WebPIDelete(idec *WebPIDecoder) {
         (void)VP8ExitCritical((*VP8Decoder)idec.dec, &idec.io);
       }
       VP8Delete((*VP8Decoder)idec.dec);
-    } else {
-      VP8LDelete((*VP8LDecoder)idec.dec);
     }
   }
   idec.mem = nil

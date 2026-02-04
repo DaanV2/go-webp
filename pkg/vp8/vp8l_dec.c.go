@@ -1440,13 +1440,6 @@ func VP8LClear(/* const */ dec *VP8LDecoder) {
   dec.transforms_seen = 0;
 }
 
-// Clears and deallocate a lossless decoder instance.
-func VP8LDelete(/* const */ dec *VP8LDecoder) {
-  if (dec != nil) {
-    VP8LClear(dec);
-  }
-}
-
 func UpdateDecoder(const dec *VP8LDecoder, int width, int height) {
   var hdr *VP8LMetadata = &decoder.hdr;
   num_bits := hdr.huffman_subsample_bits;
@@ -1662,7 +1655,6 @@ int VP8LDecodeAlphaHeader(const alph_dec *ALPHDecoder, /*const*/ *uint8  data, d
   return 1;
 
 Err:
-  VP8LDelete(dec);
   return 0;
 }
 

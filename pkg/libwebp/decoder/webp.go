@@ -543,7 +543,6 @@ func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) 
 				}
 			}
 		}
-		VP8LDelete(dec)
 	}
 
 	if status != vp8.VP8_STATUS_OK {
