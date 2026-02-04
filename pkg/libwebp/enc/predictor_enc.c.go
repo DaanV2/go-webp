@@ -199,7 +199,7 @@ static  uint8 NearLosslessDiff(uint8 a, uint8 b) {
 // max_quantization which is a power of 2, smaller than max_diff). Take care if
 // value and predict have undergone subtract green, which means that red and
 // blue are represented as offsets from green.
-static uint32 NearLossless(uint32 value, uint32 predict, int max_quantization, int max_diff, int used_subtract_green) {
+static uint32 NearLossless(value uint32, uint32 predict, int max_quantization, int max_diff, int used_subtract_green) {
   int quantization;
   new_green := 0;
   green_diff := 0;

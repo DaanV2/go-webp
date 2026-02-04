@@ -14,4 +14,7 @@ type bit_t uint64
 // typedef uint32 bit_t;
 // #endif
 
-// typedef uint32 range_t;
+type range_t uint32
+type vp8l_val_t uint64   // right now, this bit-reader can only use 64bit.
+type vp8l_atype_t uint64 // accumulator type
+type vp8l_wtype_t uint32 // writing type
