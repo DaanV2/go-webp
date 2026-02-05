@@ -347,7 +347,7 @@ func SimplifySegments(/* const */ enc *VP8Encoder) {
 }
 
 // Sets up segment's quantization values, 'base_quant' and filter strengths.
-func VP8SetSegmentParams(/* const */ enc *VP8Encoder, float quality) {
+func VP8SetSegmentParams(/* const */ enc *VP8Encoder, quality float) {
   var i int
   int dq_uv_ac, dq_uv_dc;
   num_segments := enc.segment_hdr.num_segments;

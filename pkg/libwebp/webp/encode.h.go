@@ -78,7 +78,7 @@ typedef enum WebPImageHint {
 // Compression parameters.
 type WebPConfig struct {
   var lossless int   // Lossless encoding (0=lossy(default), 1=lossless).
-  float quality;  // between 0 and 100. For lossy, 0 gives the smallest
+  quality float;  // between 0 and 100. For lossy, 0 gives the smallest
                   // size and 100 the largest. For lossless, this
                   // parameter is the amount of effort put into the
                   // compression: 0 is the fastest but gives larger
@@ -160,7 +160,7 @@ typedef enum WebPPreset {
 // set of parameters (referred to by 'preset') and a given quality factor.
 // This function can be called as a replacement to WebPConfigInit(). Will
 // return false in case of error.
- static  int WebPConfigPreset(config *WebPConfig, WebPPreset preset, float quality) {
+ static  int WebPConfigPreset(config *WebPConfig, WebPPreset preset, quality float) {
   return WebPConfigInitInternal(config, preset, quality, WEBP_ENCODER_ABI_VERSION);
 }
 
