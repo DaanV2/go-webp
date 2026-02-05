@@ -713,7 +713,7 @@ static int FlattenSimilarBlocks(/* const */ src *WebPPicture, /*const*/ rect *Fr
     for i = x_start; i < x_end; i += block_size {
       cnt := 0;
       avg_r := 0, avg_g = 0, avg_b = 0;
-      int x, y;
+      var x, y int
       var psrc *uint32 = src.argb + j * src.argb_stride + i;
       var pdst *uint32 = dst.argb + j * dst.argb_stride + i;
       for y = 0; y < block_size; y++ {

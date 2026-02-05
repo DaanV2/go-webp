@@ -606,7 +606,7 @@ func GetBestPredictorsAndSubSampling(
 
     // Update all the super-tiles that are complete.
     subsampling_index = 0;
-    while (1) {
+    for {
       super_tile_x := tile_x >> subsampling_index;
       super_tile_y := tile_y >> subsampling_index;
       super_tiles_per_row :=

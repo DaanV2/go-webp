@@ -405,7 +405,7 @@ extern int (*WebPHasAlpha8b)(/* const */ src *uint8, int length);
 // This function returns true if src[4*i] contains a value different from 0xff.
 extern int (*WebPHasAlpha32b)(/* const */ src *uint8, int length);
 // replaces transparent values in src[] by 'color'.
-extern func (*WebPAlphaReplace)(src *uint32, int length, uint32 color);
+extern func (*WebPAlphaReplace)(src *uint32, int length, color uint32);
 
 // To be called first before using the above.
 func WebPInitAlphaProcessing(void);

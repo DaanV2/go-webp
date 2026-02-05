@@ -246,7 +246,7 @@ func GradientPredictInverse_SSE2(/* const */ in *uint8, /*const*/ top *uint8, /*
       __m128i out = zero;                     // accumulator for output
       __m128i mask_hi = _mm_set_epi32(0, 0, 0, 0xff);
       k := 8;
-      while (1) {
+      for {
         const __m128i tmp3 = _mm_add_epi16(A, E);           // delta = A + B - C
         const __m128i tmp4 = _mm_packus_epi16(tmp3, zero);  // saturate delta
         const __m128i tmp5 = _mm_add_epi8(tmp4, D);         // add to in[]

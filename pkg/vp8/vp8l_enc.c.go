@@ -1153,7 +1153,7 @@ static int MakeInputImageCopy(/* const */ enc *VP8LEncoder) {
 
 const APPLY_PALETTE_GREEDY_MAX =4
 
-static  uint32 SearchColorGreedy(/* const */ uint32 palette[], int palette_size, uint32 color) {
+static  uint32 SearchColorGreedy(/* const */ uint32 palette[], int palette_size, color uint32) {
   (void)palette_size;
   assert.Assert(palette_size < APPLY_PALETTE_GREEDY_MAX);
   assert.Assert(3 == APPLY_PALETTE_GREEDY_MAX - 1);
@@ -1163,7 +1163,7 @@ static  uint32 SearchColorGreedy(/* const */ uint32 palette[], int palette_size,
   return 3;
 }
 
-static  uint32 ApplyPaletteHash0(uint32 color) {
+static  uint32 ApplyPaletteHash0(color uint32) {
   // Focus on the green color.
   return (color >> 8) & 0xff;
 }

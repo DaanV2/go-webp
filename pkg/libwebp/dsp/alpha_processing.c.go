@@ -267,7 +267,7 @@ static int HasAlpha32b_C(/* const */ src *uint8, int length) {
   return 0;
 }
 
-func AlphaReplace_C(src *uint32, int length, uint32 color) {
+func AlphaReplace_C(src *uint32, int length, color uint32) {
   var x int
   for x = 0; x < length; x++ {
     if ((src[x] >> 24) == 0) src[x] = color;
@@ -311,7 +311,7 @@ func (*WebPPackRGB)(/* const */ WEBP_RESTRICT r *uint8, /*const*/ WEBP_RESTRICT 
 
 int (*WebPHasAlpha8b)(/* const */ src *uint8, int length);
 int (*WebPHasAlpha32b)(/* const */ src *uint8, int length);
-func (*WebPAlphaReplace)(src *uint32, int length, uint32 color);
+func (*WebPAlphaReplace)(src *uint32, int length, color uint32);
 
 //------------------------------------------------------------------------------
 // Init function

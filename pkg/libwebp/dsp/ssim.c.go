@@ -69,7 +69,7 @@ static double SSIMGetClipped_C(/* const */ src *uint81, int stride1, /*const*/ s
   xmin := (xo - VP8_SSIM_KERNEL < 0) ? 0 : xo - VP8_SSIM_KERNEL;
   xmax :=
       (xo + VP8_SSIM_KERNEL > W - 1) ? W - 1 : xo + VP8_SSIM_KERNEL;
-  int x, y;
+  var x, y int
   src1 += ymin * stride1;
   src2 += ymin * stride2;
   for y = ymin; y <= ymax; ++y, src1 += stride1, src2 += stride2 {
@@ -91,7 +91,7 @@ static double SSIMGetClipped_C(/* const */ src *uint81, int stride1, /*const*/ s
 
 static double SSIMGet_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2) {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
-  int x, y;
+  var x, y int
   for y = 0; y <= 2 * VP8_SSIM_KERNEL; ++y, src1 += stride1, src2 += stride2 {
     for x = 0; x <= 2 * VP8_SSIM_KERNEL; x++ {
       w := kWeight[x] * kWeight[y];

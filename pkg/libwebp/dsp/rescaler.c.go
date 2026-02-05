@@ -46,7 +46,7 @@ func WebPRescalerImportRowExpand_C(WEBP_RESTRICT const wrk *WebPRescaler, /*cons
     rescaler_t right =
         (wrk.src_width > 1) ? (rescaler_t)src[x_in + x_stride] : left;
     x_in += x_stride;
-    while (1) {
+    for {
       wrk.frow[x_out] = right * wrk.x_add + (left - right) * accum;
       x_out += x_stride;
       if (x_out >= x_out_max) break;

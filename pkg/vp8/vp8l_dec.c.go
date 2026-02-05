@@ -1317,7 +1317,7 @@ Error:
 
 // For security reason, we need to remap the color map to span
 // the total possible bundled values, and not just the num_colors.
-static int ExpandColorMap(int num_colors, /*const*/ transform *VP8LTransform) {
+static int ExpandColorMap(num_colors int, /*const*/ transform *VP8LTransform) {
   var i int
   final_num_colors := 1 << (8 >> transform.bits);
   var new_color_map *uint32 = (*uint32)WebPSafeMalloc(

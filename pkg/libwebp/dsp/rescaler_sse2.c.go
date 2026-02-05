@@ -66,7 +66,7 @@ func RescalerImportRowExpand_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, /*const
   if (wrk.num_channels == 4) {
     LoadTwoPixels_SSE2(src, &cur_pixels);
     src += 4;
-    while (1) {
+    for {
       const __m128i mult = _mm_set1_epi32(((x_add - accum) << 16) | accum);
       const __m128i out = _mm_madd_epi16(cur_pixels, mult);
       _mm_storeu_si128((__*m128i)frow, out);
@@ -85,7 +85,7 @@ func RescalerImportRowExpand_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, /*const
     LoadEightPixels_SSE2(src, &cur_pixels);
     src += 7;
     left = 7;
-    while (1) {
+    for {
       const __m128i mult = _mm_cvtsi32_si128(((x_add - accum) << 16) | accum);
       const __m128i out = _mm_madd_epi16(cur_pixels, mult);
       assert.Assert(sizeof(*frow) == sizeof(uint32));

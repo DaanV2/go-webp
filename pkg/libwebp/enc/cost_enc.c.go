@@ -123,7 +123,7 @@ int VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ int16 levels[16]) 
 int VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
-  int x, y;
+  var x, y int
   R := 0;
 
   VP8IteratorNzToBytes(it);  // re-import the non-zero context

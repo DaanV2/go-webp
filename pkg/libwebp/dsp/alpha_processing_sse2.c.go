@@ -314,7 +314,7 @@ static int HasAlpha32b_SSE2(/* const */ src *uint8, int length) {
   return 0;
 }
 
-func AlphaReplace_SSE2(src *uint32, int length, uint32 color) {
+func AlphaReplace_SSE2(src *uint32, int length, color uint32) {
   const __m128i m_color = _mm_set1_epi32((int)color);
   const __m128i zero = _mm_setzero_si128();
   i := 0;

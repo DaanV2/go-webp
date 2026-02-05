@@ -104,7 +104,7 @@ func VP8CodeIntraModes(/* const */ enc *VP8Encoder) {
     } else {
       preds_w := enc.preds_w;
       var top_pred *uint8 = preds - preds_w;
-      int x, y;
+      var x, y int
       for y = 0; y < 4; y++ {
         left := preds[-1];
         for x = 0; x < 4; x++ {

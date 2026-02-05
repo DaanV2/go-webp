@@ -50,7 +50,7 @@ func Flatten(ptr *uint8, int v, int stride, int size) {
 }
 
 func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
-  int x, y;
+  var x, y int
   for y = 0; y < size; y++ {
     for (x = 0; x < size; ++x) ptr[x] = v;
     ptr += stride;
@@ -61,7 +61,7 @@ func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
 // block is transparent.
 static int SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, int y_stride, width, height int) {
   sum := 0, count = 0;
-  int x, y;
+  var x, y int
   var alpha_ptr *uint8 = a_ptr;
   luma_ptr *uint8 = y_ptr;
   for y = 0; y < height; y++ {
@@ -91,7 +91,7 @@ static int SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, i
 
 // Replace samples that are fully transparent by 'color' to help compressibility
 // (no guarantee, though). Assumes pic.use_argb is true.
-func WebPReplaceTransparentPixels(/* const */ pic *WebPPicture, uint32 color) {
+func WebPReplaceTransparentPixels(/* const */ pic *WebPPicture, color uint32) {
   if (pic != nil && pic.use_argb) {
     y := pic.height;
     argb *uint32 = pic.argb;
@@ -198,7 +198,7 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
   red := (background_rgb >> 16) & 0xff;
   green := (background_rgb >> 8) & 0xff;
   blue := (background_rgb >> 0) & 0xff;
-  int x, y;
+  var x, y int
   if (picture == nil) return;
   if (!picture.use_argb) {
     // omit last pixel during u/v loop

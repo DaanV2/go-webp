@@ -1,5 +1,3 @@
-package utils
-
 // Copyright 2023 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,40 +5,38 @@ package utils
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Utilities for palette analysis.
-//
-// Author: Vincent Rabaud (vrabaud@google.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+package utils
 
 
-// -----------------------------------------------------------------------------
+const(
+	// Sorts by minimizing L1 deltas between consecutive colors, giving more
+	// weight to RGB colors.
+	kSortedDefault PaletteSorting = 0
+	// Implements the modified Zeng method from "A Survey on Palette Reordering
+	// Methods for Improving the Compression of Color-Indexed Images" by Armando
+	// J. Pinho and Antonio J. R. Neves.
+	kMinimizeDelta PaletteSorting = 1
 
-// Palette reordering for smaller sum of deltas (and for smaller storage).
+	kModifiedZeng PaletteSorting = 2
+	kUnusedPalette PaletteSorting = 3
+	kPaletteSortingNum PaletteSorting = 4
 
-static int PaletteCompareColorsForQsort(/* const */ p *void1, /*const*/ p *void2) {
-  a := WebPMemToUint32((*uint8)p1);
-  b := WebPMemToUint32((*uint8)p2);
-  assert.Assert(a != b);
-  return (a < b) ? -1 : 1;
+	COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
+	COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
+)
+
+// The different ways a palette can be sorted.
+type PaletteSorting int
+
+type Sum struct {
+   index uint8
+   sum uint32
 }
 
-static  uint32 PaletteComponentDistance(uint32 v) {
-  return (v <= 128) ? v : (256 - v);
+
+func PaletteComponentDistance(v uint32) uint32 {
+  return tenary.If(v <= 128, v, 256 - v)
 }
 
 // Computes a value that is related to the entropy created by the
@@ -48,30 +44,40 @@ static  uint32 PaletteComponentDistance(uint32 v) {
 //
 // Note that the last & 0xff is a no-operation in the next statement, but
 // removed by most compilers and is here only for regularity of the code.
-static  uint32 PaletteColorDistance(uint32 col1, uint32 col2) {
+func PaletteColorDistance(col1, col2 uint32 ) uint32 {
   diff := VP8LSubPixels(col1, col2);
   kMoreWeightForRGBThanForAlpha := 9;
-  uint32 score;
+  var score uint32
   score = PaletteComponentDistance((diff >> 0) & 0xff);
   score += PaletteComponentDistance((diff >> 8) & 0xff);
   score += PaletteComponentDistance((diff >> 16) & 0xff);
   score *= kMoreWeightForRGBThanForAlpha;
   score += PaletteComponentDistance((diff >> 24) & 0xff);
-  return score;
+  return score
+}
+  
+ // Palette reordering for smaller sum of deltas (and for smaller storage).
+func PaletteCompareColorsForQsort(/* const */ p1 , /*const*/ p2 *uint8) int {
+  a := WebPMemToUint32(p1);
+  b := WebPMemToUint32(p2);
+  assert.Assert(a != b);
+  return tenary.If(a < b, -1, 1);
 }
 
-static  func SwapColor(/* const */ col *uint321, /*const*/ col *uint322) {
+func SwapColor(/* const */ col1 *uint32, /*const*/ col2 *uint32) {
   tmp := *col1;
   *col1 = *col2;
   *col2 = tmp;
 }
 
-int SearchColorNoIdx(  sorted []uint32, uint32 color, int num_colors) {
-  low := 0, hi = num_colors;
+// Returns the index of 'color' in the sorted palette 'sorted' of size 'num_colors'.
+func SearchColorNoIdx(  sorted []uint32, color uint32, num_colors int) int {
+  low := 0
+  hi = num_colors;
   if sorted[low] == color {
     return low  // loop invariant: sorted[low] != color
 }
-  while (1) {
+  for {
     mid := (low + hi) >> 1;
     if (sorted[mid] == color) {
       return mid;
@@ -81,12 +87,14 @@ int SearchColorNoIdx(  sorted []uint32, uint32 color, int num_colors) {
       hi = mid;
     }
   }
+
   assert.Assert(0);
   return 0;
 }
 
+// Sort palette in increasing order and prepare an inverse mapping array.
 func PrepareMapToPalette(palette []uint32,  num_colors uint32, sorted []uint32, idx_map []uint32) {
-  uint32 i;
+  var i uint32
   memcpy(sorted, palette, num_colors * sizeof(*sorted));
   qsort(sorted, num_colors, sizeof(*sorted), PaletteCompareColorsForQsort);
   for i = 0; i < num_colors; i++ {
@@ -94,18 +102,20 @@ func PrepareMapToPalette(palette []uint32,  num_colors uint32, sorted []uint32, 
   }
 }
 
-//------------------------------------------------------------------------------
 
-const COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
-const COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
-
-int GetColorPalette(/* const */ pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE_SIZE)
-                        palette) {
+// Returns count of unique colors in 'pic', assuming pic.use_argb is true.
+// If the unique color count is more than MAX_PALETTE_SIZE, returns
+// MAX_PALETTE_SIZE+1.
+// If 'palette' is not nil and the number of unique colors is less than or
+// equal to MAX_PALETTE_SIZE, also outputs the actual unique colors into
+// 'palette' in a sorted order. Note: 'palette' is assumed to be an array
+// already allocated with at least MAX_PALETTE_SIZE elements.
+func GetColorPalette(/* const */ pic *WebPPicture, /*const*/   palette *uint32/* (MAX_PALETTE_SIZE) */ ) int {
   var i int
-  int x, y;
+  var x, y int
   num_colors := 0;
-  uint8 in_use[COLOR_HASH_SIZE] = {0}
-  uint32 colors[COLOR_HASH_SIZE] = {0}
+  var in_use [COLOR_HASH_SIZE]uint8
+  var colors [COLOR_HASH_SIZE]uint32
   var argb *uint32 = pic.argb;
   width := pic.width;
   height := pic.height;
@@ -115,13 +125,13 @@ int GetColorPalette(/* const */ pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE
 
   for y = 0; y < height; y++ {
     for x = 0; x < width; x++ {
-      int key;
+      var key int 
       if (argb[x] == last_pix) {
         continue;
       }
       last_pix = argb[x];
       key = VP8LHashPix(last_pix, COLOR_HASH_RIGHT_SHIFT);
-      while (1) {
+      for {
         if (!in_use[key]) {
           colors[key] = last_pix;
           in_use[key] = 1;
@@ -155,8 +165,6 @@ int GetColorPalette(/* const */ pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE
   return num_colors;
 }
 
-#undef COLOR_HASH_SIZE
-#undef COLOR_HASH_RIGHT_SHIFT
 
 // -----------------------------------------------------------------------------
 
@@ -166,8 +174,7 @@ int GetColorPalette(/* const */ pic *WebPPicture, /*const*/  *uint32(MAX_PALETTE
 // no benefit to re-organize them greedily. A monotonic development
 // would be spotted in green-only situations (like lossy alpha) or gray-scale
 // images.
-static int PaletteHasNonMonotonousDeltas(
-    const *uint32  palette, int num_colors) {
+func PaletteHasNonMonotonousDeltas(palette *uint32 , num_colors int) int {
   predict := 0x000000;
   var i int
   sign_found := 0x00;
@@ -177,31 +184,30 @@ static int PaletteHasNonMonotonousDeltas(
     gd := (diff >> 8) & 0xff;
     bd := (diff >> 0) & 0xff;
     if (rd != 0x00) {
-      sign_found |= (rd < 0x80) ? 1 : 2;
+      sign_found |= tenary.If(rd < 0x80, 1, 2);
     }
     if (gd != 0x00) {
-      sign_found |= (gd < 0x80) ? 8 : 16;
+      sign_found |= tenary.If(gd < 0x80, 8, 16);
     }
     if (bd != 0x00) {
-      sign_found |= (bd < 0x80) ? 64 : 128;
+      sign_found |= tenary.If(bd < 0x80, 64, 128);
     }
     predict = palette[i];
   }
   return (sign_found & (sign_found << 1)) != 0;  // two consequent signs.
 }
 
-func PaletteSortMinimizeDeltas(
-    const *uint32  palette_sorted, int num_colors, /*const*/ *uint32  palette) {
+func PaletteSortMinimizeDeltas(/* const */ palette_sorted *uint32 , num_colors int, /*const*/ palette *uint32) {
   predict := 0x00000000;
-  int i, k;
+  var i, k int
   memcpy(palette, palette_sorted, num_colors * sizeof(*palette));
-  if (!PaletteHasNonMonotonousDeltas(palette_sorted, num_colors)) return;
+  if (!PaletteHasNonMonotonousDeltas(palette_sorted, num_colors)) {return;}
   // Find greedily always the closest color of the predicted color to minimize
   // deltas in the palette. This reduces storage needs since the
   // palette is stored with delta encoding.
   if (num_colors > 17) {
     if (palette[0] == 0) {
-      --num_colors;
+      num_colors--
       SwapColor(&palette[num_colors], &palette[0]);
     }
   }
@@ -226,16 +232,15 @@ func PaletteSortMinimizeDeltas(
 // Pinho and Antonio J. R. Neves.
 
 // Finds the biggest cooccurrence in the matrix.
-func CoOccurrenceFindMax(
-    const  *uint32(num_num_colors *colors) cooccurrence, uint32 num_colors, /*const*/ c *uint81, /*const*/ c *uint82) {
+func CoOccurrenceFindMax(cooccurrence []uint32/* (num_num_colors *colors) */ , num_colors uint32, /*const*/ c1 *uint8, /*const*/ c2 *uint8) {
   // Find the index that is most frequently located adjacent to other
   // (different) indexes.
   best_sum := uint(0);
-  uint32 i, j, best_cooccurrence;
+  var i, j, best_cooccurrence uint32
   *c1 = uint(0);
   for i = 0; i < num_colors; i++ {
     sum := 0;
-    for (j = 0; j < num_colors; ++j) sum += cooccurrence[i * num_colors + j];
+    for (j = 0; j < num_colors; ++j) {sum += cooccurrence[i * num_colors + j];}
     if (sum > best_sum) {
       best_sum = sum;
       *c1 = i;
@@ -254,11 +259,9 @@ func CoOccurrenceFindMax(
 }
 
 // Builds the cooccurrence matrix
-static int CoOccurrenceBuild(/* const */ pic *WebPPicture, /*const*/ *uint32 
-                                 palette, uint32 num_colors,  *uint32(num_num_colors *colors)
-                                 cooccurrence) {
-  uint32 *lines, *line_top, *line_current, *line_tmp;
-  int x, y;
+func CoOccurrenceBuild(/* const */ pic *WebPPicture, /*const*/ palette *uint32 , num_colors uint32, cooccurrence []uint32/* (num_num_colors *colors) */) int {
+  var lines, line_top, line_current, line_tmp *uint32
+  var x, y int
   var src *uint32 = pic.argb;
   prev_pix := ~src[0];
   prev_idx := uint(0);
@@ -283,13 +286,13 @@ static int CoOccurrenceBuild(/* const */ pic *WebPPicture, /*const*/ *uint32
       // between Memon's and the modified Zeng's palette reordering methods".
       if (x > 0 && prev_idx != line_current[x - 1]) {
         left_idx := line_current[x - 1];
-        ++cooccurrence[prev_idx * num_colors + left_idx];
-        ++cooccurrence[left_idx * num_colors + prev_idx];
+        cooccurrence[prev_idx * num_colors + left_idx] = cooccurrence[prev_idx * num_colors + left_idx] + 1
+        cooccurrence[left_idx * num_colors + prev_idx] = cooccurrence[left_idx * num_colors + prev_idx] + 1
       }
       if (y > 0 && prev_idx != line_top[x]) {
         top_idx := line_top[x];
-        ++cooccurrence[prev_idx * num_colors + top_idx];
-        ++cooccurrence[top_idx * num_colors + prev_idx];
+        cooccurrence[prev_idx * num_colors + top_idx] = cooccurrence[prev_idx * num_colors + top_idx] + 1
+        cooccurrence[top_idx * num_colors + prev_idx] = cooccurrence[top_idx * num_colors + prev_idx] + 1
       }
     }
     line_tmp = line_top;
@@ -301,24 +304,19 @@ static int CoOccurrenceBuild(/* const */ pic *WebPPicture, /*const*/ *uint32
   return 1;
 }
 
-type Sum struct {
-  uint8 index;
-  uint32 sum;
-}
 
-static int PaletteSortModifiedZeng(
-    const pic *WebPPicture, /*const*/ *uint32  palette_in, uint32 num_colors, /*const*/ *uint32  palette) {
-  uint32 i, j, ind;
-  uint8 remapping[MAX_PALETTE_SIZE];
-  cooccurrence *uint32;
-  struct Sum sums[MAX_PALETTE_SIZE];
-  uint32 first, last;
-  uint32 num_sums;
+
+func PaletteSortModifiedZeng(/* const */ pic *WebPPicture, /*const*/ palette_in *uint32 , num_colors uint32, /*const*/ palette *uint32) int {
+  var i, j, ind uint32
+  var remapping [MAX_PALETTE_SIZE]uint8
+  var cooccurrence *uint32;
+  var  sums[MAX_PALETTE_SIZE]Sum
+   var first, last uint32
+  var num_sums uint32
   // TODO(vrabaud) check whether one color images should use palette or not.
   if (num_colors <= 1) { return 1; }
   // Build the co-occurrence matrix.
-  cooccurrence =
-      (*uint32)WebPSafeCalloc(num_colors * num_colors, sizeof(*cooccurrence));
+  cooccurrence = (*uint32)WebPSafeCalloc(num_colors * num_colors, sizeof(*cooccurrence));
   if (cooccurrence == nil) {
     return 0;
   }
@@ -339,7 +337,7 @@ static int PaletteSortModifiedZeng(
   num_sums = num_colors - 2;  // -2 because we know the first two values
   if (num_sums > 0) {
     // Initialize the sums with the first two remappings and find the best one
-    struct best_sum *Sum = &sums[0];
+    var best_sum *Sum = &sums[0];
     best_sum.index = uint(0);
     best_sum.sum = uint(0);
     for i = 0, j = 0; i < num_colors; i++ {
@@ -388,10 +386,12 @@ static int PaletteSortModifiedZeng(
   return 1;
 }
 
-// -----------------------------------------------------------------------------
-
-int PaletteSort(PaletteSorting method, /*const*/ struct const pic *WebPPicture, /*const*/ *uint32 
-                    palette_sorted, uint32 num_colors, /*const*/ *uint32  palette) {
+// Sorts the palette according to the criterion defined by 'method'.
+// 'palette_sorted' is the input palette sorted lexicographically, as done in
+// PrepareMapToPalette. Returns 0 on memory allocation error.
+// For kSortedDefault and kMinimizeDelta methods, 0 (if present) is set as the
+// last element to optimize later storage.
+func PaletteSort(method PaletteSorting, /*const*/ pic *WebPPicture, /*const*/ palette_sorted *uint32 , num_colors uint32, /*const*/ palette *uint32  ) int {
   switch (method) {
     case kSortedDefault:
       if (palette_sorted[0] == 0 && num_colors > 17) {

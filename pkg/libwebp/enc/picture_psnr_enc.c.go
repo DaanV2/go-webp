@@ -36,7 +36,7 @@ typedef double (*AccumulateFunc)(/* const */ src *uint8, int src_stride, /*const
 const RADIUS = 2  // search radius. Shouldn't be too large.
 
 static double AccumulateLSIM(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) {
-  int x, y;
+  var x, y int
   double total_sse = 0.;
   for y = 0; y < h; y++ {
     y_0 := (y - RADIUS < 0) ? 0 : y - RADIUS;
@@ -80,7 +80,7 @@ static double AccumulateSSIM(/* const */ src *uint8, int src_stride, /*const*/ r
   w1 := w - VP8_SSIM_KERNEL - 1;
   h0 := (h < VP8_SSIM_KERNEL) ? h : VP8_SSIM_KERNEL;
   h1 := h - VP8_SSIM_KERNEL - 1;
-  int x, y;
+  var x, y int
   double sum = 0.;
   for y = 0; y < h0; y++ {
     for x = 0; x < w; x++ {
@@ -136,7 +136,7 @@ int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref
 
   VP8SSIMDspInit();
   if (x_step != 1) {  // extract a packed plane if needed
-    int x, y;
+    var x, y int
     tmp *uint81;
     tmp *uint82;
     allocated =

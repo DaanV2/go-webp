@@ -267,7 +267,7 @@ static int Disto4x4_MIPSdspR2(/* const */ WEBP_RESTRICT const a *uint8, /*const*
 
 static int Disto16x16_MIPSdspR2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   D := 0;
-  int x, y;
+  var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
     for x = 0; x < 16; x += 4 {
       D += Disto4x4_MIPSdspR2(a + x + y, b + x + y, w);

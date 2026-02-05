@@ -391,7 +391,7 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
     // We have the best match but in case the two intervals continue matching
     // to the left, we have the best matches for the left-extended pixels.
     max_base_position = base_position;
-    while (1) {
+    for {
       assert.Assert(best_length <= MAX_LENGTH);
       assert.Assert(best_distance <= WINDOW_SIZE);
       p.offset_length[base_position] =
@@ -584,7 +584,7 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint3
   // Figure out the window offsets around a pixel. They are stored in a
   // spiraling order around the pixel as defined by VP8LDistanceToPlaneCode.
   {
-    int x, y;
+    var x, y int
     for y = 0; y <= 6; y++ {
       for x = -6; x <= 6; x++ {
         offset := y * xsize + x;

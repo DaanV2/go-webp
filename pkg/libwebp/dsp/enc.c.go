@@ -487,7 +487,7 @@ func HD4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
 }
 
 func TM4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
-  int x, y;
+  var x, y int
   var clip *uint8 = clip1 + 255 - top[-1];
   for y = 0; y < 4; y++ {
     var clip_table *uint8 = clip + top[-2 - y];
@@ -617,7 +617,7 @@ static int Disto4x4_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_R
 
 static int Disto16x16_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
   D := 0;
-  int x, y;
+  var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
     for x = 0; x < 16; x += 4 {
       D += Disto4x4_C(a + x + y, b + x + y, w);

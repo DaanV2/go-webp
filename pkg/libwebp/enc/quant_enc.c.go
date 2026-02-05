@@ -727,7 +727,7 @@ static int ReconstructIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTR
   nz |= VP8EncQuantizeBlockWHT(dc_tmp, rd.y_dc_levels, &dqm.y2) << 24;
 
   if (DO_TRELLIS_I16 && it.do_trellis) {
-    int x, y;
+    var x, y int
     VP8IteratorNzToBytes(it);
     for y = 0, n = 0; y < 4; y++ {
       for x = 0; x < 4; ++x, n++ {
