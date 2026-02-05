@@ -75,7 +75,7 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 	// Special case code with only one value.
 	if offset[MAX_ALLOWED_CODE_LENGTH] == 1 {
 		if sorted != nil {
-			code := HuffmanCode{
+			code := &HuffmanCode{
 				bits:  0,
 				value: sorted[0],
 			}
@@ -107,7 +107,7 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 			}
 			if root_table != nil {
 				for ; count[len] > 0; count[len]-- {
-					code := HuffmanCode{
+					code := &HuffmanCode{
 						bits:  uint8(len),
 						value: sorted[symbol],
 					}
@@ -140,10 +140,10 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 						// This was moving the pointer
 						table = table[table_size:]
 					}
-					table_bits = NextTableBitSize(count, len, root_bits)
+					table_bits = NextTableBitSize(count[:], len, root_bits)
 					table_size = 1 << table_bits
 					total_size += table_size
-					low = key & mask
+					low = uint32(key & mask)
 					if root_table != nil {
 						root_table[low].bits = (uint8)(table_bits + root_bits)
 						root_table[low].value = (uint16)((table - root_table) - low)

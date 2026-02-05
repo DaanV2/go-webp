@@ -29,7 +29,6 @@ func HTreeGroup8LHtreeGroupsNew(num_htree_groups int) []HTreeGroup {
 	return htree_groups
 }
 
-
 // Returns reverse(reverse(key, len) + 1, len), where reverse(key, len) is the
 // bit-wise reversal of the len least significant bits of key.
 func GetNextKey(key uint32, len int) uint32 {

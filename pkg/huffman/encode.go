@@ -22,12 +22,6 @@ import (
 func ValuesShouldBeCollapsedToStrideAverage(a, b int) bool {
 	return stdlib.Abs(a-b) < 4
 }
-
-
-
-// -----------------------------------------------------------------------------
-// Coding of the Huffman tree values
-
 func CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, prev_value int) *HuffmanTreeToken {
 	assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH)
 	if value != prev_value {
@@ -61,7 +55,7 @@ func CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, pr
 }
 
 func CodeRepeatedZeros(repetitions int, tokens *HuffmanTreeToken) *HuffmanTreeToken {
-	for ; ; repetitions >= 1 {
+	for repetitions >= 1 {
 		if repetitions < 3 {
 			var i int
 			for i = 0; i < repetitions; i++ {
