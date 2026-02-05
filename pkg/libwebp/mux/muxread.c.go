@@ -11,6 +11,7 @@ package mux
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
+	"github.com/daanv2/go-webp/pkg/vp8"
 )
 
 // Handy MACRO.
@@ -26,7 +27,7 @@ func SWITCH_ID_LIST(INDEX, LIST int) int {
 	}
 }
 
-func MuxGet( /* const */ mux *WebPMux, CHUNK_INDEX idx, uint32 nth /*const*/, data *WebPData) WebPMuxError {
+func MuxGet( /* const */ mux *WebPMux, CHUNK_INDEX idx, nth uint32 /*const*/, data *WebPData) WebPMuxError {
 	assert.Assert(mux != nil)
 	assert.Assert(idx != IDX_LAST_CHUNK)
 	assert.Assert(!IsWPI(kChunks[idx].id))
@@ -43,7 +44,7 @@ func MuxGet( /* const */ mux *WebPMux, CHUNK_INDEX idx, uint32 nth /*const*/, da
 
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
-func ChunkVerifyAndAssign(chunk *WebPChunk /*const*/, data *uint8, data_size uint64, uint64 riff_size, int copy_data) WebPMuxError {
+func ChunkVerifyAndAssign(chunk *WebPChunk /*const*/, data *uint8, data_size uint64, uint64 riff_size, copy_data int) WebPMuxError {
 	var chunk_size uint32
 	var chunk_data WebPData
 
@@ -80,6 +81,8 @@ func ChunkVerifyAndAssign(chunk *WebPChunk /*const*/, data *uint8, data_size uin
 	return ChunkAssignData(chunk, &chunk_data, copy_data, GetLE32(data+0))
 }
 
+// Update width/height/has_alpha info from chunks within wpi.
+// Also remove ALPH chunk if not needed.
 func MuxImageFinalize( /* const */ wpi *WebPMuxImage) int {
 	var img *WebPChunk = wpi.img
 	var image *WebPData = &img.data
@@ -88,10 +91,10 @@ func MuxImageFinalize( /* const */ wpi *WebPMuxImage) int {
 	vp8l_has_alpha := 0
 	ok := tenary.If(
 		is_lossless,
-		VP8LGetInfo(image.bytes, image.size, &w, &h, &vp8l_has_alpha),
-		VP8GetInfo(image.bytes, image.size, image.size, &w, &h))
+		vp8.VP8LGetInfo(image.bytes, image.size, &w, &h, &vp8l_has_alpha),
+		vp8.VP8GetInfo(image.bytes, image.size, image.size, &w, &h))
 	assert.Assert(img != nil)
-	if ok {
+	if ok != 0 {
 		// Ignore ALPH chunk accompanying VP8L.
 		if is_lossless && (wpi.alpha != nil) {
 			ChunkDelete(wpi.alpha)
@@ -104,7 +107,7 @@ func MuxImageFinalize( /* const */ wpi *WebPMuxImage) int {
 	return ok
 }
 
-func MuxImageParse( /* const */ chunk *WebPChunk, int copy_data /*const*/, wpi *WebPMuxImage) int {
+func MuxImageParse( /* const */ chunk *WebPChunk, copy_data int /*const*/, wpi *WebPMuxImage) int {
 	var bytes *uint8 = chunk.data.bytes
 	var size uint64 = chunk.data.size
 	var last *uint8 = tenary.If(bytes == nil, nil, bytes+size)

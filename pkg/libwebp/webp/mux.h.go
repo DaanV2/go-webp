@@ -290,7 +290,7 @@ func WebPMuxGetFrame(mux *WebPMux, nth uint32, frame *WebPMuxFrameInfo) WebPMuxE
 //   WEBP_MUX_NOT_FOUND - If there are less than nth frames in the mux object
 //                        before deletion.
 //   WEBP_MUX_OK - on success.
-func WebPMuxDeleteFrame(mux *WebPMux, uint32 nth) WebPMuxError {
+func WebPMuxDeleteFrame(mux *WebPMux, nth uint32) WebPMuxError {
 	// TODO: implement function
 	return 0
 }

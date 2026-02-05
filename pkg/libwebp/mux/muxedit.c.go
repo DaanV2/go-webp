@@ -88,7 +88,7 @@ func WebPMuxDelete(mux *WebPMux) {
     }                                                      \
   } while (0)
 
-func MuxSet(/* const */ mux *WebPMux, uint32 tag, /*const*/ data *WebPData, int copy_data) WebPMuxError {
+func MuxSet(/* const */ mux *WebPMux, tag uint32, /*const*/ data *WebPData, copy_data int) WebPMuxError {
   var chunk WebPChunk
   var err WebPMuxError = WEBP_MUX_NOT_FOUND;
   var idx CHUNK_INDEX  = ChunkGetIndexFromTag(tag);
@@ -159,7 +159,7 @@ func GetImageData(/* const */ bitstream *WebPData, /*const*/ image *WebPData, /*
   return WEBP_MUX_OK;
 }
 
-func DeleteChunks(*WebPChunk* chunk_list, uint32 tag) WebPMuxError {
+func DeleteChunks(*WebPChunk* chunk_list, tag uint32) WebPMuxError {
   WebPMuxError err = WEBP_MUX_NOT_FOUND;
   assert.Assert(chunk_list);
   while (*chunk_list) {
@@ -174,8 +174,8 @@ func DeleteChunks(*WebPChunk* chunk_list, uint32 tag) WebPMuxError {
   return err;
 }
 
-func MuxDeleteAllNamedData(/* const */ mux *WebPMux, uint32 tag) WebPMuxError {
-  const WebPChunkId id = ChunkGetIdFromTag(tag);
+func MuxDeleteAllNamedData(/* const */ mux *WebPMux, tag uint32) WebPMuxError {
+  var id WebPChunkId  = ChunkGetIdFromTag(tag);
   assert.Assert(mux != nil);
   if IsWPI(id) { return WEBP_MUX_INVALID_ARGUMENT  }
   return DeleteChunks(MuxGetChunkListFromId(mux, id), tag);
@@ -184,7 +184,7 @@ func MuxDeleteAllNamedData(/* const */ mux *WebPMux, uint32 tag) WebPMuxError {
 //------------------------------------------------------------------------------
 // Set API(s).
 
-WebPMuxError WebPMuxSetChunk(mux *WebPMux, /*const*/ byte fourcc[4], /*const*/ chunk_data *WebPData, int copy_data) {
+WebPMuxError WebPMuxSetChunk(mux *WebPMux, /*const*/ fourcc [4]byte, /*const*/ chunk_data *WebPData, copy_data int) {
   var tag uint32
   var err WebPMuxError 
   if (mux == nil || fourcc == nil || chunk_data == nil ||
@@ -202,7 +202,7 @@ WebPMuxError WebPMuxSetChunk(mux *WebPMux, /*const*/ byte fourcc[4], /*const*/ c
 }
 
 // Creates a chunk from given 'data' and sets it as 1st chunk in 'chunk_list'.
-func AddDataToChunkList(/* const */ data *WebPData, int copy_data, uint32 tag, *WebPChunk* chunk_list) WebPMuxError {
+func AddDataToChunkList(/* const */ data *WebPData, copy_data int, tag uint32, *WebPChunk* chunk_list) WebPMuxError {
   WebPChunk chunk;
   var err WebPMuxError 
   ChunkInit(&chunk);
@@ -218,7 +218,7 @@ Err:
 
 // Extracts image & alpha data from the given bitstream and then sets wpi.alpha
 // and wpi.img appropriately.
-func SetAlphaAndImageChunks(/* const */ bitstream *WebPData, int copy_data, /*const*/ wpi *WebPMuxImage) WebPMuxError {
+func SetAlphaAndImageChunks(/* const */ bitstream *WebPData, copy_data int, /*const*/ wpi *WebPMuxImage) WebPMuxError {
   is_lossless := 0;
   WebPData image, alpha;
   WebPMuxError err = GetImageData(bitstream, &image, &alpha, &is_lossless);
@@ -234,7 +234,7 @@ func SetAlphaAndImageChunks(/* const */ bitstream *WebPData, int copy_data, /*co
   return MuxImageFinalize(wpi) ? WEBP_MUX_OK : WEBP_MUX_INVALID_ARGUMENT;
 }
 
-WebPMuxError WebPMuxSetImage(mux *WebPMux, /*const*/ bitstream *WebPData, int copy_data) {
+WebPMuxError WebPMuxSetImage(mux *WebPMux, /*const*/ bitstream *WebPData, copy_data int) {
   WebPMuxImage wpi;
   var err WebPMuxError 
 
@@ -264,7 +264,7 @@ Err:  // Something bad happened.
   return err;
 }
 
-WebPMuxError WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, int copy_data) {
+WebPMuxError WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, copy_data int) {
   WebPMuxImage wpi;
   var err WebPMuxError 
 
@@ -373,12 +373,12 @@ WebPMuxError WebPMuxSetCanvasSize(mux *WebPMux, width, height int) {
 //------------------------------------------------------------------------------
 // Delete API(s).
 
-WebPMuxError WebPMuxDeleteChunk(mux *WebPMux, /*const*/ byte fourcc[4]) {
+WebPMuxError WebPMuxDeleteChunk(mux *WebPMux, /*const*/ fourcc [4]byte) {
   if mux == nil || fourcc == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return MuxDeleteAllNamedData(mux, ChunkGetTagFromFourCC(fourcc));
 }
 
-WebPMuxError WebPMuxDeleteFrame(mux *WebPMux, uint32 nth) {
+WebPMuxError WebPMuxDeleteFrame(mux *WebPMux, nth uint32) {
   if mux == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return MuxImageDeleteNth(&mux.images, nth);
 }
@@ -548,7 +548,7 @@ func MuxCleanup(/* const */ mux *WebPMux) WebPMuxError {
   if err != WEBP_MUX_OK { return err  }
   if (num_frames == 1) {
     frame *WebPMuxImage = nil;
-    err = MuxImageGetNth((/* const */ *WebPMuxImage*)&mux.images, 1, &frame);
+    err = MuxImageGetNth((/* const */ wpi_list *WebPMuxImage)&mux.images, 1, &frame);
     if err != WEBP_MUX_OK { return err  }
     // We know that one frame does exist.
     assert.Assert(frame != nil);

@@ -73,7 +73,7 @@ func WebPDemuxPartial(/* const */ data *WebPData, state *WebPDemuxState) *WebPDe
 }
 
 
-int WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_number, iter *WebPChunkIterator);
+int WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, int chunk_number, iter *WebPChunkIterator);
 
 // Sets 'iter.chunk' to point to the next ('iter.chunk_num' + 1) or previous
 // ('iter.chunk_num' - 1) chunk. These functions do not loop.

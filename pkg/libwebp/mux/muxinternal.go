@@ -20,29 +20,26 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-const UNDEFINED_CHUNK_SIZE =((uint32)(-1))
 
-const ChunkInfo kChunks[] = {
+
+var ChunkInfo = []kChunks{
     {MKFOURCC('V', 'P', '8', 'X'), WEBP_CHUNK_VP8X, VP8X_CHUNK_SIZE}, {MKFOURCC('I', 'C', 'C', 'P'), WEBP_CHUNK_ICCP, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('A', 'N', 'I', 'M'), WEBP_CHUNK_ANIM, ANIM_CHUNK_SIZE}, {MKFOURCC('A', 'N', 'M', 'F'), WEBP_CHUNK_ANMF, ANMF_CHUNK_SIZE}, {MKFOURCC('A', 'L', 'P', 'H'), WEBP_CHUNK_ALPHA, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('V', 'P', '8', ' '), WEBP_CHUNK_IMAGE, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('V', 'P', '8', 'L'), WEBP_CHUNK_IMAGE, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('E', 'X', 'I', 'F'), WEBP_CHUNK_EXIF, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('X', 'M', 'P', ' '), WEBP_CHUNK_XMP, UNDEFINED_CHUNK_SIZE}, {NIL_TAG, WEBP_CHUNK_UNKNOWN, UNDEFINED_CHUNK_SIZE},
 
     {NIL_TAG, WEBP_CHUNK_NIL, UNDEFINED_CHUNK_SIZE}}
 
-//------------------------------------------------------------------------------
-
-int WebPGetMuxVersion(){
+func WebPGetMuxVersion() int {
   return (MUX_MAJ_VERSION << 16) | (MUX_MIN_VERSION << 8) | MUX_REV_VERSION;
 }
 
-//------------------------------------------------------------------------------
-// Life of a chunk object.
-
+// Initialize.
 func ChunkInit(/* const */ chunk *WebPChunk) {
   assert.Assert(chunk);
   stdlib.Memset(chunk, 0, sizeof(*chunk));
   chunk.tag = NIL_TAG;
 }
 
-ChunkRelease *WebPChunk(/* const */ chunk *WebPChunk) {
+// Releases chunk and returns chunk.next.
+func ChunkRelease(/* const */ chunk *WebPChunk) *WebPChunk {
   next *WebPChunk;
   if chunk == nil { return nil  }
   if (chunk.owner) {
@@ -53,18 +50,17 @@ ChunkRelease *WebPChunk(/* const */ chunk *WebPChunk) {
   return next;
 }
 
-//------------------------------------------------------------------------------
-// Chunk misc methods.
-
-CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag) {
+// Get chunk index from chunk tag. Returns IDX_UNKNOWN if not found.
+func ChunkGetIndexFromTag(tag uint32) CHUNK_INDEX {
   var i int
   for i = 0; kChunks[i].tag != NIL_TAG; i++ {
-    if tag == kChunks[i].tag { return (CHUNK_INDEX)i  }
+    if tag == kChunks[i].tag { return CHUNK_INDEX(i)  }
   }
   return IDX_UNKNOWN;
 }
 
-WebPChunkId ChunkGetIdFromTag(uint32 tag) {
+// Get chunk id from chunk tag. Returns WEBP_CHUNK_UNKNOWN if not found.
+func ChunkGetIdFromTag(tag uint32) WebPChunkId {
   var i int
   for i = 0; kChunks[i].tag != NIL_TAG; i++ {
     if tag == kChunks[i].tag { return kChunks[i].id  }
@@ -72,12 +68,14 @@ WebPChunkId ChunkGetIdFromTag(uint32 tag) {
   return WEBP_CHUNK_UNKNOWN;
 }
 
-uint32 ChunkGetTagFromFourCC(/* const */ byte fourcc[4]) {
+// Convert a fourcc string to a tag.
+func ChunkGetTagFromFourCC(/* const */ fourcc [4]byte) uint32 {
   return MKFOURCC(fourcc[0], fourcc[1], fourcc[2], fourcc[3]);
 }
 
-CHUNK_INDEX ChunkGetIndexFromFourCC(/* const */ byte fourcc[4]) {
-  tag := ChunkGetTagFromFourCC(fourcc);
+// Get chunk index from fourcc. Returns IDX_UNKNOWN if given fourcc is unknown.
+func ChunkGetIndexFromFourCC(/* const */ fourcc [4]byte) CHUNK_INDEX {
+  tag := ChunkGetTagFromFourCC(fou*WebPChunkrcc);
   return ChunkGetIndexFromTag(tag);
 }
 
@@ -85,14 +83,16 @@ CHUNK_INDEX ChunkGetIndexFromFourCC(/* const */ byte fourcc[4]) {
 // Chunk search methods.
 
 // Returns next chunk in the chunk list with the given tag.
-static ChunkSearchNextInList *WebPChunk(chunk *WebPChunk, uint32 tag) {
+func ChunkSearchNextInList(chunk *WebPChunk, tag uint32) *WebPChunk {
   while (chunk != nil && chunk.tag != tag) {
     chunk = chunk.next;
   }
   return chunk;
 }
 
-ChunkSearchList *WebPChunk(first *WebPChunk, uint32 nth, uint32 tag) {
+// Search for nth chunk with given 'tag' in the chunk list.
+// nth = 0 means "last of the list".
+func ChunkSearchList(first *WebPChunk, nth uint32, tag uint32) *WebPChunk {
   iter := nth;
   first = ChunkSearchNextInList(first, tag);
   if first == nil { return nil  }
@@ -108,7 +108,8 @@ ChunkSearchList *WebPChunk(first *WebPChunk, uint32 nth, uint32 tag) {
 //------------------------------------------------------------------------------
 // Chunk writer methods.
 
-WebPMuxError ChunkAssignData(chunk *WebPChunk, /*const*/ data *WebPData, int copy_data, uint32 tag) {
+// Fill the chunk with the given data.
+func ChunkAssignData(chunk *WebPChunk, /*const*/ data *WebPData, copy_data int, tag uint32) WebPMuxError {
   // For internally allocated chunks, always copy data & make it owner of data.
   if (tag == kChunks[IDX_VP8X].tag || tag == kChunks[IDX_ANIM].tag) {
     copy_data = 1;
@@ -128,7 +129,9 @@ WebPMuxError ChunkAssignData(chunk *WebPChunk, /*const*/ data *WebPData, int cop
   return WEBP_MUX_OK;
 }
 
-WebPMuxError ChunkSetHead(/* const */ chunk *WebPChunk, *WebPChunk* const chunk_list) {
+// Sets 'chunk' as the only element in 'chunk_list' if it is empty.
+// On success ownership is transferred from 'chunk' to the 'chunk_list'.
+func ChunkSetHead(/* const */ chunk *WebPChunk, chunk_list *WebPChunk) WebPMuxError {
   new_chunk *WebPChunk;
 
   assert.Assert(chunk_list != nil);
@@ -147,7 +150,11 @@ WebPMuxError ChunkSetHead(/* const */ chunk *WebPChunk, *WebPChunk* const chunk_
   return WEBP_MUX_OK;
 }
 
-WebPMuxError ChunkAppend(/* const */ chunk *WebPChunk, *WebPChunk** const chunk_list) {
+// Sets 'chunk' at last position in the 'chunk_list'.
+// On success ownership is transferred from 'chunk' to the 'chunk_list'.
+// also points towards *chunk_list the last valid element of the initial
+// *chunk_list.
+func ChunkAppend(/* const */ chunk *WebPChunk, chunk_list *WebPChunk) WebPMuxError {
   var err WebPMuxError 
   assert.Assert(chunk_list != nil && *chunk_list != nil);
 
@@ -162,16 +169,15 @@ WebPMuxError ChunkAppend(/* const */ chunk *WebPChunk, *WebPChunk** const chunk_
   return err;
 }
 
-//------------------------------------------------------------------------------
-// Chunk deletion method(s).
-
-func WebPChunk(/* const */ chunk *WebPChunk) *ChunkDelete {
-  var next *WebPChunk = ChunkRelease(chunk);
+// Deletes given chunk & returns chunk.next.
+func ChunkDelete(/* const */ chunk *WebPChunk) *WebPChunk {
+  next := ChunkRelease(chunk);
 
   return next;
 }
 
-func ChunkListDelete(*WebPChunk* const chunk_list) {
+// Deletes all chunks in the given chunk list.
+func ChunkListDelete(chunk_list *WebPChunk) {
   for *chunk_list != nil {
     *chunk_list = ChunkDelete(*chunk_list);
   }
@@ -180,7 +186,7 @@ func ChunkListDelete(*WebPChunk* const chunk_list) {
 //------------------------------------------------------------------------------
 // Chunk serialization methods.
 
-static ChunkEmit *uint8(/* const */ chunk *WebPChunk, dst *uint8) {
+func ChunkEmit(/* const */ chunk *WebPChunk, dst *uint8) *uint8 {
   chunk_size := chunk.data.size;
   assert.Assert(chunk);
   assert.Assert(chunk.tag != NIL_TAG);
@@ -192,7 +198,8 @@ static ChunkEmit *uint8(/* const */ chunk *WebPChunk, dst *uint8) {
   return dst + ChunkDiskSize(chunk);
 }
 
-ChunkListEmit *uint8(/* const */ chunk_list *WebPChunk, dst *uint8) {
+// Write out the given list of chunks into 'dst'.
+func ChunkListEmit(/* const */ chunk_list *WebPChunk, dst *uint8) *uint8 {
   while (chunk_list != nil) {
     dst = ChunkEmit(chunk_list, dst);
     chunk_list = chunk_list.next;
@@ -200,7 +207,8 @@ ChunkListEmit *uint8(/* const */ chunk_list *WebPChunk, dst *uint8) {
   return dst;
 }
 
-uint64 ChunkListDiskSize(/* const */ chunk_list *WebPChunk) {
+// Total size of a list of chunks.
+func ChunkListDiskSize(/* const */ chunk_list *WebPChunk) uint64 {
   size uint64  = 0;
   while (chunk_list != nil) {
     size += ChunkDiskSize(chunk_list);
@@ -209,15 +217,14 @@ uint64 ChunkListDiskSize(/* const */ chunk_list *WebPChunk) {
   return size;
 }
 
-//------------------------------------------------------------------------------
-// Life of a MuxImage object.
-
+// Initialize.
 func MuxImageInit(/* const */ wpi *WebPMuxImage) {
   assert.Assert(wpi);
   stdlib.Memset(wpi, 0, sizeof(*wpi));
 }
 
-MuxImageRelease *WebPMuxImage(/* const */ wpi *WebPMuxImage) {
+// Releases image 'wpi' and returns wpi.next.
+func MuxImageRelease(/* const */ wpi *WebPMuxImage)  *WebPMuxImage {
   next *WebPMuxImage;
   if wpi == nil { return nil  }
   // There should be at most one chunk of 'header', 'alpha', 'img' but we call
@@ -236,7 +243,7 @@ MuxImageRelease *WebPMuxImage(/* const */ wpi *WebPMuxImage) {
 // MuxImage search methods.
 
 // Get a reference to appropriate chunk list within an image given chunk tag.
-static *WebPChunk* GetChunkListFromId(/* const */ wpi *WebPMuxImage, WebPChunkId id) {
+func GetChunkListFromId(/* const */ wpi *WebPMuxImage, WebPChunkId id) *WebPChunk {
   assert.Assert(wpi != nil);
   switch (id) {
     case WEBP_CHUNK_ANMF:
@@ -250,9 +257,11 @@ static *WebPChunk* GetChunkListFromId(/* const */ wpi *WebPMuxImage, WebPChunkId
   }
 }
 
+// Count number of images matching the given tag id in the 'wpi_list'.
+// If id == WEBP_CHUNK_NIL, all images will be matched.
 func MuxImageCount(/* const */ wpi_list *WebPMuxImage, WebPChunkId id) int {
   count := 0;
-  const current *WebPMuxImage;
+  var current *WebPMuxImage;
   for current = wpi_list; current != nil; current = current.next {
     if (id == WEBP_CHUNK_NIL) {
       count++  // Special case: count all images.
@@ -270,7 +279,7 @@ func MuxImageCount(/* const */ wpi_list *WebPMuxImage, WebPChunkId id) int {
 // Outputs a pointer to 'prev_wpi.next',
 //   where 'prev_wpi' is the pointer to the image at position (nth - 1).
 // Returns true if nth image was found.
-func SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage** const location) int {
+func SearchImageToGetOrDelete(wpi_list *WebPMuxImage, nth uint32, wpi_list *WebPMuxImage* const location) int {
   count := 0;
   assert.Assert(wpi_list);
   *location = wpi_list;
@@ -282,7 +291,7 @@ func SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage
 }
   }
 
-  while (*wpi_list != nil) {
+  for (*wpi_list != nil) {
     var cur_wpi *WebPMuxImage = *wpi_list;
     count++
     if count == nth {
@@ -294,10 +303,9 @@ func SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage
   return 0;  // Not found.
 }
 
-//------------------------------------------------------------------------------
-// MuxImage writer methods.
-
-WebPMuxError MuxImagePush(/* const */ wpi *WebPMuxImage, *WebPMuxImage* wpi_list) {
+// Pushes 'wpi' at the end of 'wpi_list'.
+// Write out the given image into 'dst'.
+func MuxImagePush(/* const */ wpi *WebPMuxImage, wpi_list *WebPMuxImage) WebPMuxError {
   new_wpi *WebPMuxImage;
 
   while (*wpi_list != nil) {
@@ -321,17 +329,17 @@ WebPMuxError MuxImagePush(/* const */ wpi *WebPMuxImage, *WebPMuxImage* wpi_list
   return WEBP_MUX_OK;
 }
 
-//------------------------------------------------------------------------------
-// MuxImage deletion methods.
-
-func WebPMuxImage(/* const */ wpi *WebPMuxImage) *MuxImageDelete {
+// Delete image 'wpi' and return the next image in the list or nil.
+// 'wpi' can be nil.
+func MuxImageDelete(/* const */ wpi *WebPMuxImage) *WebPMuxImage {
   // Delete the components of wpi. If wpi is nil this is a noop.
-  var next *WebPMuxImage = MuxImageRelease(wpi);
+  next := MuxImageRelease(wpi);
 //   WebPSafeFree(wpi);
   return next;
 }
 
-WebPMuxError MuxImageDeleteNth(*WebPMuxImage* wpi_list, uint32 nth) {
+// Delete nth image in the image list.
+func MuxImageDeleteNth(wpi_list *WebPMuxImage, nth uint32) WebPMuxError {
   assert.Assert(wpi_list);
   if (!SearchImageToGetOrDelete(wpi_list, nth, &wpi_list)) {
     return WEBP_MUX_NOT_FOUND;
@@ -340,25 +348,21 @@ WebPMuxError MuxImageDeleteNth(*WebPMuxImage* wpi_list, uint32 nth) {
   return WEBP_MUX_OK;
 }
 
-//------------------------------------------------------------------------------
-// MuxImage reader methods.
-
-WebPMuxError MuxImageGetNth(/* const */ *WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage* wpi) {
+// Get nth image in the image list.
+WebPMuxError MuxImageGetNth(/* const */ wpi_list *WebPMuxImage, nth uint32, wpi_list *WebPMuxImage wpi) {
   assert.Assert(wpi_list);
   assert.Assert(wpi);
-  if (!SearchImageToGetOrDelete((*WebPMuxImage*)wpi_list, nth, (*WebPMuxImage**)&wpi_list)) {
+  if (!SearchImageToGetOrDelete((wpi_list *WebPMuxImage)wpi_list, nth, (wpi_list *WebPMuxImage*)&wpi_list)) {
     return WEBP_MUX_NOT_FOUND;
   }
   *wpi = (*WebPMuxImage)*wpi_list;
   return WEBP_MUX_OK;
 }
 
-//------------------------------------------------------------------------------
-// MuxImage serialization methods.
-
 // Size of an image.
-uint64 MuxImageDiskSize(/* const */ wpi *WebPMuxImage) {
-  size uint64  = 0;
+// Total size of the given image.
+func MuxImageDiskSize(/* const */ wpi *WebPMuxImage) uint64 {
+  var size uint64  = 0;
   if wpi.header != nil { size += ChunkDiskSize(wpi.header) }
   if wpi.alpha != nil { size += ChunkDiskSize(wpi.alpha) }
   if wpi.img != nil { size += ChunkDiskSize(wpi.img) }
@@ -396,9 +400,8 @@ MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst *uint8) {
   return dst;
 }
 
-//------------------------------------------------------------------------------
-// Helper methods for mux.
-
+// Checks if the given image list contains at least one image with alpha.
+// Write out RIFF header into 'data', given total data size 'size'.
 func MuxHasAlpha(/* const */ images *WebPMuxImage) int {
   while (images != nil) {
     if images.has_alpha { return 1  }
@@ -415,7 +418,8 @@ MuxEmitRiffHeader *uint8(/* const */ data *uint8, size uint64 ) {
   return data + RIFF_HEADER_SIZE;
 }
 
-*WebPChunk* MuxGetChunkListFromId(/* const */ mux *WebPMux, WebPChunkId id) {
+// Returns the list where chunk with given ID is to be inserted in mux.
+func MuxGetChunkListFromId(/* const */ mux *WebPMux, WebPChunkId id) *WebPChunk {
   assert.Assert(mux != nil);
   switch (id) {
     case WEBP_CHUNK_VP8X:
@@ -453,6 +457,7 @@ func ValidateChunk(/* const */ mux *WebPMux, CHUNK_INDEX idx, WebPFeatureFlags f
   return WEBP_MUX_OK;
 }
 
+// Validates the given mux object.
 func MuxValidate(/* const */ mux *WebPMux) WebPMuxError {
   var num_iccp int
   var num_exif int

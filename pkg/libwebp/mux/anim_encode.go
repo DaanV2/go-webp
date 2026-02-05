@@ -1645,17 +1645,17 @@ func WebPAnimEncoderGetError(enc *WebPAnimEncoder)  *byte {
   return enc.error_str;
 }
 
-func WebPAnimEncoderSetChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4], /*const*/ chunk_data *WebPData, int copy_data) WebPMuxError {
+func WebPAnimEncoderSetChunk(enc *WebPAnimEncoder, /*const*/ fourcc [4]byte, /*const*/ chunk_data *WebPData, copy_data int) WebPMuxError {
   if enc == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return WebPMuxSetChunk(enc.mux, fourcc, chunk_data, copy_data);
 }
 
-func WebPAnimEncoderGetChunk(/* const */ enc *WebPAnimEncoder, /*const*/ byte fourcc[4], chunk_data *WebPData) WebPMuxError {
+func WebPAnimEncoderGetChunk(/* const */ enc *WebPAnimEncoder, /*const*/ fourcc [4]byte, chunk_data *WebPData) WebPMuxError {
   if enc == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return WebPMuxGetChunk(enc.mux, fourcc, chunk_data);
 }
 
-func WebPAnimEncoderDeleteChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4]) WebPMuxError {
+func WebPAnimEncoderDeleteChunk(enc *WebPAnimEncoder, /*const*/ fourcc [4]byte) WebPMuxError {
   if enc == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return WebPMuxDeleteChunk(enc.mux, fourcc);
 }
