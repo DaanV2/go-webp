@@ -107,7 +107,7 @@ extern func SharpYuvInit(VP8CPUInfo cpu_info_func);
 
 static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,        // bytes per pixel
                               int rgb_stride,  // bytes per scanline
-                              float dithering, use_iterative_conversion int, /*const*/ picture *WebPPicture) {
+                              float64 dithering, use_iterative_conversion int, /*const*/ picture *WebPPicture) {
   var y int
   width := picture.width;
   height := picture.height;
@@ -232,7 +232,7 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 //------------------------------------------------------------------------------
 // call for ARGB.YUVA conversion
 
-func PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float dithering, use_iterative_conversion int) int {
+func PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float64 dithering, use_iterative_conversion int) int {
   if picture == nil { return 0  }
   if (picture.argb == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
@@ -250,7 +250,7 @@ func PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float dither
   }
 }
 
-func WebPPictureARGBToYUVADithered(picture *WebPPicture, WebPEncCSP colorspace, float dithering) int {
+func WebPPictureARGBToYUVADithered(picture *WebPPicture, WebPEncCSP colorspace, float64 dithering) int {
   return PictureARGBToYUVA(picture, colorspace, dithering, 0);
 }
 

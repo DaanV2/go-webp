@@ -244,7 +244,7 @@ func WebPMemoryWriterClear(writer *WebPMemoryWriter) {
 
 typedef int (*Importer)(/* const */ *WebPPicture, /*const*/ *uint8, int);
 
-func Encode(/* const */ rgba *uint8, width, height int, stride int, Importer import, float quality_factor, lossless int, *uint8* output) uint64 {
+func Encode(/* const */ rgba *uint8, width, height int, stride int, Importer import, float64 quality_factor, lossless int, *uint8* output) uint64 {
    var pic WebPPicture
    var config WebPConfig
    var wrt WebPMemoryWriter
@@ -277,7 +277,7 @@ func Encode(/* const */ rgba *uint8, width, height int, stride int, Importer imp
 }
 
 #define ENCODE_FUNC(NAME, IMPORTER)                              \
-  uint64 NAME(/* const */ in *uint8, w int, h int, bps int, float q, \
+  uint64 NAME(/* const */ in *uint8, w int, h int, bps int, float64 q, \
               *uint8* out) {                                   \
     return Encode(in, w, h, bps, IMPORTER, q, 0, out);           \
   }

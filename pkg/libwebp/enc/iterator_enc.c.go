@@ -1,5 +1,3 @@
-package enc
-
 // Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,26 +5,17 @@ package enc
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// VP8Iterator: block iterator
-//
-// Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/string"
+package enc
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import "github.com/daanv2/go-webp/pkg/vp8"
 
-//------------------------------------------------------------------------------
-// VP8Iterator
-//------------------------------------------------------------------------------
+func InitLeft(/* const */ it *vp8.VP8EncIterator) {
+	tmp := tenary.If(it.y > 0, 129, 127);
 
-func InitLeft(/* const */ it *VP8EncIterator) {
-  it.y_left[-1] = it.u_left[-1] = it.v_left[-1] = (it.y > 0) ? 129 : 127;
+  it.y_left[-1] = tmp
+  it.u_left[-1] = tmp
+  it.v_left[-1] = tmp
   stdlib.Memset(it.y_left, 129, 16);
   stdlib.Memset(it.u_left, 129, 8);
   stdlib.Memset(it.v_left, 129, 8);
@@ -71,8 +60,9 @@ func VP8IteratorReset(/* const */ it *VP8EncIterator) {
 }
 
 // set count down (=number of iterations to go)
-func VP8IteratorSetCountDown(/* const */ it *VP8EncIterator, count_down int) {
-  it.count_down = it.count_down0 = count_down;
+func VP8IteratorSetCountDown(/* const */ it *vp8.VP8EncIterator, count_down int) {
+  it.count_down = count_down
+  it.count_down0 = count_down
 }
 
 // return true if iteration is finished
@@ -113,7 +103,7 @@ func VP8IteratorProgress(/* const */ it *VP8EncIterator, delta int) int {
 // Import the source samples into the cache. Takes care of replicating
 // boundary pixels if necessary.
 
-func MinSize(int a, b int) int { return (a < b) ? a : b; }
+func MinSize(a, b int) int { return (a < b) ? a : b; }
 
 func ImportBlock(/* const */ src *uint8, src_stride int, dst *uint8, w int, h int, size int) {
   var i int

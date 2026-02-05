@@ -215,9 +215,9 @@ func VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*cons
       const token_t token = tokens[n];
       bit := (token >> 15) & 1;
       if (token & FIXED_PROBA_BIT) {
-        VP8PutBit(bw, bit, token & uint(0xff));  // constant proba
+        vp8.VP8PutBit(bw, bit, token & uint(0xff));  // constant proba
       } else {
-        VP8PutBit(bw, bit, probas[token & uint(0x3fff)]);
+        vp8.VP8PutBit(bw, bit, probas[token & uint(0x3fff)]);
       }
     }
     p = next;

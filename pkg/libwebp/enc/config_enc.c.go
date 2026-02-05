@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // WebPConfig
 //------------------------------------------------------------------------------
 
-func WebPConfigInitInternal(config *WebPConfig, WebPPreset preset, quality float, version int) int {
+func WebPConfigInitInternal(config *WebPConfig, WebPPreset preset, quality float64, version int) int {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_ENCODER_ABI_VERSION)) {
     return 0;  // caller/system version mismatch!
   }

@@ -86,9 +86,9 @@ func DoFilter(/* const */ it *VP8EncIterator, level int) {
 //------------------------------------------------------------------------------
 // SSIM metric for one macroblock
 
-func GetMBSSIM(/* const */ yuv *uint81, /*const*/ yuv *uint82) double {
+func GetMBSSIM(/* const */ yuv *uint81, /*const*/ yuv *uint82) float64 {
   var x, y int
-  double sum = 0.;
+  float64 sum = 0.;
 
   // compute SSIM in a 10 x 10 window
   for y = VP8_SSIM_KERNEL; y < 16 - VP8_SSIM_KERNEL; y++ {
@@ -173,9 +173,9 @@ func VP8AdjustFilterStrength(/* const */ it *VP8EncIterator) {
     for s = 0; s < NUM_MB_SEGMENTS; s++ {
       int i, best_level = 0;
       // Improvement over filter level 0 should be at least 1e-5 (relatively)
-      double best_v = 1.00001 * (*it.lf_stats)[s][0];
+      float64 best_v = 1.00001 * (*it.lf_stats)[s][0];
       for i = 1; i < MAX_LF_LEVELS; i++ {
-        const double v = (*it.lf_stats)[s][i];
+        const float64 v = (*it.lf_stats)[s][i];
         if (v > best_v) {
           best_v = v;
           best_level = i;

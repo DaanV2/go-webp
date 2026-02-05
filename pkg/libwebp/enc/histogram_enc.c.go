@@ -402,8 +402,7 @@ func SaturateAdd(uint64 a, b *int64) {
 
 // Returns 1 if the cost of the combined histogram is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
- static int GetCombinedHistogramEntropy(
-    const a *VP8LHistogram, /*const*/ b *VP8LHistogram, int64 cost_threshold_in, cost *uint64, uint64 costs[5]) {
+func GetCombinedHistogramEntropy(a *VP8LHistogram, /*const*/ b *VP8LHistogram, cost_threshold_in int64 , cost *uint64, costs [5]uint64) int {
   var i int
   cost_threshold := (uint64)cost_threshold_in;
   assert.Assert(a.palette_code_bits == b.palette_code_bits);

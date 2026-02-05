@@ -1,5 +1,3 @@
-package enc
-
 // Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,24 +5,10 @@ package enc
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-//   frame coding and analysis
-//
-// Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/math"
-import "github.com/daanv2/go-webp/pkg/string"
 
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"  // RIFF constants
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+package enc
+
 
 const SEGMENT_VISU =0
 const DEBUG_SEARCH =0  // useful to track search convergence
@@ -37,7 +21,7 @@ const DQ_LIMIT =0.4  // convergence is considered reached if dq < DQ_LIMIT
 // we allow 2k of extra head-room in PARTITION0 limit.
 const PARTITION0_SIZE_LIMIT =((VP8_MAX_PARTITION0_SIZE - uint64(2048)) << 11)
 
-func Clamp(float v, float min, float max) float {
+func Clamp(float64 v, float64 min, float64 max) float64 {
   return tenary.If(v < min, min, tenary.If(v > max, max, v))
 }
 
@@ -54,7 +38,7 @@ type PassStats struct {  // struct for organizing convergence in either size or 
 func InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) int {
   target_size := uint64(enc.config.target_size)
   do_size_search := (target_size != 0);
-  const float target_PSNR = enc.config.target_PSNR;
+  const float64 target_PSNR = enc.config.target_PSNR;
 
   s.is_first = 1;
   s.dq = 10.0;
@@ -62,7 +46,7 @@ func InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) int {
   s.qmax = 1.0 * enc.config.qmax;
   s.last_q = Clamp(enc.config.quality, s.qmin, s.qmax);
  	s.q = s.last_q 
-  s.target = do_size_search       ? (double)target_size
+  s.target = do_size_search       ? (float64)target_size
               : (target_PSNR > 0.) ? target_PSNR
                                    : 40.;  // default, just in case
   s.value = s.last_value = 0.;
@@ -70,14 +54,14 @@ func InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) int {
   return do_size_search;
 }
 
-func ComputeNextQ(/* const */ s *PassStats) float {
-  float dq;
+func ComputeNextQ(/* const */ s *PassStats) float64 {
+  float64 dq;
   if (s.is_first) {
     dq = (s.value > s.target) ? -s.dq : s.dq;
     s.is_first = 0;
   } else if (s.value != s.last_value) {
-    const double slope = (s.target - s.value) / (s.last_value - s.value);
-    dq = (float)(slope * (s.last_q - s.q));
+    const float64 slope = (s.target - s.value) / (s.last_value - s.value);
+    dq = (float64)(slope * (s.last_q - s.q));
   } else {
     dq = 0.;  // we're done?!
   }
@@ -92,13 +76,10 @@ func ComputeNextQ(/* const */ s *PassStats) float {
 //------------------------------------------------------------------------------
 // Tables for level coding
 
-const uint8 VP8Cat3[] = {173, 148, 140}
-const uint8 VP8Cat4[] = {176, 155, 140, 135}
-const uint8 VP8Cat5[] = {180, 157, 141, 134, 130}
-const uint8 VP8Cat6[] = {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129}
-
-//------------------------------------------------------------------------------
-// Reset the statistics about: number of skips, token proba, level cost,...
+const VP8Cat3 = []uint8 {173, 148, 140}
+const VP8Cat4 = []uint8 {176, 155, 140, 135}
+const VP8Cat5 = []uint8 {180, 157, 141, 134, 130}
+const VP8Cat6 = []uint8 {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129}
 
 func ResetStats(/* const */ enc *VP8Encoder) {
   var proba *VP8EncProba = &enc.proba;
@@ -106,8 +87,6 @@ func ResetStats(/* const */ enc *VP8Encoder) {
   proba.nb_skip = 0;
 }
 
-//------------------------------------------------------------------------------
-// Skip decision probability
 
 const SKIP_PROBA_THRESHOLD =250  // value below which using skip_proba is OK.
 
@@ -134,14 +113,14 @@ func FinalizeSkipProba(/* const */ enc *VP8Encoder) int {
 
 // Collect statistics and deduce probabilities for next coding pass.
 // Return the total bit-cost for coding the probability updates.
-func CalcTokenProba(int nb, total int) int {
+func CalcTokenProba(nb int, total int) int {
   assert.Assert(nb <= total);
-  return nb ? (255 - nb * 255 / total) : 255;
+  return tenary.If(nb != 0, (255 - nb * 255 / total), 255)
 }
 
 // Cost of coding 'nb' 1's and 'total-nb' 0's using 'proba' probability.
-func BranchCost(int nb, total int, proba int) int {
-  return nb * VP8BitCost(1, proba) + (total - nb) * VP8BitCost(0, proba);
+func BranchCost(nb int, total int, proba int) int {
+  return nb * VP8BitCost(1, proba) + (total - nb) * VP8BitCost(0, proba)
 }
 
 func ResetTokenStats(/* const */ enc *VP8Encoder) {
@@ -157,16 +136,14 @@ func FinalizeTokenProbas(/* const */ proba *VP8EncProba) int {
     for b = 0; b < NUM_BANDS; b++ {
       for c = 0; c < NUM_CTX; c++ {
         for p = 0; p < NUM_PROBAS; p++ {
-          const proba_t stats = proba.stats[t][b][c][p];
+          var proba_t stats = proba.stats[t][b][c][p];
           nb := (stats >> 0) & 0xffff;
           total := (stats >> 16) & 0xffff;
           update_proba := VP8CoeffsUpdateProba[t][b][c][p];
           old_p := VP8CoeffsProba0[t][b][c][p];
           new_p := CalcTokenProba(nb, total);
-          old_cost :=
-              BranchCost(nb, total, old_p) + VP8BitCost(0, update_proba);
-          new_cost := BranchCost(nb, total, new_p) +
-                               VP8BitCost(1, update_proba) + 8 * 256;
+          old_cost := BranchCost(nb, total, old_p) + VP8BitCost(0, update_proba);
+          new_cost := BranchCost(nb, total, new_p) + VP8BitCost(1, update_proba) + 8 * 256;
           use_new_p := (old_cost > new_cost);
           size += VP8BitCost(use_new_p, update_proba);
           if (use_new_p) {  // only use proba that seem meaningful enough.
@@ -187,16 +164,18 @@ func FinalizeTokenProbas(/* const */ proba *VP8EncProba) int {
 //------------------------------------------------------------------------------
 // Finalize Segment probability based on the coding tree
 
-func GetProba(int a, b int) int {
+func GetProba(a, b int) int {
   total := a + b;
-  return (total == 0) ? 255  // that's the default probability.
-                      : (255 * a + total / 2) / total;  // rounded proba
+
+  if (total == 0) { return 255   // that's the default probability.
+  } 
+  
+ return (255 * a + total / 2) / total;  // rounded proba
 }
 
 func ResetSegments(/* const */ enc *VP8Encoder) {
-  var n int
-  for n = 0; n < enc.mb_w * enc.mb_h; n++ {
-    enc.mb_info[n].segment = 0;
+  for n := 0; n < enc.mb_w * enc.mb_h; n++ {
+    enc.mb_info[n].segment = 0
   }
 }
 
@@ -242,7 +221,7 @@ func PutCoeffs(/* const */ bw *VP8BitWriter, ctx int, /*const*/ res *VP8Residual
   n := res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   var p *uint8 = res.prob[n][ctx];
-  if (!VP8PutBit(bw, res.last >= 0, p[0])) {
+  if (!vp8.VP8PutBit(bw, res.last >= 0, p[0])) {
     return 0;
   }
 
@@ -251,61 +230,61 @@ func PutCoeffs(/* const */ bw *VP8BitWriter, ctx int, /*const*/ res *VP8Residual
 	n++
     sign := c < 0;
     v := tenary.If(sign, -c, c);
-    if (!VP8PutBit(bw, v != 0, p[1])) {
+    if (!vp8.VP8PutBit(bw, v != 0, p[1])) {
       p = res.prob[VP8EncBands[n]][0];
       continue;
     }
-    if (!VP8PutBit(bw, v > 1, p[2])) {
+    if (!vp8.VP8PutBit(bw, v > 1, p[2])) {
       p = res.prob[VP8EncBands[n]][1];
     } else {
-      if (!VP8PutBit(bw, v > 4, p[3])) {
-        if (VP8PutBit(bw, v != 2, p[4])) {
-          VP8PutBit(bw, v == 4, p[5]);
+      if (!vp8.VP8PutBit(bw, v > 4, p[3])) {
+        if (vp8.VP8PutBit(bw, v != 2, p[4])) {
+          vp8.VP8PutBit(bw, v == 4, p[5]);
         }
-      } else if (!VP8PutBit(bw, v > 10, p[6])) {
-        if (!VP8PutBit(bw, v > 6, p[7])) {
-          VP8PutBit(bw, v == 6, 159);
+      } else if (!vp8.VP8PutBit(bw, v > 10, p[6])) {
+        if (!vp8.VP8PutBit(bw, v > 6, p[7])) {
+          vp8.VP8PutBit(bw, v == 6, 159);
         } else {
-          VP8PutBit(bw, v >= 9, 165);
-          VP8PutBit(bw, !(v & 1), 145);
+          vp8.VP8PutBit(bw, v >= 9, 165);
+          vp8.VP8PutBit(bw, !(v & 1), 145);
         }
       } else {
         var mask int
         const tab *uint8;
         if (v < 3 + (8 << 1)) {  // VP8Cat3  (3b)
-          VP8PutBit(bw, 0, p[8]);
-          VP8PutBit(bw, 0, p[9]);
+          vp8.VP8PutBit(bw, 0, p[8]);
+          vp8.VP8PutBit(bw, 0, p[9]);
           v -= 3 + (8 << 0);
           mask = 1 << 2;
           tab = VP8Cat3;
         } else if (v < 3 + (8 << 2)) {  // VP8Cat4  (4b)
-          VP8PutBit(bw, 0, p[8]);
-          VP8PutBit(bw, 1, p[9]);
+          vp8.VP8PutBit(bw, 0, p[8]);
+          vp8.VP8PutBit(bw, 1, p[9]);
           v -= 3 + (8 << 1);
           mask = 1 << 3;
           tab = VP8Cat4;
         } else if (v < 3 + (8 << 3)) {  // VP8Cat5  (5b)
-          VP8PutBit(bw, 1, p[8]);
-          VP8PutBit(bw, 0, p[10]);
+          vp8.VP8PutBit(bw, 1, p[8]);
+          vp8.VP8PutBit(bw, 0, p[10]);
           v -= 3 + (8 << 2);
           mask = 1 << 4;
           tab = VP8Cat5;
         } else {  // VP8Cat6 (11b)
-          VP8PutBit(bw, 1, p[8]);
-          VP8PutBit(bw, 1, p[10]);
+          vp8.VP8PutBit(bw, 1, p[8]);
+          vp8.VP8PutBit(bw, 1, p[10]);
           v -= 3 + (8 << 3);
           mask = 1 << 10;
           tab = VP8Cat6;
         }
         while (mask) {
-          VP8PutBit(bw, !!(v & mask), *tab++);
+          vp8.VP8PutBit(bw, !!(v & mask), *tab++);
           mask >>= 1;
         }
       }
       p = res.prob[VP8EncBands[n]][2];
     }
-    VP8PutBitUniform(bw, sign);
-    if (n == 16 || !VP8PutBit(bw, n <= res.last, p[0])) {
+    vp8.VP8PutBitUniform(bw, sign);
+    if (n == 16 || !vp8.VP8PutBit(bw, n <= res.last, p[0])) {
       return 1;  // EOB
     }
   }
@@ -562,7 +541,7 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
 func ResetSideInfo(/* const */ it *VP8EncIterator) { (void)it; }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
-func GetPSNR(uint64 mse, size uint64 ) double {
+func GetPSNR(uint64 mse, size uint64 ) float64 {
   return (mse > 0 && size > 0) ? 10. * log10(255. * 255. * size / mse) : 99;
 }
 
@@ -571,7 +550,7 @@ func GetPSNR(uint64 mse, size uint64 ) double {
 //  This is used for deciding optimal probabilities. It also modifies the
 //  quantizer value if some target (size, PSNR) was specified.
 
-func SetLoopParams(/* const */ enc *VP8Encoder, float q) {
+func SetLoopParams(/* const */ enc *VP8Encoder, float64 q) {
   // Make sure the quality parameter is inside valid bounds
   q = Clamp(q, 0.f, 100.f);
 
@@ -613,7 +592,7 @@ func OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, nb_mbs int, per
     size += FinalizeSkipProba(enc);
     size += FinalizeTokenProbas(&enc.proba);
     size = ((size + size_p0 + 1024) >> 11) + HEADER_SIZE_ESTIMATE;
-    s.value = (double)size;
+    s.value = (float64)size;
   } else {
     s.value = GetPSNR(distortion, pixel_count);
   }
@@ -859,7 +838,7 @@ func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
       size += VP8EstimateTokenSize(&enc.tokens, (/* const */ *uint8)proba.coeffs);
       size = (size + size_p0 + 1024) >> 11;  // . size in bytes
       size += HEADER_SIZE_ESTIMATE;
-      stats.value = (double)size;
+      stats.value = (float64)size;
     } else {  // compute and store PSNR
       stats.value = GetPSNR(distortion, pixel_count);
     }

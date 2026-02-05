@@ -224,7 +224,7 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *WebPConfig, /*const*/ pict
   // lower quality means smaller output . we modulate a little the page
   // size based on quality. This is just a crude 1rst-order prediction.
   {
-    const float scale = 1.0 + config.quality * 5.0 / 100.0;  // in [1,6]
+    const float64 scale = 1.0 + config.quality * 5.0 / 100.0;  // in [1,6]
     VP8TBufferInit(&enc.tokens, (int)(mb_w * mb_h * 4 * scale));
   }
   return enc;
@@ -242,7 +242,7 @@ func DeleteVP8Encoder(enc *VP8Encoder) int {
 //------------------------------------------------------------------------------
 
 #if !defined(WEBP_DISABLE_STATS)
-func GetPSNR(uint64 err, size uint64 ) double {
+func GetPSNR(uint64 err, size uint64 ) float64 {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
 
@@ -250,11 +250,11 @@ func FinalizePSNR(/* const */ enc *VP8Encoder) {
   stats *WebPAuxStats = enc.pic.stats;
   const size uint64  = enc.sse_count;
   var sse *uint64 = enc.sse;
-  stats.PSNR[0] = (float)GetPSNR(sse[0], size);
-  stats.PSNR[1] = (float)GetPSNR(sse[1], size / 4);
-  stats.PSNR[2] = (float)GetPSNR(sse[2], size / 4);
-  stats.PSNR[3] = (float)GetPSNR(sse[0] + sse[1] + sse[2], size * 3 / 2);
-  stats.PSNR[4] = (float)GetPSNR(sse[3], size);
+  stats.PSNR[0] = (float64)GetPSNR(sse[0], size);
+  stats.PSNR[1] = (float64)GetPSNR(sse[1], size / 4);
+  stats.PSNR[2] = (float64)GetPSNR(sse[2], size / 4);
+  stats.PSNR[3] = (float64)GetPSNR(sse[0] + sse[1] + sse[2], size * 3 / 2);
+  stats.PSNR[4] = (float64)GetPSNR(sse[3], size);
 }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
@@ -333,10 +333,10 @@ func WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) int {
           return 0;
         }
       } else {
-        float dithering = 0.f;
+        float64 dithering = 0.f;
         if (config.preprocessing & 2) {
-          const float x = config.quality / 100.f;
-          const float x2 = x * x;
+          const float64 x = config.quality / 100.f;
+          const float64 x2 = x * x;
           // slowly decreasing from max dithering at low quality (q.0)
           // to 0.5 dithering amplitude at high quality (q.100)
           dithering = 1.0f + (0.5f - 1.0f) * x2 * x2;

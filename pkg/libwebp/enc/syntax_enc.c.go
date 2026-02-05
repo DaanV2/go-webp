@@ -43,7 +43,7 @@ func PutPaddingByte(/* const */ pic *WebPPicture) int {
 
 func PutRIFFHeader(/* const */ enc *VP8Encoder, uint64 riff_size) WebPEncodingError {
   var pic *WebPPicture = enc.pic;
-  uint8 riff[RIFF_HEADER_SIZE] = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
+  var riff [RIFF_HEADER_SIZE]uint8 = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
   assert.Assert(riff_size == (uint32)riff_size);
   PutLE32(riff + TAG_SIZE, (uint32)riff_size);
   if (!pic.writer(riff, sizeof(riff), pic)) {
@@ -182,25 +182,25 @@ Error:
 func PutSegmentHeader(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
   var hdr *VP8EncSegmentHeader = &enc.segment_hdr;
   var proba *VP8EncProba = &enc.proba;
-  if (VP8PutBitUniform(bw, (hdr.num_segments > 1))) {
+  if (vp8.VP8PutBitUniform(bw, (hdr.num_segments > 1))) {
     // We always 'update' the quant and filter strength values
     update_data := 1;
     var s int
-    VP8PutBitUniform(bw, hdr.update_map);
-    if (VP8PutBitUniform(bw, update_data)) {
+    vp8.VP8PutBitUniform(bw, hdr.update_map);
+    if (vp8.VP8PutBitUniform(bw, update_data)) {
       // we always use absolute values, not relative ones
-      VP8PutBitUniform(bw, 1);  // (segment_feature_mode = 1. Paragraph 9.3.)
+      vp8.VP8PutBitUniform(bw, 1);  // (segment_feature_mode = 1. Paragraph 9.3.)
       for s = 0; s < NUM_MB_SEGMENTS; s++ {
-        VP8PutSignedBits(bw, enc.dqm[s].quant, 7);
+        vp8.VP8PutSignedBits(bw, enc.dqm[s].quant, 7);
       }
       for s = 0; s < NUM_MB_SEGMENTS; s++ {
-        VP8PutSignedBits(bw, enc.dqm[s].fstrength, 6);
+        vp8.VP8PutSignedBits(bw, enc.dqm[s].fstrength, 6);
       }
     }
     if (hdr.update_map) {
       for s = 0; s < 3; s++ {
-        if (VP8PutBitUniform(bw, (proba.segments[s] != uint(255)))) {
-          VP8PutBits(bw, proba.segments[s], 8);
+        if (vp8.VP8PutBitUniform(bw, (proba.segments[s] != uint(255)))) {
+          vp8.VP8PutBits(bw, proba.segments[s], 8);
         }
       }
     }
@@ -210,30 +210,30 @@ func PutSegmentHeader(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
 // Filtering parameters header
 func PutFilterHeader(/* const */ bw *VP8BitWriter, /*const*/ hdr *VP8EncFilterHeader) {
   use_lf_delta := (hdr.i4x4_lf_delta != 0);
-  VP8PutBitUniform(bw, hdr.simple);
-  VP8PutBits(bw, hdr.level, 6);
-  VP8PutBits(bw, hdr.sharpness, 3);
-  if (VP8PutBitUniform(bw, use_lf_delta)) {
+  vp8.VP8PutBitUniform(bw, hdr.simple);
+  vp8.VP8PutBits(bw, hdr.level, 6);
+  vp8.VP8PutBits(bw, hdr.sharpness, 3);
+  if (vp8.VP8PutBitUniform(bw, use_lf_delta)) {
     // '0' is the default value for i4x4_lf_delta at frame #0.
     need_update := (hdr.i4x4_lf_delta != 0);
-    if (VP8PutBitUniform(bw, need_update)) {
+    if (vp8.VP8PutBitUniform(bw, need_update)) {
       // we don't use ref_lf_delta => emit four 0 bits
-      VP8PutBits(bw, 0, 4);
+      vp8.VP8PutBits(bw, 0, 4);
       // we use mode_lf_delta for i4x4
-      VP8PutSignedBits(bw, hdr.i4x4_lf_delta, 6);
-      VP8PutBits(bw, 0, 3);  // all others unused
+      vp8.VP8PutSignedBits(bw, hdr.i4x4_lf_delta, 6);
+      vp8.VP8PutBits(bw, 0, 3);  // all others unused
     }
   }
 }
 
 // Nominal quantization parameters
 func PutQuant(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
-  VP8PutBits(bw, enc.base_quant, 7);
-  VP8PutSignedBits(bw, enc.dq_y1_dc, 4);
-  VP8PutSignedBits(bw, enc.dq_y2_dc, 4);
-  VP8PutSignedBits(bw, enc.dq_y2_ac, 4);
-  VP8PutSignedBits(bw, enc.dq_uv_dc, 4);
-  VP8PutSignedBits(bw, enc.dq_uv_ac, 4);
+  vp8.VP8PutBits(bw, enc.base_quant, 7);
+  vp8.VP8PutSignedBits(bw, enc.dq_y1_dc, 4);
+  vp8.VP8PutSignedBits(bw, enc.dq_y2_dc, 4);
+  vp8.VP8PutSignedBits(bw, enc.dq_y2_ac, 4);
+  vp8.VP8PutSignedBits(bw, enc.dq_uv_dc, 4);
+  vp8.VP8PutSignedBits(bw, enc.dq_uv_ac, 4);
 }
 
 // Partition sizes
@@ -266,17 +266,17 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
   if (!VP8BitWriterInit(bw, mb_size * 7 / 8)) {  // ~7 bits per macroblock
     return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
-  VP8PutBitUniform(bw, 0);  // colorspace
-  VP8PutBitUniform(bw, 0);  // clamp type
+  vp8.VP8PutBitUniform(bw, 0);  // colorspace
+  vp8.VP8PutBitUniform(bw, 0);  // clamp type
 
   PutSegmentHeader(bw, enc);
   PutFilterHeader(bw, &enc.filter_hdr);
-  VP8PutBits(bw, enc.num_parts == 8   ? 3
+  vp8.VP8PutBits(bw, enc.num_parts == 8   ? 3
              : enc.num_parts == 4 ? 2
              : enc.num_parts == 2 ? 1
                                    : 0, 2);
   PutQuant(bw, enc);
-  VP8PutBitUniform(bw, 0);  // no proba update
+  vp8.VP8PutBitUniform(bw, 0);  // no proba update
   VP8WriteProbas(bw, &enc.proba);
   pos2 = VP8BitWriterPos(bw);
   VP8CodeIntraModes(enc);
