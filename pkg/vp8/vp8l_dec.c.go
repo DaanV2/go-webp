@@ -204,7 +204,7 @@ func ReadPackedSymbols(/* const */ group *HTreeGroup, /*const*/ br *VP8LBitReade
   }
 }
 
-func AccumulateHCode(HuffmanCode hcode, int shift, /*const*/ huff *HuffmanCode32) int {
+func AccumulateHCode(HuffmanCode hcode, shift int, /*const*/ huff *HuffmanCode32) int {
   huff.bits += hcode.bits;
   huff.value |= (uint32)hcode.value << shift;
   assert.Assert(huff.bits <= HUFFMAN_TABLE_BITS);

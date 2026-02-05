@@ -13,39 +13,41 @@ package dsp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
-import "github.com/daanv2/go-webp/pkg/string"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/enc"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/string"
+) // for abs()
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-static  uint8 clip_8b(int v) {
-  return (!(v & ~0xff)) ? v : (v < 0) ? 0 : 255;
+func clip_8b(v int) uint8 {
+  return tenary.If(!(v & ~0xff),  v, tenary.If(v < 0, 0, 255))
 }
 
-#if !WEBP_NEON_OMIT_C_CODE
-static  int clip_max(int v, int max) { return (v > max) ? max : v; }
-#endif  // !WEBP_NEON_OMIT_C_CODE
+func clip_max(v, max int ) { 
+	return tenary.If(v > max, max, v)
+}
 
 //------------------------------------------------------------------------------
 // Compute susceptibility based on DCT-coeff histograms:
 // the higher, the "easier" the macroblock is to compress.
 
-const int VP8DspScan[16 + 4 + 4] = {
+var VP8DspScan = [16 + 4 + 4]int{
     // Luma
-    0 + 0 * BPS,  4 + 0 * BPS,  8 + 0 * BPS,  12 + 0 * BPS, 0 + 4 * BPS,  4 + 4 * BPS,  8 + 4 * BPS,  12 + 4 * BPS, 0 + 8 * BPS,  4 + 8 * BPS,  8 + 8 * BPS,  12 + 8 * BPS, 0 + 12 * BPS, 4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS,
+    0 + 0 * constants.BPS,  4 + 0 * constants.BPS,  8 + 0 * constants.BPS,  12 + 0 * constants.BPS, 0 + 4 * constants.BPS,  4 + 4 * constants.BPS,  8 + 4 * constants.BPS,  12 + 4 * constants.BPS, 0 + 8 * constants.BPS,  4 + 8 * constants.BPS,  8 + 8 * constants.BPS,  12 + 8 * constants.BPS, 0 + 12 * constants.BPS, 4 + 12 * constants.BPS, 8 + 12 * constants.BPS, 12 + 12 * constants.BPS,
 
-    0 + 0 * BPS,  4 + 0 * BPS,  0 + 4 * BPS,  4 + 4 * BPS,  // U
-    8 + 0 * BPS,  12 + 0 * BPS, 8 + 4 * BPS,  12 + 4 * BPS  // V
+    0 + 0 * constants.BPS,  4 + 0 * constants.BPS,  0 + 4 * constants.BPS,  4 + 4 * constants.BPS,  // U
+    8 + 0 * constants.BPS,  12 + 0 * constants.BPS, 8 + 4 * constants.BPS,  12 + 4 * constants.BPS,  // V
 }
 
 // general-purpose util function
-func VP8SetHistogramData(/* const */ int distribution[MAX_COEFF_THRESH + 1], /*const*/ histo *VP8Histogram) {
-  max_value := 0, last_non_zero = 1;
+func VP8SetHistogramData(/* const */ distribution [MAX_COEFF_THRESH + 1]int, /*const*/ histo *VP8Histogram) {
+  max_value := 0
+  last_non_zero := 1;
   var k int
   for k = 0; k <= MAX_COEFF_THRESH; k++ {
     value := distribution[k];
@@ -104,7 +106,7 @@ static WEBP_TSAN_IGNORE_FUNCTION func InitTables(){
 #if !WEBP_NEON_OMIT_C_CODE
 
 #define STORE(x, y, v) \
-  dst[(x) + (y) * BPS] = clip_8b(ref[(x) + (y) * BPS] + ((v) >> 3))
+  dst[(x) + (y) * constants.BPS] = clip_8b(ref[(x) + (y) * constants.BPS] + ((v) >> 3))
 
 func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int C[4 * 4], *tmp;
@@ -152,7 +154,7 @@ func ITransform_C(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT 
 func FTransform_C(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
   var i int
   int tmp[16];
-  for i = 0; i < 4; ++i, src += BPS, ref += BPS {
+  for i = 0; i < 4; ++i, src += constants.BPS, ref += constants.BPS {
     d0 := src[0] - ref[0];  // 9bit dynamic range ([-255,255])
     d1 := src[1] - ref[1];
     d2 := src[2] - ref[2];
@@ -224,14 +226,14 @@ func FTransformWHT_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int
 func Fill(dst *uint8, value int, size int) {
   var j int
   for j = 0; j < size; j++ {
-    stdlib.Memset(dst + j * BPS, value, size);
+    stdlib.Memset(dst + j * constants.BPS, value, size);
   }
 }
 
 func VerticalPred(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int) {
   var j int
   if (top != nil) {
-    for (j = 0; j < size; ++j) memcpy(dst + j * BPS, top, size);
+    for (j = 0; j < size; ++j) memcpy(dst + j * constants.BPS, top, size);
   } else {
     Fill(dst, 127, size);
   }
@@ -241,7 +243,7 @@ func HorizontalPred(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint
   if (left != nil) {
     var j int
     for j = 0; j < size; j++ {
-      stdlib.Memset(dst + j * BPS, left[j], size);
+      stdlib.Memset(dst + j * constants.BPS, left[j], size);
     }
   } else {
     Fill(dst, 129, size);
@@ -259,7 +261,7 @@ func TrueMotion(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /
         for x = 0; x < size; x++ {
           dst[x] = clip_table[top[x]];
         }
-        dst += BPS;
+        dst += constants.BPS;
       }
     } else {
       HorizontalPred(dst, left, size);
@@ -277,7 +279,7 @@ func TrueMotion(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /
   }
 }
 
-func DCMode(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int, int round, int shift) {
+func DCMode(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int, int round, shift int) {
   DC := 0;
   var j int
   if (top != nil) {
@@ -332,9 +334,9 @@ func Intra16Preds_C(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint
 //------------------------------------------------------------------------------
 // luma 4x4 prediction
 
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || BPS != 32
+#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || constants.BPS != 32
 
-#define DST(x, y) dst[(x) + (y) * BPS]
+#define DST(x, y) dst[(x) + (y) * constants.BPS]
 #define AVG3(a, b, c) ((uint8)(((a) + 2 * (b) + (c) + 2) >> 2))
 #define AVG2(a, b) (((a) + (b) + 1) >> 1)
 
@@ -344,7 +346,7 @@ func VE4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
       AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
   var i int
   for i = 0; i < 4; i++ {
-    memcpy(dst + i * BPS, vals, 4);
+    memcpy(dst + i * constants.BPS, vals, 4);
   }
 }
 
@@ -355,10 +357,10 @@ func HE4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   J := top[-3];
   K := top[-4];
   L := top[-5];
-  WebPUint32ToMem(dst + 0 * BPS, uint(0x01010101) * AVG3(X, I, J));
-  WebPUint32ToMem(dst + 1 * BPS, uint(0x01010101) * AVG3(I, J, K));
-  WebPUint32ToMem(dst + 2 * BPS, uint(0x01010101) * AVG3(J, K, L));
-  WebPUint32ToMem(dst + 3 * BPS, uint(0x01010101) * AVG3(K, L, L));
+  WebPUint32ToMem(dst + 0 * constants.BPS, uint(0x01010101) * AVG3(X, I, J));
+  WebPUint32ToMem(dst + 1 * constants.BPS, uint(0x01010101) * AVG3(I, J, K));
+  WebPUint32ToMem(dst + 2 * constants.BPS, uint(0x01010101) * AVG3(J, K, L));
+  WebPUint32ToMem(dst + 3 * constants.BPS, uint(0x01010101) * AVG3(K, L, L));
 }
 
 func DC4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
@@ -494,7 +496,7 @@ func TM4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
     for x = 0; x < 4; x++ {
       dst[x] = clip_table[top[x]];
     }
-    dst += BPS;
+    dst += constants.BPS;
   }
 }
 
@@ -517,7 +519,7 @@ func Intra4Preds_C(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8)
   HU4(I4HU4 + dst, top);
 }
 
-#endif  // !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || BPS != 32
+#endif  // !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || constants.BPS != 32
 
 //------------------------------------------------------------------------------
 // Metric
@@ -531,8 +533,8 @@ func GetSSE(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8
       diff := (int)a[x] - b[x];
       count += diff * diff;
     }
-    a += BPS;
-    b += BPS;
+    a += constants.BPS;
+    b += constants.BPS;
   }
   return count;
 }
@@ -557,7 +559,7 @@ func Mean16x4_C(/* const */ WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
     avg := 0;
     for y = 0; y < 4; y++ {
       for x = 0; x < 4; x++ {
-        avg += ref[x + y * BPS];
+        avg += ref[x + y * constants.BPS];
       }
     }
     dc[k] = avg;
@@ -580,7 +582,7 @@ func TTransform(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *
   int tmp[16];
   var i int
   // horizontal pass
-  for i = 0; i < 4; ++i, in += BPS {
+  for i = 0; i < 4; ++i, in += constants.BPS {
     a0 := in[0] + in[2];
     a1 := in[1] + in[3];
     a2 := in[1] - in[3];
@@ -618,7 +620,7 @@ func Disto4x4_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRIC
 func Disto16x16_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   D := 0;
   var x, y int
-  for y = 0; y < 16 * BPS; y += 4 * BPS {
+  for y = 0; y < 16 * constants.BPS; y += 4 * constants.BPS {
     for x = 0; x < 16; x += 4 {
       D += Disto4x4_C(a + x + y, b + x + y, w);
     }
@@ -675,8 +677,8 @@ func Copy(/* const */ WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int w,
   var y int
   for y = 0; y < h; y++ {
     memcpy(dst, src, w);
-    src += BPS;
-    dst += BPS;
+    src += constants.BPS;
+    dst += constants.BPS;
   }
 }
 
@@ -746,7 +748,7 @@ WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
   VP8EncQuantizeBlockWHT = QuantizeBlock_C;
 #endif
 
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || BPS != 32
+#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || constants.BPS != 32
   VP8EncPredLuma4 = Intra4Preds_C;
 #endif
 #if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64

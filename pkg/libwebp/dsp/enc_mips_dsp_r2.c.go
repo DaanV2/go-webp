@@ -22,8 +22,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static const int kC1 = WEBP_TRANSFORM_AC3_C1;
-static const int kC2 = WEBP_TRANSFORM_AC3_C2;
+const  kC1 = WEBP_TRANSFORM_AC3_C1;
+const  kC2 = WEBP_TRANSFORM_AC3_C2;
 
 // O - output
 // I - input (macro doesn't change it)

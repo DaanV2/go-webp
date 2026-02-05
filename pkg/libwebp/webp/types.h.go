@@ -35,17 +35,3 @@ func WEBP_ABI_IS_INCOMPATIBLE(a, b int) bool {
 //
 // Currently, we only allow non-ABI changing annotations in this file to ensure
 // we don't accidentally change the ABI for public functions.
-
-// Deprecated: Use golang std code
-func WEBP_UNSAFE_MEMMOVE(dst, src, size any) { /* memmove(dst, src, size) */ }
-
-// Deprecated: Use golang std code
-func WEBP_UNSAFE_MEMCMP(s1, s2, size any) { /* memcmp(s1, s2, size) */ }
-
-// Deprecated: Use golang std code
-func WEBP_UNSAFE_FORGE_SINGLE(typ, ptr any) { /* ((typ)(ptr)) */ }
-
-// This macro exists to indicate intentionality with self-assignments and
-// silence -Wself-assign compiler warnings.
-// Deprecated: Not needed in Go.
-func WEBP_SELF_ASSIGN(x any) { /*x = x*/ }

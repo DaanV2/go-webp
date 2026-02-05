@@ -18,8 +18,8 @@ type ALPHDecoder struct {
 	method int
 	filter WEBP_FILTER_TYPE
 	pre_processing int
-	vp *VP8LDecoder8l_dec
-	io VP8Io
+	vp *vp8.VP8LDecoder8l_dec
+	io vp8.VP8Io
 	// Although alpha channel requires only 1 byte per
 	// pixel, sometimes VP8LDecoder may need to allocate
 	// 4 bytes per pixel internally during decode.

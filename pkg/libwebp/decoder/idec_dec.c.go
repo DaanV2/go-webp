@@ -160,12 +160,12 @@ func DoRemap(/* const */ idec *WebPIDecoder, ptrdiff_t offset) {
       if (NeedCompressedAlpha(idec)) {
         var alph_dec *ALPHDecoder = dec.alph_dec;
         dec.alpha_data += offset;
-        WEBP_SELF_ASSIGN(dec.alpha_data_size);
+        // WEBP_SELF_ASSIGN(dec.alpha_data_size);
         if (alph_dec != nil && alph_dec.vp8l_dec != nil) {
           if (alph_dec.method == ALPHA_LOSSLESS_COMPRESSION) {
-            var alph_vp *VP8LDecoder8l_dec = alph_dec.vp8l_dec;
+            var alph_vp8l_dec *vp8.VP8LDecoder = alph_dec.vp8l_dec;
             data_size uint64;
-            const bounded_alpha_data *uint8;
+            var bounded_alpha_data *uint8;
 
             assert.Assert(dec.alpha_data_size >= ALPHA_HEADER_LEN);
             data_size = dec.alpha_data_size - ALPHA_HEADER_LEN;

@@ -1,5 +1,3 @@
-package dsp
-
 // Copyright 2014 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,24 +5,15 @@ package dsp
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// MIPS version of dsp functions
-//
-// Author(s):  Djordje Pesut    (djordje.pesut@imgtec.com)
-//             Jovan Zelincevic (jovan.zelincevic@imgtec.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+package dsp
 
-#if defined(WEBP_USE_MIPS_DSP_R2)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+const kC1 = WEBP_TRANSFORM_AC3_C1;
+const kC2 = WEBP_TRANSFORM_AC3_C2;
 
-static const int kC1 = WEBP_TRANSFORM_AC3_C1;
-static const int kC2 = WEBP_TRANSFORM_AC3_C2;
-
-func TransformDC(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
-  int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10;
+func TransformDC(/* const */ in *int16, dst *uint8) {
+  var temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10 int
 
   __asm__ volatile(
     LOAD_WITH_OFFSET_X4(temp1, temp2, temp3, temp4, dst, 0, 0, 0, 0, 0, 1, 2, 3, BPS)

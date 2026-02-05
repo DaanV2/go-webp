@@ -257,7 +257,7 @@ func Interpolate(int v) int {
 
 // Convert a linear value 'v' to YUV_FIX+2 fixed-point precision
 // U/V value, suitable for RGBToU/V calls.
-func LinearToGamma(uint32 base_value, int shift) int {
+func LinearToGamma(uint32 base_value, shift int) int {
   y := Interpolate(base_value << shift);  // final uplifted value
   return (y + kGammaTabRounder) >> GAMMA_TAB_FIX;  // descale
 }
@@ -266,7 +266,7 @@ func LinearToGamma(uint32 base_value, int shift) int {
 
 func WebPInitGammaTables(){}
 func GammaToLinear(uint8 v) uint32 { return v; }
-func LinearToGamma(uint32 base_value, int shift) int {
+func LinearToGamma(uint32 base_value, shift int) int {
   return (int)(base_value << shift);
 }
 

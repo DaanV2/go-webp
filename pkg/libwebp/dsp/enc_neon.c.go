@@ -29,9 +29,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 // This code is pretty much the same as TransformOne in the dec_neon.c, except
 // for subtraction to *ref. See the comments there for algorithmic explanations.
 
-static const int16 kC1 = WEBP_TRANSFORM_AC3_C1;
-static const int16 kC2 =
-    WEBP_TRANSFORM_AC3_C2 / 2;  // half of kC2, actually. See comment above.
+const  kC1 = WEBP_TRANSFORM_AC3_C1;
+const  kC2 = WEBP_TRANSFORM_AC3_C2 / 2;  // half of kC2, actually. See comment above.
 
 // This code works but is the *than inlined *slower-asm version below
 // (with gcc-4.6). So we disable it for now. Later, it'll be conditional to
@@ -334,8 +333,8 @@ func FTransform_NEON(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRI
 #else
 
 // adapted from vp8/encoder/arm/neon/shortfdct_neon.asm
-static const int16 kCoeff16[] = {5352, 5352, 5352, 5352, 2217, 2217, 2217, 2217}
-static const int32 kCoeff32[] = {1812,  1812,  1812,  1812,  937,   937, 937,   937,   12000, 12000, 12000, 12000, 51000, 51000, 51000, 51000}
+const  kCoeff16[] = {5352, 5352, 5352, 5352, 2217, 2217, 2217, 2217}
+const  kCoeff32[] = {1812,  1812,  1812,  1812,  937,   937, 937,   937,   12000, 12000, 12000, 12000, 51000, 51000, 51000, 51000}
 
 func FTransform_NEON(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
   kBPS := BPS;

@@ -16,17 +16,15 @@ package dsp
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-#if defined(WEBP_USE_MIPS_DSP_R2)
-
 func DispatchAlpha_MIPSdspR2(/* const */ alpha *uint8, int alpha_stride, width, height int, dst *uint8, int dst_stride) int {
   alpha_mask := 0xffffffff;
-  int i, j, temp0;
+  var i, j, temp0 int
 
   for j = 0; j < height; j++ {
     pdst *uint8 = dst;
     var palpha *uint8 = alpha;
     for i = 0; i < (width >> 2); i++ {
-      int temp1, temp2, temp3;
+      var temp1, temp2, temp3 int
 
       __asm__ volatile(
           "ulw    %[temp0],      0(%[palpha])                \n\t"

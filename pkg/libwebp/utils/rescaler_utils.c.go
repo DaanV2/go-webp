@@ -133,8 +133,8 @@ func WebPRescalerImport(/* const */ rescaler *WebPRescaler, int num_lines, /*con
       rescaler.irow = rescaler.frow;
       rescaler.frow = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           rescaler_t*, tmp, rescaler.num_channels * rescaler.dst_width * sizeof(*tmp));
-      WEBP_SELF_ASSIGN(rescaler.dst_width);
-      WEBP_SELF_ASSIGN(rescaler.num_channels);
+    //   WEBP_SELF_ASSIGN(rescaler.dst_width);
+    //   WEBP_SELF_ASSIGN(rescaler.num_channels);
     }
     WebPRescalerImportRow(rescaler, src);
     if (!rescaler.y_expand) {  // Accumulate the contribution of the new row.

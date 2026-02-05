@@ -883,8 +883,8 @@ func HFilter8i_NEON(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, 
 // libwebp adds 1 << 16 to cospi8sqrt2minus1 (kC1). However, this causes the
 // same issue with kC1 and vqdmulh that we work around by down shifting kC2
 
-static const int16 kC1 = WEBP_TRANSFORM_AC3_C1;
-static const int16 kC2 =
+const  kC1 = WEBP_TRANSFORM_AC3_C1;
+const  kC2 =
     WEBP_TRANSFORM_AC3_C2 / 2;  // half of kC2, actually. See comment above.
 
 #if defined(WEBP_USE_INTRINSICS)

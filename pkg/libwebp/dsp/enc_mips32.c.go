@@ -1,5 +1,3 @@
-package dsp
-
 // Copyright 2014 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,24 +5,11 @@ package dsp
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// MIPS version of speed-critical encoding functions.
-//
-// Author(s): Djordje Pesut    (djordje.pesut@imgtec.com)
-//            Jovan Zelincevic (jovan.zelincevic@imgtec.com)
-//            Slobodan Prijic  (slobodan.prijic@imgtec.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+package dsp
 
-#if defined(WEBP_USE_MIPS32)
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-
-static const int kC1 = WEBP_TRANSFORM_AC3_C1;
-static const int kC2 = WEBP_TRANSFORM_AC3_C2;
+const kC1 = WEBP_TRANSFORM_AC3_C1;
+const kC2 = WEBP_TRANSFORM_AC3_C2;
 
 // macro for one vertical pass in ITransformOne
 // MUL macro inlined

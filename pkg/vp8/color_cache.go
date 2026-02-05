@@ -27,7 +27,7 @@ func VP8LColorCacheInit( /* const */ color_cache *VP8LColorCache, hash_bits int)
 	colors := make([]uint32, hash_size)
 	if colors == nil {
 		color_cache.colors = nil
-		WEBP_SELF_ASSIGN(color_cache.hash_bits)
+		// WEBP_SELF_ASSIGN(color_cache.hash_bits)
 		return 0
 	}
 	color_cache.hash_shift = 32 - hash_bits
@@ -40,11 +40,11 @@ func VP8LColorCacheInit( /* const */ color_cache *VP8LColorCache, hash_bits int)
 func VP8LColorCacheClear( /* const */ color_cache *VP8LColorCache) {
 	if color_cache != nil {
 		color_cache.colors = nil
-		WEBP_SELF_ASSIGN(color_cache.hash_bits)
+		// WEBP_SELF_ASSIGN(color_cache.hash_bits)
 	}
 }
 
-func VP8LHashPix(argb uint32, int shift) int {
+func VP8LHashPix(argb uint32, shift int) int {
 	return (int)((argb * kHashMul) >> shift)
 }
 

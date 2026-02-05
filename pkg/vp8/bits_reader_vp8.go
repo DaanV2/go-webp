@@ -69,7 +69,7 @@ func VP8LoadFinalBytes(/* const */ br *VP8BitReader) {
   if (br.buf < br.buf_end) {
     br.bits += 8;
     br.value = (bit_t)(*br.buf++) | (br.value << 8);
-    WEBP_SELF_ASSIGN(br.buf_end);
+    // WEBP_SELF_ASSIGN(br.buf_end);
   } else if (!br.eof) {
     br.value <<= 8;
     br.bits += 8;
@@ -108,7 +108,7 @@ func VP8LoadNewBytes(/* const */ br *VP8BitReader) {
     stdlib.MemCpy(&in_bits, br.buf, sizeof(in_bits));
 	
     br.buf += BITS >> 3;
-    WEBP_SELF_ASSIGN(br.buf_end);
+    // WEBP_SELF_ASSIGN(br.buf_end);
 
 
 	if !constants.WORDS_BIGENDIAN{
