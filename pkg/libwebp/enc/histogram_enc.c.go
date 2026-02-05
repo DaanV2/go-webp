@@ -232,7 +232,7 @@ func VP8LHistogramStoreRefs(/* const */ refs *VP8LBackwardRefs, int (distance_mo
 // -----------------------------------------------------------------------------
 // Entropy-related functions.
 
-static  uint64 BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) {
+func BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) uint64 {
   var mix uint64
   if (entropy.nonzeros < 5) {
     if (entropy.nonzeros <= 1) {
@@ -320,7 +320,7 @@ func PopulationCost(/* const */ population *uint32, int length, /*const*/ trivia
   return BitsEntropyRefine(&bit_entropy) + FinalHuffmanCost(&stats);
 }
 
-static  func GetPopulationInfo(/* const */ histo *VP8LHistogram, HistogramIndex index, /*const*/ *uint32* population, length *int) {
+func GetPopulationInfo(/* const */ histo *VP8LHistogram, HistogramIndex index, /*const*/ *uint32* population, length *int) {
   switch (index) {
     case LITERAL:
       *population = histo.literal;
@@ -349,7 +349,7 @@ static  func GetPopulationInfo(/* const */ histo *VP8LHistogram, HistogramIndex 
 // non-zero: both the zero-th one, or both the last one.
 // 'index' is the index of the symbol in the histogram (literal, red, blue,
 // alpha, distance).
-static  uint64 GetCombinedEntropy(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, HistogramIndex index) {
+func GetCombinedEntropy(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, HistogramIndex index) uint64 {
   const X *uint32;
   const Y *uint32;
   var length int
@@ -392,7 +392,7 @@ uint64 VP8LHistogramEstimateBits(/* const */ h *VP8LHistogram) {
 // Various histogram combine/cost-eval functions
 
 // Set a + b in b, saturating at WEBP_INT64_MAX.
-static  func SaturateAdd(uint64 a, b *int64) {
+func SaturateAdd(uint64 a, b *int64) {
   if (*b < 0 || (int64)a <= WEBP_INT64_MAX - *b) {
     *b += (int64)a;
   } else {
@@ -421,7 +421,7 @@ static  func SaturateAdd(uint64 a, b *int64) {
   return 1;
 }
 
-static  func HistogramAdd(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, /*const*/ hout *VP8LHistogram) {
+func HistogramAdd(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, /*const*/ hout *VP8LHistogram) {
   var i int
   assert.Assert(h1.palette_code_bits == h2.palette_code_bits);
 

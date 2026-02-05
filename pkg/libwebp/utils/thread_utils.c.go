@@ -127,7 +127,7 @@ const THREADFN = *void
 
 //------------------------------------------------------------------------------
 
-static THREADFN ThreadLoop(ptr *void) {
+func ThreadLoop(ptr *void) THREADFN {
   var worker *WebPWorker = (*WebPWorker)ptr;
   var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
   done := 0;

@@ -95,7 +95,7 @@ MAP_COLOR_FUNCS(MapAlpha_MIPSdspR2, uint8, VP8GetAlphaIndex, VP8GetAlphaValue)
 
 #undef MAP_COLOR_FUNCS
 
-static  uint32 ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) {
+func ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) uint32 {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   __asm__ volatile(
       "preceu.ph.qbr   %[temp1],   %[c0]                 \n\t"
@@ -117,7 +117,7 @@ static  uint32 ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) {
   return temp2;
 }
 
-static  uint32 ClampedAddSubtractHalf(uint32 c0, uint32 c1, uint32 c2) {
+func ClampedAddSubtractHalf(uint32 c0, uint32 c1, uint32 c2) uint32 {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   __asm__ volatile(
       "adduh.qb         %[temp5],   %[c0],      %[c1]       \n\t"
@@ -144,7 +144,7 @@ static  uint32 ClampedAddSubtractHalf(uint32 c0, uint32 c1, uint32 c2) {
   return temp1;
 }
 
-static  uint32 Select(uint32 a, uint32 b, uint32 c) {
+func Select(uint32 a, uint32 b, uint32 c) uint32 {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   __asm__ volatile(
       "cmpgdu.lt.qb %[temp1], %[c],     %[b]             \n\t"
@@ -165,18 +165,18 @@ static  uint32 Select(uint32 a, uint32 b, uint32 c) {
   return a;
 }
 
-static  uint32 Average2(uint32 a0, uint32 a1) {
+func Average2(uint32 a0, uint32 a1) uint32 {
   __asm__ volatile("adduh.qb    %[a0], %[a0], %[a1]       \n\t"
                    : [a0] "+r"(a0)
                    : [a1] "r"(a1));
   return a0;
 }
 
-static  uint32 Average3(uint32 a0, uint32 a1, uint32 a2) {
+func Average3(uint32 a0, uint32 a1, uint32 a2) uint32 {
   return Average2(Average2(a0, a2), a1);
 }
 
-static  uint32 Average4(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
+func Average4(uint32 a0, uint32 a1, uint32 a2, uint32 a3) uint32 {
   return Average2(Average2(a0, a1), Average2(a2, a3));
 }
 

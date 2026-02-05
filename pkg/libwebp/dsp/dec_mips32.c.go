@@ -90,7 +90,7 @@ static  int needs_filter2(/* const */ p *uint8, int step, int t, int it) {
          abs_mips32(q2 - q1) <= it && abs_mips32(q1 - q0) <= it;
 }
 
-static  func FilterLoop26(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
+func FilterLoop26(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
   thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (needs_filter2(p, hstride, thresh2, ithresh)) {
@@ -104,7 +104,7 @@ static  func FilterLoop26(p *uint8, int hstride, int vstride, size int, int thre
   }
 }
 
-static  func FilterLoop24(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
+func FilterLoop24(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
   thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (needs_filter2(p, hstride, thresh2, ithresh)) {

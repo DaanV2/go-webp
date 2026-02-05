@@ -177,7 +177,7 @@ VP8WHT VP8TransformWHT;
 #define DST(x, y) dst[(x) + (y) * BPS]
 
 #if !WEBP_NEON_OMIT_C_CODE
-static  func TrueMotion(dst *uint8, size int) {
+func TrueMotion(dst *uint8, size int) {
   var top *uint8 = dst - BPS;
   var clip *uint80 = VP8kclip1 - top[-1];
   var y int
@@ -212,7 +212,7 @@ func HE16_C(dst *uint8) {  // horizontal
   }
 }
 
-static  func Put16(int v, dst *uint8) {
+func Put16(int v, dst *uint8) {
   var j int
   for j = 0; j < 16; j++ {
     stdlib.Memset(dst + j * BPS, v, 16);
@@ -437,7 +437,7 @@ func HE8uv_C(dst *uint8) {  // horizontal
 }
 
 // helper for chroma-DC predictions
-static  func Put8x8uv(uint8 value, dst *uint8) {
+func Put8x8uv(uint8 value, dst *uint8) {
   var j int
   for j = 0; j < 8; j++ {
     stdlib.Memset(dst + j * BPS, value, 8);
@@ -522,7 +522,7 @@ static  func DoFilter6_C(p *uint8, int step) {
   p[2 * step] = VP8kclip1[q2 - a3];
 }
 
-static  int Hev(/* const */ p *uint8, int step, int thresh) {
+func Hev(/* const */ p *uint8, int step, int thresh) int {
   p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   return (VP8kabs0[p1 - p0] > thresh) || (VP8kabs0[q1 - q0] > thresh);
 }

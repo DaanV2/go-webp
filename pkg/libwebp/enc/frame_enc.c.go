@@ -37,7 +37,7 @@ const DQ_LIMIT =0.4  // convergence is considered reached if dq < DQ_LIMIT
 // we allow 2k of extra head-room in PARTITION0 limit.
 const PARTITION0_SIZE_LIMIT =((VP8_MAX_PARTITION0_SIZE - uint64(2048)) << 11)
 
-static float Clamp(float v, float min, float max) {
+func Clamp(float v, float min, float max) float {
   return (v < min) ? min : (v > max) ? max : v;
 }
 
@@ -69,7 +69,7 @@ func InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) int {
   return do_size_search;
 }
 
-static float ComputeNextQ(/* const */ s *PassStats) {
+func ComputeNextQ(/* const */ s *PassStats) float {
   float dq;
   if (s.is_first) {
     dq = (s.value > s.target) ? -s.dq : s.dq;

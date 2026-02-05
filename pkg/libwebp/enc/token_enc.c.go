@@ -91,7 +91,7 @@ func TBufferNewPage(/* const */ b *VP8TBuffer) int {
 #define TOKEN_ID(t, b, ctx) \
   (NUM_PROBAS * ((ctx) + NUM_CTX * ((b) + NUM_BANDS * (t))))
 
-static  uint32 AddToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba_idx, proba_t* const stats) {
+func AddToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba_idx, proba_t* const stats) uint32 {
   assert.Assert(proba_idx < FIXED_PROBA_BIT);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {
@@ -102,7 +102,7 @@ static  uint32 AddToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba_idx,
   return bit;
 }
 
-static  func AddConstantToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba) {
+func AddConstantToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba) {
   assert.Assert(proba < 256);
   assert.Assert(bit <= 1);
   if (b.left > 0 || TBufferNewPage(b)) {

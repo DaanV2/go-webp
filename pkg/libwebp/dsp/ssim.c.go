@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 static const uint32 kWeight[2 * VP8_SSIM_KERNEL + 1] = {1, 2, 3, 4, 3, 2, 1}
 static const kWeightSum := 16 * 16;  // sum{kWeight}^2
 
-static  double SSIMCalculation(/* const */ stats *VP8DistoStats, n uint32 /*num *samples/) {
+func SSIMCalculation(/* const */ stats *VP8DistoStats, n uint32 /*num *samples/) double {
   w2 := N * N;
   C1 := 20 * w2;
   C2 := 60 * w2;

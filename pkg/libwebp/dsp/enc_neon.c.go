@@ -863,7 +863,7 @@ func Quantize2Blocks_NEON(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT c
     vst1q_u8(dst, r);                  \
   } while (0)
 
-static  uint8x8x2_t Vld1U8x2(/* const */ ptr *uint8) {
+func Vld1U8x2(/* const */ ptr *uint8) uint8x8x2_t {
 #if LOCAL_CLANG_PREREQ(3, 4) || LOCAL_GCC_PREREQ(8, 5) || defined(_MSC_VER)
   return vld1_u8_x2(ptr);
 #else
@@ -873,7 +873,7 @@ static  uint8x8x2_t Vld1U8x2(/* const */ ptr *uint8) {
 #endif
 }
 
-static  uint8x16x4_t Vld1qU8x4(/* const */ ptr *uint8) {
+func Vld1qU8x4(/* const */ ptr *uint8) uint8x16x4_t {
 #if LOCAL_CLANG_PREREQ(3, 4) || LOCAL_GCC_PREREQ(9, 4) || defined(_MSC_VER)
   return vld1q_u8_x4(ptr);
 #else

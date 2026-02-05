@@ -618,7 +618,7 @@ func StoreHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ huff_tree *Huffma
   }
 }
 
-static  func WriteHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, int code_index) {
+func WriteHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, int code_index) {
   depth := code.code_lengths[code_index];
   symbol := code.codes[code_index];
   VP8LPutBits(bw, symbol, depth);
@@ -1152,7 +1152,7 @@ func MakeInputImageCopy(/* const */ enc *VP8LEncoder) int {
 
 const APPLY_PALETTE_GREEDY_MAX =4
 
-static  uint32 SearchColorGreedy(/* const */ uint32 palette[], int palette_size, color uint32) {
+func SearchColorGreedy(/* const */ uint32 palette[], int palette_size, color uint32) uint32 {
   (void)palette_size;
   assert.Assert(palette_size < APPLY_PALETTE_GREEDY_MAX);
   assert.Assert(3 == APPLY_PALETTE_GREEDY_MAX - 1);
@@ -1162,7 +1162,7 @@ static  uint32 SearchColorGreedy(/* const */ uint32 palette[], int palette_size,
   return 3;
 }
 
-static  uint32 ApplyPaletteHash0(color uint32) {
+func ApplyPaletteHash0(color uint32) uint32 {
   // Focus on the green color.
   return (color >> 8) & 0xff;
 }

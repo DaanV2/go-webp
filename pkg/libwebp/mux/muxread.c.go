@@ -31,7 +31,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
     }                                                         \
   } while (0)
 
-static WebPMuxError MuxGet(/* const */ mux *WebPMux, CHUNK_INDEX idx, uint32 nth, /*const*/ data *WebPData) {
+func MuxGet(/* const */ mux *WebPMux, CHUNK_INDEX idx, uint32 nth, /*const*/ data *WebPData) WebPMuxError {
   assert.Assert(mux != nil);
   assert.Assert(idx != IDX_LAST_CHUNK);
   assert.Assert(!IsWPI(kChunks[idx].id));
@@ -49,7 +49,7 @@ static WebPMuxError MuxGet(/* const */ mux *WebPMux, CHUNK_INDEX idx, uint32 nth
 
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
-static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, /*const*/ data *uint8, data_size uint64, uint64 riff_size, int copy_data) {
+func ChunkVerifyAndAssign(chunk *WebPChunk, /*const*/ data *uint8, data_size uint64, uint64 riff_size, int copy_data) WebPMuxError {
   var chunk_size uint32
   WebPData chunk_data;
 
@@ -306,7 +306,7 @@ Err:  // Something bad happened.
 // Get API(s).
 
 // Validates that the given mux has a single image.
-static WebPMuxError ValidateForSingleImage(/* const */ mux *WebPMux) {
+func ValidateForSingleImage(/* const */ mux *WebPMux) WebPMuxError {
   num_images := MuxImageCount(mux.images, WEBP_CHUNK_IMAGE);
   num_frames := MuxImageCount(mux.images, WEBP_CHUNK_ANMF);
 
@@ -324,7 +324,7 @@ static WebPMuxError ValidateForSingleImage(/* const */ mux *WebPMux) {
 
 // Get the canvas width, height and flags after validating that VP8X/VP8/VP8L
 // chunk and canvas size are valid.
-static WebPMuxError MuxGetCanvasInfo(/* const */ mux *WebPMux, width *int, height *int, flags *uint32) {
+func MuxGetCanvasInfo(/* const */ mux *WebPMux, width *int, height *int, flags *uint32) WebPMuxError {
   int w, h;
   f := 0;
   WebPData data;

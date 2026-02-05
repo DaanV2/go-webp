@@ -28,15 +28,15 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Decoding
 
 // color mapping related functions.
-static  uint32 VP8GetARGBIndex(uint32 idx) {
+func VP8GetARGBIndex(uint32 idx) uint32 {
   return (idx >> 8) & 0xff;
 }
 
-static  uint8 VP8GetAlphaIndex(uint8 idx) { return idx; }
+func VP8GetAlphaIndex(uint8 idx) uint8 { return idx; }
 
-static  uint32 VP8GetARGBValue(uint32 val) { return val; }
+func VP8GetARGBValue(uint32 val) uint32 { return val; }
 
-static  uint8 VP8GetAlphaValue(uint32 val) {
+func VP8GetAlphaValue(uint32 val) uint8 {
   return (val >> 8) & 0xff;
 }
 
@@ -44,12 +44,12 @@ static  uint8 VP8GetAlphaValue(uint32 val) {
 // Misc methods.
 
 // Computes sampled size of 'size' when sampling using 'sampling bits'.
-static  uint32 VP8LSubSampleSize(size uint32, uint32 sampling_bits) {
+func VP8LSubSampleSize(size uint32, uint32 sampling_bits) uint32 {
   return (size + (1 << sampling_bits) - 1) >> sampling_bits;
 }
 
 // Converts near lossless quality into max number of bits shaved off.
-static  int VP8LNearLosslessBits(int near_lossless_quality) {
+func VP8LNearLosslessBits(int near_lossless_quality) int {
   //    100 . 0
   // 80..99 . 1
   // 60..79 . 2
@@ -87,19 +87,19 @@ typedef uint64 (*VP8LFastSLog2SlowFunc)(uint32 v);
 extern VP8LFastLog2SlowFunc VP8LFastLog2Slow;
 extern VP8LFastSLog2SlowFunc VP8LFastSLog2Slow;
 
-static  uint32 VP8LFastLog2(uint32 v) {
+func VP8LFastLog2(uint32 v) uint32 {
   return (v < LOG_LOOKUP_IDX_MAX) ? kLog2Table[v] : VP8LFastLog2Slow(v);
 }
 // Fast calculation of v * log2(v) for integer input.
-static  uint64 VP8LFastSLog2(uint32 v) {
+func VP8LFastSLog2(uint32 v) uint64 {
   return (v < LOG_LOOKUP_IDX_MAX) ? kSLog2Table[v] : VP8LFastSLog2Slow(v);
 }
 
-static  uint64 RightShiftRound(uint64 v, uint32 shift) {
+func RightShiftRound(uint64 v, uint32 shift) uint64 {
   return (v + (uint64(1) << shift >> 1)) >> shift;
 }
 
-static  int64 DivRound(int64 a, int64 b) {
+func DivRound(int64 a, int64 b) int64 {
   return ((a < 0) == (b < 0)) ? ((a + b / 2) / b) : ((a - b / 2) / b);
 }
 
@@ -112,14 +112,14 @@ const WEBP_UINT64_MAX =(~uint64(0))
 // Splitting of distance and length codes into prefixes and
 // extra bits. The prefixes are encoded with an entropy code
 // while the extra bits are stored just as normal bits.
-static  func VP8LPrefixEncodeBitsNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
+func VP8LPrefixEncodeBitsNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
   highest_bit := BitsLog2Floor(--distance);
   second_highest_bit := (distance >> (highest_bit - 1)) & 1;
   *extra_bits = highest_bit - 1;
   *code = 2 * highest_bit + second_highest_bit;
 }
 
-static  func VP8LPrefixEncodeNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
+func VP8LPrefixEncodeNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
   highest_bit := BitsLog2Floor(--distance);
   second_highest_bit := (distance >> (highest_bit - 1)) & 1;
   *extra_bits = highest_bit - 1;
@@ -136,7 +136,7 @@ type VP8LPrefixCode struct {
 // These tables are derived using VP8LPrefixEncodeNoLUT.
 extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];
 extern const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
-static  func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
+func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
     *code = prefix_code.code;
@@ -146,7 +146,7 @@ static  func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ e
   }
 }
 
-static  func VP8LPrefixEncode(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
+func VP8LPrefixEncode(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
     *code = prefix_code.code;

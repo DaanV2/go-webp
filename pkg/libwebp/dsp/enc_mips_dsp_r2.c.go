@@ -172,7 +172,7 @@ func FTransform_MIPSdspR2(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_R
 #undef VERTICAL_PASS
 #undef HORIZONTAL_PASS
 
-static  func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17, temp18;
 
@@ -439,7 +439,7 @@ TRUE_MOTION(dst, left, top, 16)
 #undef CLIP_8B_TO_DST
 #undef CLIPPING
 
-static  func DCMode16(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func DCMode16(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   int DC, DC1;
   int temp0, temp1, temp2, temp3;
 
@@ -491,7 +491,7 @@ static  func DCMode16(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *ui
   FILL_8_OR_16(dst, DC, 16);
 }
 
-static  func DCMode8(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func DCMode8(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   int DC, DC1;
   int temp0, temp1, temp2, temp3;
 

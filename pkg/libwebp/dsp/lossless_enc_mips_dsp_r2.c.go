@@ -70,7 +70,7 @@ func SubtractGreenFromBlueAndRed_MIPSdspR2(argb_data *uint32, num_pixels int) {
       : "memory");
 }
 
-static  uint32 ColorTransformDelta(int8 color_pred, int8 color) {
+func ColorTransformDelta(int8 color_pred, int8 color) uint32 {
   return (uint32)((int)(color_pred)*color) >> 5;
 }
 
@@ -151,7 +151,7 @@ func TransformColor_MIPSdspR2(
   }
 }
 
-static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) {
+func TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) uint8 {
   green := argb >> 8;
   red := argb >> 16;
   new_blue := argb;
@@ -198,7 +198,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
   }
 }
 
-static  uint8 TransformColorRed(uint8 green_to_red, argb uint32) {
+func TransformColorRed(uint8 green_to_red, argb uint32) uint8 {
   green := argb >> 8;
   new_red := argb >> 16;
   new_red -= ColorTransformDelta(green_to_red, green);

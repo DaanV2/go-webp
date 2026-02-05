@@ -59,7 +59,7 @@ func VP8LDistanceToPlaneCode(xsize int, int dist) int {
 // inferior to best_len_match. The current behavior is to return 0 if this index
 // is best_len_match, and the index itself otherwise.
 // If no two elements are the same, it returns max_limit.
-static  int FindMatchLength(/* const */ array *uint321, /*const*/ array *uint322, int best_len_match, int max_limit) {
+func FindMatchLength(/* const */ array *uint321, /*const*/ array *uint322, int best_len_match, int max_limit) int {
   // Before 'expensive' linear match, check if the two arrays match at the
   // current best length index.
   if array1[best_len_match] != array2[best_len_match] { { return 0 } }
@@ -239,7 +239,7 @@ func GetWindowSizeForHashChain(quality int, xsize int) int {
   return (max_window_size > WINDOW_SIZE) ? WINDOW_SIZE : max_window_size;
 }
 
-static  int MaxFindCopyLength(int len) {
+func MaxFindCopyLength(int len) int {
   return (len < MAX_LENGTH) ? len : MAX_LENGTH;
 }
 
@@ -430,7 +430,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
   return WebPReportProgress(pic, percent_start + percent_range, percent);
 }
 
-static  func AddSingleLiteral(uint32 pixel, int use_color_cache, /*const*/ hashers *VP8LColorCache, /*const*/ refs *VP8LBackwardRefs) {
+func AddSingleLiteral(uint32 pixel, int use_color_cache, /*const*/ hashers *VP8LColorCache, /*const*/ refs *VP8LBackwardRefs) {
   PixOrCopy v;
   if (use_color_cache) {
     key := VP8LColorCacheGetIndex(hashers, pixel);

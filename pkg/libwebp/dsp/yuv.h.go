@@ -65,39 +65,39 @@ enum {
 //------------------------------------------------------------------------------
 // slower on x86 by ~7-8%, but bit-exact with the SSE2/NEON version
 
-static  int MultHi(int v, int coeff) {  // _mm_mulhi_epu16 emulation
+func MultHi(int v, int coeff) int {  // _mm_mulhi_epu16 emulation
   return (v * coeff) >> 8;
 }
 
-static  int VP8Clip8(int v) {
+func VP8Clip8(int v) int {
   return ((v & ~YUV_MASK2) == 0) ? (v >> YUV_FIX2) : (v < 0) ? 0 : 255;
 }
 
-static  int VP8YUVToR(int y, int v) {
+func VP8YUVToR(int y, int v) int {
   return VP8Clip8(MultHi(y, 19077) + MultHi(v, 26149) - 14234);
 }
 
-static  int VP8YUVToG(int y, int u, int v) {
+func VP8YUVToG(int y, int u, int v) int {
   return VP8Clip8(MultHi(y, 19077) - MultHi(u, 6419) - MultHi(v, 13320) + 8708);
 }
 
-static  int VP8YUVToB(int y, int u) {
+func VP8YUVToB(int y, int u) int {
   return VP8Clip8(MultHi(y, 19077) + MultHi(u, 33050) - 17685);
 }
 
-static  func VP8YuvToRgb(int y, int u, int v, /*const*/ rgb *uint8) {
+func VP8YuvToRgb(int y, int u, int v, /*const*/ rgb *uint8) {
   rgb[0] = VP8YUVToR(y, v);
   rgb[1] = VP8YUVToG(y, u, v);
   rgb[2] = VP8YUVToB(y, u);
 }
 
-static  func VP8YuvToBgr(int y, int u, int v, /*const*/ bgr *uint8) {
+func VP8YuvToBgr(int y, int u, int v, /*const*/ bgr *uint8) {
   bgr[0] = VP8YUVToB(y, u);
   bgr[1] = VP8YUVToG(y, u, v);
   bgr[2] = VP8YUVToR(y, v);
 }
 
-static  func VP8YuvToRgb565(int y, int u, int v, /*const*/ rgb *uint8) {
+func VP8YuvToRgb565(int y, int u, int v, /*const*/ rgb *uint8) {
   r := VP8YUVToR(y, v);     // 5 usable bits
   g := VP8YUVToG(y, u, v);  // 6 usable bits
   b := VP8YUVToB(y, u);     // 5 usable bits
@@ -112,7 +112,7 @@ static  func VP8YuvToRgb565(int y, int u, int v, /*const*/ rgb *uint8) {
 #endif
 }
 
-static  func VP8YuvToRgba4444(int y, int u, int v, /*const*/ argb *uint8) {
+func VP8YuvToRgba4444(int y, int u, int v, /*const*/ argb *uint8) {
   r := VP8YUVToR(y, v);     // 4 usable bits
   g := VP8YUVToG(y, u, v);  // 4 usable bits
   b := VP8YUVToB(y, u);     // 4 usable bits
@@ -130,17 +130,17 @@ static  func VP8YuvToRgba4444(int y, int u, int v, /*const*/ argb *uint8) {
 //-----------------------------------------------------------------------------
 // Alpha handling variants
 
-static  func VP8YuvToArgb(uint8 y, uint8 u, uint8 v, /*const*/ argb *uint8) {
+func VP8YuvToArgb(uint8 y, uint8 u, uint8 v, /*const*/ argb *uint8) {
   argb[0] = 0xff;
   VP8YuvToRgb(y, u, v, argb + 1);
 }
 
-static  func VP8YuvToBgra(uint8 y, uint8 u, uint8 v, /*const*/ bgra *uint8) {
+func VP8YuvToBgra(uint8 y, uint8 u, uint8 v, /*const*/ bgra *uint8) {
   VP8YuvToBgr(y, u, v, bgra);
   bgra[3] = 0xff;
 }
 
-static  func VP8YuvToRgba(uint8 y, uint8 u, uint8 v, /*const*/ rgba *uint8) {
+func VP8YuvToRgba(uint8 y, uint8 u, uint8 v, /*const*/ rgba *uint8) {
   VP8YuvToRgb(y, u, v, rgba);
   rgba[3] = 0xff;
 }
@@ -176,22 +176,22 @@ func VP8YuvToBgr32_SSE41(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_REST
 // RGB . YUV conversion
 
 // Stub functions that can be called with various rounding values:
-static  int VP8ClipUV(int uv, int rounding) {
+func VP8ClipUV(int uv, int rounding) int {
   uv = (uv + rounding + (128 << (YUV_FIX + 2))) >> (YUV_FIX + 2);
   return ((uv & ~0xff) == 0) ? uv : (uv < 0) ? 0 : 255;
 }
 
-static  int VP8RGBToY(int r, int g, int b, int rounding) {
+func VP8RGBToY(int r, int g, int b, int rounding) int {
   luma := 16839 * r + 33059 * g + 6420 * b;
   return (luma + rounding + (16 << YUV_FIX)) >> YUV_FIX;  // no need to clip
 }
 
-static  int VP8RGBToU(int r, int g, int b, int rounding) {
+func VP8RGBToU(int r, int g, int b, int rounding) int {
   u := -9719 * r - 19081 * g + 28800 * b;
   return VP8ClipUV(u, rounding);
 }
 
-static  int VP8RGBToV(int r, int g, int b, int rounding) {
+func VP8RGBToV(int r, int g, int b, int rounding) int {
   v := +28800 * r - 24116 * g - 4684 * b;
   return VP8ClipUV(v, rounding);
 }

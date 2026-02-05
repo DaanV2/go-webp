@@ -34,19 +34,19 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Image transforms.
 
-static  uint32 Average2(uint32 a0, uint32 a1) {
+func Average2(uint32 a0, uint32 a1) uint32 {
   return (((a0 ^ a1) & uint(0xfefefefe)) >> 1) + (a0 & a1);
 }
 
-static  uint32 Average3(uint32 a0, uint32 a1, uint32 a2) {
+func Average3(uint32 a0, uint32 a1, uint32 a2) uint32 {
   return Average2(Average2(a0, a2), a1);
 }
 
-static  uint32 Average4(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
+func Average4(uint32 a0, uint32 a1, uint32 a2, uint32 a3) uint32 {
   return Average2(Average2(a0, a1), Average2(a2, a3));
 }
 
-static  uint32 Clip255(uint32 a) {
+func Clip255(uint32 a) uint32 {
   if (a < 256) {
     return a;
   }
@@ -55,11 +55,11 @@ static  uint32 Clip255(uint32 a) {
   return ~a >> 24;
 }
 
-static  int AddSubtractComponentFull(int a, int b, int c) {
+func AddSubtractComponentFull(int a, int b, int c) int {
   return Clip255((uint32)(a + b - c));
 }
 
-static  uint32 ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) {
+func ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) uint32 {
   a := AddSubtractComponentFull(c0 >> 24, c1 >> 24, c2 >> 24);
   r := AddSubtractComponentFull((c0 >> 16) & 0xff, (c1 >> 16) & 0xff, (c2 >> 16) & 0xff);
   g := AddSubtractComponentFull((c0 >> 8) & 0xff, (c1 >> 8) & 0xff, (c2 >> 8) & 0xff);
@@ -67,11 +67,11 @@ static  uint32 ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) {
   return ((uint32)a << 24) | (r << 16) | (g << 8) | b;
 }
 
-static  int AddSubtractComponentHalf(int a, int b) {
+func AddSubtractComponentHalf(int a, int b) int {
   return Clip255((uint32)(a + (a - b) / 2));
 }
 
-static  uint32 ClampedAddSubtractHalf(uint32 c0, uint32 c1, uint32 c2) {
+func ClampedAddSubtractHalf(uint32 c0, uint32 c1, uint32 c2) uint32 {
   ave := Average2(c0, c1);
   a := AddSubtractComponentHalf(ave >> 24, c2 >> 24);
   r := AddSubtractComponentHalf((ave >> 16) & 0xff, (c2 >> 16) & 0xff);
@@ -96,7 +96,7 @@ static LOCAL_INLINE int Sub3(int a, int b, int c) {
 
 #undef LOCAL_INLINE
 
-static  uint32 Select(uint32 a, uint32 b, uint32 c) {
+func Select(uint32 a, uint32 b, uint32 c) uint32 {
   pa_minus_pb :=
       Sub3((a >> 24), (b >> 24), (c >> 24)) +
       Sub3((a >> 16) & 0xff, (b >> 16) & 0xff, (c >> 16) & 0xff) +
@@ -253,11 +253,11 @@ func VP8LAddGreenToBlueAndRed_C(/* const */ src *uint32, num_pixels int, dst *ui
   }
 }
 
-static  int ColorTransformDelta(int8 color_pred, int8 color) {
+func ColorTransformDelta(int8 color_pred, int8 color) int {
   return ((int)color_pred * color) >> 5;
 }
 
-static  func ColorCodeToMultipliers(uint32 color_code, /*const*/ m *VP8LMultipliers) {
+func ColorCodeToMultipliers(uint32 color_code, /*const*/ m *VP8LMultipliers) {
   m.green_to_red = (color_code >> 0) & 0xff;
   m.green_to_blue = (color_code >> 8) & 0xff;
   m.red_to_blue = (color_code >> 16) & 0xff;

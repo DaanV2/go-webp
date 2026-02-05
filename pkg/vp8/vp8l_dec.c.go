@@ -171,7 +171,7 @@ func PlaneCodeToDistance(xsize, plane_code int ) int {
 // Decodes the next Huffman code from bit-stream.
 // VP8LFillBitWindow(br) needs to be called at minimum every second call
 // to ReadSymbol, in order to pre-fetch enough bits.
-static  int ReadSymbol(/* const */ table *HuffmanCode, /*const*/ br *VP8LBitReader) {
+func ReadSymbol(/* const */ table *HuffmanCode, /*const*/ br *VP8LBitReader) int {
   var nbits int
   val := VP8LPrefetchBits(br);
   table += val & HUFFMAN_TABLE_MASK;
@@ -189,7 +189,7 @@ static  int ReadSymbol(/* const */ table *HuffmanCode, /*const*/ br *VP8LBitRead
 // Reads packed symbol depending on GREEN channel
 const BITS_SPECIAL_MARKER =0x100  // something large enough (and a bit-mask)
 const PACKED_NON_LITERAL_CODE =0  // must be < NUM_LITERAL_CODES
-static  int ReadPackedSymbols(/* const */ group *HTreeGroup, /*const*/ br *VP8LBitReader, /*const*/ dst *uint32) {
+func ReadPackedSymbols(/* const */ group *HTreeGroup, /*const*/ br *VP8LBitReader, /*const*/ dst *uint32) int {
   val := VP8LPrefetchBits(br) & (HUFFMAN_PACKED_TABLE_SIZE - 1);
   const HuffmanCode32 code = group.packed_table[val];
   assert.Assert(group.use_packed_table);
@@ -785,7 +785,7 @@ func SetCropWindow(/* const */ io *VP8Io,  y_start int, y_end int, in_data *uint
 
 //------------------------------------------------------------------------------
 
-static  int GetMetaIndex(/* const */ image *uint32, xsize int, bits int, int x, int y) {
+func GetMetaIndex(/* const */ image *uint32, xsize int, bits int, int x, int y) int {
   if bits == 0 { { return 0 } }
   return image[xsize * (y >> bits) + (x >> bits)];
 }
@@ -944,7 +944,7 @@ func ExtractPalettedAlphaRows(/* const */ dec *VP8LDecoder, int last_row) {
 // Helper functions for fast pattern copy (8b and 32b)
 
 // cyclic rotation of pattern word
-static  uint32 Rotate8b(uint32 V) {
+func Rotate8b(uint32 V) uint32 {
 	if constants.WORDS_BIGENDIAN {
 	return ((V & uint(0xff000000)) >> 24) | (V << 8);
 	} else {
@@ -953,7 +953,7 @@ static  uint32 Rotate8b(uint32 V) {
 }
 
 // copy 1, 2 or 4-bytes pattern
-static  func CopySmallPattern8b(/* const */ src *uint8, dst *uint8, int length, uint32 pattern) {
+func CopySmallPattern8b(/* const */ src *uint8, dst *uint8, int length, uint32 pattern) {
   var i int
   // align 'dst' to 4-bytes boundary. Adjust the pattern along the way.
   while ((uintptr_t)dst & 3) {
@@ -971,7 +971,7 @@ static  func CopySmallPattern8b(/* const */ src *uint8, dst *uint8, int length, 
   }
 }
 
-static  func CopyBlock8b(/* const */ dst *uint8, int dist, int length) {
+func CopyBlock8b(/* const */ dst *uint8, int dist, int length) {
   var src *uint8 = dst - dist;
   if (length >= 8) {
     pattern := 0;
@@ -1020,7 +1020,7 @@ Copy:
 }
 
 // copy pattern of 1 or 2 uint32's
-static  func CopySmallPattern32b(/* const */ src *uint32, dst *uint32, int length, uint64 pattern) {
+func CopySmallPattern32b(/* const */ src *uint32, dst *uint32, int length, uint64 pattern) {
   var i int
   if ((uintptr_t)dst & 4) {  // Align 'dst' to 8-bytes boundary.
     *dst++ = *src++;
@@ -1036,7 +1036,7 @@ static  func CopySmallPattern32b(/* const */ src *uint32, dst *uint32, int lengt
   }
 }
 
-static  func CopyBlock32b(/* const */ dst *uint32, int dist, int length) {
+func CopyBlock32b(/* const */ dst *uint32, int dist, int length) {
   var src *uint32 = dst - dist;
   if (dist <= 2 && length >= 4 && ((uintptr_t)dst & 3) == 0) {
     var pattern uint64

@@ -85,24 +85,24 @@ Error:
   return ok;
 }
 
-static  int64 GetLiteralCost(/* const */ m *CostModel, uint32 v) {
+func GetLiteralCost(/* const */ m *CostModel, uint32 v) int64 {
   return (int64)m.alpha[v >> 24] + m.red[(v >> 16) & 0xff] +
          m.literal[(v >> 8) & 0xff] + m.blue[v & 0xff];
 }
 
-static  int64 GetCacheCost(/* const */ m *CostModel, uint32 idx) {
+func GetCacheCost(/* const */ m *CostModel, uint32 idx) int64 {
   literal_idx := VALUES_IN_BYTE + NUM_LENGTH_CODES + idx;
   return (int64)m.literal[literal_idx];
 }
 
-static  int64 GetLengthCost(/* const */ m *CostModel, uint32 length) {
+func GetLengthCost(/* const */ m *CostModel, uint32 length) int64 {
   int code, extra_bits;
   VP8LPrefixEncodeBits(length, &code, &extra_bits);
   return (int64)m.literal[VALUES_IN_BYTE + code] +
          ((int64)extra_bits << LOG_2_PRECISION_BITS);
 }
 
-static  int64 GetDistanceCost(/* const */ m *CostModel, uint32 distance) {
+func GetDistanceCost(/* const */ m *CostModel, uint32 distance) int64 {
   int code, extra_bits;
   VP8LPrefixEncodeBits(distance, &code, &extra_bits);
   return (int64)m.distance[code] +
@@ -303,7 +303,7 @@ func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uin
 
 // Given the cost and the position that define an interval, update the cost at
 // pixel 'i' if it is smaller than the previously computed value.
-static  func UpdateCost(/* const */ manager *CostManager, int i, int position, int64 cost) {
+func UpdateCost(/* const */ manager *CostManager, int i, int position, int64 cost) {
   k := i - position;
   assert.Assert(k >= 0 && k < MAX_LENGTH);
 
@@ -315,13 +315,13 @@ static  func UpdateCost(/* const */ manager *CostManager, int i, int position, i
 
 // Given the cost and the position that define an interval, update the cost for
 // all the pixels between 'start' and 'end' excluded.
-static  func UpdateCostPerInterval(/* const */ manager *CostManager, int start, int end, int position, int64 cost) {
+func UpdateCostPerInterval(/* const */ manager *CostManager, int start, int end, int position, int64 cost) {
   var i int
   for (i = start; i < end; ++i) UpdateCost(manager, i, position, cost);
 }
 
 // Given two intervals, make 'prev' be the previous one of 'next' in 'manager'.
-static  func ConnectIntervals(/* const */ manager *CostManager, /*const*/ prev *CostInterval, /*const*/ next *CostInterval) {
+func ConnectIntervals(/* const */ manager *CostManager, /*const*/ prev *CostInterval, /*const*/ next *CostInterval) {
   if (prev != nil) {
     prev.next = next;
   } else {
@@ -332,7 +332,7 @@ static  func ConnectIntervals(/* const */ manager *CostManager, /*const*/ prev *
 }
 
 // Pop an interval in the manager.
-static  func PopInterval(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
+func PopInterval(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
   if interval == nil { return }
 
   ConnectIntervals(manager, interval.previous, interval.next);
@@ -350,7 +350,7 @@ static  func PopInterval(/* const */ manager *CostManager, /*const*/ interval *C
 // overlap with i.
 // If 'do_clean_intervals' is set to something different than 0, intervals that
 // end before 'i' will be popped.
-static  func UpdateCostAtIndex(/* const */ manager *CostManager, int i, int do_clean_intervals) {
+func UpdateCostAtIndex(/* const */ manager *CostManager, int i, int do_clean_intervals) {
   current *CostInterval = manager.head;
 
   while (current != nil && current.start <= i) {
@@ -370,7 +370,7 @@ static  func UpdateCostAtIndex(/* const */ manager *CostManager, int i, int do_c
 // Given a current orphan interval and its previous interval, before
 // it was orphaned (which can be nil), set it at the right place in the list
 // of intervals using the 'start' ordering and the previous interval as a hint.
-static  func PositionOrphanInterval(/* const */ manager *CostManager, /*const*/ current *CostInterval, previous *CostInterval) {
+func PositionOrphanInterval(/* const */ manager *CostManager, /*const*/ current *CostInterval, previous *CostInterval) {
   assert.Assert(current != nil);
 
   if previous == nil { previous = manager.head }
@@ -392,7 +392,7 @@ static  func PositionOrphanInterval(/* const */ manager *CostManager, /*const*/ 
 
 // Insert an interval in the list contained in the manager by starting at
 // 'interval_in' as a hint. The intervals are sorted by 'start' value.
-static  func InsertInterval(/* const */ manager *CostManager, /*const*/ interval_in *CostInterval, int64 cost, int position, int start, int end) {
+func InsertInterval(/* const */ manager *CostManager, /*const*/ interval_in *CostInterval, int64 cost, int position, int start, int end) {
   interval_new *CostInterval;
 
   if start >= end { return }
@@ -430,7 +430,7 @@ static  func InsertInterval(/* const */ manager *CostManager, /*const*/ interval
 // and distance_cost, add its contributions to the previous intervals and costs.
 // If handling the interval or one of its subintervals becomes to heavy, its
 // contribution is added to the costs right away.
-static  func PushInterval(/* const */ manager *CostManager, int64 distance_cost, int position, int len) {
+func PushInterval(/* const */ manager *CostManager, int64 distance_cost, int position, int len) {
   var i uint64
   interval *CostInterval = manager.head;
   interval_next *CostInterval;

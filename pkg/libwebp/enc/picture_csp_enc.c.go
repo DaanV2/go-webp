@@ -86,7 +86,7 @@ func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ 
   return ok;
 }
 
-static  func ConvertRowToY(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, /*const*/ dst_y *uint8, int width, /*const*/ rg *VP8Random) {
+func ConvertRowToY(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, /*const*/ dst_y *uint8, int width, /*const*/ rg *VP8Random) {
   int i, j;
   for i = 0, j = 0; i < width; i += 1, j += step {
     dst_y[i] =
@@ -94,7 +94,7 @@ static  func ConvertRowToY(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*c
   }
 }
 
-static  func ConvertRowsToUV(/* const */ rgb *uint16, /*const*/ dst_u *uint8, /*const*/ dst_v *uint8, int width, /*const*/ rg *VP8Random) {
+func ConvertRowsToUV(/* const */ rgb *uint16, /*const*/ dst_u *uint8, /*const*/ dst_v *uint8, int width, /*const*/ rg *VP8Random) {
   var i int
   for i = 0; i < width; i += 1, rgb += 4 {
     r := rgb[0], g = rgb[1], b = rgb[2];

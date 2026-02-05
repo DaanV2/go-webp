@@ -36,8 +36,8 @@ static const kMaskAlpha := 0xff000000;
 static const kNumPredModes := 14;
 
 // Mostly used to reduce code size + readability
-static  int GetMin(int a, int b) { return (a > b) ? b : a; }
-static  int GetMax(int a, int b) { return (a < b) ? b : a; }
+func GetMin(int a, int b) int { return (a > b) ? b : a; }
+func GetMax(int a, int b) int { return (a < b) ? b : a; }
 
 //------------------------------------------------------------------------------
 // Methods to calculate Entropy (Shannon).
@@ -76,7 +76,7 @@ static int64 PredictionCostSpatialHistogram(
   return retval;
 }
 
-static  func UpdateHisto(uint32 histo_argb[HISTO_SIZE], argb uint32) {
+func UpdateHisto(uint32 histo_argb[HISTO_SIZE], argb uint32) {
   ++histo_argb[0 * 256 + (argb >> 24)];
   ++histo_argb[1 * 256 + ((argb >> 16) & 0xff)];
   ++histo_argb[2 * 256 + ((argb >> 8) & 0xff)];
@@ -86,7 +86,7 @@ static  func UpdateHisto(uint32 histo_argb[HISTO_SIZE], argb uint32) {
 //------------------------------------------------------------------------------
 // Spatial transform functions.
 
-static  func PredictBatch(int mode, int x_start, int y, num_pixels int, /*const*/ current *uint32, /*const*/ upper *uint32, out *uint32) {
+func PredictBatch(int mode, int x_start, int y, num_pixels int, /*const*/ current *uint32, /*const*/ upper *uint32, out *uint32) {
   if (x_start == 0) {
     if (y == 0) {
       // ARGB_BLACK.
@@ -190,7 +190,7 @@ func NearLosslessComponent(uint8 value, uint8 predict, uint8 boundary, int quant
   }
 }
 
-static  uint8 NearLosslessDiff(uint8 a, uint8 b) {
+func NearLosslessDiff(uint8 a, uint8 b) uint8 {
   return (uint8)((((int)(a) - (int)(b))) & 0xff);
 }
 
@@ -756,13 +756,13 @@ func VP8LResidualImage(width, height int, int min_bits, int max_bits, low_effort
 //------------------------------------------------------------------------------
 // Color transform functions.
 
-static  func MultipliersClear(/* const */ m *VP8LMultipliers) {
+func MultipliersClear(/* const */ m *VP8LMultipliers) {
   m.green_to_red = 0;
   m.green_to_blue = 0;
   m.red_to_blue = 0;
 }
 
-static  func ColorCodeToMultipliers(uint32 color_code, /*const*/ m *VP8LMultipliers) {
+func ColorCodeToMultipliers(uint32 color_code, /*const*/ m *VP8LMultipliers) {
   m.green_to_red = (color_code >> 0) & 0xff;
   m.green_to_blue = (color_code >> 8) & 0xff;
   m.red_to_blue = (color_code >> 16) & 0xff;

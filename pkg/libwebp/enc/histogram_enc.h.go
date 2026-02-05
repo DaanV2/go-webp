@@ -82,7 +82,7 @@ func VP8LHistogramSetClear(/* const */ set *VP8LHistogramSet);
 // Special case of VP8LAllocateHistogramSet, with size equals 1.
 VP *VP8LHistogram8LAllocateHistogram(int cache_bits);
 
-static  int VP8LHistogramNumCodes(int palette_code_bits) {
+func VP8LHistogramNumCodes(int palette_code_bits) int {
   return NUM_LITERAL_CODES + NUM_LENGTH_CODES +
          ((palette_code_bits > 0) ? (1 << palette_code_bits) : 0);
 }

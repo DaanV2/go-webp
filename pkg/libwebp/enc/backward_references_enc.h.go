@@ -36,7 +36,7 @@ type PixOrCopy struct {
   var argb_or_distance uint32
 } ;
 
-static  PixOrCopy PixOrCopyCreateCopy(uint32 distance, uint16 len) {
+func PixOrCopyCreateCopy(uint32 distance, uint16 len) PixOrCopy {
   PixOrCopy retval;
   retval.mode = kCopy;
   retval.argb_or_distance = distance;
@@ -44,7 +44,7 @@ static  PixOrCopy PixOrCopyCreateCopy(uint32 distance, uint16 len) {
   return retval;
 }
 
-static  PixOrCopy PixOrCopyCreateCacheIdx(int idx) {
+func PixOrCopyCreateCacheIdx(int idx) PixOrCopy {
   PixOrCopy retval;
   assert.Assert(idx >= 0);
   assert.Assert(idx < (1 << MAX_COLOR_CACHE_BITS));
@@ -54,7 +54,7 @@ static  PixOrCopy PixOrCopyCreateCacheIdx(int idx) {
   return retval;
 }
 
-static  PixOrCopy PixOrCopyCreateLiteral(argb uint32) {
+func PixOrCopyCreateLiteral(argb uint32) PixOrCopy {
   PixOrCopy retval;
   retval.mode = kLiteral;
   retval.argb_or_distance = argb;
@@ -62,34 +62,34 @@ static  PixOrCopy PixOrCopyCreateLiteral(argb uint32) {
   return retval;
 }
 
-static  int PixOrCopyIsLiteral(/* const */ p *PixOrCopy) {
+func PixOrCopyIsLiteral(/* const */ p *PixOrCopy) int {
   return (p.mode == kLiteral);
 }
 
-static  int PixOrCopyIsCacheIdx(/* const */ p *PixOrCopy) {
+func PixOrCopyIsCacheIdx(/* const */ p *PixOrCopy) int {
   return (p.mode == kCacheIdx);
 }
 
-static  int PixOrCopyIsCopy(/* const */ p *PixOrCopy) {
+func PixOrCopyIsCopy(/* const */ p *PixOrCopy) int {
   return (p.mode == kCopy);
 }
 
-static  uint32 PixOrCopyLiteral(/* const */ p *PixOrCopy, int component) {
+func PixOrCopyLiteral(/* const */ p *PixOrCopy, int component) uint32 {
   assert.Assert(p.mode == kLiteral);
   return (p.argb_or_distance >> (component * 8)) & 0xff;
 }
 
-static  uint32 PixOrCopyLength(/* const */ p *PixOrCopy) {
+func PixOrCopyLength(/* const */ p *PixOrCopy) uint32 {
   return p.len;
 }
 
-static  uint32 PixOrCopyCacheIdx(/* const */ p *PixOrCopy) {
+func PixOrCopyCacheIdx(/* const */ p *PixOrCopy) uint32 {
   assert.Assert(p.mode == kCacheIdx);
   assert.Assert(p.argb_or_distance < (uint(1) << MAX_COLOR_CACHE_BITS));
   return p.argb_or_distance;
 }
 
-static  uint32 PixOrCopyDistance(/* const */ p *PixOrCopy) {
+func PixOrCopyDistance(/* const */ p *PixOrCopy) uint32 {
   assert.Assert(p.mode == kCopy);
   return p.argb_or_distance;
 }
@@ -129,15 +129,15 @@ int VP8LHashChainInit(/* const */ p *VP8LHashChain, size int);
 int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, xsize int, ysize int, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int);
 func VP8LHashChainClear(/* const */ p *VP8LHashChain);  // release memory
 
-static  int VP8LHashChainFindOffset(/* const */ p *VP8LHashChain, /*const*/ int base_position) {
+func VP8LHashChainFindOffset(/* const */ p *VP8LHashChain, /*const*/ int base_position) int {
   return p.offset_length[base_position] >> MAX_LENGTH_BITS;
 }
 
-static  int VP8LHashChainFindLength(/* const */ p *VP8LHashChain, /*const*/ int base_position) {
+func VP8LHashChainFindLength(/* const */ p *VP8LHashChain, /*const*/ int base_position) int {
   return p.offset_length[base_position] & ((uint(1) << MAX_LENGTH_BITS) - 1);
 }
 
-static  func VP8LHashChainFindCopy(/* const */ p *VP8LHashChain, int base_position, /*const*/ offset_ptr *int, /*const*/ length_ptr *int) {
+func VP8LHashChainFindCopy(/* const */ p *VP8LHashChain, int base_position, /*const*/ offset_ptr *int, /*const*/ length_ptr *int) {
   *offset_ptr = VP8LHashChainFindOffset(p, base_position);
   *length_ptr = VP8LHashChainFindLength(p, base_position);
 }
@@ -179,13 +179,13 @@ type VP8LRefsCursor struct {
 // Returns a cursor positioned at the beginning of the references list.
 VP8LRefsCursor VP8LRefsCursorInit(/* const */ refs *VP8LBackwardRefs);
 // Returns true if cursor is pointing at a valid position.
-static  int VP8LRefsCursorOk(/* const */ c *VP8LRefsCursor) {
+func VP8LRefsCursorOk(/* const */ c *VP8LRefsCursor) int {
   return (c.cur_pos != nil);
 }
 // Move to next block of references. Internal, not to be called directly.
 func VP8LRefsCursorNextBlock(/* const */ c *VP8LRefsCursor);
 // Move to next position, or nil. Should not be called if !VP8LRefsCursorOk().
-static  func VP8LRefsCursorNext(/* const */ c *VP8LRefsCursor) {
+func VP8LRefsCursorNext(/* const */ c *VP8LRefsCursor) {
   assert.Assert(c != nil);
   assert.Assert(VP8LRefsCursorOk(c));
   if ++c.cur_pos == c.last_pos { VP8LRefsCursorNextBlock(c) }

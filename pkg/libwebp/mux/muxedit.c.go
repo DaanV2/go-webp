@@ -88,7 +88,7 @@ func WebPMuxDelete(mux *WebPMux) {
     }                                                      \
   } while (0)
 
-static WebPMuxError MuxSet(/* const */ mux *WebPMux, uint32 tag, /*const*/ data *WebPData, int copy_data) {
+func MuxSet(/* const */ mux *WebPMux, uint32 tag, /*const*/ data *WebPData, int copy_data) WebPMuxError {
   WebPChunk chunk;
   WebPMuxError err = WEBP_MUX_NOT_FOUND;
   const CHUNK_INDEX idx = ChunkGetIndexFromTag(tag);
@@ -107,7 +107,7 @@ static WebPMuxError MuxSet(/* const */ mux *WebPMux, uint32 tag, /*const*/ data 
 #undef SWITCH_ID_LIST
 
 // Create data for frame given image data, offsets and duration.
-static WebPMuxError CreateFrameData(width, height int, /*const*/ info *WebPMuxFrameInfo, /*const*/ frame *WebPData) {
+func CreateFrameData(width, height int, /*const*/ info *WebPMuxFrameInfo, /*const*/ frame *WebPData) WebPMuxError {
   frame_bytes *uint8;
   frame_size := kChunks[IDX_ANMF].size;
 
@@ -137,7 +137,7 @@ static WebPMuxError CreateFrameData(width, height int, /*const*/ info *WebPMuxFr
 // Outputs image data given a bitstream. The bitstream can either be a
 // single-image WebP file or raw VP8/VP8L data.
 // Also outputs 'is_lossless' to be true if the given bitstream is lossless.
-static WebPMuxError GetImageData(/* const */ bitstream *WebPData, /*const*/ image *WebPData, /*const*/ alpha *WebPData, /*const*/ is_lossless *int) {
+func GetImageData(/* const */ bitstream *WebPData, /*const*/ image *WebPData, /*const*/ alpha *WebPData, /*const*/ is_lossless *int) WebPMuxError {
   WebPDataInit(alpha);  // Default: no alpha.
   if (bitstream.size < TAG_SIZE ||
       memcmp(bitstream.bytes, "RIFF", TAG_SIZE)) {
@@ -160,7 +160,7 @@ static WebPMuxError GetImageData(/* const */ bitstream *WebPData, /*const*/ imag
   return WEBP_MUX_OK;
 }
 
-static WebPMuxError DeleteChunks(*WebPChunk* chunk_list, uint32 tag) {
+func DeleteChunks(*WebPChunk* chunk_list, uint32 tag) WebPMuxError {
   WebPMuxError err = WEBP_MUX_NOT_FOUND;
   assert.Assert(chunk_list);
   while (*chunk_list) {
@@ -175,7 +175,7 @@ static WebPMuxError DeleteChunks(*WebPChunk* chunk_list, uint32 tag) {
   return err;
 }
 
-static WebPMuxError MuxDeleteAllNamedData(/* const */ mux *WebPMux, uint32 tag) {
+func MuxDeleteAllNamedData(/* const */ mux *WebPMux, uint32 tag) WebPMuxError {
   const WebPChunkId id = ChunkGetIdFromTag(tag);
   assert.Assert(mux != nil);
   if IsWPI(id) { { return WEBP_MUX_INVALID_ARGUMENT } }
@@ -203,7 +203,7 @@ WebPMuxError WebPMuxSetChunk(mux *WebPMux, /*const*/ byte fourcc[4], /*const*/ c
 }
 
 // Creates a chunk from given 'data' and sets it as 1st chunk in 'chunk_list'.
-static WebPMuxError AddDataToChunkList(/* const */ data *WebPData, int copy_data, uint32 tag, *WebPChunk* chunk_list) {
+func AddDataToChunkList(/* const */ data *WebPData, int copy_data, uint32 tag, *WebPChunk* chunk_list) WebPMuxError {
   WebPChunk chunk;
   WebPMuxError err;
   ChunkInit(&chunk);
@@ -219,7 +219,7 @@ Err:
 
 // Extracts image & alpha data from the given bitstream and then sets wpi.alpha
 // and wpi.img appropriately.
-static WebPMuxError SetAlphaAndImageChunks(/* const */ bitstream *WebPData, int copy_data, /*const*/ wpi *WebPMuxImage) {
+func SetAlphaAndImageChunks(/* const */ bitstream *WebPData, int copy_data, /*const*/ wpi *WebPMuxImage) WebPMuxError {
   is_lossless := 0;
   WebPData image, alpha;
   WebPMuxError err = GetImageData(bitstream, &image, &alpha, &is_lossless);
@@ -387,7 +387,7 @@ WebPMuxError WebPMuxDeleteFrame(mux *WebPMux, uint32 nth) {
 //------------------------------------------------------------------------------
 // Assembly of the WebP RIFF file.
 
-static WebPMuxError GetFrameInfo(/* const */ frame_chunk *WebPChunk, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ duration *int) {
+func GetFrameInfo(/* const */ frame_chunk *WebPChunk, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ duration *int) WebPMuxError {
   var data *WebPData = &frame_chunk.data;
   expected_data_size := ANMF_CHUNK_SIZE;
   assert.Assert(frame_chunk.tag == kChunks[IDX_ANMF].tag);
@@ -400,7 +400,7 @@ static WebPMuxError GetFrameInfo(/* const */ frame_chunk *WebPChunk, /*const*/ x
   return WEBP_MUX_OK;
 }
 
-static WebPMuxError GetImageInfo(/* const */ wpi *WebPMuxImage, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ duration *int, /*const*/ width *int, /*const*/ height *int) {
+func GetImageInfo(/* const */ wpi *WebPMuxImage, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ duration *int, /*const*/ width *int, /*const*/ height *int) WebPMuxError {
   var frame_chunk *WebPChunk = wpi.header;
   WebPMuxError err;
   assert.Assert(wpi != nil);
@@ -417,7 +417,7 @@ static WebPMuxError GetImageInfo(/* const */ wpi *WebPMuxImage, /*const*/ x_offs
 }
 
 // Returns the tightest dimension for the canvas considering the image list.
-static WebPMuxError GetAdjustedCanvasSize(/* const */ mux *WebPMux, /*const*/ width *int, /*const*/ height *int) {
+func GetAdjustedCanvasSize(/* const */ mux *WebPMux, /*const*/ width *int, /*const*/ height *int) WebPMuxError {
   wpi *WebPMuxImage = nil;
   assert.Assert(mux != nil);
   assert.Assert(width != nil && height != nil);
@@ -459,7 +459,7 @@ static WebPMuxError GetAdjustedCanvasSize(/* const */ mux *WebPMux, /*const*/ wi
 // Flags  : 4 bytes,
 // Width  : 3 bytes,
 // Height : 3 bytes.
-static WebPMuxError CreateVP8XChunk(/* const */ mux *WebPMux) {
+func CreateVP8XChunk(/* const */ mux *WebPMux) WebPMuxError {
   WebPMuxError err = WEBP_MUX_OK;
   flags := 0;
   width := 0;
@@ -538,7 +538,7 @@ static WebPMuxError CreateVP8XChunk(/* const */ mux *WebPMux) {
 }
 
 // Cleans up 'mux' by removing any unnecessary chunks.
-static WebPMuxError MuxCleanup(/* const */ mux *WebPMux) {
+func MuxCleanup(/* const */ mux *WebPMux) WebPMuxError {
   var num_frames int
   var num_anim_chunks int
 

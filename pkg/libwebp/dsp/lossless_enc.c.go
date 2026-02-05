@@ -263,11 +263,11 @@ func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, num_pixels int) {
   }
 }
 
-static  int ColorTransformDelta(int8 color_pred, int8 color) {
+func ColorTransformDelta(int8 color_pred, int8 color) int {
   return ((int)color_pred * color) >> 5;
 }
 
-static  int8 U32ToS8(uint32 v) { return (int8)(v & 0xff); }
+func U32ToS8(uint32 v) int8 { return (int8)(v & 0xff); }
 
 func VP8LTransformColor_C(/* const */ WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, num_pixels int) {
   var i int
@@ -286,14 +286,14 @@ func VP8LTransformColor_C(/* const */ WEBP_RESTRICT const m *VP8LMultipliers, WE
   }
 }
 
-static  uint8 TransformColorRed(uint8 green_to_red, argb uint32) {
+func TransformColorRed(uint8 green_to_red, argb uint32) uint8 {
   green := U32ToS8(argb >> 8);
   new_red := argb >> 16;
   new_red -= ColorTransformDelta((int8)green_to_red, green);
   return (new_red & 0xff);
 }
 
-static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) {
+func TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) uint8 {
   green := U32ToS8(argb >> 8);
   red := U32ToS8(argb >> 16);
   new_blue := argb & 0xff;

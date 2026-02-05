@@ -41,7 +41,7 @@ func PutPaddingByte(/* const */ pic *WebPPicture) int {
 //------------------------------------------------------------------------------
 // Writers for header's various pieces (in order of appearance)
 
-static WebPEncodingError PutRIFFHeader(/* const */ enc *VP8Encoder, uint64 riff_size) {
+func PutRIFFHeader(/* const */ enc *VP8Encoder, uint64 riff_size) WebPEncodingError {
   var pic *WebPPicture = enc.pic;
   uint8 riff[RIFF_HEADER_SIZE] = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
   assert.Assert(riff_size == (uint32)riff_size);
@@ -52,7 +52,7 @@ static WebPEncodingError PutRIFFHeader(/* const */ enc *VP8Encoder, uint64 riff_
   return VP8_ENC_OK;
 }
 
-static WebPEncodingError PutVP8XHeader(/* const */ enc *VP8Encoder) {
+func PutVP8XHeader(/* const */ enc *VP8Encoder) WebPEncodingError {
   var pic *WebPPicture = enc.pic;
   uint8 vp8x[CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE] = {'V', 'P', '8', 'X'}
   flags := 0;
@@ -75,7 +75,7 @@ static WebPEncodingError PutVP8XHeader(/* const */ enc *VP8Encoder) {
   return VP8_ENC_OK;
 }
 
-static WebPEncodingError PutAlphaChunk(/* const */ enc *VP8Encoder) {
+func PutAlphaChunk(/* const */ enc *VP8Encoder) WebPEncodingError {
   var pic *WebPPicture = enc.pic;
   uint8 alpha_chunk_hdr[CHUNK_HEADER_SIZE] = {'A', 'L', 'P', 'H'}
 
@@ -99,7 +99,7 @@ static WebPEncodingError PutAlphaChunk(/* const */ enc *VP8Encoder) {
   return VP8_ENC_OK;
 }
 
-static WebPEncodingError PutVP8Header(/* const */ pic *WebPPicture, uint64 vp8_size) {
+func PutVP8Header(/* const */ pic *WebPPicture, uint64 vp8_size) WebPEncodingError {
   uint8 vp8_chunk_hdr[CHUNK_HEADER_SIZE] = {'V', 'P', '8', ' '}
   assert.Assert(vp8_size == (uint32)vp8_size);
   PutLE32(vp8_chunk_hdr + TAG_SIZE, (uint32)vp8_size);
@@ -109,7 +109,7 @@ static WebPEncodingError PutVP8Header(/* const */ pic *WebPPicture, uint64 vp8_s
   return VP8_ENC_OK;
 }
 
-static WebPEncodingError PutVP8FrameHeader(/* const */ pic *WebPPicture, int profile, uint64 size0) {
+func PutVP8FrameHeader(/* const */ pic *WebPPicture, int profile, uint64 size0) WebPEncodingError {
   uint8 vp8_frm_hdr[VP8_FRAME_HEADER_SIZE];
   bits uint32;
 

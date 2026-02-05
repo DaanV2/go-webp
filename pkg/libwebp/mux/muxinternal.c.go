@@ -448,7 +448,7 @@ const NO_FLAG =((WebPFeatureFlags)0)
 // retrieval, maximum number of chunks by index (use -1 to skip)
 // and feature incompatibility (use NO_FLAG to skip).
 // On success returns WEBP_MUX_OK and stores the chunk count in *num.
-static WebPMuxError ValidateChunk(/* const */ mux *WebPMux, CHUNK_INDEX idx, WebPFeatureFlags feature, uint32 vp8x_flags, int max, num *int) {
+func ValidateChunk(/* const */ mux *WebPMux, CHUNK_INDEX idx, WebPFeatureFlags feature, uint32 vp8x_flags, int max, num *int) WebPMuxError {
   const WebPMuxError err = WebPMuxNumChunks(mux, kChunks[idx].id, num);
   if err != WEBP_MUX_OK { { return err } }
   if max > -1 && *num > max { { return WEBP_MUX_INVALID_ARGUMENT } }

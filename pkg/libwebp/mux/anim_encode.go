@@ -329,7 +329,7 @@ typedef int (*ComparePixelsFunc)(/* const */ *uint32, int, /*const*/ *uint32, in
 // Returns true if 'length' number of pixels in 'src' and 'dst' are equal,
 // assuming the given step sizes between pixels.
 // 'max_allowed_diff' is unused and only there to allow function pointer use.
-static  int ComparePixelsLossless(/* const */ src *uint32, int src_step, /*const*/ dst *uint32, int dst_step, int length, int max_allowed_diff) {
+func ComparePixelsLossless(/* const */ src *uint32, int src_step, /*const*/ dst *uint32, int dst_step, int length, int max_allowed_diff) int {
   (void)max_allowed_diff;
   assert.Assert(length > 0);
   while (length-- > 0) {
@@ -344,7 +344,7 @@ static  int ComparePixelsLossless(/* const */ src *uint32, int src_step, /*const
 
 // Helper to check if each channel in 'src' and 'dst' is at most off by
 // 'max_allowed_diff'.
-static  int PixelsAreSimilar(uint32 src, uint32 dst, int max_allowed_diff) {
+func PixelsAreSimilar(uint32 src, uint32 dst, int max_allowed_diff) int {
   src_a := (src >> 24) & 0xff;
   src_r := (src >> 16) & 0xff;
   src_g := (src >> 8) & 0xff;
@@ -362,7 +362,7 @@ static  int PixelsAreSimilar(uint32 src, uint32 dst, int max_allowed_diff) {
 
 // Returns true if 'length' number of pixels in 'src' and 'dst' are within an
 // error bound, assuming the given step sizes between pixels.
-static  int ComparePixelsLossy(/* const */ src *uint32, int src_step, /*const*/ dst *uint32, int dst_step, int length, int max_allowed_diff) {
+func ComparePixelsLossy(/* const */ src *uint32, int src_step, /*const*/ dst *uint32, int dst_step, int length, int max_allowed_diff) int {
   assert.Assert(length > 0);
   while (length-- > 0) {
     if (!PixelsAreSimilar(*src, *dst, max_allowed_diff)) {
@@ -465,7 +465,7 @@ func MinimizeChangeRectangle(/* const */ src *WebPPicture, /*const*/ dst *WebPPi
 }
 
 // Snap rectangle to even offsets (and adjust dimensions if needed).
-static  func SnapToEvenOffsets(/* const */ rect *FrameRectangle) {
+func SnapToEvenOffsets(/* const */ rect *FrameRectangle) {
   rect.width += (rect.x_offset & 1);
   rect.height += (rect.y_offset & 1);
   rect.x_offset &= ~1;
@@ -747,7 +747,7 @@ type Candidate struct {
 } ;
 
 // Generates a candidate encoded frame given a picture and metadata.
-static WebPEncodingError EncodeCandidate(/* const */ sub_frame *WebPPicture, /*const*/ rect *FrameRectangle, /*const*/ encoder_config *WebPConfig, int use_blending, /*const*/ candidate *Candidate) {
+func EncodeCandidate(/* const */ sub_frame *WebPPicture, /*const*/ rect *FrameRectangle, /*const*/ encoder_config *WebPConfig, int use_blending, /*const*/ candidate *Candidate) WebPEncodingError {
   WebPConfig config = *encoder_config;
   WebPEncodingError error_code = VP8_ENC_OK;
   assert.Assert(candidate != nil);
@@ -807,7 +807,7 @@ func GetEncodedData(/* const */ memory *WebPMemoryWriter, /*const*/ encoded_data
 }
 
 // Opposite of SetPreviousDisposeMethod().
-static WebPMuxAnimDispose GetPreviousDisposeMethod(/* const */ enc *WebPAnimEncoder) {
+func GetPreviousDisposeMethod(/* const */ enc *WebPAnimEncoder) WebPMuxAnimDispose {
   position := enc.count - 2;
   var prev_enc_frame *EncodedFrame = GetFrame(enc, position);
   assert.Assert(enc.count >= 2);  // As current and previous frames are in enc.

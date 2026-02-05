@@ -520,11 +520,11 @@ const NUM_NODES =(MIN_DELTA + 1 + MAX_DELTA)
 #define NODE(n, l) (nodes[(n)][(l) + MIN_DELTA])
 #define SCORE_STATE(n, l) (score_states[n][(l) + MIN_DELTA])
 
-static  func SetRDScore(int lambda, /*const*/ rd *VP8ModeScore) {
+func SetRDScore(int lambda, /*const*/ rd *VP8ModeScore) {
   rd.score = (rd.R + rd.H) * lambda + RD_DISTO_MULT * (rd.D + rd.SD);
 }
 
-static  score_t RDScoreTrellis(int lambda, score_t rate, score_t distortion) {
+func RDScoreTrellis(int lambda, score_t rate, score_t distortion) score_t {
   return rate * lambda + RD_DISTO_MULT * distortion;
 }
 

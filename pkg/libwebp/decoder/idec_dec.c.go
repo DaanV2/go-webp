@@ -268,7 +268,7 @@ func CheckMemBufferMode(/* const */ mem *MemBuffer, MemBufferMode expected) int 
 }
 
 // To be called last.
- static VP8StatusCode FinishDecoding(/* const */ idec *WebPIDecoder) {
+func FinishDecoding(/* const */ idec *WebPIDecoder) VP8StatusCode {
   var options *WebPDecoderOptions = idec.params.options;
   var output *WebPDecBuffer = idec.params.output;
 
@@ -305,7 +305,7 @@ func RestoreContext(/* const */ context *MBContext, /*const*/ dec *VP8Decoder, /
 
 //------------------------------------------------------------------------------
 
-static VP8StatusCode IDecError(/* const */ idec *WebPIDecoder, VP8StatusCode error) {
+func IDecError(/* const */ idec *WebPIDecoder, VP8StatusCode error) VP8StatusCode {
   if (idec.state == STATE_VP8_DATA) {
     // Synchronize the thread, clean-up and check for errors.
     (void)VP8ExitCritical((*VP8Decoder)idec.dec, &idec.io);
@@ -364,7 +364,7 @@ func DecodeWebPHeaders(/* const */ idec *WebPIDecoder) VP8StatusCode {
   return VP8_STATUS_OK;
 }
 
-static VP8StatusCode DecodeVP8FrameHeader(/* const */ idec *WebPIDecoder) {
+func DecodeVP8FrameHeader(/* const */ idec *WebPIDecoder) VP8StatusCode {
   var data *uint8 = idec.mem.buf + idec.mem.start;
   curr_size := MemDataSize(&idec.mem);
   var width, height int
@@ -392,7 +392,7 @@ static VP8StatusCode DecodeVP8FrameHeader(/* const */ idec *WebPIDecoder) {
 }
 
 // Partition #0
-static VP8StatusCode CopyParts0Data(/* const */ idec *WebPIDecoder) {
+func CopyParts0Data(/* const */ idec *WebPIDecoder) VP8StatusCode {
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   var br *VP8BitReader = &dec.br;
   part_size := br.buf_end - br.buf;
@@ -422,7 +422,7 @@ static VP8StatusCode CopyParts0Data(/* const */ idec *WebPIDecoder) {
   return VP8_STATUS_OK;
 }
 
-static VP8StatusCode DecodePartition0(/* const */ idec *WebPIDecoder) {
+func DecodePartition0(/* const */ idec *WebPIDecoder) VP8StatusCode {
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   var io *VP8Io = &idec.io;
   var params *WebPDecParams = &idec.params;
@@ -475,7 +475,7 @@ static VP8StatusCode DecodePartition0(/* const */ idec *WebPIDecoder) {
 }
 
 // Remaining partitions
-static VP8StatusCode DecodeRemaining(/* const */ idec *WebPIDecoder) {
+func DecodeRemaining(/* const */ idec *WebPIDecoder) VP8StatusCode {
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   var io *VP8Io = &idec.io;
 
@@ -535,14 +535,14 @@ static VP8StatusCode DecodeRemaining(/* const */ idec *WebPIDecoder) {
   return FinishDecoding(idec);
 }
 
-static VP8StatusCode ErrorStatusLossless(/* const */ idec *WebPIDecoder, VP8StatusCode status) {
+func ErrorStatusLossless(/* const */ idec *WebPIDecoder, VP8StatusCode status) VP8StatusCode {
   if (status == VP8_STATUS_SUSPENDED || status == VP8_STATUS_NOT_ENOUGH_DATA) {
     return VP8_STATUS_SUSPENDED;
   }
   return IDecError(idec, status);
 }
 
-static VP8StatusCode DecodeVP8LHeader(/* const */ idec *WebPIDecoder) {
+func DecodeVP8LHeader(/* const */ idec *WebPIDecoder) VP8StatusCode {
   var io *VP8Io = &idec.io;
   var dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
   var params *WebPDecParams = &idec.params;
@@ -574,7 +574,7 @@ static VP8StatusCode DecodeVP8LHeader(/* const */ idec *WebPIDecoder) {
   return VP8_STATUS_OK;
 }
 
-static VP8StatusCode DecodeVP8LData(/* const */ idec *WebPIDecoder) {
+func DecodeVP8LData(/* const */ idec *WebPIDecoder) VP8StatusCode {
   var dec *VP8LDecoder = (*VP8LDecoder)idec.dec;
   curr_size := MemDataSize(&idec.mem);
   assert.Assert(idec.is_lossless);
@@ -591,7 +591,7 @@ static VP8StatusCode DecodeVP8LData(/* const */ idec *WebPIDecoder) {
 }
 
 // Main decoding loop
-static VP8StatusCode IDecode(idec *WebPIDecoder) {
+func IDecode(idec *WebPIDecoder) VP8StatusCode {
   VP8StatusCode status = VP8_STATUS_SUSPENDED;
 
   if (idec.state == STATE_WEBP_HEADER) {

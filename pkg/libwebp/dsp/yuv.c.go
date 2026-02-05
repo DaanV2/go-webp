@@ -241,11 +241,11 @@ WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
   }
 }
 
-static  uint32 GammaToLinear(uint8 v) {
+func GammaToLinear(uint8 v) uint32 {
   return kGammaToLinearTab[v];
 }
 
-static  int Interpolate(int v) {
+func Interpolate(int v) int {
   tab_pos := v >> (GAMMA_TAB_FIX + 2);   // integer part
   x := v & ((kGammaTabScale << 2) - 1);  // fractional part
   v0 := kLinearToGammaTab[tab_pos];
@@ -257,7 +257,7 @@ static  int Interpolate(int v) {
 
 // Convert a linear value 'v' to YUV_FIX+2 fixed-point precision
 // U/V value, suitable for RGBToU/V calls.
-static  int LinearToGamma(uint32 base_value, int shift) {
+func LinearToGamma(uint32 base_value, int shift) int {
   y := Interpolate(base_value << shift);  // final uplifted value
   return (y + kGammaTabRounder) >> GAMMA_TAB_FIX;  // descale
 }
@@ -265,8 +265,8 @@ static  int LinearToGamma(uint32 base_value, int shift) {
 #else
 
 func WebPInitGammaTables(){}
-static  uint32 GammaToLinear(uint8 v) { return v; }
-static  int LinearToGamma(uint32 base_value, int shift) {
+func GammaToLinear(uint8 v) uint32 { return v; }
+func LinearToGamma(uint32 base_value, int shift) int {
   return (int)(base_value << shift);
 }
 
@@ -320,7 +320,7 @@ static const uint32 kInvAlpha[4 * 0xff + 1] = {
 
 #endif  // USE_INVERSE_ALPHA_TABLE
 
-static  int LinearToGammaWeighted(/* const */ src *uint8, /*const*/ a_ptr *uint8, uint32 total_a, int step, int rgb_stride) {
+func LinearToGammaWeighted(/* const */ src *uint8, /*const*/ a_ptr *uint8, uint32 total_a, int step, int rgb_stride) int {
   sum :=
       a_ptr[0] * GammaToLinear(src[0]) +
       a_ptr[step] * GammaToLinear(src[step]) +
