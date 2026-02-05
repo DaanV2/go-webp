@@ -170,7 +170,7 @@ func x86CPUInfo(CPUFeature feature) int {
 VP8CPUInfo VP8GetCPUInfo = x86CPUInfo;
 #elif defined(WEBP_ANDROID_NEON)  // NB: needs to be before generic NEON test.
 func AndroidCPUInfo(CPUFeature feature) int {
-  const AndroidCpuFamily cpu_family = android_getCpuFamily();
+  var cpu_family AndroidCpuFamily = android_getCpuFamily();
   cpu_features := android_getCpuFeatures();
   if (feature == kNEON) {
     return cpu_family == ANDROID_CPU_FAMILY_ARM &&

@@ -274,11 +274,11 @@ func FinishDecoding(/* const */ idec *WebPIDecoder) VP8StatusCode {
 
   idec.state = STATE_DONE;
   if (options != nil && options.flip) {
-    const VP8StatusCode status = WebPFlipBuffer(output);
+    var status VP8StatusCode = WebPFlipBuffer(output);
     if status != VP8_STATUS_OK { return status  }
   }
   if (idec.final_output != nil) {
-    const VP8StatusCode status = WebPCopyDecBufferPixels(
+    var status VP8StatusCode = WebPCopyDecBufferPixels(
         output, idec.final_output);  // do the slow-copy
     WebPFreeDecBuffer(&idec.output);
     if status != VP8_STATUS_OK { return status  }
@@ -434,7 +434,7 @@ func DecodePartition0(/* const */ idec *WebPIDecoder) VP8StatusCode {
   }
 
   if (!VP8GetHeaders(dec, io)) {
-    const VP8StatusCode status = dec.status;
+    var status VP8StatusCode = dec.status;
     if (status == VP8_STATUS_SUSPENDED ||
         status == VP8_STATUS_NOT_ENOUGH_DATA) {
       // treating NOT_ENOUGH_DATA as SUSPENDED state

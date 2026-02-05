@@ -222,7 +222,7 @@ func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, int y_sta
       PredictorAdd2_C(in, out - width, 1, out);
       // .. the rest:
       while (x < width) {
-        const VP8LPredictorAddSubFunc pred_func =
+        var pred_func VP8LPredictorAddSubFunc =
             VP8LPredictorsAdd[((*pred_mode_src++) >> 8) & 0xf];
         x_end := (x & ~mask) + tile_width;
         if x_end > width { x_end = width }

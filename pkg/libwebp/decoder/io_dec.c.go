@@ -200,7 +200,7 @@ func EmitAlphaRGBA4444(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expect
   var alpha *uint8 = io.a;
   if (alpha != nil) {
     mb_w := io.mb_w;
-    const WEBP_CSP_MODE colorspace = p.output.colorspace;
+    var colorspace WEBP_CSP_MODE = p.output.colorspace;
     var buf *WebPRGBABuffer = &p.output.u.RGBA;
     num_rows int ;
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows);
@@ -341,7 +341,7 @@ func InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 // RGBA rescaling
 
 func ExportRGB(/* const */ p *WebPDecParams, y_pos int) int {
-  const WebPYUV444Converter convert =
+  var convert WebPYUV444Converter =
       WebPYUV444Converters[p.output.colorspace];
   var buf *WebPRGBABuffer = &p.output.u.RGBA;
   dst *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
@@ -388,7 +388,7 @@ func EmitRescaledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 func ExportAlpha(/* const */ p *WebPDecParams, y_pos int, int max_lines_out) int {
   var buf *WebPRGBABuffer = &p.output.u.RGBA;
   var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
-  const WEBP_CSP_MODE colorspace = p.output.colorspace;
+  var colorspace WEBP_CSP_MODE = p.output.colorspace;
   alpha_first := (colorspace == MODE_ARGB || colorspace == MODE_Argb);
   dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3));
   num_lines_out := 0;
@@ -419,7 +419,7 @@ func ExportAlphaRGBA4444(/* const */ p *WebPDecParams, y_pos int, int max_lines_
   alpha_dst *uint8 = base_rgba + 1;
 #endif
   num_lines_out := 0;
-  const WEBP_CSP_MODE colorspace = p.output.colorspace;
+  var colorspace WEBP_CSP_MODE = p.output.colorspace;
   width := p.scaler_a.dst_width;
   is_premult_alpha := WebPIsPremultipliedMode(colorspace);
   alpha_mask := 0x0f;
@@ -529,7 +529,7 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 
 func CustomSetup(io *VP8Io) int {
   var p *WebPDecParams = (*WebPDecParams)io.opaque;
-  const WEBP_CSP_MODE colorspace = p.output.colorspace;
+  var colorspace WEBP_CSP_MODE = p.output.colorspace;
   is_rgb := WebPIsRGBMode(colorspace);
   is_alpha := WebPIsAlphaMode(colorspace);
 

@@ -628,7 +628,7 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
   percent_per_pass :=
       (task_percent + num_pass_left / 2) / num_pass_left;
   final_percent := enc.percent + task_percent;
-  const VP8RDLevel rd_opt =
+  var rd_opt VP8RDLevel =
       (method >= 3 || do_search) ? RD_OPT_BASIC : RD_OPT_NONE;
   nb_mbs := enc.mb_w * enc.mb_h;
   PassStats stats;
@@ -752,7 +752,7 @@ func VP8EncLoop(/* const */ enc *VP8Encoder) int {
   for {
     VP8ModeScore info;
     dont_use_skip := !enc.proba.use_skip_proba;
-    const VP8RDLevel rd_opt = enc.rd_opt_level;
+    var rd_opt VP8RDLevel = enc.rd_opt_level;
 
     VP8IteratorImport(&it, nil);
     // Warning! order is important: first call VP8Decimate() and
@@ -792,7 +792,7 @@ func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
   do_search := enc.do_search;
   VP8EncIterator it;
   var proba *VP8EncProba = &enc.proba;
-  const VP8RDLevel rd_opt = enc.rd_opt_level;
+  var rd_opt VP8RDLevel = enc.rd_opt_level;
   pixel_count := (uint64)enc.mb_w * enc.mb_h * 384;
   PassStats stats;
   var ok int

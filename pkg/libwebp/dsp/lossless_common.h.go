@@ -138,7 +138,7 @@ extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];
 extern const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
 func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
-    const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
+    var prefix_code VP8LPrefixCode = kPrefixEncodeCode[distance];
     *code = prefix_code.code;
     *extra_bits = prefix_code.extra_bits;
   } else {
@@ -148,7 +148,7 @@ func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ extra_bit
 
 func VP8LPrefixEncode(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
-    const VP8LPrefixCode prefix_code = kPrefixEncodeCode[distance];
+    var prefix_code VP8LPrefixCode = kPrefixEncodeCode[distance];
     *code = prefix_code.code;
     *extra_bits = prefix_code.extra_bits;
     *extra_bits_value = kPrefixEncodeExtraBitsValue[distance];

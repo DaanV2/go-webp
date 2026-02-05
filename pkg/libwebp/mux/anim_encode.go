@@ -387,7 +387,7 @@ func QualityToMaxDiff(quality float) int {
 // Assumes that an initial valid guess of change rectangle 'rect' is passed.
 func MinimizeChangeRectangle(/* const */ src *WebPPicture, /*const*/ dst *WebPPicture, /*const*/ rect *FrameRectangle, is_lossless bool, quality float) {
   int i, j;
-  const ComparePixelsFunc compare_pixels =
+  var compare_pixels ComparePixelsFunc =
       tenary.If(is_lossless, ComparePixelsLossless, ComparePixelsLossy);
   max_allowed_diff_lossy := QualityToMaxDiff(quality);
   max_allowed_diff := tenary.If(is_lossless, 0, max_allowed_diff_lossy);
@@ -1297,7 +1297,7 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig) 
     // There is no carried over pixel in the disposed rectangle, if any.
     // Note that this could not have been done earlier because the decision to
     // dispose a frame is taken when encoding a next frame's candidate.
-    const WebPMuxAnimDispose prev_dispose_method =
+    var prev_dispose_method WebPMuxAnimDispose =
         GetPreviousDisposeMethod(enc);
     assert.Assert(prev_dispose_method == WEBP_MUX_DISPOSE_NONE ||
            !enc.prev_candidate_undecided);

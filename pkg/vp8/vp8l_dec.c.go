@@ -191,7 +191,7 @@ const BITS_SPECIAL_MARKER =0x100  // something large enough (and a bit-mask)
 const PACKED_NON_LITERAL_CODE =0  // must be < NUM_LITERAL_CODES
 func ReadPackedSymbols(/* const */ group *HTreeGroup, /*const*/ br *VP8LBitReader, /*const*/ dst *uint32) int {
   val := VP8LPrefetchBits(br) & (HUFFMAN_PACKED_TABLE_SIZE - 1);
-  const HuffmanCode32 code = group.packed_table[val];
+  var code HuffmanCode32 = group.packed_table[val];
   assert.Assert(group.use_packed_table);
   if (code.bits < BITS_SPECIAL_MARKER) {
     VP8LSetBitPos(br, br.bit_pos + code.bits);
@@ -595,7 +595,7 @@ func Export(/* const */ rescaler *WebPRescaler, WEBP_CSP_MODE colorspace, rgba_s
 
 // Emit scaled rows.
 func EmitRescaledRowsRGBA(/* const */ dec *VP8LDecoder, in *uint8, int in_stride, int mb_h, /*const*/ out *uint8, int out_stride) int {
-  const WEBP_CSP_MODE colorspace = dec.output.colorspace;
+  var colorspace WEBP_CSP_MODE = dec.output.colorspace;
   num_lines_in := 0;
   num_lines_out := 0;
   while (num_lines_in < mb_h) {
@@ -1348,7 +1348,7 @@ func ReadTransform(/* const */ xsize *int, ysize int *const, /*const*/ decoder *
   ok := 1;
   var br *VP8LBitReader = &decoder.br;
   transform *VP8LTransform = &dec.transforms[dec.next_transform];
-  const VP8LImageTransformType type =
+  var type VP8LImageTransformType =
       (VP8LImageTransformType)VP8LReadBits(br, 2);
 
   // Each transform type can only be present once in the stream.

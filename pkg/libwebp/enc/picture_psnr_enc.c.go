@@ -126,7 +126,7 @@ func GetLogSSIM(double v, double size) double {
 
 func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) int {
   allocated *uint8 = nil;
-  const AccumulateFunc metric = (type == 0)   ? AccumulateSSE
+  var metric AccumulateFunc = (type == 0)   ? AccumulateSSE
                                 : (type == 1) ? AccumulateSSIM
                                               : AccumulateLSIM;
   if (src == nil || ref == nil || src_stride < x_step * width ||

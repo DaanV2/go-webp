@@ -104,7 +104,7 @@ func BackwardRefsSwap(/* const */ refs *VP8LBackwardRefs1, /*const*/ refs *VP8LB
       (refs1.tail != nil && refs1.tail == &refs1.refs);
   point_to_refs2 :=
       (refs2.tail != nil && refs2.tail == &refs2.refs);
-  const VP8LBackwardRefs tmp = *refs1;
+  var tmp VP8LBackwardRefs = *refs1;
   *refs1 = *refs2;
   *refs2 = tmp;
   if point_to_refs2 { refs1.tail = &refs1.refs }

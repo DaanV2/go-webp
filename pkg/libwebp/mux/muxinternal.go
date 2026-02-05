@@ -268,7 +268,7 @@ func MuxImageCount(/* const */ wpi_list *WebPMuxImage, WebPChunkId id) int {
     } else {
       var wpi_chunk *WebPChunk = *GetChunkListFromId(current, id);
       if (wpi_chunk != nil) {
-        const WebPChunkId wpi_chunk_id = ChunkGetIdFromTag(wpi_chunk.tag);
+        var wpi_chunk_id WebPChunkId = ChunkGetIdFromTag(wpi_chunk.tag);
         if (wpi_chunk_id == id) count++  // Count images with a matching 'id'.
       }
     }

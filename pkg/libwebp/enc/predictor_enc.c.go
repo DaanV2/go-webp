@@ -242,7 +242,7 @@ static  func GetResidual(
   if (exact) {
     PredictBatch(mode, x_start, y, x_end - x_start, current_row, upper_row, out);
   } else {
-    const VP8LPredictorFunc pred_func = VP8LPredictors[mode];
+    var pred_func VP8LPredictorFunc = VP8LPredictors[mode];
     var x int
     for x = x_start; x < x_end; x++ {
       var predict uint32

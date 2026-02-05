@@ -786,7 +786,7 @@ func HistoQueueUpdateHead(/* const */ histo_queue *HistoQueue, /*const*/ pair *H
   assert.Assert(histo_queue.size > 0);
   if (pair.cost_diff < histo_queue.queue[0].cost_diff) {
     // Replace the best pair.
-    const HistogramPair tmp = histo_queue.queue[0];
+    var tmp HistogramPair = histo_queue.queue[0];
     histo_queue.queue[0] = *pair;
     *pair = tmp;
   }

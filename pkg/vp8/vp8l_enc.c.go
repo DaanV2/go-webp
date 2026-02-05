@@ -322,7 +322,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, CrunchConfig crunch_configs[CR
             var sorting_method int
             for (sorting_method = 0; sorting_method < kPaletteSortingNum;
                  ++sorting_method) {
-              const PaletteSorting typed_sorting_method =
+              var typed_sorting_method PaletteSorting =
                   (PaletteSorting)sorting_method;
               // TODO(vrabaud) kSortedDefault should be tested. It is omitted
               // for now for backward compatibility.

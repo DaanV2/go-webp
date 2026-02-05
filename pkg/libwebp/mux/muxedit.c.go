@@ -328,7 +328,7 @@ Err:  // Something bad happened.
 WebPMuxError WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAnimParams) {
   var err WebPMuxError 
   uint8 data[ANIM_CHUNK_SIZE];
-  const WebPData anim = {data, ANIM_CHUNK_SIZE}
+  var anim WebPData = {data, ANIM_CHUNK_SIZE}
 
   if mux == nil || params == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   if (params.loop_count < 0 || params.loop_count >= MAX_LOOP_COUNT) {
