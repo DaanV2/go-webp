@@ -85,17 +85,17 @@ type WebPAnimEncoder struct {
   // Misc.
    is_first_frame int  // True if first frame is yet to be added/being added.
    // True if WebPAnimEncoderAdd() has already been called
-                       // with a nil frame.
+	// with a nil frame.
    got_nil_frame int  
 
       // Number of input frames processed so far.
    in_frame_count uint64
-	    // Number of frames added to mux so far. This may be
-                           // different from 'in_frame_count' due to merging.
+// Number of frames added to mux so far. This may be
+// different from 'in_frame_count' due to merging.
 	out_frame_count uint64
 
   mux *WebPMux;  // Muxer to assemble the WebP bitstream.
-  error_str  [ERROR_STR_MAX_LENGTH]byte  // Error string. Empty if no error.
+  error_str  string  // Error string. Empty if no error. used to be byte[ERROR_STR_MAX_LENGTH]
 }
 
 
@@ -196,7 +196,7 @@ func WebPUtilClearPic(/* const */ picture *WebPPicture, /*const*/ rect *FrameRec
 }
 
 func MarkNoError(/* const */ enc *WebPAnimEncoder) {
-  enc.error_str[0] = '\0';  // Empty string.
+  enc.error_str = "";
 }
 
 func MarkError(/* const */ enc *WebPAnimEncoder, /*const*/ str *byte) {
@@ -211,15 +211,15 @@ func MarkError2(/* const */ enc *WebPAnimEncoder, /*const*/ str *byte, int error
   }
 }
 
-WebPAnimEncoderNewInternal *WebPAnimEncoder(
-    width, height int, /*const*/ enc_options *WebPAnimEncoderOptions, abi_version int) {
-  enc *WebPAnimEncoder;
+func WebPAnimEncoder(
+    width, height int, /*const*/ enc_options *WebPAnimEncoderOptions, abi_version int) *WebPAnimEncoderNewInternal {
+  var enc *WebPAnimEncoder;
 
   if (WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_MUX_ABI_VERSION)) {
     return nil;
   }
   if (width <= 0 || height <= 0 ||
-      (width * (uint64)height) >= MAX_IMAGE_AREA) {
+      (width * uint64(height)) >= MAX_IMAGE_AREA) {
     return nil;
   }
 
