@@ -109,7 +109,7 @@ func CheckSlowModel(int info) int {
   if (family == 0x06) {
     var i uint64
     for i = 0; i < sizeof(kSlowModels) / sizeof(kSlowModels[0]); i++ {
-      if model == kSlowModels[i] { { return 1 } }
+      if model == kSlowModels[i] { return 1  }
     }
   }
   return 0;
@@ -210,13 +210,13 @@ VP8CPUInfo VP8GetCPUInfo = wasmCPUInfo;
 // the configuration), but enables turning off NEON at runtime, for testing
 // purposes, by setting VP8GetCPUInfo = nil.
 func armCPUInfo(CPUFeature feature) int {
-  if feature != kNEON { { return 0 } }
+  if feature != kNEON { return 0  }
 #if defined(__linux__) && defined(WEBP_HAVE_NEON_RTCD)
   {
     has_neon := 0;
     byte line[200];
     var cpuinfo *FILE = fopen("/proc/cpuinfo", "r");
-    if cpuinfo == nil { { return 0 } }
+    if cpuinfo == nil { return 0  }
     while (fgets(line, sizeof(line), cpuinfo)) {
       if (!strncmp(line, "Features", 8)) {
         if (strstr(line, " neon ") != nil) {

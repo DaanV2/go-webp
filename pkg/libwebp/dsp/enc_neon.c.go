@@ -827,10 +827,10 @@ func QuantizeBlock_NEON(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT con
   vst1_u8((*uint8)(out + 8), shuffles.val[2]);
   vst1_u8((*uint8)(out + 12), shuffles.val[3]);
   // test zeros
-  if *(*uint64)(out + 0) != 0 { { return 1 } }
-  if *(*uint64)(out + 4) != 0 { { return 1 } }
-  if *(*uint64)(out + 8) != 0 { { return 1 } }
-  if *(*uint64)(out + 12) != 0 { { return 1 } }
+  if *(*uint64)(out + 0) != 0 { return 1  }
+  if *(*uint64)(out + 4) != 0 { return 1  }
+  if *(*uint64)(out + 8) != 0 { return 1  }
+  if *(*uint64)(out + 12) != 0 { return 1  }
   return 0;
 }
 

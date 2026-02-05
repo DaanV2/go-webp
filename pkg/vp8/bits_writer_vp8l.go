@@ -38,7 +38,7 @@ func VP8LBitWriterResize(/* const */ bw *VP8LBitWriter, extra_size uint64 ) int 
     bw.error = 1;
     return 0;
   }
-  if max_bytes > 0 && size_required <= max_bytes { { return 1 } }
+  if max_bytes > 0 && size_required <= max_bytes { return 1  }
   allocated_size = (3 * max_bytes) >> 1;
   if allocated_size < size_required { {allocated_size = size_required }}
   // make allocated size multiple of 1k
@@ -72,7 +72,7 @@ func VP8LBitWriterInit(/* const */ bw *VP8LBitWriter, expected_size uint64) int 
 func VP8LBitWriterClone(/* const */ src *VP8LBitWriter, /*const*/ dst *VP8LBitWriter) int {
   current_size := src.cur - src.buf;
   assert.Assert(src.cur >= src.buf && src.cur <= src.end);
-  if !VP8LBitWriterResize(dst, current_size) { { return 0 } }
+  if !VP8LBitWriterResize(dst, current_size) { return 0  }
   stdlib.MemCpy(dst.buf, src.buf, current_size);
   dst.bits = src.bits;
   dst.used = src.used;

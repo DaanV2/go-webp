@@ -307,7 +307,7 @@ func WebPReportProgress(/* const */ pic *WebPPicture, int percent, /*const*/ per
 
 func WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) int {
   ok := 0;
-  if pic == nil { { return 0 } }
+  if pic == nil { return 0  }
 
   pic.error_code = VP8_ENC_OK;  // all ok so far
   if (config == nil) {          // bad params
@@ -316,7 +316,7 @@ func WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) int {
   if (!WebPValidateConfig(config)) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
-  if !WebPValidatePicture(pic) { { return 0 } }
+  if !WebPValidatePicture(pic) { return 0  }
   if (pic.width > WEBP_MAX_DIMENSION || pic.height > WEBP_MAX_DIMENSION) {
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_DIMENSION);
   }

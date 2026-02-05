@@ -53,7 +53,7 @@ func WebPPictureInitInternal(picture *WebPPicture, version int) int {
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
 func WebPValidatePicture(/* const */ picture *WebPPicture) int {
-  if picture == nil { { return 0 } }
+  if picture == nil { return 0  }
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
       picture.height <= 0 || picture.height > INT_MAX / 4) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
@@ -92,7 +92,7 @@ func WebPPictureAllocARGB(/* const */ picture *WebPPicture) int {
   height := picture.height
   argb_size := uint64(width * height)
 
-  if !WebPValidatePicture(picture) { { return 0 } }
+  if !WebPValidatePicture(picture) { return 0  }
 
   WebPPictureResetBufferARGB(picture);
 
@@ -125,7 +125,7 @@ func WebPPictureAllocYUVA(/* const */ picture *WebPPicture) int {
   uint64 y_size, uv_size, a_size, total_size;
   mem *uint8;
 
-  if !WebPValidatePicture(picture) { { return 0 } }
+  if !WebPValidatePicture(picture) { return 0  }
 
   WebPPictureResetBufferYUVA(picture);
 
@@ -250,7 +250,7 @@ func Encode(/* const */ rgba *uint8, width, height int, int stride, Importer imp
   WebPMemoryWriter wrt;
   var ok int
 
-  if output == nil { { return 0 } }
+  if output == nil { return 0  }
 
   if (!WebPConfigPreset(&config, WEBP_PRESET_DEFAULT, quality_factor) ||
       !WebPPictureInit(&pic)) {

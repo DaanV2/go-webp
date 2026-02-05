@@ -116,7 +116,7 @@ func VP8LAllocateHistogram(cache_bits int) *VP8LHistogram {
   histo *VP8LHistogram = nil;
   total_size := GetHistogramSize(cache_bits);
 //   var memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
-//   if memory == nil { { return nil } }
+//   if memory == nil { return nil  }
 	memory := make([]uint8, total_size)
 
   histo = (*VP8LHistogram)memory;
@@ -153,7 +153,7 @@ VP *VP8LHistogramSet8LAllocateHistogramSet(size int, int cache_bits) {
   var set *VP8LHistogramSet;
   total_size := HistogramSetTotalSize(size, cache_bits);
 //   memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
-//   if memory == nil { { return nil } }
+//   if memory == nil { return nil  }
   memory := make([]uint8, total_size)
 
   set = (*VP8LHistogramSet)memory;
@@ -361,7 +361,7 @@ func GetCombinedEntropy(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogra
                          h1.trivial_symbol[index] == h2.trivial_symbol[index];
 
   if (is_trivial || !is_h1_used || !is_h2_used) {
-    if is_h1_used { { return h1.costs[index] } }
+    if is_h1_used { return h1.costs[index]  }
     return h2.costs[index];
   }
   assert.Assert(is_h1_used && is_h2_used);
@@ -407,7 +407,7 @@ func SaturateAdd(uint64 a, b *int64) {
   var i int
   cost_threshold := (uint64)cost_threshold_in;
   assert.Assert(a.palette_code_bits == b.palette_code_bits);
-  if cost_threshold_in <= 0 { { return 0 } }
+  if cost_threshold_in <= 0 { return 0  }
   *cost = 0;
 
   // No need to add the extra cost for length and distance as it is a constant
@@ -415,7 +415,7 @@ func SaturateAdd(uint64 a, b *int64) {
   for i = 0; i < 5; i++ {
     costs[i] = GetCombinedEntropy(a, b, (HistogramIndex)i);
     *cost += costs[i];
-    if *cost >= cost_threshold { { return 0 } }
+    if *cost >= cost_threshold { return 0  }
   }
 
   return 1;
@@ -826,7 +826,7 @@ func HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram* const h
   HistogramPair pair;
 
   // Stop here if the queue is full.
-  if histo_queue.size == histo_queue.max_size { { return 0 } }
+  if histo_queue.size == histo_queue.max_size { return 0  }
   assert.Assert(threshold <= 0);
   if (idx1 > idx2) {
     tmp := idx2;
@@ -839,7 +839,7 @@ func HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram* const h
   h2 = histograms[idx2];
 
   // Do not even consider the pair if it does not improve the entropy.
-  if !HistoQueueUpdatePair(h1, h2, threshold, &pair) { { return 0 } }
+  if !HistoQueueUpdatePair(h1, h2, threshold, &pair) { return 0  }
 
   histo_queue.queue[histo_queue.size] = pair;
   histo_queue.size = histo_queue.size + 1

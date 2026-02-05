@@ -315,7 +315,7 @@ func PaletteSortModifiedZeng(/* const */ pic *WebPPicture, /*const*/ palette_in 
    var first, last uint32
   var num_sums uint32
   // TODO(vrabaud) check whether one color images should use palette or not.
-  if num_colors <= 1 { { return 1 } }
+  if num_colors <= 1 { return 1  }
   // Build the co-occurrence matrix.
 //   cooccurrence = (*uint32)WebPSafeCalloc(num_colors * num_colors, sizeof(*cooccurrence));
 //   if (cooccurrence == nil) {

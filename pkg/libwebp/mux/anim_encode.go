@@ -939,7 +939,7 @@ static WebPEncodingError GenerateCandidates(
           IncreaseTransparency(canvas_carryover, &params.rect_ll, curr_canvas, enc.candidate_carryover_mask);
     }
     error_code = EncodeCandidate(&params.sub_frame_ll, &params.rect_ll, config_ll, use_blending_ll, candidate_ll);
-    if error_code != VP8_ENC_OK { { return error_code } }
+    if error_code != VP8_ENC_OK { return error_code  }
     candidate_ll.carries_over = enc.curr_canvas_copy_modified;
     PickBestCandidate(enc, candidate_ll, dispose_method, is_key_frame, best_candidate, encoded_frame);
   }
@@ -954,7 +954,7 @@ static WebPEncodingError GenerateCandidates(
     }
     error_code =
         EncodeCandidate(&params.sub_frame_lossy, &params.rect_lossy, config_lossy, use_blending_lossy, candidate_lossy);
-    if error_code != VP8_ENC_OK { { return error_code } }
+    if error_code != VP8_ENC_OK { return error_code  }
     candidate_lossy.carries_over = enc.curr_canvas_copy_modified;
     enc.curr_canvas_copy_modified = 1;
     PickBestCandidate(enc, candidate_lossy, dispose_method, is_key_frame, best_candidate, encoded_frame);
@@ -1359,7 +1359,7 @@ End:
 
 func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
   while (enc.flush_count > 0) {
-    WebPMuxError err;
+    var err WebPMuxError 
     var curr *EncodedFrame = GetFrame(enc, 0);
     const info *WebPMuxFrameInfo =
         curr.is_key_frame ? &curr.key_frame : &curr.sub_frame;
@@ -1548,7 +1548,7 @@ func OptimizeSingleFrame(/* const */ enc *WebPAnimEncoder, /*const*/ webp_data *
   var  full_image WebPData
   var  webp_data2 WebPData
   var mux *WebPMux = WebPMuxCreate(webp_data, 0);
-  if mux == nil { { return WEBP_MUX_BAD_DATA } }
+  if mux == nil { return WEBP_MUX_BAD_DATA  }
   assert.Assert(enc.out_frame_count == 1);
   WebPDataInit(&frame.bitstream);
   WebPDataInit(&full_image);
@@ -1584,7 +1584,7 @@ End:
 
 func WebPAnimEncoderAssemble(enc *WebPAnimEncoder, webp_data *WebPData) int {
   mux *WebPMux;
-  WebPMuxError err;
+  var err WebPMuxError 
 
   if (enc == nil) {
     return 0;
@@ -1641,21 +1641,21 @@ Err:
 }
 
 func WebPAnimEncoderGetError(enc *WebPAnimEncoder)  *byte {
-  if enc == nil { { return nil } }
+  if enc == nil { return nil  }
   return enc.error_str;
 }
 
 func WebPAnimEncoderSetChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4], /*const*/ chunk_data *WebPData, int copy_data) WebPMuxError {
-  if enc == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
+  if enc == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return WebPMuxSetChunk(enc.mux, fourcc, chunk_data, copy_data);
 }
 
 func WebPAnimEncoderGetChunk(/* const */ enc *WebPAnimEncoder, /*const*/ byte fourcc[4], chunk_data *WebPData) WebPMuxError {
-  if enc == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
+  if enc == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return WebPMuxGetChunk(enc.mux, fourcc, chunk_data);
 }
 
 func WebPAnimEncoderDeleteChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4]) WebPMuxError {
-  if enc == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
+  if enc == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return WebPMuxDeleteChunk(enc.mux, fourcc);
 }

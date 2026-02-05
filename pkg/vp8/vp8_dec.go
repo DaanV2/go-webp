@@ -152,8 +152,8 @@ func VP8Status(/* const */ dec *VP8Decoder) VP8StatusCode {
 
 // return readable string corresponding to the last status.
 func byte8StatusMessage(/* const */ dec *VP8Decoder) *VP {
-  if dec == nil { { return "no object" } }
-  if !dec.error_msg { { return "OK" } }
+  if dec == nil { return "no object"  }
+  if !dec.error_msg { return "OK"  }
   return dec.error_msg;
 }
 
@@ -509,7 +509,7 @@ func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas
     while (!VP8GetBit(br, p[1], "coeffs")) {  // sequence of zero coeffs
 		n++
       p = prob[n].probas[0];
-      if n == 16 { { return 16 } }
+      if n == 16 { return 16  }
     }
     {  // non zero coeff
       var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
@@ -721,7 +721,7 @@ func ParseFrame(/* const */ dec *VP8Decoder, io *VP8Io) int {
     }
   }
   if (dec.mt_method > 0) {
-    if !WebPGetWorkerInterface().Sync(&dec.worker) { { return 0 } }
+    if !WebPGetWorkerInterface().Sync(&dec.worker) { return 0  }
   }
 
   return 1;

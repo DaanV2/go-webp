@@ -8,533 +8,659 @@
 
 package mux
 
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
 
 // Handy MACRO.
 func SWITCH_ID_LIST(INDEX, LIST int) int {
-    if (idx == (INDEX)) {
-      var chunk *WebPChunk = ChunkSearchList((LIST), nth, kChunks[(INDEX)].tag);
-      if (chunk) {
-        *data = chunk.data;
-        return WEBP_MUX_OK;
-      } else {
-        return WEBP_MUX_NOT_FOUND;
-      }
-    }
+	if idx == (INDEX) {
+		var chunk *WebPChunk = ChunkSearchList((LIST), nth, kChunks[(INDEX)].tag)
+		if chunk {
+			*data = chunk.data
+			return WEBP_MUX_OK
+		} else {
+			return WEBP_MUX_NOT_FOUND
+		}
+	}
 }
 
-func MuxGet(/* const */ mux *WebPMux, CHUNK_INDEX idx, uint32 nth, /*const*/ data *WebPData) WebPMuxError {
-  assert.Assert(mux != nil);
-  assert.Assert(idx != IDX_LAST_CHUNK);
-  assert.Assert(!IsWPI(kChunks[idx].id));
-  WebPDataInit(data);
+func MuxGet( /* const */ mux *WebPMux, CHUNK_INDEX idx, uint32 nth /*const*/, data *WebPData) WebPMuxError {
+	assert.Assert(mux != nil)
+	assert.Assert(idx != IDX_LAST_CHUNK)
+	assert.Assert(!IsWPI(kChunks[idx].id))
+	WebPDataInit(data)
 
-  SWITCH_ID_LIST(IDX_VP8X, mux.vp8x);
-  SWITCH_ID_LIST(IDX_ICCP, mux.iccp);
-  SWITCH_ID_LIST(IDX_ANIM, mux.anim);
-  SWITCH_ID_LIST(IDX_EXIF, mux.exif);
-  SWITCH_ID_LIST(IDX_XMP, mux.xmp);
-  assert.Assert(idx != IDX_UNKNOWN);
-  return WEBP_MUX_NOT_FOUND;
+	SWITCH_ID_LIST(IDX_VP8X, mux.vp8x)
+	SWITCH_ID_LIST(IDX_ICCP, mux.iccp)
+	SWITCH_ID_LIST(IDX_ANIM, mux.anim)
+	SWITCH_ID_LIST(IDX_EXIF, mux.exif)
+	SWITCH_ID_LIST(IDX_XMP, mux.xmp)
+	assert.Assert(idx != IDX_UNKNOWN)
+	return WEBP_MUX_NOT_FOUND
 }
 
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
-func ChunkVerifyAndAssign(chunk *WebPChunk, /*const*/ data *uint8, data_size uint64, uint64 riff_size, int copy_data) WebPMuxError {
-  var chunk_size uint32
-  var chunk_data WebPData
+func ChunkVerifyAndAssign(chunk *WebPChunk /*const*/, data *uint8, data_size uint64, uint64 riff_size, int copy_data) WebPMuxError {
+	var chunk_size uint32
+	var chunk_data WebPData
 
-  // Correctness checks.
-  if data_size < CHUNK_HEADER_SIZE { { return WEBP_MUX_NOT_ENOUGH_DATA } }
-  chunk_size = GetLE32(data + TAG_SIZE);
-  if chunk_size > MAX_CHUNK_PAYLOAD { { return WEBP_MUX_BAD_DATA } }
+	// Correctness checks.
+	if data_size < CHUNK_HEADER_SIZE {
+		{
+			return WEBP_MUX_NOT_ENOUGH_DATA
+		}
+	}
+	chunk_size = GetLE32(data + TAG_SIZE)
+	if chunk_size > MAX_CHUNK_PAYLOAD {
+		{
+			return WEBP_MUX_BAD_DATA
+		}
+	}
 
-  {
-    chunk_disk_size := SizeWithPadding(chunk_size);
-    if chunk_disk_size > riff_size { { return WEBP_MUX_BAD_DATA } }
-    if chunk_disk_size > data_size { { return WEBP_MUX_NOT_ENOUGH_DATA } }
-  }
+	{
+		chunk_disk_size := SizeWithPadding(chunk_size)
+		if chunk_disk_size > riff_size {
+			{
+				return WEBP_MUX_BAD_DATA
+			}
+		}
+		if chunk_disk_size > data_size {
+			{
+				return WEBP_MUX_NOT_ENOUGH_DATA
+			}
+		}
+	}
 
-  // Data assignment.
-  chunk_data.bytes = data + CHUNK_HEADER_SIZE;
-  chunk_data.size = chunk_size;
-  return ChunkAssignData(chunk, &chunk_data, copy_data, GetLE32(data + 0));
+	// Data assignment.
+	chunk_data.bytes = data + CHUNK_HEADER_SIZE
+	chunk_data.size = chunk_size
+	return ChunkAssignData(chunk, &chunk_data, copy_data, GetLE32(data+0))
 }
 
-func MuxImageFinalize(/* const */ wpi *WebPMuxImage) int {
-  var img *WebPChunk = wpi.img;
-  var image *WebPData = &img.data;
-  is_lossless := (img.tag == kChunks[IDX_VP8L].tag);
-  var w, h int
-  vp8l_has_alpha := 0;
-  ok := tenary.If(
-      is_lossless,
-          VP8LGetInfo(image.bytes, image.size, &w, &h, &vp8l_has_alpha),
-          VP8GetInfo(image.bytes, image.size, image.size, &w, &h))
-  assert.Assert(img != nil);
-  if (ok) {
-    // Ignore ALPH chunk accompanying VP8L.
-    if (is_lossless && (wpi.alpha != nil)) {
-      ChunkDelete(wpi.alpha);
-      wpi.alpha = nil;
-    }
-    wpi.width = w;
-    wpi.height = h;
-    wpi.has_alpha = vp8l_has_alpha || (wpi.alpha != nil);
-  }
-  return ok;
+func MuxImageFinalize( /* const */ wpi *WebPMuxImage) int {
+	var img *WebPChunk = wpi.img
+	var image *WebPData = &img.data
+	is_lossless := (img.tag == kChunks[IDX_VP8L].tag)
+	var w, h int
+	vp8l_has_alpha := 0
+	ok := tenary.If(
+		is_lossless,
+		VP8LGetInfo(image.bytes, image.size, &w, &h, &vp8l_has_alpha),
+		VP8GetInfo(image.bytes, image.size, image.size, &w, &h))
+	assert.Assert(img != nil)
+	if ok {
+		// Ignore ALPH chunk accompanying VP8L.
+		if is_lossless && (wpi.alpha != nil) {
+			ChunkDelete(wpi.alpha)
+			wpi.alpha = nil
+		}
+		wpi.width = w
+		wpi.height = h
+		wpi.has_alpha = vp8l_has_alpha || (wpi.alpha != nil)
+	}
+	return ok
 }
 
-func MuxImageParse(/* const */ chunk *WebPChunk, int copy_data, /*const*/ wpi *WebPMuxImage) int {
-  var bytes *uint8 = chunk.data.bytes;
-  var size uint64  = chunk.data.size;
-  var last *uint8 = tenary.If(bytes == nil, nil, bytes + size)
-  var subchunk WebPChunk
-  var subchunk_size uint64
-  var unknown_chunk_list *WebPChunk  = &wpi.unknown;
-  ChunkInit(&subchunk);
+func MuxImageParse( /* const */ chunk *WebPChunk, int copy_data /*const*/, wpi *WebPMuxImage) int {
+	var bytes *uint8 = chunk.data.bytes
+	var size uint64 = chunk.data.size
+	var last *uint8 = tenary.If(bytes == nil, nil, bytes+size)
+	var subchunk WebPChunk
+	var subchunk_size uint64
+	var unknown_chunk_list *WebPChunk = &wpi.unknown
+	ChunkInit(&subchunk)
 
-  assert.Assert(chunk.tag == kChunks[IDX_ANMF].tag);
-  assert.Assert(!wpi.is_partial);
+	assert.Assert(chunk.tag == kChunks[IDX_ANMF].tag)
+	assert.Assert(!wpi.is_partial)
 
-  // ANMF.
-  {
-    hdr_size := ANMF_CHUNK_SIZE;
-    var temp WebPData = WebPData{bytes, hdr_size}
-    // Each of ANMF chunk contain a header at the beginning. So, its size should
-    // be at least 'hdr_size'.
-    if size < hdr_size { goto Fail }
-    if (ChunkAssignData(&subchunk, &temp, copy_data, chunk.tag) !=
-        WEBP_MUX_OK) {
-      goto Fail;
-    }
-  }
-  if ChunkSetHead(&subchunk, &wpi.header) != WEBP_MUX_OK { goto Fail }
-  wpi.is_partial = 1;  // Waiting for ALPH and/or VP8/VP8L chunks.
+	// ANMF.
+	{
+		hdr_size := ANMF_CHUNK_SIZE
+		var temp WebPData = WebPData{bytes, hdr_size}
+		// Each of ANMF chunk contain a header at the beginning. So, its size should
+		// be at least 'hdr_size'.
+		if size < hdr_size {
+			goto Fail
+		}
+		if ChunkAssignData(&subchunk, &temp, copy_data, chunk.tag) !=
+			WEBP_MUX_OK {
+			goto Fail
+		}
+	}
+	if ChunkSetHead(&subchunk, &wpi.header) != WEBP_MUX_OK {
+		goto Fail
+	}
+	wpi.is_partial = 1 // Waiting for ALPH and/or VP8/VP8L chunks.
 
-  // Rest of the chunks.
-  subchunk_size = ChunkDiskSize(&subchunk) - CHUNK_HEADER_SIZE;
-  bytes += subchunk_size;
-  size -= subchunk_size;
+	// Rest of the chunks.
+	subchunk_size = ChunkDiskSize(&subchunk) - CHUNK_HEADER_SIZE
+	bytes += subchunk_size
+	size -= subchunk_size
 
-  for (bytes != last) {
-    ChunkInit(&subchunk);
-    if (ChunkVerifyAndAssign(&subchunk, bytes, size, size, copy_data) !=
-        WEBP_MUX_OK) {
-      goto Fail;
-    }
-    switch (ChunkGetIdFromTag(subchunk.tag)) {
-      case WEBP_CHUNK_ALPHA:
-        if wpi.alpha != nil { goto Fail }  // Consecutive ALPH chunks.
-        if ChunkSetHead(&subchunk, &wpi.alpha) != WEBP_MUX_OK { goto Fail }
-        wpi.is_partial = 1;  // Waiting for a VP8 chunk.
-        break;
-      case WEBP_CHUNK_IMAGE:
-        if wpi.img != nil { goto Fail }  // Only 1 image chunk allowed.
-        if ChunkSetHead(&subchunk, &wpi.img) != WEBP_MUX_OK { goto Fail }
-        if !MuxImageFinalize(wpi) { goto Fail }
-        wpi.is_partial = 0;  // wpi is completely filled.
-        break;
-      case WEBP_CHUNK_UNKNOWN:
-        if (wpi.is_partial) {
-          goto Fail;  // Encountered an unknown chunk
-                      // before some image chunks.
-        }
-        if (ChunkAppend(&subchunk, &unknown_chunk_list) != WEBP_MUX_OK) {
-          goto Fail;
-        }
-        break;
-      default:
-        goto Fail;
-    }
-    subchunk_size = ChunkDiskSize(&subchunk);
-    bytes += subchunk_size;
-    size -= subchunk_size;
-  }
-  if wpi.is_partial { goto Fail }
-  return 1;
+	for bytes != last {
+		ChunkInit(&subchunk)
+		if ChunkVerifyAndAssign(&subchunk, bytes, size, size, copy_data) !=
+			WEBP_MUX_OK {
+			goto Fail
+		}
+		switch ChunkGetIdFromTag(subchunk.tag) {
+		case WEBP_CHUNK_ALPHA:
+			if wpi.alpha != nil {
+				goto Fail
+			} // Consecutive ALPH chunks.
+			if ChunkSetHead(&subchunk, &wpi.alpha) != WEBP_MUX_OK {
+				goto Fail
+			}
+			wpi.is_partial = 1 // Waiting for a VP8 chunk.
+			break
+		case WEBP_CHUNK_IMAGE:
+			if wpi.img != nil {
+				goto Fail
+			} // Only 1 image chunk allowed.
+			if ChunkSetHead(&subchunk, &wpi.img) != WEBP_MUX_OK {
+				goto Fail
+			}
+			if !MuxImageFinalize(wpi) {
+				goto Fail
+			}
+			wpi.is_partial = 0 // wpi is completely filled.
+			break
+		case WEBP_CHUNK_UNKNOWN:
+			if wpi.is_partial {
+				goto Fail // Encountered an unknown chunk
+				// before some image chunks.
+			}
+			if ChunkAppend(&subchunk, &unknown_chunk_list) != WEBP_MUX_OK {
+				goto Fail
+			}
+			break
+		default:
+			goto Fail
+		}
+		subchunk_size = ChunkDiskSize(&subchunk)
+		bytes += subchunk_size
+		size -= subchunk_size
+	}
+	if wpi.is_partial {
+		goto Fail
+	}
+	return 1
 
 Fail:
-  ChunkRelease(&subchunk);
-  return 0;
+	ChunkRelease(&subchunk)
+	return 0
 }
 
 //------------------------------------------------------------------------------
 // Create a mux object from WebP-RIFF data.
 
-func WebPMuxCreateInternal(/* const */ bitstream *WebPData, copy_data int , version int)  *WebPMux {
-  var riff_size uint64
-  var tag uint32
-  var end *uint8;
-  var mux *WebPMux = nil;
-  var wpi *WebPMuxImage = nil;
-  var  data *uint8;
-  var size uint64 ;
-  var chunk WebPChunk ;
-  // Stores the end of the chunk lists so that it is faster to append data to
-  // their ends.
-  var chunk_list_ends [WEBP_CHUNK_NIL + 1]*WebPChunk
-  ChunkInit(&chunk);
+func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, version int) *WebPMux {
+	var riff_size uint64
+	var tag uint32
+	var end *uint8
+	var mux *WebPMux = nil
+	var wpi *WebPMuxImage = nil
+	var data *uint8
+	var size uint64
+	var chunk WebPChunk
+	// Stores the end of the chunk lists so that it is faster to append data to
+	// their ends.
+	var chunk_list_ends [WEBP_CHUNK_NIL + 1]*WebPChunk
+	ChunkInit(&chunk)
 
-  if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_MUX_ABI_VERSION)) {
-    return nil;  // version mismatch
-  }
-  if bitstream == nil { { return nil } }
+	if WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_MUX_ABI_VERSION) {
+		return nil // version mismatch
+	}
+	if bitstream == nil {
+		{
+			return nil
+		}
+	}
 
-  data = bitstream.bytes;
-  size = bitstream.size;
+	data = bitstream.bytes
+	size = bitstream.size
 
-  if data == nil { { return nil } }
-  if size < RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE { { return nil } }
-  if (GetLE32(data + 0) != MKFOURCC('R', 'I', 'F', 'F') ||
-      GetLE32(data + CHUNK_HEADER_SIZE) != MKFOURCC('W', 'E', 'B', 'P')) {
-    return nil;
-  }
+	if data == nil {
+		{
+			return nil
+		}
+	}
+	if size < RIFF_HEADER_SIZE+CHUNK_HEADER_SIZE {
+		{
+			return nil
+		}
+	}
+	if GetLE32(data+0) != MKFOURCC('R', 'I', 'F', 'F') ||
+		GetLE32(data+CHUNK_HEADER_SIZE) != MKFOURCC('W', 'E', 'B', 'P') {
+		return nil
+	}
 
-  mux = WebPMuxNew();
-  if mux == nil { { return nil } }
+	mux = WebPMuxNew()
+	if mux == nil {
+		{
+			return nil
+		}
+	}
 
-  tag = GetLE32(data + RIFF_HEADER_SIZE);
-  if (tag != kChunks[IDX_VP8].tag && tag != kChunks[IDX_VP8L].tag &&
-      tag != kChunks[IDX_VP8X].tag) {
-    goto Err;  // First chunk should be VP8, VP8L or VP8X.
-  }
+	tag = GetLE32(data + RIFF_HEADER_SIZE)
+	if tag != kChunks[IDX_VP8].tag && tag != kChunks[IDX_VP8L].tag &&
+		tag != kChunks[IDX_VP8X].tag {
+		goto Err // First chunk should be VP8, VP8L or VP8X.
+	}
 
-  riff_size = GetLE32(data + TAG_SIZE);
-  if riff_size > MAX_CHUNK_PAYLOAD { goto Err }
+	riff_size = GetLE32(data + TAG_SIZE)
+	if riff_size > MAX_CHUNK_PAYLOAD {
+		goto Err
+	}
 
-  // Note this padding is historical and differs from demux.c which does not
-  // pad the file size.
-  riff_size = SizeWithPadding(riff_size);
-  // Make sure the whole RIFF header is available.
-  if riff_size < RIFF_HEADER_SIZE { goto Err }
-  if riff_size > size { goto Err }
-  // There's no point in reading past the end of the RIFF chunk. Note riff_size
-  // includes CHUNK_HEADER_SIZE after SizeWithPadding().
-  if (size > riff_size) {
-    size = riff_size;
-  }
+	// Note this padding is historical and differs from demux.c which does not
+	// pad the file size.
+	riff_size = SizeWithPadding(riff_size)
+	// Make sure the whole RIFF header is available.
+	if riff_size < RIFF_HEADER_SIZE {
+		goto Err
+	}
+	if riff_size > size {
+		goto Err
+	}
+	// There's no point in reading past the end of the RIFF chunk. Note riff_size
+	// includes CHUNK_HEADER_SIZE after SizeWithPadding().
+	if size > riff_size {
+		size = riff_size
+	}
 
-  end = data + size;
-  data += RIFF_HEADER_SIZE;
-  size -= RIFF_HEADER_SIZE;
+	end = data + size
+	data += RIFF_HEADER_SIZE
+	size -= RIFF_HEADER_SIZE
 
-//   wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*wpi));
-//   if wpi == nil { goto Err }
-  wpi := new(WebPMuxImage)
+	//   wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*wpi));
+	//   if wpi == nil { goto Err }
+	wpi := new(WebPMuxImage)
 
-  MuxImageInit(wpi);
+	MuxImageInit(wpi)
 
-  // Loop over chunks.
-  for (data != end) {
-    var data_size uint64;
-    var id WebPChunkId
-    if (ChunkVerifyAndAssign(&chunk, data, size, riff_size, copy_data) !=
-        WEBP_MUX_OK) {
-      goto Err;
-    }
-    data_size = ChunkDiskSize(&chunk);
-    id = ChunkGetIdFromTag(chunk.tag);
-    switch (id) {
-      case WEBP_CHUNK_ALPHA:
-        if wpi.alpha != nil { goto Err }  // Consecutive ALPH chunks.
-        if ChunkSetHead(&chunk, &wpi.alpha) != WEBP_MUX_OK { goto Err }
-        wpi.is_partial = 1;  // Waiting for a VP8 chunk.
-        break;
-      case WEBP_CHUNK_IMAGE:
-        if ChunkSetHead(&chunk, &wpi.img) != WEBP_MUX_OK { goto Err }
-        if !MuxImageFinalize(wpi) { goto Err }
-        wpi.is_partial = 0;  // wpi is completely filled.
-      PushImage:
-        // Add this to mux.images list.
-        if MuxImagePush(wpi, &mux.images) != WEBP_MUX_OK { goto Err }
-        MuxImageInit(wpi);  // Reset for reading next image.
-        break;
-      case WEBP_CHUNK_ANMF:
-        if wpi.is_partial { goto Err }  // Previous wpi is still incomplete.
-        if !MuxImageParse(&chunk, copy_data, wpi) { goto Err }
-        ChunkRelease(&chunk);
-        goto PushImage;
-      default:  // A non-image chunk.
-        if (wpi.is_partial) {
-          goto Err;  // Encountered a non-image chunk before
-                     // getting all chunks of an image.
-        }
-        if (chunk_list_ends[id] == nil) {
-          chunk_list_ends[id] =
-              MuxGetChunkListFromId(mux, id);  // List to add this chunk.
-        }
-        if ChunkAppend(&chunk, &chunk_list_ends[id]) != WEBP_MUX_OK { goto Err }
-        if (id == WEBP_CHUNK_VP8X) {  // grab global specs
-          if data_size < CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE { goto Err }
-          mux.canvas_width = GetLE24(data + 12) + 1;
-          mux.canvas_height = GetLE24(data + 15) + 1;
-        }
-        break;
-    }
-    data += data_size;
-    size -= data_size;
-    ChunkInit(&chunk);
-  }
+	// Loop over chunks.
+	for data != end {
+		var data_size uint64
+		var id WebPChunkId
+		if ChunkVerifyAndAssign(&chunk, data, size, riff_size, copy_data) !=
+			WEBP_MUX_OK {
+			goto Err
+		}
+		data_size = ChunkDiskSize(&chunk)
+		id = ChunkGetIdFromTag(chunk.tag)
+		switch id {
+		case WEBP_CHUNK_ALPHA:
+			if wpi.alpha != nil {
+				goto Err
+			} // Consecutive ALPH chunks.
+			if ChunkSetHead(&chunk, &wpi.alpha) != WEBP_MUX_OK {
+				goto Err
+			}
+			wpi.is_partial = 1 // Waiting for a VP8 chunk.
+			break
+		case WEBP_CHUNK_IMAGE:
+			if ChunkSetHead(&chunk, &wpi.img) != WEBP_MUX_OK {
+				goto Err
+			}
+			if !MuxImageFinalize(wpi) {
+				goto Err
+			}
+			wpi.is_partial = 0 // wpi is completely filled.
+		PushImage:
+			// Add this to mux.images list.
+			if MuxImagePush(wpi, &mux.images) != WEBP_MUX_OK {
+				goto Err
+			}
+			MuxImageInit(wpi) // Reset for reading next image.
+			break
+		case WEBP_CHUNK_ANMF:
+			if wpi.is_partial {
+				goto Err
+			} // Previous wpi is still incomplete.
+			if !MuxImageParse(&chunk, copy_data, wpi) {
+				goto Err
+			}
+			ChunkRelease(&chunk)
+			goto PushImage
+		default: // A non-image chunk.
+			if wpi.is_partial {
+				goto Err // Encountered a non-image chunk before
+				// getting all chunks of an image.
+			}
+			if chunk_list_ends[id] == nil {
+				chunk_list_ends[id] =
+					MuxGetChunkListFromId(mux, id) // List to add this chunk.
+			}
+			if ChunkAppend(&chunk, &chunk_list_ends[id]) != WEBP_MUX_OK {
+				goto Err
+			}
+			if id == WEBP_CHUNK_VP8X { // grab global specs
+				if data_size < CHUNK_HEADER_SIZE+VP8X_CHUNK_SIZE {
+					goto Err
+				}
+				mux.canvas_width = GetLE24(data+12) + 1
+				mux.canvas_height = GetLE24(data+15) + 1
+			}
+			break
+		}
+		data += data_size
+		size -= data_size
+		ChunkInit(&chunk)
+	}
 
-  // Incomplete image.
-  if wpi.is_partial { goto Err }
+	// Incomplete image.
+	if wpi.is_partial {
+		goto Err
+	}
 
-  // Validate mux if complete.
-  if MuxValidate(mux) != WEBP_MUX_OK { goto Err }
+	// Validate mux if complete.
+	if MuxValidate(mux) != WEBP_MUX_OK {
+		goto Err
+	}
 
-  MuxImageDelete(wpi);
-  return mux;  // All OK;
+	MuxImageDelete(wpi)
+	return mux // All OK;
 
-Err:  // Something bad happened.
-  ChunkRelease(&chunk);
-  MuxImageDelete(wpi);
-  WebPMuxDelete(mux);
-  return nil;
+Err: // Something bad happened.
+	ChunkRelease(&chunk)
+	MuxImageDelete(wpi)
+	WebPMuxDelete(mux)
+	return nil
 }
 
 //------------------------------------------------------------------------------
 // Get API(s).
 
 // Validates that the given mux has a single image.
-func ValidateForSingleImage(/* const */ mux *WebPMux) WebPMuxError {
-  num_images := MuxImageCount(mux.images, WEBP_CHUNK_IMAGE);
-  num_frames := MuxImageCount(mux.images, WEBP_CHUNK_ANMF);
+func ValidateForSingleImage( /* const */ mux *WebPMux) WebPMuxError {
+	num_images := MuxImageCount(mux.images, WEBP_CHUNK_IMAGE)
+	num_frames := MuxImageCount(mux.images, WEBP_CHUNK_ANMF)
 
-  if (num_images == 0) {
-    // No images in mux.
-    return WEBP_MUX_NOT_FOUND;
-  } else if (num_images == 1 && num_frames == 0) {
-    // Valid case (single image).
-    return WEBP_MUX_OK;
-  } else {
-    // Frame case OR an invalid mux.
-    return WEBP_MUX_INVALID_ARGUMENT;
-  }
+	if num_images == 0 {
+		// No images in mux.
+		return WEBP_MUX_NOT_FOUND
+	} else if num_images == 1 && num_frames == 0 {
+		// Valid case (single image).
+		return WEBP_MUX_OK
+	} else {
+		// Frame case OR an invalid mux.
+		return WEBP_MUX_INVALID_ARGUMENT
+	}
 }
 
 // Get the canvas width, height and flags after validating that VP8X/VP8/VP8L
 // chunk and canvas size are valid.
-func MuxGetCanvasInfo(/* const */ mux *WebPMux, width *int, height *int, flags *uint32) WebPMuxError {
-  var w, h int
-  f := 0;
-  var data WebPData ;
-  assert.Assert(mux != nil);
+func MuxGetCanvasInfo( /* const */ mux *WebPMux, width *int, height *int, flags *uint32) WebPMuxError {
+	var w, h int
+	f := 0
+	var data WebPData
+	assert.Assert(mux != nil)
 
-  // Check if VP8X chunk is present.
-  if (MuxGet(mux, IDX_VP8X, 1, &data) == WEBP_MUX_OK) {
-    if data.size < VP8X_CHUNK_SIZE { { return WEBP_MUX_BAD_DATA } }
-    f = GetLE32(data.bytes + 0);
-    w = GetLE24(data.bytes + 4) + 1;
-    h = GetLE24(data.bytes + 7) + 1;
-  } else {
-    var wpi *WebPMuxImage = mux.images;
-    // Grab user-forced canvas size as default.
-    w = mux.canvas_width;
-    h = mux.canvas_height;
-    if (w == 0 && h == 0 && ValidateForSingleImage(mux) == WEBP_MUX_OK) {
-      // single image and not forced canvas size => use dimension of first frame
-      assert.Assert(wpi != nil);
-      w = wpi.width;
-      h = wpi.height;
-    }
-    if (wpi != nil) {
-      if wpi.has_alpha { f |= ALPHA_FLAG }
-    }
-  }
-  if w * uint64(h >= MAX_IMAGE_AREA) { return WEBP_MUX_BAD_DATA }
+	// Check if VP8X chunk is present.
+	if MuxGet(mux, IDX_VP8X, 1, &data) == WEBP_MUX_OK {
+		if data.size < VP8X_CHUNK_SIZE {
+			{
+				return WEBP_MUX_BAD_DATA
+			}
+		}
+		f = GetLE32(data.bytes + 0)
+		w = GetLE24(data.bytes+4) + 1
+		h = GetLE24(data.bytes+7) + 1
+	} else {
+		var wpi *WebPMuxImage = mux.images
+		// Grab user-forced canvas size as default.
+		w = mux.canvas_width
+		h = mux.canvas_height
+		if w == 0 && h == 0 && ValidateForSingleImage(mux) == WEBP_MUX_OK {
+			// single image and not forced canvas size => use dimension of first frame
+			assert.Assert(wpi != nil)
+			w = wpi.width
+			h = wpi.height
+		}
+		if wpi != nil {
+			if wpi.has_alpha {
+				f |= ALPHA_FLAG
+			}
+		}
+	}
+	if w * uint64(h >= MAX_IMAGE_AREA) {
+		return WEBP_MUX_BAD_DATA
+	}
 
-  if width != nil { *width = w }
-  if height != nil { *height = h }
-  if flags != nil { *flags = f }
-  return WEBP_MUX_OK;
+	if width != nil {
+		*width = w
+	}
+	if height != nil {
+		*height = h
+	}
+	if flags != nil {
+		*flags = f
+	}
+	return WEBP_MUX_OK
 }
 
-func WebPMuxGetCanvasSize(/* const */ mux *WebPMux, width *int, height *int) WebPMuxError {
-  if (mux == nil || width == nil || height == nil) {
-    return WEBP_MUX_INVALID_ARGUMENT;
-  }
-  return MuxGetCanvasInfo(mux, width, height, nil);
+func WebPMuxGetCanvasSize( /* const */ mux *WebPMux, width *int, height *int) WebPMuxError {
+	if mux == nil || width == nil || height == nil {
+		return WEBP_MUX_INVALID_ARGUMENT
+	}
+	return MuxGetCanvasInfo(mux, width, height, nil)
 }
 
-func WebPMuxGetFeatures(/* const */ mux *WebPMux, flags *uint32) WebPMuxError {
-  if mux == nil || flags == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
-  return MuxGetCanvasInfo(mux, nil, nil, flags);
+func WebPMuxGetFeatures( /* const */ mux *WebPMux, flags *uint32) WebPMuxError {
+	if mux == nil || flags == nil {
+		{
+			return WEBP_MUX_INVALID_ARGUMENT
+		}
+	}
+	return MuxGetCanvasInfo(mux, nil, nil, flags)
 }
 
-func EmitVP8XChunk(/* const */ dst *uint8, width, height int, flags uint32) *uint8 {
-  vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
-  assert.Assert(width >= 1 && height >= 1);
-  assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE);
-  assert.Assert(width * uint64(height < MAX_IMAGE_AREA));
-  PutLE32(dst, MKFOURCC('V', 'P', '8', 'X'));
-  PutLE32(dst + TAG_SIZE, VP8X_CHUNK_SIZE);
-  PutLE32(dst + CHUNK_HEADER_SIZE, flags);
-  PutLE24(dst + CHUNK_HEADER_SIZE + 4, width - 1);
-  PutLE24(dst + CHUNK_HEADER_SIZE + 7, height - 1);
-  return dst + vp8x_size;
+func EmitVP8XChunk( /* const */ dst *uint8, width, height int, flags uint32) *uint8 {
+	vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE
+	assert.Assert(width >= 1 && height >= 1)
+	assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE)
+	assert.Assert(width * uint64(height < MAX_IMAGE_AREA))
+	PutLE32(dst, MKFOURCC('V', 'P', '8', 'X'))
+	PutLE32(dst+TAG_SIZE, VP8X_CHUNK_SIZE)
+	PutLE32(dst+CHUNK_HEADER_SIZE, flags)
+	PutLE24(dst+CHUNK_HEADER_SIZE+4, width-1)
+	PutLE24(dst+CHUNK_HEADER_SIZE+7, height-1)
+	return dst + vp8x_size
 }
 
 // Assemble a single image WebP bitstream from 'wpi'.
-func SynthesizeBitstream(/* const */ wpi *WebPMuxImage, /*const*/ bitstream *WebPData) WebPMuxError {
-  var dst *uint8;
+func SynthesizeBitstream( /* const */ wpi *WebPMuxImage /*const*/, bitstream *WebPData) WebPMuxError {
+	var dst *uint8
 
-  // Allocate data.
-  need_vp8x := (wpi.alpha != nil);
-  vp8x_size := tenary.If(need_vp8x, CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE, 0)
-  alpha_size := tenary.If(need_vp8x, ChunkDiskSize(wpi.alpha), 0)
-  // Note: No need to output ANMF chunk for a single image.
-  var size uint64  =
-      RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img);
-//   var data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size);
-//   if data == nil { { return WEBP_MUX_MEMORY_ERROR } }
-  data := make([]uint8, size)
+	// Allocate data.
+	need_vp8x := (wpi.alpha != nil)
+	vp8x_size := tenary.If(need_vp8x, CHUNK_HEADER_SIZE+VP8X_CHUNK_SIZE, 0)
+	alpha_size := tenary.If(need_vp8x, ChunkDiskSize(wpi.alpha), 0)
+	// Note: No need to output ANMF chunk for a single image.
+	var size uint64 = RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img)
+	//   var data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size);
+	//   if data == nil { return WEBP_MUX_MEMORY_ERROR  }
+	data := make([]uint8, size)
 
-  // There should be at most one alpha chunk and exactly one img chunk.
-  assert.Assert(wpi.alpha == nil || wpi.alpha.next == nil);
-  assert.Assert(wpi.img != nil && wpi.img.next == nil);
+	// There should be at most one alpha chunk and exactly one img chunk.
+	assert.Assert(wpi.alpha == nil || wpi.alpha.next == nil)
+	assert.Assert(wpi.img != nil && wpi.img.next == nil)
 
-  // Main RIFF header.
-  dst = MuxEmitRiffHeader(data, size);
+	// Main RIFF header.
+	dst = MuxEmitRiffHeader(data, size)
 
-  if (need_vp8x) {
-    dst = EmitVP8XChunk(dst, wpi.width, wpi.height, ALPHA_FLAG);  // VP8X.
-    dst = ChunkListEmit(wpi.alpha, dst);                           // ALPH.
-  }
+	if need_vp8x {
+		dst = EmitVP8XChunk(dst, wpi.width, wpi.height, ALPHA_FLAG) // VP8X.
+		dst = ChunkListEmit(wpi.alpha, dst)                         // ALPH.
+	}
 
-  // Bitstream.
-  dst = ChunkListEmit(wpi.img, dst);
-  assert.Assert(dst == data + size);
+	// Bitstream.
+	dst = ChunkListEmit(wpi.img, dst)
+	assert.Assert(dst == data+size)
 
-  // Output.
-  bitstream.bytes = data;
-  bitstream.size = size;
-  return WEBP_MUX_OK;
+	// Output.
+	bitstream.bytes = data
+	bitstream.size = size
+	return WEBP_MUX_OK
 }
 
-func WebPMuxGetChunk(/* const */ mux *WebPMux, fourcc [4]byte, chunk_data *WebPData) WebPMuxError {
-  var  idx CHUNK_INDEX
-  if (mux == nil || fourcc == nil || chunk_data == nil) {
-    return WEBP_MUX_INVALID_ARGUMENT;
-  }
-  idx = ChunkGetIndexFromFourCC(fourcc);
-  assert.Assert(idx != IDX_LAST_CHUNK);
-  if (IsWPI(kChunks[idx].id)) {  // An image chunk.
-    return WEBP_MUX_INVALID_ARGUMENT;
-  } else if (idx != IDX_UNKNOWN) {  // A known chunk type.
-    return MuxGet(mux, idx, 1, chunk_data);
-  } else {  // An unknown chunk type.
-    const chunk *WebPChunk =
-        ChunkSearchList(mux.unknown, 1, ChunkGetTagFromFourCC(fourcc));
-    if chunk == nil { { return WEBP_MUX_NOT_FOUND } }
-    *chunk_data = chunk.data;
-    return WEBP_MUX_OK;
-  }
+func WebPMuxGetChunk( /* const */ mux *WebPMux, fourcc [4]byte, chunk_data *WebPData) WebPMuxError {
+	var idx CHUNK_INDEX
+	if mux == nil || fourcc == nil || chunk_data == nil {
+		return WEBP_MUX_INVALID_ARGUMENT
+	}
+	idx = ChunkGetIndexFromFourCC(fourcc)
+	assert.Assert(idx != IDX_LAST_CHUNK)
+	if IsWPI(kChunks[idx].id) { // An image chunk.
+		return WEBP_MUX_INVALID_ARGUMENT
+	} else if idx != IDX_UNKNOWN { // A known chunk type.
+		return MuxGet(mux, idx, 1, chunk_data)
+	} else { // An unknown chunk type.
+		const chunk *WebPChunk = ChunkSearchList(mux.unknown, 1, ChunkGetTagFromFourCC(fourcc))
+		if chunk == nil {
+			{
+				return WEBP_MUX_NOT_FOUND
+			}
+		}
+		*chunk_data = chunk.data
+		return WEBP_MUX_OK
+	}
 }
 
 func MuxGetImageInternal(wpi *WebPMuxImage, info *WebPMuxFrameInfo) WebPMuxError {
-  // Set some defaults for unrelated fields.
-  info.x_offset = 0;
-  info.y_offset = 0;
-  info.duration = 1;
-  info.dispose_method = WEBP_MUX_DISPOSE_NONE;
-  info.blend_method = WEBP_MUX_BLEND;
-  // Extract data for related fields.
-  info.id = ChunkGetIdFromTag(wpi.img.tag);
-  return SynthesizeBitstream(wpi, &info.bitstream);
+	// Set some defaults for unrelated fields.
+	info.x_offset = 0
+	info.y_offset = 0
+	info.duration = 1
+	info.dispose_method = WEBP_MUX_DISPOSE_NONE
+	info.blend_method = WEBP_MUX_BLEND
+	// Extract data for related fields.
+	info.id = ChunkGetIdFromTag(wpi.img.tag)
+	return SynthesizeBitstream(wpi, &info.bitstream)
 }
 
 func MuxGetFrameInternal(wpi *WebPMuxImage, frame *WebPMuxFrameInfo) WebPMuxError {
-  is_frame := (wpi.header.tag == kChunks[IDX_ANMF].tag);
-  const frame_data *WebPData;
-  if !is_frame { { return WEBP_MUX_INVALID_ARGUMENT } }
-  assert.Assert(wpi.header != nil);  // Already checked by WebPMuxGetFrame().
-  // Get frame chunk.
-  frame_data = &wpi.header.data;
-  if frame_data.size < kChunks[IDX_ANMF].size { { return WEBP_MUX_BAD_DATA } }
-  // Extract info.
-  frame.x_offset = 2 * GetLE24(frame_data.bytes + 0);
-  frame.y_offset = 2 * GetLE24(frame_data.bytes + 3);
-  {
-    bits := frame_data.bytes[15];
-    frame.duration = GetLE24(frame_data.bytes + 12);
-    frame.dispose_method =
-        tenary.If(bits & 1, WEBP_MUX_DISPOSE_BACKGROUND, WEBP_MUX_DISPOSE_NONE)
-    frame.blend_method = tenary.If(bits & 2, WEBP_MUX_NO_BLEND, WEBP_MUX_BLEND)
-  }
-  frame.id = ChunkGetIdFromTag(wpi.header.tag);
-  return SynthesizeBitstream(wpi, &frame.bitstream);
+	is_frame := (wpi.header.tag == kChunks[IDX_ANMF].tag)
+	const frame_data *WebPData
+	if !is_frame {
+		{
+			return WEBP_MUX_INVALID_ARGUMENT
+		}
+	}
+	assert.Assert(wpi.header != nil) // Already checked by WebPMuxGetFrame().
+	// Get frame chunk.
+	frame_data = &wpi.header.data
+	if frame_data.size < kChunks[IDX_ANMF].size {
+		{
+			return WEBP_MUX_BAD_DATA
+		}
+	}
+	// Extract info.
+	frame.x_offset = 2 * GetLE24(frame_data.bytes+0)
+	frame.y_offset = 2 * GetLE24(frame_data.bytes+3)
+	{
+		bits := frame_data.bytes[15]
+		frame.duration = GetLE24(frame_data.bytes + 12)
+		frame.dispose_method =
+			tenary.If(bits&1, WEBP_MUX_DISPOSE_BACKGROUND, WEBP_MUX_DISPOSE_NONE)
+		frame.blend_method = tenary.If(bits&2, WEBP_MUX_NO_BLEND, WEBP_MUX_BLEND)
+	}
+	frame.id = ChunkGetIdFromTag(wpi.header.tag)
+	return SynthesizeBitstream(wpi, &frame.bitstream)
 }
 
-func WebPMuxGetFrame(mux *WebPMux , nth uint32 , frame *WebPMuxFrameInfo) WebPMuxError {
-  var err WebPMuxError ;
-  var wpi *WebPMuxImage;
+func WebPMuxGetFrame(mux *WebPMux, nth uint32, frame *WebPMuxFrameInfo) WebPMuxError {
+	var err WebPMuxError
+	var wpi *WebPMuxImage
 
-  if (mux == nil || frame == nil) {
-    return WEBP_MUX_INVALID_ARGUMENT;
-  }
+	if mux == nil || frame == nil {
+		return WEBP_MUX_INVALID_ARGUMENT
+	}
 
-  // Get the nth WebPMuxImage.
-  err = MuxImageGetNth(&mux.images, nth, &wpi);
-  if err != WEBP_MUX_OK { { return err } }
+	// Get the nth WebPMuxImage.
+	err = MuxImageGetNth(&mux.images, nth, &wpi)
+	if err != WEBP_MUX_OK {
+		{
+			return err
+		}
+	}
 
-  // Get frame info.
-  if (wpi.header == nil) {
-    return MuxGetImageInternal(wpi, frame);
-  } else {
-    return MuxGetFrameInternal(wpi, frame);
-  }
+	// Get frame info.
+	if wpi.header == nil {
+		return MuxGetImageInternal(wpi, frame)
+	} else {
+		return MuxGetFrameInternal(wpi, frame)
+	}
 }
 
-func WebPMuxGetAnimationParams(mux *WebPMux ,  params *WebPMuxAnimParams) WebPMuxError {
-  var anim WebPData
-  var err WebPMuxError
+func WebPMuxGetAnimationParams(mux *WebPMux, params *WebPMuxAnimParams) WebPMuxError {
+	var anim WebPData
+	var err WebPMuxError
 
-  if mux == nil || params == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
+	if mux == nil || params == nil {
+		{
+			return WEBP_MUX_INVALID_ARGUMENT
+		}
+	}
 
-  err = MuxGet(mux, IDX_ANIM, 1, &anim);
-  if err != WEBP_MUX_OK { { return err } }
-  if anim.size < kChunks[WEBP_CHUNK_ANIM].size { { return WEBP_MUX_BAD_DATA } }
-  params.bgcolor = GetLE32(anim.bytes);
-  params.loop_count = GetLE16(anim.bytes + 4);
+	err = MuxGet(mux, IDX_ANIM, 1, &anim)
+	if err != WEBP_MUX_OK {
+		{
+			return err
+		}
+	}
+	if anim.size < kChunks[WEBP_CHUNK_ANIM].size {
+		{
+			return WEBP_MUX_BAD_DATA
+		}
+	}
+	params.bgcolor = GetLE32(anim.bytes)
+	params.loop_count = GetLE16(anim.bytes + 4)
 
-  return WEBP_MUX_OK;
+	return WEBP_MUX_OK
 }
 
 // Get chunk index from chunk id. Returns IDX_NIL if not found.
 func ChunkGetIndexFromId(id WebPChunkId) CHUNK_INDEX {
-  for i := 0; kChunks[i].id != WEBP_CHUNK_NIL; i++ {
-    if id == kChunks[i].id {  return CHUNK_INDEX(i) } 
-  }
-  return IDX_NIL;
+	for i := 0; kChunks[i].id != WEBP_CHUNK_NIL; i++ {
+		if id == kChunks[i].id {
+			return CHUNK_INDEX(i)
+		}
+	}
+	return IDX_NIL
 }
 
 // Count number of chunks matching 'tag' in the 'chunk_list'.
 // If tag == NIL_TAG, any tag will be matched.
 func CountChunks(chunk_list *WebPChunk, tag uint32) int {
-  count := 0;
-  const current *WebPChunk;
-  for current = chunk_list; current != nil; current = current.next {
-    if (tag == NIL_TAG || current.tag == tag) {
-      count++;  // Count chunks whose tags match.
-    }
-  }
-  return count;
+	count := 0
+	const current *WebPChunk
+	for current = chunk_list; current != nil; current = current.next {
+		if tag == NIL_TAG || current.tag == tag {
+			count++ // Count chunks whose tags match.
+		}
+	}
+	return count
 }
 
 func WebPMuxNumChunks(mux *WebPMux, id WebPChunkId, num_elements *int) WebPMuxError {
-  if (mux == nil || num_elements == nil) {
-    return WEBP_MUX_INVALID_ARGUMENT;
-  }
+	if mux == nil || num_elements == nil {
+		return WEBP_MUX_INVALID_ARGUMENT
+	}
 
-  if (IsWPI(id)) {
-    *num_elements = MuxImageCount(mux.images, id);
-  } else {
-    chunk_list *WebPChunk *const = MuxGetChunkListFromId(mux, id);
-    const CHUNK_INDEX idx = ChunkGetIndexFromId(id);
-    *num_elements = CountChunks(*chunk_list, kChunks[idx].tag);
-  }
+	if IsWPI(id) {
+		*num_elements = MuxImageCount(mux.images, id)
+	} else {
+		var chunk_list *WebPChunk = MuxGetChunkListFromId(mux, id)
+		var idx CHUNK_INDEX = ChunkGetIndexFromId(id)
+		*num_elements = CountChunks(*chunk_list, kChunks[idx].tag)
+	}
 
-  return WEBP_MUX_OK;
+	return WEBP_MUX_OK
 }
 
 //------------------------------------------------------------------------------

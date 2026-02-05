@@ -145,7 +145,7 @@ func IsFullFrame(width, height, canvas_width, canvas_height int) int {
 func ZeroFillCanvas(buf []uint8, canvas_width uint32, canvas_height uint32) bool {
 	// size = uint64(canvas_width * canvas_height * NUM_CHANNELS * sizeof(*buf))
 
-	// if !CheckSizeOverflow(size) { { return 0 } }
+	// if !CheckSizeOverflow(size) { return 0  }
 
 	//   stdlib.Memset(buf, 0, size);
 	stdlib.Memset2(buf, 0)
@@ -165,7 +165,7 @@ func ZeroFillFrameRect(buf *uint8, buf_stride, x_offset, y_offset, width, height
 // Copy width * height pixels from 'src' to 'dst'.
 func CopyCanvas( /* const */ src *uint8, dst *uint8, width, height uint32) int {
 	size := width * height * NUM_CHANNELS
-	//   if !CheckSizeOverflow(size) { { return 0 } }
+	//   if !CheckSizeOverflow(size) { return 0  }
 	assert.Assert(src != nil && dst != nil)
 	stdlib.MemCpy(dst, src, size)
 	return 1

@@ -62,7 +62,7 @@ func VP8LDistanceToPlaneCode(xsize int, int dist) int {
 func FindMatchLength(/* const */ array *uint321, /*const*/ array *uint322, int best_len_match, int max_limit) int {
   // Before 'expensive' linear match, check if the two arrays match at the
   // current best length index.
-  if array1[best_len_match] != array2[best_len_match] { { return 0 } }
+  if array1[best_len_match] != array2[best_len_match] { return 0  }
 
   return VP8LVectorMismatch(array1, array2, max_limit);
 }
@@ -169,7 +169,7 @@ func BackwardRefsClone(/* const */ from *VP8LBackwardRefs, /*const*/ to *VP8LBac
   VP8LClearBackwardRefs(to);
   while (block_from != nil) {
     var block_to *PixOrCopyBlock = BackwardRefsNewBlock(to);
-    if block_to == nil { { return 0 } }
+    if block_to == nil { return 0  }
     memcpy(block_to.start, block_from.start, block_from.size * sizeof(PixOrCopy));
     block_to.size = block_from.size;
     block_from = block_from.next;
@@ -196,7 +196,7 @@ func VP8LHashChainInit(/* const */ p *VP8LHashChain, size int) int {
 	assert.Assert(p.offset_length == nil);
 	assert.Assert(size > 0);
 	//   p.offset_length = (*uint32)WebPSafeMalloc(size, sizeof(*p.offset_length));
-	//   if p.offset_length == nil { { return 0 } }
+	//   if p.offset_length == nil { return 0  }
 	p.offset_length = make([]uint32, size)
 
 	p.size = size;
@@ -329,7 +329,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
 //   WebPSafeFree(hash_to_first_index);
 
   percent_start += percent_range;
-  if !WebPReportProgress(pic, percent_start, percent) { { return 0 } }
+  if !WebPReportProgress(pic, percent_start, percent) { return 0  }
   percent_range = remaining_percent;
 
   // Find the best match interval at each pixel, defined by an offset to the
@@ -570,7 +570,7 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, int
   best_offset_prev := -1, best_length_prev = -1;
 
 //   var counts_ini *uint16 = (*uint16)WebPSafeMalloc(xsize * ysize, sizeof(*counts_ini));
-//   if counts_ini == nil { { return 0 } }
+//   if counts_ini == nil { return 0  }
 	counts_ini := make([]uint16, xsize * ysize)
 
   // counts[i] counts how many times a pixel is repeated starting at position i.
@@ -831,7 +831,7 @@ func BackwardRefsWithLocalCache(/* const */ argb *uint32, int cache_bits, /*cons
   pixel_index := 0;
   VP8LColorCache hashers;
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
-  if !VP8LColorCacheInit(&hashers, cache_bits) { { return 0 } }
+  if !VP8LColorCacheInit(&hashers, cache_bits) { return 0  }
 
   while (VP8LRefsCursorOk(&c)) {
     var v *PixOrCopy = c.cur_pos;

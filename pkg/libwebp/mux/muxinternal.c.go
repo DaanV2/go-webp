@@ -44,7 +44,7 @@ func ChunkInit(/* const */ chunk *WebPChunk) {
 
 ChunkRelease *WebPChunk(/* const */ chunk *WebPChunk) {
   next *WebPChunk;
-  if chunk == nil { { return nil } }
+  if chunk == nil { return nil  }
   if (chunk.owner) {
     WebPDataClear(&chunk.data);
   }
@@ -59,7 +59,7 @@ ChunkRelease *WebPChunk(/* const */ chunk *WebPChunk) {
 CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag) {
   var i int
   for i = 0; kChunks[i].tag != NIL_TAG; i++ {
-    if tag == kChunks[i].tag { { return (CHUNK_INDEX)i } }
+    if tag == kChunks[i].tag { return (CHUNK_INDEX)i  }
   }
   return IDX_UNKNOWN;
 }
@@ -67,7 +67,7 @@ CHUNK_INDEX ChunkGetIndexFromTag(uint32 tag) {
 WebPChunkId ChunkGetIdFromTag(uint32 tag) {
   var i int
   for i = 0; kChunks[i].tag != NIL_TAG; i++ {
-    if tag == kChunks[i].tag { { return kChunks[i].id } }
+    if tag == kChunks[i].tag { return kChunks[i].id  }
   }
   return WEBP_CHUNK_UNKNOWN;
 }
@@ -95,7 +95,7 @@ static ChunkSearchNextInList *WebPChunk(chunk *WebPChunk, uint32 tag) {
 ChunkSearchList *WebPChunk(first *WebPChunk, uint32 nth, uint32 tag) {
   iter := nth;
   first = ChunkSearchNextInList(first, tag);
-  if first == nil { { return nil } }
+  if first == nil { return nil  }
 
   while (--iter != 0) {
     next_chunk *WebPChunk = ChunkSearchNextInList(first.next, tag);
@@ -118,7 +118,7 @@ WebPMuxError ChunkAssignData(chunk *WebPChunk, /*const*/ data *WebPData, int cop
 
   if (data != nil) {
     if (copy_data) {  // Copy data.
-      if !WebPDataCopy(data, &chunk.data) { { return WEBP_MUX_MEMORY_ERROR } }
+      if !WebPDataCopy(data, &chunk.data) { return WEBP_MUX_MEMORY_ERROR  }
       chunk.owner = 1;  // Chunk is owner of data.
     } else {             // Don't copy data.
       chunk.data = *data;
@@ -137,7 +137,7 @@ WebPMuxError ChunkSetHead(/* const */ chunk *WebPChunk, *WebPChunk* const chunk_
   }
 
 //   new_chunk = (*WebPChunk)WebPSafeMalloc(uint64(1), sizeof(*new_chunk));
-//   if new_chunk == nil { { return WEBP_MUX_MEMORY_ERROR } }
+//   if new_chunk == nil { return WEBP_MUX_MEMORY_ERROR  }
   new_chunk = new(WebPChunk)
 
   *new_chunk = *chunk;
@@ -148,7 +148,7 @@ WebPMuxError ChunkSetHead(/* const */ chunk *WebPChunk, *WebPChunk* const chunk_
 }
 
 WebPMuxError ChunkAppend(/* const */ chunk *WebPChunk, *WebPChunk** const chunk_list) {
-  WebPMuxError err;
+  var err WebPMuxError 
   assert.Assert(chunk_list != nil && *chunk_list != nil);
 
   if (**chunk_list == nil) {
@@ -219,7 +219,7 @@ func MuxImageInit(/* const */ wpi *WebPMuxImage) {
 
 MuxImageRelease *WebPMuxImage(/* const */ wpi *WebPMuxImage) {
   next *WebPMuxImage;
-  if wpi == nil { { return nil } }
+  if wpi == nil { return nil  }
   // There should be at most one chunk of 'header', 'alpha', 'img' but we call
   // ChunkListDelete to be safe
   ChunkListDelete(&wpi.header);
@@ -307,7 +307,7 @@ WebPMuxError MuxImagePush(/* const */ wpi *WebPMuxImage, *WebPMuxImage* wpi_list
   }
 
 //   new_wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*new_wpi));
-//   if new_wpi == nil { { return WEBP_MUX_MEMORY_ERROR } }
+//   if new_wpi == nil { return WEBP_MUX_MEMORY_ERROR  }
   new_wpi := new(WebPMuxImage)
 
   *new_wpi = *wpi;
@@ -401,7 +401,7 @@ MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst *uint8) {
 
 func MuxHasAlpha(/* const */ images *WebPMuxImage) int {
   while (images != nil) {
-    if images.has_alpha { { return 1 } }
+    if images.has_alpha { return 1  }
     images = images.next;
   }
   return 0;
@@ -444,54 +444,54 @@ const NO_FLAG =((WebPFeatureFlags)0)
 // and feature incompatibility (use NO_FLAG to skip).
 // On success returns WEBP_MUX_OK and stores the chunk count in *num.
 func ValidateChunk(/* const */ mux *WebPMux, CHUNK_INDEX idx, WebPFeatureFlags feature, uint32 vp8x_flags, int max, num *int) WebPMuxError {
-  const WebPMuxError err = WebPMuxNumChunks(mux, kChunks[idx].id, num);
-  if err != WEBP_MUX_OK { { return err } }
-  if max > -1 && *num > max { { return WEBP_MUX_INVALID_ARGUMENT } }
+  var err WebPMuxError  = WebPMuxNumChunks(mux, kChunks[idx].id, num);
+  if err != WEBP_MUX_OK { return err  }
+  if max > -1 && *num > max { return WEBP_MUX_INVALID_ARGUMENT  }
   if (feature != NO_FLAG && IsNotCompatible(vp8x_flags & feature, *num)) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
   return WEBP_MUX_OK;
 }
 
-WebPMuxError MuxValidate(/* const */ mux *WebPMux) {
+func MuxValidate(/* const */ mux *WebPMux) WebPMuxError {
   var num_iccp int
   var num_exif int
   var num_xmp int
   var num_anim int
   var num_frames int
-  int num_vp8x;
+  var num_vp8x int
   var num_images int
   var num_alpha int
   var flags uint32
-  WebPMuxError err;
+  var err WebPMuxError 
 
   // Verify mux is not nil.
-  if mux == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
+  if mux == nil { return WEBP_MUX_INVALID_ARGUMENT  }
 
   // Verify mux has at least one image.
-  if mux.images == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
+  if mux.images == nil { return WEBP_MUX_INVALID_ARGUMENT  }
 
   err = WebPMuxGetFeatures(mux, &flags);
-  if err != WEBP_MUX_OK { { return err } }
+  if err != WEBP_MUX_OK { return err  }
 
   // At most one color profile chunk.
   err = ValidateChunk(mux, IDX_ICCP, ICCP_FLAG, flags, 1, &num_iccp);
-  if err != WEBP_MUX_OK { { return err } }
+  if err != WEBP_MUX_OK { return err  }
 
   // At most one EXIF metadata.
   err = ValidateChunk(mux, IDX_EXIF, EXIF_FLAG, flags, 1, &num_exif);
-  if err != WEBP_MUX_OK { { return err } }
+  if err != WEBP_MUX_OK { return err  }
 
   // At most one XMP metadata.
   err = ValidateChunk(mux, IDX_XMP, XMP_FLAG, flags, 1, &num_xmp);
-  if err != WEBP_MUX_OK { { return err } }
+  if err != WEBP_MUX_OK { return err  }
 
   // Animation: ANIMATION_FLAG, ANIM chunk and ANMF chunk(s) are consistent.
   // At most one ANIM chunk.
   err = ValidateChunk(mux, IDX_ANIM, NO_FLAG, flags, 1, &num_anim);
-  if err != WEBP_MUX_OK { { return err } }
+  if err != WEBP_MUX_OK { return err  }
   err = ValidateChunk(mux, IDX_ANMF, NO_FLAG, flags, -1, &num_frames);
-  if err != WEBP_MUX_OK { { return err } }
+  if err != WEBP_MUX_OK { return err  }
 
   {
     has_animation := !!(flags & ANIMATION_FLAG);
@@ -520,22 +520,22 @@ WebPMuxError MuxValidate(/* const */ mux *WebPMux) {
   // Verify either VP8X chunk is present OR there is only one elem in
   // mux.images.
   err = ValidateChunk(mux, IDX_VP8X, NO_FLAG, flags, 1, &num_vp8x);
-  if err != WEBP_MUX_OK { { return err } }
+  if err != WEBP_MUX_OK { return err  }
   err = ValidateChunk(mux, IDX_VP8, NO_FLAG, flags, -1, &num_images);
-  if err != WEBP_MUX_OK { { return err } }
-  if num_vp8x == 0 && num_images != 1 { { return WEBP_MUX_INVALID_ARGUMENT } }
+  if err != WEBP_MUX_OK { return err  }
+  if num_vp8x == 0 && num_images != 1 { return WEBP_MUX_INVALID_ARGUMENT  }
 
   // ALPHA_FLAG & alpha chunk(s) are consistent.
   // Note: ALPHA_FLAG can be set when there is actually no Alpha data present.
   if (MuxHasAlpha(mux.images)) {
     if (num_vp8x > 0) {
       // VP8X chunk is present, so it should contain ALPHA_FLAG.
-      if !(flags & ALPHA_FLAG) { { return WEBP_MUX_INVALID_ARGUMENT } }
+      if !(flags & ALPHA_FLAG) { return WEBP_MUX_INVALID_ARGUMENT  }
     } else {
       // VP8X chunk is not present, so ALPH chunks should NOT be present either.
       err = WebPMuxNumChunks(mux, WEBP_CHUNK_ALPHA, &num_alpha);
-      if err != WEBP_MUX_OK { { return err } }
-      if num_alpha > 0 { { return WEBP_MUX_INVALID_ARGUMENT } }
+      if err != WEBP_MUX_OK { return err  }
+      if num_alpha > 0 { return WEBP_MUX_INVALID_ARGUMENT  }
     }
   }
 

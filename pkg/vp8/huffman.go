@@ -31,7 +31,7 @@ func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, cod
     // need a contiguous buffer.
     segment_size := root_table.curr_segment.size;
     // next *HuffmanTablesSegment = (*HuffmanTablesSegment)WebPSafeMalloc(1, sizeof(*next));
-    // if next == nil { { return 0 } }
+    // if next == nil { return 0  }
 	next := new(huffman.HuffmanTablesSegment)
 
     // Fill the new segment.
@@ -62,7 +62,7 @@ func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, cod
     huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted[:]);
   } else {  // rare case. Use heap allocation.
     // const sorted *uint16 = (*uint16)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
-    // if sorted == nil { { return 0 } }
+    // if sorted == nil { return 0  }
 	sorted := make([]uint16, code_lengths_size)
 
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)

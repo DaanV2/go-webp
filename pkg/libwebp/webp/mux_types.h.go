@@ -50,13 +50,13 @@ func WebPDataInit(webp_data *WebPData) {
 // Allocates necessary storage for 'dst' and copies the contents of 'src'.
 // Returns true on success.
 func  WebPDataCopy(/* const */ src *WebPData, dst *WebPData) int {
-  if src == nil || dst == nil { { return 0 } }
+  if src == nil || dst == nil { return 0  }
   WebPDataInit(dst);
   if (src.bytes != nil && src.size != 0) {
     // dst.bytes = (*uint8)WebPMalloc(src.size);
 	dst.bytes = make([]uint8, src.size)
 
-    if dst.bytes == nil { { return 0 } }
+    if dst.bytes == nil { return 0  }
     stdlib.MemCpy(dst.bytes, src.bytes, src.size);
     dst.size = src.size;
   }

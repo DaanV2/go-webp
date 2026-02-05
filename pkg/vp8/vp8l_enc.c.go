@@ -385,7 +385,7 @@ func EncoderInit(/* const */ enc *VP8LEncoder) int {
   // at most MAX_REFS_BLOCK_PER_IMAGE blocks used:
   refs_block_size := (pix_cnt - 1) / MAX_REFS_BLOCK_PER_IMAGE + 1;
   var i int
-  if !VP8LHashChainInit(&enc.hash_chain, pix_cnt) { { return 0 } }
+  if !VP8LHashChainInit(&enc.hash_chain, pix_cnt) { return 0  }
 
   for (i = 0; i < 4; ++i) VP8LBackwardRefsInit(&enc.refs[i], refs_block_size);
 
@@ -1130,8 +1130,8 @@ func MakeInputImageCopy(/* const */ enc *VP8LEncoder) int {
   width := picture.width;
   height := picture.height;
 
-  if !AllocateTransformBuffer(enc, width, height) { { return 0 } }
-  if enc.argb_content == kEncoderARGB { { return 1 } }
+  if !AllocateTransformBuffer(enc, width, height) { return 0  }
+  if enc.argb_content == kEncoderARGB { return 1  }
 
   {
     dst *uint32 = enc.argb;
@@ -1156,9 +1156,9 @@ func SearchColorGreedy(/* const */ uint32 palette[], int palette_size, color uin
   (void)palette_size;
   assert.Assert(palette_size < APPLY_PALETTE_GREEDY_MAX);
   assert.Assert(3 == APPLY_PALETTE_GREEDY_MAX - 1);
-  if color == palette[0] { { return 0 } }
-  if color == palette[1] { { return 1 } }
-  if color == palette[2] { { return 2 } }
+  if color == palette[0] { return 0  }
+  if color == palette[1] { return 1  }
+  if color == palette[2] { return 2  }
   return 3;
 }
 
@@ -1690,7 +1690,7 @@ func VP8LEncodeImage(/* const */ config *WebPConfig, /*const*/ picture *WebPPict
   var initial_size int;
   VP8LBitWriter bw;
 
-  if picture == nil { { return 0 } }
+  if picture == nil { return 0  }
 
   if (config == nil || picture.argb == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);

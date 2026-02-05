@@ -730,7 +730,7 @@ func VP8LResidualImage(width, height int, int min_bits, int max_bits, low_effort
       sum_num_pixels += num_pixels[bits];
     }
     // modes_raw = (*uint32)WebPSafeMalloc(sum_num_pixels, sizeof(*modes_raw));
-    // if modes_raw == nil { { return 0 } }
+    // if modes_raw == nil { return 0  }
 	modes_raw := make([]uint32, sum_num_pixels)
 
     // Have modes point to the right global memory modes_raw.

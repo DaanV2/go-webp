@@ -316,7 +316,7 @@ func VP8EncWrite(/* const */ enc *VP8Encoder) int {
 
   // Partition #0 with header and partition sizes
   ok = GeneratePartition0(enc);
-  if !ok { { return 0 } }
+  if !ok { return 0  }
 
   // Compute VP8 size
   vp8_size =

@@ -540,7 +540,7 @@ static  int NeedsFilter2_C(/* const */ p *uint8, int step, int t, int it) {
   p3 = p[-4 * step], p2 = p[-3 * step], p1 := p[-2 * step];
   p0 = p[-step], q0 := p[0];
   q1 = p[step], q2 = p[2 * step], q3 := p[3 * step];
-  if (4 * VP8kabs0[p0 - q0] + VP8kabs0[p1 - q1]) > t { { return 0 } }
+  if (4 * VP8kabs0[p0 - q0] + VP8kabs0[p1 - q1]) > t { return 0  }
   return VP8kabs0[p3 - p2] <= it && VP8kabs0[p2 - p1] <= it &&
          VP8kabs0[p1 - p0] <= it && VP8kabs0[q3 - q2] <= it &&
          VP8kabs0[q2 - q1] <= it && VP8kabs0[q1 - q0] <= it;

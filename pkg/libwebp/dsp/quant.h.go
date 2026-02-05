@@ -62,7 +62,7 @@ func IsFlat(/* const */ levels *int16, int num_blocks, int thresh) int {
     var i int
     for i = 1; i < 16; i++ {  // omit DC, we're only interested in AC
       score += (levels[i] != 0);
-      if score > thresh { { return 0 } }
+      if score > thresh { return 0  }
     }
     levels += 16;
   }

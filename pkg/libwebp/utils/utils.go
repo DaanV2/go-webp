@@ -198,9 +198,9 @@ func CheckSizeOverflow(size uint64 ) bool {
 // Returns 0 in case of overflow of nmemb * size.
 func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
   total_size := nmemb * size;
-  if nmemb == 0 { { return 1 } }
-  if (uint64)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb { { return 0 } }
-  if !CheckSizeOverflow(total_size) { { return 0 } }
+  if nmemb == 0 { return 1  }
+  if (uint64)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb { return 0  }
+  if !CheckSizeOverflow(total_size) { return 0  }
 // #if defined(PRINT_MEM_INFO) && defined(MALLOC_FAIL_AT)
   if (countdown_to_fail > 0 && --countdown_to_fail == 0) {
     return 0;  // fake fail!
@@ -228,7 +228,7 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 // func WebPSafeMalloc(nmemb uint64, size uint64 ) *void/* (size *nmemb) */ {
 //   var ptr *void;
 //   Increment(&num_malloc_calls);
-//   if !CheckSizeArgumentsOverflow(nmemb, size) { { return nil } }
+//   if !CheckSizeArgumentsOverflow(nmemb, size) { return nil  }
 //   assert.Assert(nmemb * size > 0);
 //   ptr = malloc((uint64)(nmemb * size));
 //   AddMem(ptr, (uint64)(nmemb * size));
@@ -241,7 +241,7 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 // func WebPSafeCalloc(nmemb, size uint64) *void/* (size *nmemb) */ {
 //   ptr *void;
 //   Increment(&num_calloc_calls);
-//   if !CheckSizeArgumentsOverflow(nmemb, size) { { return nil } }
+//   if !CheckSizeArgumentsOverflow(nmemb, size) { return nil  }
 //   assert.Assert(nmemb * size > 0);
 //   ptr = calloc((uint64)nmemb, size);
 //   AddMem(ptr, (uint64)(nmemb * size));
