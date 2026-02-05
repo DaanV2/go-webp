@@ -28,30 +28,30 @@ type VP8LHistogram struct {
   // 'literal' contains green literal, palette-code and
   // copy-length-prefix histogram
   literal *uint32;  // Pointer to the allocated buffer for literal.
-  uint32 red[NUM_LITERAL_CODES];
-  uint32 blue[NUM_LITERAL_CODES];
-  uint32 alpha[NUM_LITERAL_CODES];
+  red [NUM_LITERAL_CODES]uint32
+  blue [NUM_LITERAL_CODES]uint32
+  alpha [NUM_LITERAL_CODES]uint32
   // Backward reference prefix-code histogram.
-  uint32 distance[NUM_DISTANCE_CODES];
-  var palette_code_bits int
+  distance [NUM_DISTANCE_CODES]uint32
+  palette_code_bits int
   // The following members are only used within VP8LGetHistoImageSymbols.
 
   // Index of the unique value of a histogram if any, VP8L_NON_TRIVIAL_SYM
   // otherwise.
-  uint16 trivial_symbol[5];
-  var bit_cost uint64  // Cached value of total bit cost.
+  trivial_symbol [5]uint16
+  bit_cost uint64  // Cached value of total bit cost.
   // Cached values of entropy costs: literal, red, blue, alpha, distance
-  uint64 costs[5];
-  uint8 is_used[5];  // 5 for literal, red, blue, alpha, distance
-  var bin_id uint16     // entropy bin index.
+  costs [5]uint64
+  is_used [5]uint8  // 5 for literal, red, blue, alpha, distance
+  bin_id uint16     // entropy bin index.
 } ;
 
 // Collection of histograms with fixed capacity, allocated as one
 // big memory chunk.
 type VP8LHistogramSet struct {
-  var size int      // number of slots currently in use
-  var max_size int  // maximum capacity
-  *VP8LHistogram* histograms;
+  size int      // number of slots currently in use
+  max_size int  // maximum capacity
+  histograms *VP8LHistogram
 } ;
 
 // Create the histogram.

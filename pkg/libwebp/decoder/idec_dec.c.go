@@ -66,29 +66,29 @@ const (
 
 // storage for partition #0 and partial data (in a rolling fashion)
 type MemBuffer struct {
-   mode MemBufferMode;  // Operation mode
-   start uint64;        // start location of the data to be decoded
-   end uint64;          // end location
-   buf_size uint64;     // size of the allocated buffer
-   buf *uint8;        // We don't own this buffer in case WebPIUpdate()
+	mode MemBufferMode;  // Operation mode
+	start uint64;        // start location of the data to be decoded
+	end uint64;          // end location
+	buf_size uint64;     // size of the allocated buffer
+	buf *uint8;        // We don't own this buffer in case WebPIUpdate()
 
-   part0_size uint64;         // size of partition #0
-  part0_buf *uint8;  // buffer to store partition #0
+	part0_size uint64;         // size of partition #0
+	part0_buf *uint8;  // buffer to store partition #0
 }
 
 type WebPIDecoder struct {
-  state DecState;        // current decoding state
-  params WebPDecParams  // Params to store output info
-   is_lossless int       // for down-casting 'dec'.
-  dec *void;             // either a VP8Decoder or a VP8LDecoder instance
-  io VP8Io
+	state DecState;        // current decoding state
+	params WebPDecParams  // Params to store output info
+	is_lossless int       // for down-casting 'dec'.
+	dec *void;             // either a VP8Decoder or a VP8LDecoder instance
+	io VP8Io
 
-   var mem MemBuffer         // input memory buffer.
-  output WebPDecBuffer ;  // output buffer (when no external one is supplied, // or if the external one has slow-memory)
-  final_output *WebPDecBuffer;  // Slow-memory output to copy to eventually.
-   chunk_size uint64  // Compressed VP8/VP8L size extracted from Header.
+	mem MemBuffer         // input memory buffer.
+	output WebPDecBuffer ;  // output buffer (when no external one is supplied, // or if the external one has slow-memory)
+	final_output *WebPDecBuffer;  // Slow-memory output to copy to eventually.
+	chunk_size uint64  // Compressed VP8/VP8L size extracted from Header.
 
-  last_mb_y int ;  // last row reached for intra-mode decoding
+	last_mb_y int ;  // last row reached for intra-mode decoding
 }
 
 // MB context to restore in case VP8DecodeMB() fails

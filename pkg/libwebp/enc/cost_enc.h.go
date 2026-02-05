@@ -25,16 +25,15 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // On-the-fly info about the current set of residuals. Handy to avoid
 // passing zillions of params.
-typedef struct VP8Residual VP8Residual;
 type VP8Residual struct {
-  var first int
-  var last int
-  const coeffs *int16;
+  first int
+  last int
+  coeffs *int16;
 
-  var coeff_type int
+  coeff_type int
   prob *ProbaArray;
   stats *StatsArray;
-   var costs CostArrayPtr
+   costs CostArrayPtr
 }
 
 func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual);

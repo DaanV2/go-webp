@@ -98,9 +98,9 @@ static int EncodeLossless(/* const */ data *uint8, width, height int, int effort
 
 // Small struct to hold the result of a filter mode compression attempt.
 type FilterTrial struct {
-  var score uint64
-   var bw VP8BitWriter
-   var stats WebPAuxStats
+	score uint64
+	bw VP8BitWriter
+	stats WebPAuxStats
 } 
 
 // This function always returns an initialized 'bw' object, even upon error.

@@ -52,7 +52,7 @@ type WebPWorkerImpl struct {
   pthread_mutex_t mutex;
   pthread_cond_t condition;
   pthread_t thread;
-} ;
+}
 
 #if defined(_WIN32)
 

@@ -23,7 +23,7 @@ type ALPHDecoder struct {
 	// Although alpha channel requires only 1 byte per
 	// pixel, sometimes VP8LDecoder may need to allocate
 	// 4 bytes per pixel internally during decode.
-	use_8b_decode int  
+	use_8b_decode int
 	output *uint8
 	prev_line *uint8  // last output row (or nil)
 }

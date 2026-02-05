@@ -253,21 +253,22 @@ func GetTransformBits(int method, int histo_bits) int {
 // Set of parameters to be used in each iteration of the cruncher.
 const CRUNCH_SUBCONFIGS_MAX =2
 type CrunchSubConfig struct {
-  int lz77;
-  var do_no_cache int
-} ;
+  lz77 int
+  do_no_cache int
+}
+
 type CrunchConfig struct {
-  var entropy_idx int
-   var palette_sorting_type PaletteSorting
-  CrunchSubConfig sub_configs[CRUNCH_SUBCONFIGS_MAX];
-  var sub_configs_size int
+  entropy_idx int
+  palette_sorting_type PaletteSorting
+  sub_configs [CRUNCH_SUBCONFIGS_MAX]CrunchSubConfig
+  sub_configs_size int
 } ;
 
 // +2 because we add a palette sorting configuration for kPalette and
 // kPaletteAndSpatial.
 const CRUNCH_CONFIGS_MAX =(kNumEntropyIx + 2 * kPaletteSortingNum)
 
-func EncoderAnalyze(/* const */ enc *VP8LEncoder, CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX], /*const*/ crunch_configs_size *int, /*const*/ red_and_blue_always_zero *int) int {
+func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS_MAX]CrunchConfig, /*const*/ crunch_configs_size *int, /*const*/ red_and_blue_always_zero *int) int {
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
@@ -275,8 +276,8 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, CrunchConfig crunch_configs[CR
   method := config.method;
   low_effort := (config.method == 0);
   var i int
-  int use_palette, transform_bits;
-  int n_lz77s;
+  var use_palette, transform_bits int 
+  var n_lz77s int 
   // If set to 0, analyze the cache with the computed cache value. If 1, also
   // analyze with no-cache.
   do_no_cache := 0;
@@ -1348,14 +1349,14 @@ func VP8LEncoderDelete(enc *VP8LEncoder) {
 // Main call
 
 type StreamEncodeContext struct {
-  const config *WebPConfig;
-  const picture *WebPPicture;
-  bw *VP8LBitWriter;
-  enc *VP8LEncoder;
-  CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX];
-  var num_crunch_configs int
-  var red_and_blue_always_zero int
-  stats *WebPAuxStats;
+	config *WebPConfig
+	picture *WebPPicture
+	bw *VP8LBitWriter
+	enc *VP8LEncoder
+	crunch_configs [CRUNCH_CONFIGS_MAX]CrunchConfig
+	num_crunch_configs int
+	red_and_blue_always_zero int
+	stats *WebPAuxStats
 } ;
 
 func EncodeStreamHook(input *void, data *void2) int {

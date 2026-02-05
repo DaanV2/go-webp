@@ -73,10 +73,10 @@ func FindMatchLength(/* const */ array *uint321, /*const*/ array *uint322, int b
 type PixOrCopyBlock struct {
   next *PixOrCopyBlock;  // next block (or nil)
   start *PixOrCopy;      // data start
-  var size int              // currently used size
+  size int              // currently used size
 }
 
-extern func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs);
+// extern func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs);
 func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs) {
   assert.Assert(refs != nil);
   if (refs.tail != nil) {

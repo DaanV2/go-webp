@@ -148,15 +148,12 @@ func VP8LHashChainFindCopy(/* const */ p *VP8LHashChain, int base_position, /*co
 // maximum number of reference blocks the image will be segmented into
 const MAX_REFS_BLOCK_PER_IMAGE =16
 
-typedef struct PixOrCopyBlock PixOrCopyBlock;  // forward declaration
-typedef struct VP8LBackwardRefs VP8LBackwardRefs;
-
 // Container for blocks chain
 type VP8LBackwardRefs struct {
-  var block_size int               // common block-size
-  var error int                    // set to true if some memory error occurred
+  block_size int               // common block-size
+  error int                    // set to true if some memory error occurred
   refs *PixOrCopyBlock;         // list of currently used blocks
-  *PixOrCopyBlock* tail;        // for list recycling
+  tail *PixOrCopyBlock        // for list recycling
   free_blocks *PixOrCopyBlock;  // free-list
   last_block *PixOrCopyBlock;   // used for adding new refs (internal)
 }
@@ -173,8 +170,8 @@ type VP8LRefsCursor struct {
   cur_pos *PixOrCopy;  // current position
   // private:
   cur_block *PixOrCopyBlock;  // current block in the refs list
-  const last_pos *PixOrCopy;  // sentinel for switching to next block
-} ;
+  last_pos *PixOrCopy;  // sentinel for switching to next block
+}
 
 // Returns a cursor positioned at the beginning of the references list.
 VP8LRefsCursor VP8LRefsCursorInit(/* const */ refs *VP8LBackwardRefs);

@@ -24,27 +24,24 @@ const WEBP_RESCALER_ONE =(uint64(1) << WEBP_RESCALER_RFIX)
 #define WEBP_RESCALER_FRAC(x, y) \
   ((uint32)(((uint64)(x) << WEBP_RESCALER_RFIX) / (y)))
 
-// Structure used for on-the-fly rescaling
-typedef uint32 rescaler_t;  // type for side-buffer
-typedef struct WebPRescaler WebPRescaler;
 type WebPRescaler struct {
-  var x_expand int               // true if we're expanding in the x direction
-  var y_expand int               // true if we're expanding in the y direction
-  var num_channels int           // bytes to jump between pixels
-  var fx_scale uint32          // fixed-point scaling factors
-  var fy_scale uint32          // ''
-  var fxy_scale uint32         // ''
-  var y_accum int                // vertical accumulator
-  int y_add, y_sub;           // vertical increments
-  int x_add, x_sub;           // horizontal increments
-  int src_width, src_height;  // source dimensions
-  int dst_width, dst_height;  // destination dimensions
-  int src_y, dst_y;           // row counters for input and output
+  x_expand int               // true if we're expanding in the x direction
+  y_expand int               // true if we're expanding in the y direction
+  num_channels int           // bytes to jump between pixels
+  fx_scale uint32          // fixed-point scaling factors
+  fy_scale uint32          // ''
+  fxy_scale uint32         // ''
+  y_accum int                // vertical accumulator
+  y_add, y_sub int           // vertical increments
+  x_add, x_sub int           // horizontal increments
+  src_width, src_height int  // source dimensions
+  dst_width, dst_height int  // destination dimensions
+  src_y, dst_y int           // row counters for input and output
   dst *uint8;
-  var dst_stride int
+  dst_stride int
   // work buffer
-  rescaler_t* (dst_num_channels *width) irow;
-  rescaler_t* (dst_num_channels *width) frow;
+  irow (dst_num_channels *width) *rescaler_t
+  irow (dst_num_channels *width) *rescaler_t
 }
 
 // Initialize a rescaler given scratch area 'work' and dimensions of src & dst.

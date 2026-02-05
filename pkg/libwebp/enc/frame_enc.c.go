@@ -38,29 +38,30 @@ const DQ_LIMIT =0.4  // convergence is considered reached if dq < DQ_LIMIT
 const PARTITION0_SIZE_LIMIT =((VP8_MAX_PARTITION0_SIZE - uint64(2048)) << 11)
 
 func Clamp(float v, float min, float max) float {
-  return (v < min) ? min : (v > max) ? max : v;
+  return tenary.If(v < min, min, tenary.If(v > max, max, v))
 }
 
 type PassStats struct {  // struct for organizing convergence in either size or PSNR
-  var is_first int
-  float dq;
-  float q, last_q;
-  float qmin, qmax;
-  double value, last_value;  // PSNR or size
-  double target;
-  var do_size_search int
-} ;
+	is_first int
+	dq float64
+	q, last_q float64
+	qmin, qmax float64
+	value, last_value double64  // PSNR or size
+	target double64
+	do_size_search int
+}
 
 func InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) int {
-  target_size := (uint64)enc.config.target_size;
+  target_size := uint64(enc.config.target_size)
   do_size_search := (target_size != 0);
   const float target_PSNR = enc.config.target_PSNR;
 
   s.is_first = 1;
-  s.dq = 10.f;
-  s.qmin = 1.f * enc.config.qmin;
-  s.qmax = 1.f * enc.config.qmax;
-  s.q = s.last_q = Clamp(enc.config.quality, s.qmin, s.qmax);
+  s.dq = 10.0;
+  s.qmin = 1.0 * enc.config.qmin;
+  s.qmax = 1.0 * enc.config.qmax;
+  s.last_q = Clamp(enc.config.quality, s.qmin, s.qmax);
+ 	s.q = s.last_q 
   s.target = do_size_search       ? (double)target_size
               : (target_PSNR > 0.) ? target_PSNR
                                    : 40.;  // default, just in case

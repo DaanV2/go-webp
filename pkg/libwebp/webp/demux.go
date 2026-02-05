@@ -155,12 +155,12 @@ type WebPAnimDecoderOptions struct {
 
 // Global information about the animation..
 type WebPAnimInfo struct {
-  var canvas_width uint32
-  var canvas_height uint32
-  var loop_count uint32
-  var bgcolor uint32
-  var frame_count uint32
-  uint32 pad[4];  // padding for later use
+  canvas_width uint32
+  canvas_height uint32
+  loop_count uint32
+  bgcolor uint32
+  frame_count uint32
+  pad [4]uint32  // padding for later use
 }
 
 // Get global information about the animation.

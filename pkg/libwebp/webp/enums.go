@@ -133,3 +133,56 @@ const (
 	// possibly being partial.
 	WEBP_FF_FRAME_COUNT
 )
+
+// Image characteristics hint for the underlying encoder.
+type WebPImageHint int
+
+const (
+	WEBP_HINT_DEFAULT WebPImageHint = iota // default preset.
+	WEBP_HINT_PICTURE                      // digital picture, like portrait, inner shot
+	WEBP_HINT_PHOTO                        // outdoor photograph, with natural lighting
+	WEBP_HINT_GRAPH                        // Discrete tone image (graph, map-tile etc).
+	WEBP_HINT_LAST
+)
+
+// Enumerate some predefined settings for WebPConfig, depending on the type
+// of source picture. These presets are used when calling WebPConfigPreset().
+type WebPPreset int
+
+const (
+	WEBP_PRESET_DEFAULT WebPPreset = iota // default preset.
+	WEBP_PRESET_PICTURE                   // digital picture, like portrait, inner shot
+	WEBP_PRESET_PHOTO                     // outdoor photograph, with natural lighting
+	WEBP_PRESET_DRAWING                   // hand or line drawing, with high-contrast details
+	WEBP_PRESET_ICON                      // small-sized colorful images
+	WEBP_PRESET_TEXT                      // text-like
+)
+
+// Color spaces.
+type WebPEncCSP int
+
+const (
+	// chroma sampling
+	WEBP_YUV420        WebPEncCSP = 0 // 4:2:0
+	WEBP_YUV420A       WebPEncCSP = 4 // alpha channel variant
+	WEBP_CSP_UV_MASK   WebPEncCSP = 3 // bit-mask to get the UV sampling factors
+	WEBP_CSP_ALPHA_BIT WebPEncCSP = 4 // bit that is set if alpha is present
+)
+
+// Encoding error conditions.
+type WebPEncodingError int
+
+const (
+	VP8_ENC_OK                            WebPEncodingError = iota
+	VP8_ENC_ERROR_OUT_OF_MEMORY                             // memory error allocating objects
+	VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY                   // memory error while flushing bits
+	VP8_ENC_ERROR_nil_PARAMETER                             // a pointer parameter is nil
+	VP8_ENC_ERROR_INVALID_CONFIGURATION                     // configuration is invalid
+	VP8_ENC_ERROR_BAD_DIMENSION                             // picture has invalid width/height
+	VP8_ENC_ERROR_PARTITION0_OVERFLOW                       // partition is bigger than 512k
+	VP8_ENC_ERROR_PARTITION_OVERFLOW                        // partition is bigger than 16M
+	VP8_ENC_ERROR_BAD_WRITE                                 // error while flushing bytes
+	VP8_ENC_ERROR_FILE_TOO_BIG                              // file is bigger than 4G
+	VP8_ENC_ERROR_USER_ABORT                                // abort request by user
+	VP8_ENC_ERROR_LAST                                      // list terminator. always last.
+)

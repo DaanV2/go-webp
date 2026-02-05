@@ -653,13 +653,14 @@ func HistogramAnalyzeEntropyBin(/* const */ image_histo *VP8LHistogramSet, low_e
 // Sets the remaining histograms to nil.
 // 'combine_cost_factor' has to be divided by 100.
 func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_combo *VP8LHistogram, int num_bins, int32 combine_cost_factor, low_effort int) {
-  *VP8LHistogram* const histograms = image_histo.histograms;
+  var histograms *VP8LHistogram = image_histo.histograms;
   var idx int
-  struct {
-    var first int16  // position of the histogram that accumulates all
+  var bin_info [BIN_SIZE]struct{
+	// position of the histogram that accumulates all
                     // histograms with the same bin_id
-    var num_combine_failures uint16  // number of combine failures per bin_id
-  } bin_info[BIN_SIZE];
+    first int16  
+    num_combine_failures uint16  // number of combine failures per bin_id
+  }
 
   assert.Assert(num_bins <= BIN_SIZE);
   for idx = 0; idx < num_bins; idx++ {
@@ -737,18 +738,18 @@ func MyRand(/* const */ seed *uint32) uint32 {
 
 // Pair of histograms. Negative idx1 value means that pair is out-of-date.
 type HistogramPair struct {
-  int idx1;
-  int idx2;
-  var cost_diff int64
-  var cost_combo uint64
-  uint64 costs[5];
-} ;
+  idx1 int
+  idx2 int
+  cost_diff int64
+  cost_combo uint64
+  costs [5]uint64
+}
 
 type HistoQueue struct {
-  queue *HistogramPair;
-  var size int
-  var max_size int
-} ;
+  queue *HistogramPair
+  size int
+  max_size int
+}
 
 func HistoQueueInit(/* const */ histo_queue *HistoQueue, /*const*/ max_size int) bool {
   histo_queue.size = 0;

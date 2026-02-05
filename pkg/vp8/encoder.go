@@ -11,74 +11,74 @@ package vp8
 import "github.com/daanv2/go-webp/pkg/constants"
 
 type VP8Encoder struct {
-  config *WebPConfig;  // user configuration and parameters
-  pic *WebPPicture;          // input / output picture
+	config *WebPConfig;  // user configuration and parameters
+	pic *WebPPicture;          // input / output picture
 
-  // headers
-   filter_hdr VP8EncFilterHeader    // filtering information
-   segment_hdr VP8EncSegmentHeader  // segment information
+	// headers
+	filter_hdr VP8EncFilterHeader    // filtering information
+	segment_hdr VP8EncSegmentHeader  // segment information
 
-   profile int  // VP8's profile, deduced from Config.
+	profile int  // VP8's profile, deduced from Config.
 
-  // dimension, in macroblock units.
-   mb_w, mb_h int
-   preds_w int  // stride of the prediction plane *preds (=4*mb_w + 1)
+	// dimension, in macroblock units.
+	mb_w, mb_h int
+	preds_w int  // stride of the prediction plane *preds (=4*mb_w + 1)
 
-  // number of partitions (1, 2, 4 or 8 = MAX_NUM_PARTITIONS)
-   num_parts int
+	// number of partitions (1, 2, 4 or 8 = MAX_NUM_PARTITIONS)
+	num_parts int
 
-  // per-partition boolean decoders.
-   bw VP8BitWriter                         // part0
-   parts [MAX_NUM_PARTITIONS]VP8BitWriter  // token partitions
-   tokens VP8TBuffer                       // token buffer
+	// per-partition boolean decoders.
+	bw VP8BitWriter                         // part0
+	parts [MAX_NUM_PARTITIONS]VP8BitWriter  // token partitions
+	tokens VP8TBuffer                       // token buffer
 
-   percent int  // for progress
+	percent int  // for progress
 
-  // transparency blob
-  has_alpha int 
-  alpha_data *uint8;  // non-nil if transparency is present
-   alpha_data_size uint32
-  alpha_worker WebPWorker 
+	// transparency blob
+	has_alpha int 
+	alpha_data *uint8;  // non-nil if transparency is present
+	alpha_data_size uint32
+	alpha_worker WebPWorker 
 
-  // quantization info (one set of DC/AC dequant factor per segment)
-  dqm [NUM_MB_SEGMENTS]VP8SegmentInfo
-  base_quant int  // nominal quantizer value. Only used
-                   // for relative coding of segments' quant.
-  alpha int       // global susceptibility (<=> complexity)
-  // U/V quantization susceptibility
-  // global offset of quantizers, shared by all segments
-  uv_alpha int
-  dq_y1_dc int
-  dq_y2_dc, dq_y2_ac int
-  dq_uv_dc, dq_uv_ac int
+	// quantization info (one set of DC/AC dequant factor per segment)
+	dqm [NUM_MB_SEGMENTS]VP8SegmentInfo
+	base_quant int  // nominal quantizer value. Only used
+					// for relative coding of segments' quant.
+	alpha int       // global susceptibility (<=> complexity)
+	// U/V quantization susceptibility
+	// global offset of quantizers, shared by all segments
+	uv_alpha int
+	dq_y1_dc int
+	dq_y2_dc, dq_y2_ac int
+	dq_uv_dc, dq_uv_ac int
 
-  // probabilities and statistics
-   proba VP8EncProba
-   sse [4]uint64     // sum of Y/U/V/A squared errors for all macroblocks
-   sse_count uint64  // pixel count for the sse[] stats
-   coded_size int
+	// probabilities and statistics
+	proba VP8EncProba
+	sse [4]uint64     // sum of Y/U/V/A squared errors for all macroblocks
+	sse_count uint64  // pixel count for the sse[] stats
+	coded_size int
 	residual_bytes[3][4]int 
 	block_count[3]int
 
-  // quality/speed settings
-  method int                // 0=fastest, 6=best/slowest.
-   rd_opt_level VP8RDLevel   // Deduced from method.
-  max_i4_header_bits int    // partition #0 safeness factor
-  mb_header_limit int       // rough limit for header bits per MB
-  thread_level int          // derived from config.thread_level
-  do_search int             // derived from config.target_XXX
-  use_tokens int            // if true, use token buffer
+	// quality/speed settings
+	method int                // 0=fastest, 6=best/slowest.
+	rd_opt_level VP8RDLevel   // Deduced from method.
+	max_i4_header_bits int    // partition #0 safeness factor
+	mb_header_limit int       // rough limit for header bits per MB
+	thread_level int          // derived from config.thread_level
+	do_search int             // derived from config.target_XXX
+	use_tokens int            // if true, use token buffer
 
-  // Memory
-  mb_info *VP8MBInfo;  // contextual macroblock infos (mb_w + 1)
-  preds *uint8;      // predictions modes: (4*mb_w+1) * (4*mb_h+1)
-  nz *uint32;        // non-zero bit context: mb_w+1
-  y_top *uint8;      // top luma samples.
-  // top u/v samples.
+	// Memory
+	mb_info *VP8MBInfo;  // contextual macroblock infos (mb_w + 1)
+	preds *uint8;      // predictions modes: (4*mb_w+1) * (4*mb_h+1)
+	nz *uint32;        // non-zero bit context: mb_w+1
+	y_top *uint8;      // top luma samples.
+	// top u/v samples.
 	// U and V are packed into 16 bytes (8 U + 8 V)
-  uv_top *uint8;     
-  lf_stats *LFStats;   // autofilter stats (if nil, autofilter is off)
-  top_derr *DError;    // diffusion error (nil if disabled)
+	uv_top *uint8;     
+	lf_stats *LFStats;   // autofilter stats (if nil, autofilter is off)
+	top_derr *DError;    // diffusion error (nil if disabled)
 }
 
 type VP8LEncoder struct {

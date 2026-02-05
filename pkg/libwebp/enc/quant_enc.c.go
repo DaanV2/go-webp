@@ -503,13 +503,13 @@ type Node struct {
    prev int8    // best previous node
    sign int8    // sign of coeff_i
    level int16  // level
-} ;
+}
 
 // Score state
 type ScoreState struct {
   score_t score;          // partial RD score
   costs *uint16;  // shortcut to cost tables
-} ;
+}
 
 // If a coefficient was quantized to a value Q (using a neutral bias),
 // we test all alternate possibilities between [Q-MIN_DELTA, Q+MAX_DELTA]

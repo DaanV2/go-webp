@@ -21,10 +21,6 @@ import "github.com/daanv2/go-webp/pkg/stddef"
 const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 
 
-
-
- int WebPGetEncoderVersion(void);
-
 //------------------------------------------------------------------------------
 // One-stop-shop call! No questions asked:
 
@@ -52,87 +48,81 @@ const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
  uint64 WebPEncodeLosslessRGBA(/* const */ rgba *uint8, width, height int, int stride, *uint8* output);
  uint64 WebPEncodeLosslessBGRA(/* const */ bgra *uint8, width, height int, int stride, *uint8* output);
 
-//------------------------------------------------------------------------------
-// Coding parameters
-
-// Image characteristics hint for the underlying encoder.
-typedef enum WebPImageHint {
-  WEBP_HINT_DEFAULT = 0,  // default preset.
-  WEBP_HINT_PICTURE,      // digital picture, like portrait, inner shot
-  WEBP_HINT_PHOTO,        // outdoor photograph, with natural lighting
-  WEBP_HINT_GRAPH,        // Discrete tone image (graph, map-tile etc).
-  WEBP_HINT_LAST
-} WebPImageHint;
 
 // Compression parameters.
 type WebPConfig struct {
-  var lossless int   // Lossless encoding (0=lossy(default), 1=lossless).
-  quality float;  // between 0 and 100. For lossy, 0 gives the smallest
-                  // size and 100 the largest. For lossless, this
-                  // parameter is the amount of effort put into the
-                  // compression: 0 is the fastest but gives larger
-                  // files compared to the slowest, but best, 100.
-  var method int     // quality/speed trade-off (0=fast, 6=slower-better)
+	lossless int   // Lossless encoding (0=lossy(default), 1=lossless).
+	// between 0 and 100. For lossy, 0 gives the smallest
+	// size and 100 the largest. For lossless, this
+	// parameter is the amount of effort put into the
+	// compression: 0 is the fastest but gives larger
+	// files compared to the slowest, but best, 100.
+	quality float64
+	method int     // quality/speed trade-off (0=fast, 6=slower-better)
 
-   var image_hint WebPImageHint  // Hint for image type (lossless only for now).
+	image_hint WebPImageHint  // Hint for image type (lossless only for now).
 
-  var target_size int        // if non-zero, set the desired target size in bytes.
-                          // Takes precedence over the 'compression' parameter.
-  float target_PSNR;      // if non-zero, specifies the minimal distortion to
-                          // try to achieve. Takes precedence over target_size.
-  var segments int           // maximum number of segments to use, in [1..4]
-  var sns_strength int       // Spatial Noise Shaping. 0=off, 100=maximum.
-  var filter_strength int    // range: [0 = off .. 100 = strongest]
-  var filter_sharpness int   // range: [0 = off .. 7 = least sharp]
-  var filter_type int        // filtering type: 0 = simple, 1 = strong (only used
-                          // if filter_strength > 0 or autofilter > 0)
-  var autofilter int         // Auto adjust filter's strength [0 = off, 1 = on]
-  var alpha_compression int  // Algorithm for encoding the alpha plane (0 = none, // 1 = compressed with WebP lossless). Default is 1.
-  var alpha_filtering int    // Predictive filtering method for alpha plane.
-                          //  0: none, 1: fast, 2: best. Default if 1.
-  var alpha_quality int      // Between 0 (smallest size) and 100 (lossless).
-                          // Default is 100.
-  var pass int               // number of entropy-analysis passes (in [1..10]).
+	// if non-zero, set the desired target size in bytes.
+	// Takes precedence over the 'compression' parameter.
+	target_size int        
+	// if non-zero, specifies the minimal distortion to
+	// try to achieve. Takes precedence over target_size.
+	target_PSNR float64
+	segments int           // maximum number of segments to use, in [1..4]
+	sns_strength int       // Spatial Noise Shaping. 0=off, 100=maximum.
+	filter_strength int    // range: [0 = off .. 100 = strongest]
+	filter_sharpness int   // range: [0 = off .. 7 = least sharp]
+	// filtering type: 0 = simple, 1 = strong (only used
+	// if filter_strength > 0 or autofilter > 0)
+	filter_type int        
+	autofilter int         // Auto adjust filter's strength [0 = off, 1 = on]
+	alpha_compression int  // Algorithm for encoding the alpha plane (0 = none, // 1 = compressed with WebP lossless). Default is 1.
+	// Predictive filtering method for alpha plane.
+	//  0: none, 1: fast, 2: best. Default if 1. 
+	alpha_filtering int    
+	// Between 0 (smallest size) and 100 (lossless).
+	// Default is 100.
+	alpha_quality int      
+	pass int               // number of entropy-analysis passes (in [1..10]).
 
-  var show_compressed int    // if true, export the compressed picture back.
-                          // In-loop filtering is not applied.
-  var preprocessing int      // preprocessing filter:
-                          // 0=none, 1=segment-smooth, 2=pseudo-random dithering
-  var partitions int         // log2(number of token partitions) in [0..3]. Default
-                          // is set to 0 for easier progressive decoding.
-  var partition_limit int    // quality degradation allowed to fit the 512k limit
-                          // on prediction modes coding (0: no degradation, // 100: maximum possible degradation).
-  var emulate_jpeg_size int  // If true, compression parameters will be remapped
-                          // to better match the expected output size from
-                          // JPEG compression. Generally, the output size will
-                          // be similar but the degradation will be lower.
-  var thread_level int       // If non-zero, try and use multi-threaded encoding.
-  var low_memory int         // If set, reduce memory usage (but increase CPU use).
+	// if true, export the compressed picture back.
+	// In-loop filtering is not applied.
+	show_compressed int    
+	// preprocessing filter:
+	// 0=none, 1=segment-smooth, 2=pseudo-random dithering
+	preprocessing int      
+	// log2(number of token partitions) in [0..3]. Default
+	// is set to 0 for easier progressive decoding.
+	partitions int         
+	// quality degradation allowed to fit the 512k limit
+	// on prediction modes coding (0: no degradation, // 100: maximum possible degradation).
+	partition_limit int    
+	// If true, compression parameters will be remapped
+	// to better match the expected output size from
+	// JPEG compression. Generally, the output size will
+	// be similar but the degradation will be lower.
+	emulate_jpeg_size int  
+	thread_level int       // If non-zero, try and use multi-threaded encoding.
+	low_memory int         // If set, reduce memory usage (but increase CPU use).
 
-  var near_lossless int  // Near lossless encoding [0 = max loss .. 100 = off
-                      // (default)].
-  exact int;          // if non-zero, preserve the exact RGB values under
-                      // transparent area. Otherwise, discard this invisible
-                      // RGB information for better compression. The default
-                      // value is 0.
+	// Near lossless encoding [0 = max loss .. 100 = off
+	// (default)].
+	near_lossless int  
 
-  var use_delta_palette int  // reserved
-  var use_sharp_yuv int      // if needed, use sharp (and slow) RGB.YUV conversion
+	// if non-zero, preserve the exact RGB values under
+	// transparent area. Otherwise, discard this invisible
+	// RGB information for better compression. The default
+	// value is 0.
+	exact int;          
 
-  var qmin int  // minimum permissible quality factor
-  var qmax int  // maximum permissible quality factor
+	use_delta_palette int  // reserved
+	use_sharp_yuv int      // if needed, use sharp (and slow) RGB.YUV conversion
+
+	qmin int  // minimum permissible quality factor
+	qmax int  // maximum permissible quality factor
 }
 
-// Enumerate some predefined settings for WebPConfig, depending on the type
-// of source picture. These presets are used when calling WebPConfigPreset().
-typedef enum WebPPreset {
-  WEBP_PRESET_DEFAULT = 0,  // default preset.
-  WEBP_PRESET_PICTURE,      // digital picture, like portrait, inner shot
-  WEBP_PRESET_PHOTO,        // outdoor photograph, with natural lighting
-  WEBP_PRESET_DRAWING,      // hand or line drawing, with high-contrast details
-  WEBP_PRESET_ICON,         // small-sized colorful images
-  WEBP_PRESET_TEXT          // text-like
-} WebPPreset;
+
 
 // Internal, version-checked, entry point
   int WebPConfigInitInternal(*WebPConfig, WebPPreset, float, int);
@@ -170,48 +160,55 @@ func WebPConfigPreset(config *WebPConfig, WebPPreset preset, quality float) int 
 // Structure for storing auxiliary statistics.
 
 type WebPAuxStats struct {
-  var coded_size int  // final size
+  coded_size int  // final size
 
-  float PSNR[5];             // peak-signal-to-noise ratio for Y/U/V/All/Alpha
-  int block_count[3];        // number of intra4/intra16/skipped macroblocks
-  int header_bytes[2];       // approximate number of bytes spent for header
+  PSNR [5]float64;             // peak-signal-to-noise ratio for Y/U/V/All/Alpha
+  block_count [3]int        // number of intra4/intra16/skipped macroblocks
+
+  // approximate number of bytes spent for header
                              // and mode-partition #0
-  int residual_bytes[3][4];  // approximate number of bytes spent for
+  header_bytes [2]int       
+
+							 // approximate number of bytes spent for
                              // DC/AC/uv coefficients for each (0..3) segments.
-  int segment_size[4];       // number of macroblocks in each segments
-  int segment_quant[4];      // quantizer values for each segments
-  int segment_level[4];      // filtering strength for each segments [0..63]
+  residual_bytes[3][4]int  
+  segment_size [4]int       // number of macroblocks in each segments
+  segment_quant [4]int      // quantizer values for each segments
+  segment_level [4]int      // filtering strength for each segments [0..63]
 
-  var alpha_data_size int  // size of the transparency data
-  var layer_data_size int  // size of the enhancement layer data
+  alpha_data_size int  // size of the transparency data
+  layer_data_size int  // size of the enhancement layer data
 
-  // lossless encoder statistics
-  var lossless_features uint32  // bit0:predictor bit1:cross-color transform
-                               // bit2:subtract-green bit3:color indexing
-  var histogram_bits int          // number of precision bits of histogram
-  var transform_bits int          // precision bits for predictor transform
-  var cache_bits int              // number of bits for color cache lookup
-  var palette_size int            // number of color in palette, if used
-  var lossless_size int           // final lossless size
-  var lossless_hdr_size int       // lossless header (transform, huffman etc) size
-  var lossless_data_size int      // lossless image data size
-  var cross_color_transform_bits int  // precision bits for cross-color transform
+	// lossless encoder statistics
+	// bit0:predictor
+	// bit1:cross-color transform
+	// bit2:subtract-green
+	// bit3:color indexing
+  lossless_features uint32  
+  histogram_bits int          // number of precision bits of histogram
+  transform_bits int          // precision bits for predictor transform
+  cache_bits int              // number of bits for color cache lookup
+  palette_size int            // number of color in palette, if used
+  lossless_size int           // final lossless size
+  lossless_hdr_size int       // lossless header (transform, huffman etc) size
+  lossless_data_size int      // lossless image data size
+  cross_color_transform_bits int  // precision bits for cross-color transform
 
-  uint32 pad[1];  // padding for later use
+  pad [1]uint32  // padding for later use
 }
 
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
 // reference (and so one can make use of picture.custom_ptr).
-typedef int (*WebPWriterFunction)(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture);
+type WebPWriterFunction = func(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture) int 
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
 // the following WebPMemoryWriter object (to be set as a custom_ptr).
 type WebPMemoryWriter struct {
-  mem *uint8;     // final buffer (of size 'max_size', larger than 'size').
-  size uint64 ;      // final size
-  var max_size uint64  // total capacity
-  uint32 pad[1];  // padding for later use
+  mem *uint8     // final buffer (of size 'max_size', larger than 'size').
+  size uint64      // final size
+  max_size uint64  // total capacity
+  pad [1]uint32  // padding for later use
 }
 
 // The following must be called first before any use.
@@ -230,29 +227,7 @@ type WebPMemoryWriter struct {
 // everything is OK.
 typedef int (*WebPProgressHook)(int percent, /*const*/ picture *WebPPicture);
 
-// Color spaces.
-typedef enum WebPEncCSP {
-  // chroma sampling
-  WEBP_YUV420 = 0,        // 4:2:0
-  WEBP_YUV420A = 4,       // alpha channel variant
-  WEBP_CSP_UV_MASK = 3,   // bit-mask to get the UV sampling factors
-  WEBP_CSP_ALPHA_BIT = 4  // bit that is set if alpha is present
-} WebPEncCSP;
 
-// Encoding error conditions.
-typedef enum WebPEncodingError {
-  VP8_ENC_OK = 0, VP8_ENC_ERROR_OUT_OF_MEMORY,            // memory error allocating objects
-  VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY,  // memory error while flushing bits
-  VP8_ENC_ERROR_nil_PARAMETER,           // a pointer parameter is nil
-  VP8_ENC_ERROR_INVALID_CONFIGURATION,    // configuration is invalid
-  VP8_ENC_ERROR_BAD_DIMENSION,            // picture has invalid width/height
-  VP8_ENC_ERROR_PARTITION0_OVERFLOW,      // partition is bigger than 512k
-  VP8_ENC_ERROR_PARTITION_OVERFLOW,       // partition is bigger than 16M
-  VP8_ENC_ERROR_BAD_WRITE,                // error while flushing bytes
-  VP8_ENC_ERROR_FILE_TOO_BIG,             // file is bigger than 4G
-  VP8_ENC_ERROR_USER_ABORT,               // abort request by user
-  VP8_ENC_ERROR_LAST                      // list terminator. always last.
-} WebPEncodingError;
 
 // maximum width/height allowed (inclusive), in pixels
 const WEBP_MAX_DIMENSION =16383
@@ -270,61 +245,67 @@ type WebPPicture struct {
   // It is recommended to use ARGB input (*argb, argb_stride) for lossless
   // compression, and YUV input (*y, *u, *v, etc.) for lossy compression
   // since these are the respective native colorspace for these formats.
-  var use_argb int
+  use_argb int
 
   // YUV input (mostly used for input to lossy compression)
-   var colorspace WebPEncCSP    // colorspace: should be YUV420 for now (=Y'CbCr).
-  int width, height;        // dimensions (less or equal to WEBP_MAX_DIMENSION)
-  uint8 *y, *u, *v;       // pointers to luma/chroma planes.
-  int y_stride, uv_stride;  // luma/chroma strides.
+   colorspace WebPEncCSP    // colorspace: should be YUV420 for now (=Y'CbCr).
+   width, height int        // dimensions (less or equal to WEBP_MAX_DIMENSION)
+  y, u, v *uint8       // pointers to luma/chroma planes.
+   y_stride, uv_stride int  // luma/chroma strides.
   a *uint8;               // pointer to the alpha plane
   a_stride int;             // stride of the alpha plane
-  uint32 pad1[2];         // padding for later use
+   pad1 [2]uint32;         // padding for later use
 
   // ARGB input (mostly used for input to lossless compression)
   argb *uint32;    // Pointer to argb (32 bit) plane.
-  var argb_stride int   // This is stride in pixels units, not bytes.
-  uint32 pad2[3];  // padding for later use
+  argb_stride int   // This is stride in pixels units, not bytes.
+   pad2 [3]uint32;  // padding for later use
 
   //   OUTPUT
   ///////////////
   // Byte-emission hook, to store compressed bytes as they are ready.
-   var writer WebPWriterFunction  // can be nil
+   writer WebPWriterFunction  // can be nil
   custom_ptr *void;           // can be used by the writer.
 
   // map for extra information (only for lossy compression mode)
-  var extra_info_type int  // 1: intra type, 2: segment, 3: quant
-                        // 4: intra-16 prediction mode, // 5: chroma prediction mode, // 6: bit cost, 7: distortion
-  extra_info *uint8;  // if not nil, points to an array of size
-                        // ((width + 15) / 16) * ((height + 15) / 16) that
-                        // will be filled with a macroblock map, depending
-                        // on extra_info_type.
+  // 1: intra type
+  // 2: segment
+  // 3: quant
+  // 4: intra-16 prediction mode
+  // 5: chroma prediction mode
+  // 6: bit cost
+  // 7: distortion
+  extra_info_type int
+  // if not nil, points to an array of size
+	// ((width + 15) / 16) * ((height + 15) / 16) that
+	// will be filled with a macroblock map, depending
+	// on extra_info_type.
+  extra_info *uint8
 
-  //   STATS AND REPORTS
-  ///////////////////////////
   // Pointer to side statistics (updated only if not nil)
   stats *WebPAuxStats;
 
   // Error code for the latest error encountered during encoding
-   var error_code WebPEncodingError
+   error_code WebPEncodingError
 
   // If not nil, report progress during encoding.
-   var progress_hook WebPProgressHook
+   progress_hook WebPProgressHook
 
-  user_data *void;  // this field is free to be set to any value and
-                    // used during callbacks (like progress-report e.g.).
+   // this field is free to be set to any value and
+	// used during callbacks (like progress-report e.g.).
+  user_data *void
 
-  uint32 pad3[3];  // padding for later use
+  pad3 [3]uint32  // padding for later use
 
   // Unused for now
-  uint8 *pad4, *pad5;
-  uint32 pad6[8];  // padding for later use
+	pad4, pad5 *uint8
+  pad6[8] uint32  // padding for later use
 
   // PRIVATE FIELDS
   ////////////////////
-  memory_ *void;       // row chunk of memory for yuva planes
-  memory_argb_ *void;  // and for argb too.
-  pad *void7[2];       // padding for later use
+  memory_ *void       // row chunk of memory for yuva planes
+  memory_argb_ *void  // and for argb too.
+  pad7 [2]*void       // padding for later use
 }
 
 // Internal, version-checked, entry point
@@ -494,8 +475,3 @@ func WebPPictureInit(picture *WebPPicture) int {
 // another is provided but they both incur some loss.
   int WebPEncode(/* const */ config *WebPConfig, picture *WebPPicture);
 
-//------------------------------------------------------------------------------
-
-
-
-#endif  // WEBP_WEBP_ENCODE_H_

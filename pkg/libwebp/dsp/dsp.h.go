@@ -112,9 +112,9 @@ extern const int VP8DspScan[16 + 4 + 4];
 const MAX_COEFF_THRESH =31  // size of histogram used by CollectHistogram.
 type VP8Histogram struct {
   // We only need to store max_value and last_non_zero, not the distribution.
-  var max_value int
-  var last_non_zero int
-} ;
+  max_value int
+  last_non_zero int
+} 
 typedef func (*VP8CHisto)(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram);
 extern VP8CHisto VP8CollectHistogram;
 // General-purpose util function to help VP8CollectHistogram().
@@ -147,11 +147,11 @@ func VP8EncDspCostInit(void);
 // SSIM / PSNR utils
 
 // struct for accumulating statistical moments
-type <Foo> struct {
-  var w uint32              // sum(w_i) : sum of weights
-  uint32 xm, ym;         // sum(w_i * x_i), sum(w_i * y_i)
-  uint32 xxm, xym, yym;  // sum(w_i * x_i * x_i), etc.
-} VP8DistoStats;
+type VP8DistoStats struct {
+	w uint32              // sum(w_i) : sum of weights
+	xm, ym uint32         // sum(w_i * x_i), sum(w_i * y_i)
+	xxm, xym, yym uint32  // sum(w_i * x_i * x_i), etc.
+}
 
 // Compute the final SSIM value
 // The non-clipped version assumes stats.w = (2 * VP8_SSIM_KERNEL + 1)^2.

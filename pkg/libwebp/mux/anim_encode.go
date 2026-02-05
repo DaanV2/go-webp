@@ -19,83 +19,83 @@ const TRANSPARENT_COLOR =0x00000000
 
 
 type WebPAnimEncoder struct {
-  canvas_width int;                // Canvas width.
-  canvas_height int;               // Canvas height.
-  options WebPAnimEncoderOptions  // Global encoding options.
+	canvas_width int;                // Canvas width.
+	canvas_height int;               // Canvas height.
+	options WebPAnimEncoderOptions  // Global encoding options.
 
-  last_config WebPConfig            // Cached in case a re-encode is needed.
-  // If 'last_config' uses lossless, then
+	last_config WebPConfig            // Cached in case a re-encode is needed.
+	// If 'last_config' uses lossless, then
 	// this config uses lossy and vice versa;
 	// only valid if 'options.allow_mixed'
 	// is true.
-  last_config_reversed WebPConfig   
+	last_config_reversed WebPConfig   
 
-  curr_canvas *WebPPicture;  // Only pointer; we don't own memory.
+	curr_canvas *WebPPicture;  // Only pointer; we don't own memory.
 
-  // Canvas buffers.
-  curr_canvas_copy WebPPicture   // Possibly modified current canvas.
-  // True if pixels in 'curr_canvas_copy'
-                                  // differ from those in 'curr_canvas'.
-   curr_canvas_copy_modified int  
+	// Canvas buffers.
+	curr_canvas_copy WebPPicture   // Possibly modified current canvas.
+	// True if pixels in 'curr_canvas_copy'
+	// differ from those in 'curr_canvas'.
+	curr_canvas_copy_modified int  
 
-  // Previous canvas (original animation).
-  // Also used temporarily to store canvas_carryover_disposed pixel values.
-  prev_canvas WebPPicture ;
-  // canvas_carryover contains the previous original input frame's pixels
-  // (prev_canvas) with some parts carried over from even earlier original input
-  // frames, to approximate the current state of the canvas at decoding.
-  // canvas_carryover is  compared to curr_canvas at encoding to see what parts
-  // of the current frame are similar enough to not be explicitly encoded.
-   canvas_carryover WebPPicture ;
+	// Previous canvas (original animation).
+	// Also used temporarily to store canvas_carryover_disposed pixel values.
+	prev_canvas WebPPicture ;
+	// canvas_carryover contains the previous original input frame's pixels
+	// (prev_canvas) with some parts carried over from even earlier original input
+	// frames, to approximate the current state of the canvas at decoding.
+	// canvas_carryover is  compared to curr_canvas at encoding to see what parts
+	// of the current frame are similar enough to not be explicitly encoded.
+	canvas_carryover WebPPicture ;
 
-  // Buffer of the size of a subframe, with one boolean value per pixel.
-  // Used when encoding a subframe to remember the pixels that may change when
-  // decoding that frame (0 means the pixel is explicitly encoded, 1 means
-  // carrying over the pixel value of the previous frame).
-  candidate_carryover_mask *uint8;
-  // True if at least one pixel is carried over by the best candidate subframe.
-  best_candidate_carries_over int ;
-  // Same as candidate_carryover_mask but for the best candidate subframe.
-  best_candidate_carryover_mask *uint8;
+	// Buffer of the size of a subframe, with one boolean value per pixel.
+	// Used when encoding a subframe to remember the pixels that may change when
+	// decoding that frame (0 means the pixel is explicitly encoded, 1 means
+	// carrying over the pixel value of the previous frame).
+	candidate_carryover_mask *uint8;
+	// True if at least one pixel is carried over by the best candidate subframe.
+	best_candidate_carries_over int ;
+	// Same as candidate_carryover_mask but for the best candidate subframe.
+	best_candidate_carryover_mask *uint8;
 
-  // Encoded data.
-  encoded_frames []EncodedFrame;  // Array of encoded frames.
-  size uint64 ;                   // Number of allocated frames.
-   start uint64                  // Frame start index.
-   count uint64                  // Number of valid frames.
-   flush_count uint64            // If >0, 'flush_count' frames starting from
-                                 // 'start' are ready to be added to mux.
+	// Encoded data.
+	encoded_frames []EncodedFrame;  // Array of encoded frames.
+	size uint64                   // Number of allocated frames.
+	start uint64                  // Frame start index.
+	count uint64                  // Number of valid frames.
+	flush_count uint64            // If >0, 'flush_count' frames starting from
+	// 'start' are ready to be added to mux.
 
-  // keyframe related.
-  // min(canvas size - frame size) over the frames.
-// Can be negative in certain cases due to
-// transparent pixels in a frame.
-   best_delta int64         
-   keyframe int               // Index of selected keyframe relative to 'start'.
-   count_since_key_frame int  // Frames seen since the last keyframe.
+	// keyframe related.
+	// min(canvas size - frame size) over the frames.
+	// Can be negative in certain cases due to
+	// transparent pixels in a frame.
+	best_delta int64         
+	keyframe int               // Index of selected keyframe relative to 'start'.
+	count_since_key_frame int  // Frames seen since the last keyframe.
 
-   first_timestamp int           // Timestamp of the first frame.
-   prev_timestamp int            // Timestamp of the last added frame.
-   prev_candidate_undecided int  // True if it's not yet decided if previous
-                                 // frame would be a subframe or a keyframe.
+	first_timestamp int           // Timestamp of the first frame.
+	prev_timestamp int            // Timestamp of the last added frame.
+	prev_candidate_undecided int  // True if it's not yet decided if previous
+	// frame would be a subframe or a keyframe.
 
-  prev_rect FrameRectangle ;  // Previous WebP frame rectangle. Only valid if
-                             // prev_candidate_undecided is true.
+	prev_rect FrameRectangle ;  // Previous WebP frame rectangle. Only valid if
+	// prev_candidate_undecided is true.
 
-  // Misc.
-   is_first_frame int  // True if first frame is yet to be added/being added.
-   // True if WebPAnimEncoderAdd() has already been called
+	// Misc.
+	is_first_frame int  // True if first frame is yet to be added/being added.
+	// True if WebPAnimEncoderAdd() has already been called
 	// with a nil frame.
-   got_nil_frame int  
+	got_nil_frame int  
 
-      // Number of input frames processed so far.
-   in_frame_count uint64
-// Number of frames added to mux so far. This may be
-// different from 'in_frame_count' due to merging.
+	// Number of input frames processed so far.
+	in_frame_count uint64
+	// Number of frames added to mux so far. This may be
+	// different from 'in_frame_count' due to merging.
 	out_frame_count uint64
 
-  mux *WebPMux;  // Muxer to assemble the WebP bitstream.
-  error_str  string  // Error string. Empty if no error. used to be byte[ERROR_STR_MAX_LENGTH]
+	mux *WebPMux;  // Muxer to assemble the WebP bitstream.
+	error_str  string  // Error string. Empty if no error. used to be byte[ERROR_STR_MAX_LENGTH]
 }
 
 
@@ -473,15 +473,16 @@ func SnapToEvenOffsets(/* const */ rect *FrameRectangle) {
 }
 
 type SubFrameParams struct {
-  var should_try int               // Should try this set of parameters.
-  var empty_rect_allowed int       // Frame with empty rectangle can be skipped.
-   var rect_ll FrameRectangle       // Frame rectangle for lossless compression.
-   var sub_frame_ll WebPPicture     // subframe pic for lossless compression.
-   var rect_lossy FrameRectangle    // Frame rectangle for lossy compression.
+  should_try int               // Should try this set of parameters.
+  empty_rect_allowed int       // Frame with empty rectangle can be skipped.
+   rect_ll FrameRectangle       // Frame rectangle for lossless compression.
+   sub_frame_ll WebPPicture     // subframe pic for lossless compression.
+   // Frame rectangle for lossy compression.
                                 // Could be smaller than 'rect_ll' as pixels
                                 // with small diffs can be ignored.
-   var sub_frame_lossy WebPPicture  // subframe pic for lossy compression.
-} ;
+   rect_lossy FrameRectangle    
+   sub_frame_lossy WebPPicture  // subframe pic for lossy compression.
+}
 
 func SubFrameParamsInit(/* const */ params *SubFrameParams, int should_try, int empty_rect_allowed) int {
   params.should_try = should_try;
@@ -735,16 +736,17 @@ func EncodeFrame(/* const */ config *WebPConfig, /*const*/ pic *WebPPicture, /*c
 
 // Struct representing a candidate encoded frame including its metadata.
 type Candidate struct {
-   var mem WebPMemoryWriter  // Encoded bytes.
-   var info WebPMuxFrameInfo
-   var rect FrameRectangle  // Coordinates and dimensions of this candidate.
-  var carries_over int  // True if at least one pixel in rect is carried over from
-                     // the previous frame, meaning at least one pixel was set
-                     // to fully transparent and this frame is blended.
-                     // If this is true, such pixels are marked as 1s in
-                     // WebPAnimEncoder::candidate_carryover_mask.
-  var evaluate int      // True if this candidate should be evaluated.
-} ;
+	mem WebPMemoryWriter  // Encoded bytes.
+	info WebPMuxFrameInfo
+	rect FrameRectangle  // Coordinates and dimensions of this candidate.
+	// True if at least one pixel in rect is carried over from
+	// the previous frame, meaning at least one pixel was set
+	// to fully transparent and this frame is blended.
+	// If this is true, such pixels are marked as 1s in
+	// WebPAnimEncoder::candidate_carryover_mask.
+	carries_over int  
+	evaluate int      // True if this candidate should be evaluated.
+}
 
 // Generates a candidate encoded frame given a picture and metadata.
 func EncodeCandidate(/* const */ sub_frame *WebPPicture, /*const*/ rect *FrameRectangle, /*const*/ encoder_config *WebPConfig, int use_blending, /*const*/ candidate *Candidate) WebPEncodingError {

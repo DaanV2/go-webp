@@ -36,9 +36,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 const MIN_PAGE_SIZE =8192  // minimum number of token per page
 const FIXED_PROBA_BIT =(uint(1) << 14)
 
-typedef uint16 token_t;  // bit #15: bit value
-                           // bit #14: flags for constant proba or idx
-                           // bits #0..13: slot or constant proba
+// bit #15: bit value
+// bit #14: flags for constant proba or idx
+// bits #0..13: slot or constant proba
+type token_t  uint16
+
 type VP8Tokens struct {
   next *VP8Tokens;  // pointer to next page
 }

@@ -53,10 +53,10 @@ extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed_SSE;
 type VP8LMultipliers struct {
   // Note: the members are uint8, so that any negative values are
   // automatically converted to "mod 256" values.
-  var green_to_red uint8
-  var green_to_blue uint8
-  var red_to_blue uint8
-} ;
+  green_to_red uint8
+  green_to_blue uint8
+  red_to_blue uint8
+}
 typedef func (*VP8LTransformColorInverseFunc)(/* const */ m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32);
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse;
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse_SSE;
@@ -133,33 +133,25 @@ func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, num_pixels int);
 func VP8LCollectColorRedTransforms_C(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]);
 func VP8LCollectColorBlueTransforms_C(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]);
 
-extern VP8LPredictorAddSubFunc VP8LPredictorsSub[16];
-extern VP8LPredictorAddSubFunc VP8LPredictorsSub_C[16];
-extern VP8LPredictorAddSubFunc VP8LPredictorsSub_SSE[16];
-
 // -----------------------------------------------------------------------------
 // Huffman-cost related functions.
 
-typedef uint32 (*VP8LCostFunc)(/* const */ population *uint32, int length);
-typedef uint64 (*VP8LCombinedShannonEntropyFunc)(/* const */ uint32 X[256], /*const*/ uint32 Y[256]);
-typedef uint64 (*VP8LShannonEntropyFunc)(/* const */ X *uint32, int length);
-
-extern VP8LCostFunc VP8LExtraCost;
-extern VP8LCombinedShannonEntropyFunc VP8LCombinedShannonEntropy;
-extern VP8LShannonEntropyFunc VP8LShannonEntropy;
+type VP8LCostFunc = func(/* const */ population *uint32, int length)uint32
+type VP8LCombinedShannonEntropyFunc = func(/* const */ X [256]uint32, /*const*/ Y [256]uint32)uint64
+type VP8LShannonEntropyFunc = func(/* const */ X *uint32, int length)uint64
 
 type VP8LStreaks struct {      // small struct to hold counters
-  int counts[2];      // index: 0=zero streak, 1=non-zero streak
-  int streaks[2][2];  // [zero/non-zero][streak<3 / streak>=3]
+   counts[2]int     // index: 0=zero streak, 1=non-zero streak
+  streaks[2][2]int   // [zero/non-zero][streak<3 / streak>=3]
 } ;
 
 type VP8LBitEntropy struct {          // small struct to hold bit entropy results
-  var entropy uint64       // entropy
-  var sum uint32           // sum of the population
-  var nonzeros int           // number of non-zero elements in the population
-  var max_val uint32       // maximum value in the population
-  var nonzero_code uint32  // index of the last non-zero in the population
-} ;
+  entropy uint64       // entropy
+  sum uint32           // sum of the population
+  nonzeros int           // number of non-zero elements in the population
+  max_val uint32       // maximum value in the population
+  nonzero_code uint32  // index of the last non-zero in the population
+}
 
 func VP8LBitEntropyInit(/* const */ entropy *VP8LBitEntropy);
 

@@ -129,9 +129,9 @@ func VP8LPrefixEncodeNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bi
 
 const PREFIX_LOOKUP_IDX_MAX =512
 type VP8LPrefixCode struct {
-  var code int8
-  var extra_bits int8
-} ;
+  code int8
+  extra_bits int8
+} 
 
 // These tables are derived using VP8LPrefixEncodeNoLUT.
 extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];

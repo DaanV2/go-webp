@@ -147,21 +147,20 @@ const COST_CACHE_INTERVAL_SIZE_MAX =500
 // Intervals are stored in a linked list and ordered by 'start'. When a new
 // interval has a better value, old intervals are split or removed. There are
 // therefore no overlapping intervals.
-typedef struct CostInterval CostInterval;
 type CostInterval struct {
-  var cost int64
-  var start int
-  var end int
-  var index int
+  cost int64
+  start int
+  end int
+  index int
   previous *CostInterval;
   next *CostInterval;
 }
 
 // The GetLengthCost(cost_model, k) are cached in a CostCacheInterval.
 type CostCacheInterval struct {
-  var cost int64
-  var start int
-  var end int  // Exclusive.
+  cost int64
+  start int
+  end int  // Exclusive.
 } ;
 
 // This structure is in charge of managing intervals and costs.
@@ -171,21 +170,21 @@ type CostCacheInterval struct {
 const COST_MANAGER_MAX_FREE_LIST =10
 type CostManager struct {
   head *CostInterval;
-  var count int  // The number of stored intervals.
+  count int  // The number of stored intervals.
   cache_intervals *CostCacheInterval;
-  var cache_intervals_size uint64
+  cache_intervals_size uint64
   // Contains the GetLengthCost(cost_model, k).
-  int64 cost_cache[MAX_LENGTH];
+  cost_cache [MAX_LENGTH]int64
   costs *int64;
   dist_array *uint16;
   // Most of the time, we only need few intervals . use a free-list, to avoid
   // fragmentation with small allocs in most common cases.
-  CostInterval intervals[COST_MANAGER_MAX_FREE_LIST];
+  intervals [COST_MANAGER_MAX_FREE_LIST]CostInterval
   free_intervals *CostInterval;
   // These are regularly malloc'd remains. This list can't grow larger than than
   // size COST_CACHE_INTERVAL_SIZE_MAX - COST_MANAGER_MAX_FREE_LIST, note.
   recycled_intervals *CostInterval;
-} ;
+}
 
 func CostIntervalAddToFreeList(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
   interval.next = manager.free_intervals;

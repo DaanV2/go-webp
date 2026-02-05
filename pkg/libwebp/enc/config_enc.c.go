@@ -138,10 +138,12 @@ func WebPValidateConfig(/* const */ config *WebPConfig) int {
 const MAX_LEVEL =9
 
 // Mapping between -z level and -m / -q parameter settings.
-static const struct {
-  var method uint8
-  var quality uint8
-} kLosslessPresets[MAX_LEVEL + 1] = {{0, 0},  {1, 20}, {2, 25}, {3, 30}, {3, 50}, {4, 50}, {4, 75}, {4, 90}, {5, 90}, {6, 100}}
+type MQ struct {
+  method uint8
+  quality uint8
+}
+
+vart kLosslessPresets = [MAX_LEVEL + 1]MQ{{0, 0},  {1, 20}, {2, 25}, {3, 30}, {3, 50}, {4, 50}, {4, 75}, {4, 90}, {5, 90}, {6, 100}}
 
 func WebPConfigLosslessPreset(config *WebPConfig, level int) int {
   if config == nil || level < 0 || level > MAX_LEVEL { return 0  }
