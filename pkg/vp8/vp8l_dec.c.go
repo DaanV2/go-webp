@@ -387,11 +387,12 @@ func ReadHuffmanCodes(/* const */ dec *VP8LDecoder, xsize int, ysize int, int co
     if (num_htree_groups_max > 1000 || num_htree_groups_max > xsize * ysize) {
       // Create a mapping from the used indices to the minimal set of used
       // values [0, num_htree_groups)
-      mapping = (*int)WebPSafeMalloc(num_htree_groups_max, sizeof(*mapping));
-      if (mapping == nil) {
-        VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
-        goto Error;
-      }
+    //   mapping = (*int)WebPSafeMalloc(num_htree_groups_max, sizeof(*mapping));
+    //   if (mapping == nil) {
+    //     VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
+    //     goto Error;
+    //   }
+	  mapping := make([]int, num_htree_groups_max)
       // -1 means a value is unmapped, and therefore unused in the Huffman
       // image.
       stdlib.Memset(mapping, 0xff, num_htree_groups_max * sizeof(*mapping));
@@ -542,18 +543,19 @@ func AllocateAndInitRescaler(/* const */ dec *VP8LDecoder, /*const*/ io *VP8Io) 
   in_height := io.mb_h;
   out_height := io.scaled_height;
   work_size := 2 * num_channels * (uint64)out_width;
-  rescaler_t* work;  // Rescaler work area.
-  scaled_data_size := (uint64)out_width;
-  *uint32
-      scaled_data;  // Temporary storage for scaled BGRA data.
+  var work *rescaler_t;  // Rescaler work area.
+  scaled_data_size := uint64(out_width);
+  var scaled_data *uint32
+      ;  // Temporary storage for scaled BGRA data.
   memory_size := sizeof(*dec.rescaler) +
                                work_size * sizeof(*work) +
                                scaled_data_size * sizeof(*scaled_data);
-  memory *uint8 =
-      (*uint8)WebPSafeMalloc(memory_size, sizeof(*memory));
-  if (memory == nil) {
-    return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
-  }
+//   var memory *uint8 = (*uint8)WebPSafeMalloc(memory_size, sizeof(*memory));
+//   if (memory == nil) {
+//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
+//   }
+  memory := make([]uint8, memory_size)
+
   assert.Assert(dec.rescaler_memory == nil);
   dec.rescaler_memory = memory;
 
@@ -576,12 +578,12 @@ func AllocateAndInitRescaler(/* const */ dec *VP8LDecoder, /*const*/ io *VP8Io) 
 #if !defined(WEBP_REDUCE_SIZE)
 
 // We have special "export" function since we need to convert from BGRA
-func Export(/* const */ rescaler *WebPRescaler, WEBP_CSP_MODE colorspace, int rgba_stride, /*const*/ rgba *uint8) int {
+func Export(/* const */ rescaler *WebPRescaler, WEBP_CSP_MODE colorspace, rgba_stride int, /*const*/ rgba *uint8) int {
   var src *uint32 = (*uint32)rescaler.dst;
   dst *uint8 = rgba;
   dst_width := rescaler.dst_width;
   num_lines_out := 0;
-  while (WebPRescalerHasPendingOutput(rescaler)) {
+  for (WebPRescalerHasPendingOutput(rescaler)) {
     WebPRescalerExportRow(rescaler);
     WebPMultARGBRow(src, dst_width, 1);
     VP8LConvertFromBGRA(src, dst_width, colorspace, dst);
@@ -1320,11 +1322,12 @@ Error:
 func ExpandColorMap(num_colors int, /*const*/ transform *VP8LTransform) int {
   var i int
   final_num_colors := 1 << (8 >> transform.bits);
-  var new_color_map *uint32 = (*uint32)WebPSafeMalloc(
-      (uint64)final_num_colors, sizeof(*new_color_map));
-  if (new_color_map == nil) {
-    return 0;
-  } else {
+//   var new_color_map *uint32 = (*uint32)WebPSafeMalloc((uint64)final_num_colors, sizeof(*new_color_map));
+//   if (new_color_map == nil) {
+//     return 0;
+//   } else {
+	new_color_map := make([]uint32, final_num_colors)
+
     var data *uint8 = (*uint8)transform.data;
     var new_data *uint8 = (*uint8)new_color_map;
     new_color_map[0] = transform.data[0];
@@ -1337,7 +1340,7 @@ func ExpandColorMap(num_colors int, /*const*/ transform *VP8LTransform) int {
     }
 	
     transform.data = new_color_map;
-  }
+//   }
   return 1;
 }
 
@@ -1503,12 +1506,13 @@ func DecodeImageStream(xsize int, ysize int, int is_level0, /*const*/ dec *VP8LD
   }
 
   {
-    total_size := (uint64)transform_xsize * transform_ysize;
-    data = (*uint32)WebPSafeMalloc(total_size, sizeof(*data));
-    if (data == nil) {
-      ok = VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
-      goto End;
-    }
+    total_size := uint64(transform_xsize * transform_ysize);
+    // data = (*uint32)WebPSafeMalloc(total_size, sizeof(*data));
+    // if (data == nil) {
+    //   ok = VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
+    //   goto End;
+    // }
+	data := make([]uint32, total_size)
   }
 
   // Use the Huffman trees to decode the LZ77 encoded data.
@@ -1554,11 +1558,13 @@ func AllocateInternalBuffers32b(/* const */ dec *VP8LDecoder, int final_width) i
   total_num_pixels =
       num_pixels + cache_top_pixels + cache_pixels + accumulated_rgb_pixels;
   assert.Assert(dec.width <= final_width);
-  dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint32));
-  if (dec.pixels == nil) {
-    dec.argb_cache = nil;  // for soundness
-    return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
-  }
+//   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint32));
+//   if (dec.pixels == nil) {
+//     dec.argb_cache = nil;  // for soundness
+//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
+//   }
+  dec.pixels = make([]uint32, total_num_pixels) // NOTE: have the feeling that this should be divided by 4
+
   dec.argb_cache = dec.pixels + num_pixels + cache_top_pixels;
   dec.accumulated_rgb_pixels =
       accumulated_rgb_pixels == 0
@@ -1570,12 +1576,14 @@ func AllocateInternalBuffers32b(/* const */ dec *VP8LDecoder, int final_width) i
 }
 
 func AllocateInternalBuffers8b(/* const */ dec *VP8LDecoder) int {
-  total_num_pixels := (uint64)dec.width * dec.height;
+  total_num_pixels := uint64(dec.width * dec.height;)
   dec.argb_cache = nil;  // for soundness
-  dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint8));
-  if (dec.pixels == nil) {
-    return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
-  }
+//   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint8));
+//   if (dec.pixels == nil) {
+//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
+//   }
+  dec.pixels = make([]uint32, total_num_pixels) // NOTE: have the feeling that this should be divided by 4
+
   return 1;
 }
 

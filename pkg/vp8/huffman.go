@@ -8,6 +8,12 @@
 
 package vp8
 
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/huffman"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
+
 // Builds Huffman lookup table assuming code lengths are in symbol order.
 // The 'code_lengths' is pre-allocated temporary memory buffer used for creating
 // the huffman table.
@@ -24,19 +30,22 @@ func VP8LBuildHuffmanTable(root_table *HuffmanTables, root_bits int, code_length
     // The available part of root_table.curr_segment is left unused because we
     // need a contiguous buffer.
     segment_size := root_table.curr_segment.size;
-    next *HuffmanTablesSegment = (*HuffmanTablesSegment)WebPSafeMalloc(1, sizeof(*next));
-    if next == nil { { return 0 } }
+    // next *HuffmanTablesSegment = (*HuffmanTablesSegment)WebPSafeMalloc(1, sizeof(*next));
+    // if next == nil { { return 0 } }
+	next := new(HuffmanTablesSegment)
+
     // Fill the new segment.
     // We need at least 'total_size' but if that value is small, it is better to
     // allocate a big chunk to prevent more allocations later. 'segment_size' is
     // therefore chosen (any other arbitrary value could be chosen).
     {
       next_size := tenary.If(total_size > segment_size, total_size, segment_size);
-      var next_start *HuffmanCode =
-          (*HuffmanCode)WebPSafeMalloc(next_size, sizeof(*next_start));
-      if (next_start == nil) {
-        return 0;
-      }
+    //   var next_start *HuffmanCode = (*HuffmanCode)WebPSafeMalloc(next_size, sizeof(*next_start));
+    //   if (next_start == nil) {
+    //     return 0;
+    //   }
+	  next_start := make([]huffman.HuffmanCode, next_size)
+
       next.size = next_size;
       next.start = next_start;
     }
@@ -46,38 +55,39 @@ func VP8LBuildHuffmanTable(root_table *HuffmanTables, root_bits int, code_length
     root_table.curr_segment.next = next;
     root_table.curr_segment = next;
   }
-  if (code_lengths_size <= SORTED_SIZE_CUTOFF) {
+  if (code_lengths_size <= huffman.SORTED_SIZE_CUTOFF) {
     // use local stack-allocated array.
-    var sorted [SORTED_SIZE_CUTOFF]uint16
+    var sorted [huffman.SORTED_SIZE_CUTOFF]uint16
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
-    BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
+    huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
   } else {  // rare case. Use heap allocation.
-    const sorted *uint16 =
-        (*uint16)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
-    if sorted == nil { { return 0 } }
+    // const sorted *uint16 = (*uint16)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
+    // if sorted == nil { { return 0 } }
+	sorted := make([]uint16, code_lengths_size)
+
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
     // sorted bidi index -> (uint64)code_lengths_size * sizeof(*sorted)
-	BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
+	huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
   }
   return total_size;
 }
 
 // Allocates a HuffmanTables with 'size' contiguous HuffmanCodes. Returns 0 on
 // memory allocation error, 1 otherwise.
-func VP8LHuffmanTablesAllocate(size int, huffman_tables *HuffmanTables) int {
+func VP8LHuffmanTablesAllocate(size int, huffman_tables *huffman.HuffmanTables) int {
   // Have 'segment' point to the first segment for now, 'root'.
-  var root *HuffmanTablesSegment = &huffman_tables.root;
+  var root *huffman.HuffmanTablesSegment = &huffman_tables.root;
   huffman_tables.curr_segment = root;
   root.next = nil;
   // Allocate root.
   {
-    const start *HuffmanCode =
-        (*HuffmanCode)WebPSafeMalloc(size, sizeof(*root.start));
-    if (start == nil) {
-      root.start = nil;
-      root.size = 0;
-      return 0;
-    }
+    // var start *HuffmanCode = (*HuffmanCode)WebPSafeMalloc(size, sizeof(*root.start));
+	start := make([]huffman.HuffmanCode, size)
+    // if (start == nil) {
+    //   root.start = nil;
+    //   root.size = 0;
+    //   return 0;
+    // }
     root.size = size;
     root.start = start;
   }
@@ -85,8 +95,8 @@ func VP8LHuffmanTablesAllocate(size int, huffman_tables *HuffmanTables) int {
   return 1;
 }
 
-func VP8LHuffmanTablesDeallocate(/* const */ huffman_tables *HuffmanTables) {
-  var current, next *HuffmanTablesSegment;
+func VP8LHuffmanTablesDeallocate(/* const */ huffman_tables *huffman.HuffmanTables) {
+  var current, next *huffman.HuffmanTablesSegment;
   if huffman_tables == nil { return }
   // Free the root node.
   current = &huffman_tables.root;
@@ -96,7 +106,7 @@ func VP8LHuffmanTablesDeallocate(/* const */ huffman_tables *HuffmanTables) {
   current.next = nil;
   current = next;
   // Free the following nodes.
-  while (current != nil) {
+  for (current != nil) {
     next = current.next;
     current = next;
   }

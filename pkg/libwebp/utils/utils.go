@@ -225,15 +225,15 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 // safe malloc() borrows the signature from calloc(), pointing at the dangerous
 // underlying multiply involved.
 // Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
-func WebPSafeMalloc(nmemb uint64, size uint64 ) *void/* (size *nmemb) */ {
-  var ptr *void;
-  Increment(&num_malloc_calls);
-  if !CheckSizeArgumentsOverflow(nmemb, size) { { return nil } }
-  assert.Assert(nmemb * size > 0);
-  ptr = malloc((uint64)(nmemb * size));
-  AddMem(ptr, (uint64)(nmemb * size));
-  return ptr // bidi index -> (uint64)(nmemb * size);
-}
+// func WebPSafeMalloc(nmemb uint64, size uint64 ) *void/* (size *nmemb) */ {
+//   var ptr *void;
+//   Increment(&num_malloc_calls);
+//   if !CheckSizeArgumentsOverflow(nmemb, size) { { return nil } }
+//   assert.Assert(nmemb * size > 0);
+//   ptr = malloc((uint64)(nmemb * size));
+//   AddMem(ptr, (uint64)(nmemb * size));
+//   return ptr // bidi index -> (uint64)(nmemb * size);
+// }
 
 // Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.

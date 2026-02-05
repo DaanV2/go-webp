@@ -87,21 +87,22 @@ func WebPPictureResetBuffers(/* const */ picture *WebPPicture) {
 // Allocates ARGB buffer according to set width/height (previous one is
 // always free'd). Preserves the YUV(A) buffer. Returns false in case of error
 // (invalid param, out-of-memory).
-int WebPPictureAllocARGB(/* const */ picture *WebPPicture) {
-  memory *void;
-  width := picture.width;
-  height := picture.height;
-  argb_size := (uint64)width * height;
+func WebPPictureAllocARGB(/* const */ picture *WebPPicture) int {
+  width := picture.width
+  height := picture.height
+  argb_size := uint64(width * height)
 
   if !WebPValidatePicture(picture) { { return 0 } }
 
   WebPPictureResetBufferARGB(picture);
 
   // allocate a new buffer.
-  memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.argb));
-  if (memory == nil) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
-  }
+//   memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.argb));
+//   if (memory == nil) {
+//     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//   }
+  memory := make([]uint8, argb_size + WEBP_ALIGN_CST)
+
   picture.memory_argb_ = memory;
   picture.argb = (*uint32)WEBP_ALIGN(memory);
   picture.argb_stride = width;
@@ -112,7 +113,7 @@ int WebPPictureAllocARGB(/* const */ picture *WebPPicture) {
 // free'd). Uses picture.csp to determine whether an alpha buffer is needed.
 // Preserves the ARGB buffer.
 // Returns false in case of error (invalid param, out-of-memory).
-int WebPPictureAllocYUVA(/* const */ picture *WebPPicture) {
+func WebPPictureAllocYUVA(/* const */ picture *WebPPicture) int {
   has_alpha := (int)picture.colorspace & WEBP_CSP_ALPHA_BIT;
   width := picture.width;
   height := picture.height;
@@ -143,10 +144,11 @@ int WebPPictureAllocYUVA(/* const */ picture *WebPPicture) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
   }
   // allocate a new buffer.
-  mem = (*uint8)WebPSafeMalloc(total_size, sizeof(*mem));
-  if (mem == nil) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
-  }
+//   mem = (*uint8)WebPSafeMalloc(total_size, sizeof(*mem));
+//   if (mem == nil) {
+//     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//   }
+  mem := make([]uint8, total_size)
 
   // From now on, we're in the clear, we can no longer fail...
   picture.memory_ = (*void)mem;
@@ -211,10 +213,12 @@ int WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture
     next_max_size := uint64(2) * w.max_size;
     if next_max_size < next_size { next_max_size = next_size }
     if next_max_size < uint64(8192) { next_max_size = uint64(8192) }
-    new_mem = (*uint8)WebPSafeMalloc(next_max_size, 1);
-    if (new_mem == nil) {
-      return 0;
-    }
+    // new_mem = (*uint8)WebPSafeMalloc(next_max_size, 1);
+    // if (new_mem == nil) {
+    //   return 0;
+    // }
+	new_mem := make([]uint8, next_max_size)
+
     if (w.size > 0) {
       memcpy(new_mem, w.mem, w.size);
     }

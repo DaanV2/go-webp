@@ -200,11 +200,12 @@ int WebPPictureRescale(picture *WebPPicture, width, height int) {
   }
 
   if (!picture.use_argb) {
-    work = (rescaler_t*)WebPSafeMalloc(uint64(2) * width, sizeof(*work));
-    if (work == nil) {
-      status = VP8_ENC_ERROR_OUT_OF_MEMORY;
-      goto Cleanup;
-    }
+    // work = (rescaler_t*)WebPSafeMalloc(uint64(2) * width, sizeof(*work));
+    // if (work == nil) {
+    //   status = VP8_ENC_ERROR_OUT_OF_MEMORY;
+    //   goto Cleanup;
+    // }
+	work = make([]rescaler_t, 2 * width)
     // If present, we need to rescale alpha first (for AlphaMultiplyY).
     if (picture.a != nil) {
       WebPInitAlphaProcessing();
@@ -225,11 +226,13 @@ int WebPPictureRescale(picture *WebPPicture, width, height int) {
     }
     AlphaMultiplyY(&tmp, 1);
   } else {
-    work = (rescaler_t*)WebPSafeMalloc(uint64(2) * width * 4, sizeof(*work));
-    if (work == nil) {
-      status = VP8_ENC_ERROR_BAD_DIMENSION;
-      goto Cleanup;
-    }
+    // work = (rescaler_t*)WebPSafeMalloc(uint64(2) * width * 4, sizeof(*work));
+    // if (work == nil) {
+    //   status = VP8_ENC_ERROR_BAD_DIMENSION;
+    //   goto Cleanup;
+    // }
+	work := make([]rescaler_t, 2 * width * 4)
+
     // In order to correctly interpolate colors, we need to apply the alpha
     // weighting first (black-matting), scale the RGB values, and remove
     // the premultiplication afterward (while preserving the alpha channel).

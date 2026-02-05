@@ -718,19 +718,21 @@ int VP8LResidualImage(width, height int, int min_bits, int max_bits, low_effort 
     *best_bits = max_bits;
   } else {
     // Allocate data to try all samplings from min_bits to max_bits.
-    bits int;
+    var bits int;
     sum_num_pixels := uint(0);
-    uint32 *modes_raw, *best_mode;
-    modes *uint32[MAX_TRANSFORM_BITS + 1];
-    uint32 num_pixels[MAX_TRANSFORM_BITS + 1];
+    var modes_raw, best_mode *uint32
+    var modes [MAX_TRANSFORM_BITS + 1]*uint32
+    var num_pixels [MAX_TRANSFORM_BITS + 1]uint32
     for bits = min_bits; bits <= max_bits; bits++ {
       tiles_per_row := VP8LSubSampleSize(width, bits);
       tiles_per_col := VP8LSubSampleSize(height, bits);
       num_pixels[bits] = tiles_per_row * tiles_per_col;
       sum_num_pixels += num_pixels[bits];
     }
-    modes_raw = (*uint32)WebPSafeMalloc(sum_num_pixels, sizeof(*modes_raw));
-    if modes_raw == nil { { return 0 } }
+    // modes_raw = (*uint32)WebPSafeMalloc(sum_num_pixels, sizeof(*modes_raw));
+    // if modes_raw == nil { { return 0 } }
+	modes_raw := make([]uint32, sum_num_pixels)
+
     // Have modes point to the right global memory modes_raw.
     modes[min_bits] = modes_raw;
     for bits = min_bits + 1; bits <= max_bits; bits++ {

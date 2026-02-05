@@ -137,11 +137,12 @@ int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref
   VP8SSIMDspInit();
   if (x_step != 1) {  // extract a packed plane if needed
     var x, y int
-    tmp *uint81;
-    tmp *uint82;
-    allocated =
-        (*uint8)WebPSafeMalloc(uint64(2) * width * height, sizeof(*allocated));
-    if allocated == nil { { return 0 } }
+    var tmp1 *uint8;
+    var tmp2 *uint8;
+    // allocated = (*uint8)WebPSafeMalloc(uint64(2) * width * height, sizeof(*allocated));
+    // if allocated == nil { { return 0 } }
+	allocated = make([]uint8, 2 * width * height)
+
     tmp1 = allocated;
     tmp2 = tmp1 + (uint64)width * height;
     for y = 0; y < height; y++ {

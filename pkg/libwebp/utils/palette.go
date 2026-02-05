@@ -265,12 +265,14 @@ func CoOccurrenceBuild(/* const */ pic *WebPPicture, /*const*/ palette *uint32 ,
   var src *uint32 = pic.argb;
   prev_pix := ~src[0];
   prev_idx := uint(0);
-  uint32 idx_map[MAX_PALETTE_SIZE] = {0}
-  uint32 palette_sorted[MAX_PALETTE_SIZE];
-  lines = (*uint32)WebPSafeMalloc(2 * pic.width, sizeof(*lines));
-  if (lines == nil) {
-    return 0;
-  }
+  var idx_map [MAX_PALETTE_SIZE]uint32
+  var palette_sorted [MAX_PALETTE_SIZE]uint32
+//   lines = (*uint32)WebPSafeMalloc(2 * pic.width, sizeof(*lines));
+//   if (lines == nil) {
+//     return 0;
+//   }
+  lines := make([]uint32, 2 * pic.width)
+
   line_top = &lines[0];
   line_current = &lines[pic.width];
   PrepareMapToPalette(palette, num_colors, palette_sorted, idx_map);

@@ -200,11 +200,13 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *WebPConfig, /*const*/ pict
   printf("Picture size (yuv): %ld\n", mb_w * mb_h * 384 * sizeof(uint8));
   printf("===================================\n");
 #endif
-  mem = (*uint8)WebPSafeMalloc(size, sizeof(*mem));
-  if (mem == nil) {
-    WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
-    return nil;
-  }
+//   mem = (*uint8)WebPSafeMalloc(size, sizeof(*mem));
+//   if (mem == nil) {
+//     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//     return nil;
+//   }
+	mem = make([]uint8, size)
+
   enc = (*VP8Encoder)mem;
   mem = (*uint8)WEBP_ALIGN(mem + sizeof(*enc));
   stdlib.Memset(enc, 0, sizeof(*enc));

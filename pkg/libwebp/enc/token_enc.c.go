@@ -72,12 +72,10 @@ func VP8TBufferClear(/* const */ b *VP8TBuffer) {
 func TBufferNewPage(/* const */ b *VP8TBuffer) int {
   page *VP8Tokens = nil;
   if (!b.error) {
-    const size uint64  = sizeof(*page) + b.page_size * sizeof(token_t);
-    page = (*VP8Tokens)WebPSafeMalloc(uint64(1), size);
-  }
-  if (page == nil) {
-    b.error = 1;
-    return 0;
+    var size uint64  = sizeof(*page) + b.page_size * sizeof(token_t);
+    // page = (*VP8Tokens)WebPSafeMalloc(uint64(1), size);
+	page = new(VP8Tokens)
+
   }
   page.next = nil;
 

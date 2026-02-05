@@ -140,12 +140,13 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
   } else {
     uv_width := (width + 1) >> 1;
     // temporary storage for accumulated R/G/B values during conversion to U/V
-    const tmp_rgb *uint16 =
-        (*uint16)WebPSafeMalloc(4 * uv_width, sizeof(*tmp_rgb));
-    dst_y *uint8 = picture.y;
-    dst_u *uint8 = picture.u;
-    dst_v *uint8 = picture.v;
-    dst_a *uint8 = picture.a;
+    // var tmp_rgb *uint16 = (*uint16)WebPSafeMalloc(4 * uv_width, sizeof(*tmp_rgb));
+	tmp_rgb = make([]uint16, 4 * uv_width)
+
+	var dst_y *uint8 = picture.y;
+    var dst_u *uint8 = picture.u;
+    var dst_v *uint8 = picture.v;
+    var dst_a *uint8 = picture.a;
 
     VP8Random base_rg;
     rg *VP8Random = nil;
@@ -156,9 +157,9 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
     WebPInitConvertARGBToYUV();
     WebPInitGammaTables();
 
-    if (tmp_rgb == nil) {
-      return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
-    }
+    // if (tmp_rgb == nil) {
+    //   return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    // }
 
     if (rg == nil) {
       // Downsample Y/U/V planes, two rows at a time
@@ -422,7 +423,7 @@ int WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, int rgb_str
              : 0;
 }
 
-int WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, int rgba_stride) {
+int WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, rgba_stride int) {
   return (picture != nil && rgba != nil)
              ? Import(picture, rgba, rgba_stride, 4, 0, 1)
              : 0;

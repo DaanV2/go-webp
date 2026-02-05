@@ -438,10 +438,11 @@ func GetHuffBitLengthsAndCodes(/* const */ histogram_image *VP8LHistogramSet, /*
     }
   }
 
-  buf_rle = (*uint8)WebPSafeMalloc(uint64(1), max_num_symbols);
-  huff_tree =
-      (*HuffmanTree)WebPSafeMalloc(uint64(3) * max_num_symbols, sizeof(*huff_tree));
-  if buf_rle == nil || huff_tree == nil { goto End }
+//   buf_rle = (*uint8)WebPSafeMalloc(uint64(1), max_num_symbols);
+//   huff_tree = (*HuffmanTree)WebPSafeMalloc(uint64(3) * max_num_symbols, sizeof(*huff_tree));
+//   if buf_rle == nil || huff_tree == nil { goto End }
+  buf_rle := make([]uint8, max_num_symbols)
+  huff_tree := make([]HuffmanTree, 3 * max_num_symbols)
 
   // Create Huffman trees.
   for i = 0; i < histogram_image_size; i++ {
@@ -695,18 +696,19 @@ func StoreImageToBitMask(/* const */ bw *VP8LBitWriter, int width, int histo_bit
 func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_array *VP8LBackwardRefs, width, height int, quality int, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) int {
   var i int
   max_tokens := 0;
-  refs *VP8LBackwardRefs;
-  tokens *HuffmanTreeToken = nil;
-  HuffmanTreeCode huffman_codes[5] = {{0, nil, nil}}
+  var refs *VP8LBackwardRefs;
+  var tokens *HuffmanTreeToken = nil;
+  var huffman_codes [5]HuffmanTreeCode = {{0, nil, nil}}
   histogram_symbols[1] := {0}  // only one tree, one symbol
   cache_bits := 0;
-  histogram_image *VP8LHistogramSet = nil;
-  var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(
-      uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
-  if (huff_tree == nil) {
-    WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
-    goto Error;
-  }
+  var histogram_image *VP8LHistogramSet = nil;
+//   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(
+//       uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
+//   if (huff_tree == nil) {
+//     WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//     goto Error;
+//   }
+  huff_tree := make([]HuffmanTree, 3*CODE_LENGTH_CODES)
 
   // Calculate backward references from ARGB image.
   if (!VP8LHashChainFill(hash_chain, quality, argb, width, height, low_effort, pic, percent_range / 2, percent)) {
@@ -744,11 +746,12 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
     }
   }
 
-  tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens));
-  if (tokens == nil) {
-    WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
-    goto Error;
-  }
+//   tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens));
+//   if (tokens == nil) {
+//     WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//     goto Error;
+//   }
+  tokens := make([]HuffmanTreeToken, max_tokens)
 
   // Store Huffman codes.
   for i = 0; i < 5; i++ {

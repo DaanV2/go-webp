@@ -129,10 +129,11 @@ int VP8ApplyNearLossless(/* const */ picture *WebPPicture, quality int, /*const*
     return 1;
   }
 
-  copy_buffer = (*uint32)WebPSafeMalloc(xsize * 3, sizeof(*copy_buffer));
-  if (copy_buffer == nil) {
-    return 0;
-  }
+//   copy_buffer = (*uint32)WebPSafeMalloc(xsize * 3, sizeof(*copy_buffer));
+//   if (copy_buffer == nil) {
+//     return 0;
+//   }
+  copy_buffer := make([]uint32, xsize * 3)
 
   NearLossless(xsize, ysize, picture.argb, stride, limit_bits, copy_buffer, argb_dst);
   for i = limit_bits - 1; i != 0; --i {

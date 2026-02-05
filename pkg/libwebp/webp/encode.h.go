@@ -431,7 +431,7 @@ type WebPPicture struct {
 // Returns false in case of memory error.
   int WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride);
 // Same, but for RGBA buffer.
-  int WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, int rgba_stride);
+  int WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, rgba_stride int);
 // Same, but for RGBA buffer. Imports the RGB direct from the 32-bit format
 // input buffer ignoring the alpha channel. Avoids needing to copy the data
 // to a temporary 24-bit RGB buffer to import the RGB only.

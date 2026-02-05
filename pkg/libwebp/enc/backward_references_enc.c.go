@@ -144,11 +144,13 @@ static BackwardRefsNewBlock *PixOrCopyBlock(/* const */ refs *VP8LBackwardRefs) 
   b *PixOrCopyBlock = refs.free_blocks;
   if (b == nil) {  // allocate new memory chunk
     total_size := sizeof(*b) + refs.block_size * sizeof(*b.start);
-    b = (*PixOrCopyBlock)WebPSafeMalloc(uint64(1), total_size);
-    if (b == nil) {
-      refs.error |= 1;
-      return nil;
-    }
+    // b = (*PixOrCopyBlock)WebPSafeMalloc(uint64(1), total_size);
+    // if (b == nil) {
+    //   refs.error |= 1;
+    //   return nil;
+    // }
+	b = new(PixOrCopyBlock)
+
     b.start = (*PixOrCopy)((*uint8)b + sizeof(*b));  // not always aligned
   } else {  // recycle from free-list
     refs.free_blocks = b.next;
@@ -189,32 +191,32 @@ func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ Pix
 // -----------------------------------------------------------------------------
 // Hash chains
 
-int VP8LHashChainInit(/* const */ p *VP8LHashChain, size int) {
-  assert.Assert(p.size == 0);
-  assert.Assert(p.offset_length == nil);
-  assert.Assert(size > 0);
-  p.offset_length = (*uint32)WebPSafeMalloc(size, sizeof(*p.offset_length));
-  if p.offset_length == nil { { return 0 } }
-  p.size = size;
+func VP8LHashChainInit(/* const */ p *VP8LHashChain, size int) int {
+	assert.Assert(p.size == 0);
+	assert.Assert(p.offset_length == nil);
+	assert.Assert(size > 0);
+	//   p.offset_length = (*uint32)WebPSafeMalloc(size, sizeof(*p.offset_length));
+	//   if p.offset_length == nil { { return 0 } }
+	p.offset_length = make([]uint32, size)
 
-  return 1;
+	p.size = size;
+
+	return 1;
 }
 
 func VP8LHashChainClear(/* const */ p *VP8LHashChain) {
-  assert.Assert(p != nil);
+  assert.Assert(p != nil)
 
-
-  p.size = 0;
-  p.offset_length = nil;
+  p.size = 0
+  p.offset_length = nil
 }
 
 // -----------------------------------------------------------------------------
 
-static const kHashMultiplierHi := uint(0xc6a4a793);
-static const kHashMultiplierLo := uint(0x5bd1e996);
+const kHashMultiplierHi := uint(0xc6a4a793);
+const kHashMultiplierLo := uint(0x5bd1e996);
 
-static   uint32
-GetPixPairHash64(/* const */ argb *uint32) {
+func GetPixPairHash64(/* const */ argb *uint32) uint32 {
   key uint32;
   key = argb[1] * kHashMultiplierHi;
   key += argb[0] * kHashMultiplierLo;
@@ -262,11 +264,11 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
     return 1;
   }
 
-  hash_to_first_index =
-      (*int32)WebPSafeMalloc(HASH_SIZE, sizeof(*hash_to_first_index));
-  if (hash_to_first_index == nil) {
-    return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
-  }
+//   hash_to_first_index = (*int32)WebPSafeMalloc(HASH_SIZE, sizeof(*hash_to_first_index));
+//   if (hash_to_first_index == nil) {
+//     return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//   }
+  hash_to_first_index := make([]int32, HASH_SIZE)
 
   percent_range = remaining_percent / 2;
   remaining_percent -= percent_range;
@@ -555,18 +557,21 @@ Error:
 // We therefore limit the algorithm to the lowest 32 values in the PlaneCode
 // definition.
 const WINDOW_OFFSETS_SIZE_MAX =32
+
 func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain_best *VP8LHashChain, hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) int {
   var i int
+  var counts *uint16;
+  var window_offsets [WINDOW_OFFSETS_SIZE_MAX]int
+  var window_offsets_new [WINDOW_OFFSETS_SIZE_MAX]int
+
   pix_count := xsize * ysize;
-  counts *uint16;
-  int window_offsets[WINDOW_OFFSETS_SIZE_MAX] = {0}
-  int window_offsets_new[WINDOW_OFFSETS_SIZE_MAX] = {0}
   window_offsets_size := 0;
   window_offsets_new_size := 0;
-  const counts_ini *uint16 =
-      (*uint16)WebPSafeMalloc(xsize * ysize, sizeof(*counts_ini));
   best_offset_prev := -1, best_length_prev = -1;
-  if counts_ini == nil { { return 0 } }
+
+//   var counts_ini *uint16 = (*uint16)WebPSafeMalloc(xsize * ysize, sizeof(*counts_ini));
+//   if counts_ini == nil { { return 0 } }
+	counts_ini := make([]uint16, xsize * ysize)
 
   // counts[i] counts how many times a pixel is repeated starting at position i.
   i = pix_count - 2;

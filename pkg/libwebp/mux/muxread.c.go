@@ -240,8 +240,10 @@ WebPMuxCreateInternal *WebPMux(/* const */ bitstream *WebPData, int copy_data, v
   data += RIFF_HEADER_SIZE;
   size -= RIFF_HEADER_SIZE;
 
-  wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*wpi));
-  if wpi == nil { goto Err }
+//   wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*wpi));
+//   if wpi == nil { goto Err }
+  wpi := new(WebPMuxImage)
+
   MuxImageInit(wpi);
 
   // Loop over chunks.
@@ -395,18 +397,19 @@ static EmitVP *uint88XChunk(/* const */ dst *uint8, width, height int, uint32 fl
 }
 
 // Assemble a single image WebP bitstream from 'wpi'.
-static WebPMuxError SynthesizeBitstream(/* const */ wpi *WebPMuxImage, /*const*/ bitstream *WebPData) {
-  dst *uint8;
+func SynthesizeBitstream(/* const */ wpi *WebPMuxImage, /*const*/ bitstream *WebPData) WebPMuxError {
+  var dst *uint8;
 
   // Allocate data.
   need_vp8x := (wpi.alpha != nil);
-  vp8x_size := need_vp8x ? CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE : 0;
-  alpha_size := need_vp8x ? ChunkDiskSize(wpi.alpha) : 0;
+  vp8x_size := tenary.If(need_vp8x, CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE, 0)
+  alpha_size := tenary.If(need_vp8x, ChunkDiskSize(wpi.alpha), 0)
   // Note: No need to output ANMF chunk for a single image.
-  const size uint64  =
+  var size uint64  =
       RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img);
-  var data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size);
-  if data == nil { { return WEBP_MUX_MEMORY_ERROR } }
+//   var data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size);
+//   if data == nil { { return WEBP_MUX_MEMORY_ERROR } }
+  data := make([]uint8, size)
 
   // There should be at most one alpha chunk and exactly one img chunk.
   assert.Assert(wpi.alpha == nil || wpi.alpha.next == nil);

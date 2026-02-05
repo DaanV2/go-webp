@@ -36,19 +36,21 @@ func MuxInit(/* const */ mux *WebPMux) {
   mux.canvas_height = 0;
 }
 
-WebPNewInternal *WebPMux(version int) {
+func WebPMux(version int) *WebPNewInternal {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_MUX_ABI_VERSION)) {
     return nil;
   } else {
-    var mux *WebPMux = (*WebPMux)WebPSafeMalloc(uint64(1), sizeof(WebPMux));
-    if mux != nil { MuxInit(mux) }
+    // var mux *WebPMux = (*WebPMux)WebPSafeMalloc(uint64(1), sizeof(WebPMux));
+    // if mux != nil { MuxInit(mux) }
+	mux = new(WebPMux)
+
     return mux;
   }
 }
 
 // Delete all images in 'wpi_list'.
-func DeleteAllImages(*WebPMuxImage* const wpi_list) {
-  while (*wpi_list != nil) {
+func DeleteAllImages(/*  const */ wpi_list *WebPMuxImage) {
+  for (*wpi_list != nil) {
     *wpi_list = MuxImageDelete(*wpi_list);
   }
 }
@@ -113,8 +115,9 @@ static WebPMuxError CreateFrameData(width, height int, /*const*/ info *WebPMuxFr
   assert.Assert(info.dispose_method == (info.dispose_method & 1));
   // Note: assertion on upper bounds is done in PutLE24().
 
-  frame_bytes = (*uint8)WebPSafeMalloc(uint64(1), frame_size);
-  if frame_bytes == nil { { return WEBP_MUX_MEMORY_ERROR } }
+//   frame_bytes = (*uint8)WebPSafeMalloc(uint64(1), frame_size);
+//   if frame_bytes == nil { { return WEBP_MUX_MEMORY_ERROR } }
+  frame_bytes := make([]uint8, frame_size)
 
   PutLE24(frame_bytes + 0, info.x_offset / 2);
   PutLE24(frame_bytes + 3, info.y_offset / 2);
@@ -617,8 +620,9 @@ WebPMuxError WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) {
          ChunkListDiskSize(mux.exif) + ChunkListDiskSize(mux.xmp) +
          ChunkListDiskSize(mux.unknown) + RIFF_HEADER_SIZE;
 
-  data = (*uint8)WebPSafeMalloc(uint64(1), size);
-  if data == nil { { return WEBP_MUX_MEMORY_ERROR } }
+//   data = (*uint8)WebPSafeMalloc(uint64(1), size);
+//   if data == nil { { return WEBP_MUX_MEMORY_ERROR } }
+  data = make([]uint8, size);
 
   // Emit header & chunks.
   dst = MuxEmitRiffHeader(data, size);

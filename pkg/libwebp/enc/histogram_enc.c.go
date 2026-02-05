@@ -112,11 +112,13 @@ func VP8LHistogramInit(/* const */ h *VP8LHistogram, int palette_code_bits, int 
   }
 }
 
-VP *VP8LHistogram8LAllocateHistogram(int cache_bits) {
+func VP8LAllocateHistogram(cache_bits int) *VP8LHistogram {
   histo *VP8LHistogram = nil;
   total_size := GetHistogramSize(cache_bits);
-  var memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
-  if memory == nil { { return nil } }
+//   var memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
+//   if memory == nil { { return nil } }
+	memory := make([]uint8, total_size)
+
   histo = (*VP8LHistogram)memory;
   // 'literal' won't necessary be aligned.
   histo.literal = (*uint32)(memory + sizeof(VP8LHistogram));
@@ -148,10 +150,11 @@ func HistogramSetTotalSize(size int, int cache_bits) uint64 {
 
 VP *VP8LHistogramSet8LAllocateHistogramSet(size int, int cache_bits) {
   var i int
-  set *VP8LHistogramSet;
+  var set *VP8LHistogramSet;
   total_size := HistogramSetTotalSize(size, cache_bits);
-  memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
-  if memory == nil { { return nil } }
+//   memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
+//   if memory == nil { { return nil } }
+  memory := make([]uint8, total_size)
 
   set = (*VP8LHistogramSet)memory;
   memory += sizeof(*set);
@@ -747,13 +750,14 @@ type HistoQueue struct {
   var max_size int
 } ;
 
-func HistoQueueInit(/* const */ histo_queue *HistoQueue, /*const*/ int max_size) int {
+func HistoQueueInit(/* const */ histo_queue *HistoQueue, /*const*/ max_size int) bool {
   histo_queue.size = 0;
   histo_queue.max_size = max_size;
   // We allocate max_size + 1 because the last element at index "size" is
   // used as temporary data (and it could be up to max_size).
-  histo_queue.queue = (*HistogramPair)WebPSafeMalloc(
-      histo_queue.max_size + 1, sizeof(*histo_queue.queue));
+//   histo_queue.queue = (*HistogramPair)WebPSafeMalloc(histo_queue.max_size + 1, sizeof(*histo_queue.queue));
+  histo_queue.queue = make([]HistogramPair, histo_queue.max_size + 1);
+ 
   return histo_queue.queue != nil;
 }
 

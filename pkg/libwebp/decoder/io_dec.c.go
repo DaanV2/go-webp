@@ -561,10 +561,11 @@ func CustomSetup(io *VP8Io) int {
       if (io.fancy_upsampling) {
 #ifdef FANCY_UPSAMPLING
         uv_width := (io.mb_w + 1) >> 1;
-        p.memory = WebPSafeMalloc(uint64(1), (uint64)(io.mb_w + 2 * uv_width));
-        if (p.memory == nil) {
-          return 0;  // memory error.
-        }
+        // p.memory = WebPSafeMalloc(uint64(1), (uint64)(io.mb_w + 2 * uv_width));
+        // if (p.memory == nil) {
+        //   return 0;  // memory error.
+        // }
+		p.memory = make([]uint8, (io.mb_w + 2 * uv_width))
 
         p.tmp_y = (*uint8)p.memory;
         p.tmp_u = p.tmp_y + io.mb_w;
