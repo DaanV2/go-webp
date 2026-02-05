@@ -8,78 +8,74 @@
 
 package vp8
 
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-const kHashMul  = uint32(0x1e35a7bd);
+const kHashMul = uint32(0x1e35a7bd)
 
 // Initializes the color cache with 'hash_bits' bits for the keys.
 // Returns false in case of memory error.
-func VP8LColorCacheInit(/* const */ color_cache *VP8LColorCache, int hash_bits) int {
-  hash_size := 1 << hash_bits;
-  colors *uint32 = (*uint32)WebPSafeCalloc((uint64)hash_size, sizeof(*color_cache.colors));
-  assert.Assert(color_cache != nil);
-  assert.Assert(hash_bits > 0);
-  if (colors == nil) {
-    color_cache.colors = nil;
-    WEBP_SELF_ASSIGN(color_cache.hash_bits);
-    return 0;
-  }
-  color_cache.hash_shift = 32 - hash_bits;
-  color_cache.hash_bits = hash_bits;
-  color_cache.colors = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-      *uint32, colors, (uint64)hash_size * sizeof(*color_cache.colors));
-  return 1;
+func VP8LColorCacheInit( /* const */ color_cache *VP8LColorCache, hash_bits int) int {
+	hash_size := 1 << hash_bits
+	assert.Assert(color_cache != nil)
+	assert.Assert(hash_bits > 0)
+
+	//   colors *uint32 = (*uint32)WebPSafeCalloc((uint64)hash_size, sizeof(*color_cache.colors));
+	colors := make([]uint32, hash_size)
+	if colors == nil {
+		color_cache.colors = nil
+		WEBP_SELF_ASSIGN(color_cache.hash_bits)
+		return 0
+	}
+	color_cache.hash_shift = 32 - hash_bits
+	color_cache.hash_bits = hash_bits
+	color_cache.colors = colors
+	return 1
 }
 
 // Delete the memory associated to color cache.
-func VP8LColorCacheClear(/* const */ color_cache *VP8LColorCache) {
-  if (color_cache != nil) {
-    color_cache.colors = nil;
-    WEBP_SELF_ASSIGN(color_cache.hash_bits);
-  }
+func VP8LColorCacheClear( /* const */ color_cache *VP8LColorCache) {
+	if color_cache != nil {
+		color_cache.colors = nil
+		WEBP_SELF_ASSIGN(color_cache.hash_bits)
+	}
 }
 
 func VP8LHashPix(argb uint32, int shift) int {
-  return (int)((argb * kHashMul) >> shift);
+	return (int)((argb * kHashMul) >> shift)
 }
 
-func VP8LColorCacheLookup(/* const */ cc *VP8LColorCache, key uint32) uint32 {
-  assert.Assert((key >> cc.hash_bits) == uint(0));
-  return cc.colors[key];
+func VP8LColorCacheLookup( /* const */ cc *VP8LColorCache, key uint32) uint32 {
+	assert.Assert((key >> cc.hash_bits) == uint(0))
+	return cc.colors[key]
 }
 
-func VP8LColorCacheSet(/* const */ cc *VP8LColorCache, key uint32, argb uint32) {
-  assert.Assert((key >> cc.hash_bits) == uint(0));
-  cc.colors[key] = argb;
+func VP8LColorCacheSet( /* const */ cc *VP8LColorCache, key uint32, argb uint32) {
+	assert.Assert((key >> cc.hash_bits) == uint(0))
+	cc.colors[key] = argb
 }
 
-func VP8LColorCacheInsert(/* const */ cc *VP8LColorCache, argb uint32) {
-  key := VP8LHashPix(argb, cc.hash_shift);
-  cc.colors[key] = argb;
+func VP8LColorCacheInsert( /* const */ cc *VP8LColorCache, argb uint32) {
+	key := VP8LHashPix(argb, cc.hash_shift)
+	cc.colors[key] = argb
 }
 
-func VP8LColorCacheGetIndex(/* const */ cc *VP8LColorCache, argb uint32) int {
-  return VP8LHashPix(argb, cc.hash_shift);
+func VP8LColorCacheGetIndex( /* const */ cc *VP8LColorCache, argb uint32) int {
+	return VP8LHashPix(argb, cc.hash_shift)
 }
 
 // Return the key if cc contains argb, and -1 otherwise.
-func VP8LColorCacheContains(/* const */ cc *VP8LColorCache, argb uint32) int {
-  key := VP8LHashPix(argb, cc.hash_shift);
-  return tenary.If(cc.colors[key] == argb, key, -1)
+func VP8LColorCacheContains( /* const */ cc *VP8LColorCache, argb uint32) int {
+	key := VP8LHashPix(argb, cc.hash_shift)
+	return tenary.If(cc.colors[key] == argb, key, -1)
 }
 
-func VP8LColorCacheCopy(/* const */ src *VP8LColorCache, /*const*/ dst *VP8LColorCache) {
-  assert.Assert(src != nil);
-  assert.Assert(dst != nil);
-  assert.Assert(src.hash_bits == dst.hash_bits);
-  stdlib.MemCpy(dst.colors, src.colors, (uint64(1) << dst.hash_bits) * sizeof(*dst.colors));
+func VP8LColorCacheCopy( /* const */ src *VP8LColorCache /*const*/, dst *VP8LColorCache) {
+	assert.Assert(src != nil)
+	assert.Assert(dst != nil)
+	assert.Assert(src.hash_bits == dst.hash_bits)
+	stdlib.MemCpy(dst.colors, src.colors, (uint64(1)<<dst.hash_bits)*sizeof(*dst.colors))
 }

@@ -575,8 +575,9 @@ func GetBestPredictorsAndSubSampling(
   num_argb := (max_subsampling_index + 1) * kNumPredModes * HISTO_SIZE;
   num_accumulated_rgb := (max_subsampling_index + 1) * HISTO_SIZE;
   num_predictors := (max_subsampling_index + 1) * kNumPredModes;
-  var raw_data *uint32 = (*uint32)WebPSafeCalloc(
-      num_argb + num_accumulated_rgb + num_predictors, sizeof(uint32));
+//   var raw_data *uint32 = (*uint32)WebPSafeCalloc(num_argb + num_accumulated_rgb + num_predictors, sizeof(uint32));
+  raw_data := make([]uint32, num_argb + num_accumulated_rgb + num_predictors)
+ 
   var all_argb *uint32 = raw_data;
   var all_accumulated_argb *uint32 = all_argb + num_argb;
   var all_pred_histos *uint32 = all_accumulated_argb + num_accumulated_rgb;

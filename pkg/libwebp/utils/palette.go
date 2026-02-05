@@ -309,17 +309,18 @@ func CoOccurrenceBuild(/* const */ pic *WebPPicture, /*const*/ palette *uint32 ,
 func PaletteSortModifiedZeng(/* const */ pic *WebPPicture, /*const*/ palette_in *uint32 , num_colors uint32, /*const*/ palette *uint32) int {
   var i, j, ind uint32
   var remapping [MAX_PALETTE_SIZE]uint8
-  var cooccurrence *uint32;
   var  sums[MAX_PALETTE_SIZE]Sum
    var first, last uint32
   var num_sums uint32
   // TODO(vrabaud) check whether one color images should use palette or not.
   if num_colors <= 1 { { return 1 } }
   // Build the co-occurrence matrix.
-  cooccurrence = (*uint32)WebPSafeCalloc(num_colors * num_colors, sizeof(*cooccurrence));
-  if (cooccurrence == nil) {
-    return 0;
-  }
+//   cooccurrence = (*uint32)WebPSafeCalloc(num_colors * num_colors, sizeof(*cooccurrence));
+//   if (cooccurrence == nil) {
+//     return 0;
+//   }
+  cooccurrence := make([]uint32, num_colors * num_colors)
+
   if (!CoOccurrenceBuild(pic, palette_in, num_colors, WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
                              *uint32, cooccurrence, num_num_colors *colors * sizeof(*cooccurrence)))) {
     return 0;

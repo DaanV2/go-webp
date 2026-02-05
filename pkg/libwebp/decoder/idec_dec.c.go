@@ -626,12 +626,12 @@ static VP8StatusCode IDecode(idec *WebPIDecoder) {
 //------------------------------------------------------------------------------
 // Internal constructor
 
- static NewDecoder *WebPIDecoder(
-    const output_buffer *WebPDecBuffer, /*const*/ features *WebPBitstreamFeatures) {
-  idec *WebPIDecoder = (*WebPIDecoder)WebPSafeCalloc(uint64(1), sizeof(*idec));
-  if (idec == nil) {
-    return nil;
-  }
+func NewDecoder (/* const */ output_buffer *WebPDecBuffer, /*const*/ features *WebPBitstreamFeatures) *WebPIDecoder {
+	//   idec *WebPIDecoder = (*WebPIDecoder)WebPSafeCalloc(uint64(1), sizeof(*idec));
+	//   if (idec == nil) {
+	//     return nil;
+	//   }
+  idec := &WebPIDecoder{}
 
   idec.state = STATE_WEBP_HEADER;
   idec.chunk_size = 0;

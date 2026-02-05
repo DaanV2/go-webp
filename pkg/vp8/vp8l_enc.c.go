@@ -108,9 +108,10 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
     return 1;
   }
 
-  histo = (*Histograms)WebPSafeCalloc(1, sizeof(*histo));
-  if (histo != nil) {
-    int i, x, y;
+	//   histo = (*Histograms)WebPSafeCalloc(1, sizeof(*histo));
+	hist := &Histograms{}
+
+    var i, x, y int
     var prev_row *uint32 = nil;
     var curr_row *uint32 = argb;
     pix_prev := argb[0];  // Skip the first pixel.
@@ -129,18 +130,18 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
         {
           // Approximate the palette by the entropy of the multiplicative hash.
           hash := HashPix(pix);
-          ++histo.category[kHistoPalette][hash];
+          histo.category[kHistoPalette][hash] = histo.category[kHistoPalette][hash] + 1;
         }
       }
       prev_row = curr_row;
       curr_row += argb_stride;
     }
     {
-      uint64 entropy_comp[kHistoTotal];
-      uint64 entropy[kNumEntropyIx];
+      var entropy_comp [kHistoTotal]uint64
+      var entropy [kNumEntropyIx]uint64
       var k int
-      last_mode_to_analyze := use_palette ? kPalette : kSpatialSubGreen;
       var j int
+      last_mode_to_analyze := tenary.If(use_palette, kPalette, kSpatialSubGreen)
       // Let's add one zero to the predicted histograms. The zeros are removed
       // too efficiently by the pix_diff == 0 comparison, at least one of the
       // zeros is likely to exist.
@@ -212,9 +213,6 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
     }
 
     return 1;
-  } else {
-    return 0;
-  }
 }
 
 // Clamp histogram and transform bits.
@@ -395,16 +393,14 @@ func EncoderInit(/* const */ enc *VP8LEncoder) int {
 }
 
 // Returns false in case of memory error.
-static int GetHuffBitLengthsAndCodes(
-    const histogram_image *VP8LHistogramSet, /*const*/ huffman_codes *HuffmanTreeCode) {
-  int i, k;
+func GetHuffBitLengthsAndCodes(/* const */ histogram_image *VP8LHistogramSet, /*const*/ huffman_codes *HuffmanTreeCode) int {
+  var i, k int
   ok := 0;
   total_length_size := 0;
-  mem_buf *uint8 = nil;
   histogram_image_size := histogram_image.size;
   max_num_symbols := 0;
-  buf_rle *uint8 = nil;
-  huff_tree *HuffmanTree = nil;
+  var buf_rle *uint8 = nil;
+  var huff_tree *HuffmanTree = nil;
 
   // Iterate over all histograms and get the aggregate number of codes used.
   for i = 0; i < histogram_image_size; i++ {
@@ -423,13 +419,13 @@ static int GetHuffBitLengthsAndCodes(
 
   // Allocate and Set Huffman codes.
   {
-    codes *uint16;
-    lengths *uint8;
-    mem_buf = (*uint8)WebPSafeCalloc(total_length_size, sizeof(*lengths) + sizeof(*codes));
-    if mem_buf == nil { goto End }
+    codes := make([]uint16, total_length_size)
+    lengths := make([]uint8, total_length_size)
+    // mem_buf = (*uint8)WebPSafeCalloc(total_length_size, sizeof(*lengths) + sizeof(*codes));
+    // if mem_buf == nil { goto End }
 
-    codes = (*uint16)mem_buf;
-    lengths = (*uint8)&codes[total_length_size];
+    // codes = (*uint16)mem_buf;
+    // lengths = (*uint8)&codes[total_length_size];
     for i = 0; i < 5 * histogram_image_size; i++ {
       bit_length := huffman_codes[i].num_symbols;
       huffman_codes[i].codes = codes;
@@ -878,12 +874,12 @@ func EncodeImageInternal(
       // Create Huffman bit lengths and codes for each histogram image.
       histogram_image_size = histogram_image.size;
       bit_array_size = 5 * histogram_image_size;
-      huffman_codes = (*HuffmanTreeCode)WebPSafeCalloc(bit_array_size, sizeof(*huffman_codes));
+    //   huffman_codes = (*HuffmanTreeCode)WebPSafeCalloc(bit_array_size, sizeof(*huffman_codes));
+	  huffman_codes = make([]HuffmanTreeCode, bit_array_size)
       // Note: some histogram_image entries may point to tmp_histos[], so the
       // latter need to outlive the following call to
       // GetHuffBitLengthsAndCodes().
-      if (huffman_codes == nil ||
-          !GetHuffBitLengthsAndCodes(histogram_image, huffman_codes)) {
+      if (!GetHuffBitLengthsAndCodes(histogram_image, huffman_codes)) {
         WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
         goto Error;
       }
@@ -1319,15 +1315,17 @@ func EncodePalette(/* const */ bw *VP8LBitWriter, low_effort int, /*const*/ enc 
 // -----------------------------------------------------------------------------
 // VP8LEncoder
 
-static VP *VP8LEncoder8LEncoderNew(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture) {
-  var enc *VP8LEncoder = (*VP8LEncoder)WebPSafeCalloc(uint64(1), sizeof(*enc));
-  if (enc == nil) {
-    WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
-    return nil;
+func VP8LEncoderNew(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture) *VP8LEncoder {
+//   var enc *VP8LEncoder = (*VP8LEncoder)WebPSafeCalloc(uint64(1), sizeof(*enc));
+//   if (enc == nil) {
+//     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//     return nil;
+//   }
+  enc := &VP8LEncoder{
+	config = config;
+	pic = picture;
+	argb_content = kEncoderNone;
   }
-  enc.config = config;
-  enc.pic = picture;
-  enc.argb_content = kEncoderNone;
 
   VP8LEncDspInit();
 
@@ -1338,7 +1336,7 @@ func VP8LEncoderDelete(enc *VP8LEncoder) {
   if (enc != nil) {
     var i int
     VP8LHashChainClear(&enc.hash_chain);
-    for (i = 0; i < 4; ++i) VP8LBackwardRefsClear(&enc.refs[i]);
+    for (i = 0; i < 4; ++i) {VP8LBackwardRefsClear(&enc.refs[i]);}
     ClearTransformBuffer(enc);
   }
 }

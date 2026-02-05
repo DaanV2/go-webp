@@ -132,15 +132,16 @@ func VP8InitIoInternal(/* const */ io *VP8Io, version int) int {
 
 // Create a new decoder object.
 func VP8Decoder8New() *VP {
-  var dec *VP8Decoder = (*VP8Decoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
-  if (dec != nil) {
-    SetOk(dec);
-    WebPGetWorkerInterface().Init(&dec.worker);
-    dec.ready = 0;
-    dec.num_parts_minus_one = 0;
-    InitGetCoeffs();
-  }
-  return dec;
+//   var dec *VP8Decoder = (*VP8Decoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
+	dec := &VP8Decoder{}
+
+	SetOk(dec);
+	WebPGetWorkerInterface().Init(&dec.worker);
+	dec.ready = 0;
+	dec.num_parts_minus_one = 0;
+	InitGetCoeffs();
+
+	return dec;
 }
 
 // Return current status of the decoder:

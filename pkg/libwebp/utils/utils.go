@@ -238,15 +238,15 @@ func WebPSafeMalloc(nmemb uint64, size uint64 ) *void/* (size *nmemb) */ {
 // Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
 // Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
-func WebPSafeCalloc(nmemb, size uint64) *void/* (size *nmemb) */ {
-  ptr *void;
-  Increment(&num_calloc_calls);
-  if !CheckSizeArgumentsOverflow(nmemb, size) { { return nil } }
-  assert.Assert(nmemb * size > 0);
-  ptr = calloc((uint64)nmemb, size);
-  AddMem(ptr, (uint64)(nmemb * size));
-  return ptr // bidi index -> (uint64)(nmemb * size);
-}
+// func WebPSafeCalloc(nmemb, size uint64) *void/* (size *nmemb) */ {
+//   ptr *void;
+//   Increment(&num_calloc_calls);
+//   if !CheckSizeArgumentsOverflow(nmemb, size) { { return nil } }
+//   assert.Assert(nmemb * size > 0);
+//   ptr = calloc((uint64)nmemb, size);
+//   AddMem(ptr, (uint64)(nmemb * size));
+//   return ptr // bidi index -> (uint64)(nmemb * size);
+// }
 
 // Public API functions.
 

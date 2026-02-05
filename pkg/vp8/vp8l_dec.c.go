@@ -434,19 +434,19 @@ Error:
 // some of those indices map to -1. This is used for non-balanced codes to
 // limit memory usage.
 int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_htree_groups_max, /*const*/ mapping *int, /*const*/ dec *VP8LDecoder, /*const*/ huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) {
-  int i, j, ok = 0;
+  int i, j, ok = 0, 0, 0;
   max_alphabet_size :=
       kAlphabetSize[0] + ((color_cache_bits > 0) ? 1 << color_cache_bits : 0);
   table_size := kTableSize[color_cache_bits];
-  code_lengths *int = nil;
 
   if ((mapping == nil && num_htree_groups != num_htree_groups_max) ||
       num_htree_groups > num_htree_groups_max) {
     goto Error;
   }
 
-  code_lengths =
-      (*int)WebPSafeCalloc((uint64)max_alphabet_size, sizeof(*code_lengths));
+//   code_lengths = (*int)WebPSafeCalloc((uint64)max_alphabet_size, sizeof(*code_lengths));
+  code_lengths := make([]int, max_alphabet_size)
+  
   *htree_groups = VP8LHtreeGroupsNew(num_htree_groups);
 
   if (*htree_groups == nil || code_lengths == nil ||
@@ -1415,11 +1415,13 @@ func ClearMetadata(/* const */ hdr *VP8LMetadata) {
 // VP8LDecoder
 
 // Allocates and initialize a new lossless decoder instance.
-VP *VP8LDecoder8LNew(){
-  var dec *VP8LDecoder = (*VP8LDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
-  if dec == nil { { return nil } }
-  dec.status = VP8_STATUS_OK;
-  dec.state = READ_DIM;
+func VP8LNew() *VP8LDecoder{
+//   var dec *VP8LDecoder = (*VP8LDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
+//   if dec == nil { return nil }
+	dec := &VP8LDecoder{
+		status = VP8_STATUS_OK
+		state = READ_DIM
+	}
 
   VP8LDspInit();  // Init critical function pointers.
 

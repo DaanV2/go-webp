@@ -59,7 +59,7 @@ type WebPAnimEncoder struct {
   best_candidate_carryover_mask *uint8;
 
   // Encoded data.
-  encoded_frames *EncodedFrame;  // Array of encoded frames.
+  encoded_frames []EncodedFrame;  // Array of encoded frames.
   size uint64 ;                   // Number of allocated frames.
    start uint64                  // Frame start index.
    count uint64                  // Number of valid frames.
@@ -223,8 +223,9 @@ func WebPAnimEncoder(
     return nil;
   }
 
-  enc = (*WebPAnimEncoder)WebPSafeCalloc(1, sizeof(*enc));
-  if enc == nil { { return nil } }
+//   enc = (*WebPAnimEncoder)WebPSafeCalloc(1, sizeof(*enc));
+//   if enc == nil { return nil }
+  enc := &WebPAnimEncoder{}
   MarkNoError(enc);
 
   // Dimensions and options.
@@ -255,12 +256,13 @@ func WebPAnimEncoder(
   enc.curr_canvas_copy_modified = 1;
 
   // Allocate for the whole canvas so that it can be reused for any subframe.
-  enc.candidate_carryover_mask = (*uint8)WebPSafeMalloc(
-      width * (uint64)height, sizeof(*enc.candidate_carryover_mask));
-  if enc.candidate_carryover_mask == nil { goto Err }
-  enc.best_candidate_carryover_mask = (*uint8)WebPSafeMalloc(
-      width * (uint64)height, sizeof(*enc.best_candidate_carryover_mask));
-  if enc.best_candidate_carryover_mask == nil { goto Err }
+//   enc.candidate_carryover_mask = (*uint8)WebPSafeMalloc(width * (uint64)height, sizeof(*enc.candidate_carryover_mask));
+//   enc.best_candidate_carryover_mask = (*uint8)WebPSafeMalloc(width * (uint64)height, sizeof(*enc.best_candidate_carryover_mask));
+//   if enc.candidate_carryover_mask == nil { goto Err }
+//   if enc.best_candidate_carryover_mask == nil { goto Err }
+
+  enc.candidate_carryover_mask = make([]uint8, width * height)
+  enc.best_candidate_carryover_mask = make([]uint8, width * height)
 
   // Encoded frames.
   ResetCounters(enc);
@@ -268,9 +270,9 @@ func WebPAnimEncoder(
   enc.size = enc.options.kmax - enc.options.kmin + 1;
   // We need space for at least 2 frames. But when kmin, kmax are both zero, // enc.size will be 1. So we handle that special case below.
   if enc.size < 2 { enc.size = 2 }
-  enc.encoded_frames =
-      (*EncodedFrame)WebPSafeCalloc(enc.size, sizeof(*enc.encoded_frames));
-  if enc.encoded_frames == nil { goto Err }
+//   enc.encoded_frames = (*EncodedFrame)WebPSafeCalloc(enc.size, sizeof(*enc.encoded_frames));
+//   if enc.encoded_frames == nil { goto Err }
+  enc.encoded_frames = make([]EncodedFrame, enc.size)
 
   enc.mux = WebPMuxNew();
   if enc.mux == nil { goto Err }

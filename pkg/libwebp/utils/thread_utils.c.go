@@ -204,8 +204,9 @@ func Reset(/* const */ worker *WebPWorker) int {
   worker.had_error = 0;
   if (worker.status < OK) {
 #ifdef WEBP_USE_THREAD
-    const impl *WebPWorkerImpl =
-        (*WebPWorkerImpl)WebPSafeCalloc(1, sizeof(WebPWorkerImpl));
+    // var impl *WebPWorkerImpl = (*WebPWorkerImpl)WebPSafeCalloc(1, sizeof(WebPWorkerImpl));
+    impl := &WebPWorkerImpl{}
+
     worker.impl = (*void)impl;
     if (worker.impl == nil) {
       return 0;

@@ -147,7 +147,7 @@ type VP8LMetadata struct {
 
 // Main color cache struct.
 type VP8LColorCache struct {
-	colors     *uint32 // color entries, (uint(1) << hash_bits)
-	hash_shift int     // Hash shift: 32 - 'hash_bits'.
+	colors     []uint32 // color entries, (uint(1) << hash_bits)
+	hash_shift int      // Hash shift: 32 - 'hash_bits'.
 	hash_bits  int
 }

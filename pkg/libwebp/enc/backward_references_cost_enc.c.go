@@ -528,8 +528,7 @@ static  func PushInterval(/* const */ manager *CostManager, int64 distance_cost,
   }
 }
 
-static int BackwardReferencesHashChainDistanceOnly(
-    int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ dist_array *uint16) {
+func BackwardReferencesHashChainDistanceOnly(xsize, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ dist_array *uint16) int {
   var i int
   ok := 0;
   cc_init := 0;
@@ -538,17 +537,19 @@ static int BackwardReferencesHashChainDistanceOnly(
   literal_array_size :=
       sizeof(*((*CostModel)nil).literal) * VP8LHistogramNumCodes(cache_bits);
   cost_model_size := sizeof(CostModel) + literal_array_size;
-  const cost_model *CostModel =
-      (*CostModel)WebPSafeCalloc(uint64(1), cost_model_size);
-  VP8LColorCache hashers;
-  cost_manager *CostManager =
-      (*CostManager)WebPSafeCalloc(uint64(1), sizeof(*cost_manager));
+  var hashers VP8LColorCache 
+  
+//   var cost_model *CostModel = (*CostModel)WebPSafeCalloc(uint64(1), cost_model_size);
+//   var cost_manager *CostManager = (*CostManager)WebPSafeCalloc(uint64(1), sizeof(*cost_manager));
+  cost_model := &CostModel{}
+  cost_manager := &CostManager{}
+
   offset_prev := -1, len_prev = -1;
   offset_cost := -1;
   first_offset_is_constant := -1;  // initialized with 'impossible' value
   reach := 0;
 
-  if cost_model == nil || cost_manager == nil { goto Error }
+//   if cost_model == nil || cost_manager == nil { goto Error }
 
   cost_model.literal = (*uint32)(cost_model + 1);
   if (use_color_cache) {
