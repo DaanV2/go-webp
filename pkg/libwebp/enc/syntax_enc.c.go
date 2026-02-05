@@ -304,7 +304,7 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
 // Generates the final bitstream by coding the partition0 and headers,
 // and appending an assembly of all the pre-coded token partitions.
 // Return true if everything is ok.
-int VP8EncWrite(/* const */ enc *VP8Encoder) {
+func VP8EncWrite(/* const */ enc *VP8Encoder) int {
   var pic *WebPPicture = enc.pic;
   var bw *VP8BitWriter = &enc.bw;
   task_percent := 19;

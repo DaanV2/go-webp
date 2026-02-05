@@ -16,24 +16,13 @@ package webp
 
 import "github.com/daanv2/go-webp/pkg/stddef"
 
-import "."
 
 
 const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 
-// Note: forward declaring enumerations is not allowed in (strict) C and C++,
-// the types are left here for reference.
-// typedef enum WebPImageHint WebPImageHint;
-// typedef enum WebPEncCSP WebPEncCSP;
-// typedef enum WebPPreset WebPPreset;
-// typedef enum WebPEncodingError WebPEncodingError;
-typedef struct WebPConfig WebPConfig;
-typedef struct WebPPicture WebPPicture;  // main structure for I/O
-typedef struct WebPAuxStats WebPAuxStats;
-typedef struct WebPMemoryWriter WebPMemoryWriter;
 
-// Return the encoder's version number, packed in hexadecimal using 8bits for
-// each of major/minor/revision. E.g: v2.5.7 is 0x020507.
+
+
  int WebPGetEncoderVersion(void);
 
 //------------------------------------------------------------------------------

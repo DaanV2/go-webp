@@ -56,7 +56,7 @@ func CheckNonOpaque(/* const */ alpha *uint8, width, height int, int x_step, int
 }
 
 // Checking for the presence of non-opaque alpha.
-int WebPPictureHasTransparency(/* const */ picture *WebPPicture) {
+func WebPPictureHasTransparency(/* const */ picture *WebPPicture) int {
   if picture == nil { { return 0 } }
   if (picture.use_argb) {
     if (picture.argb != nil) {
@@ -250,26 +250,26 @@ func PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float dither
   }
 }
 
-int WebPPictureARGBToYUVADithered(picture *WebPPicture, WebPEncCSP colorspace, float dithering) {
+func WebPPictureARGBToYUVADithered(picture *WebPPicture, WebPEncCSP colorspace, float dithering) int {
   return PictureARGBToYUVA(picture, colorspace, dithering, 0);
 }
 
-int WebPPictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace) {
+func WebPPictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace) int {
   return PictureARGBToYUVA(picture, colorspace, 0.f, 0);
 }
 
-int WebPPictureSharpARGBToYUVA(picture *WebPPicture) {
+func WebPPictureSharpARGBToYUVA(picture *WebPPicture) int {
   return PictureARGBToYUVA(picture, WEBP_YUV420, 0.f, 1);
 }
 // for backward compatibility
-int WebPPictureSmartARGBToYUVA(picture *WebPPicture) {
+func WebPPictureSmartARGBToYUVA(picture *WebPPicture) int {
   return WebPPictureSharpARGBToYUVA(picture);
 }
 
 //------------------------------------------------------------------------------
 // call for YUVA . ARGB conversion
 
-int WebPPictureYUVAToARGB(picture *WebPPicture) {
+func WebPPictureYUVAToARGB(picture *WebPPicture) int {
   if picture == nil { { return 0 } }
   if (picture.y == nil || picture.u == nil || picture.v == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
@@ -397,19 +397,19 @@ func Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stri
 
 #if !defined(WEBP_REDUCE_CSP)
 
-int WebPPictureImportBGR(picture *WebPPicture, /*const*/ bgr *uint8, int bgr_stride) {
+func WebPPictureImportBGR(picture *WebPPicture, /*const*/ bgr *uint8, int bgr_stride) int {
   return (picture != nil && bgr != nil)
              ? Import(picture, bgr, bgr_stride, 3, 1, 0)
              : 0;
 }
 
-int WebPPictureImportBGRA(picture *WebPPicture, /*const*/ bgra *uint8, int bgra_stride) {
+func WebPPictureImportBGRA(picture *WebPPicture, /*const*/ bgra *uint8, int bgra_stride) int {
   return (picture != nil && bgra != nil)
              ? Import(picture, bgra, bgra_stride, 4, 1, 1)
              : 0;
 }
 
-int WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, int bgrx_stride) {
+func WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, int bgrx_stride) int {
   return (picture != nil && bgrx != nil)
              ? Import(picture, bgrx, bgrx_stride, 4, 1, 0)
              : 0;
@@ -417,19 +417,19 @@ int WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, int bgrx_
 
 #endif  // WEBP_REDUCE_CSP
 
-int WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride) {
+func WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride) int {
   return (picture != nil && rgb != nil)
              ? Import(picture, rgb, rgb_stride, 3, 0, 0)
              : 0;
 }
 
-int WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, rgba_stride int) {
+func WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, rgba_stride int) int {
   return (picture != nil && rgba != nil)
              ? Import(picture, rgba, rgba_stride, 4, 0, 1)
              : 0;
 }
 
-int WebPPictureImportRGBX(picture *WebPPicture, /*const*/ rgbx *uint8, int rgbx_stride) {
+func WebPPictureImportRGBX(picture *WebPPicture, /*const*/ rgbx *uint8, int rgbx_stride) int {
   return (picture != nil && rgbx != nil)
              ? Import(picture, rgbx, rgbx_stride, 4, 0, 0)
              : 0;

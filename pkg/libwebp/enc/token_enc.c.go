@@ -112,7 +112,7 @@ static  func AddConstantToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 prob
 }
 
 // record the coding of coefficients without knowing the probabilities yet
-int VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*const*/ tokens *VP8TBuffer) {
+func VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*const*/ tokens *VP8TBuffer) int {
   var coeffs *int16 = res.coeffs;
   coeff_type := res.coeff_type;
   last := res.last;
@@ -201,7 +201,7 @@ int VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*con
 
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
-int VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, int final_pass) {
+func VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, int final_pass) int {
   var p *VP8Tokens = b.pages;
   assert.Assert(!b.error);
   for p != nil {

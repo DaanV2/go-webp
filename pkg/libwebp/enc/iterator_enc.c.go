@@ -76,7 +76,7 @@ func VP8IteratorSetCountDown(/* const */ it *VP8EncIterator, int count_down) {
 }
 
 // return true if iteration is finished
-int VP8IteratorIsDone(/* const */ it *VP8EncIterator) {
+func VP8IteratorIsDone(/* const */ it *VP8EncIterator) int {
   return (it.count_down <= 0);
 }
 
@@ -97,7 +97,7 @@ func VP8IteratorInit(/* const */ enc *VP8Encoder, /*const*/ it *VP8EncIterator) 
 }
 
 // Report progression based on macroblock rows. Return 0 for user-abort request.
-int VP8IteratorProgress(/* const */ it *VP8EncIterator, int delta) {
+func VP8IteratorProgress(/* const */ it *VP8EncIterator, int delta) int {
   var enc *VP8Encoder = it.enc;
   if (delta && enc.pic.progress_hook != nil) {
     done := it.count_down0 - it.count_down;
@@ -327,7 +327,7 @@ func VP8IteratorSaveBoundary(/* const */ it *VP8EncIterator) {
 }
 
 // go to next macroblock. Returns false if not finished.
-int VP8IteratorNext(/* const */ it *VP8EncIterator) {
+func VP8IteratorNext(/* const */ it *VP8EncIterator) int {
   if (++it.x == it.enc.mb_w) {
     VP8IteratorSetRow(it, ++it.y);
   } else {
@@ -448,7 +448,7 @@ func VP8IteratorStartI4(/* const */ it *VP8EncIterator) {
 }
 
 // returns true if not done.
-int VP8IteratorRotateI4(/* const */ it *VP8EncIterator, /*const*/ yuv_out *uint8) {
+func VP8IteratorRotateI4(/* const */ it *VP8EncIterator, /*const*/ yuv_out *uint8) int {
   var blk *uint8 = yuv_out + VP8Scan[it.i4];
   var top *uint8 = it.i4_top;
   var i int

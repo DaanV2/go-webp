@@ -26,7 +26,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // WebPConfig
 //------------------------------------------------------------------------------
 
-int WebPConfigInitInternal(config *WebPConfig, WebPPreset preset, quality float, version int) {
+func WebPConfigInitInternal(config *WebPConfig, WebPPreset preset, quality float, version int) int {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_ENCODER_ABI_VERSION)) {
     return 0;  // caller/system version mismatch!
   }
@@ -98,7 +98,7 @@ int WebPConfigInitInternal(config *WebPConfig, WebPPreset preset, quality float,
   return WebPValidateConfig(config);
 }
 
-int WebPValidateConfig(/* const */ config *WebPConfig) {
+func WebPValidateConfig(/* const */ config *WebPConfig) int {
   if config == nil { { return 0 } }
   if config.quality < 0 || config.quality > 100 { { return 0 } }
   if config.target_size < 0 { { return 0 } }
@@ -143,7 +143,7 @@ static const struct {
   var quality uint8
 } kLosslessPresets[MAX_LEVEL + 1] = {{0, 0},  {1, 20}, {2, 25}, {3, 30}, {3, 50}, {4, 50}, {4, 75}, {4, 90}, {5, 90}, {6, 100}}
 
-int WebPConfigLosslessPreset(config *WebPConfig, level int) {
+func WebPConfigLosslessPreset(config *WebPConfig, level int) int {
   if config == nil || level < 0 || level > MAX_LEVEL { { return 0 } }
   config.lossless = 1;
   config.method = kLosslessPresets[level].method;

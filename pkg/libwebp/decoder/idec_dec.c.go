@@ -965,7 +965,7 @@ func WebPIDecGetYUVA(/* const */ idec *WebPIDecoder, last_y *int, u \*uint8, v *
 // Set the custom IO function pointers and user-data. The setter for IO hooks
 // should be called before initiating incremental decoding. Returns true if
 // WebPIDecoder object is successfully modified, false otherwise.
-int WebPISetIOHooks(/* const */ idec *WebPIDecoder, VP8IoPutHook put, VP8IoSetupHook setup, VP8IoTeardownHook teardown, user_data *void) {
+func WebPISetIOHooks(/* const */ idec *WebPIDecoder, VP8IoPutHook put, VP8IoSetupHook setup, VP8IoTeardownHook teardown, user_data *void) int {
   if (idec == nil || idec.state > STATE_WEBP_HEADER) {
     return 0;
   }

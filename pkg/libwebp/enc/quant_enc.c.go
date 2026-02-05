@@ -1277,7 +1277,7 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
 // Entry point
 
 // Pick best modes and fills the levels. Returns true if skipped.
-int VP8Decimate(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, VP8RDLevel rd_opt) {
+func VP8Decimate(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, VP8RDLevel rd_opt) int {
   var is_skipped int
   method := it.enc.method;
 

@@ -106,7 +106,7 @@ func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*con
 //------------------------------------------------------------------------------
 // Mode costs
 
-int VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ int16 levels[16]) {
+func VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ int16 levels[16]) int {
   x := (it.i4 & 3), y = (it.i4 >> 2);
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
@@ -120,7 +120,7 @@ int VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ int16 levels[16]) 
   return R;
 }
 
-int VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
+func VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   var x, y int
@@ -146,7 +146,7 @@ int VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore)
   return R;
 }
 
-int VP8GetCostUV(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
+func VP8GetCostUV(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   int ch, x, y;
@@ -176,7 +176,7 @@ int VP8GetCostUV(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
 
 // Simulate block coding, but only record statistics.
 // Note: no need to record the fixed probas.
-int VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual) {
+func VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual) int {
   n := res.first;
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
   proba_t* s = res.stats[n][ctx];

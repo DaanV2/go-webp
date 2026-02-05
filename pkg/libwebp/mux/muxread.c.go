@@ -70,7 +70,7 @@ static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, /*const*/ data *uint8
   return ChunkAssignData(chunk, &chunk_data, copy_data, GetLE32(data + 0));
 }
 
-int MuxImageFinalize(/* const */ wpi *WebPMuxImage) {
+func MuxImageFinalize(/* const */ wpi *WebPMuxImage) int {
   var img *WebPChunk = wpi.img;
   var image *WebPData = &img.data;
   is_lossless := (img.tag == kChunks[IDX_VP8L].tag);

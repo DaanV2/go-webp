@@ -653,7 +653,7 @@ func InitThreadContext(/* const */ dec *vp8.VP8Decoder) int  {
 
 // Return the multi-threading method to use (0=off), depending
 // on options and bitstream size. Only for lossy decoding.
-int VP8GetThreadMethod(/* const */ options *WebPDecoderOptions, /*const*/ headers *WebPHeaderStructure, width int, height int) {
+func VP8GetThreadMethod(/* const */ options *WebPDecoderOptions, /*const*/ headers *WebPHeaderStructure, width int, height int) int {
   if (options == nil || options.use_threads == 0) {
     return 0;
   }
@@ -789,7 +789,7 @@ func InitIo(/* const */ dec *VP8Decoder, io *VP8Io) {
   io.a = nil;
 }
 
-int VP8InitFrame(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) {
+func VP8InitFrame(/* const */ dec *VP8Decoder, /*const*/ io *VP8Io) int {
   if !InitThreadContext(dec) {
     return 0  // call first. Sets dec.num_caches.
 }

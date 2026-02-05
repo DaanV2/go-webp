@@ -434,7 +434,7 @@ Error:
 // 'num_htree_groups' groups. If 'num_htree_groups_max' > 'num_htree_groups',
 // some of those indices map to -1. This is used for non-balanced codes to
 // limit memory usage.
-int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_htree_groups_max, /*const*/ mapping *int, /*const*/ dec *VP8LDecoder, /*const*/ huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) {
+func ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_htree_groups_max, /*const*/ mapping *int, /*const*/ dec *VP8LDecoder, /*const*/ huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) int {
   int i, j, ok = 0, 0, 0;
   max_alphabet_size :=
       kAlphabetSize[0] + ((color_cache_bits > 0) ? 1 << color_cache_bits : 0);
@@ -1622,7 +1622,7 @@ func ExtractAlphaRows(/* const */ dec *VP8LDecoder, int last_row, int wait_for_b
 
 // Decodes image header for alpha data stored using lossless compression.
 // Returns false in case of error.
-int VP8LDecodeAlphaHeader(/* const */ alph_dec *ALPHDecoder, /*const*/ data *uint8, data_size uint64) {
+func VP8LDecodeAlphaHeader(/* const */ alph_dec *ALPHDecoder, /*const*/ data *uint8, data_size uint64) int {
   ok := 0;
   dec *VP8LDecoder = VP8LNew();
 
@@ -1672,7 +1672,7 @@ Err:
 // already decoded in previous call(s), it will resume decoding from where it
 // was paused.
 // Returns false in case of bitstream error.
-int VP8LDecodeAlphaImageStream(/* const */ alph_dec *ALPHDecoder, int last_row) {
+func VP8LDecodeAlphaImageStream(/* const */ alph_dec *ALPHDecoder, int last_row) int {
   var dec *VP8LDecoder = alph_dec.vp8l_dec;
   assert.Assert(dec != nil);
   assert.Assert(last_row <= dec.height);
@@ -1692,7 +1692,7 @@ int VP8LDecodeAlphaImageStream(/* const */ alph_dec *ALPHDecoder, int last_row) 
 //------------------------------------------------------------------------------
 
 // Decodes the image header. Returns false in case of error.
-int VP8LDecodeHeader(/* const */ dec *VP8LDecoder, /* const */ io *VP8Io) {
+func VP8LDecodeHeader(/* const */ dec *VP8LDecoder, /* const */ io *VP8Io) int {
   int width, height, has_alpha;
 
   if dec == nil { { return 0 } }
@@ -1727,7 +1727,7 @@ Error:
 
 // Decodes an image. It's required to decode the lossless header before calling
 // this function. Returns false in case of error, with updated dec.status.
-int VP8LDecodeImage(/* const */ dec *VP8LDecoder) {
+func VP8LDecodeImage(/* const */ dec *VP8LDecoder) int {
   io *VP8Io = nil;
   params *WebPDecParams = nil;
 

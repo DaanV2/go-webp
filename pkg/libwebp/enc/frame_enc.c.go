@@ -740,7 +740,7 @@ func ResetAfterSkip(/* const */ it *VP8EncIterator) {
   }
 }
 
-int VP8EncLoop(/* const */ enc *VP8Encoder) {
+func VP8EncLoop(/* const */ enc *VP8Encoder) int {
   VP8EncIterator it;
   ok := PreLoopInitialize(enc);
   if !ok { { return 0 } }
@@ -784,7 +784,7 @@ int VP8EncLoop(/* const */ enc *VP8Encoder) {
 
 const MIN_COUNT =96  // minimum number of macroblocks before updating stats
 
-int VP8EncTokenLoop(/* const */ enc *VP8Encoder) {
+func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
   // Roughly refresh the proba eight times per pass
   max_count := (enc.mb_w * enc.mb_h) >> 3;
   num_pass_left := enc.config.pass;
@@ -895,7 +895,7 @@ int VP8EncTokenLoop(/* const */ enc *VP8Encoder) {
 
 #else
 
-int VP8EncTokenLoop(/* const */ enc *VP8Encoder) {
+func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
   (void)enc;
   return 0;  // we shouldn't be here.
 }

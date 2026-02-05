@@ -1527,7 +1527,7 @@ Error:
 
 // Encodes the main image stream using the supplied bit writer.
 // Returns false in case of error (stored in picture.error_code).
-int VP8LEncodeStream(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture, /*const*/ bw_main *VP8LBitWriter) {
+func VP8LEncodeStream(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture, /*const*/ bw_main *VP8LBitWriter) int {
   var enc_main *VP8LEncoder = VP8LEncoderNew(config, picture);
   enc_side *VP8LEncoder = nil;
   CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX];
@@ -1682,7 +1682,7 @@ Error:
 // Encodes the picture.
 // Returns 0 if config or picture is nil or picture doesn't have valid argb
 // input.
-int VP8LEncodeImage(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture) {
+func VP8LEncodeImage(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture) int {
   var  width, height int
   var  has_alpha int
   var coded_size uint64

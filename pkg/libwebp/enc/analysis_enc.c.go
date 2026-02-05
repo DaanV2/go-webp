@@ -429,7 +429,7 @@ func InitSegmentJob(/* const */ enc *VP8Encoder, /*const*/ job *SegmentJob, int 
 // main entry point
 // Main analysis loop. Decides the segmentations and complexity.
 // Assigns a first guess for Intra16 and 'uvmode' prediction modes
-int VP8EncAnalyze(/* const */ enc *VP8Encoder) {
+func VP8EncAnalyze(/* const */ enc *VP8Encoder) int {
   ok := 1;
   do_segments :=
       enc.config.emulate_jpeg_size ||  // We need the complexity evaluation.

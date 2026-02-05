@@ -132,7 +132,7 @@ func ParseIntraMode(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder, int
                                                          : H_PRED;
 }
 
-int VP8ParseIntraModeRow(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder) {
+func VP8ParseIntraModeRow(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder) int {
   var mb_x int
   for mb_x = 0; mb_x < dec.mb_w; mb_x++ {
     ParseIntraMode(br, dec, mb_x);

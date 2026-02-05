@@ -1,5 +1,3 @@
-package enc
-
 // Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,35 +5,12 @@ package enc
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// WebP encoder: main entry point
-//
-// Author: Skal (pascal.massimino@gmail.com)
+package enc
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/math"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
 
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-// #define PRINT_MEMORY_INFO
-
-#ifdef PRINT_MEMORY_INFO
-import "github.com/daanv2/go-webp/pkg/stdio"
-#endif
-
-//------------------------------------------------------------------------------
-
-int WebPGetEncoderVersion(){
+// Return the encoder's version number, packed in hexadecimal using 8bits for
+// each of major/minor/revision. E.g: v2.5.7 is 0x020507.
+func WebPGetEncoderVersion() int {
   return (ENC_MAJ_VERSION << 16) | (ENC_MIN_VERSION << 8) | ENC_REV_VERSION;
 }
 
@@ -308,7 +283,7 @@ func StoreStats(/* const */ enc *VP8Encoder) {
 
 // Assign an error code to a picture. Return false for convenience.
 // Deprecated: time to start using golang errors
-int WebPEncodingSetError(/* const */ pic *WebPPicture, error WebPEncodingError ) {
+func WebPEncodingSetError(/* const */ pic *WebPPicture, error WebPEncodingError ) int {
   assert.Assert((int)error < VP8_ENC_ERROR_LAST);
   assert.Assert((int)error >= VP8_ENC_OK);
   // The oldest error reported takes precedence over the new one.
@@ -318,7 +293,7 @@ int WebPEncodingSetError(/* const */ pic *WebPPicture, error WebPEncodingError )
   return 0;
 }
 
-int WebPReportProgress(/* const */ pic *WebPPicture, int percent, /*const*/ percent_store *int) {
+func WebPReportProgress(/* const */ pic *WebPPicture, int percent, /*const*/ percent_store *int) int {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
     if (pic.progress_hook && !pic.progress_hook(percent, pic)) {
@@ -330,7 +305,7 @@ int WebPReportProgress(/* const */ pic *WebPPicture, int percent, /*const*/ perc
 }
 //------------------------------------------------------------------------------
 
-int WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) {
+func WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) int {
   ok := 0;
   if pic == nil { { return 0 } }
 

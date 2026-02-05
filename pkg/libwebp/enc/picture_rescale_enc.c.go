@@ -57,7 +57,7 @@ func AdjustAndCheckRectangle(/* const */ pic *WebPPicture, /*const*/ left *int, 
 }
 
 #if !defined(WEBP_REDUCE_SIZE)
-int WebPPictureCopy(/* const */ src *WebPPicture, dst *WebPPicture) {
+func WebPPictureCopy(/* const */ src *WebPPicture, dst *WebPPicture) int {
   if src == nil || dst == nil { { return 0 } }
   if src == dst { { return 1 } }
 
@@ -78,7 +78,7 @@ int WebPPictureCopy(/* const */ src *WebPPicture, dst *WebPPicture) {
 }
 #endif  // !defined(WEBP_REDUCE_SIZE)
 
-int WebPPictureIsView(/* const */ picture *WebPPicture) {
+func WebPPictureIsView(/* const */ picture *WebPPicture) int {
   if picture == nil { { return 0 } }
   if (picture.use_argb) {
     return (picture.memory_argb_ == nil);
@@ -86,7 +86,7 @@ int WebPPictureIsView(/* const */ picture *WebPPicture) {
   return (picture.memory_ == nil);
 }
 
-int WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, height int, dst *WebPPicture) {
+func WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, height int, dst *WebPPicture) int {
   if src == nil || dst == nil { { return 0 } }
 
   // verify rectangle position.
@@ -118,7 +118,7 @@ int WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, heig
 //------------------------------------------------------------------------------
 // Picture cropping
 
-int WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) {
+func WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) int {
   WebPPicture tmp;
 
   if pic == nil { { return 0 } }
@@ -179,7 +179,7 @@ func AlphaMultiplyY(/* const */ pic *WebPPicture, int inverse) {
   }
 }
 
-int WebPPictureRescale(picture *WebPPicture, width, height int) {
+func WebPPictureRescale(picture *WebPPicture, width, height int) int {
   WebPPicture tmp;
   int prev_width, prev_height;
   rescaler_t* work;
@@ -258,13 +258,13 @@ Cleanup:
 
 #else   // defined(WEBP_REDUCE_SIZE)
 
-int WebPPictureCopy(/* const */ src *WebPPicture, dst *WebPPicture) {
+func WebPPictureCopy(/* const */ src *WebPPicture, dst *WebPPicture) int {
   (void)src;
   (void)dst;
   return 0;
 }
 
-int WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) {
+func WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) int {
   (void)pic;
   (void)left;
   (void)top;
@@ -273,7 +273,7 @@ int WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) {
   return 0;
 }
 
-int WebPPictureRescale(pic *WebPPicture, width, height int) {
+func WebPPictureRescale(pic *WebPPicture, width, height int) int {
   (void)pic;
   (void)width;
   (void)height;

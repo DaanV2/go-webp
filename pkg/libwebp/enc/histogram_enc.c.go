@@ -1074,7 +1074,7 @@ func GetCombineCostFactor(int histo_size, quality int) int32 {
   return combine_cost_factor;
 }
 
-int VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
+func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) int {
   histo_xsize :=
       histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1;
   histo_ysize :=

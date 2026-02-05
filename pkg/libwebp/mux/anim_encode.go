@@ -1395,7 +1395,7 @@ func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
 #undef DELTA_INFINITY
 #undef KEYFRAME_NONE
 
-int WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, int timestamp, /*const*/ encoder_config *WebPConfig) {
+func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, int timestamp, /*const*/ encoder_config *WebPConfig) int {
   WebPConfig config;
   var ok int
 

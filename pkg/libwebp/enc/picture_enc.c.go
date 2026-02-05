@@ -35,7 +35,7 @@ func DummyWriter(/* const */ data *uint8, data_size uint64, /*const*/ picture *W
   return 1;
 }
 
-int WebPPictureInitInternal(picture *WebPPicture, version int) {
+func WebPPictureInitInternal(picture *WebPPicture, version int) int {
   if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_ENCODER_ABI_VERSION)) {
     return 0;  // caller/system version mismatch!
   }
@@ -52,7 +52,7 @@ int WebPPictureInitInternal(picture *WebPPicture, version int) {
 // Returns true if 'picture' is non-nil and dimensions/colorspace are within
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
-int WebPValidatePicture(/* const */ picture *WebPPicture) {
+func WebPValidatePicture(/* const */ picture *WebPPicture) int {
   if picture == nil { { return 0 } }
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
       picture.height <= 0 || picture.height > INT_MAX / 4) {
@@ -173,7 +173,7 @@ func WebPPictureAllocYUVA(/* const */ picture *WebPPicture) int {
   return 1;
 }
 
-int WebPPictureAlloc(picture *WebPPicture) {
+func WebPPictureAlloc(picture *WebPPicture) int {
   if (picture != nil) {
     WebPPictureFree(picture);  // erase previous buffer
 
@@ -201,7 +201,7 @@ func WebPMemoryWriterInit(writer *WebPMemoryWriter) {
   writer.max_size = 0;
 }
 
-int WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture) {
+func WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture) int {
   var w *WebPMemoryWriter = (*WebPMemoryWriter)picture.custom_ptr;
   var next_size uint64
   if (w == nil) {

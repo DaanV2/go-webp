@@ -124,7 +124,7 @@ func GetLogSSIM(double v, double size) double {
   return (v < 1.) ? -10.0 * log10(1. - v) : kMinDistortion_dB;
 }
 
-int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) {
+func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) int {
   allocated *uint8 = nil;
   const AccumulateFunc metric = (type == 0)   ? AccumulateSSE
                                 : (type == 1) ? AccumulateSSIM
@@ -167,7 +167,7 @@ const BLUE_OFFSET =3  // uint32 0x000000ff is 0x00,00,00,ff in memory
 const BLUE_OFFSET =0  // uint32 0x000000ff is 0xff,00,00,00 in memory
 #endif
 
-int WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, int type, float results[5]) {
+func WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, int type, float results[5]) int {
   int w, h, c;
   ok := 0;
   WebPPicture p0, p1;
@@ -213,7 +213,7 @@ Error:
 #undef BLUE_OFFSET
 
 #else  // defined(WEBP_DISABLE_STATS)
-int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) {
+func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) int {
   (void)src;
   (void)src_stride;
   (void)ref;
@@ -228,7 +228,7 @@ int WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref
   return 1;
 }
 
-int WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, int type, float results[5]) {
+func WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, int type, float results[5]) int {
   var i int
   (void)src;
   (void)ref;

@@ -255,7 +255,7 @@ static *WebPChunk* GetChunkListFromId(/* const */ wpi *WebPMuxImage, WebPChunkId
   }
 }
 
-int MuxImageCount(/* const */ wpi_list *WebPMuxImage, WebPChunkId id) {
+func MuxImageCount(/* const */ wpi_list *WebPMuxImage, WebPChunkId id) int {
   count := 0;
   const current *WebPMuxImage;
   for current = wpi_list; current != nil; current = current.next {
@@ -404,7 +404,7 @@ MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst *uint8) {
 //------------------------------------------------------------------------------
 // Helper methods for mux.
 
-int MuxHasAlpha(/* const */ images *WebPMuxImage) {
+func MuxHasAlpha(/* const */ images *WebPMuxImage) int {
   while (images != nil) {
     if images.has_alpha { { return 1 } }
     images = images.next;

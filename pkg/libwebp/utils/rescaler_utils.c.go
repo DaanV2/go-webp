@@ -86,7 +86,7 @@ int WebPRescalerInit(/* const */ rescaler *WebPRescaler, int src_width, int src_
   return 1;
 }
 
-int WebPRescalerGetScaledDimensions(int src_width, int src_height, /*const*/ scaled_width *int, /*const*/ scaled_height *int) {
+func WebPRescalerGetScaledDimensions(int src_width, int src_height, /*const*/ scaled_width *int, /*const*/ scaled_height *int) int {
   assert.Assert(scaled_width != nil);
   assert.Assert(scaled_height != nil);
   {
@@ -118,13 +118,13 @@ int WebPRescalerGetScaledDimensions(int src_width, int src_height, /*const*/ sca
 //------------------------------------------------------------------------------
 // all-in-one calls
 
-int WebPRescaleNeededLines(/* const */ rescaler *WebPRescaler, int max_num_lines) {
+func WebPRescaleNeededLines(/* const */ rescaler *WebPRescaler, int max_num_lines) int {
   num_lines :=
       (rescaler.y_accum + rescaler.y_sub - 1) / rescaler.y_sub;
   return (num_lines > max_num_lines) ? max_num_lines : num_lines;
 }
 
-int WebPRescalerImport(/* const */ rescaler *WebPRescaler, int num_lines, /*const*/ src *uint8, int src_stride) {
+func WebPRescalerImport(/* const */ rescaler *WebPRescaler, int num_lines, /*const*/ src *uint8, int src_stride) int {
   total_imported := 0;
   while (total_imported < num_lines &&
          !WebPRescalerHasPendingOutput(rescaler)) {
@@ -151,7 +151,7 @@ int WebPRescalerImport(/* const */ rescaler *WebPRescaler, int num_lines, /*cons
   return total_imported;
 }
 
-int WebPRescalerExport(/* const */ rescaler *WebPRescaler) {
+func WebPRescalerExport(/* const */ rescaler *WebPRescaler) int {
   total_exported := 0;
   while (WebPRescalerHasPendingOutput(rescaler)) {
     WebPRescalerExportRow(rescaler);
