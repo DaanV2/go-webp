@@ -1,5 +1,3 @@
-package dsp
-
 // Copyright 2010 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,70 +5,41 @@ package dsp
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// YUV.RGB conversion functions
-//
-// Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+package dsp
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
+func row_func(callfn func(y, u, v, rgb *uint8), XSTEP int) func(y, u, v, dst *uint8, len int) {
+  return func(y , u, v, dst *uint8, len int) {
+    var end *uint8 = dst + (len & ~1) * (XSTEP)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-// Uncomment to disable gamma-compression during RGB.U/V averaging
-#define USE_GAMMA_COMPRESSION
-
-// If defined, use table to compute x / alpha.
-#define USE_INVERSE_ALPHA_TABLE
-
-#ifdef USE_GAMMA_COMPRESSION
-import "github.com/daanv2/go-webp/pkg/math"
-#endif
-
-//-----------------------------------------------------------------------------
-// Plain-C version
-
-#define ROW_FUNC(FUNC_NAME, FUNC, XSTEP)                                     \
-  func FUNC_NAME(                                                     \
-      const y *uint8, /*const*/ u *uint8,        \
-      const v *uint8, dst *uint8, len int) { \
-    var end *uint8 = dst + (len & ~1) * (XSTEP);                   \
-    while (dst != end) {                                                     \
-      FUNC(y[0], u[0], v[0], dst);                                           \
-      FUNC(y[1], u[0], v[0], dst + (XSTEP));                                 \
-      y += 2;                                                                \
-      u++                                                                   \
-      v++                                                                   \
-      dst += 2 * (XSTEP);                                                    \
-    }                                                                        \
-    if (len & 1) {                                                           \
-      FUNC(y[0], u[0], v[0], dst);                                           \
-    }                                                                        \
+    for (dst != end) {
+      callfn(y[0], u[0], v[0], dst)
+      callfn(y[1], u[0], v[0], dst + (XSTEP))
+      y += 2;
+      u++
+      v++
+      dst += 2 * (XSTEP);
+    }
+    if (len & 1) {
+      callfn(y[0], u[0], v[0], dst)
+    }
   }
+}
 
 // All variants implemented.
-ROW_FUNC(YuvToRgbRow, VP8YuvToRgb, 3)
-ROW_FUNC(YuvToBgrRow, VP8YuvToBgr, 3)
-ROW_FUNC(YuvToRgbaRow, VP8YuvToRgba, 4)
-ROW_FUNC(YuvToBgraRow, VP8YuvToBgra, 4)
-ROW_FUNC(YuvToArgbRow, VP8YuvToArgb, 4)
-ROW_FUNC(YuvToRgba4444Row, VP8YuvToRgba4444, 2)
-ROW_FUNC(YuvToRgb565Row, VP8YuvToRgb565, 2)
-
-#undef ROW_FUNC
+const YuvToRgbRow = row_func( VP8YuvToRgb, 3)
+const YuvToBgrRow = row_func( VP8YuvToBgr, 3)
+const YuvToRgbaRow = row_func( VP8YuvToRgba, 4)
+const YuvToBgraRow = row_func( VP8YuvToBgra, 4)
+const YuvToArgbRow = row_func( VP8YuvToArgb, 4)
+const YuvToRgba4444Row = row_func( VP8YuvToRgba4444, 2)
+const YuvToRgb565Row = row_func( VP8YuvToRgb565, 2)
 
 // Main call for processing a plane with a WebPSamplerRowFunc function:
-func WebPSamplerProcessPlane(/* const */ y *uint8, y_stride int, /*const*/ u *uint8, /*const*/ v *uint8, uv_stride int, dst *uint8, dst_stride int, width, height int, WebPSamplerRowFunc func) {
+func WebPSamplerProcessPlane(/* const */ y *uint8, y_stride int, /*const*/ u *uint8, /*const*/ v *uint8, uv_stride int, dst *uint8, dst_stride int, width, height int, fn WebPSamplerRowFunc) {
   var j int
   for j = 0; j < height; j++ {
-    func(y, u, v, dst, width);
+    fn(y, u, v, dst, width);
     y += y_stride;
     if (j & 1) {
       u += uv_stride;
@@ -80,18 +49,7 @@ func WebPSamplerProcessPlane(/* const */ y *uint8, y_stride int, /*const*/ u *ui
   }
 }
 
-//-----------------------------------------------------------------------------
-// Main call
-
-WebPSamplerRowFunc WebPSamplers[MODE_LAST];
-
-extern VP8CPUInfo VP8GetCPUInfo;
-extern func WebPInitSamplersSSE2(void);
-extern func WebPInitSamplersSSE41(void);
-extern func WebPInitSamplersMIPS32(void);
-extern func WebPInitSamplersMIPSdspR2(void);
-
-WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
+func WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
   WebPSamplers[MODE_RGB] = YuvToRgbRow;
   WebPSamplers[MODE_RGBA] = YuvToRgbaRow;
   WebPSamplers[MODE_BGR] = YuvToBgrRow;
@@ -128,9 +86,6 @@ WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
 #endif  // WEBP_USE_MIPS_DSP_R2
   }
 }
-
-//-----------------------------------------------------------------------------
-// ARGB . YUV converters
 
 func ConvertARGBToY_C(/* const */ argb *uint32, y *uint8, width int) {
   var i int
@@ -212,20 +167,20 @@ func WebPConvertRGBA32ToUV_C(/* const */ rgb *uint16, u *uint8, v *uint8, width 
 #if defined(USE_GAMMA_COMPRESSION)
 
 // Gamma correction compensates loss of resolution during chroma subsampling.
-const GAMMA_FIX =12     // fixed-point precision for linear values
+const GAMMA_FIX = 12     // fixed-point precision for linear values
 const GAMMA_TAB_FIX =7  // fixed-point fractional bits precision
 const GAMMA_TAB_SIZE =(1 << (GAMMA_FIX - GAMMA_TAB_FIX))
-static const double kGamma = 0.80;
-static const kGammaScale := ((1 << GAMMA_FIX) - 1);
-static const kGammaTabScale := (1 << GAMMA_TAB_FIX);
-static const kGammaTabRounder := (1 << GAMMA_TAB_FIX >> 1);
+const double kGamma = 0.80
+const kGammaScale := ((1 << GAMMA_FIX) - 1)
+const kGammaTabScale := (1 << GAMMA_TAB_FIX)
+const kGammaTabRounder := (1 << GAMMA_TAB_FIX >> 1)
 
-static int kLinearToGammaTab[GAMMA_TAB_SIZE + 1];
-static uint16 kGammaToLinearTab[256];
-static volatile kGammaTablesOk := 0;
-extern VP8CPUInfo VP8GetCPUInfo;
+var kLinearToGammaTab [GAMMA_TAB_SIZE + 1]int
+var kGammaToLinearTab[256]uinuint16
+var kGammaTablesOk = 0
+var VP8CPUInfo VP8GetCPUInfo
 
-WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
+func WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
   if (!kGammaTablesOk) {
     var v int
     const double scale = (double)(1 << GAMMA_TAB_FIX) / kGammaScale;
@@ -261,16 +216,6 @@ func LinearToGamma(uint32 base_value, shift int) int {
   y := Interpolate(base_value << shift);  // final uplifted value
   return (y + kGammaTabRounder) >> GAMMA_TAB_FIX;  // descale
 }
-
-#else
-
-func WebPInitGammaTables(){}
-func GammaToLinear(uint8 v) uint32 { return v; }
-func LinearToGamma(uint32 base_value, shift int) int {
-  return (int)(base_value << shift);
-}
-
-#endif  // USE_GAMMA_COMPRESSION
 
 #define SUM4(ptr, step)                                                  \
   LinearToGamma(GammaToLinear((ptr)[0]) + GammaToLinear((ptr)[(step)]) + \
@@ -498,7 +443,7 @@ extern func WebPInitConvertARGBToYUVSSE2(void);
 extern func WebPInitConvertARGBToYUVSSE41(void);
 extern func WebPInitConvertARGBToYUVNEON(void);
 
-WEBP_DSP_INIT_FUNC(WebPInitConvertARGBToYUV) {
+func WEBP_DSP_INIT_FUNC(WebPInitConvertARGBToYUV) {
   WebPConvertARGBToY = ConvertARGBToY_C;
   WebPConvertARGBToUV = WebPConvertARGBToUV_C;
 

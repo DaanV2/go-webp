@@ -40,7 +40,7 @@ func HorizontalAdd32b_SSE2(/* const */ __const m *m128i) uint32 {
   return (uint32)_mm_cvtsi128_si32(c);
 }
 
-static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0}
+var kWeight = []uint16{1, 2, 3, 4, 3, 2, 1, 0}
 
 #define ACCUMULATE_ROW(WEIGHT)                                \
   for {                                                        \

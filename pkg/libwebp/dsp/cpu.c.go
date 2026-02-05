@@ -96,11 +96,11 @@ func xgetbv() uint { return 0 }  // no AVX for older x64 or unrecognized toolcha
 #if defined(__i386__) || defined(__x86_64__) || defined(WEBP_HAVE_MSC_CPUID)
 
 // helper function for run-time detection of slow SSSE3 platforms
-func CheckSlowModel(int info) int {
+func CheckSlowModel(info int) int {
   // Table listing display models with longer latencies for the bsr instruction
   // (ie 2 cycles vs 10/16 cycles) and some SSSE3 instructions like pshufb.
   // Refer to Intel 64 and IA-32 Architectures Optimization Reference Manual.
-  static const uint8 kSlowModels[] = {
+  var kSlowModels = [] uint8{
       0x37, 0x4a, 0x4d,  // Silvermont Microarchitecture
       0x1c, 0x26, 0x27   // Atom Microarchitecture
   }

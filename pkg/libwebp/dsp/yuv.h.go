@@ -34,33 +34,33 @@ package dsp
 
 // Author: Skal (pascal.massimino@gmail.com)
 
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
+import (
+	"github.com/daanv2/go-webp/pkg/constants"
+	"github.com/daanv2/go-webp/pkg/libwebp/dec"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
 
 // Macros to give the offset of each channel in a uint32 containing ARGB.
-#ifdef constants.WORDS_BIGENDIAN
-// uint32 0xff000000 is 0xff,00,00,00 in memory
-#define CHANNEL_OFFSET(i) (i)
-#else
-// uint32 0xff000000 is 0x00,00,00,ff in memory
-#define CHANNEL_OFFSET(i) (3 - (i))
-#endif
+func CHANNEL_OFFSET(i int) int {
+  if constants.WORDS_BIGENDIAN {
+	// uint32 0xff000000 is 0xff,00,00,00 in memory
+	return i
+	  }
 
-//------------------------------------------------------------------------------
-// YUV . RGB conversion
-
-
-enum {
-  YUV_FIX = 16,  // fixed-point precision for RGB.YUV
-  YUV_HALF = 1 << (YUV_FIX - 1),
-
-  YUV_FIX2 = 6,  // fixed-point precision for YUV.RGB
-  YUV_MASK2 = (256 << YUV_FIX2) - 1
+	// uint32 0xff000000 is 0x00,00,00,ff in memory
+	return 3 - i
 }
+
+
+const (
+  YUV_FIX = 16  // fixed-point precision for RGB.YUV
+  YUV_HALF = 1 << (YUV_FIX - 1)
+
+  YUV_FIX2 = 6  // fixed-point precision for YUV.RGB
+  YUV_MASK2 = (256 << YUV_FIX2) - 1
+)
 
 //------------------------------------------------------------------------------
 // slower on x86 by ~7-8%, but bit-exact with the SSE2/NEON version
@@ -70,34 +70,34 @@ func MultHi(int v, coeff int) int {  // _mm_mulhi_epu16 emulation
 }
 
 func VP8Clip8(int v) int {
-  return ((v & ~YUV_MASK2) == 0) ? (v >> YUV_FIX2) : (v < 0) ? 0 : 255;
+  return tenary.If((v & ~YUV_MASK2) == 0, (v >> YUV_FIX2), tenary.If(v < 0, 0,  255))
 }
 
-func VP8YUVToR(int y, v int) int {
+func VP8YUVToR(y int, v int) int {
   return VP8Clip8(MultHi(y, 19077) + MultHi(v, 26149) - 14234);
 }
 
-func VP8YUVToG(int y, u int, v int) int {
+func VP8YUVToG(y int, u int, v int) int {
   return VP8Clip8(MultHi(y, 19077) - MultHi(u, 6419) - MultHi(v, 13320) + 8708);
 }
 
-func VP8YUVToB(int y, u int) int {
+func VP8YUVToB(y int, u int) int {
   return VP8Clip8(MultHi(y, 19077) + MultHi(u, 33050) - 17685);
 }
 
-func VP8YuvToRgb(int y, u int, v int, /*const*/ rgb *uint8) {
+func VP8YuvToRgb(y, u, v, rgb *uint8) {
   rgb[0] = VP8YUVToR(y, v);
   rgb[1] = VP8YUVToG(y, u, v);
   rgb[2] = VP8YUVToB(y, u);
 }
 
-func VP8YuvToBgr(int y, u int, v int, /*const*/ bgr *uint8) {
+func VP8YuvToBgr(y, u, v, bgr *uint8) {
   bgr[0] = VP8YUVToB(y, u);
   bgr[1] = VP8YUVToG(y, u, v);
   bgr[2] = VP8YUVToR(y, v);
 }
 
-func VP8YuvToRgb565(int y, u int, v int, /*const*/ rgb *uint8) {
+func VP8YuvToRgb565(y, u, v, rgb *uint8) {
   r := VP8YUVToR(y, v);     // 5 usable bits
   g := VP8YUVToG(y, u, v);  // 6 usable bits
   b := VP8YUVToB(y, u);     // 5 usable bits
@@ -112,7 +112,7 @@ func VP8YuvToRgb565(int y, u int, v int, /*const*/ rgb *uint8) {
 #endif
 }
 
-func VP8YuvToRgba4444(int y, u int, v int, /*const*/ argb *uint8) {
+func VP8YuvToRgba4444(y, u, v, argb *uint8) {
   r := VP8YUVToR(y, v);     // 4 usable bits
   g := VP8YUVToG(y, u, v);  // 4 usable bits
   b := VP8YUVToB(y, u);     // 4 usable bits

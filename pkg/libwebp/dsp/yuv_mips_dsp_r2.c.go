@@ -1,5 +1,3 @@
-package dsp
-
 // Copyright 2014 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,18 +5,9 @@ package dsp
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// MIPS DSPr2 version of YUV to RGB upsampling functions.
-//
-// Author(s):  Branimir Vasic (branimir.vasic@imgtec.com)
-//             Djordje Pesut  (djordje.pesut@imgtec.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+package dsp
 
-#if defined(WEBP_USE_MIPS_DSP_R2)
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 //------------------------------------------------------------------------------
 // simple point-sampling
