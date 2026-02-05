@@ -857,7 +857,7 @@ func ChunkCount(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte) int {
   return count
 }
 
-static GetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, int chunk_num) *Chunk {
+static GetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, chunk_num int) *Chunk {
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
   count := 0
@@ -869,7 +869,7 @@ static GetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, int chu
   return c
 }
 
-func SetChunk(/* const */ fourcc [4]byte, int chunk_num, /*const*/ iter *WebPChunkIterator) int {
+func SetChunk(/* const */ fourcc [4]byte, chunk_num int, /*const*/ iter *WebPChunkIterator) int {
   var dmux *WebPDemuxer = (*WebPDemuxer)iter.private_
   int count
 
@@ -899,7 +899,7 @@ func SetChunk(/* const */ fourcc [4]byte, int chunk_num, /*const*/ iter *WebPChu
 // payloads are accessed through WebPDemuxGetFrame() and related functions.
 // Call WebPDemuxReleaseChunkIterator() when use of the iterator is complete.
 // NOTE: 'dmux' must persist for the lifetime of the iterator.
-func WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, int chunk_num, iter *WebPChunkIterator) int {
+func WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, chunk_num int, iter *WebPChunkIterator) int {
   if (iter == nil) { return 0 }
 
   stdlib.Memset(iter, 0, sizeof(*iter))

@@ -47,7 +47,7 @@ func InitTop(/* const */ it *VP8EncIterator) {
 }
 
 // reset iterator position to row 'y'
-func VP8IteratorSetRow(/* const */ it *VP8EncIterator, int y) {
+func VP8IteratorSetRow(/* const */ it *VP8EncIterator, y int) {
   var enc *VP8Encoder = it.enc;
   it.x = 0;
   it.y = y;
@@ -71,7 +71,7 @@ func VP8IteratorReset(/* const */ it *VP8EncIterator) {
 }
 
 // set count down (=number of iterations to go)
-func VP8IteratorSetCountDown(/* const */ it *VP8EncIterator, int count_down) {
+func VP8IteratorSetCountDown(/* const */ it *VP8EncIterator, count_down int) {
   it.count_down = it.count_down0 = count_down;
 }
 
@@ -97,7 +97,7 @@ func VP8IteratorInit(/* const */ enc *VP8Encoder, /*const*/ it *VP8EncIterator) 
 }
 
 // Report progression based on macroblock rows. Return 0 for user-abort request.
-func VP8IteratorProgress(/* const */ it *VP8EncIterator, int delta) int {
+func VP8IteratorProgress(/* const */ it *VP8EncIterator, delta int) int {
   var enc *VP8Encoder = it.enc;
   if (delta && enc.pic.progress_hook != nil) {
     done := it.count_down0 - it.count_down;
@@ -113,9 +113,9 @@ func VP8IteratorProgress(/* const */ it *VP8EncIterator, int delta) int {
 // Import the source samples into the cache. Takes care of replicating
 // boundary pixels if necessary.
 
-func MinSize(int a, int b) int { return (a < b) ? a : b; }
+func MinSize(int a, b int) int { return (a < b) ? a : b; }
 
-func ImportBlock(/* const */ src *uint8, int src_stride, dst *uint8, int w, int h, size int) {
+func ImportBlock(/* const */ src *uint8, src_stride int, dst *uint8, w int, h int, size int) {
   var i int
   for i = 0; i < h; i++ {
     memcpy(dst, src, w);
@@ -131,7 +131,7 @@ func ImportBlock(/* const */ src *uint8, int src_stride, dst *uint8, int w, int 
   }
 }
 
-func ImportLine(/* const */ src *uint8, int src_stride, dst *uint8, int len, int total_len) {
+func ImportLine(/* const */ src *uint8, src_stride int, dst *uint8, len int, total_len int) {
   var i int
   for (i = 0; i < len; ++i, src += src_stride) dst[i] = *src;
   for (; i < total_len; ++i) dst[i] = dst[len - 1];
@@ -188,7 +188,7 @@ func VP8IteratorImport(/* const */ it *VP8EncIterator, /*const*/ tmp_ *uint832) 
 //------------------------------------------------------------------------------
 // Copy back the compressed samples into user space if requested.
 
-func ExportBlock(/* const */ src *uint8, dst *uint8, int dst_stride, int w, int h) {
+func ExportBlock(/* const */ src *uint8, dst *uint8, dst_stride int, w int, h int) {
   while (h-- > 0) {
     memcpy(dst, src, w);
     dst += dst_stride;
@@ -343,7 +343,7 @@ func VP8IteratorNext(/* const */ it *VP8EncIterator) int {
 //------------------------------------------------------------------------------
 // Helper function to set mode properties
 
-func VP8SetIntra16Mode(/* const */ it *VP8EncIterator, int mode) {
+func VP8SetIntra16Mode(/* const */ it *VP8EncIterator, mode int) {
   preds *uint8 = it.preds;
   var y int
   for y = 0; y < 4; y++ {
@@ -364,15 +364,15 @@ func VP8SetIntra4Mode(/* const */ it *VP8EncIterator, /*const*/ modes *uint8) {
   it.mb.type = 0;
 }
 
-func VP8SetIntraUVMode(/* const */ it *VP8EncIterator, int mode) {
+func VP8SetIntraUVMode(/* const */ it *VP8EncIterator, mode int) {
   it.mb.uv_mode = mode;
 }
 
-func VP8SetSkip(/* const */ it *VP8EncIterator, int skip) {
+func VP8SetSkip(/* const */ it *VP8EncIterator, skip int) {
   it.mb.skip = skip;
 }
 
-func VP8SetSegment(/* const */ it *VP8EncIterator, int segment) {
+func VP8SetSegment(/* const */ it *VP8EncIterator, segment int) {
   it.mb.segment = segment;
 }
 

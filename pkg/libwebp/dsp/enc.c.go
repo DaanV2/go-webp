@@ -61,7 +61,7 @@ func VP8SetHistogramData(/* const */ distribution [MAX_COEFF_THRESH + 1]int, /*c
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-func CollectHistogram_C(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
+func CollectHistogram_C(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, start_block int, end_block int, WEBP_RESTRICT const histo *VP8Histogram) {
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   for j = start_block; j < end_block; j++ {
@@ -144,7 +144,7 @@ func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT
   }
 }
 
-func ITransform_C(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_C(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
   ITransformOne(ref, in, dst);
   if (do_two) {
     ITransformOne(ref + 4, in + 16, dst + 4);
@@ -279,7 +279,7 @@ func TrueMotion(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /
   }
 }
 
-func DCMode(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int, int round, shift int) {
+func DCMode(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int, round int, shift int) {
   DC := 0;
   var j int
   if (top != nil) {
@@ -525,7 +525,7 @@ func Intra4Preds_C(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8)
 // Metric
 
 #if !WEBP_NEON_OMIT_C_CODE
-func GetSSE(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8, int w, int h) int {
+func GetSSE(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8, w int, h int) int {
   count := 0;
   int y, x;
   for y = 0; y < h; y++ {
@@ -673,7 +673,7 @@ func Quantize2Blocks_C(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT cons
 //------------------------------------------------------------------------------
 // Block copy
 
-func Copy(/* const */ WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, int w, int h) {
+func Copy(/* const */ WEBP_RESTRICT src *uint8, WEBP_RESTRICT dst *uint8, w int, h int) {
   var y int
   for y = 0; y < h; y++ {
     memcpy(dst, src, w);

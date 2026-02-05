@@ -216,7 +216,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
 }
 
 // Clamp histogram and transform bits.
-func ClampBits(width, height int, bits int, int min_bits, int max_bits, int image_size_max) int {
+func ClampBits(width, height int, bits int, min_bits int, max_bits int, image_size_max int) int {
   var image_size int
   bits = (bits < min_bits) ? min_bits : (bits > max_bits) ? max_bits : bits;
   image_size = VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits);
@@ -236,13 +236,13 @@ func ClampBits(width, height int, bits int, int min_bits, int max_bits, int imag
   return bits;
 }
 
-func GetHistoBits(int method, int use_palette, width, height int) int {
+func GetHistoBits(int method, use_palette int, width, height int) int {
   // Make tile size a function of encoding method (Range: 0 to 6).
   histo_bits := (use_palette ? 9 : 7) - method;
   return ClampBits(width, height, histo_bits, MIN_HUFFMAN_BITS, MAX_HUFFMAN_BITS, MAX_HUFF_IMAGE_SIZE);
 }
 
-func GetTransformBits(int method, int histo_bits) int {
+func GetTransformBits(int method, histo_bits int) int {
   max_transform_bits := (method < 4) ? 6 : (method > 4) ? 4 : 5;
   res :=
       (histo_bits > max_transform_bits) ? max_transform_bits : histo_bits;
@@ -619,20 +619,20 @@ func StoreHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ huff_tree *Huffma
   }
 }
 
-func WriteHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, int code_index) {
+func WriteHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, code_index int) {
   depth := code.code_lengths[code_index];
   symbol := code.codes[code_index];
   VP8LPutBits(bw, symbol, depth);
 }
 
 static  func WriteHuffmanCodeWithExtraBits(
-    const bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, int code_index, bits int, n_bits int) {
+    const bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, code_index int, bits int, n_bits int) {
   depth := code.code_lengths[code_index];
   symbol := code.codes[code_index];
   VP8LPutBits(bw, (bits << depth) | symbol, depth + n_bits);
 }
 
-func StoreImageToBitMask(/* const */ bw *VP8LBitWriter, int width, int histo_bits, /*const*/ refs *VP8LBackwardRefs, /*const*/ histogram_symbols *uint32, /*const*/ huffman_codes *HuffmanTreeCode, /*const*/ pic *WebPPicture) int {
+func StoreImageToBitMask(/* const */ bw *VP8LBitWriter, width int, histo_bits int, /*const*/ refs *VP8LBackwardRefs, /*const*/ histogram_symbols *uint32, /*const*/ huffman_codes *HuffmanTreeCode, /*const*/ pic *WebPPicture) int {
   histo_xsize := histo_bits ? VP8LSubSampleSize(width, histo_bits) : 1;
   tile_mask := (histo_bits == 0) ? 0 : -(1 << histo_bits);
   // x and y trace the position in the image.
@@ -987,7 +987,7 @@ func ApplySubtractGreen(/* const */ enc *VP8LEncoder, width, height int, /*const
   VP8LSubtractGreenFromBlueAndRed(enc.argb, width * height);
 }
 
-func ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, quality int, low_effort int, int used_subtract_green, /*const*/ bw *VP8LBitWriter, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
+func ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, quality int, low_effort int, used_subtract_green int, /*const*/ bw *VP8LBitWriter, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
   near_lossless_strength :=
       enc.use_palette ? 100 : enc.config.near_lossless;
   max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE);
@@ -1039,7 +1039,7 @@ func WriteImageSize(/* const */ pic *WebPPicture, /*const*/ bw *VP8LBitWriter) i
   return !bw.error;
 }
 
-func WriteRealAlphaAndVersion(/* const */ bw *VP8LBitWriter, int has_alpha) int {
+func WriteRealAlphaAndVersion(/* const */ bw *VP8LBitWriter, has_alpha int) int {
   VP8LPutBits(bw, has_alpha, 1);
   VP8LPutBits(bw, VP8L_VERSION, VP8L_VERSION_BITS);
   return !bw.error;
@@ -1153,7 +1153,7 @@ func MakeInputImageCopy(/* const */ enc *VP8LEncoder) int {
 
 const APPLY_PALETTE_GREEDY_MAX =4
 
-func SearchColorGreedy(/* const */ uint32 palette[], int palette_size, color uint32) uint32 {
+func SearchColorGreedy(/* const */ uint32 palette[], palette_size int, color uint32) uint32 {
   (void)palette_size;
   assert.Assert(palette_size < APPLY_PALETTE_GREEDY_MAX);
   assert.Assert(3 == APPLY_PALETTE_GREEDY_MAX - 1);

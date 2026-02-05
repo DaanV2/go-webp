@@ -244,7 +244,7 @@ func WebPMemoryWriterClear(writer *WebPMemoryWriter) {
 
 typedef int (*Importer)(/* const */ *WebPPicture, /*const*/ *uint8, int);
 
-func Encode(/* const */ rgba *uint8, width, height int, int stride, Importer import, float quality_factor, int lossless, *uint8* output) uint64 {
+func Encode(/* const */ rgba *uint8, width, height int, stride int, Importer import, float quality_factor, lossless int, *uint8* output) uint64 {
    var pic WebPPicture
    var config WebPConfig
    var wrt WebPMemoryWriter
@@ -277,7 +277,7 @@ func Encode(/* const */ rgba *uint8, width, height int, int stride, Importer imp
 }
 
 #define ENCODE_FUNC(NAME, IMPORTER)                              \
-  uint64 NAME(/* const */ in *uint8, int w, int h, int bps, float q, \
+  uint64 NAME(/* const */ in *uint8, w int, h int, bps int, float q, \
               *uint8* out) {                                   \
     return Encode(in, w, h, bps, IMPORTER, q, 0, out);           \
   }
@@ -293,7 +293,7 @@ ENCODE_FUNC(WebPEncodeBGRA, WebPPictureImportBGRA)
 
 const LOSSLESS_DEFAULT_QUALITY =70.
 #define LOSSLESS_ENCODE_FUNC(NAME, IMPORTER)                                  \
-  uint64 NAME(/* const */ in *uint8, int w, int h, int bps, *uint8* out) {      \
+  uint64 NAME(/* const */ in *uint8, w int, h int, bps int, *uint8* out) {      \
     return Encode(in, w, h, bps, IMPORTER, LOSSLESS_DEFAULT_QUALITY, 1, out); \
   }
 

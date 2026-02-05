@@ -70,7 +70,7 @@ func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT
   ST4x4_UB(res0, res0, 3, 2, 1, 0, dst, BPS);
 }
 
-func ITransform_MSA(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_MSA(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
   ITransformOne(ref, in, dst);
   if (do_two) {
     ITransformOne(ref + 4, in + 16, dst + 4);
@@ -219,7 +219,7 @@ func Disto16x16_MSA(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RES
 //------------------------------------------------------------------------------
 // Histogram
 
-func CollectHistogram_MSA(/* const */ ref *uint8, /*const*/ pred *uint8, int start_block, int end_block, /*const*/ histo *VP8Histogram) {
+func CollectHistogram_MSA(/* const */ ref *uint8, /*const*/ pred *uint8, start_block int, end_block int, /*const*/ histo *VP8Histogram) {
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   for j = start_block; j < end_block; j++ {

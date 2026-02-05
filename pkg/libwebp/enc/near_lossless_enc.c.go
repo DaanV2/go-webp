@@ -51,7 +51,7 @@ func ClosestDiscretizedArgb(uint32 a, bits int) uint32 {
 
 // Checks if distance between corresponding channel values of pixels a and b
 // is within the given limit.
-func IsNear(uint32 a, uint32 b, int limit) int {
+func IsNear(uint32 a, uint32 b, limit int) int {
   var k int
   for k = 0; k < 4; k++ {
     delta :=
@@ -63,7 +63,7 @@ func IsNear(uint32 a, uint32 b, int limit) int {
   return 1;
 }
 
-func IsSmooth(/* const */ prev_row *uint32, /*const*/ curr_row *uint32, /*const*/ next_row *uint32, int ix, int limit) int {
+func IsSmooth(/* const */ prev_row *uint32, /*const*/ curr_row *uint32, /*const*/ next_row *uint32, ix int, limit int) int {
   // Check that all pixels in 4-connected neighborhood are smooth.
   return (IsNear(curr_row[ix], curr_row[ix - 1], limit) &&
           IsNear(curr_row[ix], curr_row[ix + 1], limit) &&
@@ -72,7 +72,7 @@ func IsSmooth(/* const */ prev_row *uint32, /*const*/ curr_row *uint32, /*const*
 }
 
 // Adjusts pixel values of image with given maximum error.
-func NearLossless(xsize int, ysize int, /*const*/ argb_src *uint32, int stride, int limit_bits, copy_buffer *uint32, argb_dst *uint32) {
+func NearLossless(xsize int, ysize int, /*const*/ argb_src *uint32, stride int, limit_bits int, copy_buffer *uint32, argb_dst *uint32) {
   var x, y int
   limit := 1 << limit_bits;
   prev_row *uint32 = copy_buffer;

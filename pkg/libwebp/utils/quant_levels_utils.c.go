@@ -31,7 +31,7 @@ const ERROR_THRESHOLD =1e-4  // MSE stopping criterion.
 // -----------------------------------------------------------------------------
 // Quantize levels.
 
-func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, height int, int num_levels, /*const*/ sse *uint64) int {
+func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, height int, num_levels int, /*const*/ sse *uint64) int {
   int freq[NUM_SYMBOLS] = {0}
   int q_level[NUM_SYMBOLS] = {0}
   double inv_q_level[NUM_SYMBOLS] = {0}

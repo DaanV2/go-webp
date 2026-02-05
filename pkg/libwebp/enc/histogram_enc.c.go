@@ -95,7 +95,7 @@ func HistogramCopy(/* const */ src *VP8LHistogram, /*const*/ dst *VP8LHistogram)
   memcpy(dst.literal, src.literal, literal_size * sizeof(*dst.literal));
 }
 
-func VP8LHistogramCreate(/* const */ h *VP8LHistogram, /*const*/ refs *VP8LBackwardRefs, int palette_code_bits) {
+func VP8LHistogramCreate(/* const */ h *VP8LHistogram, /*const*/ refs *VP8LBackwardRefs, palette_code_bits int) {
   if (palette_code_bits >= 0) {
     h.palette_code_bits = palette_code_bits;
   }
@@ -103,7 +103,7 @@ func VP8LHistogramCreate(/* const */ h *VP8LHistogram, /*const*/ refs *VP8LBackw
   VP8LHistogramStoreRefs(refs, /*distance_modifier=*/nil, /*distance_modifier_arg0=*/0, h);
 }
 
-func VP8LHistogramInit(/* const */ h *VP8LHistogram, int palette_code_bits, int init_arrays) {
+func VP8LHistogramInit(/* const */ h *VP8LHistogram, palette_code_bits int, init_arrays int) {
   h.palette_code_bits = palette_code_bits;
   if (init_arrays) {
     HistogramClear(h);
@@ -127,7 +127,7 @@ func VP8LAllocateHistogram(cache_bits int) *VP8LHistogram {
 }
 
 // Resets the pointers of the histograms to point to the bit buffer in the set.
-func HistogramSetResetPointers(/* const */ set *VP8LHistogramSet, int cache_bits) {
+func HistogramSetResetPointers(/* const */ set *VP8LHistogramSet, cache_bits int) {
   var i int
   histo_size := GetHistogramSize(cache_bits);
   memory *uint8 = (*uint8)(set.histograms);
@@ -142,13 +142,13 @@ func HistogramSetResetPointers(/* const */ set *VP8LHistogramSet, int cache_bits
 }
 
 // Returns the total size of the VP8LHistogramSet.
-func HistogramSetTotalSize(size int, int cache_bits) uint64 {
+func HistogramSetTotalSize(size int, cache_bits int) uint64 {
   histo_size := GetHistogramSize(cache_bits);
   return (sizeof(VP8LHistogramSet) +
           size * (sizeof(*VP8LHistogram) + histo_size + WEBP_ALIGN_CST));
 }
 
-VP *VP8LHistogramSet8LAllocateHistogramSet(size int, int cache_bits) {
+VP *VP8LHistogramSet8LAllocateHistogramSet(size int, cache_bits int) {
   var i int
   var set *VP8LHistogramSet;
   total_size := HistogramSetTotalSize(size, cache_bits);
@@ -187,7 +187,7 @@ func VP8LHistogramSetClear(/* const */ set *VP8LHistogramSet) {
 }
 
 // Removes the histogram 'i' from 'set'.
-func HistogramSetRemoveHistogram(/* const */ set *VP8LHistogramSet, int i) {
+func HistogramSetRemoveHistogram(/* const */ set *VP8LHistogramSet, i int) {
   set.histograms[i] = set.histograms[set.size - 1];
   --set.size;
   assert.Assert(set.size > 0);
@@ -267,7 +267,7 @@ func BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) uint64 {
   }
 }
 
-uint64 VP8LBitsEntropy(/* const */ array *uint32, int n) {
+uint64 VP8LBitsEntropy(/* const */ array *uint32, n int) {
    var entropy VP8LBitEntropy
   VP8LBitsEntropyUnrefined(array, n, &entropy);
 
@@ -304,7 +304,7 @@ func FinalHuffmanCost(/* const */ stats *VP8LStreaks) uint64 {
 
 // Get the symbol entropy for the distribution 'population'.
 // Set 'trivial_sym', if there's only one symbol present in the distribution.
-func PopulationCost(/* const */ population *uint32, int length, /*const*/ trivial_sym *uint16, /*const*/ is_used *uint8) uint64 {
+func PopulationCost(/* const */ population *uint32, length int, /*const*/ trivial_sym *uint16, /*const*/ is_used *uint8) uint64 {
    var bit_entropy VP8LBitEntropy
    var stats VP8LStreaks
   VP8LGetEntropyUnrefined(population, length, &bit_entropy, &stats);
@@ -652,7 +652,7 @@ func HistogramAnalyzeEntropyBin(/* const */ image_histo *VP8LHistogramSet, low_e
 // Merges some histograms with same bin_id together if it's advantageous.
 // Sets the remaining histograms to nil.
 // 'combine_cost_factor' has to be divided by 100.
-func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_combo *VP8LHistogram, int num_bins, int32 combine_cost_factor, low_effort int) {
+func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_combo *VP8LHistogram, num_bins int, int32 combine_cost_factor, low_effort int) {
   var histograms *VP8LHistogram = image_histo.histograms;
   var idx int
   var bin_info [BIN_SIZE]struct{
@@ -794,7 +794,7 @@ func HistoQueueUpdateHead(/* const */ histo_queue *HistoQueue, /*const*/ pair *H
 }
 
 // Replaces the bad_id with good_id in the pair.
-func HistoQueueFixPair(int bad_id, int good_id, /*const*/ pair *HistogramPair) {
+func HistoQueueFixPair(int bad_id, good_id int, /*const*/ pair *HistogramPair) {
   if pair.idx1 == bad_id { pair.idx1 = good_id }
   if pair.idx2 == bad_id { pair.idx2 = good_id }
   if (pair.idx1 > pair.idx2) {
@@ -918,7 +918,7 @@ End:
 // Perform histogram aggregation using a stochastic approach.
 // 'do_greedy' is set to 1 if a greedy approach needs to be performed
 // afterwards, 0 otherwise.
-func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, int min_cluster_size, /*const*/ do_greedy *int) int {
+func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, min_cluster_size int, /*const*/ do_greedy *int) int {
   int j, iter;
   seed := 1;
   tries_with_no_success := 0;
@@ -1075,7 +1075,7 @@ func GetCombineCostFactor(int histo_size, quality int) int32 {
   return combine_cost_factor;
 }
 
-func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) int {
+func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, histogram_bits int, cache_bits int, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) int {
   histo_xsize :=
       histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1;
   histo_ysize :=

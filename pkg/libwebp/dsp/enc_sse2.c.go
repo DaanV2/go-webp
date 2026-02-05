@@ -319,7 +319,7 @@ func ITransform_Two_SSE2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RE
 }
 
 // Does one or two inverse transforms.
-func ITransform_SSE2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_SSE2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
   if (do_two) {
     ITransform_Two_SSE2(ref, in, dst);
   } else {
@@ -561,7 +561,7 @@ func FTransformWHT_SSE2(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *
 // Compute susceptibility based on DCT-coeff histograms:
 // the higher, the "easier" the macroblock is to compress.
 
-func CollectHistogram_SSE2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
+func CollectHistogram_SSE2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, start_block int, end_block int, WEBP_RESTRICT const histo *VP8Histogram) {
   const __m128i zero = _mm_setzero_si128();
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   var j int
@@ -1072,7 +1072,7 @@ static  func SubtractAndAccumulate_SSE2(/* const */ __m128i a, /*const*/ __m128i
   *sum = _mm_add_epi32(sum1, sum2);
 }
 
-static  int SSE_16xN_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8, int num_pairs) {
+static  int SSE_16xN_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8, num_pairs int) {
   __m128i sum = _mm_setzero_si128();
   int32 tmp[4];
   var i int

@@ -109,7 +109,7 @@ func PutVP8Header(/* const */ pic *WebPPicture, uint64 vp8_size) WebPEncodingErr
   return VP8_ENC_OK;
 }
 
-func PutVP8FrameHeader(/* const */ pic *WebPPicture, int profile, uint64 size0) WebPEncodingError {
+func PutVP8FrameHeader(/* const */ pic *WebPPicture, profile int, uint64 size0) WebPEncodingError {
   uint8 vp8_frm_hdr[VP8_FRAME_HEADER_SIZE];
   bits uint32;
 

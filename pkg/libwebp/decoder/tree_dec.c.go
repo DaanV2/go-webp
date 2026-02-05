@@ -56,7 +56,7 @@ func VP8ResetProba(/* const */ proba *VP8Proba) {
   // proba.bands[][] is initialized later
 }
 
-func ParseIntraMode(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder, int mb_x) {
+func ParseIntraMode(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder, mb_x int ) {
   var top *uint8 = dec.intra_t + 4 * mb_x;
   var left *uint8 = dec.intra_l;
   var block *VP8MBData = dec.mb_data + mb_x;

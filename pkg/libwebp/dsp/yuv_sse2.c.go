@@ -263,7 +263,7 @@ func VP8YuvToBgr32_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTR
 //-----------------------------------------------------------------------------
 // Arbitrary-length row conversion functions
 
-func YuvToRgbaRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
+func YuvToRgbaRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) {
   const __m128i kAlpha = _mm_set1_epi16(255);
   var n int
   for n = 0; n + 8 <= len; n += 8, dst += 32 {
@@ -283,7 +283,7 @@ func YuvToRgbaRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRI
   }
 }
 
-func YuvToBgraRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
+func YuvToBgraRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) {
   const __m128i kAlpha = _mm_set1_epi16(255);
   var n int
   for n = 0; n + 8 <= len; n += 8, dst += 32 {
@@ -303,7 +303,7 @@ func YuvToBgraRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRI
   }
 }
 
-func YuvToArgbRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
+func YuvToArgbRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) {
   const __m128i kAlpha = _mm_set1_epi16(255);
   var n int
   for n = 0; n + 8 <= len; n += 8, dst += 32 {
@@ -323,7 +323,7 @@ func YuvToArgbRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRI
   }
 }
 
-func YuvToRgbRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
+func YuvToRgbRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) {
   var n int
   for n = 0; n + 32 <= len; n += 32, dst += 32 * 3 {
     __m128i R0, R1, R2, R3, G0, G1, G2, G3, B0, B1, B2, B3;
@@ -358,7 +358,7 @@ func YuvToRgbRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRIC
   }
 }
 
-func YuvToBgrRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) {
+func YuvToBgrRow_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) {
   var n int
   for n = 0; n + 32 <= len; n += 32, dst += 32 * 3 {
     __m128i R0, R1, R2, R3, G0, G1, G2, G3, B0, B1, B2, B3;
@@ -537,7 +537,7 @@ static  func ConvertRGBToUV_SSE2(/* const */ __const R *m128i, /*const*/ __const
 #undef TRANSFORM
 
 static  func ConvertRGBToYHelper_SSE2(
-    const __const rgb_plane *m128i /*in[6]*/, int swap_rb, i *int, WEBP_RESTRICT y *uint8) {
+    const __const rgb_plane *m128i /*in[6]*/, swap_rb int, i *int, WEBP_RESTRICT y *uint8) {
   var j int
 
   for j = 0; j < 2; ++j, *i += 16 {
@@ -561,7 +561,7 @@ static  func ConvertRGBToYHelper_SSE2(
   }
 }
 
-func ConvertRGBToY_SSE2(/* const */ WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
+func ConvertRGBToY_SSE2(/* const */ WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *uint8, width int, step int) {
   max_width := width & ~31;
   var i int
   __m128i rgb_plane[6];
@@ -581,7 +581,7 @@ func ConvertRGBToY_SSE2(/* const */ WEBP_RESTRICT rgb *uint8, WEBP_RESTRICT y *u
   }
 }
 
-func ConvertBGRToY_SSE2(/* const */ WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, int width, int step) {
+func ConvertBGRToY_SSE2(/* const */ WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *uint8, width int, step int) {
   max_width := width & ~31;
   var i int
   __m128i bgr_plane[6];
@@ -601,7 +601,7 @@ func ConvertBGRToY_SSE2(/* const */ WEBP_RESTRICT bgr *uint8, WEBP_RESTRICT y *u
   }
 }
 
-func ConvertARGBToY_SSE2(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, int width) {
+func ConvertARGBToY_SSE2(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT y *uint8, width int) {
   max_width := width & ~15;
   var i int
   for i = 0; i < max_width; i += 16 {
@@ -627,7 +627,7 @@ func HorizontalAddPack_SSE2(/* const */ __const A *m128i, /*const*/ __const B *m
   *out = _mm_packs_epi32(C, D);
 }
 
-func ConvertARGBToUV_SSE2(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int src_width, int do_store) {
+func ConvertARGBToUV_SSE2(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, src_width int, do_store int) {
   max_width := src_width & ~31;
   var i int
   for i = 0; i < max_width; i += 32, u += 16, v += 16 {
@@ -681,7 +681,7 @@ static  func RGBA32PackedToPlanar_16b_SSE2(
   *b = _mm_unpacklo_epi64(B1, B3);
 }
 
-func ConvertRGBA32ToUV_SSE2(/* const */ WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int width) {
+func ConvertRGBA32ToUV_SSE2(/* const */ WEBP_RESTRICT rgb *uint16, WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, width int) {
   max_width := width & ~15;
   var last_rgb *uint16 = rgb + 4 * max_width;
   while (rgb < last_rgb) {

@@ -237,7 +237,7 @@ func ITransformOne_NEON(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RES
 
 #endif  // WEBP_USE_INTRINSICS
 
-func ITransform_NEON(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_NEON(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
   ITransformOne_NEON(ref, in, dst);
   if (do_two) {
     ITransformOne_NEON(ref + 4, in + 16, dst + 4);
@@ -670,7 +670,7 @@ func Disto16x16_NEON(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RE
 
 //------------------------------------------------------------------------------
 
-func CollectHistogram_NEON(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram) {
+func CollectHistogram_NEON(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, start_block int, end_block int, WEBP_RESTRICT const histo *VP8Histogram) {
   const uint16x8_t max_coeff_thresh = vdupq_n_u16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
@@ -776,7 +776,7 @@ func SSE4x4_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *
 // Compilation with gcc-4.6.x is problematic for now.
 #if !defined(WORK_AROUND_GCC)
 
-static int16x8_t Quantize_NEON(WEBP_RESTRICT const in *int16, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, int offset) {
+static int16x8_t Quantize_NEON(WEBP_RESTRICT const in *int16, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, offset int) {
   const uint16x8_t sharp = vld1q_u16(&mtx.sharpen[offset]);
   const uint16x8_t q = vld1q_u16(&mtx.q[offset]);
   const uint16x8_t iq = vld1q_u16(&mtx.iq[offset]);
@@ -1044,7 +1044,7 @@ static  func DCMode_NEON(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8
   Fill_NEON(dst, s);
 }
 
-static  func TrueMotionHelper_NEON(dst *uint8, /*const*/ uint8x8_t outer, /*const*/ uint8x8x2_t inner, /*const*/ uint16x8_t a, int i, /*const*/ int n) {
+static  func TrueMotionHelper_NEON(dst *uint8, /*const*/ uint8x8_t outer, /*const*/ uint8x8x2_t inner, /*const*/ uint16x8_t a, i int, /*const*/ int n) {
   uint8x8_t d1, d2;
   uint16x8_t r1, r2;
 

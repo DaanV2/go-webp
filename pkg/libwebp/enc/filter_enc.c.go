@@ -33,7 +33,7 @@ const kLevelsFromDelta = [8][MAX_DELTA_SIZE]uint8{
 
 // returns the approximate filtering strength needed to smooth a edge
 // step of 'delta', given a sharpness parameter 'sharpness'.
-func VP8FilterStrengthFromDelta(int sharpness, int delta) int {
+func VP8FilterStrengthFromDelta(int sharpness, delta int) int {
   pos := (delta < MAX_DELTA_SIZE) ? delta : MAX_DELTA_SIZE - 1;
   assert.Assert(sharpness >= 0 && sharpness <= 7);
   return kLevelsFromDelta[sharpness][pos];

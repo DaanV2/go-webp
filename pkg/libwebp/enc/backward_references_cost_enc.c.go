@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 const VALUES_IN_BYTE =256
 
 extern func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs);
-extern int VP8LDistanceToPlaneCode(xsize int, int dist);
+extern int VP8LDistanceToPlaneCode(xsize int, dist int);
 extern func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ PixOrCopy v);
 
 type CostModel struct {
@@ -110,7 +110,7 @@ func GetDistanceCost(/* const */ m *CostModel, uint32 distance) int64 {
 }
 
 static  func AddSingleLiteralWithCostModel(
-    const argb *uint32, /*const*/ hashers *VP8LColorCache, /*const*/ cost_model *CostModel, int idx, int use_color_cache, int64 prev_cost, /*const*/ cost *int64, /*const*/ dist_array *uint16) {
+    const argb *uint32, /*const*/ hashers *VP8LColorCache, /*const*/ cost_model *CostModel, idx int, use_color_cache int, int64 prev_cost, /*const*/ cost *int64, /*const*/ dist_array *uint16) {
   cost_val := prev_cost;
   color := argb[idx];
   ix := use_color_cache ? VP8LColorCacheContains(hashers, color) : -1;
@@ -226,7 +226,7 @@ func CostManagerClear(/* const */ manager *CostManager) {
   CostManagerInitFreeList(manager);
 }
 
-func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uint16, int pix_count, /*const*/ cost_model *CostModel) int {
+func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uint16, pix_count int, /*const*/ cost_model *CostModel) int {
   var i int
   cost_cache_size := (pix_count > MAX_LENGTH) ? MAX_LENGTH : pix_count;
 
@@ -302,7 +302,7 @@ func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uin
 
 // Given the cost and the position that define an interval, update the cost at
 // pixel 'i' if it is smaller than the previously computed value.
-func UpdateCost(/* const */ manager *CostManager, int i, int position, int64 cost) {
+func UpdateCost(/* const */ manager *CostManager, i int, position int, int64 cost) {
   k := i - position;
   assert.Assert(k >= 0 && k < MAX_LENGTH);
 
@@ -314,7 +314,7 @@ func UpdateCost(/* const */ manager *CostManager, int i, int position, int64 cos
 
 // Given the cost and the position that define an interval, update the cost for
 // all the pixels between 'start' and 'end' excluded.
-func UpdateCostPerInterval(/* const */ manager *CostManager, int start, int end, int position, int64 cost) {
+func UpdateCostPerInterval(/* const */ manager *CostManager, start int, end int, position int, int64 cost) {
   var i int
   for (i = start; i < end; ++i) UpdateCost(manager, i, position, cost);
 }
@@ -349,7 +349,7 @@ func PopInterval(/* const */ manager *CostManager, /*const*/ interval *CostInter
 // overlap with i.
 // If 'do_clean_intervals' is set to something different than 0, intervals that
 // end before 'i' will be popped.
-func UpdateCostAtIndex(/* const */ manager *CostManager, int i, int do_clean_intervals) {
+func UpdateCostAtIndex(/* const */ manager *CostManager, i int, do_clean_intervals int) {
   current *CostInterval = manager.head;
 
   while (current != nil && current.start <= i) {
@@ -391,7 +391,7 @@ func PositionOrphanInterval(/* const */ manager *CostManager, /*const*/ current 
 
 // Insert an interval in the list contained in the manager by starting at
 // 'interval_in' as a hint. The intervals are sorted by 'start' value.
-func InsertInterval(/* const */ manager *CostManager, /*const*/ interval_in *CostInterval, int64 cost, int position, int start, int end) {
+func InsertInterval(/* const */ manager *CostManager, /*const*/ interval_in *CostInterval, int64 cost, position int, start int, end int) {
   interval_new *CostInterval;
 
   if start >= end { return }
@@ -429,7 +429,7 @@ func InsertInterval(/* const */ manager *CostManager, /*const*/ interval_in *Cos
 // and distance_cost, add its contributions to the previous intervals and costs.
 // If handling the interval or one of its subintervals becomes to heavy, its
 // contribution is added to the costs right away.
-func PushInterval(/* const */ manager *CostManager, int64 distance_cost, int position, int len) {
+func PushInterval(/* const */ manager *CostManager, int64 distance_cost, position int, len int) {
   var i uint64
   interval *CostInterval = manager.head;
   interval_next *CostInterval;
@@ -529,7 +529,7 @@ func PushInterval(/* const */ manager *CostManager, int64 distance_cost, int pos
   }
 }
 
-func BackwardReferencesHashChainDistanceOnly(xsize, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ dist_array *uint16) int {
+func BackwardReferencesHashChainDistanceOnly(xsize, ysize int, /*const*/ argb *uint32, cache_bits int, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ dist_array *uint16) int {
   var i int
   ok := 0;
   cc_init := 0;
@@ -648,7 +648,7 @@ Error:
 // We pack the path at the end of and return *dist_array
 // a pointer to this part of the array. Example:
 // dist_array = [1x2xx3x2] => packed [1x2x1232], chosen_path = [1232]
-func TraceBackwards(/* const */ dist_array *uint16, int dist_array_size, *uint16* const chosen_path, /*const*/ chosen_path_size *int) {
+func TraceBackwards(/* const */ dist_array *uint16, dist_array_size int, *uint16* const chosen_path, /*const*/ chosen_path_size *int) {
   path *uint16 = dist_array + dist_array_size;
   cur *uint16 = dist_array + dist_array_size - 1;
   while (cur >= dist_array) {
@@ -662,7 +662,7 @@ func TraceBackwards(/* const */ dist_array *uint16, int dist_array_size, *uint16
 }
 
 static int BackwardReferencesHashChainFollowChosenPath(
-    const argb *uint32, int cache_bits, /*const*/ chosen_path *uint16, int chosen_path_size, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) {
+    const argb *uint32, cache_bits int, /*const*/ chosen_path *uint16, chosen_path_size int, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) {
   use_color_cache := (cache_bits > 0);
   var ix int
   i := 0;
@@ -710,7 +710,7 @@ Error:
   return ok;
 }
 
-func VP8LBackwardReferencesTraceBackwards(xsize int, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs) int {
+func VP8LBackwardReferencesTraceBackwards(xsize int, ysize int, /*const*/ argb *uint32, cache_bits int, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs) int {
   ok := 0;
   dist_array_size := xsize * ysize;
   var chosen_path *uint16 = nil;

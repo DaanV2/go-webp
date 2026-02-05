@@ -52,8 +52,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int EncodeLossless(/* const */ data *uint8, width, height int, int effort_level,  // in [0..6] range
-                          int use_quality_100, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) {
+func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int, use_quality_100 int, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) int {
   ok := 0;
    var config WebPConfig
    var picture WebPPicture
@@ -104,8 +103,7 @@ type FilterTrial struct {
 } 
 
 // This function always returns an initialized 'bw' object, even upon error.
-static int EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter, reduce_levels, effort_level int,  // in [0..6] range
-                               /* const */ tmp_alpha *uint8, result *FilterTrial) {
+func EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter, reduce_levels, effort_level int,  /* const */ tmp_alpha *uint8, result *FilterTrial) int {
   ok := 0;
   output_size := 0;
   data_size := width * height;
@@ -170,7 +168,7 @@ static int EncodeAlphaInternal(/* const */ data *uint8, width, height, method, f
 
 // -----------------------------------------------------------------------------
 
-func GetNumColors(/* const */ data *uint8, width, height int, int stride) int {
+func GetNumColors(/* const */ data *uint8, width, height int, stride int) int {
   var j int
   colors := 0;
   uint8 color[256] = {0}
@@ -192,7 +190,7 @@ const FILTER_TRY_NONE =(1 << WEBP_FILTER_NONE)
 const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
-func GetFilterMap(/* const */ alpha *uint8, width, height int, int filter, int effort_level) uint32 {
+func GetFilterMap(/* const */ alpha *uint8, width, height int, filter int, effort_level int) uint32 {
   bit_map := uint(0);
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
@@ -223,7 +221,7 @@ func InitFilterTrial(/* const */ score *FilterTrial) {
   VP8BitWriterInit(&score.bw, 0);
 }
 
-func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) int {
+func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_size uint64, method int, filter int, reduce_levels int, effort_level int, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) int {
   ok := 1;
    var best FilterTrial
   try_map := GetFilterMap(alpha, width, height, filter, effort_level);
@@ -268,7 +266,7 @@ func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_siz
   return ok;
 }
 
-func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, int method, int filter, int effort_level, *uint8* const output, /*const*/ output_size *uint64) int  {
+func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter int, effort_level int, *uint8* const output, /*const*/ output_size *uint64) int  {
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;

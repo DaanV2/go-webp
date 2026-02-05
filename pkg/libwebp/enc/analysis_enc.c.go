@@ -83,7 +83,7 @@ func clip(v, m, M int ) static {
   return tenary.If(v < m, m, tenary.If(v > M, M, v));
 }
 
-func SetSegmentAlphas(/* const */ enc *VP8Encoder, /*const*/ int centers[NUM_MB_SEGMENTS], int mid) {
+func SetSegmentAlphas(/* const */ enc *VP8Encoder, /*const*/ int centers[NUM_MB_SEGMENTS], mid int) {
   nb := enc.segment_hdr.num_segments;
   min := centers[0], max = centers[0];
   var n int
@@ -315,7 +315,7 @@ func MBAnalyzeBestUVMode(/* const */ it *VP8EncIterator) int {
   return best_alpha;
 }
 
-func MBAnalyze(/* const */ it *VP8EncIterator, int alphas[MAX_ALPHA + 1], /*const*/ alpha *int, /*const*/ uv_alpha *int) {
+func MBAnalyze(/* const */ it *VP8EncIterator, alphas int[MAX_ALPHA + 1], /*const*/ alpha *int, /*const*/ uv_alpha *int) {
   var enc *VP8Encoder = it.enc;
   int best_alpha, best_uv_alpha;
 
@@ -410,7 +410,7 @@ func MergeJobs(/* const */ src *SegmentJob, /*const*/ dst *SegmentJob) {
 #endif
 
 // initialize the job struct with some tasks to perform
-func InitSegmentJob(/* const */ enc *VP8Encoder, /*const*/ job *SegmentJob, int start_row, int end_row) {
+func InitSegmentJob(/* const */ enc *VP8Encoder, /*const*/ job *SegmentJob, start_row int, end_row int) {
   WebPGetWorkerInterface().Init(&job.worker);
   job.worker.data1 = job;
   job.worker.data2 = &job.it;

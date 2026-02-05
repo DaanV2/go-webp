@@ -437,7 +437,7 @@ func MuxGetChunkListFromId(/* const */ mux *WebPMux, WebPChunkId id) *WebPChunk 
   }
 }
 
-func IsNotCompatible(int feature, int num_items) int {
+func IsNotCompatible(int feature, num_items int) int {
   return (feature != 0) != (num_items > 0);
 }
 
@@ -447,7 +447,7 @@ const NO_FLAG =((WebPFeatureFlags)0)
 // retrieval, maximum number of chunks by index (use -1 to skip)
 // and feature incompatibility (use NO_FLAG to skip).
 // On success returns WEBP_MUX_OK and stores the chunk count in *num.
-func ValidateChunk(/* const */ mux *WebPMux, CHUNK_INDEX idx, WebPFeatureFlags feature, uint32 vp8x_flags, int max, num *int) WebPMuxError {
+func ValidateChunk(/* const */ mux *WebPMux, CHUNK_INDEX idx, WebPFeatureFlags feature, uint32 vp8x_flags, max int, num *int) WebPMuxError {
   var err WebPMuxError  = WebPMuxNumChunks(mux, kChunks[idx].id, num);
   if err != WEBP_MUX_OK { return err  }
   if max > -1 && *num > max { return WEBP_MUX_INVALID_ARGUMENT  }

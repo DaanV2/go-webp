@@ -222,10 +222,10 @@ extern func WebPInitYUV444ConvertersSSE41(void);
 #define YUV444_FUNC(FUNC_NAME, CALL, CALL_C, XSTEP)                          \
   extern func CALL_C(                                                        \
       const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len);  \
+      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int);  \
   func FUNC_NAME(                                                     \
       const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
+      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) { \
     var i int                                                                   \
     max_len := len & ~31;                                           \
     for i = 0; i < max_len; i += 32 {                                      \

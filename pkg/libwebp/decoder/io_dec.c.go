@@ -231,7 +231,7 @@ func EmitAlphaRGBA4444(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expect
 // YUV rescaling (no final RGB conversion needed)
 
 #if !defined(WEBP_REDUCE_SIZE)
-func Rescale(/* const */ src *uint8, int src_stride, int new_lines, /*const*/ wrk *WebPRescaler) int {
+func Rescale(/* const */ src *uint8, src_stride int, new_lines int , /*const*/ wrk *WebPRescaler) int {
   num_lines_out := 0;
   while (new_lines > 0) {  // import new contributions of source rows.
     lines_in := WebPRescalerImport(wrk, new_lines, src, src_stride);
@@ -385,7 +385,7 @@ func EmitRescaledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   return num_lines_out;
 }
 
-func ExportAlpha(/* const */ p *WebPDecParams, y_pos int, int max_lines_out) int {
+func ExportAlpha(/* const */ p *WebPDecParams, y_pos int, max_lines_out int) int {
   var buf *WebPRGBABuffer = &p.output.u.RGBA;
   var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
   var colorspace WEBP_CSP_MODE = p.output.colorspace;
@@ -410,7 +410,7 @@ func ExportAlpha(/* const */ p *WebPDecParams, y_pos int, int max_lines_out) int
   return num_lines_out;
 }
 
-func ExportAlphaRGBA4444(/* const */ p *WebPDecParams, y_pos int, int max_lines_out) int {
+func ExportAlphaRGBA4444(/* const */ p *WebPDecParams, y_pos int, max_lines_out int ) int {
   var buf *WebPRGBABuffer = &p.output.u.RGBA;
   var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
 #if (WEBP_SWAP_16BIT_CSP == 1)
@@ -444,7 +444,7 @@ func ExportAlphaRGBA4444(/* const */ p *WebPDecParams, y_pos int, int max_lines_
   return num_lines_out;
 }
 
-func EmitRescaledAlphaRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, int expected_num_out_lines) int {
+func EmitRescaledAlphaRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expected_num_out_lines int ) int {
   if (io.a != nil) {
     var scaler *WebPRescaler = p.scaler_a;
     lines_left := expected_num_out_lines;

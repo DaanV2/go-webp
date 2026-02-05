@@ -65,7 +65,7 @@ enum {
 //------------------------------------------------------------------------------
 // slower on x86 by ~7-8%, but bit-exact with the SSE2/NEON version
 
-func MultHi(int v, int coeff) int {  // _mm_mulhi_epu16 emulation
+func MultHi(int v, coeff int) int {  // _mm_mulhi_epu16 emulation
   return (v * coeff) >> 8;
 }
 
@@ -73,31 +73,31 @@ func VP8Clip8(int v) int {
   return ((v & ~YUV_MASK2) == 0) ? (v >> YUV_FIX2) : (v < 0) ? 0 : 255;
 }
 
-func VP8YUVToR(int y, int v) int {
+func VP8YUVToR(int y, v int) int {
   return VP8Clip8(MultHi(y, 19077) + MultHi(v, 26149) - 14234);
 }
 
-func VP8YUVToG(int y, int u, int v) int {
+func VP8YUVToG(int y, u int, v int) int {
   return VP8Clip8(MultHi(y, 19077) - MultHi(u, 6419) - MultHi(v, 13320) + 8708);
 }
 
-func VP8YUVToB(int y, int u) int {
+func VP8YUVToB(int y, u int) int {
   return VP8Clip8(MultHi(y, 19077) + MultHi(u, 33050) - 17685);
 }
 
-func VP8YuvToRgb(int y, int u, int v, /*const*/ rgb *uint8) {
+func VP8YuvToRgb(int y, u int, v int, /*const*/ rgb *uint8) {
   rgb[0] = VP8YUVToR(y, v);
   rgb[1] = VP8YUVToG(y, u, v);
   rgb[2] = VP8YUVToB(y, u);
 }
 
-func VP8YuvToBgr(int y, int u, int v, /*const*/ bgr *uint8) {
+func VP8YuvToBgr(int y, u int, v int, /*const*/ bgr *uint8) {
   bgr[0] = VP8YUVToB(y, u);
   bgr[1] = VP8YUVToG(y, u, v);
   bgr[2] = VP8YUVToR(y, v);
 }
 
-func VP8YuvToRgb565(int y, int u, int v, /*const*/ rgb *uint8) {
+func VP8YuvToRgb565(int y, u int, v int, /*const*/ rgb *uint8) {
   r := VP8YUVToR(y, v);     // 5 usable bits
   g := VP8YUVToG(y, u, v);  // 6 usable bits
   b := VP8YUVToB(y, u);     // 5 usable bits
@@ -112,7 +112,7 @@ func VP8YuvToRgb565(int y, int u, int v, /*const*/ rgb *uint8) {
 #endif
 }
 
-func VP8YuvToRgba4444(int y, int u, int v, /*const*/ argb *uint8) {
+func VP8YuvToRgba4444(int y, u int, v int, /*const*/ argb *uint8) {
   r := VP8YUVToR(y, v);     // 4 usable bits
   g := VP8YUVToG(y, u, v);  // 4 usable bits
   b := VP8YUVToB(y, u);     // 4 usable bits
@@ -176,38 +176,38 @@ func VP8YuvToBgr32_SSE41(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_REST
 // RGB . YUV conversion
 
 // Stub functions that can be called with various rounding values:
-func VP8ClipUV(int uv, int rounding) int {
+func VP8ClipUV(int uv, rounding int) int {
   uv = (uv + rounding + (128 << (YUV_FIX + 2))) >> (YUV_FIX + 2);
   return ((uv & ~0xff) == 0) ? uv : (uv < 0) ? 0 : 255;
 }
 
-func VP8RGBToY(int r, int g, int b, int rounding) int {
+func VP8RGBToY(int r, g int, b int, rounding int) int {
   luma := 16839 * r + 33059 * g + 6420 * b;
   return (luma + rounding + (16 << YUV_FIX)) >> YUV_FIX;  // no need to clip
 }
 
-func VP8RGBToU(int r, int g, int b, int rounding) int {
+func VP8RGBToU(int r, g int, b int, rounding int) int {
   u := -9719 * r - 19081 * g + 28800 * b;
   return VP8ClipUV(u, rounding);
 }
 
-func VP8RGBToV(int r, int g, int b, int rounding) int {
+func VP8RGBToV(int r, g int, b int, rounding int) int {
   v := +28800 * r - 24116 * g - 4684 * b;
   return VP8ClipUV(v, rounding);
 }
 
 // has_alpha is true if there is an alpha value that is not 0xff.
 extern func (*WebPImportYUVAFromRGBA)(
-    const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
+    const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,        // bytes per pixel
     int rgb_stride,  // bytes per scanline
-    int has_alpha, width, height int, tmp_rgb *uint16, int y_stride, int uv_stride, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
+    int has_alpha, width, height int, tmp_rgb *uint16, y_stride int, uv_stride int, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 extern func (*WebPImportYUVAFromRGBALastLine)(
-    const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,  // bytes per pixel
-    int has_alpha, int width, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
+    const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,  // bytes per pixel
+    int has_alpha, width int, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 
 // Internal function to that can be *WebPImportYUVAFromRGBA reused.
-func WebPAccumulateRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int rgb_stride, dst *uint16, int width);
-func WebPAccumulateRGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, int rgb_stride, dst *uint16, int width);
+func WebPAccumulateRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, rgb_stride int, dst *uint16, width int);
+func WebPAccumulateRGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, step int, rgb_stride int, dst *uint16, width int);
 // Must be called before calling *WebPAccumulateRGB.
 func WebPInitGammaTables(void);
 

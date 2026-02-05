@@ -113,7 +113,7 @@ UPSAMPLE_FUNC(UpsampleBgrLinePair_C, VP8YuvToBgr, 3)
 UPSAMPLE_FUNC(UpsampleRgba4444LinePair_C, VP8YuvToRgba4444, 2)
 UPSAMPLE_FUNC(UpsampleRgb565LinePair_C, VP8YuvToRgb565, 2)
 #else
-func EmptyUpsampleFunc(/* const */ top_y *uint8, /*const*/ bottom_y *uint8, /*const*/ top_u *uint8, /*const*/ top_v *uint8, /*const*/ cur_u *uint8, /*const*/ cur_v *uint8, top_dst *uint8, bottom_dst *uint8, int len) {
+func EmptyUpsampleFunc(/* const */ top_y *uint8, /*const*/ bottom_y *uint8, /*const*/ top_u *uint8, /*const*/ top_v *uint8, /*const*/ cur_u *uint8, /*const*/ cur_v *uint8, top_dst *uint8, bottom_dst *uint8, len int) {
   (void)top_y;
   (void)bottom_y;
   (void)top_u;
@@ -191,10 +191,10 @@ WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last) {
 #define YUV444_FUNC(FUNC_NAME, FUNC, XSTEP)                                  \
   extern func FUNC_NAME(                                                     \
       const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len);  \
+      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int);  \
   func FUNC_NAME(                                                            \
       const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, int len) { \
+      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) { \
     var i int                                                                   \
     for (i = 0; i < len; ++i) FUNC(y[i], u[i], v[i], &dst[i * (XSTEP)]);     \
   }
@@ -208,7 +208,7 @@ YUV444_FUNC(WebPYuv444ToArgb_C, VP8YuvToArgb, 4)
 YUV444_FUNC(WebPYuv444ToRgba4444_C, VP8YuvToRgba4444, 2)
 YUV444_FUNC(WebPYuv444ToRgb565_C, VP8YuvToRgb565, 2)
 #else
-func EmptyYuv444Func(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, int len) {
+func EmptyYuv444Func(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int) {
   (void)y;
   (void)u;
   (void)v;

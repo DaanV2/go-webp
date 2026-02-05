@@ -222,7 +222,7 @@ func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT
   );
 }
 
-func ITransform_MIPSdspR2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_MIPSdspR2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
   ITransformOne(ref, in, dst);
   if (do_two) {
     ITransformOne(ref + 4, in + 16, dst + 4);
@@ -371,7 +371,7 @@ HORIZONTAL_PRED(dst, left, 16)
 // clang-format off
 #define CLIP_8B_TO_DST(DST, LEFT, TOP, SIZE)                                   \
   for {                                                                         \
-    int leftY_1 = ((int)(LEFT)[y] << 16) + (LEFT)[y];                          \
+    left intY_1 = ((int)(LEFT)[y] << 16) + (LEFT)[y];                          \
     int temp0, temp1, temp2, temp3;                                            \
     __asm__ volatile(                                                          \
       "replv.ph        %[leftY_1], %[leftY_1]              \n\t"               \
@@ -1358,7 +1358,7 @@ func FTransformWHT_MIPSdspR2(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT 
   "sw         %[temp8],  0(%[temp3])                   \n\t"
 // clang-format on
 
-func CollectHistogram_MIPSdspR2(/* const */ ref *uint8, /*const*/ pred *uint8, int start_block, int end_block, /*const*/ histo *VP8Histogram) {
+func CollectHistogram_MIPSdspR2(/* const */ ref *uint8, /*const*/ pred *uint8, start_block int, end_block int, /*const*/ histo *VP8Histogram) {
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
   max_coeff := (MAX_COEFF_THRESH << 16) + MAX_COEFF_THRESH;

@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const SIZE = 8
 const SIZE2 = (SIZE / 2)
-func IsTransparentARGBArea(/* const */ ptr *uint32, int stride, size int) int {
+func IsTransparentARGBArea(/* const */ ptr *uint32, stride int, size int) int {
   int y, x;
   for y = 0; y < size; y++ {
     for x = 0; x < size; x++ {
@@ -41,7 +41,7 @@ func IsTransparentARGBArea(/* const */ ptr *uint32, int stride, size int) int {
   return 1;
 }
 
-func Flatten(ptr *uint8, int v, int stride, size int) {
+func Flatten(ptr *uint8, v int, stride int, size int) {
   var y int
   for y = 0; y < size; y++ {
     stdlib.Memset(ptr, v, size);
@@ -49,7 +49,7 @@ func Flatten(ptr *uint8, int v, int stride, size int) {
   }
 }
 
-func FlattenARGB(ptr *uint32, uint32 v, int stride, size int) {
+func FlattenARGB(ptr *uint32, uint32 v, stride int, size int) {
   var x, y int
   for y = 0; y < size; y++ {
     for (x = 0; x < size; ++x) ptr[x] = v;
@@ -59,7 +59,7 @@ func FlattenARGB(ptr *uint32, uint32 v, int stride, size int) {
 
 // Smoothen the luma components of transparent pixels. Return true if the whole
 // block is transparent.
-func SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, int y_stride, width, height int) int {
+func SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, y_stride int, width, height int) int {
   sum := 0, count = 0;
   var x, y int
   var alpha_ptr *uint8 = a_ptr;
@@ -190,7 +190,7 @@ func WebPCleanupTransparentArea(pic *WebPPicture) {
 #define BLEND_10BIT(V0, V1, ALPHA) \
   ((((V0) * (1020 - (ALPHA)) + (V1) * (ALPHA)) * 0x101 + 1024) >> 18)
 
-func MakeARGB32(int r, int g, int b) uint32 {
+func MakeARGB32(int r, g int, b int) uint32 {
   return (uint(0xff000000) | (r << 16) | (g << 8) | b);
 }
 

@@ -107,14 +107,14 @@ func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8)
   );
 }
 
-func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);
   }
 }
 
-func FilterLoop26(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
+func FilterLoop26(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
   thresh2 := 2 * thresh + 1;
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15;
@@ -242,7 +242,7 @@ func FilterLoop26(p *uint8, int hstride, int vstride, size int, int thresh, int 
       : "memory");
 }
 
-func FilterLoop24(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
+func FilterLoop24(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
   int p0, q0, p1, q1, p2, q2, p3, q3;
   int step1, step2, temp1, temp2, temp3, temp4;
   pTemp *uint80;
@@ -362,27 +362,27 @@ func FilterLoop24(p *uint8, int hstride, int vstride, size int, int thresh, int 
 }
 
 // on macroblock edges
-func VFilter16(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
+func VFilter16(p *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop26(p, stride, 1, 16, thresh, ithresh, hev_thresh);
 }
 
-func HFilter16(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
+func HFilter16(p *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop26(p, 1, stride, 16, thresh, ithresh, hev_thresh);
 }
 
 // 8-pixels wide variant, for chroma filtering
-func VFilter8(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
+func VFilter8(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop26(u, stride, 1, 8, thresh, ithresh, hev_thresh);
   FilterLoop26(v, stride, 1, 8, thresh, ithresh, hev_thresh);
 }
 
-func HFilter8(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
+func HFilter8(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop26(u, 1, stride, 8, thresh, ithresh, hev_thresh);
   FilterLoop26(v, 1, stride, 8, thresh, ithresh, hev_thresh);
 }
 
 // on three inner edges
-func VFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
+func VFilter16i(p *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   var k int
   for k = 3; k > 0; --k {
     p += 4 * stride;
@@ -390,7 +390,7 @@ func VFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
   }
 }
 
-func HFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
+func HFilter16i(p *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   var k int
   for k = 3; k > 0; --k {
     p += 4;
@@ -398,12 +398,12 @@ func HFilter16i(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
   }
 }
 
-func VFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
+func VFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop24(u + 4 * stride, stride, 1, 8, thresh, ithresh, hev_thresh);
   FilterLoop24(v + 4 * stride, stride, 1, 8, thresh, ithresh, hev_thresh);
 }
 
-func HFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
+func HFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop24(u + 4, 1, stride, 8, thresh, ithresh, hev_thresh);
   FilterLoop24(v + 4, 1, stride, 8, thresh, ithresh, hev_thresh);
 }
@@ -411,7 +411,7 @@ func HFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, int stride, int t
 //------------------------------------------------------------------------------
 // Simple In-loop filtering (Paragraph 15.2)
 
-func SimpleVFilter16(p *uint8, int stride, int thresh) {
+func SimpleVFilter16(p *uint8, stride int, thresh int) {
   var i int
   thresh2 := 2 * thresh + 1;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
@@ -478,7 +478,7 @@ func SimpleVFilter16(p *uint8, int stride, int thresh) {
   "lbu      %[" #TEMP3 "],   " #D "+" #D1 "*" XSTR(BPS) "(%[" #SRC "]) \n\t"
 // clang-format on
 
-func SimpleHFilter16(p *uint8, int stride, int thresh) {
+func SimpleHFilter16(p *uint8, stride int, thresh int) {
   var i int
   thresh2 := 2 * thresh + 1;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
@@ -526,7 +526,7 @@ func SimpleHFilter16(p *uint8, int stride, int thresh) {
   );
 }
 
-func SimpleVFilter16i(p *uint8, int stride, int thresh) {
+func SimpleVFilter16i(p *uint8, stride int, thresh int) {
   var k int
   for k = 3; k > 0; --k {
     p += 4 * stride;
@@ -534,7 +534,7 @@ func SimpleVFilter16i(p *uint8, int stride, int thresh) {
   }
 }
 
-func SimpleHFilter16i(p *uint8, int stride, int thresh) {
+func SimpleHFilter16i(p *uint8, stride int, thresh int) {
   var k int
   for k = 3; k > 0; --k {
     p += 4;

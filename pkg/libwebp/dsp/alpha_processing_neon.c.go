@@ -42,7 +42,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     (V).val[(OTHER)] = vshrn_n_u16(b3, 8);                   \
   } while (0)
 
-func ApplyAlphaMultiply_NEON(rgba *uint8, int alpha_first, int w, int h, int stride) {
+func ApplyAlphaMultiply_NEON(rgba *uint8, alpha_first int, w int, h int, stride int) {
   const uint16x8_t kOne = vdupq_n_u16(uint(1));
   while (h-- > 0) {
     var rgbx *uint32 = (*uint32)rgba;
@@ -82,7 +82,7 @@ func ApplyAlphaMultiply_NEON(rgba *uint8, int alpha_first, int w, int h, int str
 
 //------------------------------------------------------------------------------
 
-func DispatchAlpha_NEON(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint8, int dst_stride) int {
+func DispatchAlpha_NEON(/* const */ WEBP_RESTRICT alpha *uint8, alpha_stride int, width, height int, WEBP_RESTRICT dst *uint8, dst_stride int) int {
   alpha_mask := uint(0xff);
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
@@ -113,7 +113,7 @@ func DispatchAlpha_NEON(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride
   return (alpha_mask != uint(0xffffffff));
 }
 
-func DispatchAlphaToGreen_NEON(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint32, int dst_stride) {
+func DispatchAlphaToGreen_NEON(/* const */ WEBP_RESTRICT alpha *uint8, alpha_stride int, width, height int, WEBP_RESTRICT dst *uint32, dst_stride int) {
   int i, j;
   uint8x8x4_t greens;  // leave A/R/B channels zero'd.
   greens.val[0] = vdup_n_u8(0);
@@ -130,7 +130,7 @@ func DispatchAlphaToGreen_NEON(/* const */ WEBP_RESTRICT alpha *uint8, int alpha
   }
 }
 
-func ExtractAlpha_NEON(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride) int {
+func ExtractAlpha_NEON(/* const */ WEBP_RESTRICT argb *uint8, argb_stride int, width, height int, WEBP_RESTRICT alpha *uint8, alpha_stride int) int {
   alpha_mask := uint(0xff);
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];

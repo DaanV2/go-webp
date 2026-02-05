@@ -121,7 +121,7 @@ static  func ITransformOne_MIPS32(/* const */ WEBP_RESTRICT ref *uint8, /*const*
       : "memory", "hi", "lo");
 }
 
-func ITransform_MIPS32(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func ITransform_MIPS32(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
   ITransformOne_MIPS32(ref, in, dst);
   if (do_two) {
     ITransformOne_MIPS32(ref + 4, in + 16, dst + 4);

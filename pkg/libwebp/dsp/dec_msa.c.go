@@ -65,7 +65,7 @@ func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8)
   ST4x4_UB(res0, res0, 3, 2, 1, 0, dst, BPS);
 }
 
-func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, int do_two) {
+func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);
@@ -341,7 +341,7 @@ func TransformAC3(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8)
     mask = (mask <= b_limit);                                 \
   } while (0)
 
-func VFilter16(src *uint8, int stride, int b_limit_in, int limit_in, int thresh_in) {
+func VFilter16(src *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   ptemp *uint8 = src - 4 * stride;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 mask, hev;
@@ -358,7 +358,7 @@ func VFilter16(src *uint8, int stride, int b_limit_in, int limit_in, int thresh_
   ST_UB2(q1, q2, ptemp, stride);
 }
 
-func HFilter16(src *uint8, int stride, int b_limit_in, int limit_in, int thresh_in) {
+func HFilter16(src *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   ptmp *uint8 = src - 4;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 mask, hev;
@@ -415,7 +415,7 @@ func HFilter16(src *uint8, int stride, int b_limit_in, int limit_in, int thresh_
 }
 
 // on three inner edges
-func VFilterHorEdge16i(src *uint8, int stride, int b_limit, int limit, int thresh) {
+func VFilterHorEdge16i(src *uint8, stride int, b_limit int, limit int, thresh int) {
   v16u8 mask, hev;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   const v16u8 thresh0 = (v16u8)__msa_fill_b(thresh);
@@ -428,13 +428,13 @@ func VFilterHorEdge16i(src *uint8, int stride, int b_limit, int limit, int thres
   ST_UB4(p1, p0, q0, q1, (src - 2 * stride), stride);
 }
 
-func VFilter16i(src_y *uint8, int stride, int b_limit, int limit, int thresh) {
+func VFilter16i(src_y *uint8, stride int, b_limit int, limit int, thresh int) {
   VFilterHorEdge16i(src_y + 4 * stride, stride, b_limit, limit, thresh);
   VFilterHorEdge16i(src_y + 8 * stride, stride, b_limit, limit, thresh);
   VFilterHorEdge16i(src_y + 12 * stride, stride, b_limit, limit, thresh);
 }
 
-func HFilterVertEdge16i(src *uint8, int stride, int b_limit, int limit, int thresh) {
+func HFilterVertEdge16i(src *uint8, stride int, b_limit int, limit int, thresh int) {
   v16u8 mask, hev;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7;
@@ -459,14 +459,14 @@ func HFilterVertEdge16i(src *uint8, int stride, int b_limit, int limit, int thre
   ST4x8_UB(tmp4, tmp5, src, stride);
 }
 
-func HFilter16i(src_y *uint8, int stride, int b_limit, int limit, int thresh) {
+func HFilter16i(src_y *uint8, stride int, b_limit int, limit int, thresh int) {
   HFilterVertEdge16i(src_y + 4, stride, b_limit, limit, thresh);
   HFilterVertEdge16i(src_y + 8, stride, b_limit, limit, thresh);
   HFilterVertEdge16i(src_y + 12, stride, b_limit, limit, thresh);
 }
 
 // 8-pixels wide variants, for chroma filtering
-func VFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, int stride, int b_limit_in, int limit_in, int thresh_in) {
+func VFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   ptmp_src_u *uint8 = src_u - 4 * stride;
   ptmp_src_v *uint8 = src_v - 4 * stride;
   uint64 p2_d, p1_d, p0_d, q0_d, q1_d, q2_d;
@@ -509,7 +509,7 @@ func VFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, int stride
   SD(q2_d, ptmp_src_v);
 }
 
-func HFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, int stride, int b_limit_in, int limit_in, int thresh_in) {
+func HFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   ptmp_src_u *uint8 = src_u - 4;
   ptmp_src_v *uint8 = src_v - 4;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
@@ -540,7 +540,7 @@ func HFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, int stride
   ST6x4_UB(tmp7, 0, tmp5, 4, ptmp_src_v, stride);
 }
 
-func VFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, int stride, int b_limit_in, int limit_in, int thresh_in) {
+func VFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   uint64 p1_d, p0_d, q0_d, q1_d;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 p3_u, p2_u, p1_u, p0_u, q3_u, q2_u, q1_u, q0_u;
@@ -569,7 +569,7 @@ func VFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, int strid
   SD4(q1_d, q0_d, p0_d, p1_d, src_v, -stride);
 }
 
-func HFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, int stride, int b_limit_in, int limit_in, int thresh_in) {
+func HFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7, row8;
   v16u8 row9, row10, row11, row12, row13, row14, row15;
@@ -597,7 +597,7 @@ func HFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, int strid
   ST4x4_UB(tmp5, tmp5, 0, 1, 2, 3, src_v, stride);
 }
 
-func SimpleVFilter16(src *uint8, int stride, int b_limit_in) {
+func SimpleVFilter16(src *uint8, stride int, b_limit_in int) {
   v16u8 p1, p0, q1, q0, mask;
   const v16u8 b_limit = (v16u8)__msa_fill_b(b_limit_in);
 
@@ -607,7 +607,7 @@ func SimpleVFilter16(src *uint8, int stride, int b_limit_in) {
   ST_UB2(p0, q0, src - stride, stride);
 }
 
-func SimpleHFilter16(src *uint8, int stride, int b_limit_in) {
+func SimpleHFilter16(src *uint8, stride int, b_limit_in int) {
   v16u8 p1, p0, q1, q0, mask, row0, row1, row2, row3, row4, row5, row6, row7;
   v16u8 row8, row9, row10, row11, row12, row13, row14, row15;
   v8i16 tmp0, tmp1;
@@ -631,13 +631,13 @@ func SimpleHFilter16(src *uint8, int stride, int b_limit_in) {
   ptemp_src += 4 * stride;
 }
 
-func SimpleVFilter16i(src_y *uint8, int stride, int b_limit_in) {
+func SimpleVFilter16i(src_y *uint8, stride int, b_limit_in int) {
   SimpleVFilter16(src_y + 4 * stride, stride, b_limit_in);
   SimpleVFilter16(src_y + 8 * stride, stride, b_limit_in);
   SimpleVFilter16(src_y + 12 * stride, stride, b_limit_in);
 }
 
-func SimpleHFilter16i(src_y *uint8, int stride, int b_limit_in) {
+func SimpleHFilter16i(src_y *uint8, stride int, b_limit_in int) {
   SimpleHFilter16(src_y + 4, stride, b_limit_in);
   SimpleHFilter16(src_y + 8, stride, b_limit_in);
   SimpleHFilter16(src_y + 12, stride, b_limit_in);

@@ -84,7 +84,7 @@ func TransformColor_SSE2(/* const */ WEBP_RESTRICT const m *VP8LMultipliers, WEB
 
 //------------------------------------------------------------------------------
 const SPAN = 8
-func CollectColorBlueTransforms_SSE2(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
+func CollectColorBlueTransforms_SSE2(/* const */ WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]) {
   const __m128i mults_r = MK_CST_16(CST_5b(red_to_blue), 0);
   const __m128i mults_g = MK_CST_16(0, CST_5b(green_to_blue));
   const __m128i mask_g = _mm_set1_epi32(0x00ff00);  // green mask
@@ -126,7 +126,7 @@ func CollectColorBlueTransforms_SSE2(/* const */ WEBP_RESTRICT argb *uint32, int
   }
 }
 
-func CollectColorRedTransforms_SSE2(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
+func CollectColorRedTransforms_SSE2(/* const */ WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]) {
   const __m128i mults_g = MK_CST_16(0, CST_5b(green_to_red));
   const __m128i mask_g = _mm_set1_epi32(0x00ff00);  // green mask
   const __m128i mask = _mm_set1_epi32(0xff);
@@ -314,7 +314,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-func VectorMismatch_SSE2(/* const */ array *uint321, /*const*/ array *uint322, int length) int {
+func VectorMismatch_SSE2(/* const */ array *uint321, /*const*/ array *uint322, length int) int {
   var match_len int
 
   if (length >= 12) {
@@ -362,7 +362,7 @@ func VectorMismatch_SSE2(/* const */ array *uint321, /*const*/ array *uint322, i
 }
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
-func BundleColorMap_SSE2(/* const */ WEBP_RESTRICT const row *uint8, int width, int xbits, WEBP_RESTRICT dst *uint32) {
+func BundleColorMap_SSE2(/* const */ WEBP_RESTRICT const row *uint8, width int, xbits int, WEBP_RESTRICT dst *uint32) {
   var x int
   assert.Assert(xbits >= 0);
   assert.Assert(xbits <= 3);

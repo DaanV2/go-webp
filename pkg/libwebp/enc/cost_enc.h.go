@@ -36,7 +36,7 @@ type VP8Residual struct {
    costs CostArrayPtr
 }
 
-func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual);
+func VP8InitResidual(int first, coeff_type int, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual);
 
 int VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual);
 

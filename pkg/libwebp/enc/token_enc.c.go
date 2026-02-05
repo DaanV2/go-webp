@@ -50,7 +50,7 @@ type VP8Tokens struct {
 
 //------------------------------------------------------------------------------
 
-func VP8TBufferInit(/* const */ b *VP8TBuffer, int page_size) {
+func VP8TBufferInit(/* const */ b *VP8TBuffer, page_size int) {
   b.tokens = nil;
   b.pages = nil;
   b.last_page = &b.pages;
@@ -203,7 +203,7 @@ func VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*co
 
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
-func VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, int final_pass) int {
+func VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, final_pass int) int {
   var p *VP8Tokens = b.pages;
   assert.Assert(!b.error);
   for p != nil {
@@ -255,7 +255,7 @@ uint64 VP8EstimateTokenSize(/* const */ b *VP8TBuffer, /*const*/ probas *uint8) 
 
 #else  // DISABLE_TOKEN_BUFFER
 
-func VP8TBufferInit(/* const */ b *VP8TBuffer, int page_size) {
+func VP8TBufferInit(/* const */ b *VP8TBuffer, page_size int) {
   (void)b;
   (void)page_size;
 }

@@ -40,7 +40,7 @@ const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 // Detection of non-trivial transparency
 
 // Returns true if alpha[] has non-0xff values.
-func CheckNonOpaque(/* const */ alpha *uint8, width, height int, int x_step, int y_step) int {
+func CheckNonOpaque(/* const */ alpha *uint8, width, height int, x_step int, y_step int) int {
   if alpha == nil { return 0  }
   WebPInitAlphaProcessing();
   if (x_step == 1) {
@@ -77,7 +77,7 @@ static const kMinDimensionIterativeConversion := 4;
 //------------------------------------------------------------------------------
 // Main function
 
-func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, int rgb_stride, /*const*/ picture *WebPPicture) int {
+func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, step int, rgb_stride int, /*const*/ picture *WebPPicture) int {
   ok := SharpYuvConvert(
       r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.y, picture.y_stride, picture.u, picture.uv_stride, picture.v, picture.uv_stride, /*yuv_bit_depth=*/8, picture.width, picture.height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
@@ -86,7 +86,7 @@ func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ 
   return ok;
 }
 
-func ConvertRowToY(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, /*const*/ dst_y *uint8, int width, /*const*/ rg *VP8Random) {
+func ConvertRowToY(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, step int, /*const*/ dst_y *uint8, width int, /*const*/ rg *VP8Random) {
   int i, j;
   for i = 0, j = 0; i < width; i += 1, j += step {
     dst_y[i] =
@@ -94,7 +94,7 @@ func ConvertRowToY(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b
   }
 }
 
-func ConvertRowsToUV(/* const */ rgb *uint16, /*const*/ dst_u *uint8, /*const*/ dst_v *uint8, int width, /*const*/ rg *VP8Random) {
+func ConvertRowsToUV(/* const */ rgb *uint16, /*const*/ dst_u *uint8, /*const*/ dst_v *uint8, width int, /*const*/ rg *VP8Random) {
   var i int
   for i = 0; i < width; i += 1, rgb += 4 {
     r := rgb[0], g = rgb[1], b = rgb[2];
@@ -105,9 +105,9 @@ func ConvertRowsToUV(/* const */ rgb *uint16, /*const*/ dst_u *uint8, /*const*/ 
 
 extern func SharpYuvInit(VP8CPUInfo cpu_info_func);
 
-static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, int step,        // bytes per pixel
+static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,        // bytes per pixel
                               int rgb_stride,  // bytes per scanline
-                              float dithering, int use_iterative_conversion, /*const*/ picture *WebPPicture) {
+                              float dithering, use_iterative_conversion int, /*const*/ picture *WebPPicture) {
   var y int
   width := picture.width;
   height := picture.height;
@@ -232,7 +232,7 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 //------------------------------------------------------------------------------
 // call for ARGB.YUVA conversion
 
-func PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float dithering, int use_iterative_conversion) int {
+func PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float dithering, use_iterative_conversion int) int {
   if picture == nil { return 0  }
   if (picture.argb == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
@@ -331,7 +331,7 @@ func WebPPictureYUVAToARGB(picture *WebPPicture) int {
 //------------------------------------------------------------------------------
 // automatic import / conversion
 
-func Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride, int step, int swap_rb, int import_alpha) int {
+func Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, rgb_stride int, step int, swap_rb int, import_alpha int) int {
   var y int
   // swap_rb . b,g,r,a , !swap_rb . r,g,b,a
   var r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));
@@ -397,19 +397,19 @@ func Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stri
 
 #if !defined(WEBP_REDUCE_CSP)
 
-func WebPPictureImportBGR(picture *WebPPicture, /*const*/ bgr *uint8, int bgr_stride) int {
+func WebPPictureImportBGR(picture *WebPPicture, /*const*/ bgr *uint8, bgr_stride int) int {
   return (picture != nil && bgr != nil)
              ? Import(picture, bgr, bgr_stride, 3, 1, 0)
              : 0;
 }
 
-func WebPPictureImportBGRA(picture *WebPPicture, /*const*/ bgra *uint8, int bgra_stride) int {
+func WebPPictureImportBGRA(picture *WebPPicture, /*const*/ bgra *uint8, bgra_stride int) int {
   return (picture != nil && bgra != nil)
              ? Import(picture, bgra, bgra_stride, 4, 1, 1)
              : 0;
 }
 
-func WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, int bgrx_stride) int {
+func WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, bgrx_stride int) int {
   return (picture != nil && bgrx != nil)
              ? Import(picture, bgrx, bgrx_stride, 4, 1, 0)
              : 0;
@@ -417,7 +417,7 @@ func WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, int bgrx
 
 #endif  // WEBP_REDUCE_CSP
 
-func WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride) int {
+func WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, rgb_stride int) int {
   return (picture != nil && rgb != nil)
              ? Import(picture, rgb, rgb_stride, 3, 0, 0)
              : 0;
@@ -429,7 +429,7 @@ func WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, rgba_str
              : 0;
 }
 
-func WebPPictureImportRGBX(picture *WebPPicture, /*const*/ rgbx *uint8, int rgbx_stride) int {
+func WebPPictureImportRGBX(picture *WebPPicture, /*const*/ rgbx *uint8, rgbx_stride int) int {
   return (picture != nil && rgbx != nil)
              ? Import(picture, rgbx, rgbx_stride, 4, 0, 0)
              : 0;

@@ -134,13 +134,13 @@ func FinalizeSkipProba(/* const */ enc *VP8Encoder) int {
 
 // Collect statistics and deduce probabilities for next coding pass.
 // Return the total bit-cost for coding the probability updates.
-func CalcTokenProba(int nb, int total) int {
+func CalcTokenProba(int nb, total int) int {
   assert.Assert(nb <= total);
   return nb ? (255 - nb * 255 / total) : 255;
 }
 
 // Cost of coding 'nb' 1's and 'total-nb' 0's using 'proba' probability.
-func BranchCost(int nb, int total, int proba) int {
+func BranchCost(int nb, total int, proba int) int {
   return nb * VP8BitCost(1, proba) + (total - nb) * VP8BitCost(0, proba);
 }
 
@@ -187,7 +187,7 @@ func FinalizeTokenProbas(/* const */ proba *VP8EncProba) int {
 //------------------------------------------------------------------------------
 // Finalize Segment probability based on the coding tree
 
-func GetProba(int a, int b) int {
+func GetProba(int a, b int) int {
   total := a + b;
   return (total == 0) ? 255  // that's the default probability.
                       : (255 * a + total / 2) / total;  // rounded proba
@@ -238,7 +238,7 @@ func SetSegmentProbas(/* const */ enc *VP8Encoder) {
 //------------------------------------------------------------------------------
 // Coefficient coding
 
-func PutCoeffs(/* const */ bw *VP8BitWriter, int ctx, /*const*/ res *VP8Residual) int {
+func PutCoeffs(/* const */ bw *VP8BitWriter, ctx int, /*const*/ res *VP8Residual) int {
   n := res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   var p *uint8 = res.prob[n][ctx];
@@ -582,7 +582,7 @@ func SetLoopParams(/* const */ enc *VP8Encoder, float q) {
   ResetSSE(enc);
 }
 
-func OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, /*const*/ s *PassStats) uint64 {
+func OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, nb_mbs int, percent_delta int, /*const*/ s *PassStats) uint64 {
    var it VP8EncIterator
   size uint64  = 0;
   uint64 size_p0 = 0;
@@ -701,7 +701,7 @@ func PreLoopInitialize(/* const */ enc *VP8Encoder) int {
   return ok;
 }
 
-func PostLoopFinalize(/* const */ it *VP8EncIterator, int ok) int {
+func PostLoopFinalize(/* const */ it *VP8EncIterator, ok int) int {
   var enc *VP8Encoder = it.enc;
   if (ok) {  // Finalize the partitions, check for extra errors.
     var p int

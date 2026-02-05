@@ -86,7 +86,7 @@ func WebPPictureIsView(/* const */ picture *WebPPicture) int {
   return (picture.memory_ == nil);
 }
 
-func WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, height int, dst *WebPPicture) int {
+func WebPPictureView(/* const */ src *WebPPicture, left int, top int, width, height int, dst *WebPPicture) int {
   if src == nil || dst == nil { return 0  }
 
   // verify rectangle position.
@@ -118,7 +118,7 @@ func WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, hei
 //------------------------------------------------------------------------------
 // Picture cropping
 
-func WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) int {
+func WebPPictureCrop(pic *WebPPicture, left int, top int, width, height int) int {
    var tmp WebPPicture
 
   if pic == nil { return 0  }
@@ -155,7 +155,7 @@ func WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) int
 //------------------------------------------------------------------------------
 // Simple picture rescaler
 
-func RescalePlane(/* const */ src *uint8, int src_width, int src_height, int src_stride, dst *uint8, int dst_width, int dst_height, int dst_stride, rescaler_t* const work, int num_channels) int {
+func RescalePlane(/* const */ src *uint8, src_width int , src_height int, src_stride int, dst *uint8, dst_width int, dst_height int, dst_stride int, work *rescaler_t, num_channels int) int {
    var rescaler WebPRescaler
   y := 0;
   if (!WebPRescalerInit(&rescaler, src_width, src_height, dst, dst_width, dst_height, dst_stride, num_channels, work)) {
@@ -168,12 +168,12 @@ func RescalePlane(/* const */ src *uint8, int src_width, int src_height, int src
   return 1;
 }
 
-func AlphaMultiplyARGB(/* const */ pic *WebPPicture, int inverse) {
+func AlphaMultiplyARGB(/* const */ pic *WebPPicture, inverse int) {
   assert.Assert(pic.argb != nil);
   WebPMultARGBRows((*uint8)pic.argb, pic.argb_stride * sizeof(*pic.argb), pic.width, pic.height, inverse);
 }
 
-func AlphaMultiplyY(/* const */ pic *WebPPicture, int inverse) {
+func AlphaMultiplyY(/* const */ pic *WebPPicture, inverse int) {
   if (pic.a != nil) {
     WebPMultRows(pic.y, pic.y_stride, pic.a, pic.a_stride, pic.width, pic.height, inverse);
   }
@@ -264,7 +264,7 @@ func WebPPictureCopy(/* const */ src *WebPPicture, dst *WebPPicture) int {
   return 0;
 }
 
-func WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) int {
+func WebPPictureCrop(pic *WebPPicture, left int, top int, width, height int) int {
   (void)pic;
   (void)left;
   (void)top;

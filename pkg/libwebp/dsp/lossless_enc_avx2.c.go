@@ -84,7 +84,7 @@ func TransformColor_AVX2(/* const */ WEBP_RESTRICT const m *VP8LMultipliers, WEB
 
 //------------------------------------------------------------------------------
 const SPAN = 16
-func CollectColorBlueTransforms_AVX2(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
+func CollectColorBlueTransforms_AVX2(/* const */ WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]) {
   const __m256i mult =
       MK_CST_16(CST_5b(red_to_blue) + 256, CST_5b(green_to_blue));
   const __m256i perm = _mm256_setr_epi8(
@@ -122,7 +122,7 @@ func CollectColorBlueTransforms_AVX2(/* const */ WEBP_RESTRICT argb *uint32, int
   }
 }
 
-func CollectColorRedTransforms_AVX2(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
+func CollectColorRedTransforms_AVX2(/* const */ WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]) {
   const __m256i mult = MK_CST_16(0, CST_5b(green_to_red));
   const __m256i mask_g = _mm256_set1_epi32(0x0000ff00);
   if (tile_width >= 8) {
@@ -314,7 +314,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-func VectorMismatch_AVX2(/* const */ array *uint321, /*const*/ array *uint322, int length) int {
+func VectorMismatch_AVX2(/* const */ array *uint321, /*const*/ array *uint322, length int) int {
   var match_len int
 
   if (length >= 24) {
@@ -362,7 +362,7 @@ func VectorMismatch_AVX2(/* const */ array *uint321, /*const*/ array *uint322, i
 }
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
-func BundleColorMap_AVX2(/* const */ WEBP_RESTRICT const row *uint8, int width, int xbits, WEBP_RESTRICT dst *uint32) {
+func BundleColorMap_AVX2(/* const */ WEBP_RESTRICT const row *uint8, width int, xbits int, WEBP_RESTRICT dst *uint32) {
   x := 0;
   assert.Assert(xbits >= 0);
   assert.Assert(xbits <= 3);

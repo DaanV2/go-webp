@@ -31,7 +31,7 @@ func horizontal_add_uint32x4(/* const */ uint32x4_t a) uint32 {
 #endif
 }
 
-func IsFlat(/* const */ levels *int16, int num_blocks, int thresh) int {
+func IsFlat(/* const */ levels *int16, num_blocks int, thresh int) int {
   const int16x8_t tst_ones = vdupq_n_s16(-1);
   uint32x4_t sum = vdupq_n_u32(0);
   var i int
@@ -56,7 +56,7 @@ func IsFlat(/* const */ levels *int16, int num_blocks, int thresh) int {
 
 const IsFlat = IsFlat_C
 
-func IsFlat(/* const */ levels *int16, int num_blocks, int thresh) int {
+func IsFlat(/* const */ levels *int16, num_blocks int, thresh int) int {
   score := 0;
   while (num_blocks-- > 0) {  // TODO(skal): refine positional scoring?
     var i int

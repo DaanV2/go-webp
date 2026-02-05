@@ -67,7 +67,7 @@ struct VP8LTransform;  // Defined in dec/vp8li.h.
 // rows. Transform will be applied to rows [row_start, row_end[.
 // The and pointers refer *in to *out source and destination data respectively
 // corresponding to the intermediate row (row_start).
-func VP8LInverseTransform(/* const */ struct const transform *VP8LTransform, int row_start, int row_end, /*const*/ in *uint32, /*const*/ out *uint32);
+func VP8LInverseTransform(/* const */ struct const transform *VP8LTransform, row_start int, row_end int, /*const*/ in *uint32, /*const*/ out *uint32);
 
 // Color space conversion.
 typedef func (*VP8LConvertFunc)(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8);
@@ -82,8 +82,8 @@ extern VP8LConvertFunc VP8LConvertBGRAToRGBA_SSE;
 // Converts from BGRA to other color spaces.
 func VP8LConvertFromBGRA(/* const */ in_data *uint32, num_pixels int, WEBP_CSP_MODE out_colorspace, /*const*/ rgba *uint8);
 
-typedef func (*VP8LMapARGBFunc)(/* const */ src *uint32, /*const*/ color_map *uint32, dst *uint32, int y_start, int y_end, int width);
-typedef func (*VP8LMapAlphaFunc)(/* const */ src *uint8, /*const*/ color_map *uint32, dst *uint8, int y_start, int y_end, int width);
+typedef func (*VP8LMapARGBFunc)(/* const */ src *uint32, /*const*/ color_map *uint32, dst *uint32, y_start int, y_end int, width int);
+typedef func (*VP8LMapAlphaFunc)(/* const */ src *uint8, /*const*/ color_map *uint32, dst *uint8, y_start int, y_end int, width int);
 
 extern VP8LMapARGBFunc VP8LMapColor32b;
 extern VP8LMapAlphaFunc VP8LMapColor8b;
@@ -92,7 +92,7 @@ extern VP8LMapAlphaFunc VP8LMapColor8b;
 // lossless.c, but used only for alpha decoding. It takes uint8 (rather than
 // uint32) arguments for 'src' and 'dst'.
 func VP8LColorIndexInverseTransformAlpha(
-    const struct const transform *VP8LTransform, int y_start, int y_end, /*const*/ src *uint8, dst *uint8);
+    const struct const transform *VP8LTransform, y_start int, y_end int, /*const*/ src *uint8, dst *uint8);
 
 // Expose some C-only fallback functions
 func VP8LTransformColorInverse_C(/* const */ m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32);
@@ -118,27 +118,27 @@ typedef func (*VP8LTransformColorFunc)(
 extern VP8LTransformColorFunc VP8LTransformColor;
 extern VP8LTransformColorFunc VP8LTransformColor_SSE;
 typedef func (*VP8LCollectColorBlueTransformsFunc)(
-    const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]);
+    const WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]);
 extern VP8LCollectColorBlueTransformsFunc VP8LCollectColorBlueTransforms;
 extern VP8LCollectColorBlueTransformsFunc VP8LCollectColorBlueTransforms_SSE;
 
 typedef func (*VP8LCollectColorRedTransformsFunc)(
-    const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]);
+    const WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]);
 extern VP8LCollectColorRedTransformsFunc VP8LCollectColorRedTransforms;
 extern VP8LCollectColorRedTransformsFunc VP8LCollectColorRedTransforms_SSE;
 
 // Expose some C-only fallback functions
 func VP8LTransformColor_C(/* const */ WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, num_pixels int);
 func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, num_pixels int);
-func VP8LCollectColorRedTransforms_C(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]);
-func VP8LCollectColorBlueTransforms_C(/* const */ WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]);
+func VP8LCollectColorRedTransforms_C(/* const */ WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]);
+func VP8LCollectColorBlueTransforms_C(/* const */ WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]);
 
 // -----------------------------------------------------------------------------
 // Huffman-cost related functions.
 
-type VP8LCostFunc = func(/* const */ population *uint32, int length)uint32
+type VP8LCostFunc = func(/* const */ population *uint32, length int)uint32
 type VP8LCombinedShannonEntropyFunc = func(/* const */ X [256]uint32, /*const*/ Y [256]uint32)uint64
-type VP8LShannonEntropyFunc = func(/* const */ X *uint32, int length)uint64
+type VP8LShannonEntropyFunc = func(/* const */ X *uint32, length int)uint64
 
 type VP8LStreaks struct {      // small struct to hold counters
    counts[2]int     // index: 0=zero streak, 1=non-zero streak
@@ -159,15 +159,15 @@ func VP8LBitEntropyInit(/* const */ entropy *VP8LBitEntropy);
 // distributions 'X' and 'Y'. Those results can then be refined according to
 // codec specific heuristics.
 typedef func (*VP8LGetCombinedEntropyUnrefinedFunc)(
-    const uint32 X[], /*const*/ uint32 Y[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks);
+    const uint32 X[], /*const*/ uint32 Y[], length int, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks);
 extern VP8LGetCombinedEntropyUnrefinedFunc VP8LGetCombinedEntropyUnrefined;
 
 // Get the entropy for the distribution 'X'.
 typedef func (*VP8LGetEntropyUnrefinedFunc)(
-    const uint32 X[], int length, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks);
+    const uint32 X[], length int, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks);
 extern VP8LGetEntropyUnrefinedFunc VP8LGetEntropyUnrefined;
 
-func VP8LBitsEntropyUnrefined(/* const */ WEBP_RESTRICT const array *uint32, int n, WEBP_RESTRICT const entropy *VP8LBitEntropy);
+func VP8LBitsEntropyUnrefined(/* const */ WEBP_RESTRICT const array *uint32, n int, WEBP_RESTRICT const entropy *VP8LBitEntropy);
 
 typedef func (*VP8LAddVectorFunc)(/* const */ WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, size int);
 extern VP8LAddVectorFunc VP8LAddVector;
@@ -177,14 +177,14 @@ extern VP8LAddVectorEqFunc VP8LAddVectorEq;
 // -----------------------------------------------------------------------------
 // PrefixEncode()
 
-typedef int (*VP8LVectorMismatchFunc)(/* const */ array *uint321, /*const*/ array *uint322, int length);
+typedef int (*VP8LVectorMismatchFunc)(/* const */ array *uint321, /*const*/ array *uint322, length int);
 // Returns the first index where array1 and array2 are different.
 extern VP8LVectorMismatchFunc VP8LVectorMismatch;
 
-typedef func (*VP8LBundleColorMapFunc)(/* const */ WEBP_RESTRICT const row *uint8, int width, int xbits, WEBP_RESTRICT dst *uint32);
+typedef func (*VP8LBundleColorMapFunc)(/* const */ WEBP_RESTRICT const row *uint8, width int, xbits int, WEBP_RESTRICT dst *uint32);
 extern VP8LBundleColorMapFunc VP8LBundleColorMap;
 extern VP8LBundleColorMapFunc VP8LBundleColorMap_SSE;
-func VP8LBundleColorMap_C(/* const */ WEBP_RESTRICT const row *uint8, int width, int xbits, WEBP_RESTRICT dst *uint32);
+func VP8LBundleColorMap_C(/* const */ WEBP_RESTRICT const row *uint8, width int, xbits int, WEBP_RESTRICT dst *uint32);
 
 // Must be called before calling any of the above methods.
 func VP8LEncDspInit(void);

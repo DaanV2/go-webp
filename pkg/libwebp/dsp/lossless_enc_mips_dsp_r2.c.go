@@ -161,7 +161,7 @@ func TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) uin
 }
 
 func CollectColorBlueTransforms_MIPSdspR2(
-    const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_blue, int red_to_blue, uint32 histo[]) {
+    const WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]) {
   rtb := (red_to_blue << 16) | (red_to_blue & 0xffff);
   gtb := (green_to_blue << 16) | (green_to_blue & 0xffff);
   mask := uint(0xff00ff);
@@ -206,7 +206,7 @@ func TransformColorRed(uint8 green_to_red, argb uint32) uint8 {
 }
 
 func CollectColorRedTransforms_MIPSdspR2(
-    const WEBP_RESTRICT argb *uint32, int stride, int tile_width, int tile_height, int green_to_red, uint32 histo[]) {
+    const WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]) {
   gtr := (green_to_red << 16) | (green_to_red & 0xffff);
   while (tile_height-- > 0) {
     var x int

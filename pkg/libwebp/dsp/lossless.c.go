@@ -55,7 +55,7 @@ func Clip255(uint32 a) uint32 {
   return ~a >> 24;
 }
 
-func AddSubtractComponentFull(int a, int b, int c) int {
+func AddSubtractComponentFull(int a, b int, c int) int {
   return Clip255((uint32)(a + b - c));
 }
 
@@ -67,7 +67,7 @@ func ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) uint32 {
   return ((uint32)a << 24) | (r << 16) | (g << 8) | b;
 }
 
-func AddSubtractComponentHalf(int a, int b) int {
+func AddSubtractComponentHalf(int a, b int) int {
   return Clip255((uint32)(a + (a - b) / 2));
 }
 
@@ -88,7 +88,7 @@ const LOCAL_INLINE =__attribute__((noinline))
 const LOCAL_INLINE =
 #endif
 
-static LOCAL_INLINE int Sub3(int a, int b, int c) {
+static LOCAL_INLINE int Sub3(int a, b int, c int) {
   pb := b - c;
   pa := a - c;
   return abs(pb) - abs(pa);
@@ -197,7 +197,7 @@ GENERATE_PREDICTOR_ADD(VP8LPredictor13_C, PredictorAdd13_C)
 //------------------------------------------------------------------------------
 
 // Inverse prediction.
-func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, int y_start, int y_end, /*const*/ in *uint32, out *uint32) {
+func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, y_start int, y_end int, /*const*/ in *uint32, out *uint32) {
   width := transform.xsize;
   if (y_start == 0) {  // First Row follows the L (mode=1) mode.
     PredictorAdd0_C(in, nil, 1, out);
@@ -281,7 +281,7 @@ func VP8LTransformColorInverse_C(/* const */ m *VP8LMultipliers, /*const*/ src *
 }
 
 // Color space inverse transform.
-func ColorSpaceInverseTransform_C(/* const */ transform *VP8LTransform, int y_start, int y_end, /*const*/ src *uint32, dst *uint32) {
+func ColorSpaceInverseTransform_C(/* const */ transform *VP8LTransform, y_start int, y_end int, /*const*/ src *uint32, dst *uint32) {
   width := transform.xsize;
   tile_width := 1 << transform.bits;
   mask := tile_width - 1;
@@ -320,7 +320,7 @@ func ColorSpaceInverseTransform_C(/* const */ transform *VP8LTransform, int y_st
 #define COLOR_INDEX_INVERSE(FUNC_NAME, F_NAME, STATIC_DECL, TYPE, BIT_SUFFIX,  \
                             GET_INDEX, GET_VALUE)                              \
 func F_NAME(/* const */ src *TYPE, /*const*/ color_map *uint32,           \
-                   dst *TYPE, int y_start, int y_end, int width) {             \
+                   dst *TYPE, y_start int, y_end int, width int) {             \
   var y int                                                                       \
   for y = y_start; y < y_end; y++ {                                          \
     var x int                                                                     \
@@ -330,7 +330,7 @@ func F_NAME(/* const */ src *TYPE, /*const*/ color_map *uint32,           \
   }                                                                            \
 }                                                                              \
 STATIC_DECL func FUNC_NAME(/* const */ transform *VP8LTransform,               \
-                           int y_start, int y_end, /*const*/ src *TYPE,            \
+                           int y_start, y_end int, /*const*/ src *TYPE,            \
                            dst *TYPE) {                                        \
   var y int                                                                       \
   bits_per_pixel := 8 >> transform.bits;                             \
@@ -364,7 +364,7 @@ COLOR_INDEX_INVERSE(VP8LColorIndexInverseTransformAlpha, MapAlpha_C, , uint8, 8b
 
 #undef COLOR_INDEX_INVERSE
 
-func VP8LInverseTransform(/* const */ transform *VP8LTransform, int row_start, int row_end, /*const*/ in *uint32, /*const*/ out *uint32) {
+func VP8LInverseTransform(/* const */ transform *VP8LTransform, row_start int, row_end int, /*const*/ in *uint32, /*const*/ out *uint32) {
   width := transform.xsize;
   assert.Assert(row_start < row_end);
   assert.Assert(row_end <= transform.ysize);
@@ -478,7 +478,7 @@ func VP8LConvertBGRAToBGR_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels in
   }
 }
 
-func CopyOrSwap(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8, int swap_on_big_endian) {
+func CopyOrSwap(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8, swap_on_big_endian int) {
   if (is_big_endian() == swap_on_big_endian) {
     var src_end *uint32 = src + num_pixels;
     while (src < src_end) {

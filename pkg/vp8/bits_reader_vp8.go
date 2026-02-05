@@ -166,7 +166,7 @@ func VP8GetBit(/* const */ br *VP8BitReader, prob int, /*const*/ label []byte) i
 }
 
 // simplified version of VP8GetBit() for prob=0x80 (note shift is always 1 here)
-func VP8GetSigned(/* const */ br *VP8BitReader, int v, /*const*/ label []byte) int {
+func VP8GetSigned(/* const */ br *VP8BitReader, v int, /*const*/ label []byte) int {
   if (br.bits < 0) {
     VP8LoadNewBytes(br);
   }

@@ -122,7 +122,7 @@ const ROUNDER = (WEBP_RESCALER_ONE >> 1)
   } while (0)
 
 static  func ExportRowExpand_0(
-    const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT dst *uint8, int length, WEBP_RESTRICT const wrk *WebPRescaler) {
+    const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT dst *uint8, length int, WEBP_RESTRICT const wrk *WebPRescaler) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk.fy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
   const v4i32 zero = {0}
@@ -178,7 +178,7 @@ static  func ExportRowExpand_0(
 }
 
 static  func ExportRowExpand_1(
-    const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, int length, WEBP_RESTRICT const wrk *WebPRescaler) {
+    const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, length int, WEBP_RESTRICT const wrk *WebPRescaler) {
   B := WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub);
   A := (uint32)(WEBP_RESCALER_ONE - B);
   const v4i32 B1 = __msa_fill_w(B);
@@ -267,7 +267,7 @@ func RescalerExportRowExpand_MIPSdspR2(/* const */ wrk *WebPRescaler) {
 
 #if 0   // disabled for now. TODO(skal): make match the C-code
 static  func ExportRowShrink_0(
-    const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, int length, /*const*/ uint32 yscale, WEBP_RESTRICT const wrk *WebPRescaler) {
+    const WEBP_RESTRICT frow *uint32, WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, length int, /*const*/ uint32 yscale, WEBP_RESTRICT const wrk *WebPRescaler) {
   const v4u32 y_scale = (v4u32)__msa_fill_w(yscale);
   const v4u32 fxyscale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shiftval = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
@@ -349,7 +349,7 @@ static  func ExportRowShrink_0(
 }
 
 static  func ExportRowShrink_1(
-    WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, int length, WEBP_RESTRICT const wrk *WebPRescaler) {
+    WEBP_RESTRICT irow *uint32, WEBP_RESTRICT dst *uint8, length int, WEBP_RESTRICT const wrk *WebPRescaler) {
   const v4u32 scale = (v4u32)__msa_fill_w(wrk.fxy_scale);
   const v4u32 shift = (v4u32)__msa_fill_w(WEBP_RESCALER_RFIX);
   const v4i32 zero = { 0 }

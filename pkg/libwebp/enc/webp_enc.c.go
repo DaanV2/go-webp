@@ -293,7 +293,7 @@ func WebPEncodingSetError(/* const */ pic *WebPPicture, error WebPEncodingError 
   return 0;
 }
 
-func WebPReportProgress(/* const */ pic *WebPPicture, int percent, /*const*/ percent_store *int) int {
+func WebPReportProgress(/* const */ pic *WebPPicture, percent int, /*const*/ percent_store *int) int {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
     if (pic.progress_hook && !pic.progress_hook(percent, pic)) {

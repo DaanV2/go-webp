@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/smmintrin"
 
 //------------------------------------------------------------------------------
 
-func ExtractAlpha_SSE41(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride) int {
+func ExtractAlpha_SSE41(/* const */ WEBP_RESTRICT argb *uint8, argb_stride int, width, height int, WEBP_RESTRICT alpha *uint8, alpha_stride int) int {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
   alpha_and := 0xff;

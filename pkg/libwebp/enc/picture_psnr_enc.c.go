@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-typedef double (*AccumulateFunc)(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h);
+typedef double (*AccumulateFunc)(/* const */ src *uint8, src_stride int, /*const*/ ref *uint8, ref_stride int, w int, h int);
 
 //------------------------------------------------------------------------------
 // local-min distortion
@@ -35,7 +35,7 @@ typedef double (*AccumulateFunc)(/* const */ src *uint8, int src_stride, /*const
 
 const RADIUS = 2  // search radius. Shouldn't be too large.
 
-func AccumulateLSIM(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) double {
+func AccumulateLSIM(/* const */ src *uint8, src_stride int, /*const*/ ref *uint8, ref_stride int, w int, h int) double {
   var x, y int
   double total_sse = 0.;
   for y = 0; y < h; y++ {
@@ -62,7 +62,7 @@ func AccumulateLSIM(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8
 }
 #undef RADIUS
 
-func AccumulateSSE(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) double {
+func AccumulateSSE(/* const */ src *uint8, src_stride int, /*const*/ ref *uint8, ref_stride int, w int, h int) double {
   var y int
   double total_sse = 0.;
   for y = 0; y < h; y++ {
@@ -75,7 +75,7 @@ func AccumulateSSE(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8,
 
 //------------------------------------------------------------------------------
 
-func AccumulateSSIM(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) double {
+func AccumulateSSIM(/* const */ src *uint8, src_stride int, /*const*/ ref *uint8, ref_stride int, w int, h int) double {
   w0 := (w < VP8_SSIM_KERNEL) ? w : VP8_SSIM_KERNEL;
   w1 := w - VP8_SSIM_KERNEL - 1;
   h0 := (h < VP8_SSIM_KERNEL) ? h : VP8_SSIM_KERNEL;
@@ -124,7 +124,7 @@ func GetLogSSIM(double v, double size) double {
   return (v < 1.) ? -10.0 * log10(1. - v) : kMinDistortion_dB;
 }
 
-func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) int {
+func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, type int, distortion *float, result *float) int {
   allocated *uint8 = nil;
   var metric AccumulateFunc = (type == 0)   ? AccumulateSSE
                                 : (type == 1) ? AccumulateSSIM
@@ -167,7 +167,7 @@ const BLUE_OFFSET =3  // uint32 0x000000ff is 0x00,00,00,ff in memory
 const BLUE_OFFSET =0  // uint32 0x000000ff is 0xff,00,00,00 in memory
 #endif
 
-func WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, int type, float results[5]) int {
+func WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, type int, float results[5]) int {
   int w, h, c;
   ok := 0;
   WebPPicture p0, p1;
@@ -213,7 +213,7 @@ Error:
 #undef BLUE_OFFSET
 
 #else  // defined(WEBP_DISABLE_STATS)
-func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type, distortion *float, result *float) int {
+func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, type int, distortion *float, result *float) int {
   (void)src;
   (void)src_stride;
   (void)ref;
@@ -228,7 +228,7 @@ func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ re
   return 1;
 }
 
-func WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, int type, float results[5]) int {
+func WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, type int, float results[5]) int {
   var i int
   (void)src;
   (void)ref;

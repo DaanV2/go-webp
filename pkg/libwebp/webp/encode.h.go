@@ -30,10 +30,10 @@ const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 // These functions compress using the lossy format, and the quality_factor
 // can go from 0 (smaller output, lower quality) to 100 (best quality,
 // larger output).
- uint64 WebPEncodeRGB(/* const */ rgb *uint8, width, height int, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGR(/* const */ bgr *uint8, width, height int, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeRGBA(/* const */ rgba *uint8, width, height int, int stride, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGRA(/* const */ bgra *uint8, width, height int, int stride, float quality_factor, *uint8* output);
+ uint64 WebPEncodeRGB(/* const */ rgb *uint8, width, height int, stride int, float quality_factor, *uint8* output);
+ uint64 WebPEncodeBGR(/* const */ bgr *uint8, width, height int, stride int, float quality_factor, *uint8* output);
+ uint64 WebPEncodeRGBA(/* const */ rgba *uint8, width, height int, stride int, float quality_factor, *uint8* output);
+ uint64 WebPEncodeBGRA(/* const */ bgra *uint8, width, height int, stride int, float quality_factor, *uint8* output);
 
 // These functions are the equivalent of the above, but compressing in a
 // lossless manner. Files are usually larger than lossy format, but will
@@ -43,10 +43,10 @@ const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 // transparent areas (that is, areas with alpha values equal to 0) will be
 // modified to improve compression. To afunc this, use WebPEncode() and set
 // WebPConfig::exact to 1.
- uint64 WebPEncodeLosslessRGB(/* const */ rgb *uint8, width, height int, int stride, *uint8* output);
- uint64 WebPEncodeLosslessBGR(/* const */ bgr *uint8, width, height int, int stride, *uint8* output);
- uint64 WebPEncodeLosslessRGBA(/* const */ rgba *uint8, width, height int, int stride, *uint8* output);
- uint64 WebPEncodeLosslessBGRA(/* const */ bgra *uint8, width, height int, int stride, *uint8* output);
+ uint64 WebPEncodeLosslessRGB(/* const */ rgb *uint8, width, height int, stride int, *uint8* output);
+ uint64 WebPEncodeLosslessBGR(/* const */ bgr *uint8, width, height int, stride int, *uint8* output);
+ uint64 WebPEncodeLosslessRGBA(/* const */ rgba *uint8, width, height int, stride int, *uint8* output);
+ uint64 WebPEncodeLosslessBGRA(/* const */ bgra *uint8, width, height int, stride int, *uint8* output);
 
 
 // Compression parameters.
@@ -349,7 +349,7 @@ func WebPPictureInit(picture *WebPPicture) int {
 // 'src/ref_stride' is the byte distance between rows.
 // Returns false in case of error (bad parameter, memory allocation error, ...).
   int WebPPlaneDistortion(
-    const src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, int type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
+    const src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, type int,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     distortion *float, result *float);
 
 // Compute PSNR, SSIM or LSIM distortion metric between two pictures. Results
@@ -358,7 +358,7 @@ func WebPPictureInit(picture *WebPPicture) int {
 // picture will be internally converted to ARGB (just for the measurement).
 // Warning: this function is rather CPU-intensive.
   int WebPPictureDistortion(
-    const src *WebPPicture, /*const*/ ref *WebPPicture, int metric_type,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
+    const src *WebPPicture, /*const*/ ref *WebPPicture, metric_type int,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     float result[5]);
 
 // self-crops a picture to the rectangle defined by top/left/width/height.
@@ -369,7 +369,7 @@ func WebPPictureInit(picture *WebPPicture) int {
 // must be fully be comprised inside the 'src' source picture. If the source
 // picture uses the YUV420 colorspace, the top and left coordinates will be
 // snapped to even values.
-  int WebPPictureCrop(picture *WebPPicture, int left, int top, width, height int);
+  int WebPPictureCrop(picture *WebPPicture, left int, top int, width, height int);
 
 // Extracts a view from 'src' picture into 'dst'. The rectangle for the view
 // is defined by the top-left corner pixel coordinates (left, top) as well
@@ -382,7 +382,7 @@ func WebPPictureInit(picture *WebPPicture) int {
 // with WebPPictureInit() if it is different from 'src', since its content will
 // be overwritten.
 // Returns false in case of invalid parameters.
-  int WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, height int, dst *WebPPicture);
+  int WebPPictureView(/* const */ src *WebPPicture, left int, top int, width, height int, dst *WebPPicture);
 
 // Returns true if the 'picture' is actually a view and therefore does
 // not own the memory for pixels.
@@ -399,18 +399,18 @@ func WebPPictureInit(picture *WebPPicture) int {
 // Previous buffer will be free'd, if any.
 // buffer should have *rgb a size of at least height * rgb_stride.
 // Returns false in case of memory error.
-  int WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride);
+  int WebPPictureImportRGB(picture *WebPPicture, /*const*/ rgb *uint8, rgb_stride int);
 // Same, but for RGBA buffer.
   int WebPPictureImportRGBA(picture *WebPPicture, /*const*/ rgba *uint8, rgba_stride int);
 // Same, but for RGBA buffer. Imports the RGB direct from the 32-bit format
 // input buffer ignoring the alpha channel. Avoids needing to copy the data
 // to a temporary 24-bit RGB buffer to import the RGB only.
-  int WebPPictureImportRGBX(picture *WebPPicture, /*const*/ rgbx *uint8, int rgbx_stride);
+  int WebPPictureImportRGBX(picture *WebPPicture, /*const*/ rgbx *uint8, rgbx_stride int);
 
 // Variants of the above, but taking BGR(A|X) input.
-  int WebPPictureImportBGR(picture *WebPPicture, /*const*/ bgr *uint8, int bgr_stride);
-  int WebPPictureImportBGRA(picture *WebPPicture, /*const*/ bgra *uint8, int bgra_stride);
-  int WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, int bgrx_stride);
+  int WebPPictureImportBGR(picture *WebPPicture, /*const*/ bgr *uint8, bgr_stride int);
+  int WebPPictureImportBGRA(picture *WebPPicture, /*const*/ bgra *uint8, bgra_stride int);
+  int WebPPictureImportBGRX(picture *WebPPicture, /*const*/ bgrx *uint8, bgrx_stride int);
 
 // Converts picture.argb data to the YUV420A format. The 'colorspace'
 // parameter is deprecated and should be equal to WEBP_YUV420.

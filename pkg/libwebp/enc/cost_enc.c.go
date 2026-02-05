@@ -95,7 +95,7 @@ const uint16 VP8FixedCostsI4[NUM_BMODES][NUM_BMODES][NUM_BMODES] = {
 //------------------------------------------------------------------------------
 // helper functions for residuals struct VP8Residual.
 
-func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual) {
+func VP8InitResidual(int first, coeff_type int, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual) {
   res.coeff_type = coeff_type;
   res.prob = enc.proba.coeffs[coeff_type];
   res.stats = enc.proba.stats[coeff_type];

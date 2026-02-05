@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 #define MAP_COLOR_FUNCS(FUNC_NAME, TYPE, GET_INDEX, GET_VALUE)                 \
 func FUNC_NAME(/* const */ src *TYPE,                                         \
                       const color_map *uint32,                         \
-                      dst *TYPE, int y_start, int y_end,                       \
+                      dst *TYPE, y_start int, y_end int,                       \
                       int width) {                                             \
   var y int                                                                       \
   for y = y_start; y < y_end; y++ {                                          \
