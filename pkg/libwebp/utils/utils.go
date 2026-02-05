@@ -250,19 +250,19 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 
 // Public API functions.
 
-func WebPMalloc(size uint64 ) *void {
-  // Currently WebPMalloc/WebPFree are declared in src/webp/types.h, which does
-  // not include bounds_safety.h. As such, the "default" annotation for the
-  // pointers they accept/return is __single.
-  //
-  // All callers will need to immediately cast the returned pointer to
-  // or via
-  // WEBP_UNSAFE_FORGE_BIDI_INDEXABLE.
-  //
-  // TODO: https://issues.webmproject.org/432511225 - Remove this once we can
-  // annotate WebPMalloc/WebPFree.
-  return WEBP_UNSAFE_FORGE_SINGLE(*void, WebPSafeMalloc(1, size));
-}
+// func WebPMalloc(size uint64 ) *void {
+//   // Currently WebPMalloc/WebPFree are declared in src/webp/types.h, which does
+//   // not include bounds_safety.h. As such, the "default" annotation for the
+//   // pointers they accept/return is __single.
+//   //
+//   // All callers will need to immediately cast the returned pointer to
+//   // or via
+//   // WEBP_UNSAFE_FORGE_BIDI_INDEXABLE.
+//   //
+//   // TODO: https://issues.webmproject.org/432511225 - Remove this once we can
+//   // annotate WebPMalloc/WebPFree.
+//   return WEBP_UNSAFE_FORGE_SINGLE(*void, WebPSafeMalloc(1, size));
+// }
 
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.

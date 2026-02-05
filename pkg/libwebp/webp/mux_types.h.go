@@ -28,8 +28,8 @@ import "."
 // (ICC profile, metadata) and WebP compressed image data.
 // 'bytes' memory must be allocated using WebPMalloc() and such.
 type WebPData struct {
-  bytes *uint8
-  size uint64 
+  bytes []uint8
+  size uint64 // Deprecated: use len(bytes) instead.
 }
 
 // Initializes the contents of the 'webp_data' object with default values.
@@ -53,9 +53,11 @@ func  WebPDataCopy(/* const */ src *WebPData, dst *WebPData) int {
   if src == nil || dst == nil { { return 0 } }
   WebPDataInit(dst);
   if (src.bytes != nil && src.size != 0) {
-    dst.bytes = (*uint8)WebPMalloc(src.size);
+    // dst.bytes = (*uint8)WebPMalloc(src.size);
+	dst.bytes = make([]uint8, src.size)
+
     if dst.bytes == nil { { return 0 } }
-    stdlib.MemCpy((*void)dst.bytes, src.bytes, src.size);
+    stdlib.MemCpy(dst.bytes, src.bytes, src.size);
     dst.size = src.size;
   }
   return 1;

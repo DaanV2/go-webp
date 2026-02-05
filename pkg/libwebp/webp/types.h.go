@@ -22,14 +22,6 @@ func WEBP_ABI_IS_INCOMPATIBLE(a, b int) bool {
 	return (((a) >> 8) != ((b) >> 8))
 }
 
-// Allocates 'size' bytes of memory. Returns nil upon error. Memory
-// must be deallocated by calling WebPFree(). This function is made available
-// by the core 'libwebp' library.
-// Deprecated: Not needed in Go, use built-in memory management.
-func WebPMalloc(size uint64) {
-	panic("not implemented")
-}
-
 // As explained in src/utils/bounds_safety.h, the below macros are defined
 // somewhat delicately to handle a three-state setup:
 //
