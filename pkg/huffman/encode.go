@@ -54,30 +54,32 @@ func CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, pr
 	return tokens
 }
 
-func CodeRepeatedZeros(repetitions int, tokens *HuffmanTreeToken) *HuffmanTreeToken {
+func CodeRepeatedZeros(repetitions int, tokens []HuffmanTreeToken) []HuffmanTreeToken {
+	token_index := 0
+
 	for repetitions >= 1 {
 		if repetitions < 3 {
 			var i int
 			for i = 0; i < repetitions; i++ {
-				tokens.code = 0 // 0-value
-				tokens.extra_bits = 0
-				tokens++
+				tokens[token_index].code = 0 // 0-value
+				tokens[token_index].extra_bits = 0
+				token_index++
 			}
 			break
 		} else if repetitions < 11 {
-			tokens.code = 17
-			tokens.extra_bits = repetitions - 3
-			tokens++
+			tokens[token_index].code = 17
+			tokens[token_index].extra_bits = uint8(repetitions - 3)
+			token_index++
 			break
 		} else if repetitions < 139 {
-			tokens.code = 18
-			tokens.extra_bits = repetitions - 11
-			tokens++
+			tokens[token_index].code = 18
+			tokens[token_index].extra_bits = uint8(repetitions - 11)
+			token_index++
 			break
 		} else {
-			tokens.code = 18
-			tokens.extra_bits = 0x7f // 138 repeated 0s
-			tokens++
+			tokens[token_index].code = 18
+			tokens[token_index].extra_bits = 0x7f // 138 repeated 0s
+			token_index++
 			repetitions -= 138
 		}
 	}
@@ -94,7 +96,7 @@ func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeT
 	prev_value := 8 // 8 is the initial value for rle.
 	i := 0
 	assert.Assert(tokens != nil)
-	for ; ; i < depth_size {
+	for i < depth_size {
 		value := tree.code_lengths[i]
 		k := i + 1
 		var runs int
@@ -122,11 +124,11 @@ func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeT
 var kReversedBits = [16]uint8{0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe, 0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf}
 
 func ReverseBits(num_bits int, bits uint32) uint32 {
-	retval := 0
+	retval := uint32(0)
 	i := 0
 	for i < num_bits {
 		i += 4
-		retval |= kReversedBits[bits&0xf] << (constants.MAX_ALLOWED_CODE_LENGTH + 1 - i)
+		retval |= uint32(kReversedBits[bits&0xf] << (constants.MAX_ALLOWED_CODE_LENGTH + 1 - i))
 		bits >>= 4
 	}
 	retval >>= (constants.MAX_ALLOWED_CODE_LENGTH + 1 - num_bits)
