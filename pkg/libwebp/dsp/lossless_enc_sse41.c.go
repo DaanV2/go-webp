@@ -78,7 +78,7 @@ func SubtractGreenFromBlueAndRed_SSE41(argb_data *uint32, num_pixels int) {
 #define MK_CST_16(HI, LO) \
   _mm_set1_epi32((int)(((uint32)(HI) << 16) | ((LO) & 0xffff)))
 
-func CollectColorBlueTransforms_SSE41(/* const */ WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]) {
+func CollectColorBlueTransforms_SSE41(/* const */ argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]) {
   const __m128i mult =
       MK_CST_16(CST_5b(red_to_blue) + 256, CST_5b(green_to_blue));
   const __m128i perm =
@@ -119,7 +119,7 @@ func CollectColorBlueTransforms_SSE41(/* const */ WEBP_RESTRICT argb *uint32, st
   }
 }
 
-func CollectColorRedTransforms_SSE41(/* const */ WEBP_RESTRICT argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]) {
+func CollectColorRedTransforms_SSE41(/* const */ argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]) {
   const __m128i mult = MK_CST_16(0, CST_5b(green_to_red));
   const __m128i mask_g = _mm_set1_epi32(0x0000ff00);
   if (tile_width >= 4) {

@@ -99,7 +99,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample32Pixels_SSE2(/* const */ WEBP_RESTRICT const r *uint81, /*const*/ WEBP_RESTRICT const r *uint82, WEBP_RESTRICT const out *uint8) {
+func Upsample32Pixels_SSE2(/* const */ /* const */ r *uint81, /*const*/ /* const */ r *uint82, /* const */ out *uint8) {
   UPSAMPLE_32PIXELS(r1, r2, out);
 }
 
@@ -127,11 +127,11 @@ func Upsample32Pixels_SSE2(/* const */ WEBP_RESTRICT const r *uint81, /*const*/ 
 
 #define SSE2_UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                            \
   func FUNC_NAME(                                                      \
-      const WEBP_RESTRICT top_y *uint8,                                     \
-      const WEBP_RESTRICT bottom_y *uint8,                                  \
-      const WEBP_RESTRICT top_u *uint8, /*const*/ WEBP_RESTRICT top_v *uint8, \
-      const WEBP_RESTRICT cur_u *uint8, /*const*/ WEBP_RESTRICT cur_v *uint8, \
-      WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
+      const top_y *uint8,                                     \
+      const bottom_y *uint8,                                  \
+      const top_u *uint8, /*const*/ top_v *uint8, \
+      const cur_u *uint8, /*const*/ cur_v *uint8, \
+      top_dst *uint8, bottom_dst *uint8,      \
       int len) {                                                              \
     int uv_pos, pos;                                                          \
     /* 16byte-aligned array to cache reconstructed u and v */                 \
@@ -233,11 +233,11 @@ extern func WebPInitYUV444ConvertersSSE2(void);
 
 #define YUV444_FUNC(FUNC_NAME, CALL, CALL_C, XSTEP)                          \
   extern func CALL_C(                                                        \
-      const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int);  \
+      const y *uint8, /*const*/ u *uint8,        \
+      const v *uint8, dst *uint8, len int);  \
   func FUNC_NAME(                                                     \
-      const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) { \
+      const y *uint8, /*const*/ u *uint8,        \
+      const v *uint8, dst *uint8, len int) { \
     var i int                                                                   \
     max_len := len & ~31;                                           \
     for i = 0; i < max_len; i += 32 {                                      \

@@ -27,7 +27,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-func SetResidualCoeffs_SSE2(/* const */ WEBP_RESTRICT const coeffs *int16, WEBP_RESTRICT const res *VP8Residual) {
+func SetResidualCoeffs_SSE2(/* const */ /* const */ coeffs *int16, /* const */ res *VP8Residual) {
   const __m128i c0 = _mm_loadu_si128((/* const */ __*m128i)(coeffs + 0));
   const __m128i c1 = _mm_loadu_si128((/* const */ __*m128i)(coeffs + 8));
   // Use SSE2 to compare 16 values with a single instruction.

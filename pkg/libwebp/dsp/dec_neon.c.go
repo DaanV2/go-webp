@@ -805,7 +805,7 @@ func HFilter16i_NEON(p *uint8, stride int, thresh int, ithresh int, hev_thresh i
 #endif  // !WORK_AROUND_GCC
 
 // 8-pixels wide variant, for chroma filtering
-func VFilter8_NEON(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func VFilter8_NEON(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
   Load8x8x2_NEON(u, v, stride, &p3, &p2, &p1, &p0, &q0, &q1, &q2, &q3);
   {
@@ -819,7 +819,7 @@ func VFilter8_NEON(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, t
     Store8x2x2_NEON(oq1, oq2, u + 2 * stride, v + 2 * stride, stride);
   }
 }
-func VFilter8i_NEON(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func VFilter8i_NEON(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
   u += 4 * stride;
   v += 4 * stride;
@@ -835,7 +835,7 @@ func VFilter8i_NEON(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, 
 }
 
 #if !defined(WORK_AROUND_GCC)
-func HFilter8_NEON(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func HFilter8_NEON(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
   Load8x8x2T_NEON(u, v, stride, &p3, &p2, &p1, &p0, &q0, &q1, &q2, &q3);
   {
@@ -848,7 +848,7 @@ func HFilter8_NEON(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, t
   }
 }
 
-func HFilter8i_NEON(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func HFilter8i_NEON(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   uint8x16_t p3, p2, p1, p0, q0, q1, q2, q3;
   u += 4;
   v += 4;
@@ -920,7 +920,7 @@ static  func TransformPass_NEON(int16x8x2_t* const rows) {
   Transpose8x2_NEON(E0, E1, rows);
 }
 
-func TransformOne_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformOne_NEON(/* const */ in *int16, dst *uint8) {
   int16x8x2_t rows;
   INIT_VECTOR2(rows, vld1q_s16(in + 0), vld1q_s16(in + 8));
   TransformPass_NEON(&rows);
@@ -930,7 +930,7 @@ func TransformOne_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *u
 
 #else
 
-func TransformOne_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformOne_NEON(/* const */ in *int16, dst *uint8) {
   kBPS := BPS;
   // kC1, kC2. Padded because vld1.16 loads 8 bytes
   constants[4] := {kC1, kC2, 0, 0}
@@ -1063,14 +1063,14 @@ func TransformOne_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *u
 
 #endif  // WEBP_USE_INTRINSICS
 
-func TransformTwo_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
+func TransformTwo_NEON(/* const */ in *int16, dst *uint8, do_two int) {
   TransformOne_NEON(in, dst);
   if (do_two) {
     TransformOne_NEON(in + 16, dst + 4);
   }
 }
 
-func TransformDC_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformDC_NEON(/* const */ in *int16, dst *uint8) {
   const int16x8_t DC = vdupq_n_s16(in[0]);
   Add4x4_NEON(DC, DC, dst);
 }
@@ -1089,7 +1089,7 @@ func TransformDC_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *ui
     (dst) += 16;                             \
   } while (0)
 
-func TransformWHT_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
+func TransformWHT_NEON(/* const */ in *int16, out *int16) {
   int32x4x4_t tmp;
 
   {
@@ -1140,7 +1140,7 @@ func TransformWHT_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *i
 
 //------------------------------------------------------------------------------
 
-func TransformAC3_NEON(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformAC3_NEON(/* const */ in *int16, dst *uint8) {
   const int16x4_t A = vld1_dup_s16(in);
   const int16x4_t c4 = vdup_n_s16(WEBP_TRANSFORM_AC3_MUL2(in[4]));
   const int16x4_t d4 = vdup_n_s16(WEBP_TRANSFORM_AC3_MUL1(in[4]));

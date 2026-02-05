@@ -341,7 +341,7 @@ func YuvToRgba(uint8 y, uint8 u, uint8 v, /*const*/ rgba *uint8) {
 }
 
 #if !defined(WEBP_REDUCE_CSP)
-func YuvToRgbLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, length int) {
+func YuvToRgbLine(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, length int) {
   v16u8 R, G, B;
   while (length >= 16) {
     CALC_RGB16(y, u, v, R, G, B);
@@ -367,7 +367,7 @@ func YuvToRgbLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u 
   }
 }
 
-func YuvToBgrLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, length int) {
+func YuvToBgrLine(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, length int) {
   v16u8 R, G, B;
   while (length >= 16) {
     CALC_RGB16(y, u, v, R, G, B);
@@ -394,7 +394,7 @@ func YuvToBgrLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u 
 }
 #endif  // WEBP_REDUCE_CSP
 
-func YuvToRgbaLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, length int) {
+func YuvToRgbaLine(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, length int) {
   v16u8 R, G, B;
   const v16u8 A = (v16u8)__msa_ldi_b(ALPHAVAL);
   while (length >= 16) {
@@ -421,7 +421,7 @@ func YuvToRgbaLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u
   }
 }
 
-func YuvToBgraLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, length int) {
+func YuvToBgraLine(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, length int) {
   v16u8 R, G, B;
   const v16u8 A = (v16u8)__msa_ldi_b(ALPHAVAL);
   while (length >= 16) {
@@ -449,7 +449,7 @@ func YuvToBgraLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u
 }
 
 #if !defined(WEBP_REDUCE_CSP)
-func YuvToArgbLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, length int) {
+func YuvToArgbLine(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, length int) {
   v16u8 R, G, B;
   const v16u8 A = (v16u8)__msa_ldi_b(ALPHAVAL);
   while (length >= 16) {
@@ -476,7 +476,7 @@ func YuvToArgbLine(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u
   }
 }
 
-func YuvToRgba4444Line(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, length int) {
+func YuvToRgba4444Line(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, length int) {
   v16u8 R, G, B, RG, BA, tmp0, tmp1;
   while (length >= 16) {
 #if (WEBP_SWAP_16BIT_CSP == 1)
@@ -511,7 +511,7 @@ func YuvToRgba4444Line(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRI
   }
 }
 
-func YuvToRgb565Line(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, length int) {
+func YuvToRgb565Line(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, length int) {
   v16u8 R, G, B, RG, GB, tmp0, tmp1;
   while (length >= 16) {
 #if (WEBP_SWAP_16BIT_CSP == 1)
@@ -580,10 +580,10 @@ func YuvToRgb565Line(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT
 
 #define UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                                 \
   func FUNC_NAME(                                                      \
-      const WEBP_RESTRICT top_y *uint8, /*const*/ WEBP_RESTRICT bot_y *uint8, \
-      const WEBP_RESTRICT top_u *uint8, /*const*/ WEBP_RESTRICT top_v *uint8, \
-      const WEBP_RESTRICT cur_u *uint8, /*const*/ WEBP_RESTRICT cur_v *uint8, \
-      WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bot_dst *uint8,         \
+      const top_y *uint8, /*const*/ bot_y *uint8, \
+      const top_u *uint8, /*const*/ top_v *uint8, \
+      const cur_u *uint8, /*const*/ cur_v *uint8, \
+      top_dst *uint8, bot_dst *uint8,         \
       int len) {                                                              \
     size := (len - 1) >> 1;                                                \
     uint8 temp_u[64];                                                       \

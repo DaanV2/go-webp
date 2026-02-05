@@ -78,7 +78,7 @@ const ARGB_TO_RGB_SSE41 =                              \
     }                                                   \
   } while (0)
 
-func ConvertBGRAToRGB_SSE41(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToRGB_SSE41(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var __in *m128i = (/* const */ __*m128i)src;
   __out *m128i = (__*m128i)dst;
   const __m128i perm0 =
@@ -95,7 +95,7 @@ func ConvertBGRAToRGB_SSE41(/* const */ WEBP_RESTRICT src *uint32, num_pixels in
   }
 }
 
-func ConvertBGRAToBGR_SSE41(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToBGR_SSE41(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var __in *m128i = (/* const */ __*m128i)src;
   __out *m128i = (__*m128i)dst;
   const __m128i perm0 =

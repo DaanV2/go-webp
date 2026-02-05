@@ -151,13 +151,13 @@ func VP8YuvToRgba(uint8 y, uint8 u, uint8 v, /*const*/ rgba *uint8) {
 #if defined(WEBP_USE_SSE2)
 
 // Process 32 pixels and store the result (16b, 24b or 32b per pixel) in *dst.
-func VP8YuvToRgba32_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
-func VP8YuvToRgb32_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
-func VP8YuvToBgra32_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
-func VP8YuvToBgr32_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
-func VP8YuvToArgb32_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
-func VP8YuvToRgba444432_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
-func VP8YuvToRgb56532_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
+func VP8YuvToRgba32_SSE2(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
+func VP8YuvToRgb32_SSE2(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
+func VP8YuvToBgra32_SSE2(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
+func VP8YuvToBgr32_SSE2(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
+func VP8YuvToArgb32_SSE2(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
+func VP8YuvToRgba444432_SSE2(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
+func VP8YuvToRgb56532_SSE2(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
 
 #endif  // WEBP_USE_SSE2
 
@@ -167,8 +167,8 @@ func VP8YuvToRgb56532_SSE2(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RE
 #if defined(WEBP_USE_SSE41)
 
 // Process 32 pixels and store the result (16b, 24b or 32b per pixel) in *dst.
-func VP8YuvToRgb32_SSE41(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
-func VP8YuvToBgr32_SSE41(/* const */ WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8, /*const*/ WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8);
+func VP8YuvToRgb32_SSE41(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
+func VP8YuvToBgr32_SSE41(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8);
 
 #endif  // WEBP_USE_SSE41
 

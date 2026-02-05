@@ -173,7 +173,7 @@ func Predictor13_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
 // Batch versions of those functions.
 
 // Predictor0: ARGB_BLACK.
-func PredictorAdd0_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
+func PredictorAdd0_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   const __m128i black = _mm_set1_epi32((int)ARGB_BLACK);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -188,7 +188,7 @@ func PredictorAdd0_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pix
 }
 
 // Predictor1: left.
-func PredictorAdd1_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
+func PredictorAdd1_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   __m128i prev = _mm_set1_epi32((int)out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -217,7 +217,7 @@ func PredictorAdd1_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pix
 #define GENERATE_PREDICTOR_1(X, IN)                                         \
   func PredictorAdd##X##_SSE2(/* const */ in *uint32,                    \
                                      const upper *uint32, num_pixels int, \
-                                     WEBP_RESTRICT out *uint32) {         \
+                                     out *uint32) {         \
     var i int                                                                  \
     for i = 0; i + 4 <= num_pixels; i += 4 {                              \
       const __m128i src = _mm_loadu_si128((/* const */ __*m128i)&in[i]);          \
@@ -247,7 +247,7 @@ GENERATE_PREDICTOR_ADD(Predictor7_SSE2, PredictorAdd7_SSE2)
 #define GENERATE_PREDICTOR_2(X, IN)                                         \
   func PredictorAdd##X##_SSE2(/* const */ in *uint32,                    \
                                      const upper *uint32, num_pixels int, \
-                                     WEBP_RESTRICT out *uint32) {         \
+                                     out *uint32) {         \
     var i int                                                                  \
     for i = 0; i + 4 <= num_pixels; i += 4 {                              \
       const __m128i Tother = _mm_loadu_si128((/* const */ __*m128i)&(IN));        \
@@ -286,7 +286,7 @@ const DO_PRED10_SHIFT =                                        \
     src = _mm_srli_si128(src, 4);                               \
   } while (0)
 
-func PredictorAdd10_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
+func PredictorAdd10_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
   for i = 0; i + 4 <= num_pixels; i += 4 {
@@ -334,7 +334,7 @@ const DO_PRED11_SHIFT =                                      \
     pa = _mm_srli_si128(pa, 4);                               \
   } while (0)
 
-func PredictorAdd11_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
+func PredictorAdd11_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   __m128i pa;
   __m128i L = _mm_cvtsi32_si128((int)out[-1]);
@@ -386,7 +386,7 @@ func PredictorAdd11_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pi
     src = _mm_srli_si128(src, 4);                             \
   } while (0)
 
-func PredictorAdd12_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
+func PredictorAdd12_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   const __m128i zero = _mm_setzero_si128();
   const __m128i L8 = _mm_cvtsi32_si128((int)out[-1]);
@@ -478,7 +478,7 @@ func TransformColorInverse_SSE2(/* const */ m *VP8LMultipliers, /*const*/ src *u
 //------------------------------------------------------------------------------
 // Color-space conversion functions
 
-func ConvertBGRAToRGB_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToRGB_SSE2(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var __in *m128i = (/* const */ __*m128i)src;
   __out *m128i = (__*m128i)dst;
 
@@ -513,7 +513,7 @@ func ConvertBGRAToRGB_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixels int
   }
 }
 
-func ConvertBGRAToRGBA_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToRGBA_SSE2(/* const */ src *uint32, num_pixels int, dst *uint8) {
   const __m128i red_blue_mask = _mm_set1_epi32(0x00ff00ff);
   var __in *m128i = (/* const */ __*m128i)src;
   __out *m128i = (__*m128i)dst;
@@ -540,7 +540,7 @@ func ConvertBGRAToRGBA_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixels in
   }
 }
 
-func ConvertBGRAToRGBA4444_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToRGBA4444_SSE2(/* const */ src *uint32, num_pixels int, dst *uint8) {
   const __m128i mask_0x0f = _mm_set1_epi8(0x0f);
   const __m128i mask_0xf0 = _mm_set1_epi8((byte)0xf0);
   var __in *m128i = (/* const */ __*m128i)src;
@@ -575,7 +575,7 @@ func ConvertBGRAToRGBA4444_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixel
   }
 }
 
-func ConvertBGRAToRGB565_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToRGB565_SSE2(/* const */ src *uint32, num_pixels int, dst *uint8) {
   const __m128i mask_0xe0 = _mm_set1_epi8((byte)0xe0);
   const __m128i mask_0xf8 = _mm_set1_epi8((byte)0xf8);
   const __m128i mask_0x07 = _mm_set1_epi8(0x07);
@@ -615,7 +615,7 @@ func ConvertBGRAToRGB565_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixels 
   }
 }
 
-func ConvertBGRAToBGR_SSE2(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func ConvertBGRAToBGR_SSE2(/* const */ src *uint32, num_pixels int, dst *uint8) {
   const __m128i mask_l = _mm_set_epi32(0, 0x00ffffff, 0, 0x00ffffff);
   const __m128i mask_h = _mm_set_epi32(0x00ffffff, 0, 0x00ffffff, 0);
   var __in *m128i = (/* const */ __*m128i)src;

@@ -185,7 +185,7 @@ VP8LSubPixels(uint32 a, uint32 b) {
 // is therefore considered as a residual) to get the final prediction.
 #define GENERATE_PREDICTOR_ADD(PREDICTOR, PREDICTOR_ADD)                   \
   func PREDICTOR_ADD(/* const */ in *uint32, /*const*/ upper *uint32,     \
-                            num_pixels int, WEBP_RESTRICT out *uint32) { \
+                            num_pixels int, out *uint32) { \
     var x int                                                                 \
     assert.Assert(upper != nil);                                                 \
     for x = 0; x < num_pixels; x++ {                                     \

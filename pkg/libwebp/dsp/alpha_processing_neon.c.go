@@ -82,7 +82,7 @@ func ApplyAlphaMultiply_NEON(rgba *uint8, alpha_first int, w int, h int, stride 
 
 //------------------------------------------------------------------------------
 
-func DispatchAlpha_NEON(/* const */ WEBP_RESTRICT alpha *uint8, alpha_stride int, width, height int, WEBP_RESTRICT dst *uint8, dst_stride int) int {
+func DispatchAlpha_NEON(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint8, dst_stride int) int {
   alpha_mask := uint(0xff);
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
@@ -113,7 +113,7 @@ func DispatchAlpha_NEON(/* const */ WEBP_RESTRICT alpha *uint8, alpha_stride int
   return (alpha_mask != uint(0xffffffff));
 }
 
-func DispatchAlphaToGreen_NEON(/* const */ WEBP_RESTRICT alpha *uint8, alpha_stride int, width, height int, WEBP_RESTRICT dst *uint32, dst_stride int) {
+func DispatchAlphaToGreen_NEON(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint32, dst_stride int) {
   int i, j;
   uint8x8x4_t greens;  // leave A/R/B channels zero'd.
   greens.val[0] = vdup_n_u8(0);
@@ -130,7 +130,7 @@ func DispatchAlphaToGreen_NEON(/* const */ WEBP_RESTRICT alpha *uint8, alpha_str
   }
 }
 
-func ExtractAlpha_NEON(/* const */ WEBP_RESTRICT argb *uint8, argb_stride int, width, height int, WEBP_RESTRICT alpha *uint8, alpha_stride int) int {
+func ExtractAlpha_NEON(/* const */ argb *uint8, argb_stride int, width, height int, alpha *uint8, alpha_stride int) int {
   alpha_mask := uint(0xff);
   uint8x8_t mask8 = vdup_n_u8(0xff);
   uint32 tmp[2];
@@ -159,7 +159,7 @@ func ExtractAlpha_NEON(/* const */ WEBP_RESTRICT argb *uint8, argb_stride int, w
   return (alpha_mask == uint(0xffffffff));
 }
 
-func ExtractGreen_NEON(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, size int) {
+func ExtractGreen_NEON(/* const */ argb *uint32, alpha *uint8, size int) {
   var i int
   for i = 0; i + 16 <= size; i += 16 {
     const uint8x16x4_t rgbX = vld4q_u8((/* const */ *uint8)(argb + i));

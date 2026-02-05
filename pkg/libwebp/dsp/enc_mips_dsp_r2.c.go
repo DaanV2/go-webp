@@ -145,7 +145,7 @@ const  kC2 = WEBP_TRANSFORM_AC3_C2;
   "sh              %[" #TEMP12 "],  " #B "(%[temp20])               \n\t"
 // clang-format on
 
-func FTransform_MIPSdspR2(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_RESTRICT ref *uint8, WEBP_RESTRICT out *int16) {
+func FTransform_MIPSdspR2(/* const */ src *uint8, /*const*/ ref *uint8, out *int16) {
   c2217 := 2217;
   c5352 := 5352;
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
@@ -172,7 +172,7 @@ func FTransform_MIPSdspR2(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_R
 #undef VERTICAL_PASS
 #undef HORIZONTAL_PASS
 
-func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func ITransformOne(/* const */ ref *uint8, /*const*/ in *int16, dst *uint8) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17, temp18;
 
@@ -222,7 +222,7 @@ func ITransformOne(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT
   );
 }
 
-func ITransform_MIPSdspR2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
+func ITransform_MIPSdspR2(/* const */ ref *uint8, /*const*/ in *int16, dst *uint8, do_two int) {
   ITransformOne(ref, in, dst);
   if (do_two) {
     ITransformOne(ref + 4, in + 16, dst + 4);
@@ -230,7 +230,7 @@ func ITransform_MIPSdspR2(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_R
 }
 
 // clang-format off
-func Disto4x4_MIPSdspR2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
+func Disto4x4_MIPSdspR2(/* const */ /* const */ a *uint8, /*const*/ /* const */ b *uint8, /*const*/ /* const */ w *uint16) int {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17;
 
@@ -265,7 +265,7 @@ func Disto4x4_MIPSdspR2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP
 }
 // clang-format on
 
-func Disto16x16_MIPSdspR2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
+func Disto16x16_MIPSdspR2(/* const */ /* const */ a *uint8, /*const*/ /* const */ b *uint8, /*const*/ /* const */ w *uint16) int {
   D := 0;
   var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -320,7 +320,7 @@ func Disto16x16_MIPSdspR2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WE
 
 #define VERTICAL_PRED(DST, TOP, SIZE)                                      \
   static  func VerticalPred##SIZE(                              \
-      WEBP_RESTRICT *uint8(DST), /*const*/ WEBP_RESTRICT *uint8(TOP)) {    \
+      *uint8(DST), /*const*/ *uint8(TOP)) {    \
     var j int                                                                 \
     if ((TOP)) {                                                           \
       for (j = 0; j < (SIZE); ++j) memcpy((DST) + j * BPS, (TOP), (SIZE)); \
@@ -336,7 +336,7 @@ VERTICAL_PRED(dst, top, 16)
 
 #define HORIZONTAL_PRED(DST, LEFT, SIZE)                                 \
   static  func HorizontalPred##SIZE(                          \
-      WEBP_RESTRICT *uint8(DST), /*const*/ WEBP_RESTRICT *uint8(LEFT)) { \
+      *uint8(DST), /*const*/ *uint8(LEFT)) { \
     if (LEFT) {                                                          \
       var j int                                                             \
       for j = 0; j < (SIZE); j++ {                                     \
@@ -408,9 +408,9 @@ HORIZONTAL_PRED(dst, left, 16)
 
 // clang-format off
 #define TRUE_MOTION(DST, LEFT, TOP, SIZE)                                      \
-static  func TrueMotion##SIZE(WEBP_RESTRICT *uint8 (DST),         \
-                                         const WEBP_RESTRICT *uint8 (LEFT),  \
-                                         const WEBP_RESTRICT *uint8 (TOP)) { \
+static  func TrueMotion##SIZE(*uint8 (DST),         \
+                                         const *uint8 (LEFT),  \
+                                         const *uint8 (TOP)) { \
   if ((LEFT) != nil) {                                                        \
     if ((TOP) != nil) {                                                       \
       CLIP_TO_DST((DST), (LEFT), (TOP), (SIZE));                               \
@@ -439,7 +439,7 @@ TRUE_MOTION(dst, left, top, 16)
 #undef CLIP_8B_TO_DST
 #undef CLIPPING
 
-func DCMode16(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func DCMode16(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8) {
   int DC, DC1;
   int temp0, temp1, temp2, temp3;
 
@@ -491,7 +491,7 @@ func DCMode16(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*c
   FILL_8_OR_16(dst, DC, 16);
 }
 
-func DCMode8(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func DCMode8(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8) {
   int DC, DC1;
   int temp0, temp1, temp2, temp3;
 
@@ -533,7 +533,7 @@ func DCMode8(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*co
   FILL_8_OR_16(dst, DC, 8);
 }
 
-func DC4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func DC4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1;
   __asm__ volatile(
     "ulw          %[temp0],   0(%[top])               \n\t"
@@ -554,7 +554,7 @@ func DC4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func TM4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func TM4(dst *uint8, /*const*/ top *uint8) {
   int a10, a32, temp0, temp1, temp2, temp3, temp4, temp5;
   c35 := 0xff00ff;
   __asm__ volatile(
@@ -607,7 +607,7 @@ func TM4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func VE4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func VE4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   __asm__ volatile(
     "ulw             %[temp0],   -1(%[top])              \n\t"
@@ -636,7 +636,7 @@ func VE4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func HE4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func HE4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   __asm__ volatile(
     "ulw             %[temp0],   -4(%[top])              \n\t"
@@ -670,7 +670,7 @@ func HE4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func RD4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func RD4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   int temp6, temp7, temp8, temp9, temp10, temp11;
   __asm__ volatile(
@@ -716,7 +716,7 @@ func RD4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func VR4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func VR4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8, temp9;
   __asm__ volatile(
@@ -763,7 +763,7 @@ func VR4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func LD4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func LD4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   int temp6, temp7, temp8, temp9, temp10, temp11;
   __asm__ volatile(
@@ -807,7 +807,7 @@ func LD4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func VL4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func VL4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8, temp9;
   __asm__ volatile(
@@ -853,7 +853,7 @@ func VL4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func HD4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func HD4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8, temp9;
   __asm__ volatile(
@@ -898,7 +898,7 @@ func HD4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
   );
 }
 
-func HU4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func HU4(dst *uint8, /*const*/ top *uint8) {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   __asm__ volatile(
     "ulw             %[temp0],   -5(%[top])              \n\t"
@@ -935,7 +935,7 @@ func HU4(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
 //------------------------------------------------------------------------------
 // Chroma 8x8 prediction (paragraph 12.2)
 
-func IntraChromaPreds_MIPSdspR2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func IntraChromaPreds_MIPSdspR2(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8) {
   // U block
   DCMode8(C8DC8 + dst, left, top);
   VerticalPred8(C8VE8 + dst, top);
@@ -954,7 +954,7 @@ func IntraChromaPreds_MIPSdspR2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRIC
 //------------------------------------------------------------------------------
 // luma 16x16 prediction (paragraph 12.3)
 
-func Intra16Preds_MIPSdspR2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func Intra16Preds_MIPSdspR2(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8) {
   DCMode16(I16DC16 + dst, left, top);
   VerticalPred16(I16VE16 + dst, top);
   HorizontalPred16(I16HE16 + dst, left);
@@ -963,7 +963,7 @@ func Intra16Preds_MIPSdspR2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT le
 
 // Left samples are top[-5 .. -2], top_left is top[-1], top are
 // located at top[0..3], and top right is top[4..7]
-func Intra4Preds_MIPSdspR2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
+func Intra4Preds_MIPSdspR2(dst *uint8, /*const*/ top *uint8) {
   DC4(I4DC4 + dst, top);
   TM4(I4TM4 + dst, top);
   VE4(I4VE4 + dst, top);
@@ -1001,7 +1001,7 @@ func Intra4Preds_MIPSdspR2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top
   GET_SSE_INNER(C)          \
   GET_SSE_INNER(D)
 
-func SSE16x16_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
+func SSE16x16_MIPSdspR2(/* const */ a *uint8, /*const*/ b *uint8) int {
   var count int
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
@@ -1029,7 +1029,7 @@ func SSE16x16_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTR
   return count;
 }
 
-func SSE16x8_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
+func SSE16x8_MIPSdspR2(/* const */ a *uint8, /*const*/ b *uint8) int {
   var count int
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
@@ -1049,7 +1049,7 @@ func SSE16x8_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRI
   return count;
 }
 
-func SSE8x8_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
+func SSE8x8_MIPSdspR2(/* const */ a *uint8, /*const*/ b *uint8) int {
   var count int
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
@@ -1065,7 +1065,7 @@ func SSE8x8_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRIC
   return count;
 }
 
-func SSE4x4_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
+func SSE4x4_MIPSdspR2(/* const */ a *uint8, /*const*/ b *uint8) int {
   var count int
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
@@ -1188,7 +1188,7 @@ func SSE4x4_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRIC
 "3:                                                          \n\t"
 // clang-format on
 
-func QuantizeBlock_MIPSdspR2(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
+func QuantizeBlock_MIPSdspR2(int16 in[16], int16 out[16], /*const*/ /* const */ mtx *VP8Matrix) int {
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6;
   int sign, coeff, level;
   max_level := MAX_LEVEL;
@@ -1220,7 +1220,7 @@ func QuantizeBlock_MIPSdspR2(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRIC
   return (ret != 0);
 }
 
-func Quantize2Blocks_MIPSdspR2(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
+func Quantize2Blocks_MIPSdspR2(int16 in[32], int16 out[32], /*const*/ /* const */ mtx *VP8Matrix) int {
   var nz int
   nz = QuantizeBlock_MIPSdspR2(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_MIPSdspR2(in + 1 * 16, out + 1 * 16, mtx) << 1;
@@ -1268,7 +1268,7 @@ func Quantize2Blocks_MIPSdspR2(int16 in[32], int16 out[32], /*const*/ WEBP_RESTR
   "usw             %[" #TEMP6 "],  " #D "(%[out])                 \n\t"
 // clang-format on
 
-func FTransformWHT_MIPSdspR2(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
+func FTransformWHT_MIPSdspR2(/* const */ in *int16, out *int16) {
   int temp0, temp1, temp2, temp3, temp4;
   int temp5, temp6, temp7, temp8, temp9;
 

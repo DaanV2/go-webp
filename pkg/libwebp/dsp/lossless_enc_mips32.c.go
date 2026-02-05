@@ -157,7 +157,7 @@ const HUFFMAN_COST_PASS =                                                 \
 
 // Returns the various RLE counts
 static  func GetEntropyUnrefinedHelper(
-    uint32 val, i int, WEBP_RESTRICT const val_prev *uint32, WEBP_RESTRICT const i_prev *int, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
+    uint32 val, i int, /* const */ val_prev *uint32, /* const */ i_prev *int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
   var pstreaks *int = &stats.streaks[0][0];
   var pcnts *int = &stats.counts[0];
   int temp0, temp1, temp2, temp3;
@@ -183,7 +183,7 @@ static  func GetEntropyUnrefinedHelper(
 }
 
 func GetEntropyUnrefined_MIPS32(
-    const uint32 X[], length int, WEBP_RESTRICT const bit_entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
+    const uint32 X[], length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
   var i int
   i_prev := 0;
   x_prev := X[0];
@@ -203,7 +203,7 @@ func GetEntropyUnrefined_MIPS32(
 }
 
 func GetCombinedEntropyUnrefined_MIPS32(
-    const uint32 X[], /*const*/ uint32 Y[], length int, WEBP_RESTRICT const entropy *VP8LBitEntropy, WEBP_RESTRICT const stats *VP8LStreaks) {
+    const uint32 X[], /*const*/ uint32 Y[], length int, /* const */ entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
   i := 1;
   i_prev := 0;
   xy_prev := X[0] + Y[0];
@@ -282,7 +282,7 @@ const ASM_END_1 = \
   ASM_END_COMMON_0 \
   ASM_END_COMMON_1
 
-func AddVector_MIPS32(/* const */ WEBP_RESTRICT pa *uint32, /*const*/ WEBP_RESTRICT pb *uint32, WEBP_RESTRICT pout *uint32, size int) {
+func AddVector_MIPS32(/* const */ pa *uint32, /*const*/ pb *uint32, pout *uint32, size int) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
   var LoopEnd *uint32 = pa + end;
@@ -293,7 +293,7 @@ func AddVector_MIPS32(/* const */ WEBP_RESTRICT pa *uint32, /*const*/ WEBP_RESTR
   for (i = 0; i < size - end; ++i) pout[i] = pa[i] + pb[i];
 }
 
-func AddVectorEq_MIPS32(/* const */ WEBP_RESTRICT pa *uint32, WEBP_RESTRICT pout *uint32, size int) {
+func AddVectorEq_MIPS32(/* const */ pa *uint32, pout *uint32, size int) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
   var LoopEnd *uint32 = pa + end;

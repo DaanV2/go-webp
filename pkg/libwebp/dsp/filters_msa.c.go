@@ -21,7 +21,7 @@ import "github.com/daanv2/go-webp/pkg/assert"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
-func PredictLineInverse0(/* const */ src *uint8, /*const*/ pred *uint8, WEBP_RESTRICT dst *uint8, length int) {
+func PredictLineInverse0(/* const */ src *uint8, /*const*/ pred *uint8, dst *uint8, length int) {
   v16u8 src0, pred0, dst0;
   assert.Assert(length >= 0);
   while (length >= 32) {
@@ -69,7 +69,7 @@ func PredictLineInverse0(/* const */ src *uint8, /*const*/ pred *uint8, WEBP_RES
 //------------------------------------------------------------------------------
 // Horrizontal filter
 
-func HorizontalFilter_MSA(/* const */ WEBP_RESTRICT data *uint8, width, height int, stride int, WEBP_RESTRICT filtered_data *uint8) {
+func HorizontalFilter_MSA(/* const */ data *uint8, width, height int, stride int, filtered_data *uint8) {
   var preds *uint8 = data;
   var in *uint8 = data;
   out *uint8 = filtered_data;
@@ -97,7 +97,7 @@ func HorizontalFilter_MSA(/* const */ WEBP_RESTRICT data *uint8, width, height i
 //------------------------------------------------------------------------------
 // Gradient filter
 
-func PredictLineGradient(/* const */ pinput *uint8, /*const*/ ppred *uint8, WEBP_RESTRICT poutput *uint8, stride int, size int) {
+func PredictLineGradient(/* const */ pinput *uint8, /*const*/ ppred *uint8, poutput *uint8, stride int, size int) {
   var w int
   const v16i8 zero = {0}
   while (size >= 16) {
@@ -127,7 +127,7 @@ func PredictLineGradient(/* const */ pinput *uint8, /*const*/ ppred *uint8, WEBP
   }
 }
 
-func GradientFilter_MSA(/* const */ WEBP_RESTRICT data *uint8, width, height int, stride int, WEBP_RESTRICT filtered_data *uint8) {
+func GradientFilter_MSA(/* const */ data *uint8, width, height int, stride int, filtered_data *uint8) {
   var in *uint8 = data;
   var preds *uint8 = data;
   out *uint8 = filtered_data;
@@ -154,7 +154,7 @@ func GradientFilter_MSA(/* const */ WEBP_RESTRICT data *uint8, width, height int
 //------------------------------------------------------------------------------
 // Vertical filter
 
-func VerticalFilter_MSA(/* const */ WEBP_RESTRICT data *uint8, width, height int, stride int, WEBP_RESTRICT filtered_data *uint8) {
+func VerticalFilter_MSA(/* const */ data *uint8, width, height int, stride int, filtered_data *uint8) {
   var in *uint8 = data;
   var preds *uint8 = data;
   out *uint8 = filtered_data;

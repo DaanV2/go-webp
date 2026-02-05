@@ -93,7 +93,7 @@ func GetResidualCost_MIPS32(int ctx0, /*const*/ res *VP8Residual) int {
   return cost;
 }
 
-func SetResidualCoeffs_MIPS32(/* const */ WEBP_RESTRICT const coeffs *int16, WEBP_RESTRICT const res *VP8Residual) {
+func SetResidualCoeffs_MIPS32(/* const */ /* const */ coeffs *int16, /* const */ res *VP8Residual) {
   var p_coeffs *int16 = (*int16)coeffs;
   int temp0, temp1, temp2, n, n1;
   assert.Assert(res.first == 0 || coeffs[0] == 0);

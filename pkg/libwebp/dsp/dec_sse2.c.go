@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Transforms (Paragraph 14.4)
 
-func Transform_SSE2(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
+func Transform_SSE2(/* const */ in *int16, dst *uint8, do_two int) {
   // This implementation makes use of 16-bit fixed point versions of two
   // multiply constants:
   //    K1 = sqrt(2) * cos (pi/8) ~= 85627 / 2^16
@@ -201,7 +201,7 @@ func Transform_SSE2(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint
 
 #if (USE_TRANSFORM_AC3 == 1)
 
-func TransformAC3_SSE2(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformAC3_SSE2(/* const */ in *int16, dst *uint8) {
   const __m128i A = _mm_set1_epi16(in[0] + 4);
   const __m128i c4 = _mm_set1_epi16(WEBP_TRANSFORM_AC3_MUL2(in[4]));
   const __m128i d4 = _mm_set1_epi16(WEBP_TRANSFORM_AC3_MUL1(in[4]));
@@ -756,7 +756,7 @@ func HFilter16i_SSE2(p *uint8, stride int, thresh int, ithresh int, hev_thresh i
 }
 
 // 8-pixels wide variant, for chroma filtering
-func VFilter8_SSE2(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func VFilter8_SSE2(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   __m128i mask;
   __m128i t1, p2, p1, p0, q0, q1, q2;
 
@@ -780,7 +780,7 @@ func VFilter8_SSE2(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, t
   STOREUV(q2, u, v, 2 * stride);
 }
 
-func HFilter8_SSE2(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func HFilter8_SSE2(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   __m128i mask;
   __m128i p3, p2, p1, p0, q0, q1, q2, q3;
 
@@ -799,7 +799,7 @@ func HFilter8_SSE2(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, t
   Store16x4_SSE2(&q0, &q1, &q2, &q3, u, v, stride);
 }
 
-func VFilter8i_SSE2(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func VFilter8i_SSE2(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   __m128i mask;
   __m128i t1, t2, p1, p0, q0, q1;
 
@@ -824,7 +824,7 @@ func VFilter8i_SSE2(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, 
   STOREUV(q1, u, v, 1 * stride);
 }
 
-func HFilter8i_SSE2(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func HFilter8i_SSE2(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   __m128i mask;
   __m128i t1, t2, p1, p0, q0, q1;
   Load16x4_SSE2(u, v, stride, &t2, &t1, &p1, &p0);  // p3, p2, p1, p0

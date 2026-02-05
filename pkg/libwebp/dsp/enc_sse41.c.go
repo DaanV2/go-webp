@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Compute susceptibility based on DCT-coeff histograms.
 
-func CollectHistogram_SSE41(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, start_block int, end_block int, WEBP_RESTRICT const histo *VP8Histogram) {
+func CollectHistogram_SSE41(/* const */ ref *uint8, /*const*/ pred *uint8, start_block int, end_block int, /* const */ histo *VP8Histogram) {
   const __m128i max_coeff_thresh = _mm_set1_epi16(MAX_COEFF_THRESH);
   var j int
   int distribution[MAX_COEFF_THRESH + 1] = {0}
@@ -169,12 +169,12 @@ func TTransform_SSE41(/* const */ inA *uint8, /*const*/ inB *uint8, /*const*/ w 
   return sum[0] + sum[1] + sum[2] + sum[3];
 }
 
-func Disto4x4_SSE41(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
+func Disto4x4_SSE41(/* const */ /* const */ a *uint8, /*const*/ /* const */ b *uint8, /*const*/ /* const */ w *uint16) int {
   diff_sum := TTransform_SSE41(a, b, w);
   return abs(diff_sum) >> 5;
 }
 
-func Disto16x16_SSE41(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
+func Disto16x16_SSE41(/* const */ /* const */ a *uint8, /*const*/ /* const */ b *uint8, /*const*/ /* const */ w *uint16) int {
   D := 0;
   var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -297,15 +297,15 @@ static  int DoQuantizeBlock_SSE41(int16 in[16], int16 out[16], /*const*/ sharpen
 
 #undef PSHUFB_CST
 
-func QuantizeBlock_SSE41(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
+func QuantizeBlock_SSE41(int16 in[16], int16 out[16], /*const*/ /* const */ mtx *VP8Matrix) int {
   return DoQuantizeBlock_SSE41(in, out, &mtx.sharpen[0], mtx);
 }
 
-func QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
+func QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16], /*const*/ /* const */ mtx *VP8Matrix) int {
   return DoQuantizeBlock_SSE41(in, out, nil, mtx);
 }
 
-func Quantize2Blocks_SSE41(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
+func Quantize2Blocks_SSE41(int16 in[32], int16 out[32], /*const*/ /* const */ mtx *VP8Matrix) int {
   var nz int
   var sharpen *uint16 = &mtx.sharpen[0];
   nz = DoQuantizeBlock_SSE41(in + 0 * 16, out + 0 * 16, sharpen, mtx) << 0;

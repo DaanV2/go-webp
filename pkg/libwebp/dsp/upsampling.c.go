@@ -42,11 +42,11 @@ WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
 
 #define UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                                 \
   func FUNC_NAME(                                                      \
-      const WEBP_RESTRICT top_y *uint8,                                     \
-      const WEBP_RESTRICT bottom_y *uint8,                                  \
-      const WEBP_RESTRICT top_u *uint8, /*const*/ WEBP_RESTRICT top_v *uint8, \
-      const WEBP_RESTRICT cur_u *uint8, /*const*/ WEBP_RESTRICT cur_v *uint8, \
-      WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
+      const top_y *uint8,                                     \
+      const bottom_y *uint8,                                  \
+      const top_u *uint8, /*const*/ top_v *uint8, \
+      const cur_u *uint8, /*const*/ cur_v *uint8, \
+      top_dst *uint8, bottom_dst *uint8,      \
       int len) {                                                              \
     var x int                                                                    \
     last_pixel_pair := (len - 1) >> 1;                               \
@@ -144,10 +144,10 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
 #if !defined(FANCY_UPSAMPLING)
 #define DUAL_SAMPLE_FUNC(FUNC_NAME, FUNC)                                     \
   func FUNC_NAME(                                                      \
-      const WEBP_RESTRICT top_y *uint8, /*const*/ WEBP_RESTRICT bot_y *uint8, \
-      const WEBP_RESTRICT top_u *uint8, /*const*/ WEBP_RESTRICT top_v *uint8, \
-      const WEBP_RESTRICT bot_u *uint8, /*const*/ WEBP_RESTRICT bot_v *uint8, \
-      WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bot_dst *uint8,         \
+      const top_y *uint8, /*const*/ bot_y *uint8, \
+      const top_u *uint8, /*const*/ top_v *uint8, \
+      const bot_u *uint8, /*const*/ bot_v *uint8, \
+      top_dst *uint8, bot_dst *uint8,         \
       int len) {                                                              \
     half_len := len >> 1;                                            \
     var x int                                                                    \
@@ -190,11 +190,11 @@ WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last) {
 
 #define YUV444_FUNC(FUNC_NAME, FUNC, XSTEP)                                  \
   extern func FUNC_NAME(                                                     \
-      const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int);  \
+      const y *uint8, /*const*/ u *uint8,        \
+      const v *uint8, dst *uint8, len int);  \
   func FUNC_NAME(                                                            \
-      const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) { \
+      const y *uint8, /*const*/ u *uint8,        \
+      const v *uint8, dst *uint8, len int) { \
     var i int                                                                   \
     for (i = 0; i < len; ++i) FUNC(y[i], u[i], v[i], &dst[i * (XSTEP)]);     \
   }

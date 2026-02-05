@@ -30,7 +30,7 @@ func TransformDC(/* const */ in *int16, dst *uint8) {
   );
 }
 
-func TransformAC3(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformAC3(/* const */ in *int16, dst *uint8) {
   a := in[0] + 4;
   int c4 = WEBP_TRANSFORM_AC3_MUL2(in[4]);
   d4 := WEBP_TRANSFORM_AC3_MUL1(in[4]);
@@ -57,7 +57,7 @@ func TransformAC3(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8)
   );
 }
 
-func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformOne(/* const */ in *int16, dst *uint8) {
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15, temp16, temp17, temp18;
 
@@ -107,7 +107,7 @@ func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8)
   );
 }
 
-func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
+func TransformTwo(/* const */ in *int16, dst *uint8, do_two int) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);
@@ -371,12 +371,12 @@ func HFilter16(p *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
 }
 
 // 8-pixels wide variant, for chroma filtering
-func VFilter8(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func VFilter8(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop26(u, stride, 1, 8, thresh, ithresh, hev_thresh);
   FilterLoop26(v, stride, 1, 8, thresh, ithresh, hev_thresh);
 }
 
-func HFilter8(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func HFilter8(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop26(u, 1, stride, 8, thresh, ithresh, hev_thresh);
   FilterLoop26(v, 1, stride, 8, thresh, ithresh, hev_thresh);
 }
@@ -398,12 +398,12 @@ func HFilter16i(p *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   }
 }
 
-func VFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func VFilter8i(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop24(u + 4 * stride, stride, 1, 8, thresh, ithresh, hev_thresh);
   FilterLoop24(v + 4 * stride, stride, 1, 8, thresh, ithresh, hev_thresh);
 }
 
-func HFilter8i(WEBP_RESTRICT u *uint8, WEBP_RESTRICT v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
+func HFilter8i(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_thresh int) {
   FilterLoop24(u + 4, 1, stride, 8, thresh, ithresh, hev_thresh);
   FilterLoop24(v + 4, 1, stride, 8, thresh, ithresh, hev_thresh);
 }

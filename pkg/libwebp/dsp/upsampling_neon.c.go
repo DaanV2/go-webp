@@ -62,7 +62,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
   } while (0)
 
 // Turn the macro into a function for reducing code-size when non-critical
-func Upsample16Pixels_NEON(/* const */ WEBP_RESTRICT const r *uint81, /*const*/ WEBP_RESTRICT const r *uint82, WEBP_RESTRICT const out *uint8) {
+func Upsample16Pixels_NEON(/* const */ /* const */ r *uint81, /*const*/ /* const */ r *uint82, /* const */ out *uint8) {
   UPSAMPLE_16PIXELS(r1, r2, out);
 }
 
@@ -206,11 +206,11 @@ const v255 = vdup_n_u8(255)
 
 #define NEON_UPSAMPLE_FUNC(FUNC_NAME, FMT, XSTEP)                             \
   func FUNC_NAME(                                                      \
-      const WEBP_RESTRICT top_y *uint8,                                     \
-      const WEBP_RESTRICT bottom_y *uint8,                                  \
-      const WEBP_RESTRICT top_u *uint8, /*const*/ WEBP_RESTRICT top_v *uint8, \
-      const WEBP_RESTRICT cur_u *uint8, /*const*/ WEBP_RESTRICT cur_v *uint8, \
-      WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
+      const top_y *uint8,                                     \
+      const bottom_y *uint8,                                  \
+      const top_u *uint8, /*const*/ top_v *uint8, \
+      const cur_u *uint8, /*const*/ cur_v *uint8, \
+      top_dst *uint8, bottom_dst *uint8,      \
       int len) {                                                              \
     var block int                                                                \
     /* 16 byte aligned array to cache reconstructed u and v */                \

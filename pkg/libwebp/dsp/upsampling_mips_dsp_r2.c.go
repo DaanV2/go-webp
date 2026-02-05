@@ -145,11 +145,11 @@ func YuvToRgba(uint8 y, uint8 u, uint8 v, /*const*/ rgba *uint8) {
 
 #define UPSAMPLE_FUNC(FUNC_NAME, FUNC, XSTEP)                                 \
   func FUNC_NAME(                                                      \
-      const WEBP_RESTRICT top_y *uint8,                                     \
-      const WEBP_RESTRICT bottom_y *uint8,                                  \
-      const WEBP_RESTRICT top_u *uint8, /*const*/ WEBP_RESTRICT top_v *uint8, \
-      const WEBP_RESTRICT cur_u *uint8, /*const*/ WEBP_RESTRICT cur_v *uint8, \
-      WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
+      const top_y *uint8,                                     \
+      const bottom_y *uint8,                                  \
+      const top_u *uint8, /*const*/ top_v *uint8, \
+      const cur_u *uint8, /*const*/ cur_v *uint8, \
+      top_dst *uint8, bottom_dst *uint8,      \
       int len) {                                                              \
     var x int                                                                    \
     last_pixel_pair := (len - 1) >> 1;                               \
@@ -247,8 +247,8 @@ WEBP_TSAN_IGNORE_FUNCTION func WebPInitUpsamplersMIPSdspR2(){
 
 #define YUV444_FUNC(FUNC_NAME, FUNC, XSTEP)                                  \
   func FUNC_NAME(                                                     \
-      const WEBP_RESTRICT y *uint8, /*const*/ WEBP_RESTRICT u *uint8,        \
-      const WEBP_RESTRICT v *uint8, WEBP_RESTRICT dst *uint8, len int) { \
+      const y *uint8, /*const*/ u *uint8,        \
+      const v *uint8, dst *uint8, len int) { \
     var i int                                                                   \
     for (i = 0; i < len; ++i) FUNC(y[i], u[i], v[i], &dst[i * XSTEP]);       \
   }

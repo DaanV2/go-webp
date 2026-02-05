@@ -48,7 +48,7 @@ func LoadEightPixels_SSE2(/* const */ src *uint8, __out *m128i) {
   *out = _mm_unpacklo_epi8(A, zero);
 }
 
-func RescalerImportRowExpand_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEBP_RESTRICT src *uint8) {
+func RescalerImportRowExpand_SSE2(/* const */ wrk *WebPRescaler, /*const*/ src *uint8) {
   rescaler_t* frow = wrk.frow;
   const rescaler_t* const frow_end = frow + wrk.dst_width * wrk.num_channels;
   x_add := wrk.x_add;
@@ -113,7 +113,7 @@ func RescalerImportRowExpand_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, /*const
   assert.Assert(accum == 0);
 }
 
-func RescalerImportRowShrink_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEBP_RESTRICT src *uint8) {
+func RescalerImportRowShrink_SSE2(/* const */ wrk *WebPRescaler, /*const*/ src *uint8) {
   x_sub := wrk.x_sub;
   accum := 0;
   const __m128i zero = _mm_setzero_si128();
@@ -172,7 +172,7 @@ func RescalerImportRowShrink_SSE2(WEBP_RESTRICT const wrk *WebPRescaler, /*const
 
 // load as epi *src64, multiply by mult and store result in [out0 ... out3]
 static  func LoadDispatchAndMult_SSE2(
-    const rescaler_t* WEBP_RESTRICT const src, /*const*/ __const mult *m128i, __const out *m128i0, __const out *m128i1, __const out *m128i2, __const out *m128i3) {
+    const rescaler_t* /* const */ src, /*const*/ __const mult *m128i, __const out *m128i0, __const out *m128i1, __const out *m128i2, __const out *m128i3) {
   const __m128i A0 = _mm_loadu_si128((/* const */ __*m128i)(src + 0));
   const __m128i A1 = _mm_loadu_si128((/* const */ __*m128i)(src + 4));
   const __m128i A2 = _mm_srli_epi64(A0, 32);

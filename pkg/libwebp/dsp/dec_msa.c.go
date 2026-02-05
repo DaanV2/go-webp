@@ -40,7 +40,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
     BUTTERFLY_4(a1_m, b1_m, c1_m, d1_m, out0, out1, out2, out3); \
   }
 
-func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformOne(/* const */ in *int16, dst *uint8) {
   v8i16 input0, input1;
   v4i32 in0, in1, in2, in3, hz0, hz1, hz2, hz3, vt0, vt1, vt2, vt3;
   v4i32 res0, res1, res2, res3;
@@ -65,14 +65,14 @@ func TransformOne(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8)
   ST4x4_UB(res0, res0, 3, 2, 1, 0, dst, BPS);
 }
 
-func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8, do_two int) {
+func TransformTwo(/* const */ in *int16, dst *uint8, do_two int) {
   TransformOne(in, dst);
   if (do_two) {
     TransformOne(in + 16, dst + 4);
   }
 }
 
-func TransformWHT(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16) {
+func TransformWHT(/* const */ in *int16, out *int16) {
   v8i16 input0, input1;
   const v8i16 mask0 = {0, 1, 2, 3, 8, 9, 10, 11}
   const v8i16 mask1 = {4, 5, 6, 7, 12, 13, 14, 15}
@@ -114,13 +114,13 @@ func TransformWHT(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int16)
   out[240] = __msa_copy_s_h(out1, 7);
 }
 
-func TransformDC(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformDC(/* const */ in *int16, dst *uint8) {
   DC := (in[0] + 4) >> 3;
   const v8i16 tmp0 = __msa_fill_h(DC);
   ADDBLK_ST4x4_UB(tmp0, tmp0, tmp0, tmp0, dst, BPS);
 }
 
-func TransformAC3(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8) {
+func TransformAC3(/* const */ in *int16, dst *uint8) {
   a := in[0] + 4;
   c4 := WEBP_TRANSFORM_AC3_MUL2(in[4]);
   d4 := WEBP_TRANSFORM_AC3_MUL1(in[4]);
@@ -466,7 +466,7 @@ func HFilter16i(src_y *uint8, stride int, b_limit int, limit int, thresh int) {
 }
 
 // 8-pixels wide variants, for chroma filtering
-func VFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
+func VFilter8(src_u *uint8, src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   ptmp_src_u *uint8 = src_u - 4 * stride;
   ptmp_src_v *uint8 = src_v - 4 * stride;
   uint64 p2_d, p1_d, p0_d, q0_d, q1_d, q2_d;
@@ -509,7 +509,7 @@ func VFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int
   SD(q2_d, ptmp_src_v);
 }
 
-func HFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
+func HFilter8(src_u *uint8, src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   ptmp_src_u *uint8 = src_u - 4;
   ptmp_src_v *uint8 = src_v - 4;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
@@ -540,7 +540,7 @@ func HFilter8(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int
   ST6x4_UB(tmp7, 0, tmp5, 4, ptmp_src_v, stride);
 }
 
-func VFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
+func VFilter8i(src_u *uint8, src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   uint64 p1_d, p0_d, q0_d, q1_d;
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 p3_u, p2_u, p1_u, p0_u, q3_u, q2_u, q1_u, q0_u;
@@ -569,7 +569,7 @@ func VFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride in
   SD4(q1_d, q0_d, p0_d, p1_d, src_v, -stride);
 }
 
-func HFilter8i(WEBP_RESTRICT src_u *uint8, WEBP_RESTRICT src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
+func HFilter8i(src_u *uint8, src_v *uint8, stride int, b_limit_in int, limit_in int, thresh_in int) {
   v16u8 p3, p2, p1, p0, q3, q2, q1, q0, mask, hev;
   v16u8 row0, row1, row2, row3, row4, row5, row6, row7, row8;
   v16u8 row9, row10, row11, row12, row13, row14, row15;

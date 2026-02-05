@@ -168,12 +168,12 @@ uint32 VP8LPredictor13_C(/* const */ left *uint32, /*const*/ top *uint32) {
   return pred;
 }
 
-func PredictorAdd0_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
+func PredictorAdd0_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var x int
   (void)upper;
   for (x = 0; x < num_pixels; ++x) out[x] = VP8LAddPixels(in[x], ARGB_BLACK);
 }
-func PredictorAdd1_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, WEBP_RESTRICT out *uint32) {
+func PredictorAdd1_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   left := out[-1];
   (void)upper;
@@ -415,7 +415,7 @@ static int is_big_endian(){
   return (tmp.b[0] != 1);
 }
 
-func VP8LConvertBGRAToRGB_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func VP8LConvertBGRAToRGB_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
@@ -425,7 +425,7 @@ func VP8LConvertBGRAToRGB_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels in
   }
 }
 
-func VP8LConvertBGRAToRGBA_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func VP8LConvertBGRAToRGBA_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
@@ -436,7 +436,7 @@ func VP8LConvertBGRAToRGBA_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels i
   }
 }
 
-func VP8LConvertBGRAToRGBA4444_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func VP8LConvertBGRAToRGBA4444_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
@@ -452,7 +452,7 @@ func VP8LConvertBGRAToRGBA4444_C(/* const */ WEBP_RESTRICT src *uint32, num_pixe
   }
 }
 
-func VP8LConvertBGRAToRGB565_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func VP8LConvertBGRAToRGB565_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
@@ -468,7 +468,7 @@ func VP8LConvertBGRAToRGB565_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels
   }
 }
 
-func VP8LConvertBGRAToBGR_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8) {
+func VP8LConvertBGRAToBGR_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels;
   while (src < src_end) {
     argb := *src++;
@@ -478,7 +478,7 @@ func VP8LConvertBGRAToBGR_C(/* const */ WEBP_RESTRICT src *uint32, num_pixels in
   }
 }
 
-func CopyOrSwap(/* const */ WEBP_RESTRICT src *uint32, num_pixels int, WEBP_RESTRICT dst *uint8, swap_on_big_endian int) {
+func CopyOrSwap(/* const */ src *uint32, num_pixels int, dst *uint8, swap_on_big_endian int) {
   if (is_big_endian() == swap_on_big_endian) {
     var src_end *uint32 = src + num_pixels;
     while (src < src_end) {
