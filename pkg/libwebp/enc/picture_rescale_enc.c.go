@@ -119,7 +119,7 @@ func WebPPictureView(/* const */ src *WebPPicture, int left, int top, width, hei
 // Picture cropping
 
 func WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) int {
-  WebPPicture tmp;
+   var tmp WebPPicture
 
   if pic == nil { return 0  }
   if !AdjustAndCheckRectangle(pic, &left, &top, width, height) { return 0  }
@@ -156,7 +156,7 @@ func WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) int
 // Simple picture rescaler
 
 func RescalePlane(/* const */ src *uint8, int src_width, int src_height, int src_stride, dst *uint8, int dst_width, int dst_height, int dst_stride, rescaler_t* const work, int num_channels) int {
-  WebPRescaler rescaler;
+   var rescaler WebPRescaler
   y := 0;
   if (!WebPRescalerInit(&rescaler, src_width, src_height, dst, dst_width, dst_height, dst_stride, num_channels, work)) {
     return 0;
@@ -180,7 +180,7 @@ func AlphaMultiplyY(/* const */ pic *WebPPicture, int inverse) {
 }
 
 func WebPPictureRescale(picture *WebPPicture, width, height int) int {
-  WebPPicture tmp;
+   var tmp WebPPicture
   int prev_width, prev_height;
   rescaler_t* work;
   status := VP8_ENC_OK;

@@ -88,7 +88,7 @@ func PutSegment(/* const */ bw *VP8BitWriter, int s, /*const*/ p *uint8) {
 // Writes the partition #0 modes (that is: all intra modes)
 func VP8CodeIntraModes(/* const */ enc *VP8Encoder) {
   var bw *VP8BitWriter = &enc.bw;
-  VP8EncIterator it;
+   var it VP8EncIterator
   VP8IteratorInit(enc, &it);
   for {
     var mb *VP8MBInfo = it.mb;

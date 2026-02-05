@@ -83,7 +83,7 @@ type WebPIDecoder struct {
   dec *void;             // either a VP8Decoder or a VP8LDecoder instance
   io VP8Io
 
-  MemBuffer mem;         // input memory buffer.
+   var mem MemBuffer         // input memory buffer.
   output WebPDecBuffer ;  // output buffer (when no external one is supplied, // or if the external one has slow-memory)
   final_output *WebPDecBuffer;  // Slow-memory output to copy to eventually.
    chunk_size uint64  // Compressed VP8/VP8L size extracted from Header.
@@ -496,7 +496,7 @@ func DecodeRemaining(/* const */ idec *WebPIDecoder) VP8StatusCode {
     for ; dec.mb_x < dec.mb_w; ++dec.mb_x {
       const token_br *VP8BitReader =
           &dec.parts[dec.mb_y & dec.num_parts_minus_one];
-      MBContext context;
+       var context MBContext
       SaveContext(dec, token_br, &context);
       if (!VP8DecodeMB(dec, token_br)) {
         // We shouldn't fail when MAX_MB data was available
@@ -677,7 +677,7 @@ func WebPINewDecoder (output_buffer *WebPDecBuffer) *WebPIDecoder {
 
 WebPIDecode *WebPIDecoder(/* const */ data *uint8, data_size uint64, config *WebPDecoderConfig) {
   idec *WebPIDecoder;
-  WebPBitstreamFeatures tmp_features;
+   var tmp_features WebPBitstreamFeatures
   const features *WebPBitstreamFeatures =
       (config == nil) ? &tmp_features : &config.input;
   stdlib.Memset(&tmp_features, 0, sizeof(tmp_features));

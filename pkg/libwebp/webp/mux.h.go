@@ -435,12 +435,12 @@ func WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) WebPMuxError {
 //
 // Code Example:
 /*
-  WebPAnimEncoderOptions enc_options;
+   var enc_options WebPAnimEncoderOptions
   WebPAnimEncoderOptionsInit(&enc_options);
   // Tune 'enc_options' as needed.
   *WebPAnimEncoder enc = WebPAnimEncoderNew(width, height, &enc_options);
   while(<there are more frames>) {
-    WebPConfig config;
+     var config WebPConfig
     WebPConfigInit(&config);
     // Tune 'config' as needed.
     WebPAnimEncoderAdd(enc, frame, timestamp_ms, &config);

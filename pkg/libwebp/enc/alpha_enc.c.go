@@ -55,8 +55,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 static int EncodeLossless(/* const */ data *uint8, width, height int, int effort_level,  // in [0..6] range
                           int use_quality_100, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) {
   ok := 0;
-  WebPConfig config;
-  WebPPicture picture;
+   var config WebPConfig
+   var picture WebPPicture
 
   if !WebPPictureInit(&picture) { return 0  }
   picture.width = width;
@@ -99,8 +99,8 @@ static int EncodeLossless(/* const */ data *uint8, width, height int, int effort
 // Small struct to hold the result of a filter mode compression attempt.
 type FilterTrial struct {
   var score uint64
-  VP8BitWriter bw;
-  WebPAuxStats stats;
+   var bw VP8BitWriter
+   var stats WebPAuxStats
 } 
 
 // This function always returns an initialized 'bw' object, even upon error.
@@ -225,7 +225,7 @@ func InitFilterTrial(/* const */ score *FilterTrial) {
 
 func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) int {
   ok := 1;
-  FilterTrial best;
+   var best FilterTrial
   try_map := GetFilterMap(alpha, width, height, filter, effort_level);
   InitFilterTrial(&best);
 
@@ -236,7 +236,7 @@ func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_siz
 
     for filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1 {
       if (try_map & 1) {
-        FilterTrial trial;
+         var trial FilterTrial
         ok = EncodeAlphaInternal(alpha, width, height, method, filter, reduce_levels, effort_level, filtered_alpha, &trial);
         if (ok && trial.score < best.score) {
           best = trial;

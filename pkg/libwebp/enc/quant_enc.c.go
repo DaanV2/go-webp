@@ -930,7 +930,7 @@ func PickBestIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT rd *V
   lambda := dqm.lambda_i16;
   tlambda := dqm.tlambda;
   var src *uint8 = it.yuv_in + Y_OFF_ENC;
-  VP8ModeScore rd_tmp;
+   var rd_tmp VP8ModeScore
   rd_cur *VP8ModeScore = &rd_tmp;
   rd_best *VP8ModeScore = rd;
   var mode int
@@ -1000,7 +1000,7 @@ func PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const 
   var src *uint80 = it.yuv_in + Y_OFF_ENC;
   var best_blocks *uint8 = it.yuv_out2 + Y_OFF_ENC;
   total_header_bits := 0;
-  VP8ModeScore rd_best;
+   var rd_best VP8ModeScore
 
   if (enc.max_i4_header_bits == 0) {
     return 0;
@@ -1012,7 +1012,7 @@ func PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const 
   VP8IteratorStartI4(it);
   for {
     kNumBlocks := 1;
-    VP8ModeScore rd_i4;
+     var rd_i4 VP8ModeScore
     var mode int
     best_mode := -1;
     var src *uint8 = src0 + VP8Scan[it.i4];
@@ -1023,7 +1023,7 @@ func PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const 
     InitScore(&rd_i4);
     MakeIntra4Preds(it);
     for mode = 0; mode < NUM_BMODES; mode++ {
-      VP8ModeScore rd_tmp;
+       var rd_tmp VP8ModeScore
       int16 tmp_levels[16];
 
       // Reconstruct
@@ -1094,13 +1094,13 @@ func PickBestUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *
   tmp_dst *uint8 = it.yuv_out2 + U_OFF_ENC;  // scratch buffer
   dst *uint80 = it.yuv_out + U_OFF_ENC;
   dst *uint8 = dst0;
-  VP8ModeScore rd_best;
+   var rd_best VP8ModeScore
   var mode int
 
   rd.mode_uv = -1;
   InitScore(&rd_best);
   for mode = 0; mode < NUM_PRED_MODES; mode++ {
-    VP8ModeScore rd_uv;
+     var rd_uv VP8ModeScore
 
     // Reconstruct
     rd_uv.nz = ReconstructUV(it, &rd_uv, tmp_dst, mode);

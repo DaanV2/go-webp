@@ -918,7 +918,7 @@ static VP8LMultipliers GetBestColorTransformForTile(
   tile_height := all_y_max - tile_y_offset;
   const tile_argb *uint32 =
       argb + tile_y_offset * xsize + tile_x_offset;
-  VP8LMultipliers best_tx;
+   var best_tx VP8LMultipliers
   MultipliersClear(&best_tx);
 
   GetBestGreenToRed(tile_argb, xsize, tile_width, tile_height, prev_x, prev_y, quality, accumulated_red_histo, &best_tx);

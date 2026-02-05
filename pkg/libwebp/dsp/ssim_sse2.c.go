@@ -66,7 +66,7 @@ static const uint16 kWeight[] = {1, 2, 3, 4, 3, 2, 1, 0}
   } while (0)
 
 func SSIMGet_SSE2(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2) double {
-  VP8DistoStats stats;
+   var stats VP8DistoStats
   const __m128i zero = _mm_setzero_si128();
   __m128i xm = zero, ym = zero;                // 16b accums
   __m128i xxm = zero, yym = zero, xym = zero;  // 32b accum

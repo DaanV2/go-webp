@@ -245,7 +245,7 @@ func MBAnalyzeBestIntra16Mode(/* const */ it *VP8EncIterator) int {
 
   VP8MakeLuma16Preds(it);
   for mode = 0; mode < max_mode; mode++ {
-    VP8Histogram histo;
+     var histo VP8Histogram
     var alpha int
 
     InitHistogram(&histo);
@@ -297,7 +297,7 @@ func MBAnalyzeBestUVMode(/* const */ it *VP8EncIterator) int {
 
   VP8MakeChroma8Preds(it);
   for mode = 0; mode < max_mode; mode++ {
-    VP8Histogram histo;
+     var histo VP8Histogram
     var alpha int
     InitHistogram(&histo);
     VP8CollectHistogram(it.yuv_in + U_OFF_ENC, it.yuv_p + VP8UVModeOffsets[mode], 16, 16 + 4 + 4, &histo);
@@ -375,10 +375,10 @@ func ResetAllMBInfo(/* const */ enc *VP8Encoder) {
 
 // struct used to collect job result
 type SegmentJob struct {
-  WebPWorker worker;
+   var worker WebPWorker
   int alphas[MAX_ALPHA + 1];
   int alpha, uv_alpha;
-  VP8EncIterator it;
+   var it VP8EncIterator
   var delta_progress int
 } ;
 
@@ -448,10 +448,10 @@ func VP8EncAnalyze(/* const */ enc *VP8Encoder) int {
 #endif
     const worker_interface *WebPWorkerInterface =
         WebPGetWorkerInterface();
-    SegmentJob main_job;
+     var main_job SegmentJob
     if (do_mt) {
 #ifdef WEBP_USE_THREAD
-      SegmentJob side_job;
+       var side_job SegmentJob
       // Note the use of '&' instead of '&&' because we must call the functions
       // no matter what.
       InitSegmentJob(enc, &main_job, 0, split_row);

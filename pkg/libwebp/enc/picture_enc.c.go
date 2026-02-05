@@ -245,9 +245,9 @@ func WebPMemoryWriterClear(writer *WebPMemoryWriter) {
 typedef int (*Importer)(/* const */ *WebPPicture, /*const*/ *uint8, int);
 
 func Encode(/* const */ rgba *uint8, width, height int, int stride, Importer import, float quality_factor, int lossless, *uint8* output) uint64 {
-  WebPPicture pic;
-  WebPConfig config;
-  WebPMemoryWriter wrt;
+   var pic WebPPicture
+   var config WebPConfig
+   var wrt WebPMemoryWriter
   var ok int
 
   if output == nil { return 0  }

@@ -76,7 +76,7 @@ const ALPHAVAL = (0xff)
 #define MSA_LOAD_FUNC(TYPE, INSTR, FUNC_NAME)               \
 func TYPE FUNC_NAME(/* const */ psrc *void) inline {    \
     var psrc_m *uint8 = (/* const */ *uint8)psrc;     \
-    TYPE val_m;                                             \
+     var val_m TYPE                                             \
     __asm__ volatile("" #INSTR " %[val_m], %[psrc_m]  \n\t" \
                      : [val_m] "=r"(val_m)                  \
                      : [psrc_m] "m"(*psrc_m));              \

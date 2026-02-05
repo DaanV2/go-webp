@@ -268,7 +268,7 @@ func BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) uint64 {
 }
 
 uint64 VP8LBitsEntropy(/* const */ array *uint32, int n) {
-  VP8LBitEntropy entropy;
+   var entropy VP8LBitEntropy
   VP8LBitsEntropyUnrefined(array, n, &entropy);
 
   return BitsEntropyRefine(&entropy);
@@ -305,8 +305,8 @@ func FinalHuffmanCost(/* const */ stats *VP8LStreaks) uint64 {
 // Get the symbol entropy for the distribution 'population'.
 // Set 'trivial_sym', if there's only one symbol present in the distribution.
 func PopulationCost(/* const */ population *uint32, int length, /*const*/ trivial_sym *uint16, /*const*/ is_used *uint8) uint64 {
-  VP8LBitEntropy bit_entropy;
-  VP8LStreaks stats;
+   var bit_entropy VP8LBitEntropy
+   var stats VP8LStreaks
   VP8LGetEntropyUnrefined(population, length, &bit_entropy, &stats);
   if (trivial_sym != nil) {
     *trivial_sym = (bit_entropy.nonzeros == 1) ? bit_entropy.nonzero_code
@@ -353,8 +353,8 @@ func GetCombinedEntropy(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogra
   const X *uint32;
   const Y *uint32;
   var length int
-  VP8LStreaks stats;
-  VP8LBitEntropy bit_entropy;
+   var stats VP8LStreaks
+   var bit_entropy VP8LBitEntropy
   is_h1_used := h1.is_used[index];
   is_h2_used := h2.is_used[index];
   is_trivial := h1.trivial_symbol[index] != VP8L_NON_TRIVIAL_SYM &&
@@ -633,7 +633,7 @@ func HistogramAnalyzeEntropyBin(/* const */ image_histo *VP8LHistogramSet, low_e
   var i int
   *VP8LHistogram* const histograms = image_histo.histograms;
   histo_size := image_histo.size;
-  DominantCostRange cost_range;
+   var cost_range DominantCostRange
   DominantCostRangeInit(&cost_range);
 
   // Analyze the dominant (literal, red and blue) entropy costs.
@@ -823,7 +823,7 @@ func HistoQueueUpdatePair(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistog
 func HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram* const histograms, int idx1, int idx2, int64 threshold) int64 {
   const h *VP8LHistogram1;
   const h *VP8LHistogram2;
-  HistogramPair pair;
+   var pair HistogramPair
 
   // Stop here if the queue is full.
   if histo_queue.size == histo_queue.max_size { return 0  }
@@ -858,7 +858,7 @@ func HistogramCombineGreedy(/* const */ image_histo *VP8LHistogramSet) int {
   int i, j;
   *VP8LHistogram* const histograms = image_histo.histograms;
   // Priority queue of histogram pairs.
-  HistoQueue histo_queue;
+   var histo_queue HistoQueue
 
   // image_histo_size^2 for the queue size is safe. If you look at
   // HistogramCombineGreedy, and imagine that UpdateQueueFront always pushes
@@ -927,7 +927,7 @@ func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, int m
   // Priority queue of histogram pairs. Its size of 'kHistoQueueSize'
   // impacts the quality of the compression and the speed: the smaller the
   // faster but the worse for the compression.
-  HistoQueue histo_queue;
+   var histo_queue HistoQueue
   kHistoQueueSize := 9;
   ok := 0;
 

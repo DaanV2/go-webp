@@ -37,7 +37,7 @@ type PixOrCopy struct {
 } ;
 
 func PixOrCopyCreateCopy(uint32 distance, uint16 len) PixOrCopy {
-  PixOrCopy retval;
+   var retval PixOrCopy
   retval.mode = kCopy;
   retval.argb_or_distance = distance;
   retval.len = len;
@@ -45,7 +45,7 @@ func PixOrCopyCreateCopy(uint32 distance, uint16 len) PixOrCopy {
 }
 
 func PixOrCopyCreateCacheIdx(int idx) PixOrCopy {
-  PixOrCopy retval;
+   var retval PixOrCopy
   assert.Assert(idx >= 0);
   assert.Assert(idx < (1 << MAX_COLOR_CACHE_BITS));
   retval.mode = kCacheIdx;
@@ -55,7 +55,7 @@ func PixOrCopyCreateCacheIdx(int idx) PixOrCopy {
 }
 
 func PixOrCopyCreateLiteral(argb uint32) PixOrCopy {
-  PixOrCopy retval;
+   var retval PixOrCopy
   retval.mode = kLiteral;
   retval.argb_or_distance = argb;
   retval.len = 1;

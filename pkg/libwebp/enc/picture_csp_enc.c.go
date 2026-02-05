@@ -148,7 +148,7 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
     var dst_v *uint8 = picture.v;
     var dst_a *uint8 = picture.a;
 
-    VP8Random base_rg;
+     var base_rg VP8Random
     rg *VP8Random = nil;
     if (dithering > 0.) {
       VP8InitRandom(&base_rg, dithering);

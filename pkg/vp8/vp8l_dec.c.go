@@ -238,7 +238,7 @@ func ReadHuffmanCodeLengths(/* const */ dec *VP8LDecoder, /*const*/ code_length_
   var symbol int
   var max_symbol int
   prev_code_len := DEFAULT_CODE_LENGTH;
-  HuffmanTables tables;
+   var tables HuffmanTables
   var bounded_code_lengths *int =
       WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           const *int, code_length_code_lengths, NUM_CODE_LENGTH_CODES * sizeof(*code_length_code_lengths));

@@ -669,7 +669,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
   i := 0;
   ok := 0;
   cc_init := 0;
-  VP8LColorCache hashers;
+   var hashers VP8LColorCache
 
   if (use_color_cache) {
     cc_init = VP8LColorCacheInit(&hashers, cache_bits);
@@ -690,7 +690,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
       }
       i += len;
     } else {
-      PixOrCopy v;
+       var v PixOrCopy
       idx :=
           use_color_cache ? VP8LColorCacheContains(&hashers, argb[i]) : -1;
       if (idx >= 0) {

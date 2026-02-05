@@ -313,7 +313,7 @@ func PutCoeffs(/* const */ bw *VP8BitWriter, int ctx, /*const*/ res *VP8Residual
 
 func CodeResiduals(/* const */ bw *VP8BitWriter, /*const*/ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   int x, y, ch;
-  VP8Residual res;
+   var res VP8Residual
   uint64 pos1, pos2, pos3;
   i16 = (it.mb.type :== 1);
   segment := it.mb.segment;
@@ -366,7 +366,7 @@ func CodeResiduals(/* const */ bw *VP8BitWriter, /*const*/ it *VP8EncIterator, /
 // Instead, it just records the event distribution.
 func RecordResiduals(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   int x, y, ch;
-  VP8Residual res;
+   var res VP8Residual
   var enc *VP8Encoder = it.enc;
 
   VP8IteratorNzToBytes(it);
@@ -413,7 +413,7 @@ func RecordResiduals(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore)
 
 func RecordTokens(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore, /*const*/ tokens *VP8TBuffer) int {
   int x, y, ch;
-  VP8Residual res;
+   var res VP8Residual
   var enc *VP8Encoder = it.enc;
 
   VP8IteratorNzToBytes(it);
@@ -582,7 +582,7 @@ func SetLoopParams(/* const */ enc *VP8Encoder, float q) {
 }
 
 func OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, /*const*/ s *PassStats) uint64 {
-  VP8EncIterator it;
+   var it VP8EncIterator
   size uint64  = 0;
   uint64 size_p0 = 0;
   distortion := 0;
@@ -591,7 +591,7 @@ func OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int
   VP8IteratorInit(enc, &it);
   SetLoopParams(enc, s.q);
   for {
-    VP8ModeScore info;
+     var info VP8ModeScore
     VP8IteratorImport(&it, nil);
     if (VP8Decimate(&it, &info, rd_opt)) {
       // Just record the number of skips and act like skip_proba is not used.
@@ -631,7 +631,7 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
   var rd_opt VP8RDLevel =
       (method >= 3 || do_search) ? RD_OPT_BASIC : RD_OPT_NONE;
   nb_mbs := enc.mb_w * enc.mb_h;
-  PassStats stats;
+   var stats PassStats
 
   InitPassStats(enc, &stats);
   ResetTokenStats(enc);
@@ -741,7 +741,7 @@ func ResetAfterSkip(/* const */ it *VP8EncIterator) {
 }
 
 func VP8EncLoop(/* const */ enc *VP8Encoder) int {
-  VP8EncIterator it;
+   var it VP8EncIterator
   ok := PreLoopInitialize(enc);
   if !ok { return 0  }
 
@@ -750,7 +750,7 @@ func VP8EncLoop(/* const */ enc *VP8Encoder) int {
   VP8IteratorInit(enc, &it);
   VP8InitFilter(&it);
   for {
-    VP8ModeScore info;
+     var info VP8ModeScore
     dont_use_skip := !enc.proba.use_skip_proba;
     var rd_opt VP8RDLevel = enc.rd_opt_level;
 
@@ -790,11 +790,11 @@ func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
   num_pass_left := enc.config.pass;
   remaining_progress := 40;  // percents
   do_search := enc.do_search;
-  VP8EncIterator it;
+   var it VP8EncIterator
   var proba *VP8EncProba = &enc.proba;
   var rd_opt VP8RDLevel = enc.rd_opt_level;
   pixel_count := (uint64)enc.mb_w * enc.mb_h * 384;
-  PassStats stats;
+   var stats PassStats
   var ok int
 
   InitPassStats(enc, &stats);
@@ -827,7 +827,7 @@ func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
     }
     VP8TBufferClear(&enc.tokens);
     for {
-      VP8ModeScore info;
+       var info VP8ModeScore
       VP8IteratorImport(&it, nil);
       if (--cnt < 0) {
         FinalizeTokenProbas(proba);

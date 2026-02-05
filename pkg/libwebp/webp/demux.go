@@ -22,7 +22,7 @@ package webp
   flags := WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
 
   // ... (Iterate over all frames).
-  WebPIterator iter;
+   var iter WebPIterator
   if (WebPDemuxGetFrame(demux, 1, &iter)) {
     for {
       // ... (Consume 'iter'; e.g. Decode 'iter.fragment' with WebPDecode(), // ... and get other frame properties like width, height, offsets etc.
@@ -32,7 +32,7 @@ package webp
   }
 
   // ... (Extract metadata).
-  WebPChunkIterator chunk_iter;
+   var chunk_iter WebPChunkIterator
   if flags & ICCP_FLAG { WebPDemuxGetChunk(demux, "ICCP", 1, &chunk_iter) }
   // ... (Consume the ICC profile in 'chunk_iter.chunk').
   WebPDemuxReleaseChunkIterator(&chunk_iter);
@@ -93,11 +93,11 @@ int WebPDemuxPrevChunk(iter *WebPChunkIterator);
 //
 // Code Example:
 /*
-  WebPAnimDecoderOptions dec_options;
+   var dec_options WebPAnimDecoderOptions
   WebPAnimDecoderOptionsInit(&dec_options);
   // Tune 'dec_options' as needed.
   dec *WebPAnimDecoder = WebPAnimDecoderNew(webp_data, &dec_options);
-  WebPAnimInfo anim_info;
+   var anim_info WebPAnimInfo
   WebPAnimDecoderGetInfo(dec, &anim_info);
   for i := 0; i < anim_info.loop_count; i++ {
     while (WebPAnimDecoderHasMoreFrames(dec)) {

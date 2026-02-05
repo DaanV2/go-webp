@@ -108,7 +108,7 @@ func VP8InitResidual(int first, int coeff_type, /*const*/ enc *VP8Encoder, /*con
 
 func VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ int16 levels[16]) int {
   x := (it.i4 & 3), y = (it.i4 >> 2);
-  VP8Residual res;
+   var res VP8Residual
   var enc *VP8Encoder = it.enc;
   R := 0;
   var ctx int
@@ -121,7 +121,7 @@ func VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ int16 levels[16])
 }
 
 func VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
-  VP8Residual res;
+   var res VP8Residual
   var enc *VP8Encoder = it.enc;
   var x, y int
   R := 0;
@@ -147,7 +147,7 @@ func VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore
 }
 
 func VP8GetCostUV(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
-  VP8Residual res;
+   var res VP8Residual
   var enc *VP8Encoder = it.enc;
   int ch, x, y;
   R := 0;

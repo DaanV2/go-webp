@@ -120,7 +120,7 @@ func VP8LBackwardRefsInit(/* const */ refs *VP8LBackwardRefs, int block_size) {
 }
 
 VP8LRefsCursor VP8LRefsCursorInit(/* const */ refs *VP8LBackwardRefs) {
-  VP8LRefsCursor c;
+   var c VP8LRefsCursor
   c.cur_block = refs.refs;
   if (refs.refs != nil) {
     c.cur_pos = c.cur_block.start;
@@ -431,7 +431,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
 }
 
 func AddSingleLiteral(uint32 pixel, int use_color_cache, /*const*/ hashers *VP8LColorCache, /*const*/ refs *VP8LBackwardRefs) {
-  PixOrCopy v;
+   var v PixOrCopy
   if (use_color_cache) {
     key := VP8LColorCacheGetIndex(hashers, pixel);
     if (VP8LColorCacheLookup(hashers, key) == pixel) {
@@ -450,7 +450,7 @@ func BackwardReferencesRle(xsize int, ysize int, /*const*/ argb *uint32, int cac
   pix_count := xsize * ysize;
   int i, k;
   use_color_cache := (cache_bits > 0);
-  VP8LColorCache hashers;
+   var hashers VP8LColorCache
 
   if (use_color_cache && !VP8LColorCacheInit(&hashers, cache_bits)) {
     return 0;
@@ -495,7 +495,7 @@ func BackwardReferencesLz77(xsize int, ysize int, /*const*/ argb *uint32, int ca
   cc_init := 0;
   use_color_cache := (cache_bits > 0);
   pix_count := xsize * ysize;
-  VP8LColorCache hashers;
+   var hashers VP8LColorCache
 
   if (use_color_cache) {
     cc_init = VP8LColorCacheInit(&hashers, cache_bits);
@@ -829,7 +829,7 @@ Error:
 // Update (in-place) backward references for specified cache_bits.
 func BackwardRefsWithLocalCache(/* const */ argb *uint32, int cache_bits, /*const*/ refs *VP8LBackwardRefs) int {
   pixel_index := 0;
-  VP8LColorCache hashers;
+   var hashers VP8LColorCache
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
   if !VP8LColorCacheInit(&hashers, cache_bits) { return 0  }
 
@@ -878,7 +878,7 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
   // Index 0 is for a color cache, index 1 for no cache (if needed).
   int lz77_types_best[2] = {0, 0}
   uint64 bit_costs_best[2] = {WEBP_UINT64_MAX, WEBP_UINT64_MAX}
-  VP8LHashChain hash_chain_box;
+   var hash_chain_box VP8LHashChain
   var refs_tmp *VP8LBackwardRefs = &refs[do_no_cache ? 2 : 1];
   status := 0;
   stdlib.Memset(&hash_chain_box, 0, sizeof(hash_chain_box));

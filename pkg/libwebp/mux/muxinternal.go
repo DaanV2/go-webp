@@ -349,7 +349,7 @@ func MuxImageDeleteNth(wpi_list *WebPMuxImage, nth uint32) WebPMuxError {
 }
 
 // Get nth image in the image list.
-WebPMuxError MuxImageGetNth(/* const */ wpi_list *WebPMuxImage, nth uint32, wpi_list *WebPMuxImage wpi) {
+func MuxImageGetNth(/* const */ wpi_list *WebPMuxImage, nth uint32, wpi_list *WebPMuxImage wpi) WebPMuxError {
   assert.Assert(wpi_list);
   assert.Assert(wpi);
   if (!SearchImageToGetOrDelete((wpi_list *WebPMuxImage)wpi_list, nth, (wpi_list *WebPMuxImage*)&wpi_list)) {

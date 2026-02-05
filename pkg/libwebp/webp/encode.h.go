@@ -74,7 +74,7 @@ type WebPConfig struct {
                   // files compared to the slowest, but best, 100.
   var method int     // quality/speed trade-off (0=fast, 6=slower-better)
 
-  WebPImageHint image_hint;  // Hint for image type (lossless only for now).
+   var image_hint WebPImageHint  // Hint for image type (lossless only for now).
 
   var target_size int        // if non-zero, set the desired target size in bytes.
                           // Takes precedence over the 'compression' parameter.
@@ -273,7 +273,7 @@ type WebPPicture struct {
   var use_argb int
 
   // YUV input (mostly used for input to lossy compression)
-  WebPEncCSP colorspace;    // colorspace: should be YUV420 for now (=Y'CbCr).
+   var colorspace WebPEncCSP    // colorspace: should be YUV420 for now (=Y'CbCr).
   int width, height;        // dimensions (less or equal to WEBP_MAX_DIMENSION)
   uint8 *y, *u, *v;       // pointers to luma/chroma planes.
   int y_stride, uv_stride;  // luma/chroma strides.
@@ -289,7 +289,7 @@ type WebPPicture struct {
   //   OUTPUT
   ///////////////
   // Byte-emission hook, to store compressed bytes as they are ready.
-  WebPWriterFunction writer;  // can be nil
+   var writer WebPWriterFunction  // can be nil
   custom_ptr *void;           // can be used by the writer.
 
   // map for extra information (only for lossy compression mode)
@@ -306,10 +306,10 @@ type WebPPicture struct {
   stats *WebPAuxStats;
 
   // Error code for the latest error encountered during encoding
-  WebPEncodingError error_code;
+   var error_code WebPEncodingError
 
   // If not nil, report progress during encoding.
-  WebPProgressHook progress_hook;
+   var progress_hook WebPProgressHook
 
   user_data *void;  // this field is free to be set to any value and
                     // used during callbacks (like progress-report e.g.).

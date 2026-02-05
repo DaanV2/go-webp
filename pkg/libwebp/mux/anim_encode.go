@@ -475,12 +475,12 @@ func SnapToEvenOffsets(/* const */ rect *FrameRectangle) {
 type SubFrameParams struct {
   var should_try int               // Should try this set of parameters.
   var empty_rect_allowed int       // Frame with empty rectangle can be skipped.
-  FrameRectangle rect_ll;       // Frame rectangle for lossless compression.
-  WebPPicture sub_frame_ll;     // subframe pic for lossless compression.
-  FrameRectangle rect_lossy;    // Frame rectangle for lossy compression.
+   var rect_ll FrameRectangle       // Frame rectangle for lossless compression.
+   var sub_frame_ll WebPPicture     // subframe pic for lossless compression.
+   var rect_lossy FrameRectangle    // Frame rectangle for lossy compression.
                                 // Could be smaller than 'rect_ll' as pixels
                                 // with small diffs can be ignored.
-  WebPPicture sub_frame_lossy;  // subframe pic for lossy compression.
+   var sub_frame_lossy WebPPicture  // subframe pic for lossy compression.
 } ;
 
 func SubFrameParamsInit(/* const */ params *SubFrameParams, int should_try, int empty_rect_allowed) int {
@@ -554,7 +554,7 @@ func clip(v, min_v,max_v int ) int {
 //                                                input pictures.
 // Returns true on success.
 func WebPAnimEncoderRefineRect(/* const */ prev_canvas *WebPPicture, /*const*/ curr_canvas *WebPPicture, is_lossless bool, quality float, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ width *int, /*const*/ height *int) int {
-  FrameRectangle rect;
+   var rect FrameRectangle
   int right, left, bottom, top;
   if (prev_canvas == nil || curr_canvas == nil ||
       prev_canvas.width != curr_canvas.width ||
@@ -735,9 +735,9 @@ func EncodeFrame(/* const */ config *WebPConfig, /*const*/ pic *WebPPicture, /*c
 
 // Struct representing a candidate encoded frame including its metadata.
 type Candidate struct {
-  WebPMemoryWriter mem;  // Encoded bytes.
-  WebPMuxFrameInfo info;
-  FrameRectangle rect;  // Coordinates and dimensions of this candidate.
+   var mem WebPMemoryWriter  // Encoded bytes.
+   var info WebPMuxFrameInfo
+   var rect FrameRectangle  // Coordinates and dimensions of this candidate.
   var carries_over int  // True if at least one pixel in rect is carried over from
                      // the previous frame, meaning at least one pixel was set
                      // to fully transparent and this frame is blended.
@@ -1096,8 +1096,8 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig, is
   dispose_bg_possible :=
       !is_key_frame && !enc.prev_candidate_undecided;
 
-  SubFrameParams dispose_none_params;
-  SubFrameParams dispose_bg_params;
+   var dispose_none_params SubFrameParams
+   var dispose_bg_params SubFrameParams
 
   WebPConfig config_ll = *config;
   WebPConfig config_lossy = *config;
@@ -1291,8 +1291,8 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig) 
     WebPCopyPixels(enc.curr_canvas, &enc.canvas_carryover);
   } else {
     var curr_rect *FrameRectangle = &best_sub_candidate_rect;
-    WebPPicture curr_canvas_in_curr_rect;
-    WebPPicture canvas_carryover_in_curr_rect;
+     var curr_canvas_in_curr_rect WebPPicture
+     var canvas_carryover_in_curr_rect WebPPicture
 
     // There is no carried over pixel in the disposed rectangle, if any.
     // Note that this could not have been done earlier because the decision to
@@ -1396,7 +1396,7 @@ func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
 #undef KEYFRAME_NONE
 
 func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, int timestamp, /*const*/ encoder_config *WebPConfig) int {
-  WebPConfig config;
+   var config WebPConfig
   var ok int
 
   if (enc == nil) {
@@ -1486,8 +1486,8 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, int timestamp,
  static int DecodeFrameOntoCanvas(
     const frame *WebPMuxFrameInfo, /*const*/ canvas *WebPPicture) {
   var image *WebPData = &frame.bitstream;
-  WebPPicture sub_image;
-  WebPDecoderConfig config;
+   var sub_image WebPPicture
+   var config WebPDecoderConfig
   if (!WebPInitDecoderConfig(&config)) {
     return 0;
   }
@@ -1542,7 +1542,7 @@ Err:
 // TODO(urvang): Can we pick one of the two heuristically (based on frame
 // rectangle and/or presence of alpha)?
 func OptimizeSingleFrame(/* const */ enc *WebPAnimEncoder, /*const*/ webp_data *WebPData) WebPMuxError {
-  WebPMuxError err = WEBP_MUX_OK;
+  var err WebPMuxError = WEBP_MUX_OK;
   var canvas_width , canvas_height int
   var  frame WebPMuxFrameInfo
   var  full_image WebPData

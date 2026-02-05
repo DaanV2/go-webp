@@ -1,5 +1,3 @@
-package mux
-
 // Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,27 +5,8 @@ package mux
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Set and delete APIs for mux.
-//
-// Authors: Urvang (urvang@google.com)
-//          Vikas (vikasa@google.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stddef"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/mux"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-//------------------------------------------------------------------------------
-// Life of a mux object.
+package mux
 
 func MuxInit(/* const */ mux *WebPMux) {
   assert.Assert(mux != nil);
@@ -76,17 +55,18 @@ func WebPMuxDelete(mux *WebPMux) {
 // Helper method(s).
 
 // Handy MACRO, makes MuxSet() very symmetric to MuxGet().
-#define SWITCH_ID_LIST(INDEX, LIST)                        \
-  for {                                                     \
-    if (idx == (INDEX)) {                                  \
-      err = ChunkAssignData(&chunk, data, copy_data, tag); \
-      if (err == WEBP_MUX_OK) {                            \
-        err = ChunkSetHead(&chunk, (LIST));                \
-        if err != WEBP_MUX_OK { ChunkRelease(&chunk) }      \
-      }                                                    \
-      return err;                                          \
-    }                                                      \
-  } while (0)
+func SWITCH_ID_LIST(INDEX, LIST int) int {
+    if (idx == (INDEX)) {
+      err = ChunkAssignData(&chunk, data, copy_data, tag);
+      if (err == WEBP_MUX_OK) {
+        err = ChunkSetHead(&chunk, (LIST));
+        if err != WEBP_MUX_OK { ChunkRelease(&chunk) }
+      }
+      return err;
+    }
+
+	return 0
+}
 
 func MuxSet(/* const */ mux *WebPMux, tag uint32, /*const*/ data *WebPData, copy_data int) WebPMuxError {
   var chunk WebPChunk
@@ -144,7 +124,7 @@ func GetImageData(/* const */ bitstream *WebPData, /*const*/ image *WebPData, /*
     *image = *bitstream;
   } else {
     // It is webp file data. Extract image data from it.
-    const wpi *WebPMuxImage;
+    var wpi *WebPMuxImage;
     var mux *WebPMux = WebPMuxCreate(bitstream, 0);
     if mux == nil { return WEBP_MUX_BAD_DATA  }
     wpi = mux.images;
@@ -159,10 +139,10 @@ func GetImageData(/* const */ bitstream *WebPData, /*const*/ image *WebPData, /*
   return WEBP_MUX_OK;
 }
 
-func DeleteChunks(*WebPChunk* chunk_list, tag uint32) WebPMuxError {
-  WebPMuxError err = WEBP_MUX_NOT_FOUND;
+func DeleteChunks(chunk_list *WebPChunk, tag uint32) WebPMuxError {
+  var err WebPMuxError = WEBP_MUX_NOT_FOUND;
   assert.Assert(chunk_list);
-  while (*chunk_list) {
+  for (*chunk_list) {
     var chunk *WebPChunk = *chunk_list;
     if (chunk.tag == tag) {
       *chunk_list = ChunkDelete(chunk);
@@ -184,9 +164,9 @@ func MuxDeleteAllNamedData(/* const */ mux *WebPMux, tag uint32) WebPMuxError {
 //------------------------------------------------------------------------------
 // Set API(s).
 
-WebPMuxError WebPMuxSetChunk(mux *WebPMux, /*const*/ fourcc [4]byte, /*const*/ chunk_data *WebPData, copy_data int) {
+func WebPMuxSetChunk(mux *WebPMux, /*const*/ fourcc [4]byte, /*const*/ chunk_data *WebPData, copy_data int) WebPMuxError {
   var tag uint32
-  var err WebPMuxError 
+  var err WebPMuxError
   if (mux == nil || fourcc == nil || chunk_data == nil ||
       chunk_data.bytes == nil || chunk_data.size > MAX_CHUNK_PAYLOAD) {
     return WEBP_MUX_INVALID_ARGUMENT;
@@ -202,9 +182,9 @@ WebPMuxError WebPMuxSetChunk(mux *WebPMux, /*const*/ fourcc [4]byte, /*const*/ c
 }
 
 // Creates a chunk from given 'data' and sets it as 1st chunk in 'chunk_list'.
-func AddDataToChunkList(/* const */ data *WebPData, copy_data int, tag uint32, *WebPChunk* chunk_list) WebPMuxError {
-  WebPChunk chunk;
-  var err WebPMuxError 
+func AddDataToChunkList(/* const */ data *WebPData, copy_data int, tag uint32, chunk_list *WebPChunk) WebPMuxError {
+  var chunk WebPChunk
+  var err WebPMuxError
   ChunkInit(&chunk);
   err = ChunkAssignData(&chunk, data, copy_data, tag);
   if err != WEBP_MUX_OK { goto Err }
@@ -220,10 +200,9 @@ Err:
 // and wpi.img appropriately.
 func SetAlphaAndImageChunks(/* const */ bitstream *WebPData, copy_data int, /*const*/ wpi *WebPMuxImage) WebPMuxError {
   is_lossless := 0;
-  WebPData image, alpha;
-  WebPMuxError err = GetImageData(bitstream, &image, &alpha, &is_lossless);
-  image_tag :=
-      is_lossless ? kChunks[IDX_VP8L].tag : kChunks[IDX_VP8].tag;
+  var image, alpha WebPData
+  var err WebPMuxError = GetImageData(bitstream, &image, &alpha, &is_lossless);
+  image_tag := tenary.If(is_lossless, kChunks[IDX_VP8L].tag, kChunks[IDX_VP8].tag)
   if err != WEBP_MUX_OK { return err  }
   if (alpha.bytes != nil) {
     err = AddDataToChunkList(&alpha, copy_data, kChunks[IDX_ALPHA].tag, &wpi.alpha);
@@ -231,12 +210,12 @@ func SetAlphaAndImageChunks(/* const */ bitstream *WebPData, copy_data int, /*co
   }
   err = AddDataToChunkList(&image, copy_data, image_tag, &wpi.img);
   if err != WEBP_MUX_OK { return err  }
-  return MuxImageFinalize(wpi) ? WEBP_MUX_OK : WEBP_MUX_INVALID_ARGUMENT;
+  return tenary.If(MuxImageFinalize(wpi), WEBP_MUX_OK, WEBP_MUX_INVALID_ARGUMENT)
 }
 
-WebPMuxError WebPMuxSetImage(mux *WebPMux, /*const*/ bitstream *WebPData, copy_data int) {
-  WebPMuxImage wpi;
-  var err WebPMuxError 
+func WebPMuxSetImage(mux *WebPMux, /*const*/ bitstream *WebPData, copy_data int) WebPMuxError {
+  var wpi WebPMuxImage
+  var err WebPMuxError
 
   if (mux == nil || bitstream == nil || bitstream.bytes == nil ||
       bitstream.size > MAX_CHUNK_PAYLOAD) {
@@ -264,9 +243,9 @@ Err:  // Something bad happened.
   return err;
 }
 
-WebPMuxError WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, copy_data int) {
-  WebPMuxImage wpi;
-  var err WebPMuxError 
+func WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, copy_data int) WebPMuxError {
+   var wpi WebPMuxImage
+  var err WebPMuxError
 
   if mux == nil || info == nil { return WEBP_MUX_INVALID_ARGUMENT  }
 
@@ -293,7 +272,7 @@ WebPMuxError WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, co
   assert.Assert(wpi.img != nil);  // As SetAlphaAndImageChunks() was successful.
 
   {
-    WebPData frame;
+     var frame WebPData
     tag := kChunks[IDX_ANMF].tag;
     WebPMuxFrameInfo tmp = *info;
     tmp.x_offset &= ~1;  // Snap offsets to even.
@@ -325,8 +304,8 @@ Err:  // Something bad happened.
   return err;
 }
 
-WebPMuxError WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAnimParams) {
-  var err WebPMuxError 
+func WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAnimParams) WebPMuxError {
+  var err WebPMuxError
   uint8 data[ANIM_CHUNK_SIZE];
   var anim WebPData = {data, ANIM_CHUNK_SIZE}
 
@@ -345,8 +324,8 @@ WebPMuxError WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAn
   return MuxSet(mux, kChunks[IDX_ANIM].tag, &anim, 1);
 }
 
-WebPMuxError WebPMuxSetCanvasSize(mux *WebPMux, width, height int) {
-  var err WebPMuxError 
+func WebPMuxSetCanvasSize(mux *WebPMux, width, height int) WebPMuxError {
+  var err WebPMuxError
   if (mux == nil) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
@@ -373,12 +352,12 @@ WebPMuxError WebPMuxSetCanvasSize(mux *WebPMux, width, height int) {
 //------------------------------------------------------------------------------
 // Delete API(s).
 
-WebPMuxError WebPMuxDeleteChunk(mux *WebPMux, /*const*/ fourcc [4]byte) {
+func WebPMuxDeleteChunk(mux *WebPMux, /*const*/ fourcc [4]byte) WebPMuxError {
   if mux == nil || fourcc == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return MuxDeleteAllNamedData(mux, ChunkGetTagFromFourCC(fourcc));
 }
 
-WebPMuxError WebPMuxDeleteFrame(mux *WebPMux, nth uint32) {
+func WebPMuxDeleteFrame(mux *WebPMux, nth uint32) WebPMuxError {
   if mux == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   return MuxImageDeleteNth(&mux.images, nth);
 }
@@ -401,7 +380,7 @@ func GetFrameInfo(/* const */ frame_chunk *WebPChunk, /*const*/ x_offset *int, /
 
 func GetImageInfo(/* const */ wpi *WebPMuxImage, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ duration *int, /*const*/ width *int, /*const*/ height *int) WebPMuxError {
   var frame_chunk *WebPChunk = wpi.header;
-  var err WebPMuxError 
+  var err WebPMuxError
   assert.Assert(wpi != nil);
   assert.Assert(frame_chunk != nil);
 
@@ -433,10 +412,10 @@ func GetAdjustedCanvasSize(/* const */ mux *WebPMux, /*const*/ width *int, /*con
     for ; wpi != nil; wpi = wpi.next {
       x_offset := 0, y_offset = 0, duration = 0, w = 0, h = 0;
       var err WebPMuxError = GetImageInfo(wpi, &x_offset, &y_offset, &duration, &w, &h);
-      
+
 	  max_x_pos := x_offset + w;
       max_y_pos := y_offset + h;
-      if err != WEBP_MUX_OK { return err } 
+      if err != WEBP_MUX_OK { return err }
       assert.Assert(x_offset < MAX_POSITION_OFFSET);
       assert.Assert(y_offset < MAX_POSITION_OFFSET);
 
@@ -459,7 +438,7 @@ func GetAdjustedCanvasSize(/* const */ mux *WebPMux, /*const*/ width *int, /*con
 // Width  : 3 bytes,
 // Height : 3 bytes.
 func CreateVP8XChunk(/* const */ mux *WebPMux) WebPMuxError {
-  WebPMuxError err = WEBP_MUX_OK;
+  var err WebPMuxError = WEBP_MUX_OK;
   flags := 0;
   width := 0;
   height := 0;
@@ -544,7 +523,7 @@ func MuxCleanup(/* const */ mux *WebPMux) WebPMuxError {
   // If we have an image with a single frame, and its rectangle
   // covers the whole canvas, convert it to a non-animated image
   // (to afunc writing ANMF chunk unnecessarily).
-  WebPMuxError err = WebPMuxNumChunks(mux, kChunks[IDX_ANMF].id, &num_frames);
+  var err WebPMuxError = WebPMuxNumChunks(mux, kChunks[IDX_ANMF].id, &num_frames);
   if err != WEBP_MUX_OK { return err  }
   if (num_frames == 1) {
     frame *WebPMuxImage = nil;
@@ -583,19 +562,19 @@ func ImageListDiskSize(/* const */ wpi_list *WebPMuxImage) uint64 {
 }
 
 // Write out the given list of images into 'dst'.
-static ImageListEmit *uint8(/* const */ wpi_list *WebPMuxImage, dst *uint8) {
-  while (wpi_list != nil) {
+func ImageListEmit(/* const */ wpi_list *WebPMuxImage, dst *uint8) *uint8 {
+  for wpi_list != nil {
     dst = MuxImageEmit(wpi_list, dst);
     wpi_list = wpi_list.next;
   }
   return dst;
 }
 
-WebPMuxError WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) {
+func WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) WebPMuxError {
   size uint64  = 0;
   data *uint8 = nil;
   dst *uint8 = nil;
-  var err WebPMuxError 
+  var err WebPMuxError
 
   if (assembled_data == nil) {
     return WEBP_MUX_INVALID_ARGUMENT;

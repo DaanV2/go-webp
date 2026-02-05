@@ -258,7 +258,7 @@ type CrunchSubConfig struct {
 } ;
 type CrunchConfig struct {
   var entropy_idx int
-  PaletteSorting palette_sorting_type;
+   var palette_sorting_type PaletteSorting
   CrunchSubConfig sub_configs[CRUNCH_SUBCONFIGS_MAX];
   var sub_configs_size int
 } ;
@@ -303,7 +303,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, CrunchConfig crunch_configs[CR
     n_lz77s = 1;
     *crunch_configs_size = 1;
   } else {
-    EntropyIx min_entropy_ix;
+     var min_entropy_ix EntropyIx
     // Try out multiple LZ77 on images with few colors.
     n_lz77s = (enc.palette_size > 0 && enc.palette_size <= 16) ? 2 : 1;
     if (!AnalyzeEntropy(pic.argb, width, height, pic.argb_stride, use_palette, enc.palette_size, transform_bits, &min_entropy_ix, red_and_blue_always_zero)) {
@@ -522,7 +522,7 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
   uint16 code_length_bitdepth_symbols[CODE_LENGTH_CODES] = {0}
   max_tokens := tree.num_symbols;
   var num_tokens int
-  HuffmanTreeCode huffman_code;
+   var huffman_code HuffmanTreeCode
   huffman_code.num_symbols = CODE_LENGTH_CODES;
   huffman_code.code_lengths = code_length_bitdepth;
   huffman_code.codes = code_length_bitdepth_symbols;
@@ -798,7 +798,7 @@ func EncodeImageInternal(
   int cache_bits_init, write_histogram_image;
   VP8LBitWriter bw_init = *bw, bw_best;
   var hdr_size_tmp int
-  VP8LHashChain hash_chain_histogram;  // histogram image hash chain
+   var hash_chain_histogram VP8LHashChain  // histogram image hash chain
   bw_size_best := ~(uint64)0;
   assert.Assert(histogram_bits_in >= MIN_HUFFMAN_BITS);
   assert.Assert(histogram_bits_in <= MAX_HUFFMAN_BITS);
@@ -1537,9 +1537,9 @@ func VP8LEncodeStream(/* const */ config *WebPConfig, /*const*/ picture *WebPPic
   WebPWorker worker_main, worker_side;
   StreamEncodeContext params_main, params_side;
   // The main thread uses picture.stats, the side thread uses stats_side.
-  WebPAuxStats stats_side;
-  VP8LBitWriter bw_side;
-  WebPPicture picture_side;
+   var stats_side WebPAuxStats
+   var bw_side VP8LBitWriter
+   var picture_side WebPPicture
   var worker_interface *WebPWorkerInterface = WebPGetWorkerInterface();
   var ok_main int
 
@@ -1688,7 +1688,7 @@ func VP8LEncodeImage(/* const */ config *WebPConfig, /*const*/ picture *WebPPict
   var coded_size uint64
   percent := 0;
   var initial_size int;
-  VP8LBitWriter bw;
+   var bw VP8LBitWriter
 
   if picture == nil { return 0  }
 
