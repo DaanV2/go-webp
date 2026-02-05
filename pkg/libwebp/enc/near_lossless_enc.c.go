@@ -72,7 +72,7 @@ func IsSmooth(/* const */ prev_row *uint32, /*const*/ curr_row *uint32, /*const*
 }
 
 // Adjusts pixel values of image with given maximum error.
-func NearLossless(int xsize, int ysize, /*const*/ argb_src *uint32, int stride, int limit_bits, copy_buffer *uint32, argb_dst *uint32) {
+func NearLossless(xsize int, ysize int, /*const*/ argb_src *uint32, int stride, int limit_bits, copy_buffer *uint32, argb_dst *uint32) {
   var x, y int
   limit := 1 << limit_bits;
   prev_row *uint32 = copy_buffer;

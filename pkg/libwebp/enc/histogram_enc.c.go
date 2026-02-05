@@ -140,13 +140,13 @@ func HistogramSetResetPointers(/* const */ set *VP8LHistogramSet, int cache_bits
 }
 
 // Returns the total size of the VP8LHistogramSet.
-func HistogramSetTotalSize(int size, int cache_bits) uint64 {
+func HistogramSetTotalSize(size int, int cache_bits) uint64 {
   histo_size := GetHistogramSize(cache_bits);
   return (sizeof(VP8LHistogramSet) +
           size * (sizeof(*VP8LHistogram) + histo_size + WEBP_ALIGN_CST));
 }
 
-VP *VP8LHistogramSet8LAllocateHistogramSet(int size, int cache_bits) {
+VP *VP8LHistogramSet8LAllocateHistogramSet(size int, int cache_bits) {
   var i int
   set *VP8LHistogramSet;
   total_size := HistogramSetTotalSize(size, cache_bits);
@@ -577,7 +577,7 @@ func GetHistoBinIndex(/* const */ h *VP8LHistogram, /*const*/ c *DominantCostRan
 }
 
 // Construct the histograms from backward references.
-func HistogramBuild(int xsize, int histo_bits, /*const*/ backward_refs *VP8LBackwardRefs, /*const*/ image_histo *VP8LHistogramSet) {
+func HistogramBuild(xsize int, histo_bits int , /*const*/ backward_refs *VP8LBackwardRefs, /*const*/ image_histo *VP8LHistogramSet) {
   x := 0, y = 0;
   histo_xsize := VP8LSubSampleSize(xsize, histo_bits);
   *VP8LHistogram* const histograms = image_histo.histograms;
@@ -1070,7 +1070,7 @@ func GetCombineCostFactor(int histo_size, quality int) int32 {
   return combine_cost_factor;
 }
 
-int VP8LGetHistoImageSymbols(int xsize, int ysize, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
+int VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
   histo_xsize :=
       histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1;
   histo_ysize :=

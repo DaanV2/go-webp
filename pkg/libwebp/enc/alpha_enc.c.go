@@ -230,8 +230,9 @@ func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_siz
   InitFilterTrial(&best);
 
   if (try_map != FILTER_TRY_NONE) {
-    filtered_alpha *uint8 = (*uint8)WebPSafeMalloc(uint64(1), data_size);
-    if filtered_alpha == nil { { return 0 } }
+    // filtered_alpha *uint8 = (*uint8)WebPSafeMalloc(uint64(1), data_size);
+    // if filtered_alpha == nil { return 0 }
+	filtered_alpha := make([]uint8, data_size)
 
     for filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1 {
       if (try_map & 1) {
@@ -299,10 +300,11 @@ func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, int method, int filte
     filter = WEBP_FILTER_NONE;
   }
 
-  quant_alpha = (*uint8)WebPSafeMalloc(uint64(1), data_size);
-  if (quant_alpha == nil) {
-    return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
-  }
+//   quant_alpha = (*uint8)WebPSafeMalloc(uint64(1), data_size);
+//   if (quant_alpha == nil) {
+//     return WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//   }
+  quant_alpha = make([]uint8, data_size)
 
   // Extract alpha data (width x height) from raw_data (stride x height).
   WebPCopyPlane(pic.a, pic.a_stride, quant_alpha, width, width, height);

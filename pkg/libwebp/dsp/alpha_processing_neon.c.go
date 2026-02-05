@@ -159,7 +159,7 @@ func ExtractAlpha_NEON(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, w
   return (alpha_mask == uint(0xffffffff));
 }
 
-func ExtractGreen_NEON(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
+func ExtractGreen_NEON(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, size int) {
   var i int
   for i = 0; i + 16 <= size; i += 16 {
     const uint8x16x4_t rgbX = vld4q_u8((/* const */ *uint8)(argb + i));

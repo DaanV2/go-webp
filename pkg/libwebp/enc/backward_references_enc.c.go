@@ -42,8 +42,8 @@ const MIN_LENGTH =4
 const plane_to_code_lut  = [128]uint8{
     96,  73,  55,  39,  23, 13, 5,  1,  255, 255, 255, 255, 255, 255, 255, 255, 101, 78,  58,  42,  26, 16, 8,  2,  0,   3,   9,   17,  27,  43,  59,  79, 102, 86,  62,  46,  32, 20, 10, 6,  4,   7,   11,  21,  33,  47,  63,  87, 105, 90,  70,  52,  37, 28, 18, 14, 12,  15,  19,  29,  38,  53,  71,  91, 110, 99,  82,  66,  48, 35, 30, 24, 22,  25,  31,  36,  49,  67,  83,  100, 115, 108, 94,  76,  64, 50, 44, 40, 34,  41,  45,  51,  65,  77,  95,  109, 118, 113, 103, 92,  80, 68, 60, 56, 54,  57,  61,  69,  81,  93,  104, 114, 119, 116, 111, 106, 97, 88, 84, 74, 72,  75,  85,  89,  98,  107, 112, 117}
 
-extern int VP8LDistanceToPlaneCode(int xsize, int dist);
-int VP8LDistanceToPlaneCode(int xsize, int dist) {
+extern int VP8LDistanceToPlaneCode(xsize int, int dist);
+int VP8LDistanceToPlaneCode(xsize int, int dist) {
   yoffset := dist / xsize;
   xoffset := dist - yoffset * xsize;
   if (xoffset <= 8 && yoffset < 8) {
@@ -189,7 +189,7 @@ func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ Pix
 // -----------------------------------------------------------------------------
 // Hash chains
 
-int VP8LHashChainInit(/* const */ p *VP8LHashChain, int size) {
+int VP8LHashChainInit(/* const */ p *VP8LHashChain, size int) {
   assert.Assert(p.size == 0);
   assert.Assert(p.offset_length == nil);
   assert.Assert(size > 0);
@@ -228,7 +228,7 @@ func GetMaxItersForQuality(quality int) int {
   return 8 + (quality * quality) / 128;
 }
 
-func GetWindowSizeForHashChain(quality int, int xsize) int {
+func GetWindowSizeForHashChain(quality int, xsize int) int {
   max_window_size := (quality > 75)   ? WINDOW_SIZE
                               : (quality > 50) ? (xsize << 8)
                               : (quality > 25) ? (xsize << 6)
@@ -241,7 +241,7 @@ static  int MaxFindCopyLength(int len) {
   return (len < MAX_LENGTH) ? len : MAX_LENGTH;
 }
 
-int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, int xsize, int ysize, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
+int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, xsize int, ysize int, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
   size := xsize * ysize;
   iter_max := GetMaxItersForQuality(quality);
   window_size := GetWindowSizeForHashChain(quality, xsize);
@@ -444,7 +444,7 @@ static  func AddSingleLiteral(uint32 pixel, int use_color_cache, /*const*/ hashe
   VP8LBackwardRefsCursorAdd(refs, v);
 }
 
-func BackwardReferencesRle(int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ refs *VP8LBackwardRefs) int {
+func BackwardReferencesRle(xsize int, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ refs *VP8LBackwardRefs) int {
   pix_count := xsize * ysize;
   int i, k;
   use_color_cache := (cache_bits > 0);
@@ -486,7 +486,7 @@ func BackwardReferencesRle(int xsize, int ysize, /*const*/ argb *uint32, int cac
   return !refs.error;
 }
 
-func BackwardReferencesLz77(int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) int {
+func BackwardReferencesLz77(xsize int, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) int {
   var i int
   i_last_check := -1;
   ok := 0;
@@ -555,7 +555,7 @@ Error:
 // We therefore limit the algorithm to the lowest 32 values in the PlaneCode
 // definition.
 const WINDOW_OFFSETS_SIZE_MAX =32
-func BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain_best *VP8LHashChain, hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) int {
+func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain_best *VP8LHashChain, hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) int {
   var i int
   pix_count := xsize * ysize;
   counts *uint16;
@@ -701,7 +701,7 @@ func BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint32, int
 
 // -----------------------------------------------------------------------------
 
-func BackwardReferences2DLocality(int xsize, /*const*/ refs *VP8LBackwardRefs) {
+func BackwardReferences2DLocality(xsize int, /*const*/ refs *VP8LBackwardRefs) {
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
   while (VP8LRefsCursorOk(&c)) {
     if (PixOrCopyIsCopy(c.cur_pos)) {
@@ -866,7 +866,7 @@ static GetBackwardReferencesLowEffort *VP8LBackwardRefs(
 }
 
 extern int VP8LBackwardReferencesTraceBackwards(
-    int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs);
+    xsize int, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs);
 func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality int, int lz77_types_to_try, int cache_bits_max, int do_no_cache, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int) int {
   histo *VP8LHistogram = nil;
   int i, lz77_type;

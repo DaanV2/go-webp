@@ -367,12 +367,12 @@ func ExtraCost_C(/* const */ population *uint32, int length) uint32 {
 
 //------------------------------------------------------------------------------
 
-func AddVector_C(/* const */ WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
+func AddVector_C(/* const */ WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, size int) {
   var i int
   for (i = 0; i < size; ++i) out[i] = a[i] + b[i];
 }
 
-func AddVectorEq_C(/* const */ WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int size) {
+func AddVectorEq_C(/* const */ WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, size int) {
   var i int
   for (i = 0; i < size; ++i) out[i] += a[i];
 }

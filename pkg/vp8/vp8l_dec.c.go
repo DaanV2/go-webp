@@ -343,7 +343,7 @@ func ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*const*/ co
   return size;
 }
 
-func ReadHuffmanCodes(/* const */ dec *VP8LDecoder, int xsize, int ysize, int color_cache_bits, int allow_recursion) int {
+func ReadHuffmanCodes(/* const */ dec *VP8LDecoder, xsize int, ysize int, int color_cache_bits, int allow_recursion) int {
   var i int
   var br *VP8LBitReader = &decoder.br;
   var hdr *VP8LMetadata = &decoder.hdr;
@@ -783,7 +783,7 @@ func SetCropWindow(/* const */ io *VP8Io,  y_start int, y_end int, in_data *uint
 
 //------------------------------------------------------------------------------
 
-static  int GetMetaIndex(/* const */ image *uint32, int xsize, bits int, int x, int y) {
+static  int GetMetaIndex(/* const */ image *uint32, xsize int, bits int, int x, int y) {
   if bits == 0 { { return 0 } }
   return image[xsize * (y >> bits) + (x >> bits)];
 }
@@ -1341,7 +1341,7 @@ func ExpandColorMap(num_colors int, /*const*/ transform *VP8LTransform) int {
   return 1;
 }
 
-func ReadTransform(/* const */ xsize *int, int ysize *const, /*const*/ decoder *VP8LDecoder) int {
+func ReadTransform(/* const */ xsize *int, ysize int *const, /*const*/ decoder *VP8LDecoder) int {
   ok := 1;
   var br *VP8LBitReader = &decoder.br;
   transform *VP8LTransform = &dec.transforms[dec.next_transform];
@@ -1452,7 +1452,7 @@ func UpdateDecoder(/* const */ dec *VP8LDecoder, width, height int) {
   hdr.huffman_mask = (num_bits == 0) ? ~0 : (1 << num_bits) - 1;
 }
 
-func DecodeImageStream(int xsize, int ysize, int is_level0, /*const*/ dec *VP8LDecoder, *uint32* const decoded_data) int {
+func DecodeImageStream(xsize int, ysize int, int is_level0, /*const*/ dec *VP8LDecoder, *uint32* const decoded_data) int {
   ok := 1;
   transform_xsize := xsize;
   transform_ysize := ysize;

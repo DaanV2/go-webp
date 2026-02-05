@@ -282,7 +282,7 @@ const ASM_END_1 = \
   ASM_END_COMMON_0 \
   ASM_END_COMMON_1
 
-func AddVector_MIPS32(/* const */ WEBP_RESTRICT pa *uint32, /*const*/ WEBP_RESTRICT pb *uint32, WEBP_RESTRICT pout *uint32, int size) {
+func AddVector_MIPS32(/* const */ WEBP_RESTRICT pa *uint32, /*const*/ WEBP_RESTRICT pb *uint32, WEBP_RESTRICT pout *uint32, size int) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
   var LoopEnd *uint32 = pa + end;
@@ -293,7 +293,7 @@ func AddVector_MIPS32(/* const */ WEBP_RESTRICT pa *uint32, /*const*/ WEBP_RESTR
   for (i = 0; i < size - end; ++i) pout[i] = pa[i] + pb[i];
 }
 
-func AddVectorEq_MIPS32(/* const */ WEBP_RESTRICT pa *uint32, WEBP_RESTRICT pout *uint32, int size) {
+func AddVectorEq_MIPS32(/* const */ WEBP_RESTRICT pa *uint32, WEBP_RESTRICT pout *uint32, size int) {
   uint32 temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
   end := ((size) / 4) * 4;
   var LoopEnd *uint32 = pa + end;

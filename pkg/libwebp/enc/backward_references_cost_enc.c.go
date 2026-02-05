@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 const VALUES_IN_BYTE =256
 
 extern func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs);
-extern int VP8LDistanceToPlaneCode(int xsize, int dist);
+extern int VP8LDistanceToPlaneCode(xsize int, int dist);
 extern func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ PixOrCopy v);
 
 type CostModel struct {
@@ -258,12 +258,12 @@ func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uin
   // different cost, hence MAX_LENGTH but that is impossible with the current
   // implementation that spirals around a pixel.
   assert.Assert(manager.cache_intervals_size <= MAX_LENGTH);
-  manager.cache_intervals = (*CostCacheInterval)WebPSafeMalloc(
-      manager.cache_intervals_size, sizeof(*manager.cache_intervals));
-  if (manager.cache_intervals == nil) {
-    CostManagerClear(manager);
-    return 0;
-  }
+//   manager.cache_intervals = (*CostCacheInterval)WebPSafeMalloc(manager.cache_intervals_size, sizeof(*manager.cache_intervals));
+//   if (manager.cache_intervals == nil) {
+//     CostManagerClear(manager);
+//     return 0;
+//   }
+  manager.cache_intervals = make([]CostCacheInterval, manager.cache_intervals_size)
 
   // Fill in the 'cache_intervals'.
   {
@@ -288,14 +288,15 @@ func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uin
            manager.cache_intervals_size);
   }
 
-  manager.costs = (*int64)WebPSafeMalloc(pix_count, sizeof(*manager.costs));
-  if (manager.costs == nil) {
-    CostManagerClear(manager);
-    return 0;
-  }
+//   manager.costs = (*int64)WebPSafeMalloc(pix_count, sizeof(*manager.costs));
+//   if (manager.costs == nil) {
+//     CostManagerClear(manager);
+//     return 0;
+//   }
+  manager.costs = make([]int64, pix_count)
   // Set the initial 'costs' to INT64_MAX for every pixel as we will keep the
   // minimum.
-  for (i = 0; i < pix_count; ++i) manager.costs[i] = WEBP_INT64_MAX;
+  for (i = 0; i < pix_count; ++i) {manager.costs[i] = WEBP_INT64_MAX;}
 
   return 1;
 }
@@ -407,12 +408,13 @@ static  func InsertInterval(/* const */ manager *CostManager, /*const*/ interval
     interval_new = manager.recycled_intervals;
     manager.recycled_intervals = interval_new.next;
   } else {  // malloc for good
-    interval_new = (*CostInterval)WebPSafeMalloc(1, sizeof(*interval_new));
-    if (interval_new == nil) {
-      // Write down the interval if we cannot create it.
-      UpdateCostPerInterval(manager, start, end, position, cost);
-      return;
-    }
+    // interval_new = (*CostInterval)WebPSafeMalloc(1, sizeof(*interval_new));
+    // if (interval_new == nil) {
+    //   // Write down the interval if we cannot create it.
+    //   UpdateCostPerInterval(manager, start, end, position, cost);
+    //   return;
+    // }
+	interval_new.next = new(CostInterval)
   }
 
   interval_new.cost = cost;
@@ -709,18 +711,14 @@ Error:
   return ok;
 }
 
-// Returns 1 on success.
-extern int VP8LBackwardReferencesTraceBackwards(
-    int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs);
-int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs) {
+func VP8LBackwardReferencesTraceBackwards(xsize int, ysize int, /*const*/ argb *uint32, int cache_bits, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs_src *VP8LBackwardRefs, /*const*/ refs_dst *VP8LBackwardRefs) int {
   ok := 0;
   dist_array_size := xsize * ysize;
-  chosen_path *uint16 = nil;
+  var chosen_path *uint16 = nil;
   chosen_path_size := 0;
-  dist_array *uint16 =
-      (*uint16)WebPSafeMalloc(dist_array_size, sizeof(*dist_array));
-
-  if dist_array == nil { goto Error }
+//   var dist_array *uint16 = (*uint16)WebPSafeMalloc(dist_array_size, sizeof(*dist_array));
+//   if dist_array == nil { goto Error }
+  dist_array = make([]uint16, dist_array_size)
 
   if (!BackwardReferencesHashChainDistanceOnly(
           xsize, ysize, argb, cache_bits, hash_chain, refs_src, dist_array)) {

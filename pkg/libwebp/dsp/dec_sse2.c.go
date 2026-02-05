@@ -969,7 +969,7 @@ func RD4_SSE2(dst *uint8) {  // Down-right
 //------------------------------------------------------------------------------
 // Luma 16x16
 
-static  func TrueMotion_SSE2(dst *uint8, int size) {
+static  func TrueMotion_SSE2(dst *uint8, size int) {
   var top *uint8 = dst - BPS;
   const __m128i zero = _mm_setzero_si128();
   var y int

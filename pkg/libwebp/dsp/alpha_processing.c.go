@@ -244,7 +244,7 @@ func ExtractAlpha_C(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, widt
   return (alpha_mask == 0xff);
 }
 
-func ExtractGreen_C(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
+func ExtractGreen_C(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, size int) {
   var i int
   for (i = 0; i < size; ++i) alpha[i] = argb[i] >> 8;
 }
@@ -303,7 +303,7 @@ func (*WebPApplyAlphaMultiply4444)(*uint8, int, int, int);
 int (*WebPDispatchAlpha)(/* const */ WEBP_RESTRICT *uint8, int, int, int, WEBP_RESTRICT *uint8, int);
 func (*WebPDispatchAlphaToGreen)(/* const */ WEBP_RESTRICT *uint8, int, int, int, WEBP_RESTRICT *uint32, int);
 int (*WebPExtractAlpha)(/* const */ WEBP_RESTRICT *uint8, int, int, int, WEBP_RESTRICT *uint8, int);
-func (*WebPExtractGreen)(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size);
+func (*WebPExtractGreen)(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, size int);
 #ifdef constants.WORDS_BIGENDIAN
 func (*WebPPackARGB)(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int, *uint32);
 #endif

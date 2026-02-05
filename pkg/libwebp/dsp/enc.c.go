@@ -221,14 +221,14 @@ func FTransformWHT_C(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *int
 //------------------------------------------------------------------------------
 // Intra predictions
 
-static  func Fill(dst *uint8, value int, int size) {
+static  func Fill(dst *uint8, value int, size int) {
   var j int
   for j = 0; j < size; j++ {
     stdlib.Memset(dst + j * BPS, value, size);
   }
 }
 
-static  func VerticalPred(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8, int size) {
+static  func VerticalPred(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int) {
   var j int
   if (top != nil) {
     for (j = 0; j < size; ++j) memcpy(dst + j * BPS, top, size);
@@ -237,7 +237,7 @@ static  func VerticalPred(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top 
   }
 }
 
-static  func HorizontalPred(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, int size) {
+static  func HorizontalPred(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, size int) {
   if (left != nil) {
     var j int
     for j = 0; j < size; j++ {
@@ -248,7 +248,7 @@ static  func HorizontalPred(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT le
   }
 }
 
-static  func TrueMotion(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, int size) {
+static  func TrueMotion(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int) {
   var y int
   if (left != nil) {
     if (top != nil) {
@@ -277,7 +277,7 @@ static  func TrueMotion(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *
   }
 }
 
-static  func DCMode(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, int size, int round, int shift) {
+static  func DCMode(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int, int round, int shift) {
   DC := 0;
   var j int
   if (top != nil) {

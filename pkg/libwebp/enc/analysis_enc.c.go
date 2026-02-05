@@ -13,36 +13,41 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/libwebp/decoder"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/enc"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/string"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
 
 const MAX_ITERS_K_MEANS =6
+const MAX_ALPHA =255                // 8b of precision for susceptibilities.
+const ALPHA_SCALE =(2 * MAX_ALPHA)  // scaling factor for alpha.
+const DEFAULT_ALPHA =(-1)
 
 //------------------------------------------------------------------------------
 // Smooth the segment map by replacing isolated block by the majority of its
 // neighbours.
 
 func SmoothSegmentMap(/* const */ enc *VP8Encoder) {
-  int n, x, y;
+  var n, x, y int
   w := enc.mb_w;
   h := enc.mb_h;
   majority_cnt_3_x_3_grid := 5;
-  var tmp *uint8 = (*uint8)WebPSafeMalloc(w * h, sizeof(*tmp));
-  assert.Assert((uint64)(w * h) == (uint64)w * h);  // no overflow, as per spec
+//   var tmp *uint8 = (*uint8)WebPSafeMalloc(w * h, sizeof(*tmp));
+	tmp = make([]uint8, w * h)
+	if tmp == nil { return }
 
-  if tmp == nil { return }
+//   assert.Assert(uint64(w * h) == uint64(w * h));  // no overflow, as per spec
+
   for y = 1; y < h - 1; y++ {
     for x = 1; x < w - 1; x++ {
-      int cnt[NUM_MB_SEGMENTS] = {0}
+      var cnt [NUM_MB_SEGMENTS]int
       var mb *VP8MBInfo = &enc.mb_info[x + w * y];
       majority_seg := mb.segment;
       // Check the 8 neighbouring segment values.
@@ -74,8 +79,8 @@ func SmoothSegmentMap(/* const */ enc *VP8Encoder) {
 //------------------------------------------------------------------------------
 // set segment susceptibility 'alpha' / 'beta'
 
-static  int clip(int v, int m, int M) {
-  return (v < m) ? m : (v > M) ? M : v;
+func clip(v, m, M int ) static {
+  return tenary.If(v < m, m, tenary.If(v > M, M, v));
 }
 
 func SetSegmentAlphas(/* const */ enc *VP8Encoder, /*const*/ int centers[NUM_MB_SEGMENTS], int mid) {
@@ -103,10 +108,10 @@ func SetSegmentAlphas(/* const */ enc *VP8Encoder, /*const*/ int centers[NUM_MB_
 // Compute susceptibility based on DCT-coeff histograms:
 // the higher, the "easier" the macroblock is to compress.
 
-const MAX_ALPHA =255                // 8b of precision for susceptibilities.
-const ALPHA_SCALE =(2 * MAX_ALPHA)  // scaling factor for alpha.
-const DEFAULT_ALPHA =(-1)
-#define IS_BETTER_ALPHA(alpha, best_alpha) ((alpha) > (best_alpha))
+
+func IS_BETTER_ALPHA(alpha, best_alpha int) int {
+	return ((alpha) > (best_alpha))
+}
 
 func FinalAlphaValue(int alpha) int {
   alpha = MAX_ALPHA - alpha;

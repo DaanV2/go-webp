@@ -125,7 +125,7 @@ func TransformTwo(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT dst *uint8,
   }
 }
 
-static  func FilterLoop26(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
+static  func FilterLoop26(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
   thresh2 := 2 * thresh + 1;
   int temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9;
   int temp10, temp11, temp12, temp13, temp14, temp15;
@@ -253,7 +253,7 @@ static  func FilterLoop26(p *uint8, int hstride, int vstride, int size, int thre
       : "memory");
 }
 
-static  func FilterLoop24(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
+static  func FilterLoop24(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
   int p0, q0, p1, q1, p2, q2, p3, q3;
   int step1, step2, temp1, temp2, temp3, temp4;
   pTemp *uint80;

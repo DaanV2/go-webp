@@ -124,9 +124,9 @@ type VP8LHashChain struct {
 }
 
 // Must be called first, to set size.
-int VP8LHashChainInit(/* const */ p *VP8LHashChain, int size);
+int VP8LHashChainInit(/* const */ p *VP8LHashChain, size int);
 // Pre-compute the best matches for argb. pic and percent are for progress.
-int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, int xsize, int ysize, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int);
+int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, xsize int, ysize int, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int);
 func VP8LHashChainClear(/* const */ p *VP8LHashChain);  // release memory
 
 static  int VP8LHashChainFindOffset(/* const */ p *VP8LHashChain, /*const*/ int base_position) {

@@ -168,7 +168,7 @@ func CollectColorRedTransforms_SSE2(/* const */ WEBP_RESTRICT argb *uint32, int 
 
 // Note we are adding uint32's as *int *signed32's (using _mm_add_epi32). But
 // that's ok since the histogram values are less than 1<<28 (max picture size).
-func AddVector_SSE2(/* const */ WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size) {
+func AddVector_SSE2(/* const */ WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, size int) {
   i := 0;
   aligned_size := size & ~15;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as
@@ -215,7 +215,7 @@ func AddVector_SSE2(/* const */ WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT
   }
 }
 
-func AddVectorEq_SSE2(/* const */ WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int size) {
+func AddVectorEq_SSE2(/* const */ WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, size int) {
   i := 0;
   aligned_size := size & ~15;
   // Size is, at minimum, NUM_DISTANCE_CODES (40) and may be as large as

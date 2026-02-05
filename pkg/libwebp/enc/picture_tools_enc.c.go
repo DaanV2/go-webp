@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const SIZE = 8
 const SIZE2 = (SIZE / 2)
-func IsTransparentARGBArea(/* const */ ptr *uint32, int stride, int size) int {
+func IsTransparentARGBArea(/* const */ ptr *uint32, int stride, size int) int {
   int y, x;
   for y = 0; y < size; y++ {
     for x = 0; x < size; x++ {
@@ -41,7 +41,7 @@ func IsTransparentARGBArea(/* const */ ptr *uint32, int stride, int size) int {
   return 1;
 }
 
-func Flatten(ptr *uint8, int v, int stride, int size) {
+func Flatten(ptr *uint8, int v, int stride, size int) {
   var y int
   for y = 0; y < size; y++ {
     stdlib.Memset(ptr, v, size);
@@ -49,7 +49,7 @@ func Flatten(ptr *uint8, int v, int stride, int size) {
   }
 }
 
-func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
+func FlattenARGB(ptr *uint32, uint32 v, int stride, size int) {
   var x, y int
   for y = 0; y < size; y++ {
     for (x = 0; x < size; ++x) ptr[x] = v;

@@ -177,9 +177,9 @@ extern VP8LGetEntropyUnrefinedFunc VP8LGetEntropyUnrefined;
 
 func VP8LBitsEntropyUnrefined(/* const */ WEBP_RESTRICT const array *uint32, int n, WEBP_RESTRICT const entropy *VP8LBitEntropy);
 
-typedef func (*VP8LAddVectorFunc)(/* const */ WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, int size);
+typedef func (*VP8LAddVectorFunc)(/* const */ WEBP_RESTRICT a *uint32, /*const*/ WEBP_RESTRICT b *uint32, WEBP_RESTRICT out *uint32, size int);
 extern VP8LAddVectorFunc VP8LAddVector;
-typedef func (*VP8LAddVectorEqFunc)(/* const */ WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, int size);
+typedef func (*VP8LAddVectorEqFunc)(/* const */ WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *uint32, size int);
 extern VP8LAddVectorEqFunc VP8LAddVectorEq;
 
 // -----------------------------------------------------------------------------

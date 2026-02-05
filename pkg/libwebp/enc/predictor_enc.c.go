@@ -906,7 +906,7 @@ func GetBestGreenRedToBlue(/* const */ argb *uint32, int stride, int tile_width,
 #undef kGreenRedToBlueNumAxis
 
 static VP8LMultipliers GetBestColorTransformForTile(
-    int tile_x, int tile_y, bits int, VP8LMultipliers prev_x, VP8LMultipliers prev_y, quality int, int xsize, int ysize, /*const*/ uint32 accumulated_red_histo[256], /*const*/ uint32 accumulated_blue_histo[256], /*const*/ argb *uint32) {
+    int tile_x, int tile_y, bits int, VP8LMultipliers prev_x, VP8LMultipliers prev_y, quality int, xsize int, ysize int, /*const*/ uint32 accumulated_red_histo[256], /*const*/ uint32 accumulated_blue_histo[256], /*const*/ argb *uint32) {
   max_tile_size := 1 << bits;
   tile_y_offset := tile_y * max_tile_size;
   tile_x_offset := tile_x * max_tile_size;
@@ -924,7 +924,7 @@ static VP8LMultipliers GetBestColorTransformForTile(
   return best_tx;
 }
 
-func CopyTileWithColorTransform(int xsize, int ysize, int tile_x, int tile_y, int max_tile_size, VP8LMultipliers color_transform, argb *uint32) {
+func CopyTileWithColorTransform(xsize int, ysize int, int tile_x, int tile_y, int max_tile_size, VP8LMultipliers color_transform, argb *uint32) {
   xscan := GetMin(max_tile_size, xsize - tile_x);
   yscan := GetMin(max_tile_size, ysize - tile_y);
   argb += tile_y * xsize + tile_x;

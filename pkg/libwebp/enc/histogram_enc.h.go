@@ -72,7 +72,7 @@ func VP8LHistogramStoreRefs(/* const */ refs *VP8LBackwardRefs, int (distance_mo
 
 // Allocate an array of pointer to histograms, allocated and initialized
 // using 'cache_bits'. Return nil in case of memory error.
-VP *VP8LHistogramSet8LAllocateHistogramSet(int size, int cache_bits);
+VP *VP8LHistogramSet8LAllocateHistogramSet(size int, int cache_bits);
 
 // Set the histograms in set to 0.
 func VP8LHistogramSetClear(/* const */ set *VP8LHistogramSet);
@@ -89,7 +89,7 @@ static  int VP8LHistogramNumCodes(int palette_code_bits) {
 
 // Builds the histogram image. pic and percent are for progress.
 // Returns false in case of error (stored in pic.error_code).
-int VP8LGetHistoImageSymbols(int xsize, int ysize, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int);
+int VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, int histogram_bits, int cache_bits, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int);
 
 // Returns the entropy for the symbols in the input array.
 uint64 VP8LBitsEntropy(/* const */ array *uint32, int n);

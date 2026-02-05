@@ -115,7 +115,7 @@ int VP8IteratorProgress(/* const */ it *VP8EncIterator, int delta) {
 
 static  int MinSize(int a, int b) { return (a < b) ? a : b; }
 
-func ImportBlock(/* const */ src *uint8, int src_stride, dst *uint8, int w, int h, int size) {
+func ImportBlock(/* const */ src *uint8, int src_stride, dst *uint8, int w, int h, size int) {
   var i int
   for i = 0; i < h; i++ {
     memcpy(dst, src, w);

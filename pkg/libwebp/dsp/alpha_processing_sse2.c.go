@@ -149,7 +149,7 @@ func ExtractAlpha_SSE2(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, w
   return (alpha_and == 0xff);
 }
 
-func ExtractGreen_SSE2(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, int size) {
+func ExtractGreen_SSE2(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha *uint8, size int) {
   var i int
   const __m128i mask = _mm_set1_epi32(0xff);
   var __src *m128i = (/* const */ __*m128i)argb;

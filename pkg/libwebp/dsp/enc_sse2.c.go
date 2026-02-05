@@ -620,7 +620,7 @@ static  func Put16_SSE2(uint8 v, dst *uint8) {
   }
 }
 
-static  func Fill_SSE2(dst *uint8, value int, int size) {
+static  func Fill_SSE2(dst *uint8, value int, size int) {
   if (size == 4) {
     var j int
     for j = 0; j < 4; j++ {
@@ -649,7 +649,7 @@ static  func VE16_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *ui
   }
 }
 
-static  func VerticalPred_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8, int size) {
+static  func VerticalPred_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int) {
   if (top != nil) {
     if (size == 8) {
       VE8uv_SSE2(dst, top);
@@ -679,7 +679,7 @@ static  func HE16_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *u
   }
 }
 
-static  func HorizontalPred_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, int size) {
+static  func HorizontalPred_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, size int) {
   if (left != nil) {
     if (size == 8) {
       HE8uv_SSE2(dst, left);
@@ -691,7 +691,7 @@ static  func HorizontalPred_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRI
   }
 }
 
-static  func TM_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, int size) {
+static  func TM_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int) {
   const __m128i zero = _mm_setzero_si128();
   var y int
   if (size == 8) {
@@ -718,7 +718,7 @@ static  func TM_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uin
   }
 }
 
-static  func TrueMotion_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, int size) {
+static  func TrueMotion_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8, size int) {
   if (left != nil) {
     if (top != nil) {
       TM_SSE2(dst, left, top, size);

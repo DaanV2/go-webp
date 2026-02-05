@@ -1180,7 +1180,7 @@ func DC4_NEON(dst *uint8) {       // DC
 }
 
 // TrueMotion (4x4 + 8x8)
-static  func TrueMotion_NEON(dst *uint8, int size) {
+static  func TrueMotion_NEON(dst *uint8, size int) {
   const uint8x8_t TL = vld1_dup_u8(dst - BPS - 1);  // top-left pixel 'A[-1]'
   const uint8x8_t T = vld1_u8(dst - BPS);           // top row 'A[0..3]'
   const uint16x8_t d = vsubl_u8(T, TL);             // A[c] - A[-1]

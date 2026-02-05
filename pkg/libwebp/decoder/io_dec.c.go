@@ -466,10 +466,9 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   uv_in_height := (io.mb_h + 1) >> 1;
   // scratch memory for one rescaler
   work_size := 2 * (uint64)out_width;
-  rescaler_t* work;  // rescalers work area
-  *uint8
-      tmp;  // tmp storage for scaled YUV444 samples before RGB conversion
-  uint64 tmp_size1, tmp_size2, total_size;
+  var work rescaler_t*   // rescalers work area
+  var tmp *uint8// tmp storage for scaled YUV444 samples before RGB conversion
+  var tmp_size1, tmp_size2, total_size uint64
   var rescaler_size uint64
   scalers *WebPRescaler;
   num_rescalers := tenary.If(has_alpha, 4, 3);
@@ -483,10 +482,12 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
     return 0;
   }
 
-  work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size);
-  if (work == nil) {
-    return 0;  // memory error
-  }
+//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size);
+//   if (work == nil) {
+//     return 0;  // memory error
+//   }
+  work := make([]rescaler_t, total_size)
+
   p.memory = work;
   tmp = (*uint8)(work + tmp_size1);
 
@@ -564,6 +565,7 @@ func CustomSetup(io *VP8Io) int {
         if (p.memory == nil) {
           return 0;  // memory error.
         }
+
         p.tmp_y = (*uint8)p.memory;
         p.tmp_u = p.tmp_y + io.mb_w;
         p.tmp_v = p.tmp_u + uv_width;

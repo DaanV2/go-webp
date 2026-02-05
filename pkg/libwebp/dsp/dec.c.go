@@ -177,7 +177,7 @@ VP8WHT VP8TransformWHT;
 #define DST(x, y) dst[(x) + (y) * BPS]
 
 #if !WEBP_NEON_OMIT_C_CODE
-static  func TrueMotion(dst *uint8, int size) {
+static  func TrueMotion(dst *uint8, size int) {
   var top *uint8 = dst - BPS;
   var clip *uint80 = VP8kclip1 - top[-1];
   var y int
@@ -592,7 +592,7 @@ func SimpleHFilter16i_C(p *uint8, int stride, int thresh) {
 // Complex In-loop filtering (Paragraph 15.3)
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
-static  func FilterLoop26_C(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
+static  func FilterLoop26_C(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
   thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (NeedsFilter2_C(p, hstride, thresh2, ithresh)) {
@@ -606,7 +606,7 @@ static  func FilterLoop26_C(p *uint8, int hstride, int vstride, int size, int th
   }
 }
 
-static  func FilterLoop24_C(p *uint8, int hstride, int vstride, int size, int thresh, int ithresh, int hev_thresh) {
+static  func FilterLoop24_C(p *uint8, int hstride, int vstride, size int, int thresh, int ithresh, int hev_thresh) {
   thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (NeedsFilter2_C(p, hstride, thresh2, ithresh)) {
