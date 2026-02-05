@@ -673,7 +673,7 @@ int VP8GetThreadMethod(/* const */ options *WebPDecoderOptions, /*const*/ header
 //------------------------------------------------------------------------------
 // Memory setup
 
-static int AllocateMemory(/* const */ dec *VP8Decoder) {
+func AllocateMemory(/* const */ dec *VP8Decoder) int {
   num_caches := dec.num_caches;
   mb_w := dec.mb_w;
   // Note: we use 'uint64' when there's no overflow risk, uint64 otherwise.
