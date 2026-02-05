@@ -17,12 +17,14 @@ const (
 )
 
 var kMasterChunks []ChunkParser = []ChunkParser{
-    {[4]uint8{'V', 'P', '8', ' '}, ParseSingleImage, IsValidSimpleFormat},
-    {[4]uint8{'V', 'P', '8', 'L'}, ParseSingleImage, IsValidSimpleFormat},
-    {[4]uint8{'V', 'P', '8', 'X'}, ParseVP8X, IsValidExtendedFormat},
-    {[4]uint8{'0', '0', '0', '0'}, nil, nil},
+	{[4]uint8{'V', 'P', '8', ' '}, ParseSingleImage, IsValidSimpleFormat},
+	{[4]uint8{'V', 'P', '8', 'L'}, ParseSingleImage, IsValidSimpleFormat},
+	{[4]uint8{'V', 'P', '8', 'X'}, ParseVP8X, IsValidExtendedFormat},
+	{[4]uint8{'0', '0', '0', '0'}, nil, nil},
 }
 
+// Returns the version number of the demux library, packed in hexadecimal using
+// 8bits for each of major/minor/revision. E.g: v2.5.7 is 0x020507.
 func WebPGetDemuxVersion() int {
-  return (DMUX_MAJ_VERSION << 16) | (DMUX_MIN_VERSION << 8) | DMUX_REV_VERSION
+	return (DMUX_MAJ_VERSION << 16) | (DMUX_MIN_VERSION << 8) | DMUX_REV_VERSION
 }

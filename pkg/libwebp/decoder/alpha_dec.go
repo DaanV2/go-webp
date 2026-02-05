@@ -1,5 +1,3 @@
-package decoder
-
 // Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -8,22 +6,7 @@ package decoder
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
 
-
-import (
-	"github.com/daanv2/go-webp/pkg/assert"
-	"github.com/daanv2/go-webp/pkg/stdlib"
-	"github.com/daanv2/go-webp/pkg/libwebp/dec"
-	"github.com/daanv2/go-webp/pkg/libwebp/dec"
-	"github.com/daanv2/go-webp/pkg/libwebp/dec"
-	"github.com/daanv2/go-webp/pkg/libwebp/dec"
-	"github.com/daanv2/go-webp/pkg/libwebp/dec"
-	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
-	"github.com/daanv2/go-webp/pkg/libwebp/utils"
-	"github.com/daanv2/go-webp/pkg/libwebp/utils"
-	"github.com/daanv2/go-webp/pkg/libwebp/webp"
-	"github.com/daanv2/go-webp/pkg/libwebp/webp"
-	"github.com/daanv2/go-webp/pkg/libwebp/webp"
-)
+package decoder
 
 
 //------------------------------------------------------------------------------

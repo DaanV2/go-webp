@@ -10,6 +10,7 @@ package demux
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/libwebp/webp"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
@@ -104,11 +105,11 @@ func WebPAnimDecoder( /* const */ webp_data *WebPData /* const */, dec_options *
 		goto Error
 	}
 
-	dec.info.canvas_width = WebPDemuxGetI(dec.demux, WEBP_FF_CANVAS_WIDTH)
-	dec.info.canvas_height = WebPDemuxGetI(dec.demux, WEBP_FF_CANVAS_HEIGHT)
-	dec.info.loop_count = WebPDemuxGetI(dec.demux, WEBP_FF_LOOP_COUNT)
-	dec.info.bgcolor = WebPDemuxGetI(dec.demux, WEBP_FF_BACKGROUND_COLOR)
-	dec.info.frame_count = WebPDemuxGetI(dec.demux, WEBP_FF_FRAME_COUNT)
+	dec.info.canvas_width = WebPDemuxGetI(dec.demux, constants.WEBP_FF_CANVAS_WIDTH)
+	dec.info.canvas_height = WebPDemuxGetI(dec.demux, constants.WEBP_FF_CANVAS_HEIGHT)
+	dec.info.loop_count = WebPDemuxGetI(dec.demux, constants.WEBP_FF_LOOP_COUNT)
+	dec.info.bgcolor = WebPDemuxGetI(dec.demux, constants.WEBP_FF_BACKGROUND_COLOR)
+	dec.info.frame_count = WebPDemuxGetI(dec.demux, constants.WEBP_FF_FRAME_COUNT)
 
 	// Note: calloc() because we fill frame with zeroes as well.
 	dec.curr_frame = make([]uint8, dec.info.canvas_width*dec.info.canvas_height*NUM_CHANNELS)

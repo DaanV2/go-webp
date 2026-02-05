@@ -19,9 +19,9 @@ import (
 // the huffman table.
 // Returns built table size or 0 in case of error (invalid tree or
 // memory error).
-func VP8LBuildHuffmanTable(root_table *HuffmanTables, root_bits int, code_lengths []int, code_lengths_size int) int {
-  total_size := BuildHuffmanTable(nil, root_bits, code_lengths, code_lengths_size, nil);
-  assert.Assert(code_lengths_size <= MAX_CODE_LENGTHS_SIZE);
+func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, code_lengths []int, code_lengths_size int) int {
+  total_size := huffman.BuildHuffmanTable(nil, root_bits, code_lengths, code_lengths_size, nil);
+  assert.Assert(code_lengths_size <= huffman.MAX_CODE_LENGTHS_SIZE);
   if total_size == 0 || root_table == nil { {return total_size }}
 
   if (root_table.curr_segment.curr_table + total_size >=
@@ -32,7 +32,7 @@ func VP8LBuildHuffmanTable(root_table *HuffmanTables, root_bits int, code_length
     segment_size := root_table.curr_segment.size;
     // next *HuffmanTablesSegment = (*HuffmanTablesSegment)WebPSafeMalloc(1, sizeof(*next));
     // if next == nil { { return 0 } }
-	next := new(HuffmanTablesSegment)
+	next := new(huffman.HuffmanTablesSegment)
 
     // Fill the new segment.
     // We need at least 'total_size' but if that value is small, it is better to
@@ -59,7 +59,7 @@ func VP8LBuildHuffmanTable(root_table *HuffmanTables, root_bits int, code_length
     // use local stack-allocated array.
     var sorted [huffman.SORTED_SIZE_CUTOFF]uint16
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
-    huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted);
+    huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted[:]);
   } else {  // rare case. Use heap allocation.
     // const sorted *uint16 = (*uint16)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
     // if sorted == nil { { return 0 } }

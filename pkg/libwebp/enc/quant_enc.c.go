@@ -914,7 +914,7 @@ func SwapModeScore(*VP8ModeScore* a, *VP8ModeScore* b) {
   *b = tmp;
 }
 
-func SwapPtr(*uint8* a, *uint8* b) {
+func SwapPtr(a *uint8, *uint8* b) {
   var tmp *uint8 = *a;
   *a = *b;
   *b = tmp;

@@ -577,10 +577,20 @@ func DecodeIntoRGBABuffer(colorspace WEBP_CSP_MODE, data *uint8, data_size uint6
 	return rgba
 }
 
+// RGB and BGR variants. Here too the transparency information, if present,
+// will be dropped and ignored.
 func WebPDecodeRGBInto( /* const */ data *uint8, data_size uint64, output *uint8, size uint64, stride int) *uint8 {
 	return DecodeIntoRGBABuffer(MODE_RGB, data, data_size, output, stride, size)
 }
 
+// These five functions are variants of the above ones, that decode the image
+// directly into a pre-allocated buffer 'output_buffer'. The maximum storage
+// available in this buffer is indicated by 'output_buffer_size'. If this
+// storage is not sufficient (or an error occurred), nil is returned.
+// Otherwise, output_buffer is returned, for convenience.
+// The parameter 'output_stride' specifies the distance (in bytes)
+// between scanlines. Hence, output_buffer_size is expected to be at least
+// output_stride x picture-height.
 func WebPDecodeRGBAInto( /* const */ data *uint8, data_size uint64, output *uint8, size uint64, stride int) *uint8 {
 	return DecodeIntoRGBABuffer(MODE_RGBA, data, data_size, output, stride, size)
 }
@@ -597,6 +607,13 @@ func WebPDecodeBGRAInto( /* const */ data *uint8, data_size uint64, output *uint
 	return DecodeIntoRGBABuffer(MODE_BGRA, data, data_size, output, stride, size)
 }
 
+// WebPDecodeYUVInto() is a variant of WebPDecodeYUV() that operates directly
+// into pre-allocated luma/chroma plane buffers. This function requires the
+// strides to be passed: one for the luma plane and one for each of the
+// chroma ones. The size of each plane buffer is passed as 'luma_size',
+// 'u_size' and 'v_size' respectively.
+// Pointer to the luma plane ('*luma') is returned or nil if an error occurred
+// during decoding (or because some buffers were found to be too small).
 func WebPDecodeYUVInto( /* const */ data *uint8, data_size uint64, luma *uint8, luma_size uint64, luma_stride int, u *uint8, u_size uint64, u_stride int, v *uint8, v_size uint64, v_stride int) *uint8 {
 	var params WebPDecParams
 	var output WebPDecBuffer
@@ -657,26 +674,46 @@ func Decode(mode WEBP_CSP_MODE /*const*/, data *uint8, data_size uint64 /*const*
 	return tenary.If(WebPIsRGBMode(mode), output.u.RGBA.rgba, output.u.YUVA.y)
 }
 
+// Same as WebPDecodeRGBA, but returning R, G, B, R, G, B... ordered data.
+// If the bitstream contains transparency, it is ignored.
 func WebPDecodeRGB( /* const */ data *uint8, data_size uint64, width *int, height *int) *uint8 {
 	return Decode(MODE_RGB, data, data_size, width, height, nil)
 }
 
+// Decodes WebP images pointed to by 'data' and returns RGBA samples, along
+// with the dimensions in and *width *height. The ordering of samples in
+// memory is R, G, B, A, R, G, B, A... in scan order (endian-independent).
+// The returned pointer should be deleted calling WebPFree().
+// Returns nil in case of error.
 func WebPDecodeRGBA( /* const */ data *uint8, data_size uint64, width *int, height *int) *uint8 {
 	return Decode(MODE_RGBA, data, data_size, width, height, nil)
 }
 
+// Same as WebPDecodeRGBA, but returning A, R, G, B, A, R, G, B... ordered data.
 func WebPDecodeARGB( /* const */ data *uint8, data_size uint64, width *int, height *int) *uint8 {
 	return Decode(MODE_ARGB, data, data_size, width, height, nil)
 }
 
+// Same as WebPDecodeRGB, but returning B, G, R, B, G, R... ordered data.
 func WebPDecodeBGR( /* const */ data *uint8, data_size uint64, width *int, height *int) *uint8 {
 	return Decode(MODE_BGR, data, data_size, width, height, nil)
 }
 
+// Same as WebPDecodeRGBA, but returning B, G, R, A, B, G, R, A... ordered data.
 func WebPDecodeBGRA( /* const */ data *uint8, data_size uint64, width *int, height *int) *uint8 {
 	return Decode(MODE_BGRA, data, data_size, width, height, nil)
 }
 
+// Decode WebP images pointed to by 'data' to Y'UV format(*). The pointer
+// returned is the Y samples buffer. Upon return, and will point *u to *v
+// the U and V chroma data. These U and V buffers need NOT be passed to
+// WebPFree(), unlike the returned Y luma one. The dimension of the U and V
+// planes are both (*width + 1) / 2 and (*height + 1) / 2.
+// Upon return, the Y buffer has a stride returned as '*stride', while U and V
+// have a common stride returned as '*uv_stride'.
+// 'width' and 'height' may be nil, the other pointers must not be.
+// Returns nil in case of error.
+// (*) Also named Y'CbCr. See: https://en.wikipedia.org/wiki/YCbCr
 func WebPDecodeYUV( /* const */ data *uint8, data_size uint64, width *int, height *int, u *uint8, v *uint8, stride *int, uv_stride *int) *uint8 {
 	// data, width and height are checked by Decode().
 	if u == nil || v == nil || stride == nil || uv_stride == nil {
@@ -715,9 +752,17 @@ func GetFeatures( /* const */ data *uint8, data_size uint64 /*const*/, features 
 		data, data_size, &features.width, &features.height, &features.has_alpha, &features.has_animation, &features.format, nil)
 }
 
-//------------------------------------------------------------------------------
-// WebPGetInfo()
 
+// Retrieve basic header information: width, height.
+// This function will also validate the header, returning true on success,
+// false otherwise. '*width' and '*height' are only valid on successful return.
+// Pointers 'width' and 'height' can be passed nil if deemed irrelevant.
+// Note: The following chunk sequences (before the raw VP8/VP8L data) are
+// considered valid by this function:
+// RIFF + VP8(L)
+// RIFF + VP8X + (optional chunks) + VP8(L)
+// ALPH + VP8 <-- Not a valid WebP format: only allowed for internal purpose.
+// VP8(L)     <-- Not a valid WebP format: only allowed for internal purpose.
 func WebPGetInfo( /* const */ data *uint8, data_size uint64, width *int, height *int) int {
 	var features WebPBitstreamFeatures
 
@@ -758,8 +803,19 @@ func WebPCheckCropDimensionsBasic(x, y, w, h int) bool {
 	return (x < 0 || y < 0 || w <= 0 || h <= 0)
 }
 
+// Instantiate a new incremental decoder object with the requested
+// configuration. The bitstream can be passed using 'data' and 'data_size'
+// parameter, in which case the features will be parsed and stored into
+// config.input. Otherwise, 'data' can be nil and no parsing will occur.
+// Note that 'config' can be nil too, in which case a default configuration
+// is used. If 'config' is not nil, it must outlive the WebPIDecoder object
+// as some references to its fields will be used. No internal copy of 'config'
+// is made.
+// The return WebPIDecoder object must always be deleted calling WebPIDelete().
+// Returns nil in case of error (and config.status will then reflect
+// the error condition, if available).
 func WebPValidateDecoderConfig( /* const */ config *WebPDecoderConfig) int {
-	const options *WebPDecoderOptions
+	var options *WebPDecoderOptions
 	if config == nil {
 		return 0
 	}
@@ -816,6 +872,9 @@ func WebPGetFeaturesInternal( /* const */ data *uint8, data_size uint64, feature
 	return GetFeatures(data, data_size, features)
 }
 
+// Non-incremental version. This version decodes the full data at once, taking
+// 'config' into account. Returns decoding status (which should be VP8_STATUS_OK
+// if the decoding was successful). Note that 'config' cannot be nil.
 func WebPDecode( /* const */ data *uint8, data_size uint64, config *WebPDecoderConfig) vp8.VP8StatusCode {
 	var params WebPDecParams
 	var status vp8.VP8StatusCode

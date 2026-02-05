@@ -696,6 +696,7 @@ func WebPDemuxerFn(/* const */ data *WebPData, allow_partial int, state *WebPDem
   return dmux
 }
 
+// Frees memory associated with 'dmux'.
 func WebPDemuxDelete(dmux *WebPDemuxer) {
   c *Chunk
   f *Frame
@@ -711,8 +712,13 @@ func WebPDemuxDelete(dmux *WebPDemuxer) {
   }
 }
 
-// -----------------------------------------------------------------------------
-
+// Get the 'feature' value from the 'dmux'.
+// NOTE: values are only valid if WebPDemux() was used or WebPDemuxPartial()
+// returned a state > WEBP_DEMUX_PARSING_HEADER.
+// If 'feature' is WEBP_FF_FORMAT_FLAGS, the returned value is a bit-wise
+// combination of WebPFeatureFlags values.
+// If 'feature' is WEBP_FF_LOOP_COUNT, WEBP_FF_BACKGROUND_COLOR, the returned
+// value is only meaningful if the bitstream is animated.
 func WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature) uint32 {
   if (dmux == nil) { return 0 }
 
@@ -803,7 +809,13 @@ func SetFrame(frame_num int, /*const*/ iter *WebPIterator) int {
   return SynthesizeFrame(dmux, frame, iter)
 }
 
-int WebPDemuxGetFrame(/* const */ dmux *WebPDemuxer, int frame, iter *WebPIterator) {
+// Retrieves frame 'frame_number' from 'dmux'.
+// 'iter.fragment' points to the frame on return from this function.
+// Setting 'frame_number' equal to 0 will return the last frame of the image.
+// Returns false if 'dmux' is nil or frame 'frame_number' is not present.
+// Call WebPDemuxReleaseIterator() when use of the iterator is complete.
+// NOTE: 'dmux' must persist for the lifetime of 'iter'.
+func WebPDemuxGetFrame(/* const */ dmux *WebPDemuxer, frame int , iter *WebPIterator) int {
   if (iter == nil) { return 0 }
 
   stdlib.Memset(iter, 0, sizeof(*iter))
@@ -811,17 +823,24 @@ int WebPDemuxGetFrame(/* const */ dmux *WebPDemuxer, int frame, iter *WebPIterat
   return SetFrame(frame, iter)
 }
 
-int WebPDemuxNextFrame(iter *WebPIterator) {
+// Sets 'iter.fragment' to point to the next ('iter.frame_num' + 1) or
+// previous ('iter.frame_num' - 1) frame. These functions do not loop.
+// Returns true on success, false otherwise.
+func WebPDemuxNextFrame(iter *WebPIterator) int {
   if (iter == nil) { return 0 }
   return SetFrame(iter.frame_num + 1, iter)
 }
 
-int WebPDemuxPrevFrame(iter *WebPIterator) {
+func WebPDemuxPrevFrame(iter *WebPIterator) int {
   if (iter == nil) { return 0 }
   if (iter.frame_num <= 1) { return 0 }
   return SetFrame(iter.frame_num - 1, iter)
 }
 
+// Releases any memory associated with 'iter'.
+// Must be called before any subsequent calls to WebPDemuxGetChunk() on the same
+// iter. Also, must be called before destroying the associated WebPDemuxer with
+// WebPDemuxDelete().
 func WebPDemuxReleaseIterator(iter *WebPIterator) { (void)iter }
 
 // -----------------------------------------------------------------------------
@@ -871,7 +890,16 @@ func SetChunk(/* const */ byte fourcc[4], int chunk_num, /*const*/ iter *WebPChu
   return 0
 }
 
-int WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num, iter *WebPChunkIterator) {
+// Retrieves the 'chunk_number' instance of the chunk with id 'fourcc' from
+// 'dmux'.
+// 'fourcc' is a character array containing the fourcc of the chunk to return,
+// e.g., "ICCP", "XMP ", "EXIF", etc.
+// Setting 'chunk_number' equal to 0 will return the last chunk in a set.
+// Returns true if the chunk is found, false otherwise. Image related chunk
+// payloads are accessed through WebPDemuxGetFrame() and related functions.
+// Call WebPDemuxReleaseChunkIterator() when use of the iterator is complete.
+// NOTE: 'dmux' must persist for the lifetime of the iterator.
+func WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num, iter *WebPChunkIterator) int {
   if (iter == nil) { return 0 }
 
   stdlib.Memset(iter, 0, sizeof(*iter))

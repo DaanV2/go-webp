@@ -94,8 +94,6 @@ func (mode WEBP_CSP_MODE) IsRGBMode() bool {
 //------------------------------------------------------------------------------
 // Enumeration of the status codes
 
-
-
 // Error codes
 type WebPMuxError int
 
@@ -106,4 +104,32 @@ const (
 	WEBP_MUX_BAD_DATA         WebPMuxError = -2
 	WEBP_MUX_MEMORY_ERROR     WebPMuxError = -3
 	WEBP_MUX_NOT_ENOUGH_DATA  WebPMuxError = -4
+)
+
+type WebPDemuxState int
+
+const (
+	WEBP_DEMUX_PARSE_ERROR    WebPDemuxState = -1 // An error occurred while parsing.
+	WEBP_DEMUX_PARSING_HEADER WebPDemuxState = 0  // Not enough data to parse full header.
+	WEBP_DEMUX_PARSED_HEADER  WebPDemuxState = 1  // Header parsing complete, // data may be available.
+	WEBP_DEMUX_DONE           WebPDemuxState = 2  // Entire file has been parsed.
+)
+
+type WebPFormatFeature int
+
+const (
+	// bit-wise combination of WebPFeatureFlags
+	// corresponding to the 'VP8X' chunk (if present).
+	WEBP_FF_FORMAT_FLAGS WebPFormatFeature = iota
+	WEBP_FF_CANVAS_WIDTH
+	WEBP_FF_CANVAS_HEIGHT
+	// only relevant for animated file
+	WEBP_FF_LOOP_COUNT
+	// idem.
+	WEBP_FF_BACKGROUND_COLOR
+	// Number of frames present in the demux object.
+	// In case of a partial demux, this is the number
+	// of frames seen so far, with the last frame
+	// possibly being partial.
+	WEBP_FF_FRAME_COUNT
 )

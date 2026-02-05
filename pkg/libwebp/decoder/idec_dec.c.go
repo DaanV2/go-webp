@@ -659,14 +659,23 @@ func NewDecoder (/* const */ output_buffer *WebPDecBuffer, /*const*/ features *W
   return idec;
 }
 
-//------------------------------------------------------------------------------
-// Public functions
-
-WebPINewDecoder *WebPIDecoder(output_buffer *WebPDecBuffer) {
+// Creates a new incremental decoder with the supplied buffer parameter.
+// This output_buffer can be passed nil, in which case a default output buffer
+// is used (with MODE_RGB). Otherwise, an internal reference to 'output_buffer'
+// is kept, which means that the lifespan of 'output_buffer' must be larger than
+// that of the returned WebPIDecoder object.
+// The supplied 'output_buffer' content MUST NOT be changed between calls to
+// WebPIAppend() or WebPIUpdate() unless 'output_buffer.is_external_memory' is
+// not set to 0. In such a case, it is allowed to modify the pointers, size and
+// stride of output_buffer.u.RGBA or output_buffer.u.YUVA, provided they remain
+// within valid bounds.
+// All other fields of WebPDecBuffer MUST remain constant between calls.
+// Returns nil if the allocation failed.
+func WebPINewDecoder (output_buffer *WebPDecBuffer) *WebPIDecoder {
   return NewDecoder(output_buffer, nil);
 }
 
-WebPIDecode *WebPIDecoder(/* const */ *uint8  data, data_size uint64, config *WebPDecoderConfig) {
+WebPIDecode *WebPIDecoder(/* const */ data *uint8, data_size uint64, config *WebPDecoderConfig) {
   idec *WebPIDecoder;
   WebPBitstreamFeatures tmp_features;
   const features *WebPBitstreamFeatures =
@@ -693,6 +702,8 @@ WebPIDecode *WebPIDecoder(/* const */ *uint8  data, data_size uint64, config *We
   return idec;
 }
 
+// Deletes the WebPIDecoder object and associated memory. Must always be called
+// if WebPINewDecoder, WebPINewRGB or WebPINewYUV succeeded.
 func WebPIDelete(idec *WebPIDecoder) {
   if idec == nil { return }
   if (idec.dec != nil) {
@@ -712,12 +723,21 @@ func WebPIDelete(idec *WebPIDecoder) {
 //------------------------------------------------------------------------------
 // Wrapper toward WebPINewDecoder
 
-WebPINewRGB *WebPIDecoder(WEBP_CSP_MODE csp, *uint8 
-                              output_buffer, uint64 output_buffer_size, int output_stride) {
+// This function allocates and initializes an incremental-decoder object, which
+// will output the RGB/A samples specified by 'csp' into a preallocated
+// buffer 'output_buffer'. The size of this buffer is at least
+// 'output_buffer_size' and the stride (distance in bytes between two scanlines)
+// is specified by 'output_stride'.
+// Additionally, output_buffer can be passed nil in which case the output
+// buffer will be allocated automatically when the decoding starts. The
+// colorspace 'csp' is taken into account for allocating this buffer. All other
+// parameters are ignored.
+// Returns nil if the allocation failed, or if some parameters are invalid.
+func WebPINewRGB(csp WEBP_CSP_MODE , output_buffer *uint8, output_buffer_size uint64 , output_stride int ) *WebPIDecoder {
   is_external_memory := (output_buffer != nil) ? 1 : 0;
   idec *WebPIDecoder;
 
-  if csp >= MODE_YUV { { return nil } }
+  if csp >= MODE_YUV { return nil }
   if (is_external_memory == 0) {  // Overwrite parameters to sane values.
     output_buffer = nil;
     output_buffer_size = 0;
@@ -737,7 +757,19 @@ WebPINewRGB *WebPIDecoder(WEBP_CSP_MODE csp, *uint8
   return idec;
 }
 
-WebPINewYUVA *WebPIDecoder(*uint8  luma, uint64 luma_size, int luma_stride, u *uint8, u_size uint64, u_stride int, v *uint8, v_size uint64, v_stride int, a *uint8, a_size uint64, a_stride int) {
+
+// This function allocates and initializes an incremental-decoder object, which
+// will output the raw luma/chroma samples into a preallocated planes if
+// supplied. The luma plane is specified by its pointer 'luma', its size
+// 'luma_size' and its stride 'luma_stride'. Similarly, the chroma-u plane
+// is specified by the 'u', 'u_size' and 'u_stride' parameters, and the chroma-v
+// plane by 'v' and 'v_size'. And same for the alpha-plane. The 'a' pointer
+// can be pass nil in case one is not interested in the transparency plane.
+// Conversely, 'luma' can be passed nil if no preallocated planes are supplied.
+// In this case, the output buffer will be automatically allocated (using
+// MODE_YUVA) when decoding starts. All parameters are then ignored.
+// Returns nil if the allocation failed or if a parameter is invalid.
+func WebPINewYUVA(luma *uint8, luma_size uint64, luma_stride int, u *uint8, u_size uint64, u_stride int, v *uint8, v_size uint64, v_stride int, a *uint8, a_size uint64, a_stride int) *WebPIDecoder {
   is_external_memory := (luma != nil) ? 1 : 0;
   idec *WebPIDecoder;
   WEBP_CSP_MODE colorspace;
@@ -783,13 +815,15 @@ WebPINewYUVA *WebPIDecoder(*uint8  luma, uint64 luma_size, int luma_stride, u *u
   return idec;
 }
 
-WebPINewYUV *WebPIDecoder(*uint8  luma, uint64 luma_size, int luma_stride, u *uint8, u_size uint64, u_stride int, v *uint8, v_size uint64, v_stride int) {
+// Deprecated version of the above, without the alpha plane.
+// Kept for backward compatibility.
+func WebPINewYUV(luma *uint8, luma_size uint64, luma_stride int, u *uint8, u_size uint64, u_stride int, v *uint8, v_size uint64, v_stride int) *WebPIDecoder {
   return WebPINewYUVA(luma, luma_size, luma_stride, u, u_size, u_stride, v, v_size, v_stride, nil, 0, 0);
 }
 
 //------------------------------------------------------------------------------
 
-static VP8StatusCode IDecCheckStatus(/* const */ idec *WebPIDecoder) {
+func IDecCheckStatus(/* const */ idec *WebPIDecoder) vp8.VP8StatusCode {
   assert.Assert(idec);
   if (idec.state == STATE_ERROR) {
     return VP8_STATUS_BITSTREAM_ERROR;
@@ -800,7 +834,10 @@ static VP8StatusCode IDecCheckStatus(/* const */ idec *WebPIDecoder) {
   return VP8_STATUS_SUSPENDED;
 }
 
-VP8StatusCode WebPIAppend(idec *WebPIDecoder, /*const*/ *uint8  data, data_size uint64) {
+// Copies and decodes the next available data. Returns VP8_STATUS_OK when
+// the image is successfully decoded. Returns VP8_STATUS_SUSPENDED when more
+// data is expected. Returns error in other cases.
+func WebPIAppend(idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) vp8.VP8StatusCode {
   var status VP8StatusCode
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
@@ -820,7 +857,12 @@ VP8StatusCode WebPIAppend(idec *WebPIDecoder, /*const*/ *uint8  data, data_size 
   return IDecode(idec);
 }
 
-VP8StatusCode WebPIUpdate(idec *WebPIDecoder, /*const*/ *uint8  data, data_size uint64) {
+// A variant of the above function to be used when data buffer contains
+// partial data from the beginning. In this case data buffer is not copied
+// to the internal memory.
+// Note that the value of the 'data' pointer can change between calls to
+// WebPIUpdate, for instance when the data buffer is resized to fit larger data.
+func WebPIUpdate(idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) VP8StatusCode {
   var status VP8StatusCode
   if (idec == nil || data == nil) {
     return VP8_STATUS_INVALID_PARAM;
@@ -842,7 +884,7 @@ VP8StatusCode WebPIUpdate(idec *WebPIDecoder, /*const*/ *uint8  data, data_size 
 
 //------------------------------------------------------------------------------
 
-static const GetOutputBuffer *WebPDecBuffer(/* const */ idec *WebPIDecoder) {
+func GetOutputBuffer(/* const */ idec *WebPIDecoder)  *WebPDecBuffer {
   if (idec == nil || idec.dec == nil) {
     return nil;
   }
@@ -855,7 +897,13 @@ static const GetOutputBuffer *WebPDecBuffer(/* const */ idec *WebPIDecoder) {
   return idec.params.output;
 }
 
-const WebPIDecodedArea *WebPDecBuffer(/* const */ idec *WebPIDecoder, left *int, top *int, width *int, height *int) {
+// Generic call to retrieve information about the displayable area.
+// If non nil, the left/right/width/height pointers are filled with the visible
+// rectangular area so far.
+// Returns nil in case the incremental decoder object is in an invalid state.
+// Otherwise returns the pointer to the internal representation. This structure
+// is read-only, tied to WebPIDecoder's lifespan and should not be modified.
+func WebPIDecodedArea(/* const */ idec *WebPIDecoder, left *int, top *int, width *int, height *int) *WebPDecBuffer {
   var src *WebPDecBuffer = GetOutputBuffer(idec);
   if left != nil { *left = 0 }
   if top != nil { *top = 0 }
@@ -869,7 +917,14 @@ const WebPIDecodedArea *WebPDecBuffer(/* const */ idec *WebPIDecoder, left *int,
   return src;
 }
 
- WebPIDecGetRGB *uint8(/* const */ idec *WebPIDecoder, last_y *int, width *int, height *int, stride *int) {
+// Returns the RGB/A image decoded so far. Returns nil if output params
+// are not initialized yet. The RGB/A output type corresponds to the colorspace
+// specified during call to WebPINewDecoder() or WebPINewRGB().
+// is the index *last_y of last decoded row in raster scan order. Some pointers
+// (*last_y, etc *width.) can be nil if corresponding information is not
+// needed. The values in these pointers are only valid on successful (non-nil)
+// return.
+func WebPIDecGetRGB(/* const */ idec *WebPIDecoder, last_y *int, width *int, height *int, stride *int) *uint8 {
   var src *WebPDecBuffer = GetOutputBuffer(idec);
   if src == nil { { return nil } }
   if (src.colorspace >= MODE_YUV) {
@@ -884,7 +939,10 @@ const WebPIDecodedArea *WebPDecBuffer(/* const */ idec *WebPIDecoder, left *int,
   return src.u.RGBA.rgba;
 }
 
- WebPIDecGetYUVA *uint8(/* const */ idec *WebPIDecoder, last_y *int, *uint8* u, *uint8* v, *uint8* a, width *int, height *int, stride *int, uv_stride *int, a_stride *int) {
+// Same as above function to get a YUVA image. Returns pointer to the luma
+// plane or nil in case of error. If there is no alpha information
+// the alpha pointer '*a' will be returned nil.
+func WebPIDecGetYUVA(/* const */ idec *WebPIDecoder, last_y *int, u \*uint8, v *uint8, a *uint8, width *int, height *int, stride *int, uv_stride *int, a_stride *int) *uint8 {
   var src *WebPDecBuffer = GetOutputBuffer(idec);
   if src == nil { { return nil } }
   if (src.colorspace < MODE_YUV) {

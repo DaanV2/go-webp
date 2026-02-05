@@ -15,6 +15,7 @@ package decoder
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/libwebp/webp"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
@@ -237,11 +238,10 @@ func WebPAllocateDecBuffer(width int, height int /*const*/, options *WebPDecoder
 	return status
 }
 
-//------------------------------------------------------------------------------
-// constructors / destructors
 
+// Internal, version-checked, entry point
 func WebPInitDecBufferInternal(buffer *WebPDecBuffer, version int) int {
-	if WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION) {
+	if WEBP_ABI_IS_INCOMPATIBLE(version, constants.WEBP_DECODER_ABI_VERSION) {
 		return 0 // version mismatch
 	}
 	if buffer == nil {
@@ -251,6 +251,8 @@ func WebPInitDecBufferInternal(buffer *WebPDecBuffer, version int) int {
 	return 1
 }
 
+// Free any memory associated with the buffer. Must always be called last.
+// Note: doesn't free the 'buffer' structure itself.
 func WebPFreeDecBuffer(buffer *WebPDecBuffer) {
 	if buffer != nil {
 		buffer.private_memory = nil
