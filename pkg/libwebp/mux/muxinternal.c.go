@@ -455,15 +455,15 @@ static WebPMuxError ValidateChunk(/* const */ mux *WebPMux, CHUNK_INDEX idx, Web
 }
 
 WebPMuxError MuxValidate(/* const */ mux *WebPMux) {
-  int num_iccp;
-  int num_exif;
-  int num_xmp;
-  int num_anim;
-  int num_frames;
+  var num_iccp int
+  var num_exif int
+  var num_xmp int
+  var num_anim int
+  var num_frames int
   int num_vp8x;
-  int num_images;
-  int num_alpha;
-  uint32 flags;
+  var num_images int
+  var num_alpha int
+  var flags uint32
   WebPMuxError err;
 
   // Verify mux is not nil.

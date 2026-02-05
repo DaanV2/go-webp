@@ -138,7 +138,7 @@ static  func ExportRowExpand_0(
     dst += 16;
   }
   if (length > 0) {
-    int x_out;
+    var x_out int
     if (length >= 12) {
       uint32 val0_m, val1_m, val2_m;
       v4u32 src0, src1, src2;
@@ -203,7 +203,7 @@ static  func ExportRowExpand_1(
     length -= 16;
   }
   if (length > 0) {
-    int x_out;
+    var x_out int
     if (length >= 12) {
       uint32 val0_m, val1_m, val2_m;
       v4u32 frow0, frow1, frow2, irow0, irow1, irow2;
@@ -289,7 +289,7 @@ static  func ExportRowShrink_0(
     length -= 16;
   }
   if (length > 0) {
-    int x_out;
+    var x_out int
     if (length >= 12) {
       uint32 val0_m, val1_m, val2_m;
       v4u32 src0, src1, src2, frac0, frac1, frac2;
@@ -366,7 +366,7 @@ static  func ExportRowShrink_1(
     dst    += 16;
   }
   if (length > 0) {
-    int x_out;
+    var x_out int
     if (length >= 12) {
       uint32 val0_m, val1_m, val2_m;
       v4u32 src0, src1, src2;

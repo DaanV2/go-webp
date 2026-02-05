@@ -35,8 +35,8 @@ const MUX_REV_VERSION =0
 // Chunk object.
 typedef struct WebPChunk WebPChunk;
 type WebPChunk struct {
-  uint32 tag;
-  int owner;  // True if memory is owned *data internally.
+  var tag uint32
+  var owner int  // True if memory is owned *data internally.
               // VP8X, ANIM, and other internally created chunks
               // like ANMF are always owned.
   WebPData data;
@@ -51,10 +51,10 @@ type WebPMuxImage struct {
   alpha *WebPChunk;    // Corresponds to WEBP_CHUNK_ALPHA.
   img *WebPChunk;      // Corresponds to WEBP_CHUNK_IMAGE.
   unknown *WebPChunk;  // Corresponds to WEBP_CHUNK_UNKNOWN.
-  int width;
-  int height;
-  int has_alpha;   // Through ALPH chunk or as part of VP8L.
-  int is_partial;  // True if only some of the chunks are filled.
+  var width int
+  var height int
+  var has_alpha int   // Through ALPH chunk or as part of VP8L.
+  var is_partial int  // True if only some of the chunks are filled.
   next *WebPMuxImage;
 }
 
@@ -96,7 +96,7 @@ const (
 const NIL_TAG =uint(0x00000000)  // To signal func chunk.
 
 type ChunkInfo struct {
-  uint32 tag;
+  var tag uint32
   WebPChunkId id;
   size uint32;
 } ;

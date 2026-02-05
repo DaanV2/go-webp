@@ -290,8 +290,8 @@ static int InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) {
   // scratch memory for luma rescaler
   work_size := 2 * (uint64)out_width;
   uv_work_size := 2 * uv_out_width;  // and for each u/v ones
-  uint64 total_size;
-  uint64 rescaler_size;
+  var total_size uint64
+  var rescaler_size uint64
   rescaler_t* work;
   scalers *WebPRescaler;
   num_rescalers := tenary.If(has_alpha, 4, 3);
@@ -470,7 +470,7 @@ static int InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) {
   *uint8
       tmp;  // tmp storage for scaled YUV444 samples before RGB conversion
   uint64 tmp_size1, tmp_size2, total_size;
-  uint64 rescaler_size;
+  var rescaler_size uint64
   scalers *WebPRescaler;
   num_rescalers := tenary.If(has_alpha, 4, 3);
 
@@ -595,7 +595,7 @@ static int CustomPut(/* const */ io *VP8Io) {
   var p *WebPDecParams = (*WebPDecParams)io.opaque;
   mb_w := io.mb_w;
   mb_h := io.mb_h;
-  int num_lines_out;
+  var num_lines_out int
   assert.Assert(!(io.mb_y & 1));
 
   if (mb_w <= 0 || mb_h <= 0) {

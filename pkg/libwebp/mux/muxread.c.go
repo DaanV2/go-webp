@@ -62,7 +62,7 @@ static WebPMuxError MuxGet(/* const */ mux *WebPMux, CHUNK_INDEX idx, uint32 nth
 // Fill the chunk with the given data (includes chunk header bytes), after some
 // verifications.
 static WebPMuxError ChunkVerifyAndAssign(chunk *WebPChunk, /*const*/ data *uint8, data_size uint64, uint64 riff_size, int copy_data) {
-  uint32 chunk_size;
+  var chunk_size uint32
   WebPData chunk_data;
 
   // Correctness checks.
@@ -111,7 +111,7 @@ static int MuxImageParse(/* const */ chunk *WebPChunk, int copy_data, /*const*/ 
   size uint64  = chunk.data.size;
   var last *uint8 = (bytes == nil) ? nil : bytes + size;
   WebPChunk subchunk;
-  uint64 subchunk_size;
+  var subchunk_size uint64
   *WebPChunk* unknown_chunk_list = &wpi.unknown;
   ChunkInit(&subchunk);
 
@@ -184,8 +184,8 @@ Fail:
 // Create a mux object from WebP-RIFF data.
 
 WebPMuxCreateInternal *WebPMux(/* const */ bitstream *WebPData, int copy_data, version int) {
-  uint64 riff_size;
-  uint32 tag;
+  var riff_size uint64
+  var tag uint32
   const end *uint8;
   mux *WebPMux = nil;
   wpi *WebPMuxImage = nil;

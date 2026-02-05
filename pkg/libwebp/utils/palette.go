@@ -368,7 +368,7 @@ func PaletteSortModifiedZeng(/* const */ pic *WebPPicture, /*const*/ palette_in 
       }
       // Remove best_sum from sums.
       *best_sum = sums[num_sums - 1];
-      --num_sums;
+      num_sums--
       // Update all the sums and find the best one.
       best_sum = &sums[0];
       for i = 0; i < num_sums; i++ {

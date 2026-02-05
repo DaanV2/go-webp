@@ -107,7 +107,7 @@ static int CheckSlowModel(int info) {
   model := ((info & 0xf0000) >> 12) | ((info >> 4) & 0xf);
   family := (info >> 8) & 0xf;
   if (family == 0x06) {
-    uint64 i;
+    var i uint64
     for i = 0; i < sizeof(kSlowModels) / sizeof(kSlowModels[0]); i++ {
       if (model == kSlowModels[i]) { return 1; }
     }
@@ -116,7 +116,7 @@ static int CheckSlowModel(int info) {
 }
 
 static int x86CPUInfo(CPUFeature feature) {
-  int max_cpuid_value;
+  var max_cpuid_value int
   int cpu_info[4];
   is_intel := 0;
 

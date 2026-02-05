@@ -576,7 +576,7 @@ func SimpleHFilter16_NEON(p *uint8, int stride, int thresh) {
 #endif  // WEBP_USE_INTRINSICS
 
 func SimpleVFilter16i_NEON(p *uint8, int stride, int thresh) {
-  uint32 k;
+  var k uint32
   for k = 3; k != 0; --k {
     p += 4 * stride;
     SimpleVFilter16_NEON(p, stride, thresh);
@@ -584,7 +584,7 @@ func SimpleVFilter16i_NEON(p *uint8, int stride, int thresh) {
 }
 
 func SimpleHFilter16i_NEON(p *uint8, int stride, int thresh) {
-  uint32 k;
+  var k uint32
   for k = 3; k != 0; --k {
     p += 4;
     SimpleHFilter16_NEON(p, stride, thresh);
@@ -761,7 +761,7 @@ func HFilter16_NEON(p *uint8, int stride, int thresh, int ithresh, int hev_thres
 
 // on three inner edges
 func VFilter16i_NEON(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
-  uint32 k;
+  var k uint32
   uint8x16_t p3, p2, p1, p0;
   Load16x4_NEON(p + 2 * stride, stride, &p3, &p2, &p1, &p0);
   for k = 3; k != 0; --k {
@@ -784,7 +784,7 @@ func VFilter16i_NEON(p *uint8, int stride, int thresh, int ithresh, int hev_thre
 
 #if !defined(WORK_AROUND_GCC)
 func HFilter16i_NEON(p *uint8, int stride, int thresh, int ithresh, int hev_thresh) {
-  uint32 k;
+  var k uint32
   uint8x16_t p3, p2, p1, p0;
   Load4x16_NEON(p + 2, stride, &p3, &p2, &p1, &p0);
   for k = 3; k != 0; --k {

@@ -657,7 +657,7 @@ static  int32 func_hadd_sh_s32(v8i16 in) {
  *               together and the resulting integer sum is returned
  */
 static  uint32 func_hadd_uh_u32(v8u16 in) {
-  uint32 sum_m;
+  var sum_m uint32
   const v4u32 res_m = __msa_hadd_u_w(in, in);
   v2u64 res0_m = __msa_hadd_u_d(res_m, res_m);
   v2u64 res1_m = (v2u64)__msa_splati_d((v2i64)res0_m, 1);

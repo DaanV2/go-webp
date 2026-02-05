@@ -201,7 +201,7 @@ func WebPMemoryWriterInit(writer *WebPMemoryWriter) {
 
 int WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture) {
   var w *WebPMemoryWriter = (*WebPMemoryWriter)picture.custom_ptr;
-  uint64 next_size;
+  var next_size uint64
   if (w == nil) {
     return 1;
   }
@@ -244,7 +244,7 @@ static uint64 Encode(/* const */ rgba *uint8, width, height int, int stride, Imp
   WebPPicture pic;
   WebPConfig config;
   WebPMemoryWriter wrt;
-  int ok;
+  var ok int
 
   if (output == nil) { return 0; }
 

@@ -27,11 +27,11 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // passing zillions of params.
 typedef struct VP8Residual VP8Residual;
 type VP8Residual struct {
-  int first;
-  int last;
+  var first int
+  var last int
   const coeffs *int16;
 
-  int coeff_type;
+  var coeff_type int
   prob *ProbaArray;
   stats *StatsArray;
   CostArrayPtr costs;

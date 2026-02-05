@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define CONVERT12_BGRA_XXX(psrc, pdst, m0, m1, m2)          \
   for {                                                      \
-    uint32 pix_w;                                         \
+    var pix_w uint32                                         \
     v16u8 src0, src1, src2, dst0, dst1, dst2;               \
     LD_UB3(psrc, 16, src0, src1, src2);                     \
     VSHF_B2_UB(src0, src1, src1, src2, m0, m1, dst0, dst1); \
@@ -47,7 +47,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define CONVERT8_BGRA_XXX(psrc, pdst, m0, m1)               \
   for {                                                      \
-    uint64 pix_d;                                         \
+    var pix_d uint64                                         \
     v16u8 src0, src1, src2 = {0}, dst0, dst1;               \
     LD_UB2(psrc, 16, src0, src1);                           \
     VSHF_B2_UB(src0, src1, src1, src2, m0, m1, dst0, dst1); \

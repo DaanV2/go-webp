@@ -31,9 +31,9 @@ enum Mode { kLiteral, kCacheIdx, kCopy, kNone }
 
 type PixOrCopy struct {
   // mode as uint8 to make the memory layout to be exactly 8 bytes.
-  uint8 mode;
-  uint16 len;
-  uint32 argb_or_distance;
+  var mode uint8
+  var len uint16
+  var argb_or_distance uint32
 } ;
 
 static  PixOrCopy PixOrCopyCreateCopy(uint32 distance, uint16 len) {
@@ -120,7 +120,7 @@ type VP8LHashChain struct {
   offset_length *uint32;
   // This is the maximum size of the hash_chain that can be constructed.
   // Typically this is the pixel count (width x height) for a given image.
-  int size;
+  var size int
 }
 
 // Must be called first, to set size.
@@ -153,8 +153,8 @@ typedef struct VP8LBackwardRefs VP8LBackwardRefs;
 
 // Container for blocks chain
 type VP8LBackwardRefs struct {
-  int block_size;               // common block-size
-  int error;                    // set to true if some memory error occurred
+  var block_size int               // common block-size
+  var error int                    // set to true if some memory error occurred
   refs *PixOrCopyBlock;         // list of currently used blocks
   *PixOrCopyBlock* tail;        // for list recycling
   free_blocks *PixOrCopyBlock;  // free-list

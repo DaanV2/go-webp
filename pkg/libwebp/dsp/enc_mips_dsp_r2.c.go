@@ -1002,7 +1002,7 @@ func Intra4Preds_MIPSdspR2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT top
   GET_SSE_INNER(D)
 
 static int SSE16x16_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  int count;
+  var count int
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
       "mult   $zero,    $zero                            \n\t"      //
@@ -1030,7 +1030,7 @@ static int SSE16x16_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP
 }
 
 static int SSE16x8_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  int count;
+  var count int
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
       "mult   $zero,    $zero                            \n\t"  //
@@ -1050,7 +1050,7 @@ static int SSE16x8_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_
 }
 
 static int SSE8x8_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  int count;
+  var count int
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
       "mult   $zero,    $zero                            \n\t"  //
@@ -1066,7 +1066,7 @@ static int SSE8x8_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_R
 }
 
 static int SSE4x4_MIPSdspR2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  int count;
+  var count int
   int temp0, temp1, temp2, temp3;
   __asm__ volatile(
       "mult   $zero,    $zero                            \n\t"  //
@@ -1221,7 +1221,7 @@ static int QuantizeBlock_MIPSdspR2(int16 in[16], int16 out[16], /*const*/ WEBP_R
 }
 
 static int Quantize2Blocks_MIPSdspR2(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
-  int nz;
+  var nz int
   nz = QuantizeBlock_MIPSdspR2(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_MIPSdspR2(in + 1 * 16, out + 1 * 16, mtx) << 1;
   return nz;

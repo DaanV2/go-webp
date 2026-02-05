@@ -136,16 +136,16 @@ typedef enum WebPFormatFeature {
 
 type WebPIterator struct {
   frame_num int;
-  int num_frames;                     // equivalent to WEBP_FF_FRAME_COUNT.
+  var num_frames int                     // equivalent to WEBP_FF_FRAME_COUNT.
   int x_offset, y_offset;             // offset relative to the canvas.
   int width, height;                  // dimensions of this frame.
-  int duration;                       // display duration in milliseconds.
+  var duration int                       // display duration in milliseconds.
   WebPMuxAnimDispose dispose_method;  // dispose method for the frame.
-  int complete;  // true if 'fragment' contains a full frame. partial images
+  var complete int  // true if 'fragment' contains a full frame. partial images
                  // may still be decoded with the WebP incremental decoder.
   WebPData fragment;  // The frame given by 'frame_num'. Note for historical
                       // reasons this is called a fragment.
-  int has_alpha;      // True if the frame contains transparency.
+  var has_alpha int      // True if the frame contains transparency.
   WebPMuxAnimBlend blend_method;  // Blend operation for the frame.
 
   uint32 pad[2];  // padding for later use.
@@ -178,8 +178,8 @@ type WebPIterator struct {
 type WebPChunkIterator struct {
   // The current and total number of chunks with the fourcc given to
   // WebPDemuxGetChunk().
-  int chunk_num;
-  int num_chunks;
+  var chunk_num int
+  var num_chunks int
   WebPData chunk;  // The payload of the chunk.
 
   uint32 pad[6];  // padding for later use
@@ -224,7 +224,7 @@ type WebPChunkIterator struct {
   for i := 0; i < anim_info.loop_count; i++ {
     while (WebPAnimDecoderHasMoreFrames(dec)) {
       buf *uint8;
-      int timestamp;
+      var timestamp int
       WebPAnimDecoderGetNext(dec, &buf, &timestamp);
       // ... (Render 'buf' based on 'timestamp').
       // ... (Do NOT free 'buf', as it is owned by 'dec').
@@ -243,7 +243,7 @@ type WebPAnimDecoderOptions struct {
   // Output colorspace. Only the following modes are supported:
   // MODE_RGBA, MODE_BGRA, MODE_rgbA and MODE_bgrA.
   WEBP_CSP_MODE color_mode;
-  int use_threads;      // If true, use multi-threaded decoding.
+  var use_threads int      // If true, use multi-threaded decoding.
   uint32 padding[7];  // Padding for later use.
 }
 
@@ -281,11 +281,11 @@ type WebPAnimDecoderOptions struct {
 
 // Global information about the animation..
 type WebPAnimInfo struct {
-  uint32 canvas_width;
-  uint32 canvas_height;
-  uint32 loop_count;
-  uint32 bgcolor;
-  uint32 frame_count;
+  var canvas_width uint32
+  var canvas_height uint32
+  var loop_count uint32
+  var bgcolor uint32
+  var frame_count uint32
   uint32 pad[4];  // padding for later use
 }
 

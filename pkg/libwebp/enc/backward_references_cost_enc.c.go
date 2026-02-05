@@ -149,19 +149,19 @@ const COST_CACHE_INTERVAL_SIZE_MAX =500
 // therefore no overlapping intervals.
 typedef struct CostInterval CostInterval;
 type CostInterval struct {
-  int64 cost;
-  int start;
-  int end;
-  int index;
+  var cost int64
+  var start int
+  var end int
+  var index int
   previous *CostInterval;
   next *CostInterval;
 }
 
 // The GetLengthCost(cost_model, k) are cached in a CostCacheInterval.
 type CostCacheInterval struct {
-  int64 cost;
-  int start;
-  int end;  // Exclusive.
+  var cost int64
+  var start int
+  var end int  // Exclusive.
 } ;
 
 // This structure is in charge of managing intervals and costs.
@@ -171,9 +171,9 @@ type CostCacheInterval struct {
 const COST_MANAGER_MAX_FREE_LIST =10
 type CostManager struct {
   head *CostInterval;
-  int count;  // The number of stored intervals.
+  var count int  // The number of stored intervals.
   cache_intervals *CostCacheInterval;
-  uint64 cache_intervals_size;
+  var cache_intervals_size uint64
   // Contains the GetLengthCost(cost_model, k).
   int64 cost_cache[MAX_LENGTH];
   costs *int64;
@@ -429,7 +429,7 @@ static  func InsertInterval(/* const */ manager *CostManager, /*const*/ interval
 // If handling the interval or one of its subintervals becomes to heavy, its
 // contribution is added to the costs right away.
 static  func PushInterval(/* const */ manager *CostManager, int64 distance_cost, int position, int len) {
-  uint64 i;
+  var i uint64
   interval *CostInterval = manager.head;
   interval_next *CostInterval;
   const cost_cache_intervals *CostCacheInterval =
@@ -442,7 +442,7 @@ static  func PushInterval(/* const */ manager *CostManager, int64 distance_cost,
     var j int
     for j = position; j < position + len; j++ {
       k := j - position;
-      int64 cost_tmp;
+      var cost_tmp int64
       assert.Assert(k >= 0 && k < MAX_LENGTH);
       cost_tmp = distance_cost + manager.cost_cache[k];
 
@@ -662,7 +662,7 @@ func TraceBackwards(/* const */ dist_array *uint16, int dist_array_size, *uint16
 static int BackwardReferencesHashChainFollowChosenPath(
     const argb *uint32, int cache_bits, /*const*/ chosen_path *uint16, int chosen_path_size, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs) {
   use_color_cache := (cache_bits > 0);
-  int ix;
+  var ix int
   i := 0;
   ok := 0;
   cc_init := 0;

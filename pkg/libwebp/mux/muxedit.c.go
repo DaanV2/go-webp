@@ -183,7 +183,7 @@ static WebPMuxError MuxDeleteAllNamedData(/* const */ mux *WebPMux, uint32 tag) 
 // Set API(s).
 
 WebPMuxError WebPMuxSetChunk(mux *WebPMux, /*const*/ byte fourcc[4], /*const*/ chunk_data *WebPData, int copy_data) {
-  uint32 tag;
+  var tag uint32
   WebPMuxError err;
   if (mux == nil || fourcc == nil || chunk_data == nil ||
       chunk_data.bytes == nil || chunk_data.size > MAX_CHUNK_PAYLOAD) {
@@ -536,8 +536,8 @@ static WebPMuxError CreateVP8XChunk(/* const */ mux *WebPMux) {
 
 // Cleans up 'mux' by removing any unnecessary chunks.
 static WebPMuxError MuxCleanup(/* const */ mux *WebPMux) {
-  int num_frames;
-  int num_anim_chunks;
+  var num_frames int
+  var num_anim_chunks int
 
   // If we have an image with a single frame, and its rectangle
   // covers the whole canvas, convert it to a non-animated image

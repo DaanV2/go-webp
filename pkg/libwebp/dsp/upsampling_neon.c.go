@@ -212,7 +212,7 @@ const v255 = vdup_n_u8(255)
       const WEBP_RESTRICT cur_u *uint8, /*const*/ WEBP_RESTRICT cur_v *uint8, \
       WEBP_RESTRICT top_dst *uint8, WEBP_RESTRICT bottom_dst *uint8,      \
       int len) {                                                              \
-    int block;                                                                \
+    var block int                                                                \
     /* 16 byte aligned array to cache reconstructed u and v */                \
     uint8 uv_buf[2 * 32 + 15];                                              \
     var r_uv *uint8 =                                                     \

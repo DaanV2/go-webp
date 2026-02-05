@@ -54,7 +54,7 @@ int QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heigh
   }
 
   {
-    uint64 n;
+    var n uint64
     num_levels_in = 0;
     for n = 0; n < data_size; n++ {
       num_levels_in += (freq[data[n]] == 0);
@@ -127,7 +127,7 @@ int QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heigh
     // mapping, while at it (afunc one indirection in the final loop).
     uint8 map[NUM_SYMBOLS];
     var s int
-    uint64 n;
+    var n uint64
     for s = min_s; s <= max_s; s++ {
       slot := q_level[s];
       map[s] = (uint8)(inv_q_level[slot] + .5);

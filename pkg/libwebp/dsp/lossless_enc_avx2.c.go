@@ -290,7 +290,7 @@ static uint64 CombinedShannonEntropy_AVX2(/* const */ uint32 X[256], /*const*/ u
         (uint32)_mm256_movemask_epi8(_mm256_cmpgt_epi8(y5, zero)) | mx;
     while (my) {
       j := BitsCtz(my);
-      uint32 xy;
+      var xy uint32
       if ((mx >> j) & 1) {
         x := X[i + j];
         sumXY += x;
@@ -315,7 +315,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 //------------------------------------------------------------------------------
 
 static int VectorMismatch_AVX2(/* const */ array *uint321, /*const*/ array *uint322, int length) {
-  int match_len;
+  var match_len int
 
   if (length >= 24) {
     __m256i A0 = _mm256_loadu_si256((/* const */ __*m256i)&array1[0]);

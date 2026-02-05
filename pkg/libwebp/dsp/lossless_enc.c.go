@@ -60,7 +60,7 @@ static uint64 FastSLog2Slow_C(uint32 v) {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     orig_v := v;
-    uint64 correction;
+    var correction uint64
 #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
     // use clz if available
     log_cnt := BitsLog2Floor(v) - 7;

@@ -189,7 +189,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #define STORE8_3(a0, a1, a2, dst)                                 \
   for {                                                            \
-    int64 out_m;                                                \
+    var out_m int64                                                \
     const v16u8 mask0 = {                                         \
         0, 1, 16, 2, 3, 17, 4, 5, 18, 6, 7, 19, 8, 9, 20, 10}    \
     const v16u8 mask1 = {11,  21,  12,  13,  22,  14,  15,  23,   \

@@ -306,7 +306,7 @@ static int QuantizeBlockWHT_SSE41(int16 in[16], int16 out[16], /*const*/ WEBP_RE
 }
 
 static int Quantize2Blocks_SSE41(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
-  int nz;
+  var nz int
   var sharpen *uint16 = &mtx.sharpen[0];
   nz = DoQuantizeBlock_SSE41(in + 0 * 16, out + 0 * 16, sharpen, mtx) << 0;
   nz |= DoQuantizeBlock_SSE41(in + 1 * 16, out + 1 * 16, sharpen, mtx) << 1;

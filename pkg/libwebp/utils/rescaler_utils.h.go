@@ -28,20 +28,20 @@ const WEBP_RESCALER_ONE =(uint64(1) << WEBP_RESCALER_RFIX)
 typedef uint32 rescaler_t;  // type for side-buffer
 typedef struct WebPRescaler WebPRescaler;
 type WebPRescaler struct {
-  int x_expand;               // true if we're expanding in the x direction
-  int y_expand;               // true if we're expanding in the y direction
-  int num_channels;           // bytes to jump between pixels
-  uint32 fx_scale;          // fixed-point scaling factors
-  uint32 fy_scale;          // ''
-  uint32 fxy_scale;         // ''
-  int y_accum;                // vertical accumulator
+  var x_expand int               // true if we're expanding in the x direction
+  var y_expand int               // true if we're expanding in the y direction
+  var num_channels int           // bytes to jump between pixels
+  var fx_scale uint32          // fixed-point scaling factors
+  var fy_scale uint32          // ''
+  var fxy_scale uint32         // ''
+  var y_accum int                // vertical accumulator
   int y_add, y_sub;           // vertical increments
   int x_add, x_sub;           // horizontal increments
   int src_width, src_height;  // source dimensions
   int dst_width, dst_height;  // destination dimensions
   int src_y, dst_y;           // row counters for input and output
   dst *uint8;
-  int dst_stride;
+  var dst_stride int
   // work buffer
   rescaler_t* (dst_num_channels *width) irow;
   rescaler_t* (dst_num_channels *width) frow;

@@ -223,7 +223,7 @@ static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], /*const*/ mtx *VP8M
 }
 
 static int Quantize2Blocks_MIPS32(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
-  int nz;
+  var nz int
   nz = QuantizeBlock_MIPS32(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_MIPS32(in + 1 * 16, out + 1 * 16, mtx) << 1;
   return nz;
@@ -517,7 +517,7 @@ func FTransform_MIPS32(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_REST
   GET_SSE_INNER(D, D + 1, D + 2, D + 3)
 
 static int SSE16x16_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  int count;
+  var count int
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
   __asm__ volatile(
@@ -548,7 +548,7 @@ static int SSE16x16_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RE
 }
 
 static int SSE16x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  int count;
+  var count int
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
   __asm__ volatile(
@@ -571,7 +571,7 @@ static int SSE16x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RES
 }
 
 static int SSE8x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  int count;
+  var count int
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
   __asm__ volatile(
@@ -590,7 +590,7 @@ static int SSE8x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_REST
 }
 
 static int SSE4x4_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  int count;
+  var count int
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
   __asm__ volatile(

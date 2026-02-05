@@ -285,8 +285,8 @@ func ParsePartitions(dec *VP8Decoder, buf *uint8, size uint64 ) VP8StatusCode {
   var buf_end *uint8 = buf + size;
   const part_start *uint8;
   size_left := size;
-  uint64 last_part;
-  uint64 p;
+  var last_part uint64
+  var p uint64
 
   dec.num_parts_minus_one = (1 << VP8GetValue(br, 2, "global-header")) - 1;
   last_part = dec.num_parts_minus_one;
@@ -583,7 +583,7 @@ func ParseResiduals(/* const */ dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ 
   non_zero_uv := 0;
   int x, y, ch;
   uint32 out_t_nz, out_l_nz;
-  int first;
+  var first int
 
   stdlib.Memset(dst, 0, 384 * sizeof(*dst));
   if (!block.is_i4x4) {  // parse DC

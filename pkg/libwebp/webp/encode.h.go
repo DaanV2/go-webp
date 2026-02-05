@@ -77,61 +77,61 @@ typedef enum WebPImageHint {
 
 // Compression parameters.
 type WebPConfig struct {
-  int lossless;   // Lossless encoding (0=lossy(default), 1=lossless).
+  var lossless int   // Lossless encoding (0=lossy(default), 1=lossless).
   float quality;  // between 0 and 100. For lossy, 0 gives the smallest
                   // size and 100 the largest. For lossless, this
                   // parameter is the amount of effort put into the
                   // compression: 0 is the fastest but gives larger
                   // files compared to the slowest, but best, 100.
-  int method;     // quality/speed trade-off (0=fast, 6=slower-better)
+  var method int     // quality/speed trade-off (0=fast, 6=slower-better)
 
   WebPImageHint image_hint;  // Hint for image type (lossless only for now).
 
-  int target_size;        // if non-zero, set the desired target size in bytes.
+  var target_size int        // if non-zero, set the desired target size in bytes.
                           // Takes precedence over the 'compression' parameter.
   float target_PSNR;      // if non-zero, specifies the minimal distortion to
                           // try to achieve. Takes precedence over target_size.
-  int segments;           // maximum number of segments to use, in [1..4]
-  int sns_strength;       // Spatial Noise Shaping. 0=off, 100=maximum.
-  int filter_strength;    // range: [0 = off .. 100 = strongest]
-  int filter_sharpness;   // range: [0 = off .. 7 = least sharp]
-  int filter_type;        // filtering type: 0 = simple, 1 = strong (only used
+  var segments int           // maximum number of segments to use, in [1..4]
+  var sns_strength int       // Spatial Noise Shaping. 0=off, 100=maximum.
+  var filter_strength int    // range: [0 = off .. 100 = strongest]
+  var filter_sharpness int   // range: [0 = off .. 7 = least sharp]
+  var filter_type int        // filtering type: 0 = simple, 1 = strong (only used
                           // if filter_strength > 0 or autofilter > 0)
-  int autofilter;         // Auto adjust filter's strength [0 = off, 1 = on]
-  int alpha_compression;  // Algorithm for encoding the alpha plane (0 = none, // 1 = compressed with WebP lossless). Default is 1.
-  int alpha_filtering;    // Predictive filtering method for alpha plane.
+  var autofilter int         // Auto adjust filter's strength [0 = off, 1 = on]
+  var alpha_compression int  // Algorithm for encoding the alpha plane (0 = none, // 1 = compressed with WebP lossless). Default is 1.
+  var alpha_filtering int    // Predictive filtering method for alpha plane.
                           //  0: none, 1: fast, 2: best. Default if 1.
-  int alpha_quality;      // Between 0 (smallest size) and 100 (lossless).
+  var alpha_quality int      // Between 0 (smallest size) and 100 (lossless).
                           // Default is 100.
-  int pass;               // number of entropy-analysis passes (in [1..10]).
+  var pass int               // number of entropy-analysis passes (in [1..10]).
 
-  int show_compressed;    // if true, export the compressed picture back.
+  var show_compressed int    // if true, export the compressed picture back.
                           // In-loop filtering is not applied.
-  int preprocessing;      // preprocessing filter:
+  var preprocessing int      // preprocessing filter:
                           // 0=none, 1=segment-smooth, 2=pseudo-random dithering
-  int partitions;         // log2(number of token partitions) in [0..3]. Default
+  var partitions int         // log2(number of token partitions) in [0..3]. Default
                           // is set to 0 for easier progressive decoding.
-  int partition_limit;    // quality degradation allowed to fit the 512k limit
+  var partition_limit int    // quality degradation allowed to fit the 512k limit
                           // on prediction modes coding (0: no degradation, // 100: maximum possible degradation).
-  int emulate_jpeg_size;  // If true, compression parameters will be remapped
+  var emulate_jpeg_size int  // If true, compression parameters will be remapped
                           // to better match the expected output size from
                           // JPEG compression. Generally, the output size will
                           // be similar but the degradation will be lower.
-  int thread_level;       // If non-zero, try and use multi-threaded encoding.
-  int low_memory;         // If set, reduce memory usage (but increase CPU use).
+  var thread_level int       // If non-zero, try and use multi-threaded encoding.
+  var low_memory int         // If set, reduce memory usage (but increase CPU use).
 
-  int near_lossless;  // Near lossless encoding [0 = max loss .. 100 = off
+  var near_lossless int  // Near lossless encoding [0 = max loss .. 100 = off
                       // (default)].
   exact int;          // if non-zero, preserve the exact RGB values under
                       // transparent area. Otherwise, discard this invisible
                       // RGB information for better compression. The default
                       // value is 0.
 
-  int use_delta_palette;  // reserved
-  int use_sharp_yuv;      // if needed, use sharp (and slow) RGB.YUV conversion
+  var use_delta_palette int  // reserved
+  var use_sharp_yuv int      // if needed, use sharp (and slow) RGB.YUV conversion
 
-  int qmin;  // minimum permissible quality factor
-  int qmax;  // maximum permissible quality factor
+  var qmin int  // minimum permissible quality factor
+  var qmax int  // maximum permissible quality factor
 }
 
 // Enumerate some predefined settings for WebPConfig, depending on the type
@@ -181,7 +181,7 @@ typedef enum WebPPreset {
 // Structure for storing auxiliary statistics.
 
 type WebPAuxStats struct {
-  int coded_size;  // final size
+  var coded_size int  // final size
 
   float PSNR[5];             // peak-signal-to-noise ratio for Y/U/V/All/Alpha
   int block_count[3];        // number of intra4/intra16/skipped macroblocks
@@ -193,20 +193,20 @@ type WebPAuxStats struct {
   int segment_quant[4];      // quantizer values for each segments
   int segment_level[4];      // filtering strength for each segments [0..63]
 
-  int alpha_data_size;  // size of the transparency data
-  int layer_data_size;  // size of the enhancement layer data
+  var alpha_data_size int  // size of the transparency data
+  var layer_data_size int  // size of the enhancement layer data
 
   // lossless encoder statistics
-  uint32 lossless_features;  // bit0:predictor bit1:cross-color transform
+  var lossless_features uint32  // bit0:predictor bit1:cross-color transform
                                // bit2:subtract-green bit3:color indexing
-  int histogram_bits;          // number of precision bits of histogram
-  int transform_bits;          // precision bits for predictor transform
-  int cache_bits;              // number of bits for color cache lookup
-  int palette_size;            // number of color in palette, if used
-  int lossless_size;           // final lossless size
-  int lossless_hdr_size;       // lossless header (transform, huffman etc) size
-  int lossless_data_size;      // lossless image data size
-  int cross_color_transform_bits;  // precision bits for cross-color transform
+  var histogram_bits int          // number of precision bits of histogram
+  var transform_bits int          // precision bits for predictor transform
+  var cache_bits int              // number of bits for color cache lookup
+  var palette_size int            // number of color in palette, if used
+  var lossless_size int           // final lossless size
+  var lossless_hdr_size int       // lossless header (transform, huffman etc) size
+  var lossless_data_size int      // lossless image data size
+  var cross_color_transform_bits int  // precision bits for cross-color transform
 
   uint32 pad[1];  // padding for later use
 }
@@ -221,7 +221,7 @@ typedef int (*WebPWriterFunction)(/* const */ data *uint8, data_size uint64, /*c
 type WebPMemoryWriter struct {
   mem *uint8;     // final buffer (of size 'max_size', larger than 'size').
   size uint64 ;      // final size
-  uint64 max_size;  // total capacity
+  var max_size uint64  // total capacity
   uint32 pad[1];  // padding for later use
 }
 
@@ -281,7 +281,7 @@ type WebPPicture struct {
   // It is recommended to use ARGB input (*argb, argb_stride) for lossless
   // compression, and YUV input (*y, *u, *v, etc.) for lossy compression
   // since these are the respective native colorspace for these formats.
-  int use_argb;
+  var use_argb int
 
   // YUV input (mostly used for input to lossy compression)
   WebPEncCSP colorspace;    // colorspace: should be YUV420 for now (=Y'CbCr).
@@ -294,7 +294,7 @@ type WebPPicture struct {
 
   // ARGB input (mostly used for input to lossless compression)
   argb *uint32;    // Pointer to argb (32 bit) plane.
-  int argb_stride;   // This is stride in pixels units, not bytes.
+  var argb_stride int   // This is stride in pixels units, not bytes.
   uint32 pad2[3];  // padding for later use
 
   //   OUTPUT
@@ -304,7 +304,7 @@ type WebPPicture struct {
   custom_ptr *void;           // can be used by the writer.
 
   // map for extra information (only for lossy compression mode)
-  int extra_info_type;  // 1: intra type, 2: segment, 3: quant
+  var extra_info_type int  // 1: intra type, 2: segment, 3: quant
                         // 4: intra-16 prediction mode, // 5: chroma prediction mode, // 6: bit cost, 7: distortion
   extra_info *uint8;  // if not nil, points to an array of size
                         // ((width + 15) / 16) * ((height + 15) / 16) that

@@ -33,24 +33,24 @@ type VP8LHistogram struct {
   uint32 alpha[NUM_LITERAL_CODES];
   // Backward reference prefix-code histogram.
   uint32 distance[NUM_DISTANCE_CODES];
-  int palette_code_bits;
+  var palette_code_bits int
   // The following members are only used within VP8LGetHistoImageSymbols.
 
   // Index of the unique value of a histogram if any, VP8L_NON_TRIVIAL_SYM
   // otherwise.
   uint16 trivial_symbol[5];
-  uint64 bit_cost;  // Cached value of total bit cost.
+  var bit_cost uint64  // Cached value of total bit cost.
   // Cached values of entropy costs: literal, red, blue, alpha, distance
   uint64 costs[5];
   uint8 is_used[5];  // 5 for literal, red, blue, alpha, distance
-  uint16 bin_id;     // entropy bin index.
+  var bin_id uint16     // entropy bin index.
 } ;
 
 // Collection of histograms with fixed capacity, allocated as one
 // big memory chunk.
 type VP8LHistogramSet struct {
-  int size;      // number of slots currently in use
-  int max_size;  // maximum capacity
+  var size int      // number of slots currently in use
+  var max_size int  // maximum capacity
   *VP8LHistogram* histograms;
 } ;
 

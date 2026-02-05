@@ -1,5 +1,3 @@
-package mux
-
 // Copyright 2014 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,76 +5,48 @@ package mux
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-//  AnimEncoder implementation.
-//
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/limits"
-import "github.com/daanv2/go-webp/pkg/math"  // for pow()
-import "github.com/daanv2/go-webp/pkg/stdio"
-import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
-import "github.com/daanv2/go-webp/pkg/string"
+package mux
 
-import "github.com/daanv2/go-webp/pkg/libwebp/mux"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-#if defined(_MSC_VER) && _MSC_VER < 1900
-const snprintf = _snprintf
-#endif
 
 const ERROR_STR_MAX_LENGTH =100
+const DELTA_INFINITY =(uint64(1) << 32)
+const KEYFRAME_NONE =(-1)
+const MAX_CACHED_FRAMES =30
+// This value is used to match a later call to WebPReplaceTransparentPixels(),
+// making it a no-op for lossless (see WebPEncode()).
+const TRANSPARENT_COLOR =0x00000000
 
-//------------------------------------------------------------------------------
-// Internal structs.
-
-// Stores frame rectangle dimensions.
-type FrameRectangle struct {
-  int x_offset, y_offset, width, height;
-} ;
-
-// Used to store two candidates of encoded data for an animation frame. One of
-// the two will be chosen later.
-type EncodedFrame struct {
-  WebPMuxFrameInfo sub_frame;  // Encoded frame rectangle.
-  WebPMuxFrameInfo key_frame;  // Encoded frame if it is a keyframe.
-  int is_key_frame;            // True if 'key_frame' has been chosen.
-} ;
 
 type WebPAnimEncoder struct {
-  const canvas_width int;                // Canvas width.
-  const canvas_height int;               // Canvas height.
-  const WebPAnimEncoderOptions options;  // Global encoding options.
+  canvas_width int;                // Canvas width.
+  canvas_height int;               // Canvas height.
+  options WebPAnimEncoderOptions  // Global encoding options.
 
-  WebPConfig last_config;           // Cached in case a re-encode is needed.
-  WebPConfig last_config_reversed;  // If 'last_config' uses lossless, then
-                                    // this config uses lossy and vice versa;
-                                    // only valid if 'options.allow_mixed'
-                                    // is true.
+  last_config WebPConfig            // Cached in case a re-encode is needed.
+  // If 'last_config' uses lossless, then
+	// this config uses lossy and vice versa;
+	// only valid if 'options.allow_mixed'
+	// is true.
+  last_config_reversed WebPConfig   
 
   curr_canvas *WebPPicture;  // Only pointer; we don't own memory.
 
   // Canvas buffers.
-  WebPPicture curr_canvas_copy;   // Possibly modified current canvas.
-  int curr_canvas_copy_modified;  // True if pixels in 'curr_canvas_copy'
+  curr_canvas_copy WebPPicture   // Possibly modified current canvas.
+  // True if pixels in 'curr_canvas_copy'
                                   // differ from those in 'curr_canvas'.
+   curr_canvas_copy_modified int  
 
   // Previous canvas (original animation).
   // Also used temporarily to store canvas_carryover_disposed pixel values.
-  WebPPicture prev_canvas;
+  prev_canvas WebPPicture ;
   // canvas_carryover contains the previous original input frame's pixels
   // (prev_canvas) with some parts carried over from even earlier original input
   // frames, to approximate the current state of the canvas at decoding.
   // canvas_carryover is  compared to curr_canvas at encoding to see what parts
   // of the current frame are similar enough to not be explicitly encoded.
-  WebPPicture canvas_carryover;
+   canvas_carryover WebPPicture ;
 
   // Buffer of the size of a subframe, with one boolean value per pixel.
   // Used when encoding a subframe to remember the pixels that may change when
@@ -84,37 +54,39 @@ type WebPAnimEncoder struct {
   // carrying over the pixel value of the previous frame).
   candidate_carryover_mask *uint8;
   // True if at least one pixel is carried over by the best candidate subframe.
-  int best_candidate_carries_over;
+  best_candidate_carries_over int ;
   // Same as candidate_carryover_mask but for the best candidate subframe.
   best_candidate_carryover_mask *uint8;
 
   // Encoded data.
   encoded_frames *EncodedFrame;  // Array of encoded frames.
   size uint64 ;                   // Number of allocated frames.
-  uint64 start;                  // Frame start index.
-  uint64 count;                  // Number of valid frames.
-  uint64 flush_count;            // If >0, 'flush_count' frames starting from
+   start uint64                  // Frame start index.
+   count uint64                  // Number of valid frames.
+   flush_count uint64            // If >0, 'flush_count' frames starting from
                                  // 'start' are ready to be added to mux.
 
   // keyframe related.
-  int64 best_delta;         // min(canvas size - frame size) over the frames.
-                              // Can be negative in certain cases due to
-                              // transparent pixels in a frame.
-  int keyframe;               // Index of selected keyframe relative to 'start'.
-  int count_since_key_frame;  // Frames seen since the last keyframe.
+  // min(canvas size - frame size) over the frames.
+// Can be negative in certain cases due to
+// transparent pixels in a frame.
+   best_delta int64         
+   keyframe int               // Index of selected keyframe relative to 'start'.
+   count_since_key_frame int  // Frames seen since the last keyframe.
 
-  int first_timestamp;           // Timestamp of the first frame.
-  int prev_timestamp;            // Timestamp of the last added frame.
-  int prev_candidate_undecided;  // True if it's not yet decided if previous
+   first_timestamp int           // Timestamp of the first frame.
+   prev_timestamp int            // Timestamp of the last added frame.
+   prev_candidate_undecided int  // True if it's not yet decided if previous
                                  // frame would be a subframe or a keyframe.
 
-  FrameRectangle prev_rect;  // Previous WebP frame rectangle. Only valid if
+  prev_rect FrameRectangle ;  // Previous WebP frame rectangle. Only valid if
                              // prev_candidate_undecided is true.
 
   // Misc.
-  int is_first_frame;  // True if first frame is yet to be added/being added.
-  int got_nil_frame;  // True if WebPAnimEncoderAdd() has already been called
+   is_first_frame int  // True if first frame is yet to be added/being added.
+   // True if WebPAnimEncoderAdd() has already been called
                        // with a nil frame.
+   got_nil_frame int  
 
       // Number of input frames processed so far.
    in_frame_count uint64
@@ -123,14 +95,9 @@ type WebPAnimEncoder struct {
 	out_frame_count uint64
 
   mux *WebPMux;  // Muxer to assemble the WebP bitstream.
-  byte error_str[ERROR_STR_MAX_LENGTH];  // Error string. Empty if no error.
+  error_str  [ERROR_STR_MAX_LENGTH]byte  // Error string. Empty if no error.
 }
 
-// -----------------------------------------------------------------------------
-// Life of WebPAnimEncoder object.
-
-const DELTA_INFINITY =(uint64(1) << 32)
-const KEYFRAME_NONE =(-1)
 
 // Reset the counters in the WebPAnimEncoder.
 func ResetCounters(/* const */ enc *WebPAnimEncoder) {
@@ -146,7 +113,6 @@ func DisableKeyframes(/* const */ enc_options *WebPAnimEncoderOptions) {
   enc_options.kmin = enc_options.kmax - 1;
 }
 
-const MAX_CACHED_FRAMES =30
 
 func SanitizeEncoderOptions(/* const */ enc_options *WebPAnimEncoderOptions) {
   print_warning := enc_options.verbose;
@@ -190,8 +156,6 @@ func SanitizeEncoderOptions(/* const */ enc_options *WebPAnimEncoderOptions) {
   assert.Assert(enc_options.kmin < enc_options.kmax);
 }
 
-#undef MAX_CACHED_FRAMES
-
 func DefaultEncoderOptions(/* const */ enc_options *WebPAnimEncoderOptions) {
   enc_options.anim_params.loop_count = 0;
   enc_options.anim_params.bgcolor = 0xffffffff;  // White.
@@ -201,7 +165,7 @@ func DefaultEncoderOptions(/* const */ enc_options *WebPAnimEncoderOptions) {
   enc_options.verbose = 0;
 }
 
-int WebPAnimEncoderOptionsInitInternal(enc_options *WebPAnimEncoderOptions, int abi_version) {
+func WebPAnimEncoderOptionsInitInternal(enc_options *WebPAnimEncoderOptions, abi_version int) int {
   if (enc_options == nil ||
       WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_MUX_ABI_VERSION)) {
     return 0;
@@ -210,9 +174,7 @@ int WebPAnimEncoderOptionsInitInternal(enc_options *WebPAnimEncoderOptions, int 
   return 1;
 }
 
-// This value is used to match a later call to WebPReplaceTransparentPixels(),
-// making it a no-op for lossless (see WebPEncode()).
-const TRANSPARENT_COLOR =0x00000000
+
 
 func ClearRectangle(/* const */ picture *WebPPicture, int left, int top, width, height int) {
   var j int
@@ -250,7 +212,7 @@ func MarkError2(/* const */ enc *WebPAnimEncoder, /*const*/ str *byte, int error
 }
 
 WebPAnimEncoderNewInternal *WebPAnimEncoder(
-    width, height int, /*const*/ enc_options *WebPAnimEncoderOptions, int abi_version) {
+    width, height int, /*const*/ enc_options *WebPAnimEncoderOptions, abi_version int) {
   enc *WebPAnimEncoder;
 
   if (WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_MUX_ABI_VERSION)) {
@@ -342,7 +304,7 @@ func WebPAnimEncoderDelete(enc *WebPAnimEncoder) {
     WebPPictureFree(&enc.prev_canvas);
     WebPPictureFree(&enc.canvas_carryover);
     if (enc.encoded_frames != nil) {
-      uint64 i;
+      var i uint64
       for i = 0; i < enc.size; i++ {
         FrameRelease(&enc.encoded_frames[i]);
       }
@@ -509,8 +471,8 @@ static  func SnapToEvenOffsets(/* const */ rect *FrameRectangle) {
 }
 
 type SubFrameParams struct {
-  int should_try;               // Should try this set of parameters.
-  int empty_rect_allowed;       // Frame with empty rectangle can be skipped.
+  var should_try int               // Should try this set of parameters.
+  var empty_rect_allowed int       // Frame with empty rectangle can be skipped.
   FrameRectangle rect_ll;       // Frame rectangle for lossless compression.
   WebPPicture sub_frame_ll;     // subframe pic for lossless compression.
   FrameRectangle rect_lossy;    // Frame rectangle for lossy compression.
@@ -764,12 +726,12 @@ type Candidate struct {
   WebPMemoryWriter mem;  // Encoded bytes.
   WebPMuxFrameInfo info;
   FrameRectangle rect;  // Coordinates and dimensions of this candidate.
-  int carries_over;  // True if at least one pixel in rect is carried over from
+  var carries_over int  // True if at least one pixel in rect is carried over from
                      // the previous frame, meaning at least one pixel was set
                      // to fully transparent and this frame is blended.
                      // If this is true, such pixels are marked as 1s in
                      // WebPAnimEncoder::candidate_carryover_mask.
-  int evaluate;      // True if this candidate should be evaluated.
+  var evaluate int      // True if this candidate should be evaluated.
 } ;
 
 // Generates a candidate encoded frame given a picture and metadata.
@@ -994,7 +956,7 @@ static WebPEncodingError GenerateCandidates(
 static int IncreasePreviousDuration(/* const */ enc *WebPAnimEncoder, int duration) {
   position := enc.count - 1;
   var prev_enc_frame *EncodedFrame = GetFrame(enc, position);
-  int new_duration;
+  var new_duration int
 
   assert.Assert(enc.count >= 1);
   assert.Assert(!prev_enc_frame.is_key_frame ||
@@ -1008,13 +970,13 @@ static int IncreasePreviousDuration(/* const */ enc *WebPAnimEncoder, int durati
   if (new_duration >= MAX_DURATION) {  // Special case.
     // Separate out previous frame from earlier merged frames to afunc overflow.
     // We add a 1x1 transparent frame for the previous frame, with blending on.
-    const FrameRectangle rect = {0, 0, 1, 1}
+    var rect FrameRectangle  = {0, 0, 1, 1}
     lossless_1x1_bytes[] := {
         0x52, 0x49, 0x46, 0x46, 0x14, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50, 0x56, 0x50, 0x38, 0x4c, 0x08, 0x00, 0x00, 0x00, 0x2f, 0x00, 0x00, 0x00, 0x10, 0x88, 0x88, 0x08}
-    const WebPData lossless_1x1 = {lossless_1x1_bytes, sizeof(lossless_1x1_bytes)}
+    var lossless_1x1 WebPData  = {lossless_1x1_bytes, sizeof(lossless_1x1_bytes)}
     lossy_1x1_bytes[] := {
         0x52, 0x49, 0x46, 0x46, 0x40, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50, 0x56, 0x50, 0x38, 0x58, 0x0a, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x4c, 0x50, 0x48, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x50, 0x38, 0x20, 0x18, 0x00, 0x00, 0x00, 0x30, 0x01, 0x00, 0x9d, 0x01, 0x2a, 0x01, 0x00, 0x01, 0x00, 0x02, 0x00, 0x34, 0x25, 0xa4, 0x00, 0x03, 0x70, 0x00, 0xfe, 0xfb, 0xfd, 0x50, 0x00}
-    const WebPData lossy_1x1 = {lossy_1x1_bytes, sizeof(lossy_1x1_bytes)}
+    var lossy_1x1 WebPData  = {lossy_1x1_bytes, sizeof(lossy_1x1_bytes)}
     can_use_lossless :=
         (enc.last_config.lossless || enc.options.allow_mixed);
     var curr_enc_frame *EncodedFrame = GetFrame(enc, enc.count);
@@ -1088,7 +1050,7 @@ func CopyMaskedPixels(/* const */ src *WebPPicture, /*const*/ mask *uint8, /*con
 // (lossy/lossless), dispose methods, blending methods etc to encode the current
 // frame and outputs the best one in 'encoded_frame'.
 // 'frame_skipped' will be set to true if this frame should actually be skipped.
-static WebPEncodingError SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig, int is_key_frame, /*const*/ best_candidate_rect *FrameRectangle, /*const*/ encoded_frame *EncodedFrame, /*const*/ frame_skipped *int) {
+func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig, is_key_frame int , /*const*/ best_candidate_rect *FrameRectangle, /*const*/ encoded_frame *EncodedFrame, /*const*/ frame_skipped *int) WebPEncodingError {
   var i int
   WebPEncodingError error_code = VP8_ENC_OK;
   var curr_canvas *WebPPicture = &enc.curr_canvas_copy;
@@ -1217,21 +1179,20 @@ End:
 
 // Calculate the penalty incurred if we encode given frame as a keyframe
 // instead of a subframe.
-static int64 KeyFramePenalty(/* const */ encoded_frame *EncodedFrame) {
-  return ((int64)encoded_frame.key_frame.bitstream.size -
-          encoded_frame.sub_frame.bitstream.size);
+func KeyFramePenalty(/* const */ encoded_frame *EncodedFrame) int64 {
+  return ((int64)encoded_frame.key_frame.bitstream.size - encoded_frame.sub_frame.bitstream.size);
 }
 
-static int CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig) {
+func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig) int {
   ok := 0;
   frame_skipped := 0;
   WebPEncodingError error_code = VP8_ENC_OK;
   position := enc.count;
   var encoded_frame *EncodedFrame = GetFrame(enc, position);
-  FrameRectangle best_key_candidate_rect, best_sub_candidate_rect;
-  int candidate_undecided;
+  var best_key_candidate_rect, best_sub_candidate_rect FrameRectangle
+  var candidate_undecided int
 
-  ++enc.count;
+  enc.count++
 
   if (enc.is_first_frame) {  // Add this as a keyframe.
     error_code = SetFrame(enc, config, 1, &best_key_candidate_rect, encoded_frame, &frame_skipped);
@@ -1264,7 +1225,7 @@ static int CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPCo
       enc.flush_count = enc.count - 1;
       candidate_undecided = 0;
     } else {
-      int64 curr_delta;
+      var curr_delta int64
 
       // Add this as a frame rectangle to enc.
       // TODO: Only try to encode a subframe when it can be used (for example
@@ -1424,7 +1385,7 @@ static int FlushFrames(/* const */ enc *WebPAnimEncoder) {
 
 int WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, int timestamp, /*const*/ encoder_config *WebPConfig) {
   WebPConfig config;
-  int ok;
+  var ok int
 
   if (enc == nil) {
     return 0;
@@ -1568,12 +1529,12 @@ Err:
 // Convert a single-frame animation to a non-animated image if appropriate.
 // TODO(urvang): Can we pick one of the two heuristically (based on frame
 // rectangle and/or presence of alpha)?
-static WebPMuxError OptimizeSingleFrame(/* const */ enc *WebPAnimEncoder, /*const*/ webp_data *WebPData) {
+func OptimizeSingleFrame(/* const */ enc *WebPAnimEncoder, /*const*/ webp_data *WebPData) WebPMuxError {
   WebPMuxError err = WEBP_MUX_OK;
-  canvas_width int, canvas_height;
-  WebPMuxFrameInfo frame;
-  WebPData full_image;
-  WebPData webp_data2;
+  var canvas_width , canvas_height int
+  var  frame WebPMuxFrameInfo
+  var  full_image WebPData
+  var  webp_data2 WebPData
   var mux *WebPMux = WebPMuxCreate(webp_data, 0);
   if (mux == nil) { return WEBP_MUX_BAD_DATA; }
   assert.Assert(enc.out_frame_count == 1);
@@ -1609,7 +1570,7 @@ End:
   return err;
 }
 
-int WebPAnimEncoderAssemble(enc *WebPAnimEncoder, webp_data *WebPData) {
+func WebPAnimEncoderAssemble(enc *WebPAnimEncoder, webp_data *WebPData) int {
   mux *WebPMux;
   WebPMuxError err;
 
@@ -1667,24 +1628,22 @@ Err:
   return 0;
 }
 
-const WebPAnimEncoderGetError *byte(enc *WebPAnimEncoder) {
+func WebPAnimEncoderGetError(enc *WebPAnimEncoder)  *byte {
   if (enc == nil) { return nil; }
   return enc.error_str;
 }
 
-WebPMuxError WebPAnimEncoderSetChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4], /*const*/ chunk_data *WebPData, int copy_data) {
+func WebPAnimEncoderSetChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4], /*const*/ chunk_data *WebPData, int copy_data) WebPMuxError {
   if (enc == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
   return WebPMuxSetChunk(enc.mux, fourcc, chunk_data, copy_data);
 }
 
-WebPMuxError WebPAnimEncoderGetChunk(/* const */ enc *WebPAnimEncoder, /*const*/ byte fourcc[4], chunk_data *WebPData) {
+func WebPAnimEncoderGetChunk(/* const */ enc *WebPAnimEncoder, /*const*/ byte fourcc[4], chunk_data *WebPData) WebPMuxError {
   if (enc == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
   return WebPMuxGetChunk(enc.mux, fourcc, chunk_data);
 }
 
-WebPMuxError WebPAnimEncoderDeleteChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4]) {
+func WebPAnimEncoderDeleteChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4]) WebPMuxError {
   if (enc == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
   return WebPMuxDeleteChunk(enc.mux, fourcc);
 }
-
-// -----------------------------------------------------------------------------

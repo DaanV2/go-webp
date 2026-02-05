@@ -14,6 +14,7 @@ package utils
 // Author: Urvang (urvang@google.com)
 
 import (
+	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
@@ -36,7 +37,7 @@ func GradientPredictor(a,b, c uint8) int {
 // Fast estimate of a potentially good filter.
 func WebPEstimateBestFilter(/* const */  data []uint8/* ((uint64)height *width) */, width, height int) {
   var i, j int
-  var bins [WEBP_FILTER_LAST][SMAX]int
+  var bins [constants.WEBP_FILTER_LAST][SMAX]int
   stdlib.Memset(bins, 0, sizeof(bins));
 
   // We only sample every other pixels. That's enough.

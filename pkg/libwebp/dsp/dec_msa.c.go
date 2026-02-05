@@ -680,7 +680,7 @@ func VE4(dst *uint8) {  // vertical
   var ptop *uint8 = dst - BPS - 1;
   val0 := LW(ptop + 0);
   val1 := LW(ptop + 4);
-  uint32 out;
+  var out uint32
   v16u8 A = {0}, B, C, AC, B2, R;
 
   INSERT_W2_UB(val0, val1, A);
@@ -849,7 +849,7 @@ func DC16NoTopLeft(dst *uint8) {  // DC with nothing
 func DC8uv(dst *uint8) {  // DC
   dc := 8;
   var i int
-  uint64 out;
+  var out uint64
   const v16u8 rtop = LD_UB(dst - BPS);
   const v8u16 temp0 = __msa_hadd_u_h(rtop, rtop);
   const v4u32 temp1 = __msa_hadd_u_w(temp0, temp0);
@@ -925,7 +925,7 @@ func DC8uvNoLeft(dst *uint8) {  // DC with no left samples
 func DC8uvNoTop(dst *uint8) {  // DC with no top samples
   dc := 4;
   var i int
-  uint64 out;
+  var out uint64
   v16u8 dctemp;
 
   for i = 0; i < 8; i++ {

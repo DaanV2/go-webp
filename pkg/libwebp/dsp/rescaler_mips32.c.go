@@ -31,7 +31,7 @@ func ImportRowShrink_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEB
   x_add := wrk.x_add;
   x_sub := wrk.x_sub;
   x_stride1 := x_stride << 2;
-  int channel;
+  var channel int
   assert.Assert(!wrk.x_expand);
   assert.Assert(!WebPRescalerInputDone(wrk));
 
@@ -84,7 +84,7 @@ func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEB
   x_sub := wrk.x_sub;
   src_width := wrk.src_width;
   x_stride1 := x_stride << 2;
-  int channel;
+  var channel int
   assert.Assert(wrk.x_expand);
   assert.Assert(!WebPRescalerInputDone(wrk));
 
@@ -92,8 +92,8 @@ func ImportRowExpand_MIPS32(WEBP_RESTRICT const wrk *WebPRescaler, /*const*/ WEB
     var src *uint81 = src + channel;
     rescaler_t* frow = wrk.frow + channel;
     int temp1, temp2, temp3, temp4;
-    int frac;
-    int accum;
+    var frac int
+    var accum int
     x_out := channel;
 
     __asm__ volatile(

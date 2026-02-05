@@ -111,7 +111,7 @@ int VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ int16 levels[16]) 
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
   R := 0;
-  int ctx;
+  var ctx int
 
   VP8InitResidual(0, 3, enc, &res);
   ctx = it.top_nz[x] + it.left_nz[y];

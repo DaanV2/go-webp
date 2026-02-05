@@ -42,13 +42,13 @@ static float Clamp(float v, float min, float max) {
 }
 
 type PassStats struct {  // struct for organizing convergence in either size or PSNR
-  int is_first;
+  var is_first int
   float dq;
   float q, last_q;
   float qmin, qmax;
   double value, last_value;  // PSNR or size
   double target;
-  int do_size_search;
+  var do_size_search int
 } ;
 
 static int InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) {
@@ -119,7 +119,7 @@ static int FinalizeSkipProba(/* const */ enc *VP8Encoder) {
   var proba *VP8EncProba = &enc.proba;
   nb_mbs := enc.mb_w * enc.mb_h;
   nb_events := proba.nb_skip;
-  int size;
+  var size int
   proba.skip_proba = CalcSkipProba(nb_events, nb_mbs);
   proba.use_skip_proba = (proba.skip_proba < SKIP_PROBA_THRESHOLD);
   size = 256;  // 'use_skip_proba' bit
@@ -269,7 +269,7 @@ static int PutCoeffs(/* const */ bw *VP8BitWriter, int ctx, /*const*/ res *VP8Re
           VP8PutBit(bw, !(v & 1), 145);
         }
       } else {
-        int mask;
+        var mask int
         const tab *uint8;
         if (v < 3 + (8 << 1)) {  // VP8Cat3  (3b)
           VP8PutBit(bw, 0, p[8]);
@@ -795,7 +795,7 @@ int VP8EncTokenLoop(/* const */ enc *VP8Encoder) {
   const VP8RDLevel rd_opt = enc.rd_opt_level;
   pixel_count := (uint64)enc.mb_w * enc.mb_h * 384;
   PassStats stats;
-  int ok;
+  var ok int
 
   InitPassStats(enc, &stats);
   ok = PreLoopInitialize(enc);

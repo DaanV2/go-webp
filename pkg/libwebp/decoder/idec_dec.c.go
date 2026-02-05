@@ -135,7 +135,7 @@ func DoRemap(/* const */ idec *WebPIDecoder, ptrdiff_t offset) {
       var dec *VP8Decoder = (*VP8Decoder)idec.dec;
       last_part := dec.num_parts_minus_one;
       if (offset != 0) {
-        uint32 p;
+        var p uint32
         for p = 0; p <= last_part; p++ {
           VP8RemapBitReader(dec.parts + p, offset);
         }

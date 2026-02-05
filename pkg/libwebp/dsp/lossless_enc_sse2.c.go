@@ -290,7 +290,7 @@ static uint64 CombinedShannonEntropy_SSE2(/* const */ uint32 X[256], /*const*/ u
     my := _mm_movemask_epi8(_mm_cmpgt_epi8(y4, zero)) | mx;
     while (my) {
       j := BitsCtz(my);
-      uint32 xy;
+      var xy uint32
       if ((mx >> j) & 1) {
         x := X[i + j];
         sumXY += x;
@@ -315,7 +315,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 //------------------------------------------------------------------------------
 
 static int VectorMismatch_SSE2(/* const */ array *uint321, /*const*/ array *uint322, int length) {
-  int match_len;
+  var match_len int
 
   if (length >= 12) {
     __m128i A0 = _mm_loadu_si128((/* const */ __*m128i)&array1[0]);

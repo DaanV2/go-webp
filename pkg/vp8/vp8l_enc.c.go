@@ -219,7 +219,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
 
 // Clamp histogram and transform bits.
 static int ClampBits(width, height int, bits int, int min_bits, int max_bits, int image_size_max) {
-  int image_size;
+  var image_size int
   bits = (bits < min_bits) ? min_bits : (bits > max_bits) ? max_bits : bits;
   image_size = VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits);
   while (bits < max_bits && image_size > image_size_max) {
@@ -256,13 +256,13 @@ static int GetTransformBits(int method, int histo_bits) {
 const CRUNCH_SUBCONFIGS_MAX =2
 type CrunchSubConfig struct {
   int lz77;
-  int do_no_cache;
+  var do_no_cache int
 } ;
 type CrunchConfig struct {
-  int entropy_idx;
+  var entropy_idx int
   PaletteSorting palette_sorting_type;
   CrunchSubConfig sub_configs[CRUNCH_SUBCONFIGS_MAX];
-  int sub_configs_size;
+  var sub_configs_size int
 } ;
 
 // +2 because we add a palette sorting configuration for kPalette and
@@ -321,7 +321,7 @@ static int EncoderAnalyze(/* const */ enc *VP8LEncoder, CrunchConfig crunch_conf
         if ((i != kPalette && i != kPaletteAndSpatial) || use_palette) {
           assert.Assert(*crunch_configs_size < CRUNCH_CONFIGS_MAX);
           if (use_palette && (i == kPalette || i == kPaletteAndSpatial)) {
-            int sorting_method;
+            var sorting_method int
             for (sorting_method = 0; sorting_method < kPaletteSortingNum;
                  ++sorting_method) {
               const PaletteSorting typed_sorting_method =
@@ -524,7 +524,7 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
   uint8 code_length_bitdepth[CODE_LENGTH_CODES] = {0}
   uint16 code_length_bitdepth_symbols[CODE_LENGTH_CODES] = {0}
   max_tokens := tree.num_symbols;
-  int num_tokens;
+  var num_tokens int
   HuffmanTreeCode huffman_code;
   huffman_code.num_symbols = CODE_LENGTH_CODES;
   huffman_code.code_lengths = code_length_bitdepth;
@@ -548,8 +548,8 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
   {
     trailing_zero_bits := 0;
     trimmed_length := num_tokens;
-    int write_trimmed_length;
-    int length;
+    var write_trimmed_length int
+    var length int
     i := num_tokens;
     while (i-- > 0) {
       ix := tokens[i].code;
@@ -668,7 +668,7 @@ static int StoreImageToBitMask(/* const */ bw *VP8LBitWriter, int width, int his
       WriteHuffmanCode(bw, codes, literal_ix);
     } else {
       bits int, n_bits;
-      int code;
+      var code int
 
       distance := PixOrCopyDistance(v);
       VP8LPrefixEncode(v.len, &code, &n_bits, &bits);
@@ -795,10 +795,10 @@ func EncodeImageInternal(
 	huff_tree := make([]HuffmanTree, 3*CODE_LENGTH_CODES)
 	histogram_argb := make([]uint32, histogram_image_xysize)
 
-  int sub_configs_idx;
+  var sub_configs_idx int
   int cache_bits_init, write_histogram_image;
   VP8LBitWriter bw_init = *bw, bw_best;
-  int hdr_size_tmp;
+  var hdr_size_tmp int
   VP8LHashChain hash_chain_histogram;  // histogram image hash chain
   bw_size_best := ~(uint64)0;
   assert.Assert(histogram_bits_in >= MIN_HUFFMAN_BITS);
@@ -1272,7 +1272,7 @@ static int MapImageFromPalette(/* const */ enc *VP8LEncoder) {
   height := pic.height;
   var palette *uint32 = enc.palette;
   palette_size := enc.palette_size;
-  int xbits;
+  var xbits int
 
   // Replace each input pixel by corresponding palette index.
   // This is done line by line.
@@ -1352,8 +1352,8 @@ type StreamEncodeContext struct {
   bw *VP8LBitWriter;
   enc *VP8LEncoder;
   CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX];
-  int num_crunch_configs;
-  int red_and_blue_always_zero;
+  var num_crunch_configs int
+  var red_and_blue_always_zero int
   stats *WebPAuxStats;
 } ;
 
@@ -1382,7 +1382,7 @@ static int EncodeStreamHook(input *void, data *void2) {
 #endif
   hdr_size := 0;
   data_size := 0;
-  int idx;
+  var idx int
   best_size := ~(uint64)0;
   VP8LBitWriter bw_init = *bw, bw_best;
   (void)data2;
@@ -1531,7 +1531,7 @@ int VP8LEncodeStream(/* const */ config *WebPConfig, /*const*/ picture *WebPPict
   enc_side *VP8LEncoder = nil;
   CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX];
   int num_crunch_configs_main, num_crunch_configs_side = 0;
-  int idx;
+  var idx int
   red_and_blue_always_zero := 0;
   WebPWorker worker_main, worker_side;
   StreamEncodeContext params_main, params_side;
@@ -1540,7 +1540,7 @@ int VP8LEncodeStream(/* const */ config *WebPConfig, /*const*/ picture *WebPPict
   VP8LBitWriter bw_side;
   WebPPicture picture_side;
   var worker_interface *WebPWorkerInterface = WebPGetWorkerInterface();
-  int ok_main;
+  var ok_main int
 
   if (enc_main == nil || !VP8LBitWriterInit(&bw_side, 0)) {
     VP8LEncoderDelete(enc_main);

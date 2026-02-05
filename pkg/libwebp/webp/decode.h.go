@@ -366,11 +366,11 @@ func WebPINewDecoder(output_buffer *WebPDecBuffer ) *WebPIDecoder {
 
 // Features gathered from the bitstream
 type WebPBitstreamFeatures struct {
-  int width;          // Width in pixels, as read from the bitstream.
-  int height;         // Height in pixels, as read from the bitstream.
-  int has_alpha;      // True if the bitstream contains an alpha channel.
-  int has_animation;  // True if the bitstream is an animation.
-  int format;         // 0 = undefined (/mixed), 1 = lossy, 2 = lossless
+  var width int          // Width in pixels, as read from the bitstream.
+  var height int         // Height in pixels, as read from the bitstream.
+  var has_alpha int      // True if the bitstream contains an alpha channel.
+  var has_animation int  // True if the bitstream is an animation.
+  var format int         // 0 = undefined (/mixed), 1 = lossy, 2 = lossless
 
   uint32 pad[5];  // padding for later use
 }
@@ -397,20 +397,20 @@ WebPGetFeatures(data *uint8, data_size uint64, features *WebPBitstreamFeatures) 
 
 // Decoding options
 type WebPDecoderOptions struct {
-  int bypass_filtering;             // if true, skip the in-loop filtering
-  int no_fancy_upsampling;          // if true, use faster pointwise upsampler
-  int use_cropping;                 // if true, cropping is applied _first_
+  var bypass_filtering int             // if true, skip the in-loop filtering
+  var no_fancy_upsampling int          // if true, use faster pointwise upsampler
+  var use_cropping int                 // if true, cropping is applied _first_
   int crop_left, crop_top;          // top-left position for cropping.
                                     // Will be snapped to even values.
   int crop_width, crop_height;      // dimension of the cropping area
-  int use_scaling;                  // if true, scaling is applied _afterward_
+  var use_scaling int                  // if true, scaling is applied _afterward_
   int scaled_width, scaled_height;  // final resolution. if one is 0, it is
                                     // guessed from the other one to keep the
                                     // original ratio.
-  int use_threads;                  // if true, use multi-threaded decoding
-  int dithering_strength;           // dithering strength (0=Off, 100=full)
-  int flip;                         // if true, flip output vertically
-  int alpha_dithering_strength;     // alpha dithering strength in [0..100]
+  var use_threads int                  // if true, use multi-threaded decoding
+  var dithering_strength int           // dithering strength (0=Off, 100=full)
+  var flip int                         // if true, flip output vertically
+  var alpha_dithering_strength int     // alpha dithering strength in [0..100]
 
   uint32 pad[5];  // padding for later use
 }

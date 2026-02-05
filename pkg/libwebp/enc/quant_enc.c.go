@@ -603,7 +603,7 @@ static int TrellisQuantizeBlock(/* const */ WEBP_RESTRICT const enc *VP8Encoder,
       band := VP8EncBands[n + 1];
       score_t base_score;
       score_t best_cur_score;
-      int best_prev;
+      var best_prev int
       score_t cost, score;
 
       // costs is [16][NUM_CTX == 3] but ss_cur[m].costs is only read after
@@ -812,7 +812,7 @@ func CorrectDCValues(/* const */ WEBP_RESTRICT const it *VP8EncIterator, /*const
   //
   // Final errors {err1,err2,err3} are preserved and later restored
   // as top[]/left[] on the next block.
-  int ch;
+  var ch int
   for ch = 0; ch <= 1; ch++ {
     var top *int8 = it.top_derr[it.x][ch];
     var left *int8 = it.left_derr[ch];
@@ -836,7 +836,7 @@ func CorrectDCValues(/* const */ WEBP_RESTRICT const it *VP8EncIterator, /*const
 }
 
 func StoreDiffusionErrors(WEBP_RESTRICT const it *VP8EncIterator, /*const*/ WEBP_RESTRICT const rd *VP8ModeScore) {
-  int ch;
+  var ch int
   for ch = 0; ch <= 1; ch++ {
     var top *int8 = it.top_derr[it.x][ch];
     var left *int8 = it.left_derr[ch];
@@ -933,7 +933,7 @@ func PickBestIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT rd *V
   VP8ModeScore rd_tmp;
   rd_cur *VP8ModeScore = &rd_tmp;
   rd_best *VP8ModeScore = rd;
-  int mode;
+  var mode int
   is_flat := IsFlatSource16(it.yuv_in + Y_OFF_ENC);
 
   rd.mode_i16 = -1;
@@ -1013,7 +1013,7 @@ static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT 
   for {
     kNumBlocks := 1;
     VP8ModeScore rd_i4;
-    int mode;
+    var mode int
     best_mode := -1;
     var src *uint8 = src0 + VP8Scan[it.i4];
     var mode_costs *uint16 = GetCostModeI4(it, rd.modes_i4);
@@ -1095,7 +1095,7 @@ func PickBestUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *
   dst *uint80 = it.yuv_out + U_OFF_ENC;
   dst *uint8 = dst0;
   VP8ModeScore rd_best;
-  int mode;
+  var mode int
 
   rd.mode_uv = -1;
   InitScore(&rd_best);
@@ -1165,7 +1165,7 @@ func SimpleQuantize(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const 
 func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_modes, int refine_uv_mode, WEBP_RESTRICT const rd *VP8ModeScore) {
   score_t best_score = MAX_COST;
   nz := 0;
-  int mode;
+  var mode int
   int is_i16 = try_both_modes || (it.mb.type == 1);
 
   var dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment];
@@ -1278,7 +1278,7 @@ func RefineUsingDistortion(WEBP_RESTRICT const it *VP8EncIterator, int try_both_
 
 // Pick best modes and fills the levels. Returns true if skipped.
 int VP8Decimate(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, VP8RDLevel rd_opt) {
-  int is_skipped;
+  var is_skipped int
   method := it.enc.method;
 
   InitScore(rd);

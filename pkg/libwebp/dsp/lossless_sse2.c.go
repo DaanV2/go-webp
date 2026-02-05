@@ -58,7 +58,7 @@ static  uint32 ClampedAddSubtractHalf_SSE2(uint32 c0, uint32 c1, uint32 c2) {
 }
 
 static  uint32 Select_SSE2(uint32 a, uint32 b, uint32 c) {
-  int pa_minus_pb;
+  var pa_minus_pb int
   const __m128i zero = _mm_setzero_si128();
   const __m128i A0 = _mm_cvtsi32_si128((int)a);
   const __m128i B0 = _mm_cvtsi32_si128((int)b);

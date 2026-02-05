@@ -29,9 +29,9 @@ static uint64 FastSLog2Slow_MIPS32(uint32 v) {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     uint32 log_cnt, y;
-    uint64 correction;
+    var correction uint64
     c24 := 24;
-    uint32 temp;
+    var temp uint32
 
     // Xf = 256 = 2^8
     // log_cnt is index of leading one in upper 24 bits
@@ -66,7 +66,7 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
     uint32 log_cnt, y;
     c24 := 24;
     uint32 log_2;
-    uint32 temp;
+    var temp uint32
 
     __asm__ volatile(
         "clz      %[log_cnt], %[v]                      \n\t"

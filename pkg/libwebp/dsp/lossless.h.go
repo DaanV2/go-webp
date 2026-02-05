@@ -53,9 +53,9 @@ extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed_SSE;
 type VP8LMultipliers struct {
   // Note: the members are uint8, so that any negative values are
   // automatically converted to "mod 256" values.
-  uint8 green_to_red;
-  uint8 green_to_blue;
-  uint8 red_to_blue;
+  var green_to_red uint8
+  var green_to_blue uint8
+  var red_to_blue uint8
 } ;
 typedef func (*VP8LTransformColorInverseFunc)(/* const */ m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32);
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse;
@@ -154,11 +154,11 @@ type VP8LStreaks struct {      // small struct to hold counters
 } ;
 
 type VP8LBitEntropy struct {          // small struct to hold bit entropy results
-  uint64 entropy;       // entropy
-  uint32 sum;           // sum of the population
-  int nonzeros;           // number of non-zero elements in the population
-  uint32 max_val;       // maximum value in the population
-  uint32 nonzero_code;  // index of the last non-zero in the population
+  var entropy uint64       // entropy
+  var sum uint32           // sum of the population
+  var nonzeros int           // number of non-zero elements in the population
+  var max_val uint32       // maximum value in the population
+  var nonzero_code uint32  // index of the last non-zero in the population
 } ;
 
 func VP8LBitEntropyInit(/* const */ entropy *VP8LBitEntropy);

@@ -112,8 +112,8 @@ extern const int VP8DspScan[16 + 4 + 4];
 const MAX_COEFF_THRESH =31  // size of histogram used by CollectHistogram.
 type VP8Histogram struct {
   // We only need to store max_value and last_non_zero, not the distribution.
-  int max_value;
-  int last_non_zero;
+  var max_value int
+  var last_non_zero int
 } ;
 typedef func (*VP8CHisto)(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_RESTRICT pred *uint8, int start_block, int end_block, WEBP_RESTRICT const histo *VP8Histogram);
 extern VP8CHisto VP8CollectHistogram;
@@ -148,7 +148,7 @@ func VP8EncDspCostInit(void);
 
 // struct for accumulating statistical moments
 type <Foo> struct {
-  uint32 w;              // sum(w_i) : sum of weights
+  var w uint32              // sum(w_i) : sum of weights
   uint32 xm, ym;         // sum(w_i * x_i), sum(w_i * y_i)
   uint32 xxm, xym, yym;  // sum(w_i * x_i * x_i), etc.
 } VP8DistoStats;

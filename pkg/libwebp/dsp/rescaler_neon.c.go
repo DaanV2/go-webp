@@ -61,7 +61,7 @@ static uint32x4_t Interpolate_NEON(/* const */ rescaler_t* WEBP_RESTRICT const f
 }
 
 func RescalerExportRowExpand_NEON(/* const */ wrk *WebPRescaler) {
-  int x_out;
+  var x_out int
   var dst *uint8 = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   x_out_max := wrk.dst_width * wrk.num_channels;
@@ -114,7 +114,7 @@ func RescalerExportRowExpand_NEON(/* const */ wrk *WebPRescaler) {
 }
 
 func RescalerExportRowShrink_NEON(/* const */ wrk *WebPRescaler) {
-  int x_out;
+  var x_out int
   var dst *uint8 = wrk.dst;
   rescaler_t* const irow = wrk.irow;
   x_out_max := wrk.dst_width * wrk.num_channels;

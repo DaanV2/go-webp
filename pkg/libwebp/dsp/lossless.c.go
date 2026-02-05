@@ -409,7 +409,7 @@ func VP8LInverseTransform(/* const */ transform *VP8LTransform, int row_start, i
 
 static int is_big_endian(){
   static const union {
-    uint16 w;
+    var w uint16
     uint8 b[2];
   } tmp = {1}
   return (tmp.b[0] != 1);

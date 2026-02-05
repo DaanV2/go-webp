@@ -835,7 +835,7 @@ static int QuantizeBlock_NEON(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRI
 }
 
 static int Quantize2Blocks_NEON(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
-  int nz;
+  var nz int
   nz = QuantizeBlock_NEON(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_NEON(in + 1 * 16, out + 1 * 16, mtx) << 1;
   return nz;
@@ -1018,10 +1018,10 @@ static  func VerticalPred16_NEON(dst *uint8, /*const*/ top *uint8) {
 }
 
 static  func DCMode_NEON(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8) {
-  uint8 s;
+  var s uint8
 
   if (top != nil) {
-    uint16 dc;
+    var dc uint16
     dc = vaddlvq_u8(vld1q_u8(top));
     if (left != nil) {
       // top and left present.
@@ -1033,7 +1033,7 @@ static  func DCMode_NEON(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8
     }
   } else {
     if (left != nil) {
-      uint16 dc;
+      var dc uint16
       // left but no top.
       dc = vaddlvq_u8(vld1q_u8(left));
       s = vqrshrnh_n_u16(dc, 4);

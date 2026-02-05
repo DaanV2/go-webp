@@ -152,7 +152,7 @@ int VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*con
           AddConstantToken(tokens, !(v & 1), 145);
         }
       } else {
-        int mask;
+        var mask int
         const tab *uint8;
         residue := v - 3;
         if (residue < (8 << 1)) {  // VP8Cat3  (3b)

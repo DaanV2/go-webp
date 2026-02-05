@@ -172,7 +172,7 @@ func PlaneCodeToDistance(xsize, plane_code int ) int {
 // VP8LFillBitWindow(br) needs to be called at minimum every second call
 // to ReadSymbol, in order to pre-fetch enough bits.
 static  int ReadSymbol(/* const */ table *HuffmanCode, /*const*/ br *VP8LBitReader) {
-  int nbits;
+  var nbits int
   val := VP8LPrefetchBits(br);
   table += val & HUFFMAN_TABLE_MASK;
   nbits = table.bits - HUFFMAN_TABLE_BITS;
@@ -212,7 +212,7 @@ static int AccumulateHCode(HuffmanCode hcode, int shift, /*const*/ huff *Huffman
 }
 
 func BuildPackedTable(/* const */ htree_group *HTreeGroup) {
-  uint32 code;
+  var code uint32
   for code = 0; code < HUFFMAN_PACKED_TABLE_SIZE; code++ {
     bits := code;
     var huff *HuffmanCode32 = &htree_group.packed_table[bits];
@@ -235,8 +235,8 @@ func BuildPackedTable(/* const */ htree_group *HTreeGroup) {
 static int ReadHuffmanCodeLengths(/* const */ dec *VP8LDecoder, /*const*/ code_length_code_lengths *int, int num_symbols, /*const*/ code_lengths *int) {
   ok := 0;
   var br *VP8LBitReader = &decoder.br;
-  int symbol;
-  int max_symbol;
+  var symbol int
+  var max_symbol int
   prev_code_len := DEFAULT_CODE_LENGTH;
   HuffmanTables tables;
   var bounded_code_lengths *int =
@@ -261,7 +261,7 @@ static int ReadHuffmanCodeLengths(/* const */ dec *VP8LDecoder, /*const*/ code_l
   symbol = 0;
   while (symbol < num_symbols) {
     const p *HuffmanCode;
-    int code_len;
+    var code_len int
     if (max_symbol-- == 0) break;
     VP8LFillBitWindow(br);
     p = &tables.curr_segment.start[VP8LPrefetchBits(br) & LENGTHS_TABLE_MASK];
@@ -473,7 +473,7 @@ int ReadHuffmanCodesHelper(int color_cache_bits, int num_htree_groups, int num_h
       const htree_group *HTreeGroup =
           &(*htree_groups)[(mapping == nil) ? i : mapping[i]];
       *HuffmanCode* const htrees = htree_group.htrees;
-      int size;
+      var size int
       total_size := 0;
       is_trivial_literal := 1;
       max_bits := 0;
@@ -601,7 +601,7 @@ static int EmitRescaledRowsRGBA(/* const */ dec *VP8LDecoder, in *uint8, int in_
     var row_out *uint8 = out + (ptrdiff_t)num_lines_out * out_stride;
     lines_left := mb_h - num_lines_in;
     needed_lines := WebPRescaleNeededLines(dec.rescaler, lines_left);
-    int lines_imported;
+    var lines_imported int
     assert.Assert(needed_lines > 0 && needed_lines <= lines_left);
     WebPMultARGBRows(row_in, in_stride, dec.rescaler.src_width, needed_lines, 0);
     lines_imported =
@@ -676,7 +676,7 @@ func EmitRescaledRowsYUVA(/* const */ dec *VP8LDecoder, in *uint8, in_stride, mb
   while (num_lines_in < mb_h) {
     lines_left := mb_h - num_lines_in;
     needed_lines := WebPRescaleNeededLines(dec.rescaler, lines_left);
-    int lines_imported;
+    var lines_imported int
     WebPMultARGBRows(in, in_stride, dec.rescaler.src_width, needed_lines, 0);
     lines_imported =
         WebPRescalerImport(dec.rescaler, lines_left, in, in_stride);
@@ -1037,7 +1037,7 @@ static  func CopySmallPattern32b(/* const */ src *uint32, dst *uint32, int lengt
 static  func CopyBlock32b(/* const */ dst *uint32, int dist, int length) {
   var src *uint32 = dst - dist;
   if (dist <= 2 && length >= 4 && ((uintptr_t)dst & 3) == 0) {
-    uint64 pattern;
+    var pattern uint64
     if (dist == 1) {
       pattern = (uint64)src[0];
       pattern |= pattern << 32;
@@ -1073,7 +1073,7 @@ static int DecodeAlphaData(/* const */ dec *VP8LDecoder, /*const*/ data *uint8, 
   assert.Assert(Is8bOptimizable(hdr));
 
   while (!br.eos && pos < last) {
-    int code;
+    var code int
     // Only update when changing tile.
     if ((col & mask) == 0) {
       htree_group = GetHtreeGroupForPos(hdr, col, row);
@@ -1178,7 +1178,7 @@ func DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width
   assert.Assert(src_last <= src_end);
 
   while (src < src_last) {
-    int code;
+    var code int
     if (row >= next_sync_row) {
       SaveState(dec, (int)(src - data));
       next_sync_row = row + SYNC_EVERY_N_ROWS;
@@ -1543,7 +1543,7 @@ static int AllocateInternalBuffers32b(/* const */ dec *VP8LDecoder, int final_wi
   cache_pixels := (uint64)final_width * NUM_ARGB_CACHE_ROWS;
   // Scratch buffer to accumulate RGBA values (hence 4*)for YUV conversion.
   accumulated_rgb_pixels := 0;
-  uint64 total_num_pixels;
+  var total_num_pixels uint64
   if (dec.output != nil && !WebPIsRGBMode(dec.output.colorspace)) {
     uv_width := (dec.io.crop_right - dec.io.crop_left + 1) >> 1;
     accumulated_rgb_pixels =

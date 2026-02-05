@@ -661,7 +661,7 @@ static int QuantizeBlock_C(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT 
 }
 
 static int Quantize2Blocks_C(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
-  int nz;
+  var nz int
   nz = VP8EncQuantizeBlock(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= VP8EncQuantizeBlock(in + 1 * 16, out + 1 * 16, mtx) << 1;
   return nz;

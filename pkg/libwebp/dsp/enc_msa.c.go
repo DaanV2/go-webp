@@ -168,7 +168,7 @@ func FTransformWHT_MSA(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *i
 }
 
 static int TTransform_MSA(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) {
-  int sum;
+  var sum int
   uint32 in0_m, in1_m, in2_m, in3_m;
   v16i8 src0 = {0}
   v8i16 in0, in1, tmp0, tmp1, tmp2, tmp3;
@@ -641,7 +641,7 @@ static  func TrueMotion8x8(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT lef
 }
 
 static  func DCMode8x8(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *uint8, /*const*/ WEBP_RESTRICT top *uint8) {
-  uint64 out;
+  var out uint64
   v16u8 src = {0}
   if (top != nil && left != nil) {
     left_m := LD(left);
@@ -707,7 +707,7 @@ func IntraChromaPreds_MSA(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left
   } while (0)
 
 static int SSE16x16_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  uint32 sum;
+  var sum uint32
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
   v4i32 out0, out1, out2, out3;
@@ -734,7 +734,7 @@ static int SSE16x16_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTR
 }
 
 static int SSE16x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  uint32 sum;
+  var sum uint32
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
   v4i32 out0, out1, out2, out3;
@@ -753,7 +753,7 @@ static int SSE16x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRI
 }
 
 static int SSE8x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
-  uint32 sum;
+  var sum uint32
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
   v16u8 t0, t1, t2, t3;
@@ -795,7 +795,7 @@ static int SSE4x4_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRIC
 // Quantization
 
 static int QuantizeBlock_MSA(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
-  int sum;
+  var sum int
   v8i16 in0, in1, sh0, sh1, out0, out1;
   v8i16 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, sign0, sign1;
   v4i32 s0, s1, s2, s3, b0, b1, b2, b3, t0, t1, t2, t3;
@@ -847,7 +847,7 @@ static int QuantizeBlock_MSA(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRIC
 }
 
 static int Quantize2Blocks_MSA(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
-  int nz;
+  var nz int
   nz = VP8EncQuantizeBlock(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= VP8EncQuantizeBlock(in + 1 * 16, out + 1 * 16, mtx) << 1;
   return nz;

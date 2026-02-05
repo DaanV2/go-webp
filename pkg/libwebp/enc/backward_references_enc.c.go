@@ -73,7 +73,7 @@ static  int FindMatchLength(/* const */ array *uint321, /*const*/ array *uint322
 type PixOrCopyBlock struct {
   next *PixOrCopyBlock;  // next block (or nil)
   start *PixOrCopy;      // data start
-  int size;              // currently used size
+  var size int              // currently used size
 }
 
 extern func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs);
@@ -247,9 +247,9 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
   window_size := GetWindowSizeForHashChain(quality, xsize);
   remaining_percent := percent_range;
   percent_start := *percent;
-  int pos;
-  int argb_comp;
-  uint32 base_position;
+  var pos int
+  var argb_comp int
+  var base_position uint32
   hash_to_first_index *int32;
   // Temporarily use the p.offset_length as a hash chain.
   chain *int32 = (*int32)p.offset_length;
@@ -276,7 +276,7 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
   // Fill the chain linking pixels with the same hash.
   argb_comp = (argb[0] == argb[1]);
   for pos = 0; pos < size - 2; {
-    uint32 hash_code;
+    var hash_code uint32
     argb_comp_next := (argb[pos + 1] == argb[pos + 2]);
     if (argb_comp && argb_comp_next) {
       // Consecutive pixels with the same color will share the same hash.
@@ -342,15 +342,15 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
     iter := iter_max;
     best_length := 0;
     best_distance := 0;
-    uint32 best_argb;
+    var best_argb uint32
     min_pos :=
         (base_position > window_size) ? base_position - window_size : 0;
     length_max := (max_len < 256) ? max_len : 256;
-    uint32 max_base_position;
+    var max_base_position uint32
 
     pos = chain[base_position];
     if (!low_effort) {
-      int curr_length;
+      var curr_length int
       // Heuristic: use the comparison with the above line as an initialization.
       if (base_position >= (uint32)xsize) {
         curr_length = FindMatchLength(argb_start - xsize, argb_start, best_length, max_len);
@@ -374,7 +374,7 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
     best_argb = argb_start[best_length];
 
     for ; pos >= min_pos && --iter; pos = chain[pos] {
-      int curr_length;
+      var curr_length int
       assert.Assert(base_position > (uint32)pos);
 
       if (argb[pos + best_length] != best_argb) continue;
@@ -588,7 +588,7 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint3
     for y = 0; y <= 6; y++ {
       for x = -6; x <= 6; x++ {
         offset := y * xsize + x;
-        int plane_code;
+        var plane_code int
         // Ignore offsets that bring us after the pixel.
         if (offset <= 0) continue;
         plane_code = VP8LDistanceToPlaneCode(xsize, offset) - 1;
@@ -619,9 +619,9 @@ static int BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint3
 
   hash_chain.offset_length[0] = 0;
   for i = 1; i < pix_count; i++ {
-    int ind;
+    var ind int
     best_length := VP8LHashChainFindLength(hash_chain_best, i);
-    int best_offset;
+    var best_offset int
     do_compute := 1;
 
     if (best_length >= MAX_LENGTH) {
@@ -956,7 +956,7 @@ static int GetBackwardReferences(width, height int, /*const*/ argb *uint32, qual
       const hash_chain_tmp *VP8LHashChain =
           (lz77_types_best[i] == kLZ77Standard) ? hash_chain : &hash_chain_box;
       cache_bits := (i == 1) ? 0 : *cache_bits_best;
-      uint64 bit_cost_trace;
+      var bit_cost_trace uint64
       if (!VP8LBackwardReferencesTraceBackwards(width, height, argb, cache_bits, hash_chain_tmp, &refs[i], refs_tmp)) {
         goto Error;
       }

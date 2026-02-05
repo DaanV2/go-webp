@@ -166,8 +166,8 @@ func AssignSegments(/* const */ enc *VP8Encoder, /*const*/ int alphas[MAX_ALPHA 
   }
 
   for k = 0; k < MAX_ITERS_K_MEANS; k++ {  // few iters are enough
-    int total_weight;
-    int displaced;
+    var total_weight int
+    var displaced int
     // Reset stats
     for n = 0; n < nb; n++ {
       accum[n] = 0;
@@ -234,14 +234,14 @@ const MAX_UV_MODE =2
 
 static int MBAnalyzeBestIntra16Mode(/* const */ it *VP8EncIterator) {
   max_mode := MAX_INTRA16_MODE;
-  int mode;
+  var mode int
   best_alpha := DEFAULT_ALPHA;
   best_mode := 0;
 
   VP8MakeLuma16Preds(it);
   for mode = 0; mode < max_mode; mode++ {
     VP8Histogram histo;
-    int alpha;
+    var alpha int
 
     InitHistogram(&histo);
     VP8CollectHistogram(it.yuv_in + Y_OFF_ENC, it.yuv_p + VP8I16ModeOffsets[mode], 0, 16, &histo);
@@ -288,12 +288,12 @@ static int MBAnalyzeBestUVMode(/* const */ it *VP8EncIterator) {
   smallest_alpha := 0;
   best_mode := 0;
   max_mode := MAX_UV_MODE;
-  int mode;
+  var mode int
 
   VP8MakeChroma8Preds(it);
   for mode = 0; mode < max_mode; mode++ {
     VP8Histogram histo;
-    int alpha;
+    var alpha int
     InitHistogram(&histo);
     VP8CollectHistogram(it.yuv_in + U_OFF_ENC, it.yuv_p + VP8UVModeOffsets[mode], 16, 16 + 4 + 4, &histo);
     alpha = GetAlpha(&histo);
@@ -374,7 +374,7 @@ type SegmentJob struct {
   int alphas[MAX_ALPHA + 1];
   int alpha, uv_alpha;
   VP8EncIterator it;
-  int delta_progress;
+  var delta_progress int
 } ;
 
 // main work call
