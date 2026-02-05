@@ -13,31 +13,30 @@ package utils
 //
 // Author: Urvang (urvang@google.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
+import (
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
 
 // -----------------------------------------------------------------------------
 // Quick estimate of a potentially interesting filter mode to try.
 
 const SMAX = 16
-#define SDIFF(a, b) (abs((a) - (b)) >> 4)  // Scoring diff, in [0..SMAX)
 
-static  int GradientPredictor(uint8 a, uint8 b, uint8 c) {
-  g := a + b - c;
-  return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
+func SDIFF(a, b int) int {
+	return (stdlib.Abs((a) - (b)) >> 4)  // Scoring diff, in [0..SMAX)
 }
 
-WEBP_FILTER_TYPE WebPEstimateBestFilter(
-    /* const */  *uint8((uint64)height *width) data, width, height int) {
-  int i, j;
-  int bins[WEBP_FILTER_LAST][SMAX];
+func GradientPredictor(a,b, c uint8) int {
+  g := a + b - c;
+
+  return tenary.If((g & ~0xff) == 0, g, tenary.If(g < 0, 0, 255))  // clip to 8bit
+}
+
+// Fast estimate of a potentially good filter.
+func WebPEstimateBestFilter(/* const */  data []uint8/* ((uint64)height *width) */, width, height int) {
+  var i, j int
+  var bins [WEBP_FILTER_LAST][SMAX]int
   stdlib.Memset(bins, 0, sizeof(bins));
 
   // We only sample every other pixels. That's enough.
@@ -59,8 +58,8 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
     }
   }
   {
-    int filter;
-    WEBP_FILTER_TYPE best_filter = WEBP_FILTER_NONE;
+    var filter int 
+    best_filter := WEBP_FILTER_NONE;
     best_score := 0x7fffffff;
     for filter = WEBP_FILTER_NONE; filter < WEBP_FILTER_LAST; filter++ {
       score := 0;
@@ -71,14 +70,9 @@ WEBP_FILTER_TYPE WebPEstimateBestFilter(
       }
       if (score < best_score) {
         best_score = score;
-        best_filter = (WEBP_FILTER_TYPE)filter;
+        best_filter = WEBP_FILTER_TYPE(filter);
       }
     }
     return best_filter;
   }
 }
-
-#undef SMAX
-#undef SDIFF
-
-//------------------------------------------------------------------------------
