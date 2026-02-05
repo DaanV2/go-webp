@@ -170,7 +170,7 @@ static int EncodeAlphaInternal(/* const */ data *uint8, width, height, method, f
 
 // -----------------------------------------------------------------------------
 
-static int GetNumColors(/* const */ data *uint8, width, height int, int stride) {
+func GetNumColors(/* const */ data *uint8, width, height int, int stride) int {
   var j int
   colors := 0;
   uint8 color[256] = {0}
@@ -192,7 +192,7 @@ const FILTER_TRY_NONE =(1 << WEBP_FILTER_NONE)
 const FILTER_TRY_ALL =((1 << WEBP_FILTER_LAST) - 1)
 
 // Given the input 'filter' option, return an OR'd bit-set of filters to try.
-static uint32 GetFilterMap(/* const */ alpha *uint8, width, height int, int filter, int effort_level) {
+func GetFilterMap(/* const */ alpha *uint8, width, height int, int filter, int effort_level) uint32 {
   bit_map := uint(0);
   if (filter == WEBP_FILTER_FAST) {
     // Quick estimate of the best candidate.
@@ -223,7 +223,7 @@ func InitFilterTrial(/* const */ score *FilterTrial) {
   VP8BitWriterInit(&score.bw, 0);
 }
 
-static int ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) {
+func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_size uint64, int method, int filter, int reduce_levels, int effort_level, *uint8* const output, /*const*/ output_size *uint64, /*const*/ stats *WebPAuxStats) int {
   ok := 1;
   FilterTrial best;
   try_map := GetFilterMap(alpha, width, height, filter, effort_level);

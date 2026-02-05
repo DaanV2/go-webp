@@ -28,12 +28,12 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Helper functions
 
-static int IsVP8XNeeded(/* const */ enc *VP8Encoder) {
+func IsVP8XNeeded(/* const */ enc *VP8Encoder) int {
   return !!enc.has_alpha;  // Currently the only case when VP8X is needed.
                             // This could change in the future.
 }
 
-static int PutPaddingByte(/* const */ pic *WebPPicture) {
+func PutPaddingByte(/* const */ pic *WebPPicture) int {
   pad_byte[1] := {0}
   return !!pic.writer(pad_byte, 1, pic);
 }
@@ -142,7 +142,7 @@ static WebPEncodingError PutVP8FrameHeader(/* const */ pic *WebPPicture, int pro
 }
 
 // WebP Headers.
-static int PutWebPHeaders(/* const */ enc *VP8Encoder, uint64 size0, uint64 vp8_size, uint64 riff_size) {
+func PutWebPHeaders(/* const */ enc *VP8Encoder, uint64 size0, uint64 vp8_size, uint64 riff_size) int {
   var pic *WebPPicture = enc.pic;
   WebPEncodingError err = VP8_ENC_OK;
 
@@ -237,7 +237,7 @@ func PutQuant(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
 }
 
 // Partition sizes
-static int EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *WebPPicture) {
+func EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *WebPPicture) int {
   uint8 buf[3 * (MAX_NUM_PARTITIONS - 1)];
   var p int
   for p = 0; p < enc.num_parts - 1; p++ {
@@ -257,7 +257,7 @@ static int EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *WebPPi
 
 //------------------------------------------------------------------------------
 
-static int GeneratePartition0(/* const */ enc *VP8Encoder) {
+func GeneratePartition0(/* const */ enc *VP8Encoder) int {
   var bw *VP8BitWriter = &enc.bw;
   mb_size := enc.mb_w * enc.mb_h;
   uint64 pos1, pos2, pos3;

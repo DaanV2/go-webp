@@ -45,7 +45,7 @@ static  int GetMax(int a, int b) { return (a < b) ? b : a; }
 // Compute a bias for prediction entropy using a global heuristic to favor
 // values closer to 0. Hence the final negative sign.
 // 'exp_val' has a scaling factor of 1/100.
-static int64 PredictionCostBias(/* const */ uint32 counts[256], uint64 weight_0, uint64 exp_val) {
+func PredictionCostBias(/* const */ uint32 counts[256], uint64 weight_0, uint64 exp_val) int64 {
   significant_symbols := 256 >> 4;
   exp_decay_factor := 6;  // has a scaling factor of 1/10
   bits := (weight_0 * counts[0]) << LOG_2_PRECISION_BITS;
@@ -108,7 +108,7 @@ static  func PredictBatch(int mode, int x_start, int y, num_pixels int, /*const*
 }
 
 #if (WEBP_NEAR_LOSSLESS == 1)
-static int MaxDiffBetweenPixels(uint32 p1, uint32 p2) {
+func MaxDiffBetweenPixels(uint32 p1, uint32 p2) int {
   diff_a := abs((int)(p1 >> 24) - (int)(p2 >> 24));
   diff_r := abs((int)((p1 >> 16) & 0xff) - (int)((p2 >> 16) & 0xff));
   diff_g := abs((int)((p1 >> 8) & 0xff) - (int)((p2 >> 8) & 0xff));
@@ -116,7 +116,7 @@ static int MaxDiffBetweenPixels(uint32 p1, uint32 p2) {
   return GetMax(GetMax(diff_a, diff_r), GetMax(diff_g, diff_b));
 }
 
-static int MaxDiffAroundPixel(uint32 current, uint32 up, uint32 down, uint32 left, uint32 right) {
+func MaxDiffAroundPixel(uint32 current, uint32 up, uint32 down, uint32 left, uint32 right) int {
   diff_up := MaxDiffBetweenPixels(current, up);
   diff_down := MaxDiffBetweenPixels(current, down);
   diff_left := MaxDiffBetweenPixels(current, left);
@@ -124,7 +124,7 @@ static int MaxDiffAroundPixel(uint32 current, uint32 up, uint32 down, uint32 lef
   return GetMax(GetMax(diff_up, diff_down), GetMax(diff_left, diff_right));
 }
 
-static uint32 AddGreenToBlueAndRed(argb uint32) {
+func AddGreenToBlueAndRed(argb uint32) uint32 {
   green := (argb >> 8) & 0xff;
   red_blue := argb & uint(0x00ff00ff);
   red_blue += (green << 16) | green;
@@ -161,7 +161,7 @@ func MaxDiffsForRow(int width, int stride, /*const*/ argb *uint32, /*const*/ max
 // Quantize the difference between the actual component value and its prediction
 // to a multiple of quantization, working modulo 256, taking care not to cross
 // a boundary (inclusive upper limit).
-static uint8 NearLosslessComponent(uint8 value, uint8 predict, uint8 boundary, int quantization) {
+func NearLosslessComponent(uint8 value, uint8 predict, uint8 boundary, int quantization) uint8 {
   residual := (value - predict) & 0xff;
   boundary_residual := (boundary - predict) & 0xff;
   lower := residual & ~(quantization - 1);
@@ -199,7 +199,7 @@ static  uint8 NearLosslessDiff(uint8 a, uint8 b) {
 // max_quantization which is a power of 2, smaller than max_diff). Take care if
 // value and predict have undergone subtract green, which means that red and
 // blue are represented as offsets from green.
-static uint32 NearLossless(value uint32, uint32 predict, int max_quantization, int max_diff, int used_subtract_green) {
+func NearLossless(value uint32, uint32 predict, int max_quantization, int max_diff, int used_subtract_green) uint32 {
   var quantization int
   new_green := 0;
   green_diff := 0;
@@ -771,7 +771,7 @@ MultipliersToColorCode(/* const */ m *VP8LMultipliers) {
          ((uint32)(m.green_to_blue) << 8) | m.green_to_red;
 }
 
-static int64 PredictionCostCrossColor(/* const */ uint32 accumulated[256], /*const*/ uint32 counts[256]) {
+func PredictionCostCrossColor(/* const */ uint32 accumulated[256], /*const*/ uint32 counts[256]) int64 {
   // Favor low entropy, locally and globally.
   // Favor small absolute values for PredictionCostSpatial
   static const kExpValue := 240;

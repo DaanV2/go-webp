@@ -571,7 +571,7 @@ static WebPMuxError MuxCleanup(/* const */ mux *WebPMux) {
 }
 
 // Total size of a list of images.
-static uint64 ImageListDiskSize(/* const */ wpi_list *WebPMuxImage) {
+func ImageListDiskSize(/* const */ wpi_list *WebPMuxImage) uint64 {
   size uint64  = 0;
   while (wpi_list != nil) {
     size += MuxImageDiskSize(wpi_list);

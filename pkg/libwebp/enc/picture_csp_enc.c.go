@@ -40,7 +40,7 @@ const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 // Detection of non-trivial transparency
 
 // Returns true if alpha[] has non-0xff values.
-static int CheckNonOpaque(/* const */ alpha *uint8, width, height int, int x_step, int y_step) {
+func CheckNonOpaque(/* const */ alpha *uint8, width, height int, int x_step, int y_step) int {
   if (alpha == nil) { return 0; }
   WebPInitAlphaProcessing();
   if (x_step == 1) {
@@ -77,7 +77,7 @@ static const kMinDimensionIterativeConversion := 4;
 //------------------------------------------------------------------------------
 // Main function
 
-static int PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, int rgb_stride, /*const*/ picture *WebPPicture) {
+func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, int step, int rgb_stride, /*const*/ picture *WebPPicture) int {
   ok := SharpYuvConvert(
       r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.y, picture.y_stride, picture.u, picture.uv_stride, picture.v, picture.uv_stride, /*yuv_bit_depth=*/8, picture.width, picture.height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
@@ -231,7 +231,7 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 //------------------------------------------------------------------------------
 // call for ARGB.YUVA conversion
 
-static int PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float dithering, int use_iterative_conversion) {
+func PictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace, float dithering, int use_iterative_conversion) int {
   if (picture == nil) { return 0; }
   if (picture.argb == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
@@ -330,7 +330,7 @@ int WebPPictureYUVAToARGB(picture *WebPPicture) {
 //------------------------------------------------------------------------------
 // automatic import / conversion
 
-static int Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride, int step, int swap_rb, int import_alpha) {
+func Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, int rgb_stride, int step, int swap_rb, int import_alpha) int {
   var y int
   // swap_rb . b,g,r,a , !swap_rb . r,g,b,a
   var r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));

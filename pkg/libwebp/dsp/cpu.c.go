@@ -96,7 +96,7 @@ func xgetbv() uint { return 0 }  // no AVX for older x64 or unrecognized toolcha
 #if defined(__i386__) || defined(__x86_64__) || defined(WEBP_HAVE_MSC_CPUID)
 
 // helper function for run-time detection of slow SSSE3 platforms
-static int CheckSlowModel(int info) {
+func CheckSlowModel(int info) int {
   // Table listing display models with longer latencies for the bsr instruction
   // (ie 2 cycles vs 10/16 cycles) and some SSSE3 instructions like pshufb.
   // Refer to Intel 64 and IA-32 Architectures Optimization Reference Manual.
@@ -115,7 +115,7 @@ static int CheckSlowModel(int info) {
   return 0;
 }
 
-static int x86CPUInfo(CPUFeature feature) {
+func x86CPUInfo(CPUFeature feature) int {
   var max_cpuid_value int
   int cpu_info[4];
   is_intel := 0;
@@ -169,7 +169,7 @@ static int x86CPUInfo(CPUFeature feature) {
  VP8CPUInfo VP8GetCPUInfo;
 VP8CPUInfo VP8GetCPUInfo = x86CPUInfo;
 #elif defined(WEBP_ANDROID_NEON)  // NB: needs to be before generic NEON test.
-static int AndroidCPUInfo(CPUFeature feature) {
+func AndroidCPUInfo(CPUFeature feature) int {
   const AndroidCpuFamily cpu_family = android_getCpuFamily();
   cpu_features := android_getCpuFeatures();
   if (feature == kNEON) {
@@ -182,7 +182,7 @@ static int AndroidCPUInfo(CPUFeature feature) {
 VP8CPUInfo VP8GetCPUInfo = AndroidCPUInfo;
 #elif defined(EMSCRIPTEN)         // also needs to be before generic NEON test
 // Use compile flags as an indicator of SIMD support instead of a runtime check.
-static int wasmCPUInfo(CPUFeature feature) {
+func wasmCPUInfo(CPUFeature feature) int {
   switch (feature) {
 #ifdef WEBP_HAVE_SSE2
     case kSSE2:
@@ -209,7 +209,7 @@ VP8CPUInfo VP8GetCPUInfo = wasmCPUInfo;
 // In most cases this function doesn't check for NEON support (it's assumed by
 // the configuration), but enables turning off NEON at runtime, for testing
 // purposes, by setting VP8GetCPUInfo = nil.
-static int armCPUInfo(CPUFeature feature) {
+func armCPUInfo(CPUFeature feature) int {
   if (feature != kNEON) { return 0; }
 #if defined(__linux__) && defined(WEBP_HAVE_NEON_RTCD)
   {
@@ -236,7 +236,7 @@ static int armCPUInfo(CPUFeature feature) {
 VP8CPUInfo VP8GetCPUInfo = armCPUInfo;
 #elif defined(WEBP_USE_MIPS32) || defined(WEBP_USE_MIPS_DSP_R2) || \
     defined(WEBP_USE_MSA)
-static int mipsCPUInfo(CPUFeature feature) {
+func mipsCPUInfo(CPUFeature feature) int {
   if ((feature == kMIPS32) || (feature == kMIPSdspR2) || (feature == kMSA)) {
     return 1;
   } else {

@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const SIZE = 8
 const SIZE2 = (SIZE / 2)
-static int IsTransparentARGBArea(/* const */ ptr *uint32, int stride, int size) {
+func IsTransparentARGBArea(/* const */ ptr *uint32, int stride, int size) int {
   int y, x;
   for y = 0; y < size; y++ {
     for x = 0; x < size; x++ {
@@ -59,7 +59,7 @@ func FlattenARGB(ptr *uint32, uint32 v, int stride, int size) {
 
 // Smoothen the luma components of transparent pixels. Return true if the whole
 // block is transparent.
-static int SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, int y_stride, width, height int) {
+func SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, int y_stride, width, height int) int {
   sum := 0, count = 0;
   var x, y int
   var alpha_ptr *uint8 = a_ptr;

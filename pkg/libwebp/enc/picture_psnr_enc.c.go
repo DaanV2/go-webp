@@ -35,7 +35,7 @@ typedef double (*AccumulateFunc)(/* const */ src *uint8, int src_stride, /*const
 
 const RADIUS = 2  // search radius. Shouldn't be too large.
 
-static double AccumulateLSIM(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) {
+func AccumulateLSIM(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) double {
   var x, y int
   double total_sse = 0.;
   for y = 0; y < h; y++ {
@@ -62,7 +62,7 @@ static double AccumulateLSIM(/* const */ src *uint8, int src_stride, /*const*/ r
 }
 #undef RADIUS
 
-static double AccumulateSSE(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) {
+func AccumulateSSE(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) double {
   var y int
   double total_sse = 0.;
   for y = 0; y < h; y++ {
@@ -75,7 +75,7 @@ static double AccumulateSSE(/* const */ src *uint8, int src_stride, /*const*/ re
 
 //------------------------------------------------------------------------------
 
-static double AccumulateSSIM(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) {
+func AccumulateSSIM(/* const */ src *uint8, int src_stride, /*const*/ ref *uint8, int ref_stride, int w, int h) double {
   w0 := (w < VP8_SSIM_KERNEL) ? w : VP8_SSIM_KERNEL;
   w1 := w - VP8_SSIM_KERNEL - 1;
   h0 := (h < VP8_SSIM_KERNEL) ? h : VP8_SSIM_KERNEL;
@@ -114,12 +114,12 @@ static double AccumulateSSIM(/* const */ src *uint8, int src_stride, /*const*/ r
 // Max value returned in case of exact similarity.
 static const double kMinDistortion_dB = 99.;
 
-static double GetPSNR(double v, double size) {
+func GetPSNR(double v, double size) double {
   return (v > 0. && size > 0.) ? -4.3429448 * log(v / (size * 255 * 255.))
                                : kMinDistortion_dB;
 }
 
-static double GetLogSSIM(double v, double size) {
+func GetLogSSIM(double v, double size) double {
   v = (size > 0.) ? v / size : 1.;
   return (v < 1.) ? -10.0 * log10(1. - v) : kMinDistortion_dB;
 }

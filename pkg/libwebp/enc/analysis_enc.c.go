@@ -108,12 +108,12 @@ const ALPHA_SCALE =(2 * MAX_ALPHA)  // scaling factor for alpha.
 const DEFAULT_ALPHA =(-1)
 #define IS_BETTER_ALPHA(alpha, best_alpha) ((alpha) > (best_alpha))
 
-static int FinalAlphaValue(int alpha) {
+func FinalAlphaValue(int alpha) int {
   alpha = MAX_ALPHA - alpha;
   return clip(alpha, 0, MAX_ALPHA);
 }
 
-static int GetAlpha(/* const */ histo *VP8Histogram) {
+func GetAlpha(/* const */ histo *VP8Histogram) int {
   // 'alpha' will later be clipped to [0..MAX_ALPHA] range, clamping outer
   // values which happen to be mostly noise. This leaves the maximum precision
   // for handling the useful small values which contribute most.
@@ -232,7 +232,7 @@ const MAX_INTRA16_MODE =2
 const MAX_INTRA4_MODE =2
 const MAX_UV_MODE =2
 
-static int MBAnalyzeBestIntra16Mode(/* const */ it *VP8EncIterator) {
+func MBAnalyzeBestIntra16Mode(/* const */ it *VP8EncIterator) int {
   max_mode := MAX_INTRA16_MODE;
   var mode int
   best_alpha := DEFAULT_ALPHA;
@@ -255,7 +255,7 @@ static int MBAnalyzeBestIntra16Mode(/* const */ it *VP8EncIterator) {
   return best_alpha;
 }
 
-static int FastMBAnalyze(/* const */ it *VP8EncIterator) {
+func FastMBAnalyze(/* const */ it *VP8EncIterator) int {
   // Empirical cut-off value, should be around 16 (~=block size). We use the
   // [8-17] range and favor intra4 at high quality, intra16 for low quality.
   q := (int)it.enc.config.quality;
@@ -283,7 +283,7 @@ static int FastMBAnalyze(/* const */ it *VP8EncIterator) {
   return 0;
 }
 
-static int MBAnalyzeBestUVMode(/* const */ it *VP8EncIterator) {
+func MBAnalyzeBestUVMode(/* const */ it *VP8EncIterator) int {
   best_alpha := DEFAULT_ALPHA;
   smallest_alpha := 0;
   best_mode := 0;
@@ -378,7 +378,7 @@ type SegmentJob struct {
 } ;
 
 // main work call
-static int DoSegmentsJob(arg *void1, arg *void2) {
+func DoSegmentsJob(arg *void1, arg *void2) int {
   var job *SegmentJob = (*SegmentJob)arg1;
   var it *VP8EncIterator = (*VP8EncIterator)arg2;
   ok := 1;

@@ -621,7 +621,7 @@ static  int32x2_t DistoSum_NEON(/* const */ int16x8x4_t q4_in, /*const*/ int16x4
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int Disto4x4_NEON(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto4x4_NEON(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   uint32x2_t d_in_ab_0123 = vdup_n_u32(0);
   uint32x2_t d_in_ab_4567 = vdup_n_u32(0);
   uint32x2_t d_in_ab_89ab = vdup_n_u32(0);
@@ -658,7 +658,7 @@ static int Disto4x4_NEON(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEB
 }
 #undef LOAD_LANE_32b
 
-static int Disto16x16_NEON(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto16x16_NEON(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   D := 0;
   var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -717,7 +717,7 @@ static  func AccumulateSSE16_NEON(
 }
 
 // Horizontal sum of all four uint32 values in 'sum'.
-static int SumToInt_NEON(uint32x4_t sum) {
+func SumToInt_NEON(uint32x4_t sum) int {
 #if WEBP_AARCH64
   return (int)vaddvq_u32(sum);
 #else
@@ -727,7 +727,7 @@ static int SumToInt_NEON(uint32x4_t sum) {
 #endif
 }
 
-static int SSE16x16_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x16_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
   for y = 0; y < 16; y++ {
@@ -736,7 +736,7 @@ static int SSE16x16_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_REST
   return SumToInt_NEON(sum);
 }
 
-static int SSE16x8_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x8_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
   for y = 0; y < 8; y++ {
@@ -745,7 +745,7 @@ static int SSE16x8_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTR
   return SumToInt_NEON(sum);
 }
 
-static int SSE8x8_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE8x8_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   uint32x4_t sum = vdupq_n_u32(0);
   var y int
   for y = 0; y < 8; y++ {
@@ -758,7 +758,7 @@ static int SSE8x8_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRI
   return SumToInt_NEON(sum);
 }
 
-static int SSE4x4_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE4x4_NEON(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   const uint8x16_t a0 = Load4x4_NEON(a);
   const uint8x16_t b0 = Load4x4_NEON(b);
   const uint8x16_t abs_diff = vabdq_u8(a0, b0);
@@ -805,7 +805,7 @@ static int16x8_t Quantize_NEON(WEBP_RESTRICT const in *int16, /*const*/ WEBP_RES
 
 static const uint8 kShuffles[4][8] = {{0, 1, 2, 3, 8, 9, 16, 17}, {10, 11, 4, 5, 6, 7, 12, 13}, {18, 19, 24, 25, 26, 27, 20, 21}, {14, 15, 22, 23, 28, 29, 30, 31}}
 
-static int QuantizeBlock_NEON(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func QuantizeBlock_NEON(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   const int16x8_t out0 = Quantize_NEON(in, mtx, 0);
   const int16x8_t out1 = Quantize_NEON(in, mtx, 8);
   uint8x8x4_t shuffles;
@@ -834,7 +834,7 @@ static int QuantizeBlock_NEON(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRI
   return 0;
 }
 
-static int Quantize2Blocks_NEON(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func Quantize2Blocks_NEON(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   var nz int
   nz = QuantizeBlock_NEON(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_NEON(in + 1 * 16, out + 1 * 16, mtx) << 1;

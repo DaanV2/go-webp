@@ -77,45 +77,45 @@ func pthread_join(thread pthread_t, value_ptr *void) int {
 }
 
 // Mutex
-static int pthread_mutex_init(pthread_mutex_t* const mutex, mutexattr *void) {
+func pthread_mutex_init(pthread_mutex_t* const mutex, mutexattr *void) int {
   (void)mutexattr;
   InitializeSRWLock(mutex);
   return 0;
 }
 
-static int pthread_mutex_lock(pthread_mutex_t* const mutex) {
+func pthread_mutex_lock(pthread_mutex_t* const mutex) int {
   AcquireSRWLockExclusive(mutex);
   return 0;
 }
 
-static int pthread_mutex_unlock(pthread_mutex_t* const mutex) {
+func pthread_mutex_unlock(pthread_mutex_t* const mutex) int {
   ReleaseSRWLockExclusive(mutex);
   return 0;
 }
 
-static int pthread_mutex_destroy(pthread_mutex_t* const mutex) {
+func pthread_mutex_destroy(pthread_mutex_t* const mutex) int {
   (void)mutex;
   return 0;
 }
 
 // Condition
-static int pthread_cond_destroy(pthread_cond_t* const condition) {
+func pthread_cond_destroy(pthread_cond_t* const condition) int {
   (void)condition;
   return 0;
 }
 
-static int pthread_cond_init(pthread_cond_t* const condition, cond_attr *void) {
+func pthread_cond_init(pthread_cond_t* const condition, cond_attr *void) int {
   (void)cond_attr;
   InitializeConditionVariable(condition);
   return 0;
 }
 
-static int pthread_cond_signal(pthread_cond_t* const condition) {
+func pthread_cond_signal(pthread_cond_t* const condition) int {
   WakeConditionVariable(condition);
   return 0;
 }
 
-static int pthread_cond_wait(pthread_cond_t* const condition, pthread_mutex_t* const mutex) {
+func pthread_cond_wait(pthread_cond_t* const condition, pthread_mutex_t* const mutex) int {
   ok := SleepConditionVariableSRW(condition, mutex, INFINITE, 0);
   return !ok;
 }
@@ -191,7 +191,7 @@ func Init(/* const */ worker *WebPWorker) {
   worker.status = NOT_OK;
 }
 
-static int Sync(/* const */ worker *WebPWorker) {
+func Sync(/* const */ worker *WebPWorker) int {
 #ifdef WEBP_USE_THREAD
   ChangeState(worker, OK);
 #endif
@@ -199,7 +199,7 @@ static int Sync(/* const */ worker *WebPWorker) {
   return !worker.had_error;
 }
 
-static int Reset(/* const */ worker *WebPWorker) {
+func Reset(/* const */ worker *WebPWorker) int {
   ok := 1;
   worker.had_error = 0;
   if (worker.status < OK) {

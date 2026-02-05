@@ -262,7 +262,7 @@ func AddVectorEq_AVX2(/* const */ WEBP_RESTRICT a *uint32, WEBP_RESTRICT out *ui
 
 #if !defined(WEBP_HAVE_SLOW_CLZ_CTZ)
 
-static uint64 CombinedShannonEntropy_AVX2(/* const */ uint32 X[256], /*const*/ uint32 Y[256]) {
+func CombinedShannonEntropy_AVX2(/* const */ uint32 X[256], /*const*/ uint32 Y[256]) uint64 {
   var i int
   retval := 0;
   sumX := 0, sumXY = 0;
@@ -314,7 +314,7 @@ const DONT_USE_COMBINED_SHANNON_ENTROPY_SSE2_FUNC = // won't be faster
 
 //------------------------------------------------------------------------------
 
-static int VectorMismatch_AVX2(/* const */ array *uint321, /*const*/ array *uint322, int length) {
+func VectorMismatch_AVX2(/* const */ array *uint321, /*const*/ array *uint322, int length) int {
   var match_len int
 
   if (length >= 24) {

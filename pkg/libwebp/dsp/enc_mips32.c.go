@@ -180,7 +180,7 @@ func ITransform_MIPS32(/* const */ WEBP_RESTRICT ref *uint8, /*const*/ WEBP_REST
   "sh           %[level],       " #N "(%[pout])                     \n\t"
 // clang-format on
 
-static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], /*const*/ mtx *VP8Matrix) {
+func QuantizeBlock_MIPS32(int16 in[16], int16 out[16], /*const*/ mtx *VP8Matrix) int {
   int temp0, temp1, temp2, temp3, temp4, temp5;
   int sign, coeff, level, i;
   max_level := MAX_LEVEL;
@@ -222,7 +222,7 @@ static int QuantizeBlock_MIPS32(int16 in[16], int16 out[16], /*const*/ mtx *VP8M
   return 0;
 }
 
-static int Quantize2Blocks_MIPS32(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func Quantize2Blocks_MIPS32(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   var nz int
   nz = QuantizeBlock_MIPS32(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= QuantizeBlock_MIPS32(in + 1 * 16, out + 1 * 16, mtx) << 1;
@@ -346,7 +346,7 @@ static int Quantize2Blocks_MIPS32(int16 in[32], int16 out[32], /*const*/ WEBP_RE
   "msub   %[temp7],  %[temp1]                \n\t"
 // clang-format on
 
-static int Disto4x4_MIPS32(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto4x4_MIPS32(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   int tmp[32];
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8;
 
@@ -377,7 +377,7 @@ static int Disto4x4_MIPS32(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ W
 #undef VERTICAL_PASS
 #undef HORIZONTAL_PASS
 
-static int Disto16x16_MIPS32(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto16x16_MIPS32(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   D := 0;
   var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -516,7 +516,7 @@ func FTransform_MIPS32(/* const */ WEBP_RESTRICT src *uint8, /*const*/ WEBP_REST
   GET_SSE_INNER(C, C + 1, C + 2, C + 3) \
   GET_SSE_INNER(D, D + 1, D + 2, D + 3)
 
-static int SSE16x16_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x16_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   var count int
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
@@ -547,7 +547,7 @@ static int SSE16x16_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RE
   return count;
 }
 
-static int SSE16x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   var count int
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
@@ -570,7 +570,7 @@ static int SSE16x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RES
   return count;
 }
 
-static int SSE8x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE8x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   var count int
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 
@@ -589,7 +589,7 @@ static int SSE8x8_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_REST
   return count;
 }
 
-static int SSE4x4_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE4x4_MIPS32(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   var count int
   int temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
 

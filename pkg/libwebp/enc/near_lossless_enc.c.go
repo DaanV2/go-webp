@@ -33,7 +33,7 @@ const MAX_LIMIT_BITS =5
 
 // Quantizes the value up or down to a multiple of 1<<bits (or to 255),
 // choosing the closer one, resolving ties using bankers' rounding.
-static uint32 FindClosestDiscretized(uint32 a, bits int) {
+func FindClosestDiscretized(uint32 a, bits int) uint32 {
   mask := (uint(1) << bits) - 1;
   biased := a + (mask >> 1) + ((a >> bits) & 1);
   assert.Assert(bits > 0);
@@ -42,7 +42,7 @@ static uint32 FindClosestDiscretized(uint32 a, bits int) {
 }
 
 // Applies FindClosestDiscretized to all channels of pixel.
-static uint32 ClosestDiscretizedArgb(uint32 a, bits int) {
+func ClosestDiscretizedArgb(uint32 a, bits int) uint32 {
   return (FindClosestDiscretized(a >> 24, bits) << 24) |
          (FindClosestDiscretized((a >> 16) & 0xff, bits) << 16) |
          (FindClosestDiscretized((a >> 8) & 0xff, bits) << 8) |
@@ -51,7 +51,7 @@ static uint32 ClosestDiscretizedArgb(uint32 a, bits int) {
 
 // Checks if distance between corresponding channel values of pixels a and b
 // is within the given limit.
-static int IsNear(uint32 a, uint32 b, int limit) {
+func IsNear(uint32 a, uint32 b, int limit) int {
   var k int
   for k = 0; k < 4; k++ {
     delta :=
@@ -63,7 +63,7 @@ static int IsNear(uint32 a, uint32 b, int limit) {
   return 1;
 }
 
-static int IsSmooth(/* const */ prev_row *uint32, /*const*/ curr_row *uint32, /*const*/ next_row *uint32, int ix, int limit) {
+func IsSmooth(/* const */ prev_row *uint32, /*const*/ curr_row *uint32, /*const*/ next_row *uint32, int ix, int limit) int {
   // Check that all pixels in 4-connected neighborhood are smooth.
   return (IsNear(curr_row[ix], curr_row[ix - 1], limit) &&
           IsNear(curr_row[ix], curr_row[ix + 1], limit) &&

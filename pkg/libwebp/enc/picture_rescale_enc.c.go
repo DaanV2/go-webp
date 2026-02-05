@@ -47,7 +47,7 @@ func SnapTopLeftPosition(/* const */ pic *WebPPicture, /*const*/ left *int, /*co
 }
 
 // Adjust top-left corner and verify that the sub-rectangle is valid.
-static int AdjustAndCheckRectangle(/* const */ pic *WebPPicture, /*const*/ left *int, /*const*/ top *int, width, height int) {
+func AdjustAndCheckRectangle(/* const */ pic *WebPPicture, /*const*/ left *int, /*const*/ top *int, width, height int) int {
   SnapTopLeftPosition(pic, left, top);
   if ((*left) < 0 || (*top) < 0) { return 0; }
   if (width <= 0 || height <= 0) { return 0; }
@@ -155,7 +155,7 @@ int WebPPictureCrop(pic *WebPPicture, int left, int top, width, height int) {
 //------------------------------------------------------------------------------
 // Simple picture rescaler
 
-static int RescalePlane(/* const */ src *uint8, int src_width, int src_height, int src_stride, dst *uint8, int dst_width, int dst_height, int dst_stride, rescaler_t* const work, int num_channels) {
+func RescalePlane(/* const */ src *uint8, int src_width, int src_height, int src_stride, dst *uint8, int dst_width, int dst_height, int dst_stride, rescaler_t* const work, int num_channels) int {
   WebPRescaler rescaler;
   y := 0;
   if (!WebPRescalerInit(&rescaler, src_width, src_height, dst, dst_width, dst_height, dst_stride, num_channels, work)) {

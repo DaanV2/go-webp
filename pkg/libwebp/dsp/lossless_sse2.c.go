@@ -131,41 +131,41 @@ static  uint32 Average4_SSE2(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
   return (uint32)_mm_cvtsi128_si32(A0);
 }
 
-static uint32 Predictor5_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor5_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := Average3_SSE2(*left, top[0], top[1]);
   return pred;
 }
-static uint32 Predictor6_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor6_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := Average2_SSE2(*left, top[-1]);
   return pred;
 }
-static uint32 Predictor7_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor7_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := Average2_SSE2(*left, top[0]);
   return pred;
 }
-static uint32 Predictor8_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor8_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := Average2_SSE2(top[-1], top[0]);
   (void)left;
   return pred;
 }
-static uint32 Predictor9_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor9_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := Average2_SSE2(top[0], top[1]);
   (void)left;
   return pred;
 }
-static uint32 Predictor10_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor10_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := Average4_SSE2(*left, top[-1], top[0], top[1]);
   return pred;
 }
-static uint32 Predictor11_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor11_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := Select_SSE2(top[0], *left, top[-1]);
   return pred;
 }
-static uint32 Predictor12_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor12_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := ClampedAddSubtractFull_SSE2(*left, top[0], top[-1]);
   return pred;
 }
-static uint32 Predictor13_SSE2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor13_SSE2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   pred := ClampedAddSubtractHalf_SSE2(*left, top[0], top[-1]);
   return pred;
 }

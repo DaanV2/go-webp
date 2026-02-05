@@ -62,7 +62,7 @@ func ConvertPopulationCountTableToBitEstimates(
   }
 }
 
-static int CostModelBuild(/* const */ m *CostModel,  xsize , cache_bits int, /*const*/ refs *VP8LBackwardRefs) {
+func CostModelBuild(/* const */ m *CostModel,  xsize , cache_bits int, /*const*/ refs *VP8LBackwardRefs) int {
   ok := 0;
   var histo *VP8LHistogram = VP8LAllocateHistogram(cache_bits);
   if (histo == nil) goto Error;
@@ -192,7 +192,7 @@ func CostIntervalAddToFreeList(/* const */ manager *CostManager, /*const*/ inter
   manager.free_intervals = interval;
 }
 
-static int CostIntervalIsInFreeList(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
+func CostIntervalIsInFreeList(/* const */ manager *CostManager, /*const*/ interval *CostInterval) int {
   return (interval >= &manager.intervals[0] &&
           interval <= &manager.intervals[COST_MANAGER_MAX_FREE_LIST - 1]);
 }
@@ -227,7 +227,7 @@ func CostManagerClear(/* const */ manager *CostManager) {
   CostManagerInitFreeList(manager);
 }
 
-static int CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uint16, int pix_count, /*const*/ cost_model *CostModel) {
+func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uint16, int pix_count, /*const*/ cost_model *CostModel) int {
   var i int
   cost_cache_size := (pix_count > MAX_LENGTH) ? MAX_LENGTH : pix_count;
 

@@ -21,7 +21,7 @@ import "github.com/daanv2/go-webp/pkg/arm_neon"
 
 const IsFlat = IsFlat_NEON
 
-static uint32 horizontal_add_uint32x4(/* const */ uint32x4_t a) {
+func horizontal_add_uint32x4(/* const */ uint32x4_t a) uint32 {
 #if WEBP_AARCH64
   return vaddvq_u32(a);
 #else

@@ -187,7 +187,7 @@ func DoRemap(/* const */ idec *WebPIDecoder, ptrdiff_t offset) {
 
 // Appends data to the end of MemBuffer.buf. It expands the allocated memory
 // size if required and also updates VP8BitReader's if new memory is allocated.
- static int AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) {
+func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) int {
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   /* const */ mem *MemBuffer = &idec.mem;
   need_compressed_alpha := NeedCompressedAlpha(idec);
@@ -230,7 +230,7 @@ func DoRemap(/* const */ idec *WebPIDecoder, ptrdiff_t offset) {
   return 1;
 }
 
- static int RemapMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) {
+func RemapMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) int {
   /* const */ mem *MemBuffer = &idec.mem;
   var old_buf *uint8 = mem.buf;
   const old_start *uint8 =
@@ -257,7 +257,7 @@ func InitMemBuffer(/* const */ mem *MemBuffer) {
   mem.part0_size = 0;
 }
 
- static int CheckMemBufferMode(/* const */ mem *MemBuffer, MemBufferMode expected) {
+func CheckMemBufferMode(/* const */ mem *MemBuffer, MemBufferMode expected) int {
   if (mem.mode == MEM_MODE_NONE) {
     mem.mode = expected;  // switch to the expected mode
   } else if (mem.mode != expected) {

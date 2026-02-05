@@ -262,7 +262,7 @@ func VerticalFilter_MIPSdspR2(/* const */ WEBP_RESTRICT data *uint8, width, heig
 //------------------------------------------------------------------------------
 // Gradient filter.
 
-static int GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) {
+func GradientPredictor_MIPSdspR2(uint8 a, uint8 b, uint8 c) int {
   int temp0;
   __asm__ volatile(
       "addu             %[temp0],   %[a],       %[b]        \n\t"

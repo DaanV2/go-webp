@@ -108,12 +108,12 @@ static  uint32 Select(uint32 a, uint32 b, uint32 c) {
 //------------------------------------------------------------------------------
 // Predictors
 
-static uint32 VP8LPredictor0_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor0_C(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   (void)top;
   (void)left;
   return ARGB_BLACK;
 }
-static uint32 VP8LPredictor1_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor1_C(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   (void)top;
   return *left;
 }

@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/math"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 import "github.com/daanv2/go-webp/pkg/string"
 
-static uint64 FastSLog2Slow_MIPS32(uint32 v) {
+func FastSLog2Slow_MIPS32(uint32 v) uint64 {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     uint32 log_cnt, y;
@@ -60,7 +60,7 @@ static uint64 FastSLog2Slow_MIPS32(uint32 v) {
   }
 }
 
-static uint32 FastLog2Slow_MIPS32(uint32 v) {
+func FastLog2Slow_MIPS32(uint32 v) uint32 {
   assert.Assert(v >= LOG_LOOKUP_IDX_MAX);
   if (v < APPROX_LOG_WITH_CORRECTION_MAX) {
     uint32 log_cnt, y;
@@ -102,7 +102,7 @@ static uint32 FastLog2Slow_MIPS32(uint32 v) {
 //     pop += 2;
 //   }
 //   return cost;
-static uint32 ExtraCost_MIPS32(/* const */ population *uint32, int length) {
+func ExtraCost_MIPS32(/* const */ population *uint32, int length) uint32 {
   int i, temp0, temp1;
   var pop *uint32 = &population[4];
   var LoopEnd *uint32 = &population[length];

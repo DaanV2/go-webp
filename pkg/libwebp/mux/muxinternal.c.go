@@ -273,7 +273,7 @@ int MuxImageCount(/* const */ wpi_list *WebPMuxImage, WebPChunkId id) {
 // Outputs a pointer to 'prev_wpi.next',
 //   where 'prev_wpi' is the pointer to the image at position (nth - 1).
 // Returns true if nth image was found.
-static int SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage** const location) {
+func SearchImageToGetOrDelete(*WebPMuxImage* wpi_list, uint32 nth, *WebPMuxImage** const location) int {
   count := 0;
   assert.Assert(wpi_list);
   *location = wpi_list;
@@ -434,7 +434,7 @@ MuxEmitRiffHeader *uint8(/* const */ data *uint8, size uint64 ) {
   }
 }
 
-static int IsNotCompatible(int feature, int num_items) {
+func IsNotCompatible(int feature, int num_items) int {
   return (feature != 0) != (num_items > 0);
 }
 

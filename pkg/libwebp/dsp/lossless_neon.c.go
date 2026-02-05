@@ -166,16 +166,16 @@ static  uint32 Average3_NEON(uint32 a0, uint32 a1, uint32 a2) {
   return avg;
 }
 
-static uint32 Predictor5_NEON(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor5_NEON(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return Average3_NEON(*left, top[0], top[1]);
 }
-static uint32 Predictor6_NEON(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor6_NEON(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return Average2_NEON(*left, top[-1]);
 }
-static uint32 Predictor7_NEON(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor7_NEON(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return Average2_NEON(*left, top[0]);
 }
-static uint32 Predictor13_NEON(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor13_NEON(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return ClampedAddSubtractHalf_NEON(*left, top[0], top[-1]);
 }
 

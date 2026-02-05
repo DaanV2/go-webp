@@ -31,7 +31,7 @@ const MFIX = 24  // 24bit fixed-point arithmetic
 const HALF = ((uint(1) << MFIX) >> 1)
 const KINV_255 =((uint(1) << MFIX) / uint(255))
 
-static uint32 Mult(uint8 x, uint32 mult) {
+func Mult(uint8 x, uint32 mult) uint32 {
   v := (x * mult + HALF) >> MFIX;
   assert.Assert(v <= 255);  // <- 24bit precision is enough to ensure that.
   return v;
@@ -200,7 +200,7 @@ func ApplyAlphaMultiply_16b_C(rgba *uint84444, int w, int h, int stride) {
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-static int DispatchAlpha_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint8, int dst_stride) {
+func DispatchAlpha_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint8, int dst_stride) int {
   alpha_mask := 0xff;
   int i, j;
 
@@ -228,7 +228,7 @@ func DispatchAlphaToGreen_C(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_st
   }
 }
 
-static int ExtractAlpha_C(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
+func ExtractAlpha_C(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride) int {
   alpha_mask := 0xff;
   int i, j;
 
@@ -252,14 +252,14 @@ func ExtractGreen_C(/* const */ WEBP_RESTRICT argb *uint32, WEBP_RESTRICT alpha 
 
 //------------------------------------------------------------------------------
 
-static int HasAlpha8b_C(/* const */ src *uint8, int length) {
+func HasAlpha8b_C(/* const */ src *uint8, int length) int {
   while (length-- > 0) {
     if (*src++ != 0xff) { return 1; }
   }
   return 0;
 }
 
-static int HasAlpha32b_C(/* const */ src *uint8, int length) {
+func HasAlpha32b_C(/* const */ src *uint8, int length) int {
   var x int
   for x = 0; length-- > 0; x += 4 {
     if (src[x] != 0xff) { return 1; }

@@ -74,7 +74,7 @@ const ALPHAVAL = (0xff)
 #define ST_SW(...) ST_W(v4i32, __VA_ARGS__)
 
 #define MSA_LOAD_FUNC(TYPE, INSTR, FUNC_NAME)               \
-  static inline TYPE FUNC_NAME(/* const */ psrc *void) {    \
+func TYPE FUNC_NAME(/* const */ psrc *void) inline {    \
     var psrc_m *uint8 = (/* const */ *uint8)psrc;     \
     TYPE val_m;                                             \
     __asm__ volatile("" #INSTR " %[val_m], %[psrc_m]  \n\t" \
@@ -86,7 +86,7 @@ const ALPHAVAL = (0xff)
 #define MSA_LOAD(psrc, FUNC_NAME) FUNC_NAME(psrc)
 
 #define MSA_STORE_FUNC(TYPE, INSTR, FUNC_NAME)                 \
-  static inline func FUNC_NAME(TYPE val, /*const*/ pdst *void) {   \
+func func FUNC_NAME(TYPE val, /*const*/ pdst *void) inline {   \
     var pdst_m *uint8 = (*uint8)pdst;                    \
     TYPE val_m = val;                                          \
     __asm__ volatile(" " #INSTR "  %[val_m],  %[pdst_m]  \n\t" \

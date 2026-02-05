@@ -167,7 +167,7 @@ func FTransformWHT_MSA(/* const */ WEBP_RESTRICT in *int16, WEBP_RESTRICT out *i
   ST_SH2(out0, out1, out, 8);
 }
 
-static int TTransform_MSA(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) {
+func TTransform_MSA(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) int {
   var sum int
   uint32 in0_m, in1_m, in2_m, in3_m;
   v16i8 src0 = {0}
@@ -199,13 +199,13 @@ static int TTransform_MSA(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RE
   return sum;
 }
 
-static int Disto4x4_MSA(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto4x4_MSA(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   sum1 := TTransform_MSA(a, w);
   sum2 := TTransform_MSA(b, w);
   return abs(sum2 - sum1) >> 5;
 }
 
-static int Disto16x16_MSA(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto16x16_MSA(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   D := 0;
   var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -706,7 +706,7 @@ func IntraChromaPreds_MSA(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left
     DPADD_SH2_SW(tmp2, tmp3, tmp2, tmp3, out2, out3);                 \
   } while (0)
 
-static int SSE16x16_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x16_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   var sum uint32
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
@@ -733,7 +733,7 @@ static int SSE16x16_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTR
   return sum;
 }
 
-static int SSE16x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   var sum uint32
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
@@ -752,7 +752,7 @@ static int SSE16x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRI
   return sum;
 }
 
-static int SSE8x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE8x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   var sum uint32
   v16u8 src0, src1, src2, src3, src4, src5, src6, src7;
   v16u8 ref0, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
@@ -772,7 +772,7 @@ static int SSE8x8_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRIC
   return sum;
 }
 
-static int SSE4x4_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE4x4_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   sum := 0;
   uint32 src0, src1, src2, src3, ref0, ref1, ref2, ref3;
   v16u8 src = {0}, ref = {0}, tmp0, tmp1;
@@ -794,7 +794,7 @@ static int SSE4x4_MSA(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRIC
 //------------------------------------------------------------------------------
 // Quantization
 
-static int QuantizeBlock_MSA(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func QuantizeBlock_MSA(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   var sum int
   v8i16 in0, in1, sh0, sh1, out0, out1;
   v8i16 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, sign0, sign1;
@@ -846,7 +846,7 @@ static int QuantizeBlock_MSA(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRIC
   return (sum > 0);
 }
 
-static int Quantize2Blocks_MSA(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func Quantize2Blocks_MSA(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   var nz int
   nz = VP8EncQuantizeBlock(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= VP8EncQuantizeBlock(in + 1 * 16, out + 1 * 16, mtx) << 1;

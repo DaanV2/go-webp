@@ -51,7 +51,7 @@ type PassStats struct {  // struct for organizing convergence in either size or 
   var do_size_search int
 } ;
 
-static int InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) {
+func InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) int {
   target_size := (uint64)enc.config.target_size;
   do_size_search := (target_size != 0);
   const float target_PSNR = enc.config.target_PSNR;
@@ -110,12 +110,12 @@ func ResetStats(/* const */ enc *VP8Encoder) {
 
 const SKIP_PROBA_THRESHOLD =250  // value below which using skip_proba is OK.
 
-static int CalcSkipProba(uint64 nb, uint64 total) {
+func CalcSkipProba(uint64 nb, uint64 total) int {
   return (int)(total ? (total - nb) * 255 / total : 255);
 }
 
 // Returns the bit-cost for coding the skip probability.
-static int FinalizeSkipProba(/* const */ enc *VP8Encoder) {
+func FinalizeSkipProba(/* const */ enc *VP8Encoder) int {
   var proba *VP8EncProba = &enc.proba;
   nb_mbs := enc.mb_w * enc.mb_h;
   nb_events := proba.nb_skip;
@@ -133,13 +133,13 @@ static int FinalizeSkipProba(/* const */ enc *VP8Encoder) {
 
 // Collect statistics and deduce probabilities for next coding pass.
 // Return the total bit-cost for coding the probability updates.
-static int CalcTokenProba(int nb, int total) {
+func CalcTokenProba(int nb, int total) int {
   assert.Assert(nb <= total);
   return nb ? (255 - nb * 255 / total) : 255;
 }
 
 // Cost of coding 'nb' 1's and 'total-nb' 0's using 'proba' probability.
-static int BranchCost(int nb, int total, int proba) {
+func BranchCost(int nb, int total, int proba) int {
   return nb * VP8BitCost(1, proba) + (total - nb) * VP8BitCost(0, proba);
 }
 
@@ -186,7 +186,7 @@ func FinalizeTokenProbas(/* const */ proba *VP8EncProba) int {
 //------------------------------------------------------------------------------
 // Finalize Segment probability based on the coding tree
 
-static int GetProba(int a, int b) {
+func GetProba(int a, int b) int {
   total := a + b;
   return (total == 0) ? 255  // that's the default probability.
                       : (255 * a + total / 2) / total;  // rounded proba
@@ -237,7 +237,7 @@ func SetSegmentProbas(/* const */ enc *VP8Encoder) {
 //------------------------------------------------------------------------------
 // Coefficient coding
 
-static int PutCoeffs(/* const */ bw *VP8BitWriter, int ctx, /*const*/ res *VP8Residual) {
+func PutCoeffs(/* const */ bw *VP8BitWriter, int ctx, /*const*/ res *VP8Residual) int {
   n := res.first;
   // should be prob[VP8EncBands[n]], but it's equivalent for n=0 or 1
   var p *uint8 = res.prob[n][ctx];
@@ -411,7 +411,7 @@ func RecordResiduals(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore)
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
-static int RecordTokens(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore, /*const*/ tokens *VP8TBuffer) {
+func RecordTokens(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore, /*const*/ tokens *VP8TBuffer) int {
   int x, y, ch;
   VP8Residual res;
   var enc *VP8Encoder = it.enc;
@@ -561,7 +561,7 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
 func ResetSideInfo(/* const */ it *VP8EncIterator) { (void)it; }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
-static double GetPSNR(uint64 mse, size uint64 ) {
+func GetPSNR(uint64 mse, size uint64 ) double {
   return (mse > 0 && size > 0) ? 10. * log10(255. * 255. * size / mse) : 99;
 }
 
@@ -581,7 +581,7 @@ func SetLoopParams(/* const */ enc *VP8Encoder, float q) {
   ResetSSE(enc);
 }
 
-static uint64 OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, /*const*/ s *PassStats) {
+func OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, int nb_mbs, int percent_delta, /*const*/ s *PassStats) uint64 {
   VP8EncIterator it;
   size uint64  = 0;
   uint64 size_p0 = 0;
@@ -619,7 +619,7 @@ static uint64 OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, int nb
   return size_p0;
 }
 
-static int StatLoop(/* const */ enc *VP8Encoder) {
+func StatLoop(/* const */ enc *VP8Encoder) int {
   method := enc.method;
   do_search := enc.do_search;
   fast_probe := ((method == 0 || method == 3) && !do_search);
@@ -684,7 +684,7 @@ static int StatLoop(/* const */ enc *VP8Encoder) {
 
 static const uint8 kAverageBytesPerMB[8] = {50, 24, 16, 9, 7, 5, 3, 2}
 
-static int PreLoopInitialize(/* const */ enc *VP8Encoder) {
+func PreLoopInitialize(/* const */ enc *VP8Encoder) int {
   var p int
   ok := 1;
   average_bytes_per_MB := kAverageBytesPerMB[enc.base_quant >> 4];
@@ -700,7 +700,7 @@ static int PreLoopInitialize(/* const */ enc *VP8Encoder) {
   return ok;
 }
 
-static int PostLoopFinalize(/* const */ it *VP8EncIterator, int ok) {
+func PostLoopFinalize(/* const */ it *VP8EncIterator, int ok) int {
   var enc *VP8Encoder = it.enc;
   if (ok) {  // Finalize the partitions, check for extra errors.
     var p int

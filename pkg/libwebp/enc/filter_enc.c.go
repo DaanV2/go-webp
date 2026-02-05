@@ -44,7 +44,7 @@ func VP8FilterStrengthFromDelta(int sharpness, int delta) int {
 
 #if !defined(WEBP_REDUCE_SIZE)
 
-static int GetILevel(int sharpness, level int) {
+func GetILevel(int sharpness, level int) int {
   if (sharpness > 0) {
     if (sharpness > 4) {
       level >>= 2;
@@ -86,7 +86,7 @@ func DoFilter(/* const */ it *VP8EncIterator, level int) {
 //------------------------------------------------------------------------------
 // SSIM metric for one macroblock
 
-static double GetMBSSIM(/* const */ yuv *uint81, /*const*/ yuv *uint82) {
+func GetMBSSIM(/* const */ yuv *uint81, /*const*/ yuv *uint82) double {
   var x, y int
   double sum = 0.;
 

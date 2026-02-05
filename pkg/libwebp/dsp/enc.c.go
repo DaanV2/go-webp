@@ -537,16 +537,16 @@ static  int GetSSE(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b
   return count;
 }
 
-static int SSE16x16_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x16_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   return GetSSE(a, b, 16, 16);
 }
-static int SSE16x8_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x8_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   return GetSSE(a, b, 16, 8);
 }
-static int SSE8x8_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE8x8_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   return GetSSE(a, b, 8, 8);
 }
-static int SSE4x4_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE4x4_C(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   return GetSSE(a, b, 4, 4);
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
@@ -575,7 +575,7 @@ func Mean16x4_C(/* const */ WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int TTransform(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) {
+func TTransform(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRICT w *uint16) int {
   sum := 0;
   int tmp[16];
   var i int
@@ -609,13 +609,13 @@ static int TTransform(/* const */ WEBP_RESTRICT in *uint8, /*const*/ WEBP_RESTRI
   return sum;
 }
 
-static int Disto4x4_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto4x4_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   sum1 := TTransform(a, w);
   sum2 := TTransform(b, w);
   return abs(sum2 - sum1) >> 5;
 }
 
-static int Disto16x16_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto16x16_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   D := 0;
   var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -635,7 +635,7 @@ static int Disto16x16_C(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP
 static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
 
 // Simple quantization
-static int QuantizeBlock_C(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func QuantizeBlock_C(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   last := -1;
   var n int
   for n = 0; n < 16; n++ {
@@ -660,7 +660,7 @@ static int QuantizeBlock_C(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT 
   return (last >= 0);
 }
 
-static int Quantize2Blocks_C(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func Quantize2Blocks_C(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   var nz int
   nz = VP8EncQuantizeBlock(in + 0 * 16, out + 0 * 16, mtx) << 0;
   nz |= VP8EncQuantizeBlock(in + 1 * 16, out + 1 * 16, mtx) << 1;

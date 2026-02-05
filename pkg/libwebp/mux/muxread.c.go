@@ -106,7 +106,7 @@ int MuxImageFinalize(/* const */ wpi *WebPMuxImage) {
   return ok;
 }
 
-static int MuxImageParse(/* const */ chunk *WebPChunk, int copy_data, /*const*/ wpi *WebPMuxImage) {
+func MuxImageParse(/* const */ chunk *WebPChunk, int copy_data, /*const*/ wpi *WebPMuxImage) int {
   var bytes *uint8 = chunk.data.bytes;
   size uint64  = chunk.data.size;
   var last *uint8 = (bytes == nil) ? nil : bytes + size;

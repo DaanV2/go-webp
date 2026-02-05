@@ -180,41 +180,41 @@ static  uint32 Average4(uint32 a0, uint32 a1, uint32 a2, uint32 a3) {
   return Average2(Average2(a0, a1), Average2(a2, a3));
 }
 
-static uint32 Predictor5_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor5_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return Average3(*left, top[0], top[1]);
 }
 
-static uint32 Predictor6_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor6_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return Average2(*left, top[-1]);
 }
 
-static uint32 Predictor7_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor7_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return Average2(*left, top[0]);
 }
 
-static uint32 Predictor8_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor8_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   (void)left;
   return Average2(top[-1], top[0]);
 }
 
-static uint32 Predictor9_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor9_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   (void)left;
   return Average2(top[0], top[1]);
 }
 
-static uint32 Predictor10_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor10_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return Average4(*left, top[-1], top[0], top[1]);
 }
 
-static uint32 Predictor11_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor11_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return Select(top[0], *left, top[-1]);
 }
 
-static uint32 Predictor12_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor12_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return ClampedAddSubtractFull(*left, top[0], top[-1]);
 }
 
-static uint32 Predictor13_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) {
+func Predictor13_MIPSdspR2(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
   return ClampedAddSubtractHalf(*left, top[0], top[-1]);
 }
 

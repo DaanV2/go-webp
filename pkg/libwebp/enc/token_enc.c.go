@@ -69,7 +69,7 @@ func VP8TBufferClear(/* const */ b *VP8TBuffer) {
   }
 }
 
-static int TBufferNewPage(/* const */ b *VP8TBuffer) {
+func TBufferNewPage(/* const */ b *VP8TBuffer) int {
   page *VP8Tokens = nil;
   if (!b.error) {
     const size uint64  = sizeof(*page) + b.page_size * sizeof(token_t);

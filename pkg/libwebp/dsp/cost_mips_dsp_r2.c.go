@@ -17,7 +17,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
-static int GetResidualCost_MIPSdspR2(int ctx0, /*const*/ res *VP8Residual) {
+func GetResidualCost_MIPSdspR2(int ctx0, /*const*/ res *VP8Residual) int {
   int temp0, temp1;
   int v_reg, ctx_reg;
   n := res.first;

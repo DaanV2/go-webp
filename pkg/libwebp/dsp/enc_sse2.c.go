@@ -1093,18 +1093,18 @@ static  int SSE_16xN_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RES
   return (tmp[3] + tmp[2] + tmp[1] + tmp[0]);
 }
 
-static int SSE16x16_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x16_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   return SSE_16xN_SSE2(a, b, 8);
 }
 
-static int SSE16x8_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE16x8_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   return SSE_16xN_SSE2(a, b, 4);
 }
 
 #define LOAD_8x16b(ptr) \
   _mm_unpacklo_epi8(_mm_loadl_epi64((/* const */ __*m128i)(ptr)), zero)
 
-static int SSE8x8_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE8x8_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   const __m128i zero = _mm_setzero_si128();
   num_pairs := 4;
   __m128i sum = zero;
@@ -1131,7 +1131,7 @@ static int SSE8x8_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRI
 }
 #undef LOAD_8x16b
 
-static int SSE4x4_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) {
+func SSE4x4_SSE2(/* const */ WEBP_RESTRICT a *uint8, /*const*/ WEBP_RESTRICT b *uint8) int {
   const __m128i zero = _mm_setzero_si128();
 
   // Load values. Note that we read 8 pixels instead of 4, // but the a/b buffers are over-allocated to that effect.
@@ -1205,7 +1205,7 @@ func Mean16x4_SSE2(/* const */ WEBP_RESTRICT ref *uint8, uint32 dc[4]) {
 // Hadamard transform
 // Returns the weighted sum of the absolute value of transformed coefficients.
 // w[] contains a row-major 4 by 4 symmetric matrix.
-static int TTransform_SSE2(/* const */ WEBP_RESTRICT inA *uint8, /*const*/ WEBP_RESTRICT inB *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func TTransform_SSE2(/* const */ WEBP_RESTRICT inA *uint8, /*const*/ WEBP_RESTRICT inB *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   int32 sum[4];
   __m128i tmp_0, tmp_1, tmp_2, tmp_3;
   const __m128i zero = _mm_setzero_si128();
@@ -1305,12 +1305,12 @@ static int TTransform_SSE2(/* const */ WEBP_RESTRICT inA *uint8, /*const*/ WEBP_
   return sum[0] + sum[1] + sum[2] + sum[3];
 }
 
-static int Disto4x4_SSE2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto4x4_SSE2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   diff_sum := TTransform_SSE2(a, b, w);
   return abs(diff_sum) >> 5;
 }
 
-static int Disto16x16_SSE2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) {
+func Disto16x16_SSE2(/* const */ WEBP_RESTRICT const a *uint8, /*const*/ WEBP_RESTRICT const b *uint8, /*const*/ WEBP_RESTRICT const w *uint16) int {
   D := 0;
   var x, y int
   for y = 0; y < 16 * BPS; y += 4 * BPS {
@@ -1436,15 +1436,15 @@ static  int DoQuantizeBlock_SSE2(
   return (_mm_movemask_epi8(_mm_cmpeq_epi8(packed_out, zero)) != 0xffff);
 }
 
-static int QuantizeBlock_SSE2(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func QuantizeBlock_SSE2(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   return DoQuantizeBlock_SSE2(in, out, &mtx.sharpen[0], mtx);
 }
 
-static int QuantizeBlockWHT_SSE2(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func QuantizeBlockWHT_SSE2(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   return DoQuantizeBlock_SSE2(in, out, nil, mtx);
 }
 
-static int Quantize2Blocks_SSE2(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func Quantize2Blocks_SSE2(int16 in[32], int16 out[32], /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   var nz int
   var sharpen *uint16 = &mtx.sharpen[0];
   nz = DoQuantizeBlock_SSE2(in + 0 * 16, out + 0 * 16, sharpen, mtx) << 0;

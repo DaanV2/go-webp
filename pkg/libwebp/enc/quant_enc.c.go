@@ -154,7 +154,7 @@ static const uint8 kFreqSharpening[16] = {0,  30, 60, 90, 30, 60, 90, 90, 60, 90
 // Initialize quantization parameters in VP8Matrix
 
 // Returns the average quantizer
-static int ExpandMatrix(/* const */ m *VP8Matrix, int type) {
+func ExpandMatrix(/* const */ m *VP8Matrix, int type) int {
   int i, sum;
   for i = 0; i < 2; i++ {
     is_ac_coeff := (i > 0);
@@ -271,7 +271,7 @@ const MIN_DQ_UV =(-4)
 // We want to emulate jpeg-like behaviour where the expected "good" quality
 // is around q=75. Internally, our "good" middle is around c=50. So we
 // map accordingly using linear piece-wise function
-static double QualityToCompression(double c) {
+func QualityToCompression(double c) double {
   const double linear_c = (c < 0.75) ? c * (2. / 3.) : 2. * c - 1.;
   // The file size roughly scales as pow(quantizer, 3.). Actually, the
   // exponent is somewhere between 2.8 and 3.2, but we're mostly interested
@@ -283,7 +283,7 @@ static double QualityToCompression(double c) {
   return v;
 }
 
-static double QualityToJPEGCompression(double c, double alpha) {
+func QualityToJPEGCompression(double c, double alpha) double {
   // We map the complexity 'alpha' and quality setting 'c' to a compression
   // exponent empirically matched to the compression curve of libjpeg6b.
   // On average, the WebP output size will be roughly similar to that of a
@@ -302,7 +302,7 @@ static double QualityToJPEGCompression(double c, double alpha) {
   return v;
 }
 
-static int SegmentsAreEquivalent(/* const */ S *VP8SegmentInfo1, /*const*/ S *VP8SegmentInfo2) {
+func SegmentsAreEquivalent(/* const */ S *VP8SegmentInfo1, /*const*/ S *VP8SegmentInfo2) int {
   return (S1.quant == S2.quant) && (S1.fstrength == S2.fstrength);
 }
 
@@ -531,7 +531,7 @@ static  score_t RDScoreTrellis(int lambda, score_t rate, score_t distortion) {
 // Coefficient type.
 enum { TYPE_I16_AC = 0, TYPE_I16_DC = 1, TYPE_CHROMA_A = 2, TYPE_I4_AC = 3 }
 
-static int TrellisQuantizeBlock(/* const */ WEBP_RESTRICT const enc *VP8Encoder, int16 in[16], int16 out[16], int ctx0, int coeff_type, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, int lambda) {
+func TrellisQuantizeBlock(/* const */ WEBP_RESTRICT const enc *VP8Encoder, int16 in[16], int16 out[16], int ctx0, int coeff_type, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix, int lambda) int {
   var probas *ProbaArray = enc.proba.coeffs[coeff_type];
   CostArrayPtr const costs =
       (CostArrayPtr)enc.proba.remapped_costs[coeff_type];
@@ -711,7 +711,7 @@ static int TrellisQuantizeBlock(/* const */ WEBP_RESTRICT const enc *VP8Encoder,
 // all at once. Output is the reconstructed block in *yuv_out, and the
 // quantized levels in *levels.
 
-static int ReconstructIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, WEBP_RESTRICT const yuv_out *uint8, int mode) {
+func ReconstructIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, WEBP_RESTRICT const yuv_out *uint8, int mode) int {
   var enc *VP8Encoder = it.enc;
   var ref *uint8 = it.yuv_p + VP8I16ModeOffsets[mode];
   var src *uint8 = it.yuv_in + Y_OFF_ENC;
@@ -759,7 +759,7 @@ static int ReconstructIntra16(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTR
   return nz;
 }
 
-static int ReconstructIntra4(WEBP_RESTRICT const it *VP8EncIterator, int16 levels[16], /*const*/ WEBP_RESTRICT const src *uint8, WEBP_RESTRICT const yuv_out *uint8, int mode) {
+func ReconstructIntra4(WEBP_RESTRICT const it *VP8EncIterator, int16 levels[16], /*const*/ WEBP_RESTRICT const src *uint8, WEBP_RESTRICT const yuv_out *uint8, int mode) int {
   var enc *VP8Encoder = it.enc;
   var ref *uint8 = it.yuv_p + VP8I4ModeOffsets[mode];
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment];
@@ -790,7 +790,7 @@ const DSCALE = 1  // storage descaling, needed to make the error fit int8
 
 // Quantize as usual, but also compute and return the quantization error.
 // Error is already divided by DSHIFT.
-static int QuantizeSingle(WEBP_RESTRICT const v *int16, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) {
+func QuantizeSingle(WEBP_RESTRICT const v *int16, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   V := *v;
   sign := (V < 0);
   if (sign) V = -V;
@@ -854,7 +854,7 @@ func StoreDiffusionErrors(WEBP_RESTRICT const it *VP8EncIterator, /*const*/ WEBP
 
 //------------------------------------------------------------------------------
 
-static int ReconstructUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, WEBP_RESTRICT const yuv_out *uint8, int mode) {
+func ReconstructUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore, WEBP_RESTRICT const yuv_out *uint8, int mode) int {
   var enc *VP8Encoder = it.enc;
   var ref *uint8 = it.yuv_p + VP8UVModeOffsets[mode];
   var src *uint8 = it.yuv_in + U_OFF_ENC;
@@ -992,7 +992,7 @@ static const GetCostModeI *uint164(WEBP_RESTRICT const it *VP8EncIterator, /*con
   return VP8FixedCostsI4[top][left];
 }
 
-static int PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore) {
+func PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const rd *VP8ModeScore) int {
   var enc *VP8Encoder = it.enc;
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment];
   lambda := dqm.lambda_i4;

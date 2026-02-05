@@ -33,7 +33,7 @@ static  uint32 HorizontalSum_SSE41(__m128i cost) {
   return _mm_cvtsi128_si32(cost);
 }
 
-static uint32 ExtraCost_SSE41(/* const */ a *uint32, int length) {
+func ExtraCost_SSE41(/* const */ a *uint32, int length) uint32 {
   var i int
   __m128i cost = _mm_set_epi32(2 * a[7], 2 * a[6], a[5], a[4]);
   assert.Assert(length % 8 == 0);

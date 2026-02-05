@@ -767,7 +767,7 @@ func GetFramePayload(/* const */ mem_buf *uint8, /*const*/ frame *Frame, /*const
 }
 
 // Create a whole 'frame' from VP8 (+ alpha) or lossless.
-static int SynthesizeFrame(/* const */ dmux *WebPDemuxer, /*const*/ frame *Frame, /*const*/ iter *WebPIterator) {
+func SynthesizeFrame(/* const */ dmux *WebPDemuxer, /*const*/ frame *Frame, /*const*/ iter *WebPIterator) int {
   var mem_buf *uint8 = dmux.mem.buf
   payload_size := 0
   var payload *uint8 = GetFramePayload(mem_buf, frame, &payload_size)
@@ -790,7 +790,7 @@ static int SynthesizeFrame(/* const */ dmux *WebPDemuxer, /*const*/ frame *Frame
   return 1
 }
 
-static int SetFrame(frame_num int, /*const*/ iter *WebPIterator) {
+func SetFrame(frame_num int, /*const*/ iter *WebPIterator) int {
   const frame *Frame
   var dmux *WebPDemuxer = (*WebPDemuxer)iter.private_
   if (dmux == nil || frame_num < 0) { return 0 }
@@ -827,7 +827,7 @@ func WebPDemuxReleaseIterator(iter *WebPIterator) { (void)iter }
 // -----------------------------------------------------------------------------
 // Chunk iteration
 
-static int ChunkCount(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4]) {
+func ChunkCount(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4]) int {
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
   count := 0
@@ -838,7 +838,7 @@ static int ChunkCount(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4]) {
   return count
 }
 
-static const GetChunk *Chunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num) {
+static GetChunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourcc[4], int chunk_num) *Chunk {
   var mem_buf *uint8 = dmux.mem.buf
   const c *Chunk
   count := 0
@@ -850,7 +850,7 @@ static const GetChunk *Chunk(/* const */ dmux *WebPDemuxer, /*const*/ byte fourc
   return c
 }
 
-static int SetChunk(/* const */ byte fourcc[4], int chunk_num, /*const*/ iter *WebPChunkIterator) {
+func SetChunk(/* const */ byte fourcc[4], int chunk_num, /*const*/ iter *WebPChunkIterator) int {
   var dmux *WebPDemuxer = (*WebPDemuxer)iter.private_
   int count
 

@@ -140,7 +140,7 @@ func HistogramSetResetPointers(/* const */ set *VP8LHistogramSet, int cache_bits
 }
 
 // Returns the total size of the VP8LHistogramSet.
-static uint64 HistogramSetTotalSize(int size, int cache_bits) {
+func HistogramSetTotalSize(int size, int cache_bits) uint64 {
   histo_size := GetHistogramSize(cache_bits);
   return (sizeof(VP8LHistogramSet) +
           size * (sizeof(*VP8LHistogram) + histo_size + WEBP_ALIGN_CST));
@@ -281,7 +281,7 @@ static uint64 InitialHuffmanCost(){
 }
 
 // Finalize the Huffman cost based on streak numbers and length type (<3 or >=3)
-static uint64 FinalHuffmanCost(/* const */ stats *VP8LStreaks) {
+func FinalHuffmanCost(/* const */ stats *VP8LStreaks) uint64 {
   // The constants in this function are empirical and got rounded from
   // their original values in 1/8 when switched to 1/1024.
   retval := InitialHuffmanCost();
@@ -301,7 +301,7 @@ static uint64 FinalHuffmanCost(/* const */ stats *VP8LStreaks) {
 
 // Get the symbol entropy for the distribution 'population'.
 // Set 'trivial_sym', if there's only one symbol present in the distribution.
-static uint64 PopulationCost(/* const */ population *uint32, int length, /*const*/ trivial_sym *uint16, /*const*/ is_used *uint8) {
+func PopulationCost(/* const */ population *uint32, int length, /*const*/ trivial_sym *uint16, /*const*/ is_used *uint8) uint64 {
   VP8LBitEntropy bit_entropy;
   VP8LStreaks stats;
   VP8LGetEntropyUnrefined(population, length, &bit_entropy, &stats);
@@ -477,7 +477,7 @@ func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5], /*const*/ h *VP8LHist
 // early.
 // Returns 1 if the cost is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
- static int HistogramAddEval(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram, /*const*/ out *VP8LHistogram, int64 cost_threshold) {
+func HistogramAddEval(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram, /*const*/ out *VP8LHistogram, int64 cost_threshold) int {
   sum_cost := a.bit_cost + b.bit_cost;
   uint64 bit_cost, costs[5];
   SaturateAdd(sum_cost, &cost_threshold);
@@ -495,7 +495,7 @@ func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5], /*const*/ h *VP8LHist
 // the term C(b) which is constant over all the evaluations.
 // Returns 1 if the cost is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
- static int HistogramAddThresh(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram, int64 cost_threshold, cost_out *int64) {
+func HistogramAddThresh(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram, int64 cost_threshold, cost_out *int64) int {
   uint64 cost, costs[5];
   assert.Assert(a != nil && b != nil);
   SaturateAdd(a.bit_cost, &cost_threshold);
@@ -552,7 +552,7 @@ func ComputeHistogramCost(/* const */ h *VP8LHistogram) {
                 h.costs[ALPHA] + h.costs[DISTANCE];
 }
 
-static int GetBinIdForEntropy(uint64 min, uint64 max, uint64 val) {
+func GetBinIdForEntropy(uint64 min, uint64 max, uint64 val) int {
   range := max - min;
   if (range > 0) {
     delta := val - min;
@@ -562,7 +562,7 @@ static int GetBinIdForEntropy(uint64 min, uint64 max, uint64 val) {
   }
 }
 
-static int GetHistoBinIndex(/* const */ h *VP8LHistogram, /*const*/ c *DominantCostRange, low_effort int) {
+func GetHistoBinIndex(/* const */ h *VP8LHistogram, /*const*/ c *DominantCostRange, low_effort int) int {
   int bin_id =
       GetBinIdForEntropy(c.literal_min, c.literal_max, h.costs[LITERAL]);
   assert.Assert(bin_id < NUM_PARTITIONS);
@@ -723,7 +723,7 @@ func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_c
 
 // Implement a Lehmer random number generator with a multiplicative constant of
 // 48271 and a modulo constant of 2^31 - 1.
-static uint32 MyRand(/* const */ seed *uint32) {
+func MyRand(/* const */ seed *uint32) uint32 {
   *seed = (uint32)(((uint64)(*seed) * uint(48271)) % uint(2147483647));
   assert.Assert(*seed > 0);
   return *seed;
@@ -747,7 +747,7 @@ type HistoQueue struct {
   var max_size int
 } ;
 
-static int HistoQueueInit(/* const */ histo_queue *HistoQueue, /*const*/ int max_size) {
+func HistoQueueInit(/* const */ histo_queue *HistoQueue, /*const*/ int max_size) int {
   histo_queue.size = 0;
   histo_queue.max_size = max_size;
   // We allocate max_size + 1 because the last element at index "size" is
@@ -803,7 +803,7 @@ func HistoQueueFixPair(int bad_id, int good_id, /*const*/ pair *HistogramPair) {
 // called when the histograms have been merged with a third one.
 // Returns 1 if the cost diff is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
- static int HistoQueueUpdatePair(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, int64 cost_threshold, /*const*/ pair *HistogramPair) {
+func HistoQueueUpdatePair(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, int64 cost_threshold, /*const*/ pair *HistogramPair) int {
   sum_cost := h1.bit_cost + h2.bit_cost;
   SaturateAdd(sum_cost, &cost_threshold);
   if (!GetCombinedHistogramEntropy(h1, h2, cost_threshold, &pair.cost_combo, pair.costs)) {
@@ -816,7 +816,7 @@ func HistoQueueFixPair(int bad_id, int good_id, /*const*/ pair *HistogramPair) {
 // Create a pair from indices "idx1" and "idx2" provided its cost
 // is inferior to "threshold", a negative entropy.
 // It returns the cost of the pair, or 0 if it superior to threshold.
-static int64 HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram* const histograms, int idx1, int idx2, int64 threshold) {
+func HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram* const histograms, int idx1, int idx2, int64 threshold) int64 {
   const h *VP8LHistogram1;
   const h *VP8LHistogram2;
   HistogramPair pair;
@@ -848,7 +848,7 @@ static int64 HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram*
 
 // Combines histograms by continuously choosing the one with the highest cost
 // reduction.
-static int HistogramCombineGreedy(/* const */ image_histo *VP8LHistogramSet) {
+func HistogramCombineGreedy(/* const */ image_histo *VP8LHistogramSet) int {
   ok := 0;
   image_histo_size := image_histo.size;
   int i, j;
@@ -913,7 +913,7 @@ End:
 // Perform histogram aggregation using a stochastic approach.
 // 'do_greedy' is set to 1 if a greedy approach needs to be performed
 // afterwards, 0 otherwise.
-static int HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, int min_cluster_size, /*const*/ do_greedy *int) {
+func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, int min_cluster_size, /*const*/ do_greedy *int) int {
   int j, iter;
   seed := 1;
   tries_with_no_success := 0;
@@ -1059,7 +1059,7 @@ func HistogramRemap(/* const */ in *VP8LHistogramSet, /*const*/ out *VP8LHistogr
   }
 }
 
-static int32 GetCombineCostFactor(int histo_size, quality int) {
+func GetCombineCostFactor(int histo_size, quality int) int32 {
   combine_cost_factor := 16;
   if (quality < 90) {
     if (histo_size > 256) combine_cost_factor /= 2;

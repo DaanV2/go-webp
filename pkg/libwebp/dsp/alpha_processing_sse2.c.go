@@ -23,7 +23,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-static int DispatchAlpha_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint8, int dst_stride) {
+func DispatchAlpha_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha_stride, width, height int, WEBP_RESTRICT dst *uint8, int dst_stride) int {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
   alpha_and := 0xff;
@@ -106,7 +106,7 @@ func DispatchAlphaToGreen_SSE2(/* const */ WEBP_RESTRICT alpha *uint8, int alpha
   }
 }
 
-static int ExtractAlpha_SSE2(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride) {
+func ExtractAlpha_SSE2(/* const */ WEBP_RESTRICT argb *uint8, int argb_stride, width, height int, WEBP_RESTRICT alpha *uint8, int alpha_stride) int {
   // alpha_and stores an 'and' operation of all the alpha[] values. The final
   // value is not 0xff if any of the alpha[] is not equal to 0xff.
   alpha_and := 0xff;
@@ -258,7 +258,7 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, int alpha_first, int w, int h, int str
 //------------------------------------------------------------------------------
 // Alpha detection
 
-static int HasAlpha8b_SSE2(/* const */ src *uint8, int length) {
+func HasAlpha8b_SSE2(/* const */ src *uint8, int length) int {
   const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
   i := 0;
   for ; i + 16 <= length; i += 16 {
@@ -273,7 +273,7 @@ static int HasAlpha8b_SSE2(/* const */ src *uint8, int length) {
   return 0;
 }
 
-static int HasAlpha32b_SSE2(/* const */ src *uint8, int length) {
+func HasAlpha32b_SSE2(/* const */ src *uint8, int length) int {
   const __m128i alpha_mask = _mm_set1_epi32(0xff);
   const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
   i := 0;

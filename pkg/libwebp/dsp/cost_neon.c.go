@@ -48,7 +48,7 @@ func SetResidualCoeffs_NEON(/* const */ WEBP_RESTRICT const coeffs *int16, WEBP_
   res.coeffs = coeffs;
 }
 
-static int GetResidualCost_NEON(int ctx0, /*const*/ res *VP8Residual) {
+func GetResidualCost_NEON(int ctx0, /*const*/ res *VP8Residual) int {
   uint8 levels[16], ctxs[16];
   uint16 abs_levels[16];
   n := res.first;

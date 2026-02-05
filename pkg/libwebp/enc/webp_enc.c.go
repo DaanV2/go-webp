@@ -265,7 +265,7 @@ func DeleteVP8Encoder(enc *VP8Encoder) int {
 //------------------------------------------------------------------------------
 
 #if !defined(WEBP_DISABLE_STATS)
-static double GetPSNR(uint64 err, size uint64 ) {
+func GetPSNR(uint64 err, size uint64 ) double {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
 
