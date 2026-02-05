@@ -54,7 +54,7 @@ static  PixOrCopy PixOrCopyCreateCacheIdx(int idx) {
   return retval;
 }
 
-static  PixOrCopy PixOrCopyCreateLiteral(uint32 argb) {
+static  PixOrCopy PixOrCopyCreateLiteral(argb uint32) {
   PixOrCopy retval;
   retval.mode = kLiteral;
   retval.argb_or_distance = argb;

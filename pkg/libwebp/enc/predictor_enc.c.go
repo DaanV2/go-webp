@@ -76,7 +76,7 @@ static int64 PredictionCostSpatialHistogram(
   return retval;
 }
 
-static  func UpdateHisto(uint32 histo_argb[HISTO_SIZE], uint32 argb) {
+static  func UpdateHisto(uint32 histo_argb[HISTO_SIZE], argb uint32) {
   ++histo_argb[0 * 256 + (argb >> 24)];
   ++histo_argb[1 * 256 + ((argb >> 16) & 0xff)];
   ++histo_argb[2 * 256 + ((argb >> 8) & 0xff)];
@@ -124,7 +124,7 @@ static int MaxDiffAroundPixel(uint32 current, uint32 up, uint32 down, uint32 lef
   return GetMax(GetMax(diff_up, diff_down), GetMax(diff_left, diff_right));
 }
 
-static uint32 AddGreenToBlueAndRed(uint32 argb) {
+static uint32 AddGreenToBlueAndRed(argb uint32) {
   green := (argb >> 8) & 0xff;
   red_blue := argb & uint(0x00ff00ff);
   red_blue += (green << 16) | green;

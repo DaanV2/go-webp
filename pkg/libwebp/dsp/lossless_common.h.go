@@ -158,7 +158,7 @@ static  func VP8LPrefixEncode(int distance, /*const*/ code *int, /*const*/ extra
 }
 
 // Sum of each component, mod 256.
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32
+static   uint32
 VP8LAddPixels(uint32 a, uint32 b) {
   alpha_and_green := (a & uint(0xff00ff00)) + (b & uint(0xff00ff00));
   red_and_blue := (a & uint(0x00ff00ff)) + (b & uint(0x00ff00ff));
@@ -166,7 +166,7 @@ VP8LAddPixels(uint32 a, uint32 b) {
 }
 
 // Difference of each component, mod 256.
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32
+static   uint32
 VP8LSubPixels(uint32 a, uint32 b) {
   alpha_and_green :=
       uint(0x00ff00ff) + (a & uint(0xff00ff00)) - (b & uint(0xff00ff00));

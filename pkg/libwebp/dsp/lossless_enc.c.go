@@ -286,14 +286,14 @@ func VP8LTransformColor_C(/* const */ WEBP_RESTRICT const m *VP8LMultipliers, WE
   }
 }
 
-static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
+static  uint8 TransformColorRed(uint8 green_to_red, argb uint32) {
   green := U32ToS8(argb >> 8);
   new_red := argb >> 16;
   new_red -= ColorTransformDelta((int8)green_to_red, green);
   return (new_red & 0xff);
 }
 
-static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 argb) {
+static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) {
   green := U32ToS8(argb >> 8);
   red := U32ToS8(argb >> 16);
   new_blue := argb & 0xff;

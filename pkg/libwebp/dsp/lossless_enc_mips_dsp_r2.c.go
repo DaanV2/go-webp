@@ -77,7 +77,7 @@ static  uint32 ColorTransformDelta(int8 color_pred, int8 color) {
 func TransformColor_MIPSdspR2(
     const WEBP_RESTRICT const m *VP8LMultipliers, WEBP_RESTRICT data *uint32, num_pixels int) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
-  uint32 argb, argb1, new_red, new_red1;
+  argb uint32, argb1, new_red, new_red1;
   G_to_R := m.green_to_red;
   G_to_B := m.green_to_blue;
   R_to_B := m.red_to_blue;
@@ -151,7 +151,7 @@ func TransformColor_MIPSdspR2(
   }
 }
 
-static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, uint32 argb) {
+static  uint8 TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) {
   green := argb >> 8;
   red := argb >> 16;
   new_blue := argb;
@@ -198,7 +198,7 @@ func CollectColorBlueTransforms_MIPSdspR2(
   }
 }
 
-static  uint8 TransformColorRed(uint8 green_to_red, uint32 argb) {
+static  uint8 TransformColorRed(uint8 green_to_red, argb uint32) {
   green := argb >> 8;
   new_red := argb >> 16;
   new_red -= ColorTransformDelta(green_to_red, green);

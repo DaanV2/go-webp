@@ -29,34 +29,33 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const kHashMul  = uint32(0x1e35a7bd);
 
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  int VP8LHashPix(
-    uint32 argb, int shift) {
+func VP8LHashPix(argb uint32, int shift) int {
   return (int)((argb * kHashMul) >> shift);
 }
 
-static  uint32 VP8LColorCacheLookup(/* const */ cc *VP8LColorCache, uint32 key) {
+func VP8LColorCacheLookup(/* const */ cc *VP8LColorCache, key uint32) uint32 {
   assert.Assert((key >> cc.hash_bits) == uint(0));
   return cc.colors[key];
 }
 
-static  func VP8LColorCacheSet(/* const */ cc *VP8LColorCache, uint32 key, uint32 argb) {
+func VP8LColorCacheSet(/* const */ cc *VP8LColorCache, key uint32, argb uint32) {
   assert.Assert((key >> cc.hash_bits) == uint(0));
   cc.colors[key] = argb;
 }
 
-static  func VP8LColorCacheInsert(/* const */ cc *VP8LColorCache, uint32 argb) {
+func VP8LColorCacheInsert(/* const */ cc *VP8LColorCache, argb uint32) {
   key := VP8LHashPix(argb, cc.hash_shift);
   cc.colors[key] = argb;
 }
 
-static  int VP8LColorCacheGetIndex(/* const */ cc *VP8LColorCache, uint32 argb) {
+func VP8LColorCacheGetIndex(/* const */ cc *VP8LColorCache, argb uint32) int {
   return VP8LHashPix(argb, cc.hash_shift);
 }
 
 // Return the key if cc contains argb, and -1 otherwise.
-static  int VP8LColorCacheContains(/* const */ cc *VP8LColorCache, uint32 argb) {
+func VP8LColorCacheContains(/* const */ cc *VP8LColorCache, argb uint32) int {
   key := VP8LHashPix(argb, cc.hash_shift);
-  return (cc.colors[key] == argb) ? key : -1;
+  return tenary.If(cc.colors[key] == argb, key, -1)
 }
 
 //------------------------------------------------------------------------------

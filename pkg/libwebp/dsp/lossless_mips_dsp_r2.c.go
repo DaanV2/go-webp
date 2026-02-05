@@ -274,7 +274,7 @@ func AddGreenToBlueAndRed_MIPSdspR2(/* const */ src *uint32, num_pixels int, dst
 
 func TransformColorInverse_MIPSdspR2(/* const */ m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32) {
   int temp0, temp1, temp2, temp3, temp4, temp5;
-  uint32 argb, argb1, new_red;
+  argb uint32, argb1, new_red;
   G_to_R := m.green_to_red;
   G_to_B := m.green_to_blue;
   R_to_B := m.red_to_blue;

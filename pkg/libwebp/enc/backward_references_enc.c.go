@@ -213,9 +213,9 @@ func VP8LHashChainClear(/* const */ p *VP8LHashChain) {
 static const kHashMultiplierHi := uint(0xc6a4a793);
 static const kHashMultiplierLo := uint(0x5bd1e996);
 
-static WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW  uint32
+static   uint32
 GetPixPairHash64(/* const */ argb *uint32) {
-  uint32 key;
+  key uint32;
   key = argb[1] * kHashMultiplierHi;
   key += argb[0] * kHashMultiplierLo;
   key = key >> (32 - HASH_BITS);

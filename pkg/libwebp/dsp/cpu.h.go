@@ -263,7 +263,7 @@ import "github.com/daanv2/go-webp/pkg/pthread"
   static WEBP_TSAN_IGNORE_FUNCTION func name##_body(void)
 
 #define WEBP_UBSAN_IGNORE_UNDEF
-#define WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW
+#define 
 #if defined(__clang__) && defined(__has_attribute)
 #if __has_attribute(no_sanitize)
 // This macro prevents the undefined behavior sanitizer from reporting
@@ -275,8 +275,8 @@ const WEBP_UBSAN_IGNORE_UNDEF =__attribute__((no_sanitize("undefined")))
 // This macro prevents the undefined behavior sanitizer from reporting
 // failures related to unsigned integer overflows. This is only meant to
 // silence cases where this well defined behavior is expected.
-#undef WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW
-const WEBP_UBSAN_IGNORE_UNSIGNED_OVERFLOW =\
+#undef 
+const  =\
   __attribute__((no_sanitize("unsigned-integer-overflow")))
 #endif
 #endif
