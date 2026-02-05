@@ -1,5 +1,3 @@
-package enc
-
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,26 +5,12 @@ package enc
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Author: Jyrki Alakuijala (jyrki@google.com)
-//
+package enc
 
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+)
 
 const MIN_BLOCK_SIZE =256  // minimum block size for backward references
 
@@ -39,19 +23,22 @@ const MIN_LENGTH =4
 
 // -----------------------------------------------------------------------------
 
-const plane_to_code_lut  = [128]uint8{
+var plane_to_code_lut  = [128]uint8{
     96,  73,  55,  39,  23, 13, 5,  1,  255, 255, 255, 255, 255, 255, 255, 255, 101, 78,  58,  42,  26, 16, 8,  2,  0,   3,   9,   17,  27,  43,  59,  79, 102, 86,  62,  46,  32, 20, 10, 6,  4,   7,   11,  21,  33,  47,  63,  87, 105, 90,  70,  52,  37, 28, 18, 14, 12,  15,  19,  29,  38,  53,  71,  91, 110, 99,  82,  66,  48, 35, 30, 24, 22,  25,  31,  36,  49,  67,  83,  100, 115, 108, 94,  76,  64, 50, 44, 40, 34,  41,  45,  51,  65,  77,  95,  109, 118, 113, 103, 92,  80, 68, 60, 56, 54,  57,  61,  69,  81,  93,  104, 114, 119, 116, 111, 106, 97, 88, 84, 74, 72,  75,  85,  89,  98,  107, 112, 117}
 
-extern int VP8LDistanceToPlaneCode(xsize int, dist int);
 func VP8LDistanceToPlaneCode(xsize int, dist int) int {
-  yoffset := dist / xsize;
-  xoffset := dist - yoffset * xsize;
-  if (xoffset <= 8 && yoffset < 8) {
-    return plane_to_code_lut[yoffset * 16 + 8 - xoffset] + 1;
-  } else if (xoffset > xsize - 8 && yoffset < 7) {
-    return plane_to_code_lut[(yoffset + 1) * 16 + 8 + (xsize - xoffset)] + 1;
-  }
-  return dist + 120;
+	yoffset := dist / xsize;
+	xoffset := dist - yoffset * xsize;
+
+	if (xoffset <= 8 && yoffset < 8) {
+
+		return plane_to_code_lut[yoffset * 16 + 8 - xoffset] + 1;
+	} else if (xoffset > xsize - 8 && yoffset < 7) {
+
+		return plane_to_code_lut[(yoffset + 1) * 16 + 8 + (xsize - xoffset)] + 1;
+	}
+
+	return dist + 120;
 }
 
 // Returns the exact index where array1 and array2 are different. For an index
@@ -66,9 +53,6 @@ func FindMatchLength(/* const */ array *uint321, /*const*/ array *uint322, best_
 
   return VP8LVectorMismatch(array1, array2, max_limit);
 }
-
-// -----------------------------------------------------------------------------
-//  VP8LBackwardRefs
 
 type PixOrCopyBlock struct {
   next *PixOrCopyBlock;  // next block (or nil)
@@ -91,7 +75,7 @@ func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs) {
 func VP8LBackwardRefsClear(/* const */ refs *VP8LBackwardRefs) {
   assert.Assert(refs != nil);
   VP8LClearBackwardRefs(refs);
-  while (refs.free_blocks != nil) {
+  for (refs.free_blocks != nil) {
     var next *PixOrCopyBlock = refs.free_blocks.next;
 
     refs.free_blocks = next;
@@ -100,13 +84,12 @@ func VP8LBackwardRefsClear(/* const */ refs *VP8LBackwardRefs) {
 
 // Swaps the content of two VP8LBackwardRefs.
 func BackwardRefsSwap(/* const */ refs *VP8LBackwardRefs1, /*const*/ refs *VP8LBackwardRefs2) {
-  point_to_refs1 :=
-      (refs1.tail != nil && refs1.tail == &refs1.refs);
-  point_to_refs2 :=
-      (refs2.tail != nil && refs2.tail == &refs2.refs);
+  point_to_refs1 := (refs1.tail != nil && refs1.tail == &refs1.refs);
+  point_to_refs2 := (refs2.tail != nil && refs2.tail == &refs2.refs);
   var tmp VP8LBackwardRefs = *refs1;
   *refs1 = *refs2;
   *refs2 = tmp;
+
   if point_to_refs2 { refs1.tail = &refs1.refs }
   if point_to_refs1 { refs2.tail = &refs2.refs }
 }
@@ -114,34 +97,35 @@ func BackwardRefsSwap(/* const */ refs *VP8LBackwardRefs1, /*const*/ refs *VP8LB
 func VP8LBackwardRefsInit(/* const */ refs *VP8LBackwardRefs, block_size int) {
   assert.Assert(refs != nil);
   stdlib.Memset(refs, 0, sizeof(*refs));
-  refs.tail = &refs.refs;
-  refs.block_size =
-      (block_size < MIN_BLOCK_SIZE) ? MIN_BLOCK_SIZE : block_size;
+  refs.tail = &refs.refs
+  refs.block_size = tenary.If(block_size < MIN_BLOCK_SIZE, MIN_BLOCK_SIZE, block_size)
 }
 
-VP8LRefsCursor VP8LRefsCursorInit(/* const */ refs *VP8LBackwardRefs) {
-   var c VP8LRefsCursor
-  c.cur_block = refs.refs;
-  if (refs.refs != nil) {
-    c.cur_pos = c.cur_block.start;
-    c.last_pos = c.cur_pos + c.cur_block.size;
-  } else {
-    c.cur_pos = nil;
-    c.last_pos = nil;
-  }
-  return c;
+func VP8LRefsCursorInit(/* const */ refs *VP8LBackwardRefs) VP8LRefsCursor {
+	var c VP8LRefsCursor
+	c.cur_block = refs.refs
+
+	if (refs.refs != nil) {
+		c.cur_pos = c.cur_block.start
+		c.last_pos = c.cur_pos + c.cur_block.size
+	} else {
+		c.cur_pos = nil
+		c.last_pos = nil
+	}
+
+	return c;
 }
 
 func VP8LRefsCursorNextBlock(/* const */ c *VP8LRefsCursor) {
   var b *PixOrCopyBlock = c.cur_block.next;
-  c.cur_pos = (b == nil) ? nil : b.start;
-  c.last_pos = (b == nil) ? nil : b.start + b.size;
+  c.cur_pos = tenary.If(b == nil, nil, b.start)
+  c.last_pos = tenary.If(b == nil, nil, b.start + b.size)
   c.cur_block = b;
 }
 
 // Create a new block, either from the free list or allocated
-static BackwardRefsNewBlock *PixOrCopyBlock(/* const */ refs *VP8LBackwardRefs) {
-  b *PixOrCopyBlock = refs.free_blocks;
+func BackwardRefsNewBlock(/* const */ refs *VP8LBackwardRefs)  *PixOrCopyBlock {
+  var b *PixOrCopyBlock = refs.free_blocks;
   if (b == nil) {  // allocate new memory chunk
     total_size := sizeof(*b) + refs.block_size * sizeof(*b.start);
     // b = (*PixOrCopyBlock)WebPSafeMalloc(uint64(1), total_size);
@@ -167,19 +151,18 @@ static BackwardRefsNewBlock *PixOrCopyBlock(/* const */ refs *VP8LBackwardRefs) 
 func BackwardRefsClone(/* const */ from *VP8LBackwardRefs, /*const*/ to *VP8LBackwardRefs) int {
   var block_from *PixOrCopyBlock = from.refs;
   VP8LClearBackwardRefs(to);
-  while (block_from != nil) {
+  for (block_from != nil) {
     var block_to *PixOrCopyBlock = BackwardRefsNewBlock(to);
     if block_to == nil { return 0  }
-    memcpy(block_to.start, block_from.start, block_from.size * sizeof(PixOrCopy));
+    stdlib.MemCpy(block_to.start, block_from.start, block_from.size * sizeof(PixOrCopy));
     block_to.size = block_from.size;
     block_from = block_from.next;
   }
   return 1;
 }
 
-extern func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ PixOrCopy v);
-func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ PixOrCopy v) {
-  b *PixOrCopyBlock = refs.last_block;
+func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ v PixOrCopy) {
+  var b *PixOrCopyBlock = refs.last_block;
   if (b == nil || b.size == refs.block_size) {
     b = BackwardRefsNewBlock(refs);
     if b == nil { return }  // refs.error is set
@@ -211,10 +194,8 @@ func VP8LHashChainClear(/* const */ p *VP8LHashChain) {
   p.offset_length = nil
 }
 
-// -----------------------------------------------------------------------------
-
-const kHashMultiplierHi := uint(0xc6a4a793);
-const kHashMultiplierLo := uint(0x5bd1e996);
+const kHashMultiplierHi = uint(0xc6a4a793)
+const kHashMultiplierLo = uint(0x5bd1e996)
 
 func GetPixPairHash64(/* const */ argb *uint32) uint32 {
   key uint32;

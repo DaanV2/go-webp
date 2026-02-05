@@ -11,22 +11,16 @@ package enc
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
 //
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/enc"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/ptr"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/string"
+)
 
 // Number of partitions for the three dominant (literal, red and blue) symbol
 // costs.
@@ -48,23 +42,23 @@ const (
 )
 
 // Return the size of the histogram for a given cache_bits.
-GetHistogramSize(int cache_bits) int  {
-  literal_size := VP8LHistogramNumCodes(cache_bits);
-  total_size := sizeof(VP8LHistogram) + sizeof(int) * literal_size;
-  assert.Assert(total_size <= (uint64)0x7fffffff);
+func GetHistogramSize(int cache_bits) int  {
+  literal_size := VP8LHistogramNumCodes(cache_bits)
+  total_size := sizeof(VP8LHistogram) + sizeof(int) * literal_size
+  assert.Assert(total_size <= uint64(0x7fffffff))
 
-  return (int)total_size;
+  return int(total_size)
 }
 
 func HistogramStatsClear(/* const */ h *VP8LHistogram) {
   var i int
   for i = 0; i < 5; i++ {
-    h.trivial_symbol[i] = VP8L_NON_TRIVIAL_SYM;
+    h.trivial_symbol[i] = VP8L_NON_TRIVIAL_SYM
     // By default, the histogram is assumed to be used.
-    h.is_used[i] = 1;
+    h.is_used[i] = 1
   }
-  h.bit_cost = 0;
-  stdlib.Memset(h.costs, 0, sizeof(h.costs));
+  h.bit_cost = 0
+  stdlib.Memset(h.costs, 0, sizeof(h.costs))
 }
 
 func HistogramClear(/* const */ h *VP8LHistogram) {
@@ -77,22 +71,15 @@ func HistogramClear(/* const */ h *VP8LHistogram) {
   HistogramStatsClear(h);
 }
 
-// Swap two histogram pointers.
-func HistogramSwap(*VP8LHistogram* const h1, *VP8LHistogram* const h2) {
-  var tmp *VP8LHistogram = *h1;
-  *h1 = *h2;
-  *h2 = tmp;
-}
-
 func HistogramCopy(/* const */ src *VP8LHistogram, /*const*/ dst *VP8LHistogram) {
   var dst_literal *uint32 = dst.literal;
   dst_cache_bits := dst.palette_code_bits;
   literal_size := VP8LHistogramNumCodes(dst_cache_bits);
   histo_size := GetHistogramSize(dst_cache_bits);
   assert.Assert(src.palette_code_bits == dst_cache_bits);
-  memcpy(dst, src, histo_size);
+  stdlib.MemCpy(dst, src, histo_size);
   dst.literal = dst_literal;
-  memcpy(dst.literal, src.literal, literal_size * sizeof(*dst.literal));
+  stdlib.MemCpy(dst.literal, src.literal, literal_size * sizeof(*dst.literal));
 }
 
 func VP8LHistogramCreate(/* const */ h *VP8LHistogram, /*const*/ refs *VP8LBackwardRefs, palette_code_bits int) {
@@ -148,7 +135,7 @@ func HistogramSetTotalSize(size int, cache_bits int) uint64 {
           size * (sizeof(*VP8LHistogram) + histo_size + WEBP_ALIGN_CST));
 }
 
-VP *VP8LHistogramSet8LAllocateHistogramSet(size int, cache_bits int) {
+func VP8LAllocateHistogramSet(size int, cache_bits int) *VP8LHistogramSet {
   var i int
   var set *VP8LHistogramSet;
   total_size := HistogramSetTotalSize(size, cache_bits);
@@ -195,35 +182,33 @@ func HistogramSetRemoveHistogram(/* const */ set *VP8LHistogramSet, i int) {
 
 // -----------------------------------------------------------------------------
 
-func HistogramAddSinglePixOrCopy(
-    const histo *VP8LHistogram, /*const*/ v *PixOrCopy, int (distance_modifier *const)(int, int), int distance_modifier_arg0) {
+func HistogramAddSinglePixOrCopy(histo *VP8LHistogram, /*const*/ v *PixOrCopy, distance_modifier func(int, int)int, distance_modifier_arg0 int) {
   if (PixOrCopyIsLiteral(v)) {
-    ++histo.alpha[PixOrCopyLiteral(v, 3)];
-    ++histo.red[PixOrCopyLiteral(v, 2)];
-    ++histo.literal[PixOrCopyLiteral(v, 1)];
-    ++histo.blue[PixOrCopyLiteral(v, 0)];
+    histo.alpha[PixOrCopyLiteral(v, 3)] = histo.alpha[PixOrCopyLiteral(v, 3)] + 1
+    histo.red[PixOrCopyLiteral(v, 2)] = histo.red[PixOrCopyLiteral(v, 2)] + 1
+    histo.literal[PixOrCopyLiteral(v, 1)] = histo.literal[PixOrCopyLiteral(v, 1)] + 1
+    histo.blue[PixOrCopyLiteral(v, 0)] = histo.blue[PixOrCopyLiteral(v, 0)] + 1
+
   } else if (PixOrCopyIsCacheIdx(v)) {
-    literal_ix :=
-        NUM_LITERAL_CODES + NUM_LENGTH_CODES + PixOrCopyCacheIdx(v);
-    assert.Assert(histo.palette_code_bits != 0);
-    ++histo.literal[literal_ix];
+    literal_ix := constants.NUM_LITERAL_CODES + constants.NUM_LENGTH_CODES + PixOrCopyCacheIdx(v)
+    assert.Assert(histo.palette_code_bits != 0)
+    histo.literal[literal_ix] = histo.literal[literal_ix] + 1
   } else {
-    int code, extra_bits;
-    VP8LPrefixEncodeBits(PixOrCopyLength(v), &code, &extra_bits);
-    ++histo.literal[NUM_LITERAL_CODES + code];
+    var code, extra_bits int
+    VP8LPrefixEncodeBits(PixOrCopyLength(v), &code, &extra_bits)
+    histo.literal[NUM_LITERAL_CODES + code] = histo.literal[NUM_LITERAL_CODES + code] + 1
     if (distance_modifier == nil) {
-      VP8LPrefixEncodeBits(PixOrCopyDistance(v), &code, &extra_bits);
+      VP8LPrefixEncodeBits(PixOrCopyDistance(v), &code, &extra_bits)
     } else {
-      VP8LPrefixEncodeBits(
-          distance_modifier(distance_modifier_arg0, PixOrCopyDistance(v)), &code, &extra_bits);
+      VP8LPrefixEncodeBits(distance_modifier(distance_modifier_arg0, PixOrCopyDistance(v)), &code, &extra_bits)
     }
-    ++histo.distance[code];
+    histo.distance[code] = histo.distance[code] + 1
   }
 }
 
-func VP8LHistogramStoreRefs(/* const */ refs *VP8LBackwardRefs, int (distance_modifier *const)(int, int), int distance_modifier_arg0, /*const*/ histo *VP8LHistogram) {
-  VP8LRefsCursor c = VP8LRefsCursorInit(refs);
-  while (VP8LRefsCursorOk(&c)) {
+func VP8LHistogramStoreRefs(/* const */ refs *VP8LBackwardRefs, distance_modifier func(int, int)int, distance_modifier_arg0 int, /*const*/ histo *VP8LHistogram) {
+  var c VP8LRefsCursor = VP8LRefsCursorInit(refs);
+  for (VP8LRefsCursorOk(&c)) {
     HistogramAddSinglePixOrCopy(histo, c.cur_pos, distance_modifier, distance_modifier_arg0);
     VP8LRefsCursorNext(&c);
   }
@@ -426,8 +411,8 @@ func HistogramAdd(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, /*
 
   for i = 0; i < 5; i++ {
     var length int
-    const uint32 *p1, *p2, *pout_const;
-    pout *uint32;
+    var p1, p2, pout_const *uint32;
+    var pout *uint32;
     GetPopulationInfo(h1, (HistogramIndex)i, &p1, &length);
     GetPopulationInfo(h2, (HistogramIndex)i, &p2, &length);
     GetPopulationInfo(hout, (HistogramIndex)i, &pout_const, &length);
@@ -437,7 +422,7 @@ func HistogramAdd(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, /*
         if (hout.is_used[i]) {
           VP8LAddVectorEq(p1, pout, length);
         } else {
-          memcpy(pout, p1, length * sizeof(pout[0]));
+          stdlib.MemCpy(pout, p1, length * sizeof(pout[0]));
         }
       }
     } else {
@@ -445,10 +430,10 @@ func HistogramAdd(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, /*
         if (h2.is_used[i]) {
           VP8LAddVector(p1, p2, pout, length);
         } else {
-          memcpy(pout, p1, length * sizeof(pout[0]));
+          stdlib.MemCpy(pout, p1, length * sizeof(pout[0]));
         }
       } else if (h2.is_used[i]) {
-        memcpy(pout, p2, length * sizeof(pout[0]));
+        stdlib.MemCpy(pout, p2, length * sizeof(pout[0]));
       } else {
         stdlib.Memset(pout, 0, length * sizeof(pout[0]));
       }
@@ -705,7 +690,7 @@ func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_c
         if (try_combine ||
             bin_info[bin_id].num_combine_failures >= max_combine_failures) {
           // move the (better) merged histogram to its final slot
-          HistogramSwap(&cur_combo, &histograms[first]);
+		  ptr.Swap(&cur_combo, &histograms[first])
           HistogramSetRemoveHistogram(image_histo, idx);
         } else {
           ++bin_info[bin_id].num_combine_failures;

@@ -13,17 +13,17 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/math"
-import "github.com/daanv2/go-webp/pkg/stdlib"  // for abs()
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/libwebp/decoder"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/enc"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/math"
+	"github.com/daanv2/go-webp/pkg/ptr"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/string"
+) // for abs()
 
 const DO_TRELLIS_I4 =1
 const DO_TRELLIS_I16 =1  // not a huge gain, but ok at low bitrate.
@@ -303,7 +303,7 @@ func QualityToJPEGCompression(float64 c, float64 alpha) float64 {
 }
 
 func SegmentsAreEquivalent(/* const */ S *VP8SegmentInfo1, /*const*/ S *VP8SegmentInfo2) int {
-  return (S1.quant == S2.quant) && (S1.fstrength == S2.fstrength);
+  return (S1.quant == S2.quant) && (S1.0strength == S2.0strength);
 }
 
 func SimplifySegments(/* const */ enc *VP8Encoder) {
@@ -908,20 +908,8 @@ func StoreMaxDelta(/* const */ dqm *VP8SegmentInfo, /*const*/ int16 DCs[16]) {
   if max_v > dqm.max_edge { dqm.max_edge = max_v }
 }
 
-func SwapModeScore(*VP8ModeScore* a, *VP8ModeScore* b) {
-  var tmp *VP8ModeScore = *a;
-  *a = *b;
-  *b = tmp;
-}
-
-func SwapPtr(a *uint8, *uint8* b) {
-  var tmp *uint8 = *a;
-  *a = *b;
-  *b = tmp;
-}
-
 func SwapOut(/* const */ it *VP8EncIterator) {
-  SwapPtr(&it.yuv_out, &it.yuv_out2);
+  ptr.Swap(&it.yuv_out, &it.yuv_out2);
 }
 
 func PickBestIntra16(/* const */ it *VP8EncIterator, rd *VP8ModeScore) {
@@ -963,12 +951,12 @@ func PickBestIntra16(/* const */ it *VP8EncIterator, rd *VP8ModeScore) {
     // Since we always examine Intra16 first, we can overwrite directly *rd.
     SetRDScore(lambda, rd_cur);
     if (mode == 0 || rd_cur.score < rd_best.score) {
-      SwapModeScore(&rd_cur, &rd_best);
+      ptr.Swap(&rd_cur, &rd_best);
       SwapOut(it);
     }
   }
   if (rd_best != rd) {
-    memcpy(rd, rd_best, sizeof(*rd));
+    stdlib.MemCpy(rd, rd_best, sizeof(*rd));
   }
   SetRDScore(dqm.lambda_mode, rd);  // finalize score for mode decision.
   VP8SetIntra16Mode(it, rd.mode_i16);
@@ -1055,8 +1043,8 @@ func PickBestIntra4(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore
       if (best_mode < 0 || rd_tmp.score < rd_i4.score) {
         CopyScore(&rd_i4, &rd_tmp);
         best_mode = mode;
-        SwapPtr(&tmp_dst, &best_block);
-        memcpy(rd_best.y_ac_levels[it.i4], tmp_levels, sizeof(rd_best.y_ac_levels[it.i4]));
+        ptr.Swap(&tmp_dst, &best_block);
+        stdlib.MemCpy(rd_best.y_ac_levels[it.i4], tmp_levels, sizeof(rd_best.y_ac_levels[it.i4]));
       }
     }
     SetRDScore(dqm.lambda_mode, &rd_i4);
@@ -1080,7 +1068,7 @@ func PickBestIntra4(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore
   CopyScore(rd, &rd_best);
   VP8SetIntra4Mode(it, rd.modes_i4);
   SwapOut(it);
-  memcpy(rd.y_ac_levels, rd_best.y_ac_levels, sizeof(rd.y_ac_levels));
+  stdlib.MemCpy(rd.y_ac_levels, rd_best.y_ac_levels, sizeof(rd.y_ac_levels));
   return 1;  // select intra4x4 over intra16x16
 }
 
@@ -1118,11 +1106,11 @@ func PickBestUV(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore) {
     if (mode == 0 || rd_uv.score < rd_best.score) {
       CopyScore(&rd_best, &rd_uv);
       rd.mode_uv = mode;
-      memcpy(rd.uv_levels, rd_uv.uv_levels, sizeof(rd.uv_levels));
+      stdlib.MemCpy(rd.uv_levels, rd_uv.uv_levels, sizeof(rd.uv_levels));
       if (it.top_derr != nil) {
-        memcpy(rd.derr, rd_uv.derr, sizeof(rd_uv.derr));
+        stdlib.MemCpy(rd.derr, rd_uv.derr, sizeof(rd_uv.derr));
       }
-      SwapPtr(&dst, &tmp_dst);
+      ptr.Swap(&dst, &tmp_dst);
     }
   }
   VP8SetIntraUVMode(it, rd.mode_uv);

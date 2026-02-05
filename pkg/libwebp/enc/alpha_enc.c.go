@@ -80,9 +80,8 @@ func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int
   // costly 'BackwardReferencesTraceBackwards'.
   // If the alpha quality is set to 100 and the method to 6, allow for a high
   // lossless quality to trigger the cruncher.
-  config.quality =
-      (use_quality_100 && effort_level == 6) ? 100 : 8.f * effort_level;
-  assert.Assert(config.quality >= 0 && config.quality <= 100.f);
+  config.quality = tenary.If(use_quality_100 && effort_level == 6, 100, 8.0 * effort_level)
+  assert.Assert(config.quality >= 0 && config.quality <= 100.0);
 
   ok = VP8LEncodeStream(&config, &picture, bw);
   WebPPictureFree(&picture);

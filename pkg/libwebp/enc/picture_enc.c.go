@@ -220,14 +220,14 @@ func WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ pictur
 	new_mem := make([]uint8, next_max_size)
 
     if (w.size > 0) {
-      memcpy(new_mem, w.mem, w.size);
+      stdlib.MemCpy(new_mem, w.mem, w.size);
     }
     w.mem = new_mem;
     // down-cast is ok, thanks to WebPSafeMalloc
     w.max_size = (uint64)next_max_size;
   }
   if (data_size > 0) {
-    memcpy(w.mem + w.size, data, data_size);
+    stdlib.MemCpy(w.mem + w.size, data, data_size);
     w.size += data_size;
   }
   return 1;

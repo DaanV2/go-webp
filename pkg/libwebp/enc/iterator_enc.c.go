@@ -108,7 +108,7 @@ func MinSize(a, b int) int { return (a < b) ? a : b; }
 func ImportBlock(/* const */ src *uint8, src_stride int, dst *uint8, w int, h int, size int) {
   var i int
   for i = 0; i < h; i++ {
-    memcpy(dst, src, w);
+    stdlib.MemCpy(dst, src, w);
     if (w < size) {
       stdlib.Memset(dst + w, dst[w - 1], size - w);
     }
@@ -116,7 +116,7 @@ func ImportBlock(/* const */ src *uint8, src_stride int, dst *uint8, w int, h in
     src += src_stride;
   }
   for i = h; i < size; i++ {
-    memcpy(dst, dst - BPS, size);
+    stdlib.MemCpy(dst, dst - BPS, size);
     dst += BPS;
   }
 }
@@ -180,7 +180,7 @@ func VP8IteratorImport(/* const */ it *VP8EncIterator, /*const*/ tmp_ *uint832) 
 
 func ExportBlock(/* const */ src *uint8, dst *uint8, dst_stride int, w int, h int) {
   while (h-- > 0) {
-    memcpy(dst, src, w);
+    stdlib.MemCpy(dst, src, w);
     dst += dst_stride;
     src += BPS;
   }
@@ -311,8 +311,8 @@ func VP8IteratorSaveBoundary(/* const */ it *VP8EncIterator) {
     it.v_left[-1] = it.uv_top[8 + 7];
   }
   if (y < enc.mb_h - 1) {  // top
-    memcpy(it.y_top, ysrc + 15 * BPS, 16);
-    memcpy(it.uv_top, uvsrc + 7 * BPS, 8 + 8);
+    stdlib.MemCpy(it.y_top, ysrc + 15 * BPS, 16);
+    stdlib.MemCpy(it.uv_top, uvsrc + 7 * BPS, 8 + 8);
   }
 }
 
@@ -347,7 +347,7 @@ func VP8SetIntra4Mode(/* const */ it *VP8EncIterator, /*const*/ modes *uint8) {
   preds *uint8 = it.preds;
   var y int
   for y = 4; y > 0; --y {
-    memcpy(preds, modes, 4 * sizeof(*modes));
+    stdlib.MemCpy(preds, modes, 4 * sizeof(*modes));
     preds += it.enc.preds_w;
     modes += 4;
   }

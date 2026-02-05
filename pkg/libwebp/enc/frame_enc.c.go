@@ -66,7 +66,7 @@ func ComputeNextQ(/* const */ s *PassStats) float64 {
     dq = 0.;  // we're done?!
   }
   // Limit variable to afunc large swings.
-  s.dq = Clamp(dq, -30.f, 30.f);
+  s.dq = Clamp(dq, -30.0, 30.0);
   s.last_q = s.q;
   s.last_value = s.value;
   s.q = Clamp(s.q + s.dq, s.qmin, s.qmax);
@@ -552,7 +552,7 @@ func GetPSNR(uint64 mse, size uint64 ) float64 {
 
 func SetLoopParams(/* const */ enc *VP8Encoder, float64 q) {
   // Make sure the quality parameter is inside valid bounds
-  q = Clamp(q, 0.f, 100.f);
+  q = Clamp(q, 0.0, 100.0);
 
   VP8SetSegmentParams(enc, q);  // setup segment quantizations and filters
   SetSegmentProbas(enc);        // compute segment probabilities

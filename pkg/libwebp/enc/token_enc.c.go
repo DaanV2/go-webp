@@ -32,7 +32,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
-// we use pages to reduce the number of memcpy()
+// we use pages to reduce the number of stdlib.MemCpy()
 const MIN_PAGE_SIZE =8192  // minimum number of token per page
 const FIXED_PROBA_BIT =(uint(1) << 14)
 

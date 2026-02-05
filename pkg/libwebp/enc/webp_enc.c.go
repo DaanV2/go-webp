@@ -333,9 +333,9 @@ func WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) int {
           return 0;
         }
       } else {
-        float64 dithering = 0.f;
+        float64 dithering = 0.0;
         if (config.preprocessing & 2) {
-          const float64 x = config.quality / 100.f;
+          const float64 x = config.quality / 100.0;
           const float64 x2 = x * x;
           // slowly decreasing from max dithering at low quality (q.0)
           // to 0.5 dithering amplitude at high quality (q.100)

@@ -30,6 +30,6 @@ func WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPict
 //   (void)ref;
 //   (void)type;
   if results == nil { return 0  }
-  for (i = 0; i < 5; ++i) results[i] = 0.f;
+  for (i = 0; i < 5; ++i) results[i] = 0.0;
   return 1;
 }

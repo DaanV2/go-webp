@@ -255,11 +255,11 @@ func WebPPictureARGBToYUVADithered(picture *WebPPicture, WebPEncCSP colorspace, 
 }
 
 func WebPPictureARGBToYUVA(picture *WebPPicture, WebPEncCSP colorspace) int {
-  return PictureARGBToYUVA(picture, colorspace, 0.f, 0);
+  return PictureARGBToYUVA(picture, colorspace, 0.0, 0);
 }
 
 func WebPPictureSharpARGBToYUVA(picture *WebPPicture) int {
-  return PictureARGBToYUVA(picture, WEBP_YUV420, 0.f, 1);
+  return PictureARGBToYUVA(picture, WEBP_YUV420, 0.0, 1);
 }
 // for backward compatibility
 func WebPPictureSmartARGBToYUVA(picture *WebPPicture) int {
@@ -344,7 +344,7 @@ func Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, rgb_stride i
 
   if (!picture.use_argb) {
     var a_ptr *uint8 = import_alpha ? rgb + 3 : nil;
-    return ImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, 0.f /* no dithering */, 0, picture);
+    return ImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, 0.0 /* no dithering */, 0, picture);
   }
   if !WebPPictureAlloc(picture) { return 0  }
 
@@ -358,7 +358,7 @@ func Import(/* const */ picture *WebPPicture, /*const*/ rgb *uint8, rgb_stride i
     assert.Assert(step == 4);
     if (do_copy) {
       for y = 0; y < height; y++ {
-        memcpy(dst, rgb, width * 4);
+        stdlib.MemCpy(dst, rgb, width * 4);
         rgb += rgb_stride;
         dst += picture.argb_stride;
       }

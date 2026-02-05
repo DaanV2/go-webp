@@ -78,14 +78,14 @@ func NearLossless(xsize int, ysize int, /*const*/ argb_src *uint32, stride int, 
   prev_row *uint32 = copy_buffer;
   curr_row *uint32 = prev_row + xsize;
   next_row *uint32 = curr_row + xsize;
-  memcpy(curr_row, argb_src, xsize * sizeof(argb_src[0]));
-  memcpy(next_row, argb_src + stride, xsize * sizeof(argb_src[0]));
+  stdlib.MemCpy(curr_row, argb_src, xsize * sizeof(argb_src[0]));
+  stdlib.MemCpy(next_row, argb_src + stride, xsize * sizeof(argb_src[0]));
 
   for y = 0; y < ysize; ++y, argb_src += stride, argb_dst += xsize {
     if (y == 0 || y == ysize - 1) {
-      memcpy(argb_dst, argb_src, xsize * sizeof(argb_src[0]));
+      stdlib.MemCpy(argb_dst, argb_src, xsize * sizeof(argb_src[0]));
     } else {
-      memcpy(next_row, argb_src + stride, xsize * sizeof(argb_src[0]));
+      stdlib.MemCpy(next_row, argb_src + stride, xsize * sizeof(argb_src[0]));
       argb_dst[0] = argb_src[0];
       argb_dst[xsize - 1] = argb_src[xsize - 1];
       for x = 1; x < xsize - 1; x++ {
@@ -124,7 +124,7 @@ func VP8ApplyNearLossless(/* const */ picture *WebPPicture, quality int, /*const
        ysize < MIN_DIM_FOR_NEAR_LOSSLESS) ||
       ysize < 3) {
     for i = 0; i < ysize; i++ {
-      memcpy(argb_dst + i * xsize, picture.argb + i * picture.argb_stride, xsize * sizeof(*argb_dst));
+      stdlib.MemCpy(argb_dst + i * xsize, picture.argb + i * picture.argb_stride, xsize * sizeof(*argb_dst));
     }
     return 1;
   }
