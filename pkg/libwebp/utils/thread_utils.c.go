@@ -159,7 +159,7 @@ func ChangeState(/* const */ worker *WebPWorker, WebPWorkerStatus new_status) {
   // Checking 'status' without acquiring the lock first would result in a data
   // race.
   var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
-  if (impl == nil) return;
+  if impl == nil { return }
 
   pthread_mutex_lock(&impl.mutex);
   if (worker.status >= OK) {
@@ -219,7 +219,7 @@ func Reset(/* const */ worker *WebPWorker) int {
     }
     pthread_mutex_lock(&impl.mutex);
     ok = !pthread_create(&impl.thread, nil, ThreadLoop, worker);
-    if (ok) worker.status = OK;
+    if ok { worker.status = OK }
     pthread_mutex_unlock(&impl.mutex);
     if (!ok) {
       pthread_mutex_destroy(&impl.mutex);

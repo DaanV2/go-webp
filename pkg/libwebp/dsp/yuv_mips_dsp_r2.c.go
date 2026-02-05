@@ -95,7 +95,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
         ROW_FUNC_PART_2(R + XSTEP, G + XSTEP, B + XSTEP, 0)                    \
         ASM_CLOBBER_LIST()                                                     \
       );                                                                       \
-      if (A) dst[A] = dst[A + XSTEP] = 0xff;                                   \
+      if A { dst[A] = dst[A + XSTEP] = 0xff }                                   \
       y += 2;                                                                  \
       u++                                                                     \
       v++                                                                     \
@@ -107,7 +107,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
         ROW_FUNC_PART_2(R, G, B, 0)                                            \
         ASM_CLOBBER_LIST()                                                     \
       );                                                                       \
-      if (A) dst[A] = 0xff;                                                    \
+      if A { dst[A] = 0xff }                                                    \
     }                                                                          \
   }
 // clang-format on

@@ -187,7 +187,7 @@ func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8I
         VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "Alpha decoder initialization failed.");
         return nil;
       }
-      if (!AllocateAlphaPlane(dec, io)) goto Error;
+      if !AllocateAlphaPlane(dec, io) { goto Error }
       if (!ALPHInit(dec.alph_dec, dec.alpha_data, dec.alpha_data_size, io, dec.alpha_plane)) {
         var vp *VP8LDecoder8l_dec = dec.alph_dec.vp8l_dec;
         VP8SetError(
@@ -204,7 +204,7 @@ func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8I
 
     assert.Assert(dec.alph_dec != nil);
     assert.Assert(row + num_rows <= height);
-    if (!ALPHDecode(dec, row, num_rows)) goto Error;
+    if !ALPHDecode(dec, row, num_rows) { goto Error }
 
     if (dec.is_alpha_decoded) {  // finished?
       dec.alph_dec = nil;

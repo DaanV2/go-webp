@@ -301,7 +301,7 @@ func PrecomputeFilterStrengths(/* const */ dec *VP8Decoder) {
               ilevel = 9 - hdr.sharpness;
             }
           }
-          if (ilevel < 1) {ilevel = 1;}
+          if ilevel < 1 { {ilevel = 1 }}
           info.f_ilevel = ilevel;
           info.f_limit = 2 * level + ilevel;
           info.hev_thresh = tenary.If(level >= 40, 2, tenary.If(level >= 15, 1, 0))
@@ -576,8 +576,8 @@ func VP8EnterCritical(/* const */ dec *vp8.VP8Decoder, /*const*/ io *vp8.VP8Io) 
       // modify some abutting pixels.
       dec.tl_mb_x = (io.crop_left - extra_pixels) >> 4;
       dec.tl_mb_y = (io.crop_top - extra_pixels) >> 4;
-      if (dec.tl_mb_x < 0) dec.tl_mb_x = 0;
-      if (dec.tl_mb_y < 0) dec.tl_mb_y = 0;
+      if dec.tl_mb_x < 0 { dec.tl_mb_x = 0 }
+      if dec.tl_mb_y < 0 { dec.tl_mb_y = 0 }
     }
     // We need some 'extra' pixels on the right/bottom.
     dec.br_mb_y = (io.crop_bottom + 15 + extra_pixels) >> 4;

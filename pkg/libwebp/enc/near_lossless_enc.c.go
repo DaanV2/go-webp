@@ -37,7 +37,7 @@ func FindClosestDiscretized(uint32 a, bits int) uint32 {
   mask := (uint(1) << bits) - 1;
   biased := a + (mask >> 1) + ((a >> bits) & 1);
   assert.Assert(bits > 0);
-  if (biased > 0xff) { return 0xff; }
+  if biased > 0xff { { return 0xff } }
   return biased & ~mask;
 }
 

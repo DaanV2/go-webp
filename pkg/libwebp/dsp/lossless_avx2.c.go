@@ -272,7 +272,7 @@ func PredictorAdd11_AVX2(/* const */ in *uint32, /*const*/ upper *uint32, num_pi
 #define DO_PRED12_SHIFT(DIFF, LANE)                           \
   for {                                                        \
     /* Shift the pre-computed value for the next iteration.*/ \
-    if ((LANE) == 0) (DIFF) = _mm256_srli_si256(DIFF, 8);     \
+    if (LANE) == 0) (DIFF { = _mm256_srli_si256(DIFF, 8) }     \
     src = _mm256_srli_si256(src, 4);                          \
   } while (0)
 

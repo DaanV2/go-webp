@@ -232,7 +232,7 @@ func ClampBits(width, height int, bits int, int min_bits, int max_bits, int imag
   while (bits > min_bits && image_size == 1) {
     image_size = VP8LSubSampleSize(width, bits - 1) *
                  VP8LSubSampleSize(height, bits - 1);
-    if (image_size != 1) break;
+    if image_size != 1 { break }
     --bits;
   }
   return bits;
@@ -387,7 +387,7 @@ func EncoderInit(/* const */ enc *VP8LEncoder) int {
   // at most MAX_REFS_BLOCK_PER_IMAGE blocks used:
   refs_block_size := (pix_cnt - 1) / MAX_REFS_BLOCK_PER_IMAGE + 1;
   var i int
-  if (!VP8LHashChainInit(&enc.hash_chain, pix_cnt)) { return 0; }
+  if !VP8LHashChainInit(&enc.hash_chain, pix_cnt) { { return 0 } }
 
   for (i = 0; i < 4; ++i) VP8LBackwardRefsInit(&enc.refs[i], refs_block_size);
 
@@ -426,7 +426,7 @@ static int GetHuffBitLengthsAndCodes(
     codes *uint16;
     lengths *uint8;
     mem_buf = (*uint8)WebPSafeCalloc(total_length_size, sizeof(*lengths) + sizeof(*codes));
-    if (mem_buf == nil) goto End;
+    if mem_buf == nil { goto End }
 
     codes = (*uint16)mem_buf;
     lengths = (*uint8)&codes[total_length_size];
@@ -445,7 +445,7 @@ static int GetHuffBitLengthsAndCodes(
   buf_rle = (*uint8)WebPSafeMalloc(uint64(1), max_num_symbols);
   huff_tree =
       (*HuffmanTree)WebPSafeMalloc(uint64(3) * max_num_symbols, sizeof(*huff_tree));
-  if (buf_rle == nil || huff_tree == nil) goto End;
+  if buf_rle == nil || huff_tree == nil { goto End }
 
   // Create Huffman trees.
   for i = 0; i < histogram_image_size; i++ {
@@ -490,7 +490,7 @@ func ClearHuffmanTreeIfOnlyOneSymbol(/* const */ huffman_code *HuffmanTreeCode) 
   for k = 0; k < huffman_code.num_symbols; k++ {
     if (huffman_code.code_lengths[k] != 0) {
       count++
-      if (count > 1) return;
+      if count > 1 { return }
     }
   }
   for k = 0; k < huffman_code.num_symbols; k++ {
@@ -595,7 +595,7 @@ func StoreHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ huff_tree *Huffma
   // Check whether it's a small tree.
   for i = 0; i < huffman_code.num_symbols && count < 3; i++ {
     if (huffman_code.code_lengths[i] != 0) {
-      if (count < 2) symbols[count] = i;
+      if count < 2 { symbols[count] = i }
       count++
     }
   }
@@ -855,7 +855,7 @@ func EncodeImageInternal(
       histogram_bits := histogram_bits_in;
       // Speed-up: no need to study the no-cache case if it was already studied
       // in i_cache == 0.
-      if (i_cache == 1 && cache_bits_best == 0) break;
+      if i_cache == 1 && cache_bits_best == 0 { break }
 
       // Reset the bit writer for this iteration.
       VP8LBitWriterReset(&bw_init, bw);
@@ -1131,8 +1131,8 @@ func MakeInputImageCopy(/* const */ enc *VP8LEncoder) int {
   width := picture.width;
   height := picture.height;
 
-  if (!AllocateTransformBuffer(enc, width, height)) { return 0; }
-  if (enc.argb_content == kEncoderARGB) { return 1; }
+  if !AllocateTransformBuffer(enc, width, height) { { return 0 } }
+  if enc.argb_content == kEncoderARGB { { return 1 } }
 
   {
     dst *uint32 = enc.argb;
@@ -1157,9 +1157,9 @@ static  uint32 SearchColorGreedy(/* const */ uint32 palette[], int palette_size,
   (void)palette_size;
   assert.Assert(palette_size < APPLY_PALETTE_GREEDY_MAX);
   assert.Assert(3 == APPLY_PALETTE_GREEDY_MAX - 1);
-  if (color == palette[0]) { return 0; }
-  if (color == palette[1]) { return 1; }
-  if (color == palette[2]) { return 2; }
+  if color == palette[0] { { return 0 } }
+  if color == palette[1] { { return 1 } }
+  if color == palette[2] { { return 2 } }
   return 3;
 }
 
@@ -1241,7 +1241,7 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
           buffer[ind] = j;
         }
       }
-      if (use_LUT) break;
+      if use_LUT { break }
     }
 
     if (i == 0) {
@@ -1420,7 +1420,7 @@ func EncodeStreamHook(input *void, data *void2) int {
     use_near_lossless =
         (config.near_lossless < 100) && !enc.use_palette && !enc.use_predict;
     if (use_near_lossless) {
-      if (!AllocateTransformBuffer(enc, width, height)) goto Error;
+      if !AllocateTransformBuffer(enc, width, height) { goto Error }
       if ((enc.argb_content != kEncoderNearLossless) &&
           !VP8ApplyNearLossless(picture, config.near_lossless, enc.argb)) {
         WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
@@ -1445,7 +1445,7 @@ func EncodeStreamHook(input *void, data *void2) int {
         goto Error;
       }
       remaining_percent -= percent_range;
-      if (!MapImageFromPalette(enc)) goto Error;
+      if !MapImageFromPalette(enc) { goto Error }
       // If using a color cache, do not have it bigger than the number of
       // colors.
       if (enc.palette_size < (1 << MAX_COLOR_CACHE_BITS)) {
@@ -1455,7 +1455,7 @@ func EncodeStreamHook(input *void, data *void2) int {
     // In case image is not packed.
     if (enc.argb_content != kEncoderNearLossless &&
         enc.argb_content != kEncoderPalette) {
-      if (!MakeInputImageCopy(enc)) goto Error;
+      if !MakeInputImageCopy(enc) { goto Error }
     }
 
     // -------------------------------------------------------------------------
@@ -1499,10 +1499,10 @@ func EncodeStreamHook(input *void, data *void2) int {
       // Update the stats.
       if (stats != nil) {
         stats.lossless_features = 0;
-        if (enc.use_predict) stats.lossless_features |= 1;
-        if (enc.use_cross_color) stats.lossless_features |= 2;
-        if (enc.use_subtract_green) stats.lossless_features |= 4;
-        if (enc.use_palette) stats.lossless_features |= 8;
+        if enc.use_predict { stats.lossless_features |= 1 }
+        if enc.use_cross_color { stats.lossless_features |= 2 }
+        if enc.use_subtract_green { stats.lossless_features |= 4 }
+        if enc.use_palette { stats.lossless_features |= 8 }
         stats.histogram_bits = enc.histo_bits;
         stats.transform_bits = predictor_transform_bits;
         stats.cross_color_transform_bits = cross_color_transform_bits;
@@ -1515,7 +1515,7 @@ func EncodeStreamHook(input *void, data *void2) int {
 #endif
     }
     // Reset the bit writer for the following iteration if any.
-    if (num_crunch_configs > 1) VP8LBitWriterReset(&bw_init, bw);
+    if num_crunch_configs > 1 { VP8LBitWriterReset(&bw_init, bw) }
   }
   VP8LBitWriterSwap(&bw_best, bw);
 
@@ -1689,7 +1689,7 @@ int VP8LEncodeImage(/* const */ config *WebPConfig, /*const*/ picture *WebPPictu
   var initial_size int;
   VP8LBitWriter bw;
 
-  if (picture == nil) { return 0; }
+  if picture == nil { { return 0 } }
 
   if (config == nil || picture.argb == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
@@ -1735,17 +1735,17 @@ int VP8LEncodeImage(/* const */ config *WebPConfig, /*const*/ picture *WebPPictu
     goto Error;
   }
 
-  if (!WebPReportProgress(picture, 2, &percent)) goto UserAbort;
+  if !WebPReportProgress(picture, 2, &percent) { goto UserAbort }
 
   // Encode main image stream.
-  if (!VP8LEncodeStream(config, picture, &bw)) goto Error;
+  if !VP8LEncodeStream(config, picture, &bw) { goto Error }
 
-  if (!WebPReportProgress(picture, 99, &percent)) goto UserAbort;
+  if !WebPReportProgress(picture, 99, &percent) { goto UserAbort }
 
   // Finish the RIFF chunk.
-  if (!WriteImage(picture, &bw, &coded_size)) goto Error;
+  if !WriteImage(picture, &bw, &coded_size) { goto Error }
 
-  if (!WebPReportProgress(picture, 100, &percent)) goto UserAbort;
+  if !WebPReportProgress(picture, 100, &percent) { goto UserAbort }
 
 #if !defined(WEBP_DISABLE_STATS)
   // Save size.

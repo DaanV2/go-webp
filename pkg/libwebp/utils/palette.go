@@ -201,7 +201,7 @@ func PaletteSortMinimizeDeltas(/* const */ palette_sorted *uint32 , num_colors i
   predict := 0x00000000;
   var i, k int
   memcpy(palette, palette_sorted, num_colors * sizeof(*palette));
-  if (!PaletteHasNonMonotonousDeltas(palette_sorted, num_colors)) {return;}
+  if !PaletteHasNonMonotonousDeltas(palette_sorted, num_colors) { {return }}
   // Find greedily always the closest color of the predicted color to minimize
   // deltas in the palette. This reduces storage needs since the
   // palette is stored with delta encoding.
@@ -314,7 +314,7 @@ func PaletteSortModifiedZeng(/* const */ pic *WebPPicture, /*const*/ palette_in 
    var first, last uint32
   var num_sums uint32
   // TODO(vrabaud) check whether one color images should use palette or not.
-  if (num_colors <= 1) { return 1; }
+  if num_colors <= 1 { { return 1 } }
   // Build the co-occurrence matrix.
   cooccurrence = (*uint32)WebPSafeCalloc(num_colors * num_colors, sizeof(*cooccurrence));
   if (cooccurrence == nil) {
@@ -341,11 +341,11 @@ func PaletteSortModifiedZeng(/* const */ pic *WebPPicture, /*const*/ palette_in 
     best_sum.index = uint(0);
     best_sum.sum = uint(0);
     for i = 0, j = 0; i < num_colors; i++ {
-      if (i == remapping[0] || i == remapping[1]) continue;
+      if i == remapping[0] || i == remapping[1] { continue }
       sums[j].index = i;
       sums[j].sum = cooccurrence[i * num_colors + remapping[0]] +
                     cooccurrence[i * num_colors + remapping[1]];
-      if (sums[j].sum > best_sum.sum) best_sum = &sums[j];
+      if sums[j].sum > best_sum.sum { best_sum = &sums[j] }
       j++
     }
 
@@ -373,7 +373,7 @@ func PaletteSortModifiedZeng(/* const */ pic *WebPPicture, /*const*/ palette_in 
       best_sum = &sums[0];
       for i = 0; i < num_sums; i++ {
         sums[i].sum += cooccurrence[best_index * num_colors + sums[i].index];
-        if (sums[i].sum > best_sum.sum) best_sum = &sums[i];
+        if sums[i].sum > best_sum.sum { best_sum = &sums[i] }
       }
     }
   }

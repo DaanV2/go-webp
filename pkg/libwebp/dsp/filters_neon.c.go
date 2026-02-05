@@ -174,7 +174,7 @@ func HorizontalUnfilter_NEON(/* const */ prev *uint8, /*const*/ in *uint8, out *
   const uint8x16_t zero = vdupq_n_u8(0);
   uint8x16_t last;
   out[0] = in[0] + (prev == nil ? 0 : prev[0]);
-  if (width <= 1) return;
+  if width <= 1 { return }
   last = vsetq_lane_u8(out[0], zero, 0);
   for i = 1; i + 16 <= width; i += 16 {
     const uint8x16_t A0 = vld1q_u8(&in[i]);

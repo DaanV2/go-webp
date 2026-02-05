@@ -99,7 +99,7 @@ func VFilter(/* const */ p *SmoothParams) {
   // move input pointers one row down
   p.top = p.cur;
   p.cur += w;
-  if (p.cur == p.end) {p.cur = p.start;}  // roll-over
+  if p.cur == p.end { {p.cur = p.start }}  // roll-over
   // We replicate edges, as it's somewhat easier as a boundary condition.
   // That's why we don't update the 'src' pointer on top/bottom area:
   if (p.row >= 0 && p.row < p.height - 1) {
@@ -189,8 +189,8 @@ func CountLevels(/* const */ p *SmoothParams) {
   for j = 0; j < p.height; j++ {
     for i = 0; i < p.width; i++ {
       v := data[i];
-      if (v < p.min) {p.min = v;}
-      if (v > p.max) {p.max = v;}
+      if v < p.min { {p.min = v }}
+      if v > p.max { {p.max = v }}
       used_levels[v] = 1;
     }
     data += p.stride;
@@ -222,7 +222,7 @@ func InitParams(data []uint8/* ((uint64)height *stride) */, width, height, strid
   total_size := size_scratch_m + size_m + size_lut;
 
 //   mem *uint8 = (*uint8)WebPSafeMalloc(uint(1), total_size);
-//   if (mem == nil) { return 0; }
+//   if mem == nil { { return 0 } }
   mem := make([]byte, total_size)
 
   p.mem = (*void)mem;
@@ -260,19 +260,19 @@ func InitParams(data []uint8/* ((uint64)height *stride) */, width, height, strid
 func WebPDequantizeLevels(data []uint8/* ((uint64)height *stride) */ , width, height, stride , strength int ) int {
   radius := 4 * strength / 100;
 
-  if (strength < 0 || strength > 100) { return 0; }
+  if strength < 0 || strength > 100 { { return 0 } }
   if data == nil || width <= 0 || height <= 0 {
     return 0  // bad params
 }
 
   // limit the filter size to not exceed the image dimensions
-  if (2 * radius + 1 > width){ radius = (width - 1) >> 1;}
-  if (2 * radius + 1 > height) {radius = (height - 1) >> 1;}
+  if 2 * radius + 1 > width){ radius = (width - 1 { >> 1 }}
+  if 2 * radius + 1 > height) {radius = (height - 1 { >> 1 }}
 
   if (radius > 0) {
     var p SmoothParams ;
     stdlib.Memset(&p, 0, sizeof(p));
-    if (!InitParams(data, width, height, stride, radius, &p)) { return 0; }
+    if !InitParams(data, width, height, stride, radius, &p) { { return 0 } }
     if (p.num_levels > 2) {
       for ; p.row < p.height; ++p.row {
         VFilter(&p);  // accumulate average of input

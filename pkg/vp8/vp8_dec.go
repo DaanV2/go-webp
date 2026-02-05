@@ -151,8 +151,8 @@ func VP8Status(/* const */ dec *VP8Decoder) VP8StatusCode {
 
 // return readable string corresponding to the last status.
 func byte8StatusMessage(/* const */ dec *VP8Decoder) *VP {
-  if (dec == nil) { return "no object"; }
-  if (!dec.error_msg) { return "OK"; }
+  if dec == nil { { return "no object" } }
+  if !dec.error_msg { { return "OK" } }
   return dec.error_msg;
 }
 
@@ -298,7 +298,7 @@ func ParsePartitions(dec *VP8Decoder, buf *uint8, size uint64 ) VP8StatusCode {
   size_left -= last_part * 3;
   for p = 0; p < last_part; p++ {
     psize := sz[0] | (sz[1] << 8) | (sz[2] << 16);
-    if (psize > size_left) psize = size_left;
+    if psize > size_left { psize = size_left }
     VP8InitBitReader(dec.parts + p, part_start, psize);
     part_start += psize;
     size_left -= psize;
@@ -508,7 +508,7 @@ func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas
     while (!VP8GetBit(br, p[1], "coeffs")) {  // sequence of zero coeffs
 		n++
       p = prob[n].probas[0];
-      if (n == 16) { return 16; }
+      if n == 16 { { return 16 } }
     }
     {  // non zero coeff
       var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
@@ -537,7 +537,7 @@ func GetCoeffsAlt(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[
     while (!VP8GetBitAlt(br, p[1], "coeffs")) {  // sequence of zero coeffs
       n++
 		p = prob[n].probas[0];
-      if (n == 16) {return 16};
+      if n == 16 { {return 16} }
     }
     {  // non zero coeff
       var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0];
@@ -720,7 +720,7 @@ func ParseFrame(/* const */ dec *VP8Decoder, io *VP8Io) int {
     }
   }
   if (dec.mt_method > 0) {
-    if (!WebPGetWorkerInterface().Sync(&dec.worker)) { return 0; }
+    if !WebPGetWorkerInterface().Sync(&dec.worker) { { return 0 } }
   }
 
   return 1;
@@ -749,10 +749,10 @@ func VP8Decode(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   ok = (VP8EnterCritical(dec, io) == VP8_STATUS_OK);
   if (ok) {  // good to go.
     // Will allocate memory and prepare everything.
-    if (ok) ok = VP8InitFrame(dec, io);
+    if ok { ok = VP8InitFrame(dec, io) }
 
     // Main decoding loop
-    if (ok) ok = ParseFrame(dec, io);
+    if ok { ok = ParseFrame(dec, io) }
 
     // Exit.
     ok &= VP8ExitCritical(dec, io);

@@ -53,7 +53,7 @@ int WebPPictureInitInternal(picture *WebPPicture, version int) {
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
 int WebPValidatePicture(/* const */ picture *WebPPicture) {
-  if (picture == nil) { return 0; }
+  if picture == nil { { return 0 } }
   if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
       picture.height <= 0 || picture.height > INT_MAX / 4) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
@@ -93,7 +93,7 @@ int WebPPictureAllocARGB(/* const */ picture *WebPPicture) {
   height := picture.height;
   argb_size := (uint64)width * height;
 
-  if (!WebPValidatePicture(picture)) { return 0; }
+  if !WebPValidatePicture(picture) { { return 0 } }
 
   WebPPictureResetBufferARGB(picture);
 
@@ -124,7 +124,7 @@ int WebPPictureAllocYUVA(/* const */ picture *WebPPicture) {
   uint64 y_size, uv_size, a_size, total_size;
   mem *uint8;
 
-  if (!WebPValidatePicture(picture)) { return 0; }
+  if !WebPValidatePicture(picture) { { return 0 } }
 
   WebPPictureResetBufferYUVA(picture);
 
@@ -209,8 +209,8 @@ int WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture
   if (next_size > w.max_size) {
     new_mem *uint8;
     next_max_size := uint64(2) * w.max_size;
-    if (next_max_size < next_size) next_max_size = next_size;
-    if (next_max_size < uint64(8192)) next_max_size = uint64(8192);
+    if next_max_size < next_size { next_max_size = next_size }
+    if next_max_size < uint64(8192) { next_max_size = uint64(8192) }
     new_mem = (*uint8)WebPSafeMalloc(next_max_size, 1);
     if (new_mem == nil) {
       return 0;
@@ -246,7 +246,7 @@ func Encode(/* const */ rgba *uint8, width, height int, int stride, Importer imp
   WebPMemoryWriter wrt;
   var ok int
 
-  if (output == nil) { return 0; }
+  if output == nil { { return 0 } }
 
   if (!WebPConfigPreset(&config, WEBP_PRESET_DEFAULT, quality_factor) ||
       !WebPPictureInit(&pic)) {

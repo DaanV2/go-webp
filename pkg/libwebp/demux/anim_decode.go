@@ -88,7 +88,7 @@ func WebPAnimDecoder( /* const */ webp_data *WebPData /* const */, dec_options *
 	// Note: calloc() so that the pointer members are initialized to nil.
 	dec = &WebPAnimDecoder{}
 	//   dec = (*WebPAnimDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec))
-	//   if (dec == nil) {goto Error;}
+	//   if dec == nil { {goto Error }}
 
 	if dec_options != nil {
 		options = *dec_options
@@ -113,11 +113,11 @@ func WebPAnimDecoder( /* const */ webp_data *WebPData /* const */, dec_options *
 	// Note: calloc() because we fill frame with zeroes as well.
 	dec.curr_frame = make([]uint8, dec.info.canvas_width*dec.info.canvas_height*NUM_CHANNELS)
 	//   dec.curr_frame = (*uint8)WebPSafeCalloc(dec.info.canvas_width * NUM_CHANNELS, dec.info.canvas_height);
-	// if (dec.curr_frame == nil) {goto Error;}
+	// if dec.curr_frame == nil { {goto Error }}
 
 	dec.prev_frame_disposed = make([]uint8, dec.info.canvas_width*dec.info.canvas_height*NUM_CHANNELS)
 	//   dec.prev_frame_disposed = (*uint8)WebPSafeCalloc(dec.info.canvas_width * NUM_CHANNELS, dec.info.canvas_height);
-	//   if (dec.prev_frame_disposed == nil) goto Error;
+	//   if dec.prev_frame_disposed == nil { goto Error }
 
 	WebPAnimDecoderReset(dec)
 	return dec
@@ -144,7 +144,7 @@ func IsFullFrame(width, height, canvas_width, canvas_height int) int {
 func ZeroFillCanvas(buf []uint8, canvas_width uint32, canvas_height uint32) bool {
 	// size = uint64(canvas_width * canvas_height * NUM_CHANNELS * sizeof(*buf))
 
-	// if (!CheckSizeOverflow(size)) { return 0; }
+	// if !CheckSizeOverflow(size) { { return 0 } }
 
 	//   stdlib.Memset(buf, 0, size);
 	stdlib.Memset2(buf, 0)
@@ -164,7 +164,7 @@ func ZeroFillFrameRect(buf *uint8, buf_stride, x_offset, y_offset, width, height
 // Copy width * height pixels from 'src' to 'dst'.
 func CopyCanvas( /* const */ src *uint8, dst *uint8, width, height uint32) int {
 	size := width * height * NUM_CHANNELS
-	//   if (!CheckSizeOverflow(size)) { return 0; }
+	//   if !CheckSizeOverflow(size) { { return 0 } }
 	assert.Assert(src != nil && dst != nil)
 	stdlib.MemCpy(dst, src, size)
 	return 1

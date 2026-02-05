@@ -329,14 +329,14 @@ func VectorMismatch_SSE2(/* const */ array *uint321, /*const*/ array *uint322, i
           _mm_loadu_si128((/* const */ __*m128i)&array1[match_len + 4]);
       const __m128i B1 =
           _mm_loadu_si128((/* const */ __*m128i)&array2[match_len + 4]);
-      if (_mm_movemask_epi8(cmpA) != 0xffff) break;
+      if _mm_movemask_epi8(cmpA) != 0xffff { break }
       match_len += 4;
 
       {
         const __m128i cmpB = _mm_cmpeq_epi32(B0, B1);
         A0 = _mm_loadu_si128((/* const */ __*m128i)&array1[match_len + 4]);
         A1 = _mm_loadu_si128((/* const */ __*m128i)&array2[match_len + 4]);
-        if (_mm_movemask_epi8(cmpB) != 0xffff) break;
+        if _mm_movemask_epi8(cmpB) != 0xffff { break }
         match_len += 4;
       }
     } while (match_len + 12 < length);

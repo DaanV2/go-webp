@@ -50,7 +50,7 @@ func VP8SetHistogramData(/* const */ int distribution[MAX_COEFF_THRESH + 1], /*c
   for k = 0; k <= MAX_COEFF_THRESH; k++ {
     value := distribution[k];
     if (value > 0) {
-      if (value > max_value) max_value = value;
+      if value > max_value { max_value = value }
       last_non_zero = k;
     }
   }
@@ -309,8 +309,8 @@ func IntraChromaPreds_C(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left *
   TrueMotion(C8TM8 + dst, left, top, 8);
   // V block
   dst += 8;
-  if (top != nil) top += 8;
-  if (left != nil) left += 16;
+  if top != nil { top += 8 }
+  if left != nil { left += 16 }
   DCMode(C8DC8 + dst, left, top, 8, 8, 4);
   VerticalPred(C8VE8 + dst, top, 8);
   HorizontalPred(C8HE8 + dst, left, 8);
@@ -647,11 +647,11 @@ func QuantizeBlock_C(int16 in[16], int16 out[16], /*const*/ WEBP_RESTRICT const 
       iQ := mtx.iq[j];
       B := mtx.bias[j];
       level := QUANTDIV(coeff, iQ, B);
-      if (level > MAX_LEVEL) level = MAX_LEVEL;
-      if (sign) level = -level;
+      if level > MAX_LEVEL { level = MAX_LEVEL }
+      if sign { level = -level }
       in[j] = level * (int)Q;
       out[n] = level;
-      if (level) last = n;
+      if level { last = n }
     } else {
       out[n] = 0;
       in[j] = 0;

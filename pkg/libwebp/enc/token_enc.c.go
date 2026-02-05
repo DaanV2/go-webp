@@ -222,7 +222,7 @@ int VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const
     }
     p = next;
   }
-  if (final_pass) b.pages = nil;
+  if final_pass { b.pages = nil }
   return 1;
 }
 

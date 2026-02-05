@@ -184,7 +184,7 @@ func ExpandMatrix(/* const */ m *VP8Matrix, int type) int {
 }
 
 func CheckLambdaValue(/* const */ v *int) {
-  if (*v < 1) *v = 1;
+  if *v < 1 { *v = 1 }
 }
 
 func SetupMatrices(enc *VP8Encoder) {
@@ -397,7 +397,7 @@ func VP8SetSegmentParams(/* const */ enc *VP8Encoder, float quality) {
 
   SetupFilterStrength(enc);  // initialize segments' filtering, eventually
 
-  if (num_segments > 1) SimplifySegments(enc);
+  if num_segments > 1 { SimplifySegments(enc) }
 
   SetupMatrices(enc);  // finalize quantization matrices
 }
@@ -586,8 +586,8 @@ func TrellisQuantizeBlock(/* const */ WEBP_RESTRICT const enc *VP8Encoder, int16
     coeff0 := (sign ? -in[j] : in[j]) + mtx.sharpen[j];
     level int0 = QUANTDIV(coeff0, iQ, B);
     thresh_level := QUANTDIV(coeff0, iQ, BIAS(0x80));
-    if (thresh_level > MAX_LEVEL) thresh_level = MAX_LEVEL;
-    if (level0 > MAX_LEVEL) level0 = MAX_LEVEL;
+    if thresh_level > MAX_LEVEL { thresh_level = MAX_LEVEL }
+    if level0 > MAX_LEVEL { level0 = MAX_LEVEL }
 
     {  // Swap current and previous score states
       var tmp *ScoreState = ss_cur;
@@ -793,7 +793,7 @@ const DSCALE = 1  // storage descaling, needed to make the error fit int8
 func QuantizeSingle(WEBP_RESTRICT const v *int16, /*const*/ WEBP_RESTRICT const mtx *VP8Matrix) int {
   V := *v;
   sign := (V < 0);
-  if (sign) V = -V;
+  if sign { V = -V }
   if (V > (int)mtx.zthresh[0]) {
     qV := QUANTDIV(V, mtx.iq[0], mtx.bias[0]) * mtx.q[0];
     err := (V - qV);
@@ -866,7 +866,7 @@ func ReconstructUV(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const r
   for n = 0; n < 8; n += 2 {
     VP8FTransform2(src + VP8ScanUV[n], ref + VP8ScanUV[n], tmp[n]);
   }
-  if (it.top_derr != nil) CorrectDCValues(it, &dqm.uv, tmp, rd);
+  if it.top_derr != nil { CorrectDCValues(it, &dqm.uv, tmp, rd) }
 
   if (DO_TRELLIS_UV && it.do_trellis) {
     int ch, x, y;
@@ -905,7 +905,7 @@ func StoreMaxDelta(/* const */ dqm *VP8SegmentInfo, /*const*/ int16 DCs[16]) {
   v2 := abs(DCs[4]);
   max_v := (v1 > v0) ? v1 : v0;
   max_v = (v2 > max_v) ? v2 : max_v;
-  if (max_v > dqm.max_edge) dqm.max_edge = max_v;
+  if max_v > dqm.max_edge { dqm.max_edge = max_v }
 }
 
 func SwapModeScore(*VP8ModeScore* a, *VP8ModeScore* b) {
@@ -1046,7 +1046,7 @@ func PickBestIntra4(WEBP_RESTRICT const it *VP8EncIterator, WEBP_RESTRICT const 
 
       // early-out check
       SetRDScore(lambda, &rd_tmp);
-      if (best_mode >= 0 && rd_tmp.score >= rd_i4.score) continue;
+      if best_mode >= 0 && rd_tmp.score >= rd_i4.score { continue }
 
       // finish computing score
       rd_tmp.R += VP8GetCostLuma4(it, tmp_levels);

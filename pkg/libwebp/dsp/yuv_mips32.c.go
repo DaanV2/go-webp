@@ -46,14 +46,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
       dst[R] = r;                                                            \
       dst[G] = g;                                                            \
       dst[B] = b;                                                            \
-      if (A) dst[A] = 0xff;                                                  \
+      if A { dst[A] = 0xff }                                                  \
       r = VP8Clip8(temp0 + temp1);                                           \
       g = VP8Clip8(temp0 - temp2);                                           \
       b = VP8Clip8(temp0 + temp4);                                           \
       dst[R + XSTEP] = r;                                                    \
       dst[G + XSTEP] = g;                                                    \
       dst[B + XSTEP] = b;                                                    \
-      if (A) dst[A + XSTEP] = 0xff;                                          \
+      if A { dst[A + XSTEP] = 0xff }                                          \
       y += 2;                                                                \
       u++                                                                   \
       v++                                                                   \
@@ -75,7 +75,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
       dst[R] = r;                                                            \
       dst[G] = g;                                                            \
       dst[B] = b;                                                            \
-      if (A) dst[A] = 0xff;                                                  \
+      if A { dst[A] = 0xff }                                                  \
     }                                                                        \
   }
 

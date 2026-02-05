@@ -671,8 +671,8 @@ func IntraChromaPreds_MSA(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT left
   TrueMotion8x8(C8TM8 + dst, left, top);
   // V block
   dst += 8;
-  if (top != nil) top += 8;
-  if (left != nil) left += 16;
+  if top != nil { top += 8 }
+  if left != nil { left += 16 }
   DCMode8x8(C8DC8 + dst, left, top);
   VerticalPred8x8(C8VE8 + dst, top);
   HorizontalPred8x8(C8HE8 + dst, left);

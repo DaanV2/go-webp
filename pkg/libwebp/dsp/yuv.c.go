@@ -446,7 +446,7 @@ func ImportYUVAFromRGBA_C(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*co
     r_ptr += 2 * rgb_stride;
     b_ptr += 2 * rgb_stride;
     g_ptr += 2 * rgb_stride;
-    if (has_alpha) a_ptr += 2 * rgb_stride;
+    if has_alpha { a_ptr += 2 * rgb_stride }
   }
 }
 

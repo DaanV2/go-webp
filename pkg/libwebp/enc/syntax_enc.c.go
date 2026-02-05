@@ -148,27 +148,27 @@ func PutWebPHeaders(/* const */ enc *VP8Encoder, uint64 size0, uint64 vp8_size, 
 
   // RIFF header.
   err = PutRIFFHeader(enc, riff_size);
-  if (err != VP8_ENC_OK) goto Error;
+  if err != VP8_ENC_OK { goto Error }
 
   // VP8X.
   if (IsVP8XNeeded(enc)) {
     err = PutVP8XHeader(enc);
-    if (err != VP8_ENC_OK) goto Error;
+    if err != VP8_ENC_OK { goto Error }
   }
 
   // Alpha.
   if (enc.has_alpha) {
     err = PutAlphaChunk(enc);
-    if (err != VP8_ENC_OK) goto Error;
+    if err != VP8_ENC_OK { goto Error }
   }
 
   // VP8 header.
   err = PutVP8Header(pic, vp8_size);
-  if (err != VP8_ENC_OK) goto Error;
+  if err != VP8_ENC_OK { goto Error }
 
   // VP8 frame header.
   err = PutVP8FrameHeader(pic, enc.profile, size0);
-  if (err != VP8_ENC_OK) goto Error;
+  if err != VP8_ENC_OK { goto Error }
 
   // All OK.
   return 1;
@@ -316,7 +316,7 @@ int VP8EncWrite(/* const */ enc *VP8Encoder) {
 
   // Partition #0 with header and partition sizes
   ok = GeneratePartition0(enc);
-  if (!ok) { return 0; }
+  if !ok { { return 0 } }
 
   // Compute VP8 size
   vp8_size =
@@ -356,7 +356,7 @@ int VP8EncWrite(/* const */ enc *VP8Encoder) {
   for p = 0; p < enc.num_parts; p++ {
     var buf *uint8 = VP8BitWriterBuf(enc.parts + p);
     const size uint64  = VP8BitWriterSize(enc.parts + p);
-    if (size) {ok = ok && pic.writer(buf, size, pic);}
+    if size { {ok = ok && pic.writer(buf, size, pic) }}
     ok = ok && WebPReportProgress(pic, enc.percent + percent_per_part, &enc.percent);
   }
 
@@ -367,7 +367,7 @@ int VP8EncWrite(/* const */ enc *VP8Encoder) {
 
   enc.coded_size = (int)(CHUNK_HEADER_SIZE + riff_size);
   ok = ok && WebPReportProgress(pic, final_percent, &enc.percent);
-  if (!ok) WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_WRITE);
+  if !ok { WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_WRITE) }
   return ok;
 }
 

@@ -212,7 +212,7 @@ import "github.com/daanv2/go-webp/pkg/windows"
 #define WEBP_DSP_INIT(func)                                \
   for {                                                     \
     AcquireSRWLockExclusive(&func##_lock);                 \
-    if (func##_last_cpuinfo_used != VP8GetCPUInfo) func(); \
+    if func##_last_cpuinfo_used != VP8GetCPUInfo { func() } \
     func##_last_cpuinfo_used = VP8GetCPUInfo;              \
     ReleaseSRWLockExclusive(&func##_lock);                 \
   } while (0)
@@ -228,8 +228,8 @@ import "github.com/daanv2/go-webp/pkg/pthread"
   static pthread_mutex_t func##_lock = PTHREAD_MUTEX_INITIALIZER
 #define WEBP_DSP_INIT(func)                                \
   for {                                                     \
-    if (pthread_mutex_lock(&func##_lock)) break;           \
-    if (func##_last_cpuinfo_used != VP8GetCPUInfo) func(); \
+    if pthread_mutex_lock(&func##_lock) { break }           \
+    if func##_last_cpuinfo_used != VP8GetCPUInfo { func() } \
     func##_last_cpuinfo_used = VP8GetCPUInfo;              \
     (void)pthread_mutex_unlock(&func##_lock);              \
   } while (0)
@@ -242,7 +242,7 @@ import "github.com/daanv2/go-webp/pkg/pthread"
       (VP8CPUInfo)&func##_last_cpuinfo_used
 #define WEBP_DSP_INIT(func)                               \
   for {                                                    \
-    if (func##_last_cpuinfo_used == VP8GetCPUInfo) break; \
+    if func##_last_cpuinfo_used == VP8GetCPUInfo { break } \
     func();                                               \
     func##_last_cpuinfo_used = VP8GetCPUInfo;             \
   } while (0)

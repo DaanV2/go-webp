@@ -225,7 +225,7 @@ func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, int y_sta
         const VP8LPredictorAddSubFunc pred_func =
             VP8LPredictorsAdd[((*pred_mode_src++) >> 8) & 0xf];
         x_end := (x & ~mask) + tile_width;
-        if (x_end > width) x_end = width;
+        if x_end > width { x_end = width }
         pred_func(in + x, out + x - width, x_end - x, out + x);
         x = x_end;
       }
@@ -310,7 +310,7 @@ func ColorSpaceInverseTransform_C(/* const */ transform *VP8LTransform, int y_st
       dst += remaining_width;
     }
     y++
-    if ((y & mask) == 0) pred_row += tiles_per_row;
+    if (y & mask) == 0 { pred_row += tiles_per_row }
   }
 }
 
@@ -348,7 +348,7 @@ STATIC_DECL func FUNC_NAME(/* const */ transform *VP8LTransform,               \
         /* 'pixels_per_byte' increments of x. Fortunately, pixels_per_byte */  \
         /* is a power of 2, so can just use a mask for that, instead of    */  \
         /* decrementing a counter.                                         */  \
-        if ((x & count_mask) == 0) packed_pixels = GET_INDEX(*src++);          \
+        if (x & count_mask) == 0 { packed_pixels = GET_INDEX(*src++) }          \
         *dst++ = GET_VALUE(color_map[packed_pixels & bit_mask]);               \
         packed_pixels >>= bits_per_pixel;                                      \
       }                                                                        \

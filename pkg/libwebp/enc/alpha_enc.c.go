@@ -58,17 +58,17 @@ static int EncodeLossless(/* const */ data *uint8, width, height int, int effort
   WebPConfig config;
   WebPPicture picture;
 
-  if (!WebPPictureInit(&picture)) { return 0; }
+  if !WebPPictureInit(&picture) { { return 0 } }
   picture.width = width;
   picture.height = height;
   picture.use_argb = 1;
   picture.stats = stats;
-  if (!WebPPictureAlloc(&picture)) { return 0; }
+  if !WebPPictureAlloc(&picture) { { return 0 } }
 
   // Transfer the alpha values to the green channel.
   WebPDispatchAlphaToGreen(data, width, picture.width, picture.height, picture.argb, picture.argb_stride);
 
-  if (!WebPConfigInit(&config)) { return 0; }
+  if !WebPConfigInit(&config) { { return 0 } }
   config.lossless = 1;
   // Enable exact, or it would alter RGB values of transparent alpha, which is
   // normally OK but not here since we are not encoding the input image but  an
@@ -157,9 +157,9 @@ static int EncodeAlphaInternal(/* const */ data *uint8, width, height, method, f
 
   // Emit final result.
   header = method | (filter << 2);
-  if (reduce_levels) header |= ALPHA_PREPROCESSED_LEVELS << 4;
+  if reduce_levels { header |= ALPHA_PREPROCESSED_LEVELS << 4 }
 
-  if (!VP8BitWriterInit(&result.bw, ALPHA_HEADER_LEN + output_size)) ok = 0;
+  if !VP8BitWriterInit(&result.bw, ALPHA_HEADER_LEN + output_size) { ok = 0 }
   ok = ok && VP8BitWriterAppend(&result.bw, &header, ALPHA_HEADER_LEN);
   ok = ok && VP8BitWriterAppend(&result.bw, output, output_size);
 
@@ -231,7 +231,7 @@ func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_siz
 
   if (try_map != FILTER_TRY_NONE) {
     filtered_alpha *uint8 = (*uint8)WebPSafeMalloc(uint64(1), data_size);
-    if (filtered_alpha == nil) { return 0; }
+    if filtered_alpha == nil { { return 0 } }
 
     for filter = WEBP_FILTER_NONE; ok && try_map; ++filter, try_map >>= 1 {
       if (try_map & 1) {

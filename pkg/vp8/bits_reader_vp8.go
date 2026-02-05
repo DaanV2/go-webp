@@ -125,7 +125,7 @@ func VP8LoadNewBytes(/* const */ br *VP8BitReader) {
 	// BITS > 32
 	}else{   // constants.WORDS_BIGENDIAN
 		bits = (bit_t)in_bits;
-		if (BITS != 8 * sizeof(bit_t)) {bits >>= (8 * sizeof(bit_t) - BITS);}
+		if BITS != 8 * sizeof(bit_t)) {bits >>= (8 * sizeof(bit_t { - BITS) }}
 	}
     br.value = bits | (br.value << BITS);
     br.bits += BITS;

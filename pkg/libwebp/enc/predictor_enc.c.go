@@ -71,8 +71,8 @@ static int64 PredictionCostSpatialHistogram(
     retval += (int64)VP8LCombinedShannonEntropy(&tile[i * 256], &accumulated[i * 256]);
   }
   // Favor keeping the areas locally similar.
-  if (mode == left_mode) retval -= kSpatialPredictorBias;
-  if (mode == above_mode) retval -= kSpatialPredictorBias;
+  if mode == left_mode { retval -= kSpatialPredictorBias }
+  if mode == above_mode { retval -= kSpatialPredictorBias }
   return retval;
 }
 
@@ -135,7 +135,7 @@ func AddGreenToBlueAndRed(argb uint32) uint32 {
 func MaxDiffsForRow(int width, int stride, /*const*/ argb *uint32, /*const*/ max_diffs *uint8, int used_subtract_green) {
   uint32 current, up, down, left, right;
   var x int
-  if (width <= 2) return;
+  if width <= 2 { return }
   current = argb[0];
   right = argb[1];
   if (used_subtract_green) {
@@ -285,7 +285,7 @@ static  func GetResidual(
         // leftmost pixel of current_row, the corresponding change must be
         // applied
         // to upper_row as well where top-right context is being read from.
-        if (x == 0 && y != 0) upper_row[width] = current_row[0];
+        if x == 0 && y != 0 { upper_row[width] = current_row[0] }
       }
       out[x - x_start] = residual;
     }
@@ -467,7 +467,7 @@ func CopyImageWithPrediction(width, height int, bits int, /*const*/ modes *uint3
         mode :=
             (modes[(y >> bits) * tiles_per_row + (x >> bits)] >> 8) & 0xff;
         x_end := x + (1 << bits);
-        if (x_end > width) x_end = width;
+        if x_end > width { x_end = width }
         GetResidual(width, height, upper_row, current_row, current_max_diffs, mode, x, x_end, y, max_quantization, exact, used_subtract_green, argb + y * width + x);
         x = x_end;
       }
@@ -501,7 +501,7 @@ func VP8LOptimizeSampling(/* const */ image *uint32, int full_width, int full_he
       break;
     }
   }
-  if (best_bits == bits) return;
+  if best_bits == bits { return }
 
   // Check columns.
   while (best_bits > bits) {
@@ -523,7 +523,7 @@ func VP8LOptimizeSampling(/* const */ image *uint32, int full_width, int full_he
     }
     --best_bits;
   }
-  if (best_bits == bits) return;
+  if best_bits == bits { return }
 
   // Subsample the image.
   old_width = width;
@@ -599,7 +599,7 @@ func GetBestPredictorsAndSubSampling(
 
   *best_bits = 0;
   *best_mode = nil;
-  if (raw_data == nil) return;
+  if raw_data == nil { return }
 
   while (tile_y < tiles_per_col) {
     ComputeResidualsForTile(width, height, tile_x, tile_y, min_bits, update_up_to_index, all_argb, argb_scratch, argb, max_quantization, exact, used_subtract_green);
@@ -612,7 +612,7 @@ func GetBestPredictorsAndSubSampling(
       super_tiles_per_row :=
           VP8LSubSampleSize(width, min_bits + subsampling_index);
       GetBestPredictorForTile(all_argb, subsampling_index, super_tile_x, super_tile_y, super_tiles_per_row, all_accumulated_argb, all_modes, all_pred_histos);
-      if (subsampling_index == max_subsampling_index) break;
+      if subsampling_index == max_subsampling_index { break }
 
       // Update the following super-tile histogram if it has not been updated
       // yet.
@@ -729,7 +729,7 @@ int VP8LResidualImage(width, height int, int min_bits, int max_bits, low_effort 
       sum_num_pixels += num_pixels[bits];
     }
     modes_raw = (*uint32)WebPSafeMalloc(sum_num_pixels, sizeof(*modes_raw));
-    if (modes_raw == nil) { return 0; }
+    if modes_raw == nil { { return 0 } }
     // Have modes point to the right global memory modes_raw.
     modes[min_bits] = modes_raw;
     for bits = min_bits + 1; bits <= max_bits; bits++ {

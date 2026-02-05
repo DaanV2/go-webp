@@ -210,10 +210,10 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
     extra_size := (new_size + CHUNK_SIZE - 1) & ~(CHUNK_SIZE - 1);
 
 	// var new_buf *uint8 = (*uint8)WebPSafeMalloc(extra_size, sizeof(*new_buf));
-    // if (new_buf == nil) { return 0; }
+    // if new_buf == nil { { return 0 } }
 	new_buf := make([]uint8, extra_size)
 
-	if (old_base != nil) {stdlib.MemCpy(new_buf, old_base, current_size);}
+	if old_base != nil { {stdlib.MemCpy(new_buf, old_base, current_size) }}
 
     mem.buf = new_buf;
     mem.buf_size = (uint64)extra_size;
@@ -275,13 +275,13 @@ func CheckMemBufferMode(/* const */ mem *MemBuffer, MemBufferMode expected) int 
   idec.state = STATE_DONE;
   if (options != nil && options.flip) {
     const VP8StatusCode status = WebPFlipBuffer(output);
-    if (status != VP8_STATUS_OK) { return status; }
+    if status != VP8_STATUS_OK { { return status } }
   }
   if (idec.final_output != nil) {
     const VP8StatusCode status = WebPCopyDecBufferPixels(
         output, idec.final_output);  // do the slow-copy
     WebPFreeDecBuffer(&idec.output);
-    if (status != VP8_STATUS_OK) { return status; }
+    if status != VP8_STATUS_OK { { return status } }
     *output = *idec.final_output;
     idec.final_output = nil;
   }
@@ -694,7 +694,7 @@ WebPIDecode *WebPIDecoder(/* const */ *uint8  data, data_size uint64, config *We
 }
 
 func WebPIDelete(idec *WebPIDecoder) {
-  if (idec == nil) return;
+  if idec == nil { return }
   if (idec.dec != nil) {
     if (!idec.is_lossless) {
       if (idec.state == STATE_VP8_DATA) {
@@ -717,7 +717,7 @@ WebPINewRGB *WebPIDecoder(WEBP_CSP_MODE csp, *uint8
   is_external_memory := (output_buffer != nil) ? 1 : 0;
   idec *WebPIDecoder;
 
-  if (csp >= MODE_YUV) { return nil; }
+  if csp >= MODE_YUV { { return nil } }
   if (is_external_memory == 0) {  // Overwrite parameters to sane values.
     output_buffer = nil;
     output_buffer_size = 0;
@@ -728,7 +728,7 @@ WebPINewRGB *WebPIDecoder(WEBP_CSP_MODE csp, *uint8
     }
   }
   idec = WebPINewDecoder(nil);
-  if (idec == nil) { return nil; }
+  if idec == nil { { return nil } }
   idec.output.colorspace = csp;
   idec.output.is_external_memory = is_external_memory;
   idec.output.u.RGBA.rgba = output_buffer;
@@ -754,17 +754,17 @@ WebPINewYUVA *WebPIDecoder(*uint8  luma, uint64 luma_size, int luma_stride, u *u
     luma_stride = u_stride = v_stride = a_stride = 0;
     colorspace = MODE_YUVA;
   } else {  // A luma buffer was passed. Validate the other parameters.
-    if (u == nil || v == nil) { return nil; }
-    if (luma_size == 0 || u_size == 0 || v_size == 0) { return nil; }
-    if (luma_stride == 0 || u_stride == 0 || v_stride == 0) { return nil; }
+    if u == nil || v == nil { { return nil } }
+    if luma_size == 0 || u_size == 0 || v_size == 0 { { return nil } }
+    if luma_stride == 0 || u_stride == 0 || v_stride == 0 { { return nil } }
     if (a != nil) {
-      if (a_size == 0 || a_stride == 0) { return nil; }
+      if a_size == 0 || a_stride == 0 { { return nil } }
     }
     colorspace = (a == nil) ? MODE_YUV : MODE_YUVA;
   }
 
   idec = WebPINewDecoder(nil);
-  if (idec == nil) { return nil; }
+  if idec == nil { { return nil } }
 
   idec.output.colorspace = colorspace;
   idec.output.is_external_memory = is_external_memory;
@@ -857,49 +857,49 @@ static const GetOutputBuffer *WebPDecBuffer(/* const */ idec *WebPIDecoder) {
 
 const WebPIDecodedArea *WebPDecBuffer(/* const */ idec *WebPIDecoder, left *int, top *int, width *int, height *int) {
   var src *WebPDecBuffer = GetOutputBuffer(idec);
-  if (left != nil) *left = 0;
-  if (top != nil) *top = 0;
+  if left != nil { *left = 0 }
+  if top != nil { *top = 0 }
   if (src != nil) {
-    if (width != nil) *width = src.width;
-    if (height != nil) *height = idec.params.last_y;
+    if width != nil { *width = src.width }
+    if height != nil { *height = idec.params.last_y }
   } else {
-    if (width != nil) *width = 0;
-    if (height != nil) *height = 0;
+    if width != nil { *width = 0 }
+    if height != nil { *height = 0 }
   }
   return src;
 }
 
  WebPIDecGetRGB *uint8(/* const */ idec *WebPIDecoder, last_y *int, width *int, height *int, stride *int) {
   var src *WebPDecBuffer = GetOutputBuffer(idec);
-  if (src == nil) { return nil; }
+  if src == nil { { return nil } }
   if (src.colorspace >= MODE_YUV) {
     return nil;
   }
 
-  if (last_y != nil) *last_y = idec.params.last_y;
-  if (width != nil) *width = src.width;
-  if (height != nil) *height = src.height;
-  if (stride != nil) *stride = src.u.RGBA.stride;
+  if last_y != nil { *last_y = idec.params.last_y }
+  if width != nil { *width = src.width }
+  if height != nil { *height = src.height }
+  if stride != nil { *stride = src.u.RGBA.stride }
 
   return src.u.RGBA.rgba;
 }
 
  WebPIDecGetYUVA *uint8(/* const */ idec *WebPIDecoder, last_y *int, *uint8* u, *uint8* v, *uint8* a, width *int, height *int, stride *int, uv_stride *int, a_stride *int) {
   var src *WebPDecBuffer = GetOutputBuffer(idec);
-  if (src == nil) { return nil; }
+  if src == nil { { return nil } }
   if (src.colorspace < MODE_YUV) {
     return nil;
   }
 
-  if (last_y != nil) *last_y = idec.params.last_y;
-  if (u != nil) *u = src.u.YUVA.u;
-  if (v != nil) *v = src.u.YUVA.v;
-  if (a != nil) *a = src.u.YUVA.a;
-  if (width != nil) *width = src.width;
-  if (height != nil) *height = src.height;
-  if (stride != nil) *stride = src.u.YUVA.y_stride;
-  if (uv_stride != nil) *uv_stride = src.u.YUVA.u_stride;
-  if (a_stride != nil) *a_stride = src.u.YUVA.a_stride;
+  if last_y != nil { *last_y = idec.params.last_y }
+  if u != nil { *u = src.u.YUVA.u }
+  if v != nil { *v = src.u.YUVA.v }
+  if a != nil { *a = src.u.YUVA.a }
+  if width != nil { *width = src.width }
+  if height != nil { *height = src.height }
+  if stride != nil { *stride = src.u.YUVA.y_stride }
+  if uv_stride != nil { *uv_stride = src.u.YUVA.u_stride }
+  if a_stride != nil { *a_stride = src.u.YUVA.a_stride }
 
   return src.u.YUVA.y;
 }

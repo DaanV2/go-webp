@@ -265,10 +265,10 @@ func HasAlpha8b_SSE2(/* const */ src *uint8, int length) int {
     const __m128i v = _mm_loadu_si128((/* const */ __*m128i)(src + i));
     const __m128i bits = _mm_cmpeq_epi8(v, all_0xff);
     mask := _mm_movemask_epi8(bits);
-    if (mask != 0xffff) { return 1; }
+    if mask != 0xffff { { return 1 } }
   }
   for ; i < length; i++ {
-    if (src[i] != 0xff) { return 1; }
+    if src[i] != 0xff { { return 1 } }
   }
   return 0;
 }
@@ -295,7 +295,7 @@ func HasAlpha32b_SSE2(/* const */ src *uint8, int length) int {
     const __m128i d = _mm_packus_epi16(c0, c1);
     const __m128i bits = _mm_cmpeq_epi8(d, all_0xff);
     mask := _mm_movemask_epi8(bits);
-    if (mask != 0xffff) { return 1; }
+    if mask != 0xffff { { return 1 } }
   }
   for ; i + 32 <= length; i += 32 {
     const __m128i a0 = _mm_loadu_si128((/* const */ __*m128i)(src + i + 0));
@@ -306,10 +306,10 @@ func HasAlpha32b_SSE2(/* const */ src *uint8, int length) int {
     const __m128i d = _mm_packus_epi16(c, c);
     const __m128i bits = _mm_cmpeq_epi8(d, all_0xff);
     mask := _mm_movemask_epi8(bits);
-    if (mask != 0xffff) { return 1; }
+    if mask != 0xffff { { return 1 } }
   }
   for ; i <= length; i += 4 {
-    if (src[i] != 0xff) { return 1; }
+    if src[i] != 0xff { { return 1 } }
   }
   return 0;
 }
@@ -333,7 +333,7 @@ func AlphaReplace_SSE2(src *uint32, int length, color uint32) {
     _mm_storeu_si128((__*m128i)(src + i + 4), _mm_or_si128(d1, e1));
   }
   for ; i < length; i++ {
-    if ((src[i] >> 24) == 0) src[i] = color;
+    if (src[i] >> 24) == 0 { src[i] = color }
   }
 }
 
@@ -365,7 +365,7 @@ func MultARGBRow_SSE2(/* const */ ptr *uint32, int width, int inverse) {
     }
   }
   width -= x;
-  if (width > 0) WebPMultARGBRow_C(ptr + x, width, inverse);
+  if width > 0 { WebPMultARGBRow_C(ptr + x, width, inverse) }
 }
 
 func MultRow_SSE2(WEBP_RESTRICT const ptr *uint8, /*const*/ WEBP_RESTRICT const alpha *uint8, int width, int inverse) {
@@ -387,7 +387,7 @@ func MultRow_SSE2(WEBP_RESTRICT const ptr *uint8, /*const*/ WEBP_RESTRICT const 
     }
   }
   width -= x;
-  if (width > 0) WebPMultRow_C(ptr + x, alpha + x, width, inverse);
+  if width > 0 { WebPMultRow_C(ptr + x, alpha + x, width, inverse) }
 }
 
 //------------------------------------------------------------------------------

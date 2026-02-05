@@ -62,7 +62,7 @@ int VP8LDistanceToPlaneCode(int xsize, int dist) {
 static  int FindMatchLength(/* const */ array *uint321, /*const*/ array *uint322, int best_len_match, int max_limit) {
   // Before 'expensive' linear match, check if the two arrays match at the
   // current best length index.
-  if (array1[best_len_match] != array2[best_len_match]) { return 0; }
+  if array1[best_len_match] != array2[best_len_match] { { return 0 } }
 
   return VP8LVectorMismatch(array1, array2, max_limit);
 }
@@ -107,8 +107,8 @@ func BackwardRefsSwap(/* const */ refs *VP8LBackwardRefs1, /*const*/ refs *VP8LB
   const VP8LBackwardRefs tmp = *refs1;
   *refs1 = *refs2;
   *refs2 = tmp;
-  if (point_to_refs2) refs1.tail = &refs1.refs;
-  if (point_to_refs1) refs2.tail = &refs2.refs;
+  if point_to_refs2 { refs1.tail = &refs1.refs }
+  if point_to_refs1 { refs2.tail = &refs2.refs }
 }
 
 func VP8LBackwardRefsInit(/* const */ refs *VP8LBackwardRefs, int block_size) {
@@ -167,7 +167,7 @@ func BackwardRefsClone(/* const */ from *VP8LBackwardRefs, /*const*/ to *VP8LBac
   VP8LClearBackwardRefs(to);
   while (block_from != nil) {
     var block_to *PixOrCopyBlock = BackwardRefsNewBlock(to);
-    if (block_to == nil) { return 0; }
+    if block_to == nil { { return 0 } }
     memcpy(block_to.start, block_from.start, block_from.size * sizeof(PixOrCopy));
     block_to.size = block_from.size;
     block_from = block_from.next;
@@ -180,7 +180,7 @@ func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ Pix
   b *PixOrCopyBlock = refs.last_block;
   if (b == nil || b.size == refs.block_size) {
     b = BackwardRefsNewBlock(refs);
-    if (b == nil) return;  // refs.error is set
+    if b == nil { return }  // refs.error is set
   }
   b.start[b.size] = v;
   b.size++
@@ -194,7 +194,7 @@ int VP8LHashChainInit(/* const */ p *VP8LHashChain, int size) {
   assert.Assert(p.offset_length == nil);
   assert.Assert(size > 0);
   p.offset_length = (*uint32)WebPSafeMalloc(size, sizeof(*p.offset_length));
-  if (p.offset_length == nil) { return 0; }
+  if p.offset_length == nil { { return 0 } }
   p.size = size;
 
   return 1;
@@ -327,7 +327,7 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
 //   WebPSafeFree(hash_to_first_index);
 
   percent_start += percent_range;
-  if (!WebPReportProgress(pic, percent_start, percent)) { return 0; }
+  if !WebPReportProgress(pic, percent_start, percent) { { return 0 } }
   percent_range = remaining_percent;
 
   // Find the best match interval at each pixel, defined by an offset to the
@@ -369,7 +369,7 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
       }
       --iter;
       // Skip the for loop if we already have the maximum.
-      if (best_length == MAX_LENGTH) pos = min_pos - 1;
+      if best_length == MAX_LENGTH { pos = min_pos - 1 }
     }
     best_argb = argb_start[best_length];
 
@@ -377,7 +377,7 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
       var curr_length int
       assert.Assert(base_position > (uint32)pos);
 
-      if (argb[pos + best_length] != best_argb) continue;
+      if argb[pos + best_length] != best_argb { continue }
 
       curr_length = VP8LVectorMismatch(argb + pos, argb_start, max_len);
       if (best_length < curr_length) {
@@ -385,7 +385,7 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
         best_distance = base_position - pos;
         best_argb = argb_start[best_length];
         // Stop if we have reached a good enough length.
-        if (best_length >= length_max) break;
+        if best_length >= length_max { break }
       }
     }
     // We have the best match but in case the two intervals continue matching
@@ -398,7 +398,7 @@ int VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb 
           (best_distance << MAX_LENGTH_BITS) | (uint32)best_length;
       --base_position;
       // Stop if we don't have a match or if we are out of bounds.
-      if (best_distance == 0 || base_position == 0) break;
+      if best_distance == 0 || base_position == 0 { break }
       // Stop if we cannot extend the matching intervals to the left.
       if (base_position < best_distance ||
           argb[base_position - best_distance] != argb[base_position]) {
@@ -482,7 +482,7 @@ func BackwardReferencesRle(int xsize, int ysize, /*const*/ argb *uint32, int cac
       i++;
     }
   }
-  if (use_color_cache) VP8LColorCacheClear(&hashers);
+  if use_color_cache { VP8LColorCacheClear(&hashers) }
   return !refs.error;
 }
 
@@ -497,7 +497,7 @@ func BackwardReferencesLz77(int xsize, int ysize, /*const*/ argb *uint32, int ca
 
   if (use_color_cache) {
     cc_init = VP8LColorCacheInit(&hashers, cache_bits);
-    if (!cc_init) goto Error;
+    if !cc_init { goto Error }
   }
   VP8LClearBackwardRefs(refs);
   for i = 0; i < pix_count; {
@@ -526,7 +526,7 @@ func BackwardReferencesLz77(int xsize, int ysize, /*const*/ argb *uint32, int ca
         if (reach > max_reach) {
           len = j - i;
           max_reach = reach;
-          if (max_reach >= pix_count) break;
+          if max_reach >= pix_count { break }
         }
       }
     } else {
@@ -547,7 +547,7 @@ func BackwardReferencesLz77(int xsize, int ysize, /*const*/ argb *uint32, int ca
 
   ok = !refs.error;
 Error:
-  if (cc_init) VP8LColorCacheClear(&hashers);
+  if cc_init { VP8LColorCacheClear(&hashers) }
   return ok;
 }
 
@@ -566,7 +566,7 @@ func BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint32, int
   const counts_ini *uint16 =
       (*uint16)WebPSafeMalloc(xsize * ysize, sizeof(*counts_ini));
   best_offset_prev := -1, best_length_prev = -1;
-  if (counts_ini == nil) { return 0; }
+  if counts_ini == nil { { return 0 } }
 
   // counts[i] counts how many times a pixel is repeated starting at position i.
   i = pix_count - 2;
@@ -590,15 +590,15 @@ func BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint32, int
         offset := y * xsize + x;
         var plane_code int
         // Ignore offsets that bring us after the pixel.
-        if (offset <= 0) continue;
+        if offset <= 0 { continue }
         plane_code = VP8LDistanceToPlaneCode(xsize, offset) - 1;
-        if (plane_code >= WINDOW_OFFSETS_SIZE_MAX) continue;
+        if plane_code >= WINDOW_OFFSETS_SIZE_MAX { continue }
         window_offsets[plane_code] = offset;
       }
     }
     // For narrow images, not all plane codes are reached, so remove those.
     for i = 0; i < WINDOW_OFFSETS_SIZE_MAX; i++ {
-      if (window_offsets[i] == 0) continue;
+      if window_offsets[i] == 0 { continue }
       window_offsets[window_offsets_size] = window_offsets[i];
 	  window_offsets_size++
     }
@@ -651,7 +651,7 @@ func BackwardReferencesLz77Box(int xsize, int ysize, /*const*/ argb *uint32, int
         j := i;
         int j_offset =
             use_prev ? i - window_offsets_new[ind] : i - window_offsets[ind];
-        if (j_offset < 0 || argb[j_offset] != argb[i]) continue;
+        if j_offset < 0 || argb[j_offset] != argb[i] { continue }
         // The longest match is the sum of how many times each pixel is
         // repeated.
         for {
@@ -739,11 +739,11 @@ func CalculateBestCacheSize(/* const */ argb *uint32, quality int, /*const*/ ref
   // Allocate data.
   for i = 0; i <= cache_bits_max; i++ {
     histos[i] = VP8LAllocateHistogram(i);
-    if (histos[i] == nil) goto Error;
+    if histos[i] == nil { goto Error }
     VP8LHistogramInit(histos[i], i, /*init_arrays=*/1);
-    if (i == 0) continue;
+    if i == 0 { continue }
     cc_init[i] = VP8LColorCacheInit(&hashers[i], i);
-    if (!cc_init[i]) goto Error;
+    if !cc_init[i] { goto Error }
   }
 
   // Find the cache_bits giving the lowest entropy. The search is done in a
@@ -815,7 +815,7 @@ func CalculateBestCacheSize(/* const */ argb *uint32, quality int, /*const*/ ref
   ok = 1;
 Error:
   for i = 0; i <= cache_bits_max; i++ {
-    if (cc_init[i]) {VP8LColorCacheClear(&hashers[i]);}
+    if cc_init[i] { {VP8LColorCacheClear(&hashers[i]) }}
     histos[i] = nil
   }
   return ok;
@@ -826,7 +826,7 @@ func BackwardRefsWithLocalCache(/* const */ argb *uint32, int cache_bits, /*cons
   pixel_index := 0;
   VP8LColorCache hashers;
   VP8LRefsCursor c = VP8LRefsCursorInit(refs);
-  if (!VP8LColorCacheInit(&hashers, cache_bits)) { return 0; }
+  if !VP8LColorCacheInit(&hashers, cache_bits) { { return 0 } }
 
   while (VP8LRefsCursorOk(&c)) {
     var v *PixOrCopy = c.cur_pos;
@@ -879,13 +879,13 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
   stdlib.Memset(&hash_chain_box, 0, sizeof(hash_chain_box));
 
   histo = VP8LAllocateHistogram(MAX_COLOR_CACHE_BITS);
-  if (histo == nil) goto Error;
+  if histo == nil { goto Error }
 
   for (lz77_type = 1; lz77_types_to_try;
        lz77_types_to_try &= ~lz77_type, lz77_type <<= 1) {
     res := 0;
     bit_cost := uint(0);
-    if ((lz77_types_to_try & lz77_type) == 0) continue;
+    if (lz77_types_to_try & lz77_type) == 0 { continue }
     switch (lz77_type) {
       case kLZ77RLE:
         res = BackwardReferencesRle(width, height, argb, 0, refs_tmp);
@@ -896,19 +896,19 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
         res = BackwardReferencesLz77(width, height, argb, 0, hash_chain, refs_tmp);
         break;
       case kLZ77Box:
-        if (!VP8LHashChainInit(&hash_chain_box, width * height)) goto Error;
+        if !VP8LHashChainInit(&hash_chain_box, width * height) { goto Error }
         res = BackwardReferencesLz77Box(width, height, argb, 0, hash_chain, &hash_chain_box, refs_tmp);
         break;
       default:
         assert.Assert(0);
     }
-    if (!res) goto Error;
+    if !res { goto Error }
 
     // Start with the no color cache case.
     for i = 1; i >= 0; --i {
       cache_bits := (i == 1) ? 0 : cache_bits_max;
 
-      if (i == 1 && !do_no_cache) continue;
+      if i == 1 && !do_no_cache { continue }
 
       if (i == 0) {
         // Try with a color cache.
@@ -933,13 +933,13 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
         if (i == 1) {
           // Do not swap as the full cache analysis would have the wrong
           // VP8LBackwardRefs to start with.
-          if (!BackwardRefsClone(refs_tmp, &refs[1])) goto Error;
+          if !BackwardRefsClone(refs_tmp, &refs[1]) { goto Error }
         } else {
           BackwardRefsSwap(refs_tmp, &refs[0]);
         }
         bit_costs_best[i] = bit_cost;
         lz77_types_best[i] = lz77_type;
-        if (i == 0) *cache_bits_best = cache_bits;
+        if i == 0 { *cache_bits_best = cache_bits }
       }
     }
   }
@@ -949,7 +949,7 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
   // Improve on simple LZ77 but only for high quality (TraceBackwards is
   // costly).
   for i = 1; i >= 0; --i {
-    if (i == 1 && !do_no_cache) continue;
+    if i == 1 && !do_no_cache { continue }
     if ((lz77_types_best[i] == kLZ77Standard ||
          lz77_types_best[i] == kLZ77Box) &&
         quality >= 25) {
@@ -973,7 +973,7 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
         *cache_bits_best == 0) {
       // If the best cache size is 0 and we have the same best LZ77, just copy
       // the data over and stop here.
-      if (!BackwardRefsClone(&refs[1], &refs[0])) goto Error;
+      if !BackwardRefsClone(&refs[1], &refs[0]) { goto Error }
       break;
     }
   }

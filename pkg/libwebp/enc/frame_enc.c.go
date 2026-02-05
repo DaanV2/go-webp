@@ -222,7 +222,7 @@ func SetSegmentProbas(/* const */ enc *VP8Encoder) {
 
     enc.segment_hdr.update_map =
         (probas[0] != 255) || (probas[1] != 255) || (probas[2] != 255);
-    if (!enc.segment_hdr.update_map) ResetSegments(enc);
+    if !enc.segment_hdr.update_map { ResetSegments(enc) }
     enc.segment_hdr.size =
         p[0] * (VP8BitCost(0, probas[0]) + VP8BitCost(0, probas[1])) +
         p[1] * (VP8BitCost(0, probas[0]) + VP8BitCost(1, probas[1])) +
@@ -651,7 +651,7 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
                              (enc.max_i4_header_bits == 0);
     size_p0 :=
         OneStatPass(enc, rd_opt, nb_mbs, percent_per_pass, &stats);
-    if (size_p0 == 0) { return 0; }
+    if size_p0 == 0 { { return 0 } }
 #if (DEBUG_SEARCH > 0)
     printf("#%d value:%.1lf . %.1lf   q:%.2f . %.2f\n", num_pass_left, stats.last_value, stats.value, stats.last_q, stats.q);
 #endif
@@ -666,7 +666,7 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
     // If no target size: just do several pass without changing 'q'
     if (do_search) {
       ComputeNextQ(&stats);
-      if (fabs(stats.dq) <= DQ_LIMIT) break;
+      if fabs(stats.dq) <= DQ_LIMIT { break }
     }
   }
   if (!do_search || !stats.do_size_search) {
@@ -743,7 +743,7 @@ func ResetAfterSkip(/* const */ it *VP8EncIterator) {
 int VP8EncLoop(/* const */ enc *VP8Encoder) {
   VP8EncIterator it;
   ok := PreLoopInitialize(enc);
-  if (!ok) { return 0; }
+  if !ok { { return 0 } }
 
   StatLoop(enc);  // stats-collection loop
 
@@ -799,9 +799,9 @@ int VP8EncTokenLoop(/* const */ enc *VP8Encoder) {
 
   InitPassStats(enc, &stats);
   ok = PreLoopInitialize(enc);
-  if (!ok) { return 0; }
+  if !ok { { return 0 } }
 
-  if (max_count < MIN_COUNT) max_count = MIN_COUNT;
+  if max_count < MIN_COUNT { max_count = MIN_COUNT }
 
   assert.Assert(enc.num_parts == 1);
   assert.Assert(enc.use_tokens);
@@ -850,7 +850,7 @@ int VP8EncTokenLoop(/* const */ enc *VP8Encoder) {
       }
       VP8IteratorSaveBoundary(&it);
     } while (ok && VP8IteratorNext(&it));
-    if (!ok) break;
+    if !ok { break }
 
     size_p0 += enc.segment_hdr.size;
     if (stats.do_size_search) {

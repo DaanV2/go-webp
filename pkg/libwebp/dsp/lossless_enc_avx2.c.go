@@ -329,14 +329,14 @@ func VectorMismatch_AVX2(/* const */ array *uint321, /*const*/ array *uint322, i
           _mm256_loadu_si256((/* const */ __*m256i)&array1[match_len + 8]);
       const __m256i B1 =
           _mm256_loadu_si256((/* const */ __*m256i)&array2[match_len + 8]);
-      if ((uint32)_mm256_movemask_epi8(cmpA) != 0xffffffff) break;
+      if (uint32)_mm256_movemask_epi8(cmpA) != 0xffffffff { break }
       match_len += 8;
 
       {
         const __m256i cmpB = _mm256_cmpeq_epi32(B0, B1);
         A0 = _mm256_loadu_si256((/* const */ __*m256i)&array1[match_len + 8]);
         A1 = _mm256_loadu_si256((/* const */ __*m256i)&array2[match_len + 8]);
-        if ((uint32)_mm256_movemask_epi8(cmpB) != 0xffffffff) break;
+        if (uint32)_mm256_movemask_epi8(cmpB) != 0xffffffff { break }
         match_len += 8;
       }
     } while (match_len + 24 < length);

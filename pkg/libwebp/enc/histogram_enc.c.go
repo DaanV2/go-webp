@@ -116,7 +116,7 @@ VP *VP8LHistogram8LAllocateHistogram(int cache_bits) {
   histo *VP8LHistogram = nil;
   total_size := GetHistogramSize(cache_bits);
   var memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
-  if (memory == nil) { return nil; }
+  if memory == nil { { return nil } }
   histo = (*VP8LHistogram)memory;
   // 'literal' won't necessary be aligned.
   histo.literal = (*uint32)(memory + sizeof(VP8LHistogram));
@@ -151,7 +151,7 @@ VP *VP8LHistogramSet8LAllocateHistogramSet(int size, int cache_bits) {
   set *VP8LHistogramSet;
   total_size := HistogramSetTotalSize(size, cache_bits);
   memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory));
-  if (memory == nil) { return nil; }
+  if memory == nil { { return nil } }
 
   set = (*VP8LHistogramSet)memory;
   memory += sizeof(*set);
@@ -358,7 +358,7 @@ static  uint64 GetCombinedEntropy(/* const */ h *VP8LHistogram1, /*const*/ h *VP
                          h1.trivial_symbol[index] == h2.trivial_symbol[index];
 
   if (is_trivial || !is_h1_used || !is_h2_used) {
-    if (is_h1_used) { return h1.costs[index]; }
+    if is_h1_used { { return h1.costs[index] } }
     return h2.costs[index];
   }
   assert.Assert(is_h1_used && is_h2_used);
@@ -404,7 +404,7 @@ static  func SaturateAdd(uint64 a, b *int64) {
   var i int
   cost_threshold := (uint64)cost_threshold_in;
   assert.Assert(a.palette_code_bits == b.palette_code_bits);
-  if (cost_threshold_in <= 0) { return 0; }
+  if cost_threshold_in <= 0 { { return 0 } }
   *cost = 0;
 
   // No need to add the extra cost for length and distance as it is a constant
@@ -412,7 +412,7 @@ static  func SaturateAdd(uint64 a, b *int64) {
   for i = 0; i < 5; i++ {
     costs[i] = GetCombinedEntropy(a, b, (HistogramIndex)i);
     *cost += costs[i];
-    if (*cost >= cost_threshold) { return 0; }
+    if *cost >= cost_threshold { { return 0 } }
   }
 
   return 1;
@@ -530,12 +530,12 @@ func DominantCostRangeInit(/* const */ c *DominantCostRange) {
 }
 
 func UpdateDominantCostRange(/* const */ h *VP8LHistogram, /*const*/ c *DominantCostRange) {
-  if (c.literal_max < h.costs[LITERAL]) c.literal_max = h.costs[LITERAL];
-  if (c.literal_min > h.costs[LITERAL]) c.literal_min = h.costs[LITERAL];
-  if (c.red_max < h.costs[RED]) c.red_max = h.costs[RED];
-  if (c.red_min > h.costs[RED]) c.red_min = h.costs[RED];
-  if (c.blue_max < h.costs[BLUE]) c.blue_max = h.costs[BLUE];
-  if (c.blue_min > h.costs[BLUE]) c.blue_min = h.costs[BLUE];
+  if c.literal_max < h.costs[LITERAL] { c.literal_max = h.costs[LITERAL] }
+  if c.literal_min > h.costs[LITERAL] { c.literal_min = h.costs[LITERAL] }
+  if c.red_max < h.costs[RED] { c.red_max = h.costs[RED] }
+  if c.red_min > h.costs[RED] { c.red_min = h.costs[RED] }
+  if c.blue_max < h.costs[BLUE] { c.blue_max = h.costs[BLUE] }
+  if c.blue_min > h.costs[BLUE] { c.blue_min = h.costs[BLUE] }
 }
 
 func ComputeHistogramCost(/* const */ h *VP8LHistogram) {
@@ -790,8 +790,8 @@ func HistoQueueUpdateHead(/* const */ histo_queue *HistoQueue, /*const*/ pair *H
 
 // Replaces the bad_id with good_id in the pair.
 func HistoQueueFixPair(int bad_id, int good_id, /*const*/ pair *HistogramPair) {
-  if (pair.idx1 == bad_id) pair.idx1 = good_id;
-  if (pair.idx2 == bad_id) pair.idx2 = good_id;
+  if pair.idx1 == bad_id { pair.idx1 = good_id }
+  if pair.idx2 == bad_id { pair.idx2 = good_id }
   if (pair.idx1 > pair.idx2) {
     tmp := pair.idx1;
     pair.idx1 = pair.idx2;
@@ -822,7 +822,7 @@ func HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram* const h
   HistogramPair pair;
 
   // Stop here if the queue is full.
-  if (histo_queue.size == histo_queue.max_size) { return 0; }
+  if histo_queue.size == histo_queue.max_size { { return 0 } }
   assert.Assert(threshold <= 0);
   if (idx1 > idx2) {
     tmp := idx2;
@@ -835,7 +835,7 @@ func HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram* const h
   h2 = histograms[idx2];
 
   // Do not even consider the pair if it does not improve the entropy.
-  if (!HistoQueueUpdatePair(h1, h2, threshold, &pair)) { return 0; }
+  if !HistoQueueUpdatePair(h1, h2, threshold, &pair) { { return 0 } }
 
   histo_queue.queue[histo_queue.size] = pair;
   histo_queue.size = histo_queue.size + 1
@@ -898,7 +898,7 @@ func HistogramCombineGreedy(/* const */ image_histo *VP8LHistogramSet) int {
 
     // Push new pairs formed with combined histogram to the queue.
     for i = 0; i < image_histo.size; i++ {
-      if (i == idx1) continue;
+      if i == idx1 { continue }
       HistoQueuePush(&histo_queue, image_histo.histograms, idx1, i, 0);
     }
   }
@@ -932,7 +932,7 @@ func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, int m
     return 1;
   }
 
-  if (!HistoQueueInit(&histo_queue, kHistoQueueSize)) goto End;
+  if !HistoQueueInit(&histo_queue, kHistoQueueSize) { goto End }
 
   // Collapse similar histograms in 'image_histo'.
   for (iter = 0; iter < outer_iters && image_histo.size >= min_cluster_size &&
@@ -953,7 +953,7 @@ func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, int m
       tmp := MyRand(&seed) % rand_range;
       uint32 idx1 = tmp / (image_histo.size - 1);
       uint32 idx2 = tmp % (image_histo.size - 1);
-      if (idx2 >= idx1) ++idx2;
+      if idx2 >= idx1 { ++idx2 }
 
       // Calculate cost reduction on combination.
       curr_cost =
@@ -961,10 +961,10 @@ func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, int m
       if (curr_cost < 0) {  // found a better pair?
         best_cost = curr_cost;
         // Empty the queue if we reached full capacity.
-        if (histo_queue.size == histo_queue.max_size) break;
+        if histo_queue.size == histo_queue.max_size { break }
       }
     }
-    if (histo_queue.size == 0) continue;
+    if histo_queue.size == 0 { continue }
 
     // Get the best histograms.
     best_idx1 = histo_queue.queue[0].idx1;
@@ -1053,7 +1053,7 @@ func HistogramRemap(/* const */ in *VP8LHistogramSet, /*const*/ out *VP8LHistogr
 
   for i = 0; i < in_size; i++ {
     var idx int
-    if (in_histo[i] == nil) continue;
+    if in_histo[i] == nil { continue }
     idx = symbols[i];
     HistogramAdd(in_histo[i], out_histo[idx], out_histo[idx]);
   }
@@ -1062,10 +1062,10 @@ func HistogramRemap(/* const */ in *VP8LHistogramSet, /*const*/ out *VP8LHistogr
 func GetCombineCostFactor(int histo_size, quality int) int32 {
   combine_cost_factor := 16;
   if (quality < 90) {
-    if (histo_size > 256) combine_cost_factor /= 2;
-    if (histo_size > 512) combine_cost_factor /= 2;
-    if (histo_size > 1024) combine_cost_factor /= 2;
-    if (quality <= 50) combine_cost_factor /= 2;
+    if histo_size > 256 { combine_cost_factor /= 2 }
+    if histo_size > 512 { combine_cost_factor /= 2 }
+    if histo_size > 1024 { combine_cost_factor /= 2 }
+    if quality <= 50 { combine_cost_factor /= 2 }
   }
   return combine_cost_factor;
 }

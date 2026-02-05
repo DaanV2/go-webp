@@ -333,7 +333,7 @@ func TransformColorInverse_MIPSdspR2(/* const */ m *VP8LMultipliers, /*const*/ s
       : "memory", "hi", "lo");
 
   // Fall-back to C-version for left-overs.
-  if (num_pixels & 1) VP8LTransformColorInverse_C(m, src, 1, dst);
+  if num_pixels & 1 { VP8LTransformColorInverse_C(m, src, 1, dst) }
 }
 
 func ConvertBGRAToRGB_MIPSdspR2(/* const */ src *uint32, num_pixels int, dst *uint8) {

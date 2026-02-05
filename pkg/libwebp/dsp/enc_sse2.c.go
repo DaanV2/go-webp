@@ -1036,8 +1036,8 @@ func IntraChromaPreds_SSE2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRICT lef
   TrueMotion_SSE2(C8TM8 + dst, left, top, 8);
   // V block
   dst += 8;
-  if (top != nil) top += 8;
-  if (left != nil) left += 16;
+  if top != nil { top += 8 }
+  if left != nil { left += 16 }
   DC8uvMode_SSE2(C8DC8 + dst, left, top);
   VerticalPred_SSE2(C8VE8 + dst, top, 8);
   HorizontalPred_SSE2(C8HE8 + dst, left, 8);

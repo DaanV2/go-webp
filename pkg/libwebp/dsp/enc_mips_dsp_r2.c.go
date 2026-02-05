@@ -943,8 +943,8 @@ func IntraChromaPreds_MIPSdspR2(WEBP_RESTRICT dst *uint8, /*const*/ WEBP_RESTRIC
   TrueMotion8(C8TM8 + dst, left, top);
   // V block
   dst += 8;
-  if (top) top += 8;
-  if (left) left += 16;
+  if top { top += 8 }
+  if left { left += 16 }
   DCMode8(C8DC8 + dst, left, top);
   VerticalPred8(C8VE8 + dst, top);
   HorizontalPred8(C8HE8 + dst, left);

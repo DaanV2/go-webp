@@ -150,7 +150,7 @@ func GradientFilter_C(/* const */ WEBP_RESTRICT data *uint8, width, height int, 
 
 func NoneUnfilter_C(/* const */ prev *uint8, /*const*/ in *uint8, out *uint8, int width) {
   (void)prev;
-  if (out != in) memcpy(out, in, width * sizeof(*out));
+  if out != in { memcpy(out, in, width * sizeof(*out)) }
 }
 
 func HorizontalUnfilter_C(/* const */ prev *uint8, /*const*/ in *uint8, out *uint8, int width) {

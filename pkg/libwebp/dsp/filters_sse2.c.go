@@ -192,7 +192,7 @@ func HorizontalUnfilter_SSE2(/* const */ prev *uint8, /*const*/ in *uint8, out *
   var i int
   __m128i last;
   out[0] = (uint8)(in[0] + (prev == nil ? 0 : prev[0]));
-  if (width <= 1) return;
+  if width <= 1 { return }
   last = _mm_set_epi32(0, 0, 0, out[0]);
   for i = 1; i + 8 <= width; i += 8 {
     const __m128i A0 = _mm_loadl_epi64((/* const */ __*m128i)(in + i));
@@ -252,7 +252,7 @@ func GradientPredictInverse_SSE2(/* const */ in *uint8, /*const*/ top *uint8, /*
         const __m128i tmp5 = _mm_add_epi8(tmp4, D);         // add to in[]
         A = _mm_and_si128(tmp5, mask_hi);                   // 1-complement clip
         out = _mm_or_si128(out, A);                         // accumulate output
-        if (--k == 0) break;
+        if --k == 0 { break }
         A = _mm_slli_si128(A, 1);              // rotate left sample
         mask_hi = _mm_slli_si128(mask_hi, 1);  // rotate mask
         A = _mm_unpacklo_epi8(A, zero);        // convert 8b.16b

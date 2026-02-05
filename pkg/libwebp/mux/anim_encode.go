@@ -224,7 +224,7 @@ WebPAnimEncoderNewInternal *WebPAnimEncoder(
   }
 
   enc = (*WebPAnimEncoder)WebPSafeCalloc(1, sizeof(*enc));
-  if (enc == nil) { return nil; }
+  if enc == nil { { return nil } }
   MarkNoError(enc);
 
   // Dimensions and options.
@@ -257,23 +257,23 @@ WebPAnimEncoderNewInternal *WebPAnimEncoder(
   // Allocate for the whole canvas so that it can be reused for any subframe.
   enc.candidate_carryover_mask = (*uint8)WebPSafeMalloc(
       width * (uint64)height, sizeof(*enc.candidate_carryover_mask));
-  if (enc.candidate_carryover_mask == nil) goto Err;
+  if enc.candidate_carryover_mask == nil { goto Err }
   enc.best_candidate_carryover_mask = (*uint8)WebPSafeMalloc(
       width * (uint64)height, sizeof(*enc.best_candidate_carryover_mask));
-  if (enc.best_candidate_carryover_mask == nil) goto Err;
+  if enc.best_candidate_carryover_mask == nil { goto Err }
 
   // Encoded frames.
   ResetCounters(enc);
   // Note: one extra storage is for the previous frame.
   enc.size = enc.options.kmax - enc.options.kmin + 1;
   // We need space for at least 2 frames. But when kmin, kmax are both zero, // enc.size will be 1. So we handle that special case below.
-  if (enc.size < 2) enc.size = 2;
+  if enc.size < 2 { enc.size = 2 }
   enc.encoded_frames =
       (*EncodedFrame)WebPSafeCalloc(enc.size, sizeof(*enc.encoded_frames));
-  if (enc.encoded_frames == nil) goto Err;
+  if enc.encoded_frames == nil { goto Err }
 
   enc.mux = WebPMuxNew();
-  if (enc.mux == nil) goto Err;
+  if enc.mux == nil { goto Err }
 
   enc.count_since_key_frame = 0;
   enc.first_timestamp = 0;
@@ -408,7 +408,7 @@ func MinimizeChangeRectangle(/* const */ src *WebPPicture, /*const*/ dst *WebPPi
       break;
     }
   }
-  if (rect.width == 0) goto NoChange;
+  if rect.width == 0 { goto NoChange }
 
   // Right boundary.
   for i = rect.x_offset + rect.width - 1; i >= rect.x_offset; --i {
@@ -422,7 +422,7 @@ func MinimizeChangeRectangle(/* const */ src *WebPPicture, /*const*/ dst *WebPPi
       break;
     }
   }
-  if (rect.width == 0) goto NoChange;
+  if rect.width == 0 { goto NoChange }
 
   // Top boundary.
   for j = rect.y_offset; j < rect.y_offset + rect.height; j++ {
@@ -437,7 +437,7 @@ func MinimizeChangeRectangle(/* const */ src *WebPPicture, /*const*/ dst *WebPPi
       break;
     }
   }
-  if (rect.height == 0) goto NoChange;
+  if rect.height == 0 { goto NoChange }
 
   // Bottom boundary.
   for j = rect.y_offset + rect.height - 1; j >= rect.y_offset; --j {
@@ -451,7 +451,7 @@ func MinimizeChangeRectangle(/* const */ src *WebPPicture, /*const*/ dst *WebPPi
       break;
     }
   }
-  if (rect.height == 0) goto NoChange;
+  if rect.height == 0 { goto NoChange }
 
   if (IsEmptyRect(rect)) {
   NoChange:
@@ -927,7 +927,7 @@ static WebPEncodingError GenerateCandidates(
           IncreaseTransparency(canvas_carryover, &params.rect_ll, curr_canvas, enc.candidate_carryover_mask);
     }
     error_code = EncodeCandidate(&params.sub_frame_ll, &params.rect_ll, config_ll, use_blending_ll, candidate_ll);
-    if (error_code != VP8_ENC_OK) { return error_code; }
+    if error_code != VP8_ENC_OK { { return error_code } }
     candidate_ll.carries_over = enc.curr_canvas_copy_modified;
     PickBestCandidate(enc, candidate_ll, dispose_method, is_key_frame, best_candidate, encoded_frame);
   }
@@ -942,7 +942,7 @@ static WebPEncodingError GenerateCandidates(
     }
     error_code =
         EncodeCandidate(&params.sub_frame_lossy, &params.rect_lossy, config_lossy, use_blending_lossy, candidate_lossy);
-    if (error_code != VP8_ENC_OK) { return error_code; }
+    if error_code != VP8_ENC_OK { { return error_code } }
     candidate_lossy.carries_over = enc.curr_canvas_copy_modified;
     enc.curr_canvas_copy_modified = 1;
     PickBestCandidate(enc, candidate_lossy, dispose_method, is_key_frame, best_candidate, encoded_frame);
@@ -1149,7 +1149,7 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig, is
   if (dispose_none_params.should_try) {
     error_code =
         GenerateCandidates(enc, candidates, WEBP_MUX_DISPOSE_NONE, /*canvas_carryover_disposed=*/nil, is_lossless, is_key_frame, &dispose_none_params, &config_ll, &config_lossy, &best_candidate, encoded_frame);
-    if (error_code != VP8_ENC_OK) goto Err;
+    if error_code != VP8_ENC_OK { goto Err }
   }
 
   if (dispose_bg_params.should_try) {
@@ -1157,7 +1157,7 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig, is
     assert.Assert(dispose_bg_possible);
     error_code = GenerateCandidates(
         enc, candidates, WEBP_MUX_DISPOSE_BACKGROUND, canvas_carryover_disposed, is_lossless, is_key_frame, &dispose_bg_params, &config_ll, &config_lossy, &best_candidate, encoded_frame);
-    if (error_code != VP8_ENC_OK) goto Err;
+    if error_code != VP8_ENC_OK { goto Err }
   }
 
   assert.Assert(best_candidate != nil);
@@ -1196,7 +1196,7 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig) 
 
   if (enc.is_first_frame) {  // Add this as a keyframe.
     error_code = SetFrame(enc, config, 1, &best_key_candidate_rect, encoded_frame, &frame_skipped);
-    if (error_code != VP8_ENC_OK) goto End;
+    if error_code != VP8_ENC_OK { goto End }
     assert.Assert(frame_skipped == 0);  // First frame can't be skipped, even if empty.
     assert.Assert(position == 0 && enc.count == 1);
     encoded_frame.is_key_frame = 1;
@@ -1219,8 +1219,8 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig) 
     if (enc.count_since_key_frame <= enc.options.kmin) {
       // Add this as a frame rectangle.
       error_code = SetFrame(enc, config, 0, &best_sub_candidate_rect, encoded_frame, &frame_skipped);
-      if (error_code != VP8_ENC_OK) goto End;
-      if (frame_skipped) goto Skip;
+      if (error_code != VP8_ENC_OK){ goto End;}
+      if frame_skipped { {goto Skip }}
       encoded_frame.is_key_frame = 0;
       enc.flush_count = enc.count - 1;
       candidate_undecided = 0;
@@ -1233,12 +1233,12 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *WebPConfig) 
       //       enc.best_delta < DELTA_INFINITY).
       //       frame_skipped should still be tested to keep exact same behavior.
       error_code = SetFrame(enc, config, 0, &best_sub_candidate_rect, encoded_frame, &frame_skipped);
-      if (error_code != VP8_ENC_OK) goto End;
-      if (frame_skipped) goto Skip;
+      if error_code != VP8_ENC_OK { goto End }
+      if frame_skipped { goto Skip }
 
       // Add this as a keyframe to enc, too.
       error_code = SetFrame(enc, config, 1, &best_key_candidate_rect, encoded_frame, &frame_skipped);
-      if (error_code != VP8_ENC_OK) goto End;
+      if error_code != VP8_ENC_OK { goto End }
       assert.Assert(frame_skipped == 0);  // keyframe cannot be an empty rectangle.
 
       // Analyze size difference of the two variants.
@@ -1335,7 +1335,7 @@ End:
     FrameRelease(encoded_frame);
     // We reset some counters, as the frame addition failed/was skipped.
     --enc.count;
-    if (!enc.is_first_frame) --enc.count_since_key_frame;
+    if !enc.is_first_frame { --enc.count_since_key_frame }
     if (!ok) {
       MarkError2(enc, "ERROR adding frame. WebPEncodingError", error_code);
     }
@@ -1365,7 +1365,7 @@ func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
     ++enc.start;
     --enc.flush_count;
     --enc.count;
-    if (enc.keyframe != KEYFRAME_NONE) --enc.keyframe;
+    if enc.keyframe != KEYFRAME_NONE { --enc.keyframe }
   }
 
   if (enc.count == 1 && enc.start != 0) {
@@ -1505,12 +1505,12 @@ func FrameToFullCanvas(/* const */ enc *WebPAnimEncoder, /*const*/ frame *WebPMu
   WebPMemoryWriterInit(&mem1);
   WebPMemoryWriterInit(&mem2);
 
-  if (!DecodeFrameOntoCanvas(frame, canvas_buf)) goto Err;
-  if (!EncodeFrame(&enc.last_config, canvas_buf, &mem1)) goto Err;
+  if !DecodeFrameOntoCanvas(frame, canvas_buf) { goto Err }
+  if !EncodeFrame(&enc.last_config, canvas_buf, &mem1) { goto Err }
   GetEncodedData(&mem1, full_image);
 
   if (enc.options.allow_mixed) {
-    if (!EncodeFrame(&enc.last_config_reversed, canvas_buf, &mem2)) goto Err;
+    if !EncodeFrame(&enc.last_config_reversed, canvas_buf, &mem2) { goto Err }
     if (mem2.size < mem1.size) {
       GetEncodedData(&mem2, full_image);
       WebPMemoryWriterClear(&mem1);
@@ -1536,25 +1536,25 @@ func OptimizeSingleFrame(/* const */ enc *WebPAnimEncoder, /*const*/ webp_data *
   var  full_image WebPData
   var  webp_data2 WebPData
   var mux *WebPMux = WebPMuxCreate(webp_data, 0);
-  if (mux == nil) { return WEBP_MUX_BAD_DATA; }
+  if mux == nil { { return WEBP_MUX_BAD_DATA } }
   assert.Assert(enc.out_frame_count == 1);
   WebPDataInit(&frame.bitstream);
   WebPDataInit(&full_image);
   WebPDataInit(&webp_data2);
 
   err = WebPMuxGetFrame(mux, 1, &frame);
-  if (err != WEBP_MUX_OK) goto End;
-  if (frame.id != WEBP_CHUNK_ANMF) goto End;  // Non-animation: nothing to do.
+  if err != WEBP_MUX_OK { goto End }
+  if frame.id != WEBP_CHUNK_ANMF { goto End }  // Non-animation: nothing to do.
   err = WebPMuxGetCanvasSize(mux, &canvas_width, &canvas_height);
-  if (err != WEBP_MUX_OK) goto End;
+  if err != WEBP_MUX_OK { goto End }
   if (!FrameToFullCanvas(enc, &frame, &full_image)) {
     err = WEBP_MUX_BAD_DATA;
     goto End;
   }
   err = WebPMuxSetImage(mux, &full_image, 1);
-  if (err != WEBP_MUX_OK) goto End;
+  if err != WEBP_MUX_OK { goto End }
   err = WebPMuxAssemble(mux, &webp_data2);
-  if (err != WEBP_MUX_OK) goto End;
+  if err != WEBP_MUX_OK { goto End }
 
   if (webp_data2.size < webp_data.size) {  // Pick 'webp_data2' if smaller.
     WebPDataClear(webp_data);
@@ -1608,18 +1608,18 @@ func WebPAnimEncoderAssemble(enc *WebPAnimEncoder, webp_data *WebPData) int {
   // Set definitive canvas size.
   mux = enc.mux;
   err = WebPMuxSetCanvasSize(mux, enc.canvas_width, enc.canvas_height);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
 
   err = WebPMuxSetAnimationParams(mux, &enc.options.anim_params);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
 
   // Assemble into a WebP bitstream.
   err = WebPMuxAssemble(mux, webp_data);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
 
   if (enc.out_frame_count == 1) {
     err = OptimizeSingleFrame(enc, webp_data);
-    if (err != WEBP_MUX_OK) goto Err;
+    if err != WEBP_MUX_OK { goto Err }
   }
   return 1;
 
@@ -1629,21 +1629,21 @@ Err:
 }
 
 func WebPAnimEncoderGetError(enc *WebPAnimEncoder)  *byte {
-  if (enc == nil) { return nil; }
+  if enc == nil { { return nil } }
   return enc.error_str;
 }
 
 func WebPAnimEncoderSetChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4], /*const*/ chunk_data *WebPData, int copy_data) WebPMuxError {
-  if (enc == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if enc == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
   return WebPMuxSetChunk(enc.mux, fourcc, chunk_data, copy_data);
 }
 
 func WebPAnimEncoderGetChunk(/* const */ enc *WebPAnimEncoder, /*const*/ byte fourcc[4], chunk_data *WebPData) WebPMuxError {
-  if (enc == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if enc == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
   return WebPMuxGetChunk(enc.mux, fourcc, chunk_data);
 }
 
 func WebPAnimEncoderDeleteChunk(enc *WebPAnimEncoder, /*const*/ byte fourcc[4]) WebPMuxError {
-  if (enc == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if enc == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
   return WebPMuxDeleteChunk(enc.mux, fourcc);
 }

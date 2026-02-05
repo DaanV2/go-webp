@@ -72,7 +72,7 @@ func ParseIntraMode(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder, int
   } else {
     block.segment = 0;  // default for intra
   }
-  if (dec.use_skip_proba) block.skip = VP8GetBit(br, dec.skip_p, "skip");
+  if dec.use_skip_proba { block.skip = VP8GetBit(br, dec.skip_p, "skip") }
 
   block.is_i4x4 = !VP8GetBit(br, 145, "block-size");
   if (!block.is_i4x4) {

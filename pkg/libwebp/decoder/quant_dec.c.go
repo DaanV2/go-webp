@@ -79,7 +79,7 @@ func VP8ParseQuant(/* const */ dec *VP8Decoder) {
       // The smallest precision for that is '(x*6349) >> 12' but 16 is a good
       // word size.
       m.y2_mat[1] = (kAcTable[clip(q + dqy2_ac, 127)] * 101581) >> 16;
-      if (m.y2_mat[1] < 8) m.y2_mat[1] = 8;
+      if m.y2_mat[1] < 8 { m.y2_mat[1] = 8 }
 
       m.uv_mat[0] = kDcTable[clip(q + dquv_dc, 117)];
       m.uv_mat[1] = kAcTable[clip(q + dquv_ac, 127)];

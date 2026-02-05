@@ -41,7 +41,7 @@ WebPNewInternal *WebPMux(version int) {
     return nil;
   } else {
     var mux *WebPMux = (*WebPMux)WebPSafeMalloc(uint64(1), sizeof(WebPMux));
-    if (mux != nil) MuxInit(mux);
+    if mux != nil { MuxInit(mux) }
     return mux;
   }
 }
@@ -80,7 +80,7 @@ func WebPMuxDelete(mux *WebPMux) {
       err = ChunkAssignData(&chunk, data, copy_data, tag); \
       if (err == WEBP_MUX_OK) {                            \
         err = ChunkSetHead(&chunk, (LIST));                \
-        if (err != WEBP_MUX_OK) ChunkRelease(&chunk);      \
+        if err != WEBP_MUX_OK { ChunkRelease(&chunk) }      \
       }                                                    \
       return err;                                          \
     }                                                      \
@@ -114,7 +114,7 @@ static WebPMuxError CreateFrameData(width, height int, /*const*/ info *WebPMuxFr
   // Note: assertion on upper bounds is done in PutLE24().
 
   frame_bytes = (*uint8)WebPSafeMalloc(uint64(1), frame_size);
-  if (frame_bytes == nil) { return WEBP_MUX_MEMORY_ERROR; }
+  if frame_bytes == nil { { return WEBP_MUX_MEMORY_ERROR } }
 
   PutLE24(frame_bytes + 0, info.x_offset / 2);
   PutLE24(frame_bytes + 3, info.y_offset / 2);
@@ -144,7 +144,7 @@ static WebPMuxError GetImageData(/* const */ bitstream *WebPData, /*const*/ imag
     // It is webp file data. Extract image data from it.
     const wpi *WebPMuxImage;
     var mux *WebPMux = WebPMuxCreate(bitstream, 0);
-    if (mux == nil) { return WEBP_MUX_BAD_DATA; }
+    if mux == nil { { return WEBP_MUX_BAD_DATA } }
     wpi = mux.images;
     assert.Assert(wpi != nil && wpi.img != nil);
     *image = wpi.img.data;
@@ -175,7 +175,7 @@ static WebPMuxError DeleteChunks(*WebPChunk* chunk_list, uint32 tag) {
 static WebPMuxError MuxDeleteAllNamedData(/* const */ mux *WebPMux, uint32 tag) {
   const WebPChunkId id = ChunkGetIdFromTag(tag);
   assert.Assert(mux != nil);
-  if (IsWPI(id)) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if IsWPI(id) { { return WEBP_MUX_INVALID_ARGUMENT } }
   return DeleteChunks(MuxGetChunkListFromId(mux, id), tag);
 }
 
@@ -193,7 +193,7 @@ WebPMuxError WebPMuxSetChunk(mux *WebPMux, /*const*/ byte fourcc[4], /*const*/ c
 
   // Delete existing chunk(s) with the same 'fourcc'.
   err = MuxDeleteAllNamedData(mux, tag);
-  if (err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND) { return err; }
+  if err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND { { return err } }
 
   // Add the given chunk.
   return MuxSet(mux, tag, chunk_data, copy_data);
@@ -205,9 +205,9 @@ static WebPMuxError AddDataToChunkList(/* const */ data *WebPData, int copy_data
   WebPMuxError err;
   ChunkInit(&chunk);
   err = ChunkAssignData(&chunk, data, copy_data, tag);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
   err = ChunkSetHead(&chunk, chunk_list);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
   return WEBP_MUX_OK;
 Err:
   ChunkRelease(&chunk);
@@ -222,13 +222,13 @@ static WebPMuxError SetAlphaAndImageChunks(/* const */ bitstream *WebPData, int 
   WebPMuxError err = GetImageData(bitstream, &image, &alpha, &is_lossless);
   image_tag :=
       is_lossless ? kChunks[IDX_VP8L].tag : kChunks[IDX_VP8].tag;
-  if (err != WEBP_MUX_OK) { return err; }
+  if err != WEBP_MUX_OK { { return err } }
   if (alpha.bytes != nil) {
     err = AddDataToChunkList(&alpha, copy_data, kChunks[IDX_ALPHA].tag, &wpi.alpha);
-    if (err != WEBP_MUX_OK) { return err; }
+    if err != WEBP_MUX_OK { { return err } }
   }
   err = AddDataToChunkList(&image, copy_data, image_tag, &wpi.img);
-  if (err != WEBP_MUX_OK) { return err; }
+  if err != WEBP_MUX_OK { { return err } }
   return MuxImageFinalize(wpi) ? WEBP_MUX_OK : WEBP_MUX_INVALID_ARGUMENT;
 }
 
@@ -248,11 +248,11 @@ WebPMuxError WebPMuxSetImage(mux *WebPMux, /*const*/ bitstream *WebPData, int co
 
   MuxImageInit(&wpi);
   err = SetAlphaAndImageChunks(bitstream, copy_data, &wpi);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
 
   // Add this WebPMuxImage to mux.
   err = MuxImagePush(&wpi, &mux.images);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
 
   // All is well.
   return WEBP_MUX_OK;
@@ -266,9 +266,9 @@ WebPMuxError WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, in
   WebPMuxImage wpi;
   WebPMuxError err;
 
-  if (mux == nil || info == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if mux == nil || info == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
 
-  if (info.id != WEBP_CHUNK_ANMF) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if info.id != WEBP_CHUNK_ANMF { { return WEBP_MUX_INVALID_ARGUMENT } }
 
   if (info.bitstream.bytes == nil ||
       info.bitstream.size > MAX_CHUNK_PAYLOAD) {
@@ -287,7 +287,7 @@ WebPMuxError WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, in
 
   MuxImageInit(&wpi);
   err = SetAlphaAndImageChunks(&info.bitstream, copy_data, &wpi);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
   assert.Assert(wpi.img != nil);  // As SetAlphaAndImageChunks() was successful.
 
   {
@@ -304,16 +304,16 @@ WebPMuxError WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, in
       goto Err;
     }
     err = CreateFrameData(wpi.width, wpi.height, &tmp, &frame);
-    if (err != WEBP_MUX_OK) goto Err;
+    if err != WEBP_MUX_OK { goto Err }
     // Add frame chunk (with copy_data = 1).
     err = AddDataToChunkList(&frame, 1, tag, &wpi.header);
     WebPDataClear(&frame);  // frame owned by wpi.header now.
-    if (err != WEBP_MUX_OK) goto Err;
+    if err != WEBP_MUX_OK { goto Err }
   }
 
   // Add this WebPMuxImage to mux.
   err = MuxImagePush(&wpi, &mux.images);
-  if (err != WEBP_MUX_OK) goto Err;
+  if err != WEBP_MUX_OK { goto Err }
 
   // All is well.
   return WEBP_MUX_OK;
@@ -328,14 +328,14 @@ WebPMuxError WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAn
   uint8 data[ANIM_CHUNK_SIZE];
   const WebPData anim = {data, ANIM_CHUNK_SIZE}
 
-  if (mux == nil || params == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if mux == nil || params == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
   if (params.loop_count < 0 || params.loop_count >= MAX_LOOP_COUNT) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
 
   // Delete any existing ANIM chunk(s).
   err = MuxDeleteAllNamedData(mux, kChunks[IDX_ANIM].tag);
-  if (err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND) { return err; }
+  if err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND { { return err } }
 
   // Set the animation parameters.
   PutLE32(data, params.bgcolor);
@@ -361,7 +361,7 @@ WebPMuxError WebPMuxSetCanvasSize(mux *WebPMux, width, height int) {
   }
   // If we already assembled a VP8X chunk, invalidate it.
   err = MuxDeleteAllNamedData(mux, kChunks[IDX_VP8X].tag);
-  if (err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND) { return err; }
+  if err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND { { return err } }
 
   mux.canvas_width = width;
   mux.canvas_height = height;
@@ -372,12 +372,12 @@ WebPMuxError WebPMuxSetCanvasSize(mux *WebPMux, width, height int) {
 // Delete API(s).
 
 WebPMuxError WebPMuxDeleteChunk(mux *WebPMux, /*const*/ byte fourcc[4]) {
-  if (mux == nil || fourcc == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if mux == nil || fourcc == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
   return MuxDeleteAllNamedData(mux, ChunkGetTagFromFourCC(fourcc));
 }
 
 WebPMuxError WebPMuxDeleteFrame(mux *WebPMux, uint32 nth) {
-  if (mux == nil) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if mux == nil { { return WEBP_MUX_INVALID_ARGUMENT } }
   return MuxImageDeleteNth(&mux.images, nth);
 }
 
@@ -389,7 +389,7 @@ static WebPMuxError GetFrameInfo(/* const */ frame_chunk *WebPChunk, /*const*/ x
   expected_data_size := ANMF_CHUNK_SIZE;
   assert.Assert(frame_chunk.tag == kChunks[IDX_ANMF].tag);
   assert.Assert(frame_chunk != nil);
-  if (data.size != expected_data_size) { return WEBP_MUX_INVALID_ARGUMENT; }
+  if data.size != expected_data_size { { return WEBP_MUX_INVALID_ARGUMENT } }
 
   *x_offset = 2 * GetLE24(data.bytes + 0);
   *y_offset = 2 * GetLE24(data.bytes + 3);
@@ -405,11 +405,11 @@ static WebPMuxError GetImageInfo(/* const */ wpi *WebPMuxImage, /*const*/ x_offs
 
   // Get offsets and duration from ANMF chunk.
   err = GetFrameInfo(frame_chunk, x_offset, y_offset, duration);
-  if (err != WEBP_MUX_OK) { return err; }
+  if err != WEBP_MUX_OK { { return err } }
 
   // Get width and height from VP8/VP8L chunk.
-  if (width != nil) *width = wpi.width;
-  if (height != nil) *height = wpi.height;
+  if width != nil { *width = wpi.width }
+  if height != nil { *height = wpi.height }
   return WEBP_MUX_OK;
 }
 
@@ -434,12 +434,12 @@ static WebPMuxError GetAdjustedCanvasSize(/* const */ mux *WebPMux, /*const*/ wi
           GetImageInfo(wpi, &x_offset, &y_offset, &duration, &w, &h);
       max_x_pos := x_offset + w;
       max_y_pos := y_offset + h;
-      if (err != WEBP_MUX_OK) { return err; }
+      if err != WEBP_MUX_OK { { return err } }
       assert.Assert(x_offset < MAX_POSITION_OFFSET);
       assert.Assert(y_offset < MAX_POSITION_OFFSET);
 
-      if (max_x_pos > max_x) max_x = max_x_pos;
-      if (max_y_pos > max_y) max_y = max_y_pos;
+      if max_x_pos > max_x { max_x = max_x_pos }
+      if max_y_pos > max_y { max_y = max_y_pos }
     }
     *width = max_x;
     *height = max_y;
@@ -475,7 +475,7 @@ static WebPMuxError CreateVP8XChunk(/* const */ mux *WebPMux) {
   // If VP8X chunk(s) is(are) already present, remove them (and later add new
   // VP8X chunk with updated flags).
   err = MuxDeleteAllNamedData(mux, kChunks[IDX_VP8X].tag);
-  if (err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND) { return err; }
+  if err != WEBP_MUX_OK && err != WEBP_MUX_NOT_FOUND { { return err } }
 
   // Set flags.
   if (mux.iccp != nil && mux.iccp.data.bytes != nil) {
@@ -498,7 +498,7 @@ static WebPMuxError CreateVP8XChunk(/* const */ mux *WebPMux) {
   }
 
   err = GetAdjustedCanvasSize(mux, &width, &height);
-  if (err != WEBP_MUX_OK) { return err; }
+  if err != WEBP_MUX_OK { { return err } }
 
   if (width <= 0 || height <= 0) {
     return WEBP_MUX_INVALID_ARGUMENT;
@@ -543,11 +543,11 @@ static WebPMuxError MuxCleanup(/* const */ mux *WebPMux) {
   // covers the whole canvas, convert it to a non-animated image
   // (to afunc writing ANMF chunk unnecessarily).
   WebPMuxError err = WebPMuxNumChunks(mux, kChunks[IDX_ANMF].id, &num_frames);
-  if (err != WEBP_MUX_OK) { return err; }
+  if err != WEBP_MUX_OK { { return err } }
   if (num_frames == 1) {
     frame *WebPMuxImage = nil;
     err = MuxImageGetNth((/* const */ *WebPMuxImage*)&mux.images, 1, &frame);
-    if (err != WEBP_MUX_OK) { return err; }
+    if err != WEBP_MUX_OK { { return err } }
     // We know that one frame does exist.
     assert.Assert(frame != nil);
     if (frame.header != nil &&
@@ -562,10 +562,10 @@ static WebPMuxError MuxCleanup(/* const */ mux *WebPMux) {
   }
   // Remove ANIM chunk if this is a non-animated image.
   err = WebPMuxNumChunks(mux, kChunks[IDX_ANIM].id, &num_anim_chunks);
-  if (err != WEBP_MUX_OK) { return err; }
+  if err != WEBP_MUX_OK { { return err } }
   if (num_anim_chunks >= 1 && num_frames == 0) {
     err = MuxDeleteAllNamedData(mux, kChunks[IDX_ANIM].tag);
-    if (err != WEBP_MUX_OK) { return err; }
+    if err != WEBP_MUX_OK { { return err } }
   }
   return WEBP_MUX_OK;
 }
@@ -607,9 +607,9 @@ WebPMuxError WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) {
 
   // Finalize mux.
   err = MuxCleanup(mux);
-  if (err != WEBP_MUX_OK) { return err; }
+  if err != WEBP_MUX_OK { { return err } }
   err = CreateVP8XChunk(mux);
-  if (err != WEBP_MUX_OK) { return err; }
+  if err != WEBP_MUX_OK { { return err } }
 
   // Allocate data.
   size = ChunkListDiskSize(mux.vp8x) + ChunkListDiskSize(mux.iccp) +
@@ -618,7 +618,7 @@ WebPMuxError WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) {
          ChunkListDiskSize(mux.unknown) + RIFF_HEADER_SIZE;
 
   data = (*uint8)WebPSafeMalloc(uint64(1), size);
-  if (data == nil) { return WEBP_MUX_MEMORY_ERROR; }
+  if data == nil { { return WEBP_MUX_MEMORY_ERROR } }
 
   // Emit header & chunks.
   dst = MuxEmitRiffHeader(data, size);

@@ -52,7 +52,7 @@ func VariableLevelCost(level int, /*const*/ uint8 probas[NUM_PROBAS]) int {
 func VP8CalculateLevelCosts(/* const */ proba *VP8EncProba) {
   int ctype, band, ctx;
 
-  if (!proba.dirty) return;  // nothing to do.
+  if !proba.dirty { return }  // nothing to do.
 
   for ctype = 0; ctype < NUM_TYPES; ctype++ {
     var n int
@@ -205,7 +205,7 @@ int VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual) {
       v = abs(v);
 #if !defined(USE_LEVEL_CODE_TABLE)
       if (!VP8RecordStats(v > 4, s + 3)) {
-        if (VP8RecordStats(v != 2, s + 4)) VP8RecordStats(v == 4, s + 5);
+        if VP8RecordStats(v != 2, s + 4) { VP8RecordStats(v == 4, s + 5) }
       } else if (!VP8RecordStats(v > 10, s + 6)) {
         VP8RecordStats(v > 6, s + 7);
       } else if (!VP8RecordStats((v >= 3 + (8 << 2)), s + 8)) {
@@ -224,14 +224,14 @@ int VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual) {
         var i int
         for i = 0; (pattern >>= 1) != 0; i++ {
           mask := 2 << i;
-          if (pattern & 1) VP8RecordStats(!!(bits & mask), s + 3 + i);
+          if pattern & 1 { VP8RecordStats(!!(bits & mask), s + 3 + i) }
         }
       }
 #endif
       s = res.stats[VP8EncBands[n]][2];
     }
   }
-  if (n < 16) VP8RecordStats(0, s + 0);
+  if n < 16 { VP8RecordStats(0, s + 0) }
   return 1;
 }
 

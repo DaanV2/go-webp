@@ -39,7 +39,7 @@ func SmoothSegmentMap(/* const */ enc *VP8Encoder) {
   var tmp *uint8 = (*uint8)WebPSafeMalloc(w * h, sizeof(*tmp));
   assert.Assert((uint64)(w * h) == (uint64)w * h);  // no overflow, as per spec
 
-  if (tmp == nil) return;
+  if tmp == nil { return }
   for y = 1; y < h - 1; y++ {
     for x = 1; x < w - 1; x++ {
       int cnt[NUM_MB_SEGMENTS] = {0}
@@ -85,11 +85,11 @@ func SetSegmentAlphas(/* const */ enc *VP8Encoder, /*const*/ int centers[NUM_MB_
 
   if (nb > 1) {
     for n = 0; n < nb; n++ {
-      if (min > centers[n]) min = centers[n];
-      if (max < centers[n]) max = centers[n];
+      if min > centers[n] { min = centers[n] }
+      if max < centers[n] { max = centers[n] }
     }
   }
-  if (max == min) max = min + 1;
+  if max == min { max = min + 1 }
   assert.Assert(mid <= max && mid >= min);
   for n = 0; n < nb; n++ {
     alpha := 255 * (centers[n] - mid) / (max - min);
@@ -201,7 +201,7 @@ func AssignSegments(/* const */ enc *VP8Encoder, /*const*/ int alphas[MAX_ALPHA 
       }
     }
     weighted_average = (weighted_average + total_weight / 2) / total_weight;
-    if (displaced < 5) break;  // no need to keep on looping...
+    if displaced < 5 { break }  // no need to keep on looping...
   }
 
   // Map each original value to the closest centroid
@@ -214,7 +214,7 @@ func AssignSegments(/* const */ enc *VP8Encoder, /*const*/ int alphas[MAX_ALPHA 
 
   if (nb > 1) {
     smooth := (enc.config.preprocessing & 1);
-    if (smooth) SmoothSegmentMap(enc);
+    if smooth { SmoothSegmentMap(enc) }
   }
 
   SetSegmentAlphas(enc, centers, weighted_average);  // pick some alphas.
@@ -462,7 +462,7 @@ int VP8EncAnalyze(/* const */ enc *VP8Encoder) {
         ok &= worker_interface.Sync(&main_job.worker);
       }
       worker_interface.End(&side_job.worker);
-      if (ok) MergeJobs(&side_job, &main_job);  // merge results together
+      if ok { MergeJobs(&side_job, &main_job) }  // merge results together
 #endif                                          // WEBP_USE_THREAD
     } else {
       // Even for single-thread case, we use the generic Worker tools.

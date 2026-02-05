@@ -65,7 +65,7 @@ func ConvertPopulationCountTableToBitEstimates(
 func CostModelBuild(/* const */ m *CostModel,  xsize , cache_bits int, /*const*/ refs *VP8LBackwardRefs) int {
   ok := 0;
   var histo *VP8LHistogram = VP8LAllocateHistogram(cache_bits);
-  if (histo == nil) goto Error;
+  if histo == nil { goto Error }
 
   // The following code is similar to VP8LHistogramCreate but converts the
   // distance to plane code.
@@ -118,7 +118,7 @@ static  func AddSingleLiteralWithCostModel(
     // use_color_cache is true and hashers contains color
     cost_val += DivRound(GetCacheCost(cost_model, ix) * 68, 100);
   } else {
-    if (use_color_cache) VP8LColorCacheInsert(hashers, color);
+    if use_color_cache { VP8LColorCacheInsert(hashers, color) }
     cost_val += DivRound(GetLiteralCost(cost_model, color) * 82, 100);
   }
   if (cost[idx] > cost_val) {
@@ -327,12 +327,12 @@ static  func ConnectIntervals(/* const */ manager *CostManager, /*const*/ prev *
     manager.head = next;
   }
 
-  if (next != nil) next.previous = prev;
+  if next != nil { next.previous = prev }
 }
 
 // Pop an interval in the manager.
 static  func PopInterval(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
-  if (interval == nil) return;
+  if interval == nil { return }
 
   ConnectIntervals(manager, interval.previous, interval.next);
   if (CostIntervalIsInFreeList(manager, interval)) {
@@ -372,7 +372,7 @@ static  func UpdateCostAtIndex(/* const */ manager *CostManager, int i, int do_c
 static  func PositionOrphanInterval(/* const */ manager *CostManager, /*const*/ current *CostInterval, previous *CostInterval) {
   assert.Assert(current != nil);
 
-  if (previous == nil) previous = manager.head;
+  if previous == nil { previous = manager.head }
   while (previous != nil && current.start < previous.start) {
     previous = previous.previous;
   }
@@ -394,7 +394,7 @@ static  func PositionOrphanInterval(/* const */ manager *CostManager, /*const*/ 
 static  func InsertInterval(/* const */ manager *CostManager, /*const*/ interval_in *CostInterval, int64 cost, int position, int start, int end) {
   interval_new *CostInterval;
 
-  if (start >= end) return;
+  if start >= end { return }
   if (manager.count >= COST_CACHE_INTERVAL_SIZE_MAX) {
     // Serialize the interval if we cannot store it.
     UpdateCostPerInterval(manager, start, end, position, cost);
@@ -469,7 +469,7 @@ static  func PushInterval(/* const */ manager *CostManager, int64 distance_cost,
       interval_next = interval.next;
 
       // Make sure we have some overlap
-      if (start >= interval.end) continue;
+      if start >= interval.end { continue }
 
       if (cost >= interval.cost) {
         // When intervals are represented, the lower, the better.
@@ -482,7 +482,7 @@ static  func PushInterval(/* const */ manager *CostManager, int64 distance_cost,
         start_new := interval.end;
         InsertInterval(manager, interval, cost, position, start, interval.start);
         start = start_new;
-        if (start >= end) break;
+        if start >= end { break }
         continue;
       }
 
@@ -548,12 +548,12 @@ static int BackwardReferencesHashChainDistanceOnly(
   first_offset_is_constant := -1;  // initialized with 'impossible' value
   reach := 0;
 
-  if (cost_model == nil || cost_manager == nil) goto Error;
+  if cost_model == nil || cost_manager == nil { goto Error }
 
   cost_model.literal = (*uint32)(cost_model + 1);
   if (use_color_cache) {
     cc_init = VP8LColorCacheInit(&hashers, cache_bits);
-    if (!cc_init) goto Error;
+    if !cc_init { goto Error }
   }
 
   if (!CostModelBuild(cost_model, xsize, cache_bits, refs)) {
@@ -637,7 +637,7 @@ static int BackwardReferencesHashChainDistanceOnly(
 
   ok = !refs.error;
 Error:
-  if (cc_init) VP8LColorCacheClear(&hashers);
+  if cc_init { VP8LColorCacheClear(&hashers) }
   CostManagerClear(cost_manager);
 
   return ok;
@@ -670,7 +670,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
 
   if (use_color_cache) {
     cc_init = VP8LColorCacheInit(&hashers, cache_bits);
-    if (!cc_init) goto Error;
+    if !cc_init { goto Error }
   }
 
   VP8LClearBackwardRefs(refs);
@@ -695,7 +695,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
         // push pixel as a color cache index
         v = PixOrCopyCreateCacheIdx(idx);
       } else {
-        if (use_color_cache) VP8LColorCacheInsert(&hashers, argb[i]);
+        if use_color_cache { VP8LColorCacheInsert(&hashers, argb[i]) }
         v = PixOrCopyCreateLiteral(argb[i]);
       }
       VP8LBackwardRefsCursorAdd(refs, v);
@@ -704,7 +704,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
   }
   ok = !refs.error;
 Error:
-  if (cc_init) VP8LColorCacheClear(&hashers);
+  if cc_init { VP8LColorCacheClear(&hashers) }
   return ok;
 }
 
@@ -719,7 +719,7 @@ int VP8LBackwardReferencesTraceBackwards(int xsize, int ysize, /*const*/ argb *u
   dist_array *uint16 =
       (*uint16)WebPSafeMalloc(dist_array_size, sizeof(*dist_array));
 
-  if (dist_array == nil) goto Error;
+  if dist_array == nil { goto Error }
 
   if (!BackwardReferencesHashChainDistanceOnly(
           xsize, ysize, argb, cache_bits, hash_chain, refs_src, dist_array)) {

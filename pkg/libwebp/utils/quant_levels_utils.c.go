@@ -58,13 +58,13 @@ int QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heigh
     num_levels_in = 0;
     for n = 0; n < data_size; n++ {
       num_levels_in += (freq[data[n]] == 0);
-      if (min_s > data[n]) min_s = data[n];
-      if (max_s < data[n]) max_s = data[n];
+      if min_s > data[n] { min_s = data[n] }
+      if max_s < data[n] { max_s = data[n] }
       ++freq[data[n]];
     }
   }
 
-  if (num_levels_in <= num_levels) goto End;  // nothing to do!
+  if num_levels_in <= num_levels { goto End }  // nothing to do!
 
   // Start with uniformly spread centroids.
   for i = 0; i < num_levels; i++ {
@@ -116,7 +116,7 @@ int QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heigh
 
     // Check for convergence: we stop as soon as the error is no
     // longer improving.
-    if (last_err - err < err_threshold) break;
+    if last_err - err < err_threshold { break }
     last_err = err;
   }
 
@@ -139,7 +139,7 @@ int QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heigh
   }
 End:
   // Store sum of squared error if needed.
-  if (sse != nil) *sse = (uint64)err;
+  if sse != nil { *sse = (uint64)err }
 
   return 1;
 }

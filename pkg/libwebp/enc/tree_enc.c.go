@@ -81,7 +81,7 @@ func PutUVMode(/* const */ bw *VP8BitWriter, int uv_mode) {
 }
 
 func PutSegment(/* const */ bw *VP8BitWriter, int s, /*const*/ p *uint8) {
-  if (VP8PutBit(bw, s >= 2, p[0])) p += 1;
+  if VP8PutBit(bw, s >= 2, p[0]) { p += 1 }
   VP8PutBit(bw, s & 1, p[1]);
 }
 

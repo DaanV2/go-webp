@@ -382,7 +382,7 @@ func PredictorAdd11_SSE2(/* const */ in *uint32, /*const*/ upper *uint32, num_pi
 #define DO_PRED12_SHIFT(DIFF, LANE)                           \
   for {                                                        \
     /* Shift the pre-computed value for the next iteration.*/ \
-    if ((LANE) == 0) (DIFF) = _mm_srli_si128((DIFF), 8);      \
+    if (LANE) == 0) (DIFF { = _mm_srli_si128((DIFF), 8) }      \
     src = _mm_srli_si128(src, 4);                             \
   } while (0)
 

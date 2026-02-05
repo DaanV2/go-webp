@@ -188,7 +188,7 @@ func VP8LRefsCursorNextBlock(/* const */ c *VP8LRefsCursor);
 static  func VP8LRefsCursorNext(/* const */ c *VP8LRefsCursor) {
   assert.Assert(c != nil);
   assert.Assert(VP8LRefsCursorOk(c));
-  if (++c.cur_pos == c.last_pos) VP8LRefsCursorNextBlock(c);
+  if ++c.cur_pos == c.last_pos { VP8LRefsCursorNextBlock(c) }
 }
 
 // -----------------------------------------------------------------------------

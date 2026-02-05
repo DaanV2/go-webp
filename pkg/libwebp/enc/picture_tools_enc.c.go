@@ -80,7 +80,7 @@ func SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, int y_s
     luma_ptr = y_ptr;
     for y = 0; y < height; y++ {
       for x = 0; x < width; x++ {
-        if (alpha_ptr[x] == 0) luma_ptr[x] = avg_u8;
+        if alpha_ptr[x] == 0 { luma_ptr[x] = avg_u8 }
       }
       alpha_ptr += a_stride;
       luma_ptr += y_stride;
@@ -106,7 +106,7 @@ func WebPReplaceTransparentPixels(/* const */ pic *WebPPicture, color uint32) {
 
 func WebPCleanupTransparentArea(pic *WebPPicture) {
   int x, y, w, h;
-  if (pic == nil) return;
+  if pic == nil { return }
   w = pic.width / SIZE;
   h = pic.height / SIZE;
 
@@ -199,7 +199,7 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
   green := (background_rgb >> 8) & 0xff;
   blue := (background_rgb >> 0) & 0xff;
   var x, y int
-  if (picture == nil) return;
+  if picture == nil { return }
   if (!picture.use_argb) {
     // omit last pixel during u/v loop
     uv_width := (picture.width >> 1);
@@ -212,7 +212,7 @@ func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
     u_ptr *uint8 = picture.u;
     v_ptr *uint8 = picture.v;
     a_ptr *uint8 = picture.a;
-    if (!has_alpha || a_ptr == nil) return;  // nothing to do
+    if !has_alpha || a_ptr == nil { return }  // nothing to do
     for y = 0; y < picture.height; y++ {
       // Luma blending
       for x = 0; x < picture.width; x++ {
