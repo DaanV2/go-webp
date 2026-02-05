@@ -25,12 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 
 
-// Main color cache struct.
-type VP8LColorCache struct {
-  colors *uint32;  // color entries, (uint(1) << hash_bits)
-  int hash_shift;  // Hash shift: 32 - 'hash_bits'.
-  int hash_bits;
-}
+
 
 const kHashMul  = uint32(0x1e35a7bd);
 

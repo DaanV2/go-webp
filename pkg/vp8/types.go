@@ -26,3 +26,8 @@ type range_t uint32
 type vp8l_val_t uint64   // right now, this bit-reader can only use 64bit.
 type vp8l_atype_t uint64 // accumulator type
 type vp8l_wtype_t uint32 // writing type
+
+// type used for scores, rate, distortion
+// Note that MAX_COST is not the maximum allowed by sizeof(score_t),
+// in order to allow overflowing computations.
+type score_t int64  

@@ -1156,8 +1156,8 @@ func RestoreState(/* const */ dec *VP8LDecoder) {
   }
 }
 
-const SYNC_EVERY_N_ROWS =8  // minimum number of rows between check-points
-static int DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width, height int, int last_row, ProcessRowsFunc process_func) {
+
+func DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width, height int, last_row int , process_func ProcessRowsFunc ) int {
   row := dec.last_pixel / width;
   col := dec.last_pixel % width;
   var br *VP8LBitReader = &decoder.br;
@@ -1169,10 +1169,10 @@ static int DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32,
   len_code_limit := NUM_LITERAL_CODES + NUM_LENGTH_CODES;
   color_cache_limit := len_code_limit + hdr.color_cache_size;
   next_sync_row := dec.incremental ? row : 1 << 24;
-  const color_cache *VP8LColorCache =
+  var color_cache *VP8LColorCache =
       (hdr.color_cache_size > 0) ? &hdr.color_cache : nil;
   mask := hdr.huffman_mask;
-  const htree_group *HTreeGroup =
+  var htree_group *HTreeGroup =
       (src < src_last) ? GetHtreeGroupForPos(hdr, col, row) : nil;
   assert.Assert(dec.last_row < last_row);
   assert.Assert(src_last <= src_end);

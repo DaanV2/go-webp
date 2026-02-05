@@ -8,6 +8,8 @@
 
 package vp8
 
+import "github.com/daanv2/go-webp/pkg/huffman"
+
 type VP8FrameHeader struct {
 	key_frame        uint8
 	profile          uint8
@@ -139,11 +141,13 @@ type VP8LMetadata struct {
 	huffman_xsize          int
 	huffman_image          *uint32
 	num_htree_groups       int
-	htree_groups           *HTreeGroup
-	huffman_tables         HuffmanTables
+	htree_groups           *huffman.HTreeGroup
+	huffman_tables         huffman.HuffmanTables
 }
 
-// type used for scores, rate, distortion
-// Note that MAX_COST is not the maximum allowed by sizeof(score_t),
-// in order to allow overflowing computations.
-type score_t int64  
+// Main color cache struct.
+type VP8LColorCache struct {
+	colors     *uint32 // color entries, (uint(1) << hash_bits)
+	hash_shift int     // Hash shift: 32 - 'hash_bits'.
+	hash_bits  int
+}

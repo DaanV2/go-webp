@@ -151,6 +151,8 @@ const (
 	VP8L_WRITER_BYTES    = 4  // sizeof(vp8l_wtype_t)
 	VP8L_WRITER_BITS     = 32 // 8 * sizeof(vp8l_wtype_t)
 	VP8L_WRITER_MAX_BITS = 64 // 8 * sizeof(vp8l_atype_t)
+
+	SYNC_EVERY_N_ROWS = 8 // minimum number of rows between check-points
 )
 
 var (
