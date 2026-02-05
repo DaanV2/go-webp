@@ -34,7 +34,7 @@ const USE_GENERIC_TREE =0
 #endif  // USE_GENERIC_TREE
 
 #if (USE_GENERIC_TREE == 1)
-static const int8 kYModesIntra4[18] = {
+var kYModesIntra4 = [18]int8 = {
     -B_DC_PRED, 1, -B_TM_PRED, 2, -B_VE_PRED, 3, 4,          6, -B_HE_PRED, 5, -B_RD_PRED, -B_VR_PRED, -B_LD_PRED, 7, -B_VL_PRED, 8, -B_HD_PRED, -B_HU_PRED}
 #endif
 

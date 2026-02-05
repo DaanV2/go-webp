@@ -683,7 +683,7 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
 // Main loops
 //
 
-static const uint8 kAverageBytesPerMB[8] = {50, 24, 16, 9, 7, 5, 3, 2}
+var kAverageBytesPerMB = [8]uint8 = {50, 24, 16, 9, 7, 5, 3, 2}
 
 func PreLoopInitialize(/* const */ enc *VP8Encoder) int {
   var p int

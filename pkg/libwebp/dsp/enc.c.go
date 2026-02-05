@@ -634,7 +634,7 @@ func Disto16x16_C(/* const */ /* const */ a *uint8, /*const*/ /* const */ b *uin
 //
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
-static const uint8 kZigzag[16] = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
+var kZigzag = [16]uint8 = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
 
 // Simple quantization
 func QuantizeBlock_C(int16 in[16], int16 out[16], /*const*/ /* const */ mtx *VP8Matrix) int {

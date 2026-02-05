@@ -34,14 +34,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 
 #ifdef USE_VTBLQ
 // 255 = byte will be zeroed
-static const uint8 kGreenShuffle[16] = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255}
+var kGreenShuffle = [16]uint8 = {1, 255, 1, 255, 5,  255, 5,  255, 9, 255, 9, 255, 13, 255, 13, 255}
 
 static  uint8x16_t DoGreenShuffle_NEON(/* const */ uint8x16_t argb, /*const*/ uint8x16_t shuffle) {
   return vcombine_u8(vtbl1q_u8(argb, vget_low_u8(shuffle)), vtbl1q_u8(argb, vget_high_u8(shuffle)));
 }
 #else   // !USE_VTBLQ
 // 255 = byte will be zeroed
-static const uint8 kGreenShuffle[8] = {1, 255, 1, 255, 5, 255, 5, 255}
+var kGreenShuffle = [8]uint8 = {1, 255, 1, 255, 5, 255, 5, 255}
 
 static  uint8x16_t DoGreenShuffle_NEON(/* const */ uint8x16_t argb, /*const*/ uint8x8_t shuffle) {
   return vcombine_u8(vtbl1_u8(vget_low_u8(argb), shuffle), vtbl1_u8(vget_high_u8(argb), shuffle));
@@ -77,10 +77,10 @@ func TransformColor_NEON(/* const */ /* const */ m *VP8LMultipliers, argb_data *
   const int16x8_t mults_b2 = vld1q_s16(b2);
 #undef CST
 #ifdef USE_VTBLQ
-  static const uint8 kg0g0[16] = {255, 1, 255, 1, 255, 5,  255, 5, 255, 9, 255, 9, 255, 13, 255, 13}
+  var kg0g0 = [16]uint8 = {255, 1, 255, 1, 255, 5,  255, 5, 255, 9, 255, 9, 255, 13, 255, 13}
   const uint8x16_t shuffle = vld1q_u8(kg0g0);
 #else
-  static const uint8 k0g0g[8] = {255, 1, 255, 1, 255, 5, 255, 5}
+  var k0g0g = [8]uint8 = {255, 1, 255, 1, 255, 5, 255, 5}
   const uint8x8_t shuffle = vld1_u8(k0g0g);
 #endif
   const uint32x4_t mask_rb = vdupq_n_u32(uint(0x00ff00ff));  // red-blue masks
