@@ -89,9 +89,9 @@ func WebPMuxDelete(mux *WebPMux) {
   } while (0)
 
 func MuxSet(/* const */ mux *WebPMux, uint32 tag, /*const*/ data *WebPData, int copy_data) WebPMuxError {
-  WebPChunk chunk;
-  WebPMuxError err = WEBP_MUX_NOT_FOUND;
-  const CHUNK_INDEX idx = ChunkGetIndexFromTag(tag);
+  var chunk WebPChunk
+  var err WebPMuxError = WEBP_MUX_NOT_FOUND;
+  var idx CHUNK_INDEX  = ChunkGetIndexFromTag(tag);
   assert.Assert(mux != nil);
   assert.Assert(!IsWPI(kChunks[idx].id));
 
@@ -104,11 +104,10 @@ func MuxSet(/* const */ mux *WebPMux, uint32 tag, /*const*/ data *WebPData, int 
   SWITCH_ID_LIST(IDX_UNKNOWN, &mux.unknown);
   return err;
 }
-#undef SWITCH_ID_LIST
 
 // Create data for frame given image data, offsets and duration.
 func CreateFrameData(width, height int, /*const*/ info *WebPMuxFrameInfo, /*const*/ frame *WebPData) WebPMuxError {
-  frame_bytes *uint8;
+  var frame_bytes *uint8;
   frame_size := kChunks[IDX_ANMF].size;
 
   assert.Assert(width > 0 && height > 0 && info.duration >= 0);

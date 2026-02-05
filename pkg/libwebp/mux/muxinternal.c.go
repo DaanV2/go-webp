@@ -1,5 +1,3 @@
-package mux
-
 // Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,12 +5,9 @@ package mux
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Internal objects and utils for mux.
-//
-// Authors: Urvang (urvang@google.com)
-//          Vikas (vikasa@google.com)
+
+package mux
+
 
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stddef"
