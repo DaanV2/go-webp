@@ -50,13 +50,13 @@ func WebPPictureAllocYUVA(/* const */ picture *picture.Picture) int {
   // Security and validation checks
   if (width <= 0 || height <= 0 ||        // luma/alpha param error
       uv_width <= 0 || uv_height <= 0) {  // u/v param error
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
+    return picture.SetEncodingError(picture.VP8_ENC_ERROR_BAD_DIMENSION)
   }
   // allocate a new buffer.
 
   //   mem = (*uint8)WebPSafeMalloc(total_size, sizeof(*mem));
 //   if (mem == nil) {
-//     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+//     return picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
 //   }
   mem := make([]uint8, total_size)
 
@@ -99,7 +99,7 @@ func WebPPictureAllocARGB(/* const */ picture *picture.Picture) error {
 	// allocate a new buffer.
 	//   memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.ARGB));
 	//   if (memory == nil) {
-	//     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+	//     return picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
 	//   }
 	memory := make([]uint8, argb_size + WEBP_ALIGN_CST)
 

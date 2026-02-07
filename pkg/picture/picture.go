@@ -13,7 +13,7 @@ const LOSSLESS_DEFAULT_QUALITY = 70.0
 // Progress hook, called from time to time to report progress. It can return
 // false to request an abort of the encoding process, or true otherwise if
 // everything is OK.
-type WebPProgressHook = func(percent int /*const*/, picture *Picture) int
+type WebPProgressHook = func(percent int /*const*/, picture *Picture) error
 
 // Main exchange structure (input samples, output bytes, statistics)
 //
@@ -31,23 +31,23 @@ type Picture struct {
 	UseARGB bool
 
 	// YUV input (mostly used for input to lossy compression)
-	ColorSpace          colorspace.CSP // colorspace: should be YUV420 for now (=Y'CbCr).
-	Width, Height       int        // dimensions (less or equal to WEBP_MAX_DIMENSION)
-	Y, U, V             *uint8     // pointers to luma/chroma planes.
-	YStride, UVStride int        // luma/chroma strides.
-	A                   *uint8     // pointer to the alpha plane
-	AStride            int        // stride of the alpha plane
+	ColorSpace        colorspace.CSP // colorspace: should be YUV420 for now (=Y'CbCr).
+	Width, Height     int            // dimensions (less or equal to WEBP_MAX_DIMENSION)
+	Y, U, V           *uint8         // pointers to luma/chroma planes.
+	YStride, UVStride int            // luma/chroma strides.
+	A                 *uint8         // pointer to the alpha plane
+	AStride           int            // stride of the alpha plane
 	// pad1                [2]uint32  // padding for later use
 
 	// ARGB input (mostly used for input to lossless compression)
-	ARGB        *uint32   // Pointer to argb (32 bit) plane.
-	ARGBStride int       // This is stride in pixels units, not bytes.
+	ARGB       *uint32 // Pointer to argb (32 bit) plane.
+	ARGBStride int     // This is stride in pixels units, not bytes.
 	// pad2        [3]uint32 // padding for later use
 
 	//   OUTPUT
 	///////////////
 	// Byte-emission hook, to store compressed bytes as they are ready.
-	Writer     WebPWriterFunction // can be nil
+	Writer    WebPWriterFunction // can be nil
 	CustomPtr *void              // can be used by the writer.
 
 	// map for extra information (only for lossy compression mode)
@@ -86,8 +86,8 @@ type Picture struct {
 
 	// PRIVATE FIELDS
 	////////////////////
-	memory_      *void    // row chunk of memory for yuva planes
-	memory_argb_ *void    // and for argb too.
+	memory_      *void // row chunk of memory for yuva planes
+	memory_argb_ *void // and for argb too.
 	// pad7         [2]*void // padding for later use
 }
 
@@ -113,8 +113,6 @@ func WebPPictureInit(picture *Picture) int {
 	return WebPPictureInitInternal(picture, WEBP_ENCODER_ABI_VERSION)
 }
 
-
-
 // Release the memory allocated by WebPPictureAlloc() or *WebPPictureImport().
 // Note that this function does _not_ free the memory used by the 'picture'
 // object itself.
@@ -130,87 +128,105 @@ func WebPPictureFree(picture *Picture) {
 // will fully own the copied pixels (this is not a view). The 'dst' picture need
 // not be initialized as its content is overwritten.
 // Returns false in case of memory allocation error.
-func WebPPictureCopy(/* const */ src *picture.Picture, dst *picture.Picture) int {
-  if src == nil || dst == nil { return 0  }
-  if src == dst { return 1  }
+func WebPPictureCopy( /* const */ src *picture.Picture, dst *picture.Picture) int {
+	if src == nil || dst == nil {
+		return 0
+	}
+	if src == dst {
+		return 1
+	}
 
-  PictureGrabSpecs(src, dst);
-  if !picture.WebPPictureAlloc(dst) { return 0  }
+	PictureGrabSpecs(src, dst)
+	if !picture.WebPPictureAlloc(dst) {
+		return 0
+	}
 
-  if (!src.use_argb) {
-    WebPCopyPlane(src.y, src.y_stride, dst.y, dst.y_stride, dst.width, dst.height);
-    WebPCopyPlane(src.u, src.uv_stride, dst.u, dst.uv_stride, HALVE(dst.width), HALVE(dst.height));
-    WebPCopyPlane(src.v, src.uv_stride, dst.v, dst.uv_stride, HALVE(dst.width), HALVE(dst.height));
-    if (dst.a != nil) {
-      WebPCopyPlane(src.a, src.a_stride, dst.a, dst.a_stride, dst.width, dst.height);
-    }
-  } else {
-    WebPCopyPlane(src.argb, 4 * src.argb_stride, dst.argb, 4 * dst.argb_stride, 4 * dst.width, dst.height);
-  }
-  return 1;
+	if !src.use_argb {
+		WebPCopyPlane(src.y, src.y_stride, dst.y, dst.y_stride, dst.width, dst.height)
+		WebPCopyPlane(src.u, src.uv_stride, dst.u, dst.uv_stride, HALVE(dst.width), HALVE(dst.height))
+		WebPCopyPlane(src.v, src.uv_stride, dst.v, dst.uv_stride, HALVE(dst.width), HALVE(dst.height))
+		if dst.a != nil {
+			WebPCopyPlane(src.a, src.a_stride, dst.a, dst.a_stride, dst.width, dst.height)
+		}
+	} else {
+		WebPCopyPlane(src.argb, 4*src.argb_stride, dst.argb, 4*dst.argb_stride, 4*dst.width, dst.height)
+	}
+	return 1
 }
 
-
-
-
 // Remove reference to the ARGB/YUVA buffer (doesn't free anything).
-func WebPPictureResetBuffers(/* const */ picture *picture.Picture) {
-  WebPPictureResetBufferARGB(picture);
-  WebPPictureResetBufferYUVA(picture);
+func WebPPictureResetBuffers( /* const */ picture *picture.Picture) {
+	WebPPictureResetBufferARGB(picture)
+	WebPPictureResetBufferYUVA(picture)
 }
 
 // Returns true if 'picture' is non-nil and dimensions/colorspace are within
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
-func WebPValidatePicture(/* const */ picture *picture.Picture) error {
-  if picture == nil { return errors.New("picture is nil")  }
-  if (picture.Width <= 0 || picture.Width > INT_MAX / 4 ||
-      picture.Height <= 0 || picture.Height > INT_MAX / 4) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
-  }
-  if (picture.ColorSpace != colorspace.WEBP_YUV420 &&
-      picture.ColorSpace != colorspace.WEBP_YUV420A) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
-  }
+func WebPValidatePicture( /* const */ picture *picture.Picture) error {
+	if picture == nil {
+		return errors.New("picture is nil")
+	}
+	if picture.Width <= 0 || picture.Width > INT_MAX/4 ||
+		picture.Height <= 0 || picture.Height > INT_MAX/4 {
+		return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION)
+	}
+	if picture.ColorSpace != colorspace.WEBP_YUV420 &&
+		picture.ColorSpace != colorspace.WEBP_YUV420A {
+		return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION)
+	}
 
-  return nil
+	return nil
 }
 
-func WebPPictureResetBufferARGB(/* const */ picture *picture.Picture) {
-  picture.memory_argb_ = nil;
-  picture.ARGB = nil;
-  picture.ARGBStride = 0;
+func WebPPictureResetBufferARGB( /* const */ picture *picture.Picture) {
+	picture.memory_argb_ = nil
+	picture.ARGB = nil
+	picture.ARGBStride = 0
 }
 
-func WebPPictureResetBufferYUVA(/* const */ picture *picture.Picture) {
-  picture.memory_ = nil
-  picture.Y = nil
-  picture.U = nil
-  picture.V = nil
-  picture.A = nil
-  picture.YStride = 0
-  picture.UVStride = 0
-  picture.AStride = 0
+func WebPPictureResetBufferYUVA( /* const */ picture *picture.Picture) {
+	picture.memory_ = nil
+	picture.Y = nil
+	picture.U = nil
+	picture.V = nil
+	picture.A = nil
+	picture.YStride = 0
+	picture.UVStride = 0
+	picture.AStride = 0
 }
 
 // Assign an error code to a picture. Return false for convenience.
-// Deprecated: time to start using golang errors
-func WebPEncodingSetError(/* const */ pic *Picture, err error) error {
-  // The oldest error reported takes precedence over the new one.
-  pic.ErrorCode = errors.Join(pic.ErrorCode, err)
-
-  return err
+// Deprecated: use: pic.SetEncodingError(err) instead, which returns the error for convenience.
+func WebPEncodingSetError( /* const */ pic *Picture, err error) error {
+	return pic.SetEncodingError(err)
 }
 
-func WebPReportProgress(/* const */ pic *Picture, percent int, /*const*/ percent_store *int) error {
-  if (percent_store != nil && percent != *percent_store) {
-    *percent_store = percent;
+func (pic *Picture) SetEncodingError(err error) error {
+	if err == nil {
+		return nil
+	}
 
-    if (pic.ProgressHook && !pic.ProgressHook(percent, pic)) {
-      // user abort requested
-      return WebPEncodingSetError(pic, VP8_ENC_ERROR_USER_ABORT);
-    }
-  }
+	// The oldest error reported takes precedence over the new one.
+	pic.ErrorCode = errors.Join(pic.ErrorCode, err)
 
-  return nil
+	return err
+}
+
+func WebPReportProgress( /* const */ pic *Picture, percent int /*const*/, percent_store *int) error {
+	return pic.ReportProgress(percent, percent_store)
+}
+
+func (pic *Picture) ReportProgress(percent int /*const*/, percent_store *int) error {
+	if percent_store != nil && percent != *percent_store {
+		*percent_store = percent
+
+		if pic.ProgressHook != nil {
+			if err := pic.ProgressHook(percent, pic); err != nil {
+				return WebPEncodingSetError(pic, err)
+			}
+		}
+	}
+
+	return nil
 }

@@ -1073,7 +1073,7 @@ func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackward
   entropy_combine_num_bins := tenary.If(low_effort, NUM_PARTITIONS, BIN_SIZE);
   var entropy_combine int
   if (orig_histo == nil) {
-    WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
     goto Error;
   }
 
@@ -1100,12 +1100,12 @@ func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackward
         (int)(1 + DivRound(quality * quality * quality * (MAX_HISTO_GREEDY - 1), 100 * 100 * 100));
     var do_greedy int
     if (!HistogramCombineStochastic(image_histo, threshold_size, &do_greedy)) {
-      WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+      pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
       goto Error;
     }
     if (do_greedy) {
       if (!HistogramCombineGreedy(image_histo)) {
-        WebPEncodingSetError(pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+        pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
         goto Error;
       }
     }

@@ -60,7 +60,7 @@ func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ 
   ok := SharpYuvConvert(
       r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.Y, picture.YStride, picture.U, picture.UVStride, picture.V, picture.UVStride, /*yuv_bit_depth=*/8, picture.Width, picture.Height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    return picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
   }
   return ok;
 }
@@ -137,7 +137,7 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
     WebPInitGammaTables();
 
     // if (tmp_rgb == nil) {
-    //   return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    //   return picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
     // }
 
     if (rg == nil) {
@@ -214,9 +214,9 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 func PictureARGBToYUVA(picture *picture.Picture, colorspace.CSP colorspace, float64 dithering, use_iterative_conversion int) int {
   if picture == nil { return 0  }
   if (picture.ARGB == nil) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
+    return picture.SetEncodingError(picture.VP8_ENC_ERROR_nil_PARAMETER)
   } else if ((colorspace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
+    return picture.SetEncodingError(picture.VP8_ENC_ERROR_INVALID_CONFIGURATION)
   } else {
     var argb *uint8 = (/* const */ *uint8)picture.ARGB;
     var a *uint8 = argb + CHANNEL_OFFSET(0);
@@ -251,13 +251,13 @@ func WebPPictureSmartARGBToYUVA(picture *picture.Picture) int {
 func WebPPictureYUVAToARGB(picture *picture.Picture) int {
   if picture == nil { return 0  }
   if (picture.Y == nil || picture.U == nil || picture.V == nil) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
+    return picture.SetEncodingError(picture.VP8_ENC_ERROR_nil_PARAMETER)
   }
   if ((picture.ColorSpace & colorspace.WEBP_CSP_ALPHA_BIT) && picture.A == nil) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
+    return picture.SetEncodingError(picture.VP8_ENC_ERROR_nil_PARAMETER)
   }
   if ((picture.ColorSpace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
+    return picture.SetEncodingError(picture.VP8_ENC_ERROR_INVALID_CONFIGURATION)
   }
   // Allocate a new argb buffer (discarding the previous one).
   if !picture.WebPPictureAllocARGB(picture) { return 0  }

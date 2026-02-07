@@ -675,7 +675,7 @@ func PreLoopInitialize(/* const */ enc *VP8Encoder) int {
     ok = VP8BitWriterInit(enc.parts + p, bytes_per_parts);
   }
   if (!ok) {
-    return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
   }
   return ok;
 }
@@ -703,7 +703,7 @@ func PostLoopFinalize(/* const */ it *VP8EncIterator, ok int) int {
 #endif
     VP8AdjustFilterStrength(it);  // ...and store filter stats.
   } else {
-    return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
   }
   return ok;
 }
@@ -817,7 +817,7 @@ func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
       VP8Decimate(&it, &info, rd_opt);
       ok = RecordTokens(&it, &info, &enc.tokens);
       if (!ok) {
-        WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+        enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
         break;
       }
       size_p0 += info.H;

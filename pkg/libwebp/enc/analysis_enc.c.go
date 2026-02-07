@@ -485,7 +485,7 @@ func VP8EncAnalyze(/* const */ enc *VP8Encoder) int {
     ResetAllMBInfo(enc);
   }
   if (!ok) {
-    return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);  // imprecise
+    return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)  // imprecise
   }
   return ok;
 }

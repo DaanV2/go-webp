@@ -175,7 +175,7 @@ func PutWebPHeaders(/* const */ enc *VP8Encoder, uint64 size0, uint64 vp8_size, 
 
   // Error.
 Error:
-  return WebPEncodingSetError(pic, err);
+  return pic.SetEncodingError(picture.err)
 }
 
 // Segmentation header
@@ -243,14 +243,14 @@ func EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *picture.Pict
   for p = 0; p < enc.num_parts - 1; p++ {
     part_size := VP8BitWriterSize(enc.parts + p);
     if (part_size >= VP8_MAX_PARTITION_SIZE) {
-      return WebPEncodingSetError(pic, VP8_ENC_ERROR_PARTITION_OVERFLOW);
+      return pic.SetEncodingError(picture.VP8_ENC_ERROR_PARTITION_OVERFLOW)
     }
     buf[3 * p + 0] = (part_size >> 0) & 0xff;
     buf[3 * p + 1] = (part_size >> 8) & 0xff;
     buf[3 * p + 2] = (part_size >> 16) & 0xff;
   }
   if (p && !pic.writer(buf, 3 * p, pic)) {
-    return WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_WRITE);
+    return pic.SetEncodingError(picture.VP8_ENC_ERROR_BAD_WRITE)
   }
   return 1;
 }
@@ -264,7 +264,7 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
 
   pos1 = VP8BitWriterPos(bw);
   if (!VP8BitWriterInit(bw, mb_size * 7 / 8)) {  // ~7 bits per macroblock
-    return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
   }
   vp8.VP8PutBitUniform(bw, 0);  // colorspace
   vp8.VP8PutBitUniform(bw, 0);  // clamp type
@@ -296,7 +296,7 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
   (void)pos3;
 #endif
   if (bw.error) {
-    return WebPEncodingSetError(enc.pic, VP8_ENC_ERROR_OUT_OF_MEMORY);
+    return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
   }
   return 1;
 }
@@ -340,7 +340,7 @@ func VP8EncWrite(/* const */ enc *VP8Encoder) int {
   }
   // RIFF size should fit in 32-bits.
   if (riff_size > uint(0xfffffffe)) {
-    return WebPEncodingSetError(pic, VP8_ENC_ERROR_FILE_TOO_BIG);
+    return pic.SetEncodingError(picture.VP8_ENC_ERROR_FILE_TOO_BIG)
   }
 
   // Emit headers and partition #0

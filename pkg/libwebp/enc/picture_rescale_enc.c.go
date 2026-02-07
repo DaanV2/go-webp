@@ -106,7 +106,7 @@ func WebPPictureCrop(pic *picture.Picture, left int, top int, width, height int)
   tmp.width = width;
   tmp.height = height;
   if (!picture.WebPPictureAlloc(&tmp)) {
-    return WebPEncodingSetError(pic, tmp.ErrorCode);
+    return pic.SetEncodingError(picture.tmp.ErrorCode)
   }
 
   if (!pic.use_argb) {
@@ -167,14 +167,14 @@ func WebPPictureRescale(picture *picture.Picture, width, height int) int {
   prev_width = picture.Width;
   prev_height = picture.Height;
   if (!WebPRescalerGetScaledDimensions(prev_width, prev_height, &width, &height)) {
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
+    return picture.SetEncodingError(picture.VP8_ENC_ERROR_BAD_DIMENSION)
   }
 
   PictureGrabSpecs(picture, &tmp);
   tmp.width = width;
   tmp.height = height;
   if (!picture.WebPPictureAlloc(&tmp)) {
-    return WebPEncodingSetError(picture, tmp.ErrorCode);
+    return picture.SetEncodingError(picture.tmp.ErrorCode)
   }
 
   if (!picture.UseARGB) {
@@ -226,7 +226,7 @@ func WebPPictureRescale(picture *picture.Picture, width, height int) int {
 Cleanup:
   if (status != VP8_ENC_OK) {
     picture.WebPPictureFree(&tmp);
-    return WebPEncodingSetError(picture, status);
+    return picture.SetEncodingError(picture.status)
   }
 
   picture.WebPPictureFree(picture);
