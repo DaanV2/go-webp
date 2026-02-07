@@ -1,5 +1,10 @@
 package webp
 
+import (
+	"github.com/daanv2/go-webp/pkg/config"
+	"github.com/daanv2/go-webp/pkg/libwebp/mux"
+)
+
 // Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -53,7 +58,7 @@ func WebPGetMuxVersion() int {
 // Life of a Mux object
 
 // Internal, version-checked, entry point
-func WebPNewInternal(v int) *WebPMux {
+func WebPNewInternal(v int) *mux.WebPMux {
 	// TODO: implement function
 	return nil
 }
@@ -62,14 +67,14 @@ func WebPNewInternal(v int) *WebPMux {
 // Returns:
 //   A pointer to the newly created empty mux object.
 //   Or nil in case of memory error.
-func WebPMuxNew() *WebPMux {
+func WebPMuxNew() *mux.WebPMux {
 	return WebPNewInternal(WEBP_MUX_ABI_VERSION)
 }
 
 // Deletes the mux object.
 // Parameters:
 //   mux - (in/out) object to be deleted
-func WebPMuxDelete(mux *WebPMux) {
+func WebPMuxDelete(mux *mux.WebPMux) {
 	// TODO: implement function
 }
 
@@ -77,7 +82,7 @@ func WebPMuxDelete(mux *WebPMux) {
 // Mux creation.
 
 // Internal, version-checked, entry point
-func WebPMuxCreateInternal(*WebPData, int, int) *WebPMux {
+func WebPMuxCreateInternal(*WebPData, int, int) *mux.WebPMux {
 	// TODO: implement function
 	return nil
 }
@@ -92,7 +97,7 @@ func WebPMuxCreateInternal(*WebPData, int, int) *WebPMux {
 // Returns:
 //   A pointer to the mux object created from given data - on success.
 //   nil - In case of invalid data or memory error.
-func WebPMuxCreate(bitstream *WebPData, copy_data int) *WebPMux {
+func WebPMuxCreate(bitstream *WebPData, copy_data int) *mux.WebPMux {
 	return WebPMuxCreateInternal(bitstream, copy_data, WEBP_MUX_ABI_VERSION)
 }
 
@@ -120,7 +125,7 @@ func WebPMuxCreate(bitstream *WebPData, copy_data int) *WebPMux {
 //                               or if fourcc corresponds to an image chunk.
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
-func WebPMuxSetChunk(mux *WebPMux, fourcc [4]byte, chunk_data *WebPData, copy_data int) WebPMuxError {
+func WebPMuxSetChunk(mux *mux.WebPMux, fourcc [4]byte, chunk_data *WebPData, copy_data int) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -137,7 +142,7 @@ func WebPMuxSetChunk(mux *WebPMux, fourcc [4]byte, chunk_data *WebPData, copy_da
 //                               or if fourcc corresponds to an image chunk.
 //   WEBP_MUX_NOT_FOUND - If mux does not contain a chunk with the given id.
 //   WEBP_MUX_OK - on success.
-func WebPMuxGetChunk(mux *WebPMux, fourcc [4]byte, chunk_data *WebPData) WebPMuxError {
+func WebPMuxGetChunk(mux *mux.WebPMux, fourcc [4]byte, chunk_data *WebPData) WebPMuxError {
 	// TODO: implement function
 }
 
@@ -151,7 +156,7 @@ func WebPMuxGetChunk(mux *WebPMux, fourcc [4]byte, chunk_data *WebPData) WebPMux
 //                               or if fourcc corresponds to an image chunk.
 //   WEBP_MUX_NOT_FOUND - If mux does not contain a chunk with the given fourcc.
 //   WEBP_MUX_OK - on success.
-func WebPMuxDeleteChunk(mux *WebPMux, fourcc [4]byte) WebPMuxError {
+func WebPMuxDeleteChunk(mux *mux.WebPMux, fourcc [4]byte) WebPMuxError {
 	// TODO: implement function
 }
 
@@ -194,7 +199,7 @@ type WebPMuxFrameInfo struct {
 //   WEBP_MUX_INVALID_ARGUMENT - if mux is nil or bitstream is nil.
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
-func WebPMuxSetImage(mux *WebPMux, bitstream *WebPData, copy_data int) WebPMuxError {
+func WebPMuxSetImage(mux *mux.WebPMux, bitstream *WebPData, copy_data int) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -217,7 +222,7 @@ func WebPMuxSetImage(mux *WebPMux, bitstream *WebPData, copy_data int) WebPMuxEr
 //                               or if content of 'frame' is invalid.
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
-func WebPMuxPushFrame(mux *WebPMux, frame *WebPMuxFrameInfo, copy_data int) WebPMuxError {
+func WebPMuxPushFrame(mux *mux.WebPMux, frame *WebPMuxFrameInfo, copy_data int) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -237,7 +242,7 @@ func WebPMuxPushFrame(mux *WebPMux, frame *WebPMuxFrameInfo, copy_data int) WebP
 //   WEBP_MUX_BAD_DATA - if nth frame chunk in mux is invalid.
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
-func WebPMuxGetFrame(mux *WebPMux, nth uint32, frame *WebPMuxFrameInfo) WebPMuxError {
+func WebPMuxGetFrame(mux *mux.WebPMux, nth uint32, frame *WebPMuxFrameInfo) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -252,7 +257,7 @@ func WebPMuxGetFrame(mux *WebPMux, nth uint32, frame *WebPMuxFrameInfo) WebPMuxE
 //   WEBP_MUX_NOT_FOUND - If there are less than nth frames in the mux object
 //                        before deletion.
 //   WEBP_MUX_OK - on success.
-func WebPMuxDeleteFrame(mux *WebPMux, nth uint32) WebPMuxError {
+func WebPMuxDeleteFrame(mux *mux.WebPMux, nth uint32) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -281,7 +286,7 @@ type WebPMuxAnimParams struct {
 //   WEBP_MUX_INVALID_ARGUMENT - if mux or params is nil.
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
-func WebPMuxSetAnimationParams(mux *WebPMux, params *WebPMuxAnimParams) WebPMuxError {
+func WebPMuxSetAnimationParams(mux *mux.WebPMux, params *WebPMuxAnimParams) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -294,7 +299,7 @@ func WebPMuxSetAnimationParams(mux *WebPMux, params *WebPMuxAnimParams) WebPMuxE
 //   WEBP_MUX_INVALID_ARGUMENT - if mux or params is nil.
 //   WEBP_MUX_NOT_FOUND - if ANIM chunk is not present in mux object.
 //   WEBP_MUX_OK - on success.
-func WebPMuxGetAnimationParams(mux *WebPMux, params *WebPMuxAnimParams) WebPMuxError {
+func WebPMuxGetAnimationParams(mux *mux.WebPMux, params *WebPMuxAnimParams) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -317,7 +322,7 @@ func WebPMuxGetAnimationParams(mux *WebPMux, params *WebPMuxAnimParams) WebPMuxE
 //   WEBP_MUX_INVALID_ARGUMENT - if mux is nil; or
 //                               width or height are invalid or out of bounds
 //   WEBP_MUX_OK - on success.
-func WebPMuxSetCanvasSize(mux *WebPMux, width, height int) WebPMuxError {
+func WebPMuxSetCanvasSize(mux *mux.WebPMux, width, height int) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -334,7 +339,7 @@ func WebPMuxSetCanvasSize(mux *WebPMux, width, height int) WebPMuxError {
 //   WEBP_MUX_INVALID_ARGUMENT - if mux, width or height is nil.
 //   WEBP_MUX_BAD_DATA - if VP8X/VP8/VP8L chunk or canvas size is invalid.
 //   WEBP_MUX_OK - on success.
-func WebPMuxGetCanvasSize(mux *WebPMux, width, height *int) WebPMuxError {
+func WebPMuxGetCanvasSize(mux *mux.WebPMux, width, height *int) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -352,7 +357,7 @@ func WebPMuxGetCanvasSize(mux *WebPMux, width, height *int) WebPMuxError {
 //   WEBP_MUX_INVALID_ARGUMENT - if mux or flags is nil.
 //   WEBP_MUX_BAD_DATA - if VP8X/VP8/VP8L chunk or canvas size is invalid.
 //   WEBP_MUX_OK - on success.
-func WebPMuxGetFeatures(mux *WebPMux, flags *uint32) WebPMuxError {
+func WebPMuxGetFeatures(mux *mux.WebPMux, flags *uint32) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -365,7 +370,7 @@ func WebPMuxGetFeatures(mux *WebPMux, flags *uint32) WebPMuxError {
 // Returns:
 //   WEBP_MUX_INVALID_ARGUMENT - if mux, or num_elements is nil.
 //   WEBP_MUX_OK - on success.
-func WebPMuxNumChunks(mux *WebPMux, id WebPChunkId, num_elements *int) WebPMuxError {
+func WebPMuxNumChunks(mux *mux.WebPMux, id WebPChunkId, num_elements *int) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -385,7 +390,7 @@ func WebPMuxNumChunks(mux *WebPMux, id WebPChunkId, num_elements *int) WebPMuxEr
 //   WEBP_MUX_INVALID_ARGUMENT - if mux or assembled_data is nil.
 //   WEBP_MUX_MEMORY_ERROR - on memory allocation error.
 //   WEBP_MUX_OK - on success.
-func WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) WebPMuxError {
+func WebPMuxAssemble(mux *mux.WebPMux, assembled_data *WebPData) WebPMuxError {
 	// TODO: implement function
 	return 0
 }
@@ -402,7 +407,7 @@ func WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) WebPMuxError {
   // Tune 'enc_options' as needed.
   *WebPAnimEncoder enc = WebPAnimEncoderNew(width, height, &enc_options);
   while(<there are more frames>) {
-     var config WebPConfig
+     var config config.WebPConfig
     WebPConfigInit(&config);
     // Tune 'config' as needed.
     WebPAnimEncoderAdd(enc, frame, timestamp_ms, &config);
@@ -488,7 +493,7 @@ func WebPAnimEncoder(width, height int, enc_options *WebPAnimEncoderOptions) *We
 // Returns:
 //   On error, returns false and frame.error_code is set appropriately.
 //   Otherwise, returns true.
-func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp_ms int, config *WebPConfig) int {
+func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp_ms int, config *config.WebPConfig) int {
 	// TODO: implement function
 	return 0
 }

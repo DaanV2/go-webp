@@ -1,0 +1,3 @@
+package lossless
+
+func Encode()

@@ -9,27 +9,9 @@
 package mux
 
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stddef"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/mux"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 
 
-var ChunkInfo = []kChunks{
-    {MKFOURCC('V', 'P', '8', 'X'), WEBP_CHUNK_VP8X, VP8X_CHUNK_SIZE}, {MKFOURCC('I', 'C', 'C', 'P'), WEBP_CHUNK_ICCP, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('A', 'N', 'I', 'M'), WEBP_CHUNK_ANIM, ANIM_CHUNK_SIZE}, {MKFOURCC('A', 'N', 'M', 'F'), WEBP_CHUNK_ANMF, ANMF_CHUNK_SIZE}, {MKFOURCC('A', 'L', 'P', 'H'), WEBP_CHUNK_ALPHA, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('V', 'P', '8', ' '), WEBP_CHUNK_IMAGE, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('V', 'P', '8', 'L'), WEBP_CHUNK_IMAGE, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('E', 'X', 'I', 'F'), WEBP_CHUNK_EXIF, UNDEFINED_CHUNK_SIZE}, {MKFOURCC('X', 'M', 'P', ' '), WEBP_CHUNK_XMP, UNDEFINED_CHUNK_SIZE}, {NIL_TAG, WEBP_CHUNK_UNKNOWN, UNDEFINED_CHUNK_SIZE},
-
-    {NIL_TAG, WEBP_CHUNK_NIL, UNDEFINED_CHUNK_SIZE}}
-
-func WebPGetMuxVersion() int {
-  return (MUX_MAJ_VERSION << 16) | (MUX_MIN_VERSION << 8) | MUX_REV_VERSION;
-}
 
 // Initialize.
 func ChunkInit(/* const */ chunk *WebPChunk) {
@@ -84,7 +66,7 @@ func ChunkGetIndexFromFourCC(/* const */ fourcc [4]byte) CHUNK_INDEX {
 
 // Returns next chunk in the chunk list with the given tag.
 func ChunkSearchNextInList(chunk *WebPChunk, tag uint32) *WebPChunk {
-  while (chunk != nil && chunk.tag != tag) {
+  for chunk != nil && chunk.tag != tag {
     chunk = chunk.next;
   }
   return chunk;

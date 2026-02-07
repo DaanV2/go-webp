@@ -6,11 +6,11 @@ import (
 	"io"
 
 	"github.com/daanv2/go-webp/pkg/config"
-	"github.com/daanv2/go-webp/pkg/encodings/lossless"
-	"github.com/daanv2/go-webp/pkg/encodings/lossy"
+	"github.com/daanv2/go-webp/pkg/encoding/lossless"
+	"github.com/daanv2/go-webp/pkg/encoding/lossy"
 )
 
-func Encode(w io.Writer, img image.Image, options *config.Config) error {
+func Encode(w io.Writer, img image.Image, options *config.WebPConfig) error {
 	if options == nil {
 		return errors.New("options is nil")
 	}

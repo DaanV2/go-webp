@@ -74,7 +74,7 @@ func ResetBoundaryPredictions(/* const */ enc *VP8Encoder) {
 //-------------------+---+---+---+---+---+---+---+
 
 func MapConfigToTools(/* const */ enc *VP8Encoder) {
-  var config *WebPConfig = enc.config;
+  var config *config.WebPConfig = enc.config;
   method := config.method;
   limit := 100 - config.partition_limit;
   enc.method = method;
@@ -122,7 +122,7 @@ func MapConfigToTools(/* const */ enc *VP8Encoder) {
 //              LFStats: 2048
 // Picture size (yuv): 419328
 
-static InitVP *VP8Encoder8Encoder(/* const */ config *WebPConfig, /*const*/ picture *WebPPicture) {
+static InitVP *VP8Encoder8Encoder(/* const */ config *config.WebPConfig, /*const*/ picture *WebPPicture) {
   enc *VP8Encoder;
   use_filter :=
       (config.filter_strength > 0) || (config.autofilter > 0);
@@ -305,7 +305,7 @@ func WebPReportProgress(/* const */ pic *WebPPicture, percent int, /*const*/ per
 }
 //------------------------------------------------------------------------------
 
-func WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) int {
+func WebPEncode(/* const */ config *config.WebPConfig, pic *WebPPicture) int {
   ok := 0;
   if pic == nil { return 0  }
 

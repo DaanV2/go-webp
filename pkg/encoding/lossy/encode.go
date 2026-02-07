@@ -1,0 +1,3 @@
+package lossy
+
+func Encode()

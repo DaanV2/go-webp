@@ -8,10 +8,13 @@
 
 package vp8
 
-import "github.com/daanv2/go-webp/pkg/constants"
+import (
+	"github.com/daanv2/go-webp/pkg/config"
+	"github.com/daanv2/go-webp/pkg/constants"
+)
 
 type VP8Encoder struct {
-	config *WebPConfig;  // user configuration and parameters
+	config *config.WebPConfig;  // user configuration and parameters
 	pic *WebPPicture;          // input / output picture
 
 	// headers
@@ -82,7 +85,7 @@ type VP8Encoder struct {
 }
 
 type VP8LEncoder struct {
-	config *WebPConfig  // user configuration and parameters
+	config *config.WebPConfig  // user configuration and parameters
 	pic    *WebPPicture // input picture.
 
 	argb         *uint32                // Transformed argb image data.

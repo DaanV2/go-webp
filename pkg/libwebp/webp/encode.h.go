@@ -50,7 +50,7 @@ func WebPEncodeBGRA(/* const */ bgra *uint8, width, height int, stride int, qual
 // settings. For lossless this means 'exact' is disabled. RGB values in fully
 // transparent areas (that is, areas with alpha values equal to 0) will be
 // modified to improve compression. To afunc this, use WebPEncode() and set
-// WebPConfig::exact to 1.
+// config.WebPConfig::exact to 1.
 func WebPEncodeLosslessRGB(/* const */ rgb *uint8, width, height int, stride int, output *uint8) uint64 {
 	// TODO:
 }
@@ -343,5 +343,5 @@ func WebPPictureInit(picture *WebPPicture) int {
 // the former for lossy encoding, and the latter for lossless encoding
 // (when config.lossless is true). Automatic conversion from one format to
 // another is provided but they both incur some loss.
-  int WebPEncode(/* const */ config *WebPConfig, picture *WebPPicture);
+  int WebPEncode(/* const */ config *config.WebPConfig, picture *WebPPicture);
 

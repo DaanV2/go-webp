@@ -145,7 +145,7 @@ const (
 	WEBP_HINT_LAST
 )
 
-// Enumerate some predefined settings for WebPConfig, depending on the type
+// Enumerate some predefined settings for config.WebPConfig, depending on the type
 // of source picture. These presets are used when calling WebPConfigPreset().
 type WebPPreset int
 
