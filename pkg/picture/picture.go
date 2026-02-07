@@ -1,8 +1,10 @@
 package picture
 
 import (
-	"github.com/daanv2/go-webp/pkg/assert"
+	"errors"
+
 	"github.com/daanv2/go-webp/pkg/color/colorspace"
+	"github.com/daanv2/go-webp/pkg/picture"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 )
 
@@ -111,22 +113,7 @@ func WebPPictureInit(picture *Picture) int {
 	return WebPPictureInitInternal(picture, WEBP_ENCODER_ABI_VERSION)
 }
 
-// Convenience allocation / deallocation based on picture.Width/height:
-// Allocate y/u/v buffers as per colorspace/width/height specification.
-// Note! This function will free the previous buffer if needed.
-// Returns false in case of memory error.
-func WebPPictureAlloc(pict *Picture) int {
-	if pict != nil {
-		WebPPictureFree(pict) // erase previous buffer
 
-		if !pict.use_argb {
-			return WebPPictureAllocYUVA(pict)
-		} else {
-			return WebPPictureAllocARGB(pict)
-		}
-	}
-	return 1
-}
 
 // Release the memory allocated by WebPPictureAlloc() or *WebPPictureImport().
 // Note that this function does _not_ free the memory used by the 'picture'
@@ -163,95 +150,8 @@ func WebPPictureCopy(/* const */ src *picture.Picture, dst *picture.Picture) int
   return 1;
 }
 
-// Allocates YUVA buffer according to set width/height (previous one is always
-// free'd). Uses picture.csp to determine whether an alpha buffer is needed.
-// Preserves the ARGB buffer.
-// Returns false in case of error (invalid param, out-of-memory).
-func WebPPictureAllocYUVA(/* const */ picture *picture.Picture) int {
-  has_alpha := int(picture.ColorSpace) & colorspace.WEBP_CSP_ALPHA_BIT;
-  width := picture.Width;
-  height := picture.Height;
-  y_stride := width;
-  uv_width := int(int64(width + 1) >> 1)
-  uv_height := int(int64(height + 1) >> 1)
-  uv_stride := uv_width;
-  var a_width, a_stride int
-  var y_size, uv_size, a_size, total_size uint64
-  var mem *uint8;
 
-  if !WebPValidatePicture(picture) { return 0  }
 
-  WebPPictureResetBufferYUVA(picture);
-
-  // alpha
-  a_width = tenary.If(has_alpha, width, 0);
-  a_stride = a_width;
-  y_size = uint64(y_stride * height)
-  uv_size = uint64(uv_stride * uv_height)
-  a_size = uint64(a_stride * height)
-
-  total_size = y_size + a_size + 2 * uv_size;
-
-  // Security and validation checks
-  if (width <= 0 || height <= 0 ||        // luma/alpha param error
-      uv_width <= 0 || uv_height <= 0) {  // u/v param error
-    return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
-  }
-  // allocate a new buffer.
-
-  //   mem = (*uint8)WebPSafeMalloc(total_size, sizeof(*mem));
-//   if (mem == nil) {
-//     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
-//   }
-  mem := make([]uint8, total_size)
-
-  // From now on, we're in the clear, we can no longer fail...
-  picture.memory_ = (*void)mem;
-  picture.YStride = y_stride;
-  picture.UVStride = uv_stride;
-  picture.AStride = a_stride;
-
-  // TODO(skal): we could align the y/u/v planes and adjust stride.
-  picture.Y = mem;
-  mem += y_size;
-
-  picture.U = mem;
-  mem += uv_size;
-  picture.V = mem;
-  mem += uv_size;
-
-  if (a_size > 0) {
-    picture.A = mem;
-    mem += a_size;
-  }
-  (void)mem;  // makes the static analyzer happy
-  return 1;
-}
-
-// Allocates ARGB buffer according to set width/height (previous one is
-// always free'd). Preserves the YUV(A) buffer. Returns false in case of error
-// (invalid param, out-of-memory).
-func WebPPictureAllocARGB(/* const */ picture *picture.Picture) int {
-  width := picture.Width
-  height := picture.Height
-  argb_size := uint64(width * height)
-
-  if !WebPValidatePicture(picture) { return 0  }
-
-  WebPPictureResetBufferARGB(picture);
-
-  // allocate a new buffer.
-//   memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.ARGB));
-//   if (memory == nil) {
-//     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
-//   }
-  memory := make([]uint8, argb_size + WEBP_ALIGN_CST)
-
-  picture.memory_argb_ = memory;
-  picture.ARGB = (*uint32)WEBP_ALIGN(memory);
-  picture.ARGBStride = width;
-  return 1;
-}
 
 // Remove reference to the ARGB/YUVA buffer (doesn't free anything).
 func WebPPictureResetBuffers(/* const */ picture *picture.Picture) {
@@ -262,8 +162,8 @@ func WebPPictureResetBuffers(/* const */ picture *picture.Picture) {
 // Returns true if 'picture' is non-nil and dimensions/colorspace are within
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
-func WebPValidatePicture(/* const */ picture *picture.Picture) int {
-  if picture == nil { return 0  }
+func WebPValidatePicture(/* const */ picture *picture.Picture) error {
+  if picture == nil { return errors.New("picture is nil")  }
   if (picture.Width <= 0 || picture.Width > INT_MAX / 4 ||
       picture.Height <= 0 || picture.Height > INT_MAX / 4) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
@@ -272,7 +172,8 @@ func WebPValidatePicture(/* const */ picture *picture.Picture) int {
       picture.ColorSpace != colorspace.WEBP_YUV420A) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
-  return 1;
+
+  return nil
 }
 
 func WebPPictureResetBufferARGB(/* const */ picture *picture.Picture) {
@@ -294,23 +195,22 @@ func WebPPictureResetBufferYUVA(/* const */ picture *picture.Picture) {
 
 // Assign an error code to a picture. Return false for convenience.
 // Deprecated: time to start using golang errors
-func WebPEncodingSetError(/* const */ pic *Picture, error WebPEncodingError ) int {
-  assert.Assert((int)error < VP8_ENC_ERROR_LAST);
-  assert.Assert((int)error >= VP8_ENC_OK);
+func WebPEncodingSetError(/* const */ pic *Picture, err error) error {
   // The oldest error reported takes precedence over the new one.
-  if (pic.ErrorCode == VP8_ENC_OK) {
-    ((*picture.Picture)pic).ErrorCode = error;
-  }
-  return 0;
+  pic.ErrorCode = errors.Join(pic.ErrorCode, err)
+
+  return err
 }
 
-func WebPReportProgress(/* const */ pic *Picture, percent int, /*const*/ percent_store *int) int {
+func WebPReportProgress(/* const */ pic *Picture, percent int, /*const*/ percent_store *int) error {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
+
     if (pic.ProgressHook && !pic.ProgressHook(percent, pic)) {
       // user abort requested
       return WebPEncodingSetError(pic, VP8_ENC_ERROR_USER_ABORT);
     }
   }
-  return 1;  // ok
+
+  return nil
 }
