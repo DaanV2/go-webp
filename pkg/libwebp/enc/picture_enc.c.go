@@ -7,30 +7,11 @@ package enc
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// WebPPicture class basis
-//
-// Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/limits"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const LOSSLESS_DEFAULT_QUALITY =70.0
 
-//------------------------------------------------------------------------------
-// WebPPicture
-//------------------------------------------------------------------------------
-
 func DummyWriter(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture) int {
-  // The following are to prevent 'unused variable' error message.
   return 1;
 }
 
@@ -71,10 +52,14 @@ func WebPPictureResetBufferARGB(/* const */ picture *WebPPicture) {
 }
 
 func WebPPictureResetBufferYUVA(/* const */ picture *WebPPicture) {
-  picture.memory_ = nil;
-  picture.y = picture.u = picture.v = picture.a = nil;
-  picture.y_stride = picture.uv_stride = 0;
-  picture.a_stride = 0;
+  picture.memory_ = nil
+  picture.y = nil
+  picture.u = nil
+  picture.v = nil
+  picture.a = nil
+  picture.y_stride = 0
+  picture.uv_stride = 0
+  picture.a_stride = 0
 }
 
 // Remove reference to the ARGB/YUVA buffer (doesn't free anything).
