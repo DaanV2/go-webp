@@ -106,7 +106,7 @@ func WebPPictureCrop(pic *picture.WebPPicture, left int, top int, width, height 
   tmp.width = width;
   tmp.height = height;
   if (!picture.WebPPictureAlloc(&tmp)) {
-    return WebPEncodingSetError(pic, tmp.error_code);
+    return WebPEncodingSetError(pic, tmp.ErrorCode);
   }
 
   if (!pic.use_argb) {
@@ -164,8 +164,8 @@ func WebPPictureRescale(picture *picture.WebPPicture, width, height int) int {
   status := VP8_ENC_OK;
 
   if picture == nil { return 0  }
-  prev_width = picture.width;
-  prev_height = picture.height;
+  prev_width = picture.Width;
+  prev_height = picture.Height;
   if (!WebPRescalerGetScaledDimensions(prev_width, prev_height, &width, &height)) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
   }
@@ -174,7 +174,7 @@ func WebPPictureRescale(picture *picture.WebPPicture, width, height int) int {
   tmp.width = width;
   tmp.height = height;
   if (!picture.WebPPictureAlloc(&tmp)) {
-    return WebPEncodingSetError(picture, tmp.error_code);
+    return WebPEncodingSetError(picture, tmp.ErrorCode);
   }
 
   if (!picture.UseARGB) {
@@ -185,9 +185,9 @@ func WebPPictureRescale(picture *picture.WebPPicture, width, height int) int {
     // }
 	work = make([]rescaler_t, 2 * width)
     // If present, we need to rescale alpha first (for AlphaMultiplyY).
-    if (picture.a != nil) {
+    if (picture.A != nil) {
       WebPInitAlphaProcessing();
-      if (!RescalePlane(picture.a, prev_width, prev_height, picture.a_stride, tmp.a, width, height, tmp.a_stride, work, 1)) {
+      if (!RescalePlane(picture.A, prev_width, prev_height, picture.AStride, tmp.a, width, height, tmp.a_stride, work, 1)) {
         status = VP8_ENC_ERROR_BAD_DIMENSION;
         goto Cleanup;
       }
@@ -196,9 +196,9 @@ func WebPPictureRescale(picture *picture.WebPPicture, width, height int) int {
     // We take transparency into account on the luma plane only. That's not
     // totally exact blending, but still is a good approximation.
     AlphaMultiplyY(picture, 0);
-    if (!RescalePlane(picture.y, prev_width, prev_height, picture.y_stride, tmp.y, width, height, tmp.y_stride, work, 1) ||
-        !RescalePlane(picture.u, HALVE(prev_width), HALVE(prev_height), picture.uv_stride, tmp.u, HALVE(width), HALVE(height), tmp.uv_stride, work, 1) ||
-        !RescalePlane(picture.v, HALVE(prev_width), HALVE(prev_height), picture.uv_stride, tmp.v, HALVE(width), HALVE(height), tmp.uv_stride, work, 1)) {
+    if (!RescalePlane(picture.Y, prev_width, prev_height, picture.YStride, tmp.y, width, height, tmp.y_stride, work, 1) ||
+        !RescalePlane(picture.U, HALVE(prev_width), HALVE(prev_height), picture.UVStride, tmp.u, HALVE(width), HALVE(height), tmp.uv_stride, work, 1) ||
+        !RescalePlane(picture.V, HALVE(prev_width), HALVE(prev_height), picture.UVStride, tmp.v, HALVE(width), HALVE(height), tmp.uv_stride, work, 1)) {
       status = VP8_ENC_ERROR_BAD_DIMENSION;
       goto Cleanup;
     }
@@ -216,7 +216,7 @@ func WebPPictureRescale(picture *picture.WebPPicture, width, height int) int {
     // the premultiplication afterward (while preserving the alpha channel).
     WebPInitAlphaProcessing();
     AlphaMultiplyARGB(picture, 0);
-    if (!RescalePlane((/* const */ *uint8)picture.argb, prev_width, prev_height, picture.argb_stride * 4, (*uint8)tmp.argb, width, height, tmp.argb_stride * 4, work, 4)) {
+    if (!RescalePlane((/* const */ *uint8)picture.ARGB, prev_width, prev_height, picture.ARGBStride * 4, (*uint8)tmp.argb, width, height, tmp.argb_stride * 4, work, 4)) {
       status = VP8_ENC_ERROR_BAD_DIMENSION;
       goto Cleanup;
     }

@@ -178,7 +178,7 @@ func WebPAnimEncoderOptionsInitInternal(enc_options *WebPAnimEncoderOptions, abi
 func ClearRectangle(/* const */ picture *picture.WebPPicture, left int, top int, width, height int) {
   var j int
   for j = top; j < top + height; j++ {
-    var dst *uint32 = picture.argb + j * picture.argb_stride;
+    var dst *uint32 = picture.ARGB + j * picture.ARGBStride;
     var i int
     for i = left; i < left + width; i++ {
       dst[i] = TRANSPARENT_COLOR;
@@ -190,7 +190,7 @@ func WebPUtilClearPic(/* const */ picture *picture.WebPPicture, /*const*/ rect *
   if (rect != nil) {
     ClearRectangle(picture, rect.x_offset, rect.y_offset, rect.width, rect.height);
   } else {
-    ClearRectangle(picture, 0, 0, picture.width, picture.height);
+    ClearRectangle(picture, 0, 0, picture.Width, picture.Height);
   }
 }
 
@@ -771,7 +771,7 @@ func EncodeCandidate(/* const */ sub_frame *picture.WebPPicture, /*const*/ rect 
     config.FilterStrength = 0;
   }
   if (!EncodeFrame(&config, sub_frame, &candidate.mem)) {
-    error_code = sub_frame.error_code;
+    error_code = sub_frame.ErrorCode;
     goto Err;
   }
 
@@ -786,8 +786,8 @@ Err:
 func CopyCurrentCanvas(/* const */ enc *WebPAnimEncoder) {
   if (enc.curr_canvas_copy_modified) {
     WebPCopyPixels(enc.curr_canvas, &enc.curr_canvas_copy);
-    enc.curr_canvas_copy.progress_hook = enc.curr_canvas.progress_hook;
-    enc.curr_canvas_copy.user_data = enc.curr_canvas.user_data;
+    enc.curr_canvas_copy.ProgressHook = enc.curr_canvas.ProgressHook;
+    enc.curr_canvas_copy.UserData = enc.curr_canvas.UserData;
     enc.curr_canvas_copy_modified = 0;
   }
 }
@@ -1350,7 +1350,7 @@ End:
       MarkError2(enc, "ERROR adding frame. WebPEncodingError", error_code);
     }
   }
-  enc.curr_canvas.error_code = error_code;  // report error_code
+  enc.curr_canvas.ErrorCode = error_code;  // report error_code
   assert.Assert(ok || error_code != VP8_ENC_OK);
   return ok;
 }
@@ -1408,7 +1408,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.WebPPicture, timest
         (uint32)timestamp - enc.prev_timestamp;
     if (prev_frame_duration >= MAX_DURATION) {
       if (frame != nil) {
-        frame.error_code = VP8_ENC_ERROR_INVALID_CONFIGURATION;
+        frame.ErrorCode = VP8_ENC_ERROR_INVALID_CONFIGURATION;
       }
       MarkError(enc, "ERROR adding frame: timestamps must be non-decreasing");
       return 0;
@@ -1434,7 +1434,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.WebPPicture, timest
 
   if (frame.width != enc.canvas_width ||
       frame.height != enc.canvas_height) {
-    frame.error_code = VP8_ENC_ERROR_INVALID_CONFIGURATION;
+    frame.ErrorCode = VP8_ENC_ERROR_INVALID_CONFIGURATION;
     MarkError(enc, "ERROR adding frame: Invalid frame dimensions");
     return 0;
   }

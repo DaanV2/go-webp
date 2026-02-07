@@ -71,7 +71,7 @@ func WebPEncodeLosslessBGRA(/* const */ bgra *uint8, width, height int, stride i
 
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
-// reference (and so one can make use of picture.custom_ptr).
+// reference (and so one can make use of picture.CustomPtr).
 type WebPWriterFunction = func(/* const */ data *uint8, data_size uint64, /*const*/ picture *picture.WebPPicture) int 
 
 // WebPMemoryWrite: a special WebPWriterFunction that writes to memory using
@@ -171,7 +171,7 @@ const WEBP_MAX_DIMENSION =16383
   int picture.WebPPictureImportBGRA(picture *picture.WebPPicture, /*const*/ bgra *uint8, bgra_stride int);
   int picture.WebPPictureImportBGRX(picture *picture.WebPPicture, /*const*/ bgrx *uint8, bgrx_stride int);
 
-// Converts picture.argb data to the YUV420A format. The 'colorspace'
+// Converts picture.ARGB data to the YUV420A format. The 'colorspace'
 // parameter is deprecated and should be equal to colorspace.WEBP_YUV420.
 // Upon return, picture.UseARGB is set to false. The presence of real
 // non-opaque transparent values is detected, and 'colorspace' will be
@@ -196,7 +196,7 @@ const WEBP_MAX_DIMENSION =16383
 // kept for backward compatibility:
   int picture.WebPPictureSmartARGBToYUVA(picture *picture.WebPPicture);
 
-// Converts picture.yuv to picture.argb and sets picture.UseARGB to true.
+// Converts picture.yuv to picture.ARGB and sets picture.UseARGB to true.
 // The input format must be YUV_420 or YUV_420A. The conversion from YUV420 to
 // ARGB incurs a small loss too.
 // Note that the use of this colorspace is discouraged if one has access to the
@@ -226,7 +226,7 @@ const WEBP_MAX_DIMENSION =16383
 // 'picture' must be less than 16384x16384 in dimension (cf WEBP_MAX_DIMENSION),
 // and the 'config' object must be a valid one.
 // Returns false in case of error, true otherwise.
-// In case of error, picture.error_code is updated accordingly.
+// In case of error, picture.ErrorCode is updated accordingly.
 // 'picture' can hold the source samples in both YUV(A) or ARGB input, depending
 // on the value of 'picture.UseARGB'. It is highly recommended to use
 // the former for lossy encoding, and the latter for lossless encoding

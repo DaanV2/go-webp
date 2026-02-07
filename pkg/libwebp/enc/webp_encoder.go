@@ -124,8 +124,8 @@ func MapConfigToTools(/* const */ enc *VP8Encoder) {
 func InitVP8Encoder(/* const */ config *config.Config, /*const*/ picture *picture.WebPPicture) *VP8Encoder {
   var enc *VP8Encoder
   use_filter := (config.FilterStrength > 0) || (config.Autofilter > 0);
-  mb_w := (picture.width + 15) >> 4;
-  mb_h := (picture.height + 15) >> 4;
+  mb_w := (picture.Width + 15) >> 4;
+  mb_h := (picture.Height + 15) >> 4;
   preds_w := 4 * mb_w + 1;
   preds_h := 4 * mb_h + 1;
   preds_size := preds_w * preds_h * sizeof(*enc.preds);
@@ -222,8 +222,8 @@ func WebPEncodingSetError(/* const */ pic *picture.WebPPicture, error WebPEncodi
   assert.Assert((int)error < VP8_ENC_ERROR_LAST);
   assert.Assert((int)error >= VP8_ENC_OK);
   // The oldest error reported takes precedence over the new one.
-  if (pic.error_code == VP8_ENC_OK) {
-    ((*picture.WebPPicture)pic).error_code = error;
+  if (pic.ErrorCode == VP8_ENC_OK) {
+    ((*picture.WebPPicture)pic).ErrorCode = error;
   }
   return 0;
 }
@@ -231,7 +231,7 @@ func WebPEncodingSetError(/* const */ pic *picture.WebPPicture, error WebPEncodi
 func WebPReportProgress(/* const */ pic *picture.WebPPicture, percent int, /*const*/ percent_store *int) int {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
-    if (pic.progress_hook && !pic.progress_hook(percent, pic)) {
+    if (pic.ProgressHook && !pic.ProgressHook(percent, pic)) {
       // user abort requested
       return WebPEncodingSetError(pic, VP8_ENC_ERROR_USER_ABORT);
     }
@@ -243,7 +243,7 @@ func WebPEncode(/* const */ config *config.Config, pic *picture.WebPPicture) int
   ok := 0;
   if pic == nil { return 0  }
 
-  pic.error_code = VP8_ENC_OK;  // all ok so far
+  pic.ErrorCode = VP8_ENC_OK;  // all ok so far
   if (config == nil) {          // bad params
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_nil_PARAMETER);
   }

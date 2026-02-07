@@ -59,14 +59,14 @@ func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int
    var picture picture.WebPPicture
 
   if !picture.WebPPictureInit(&picture) { return 0  }
-  picture.width = width;
-  picture.height = height;
+  picture.Width = width;
+  picture.Height = height;
   picture.UseARGB = true;
   picture.stats = stats;
   if !picture.WebPPictureAlloc(&picture) { return 0  }
 
   // Transfer the alpha values to the green channel.
-  WebPDispatchAlphaToGreen(data, width, picture.width, picture.height, picture.argb, picture.argb_stride);
+  WebPDispatchAlphaToGreen(data, width, picture.Width, picture.Height, picture.ARGB, picture.ARGBStride);
 
   if !config.ConfigInit(&config) { return 0  }
   config.Lossless = 1;

@@ -28,24 +28,24 @@ type WebPPicture struct {
 	UseARGB bool
 
 	// YUV input (mostly used for input to lossy compression)
-	colorspace          colorspace.CSP // colorspace: should be YUV420 for now (=Y'CbCr).
-	width, height       int        // dimensions (less or equal to WEBP_MAX_DIMENSION)
-	y, u, v             *uint8     // pointers to luma/chroma planes.
-	y_stride, uv_stride int        // luma/chroma strides.
-	a                   *uint8     // pointer to the alpha plane
-	a_stride            int        // stride of the alpha plane
-	pad1                [2]uint32  // padding for later use
+	ColorSpace          colorspace.CSP // colorspace: should be YUV420 for now (=Y'CbCr).
+	Width, Height       int        // dimensions (less or equal to WEBP_MAX_DIMENSION)
+	Y, U, V             *uint8     // pointers to luma/chroma planes.
+	YStride, UVStride int        // luma/chroma strides.
+	A                   *uint8     // pointer to the alpha plane
+	AStride            int        // stride of the alpha plane
+	// pad1                [2]uint32  // padding for later use
 
 	// ARGB input (mostly used for input to lossless compression)
-	argb        *uint32   // Pointer to argb (32 bit) plane.
-	argb_stride int       // This is stride in pixels units, not bytes.
-	pad2        [3]uint32 // padding for later use
+	ARGB        *uint32   // Pointer to argb (32 bit) plane.
+	ARGBStride int       // This is stride in pixels units, not bytes.
+	// pad2        [3]uint32 // padding for later use
 
 	//   OUTPUT
 	///////////////
 	// Byte-emission hook, to store compressed bytes as they are ready.
-	writer     WebPWriterFunction // can be nil
-	custom_ptr *void              // can be used by the writer.
+	Writer     WebPWriterFunction // can be nil
+	CustomPtr *void              // can be used by the writer.
 
 	// map for extra information (only for lossy compression mode)
 	// 1: intra type
@@ -55,44 +55,44 @@ type WebPPicture struct {
 	// 5: chroma prediction mode
 	// 6: bit cost
 	// 7: distortion
-	extra_info_type int
+	ExtraInfoType int
 	// if not nil, points to an array of size
 	// ((width + 15) / 16) * ((height + 15) / 16) that
 	// will be filled with a macroblock map, depending
 	// on extra_info_type.
-	extra_info *uint8
+	ExtraInfo *uint8
 
 	// Pointer to side statistics (updated only if not nil)
 	stats *WebPAuxStats
 
 	// Error code for the latest error encountered during encoding
-	error_code WebPEncodingError
+	ErrorCode WebPEncodingError
 
 	// If not nil, report progress during encoding.
-	progress_hook WebPProgressHook
+	ProgressHook WebPProgressHook
 
 	// this field is free to be set to any value and
 	// used during callbacks (like progress-report e.g.).
-	user_data *void
+	UserData *void
 
-	pad3 [3]uint32 // padding for later use
+	// pad3 [3]uint32 // padding for later use
 
 	// Unused for now
-	pad4, pad5 *uint8
-	pad6       [8]uint32 // padding for later use
+	// pad4, pad5 *uint8
+	// pad6       [8]uint32 // padding for later use
 
 	// PRIVATE FIELDS
 	////////////////////
 	memory_      *void    // row chunk of memory for yuva planes
 	memory_argb_ *void    // and for argb too.
-	pad7         [2]*void // padding for later use
+	// pad7         [2]*void // padding for later use
 }
 
 // Internal, version-checked, entry point
 func WebPPictureInitInternal(picture *picture.WebPPicture, version int) int {
 	if picture != nil {
 		stdlib.Memset(picture, 0, sizeof(*picture))
-		picture.writer = DummyWriter
+		picture.Writer = DummyWriter
 		WebPEncodingSetError(picture, VP8_ENC_OK)
 	}
 	return 1
@@ -110,7 +110,7 @@ func WebPPictureInit(picture *WebPPicture) int {
 	return WebPPictureInitInternal(picture, WEBP_ENCODER_ABI_VERSION)
 }
 
-// Convenience allocation / deallocation based on picture.width/height:
+// Convenience allocation / deallocation based on picture.Width/height:
 // Allocate y/u/v buffers as per colorspace/width/height specification.
 // Note! This function will free the previous buffer if needed.
 // Returns false in case of memory error.
@@ -167,9 +167,9 @@ func WebPPictureCopy(/* const */ src *picture.WebPPicture, dst *picture.WebPPict
 // Preserves the ARGB buffer.
 // Returns false in case of error (invalid param, out-of-memory).
 func WebPPictureAllocYUVA(/* const */ picture *picture.WebPPicture) int {
-  has_alpha := int(picture.colorspace) & colorspace.WEBP_CSP_ALPHA_BIT;
-  width := picture.width;
-  height := picture.height;
+  has_alpha := int(picture.ColorSpace) & colorspace.WEBP_CSP_ALPHA_BIT;
+  width := picture.Width;
+  height := picture.Height;
   y_stride := width;
   uv_width := int(int64(width + 1) >> 1)
   uv_height := int(int64(height + 1) >> 1)
@@ -206,21 +206,21 @@ func WebPPictureAllocYUVA(/* const */ picture *picture.WebPPicture) int {
 
   // From now on, we're in the clear, we can no longer fail...
   picture.memory_ = (*void)mem;
-  picture.y_stride = y_stride;
-  picture.uv_stride = uv_stride;
-  picture.a_stride = a_stride;
+  picture.YStride = y_stride;
+  picture.UVStride = uv_stride;
+  picture.AStride = a_stride;
 
   // TODO(skal): we could align the y/u/v planes and adjust stride.
-  picture.y = mem;
+  picture.Y = mem;
   mem += y_size;
 
-  picture.u = mem;
+  picture.U = mem;
   mem += uv_size;
-  picture.v = mem;
+  picture.V = mem;
   mem += uv_size;
 
   if (a_size > 0) {
-    picture.a = mem;
+    picture.A = mem;
     mem += a_size;
   }
   (void)mem;  // makes the static analyzer happy
@@ -231,8 +231,8 @@ func WebPPictureAllocYUVA(/* const */ picture *picture.WebPPicture) int {
 // always free'd). Preserves the YUV(A) buffer. Returns false in case of error
 // (invalid param, out-of-memory).
 func WebPPictureAllocARGB(/* const */ picture *picture.WebPPicture) int {
-  width := picture.width
-  height := picture.height
+  width := picture.Width
+  height := picture.Height
   argb_size := uint64(width * height)
 
   if !WebPValidatePicture(picture) { return 0  }
@@ -240,15 +240,15 @@ func WebPPictureAllocARGB(/* const */ picture *picture.WebPPicture) int {
   WebPPictureResetBufferARGB(picture);
 
   // allocate a new buffer.
-//   memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.argb));
+//   memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.ARGB));
 //   if (memory == nil) {
 //     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
 //   }
   memory := make([]uint8, argb_size + WEBP_ALIGN_CST)
 
   picture.memory_argb_ = memory;
-  picture.argb = (*uint32)WEBP_ALIGN(memory);
-  picture.argb_stride = width;
+  picture.ARGB = (*uint32)WEBP_ALIGN(memory);
+  picture.ARGBStride = width;
   return 1;
 }
 
@@ -263,12 +263,12 @@ func WebPPictureResetBuffers(/* const */ picture *picture.WebPPicture) {
 // updated.
 func WebPValidatePicture(/* const */ picture *picture.WebPPicture) int {
   if picture == nil { return 0  }
-  if (picture.width <= 0 || picture.width > INT_MAX / 4 ||
-      picture.height <= 0 || picture.height > INT_MAX / 4) {
+  if (picture.Width <= 0 || picture.Width > INT_MAX / 4 ||
+      picture.Height <= 0 || picture.Height > INT_MAX / 4) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
   }
-  if (picture.colorspace != colorspace.WEBP_YUV420 &&
-      picture.colorspace != colorspace.WEBP_YUV420A) {
+  if (picture.ColorSpace != colorspace.WEBP_YUV420 &&
+      picture.ColorSpace != colorspace.WEBP_YUV420A) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
   return 1;
@@ -276,17 +276,17 @@ func WebPValidatePicture(/* const */ picture *picture.WebPPicture) int {
 
 func WebPPictureResetBufferARGB(/* const */ picture *picture.WebPPicture) {
   picture.memory_argb_ = nil;
-  picture.argb = nil;
-  picture.argb_stride = 0;
+  picture.ARGB = nil;
+  picture.ARGBStride = 0;
 }
 
 func WebPPictureResetBufferYUVA(/* const */ picture *picture.WebPPicture) {
   picture.memory_ = nil
-  picture.y = nil
-  picture.u = nil
-  picture.v = nil
-  picture.a = nil
-  picture.y_stride = 0
-  picture.uv_stride = 0
-  picture.a_stride = 0
+  picture.Y = nil
+  picture.U = nil
+  picture.V = nil
+  picture.A = nil
+  picture.YStride = 0
+  picture.UVStride = 0
+  picture.AStride = 0
 }

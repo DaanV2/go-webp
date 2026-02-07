@@ -88,7 +88,7 @@ func VP8LHistogramNumCodes(int palette_code_bits) int {
 }
 
 // Builds the histogram image. pic and percent are for progress.
-// Returns false in case of error (stored in pic.error_code).
+// Returns false in case of error (stored in pic.ErrorCode).
 int VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, histogram_bits int, cache_bits int, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *picture.WebPPicture, percent_range int, /*const*/ percent *int);
 
 // Returns the entropy for the symbols in the input array.

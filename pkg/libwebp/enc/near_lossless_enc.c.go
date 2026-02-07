@@ -111,9 +111,9 @@ func NearLossless(xsize int, ysize int, /*const*/ argb_src *uint32, stride int, 
 func VP8ApplyNearLossless(/* const */ picture *picture.WebPPicture, quality int, /*const*/ argb_dst *uint32) int {
   var i int
   copy_buffer *uint32;
-  xsize := picture.width;
-  ysize := picture.height;
-  stride := picture.argb_stride;
+  xsize := picture.Width;
+  ysize := picture.Height;
+  stride := picture.ARGBStride;
   limit_bits := VP8LNearLosslessBits(quality);
   assert.Assert(argb_dst != nil);
   assert.Assert(limit_bits > 0);
@@ -124,7 +124,7 @@ func VP8ApplyNearLossless(/* const */ picture *picture.WebPPicture, quality int,
        ysize < MIN_DIM_FOR_NEAR_LOSSLESS) ||
       ysize < 3) {
     for i = 0; i < ysize; i++ {
-      stdlib.MemCpy(argb_dst + i * xsize, picture.argb + i * picture.argb_stride, xsize * sizeof(*argb_dst));
+      stdlib.MemCpy(argb_dst + i * xsize, picture.ARGB + i * picture.ARGBStride, xsize * sizeof(*argb_dst));
     }
     return 1;
   }
@@ -135,7 +135,7 @@ func VP8ApplyNearLossless(/* const */ picture *picture.WebPPicture, quality int,
 //   }
   copy_buffer := make([]uint32, xsize * 3)
 
-  NearLossless(xsize, ysize, picture.argb, stride, limit_bits, copy_buffer, argb_dst);
+  NearLossless(xsize, ysize, picture.ARGB, stride, limit_bits, copy_buffer, argb_dst);
   for i = limit_bits - 1; i != 0; --i {
     NearLossless(xsize, ysize, argb_dst, xsize, i, copy_buffer, argb_dst);
   }

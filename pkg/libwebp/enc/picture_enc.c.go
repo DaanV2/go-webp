@@ -18,7 +18,7 @@ func WebPMemoryWriterInit(writer *WebPMemoryWriter) {
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
 func WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture *picture.WebPPicture) int {
-  var w *WebPMemoryWriter = (*WebPMemoryWriter)picture.custom_ptr;
+  var w *WebPMemoryWriter = (*WebPMemoryWriter)picture.CustomPtr;
   var next_size uint64
   if (w == nil) {
     return 1;

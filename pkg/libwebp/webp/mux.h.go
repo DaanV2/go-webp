@@ -3,6 +3,7 @@ package webp
 import (
 	"github.com/daanv2/go-webp/pkg/config"
 	"github.com/daanv2/go-webp/pkg/libwebp/mux"
+	"github.com/daanv2/go-webp/pkg/picture"
 )
 
 // Copyright 2011 Google Inc. All Rights Reserved.
@@ -491,7 +492,7 @@ func WebPAnimEncoder(width, height int, enc_options *WebPAnimEncoderOptions) *We
 //   config - (in) encoding options; can be passed nil to pick
 //            reasonable defaults.
 // Returns:
-//   On error, returns false and frame.error_code is set appropriately.
+//   On error, returns false and frame.ErrorCode is set appropriately.
 //   Otherwise, returns true.
 func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.WebPPicture, timestamp_ms int, config *config.Config) int {
 	// TODO: implement function

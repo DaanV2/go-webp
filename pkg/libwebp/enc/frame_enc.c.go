@@ -480,9 +480,9 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
     enc.block_count[2] += (mb.skip != 0);
   }
 
-  if (pic.extra_info != nil) {
-    var info *uint8 = &pic.extra_info[it.x + it.y * enc.mb_w];
-    switch (pic.extra_info_type) {
+  if (pic.ExtraInfo != nil) {
+    var info *uint8 = &pic.ExtraInfo[it.x + it.y * enc.mb_w];
+    switch (pic.ExtraInfoType) {
       case 1:
         *info = mb.type;
         break;
@@ -531,9 +531,9 @@ func ResetSSE(/* const */ enc *VP8Encoder) { (void)enc; }
 func StoreSideInfo(/* const */ it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
   var pic *picture.WebPPicture = enc.pic;
-  if (pic.extra_info != nil) {
+  if (pic.ExtraInfo != nil) {
     if (it.x == 0 && it.y == 0) {  // only do it once, at start
-      stdlib.Memset(pic.extra_info, 0, enc.mb_w * enc.mb_h * sizeof(*pic.extra_info));
+      stdlib.Memset(pic.ExtraInfo, 0, enc.mb_w * enc.mb_h * sizeof(*pic.ExtraInfo));
     }
   }
 }
@@ -740,7 +740,7 @@ func VP8EncLoop(/* const */ enc *VP8Encoder) int {
     if (!VP8Decimate(&it, &info, rd_opt) || dont_use_skip) {
       CodeResiduals(it.bw, &it, &info);
       if (it.bw.error) {
-        // enc.pic.error_code is set in PostLoopFinalize().
+        // enc.pic.ErrorCode is set in PostLoopFinalize().
         ok = 0;
         break;
       }

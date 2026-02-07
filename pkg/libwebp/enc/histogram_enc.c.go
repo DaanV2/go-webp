@@ -1119,5 +1119,5 @@ func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackward
   }
 
 Error:
-  return (pic.error_code == VP8_ENC_OK);
+  return (pic.ErrorCode == VP8_ENC_OK);
 }

@@ -38,12 +38,12 @@ func CheckNonOpaque(/* const */ alpha *uint8, width, height int, x_step int, y_s
 func WebPPictureHasTransparency(/* const */ picture *picture.WebPPicture) int {
   if picture == nil { return 0  }
   if (picture.UseARGB) {
-    if (picture.argb != nil) {
-      return CheckNonOpaque((/* const */ *uint8)picture.argb + ALPHA_OFFSET, picture.width, picture.height, 4, picture.argb_stride * sizeof(*picture.argb));
+    if (picture.ARGB != nil) {
+      return CheckNonOpaque((/* const */ *uint8)picture.ARGB + ALPHA_OFFSET, picture.Width, picture.Height, 4, picture.ARGBStride * sizeof(*picture.ARGB));
     }
     return 0;
   }
-  return CheckNonOpaque(picture.a, picture.width, picture.height, 1, picture.a_stride);
+  return CheckNonOpaque(picture.A, picture.Width, picture.Height, 1, picture.AStride);
 }
 
 extern VP8CPUInfo VP8GetCPUInfo;
@@ -58,7 +58,7 @@ static const kMinDimensionIterativeConversion := 4;
 
 func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, step int, rgb_stride int, /*const*/ picture *picture.WebPPicture) int {
   ok := SharpYuvConvert(
-      r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.y, picture.y_stride, picture.u, picture.uv_stride, picture.v, picture.uv_stride, /*yuv_bit_depth=*/8, picture.width, picture.height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
+      r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.Y, picture.YStride, picture.U, picture.UVStride, picture.V, picture.UVStride, /*yuv_bit_depth=*/8, picture.Width, picture.Height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
@@ -88,11 +88,11 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
                               int rgb_stride,  // bytes per scanline
                               float64 dithering, use_iterative_conversion int, /*const*/ picture *picture.WebPPicture) {
   var y int
-  width := picture.width;
-  height := picture.height;
+  width := picture.Width;
+  height := picture.Height;
   has_alpha := CheckNonOpaque(a_ptr, width, height, step, rgb_stride);
 
-  picture.colorspace = tenary.If(has_alpha, colorspace.WEBP_YUV420A, colorspace.WEBP_YUV420);
+  picture.ColorSpace = tenary.If(has_alpha, colorspace.WEBP_YUV420A, colorspace.WEBP_YUV420);
   picture.UseARGB = false;
 
   // disable smart conversion if source is too small (overkill).
@@ -114,7 +114,7 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
       return 0;
     }
     if (has_alpha) {
-      WebPExtractAlpha(a_ptr, rgb_stride, width, height, picture.a, picture.a_stride);
+      WebPExtractAlpha(a_ptr, rgb_stride, width, height, picture.A, picture.AStride);
     }
   } else {
     uv_width := (width + 1) >> 1;
@@ -122,10 +122,10 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
     // var tmp_rgb *uint16 = (*uint16)WebPSafeMalloc(4 * uv_width, sizeof(*tmp_rgb));
 	tmp_rgb = make([]uint16, 4 * uv_width)
 
-	var dst_y *uint8 = picture.y;
-    var dst_u *uint8 = picture.u;
-    var dst_v *uint8 = picture.v;
-    var dst_a *uint8 = picture.a;
+	var dst_y *uint8 = picture.Y;
+    var dst_u *uint8 = picture.U;
+    var dst_v *uint8 = picture.V;
+    var dst_a *uint8 = picture.A;
 
      var base_rg VP8Random
     rg *VP8Random = nil;
@@ -142,16 +142,16 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 
     if (rg == nil) {
       // Downsample Y/U/V planes, two rows at a time
-      WebPImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, has_alpha, width, height, tmp_rgb, picture.y_stride, picture.uv_stride, picture.a_stride, dst_y, dst_u, dst_v, dst_a);
+      WebPImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, has_alpha, width, height, tmp_rgb, picture.YStride, picture.UVStride, picture.AStride, dst_y, dst_u, dst_v, dst_a);
       if (height & 1) {
-        dst_y += (height - 1) * (ptrdiff_t)picture.y_stride;
-        dst_u += (height >> 1) * (ptrdiff_t)picture.uv_stride;
-        dst_v += (height >> 1) * (ptrdiff_t)picture.uv_stride;
+        dst_y += (height - 1) * (ptrdiff_t)picture.YStride;
+        dst_u += (height >> 1) * (ptrdiff_t)picture.UVStride;
+        dst_v += (height >> 1) * (ptrdiff_t)picture.UVStride;
         r_ptr += (height - 1) * (ptrdiff_t)rgb_stride;
         b_ptr += (height - 1) * (ptrdiff_t)rgb_stride;
         g_ptr += (height - 1) * (ptrdiff_t)rgb_stride;
         if (has_alpha) {
-          dst_a += (height - 1) * (ptrdiff_t)picture.a_stride;
+          dst_a += (height - 1) * (ptrdiff_t)picture.AStride;
           a_ptr += (height - 1) * (ptrdiff_t)rgb_stride;
         }
         WebPImportYUVAFromRGBALastLine(r_ptr, g_ptr, b_ptr, a_ptr, step, has_alpha, width, tmp_rgb, dst_y, dst_u, dst_v, dst_a);
@@ -161,11 +161,11 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
       for y = 0; y < (height >> 1); y++ {
         rows_have_alpha := has_alpha;
         ConvertRowToY(r_ptr, g_ptr, b_ptr, step, dst_y, width, rg);
-        ConvertRowToY(r_ptr + rgb_stride, g_ptr + rgb_stride, b_ptr + rgb_stride, step, dst_y + picture.y_stride, width, rg);
-        dst_y += 2 * picture.y_stride;
+        ConvertRowToY(r_ptr + rgb_stride, g_ptr + rgb_stride, b_ptr + rgb_stride, step, dst_y + picture.YStride, width, rg);
+        dst_y += 2 * picture.YStride;
         if (has_alpha) {
-          rows_have_alpha &= !WebPExtractAlpha(a_ptr, rgb_stride, width, 2, dst_a, picture.a_stride);
-          dst_a += 2 * picture.a_stride;
+          rows_have_alpha &= !WebPExtractAlpha(a_ptr, rgb_stride, width, 2, dst_a, picture.AStride);
+          dst_a += 2 * picture.AStride;
         }
         // Collect averaged R/G/B(/A)
         if (!rows_have_alpha) {
@@ -175,8 +175,8 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
         }
         // Convert to U/V
         ConvertRowsToUV(tmp_rgb, dst_u, dst_v, uv_width, rg);
-        dst_u += picture.uv_stride;
-        dst_v += picture.uv_stride;
+        dst_u += picture.UVStride;
+        dst_v += picture.UVStride;
         r_ptr += 2 * rgb_stride;
         b_ptr += 2 * rgb_stride;
         g_ptr += 2 * rgb_stride;
@@ -213,19 +213,19 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 
 func PictureARGBToYUVA(picture *picture.WebPPicture, colorspace.CSP colorspace, float64 dithering, use_iterative_conversion int) int {
   if picture == nil { return 0  }
-  if (picture.argb == nil) {
+  if (picture.ARGB == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   } else if ((colorspace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   } else {
-    var argb *uint8 = (/* const */ *uint8)picture.argb;
+    var argb *uint8 = (/* const */ *uint8)picture.ARGB;
     var a *uint8 = argb + CHANNEL_OFFSET(0);
     var r *uint8 = argb + CHANNEL_OFFSET(1);
     var g *uint8 = argb + CHANNEL_OFFSET(2);
     var b *uint8 = argb + CHANNEL_OFFSET(3);
 
-    picture.colorspace = colorspace.WEBP_YUV420;
-    return ImportYUVAFromRGBA(r, g, b, a, 4, 4 * picture.argb_stride, dithering, use_iterative_conversion, picture);
+    picture.ColorSpace = colorspace.WEBP_YUV420;
+    return ImportYUVAFromRGBA(r, g, b, a, 4, 4 * picture.ARGBStride, dithering, use_iterative_conversion, picture);
   }
 }
 
@@ -250,13 +250,13 @@ func WebPPictureSmartARGBToYUVA(picture *picture.WebPPicture) int {
 
 func WebPPictureYUVAToARGB(picture *picture.WebPPicture) int {
   if picture == nil { return 0  }
-  if (picture.y == nil || picture.u == nil || picture.v == nil) {
+  if (picture.Y == nil || picture.U == nil || picture.V == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   }
-  if ((picture.colorspace & colorspace.WEBP_CSP_ALPHA_BIT) && picture.a == nil) {
+  if ((picture.ColorSpace & colorspace.WEBP_CSP_ALPHA_BIT) && picture.A == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   }
-  if ((picture.colorspace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420) {
+  if ((picture.ColorSpace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
   // Allocate a new argb buffer (discarding the previous one).
@@ -266,26 +266,26 @@ func WebPPictureYUVAToARGB(picture *picture.WebPPicture) int {
   // Convert
   {
     var y int
-    width := picture.width;
-    height := picture.height;
-    argb_stride := 4 * picture.argb_stride;
-    dst *uint8 = (*uint8)picture.argb;
-    *cur_u = picture.u, *cur_v = picture.v, *cur_y := picture.y;
+    width := picture.Width;
+    height := picture.Height;
+    argb_stride := 4 * picture.ARGBStride;
+    dst *uint8 = (*uint8)picture.ARGB;
+    *cur_u = picture.U, *cur_v = picture.V, *cur_y := picture.Y;
     WebPUpsampleLinePairFunc upsample =
         WebPGetLinePairConverter(ALPHA_OFFSET > 0);
 
     // First row, with replicated top samples.
     upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst, nil, width);
-    cur_y += picture.y_stride;
+    cur_y += picture.YStride;
     dst += argb_stride;
     // Center rows.
     for y = 1; y + 1 < height; y += 2 {
       var top_u *uint8 = cur_u;
       var top_v *uint8 = cur_v;
-      cur_u += picture.uv_stride;
-      cur_v += picture.uv_stride;
-      upsample(cur_y, cur_y + picture.y_stride, top_u, top_v, cur_u, cur_v, dst, dst + argb_stride, width);
-      cur_y += 2 * picture.y_stride;
+      cur_u += picture.UVStride;
+      cur_v += picture.UVStride;
+      upsample(cur_y, cur_y + picture.YStride, top_u, top_v, cur_u, cur_v, dst, dst + argb_stride, width);
+      cur_y += 2 * picture.YStride;
       dst += 2 * argb_stride;
     }
     // Last row (if needed), with replicated bottom samples.
@@ -293,10 +293,10 @@ func WebPPictureYUVAToARGB(picture *picture.WebPPicture) int {
       upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst, nil, width);
     }
     // Insert alpha values if needed, in replacement for the default 0xff ones.
-    if (picture.colorspace & colorspace.WEBP_CSP_ALPHA_BIT) {
+    if (picture.ColorSpace & colorspace.WEBP_CSP_ALPHA_BIT) {
       for y = 0; y < height; y++ {
-        var argb_dst *uint32 = picture.argb + y * picture.argb_stride;
-        var src *uint8 = picture.a + y * picture.a_stride;
+        var argb_dst *uint32 = picture.ARGB + y * picture.ARGBStride;
+        var src *uint8 = picture.A + y * picture.AStride;
         var x int
         for x = 0; x < width; x++ {
           argb_dst[x] = (argb_dst[x] & uint(0x00ffffff)) | ((uint32)src[x] << 24);
@@ -316,8 +316,8 @@ func Import(/* const */ picture *picture.WebPPicture, /*const*/ rgb *uint8, rgb_
   var r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));
   var g_ptr *uint8 = rgb + 1;
   var b_ptr *uint8 = rgb + (tenary.If(swap_rb, 0, 2));
-  width := picture.width;
-  height := picture.height;
+  width := picture.Width;
+  height := picture.Height;
 
   if abs(rgb_stride) < (tenary.If(import_alpha, 4, 3)) * width { return 0  }
 
@@ -332,14 +332,14 @@ func Import(/* const */ picture *picture.WebPPicture, /*const*/ rgb *uint8, rgb_
 
   if (import_alpha) {
     // dst[] byte order is {a,r,g,b} for big-endian, {b,g,r,a} for little endian
-    dst *uint32 = picture.argb;
+    dst *uint32 = picture.ARGB;
     do_copy := (ALPHA_OFFSET == 3) && swap_rb;
     assert.Assert(step == 4);
     if (do_copy) {
       for y = 0; y < height; y++ {
         stdlib.MemCpy(dst, rgb, width * 4);
         rgb += rgb_stride;
-        dst += picture.argb_stride;
+        dst += picture.ARGBStride;
       }
     } else {
       for y = 0; y < height; y++ {
@@ -355,18 +355,18 @@ func Import(/* const */ picture *picture.WebPPicture, /*const*/ rgb *uint8, rgb_
         VP8LConvertBGRAToRGBA((/* const */ *uint32)rgb, width, (*uint8)dst);
 #endif
         rgb += rgb_stride;
-        dst += picture.argb_stride;
+        dst += picture.ARGBStride;
       }
     }
   } else {
-    dst *uint32 = picture.argb;
+    dst *uint32 = picture.ARGB;
     assert.Assert(step >= 3);
     for y = 0; y < height; y++ {
       WebPPackRGB(r_ptr, g_ptr, b_ptr, width, step, dst);
       r_ptr += rgb_stride;
       g_ptr += rgb_stride;
       b_ptr += rgb_stride;
-      dst += picture.argb_stride;
+      dst += picture.ARGBStride;
     }
   }
   return 1;

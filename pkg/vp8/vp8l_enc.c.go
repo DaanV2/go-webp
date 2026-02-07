@@ -767,7 +767,7 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
   }
 
 Error:
-  return (pic.error_code == VP8_ENC_OK);
+  return (pic.ErrorCode == VP8_ENC_OK);
 }
 
 // pic and percent are for progress.
@@ -975,7 +975,7 @@ func EncodeImageInternal(
 
 Error:
   VP8LHashChainClear(&hash_chain_histogram);
-  return (pic.error_code == VP8_ENC_OK);
+  return (pic.ErrorCode == VP8_ENC_OK);
 }
 
 // -----------------------------------------------------------------------------
@@ -1128,20 +1128,20 @@ func AllocateTransformBuffer(/* const */ enc *VP8LEncoder, width, height int) in
 
 func MakeInputImageCopy(/* const */ enc *VP8LEncoder) int {
   var picture *picture.WebPPicture = enc.pic;
-  width := picture.width;
-  height := picture.height;
+  width := picture.Width;
+  height := picture.Height;
 
   if !AllocateTransformBuffer(enc, width, height) { return 0  }
   if enc.argb_content == kEncoderARGB { return 1  }
 
   {
     dst *uint32 = enc.argb;
-    var src *uint32 = picture.argb;
+    var src *uint32 = picture.ARGB;
     var y int
     for y = 0; y < height; y++ {
       memcpy(dst, src, width * sizeof(*dst));
       dst += width;
-      src += picture.argb_stride;
+      src += picture.ARGBStride;
     }
   }
   enc.argb_content = kEncoderARGB;
@@ -1374,9 +1374,9 @@ func EncodeStreamHook(input *void, data *void2) int {
   quality := (int)config.Quality;
   low_effort := (config.Method == 0);
 #if (WEBP_NEAR_LOSSLESS == 1)
-  width := picture.width;
+  width := picture.Width;
 #endif
-  height := picture.height;
+  height := picture.Height;
   byte_position := VP8LBitWriterNumBytes(bw);
   percent := 2;  // for WebPProgressHook
 #if (WEBP_NEAR_LOSSLESS == 1)
@@ -1523,11 +1523,11 @@ func EncodeStreamHook(input *void, data *void2) int {
 
 Error:
   // The hook should return false in case of error.
-  return (params.picture.error_code == VP8_ENC_OK);
+  return (params.picture.ErrorCode == VP8_ENC_OK);
 }
 
 // Encodes the main image stream using the supplied bit writer.
-// Returns false in case of error (stored in picture.error_code).
+// Returns false in case of error (stored in picture.ErrorCode).
 func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *picture.WebPPicture, /*const*/ bw_main *VP8LBitWriter) int {
   var enc_main *VP8LEncoder = VP8LEncoderNew(config, picture);
   enc_side *VP8LEncoder = nil;
@@ -1594,10 +1594,10 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
         param.enc = enc_main;
       } else {
         // Create a side picture (error_code is not thread-safe).
-        if (!picture.WebPPictureView(picture, /*left=*/0, /*top=*/0, picture.width, picture.height, &picture_side)) {
+        if (!picture.WebPPictureView(picture, /*left=*/0, /*top=*/0, picture.Width, picture.Height, &picture_side)) {
           assert.Assert(0);
         }
-        picture_side.progress_hook = nil;  // Progress hook is not thread-safe.
+        picture_side.ProgressHook = nil;  // Progress hook is not thread-safe.
         param.picture = &picture_side;  // No need to free a view afterwards.
         param.stats = (picture.stats == nil) ? nil : &stats_side;
         // Create a side bit writer.
@@ -1655,9 +1655,9 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
     ok_side := worker_interface.Sync(&worker_side);
     worker_interface.End(&worker_side);
     if (!ok_main || !ok_side) {
-      if (picture.error_code == VP8_ENC_OK) {
-        assert.Assert(picture_side.error_code != VP8_ENC_OK);
-        WebPEncodingSetError(picture, picture_side.error_code);
+      if (picture.ErrorCode == VP8_ENC_OK) {
+        assert.Assert(picture_side.ErrorCode != VP8_ENC_OK);
+        WebPEncodingSetError(picture, picture_side.ErrorCode);
       }
       goto Error;
     }
@@ -1674,7 +1674,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
 Error:
   VP8LEncoderDelete(enc_main);
   VP8LEncoderDelete(enc_side);
-  return (picture.error_code == VP8_ENC_OK);
+  return (picture.ErrorCode == VP8_ENC_OK);
 }
 
 #undef CRUNCH_CONFIGS_MAX
@@ -1693,12 +1693,12 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *pictu
 
   if picture == nil { return 0  }
 
-  if (config == nil || picture.argb == nil) {
+  if (config == nil || picture.ARGB == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   }
 
-  width = picture.width;
-  height = picture.height;
+  width = picture.Width;
+  height = picture.Height;
   // Initialize BitWriter with size corresponding to 16 bpp to photo images and
   // 8 bpp for graphical images.
   initial_size = (config.ImageHint == WEBP_HINT_GRAPH) ? width * height
@@ -1757,17 +1757,17 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *pictu
   }
 #endif
 
-  if (picture.extra_info != nil) {
+  if (picture.ExtraInfo != nil) {
     mb_w := (width + 15) >> 4;
     mb_h := (height + 15) >> 4;
-    stdlib.Memset(picture.extra_info, 0, mb_w * mb_h * sizeof(*picture.extra_info));
+    stdlib.Memset(picture.ExtraInfo, 0, mb_w * mb_h * sizeof(*picture.ExtraInfo));
   }
 
 Error:
   if (bw.error) {
     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
   }
-  return (picture.error_code == VP8_ENC_OK);
+  return (picture.ErrorCode == VP8_ENC_OK);
 }
 
 //------------------------------------------------------------------------------

@@ -89,7 +89,7 @@ func VP8IteratorInit(/* const */ enc *VP8Encoder, /*const*/ it *VP8EncIterator) 
 // Report progression based on macroblock rows. Return 0 for user-abort request.
 func VP8IteratorProgress(/* const */ it *VP8EncIterator, delta int) int {
   var enc *VP8Encoder = it.enc;
-  if (delta && enc.pic.progress_hook != nil) {
+  if (delta && enc.pic.ProgressHook != nil) {
     done := it.count_down0 - it.count_down;
     percent := (it.count_down0 <= 0)
                             ? it.percent0
