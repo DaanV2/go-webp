@@ -313,7 +313,8 @@ func WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) int {
   if (config == nil) {          // bad params
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_nil_PARAMETER);
   }
-  if (!WebPValidateConfig(config)) {
+  err := config.Validate()
+  if (err != nil) { //TODO: just return err
     return WebPEncodingSetError(pic, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
   if !WebPValidatePicture(pic) { return 0  }
@@ -339,7 +340,7 @@ func WebPEncode(/* const */ config *WebPConfig, pic *WebPPicture) int {
           const float64 x2 = x * x;
           // slowly decreasing from max dithering at low quality (q.0)
           // to 0.5 dithering amplitude at high quality (q.100)
-          dithering = 1.0f + (0.5f - 1.0f) * x2 * x2;
+          dithering = 1.0 + (0.5 - 1.0) * x2 * x2;
         }
         if (!WebPPictureARGBToYUVADithered(pic, WEBP_YUV420, dithering)) {
           return 0;

@@ -53,7 +53,7 @@ type WebPMux struct {
 	exif   *WebPChunk
 	xmp    *WebPChunk
 	anim   *WebPChunk
-	vp     *WebPChunk8x
+	vp8x   *WebPChunk
 
 	unknown       *WebPChunk
 	canvas_width  int

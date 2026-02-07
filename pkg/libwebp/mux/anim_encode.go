@@ -1455,7 +1455,8 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp int,
   }
 
   if (encoder_config != nil) {
-    if (!WebPValidateConfig(encoder_config)) {
+	err := config.Validate()
+    if (err != nil) { // TODO: return err
       MarkError(enc, "ERROR adding frame: Invalid WebPConfig");
       return 0;
     }
