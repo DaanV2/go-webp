@@ -6,10 +6,7 @@
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
 
-
 package webp
-
-
 
 // Code Example: Demuxing WebP data to extract all the frames, ICC profile
 // and EXIF/XMP metadata.
@@ -45,19 +42,11 @@ package webp
   WebPDemuxDelete(demux);
 */
 
-
-import "github.com/daanv2/go-webp/pkg/stddef"
-
-
-const WEBP_DEMUX_ABI_VERSION =0x0107  // MAJOR(8b) + MINOR(8b)
-
-
-
 // Parses the full WebP file given by 'data'. For single images the WebP file
 // header alone or the file header and the chunk header may be absent.
 // Returns a WebPDemuxer object on successful parse, nil otherwise.
-func WebPDemuxer(/* const */ data *WebPData) *WebPDemux {
-  return WebPDemuxInternal(data, 0, nil, WEBP_DEMUX_ABI_VERSION);
+func WebPDemuxer( /* const */ data *WebPData) *WebPDemux {
+	return WebPDemuxInternal(data, 0, nil, WEBP_DEMUX_ABI_VERSION)
 }
 
 // Parses the possibly incomplete WebP file given by 'data'.
@@ -68,23 +57,9 @@ func WebPDemuxer(/* const */ data *WebPData) *WebPDemux {
 // If this data is volatile, the demuxer object should be deleted (by calling
 // WebPDemuxDelete()) and WebPDemuxPartial() called again on the new data.
 // This is usually an inexpensive operation.
-func WebPDemuxPartial(/* const */ data *WebPData, state *WebPDemuxState) *WebPDemuxer {
-  return WebPDemuxInternal(data, 1, state, WEBP_DEMUX_ABI_VERSION);
+func WebPDemuxPartial( /* const */ data *WebPData, state *WebPDemuxState) *WebPDemuxer {
+	return WebPDemuxInternal(data, 1, state, WEBP_DEMUX_ABI_VERSION)
 }
-
-
-int WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, chunk_num intber, iter *WebPChunkIterator);
-
-// Sets 'iter.chunk' to point to the next ('iter.chunk_num' + 1) or previous
-// ('iter.chunk_num' - 1) chunk. These functions do not loop.
-// Returns true on success, false otherwise.
-int WebPDemuxNextChunk(iter *WebPChunkIterator);
-int WebPDemuxPrevChunk(iter *WebPChunkIterator);
-
-// Releases any memory associated with 'iter'.
-// Must be called before destroying the associated WebPDemuxer with
-// WebPDemuxDelete().
- func WebPDemuxReleaseChunkIterator(iter *WebPChunkIterator);
 
 //------------------------------------------------------------------------------
 // WebPAnimDecoder API
@@ -116,27 +91,20 @@ int WebPDemuxPrevChunk(iter *WebPChunkIterator);
 
 // Global options.
 type WebPAnimDecoderOptions struct {
-  // Output colorspace. Only the following modes are supported:
-  // MODE_RGBA, MODE_BGRA, MODE_rgbA and MODE_bgrA.
-  color_mode WEBP_CSP_MODE
-  use_threads int      // If true, use multi-threaded decoding.
-  padding [7]uint32  // Padding for later use.
+	// Output colorspace. Only the following modes are supported:
+	// MODE_RGBA, MODE_BGRA, MODE_rgbA and MODE_bgrA.
+	color_mode  WEBP_CSP_MODE
+	use_threads int       // If true, use multi-threaded decoding.
+	padding     [7]uint32 // Padding for later use.
 }
-
-// Internal, version-checked, entry point.
-  int WebPAnimDecoderOptionsInitInternal(*WebPAnimDecoderOptions, int);
 
 // Should always be called, to initialize a fresh WebPAnimDecoderOptions
 // structure before modification. Returns false in case of version mismatch.
 // WebPAnimDecoderOptionsInit() must have succeeded before using the
 // 'dec_options' object.
- func  WebPAnimDecoderOptionsInit(dec_options *WebPAnimDecoderOptions) int {
-  return WebPAnimDecoderOptionsInitInternal(dec_options, WEBP_DEMUX_ABI_VERSION);
+func WebPAnimDecoderOptionsInit(dec_options *WebPAnimDecoderOptions) int {
+	return WebPAnimDecoderOptionsInitInternal(dec_options, WEBP_DEMUX_ABI_VERSION)
 }
-
-// Internal, version-checked, entry point.
-  WebPAnimDecoderNewInternal *WebPAnimDecoder(
-    const *WebPData, /*const*/ *WebPAnimDecoderOptions, int);
 
 // Creates and initializes a WebPAnimDecoder object.
 // Parameters:
@@ -148,77 +116,16 @@ type WebPAnimDecoderOptions struct {
 // Returns:
 //   A pointer to the newly created WebPAnimDecoder object, or nil in case of
 //   parsing error, invalid option or memory error.
- static  WebPAnimDecoderNew *WebPAnimDecoder(
-    const webp_data *WebPData, /*const*/ dec_options *WebPAnimDecoderOptions) {
-  return WebPAnimDecoderNewInternal(webp_data, dec_options, WEBP_DEMUX_ABI_VERSION);
+func WebPAnimDecoderNew( /* const */ webp_data *WebPData /*const*/, dec_options *WebPAnimDecoderOptions) *WebPAnimDecoder {
+	return WebPAnimDecoderNewInternal(webp_data, dec_options, WEBP_DEMUX_ABI_VERSION)
 }
 
 // Global information about the animation..
 type WebPAnimInfo struct {
-  canvas_width uint32
-  canvas_height uint32
-  loop_count uint32
-  bgcolor uint32
-  frame_count uint32
-  pad [4]uint32  // padding for later use
+	canvas_width  uint32
+	canvas_height uint32
+	loop_count    uint32
+	bgcolor       uint32
+	frame_count   uint32
+	pad           [4]uint32 // padding for later use
 }
-
-// Get global information about the animation.
-// Parameters:
-//   dec - (in) decoder instance to get information from.
-//   info - (out) global information fetched from the animation.
-// Returns:
-//   True on success.
-  int WebPAnimDecoderGetInfo(
-    const dec *WebPAnimDecoder, info *WebPAnimInfo);
-
-// Fetch the next frame from 'dec' based on options supplied to
-// WebPAnimDecoderNew(). This will be a fully reconstructed canvas of size
-// 'canvas_width * 4 * canvas_height', and not just the frame sub-rectangle. The
-// returned buffer 'buf' is valid only until the next call to
-// WebPAnimDecoderGetNext(), WebPAnimDecoderReset() or WebPAnimDecoderDelete().
-// Parameters:
-//   dec - (in/out) decoder instance from which the next frame is to be fetched.
-//   buf - (out) decoded frame.
-//   timestamp - (out) timestamp of the frame in milliseconds.
-// Returns:
-//   False if any of the arguments are nil, or if there is a parsing or
-//   decoding error, or if there are no more frames. Otherwise, returns true.
-  int WebPAnimDecoderGetNext(dec *WebPAnimDecoder, *uint8* buf, timestamp *int);
-
-// Check if there are more frames left to decode.
-// Parameters:
-//   dec - (in) decoder instance to be checked.
-// Returns:
-//   True if 'dec' is not nil and some frames are yet to be decoded.
-//   Otherwise, returns false.
-  int WebPAnimDecoderHasMoreFrames(
-    const dec *WebPAnimDecoder);
-
-// Resets the WebPAnimDecoder object, so that next call to
-// WebPAnimDecoderGetNext() will restart decoding from 1st frame. This would be
-// helpful when all frames need to be decoded multiple times (e.g.
-// info.loop_count times) without destroying and recreating the 'dec' object.
-// Parameters:
-//   dec - (in/out) decoder instance to be reset
- func WebPAnimDecoderReset(dec *WebPAnimDecoder);
-
-// Grab the internal demuxer object.
-// Getting the demuxer object can be useful if one wants to use operations only
-// available through demuxer; e.g. to get XMP/EXIF/ICC metadata. The returned
-// demuxer object is owned by 'dec' and is valid only until the next call to
-// WebPAnimDecoderDelete().
-//
-// Parameters:
-//   dec - (in) decoder instance from which the demuxer object is to be fetched.
-  const WebPAnimDecoderGetDemuxer *WebPDemuxer(
-    const dec *WebPAnimDecoder);
-
-// Deletes the WebPAnimDecoder object.
-// Parameters:
-//   dec - (in/out) decoder instance to be deleted
- func WebPAnimDecoderDelete(dec *WebPAnimDecoder);
-
-
-
-#endif  // WEBP_WEBP_DEMUX_H_

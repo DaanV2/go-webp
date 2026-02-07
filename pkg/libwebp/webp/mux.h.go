@@ -14,8 +14,6 @@ package webp
 // Authors: Urvang (urvang@google.com)
 //          Vikas (vikasa@google.com)
 
-const WEBP_MUX_ABI_VERSION = 0x0109 // MAJOR(8b) + MINOR(8b)
-
 //------------------------------------------------------------------------------
 // Mux API
 //
@@ -24,42 +22,6 @@ const WEBP_MUX_ABI_VERSION = 0x0109 // MAJOR(8b) + MINOR(8b)
 //
 // Code Example#1: Create a WebPMux object with image data, color profile and
 // XMP metadata.
-/*
-  copy_data := 0;
-  *WebPMux mux = WebPMuxNew();
-  // ... (Prepare image data).
-  WebPMuxSetImage(mux, &image, copy_data);
-  // ... (Prepare ICCP color profile data).
-  WebPMuxSetChunk(mux, "ICCP", &icc_profile, copy_data);
-  // ... (Prepare XMP metadata).
-  WebPMuxSetChunk(mux, "XMP ", &xmp, copy_data);
-  // Get data from mux in WebP RIFF format.
-  WebPMuxAssemble(mux, &output_data);
-  WebPMuxDelete(mux);
-  // ... (Consume output_data; e.g. write output_data.bytes to file).
-  WebPDataClear(&output_data);
-*/
-
-// Code Example#2: Get image and color profile data from a WebP file.
-/*
-  copy_data := 0;
-  // ... (Read data from file).
-  *WebPMux mux = WebPMuxCreate(&data, copy_data);
-  WebPMuxGetFrame(mux, 1, &image);
-  // ... (Consume image; e.g. call WebPDecode() to decode the data).
-  WebPMuxGetChunk(mux, "ICCP", &icc_profile);
-  // ... (Consume icc_data).
-  WebPMuxDelete(mux);
-*/
-
-// Note: forward declaring enumerations is not allowed in (strict) C and C++,
-// the types are left here for reference.
-// typedef enum WebPMuxError WebPMuxError;
-// typedef enum WebPChunkId WebPChunkId;
-// typedef struct WebPMux WebPMux;  // main opaque object.
-// typedef struct WebPMuxFrameInfo WebPMuxFrameInfo;
-// typedef struct WebPMuxAnimParams WebPMuxAnimParams;
-// typedef struct WebPAnimEncoderOptions WebPAnimEncoderOptions;
 
 // IDs for different types of chunks.
 type WebPChunkId int

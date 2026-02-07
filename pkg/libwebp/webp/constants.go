@@ -11,9 +11,16 @@ package webp
 import "github.com/daanv2/go-webp/pkg/constants"
 
 const WEBP_DECODER_ABI_VERSION = constants.WEBP_DECODER_ABI_VERSION // MAJOR(8b) + MINOR(8b)
+const WEBP_MUX_ABI_VERSION = 0x0109                                 // MAJOR(8b) + MINOR(8b)
+const WEBP_DEMUX_ABI_VERSION = 0x0107                               // MAJOR(8b) + MINOR(8b)
 
 // Return the decoder's version number, packed in hexadecimal using 8bits for
 // each of major/minor/revision. E.g: v2.5.7 is 0x020507.
 func WebPGetDecoderVersion() int {
 	return dec.WebPGetDecoderVersion()
+}
+
+// WEBP_ABI_IS_INCOMPATIBLE Macro to check ABI compatibility (same major revision number)
+func WEBP_ABI_IS_INCOMPATIBLE(a, b int) bool {
+	return (((a) >> 8) != ((b) >> 8))
 }

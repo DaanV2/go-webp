@@ -86,5 +86,5 @@ type WebPDecoderConfig struct {
 // called first, unless WebPGetFeatures() is to be called.
 // Returns false in case of mismatched version.
 func WebPInitDecoderConfig(config *WebPDecoderConfig) int {
-	return WebPInitDecoderConfigInternal(config, WEBP_DECODER_ABI_VERSION)
+	return decoder.WebPInitDecoderConfigInternal(config, WEBP_DECODER_ABI_VERSION)
 }

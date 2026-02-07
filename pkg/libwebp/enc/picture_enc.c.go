@@ -23,15 +23,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
+const LOSSLESS_DEFAULT_QUALITY =70.0
+
 //------------------------------------------------------------------------------
 // WebPPicture
 //------------------------------------------------------------------------------
 
 func DummyWriter(/* const */ data *uint8, data_size uint64, /*const*/ picture *WebPPicture) int {
   // The following are to prevent 'unused variable' error message.
-  (void)data;
-  (void)data_size;
-  (void)picture;
   return 1;
 }
 
@@ -282,16 +281,14 @@ func Encode(/* const */ rgba *uint8, width, height int, stride int, Importer imp
     return Encode(in, w, h, bps, IMPORTER, q, 0, out);           \
   }
 
-ENCODE_FUNC(WebPEncodeRGB, WebPPictureImportRGB)
-ENCODE_FUNC(WebPEncodeRGBA, WebPPictureImportRGBA)
-#if !defined(WEBP_REDUCE_CSP)
-ENCODE_FUNC(WebPEncodeBGR, WebPPictureImportBGR)
-ENCODE_FUNC(WebPEncodeBGRA, WebPPictureImportBGRA)
-#endif  // WEBP_REDUCE_CSP
+func WebPEncodeRGB(/* const */ in *uint8, w int, h int, bps int, q float64 , out *uint8) uint64 {
+	return Encode(in, w, h, bps, WebPPictureImportRGB, q, 0, out);
+}
+func WebPEncodeRGBA(/* const */ in *uint8, w int, h int, bps int, q float64 , out *uint8) uint64 {
+	return Encode(in, w, h, bps, WebPPictureImportRGBA, q, 0, out);
+}
 
-#undef ENCODE_FUNC
 
-const LOSSLESS_DEFAULT_QUALITY =70.
 #define LOSSLESS_ENCODE_FUNC(NAME, IMPORTER)                                  \
   uint64 NAME(/* const */ in *uint8, w int, h int, bps int, *uint8* out) {      \
     return Encode(in, w, h, bps, IMPORTER, LOSSLESS_DEFAULT_QUALITY, 1, out); \

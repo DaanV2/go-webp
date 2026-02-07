@@ -128,6 +128,12 @@ Error:
 	return nil
 }
 
+// Get global information about the animation.
+// Parameters:
+//   dec - (in) decoder instance to get information from.
+//   info - (out) global information fetched from the animation.
+// Returns:
+//   True on success.
 func WebPAnimDecoderGetInfo( /* const */ dec *WebPAnimDecoder, info *WebPAnimInfo) int {
 	if dec == nil || info == nil {
 		return 0
@@ -292,6 +298,18 @@ func FindBlendRangeAtRow( /* const */ src *WebPIterator /* const */, dst *WebPIt
 	}
 }
 
+// Fetch the next frame from 'dec' based on options supplied to
+// WebPAnimDecoderNew(). This will be a fully reconstructed canvas of size
+// 'canvas_width * 4 * canvas_height', and not just the frame sub-rectangle. The
+// returned buffer 'buf' is valid only until the next call to
+// WebPAnimDecoderGetNext(), WebPAnimDecoderReset() or WebPAnimDecoderDelete().
+// Parameters:
+//   dec - (in/out) decoder instance from which the next frame is to be fetched.
+//   buf - (out) decoded frame.
+//   timestamp - (out) timestamp of the frame in milliseconds.
+// Returns:
+//   False if any of the arguments are nil, or if there is a parsing or
+//   decoding error, or if there are no more frames. Otherwise, returns true.
 func WebPAnimDecoderGetNext(dec *WebPAnimDecoder, buf_ptr *uint8, timestamp_ptr *int) int {
 	var iter WebPIterator
 	var width uint32
@@ -409,6 +427,12 @@ Error:
 	return 0
 }
 
+// Check if there are more frames left to decode.
+// Parameters:
+//   dec - (in) decoder instance to be checked.
+// Returns:
+//   True if 'dec' is not nil and some frames are yet to be decoded.
+//   Otherwise, returns false.
 func WebPAnimDecoderHasMoreFrames( /* const  */ dec *WebPAnimDecoder) int {
 	if dec == nil {
 		return 0
@@ -417,6 +441,12 @@ func WebPAnimDecoderHasMoreFrames( /* const  */ dec *WebPAnimDecoder) int {
 	return (dec.next_frame <= int(dec.info.frame_count))
 }
 
+// Resets the WebPAnimDecoder object, so that next call to
+// WebPAnimDecoderGetNext() will restart decoding from 1st frame. This would be
+// helpful when all frames need to be decoded multiple times (e.g.
+// info.loop_count times) without destroying and recreating the 'dec' object.
+// Parameters:
+//   dec - (in/out) decoder instance to be reset
 func WebPAnimDecoderReset(dec *WebPAnimDecoder) {
 	if dec != nil {
 		dec.prev_frame_timestamp = 0
@@ -427,7 +457,15 @@ func WebPAnimDecoderReset(dec *WebPAnimDecoder) {
 	}
 }
 
-func WebPDemuxerFn( /* const */ dec *WebPAnimDecoder) *WebPAnimDecoderGetDemuxer {
+// Grab the internal demuxer object.
+// Getting the demuxer object can be useful if one wants to use operations only
+// available through demuxer; e.g. to get XMP/EXIF/ICC metadata. The returned
+// demuxer object is owned by 'dec' and is valid only until the next call to
+// WebPAnimDecoderDelete().
+//
+// Parameters:
+//   dec - (in) decoder instance from which the demuxer object is to be fetched.
+func WebPAnimDecoderGetDemuxer( /* const */ dec *WebPAnimDecoder) *WebPDemuxer {
 	if dec == nil {
 		return nil
 	}
@@ -435,6 +473,9 @@ func WebPDemuxerFn( /* const */ dec *WebPAnimDecoder) *WebPAnimDecoderGetDemuxer
 	return dec.demux
 }
 
+// Deletes the WebPAnimDecoder object.
+// Parameters:
+//   dec - (in/out) decoder instance to be deleted
 func WebPAnimDecoderDelete(dec *WebPAnimDecoder) {
 	if dec != nil {
 		WebPDemuxReleaseIterator(&dec.prev_iter)

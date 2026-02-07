@@ -907,6 +907,9 @@ func WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, 
   return SetChunk(fourcc, chunk_num, iter)
 }
 
+// Sets 'iter.chunk' to point to the next ('iter.chunk_num' + 1) or previous
+// ('iter.chunk_num' - 1) chunk. These functions do not loop.
+// Returns true on success, false otherwise.
 func WebPDemuxNextChunk( iter *WebPChunkIterator) int {
   if (iter != nil) {
     const fourcc *byte =
@@ -925,4 +928,7 @@ func WebPDemuxPrevChunk( iter *WebPChunkIterator) int {
   return 0
 }
 
+// Releases any memory associated with 'iter'.
+// Must be called before destroying the associated WebPDemuxer with
+// WebPDemuxDelete().
 func WebPDemuxReleaseChunkIterator(iter *WebPChunkIterator) { (void)iter }

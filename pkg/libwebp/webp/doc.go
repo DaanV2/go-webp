@@ -48,4 +48,30 @@
 //	// this function even if the memory is external and wasn't allocated
 //	// by WebPDecode().
 //	WebPFreeDecBuffer(&config.output);
+//
+//
+//	copy_data := 0;
+//	*WebPMux mux = WebPMuxNew();
+//	// ... (Prepare image data).
+//	WebPMuxSetImage(mux, &image, copy_data);
+//	// ... (Prepare ICCP color profile data).
+//	WebPMuxSetChunk(mux, "ICCP", &icc_profile, copy_data);
+//	// ... (Prepare XMP metadata).
+//	WebPMuxSetChunk(mux, "XMP ", &xmp, copy_data);
+//	// Get data from mux in WebP RIFF format.
+//	WebPMuxAssemble(mux, &output_data);
+//	WebPMuxDelete(mux);
+//	// ... (Consume output_data; e.g. write output_data.bytes to file).
+//	WebPDataClear(&output_data);
+//
+// Code Example#2: Get image and color profile data from a WebP file.
+//
+//	copy_data := 0;
+//	// ... (Read data from file).
+//	*WebPMux mux = WebPMuxCreate(&data, copy_data);
+//	WebPMuxGetFrame(mux, 1, &image);
+//	// ... (Consume image; e.g. call WebPDecode() to decode the data).
+//	WebPMuxGetChunk(mux, "ICCP", &icc_profile);
+//	// ... (Consume icc_data).
+//	WebPMuxDelete(mux);
 package webp
