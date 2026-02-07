@@ -136,18 +136,7 @@ const (
 
 
 
-// Enumerate some predefined settings for config.Config, depending on the type
-// of source picture. These presets are used when calling WebPConfigPreset().
-type WebPPreset int
 
-const (
-	WEBP_PRESET_DEFAULT WebPPreset = iota // default preset.
-	WEBP_PRESET_PICTURE                   // digital picture, like portrait, inner shot
-	WEBP_PRESET_PHOTO                     // outdoor photograph, with natural lighting
-	WEBP_PRESET_DRAWING                   // hand or line drawing, with high-contrast details
-	WEBP_PRESET_ICON                      // small-sized colorful images
-	WEBP_PRESET_TEXT                      // text-like
-)
 
 // Color spaces.
 type WebPEncCSP int

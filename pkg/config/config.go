@@ -1,16 +1,9 @@
 package config
 
-import "errors"
+import (
+	"errors"
 
-// Image characteristics hint for the underlying encoder.
-type ImageHint int
-
-const (
-	WEBP_HINT_DEFAULT ImageHint = iota // default preset.
-	WEBP_HINT_PICTURE                      // digital picture, like portrait, inner shot
-	WEBP_HINT_PHOTO                        // outdoor photograph, with natural lighting
-	WEBP_HINT_GRAPH                        // Discrete tone image (graph, map-tile etc).
-	WEBP_HINT_LAST
+	"github.com/daanv2/go-webp/pkg/constants"
 )
 
 // Compression parameters.
@@ -86,24 +79,24 @@ type Config struct {
 	qmax int // maximum permissible quality factor
 }
 
-// Should always be called, to initialize a fresh WebPConfig structure before
+// Should always be called, to initialize a fresh Config structure before
 // modification. Returns false in case of version mismatch. WebPConfigInit()
 // must have succeeded before using the 'config' object.
 // Note that the default values are lossless=0 and quality=75.
-func WebPConfigInit(config *WebPConfig) error {
-	return WebPConfigInitInternal(config, WEBP_PRESET_DEFAULT, 75.0, WEBP_ENCODER_ABI_VERSION)
+func WebPConfigInit(config *Config) error {
+	return WebPConfigInitInternal(config, WEBP_PRESET_DEFAULT, 75.0, constants.WEBP_ENCODER_ABI_VERSION)
 }
 
 // This function will initialize the configuration according to a predefined
 // set of parameters (referred to by 'preset') and a given quality factor.
 // This function can be called as a replacement to WebPConfigInit(). Will
 // return false in case of error.
-func WebPConfigPreset(config *WebPConfig, preset WebPPreset, quality float64) error {
-	return WebPConfigInitInternal(config, preset, quality, WEBP_ENCODER_ABI_VERSION)
+func WebPConfigPreset(config *Config, preset Preset, quality float64) error {
+	return WebPConfigInitInternal(config, preset, quality, constants.WEBP_ENCODER_ABI_VERSION)
 }
 
 // Internal, version-checked, entry point
-func WebPConfigInitInternal(config *WebPConfig, preset WebPPreset, quality float64, version int) error {
+func WebPConfigInitInternal(config *Config, preset Preset, quality float64, version int) error {
 	if WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_ENCODER_ABI_VERSION) {
 		return nil // caller/system version mismatch!
 	}
@@ -179,7 +172,7 @@ func WebPConfigInitInternal(config *WebPConfig, preset WebPPreset, quality float
 
 // Returns true if 'config' is non-nil and all configuration parameters are
 // within their valid ranges.
-func (config *WebPConfig) Validate() error {
+func (config *Config) Validate() error {
 	if config == nil {
 		return errors.New("config is nil")
 	}

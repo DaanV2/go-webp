@@ -13,12 +13,14 @@ package webp
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+import (
+	"github.com/daanv2/go-webp/pkg/constants"
+	"github.com/daanv2/go-webp/pkg/stddef"
+)
 
-import "github.com/daanv2/go-webp/pkg/stddef"
 
 
-
-const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
+const WEBP_ENCODER_ABI_VERSION = constants.WEBP_ENCODER_ABI_VERSION
 
 
 //------------------------------------------------------------------------------
