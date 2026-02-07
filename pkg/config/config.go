@@ -58,7 +58,7 @@ type Config struct {
 	// be similar but the degradation will be lower.
 	EmulateJpegSize int
 	ThreadLevel     int // If non-zero, try and use multi-threaded encoding.
-	Low_memory      int // If set, reduce memory usage (but increase CPU use).
+	LowMemory       int // If set, reduce memory usage (but increase CPU use).
 
 	// Near lossless encoding [0 = max loss .. 100 = off
 	// (default)].
@@ -115,17 +115,17 @@ func (config *Config) init(preset Preset, quality float64) error {
 		return nil
 	}
 
-	config.quality = quality
-	config.target_size = 0
-	config.target_PSNR = 0.0
-	config.method = 4
+	config.Quality = quality
+	config.TargetSize = 0
+	config.TargetPSNR = 0.0
+	config.Method = 4
 	config.SnsStrength = 50
 	config.FilterStrength = 60 // mid-filtering
 	config.FilterSharpness = 0
 	config.FilterType = 1 // default: strong (so U/V is filtered too)
 	config.Partitions = 0
 	config.Segments = 4
-	config.pass = 1
+	config.Pass = 1
 	config.Qmin = 0
 	config.Qmax = 100
 	config.ShowCompressed = 0
@@ -135,9 +135,9 @@ func (config *Config) init(preset Preset, quality float64) error {
 	config.AlphaCompression = 1
 	config.AlphaFiltering = 1
 	config.AlphaQuality = 100
-	config.lossless = 0
+	config.Lossless = 0
 	config.Exact = 0
-	config.image_hint = WEBP_HINT_DEFAULT
+	config.ImageHint = WEBP_HINT_DEFAULT
 	config.EmulateJpegSize = 0
 	config.ThreadLevel = 0
 	config.LowMemory = 0
@@ -182,16 +182,16 @@ func (config *Config) Validate() error {
 	if config == nil {
 		return errors.New("config is nil")
 	}
-	if config.quality < 0 || config.quality > 100 {
+	if config.Quality < 0 || config.Quality > 100 {
 		return errors.New("quality must be between 0 and 100")
 	}
-	if config.target_size < 0 {
+	if config.TargetSize < 0 {
 		return errors.New("target_size must be non-negative")
 	}
-	if config.target_PSNR < 0 {
+	if config.TargetPSNR < 0 {
 		return errors.New("target_PSNR must be non-negative")
 	}
-	if config.method < 0 || config.method > 6 {
+	if config.Method < 0 || config.Method > 6 {
 		return errors.New("method must be between 0 and 6")
 	}
 	if config.Segments < 1 || config.Segments > 4 {
@@ -212,7 +212,7 @@ func (config *Config) Validate() error {
 	if config.Autofilter < 0 || config.Autofilter > 1 {
 		return errors.New("autofilter must be 0 or 1")
 	}
-	if config.pass < 1 || config.pass > 10 {
+	if config.Pass < 1 || config.Pass > 10 {
 		return errors.New("pass must be between 1 and 10")
 	}
 	if config.Qmin < 0 || config.Qmax > 100 || config.Qmin > config.Qmax {
@@ -239,13 +239,13 @@ func (config *Config) Validate() error {
 	if config.AlphaQuality < 0 || config.AlphaQuality > 100 {
 		return errors.New("alpha_quality must be between 0 and 100")
 	}
-	if config.lossless < 0 || config.lossless > 1 {
+	if config.Lossless < 0 || config.Lossless > 1 {
 		return errors.New("lossless must be 0 or 1")
 	}
 	if config.NearLossless < 0 || config.NearLossless > 100 {
 		return errors.New("near_lossless must be between 0 and 100")
 	}
-	if config.image_hint >= WEBP_HINT_LAST {
+	if config.ImageHint >= WEBP_HINT_LAST {
 		return errors.New("image_hint must be less than WEBP_HINT_LAST")
 	}
 	if config.EmulateJpegSize < 0 || config.EmulateJpegSize > 1 {
