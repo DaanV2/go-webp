@@ -276,7 +276,7 @@ func WebPEncode(/* const */ config *config.Config, pic *picture.WebPPicture) int
           // to 0.5 dithering amplitude at high quality (q.100)
           dithering = 1.0 + (0.5 - 1.0) * x2 * x2;
         }
-        if (!picture.WebPPictureARGBToYUVADithered(pic, WEBP_YUV420, dithering)) {
+        if (!picture.WebPPictureARGBToYUVADithered(pic, colorspace.WEBP_YUV420, dithering)) {
           return 0;
         }
       }

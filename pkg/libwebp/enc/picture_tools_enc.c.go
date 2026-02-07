@@ -200,14 +200,14 @@ func WebPBlendAlpha(picture *picture.WebPPicture, uint32 background_rgb) {
   blue := (background_rgb >> 0) & 0xff;
   var x, y int
   if picture == nil { return }
-  if (!picture.use_argb) {
+  if (!picture.UseARGB) {
     // omit last pixel during u/v loop
     uv_width := (picture.width >> 1);
     Y0 := VP8RGBToY(red, green, blue, YUV_HALF);
     // VP8RGBToU/V expects the u/v values summed over four pixels
     U0 := VP8RGBToU(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
     V0 := VP8RGBToV(4 * red, 4 * green, 4 * blue, 4 * YUV_HALF);
-    has_alpha := picture.colorspace & WEBP_CSP_ALPHA_BIT;
+    has_alpha := picture.colorspace & colorspace.WEBP_CSP_ALPHA_BIT;
     y_ptr *uint8 = picture.y;
     u_ptr *uint8 = picture.u;
     v_ptr *uint8 = picture.v;

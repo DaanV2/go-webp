@@ -58,7 +58,7 @@ func AdjustAndCheckRectangle(/* const */ pic *picture.WebPPicture, /*const*/ lef
 
 func WebPPictureIsView(/* const */ picture *picture.WebPPicture) int {
   if picture == nil { return 0  }
-  if (picture.use_argb) {
+  if (picture.UseARGB) {
     return (picture.memory_argb_ == nil);
   }
   return (picture.memory_ == nil);
@@ -177,7 +177,7 @@ func WebPPictureRescale(picture *picture.WebPPicture, width, height int) int {
     return WebPEncodingSetError(picture, tmp.error_code);
   }
 
-  if (!picture.use_argb) {
+  if (!picture.UseARGB) {
     // work = (rescaler_t*)WebPSafeMalloc(uint64(2) * width, sizeof(*work));
     // if (work == nil) {
     //   status = VP8_ENC_ERROR_OUT_OF_MEMORY;

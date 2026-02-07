@@ -13,27 +13,6 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/math"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "sharpyuv"
-import "sharpyuv"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-#if defined(WEBP_USE_THREAD) && !defined(_WIN32)
-import "github.com/daanv2/go-webp/pkg/pthread"
-#endif
-
 const ALPHA_OFFSET =CHANNEL_OFFSET(0)
 
 //------------------------------------------------------------------------------
@@ -58,7 +37,7 @@ func CheckNonOpaque(/* const */ alpha *uint8, width, height int, x_step int, y_s
 // Checking for the presence of non-opaque alpha.
 func WebPPictureHasTransparency(/* const */ picture *picture.WebPPicture) int {
   if picture == nil { return 0  }
-  if (picture.use_argb) {
+  if (picture.UseARGB) {
     if (picture.argb != nil) {
       return CheckNonOpaque((/* const */ *uint8)picture.argb + ALPHA_OFFSET, picture.width, picture.height, 4, picture.argb_stride * sizeof(*picture.argb));
     }
@@ -113,8 +92,8 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
   height := picture.height;
   has_alpha := CheckNonOpaque(a_ptr, width, height, step, rgb_stride);
 
-  picture.colorspace = tenary.If(has_alpha, WEBP_YUV420A, WEBP_YUV420);
-  picture.use_argb = 0;
+  picture.colorspace = tenary.If(has_alpha, colorspace.WEBP_YUV420A, colorspace.WEBP_YUV420);
+  picture.UseARGB = false;
 
   // disable smart conversion if source is too small (overkill).
   if (width < kMinDimensionIterativeConversion ||
@@ -232,11 +211,11 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 //------------------------------------------------------------------------------
 // call for ARGB.YUVA conversion
 
-func PictureARGBToYUVA(picture *picture.WebPPicture, WebPEncCSP colorspace, float64 dithering, use_iterative_conversion int) int {
+func PictureARGBToYUVA(picture *picture.WebPPicture, colorspace.CSP colorspace, float64 dithering, use_iterative_conversion int) int {
   if picture == nil { return 0  }
   if (picture.argb == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
-  } else if ((colorspace & WEBP_CSP_UV_MASK) != WEBP_YUV420) {
+  } else if ((colorspace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   } else {
     var argb *uint8 = (/* const */ *uint8)picture.argb;
@@ -245,21 +224,21 @@ func PictureARGBToYUVA(picture *picture.WebPPicture, WebPEncCSP colorspace, floa
     var g *uint8 = argb + CHANNEL_OFFSET(2);
     var b *uint8 = argb + CHANNEL_OFFSET(3);
 
-    picture.colorspace = WEBP_YUV420;
+    picture.colorspace = colorspace.WEBP_YUV420;
     return ImportYUVAFromRGBA(r, g, b, a, 4, 4 * picture.argb_stride, dithering, use_iterative_conversion, picture);
   }
 }
 
-func WebPPictureARGBToYUVADithered(picture *picture.WebPPicture, WebPEncCSP colorspace, float64 dithering) int {
+func WebPPictureARGBToYUVADithered(picture *picture.WebPPicture, colorspace.CSP colorspace, float64 dithering) int {
   return PictureARGBToYUVA(picture, colorspace, dithering, 0);
 }
 
-func WebPPictureARGBToYUVA(picture *picture.WebPPicture, WebPEncCSP colorspace) int {
+func WebPPictureARGBToYUVA(picture *picture.WebPPicture, colorspace.CSP colorspace) int {
   return PictureARGBToYUVA(picture, colorspace, 0.0, 0);
 }
 
 func WebPPictureSharpARGBToYUVA(picture *picture.WebPPicture) int {
-  return PictureARGBToYUVA(picture, WEBP_YUV420, 0.0, 1);
+  return PictureARGBToYUVA(picture, colorspace.WEBP_YUV420, 0.0, 1);
 }
 // for backward compatibility
 func WebPPictureSmartARGBToYUVA(picture *picture.WebPPicture) int {
@@ -274,15 +253,15 @@ func WebPPictureYUVAToARGB(picture *picture.WebPPicture) int {
   if (picture.y == nil || picture.u == nil || picture.v == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   }
-  if ((picture.colorspace & WEBP_CSP_ALPHA_BIT) && picture.a == nil) {
+  if ((picture.colorspace & colorspace.WEBP_CSP_ALPHA_BIT) && picture.a == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
   }
-  if ((picture.colorspace & WEBP_CSP_UV_MASK) != WEBP_YUV420) {
+  if ((picture.colorspace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
   // Allocate a new argb buffer (discarding the previous one).
   if !picture.WebPPictureAllocARGB(picture) { return 0  }
-  picture.use_argb = 1;
+  picture.UseARGB = true;
 
   // Convert
   {
@@ -314,7 +293,7 @@ func WebPPictureYUVAToARGB(picture *picture.WebPPicture) int {
       upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst, nil, width);
     }
     // Insert alpha values if needed, in replacement for the default 0xff ones.
-    if (picture.colorspace & WEBP_CSP_ALPHA_BIT) {
+    if (picture.colorspace & colorspace.WEBP_CSP_ALPHA_BIT) {
       for y = 0; y < height; y++ {
         var argb_dst *uint32 = picture.argb + y * picture.argb_stride;
         var src *uint8 = picture.a + y * picture.a_stride;
@@ -342,7 +321,7 @@ func Import(/* const */ picture *picture.WebPPicture, /*const*/ rgb *uint8, rgb_
 
   if abs(rgb_stride) < (tenary.If(import_alpha, 4, 3)) * width { return 0  }
 
-  if (!picture.use_argb) {
+  if (!picture.UseARGB) {
     var a_ptr *uint8 = import_alpha ? rgb + 3 : nil;
     return ImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, 0.0 /* no dithering */, 0, picture);
   }

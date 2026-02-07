@@ -172,20 +172,20 @@ const WEBP_MAX_DIMENSION =16383
   int picture.WebPPictureImportBGRX(picture *picture.WebPPicture, /*const*/ bgrx *uint8, bgrx_stride int);
 
 // Converts picture.argb data to the YUV420A format. The 'colorspace'
-// parameter is deprecated and should be equal to WEBP_YUV420.
-// Upon return, picture.use_argb is set to false. The presence of real
+// parameter is deprecated and should be equal to colorspace.WEBP_YUV420.
+// Upon return, picture.UseARGB is set to false. The presence of real
 // non-opaque transparent values is detected, and 'colorspace' will be
 // adjusted accordingly. Note that this method is lossy.
 // Returns false in case of error.
   int picture.WebPPictureARGBToYUVA(
-    picture *picture.WebPPicture, WebPEncCSP /*colorspace = WEBP_*YUV420/);
+    picture *picture.WebPPicture, colorspace.CSP /*colorspace = WEBP_*YUV420/);
 
 // Same as picture.WebPPictureARGBToYUVA(), but the conversion is done using
 // pseudo-random dithering with a strength 'dithering' between
 // 0.0 (no dithering) and 1.0 (maximum dithering). This is useful
 // for photographic picture.
   int picture.WebPPictureARGBToYUVADithered(
-    picture *picture.WebPPicture, WebPEncCSP colorspace, float dithering);
+    picture *picture.WebPPicture, colorspace.CSP colorspace, float dithering);
 
 // Performs 'sharp' RGBA.YUVA420 downsampling and colorspace conversion
 // Downsampling is handled with extra care in case of color clipping. This
@@ -196,7 +196,7 @@ const WEBP_MAX_DIMENSION =16383
 // kept for backward compatibility:
   int picture.WebPPictureSmartARGBToYUVA(picture *picture.WebPPicture);
 
-// Converts picture.yuv to picture.argb and sets picture.use_argb to true.
+// Converts picture.yuv to picture.argb and sets picture.UseARGB to true.
 // The input format must be YUV_420 or YUV_420A. The conversion from YUV420 to
 // ARGB incurs a small loss too.
 // Note that the use of this colorspace is discouraged if one has access to the
@@ -228,7 +228,7 @@ const WEBP_MAX_DIMENSION =16383
 // Returns false in case of error, true otherwise.
 // In case of error, picture.error_code is updated accordingly.
 // 'picture' can hold the source samples in both YUV(A) or ARGB input, depending
-// on the value of 'picture.use_argb'. It is highly recommended to use
+// on the value of 'picture.UseARGB'. It is highly recommended to use
 // the former for lossy encoding, and the latter for lossless encoding
 // (when config.Lossless is true). Automatic conversion from one format to
 // another is provided but they both incur some loss.

@@ -134,21 +134,6 @@ const (
 	WEBP_FF_FRAME_COUNT
 )
 
-
-
-
-
-// Color spaces.
-type WebPEncCSP int
-
-const (
-	// chroma sampling
-	WEBP_YUV420        WebPEncCSP = 0 // 4:2:0
-	WEBP_YUV420A       WebPEncCSP = 4 // alpha channel variant
-	WEBP_CSP_UV_MASK   WebPEncCSP = 3 // bit-mask to get the UV sampling factors
-	WEBP_CSP_ALPHA_BIT WebPEncCSP = 4 // bit that is set if alpha is present
-)
-
 // Encoding error conditions.
 type WebPEncodingError int
 

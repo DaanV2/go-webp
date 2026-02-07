@@ -1,6 +1,7 @@
 package picture
 
 import (
+	"github.com/daanv2/go-webp/pkg/color/colorspace"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 )
 
@@ -24,10 +25,10 @@ type WebPPicture struct {
 	// It is recommended to use ARGB input (*argb, argb_stride) for lossless
 	// compression, and YUV input (*y, *u, *v, etc.) for lossy compression
 	// since these are the respective native colorspace for these formats.
-	use_argb int
+	UseARGB bool
 
 	// YUV input (mostly used for input to lossy compression)
-	colorspace          WebPEncCSP // colorspace: should be YUV420 for now (=Y'CbCr).
+	colorspace          colorspace.CSP // colorspace: should be YUV420 for now (=Y'CbCr).
 	width, height       int        // dimensions (less or equal to WEBP_MAX_DIMENSION)
 	y, u, v             *uint8     // pointers to luma/chroma planes.
 	y_stride, uv_stride int        // luma/chroma strides.
@@ -104,7 +105,7 @@ func DummyWriter(*uint8, uint64, *picture.WebPPicture) int {
 // Should always be called, to initialize the structure. Returns false in case
 // of version mismatch. WebPPictureInit() must have succeeded before using the
 // 'picture' object.
-// Note that, by default, use_argb is false and colorspace is WEBP_YUV420.
+// Note that, by default, use_argb is false and colorspace is colorspace.WEBP_YUV420.
 func WebPPictureInit(picture *WebPPicture) int {
 	return WebPPictureInitInternal(picture, WEBP_ENCODER_ABI_VERSION)
 }
@@ -166,7 +167,7 @@ func WebPPictureCopy(/* const */ src *picture.WebPPicture, dst *picture.WebPPict
 // Preserves the ARGB buffer.
 // Returns false in case of error (invalid param, out-of-memory).
 func WebPPictureAllocYUVA(/* const */ picture *picture.WebPPicture) int {
-  has_alpha := int(picture.colorspace) & WEBP_CSP_ALPHA_BIT;
+  has_alpha := int(picture.colorspace) & colorspace.WEBP_CSP_ALPHA_BIT;
   width := picture.width;
   height := picture.height;
   y_stride := width;
@@ -266,8 +267,8 @@ func WebPValidatePicture(/* const */ picture *picture.WebPPicture) int {
       picture.height <= 0 || picture.height > INT_MAX / 4) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION);
   }
-  if (picture.colorspace != WEBP_YUV420 &&
-      picture.colorspace != WEBP_YUV420A) {
+  if (picture.colorspace != colorspace.WEBP_YUV420 &&
+      picture.colorspace != colorspace.WEBP_YUV420A) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION);
   }
   return 1;

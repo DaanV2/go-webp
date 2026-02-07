@@ -52,6 +52,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
+
 func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int, use_quality_100 int, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) int {
   ok := 0;
    var config config.Config
@@ -60,7 +61,7 @@ func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int
   if !picture.WebPPictureInit(&picture) { return 0  }
   picture.width = width;
   picture.height = height;
-  picture.use_argb = 1;
+  picture.UseARGB = true;
   picture.stats = stats;
   if !picture.WebPPictureAlloc(&picture) { return 0  }
 
