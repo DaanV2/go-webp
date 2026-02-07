@@ -278,7 +278,7 @@ func WebPCopyPlane(/* const */ src *uint8, src_stride int, dst *uint8, dst_strid
 
 // Copy ARGB pixels from 'src' to 'dst' honoring strides. 'src' and 'dst' are
 // assumed to be already allocated and using ARGB data.
-func WebPCopyPixels(/* const */ src *picture.WebPPicture, /*const*/ dst *picture.WebPPicture) {
+func WebPCopyPixels(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture) {
   assert.Assert(src != nil && dst != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   assert.Assert(src.use_argb && dst.use_argb)
@@ -294,7 +294,7 @@ func WebPCopyPixels(/* const */ src *picture.WebPPicture, /*const*/ dst *picture
 // Note: 'palette' is assumed to be an array already allocated with at least
 // MAX_PALETTE_SIZE elements.
 // TODO(vrabaud) remove whenever we can break the ABI.
-func WebPGetColorPalette(/* const  */pic *picture.WebPPicture, /*const*/  palette []uint32/* (MAX_PALETTE_SIZE) */) int {
+func WebPGetColorPalette(/* const  */pic *picture.Picture, /*const*/  palette []uint32/* (MAX_PALETTE_SIZE) */) int {
   return GetColorPalette(pic, palette);
 }
 

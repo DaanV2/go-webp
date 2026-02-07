@@ -110,7 +110,7 @@ func PrepareMapToPalette(palette []uint32,  num_colors uint32, sorted []uint32, 
 // equal to MAX_PALETTE_SIZE, also outputs the actual unique colors into
 // 'palette' in a sorted order. Note: 'palette' is assumed to be an array
 // already allocated with at least MAX_PALETTE_SIZE elements.
-func GetColorPalette(/* const */ pic *picture.WebPPicture, /*const*/   palette *uint32/* (MAX_PALETTE_SIZE) */ ) int {
+func GetColorPalette(/* const */ pic *picture.Picture, /*const*/   palette *uint32/* (MAX_PALETTE_SIZE) */ ) int {
   var i int
   var x, y int
   num_colors := 0;
@@ -259,7 +259,7 @@ func CoOccurrenceFindMax(cooccurrence []uint32/* (num_num_colors *colors) */ , n
 }
 
 // Builds the cooccurrence matrix
-func CoOccurrenceBuild(/* const */ pic *picture.WebPPicture, /*const*/ palette *uint32 , num_colors uint32, cooccurrence []uint32/* (num_num_colors *colors) */) int {
+func CoOccurrenceBuild(/* const */ pic *picture.Picture, /*const*/ palette *uint32 , num_colors uint32, cooccurrence []uint32/* (num_num_colors *colors) */) int {
   var lines, line_top, line_current, line_tmp *uint32
   var x, y int
   var src *uint32 = pic.argb;
@@ -308,7 +308,7 @@ func CoOccurrenceBuild(/* const */ pic *picture.WebPPicture, /*const*/ palette *
 
 
 
-func PaletteSortModifiedZeng(/* const */ pic *picture.WebPPicture, /*const*/ palette_in *uint32 , num_colors uint32, /*const*/ palette *uint32) int {
+func PaletteSortModifiedZeng(/* const */ pic *picture.Picture, /*const*/ palette_in *uint32 , num_colors uint32, /*const*/ palette *uint32) int {
   var i, j, ind uint32
   var remapping [MAX_PALETTE_SIZE]uint8
   var  sums[MAX_PALETTE_SIZE]Sum
@@ -394,7 +394,7 @@ func PaletteSortModifiedZeng(/* const */ pic *picture.WebPPicture, /*const*/ pal
 // PrepareMapToPalette. Returns 0 on memory allocation error.
 // For kSortedDefault and kMinimizeDelta methods, 0 (if present) is set as the
 // last element to optimize later storage.
-func PaletteSort(method PaletteSorting, /*const*/ pic *picture.WebPPicture, /*const*/ palette_sorted *uint32 , num_colors uint32, /*const*/ palette *uint32  ) int {
+func PaletteSort(method PaletteSorting, /*const*/ pic *picture.Picture, /*const*/ palette_sorted *uint32 , num_colors uint32, /*const*/ palette *uint32  ) int {
   switch (method) {
     case kSortedDefault:
       if (palette_sorted[0] == 0 && num_colors > 17) {

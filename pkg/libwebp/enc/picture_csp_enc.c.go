@@ -9,7 +9,7 @@ package enc
 // be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 //
-// picture.WebPPicture utils for colorspace conversion
+// picture.Picture utils for colorspace conversion
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
@@ -35,7 +35,7 @@ func CheckNonOpaque(/* const */ alpha *uint8, width, height int, x_step int, y_s
 }
 
 // Checking for the presence of non-opaque alpha.
-func WebPPictureHasTransparency(/* const */ picture *picture.WebPPicture) int {
+func WebPPictureHasTransparency(/* const */ picture *picture.Picture) int {
   if picture == nil { return 0  }
   if (picture.UseARGB) {
     if (picture.ARGB != nil) {
@@ -56,7 +56,7 @@ static const kMinDimensionIterativeConversion := 4;
 //------------------------------------------------------------------------------
 // Main function
 
-func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, step int, rgb_stride int, /*const*/ picture *picture.WebPPicture) int {
+func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, step int, rgb_stride int, /*const*/ picture *picture.Picture) int {
   ok := SharpYuvConvert(
       r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.Y, picture.YStride, picture.U, picture.UVStride, picture.V, picture.UVStride, /*yuv_bit_depth=*/8, picture.Width, picture.Height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
@@ -86,7 +86,7 @@ extern func SharpYuvInit(VP8CPUInfo cpu_info_func);
 
 static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,        // bytes per pixel
                               int rgb_stride,  // bytes per scanline
-                              float64 dithering, use_iterative_conversion int, /*const*/ picture *picture.WebPPicture) {
+                              float64 dithering, use_iterative_conversion int, /*const*/ picture *picture.Picture) {
   var y int
   width := picture.Width;
   height := picture.Height;
@@ -211,7 +211,7 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 //------------------------------------------------------------------------------
 // call for ARGB.YUVA conversion
 
-func PictureARGBToYUVA(picture *picture.WebPPicture, colorspace.CSP colorspace, float64 dithering, use_iterative_conversion int) int {
+func PictureARGBToYUVA(picture *picture.Picture, colorspace.CSP colorspace, float64 dithering, use_iterative_conversion int) int {
   if picture == nil { return 0  }
   if (picture.ARGB == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
@@ -229,26 +229,26 @@ func PictureARGBToYUVA(picture *picture.WebPPicture, colorspace.CSP colorspace, 
   }
 }
 
-func WebPPictureARGBToYUVADithered(picture *picture.WebPPicture, colorspace.CSP colorspace, float64 dithering) int {
+func WebPPictureARGBToYUVADithered(picture *picture.Picture, colorspace.CSP colorspace, float64 dithering) int {
   return PictureARGBToYUVA(picture, colorspace, dithering, 0);
 }
 
-func WebPPictureARGBToYUVA(picture *picture.WebPPicture, colorspace.CSP colorspace) int {
+func WebPPictureARGBToYUVA(picture *picture.Picture, colorspace.CSP colorspace) int {
   return PictureARGBToYUVA(picture, colorspace, 0.0, 0);
 }
 
-func WebPPictureSharpARGBToYUVA(picture *picture.WebPPicture) int {
+func WebPPictureSharpARGBToYUVA(picture *picture.Picture) int {
   return PictureARGBToYUVA(picture, colorspace.WEBP_YUV420, 0.0, 1);
 }
 // for backward compatibility
-func WebPPictureSmartARGBToYUVA(picture *picture.WebPPicture) int {
+func WebPPictureSmartARGBToYUVA(picture *picture.Picture) int {
   return picture.WebPPictureSharpARGBToYUVA(picture);
 }
 
 //------------------------------------------------------------------------------
 // call for YUVA . ARGB conversion
 
-func WebPPictureYUVAToARGB(picture *picture.WebPPicture) int {
+func WebPPictureYUVAToARGB(picture *picture.Picture) int {
   if picture == nil { return 0  }
   if (picture.Y == nil || picture.U == nil || picture.V == nil) {
     return WebPEncodingSetError(picture, VP8_ENC_ERROR_nil_PARAMETER);
@@ -310,7 +310,7 @@ func WebPPictureYUVAToARGB(picture *picture.WebPPicture) int {
 //------------------------------------------------------------------------------
 // automatic import / conversion
 
-func Import(/* const */ picture *picture.WebPPicture, /*const*/ rgb *uint8, rgb_stride int, step int, swap_rb int, import_alpha int) int {
+func Import(/* const */ picture *picture.Picture, /*const*/ rgb *uint8, rgb_stride int, step int, swap_rb int, import_alpha int) int {
   var y int
   // swap_rb . b,g,r,a , !swap_rb . r,g,b,a
   var r_ptr *uint8 = rgb + (tenary.If(swap_rb, 2, 0));
@@ -376,19 +376,19 @@ func Import(/* const */ picture *picture.WebPPicture, /*const*/ rgb *uint8, rgb_
 
 #if !defined(WEBP_REDUCE_CSP)
 
-func WebPPictureImportBGR(picture *picture.WebPPicture, /*const*/ bgr *uint8, bgr_stride int) int {
+func WebPPictureImportBGR(picture *picture.Picture, /*const*/ bgr *uint8, bgr_stride int) int {
   return (picture != nil && bgr != nil)
              ? Import(picture, bgr, bgr_stride, 3, 1, 0)
              : 0;
 }
 
-func WebPPictureImportBGRA(picture *picture.WebPPicture, /*const*/ bgra *uint8, bgra_stride int) int {
+func WebPPictureImportBGRA(picture *picture.Picture, /*const*/ bgra *uint8, bgra_stride int) int {
   return (picture != nil && bgra != nil)
              ? Import(picture, bgra, bgra_stride, 4, 1, 1)
              : 0;
 }
 
-func WebPPictureImportBGRX(picture *picture.WebPPicture, /*const*/ bgrx *uint8, bgrx_stride int) int {
+func WebPPictureImportBGRX(picture *picture.Picture, /*const*/ bgrx *uint8, bgrx_stride int) int {
   return (picture != nil && bgrx != nil)
              ? Import(picture, bgrx, bgrx_stride, 4, 1, 0)
              : 0;
@@ -396,19 +396,19 @@ func WebPPictureImportBGRX(picture *picture.WebPPicture, /*const*/ bgrx *uint8, 
 
 #endif  // WEBP_REDUCE_CSP
 
-func WebPPictureImportRGB(picture *picture.WebPPicture, /*const*/ rgb *uint8, rgb_stride int) int {
+func WebPPictureImportRGB(picture *picture.Picture, /*const*/ rgb *uint8, rgb_stride int) int {
   return (picture != nil && rgb != nil)
              ? Import(picture, rgb, rgb_stride, 3, 0, 0)
              : 0;
 }
 
-func WebPPictureImportRGBA(picture *picture.WebPPicture, /*const*/ rgba *uint8, rgba_stride int) int {
+func WebPPictureImportRGBA(picture *picture.Picture, /*const*/ rgba *uint8, rgba_stride int) int {
   return (picture != nil && rgba != nil)
              ? Import(picture, rgba, rgba_stride, 4, 0, 1)
              : 0;
 }
 
-func WebPPictureImportRGBX(picture *picture.WebPPicture, /*const*/ rgbx *uint8, rgbx_stride int) int {
+func WebPPictureImportRGBX(picture *picture.Picture, /*const*/ rgbx *uint8, rgbx_stride int) int {
   return (picture != nil && rgbx != nil)
              ? Import(picture, rgbx, rgbx_stride, 4, 0, 0)
              : 0;

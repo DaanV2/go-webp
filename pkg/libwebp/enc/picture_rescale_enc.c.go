@@ -9,7 +9,7 @@ package enc
 // be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 //
-// picture.WebPPicture tools: copy, crop, rescaling and view.
+// picture.Picture tools: copy, crop, rescaling and view.
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
@@ -30,7 +30,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 // Grab the 'specs' (writer, *opaque, width, height...) from 'src' and copy them
 // into 'dst'. Mark 'dst' as not owning any memory.
-func PictureGrabSpecs(/* const */ src *picture.WebPPicture, /*const*/ dst *picture.WebPPicture) {
+func PictureGrabSpecs(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture) {
   assert.Assert(src != nil && dst != nil);
   *dst = *src;
   picture.WebPPictureResetBuffers(dst);
@@ -39,7 +39,7 @@ func PictureGrabSpecs(/* const */ src *picture.WebPPicture, /*const*/ dst *pictu
 //------------------------------------------------------------------------------
 
 // Adjust top-left corner to chroma sample position.
-func SnapTopLeftPosition(/* const */ pic *picture.WebPPicture, /*const*/ left *int, /*const*/ top *int) {
+func SnapTopLeftPosition(/* const */ pic *picture.Picture, /*const*/ left *int, /*const*/ top *int) {
   if (!pic.use_argb) {
     *left &= ~1;
     *top &= ~1;
@@ -47,7 +47,7 @@ func SnapTopLeftPosition(/* const */ pic *picture.WebPPicture, /*const*/ left *i
 }
 
 // Adjust top-left corner and verify that the sub-rectangle is valid.
-func AdjustAndCheckRectangle(/* const */ pic *picture.WebPPicture, /*const*/ left *int, /*const*/ top *int, width, height int) int {
+func AdjustAndCheckRectangle(/* const */ pic *picture.Picture, /*const*/ left *int, /*const*/ top *int, width, height int) int {
   SnapTopLeftPosition(pic, left, top);
   if (*left) < 0 || (*top) < 0 { return 0  }
   if width <= 0 || height <= 0 { return 0  }
@@ -56,7 +56,7 @@ func AdjustAndCheckRectangle(/* const */ pic *picture.WebPPicture, /*const*/ lef
   return 1;
 }
 
-func WebPPictureIsView(/* const */ picture *picture.WebPPicture) int {
+func WebPPictureIsView(/* const */ picture *picture.Picture) int {
   if picture == nil { return 0  }
   if (picture.UseARGB) {
     return (picture.memory_argb_ == nil);
@@ -64,7 +64,7 @@ func WebPPictureIsView(/* const */ picture *picture.WebPPicture) int {
   return (picture.memory_ == nil);
 }
 
-func WebPPictureView(/* const */ src *picture.WebPPicture, left int, top int, width, height int, dst *picture.WebPPicture) int {
+func WebPPictureView(/* const */ src *picture.Picture, left int, top int, width, height int, dst *picture.Picture) int {
   if src == nil || dst == nil { return 0  }
 
   // verify rectangle position.
@@ -96,8 +96,8 @@ func WebPPictureView(/* const */ src *picture.WebPPicture, left int, top int, wi
 //------------------------------------------------------------------------------
 // Picture cropping
 
-func WebPPictureCrop(pic *picture.WebPPicture, left int, top int, width, height int) int {
-   var tmp picture.WebPPicture
+func WebPPictureCrop(pic *picture.Picture, left int, top int, width, height int) int {
+   var tmp picture.Picture
 
   if pic == nil { return 0  }
   if !AdjustAndCheckRectangle(pic, &left, &top, width, height) { return 0  }
@@ -146,19 +146,19 @@ func RescalePlane(/* const */ src *uint8, src_width int , src_height int, src_st
   return 1;
 }
 
-func AlphaMultiplyARGB(/* const */ pic *picture.WebPPicture, inverse int) {
+func AlphaMultiplyARGB(/* const */ pic *picture.Picture, inverse int) {
   assert.Assert(pic.argb != nil);
   WebPMultARGBRows((*uint8)pic.argb, pic.argb_stride * sizeof(*pic.argb), pic.width, pic.height, inverse);
 }
 
-func AlphaMultiplyY(/* const */ pic *picture.WebPPicture, inverse int) {
+func AlphaMultiplyY(/* const */ pic *picture.Picture, inverse int) {
   if (pic.a != nil) {
     WebPMultRows(pic.y, pic.y_stride, pic.a, pic.a_stride, pic.width, pic.height, inverse);
   }
 }
 
-func WebPPictureRescale(picture *picture.WebPPicture, width, height int) int {
-   var tmp picture.WebPPicture
+func WebPPictureRescale(picture *picture.Picture, width, height int) int {
+   var tmp picture.Picture
   int prev_width, prev_height;
   rescaler_t* work;
   status := VP8_ENC_OK;

@@ -121,7 +121,7 @@ func MapConfigToTools(/* const */ enc *VP8Encoder) {
 //          VP8EncProba: 18352
 //              LFStats: 2048
 // Picture size (yuv): 419328
-func InitVP8Encoder(/* const */ config *config.Config, /*const*/ picture *picture.WebPPicture) *VP8Encoder {
+func InitVP8Encoder(/* const */ config *config.Config, /*const*/ picture *picture.Picture) *VP8Encoder {
   var enc *VP8Encoder
   use_filter := (config.FilterStrength > 0) || (config.Autofilter > 0);
   mb_w := (picture.Width + 15) >> 4;
@@ -216,30 +216,9 @@ func StoreStats(/* const */ enc *VP8Encoder) {
 	WebPReportProgress(enc.pic, 100, &enc.percent);  // done!
 }
 
-// Assign an error code to a picture. Return false for convenience.
-// Deprecated: time to start using golang errors
-func WebPEncodingSetError(/* const */ pic *picture.WebPPicture, error WebPEncodingError ) int {
-  assert.Assert((int)error < VP8_ENC_ERROR_LAST);
-  assert.Assert((int)error >= VP8_ENC_OK);
-  // The oldest error reported takes precedence over the new one.
-  if (pic.ErrorCode == VP8_ENC_OK) {
-    ((*picture.WebPPicture)pic).ErrorCode = error;
-  }
-  return 0;
-}
 
-func WebPReportProgress(/* const */ pic *picture.WebPPicture, percent int, /*const*/ percent_store *int) int {
-  if (percent_store != nil && percent != *percent_store) {
-    *percent_store = percent;
-    if (pic.ProgressHook && !pic.ProgressHook(percent, pic)) {
-      // user abort requested
-      return WebPEncodingSetError(pic, VP8_ENC_ERROR_USER_ABORT);
-    }
-  }
-  return 1;  // ok
-}
 
-func WebPEncode(/* const */ config *config.Config, pic *picture.WebPPicture) int {
+func WebPEncode(/* const */ config *config.Config, pic *picture.Picture) int {
   ok := 0;
   if pic == nil { return 0  }
 

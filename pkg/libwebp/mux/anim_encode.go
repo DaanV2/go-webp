@@ -30,23 +30,23 @@ type WebPAnimEncoder struct {
 	// is true.
 	last_config_reversed config.Config   
 
-	curr_canvas *picture.WebPPicture;  // Only pointer; we don't own memory.
+	curr_canvas *picture.Picture;  // Only pointer; we don't own memory.
 
 	// Canvas buffers.
-	curr_canvas_copy picture.WebPPicture   // Possibly modified current canvas.
+	curr_canvas_copy picture.Picture   // Possibly modified current canvas.
 	// True if pixels in 'curr_canvas_copy'
 	// differ from those in 'curr_canvas'.
 	curr_canvas_copy_modified int  
 
 	// Previous canvas (original animation).
 	// Also used temporarily to store canvas_carryover_disposed pixel values.
-	prev_canvas picture.WebPPicture ;
+	prev_canvas picture.Picture ;
 	// canvas_carryover contains the previous original input frame's pixels
 	// (prev_canvas) with some parts carried over from even earlier original input
 	// frames, to approximate the current state of the canvas at decoding.
 	// canvas_carryover is  compared to curr_canvas at encoding to see what parts
 	// of the current frame are similar enough to not be explicitly encoded.
-	canvas_carryover picture.WebPPicture ;
+	canvas_carryover picture.Picture ;
 
 	// Buffer of the size of a subframe, with one boolean value per pixel.
 	// Used when encoding a subframe to remember the pixels that may change when
@@ -175,7 +175,7 @@ func WebPAnimEncoderOptionsInitInternal(enc_options *WebPAnimEncoderOptions, abi
 
 
 
-func ClearRectangle(/* const */ picture *picture.WebPPicture, left int, top int, width, height int) {
+func ClearRectangle(/* const */ picture *picture.Picture, left int, top int, width, height int) {
   var j int
   for j = top; j < top + height; j++ {
     var dst *uint32 = picture.ARGB + j * picture.ARGBStride;
@@ -186,7 +186,7 @@ func ClearRectangle(/* const */ picture *picture.WebPPicture, left int, top int,
   }
 }
 
-func WebPUtilClearPic(/* const */ picture *picture.WebPPicture, /*const*/ rect *FrameRectangle) {
+func WebPUtilClearPic(/* const */ picture *picture.Picture, /*const*/ rect *FrameRectangle) {
   if (rect != nil) {
     ClearRectangle(picture, rect.x_offset, rect.y_offset, rect.width, rect.height);
   } else {
@@ -381,7 +381,7 @@ func QualityToMaxDiff(quality float) int {
 }
 
 // Assumes that an initial valid guess of change rectangle 'rect' is passed.
-func MinimizeChangeRectangle(/* const */ src *picture.WebPPicture, /*const*/ dst *picture.WebPPicture, /*const*/ rect *FrameRectangle, is_lossless bool, quality float) {
+func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture, /*const*/ rect *FrameRectangle, is_lossless bool, quality float) {
   int i, j;
   var compare_pixels ComparePixelsFunc =
       tenary.If(is_lossless, ComparePixelsLossless, ComparePixelsLossy);
@@ -472,12 +472,12 @@ type SubFrameParams struct {
   should_try int               // Should try this set of parameters.
   empty_rect_allowed int       // Frame with empty rectangle can be skipped.
    rect_ll FrameRectangle       // Frame rectangle for lossless compression.
-   sub_frame_ll picture.WebPPicture     // subframe pic for lossless compression.
+   sub_frame_ll picture.Picture     // subframe pic for lossless compression.
    // Frame rectangle for lossy compression.
                                 // Could be smaller than 'rect_ll' as pixels
                                 // with small diffs can be ignored.
    rect_lossy FrameRectangle    
-   sub_frame_lossy picture.WebPPicture  // subframe pic for lossy compression.
+   sub_frame_lossy picture.Picture  // subframe pic for lossy compression.
 }
 
 func SubFrameParamsInit(/* const */ params *SubFrameParams, should_try int, empty_rect_allowed int) int {
@@ -498,7 +498,7 @@ func SubFrameParamsFree(/* const */ params *SubFrameParams) {
 // Given previous and current canvas, picks the optimal rectangle for the
 // current frame based on 'is_lossless' and other parameters. Assumes that the
 // initial guess 'rect' is valid.
-func GetSubRect(/* const */ prev_canvas *picture.WebPPicture, /*const*/ curr_canvas *picture.WebPPicture, is_key_frame int, is_first_frame int, empty_rect_allowed int, is_lossless bool, quality float, /*const*/ rect *FrameRectangle, /*const*/ sub_frame *picture.WebPPicture) int {
+func GetSubRect(/* const */ prev_canvas *picture.Picture, /*const*/ curr_canvas *picture.Picture, is_key_frame int, is_first_frame int, empty_rect_allowed int, is_lossless bool, quality float, /*const*/ rect *FrameRectangle, /*const*/ sub_frame *picture.Picture) int {
   if (!is_key_frame || is_first_frame) {  // Optimize frame rectangle.
     // Note: This behaves as expected for first frame, as 'prev_canvas' is
     // initialized to a fully transparent canvas in the beginning.
@@ -522,7 +522,7 @@ func GetSubRect(/* const */ prev_canvas *picture.WebPPicture, /*const*/ curr_can
 
 // Picks optimal frame rectangle for both lossless and lossy compression. The
 // initial guess for frame rectangles will be the full canvas.
-func GetSubRects(/* const */ prev_canvas *picture.WebPPicture, /*const*/ curr_canvas *picture.WebPPicture, is_key_frame int, is_first_frame int, quality float, /*const*/ params *SubFrameParams) int {
+func GetSubRects(/* const */ prev_canvas *picture.Picture, /*const*/ curr_canvas *picture.Picture, is_key_frame int, is_first_frame int, quality float, /*const*/ params *SubFrameParams) int {
   // Lossless frame rectangle.
   params.rect_ll.x_offset = 0;
   params.rect_ll.y_offset = 0;
@@ -550,7 +550,7 @@ func clip(v, min_v,max_v int ) int {
 //   x_offset, y_offset, width, height - (in/out) rectangle between the two
 //                                                input pictures.
 // Returns true on success.
-func WebPAnimEncoderRefineRect(/* const */ prev_canvas *picture.WebPPicture, /*const*/ curr_canvas *picture.WebPPicture, is_lossless bool, quality float, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ width *int, /*const*/ height *int) int {
+func WebPAnimEncoderRefineRect(/* const */ prev_canvas *picture.Picture, /*const*/ curr_canvas *picture.Picture, is_lossless bool, quality float, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ width *int, /*const*/ height *int) int {
    var rect FrameRectangle
   int right, left, bottom, top;
   if (prev_canvas == nil || curr_canvas == nil ||
@@ -576,7 +576,7 @@ func WebPAnimEncoderRefineRect(/* const */ prev_canvas *picture.WebPPicture, /*c
   return 1;
 }
 
-func DisposeFrameRectangle(dispose_method int, /*const*/ rect *FrameRectangle, /*const*/ curr_canvas *picture.WebPPicture) {
+func DisposeFrameRectangle(dispose_method int, /*const*/ rect *FrameRectangle, /*const*/ curr_canvas *picture.Picture) {
   assert.Assert(rect != nil);
   if (dispose_method == WEBP_MUX_DISPOSE_BACKGROUND) {
     WebPUtilClearPic(curr_canvas, rect);
@@ -587,7 +587,7 @@ func RectArea(/* const */ rect *FrameRectangle) uint32 {
   return (uint32)rect.width * rect.height;
 }
 
-func IsLosslessBlendingPossible(/* const */ src *picture.WebPPicture, /*const*/ dst *picture.WebPPicture, /*const*/ rect *FrameRectangle) int {
+func IsLosslessBlendingPossible(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture, /*const*/ rect *FrameRectangle) int {
   int i, j;
   assert.Assert(src.width == dst.width && src.height == dst.height);
   assert.Assert(rect.x_offset + rect.width <= dst.width);
@@ -607,7 +607,7 @@ func IsLosslessBlendingPossible(/* const */ src *picture.WebPPicture, /*const*/ 
   return 1;
 }
 
-func IsLossyBlendingPossible(/* const */ src *picture.WebPPicture, /*const*/ dst *picture.WebPPicture, /*const*/ rect *FrameRectangle, quality float) int {
+func IsLossyBlendingPossible(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture, /*const*/ rect *FrameRectangle, quality float) int {
   max_allowed_diff_lossy := QualityToMaxDiff(quality);
   int i, j;
   assert.Assert(src.width == dst.width && src.height == dst.height);
@@ -633,7 +633,7 @@ func IsLossyBlendingPossible(/* const */ src *picture.WebPPicture, /*const*/ dst
 // transparent pixels.
 // Returns true if at least one pixel gets modified.
 // Remember the modified pixel locations as 1s in carryover_mask.
-func IncreaseTransparency(/* const */ src *picture.WebPPicture, /*const*/ rect *FrameRectangle, /*const*/ dst *picture.WebPPicture, /*const*/ carryover_mask *uint8) int {
+func IncreaseTransparency(/* const */ src *picture.Picture, /*const*/ rect *FrameRectangle, /*const*/ dst *picture.Picture, /*const*/ carryover_mask *uint8) int {
   int i, j;
   modified := 0;
   // carryover_mask spans over the rect part of the canvas.
@@ -662,7 +662,7 @@ func IncreaseTransparency(/* const */ src *picture.WebPPicture, /*const*/ rect *
 // Assumes lossy compression is being used.
 // Returns true if at least one pixel gets modified.
 // Remember the modified pixel locations as 1s in carryover_mask.
-func FlattenSimilarBlocks(/* const */ src *picture.WebPPicture, /*const*/ rect *FrameRectangle, /*const*/ dst *picture.WebPPicture, quality float, /*const*/ carryover_mask *uint8) int {
+func FlattenSimilarBlocks(/* const */ src *picture.Picture, /*const*/ rect *FrameRectangle, /*const*/ dst *picture.Picture, quality float, /*const*/ carryover_mask *uint8) int {
   max_allowed_diff_lossy := QualityToMaxDiff(quality);
   int i, j;
   modified := 0;
@@ -720,7 +720,7 @@ func FlattenSimilarBlocks(/* const */ src *picture.WebPPicture, /*const*/ rect *
   return modified;
 }
 
-func EncodeFrame(/* const */ config *config.Config, /*const*/ pic *picture.WebPPicture, /*const*/ memory *WebPMemoryWriter) int {
+func EncodeFrame(/* const */ config *config.Config, /*const*/ pic *picture.Picture, /*const*/ memory *WebPMemoryWriter) int {
   pic.use_argb = 1;
   pic.writer = WebPMemoryWrite;
   pic.custom_ptr = memory;
@@ -745,7 +745,7 @@ type Candidate struct {
 }
 
 // Generates a candidate encoded frame given a picture and metadata.
-func EncodeCandidate(/* const */ sub_frame *picture.WebPPicture, /*const*/ rect *FrameRectangle, /*const*/ encoder_config *config.Config, use_blending int, /*const*/ candidate *Candidate) WebPEncodingError {
+func EncodeCandidate(/* const */ sub_frame *picture.Picture, /*const*/ rect *FrameRectangle, /*const*/ encoder_config *config.Config, use_blending int, /*const*/ candidate *Candidate) WebPEncodingError {
   config.Config config = *encoder_config;
   WebPEncodingError error_code = VP8_ENC_OK;
   assert.Assert(candidate != nil);
@@ -892,7 +892,7 @@ func PickBestCandidate(/* const */ enc *WebPAnimEncoder, /*const*/ candidate *Ca
 // Generates candidates for a given dispose method given pre-filled subframe
 // 'params'.
 static WebPEncodingError GenerateCandidates(
-    const enc *WebPAnimEncoder, Candidate candidates[CANDIDATE_COUNT], WebPMuxAnimDispose dispose_method, /*const*/ canvas_carryover_disposed *picture.WebPPicture, is_lossless bool, is_key_frame int, /*const*/ params *SubFrameParams, /*const*/ config_ll *config.Config, /*const*/ config_lossy *config.Config, *Candidate* const best_candidate, /*const*/ encoded_frame *EncodedFrame) {
+    const enc *WebPAnimEncoder, Candidate candidates[CANDIDATE_COUNT], WebPMuxAnimDispose dispose_method, /*const*/ canvas_carryover_disposed *picture.Picture, is_lossless bool, is_key_frame int, /*const*/ params *SubFrameParams, /*const*/ config_ll *config.Config, /*const*/ config_lossy *config.Config, *Candidate* const best_candidate, /*const*/ encoded_frame *EncodedFrame) {
   WebPEncodingError error_code = VP8_ENC_OK;
   is_dispose_none := (dispose_method == WEBP_MUX_DISPOSE_NONE);
   const candidate_ll *Candidate =
@@ -900,8 +900,8 @@ static WebPEncodingError GenerateCandidates(
   var candidate_lossy *Candidate = is_dispose_none
                                          ? &candidates[LOSSY_DISP_NONE]
                                          : &candidates[LOSSY_DISP_BG];
-  var curr_canvas *picture.WebPPicture = &enc.curr_canvas_copy;
-  const canvas_carryover *picture.WebPPicture =
+  var curr_canvas *picture.Picture = &enc.curr_canvas_copy;
+  const canvas_carryover *picture.Picture =
       is_dispose_none ? &enc.canvas_carryover : canvas_carryover_disposed;
   int use_blending_ll, use_blending_lossy;
   int evaluate_ll, evaluate_lossy;
@@ -1014,7 +1014,7 @@ func IncreasePreviousDuration(/* const */ enc *WebPAnimEncoder, duration int) in
 }
 
 // Copies the pixels that are identical in 'a' and 'b' to 'dst'.
-func CopyIdenticalPixels(/* const */ a *picture.WebPPicture, /*const*/ b *picture.WebPPicture, /*const*/ dst *picture.WebPPicture) {
+func CopyIdenticalPixels(/* const */ a *picture.Picture, /*const*/ b *picture.Picture, /*const*/ dst *picture.Picture) {
   int y, x;
   var row_a *uint32 = a.argb;
   var row_b *uint32 = b.argb;
@@ -1036,7 +1036,7 @@ func CopyIdenticalPixels(/* const */ a *picture.WebPPicture, /*const*/ b *pictur
 }
 
 // Copies the pixels where 'mask' is 0 from 'src' to 'dst'.
-func CopyMaskedPixels(/* const */ src *picture.WebPPicture, /*const*/ mask *uint8, /*const*/ dst *picture.WebPPicture) {
+func CopyMaskedPixels(/* const */ src *picture.Picture, /*const*/ mask *uint8, /*const*/ dst *picture.Picture) {
   int y, x;
   var row_src *uint32 = src.argb;
   var row_mask *uint8 = mask;
@@ -1063,11 +1063,11 @@ func CopyMaskedPixels(/* const */ src *picture.WebPPicture, /*const*/ mask *uint
 func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config, is_key_frame int , /*const*/ best_candidate_rect *FrameRectangle, /*const*/ encoded_frame *EncodedFrame, /*const*/ frame_skipped *int) WebPEncodingError {
   var i int
   WebPEncodingError error_code = VP8_ENC_OK;
-  var curr_canvas *picture.WebPPicture = &enc.curr_canvas_copy;
-  var canvas_carryover *picture.WebPPicture = &enc.canvas_carryover;
+  var curr_canvas *picture.Picture = &enc.curr_canvas_copy;
+  var canvas_carryover *picture.Picture = &enc.canvas_carryover;
   // canvas_carryover with the area corresponding to the previous frame disposed
   // to background color.
-  canvas_carryover_disposed *picture.WebPPicture = nil;
+  canvas_carryover_disposed *picture.Picture = nil;
   Candidate candidates[CANDIDATE_COUNT];
   best_candidate *Candidate = nil;
   is_lossless := config.Lossless;
@@ -1289,8 +1289,8 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Confi
     WebPCopyPixels(enc.curr_canvas, &enc.canvas_carryover);
   } else {
     var curr_rect *FrameRectangle = &best_sub_candidate_rect;
-     var curr_canvas_in_curr_rect picture.WebPPicture
-     var canvas_carryover_in_curr_rect picture.WebPPicture
+     var curr_canvas_in_curr_rect picture.Picture
+     var canvas_carryover_in_curr_rect picture.Picture
 
     // There is no carried over pixel in the disposed rectangle, if any.
     // Note that this could not have been done earlier because the decision to
@@ -1393,7 +1393,7 @@ func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
 #undef DELTA_INFINITY
 #undef KEYFRAME_NONE
 
-func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.WebPPicture, timestamp int, /*const*/ encoder_config *config.Config) int {
+func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp int, /*const*/ encoder_config *config.Config) int {
    var config config.Config
   var ok int
 
@@ -1483,9 +1483,9 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.WebPPicture, timest
 // Bitstream assembly.
 
  static int DecodeFrameOntoCanvas(
-    const frame *WebPMuxFrameInfo, /*const*/ canvas *picture.WebPPicture) {
+    const frame *WebPMuxFrameInfo, /*const*/ canvas *picture.Picture) {
   var image *WebPData = &frame.bitstream;
-   var sub_image picture.WebPPicture
+   var sub_image picture.Picture
    var config WebPDecoderConfig
   if (!WebPInitDecoderConfig(&config)) {
     return 0;
@@ -1511,7 +1511,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.WebPPicture, timest
 }
 
 func FrameToFullCanvas(/* const */ enc *WebPAnimEncoder, /*const*/ frame *WebPMuxFrameInfo, /*const*/ full_image *WebPData) int {
-  var canvas_buf *picture.WebPPicture = &enc.curr_canvas_copy;
+  var canvas_buf *picture.Picture = &enc.curr_canvas_copy;
   WebPMemoryWriter mem1, mem2;
   WebPMemoryWriterInit(&mem1);
   WebPMemoryWriterInit(&mem2);

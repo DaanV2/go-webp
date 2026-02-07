@@ -494,7 +494,7 @@ func WebPAnimEncoder(width, height int, enc_options *WebPAnimEncoderOptions) *We
 // Returns:
 //   On error, returns false and frame.ErrorCode is set appropriately.
 //   Otherwise, returns true.
-func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.WebPPicture, timestamp_ms int, config *config.Config) int {
+func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp_ms int, config *config.Config) int {
 	// TODO: implement function
 	return 0
 }

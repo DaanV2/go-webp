@@ -1,6 +1,7 @@
 package picture
 
 import (
+	"github.com/daanv2/go-webp/pkg/assert"
 	"github.com/daanv2/go-webp/pkg/color/colorspace"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 )
@@ -10,7 +11,7 @@ const LOSSLESS_DEFAULT_QUALITY = 70.0
 // Progress hook, called from time to time to report progress. It can return
 // false to request an abort of the encoding process, or true otherwise if
 // everything is OK.
-type WebPProgressHook = func(percent int /*const*/, picture *WebPPicture) int
+type WebPProgressHook = func(percent int /*const*/, picture *Picture) int
 
 // Main exchange structure (input samples, output bytes, statistics)
 //
@@ -18,7 +19,7 @@ type WebPProgressHook = func(percent int /*const*/, picture *WebPPicture) int
 // (use_argb, y/u/v, argb, ...) point to user-owned data, even if
 // WebPPictureAlloc() has been called. Depending on the value use_argb,
 // it's guaranteed that either or *argb *y/*u/content will be *v kept untouched.
-type WebPPicture struct {
+type Picture struct {
 	//   INPUT
 	//////////////
 	// Main flag for encoder selecting between ARGB or YUV input.
@@ -89,7 +90,7 @@ type WebPPicture struct {
 }
 
 // Internal, version-checked, entry point
-func WebPPictureInitInternal(picture *picture.WebPPicture, version int) int {
+func WebPPictureInitInternal(picture *picture.Picture, version int) int {
 	if picture != nil {
 		stdlib.Memset(picture, 0, sizeof(*picture))
 		picture.Writer = DummyWriter
@@ -98,7 +99,7 @@ func WebPPictureInitInternal(picture *picture.WebPPicture, version int) int {
 	return 1
 }
 
-func DummyWriter(*uint8, uint64, *picture.WebPPicture) int {
+func DummyWriter(*uint8, uint64, *picture.Picture) int {
 	return 1
 }
 
@@ -106,7 +107,7 @@ func DummyWriter(*uint8, uint64, *picture.WebPPicture) int {
 // of version mismatch. WebPPictureInit() must have succeeded before using the
 // 'picture' object.
 // Note that, by default, use_argb is false and colorspace is colorspace.WEBP_YUV420.
-func WebPPictureInit(picture *WebPPicture) int {
+func WebPPictureInit(picture *Picture) int {
 	return WebPPictureInitInternal(picture, WEBP_ENCODER_ABI_VERSION)
 }
 
@@ -114,7 +115,7 @@ func WebPPictureInit(picture *WebPPicture) int {
 // Allocate y/u/v buffers as per colorspace/width/height specification.
 // Note! This function will free the previous buffer if needed.
 // Returns false in case of memory error.
-func WebPPictureAlloc(pict *WebPPicture) int {
+func WebPPictureAlloc(pict *Picture) int {
 	if pict != nil {
 		WebPPictureFree(pict) // erase previous buffer
 
@@ -132,7 +133,7 @@ func WebPPictureAlloc(pict *WebPPicture) int {
 // object itself.
 // Besides memory (which is reclaimed) all other fields of 'picture' are
 // preserved.
-func WebPPictureFree(picture *WebPPicture) {
+func WebPPictureFree(picture *Picture) {
 	if picture != nil {
 		WebPPictureResetBuffers(picture)
 	}
@@ -142,7 +143,7 @@ func WebPPictureFree(picture *WebPPicture) {
 // will fully own the copied pixels (this is not a view). The 'dst' picture need
 // not be initialized as its content is overwritten.
 // Returns false in case of memory allocation error.
-func WebPPictureCopy(/* const */ src *picture.WebPPicture, dst *picture.WebPPicture) int {
+func WebPPictureCopy(/* const */ src *picture.Picture, dst *picture.Picture) int {
   if src == nil || dst == nil { return 0  }
   if src == dst { return 1  }
 
@@ -166,7 +167,7 @@ func WebPPictureCopy(/* const */ src *picture.WebPPicture, dst *picture.WebPPict
 // free'd). Uses picture.csp to determine whether an alpha buffer is needed.
 // Preserves the ARGB buffer.
 // Returns false in case of error (invalid param, out-of-memory).
-func WebPPictureAllocYUVA(/* const */ picture *picture.WebPPicture) int {
+func WebPPictureAllocYUVA(/* const */ picture *picture.Picture) int {
   has_alpha := int(picture.ColorSpace) & colorspace.WEBP_CSP_ALPHA_BIT;
   width := picture.Width;
   height := picture.Height;
@@ -230,7 +231,7 @@ func WebPPictureAllocYUVA(/* const */ picture *picture.WebPPicture) int {
 // Allocates ARGB buffer according to set width/height (previous one is
 // always free'd). Preserves the YUV(A) buffer. Returns false in case of error
 // (invalid param, out-of-memory).
-func WebPPictureAllocARGB(/* const */ picture *picture.WebPPicture) int {
+func WebPPictureAllocARGB(/* const */ picture *picture.Picture) int {
   width := picture.Width
   height := picture.Height
   argb_size := uint64(width * height)
@@ -253,7 +254,7 @@ func WebPPictureAllocARGB(/* const */ picture *picture.WebPPicture) int {
 }
 
 // Remove reference to the ARGB/YUVA buffer (doesn't free anything).
-func WebPPictureResetBuffers(/* const */ picture *picture.WebPPicture) {
+func WebPPictureResetBuffers(/* const */ picture *picture.Picture) {
   WebPPictureResetBufferARGB(picture);
   WebPPictureResetBufferYUVA(picture);
 }
@@ -261,7 +262,7 @@ func WebPPictureResetBuffers(/* const */ picture *picture.WebPPicture) {
 // Returns true if 'picture' is non-nil and dimensions/colorspace are within
 // their valid ranges. If returning false, the 'error_code' in 'picture' is
 // updated.
-func WebPValidatePicture(/* const */ picture *picture.WebPPicture) int {
+func WebPValidatePicture(/* const */ picture *picture.Picture) int {
   if picture == nil { return 0  }
   if (picture.Width <= 0 || picture.Width > INT_MAX / 4 ||
       picture.Height <= 0 || picture.Height > INT_MAX / 4) {
@@ -274,13 +275,13 @@ func WebPValidatePicture(/* const */ picture *picture.WebPPicture) int {
   return 1;
 }
 
-func WebPPictureResetBufferARGB(/* const */ picture *picture.WebPPicture) {
+func WebPPictureResetBufferARGB(/* const */ picture *picture.Picture) {
   picture.memory_argb_ = nil;
   picture.ARGB = nil;
   picture.ARGBStride = 0;
 }
 
-func WebPPictureResetBufferYUVA(/* const */ picture *picture.WebPPicture) {
+func WebPPictureResetBufferYUVA(/* const */ picture *picture.Picture) {
   picture.memory_ = nil
   picture.Y = nil
   picture.U = nil
@@ -289,4 +290,27 @@ func WebPPictureResetBufferYUVA(/* const */ picture *picture.WebPPicture) {
   picture.YStride = 0
   picture.UVStride = 0
   picture.AStride = 0
+}
+
+// Assign an error code to a picture. Return false for convenience.
+// Deprecated: time to start using golang errors
+func WebPEncodingSetError(/* const */ pic *Picture, error WebPEncodingError ) int {
+  assert.Assert((int)error < VP8_ENC_ERROR_LAST);
+  assert.Assert((int)error >= VP8_ENC_OK);
+  // The oldest error reported takes precedence over the new one.
+  if (pic.ErrorCode == VP8_ENC_OK) {
+    ((*picture.Picture)pic).ErrorCode = error;
+  }
+  return 0;
+}
+
+func WebPReportProgress(/* const */ pic *Picture, percent int, /*const*/ percent_store *int) int {
+  if (percent_store != nil && percent != *percent_store) {
+    *percent_store = percent;
+    if (pic.ProgressHook && !pic.ProgressHook(percent, pic)) {
+      // user abort requested
+      return WebPEncodingSetError(pic, VP8_ENC_ERROR_USER_ABORT);
+    }
+  }
+  return 1;  // ok
 }

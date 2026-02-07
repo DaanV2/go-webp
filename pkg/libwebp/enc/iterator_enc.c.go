@@ -133,7 +133,7 @@ func ImportLine(/* const */ src *uint8, src_stride int, dst *uint8, len int, tot
 func VP8IteratorImport(/* const */ it *VP8EncIterator, /*const*/ tmp_ *uint832) {
   var enc *VP8Encoder = it.enc;
   x := it.x, y = it.y;
-  var pic *picture.WebPPicture = enc.pic;
+  var pic *picture.Picture = enc.pic;
   var ysrc *uint8 = pic.y + (y * pic.y_stride + x) * 16;
   var usrc *uint8 = pic.u + (y * pic.uv_stride + x) * 8;
   var vsrc *uint8 = pic.v + (y * pic.uv_stride + x) * 8;
@@ -194,7 +194,7 @@ func VP8IteratorExport(/* const */ it *VP8EncIterator) {
     var ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
     var usrc *uint8 = it.yuv_out + U_OFF_ENC;
     var vsrc *uint8 = it.yuv_out + V_OFF_ENC;
-    var pic *picture.WebPPicture = enc.pic;
+    var pic *picture.Picture = enc.pic;
     var ydst *uint8 = pic.y + (y * pic.y_stride + x) * 16;
     var udst *uint8 = pic.u + (y * pic.uv_stride + x) * 8;
     var vdst *uint8 = pic.v + (y * pic.uv_stride + x) * 8;

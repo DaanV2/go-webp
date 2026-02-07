@@ -527,7 +527,7 @@ func VP8LOptimizeSampling(/* const */ image *uint32, full_width int, full_height
 // super-tile is updated. If this super-tile is finished, its histogram is used
 // to update the histogram of the next super-tile and so on up to the max-tile.
 func GetBestPredictorsAndSubSampling(
-    width, height int, /*const*/ int min_bits, /*const*/ int max_bits, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, max_quantization int, exact int, used_subtract_green int, /*const*/ pic *picture.WebPPicture, percent_range int, /*const*/ percent *int, *uint32* const all_modes, best_bits *int, *uint32* best_mode) {
+    width, height int, /*const*/ int min_bits, /*const*/ int max_bits, /*const*/ argb_scratch *uint32, /*const*/ argb *uint32, max_quantization int, exact int, used_subtract_green int, /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int, *uint32* const all_modes, best_bits *int, *uint32* best_mode) {
   tiles_per_row := VP8LSubSampleSize(width, min_bits);
   tiles_per_col := VP8LSubSampleSize(height, min_bits);
   var best_cost int64
@@ -668,7 +668,7 @@ func GetBestPredictorsAndSubSampling(
 // qualities.
 // pic and percent are for progress.
 // Returns false in case of error (stored in pic.ErrorCode).
-func VP8LResidualImage(width, height int, min_bits int, max_bits int, low_effort int, /*const*/ argb *uint32, /*const*/ argb_scratch *uint32, /*const*/ image *uint32, near_lossless_quality int, exact int, used_subtract_green int, /*const*/ pic *picture.WebPPicture, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
+func VP8LResidualImage(width, height int, min_bits int, max_bits int, low_effort int, /*const*/ argb *uint32, /*const*/ argb_scratch *uint32, /*const*/ image *uint32, near_lossless_quality int, exact int, used_subtract_green int, /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
   percent_start := *percent;
   max_quantization := 1 << VP8LNearLosslessBits(near_lossless_quality);
   if (low_effort) {
@@ -893,7 +893,7 @@ func CopyTileWithColorTransform(xsize int, ysize int, tile_x int, tile_y int, ma
   }
 }
 
-func VP8LColorSpaceTransform(width, height int, bits int, quality int, /*const*/ argb *uint32, image *uint32, /*const*/ pic *picture.WebPPicture, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
+func VP8LColorSpaceTransform(width, height int, bits int, quality int, /*const*/ argb *uint32, image *uint32, /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
   max_tile_size := 1 << bits;
   tile_xsize := VP8LSubSampleSize(width, bits);
   tile_ysize := VP8LSubSampleSize(height, bits);

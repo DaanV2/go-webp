@@ -17,7 +17,7 @@ func WebPMemoryWriterInit(writer *WebPMemoryWriter) {
 // The custom writer to be used with WebPMemoryWriter as custom_ptr. Upon
 // completion, writer.mem and writer.size will hold the coded data.
 // writer.mem must be freed by calling WebPMemoryWriterClear.
-func WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture *picture.WebPPicture) int {
+func WebPMemoryWrite(/* const */ data *uint8, data_size uint64, /*const*/ picture *picture.Picture) int {
   var w *WebPMemoryWriter = (*WebPMemoryWriter)picture.CustomPtr;
   var next_size uint64
   if (w == nil) {
@@ -58,10 +58,10 @@ func WebPMemoryWriterClear(writer *WebPMemoryWriter) {
 //------------------------------------------------------------------------------
 // Simplest high-level calls:
 
-type Importer = func(/* const */ *picture.WebPPicture, /*const*/ *uint8, int)int
+type Importer = func(/* const */ *picture.Picture, /*const*/ *uint8, int)int
 
 func Encode(/* const */ rgba *uint8, width, height int, stride int, import Importer, float64 quality_factor, lossless int, out *uint8 put) uint64 {
-   var pic picture.WebPPicture
+   var pic picture.Picture
    var config config.Config
    var wrt WebPMemoryWriter
   var ok int
