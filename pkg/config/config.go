@@ -2,8 +2,6 @@ package config
 
 import (
 	"errors"
-
-	"github.com/daanv2/go-webp/pkg/constants"
 )
 
 // Compression parameters.
@@ -83,23 +81,36 @@ type Config struct {
 // modification. Returns false in case of version mismatch. WebPConfigInit()
 // must have succeeded before using the 'config' object.
 // Note that the default values are lossless=0 and quality=75.
-func WebPConfigInit(config *Config) error {
-	return WebPConfigInitInternal(config, WEBP_PRESET_DEFAULT, 75.0, constants.WEBP_ENCODER_ABI_VERSION)
+func ConfigInit(config *Config) error {
+	return config.Init()
+}
+
+// Should always be called, to initialize a fresh Config structure before
+// modification. Returns false in case of version mismatch. WebPConfigInit()
+// must have succeeded before using the 'config' object.
+// Note that the default values are lossless=0 and quality=75.
+func (config *Config) Init() error {
+	return config.init(WEBP_PRESET_DEFAULT, 75.0)
 }
 
 // This function will initialize the configuration according to a predefined
 // set of parameters (referred to by 'preset') and a given quality factor.
 // This function can be called as a replacement to WebPConfigInit(). Will
 // return false in case of error.
-func WebPConfigPreset(config *Config, preset Preset, quality float64) error {
-	return WebPConfigInitInternal(config, preset, quality, constants.WEBP_ENCODER_ABI_VERSION)
+func ConfigPreset(config *Config, preset Preset, quality float64) error {
+	return config.init(preset, quality)
+}
+
+// This function will initialize the configuration according to a predefined
+// set of parameters (referred to by 'preset') and a given quality factor.
+// This function can be called as a replacement to WebPConfigInit(). Will
+// return false in case of error.
+func (config *Config) InitPreset(preset Preset, quality float64) error {
+	return config.init(preset, quality)
 }
 
 // Internal, version-checked, entry point
-func WebPConfigInitInternal(config *Config, preset Preset, quality float64, version int) error {
-	if WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_ENCODER_ABI_VERSION) {
-		return nil // caller/system version mismatch!
-	}
+func (config *Config) init(preset Preset, quality float64) error {
 	if config == nil {
 		return nil
 	}
@@ -133,39 +144,34 @@ func WebPConfigInitInternal(config *Config, preset Preset, quality float64, vers
 	config.near_lossless = 100
 	config.use_sharp_yuv = 0
 
-	// TODO(skal): tune.
 	switch preset {
+	case WEBP_PRESET_DEFAULT:
+	default:
+		break
 	case WEBP_PRESET_PICTURE:
 		config.sns_strength = 80
 		config.filter_sharpness = 4
 		config.filter_strength = 35
 		config.preprocessing &= ^2 // no dithering
-		break
 	case WEBP_PRESET_PHOTO:
 		config.sns_strength = 80
 		config.filter_sharpness = 3
 		config.filter_strength = 30
 		config.preprocessing |= 2
-		break
 	case WEBP_PRESET_DRAWING:
 		config.sns_strength = 25
 		config.filter_sharpness = 6
 		config.filter_strength = 10
-		break
 	case WEBP_PRESET_ICON:
 		config.sns_strength = 0
 		config.filter_strength = 0 // disable filtering to retain sharpness
 		config.preprocessing &= ^2 // no dithering
-		break
 	case WEBP_PRESET_TEXT:
 		config.sns_strength = 0
 		config.filter_strength = 0 // disable filtering to retain sharpness
 		config.preprocessing &= ^2 // no dithering
 		config.segments = 2
-		break
-	case WEBP_PRESET_DEFAULT:
-	default:
-		break
+
 	}
 	return config.Validate()
 }

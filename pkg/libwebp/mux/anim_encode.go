@@ -1458,7 +1458,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp int,
     }
     config = *encoder_config;
   } else {
-    if (!WebPConfigInit(&config)) {
+    if (!config.ConfigInit(&config)) {
       MarkError(enc, "Cannot Init config");
       return 0;
     }

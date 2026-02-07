@@ -408,7 +408,7 @@ func WebPMuxAssemble(mux *mux.WebPMux, assembled_data *WebPData) WebPMuxError {
   *WebPAnimEncoder enc = WebPAnimEncoderNew(width, height, &enc_options);
   while(<there are more frames>) {
      var config config.Config
-    WebPConfigInit(&config);
+    config.ConfigInit(&config);
     // Tune 'config' as needed.
     WebPAnimEncoderAdd(enc, frame, timestamp_ms, &config);
   }

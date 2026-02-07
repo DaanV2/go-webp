@@ -67,7 +67,7 @@ func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int
   // Transfer the alpha values to the green channel.
   WebPDispatchAlphaToGreen(data, width, picture.width, picture.height, picture.argb, picture.argb_stride);
 
-  if !WebPConfigInit(&config) { return 0  }
+  if !config.ConfigInit(&config) { return 0  }
   config.lossless = 1;
   // Enable exact, or it would alter RGB values of transparent alpha, which is
   // normally OK but not here since we are not encoding the input image but  an
