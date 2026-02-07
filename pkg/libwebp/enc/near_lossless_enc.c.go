@@ -108,7 +108,7 @@ func NearLossless(xsize int, ysize int, /*const*/ argb_src *uint32, stride int, 
 
 // in near_lossless.c
 // Near lossless preprocessing in RGB color-space.
-func VP8ApplyNearLossless(/* const */ picture *WebPPicture, quality int, /*const*/ argb_dst *uint32) int {
+func VP8ApplyNearLossless(/* const */ picture *picture.WebPPicture, quality int, /*const*/ argb_dst *uint32) int {
   var i int
   copy_buffer *uint32;
   xsize := picture.width;

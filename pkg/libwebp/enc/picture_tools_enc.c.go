@@ -9,7 +9,7 @@ package enc
 // be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 //
-// WebPPicture tools: alpha handling, etc.
+// picture.WebPPicture tools: alpha handling, etc.
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
@@ -91,7 +91,7 @@ func SmoothenBlock(/* const */ a_ptr *uint8, a_stride int, y_ptr *uint8, y_strid
 
 // Replace samples that are fully transparent by 'color' to help compressibility
 // (no guarantee, though). Assumes pic.use_argb is true.
-func WebPReplaceTransparentPixels(/* const */ pic *WebPPicture, color uint32) {
+func WebPReplaceTransparentPixels(/* const */ pic *picture.WebPPicture, color uint32) {
   if (pic != nil && pic.use_argb) {
     y := pic.height;
     argb *uint32 = pic.argb;
@@ -104,7 +104,7 @@ func WebPReplaceTransparentPixels(/* const */ pic *WebPPicture, color uint32) {
   }
 }
 
-func WebPCleanupTransparentArea(pic *WebPPicture) {
+func WebPCleanupTransparentArea(pic *picture.WebPPicture) {
   int x, y, w, h;
   if pic == nil { return }
   w = pic.width / SIZE;
@@ -194,7 +194,7 @@ func MakeARGB32(int r, g int, b int) uint32 {
   return (uint(0xff000000) | (r << 16) | (g << 8) | b);
 }
 
-func WebPBlendAlpha(picture *WebPPicture, uint32 background_rgb) {
+func WebPBlendAlpha(picture *picture.WebPPicture, uint32 background_rgb) {
   red := (background_rgb >> 16) & 0xff;
   green := (background_rgb >> 8) & 0xff;
   blue := (background_rgb >> 0) & 0xff;

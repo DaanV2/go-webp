@@ -1,3 +1,5 @@
 package lossless
 
-func Encode()
+func Encode() error {
+	return nil
+}

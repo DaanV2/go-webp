@@ -224,7 +224,7 @@ func MaxFindCopyLength(int len) int {
   return (len < MAX_LENGTH) ? len : MAX_LENGTH;
 }
 
-func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, xsize int, ysize int, low_effort int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) int {
+func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, xsize int, ysize int, low_effort int, /*const*/ pic *picture.WebPPicture, percent_range int, /*const*/ percent *int) int {
   size := xsize * ysize;
   iter_max := GetMaxItersForQuality(quality);
   window_size := GetWindowSizeForHashChain(quality, xsize);
@@ -971,7 +971,7 @@ Error:
 }
 
 int VP8LGetBackwardReferences(
-    width, height int, /*const*/ argb *uint32, quality int, low_effort int, int lz77_types_to_try, cache_bits_max int, do_no_cache int, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int, /*const*/ pic *WebPPicture, percent_range int, /*const*/ percent *int) {
+    width, height int, /*const*/ argb *uint32, quality int, low_effort int, int lz77_types_to_try, cache_bits_max int, do_no_cache int, /*const*/ hash_chain *VP8LHashChain, /*const*/ refs *VP8LBackwardRefs, /*const*/ cache_bits_best *int, /*const*/ pic *picture.WebPPicture, percent_range int, /*const*/ percent *int) {
   if (low_effort) {
     refs_best *VP8LBackwardRefs;
     *cache_bits_best = cache_bits_max;

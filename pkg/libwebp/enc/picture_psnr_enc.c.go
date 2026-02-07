@@ -24,7 +24,7 @@ func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ re
   return 1;
 }
 
-func WebPPictureDistortion(/* const */ src *WebPPicture, /*const*/ ref *WebPPicture, vtype int, results [5]float64) int {
+func WebPPictureDistortion(/* const */ src *picture.WebPPicture, /*const*/ ref *picture.WebPPicture, vtype int, results [5]float64) int {
   var i int
 //   (void)src;
 //   (void)ref;

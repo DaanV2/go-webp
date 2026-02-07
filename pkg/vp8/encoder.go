@@ -15,7 +15,7 @@ import (
 
 type VP8Encoder struct {
 	config *config.Config;  // user configuration and parameters
-	pic *WebPPicture;          // input / output picture
+	pic *picture.WebPPicture;          // input / output picture
 
 	// headers
 	filter_hdr VP8EncFilterHeader    // filtering information
@@ -86,7 +86,7 @@ type VP8Encoder struct {
 
 type VP8LEncoder struct {
 	config *config.Config  // user configuration and parameters
-	pic    *WebPPicture // input picture.
+	pic    *picture.WebPPicture // input picture.
 
 	argb         *uint32                // Transformed argb image data.
 	argb_content VP8LEncoderARGBContent // Content type of the argb buffer.

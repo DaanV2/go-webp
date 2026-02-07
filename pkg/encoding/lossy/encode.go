@@ -1,3 +1,5 @@
 package lossy
 
-func Encode()
+func Encode() error {
+	return nil
+}

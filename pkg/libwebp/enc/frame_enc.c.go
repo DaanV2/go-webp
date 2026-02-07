@@ -471,7 +471,7 @@ func StoreSSE(/* const */ it *VP8EncIterator) {
 func StoreSideInfo(/* const */ it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
   var mb *VP8MBInfo = it.mb;
-  var pic *WebPPicture = enc.pic;
+  var pic *picture.WebPPicture = enc.pic;
 
   if (pic.stats != nil) {
     StoreSSE(it);
@@ -520,7 +520,7 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
 
 func ResetSideInfo(/* const */ it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
-  var pic *WebPPicture = enc.pic;
+  var pic *picture.WebPPicture = enc.pic;
   if (pic.stats != nil) {
     stdlib.Memset(enc.block_count, 0, sizeof(enc.block_count));
   }
@@ -530,7 +530,7 @@ func ResetSideInfo(/* const */ it *VP8EncIterator) {
 func ResetSSE(/* const */ enc *VP8Encoder) { (void)enc; }
 func StoreSideInfo(/* const */ it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
-  var pic *WebPPicture = enc.pic;
+  var pic *picture.WebPPicture = enc.pic;
   if (pic.extra_info != nil) {
     if (it.x == 0 && it.y == 0) {  // only do it once, at start
       stdlib.Memset(pic.extra_info, 0, enc.mb_w * enc.mb_h * sizeof(*pic.extra_info));

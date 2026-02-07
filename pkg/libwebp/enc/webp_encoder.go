@@ -14,10 +14,6 @@ func WebPGetEncoderVersion() int {
   return (ENC_MAJ_VERSION << 16) | (ENC_MIN_VERSION << 8) | ENC_REV_VERSION;
 }
 
-//------------------------------------------------------------------------------
-// VP8Encoder
-//------------------------------------------------------------------------------
-
 func ResetSegmentHeader(/* const */ enc *VP8Encoder) {
   var hdr *VP8EncSegmentHeader = &enc.segment_hdr;
   hdr.num_segments = enc.config.Segments;
@@ -72,31 +68,35 @@ func ResetBoundaryPredictions(/* const */ enc *VP8Encoder) {
 //-------------------+---+---+---+---+---+---+---+
 // full-SNS          |   |   |   |   | x | x | x |
 //-------------------+---+---+---+---+---+---+---+
-
 func MapConfigToTools(/* const */ enc *VP8Encoder) {
-  var config *config.Config = enc.config;
-  method := config.Method;
-  limit := 100 - config.PartitionLimit;
-  enc.method = method;
-  enc.rd_opt_level = (method >= 6)   ? RD_OPT_TRELLIS_ALL
-                      : (method >= 5) ? RD_OPT_TRELLIS
-                      : (method >= 3) ? RD_OPT_BASIC
-                                      : RD_OPT_NONE;
+  var config *config.Config = enc.config
+  method := config.Method
+  limit := 100 - config.PartitionLimit
+  enc.method = method
+
+  switch method {
+  case 6:
+    enc.rd_opt_level = RD_OPT_TRELLIS_ALL
+  case 5:
+    enc.rd_opt_level = RD_OPT_TRELLIS
+  case 3, 4:
+    enc.rd_opt_level = RD_OPT_BASIC
+  default:
+    enc.rd_opt_level = RD_OPT_NONE
+  }
+
   enc.max_i4_header_bits =
       256 * 16 * 16 *                 // upper bound: up to 16bit per 4x4 block
       (limit * limit) / (100 * 100);  // ... modulated with a quadratic curve.
 
   // partition0 = 512k max.
-  enc.mb_header_limit =
-      (score_t)256 * 510 * 8 * 1024 / (enc.mb_w * enc.mb_h);
+  enc.mb_header_limit = score_t(256 * 510 * 8 * 1024 / (enc.mb_w * enc.mb_h))
 
   enc.thread_level = config.ThreadLevel;
 
   enc.do_search = (config.TargetSize > 0 || config.TargetPSNR > 0);
   if (!config.LowMemory) {
-#if !defined(DISABLE_TOKEN_BUFFER)
-    enc.use_tokens = (enc.rd_opt_level >= RD_OPT_BASIC);  // need rd stats
-#endif
+	enc.use_tokens = (enc.rd_opt_level >= RD_OPT_BASIC);  // need rd stats
     if (enc.use_tokens) {
       enc.num_parts = 1;  // doesn't work with multi-partition
     }
@@ -121,11 +121,9 @@ func MapConfigToTools(/* const */ enc *VP8Encoder) {
 //          VP8EncProba: 18352
 //              LFStats: 2048
 // Picture size (yuv): 419328
-
-static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ picture *WebPPicture) {
-  enc *VP8Encoder;
-  use_filter :=
-      (config.FilterStrength > 0) || (config.Autofilter > 0);
+func InitVP8Encoder(/* const */ config *config.Config, /*const*/ picture *picture.WebPPicture) *VP8Encoder {
+  var enc *VP8Encoder
+  use_filter := (config.FilterStrength > 0) || (config.Autofilter > 0);
   mb_w := (picture.width + 15) >> 4;
   mb_h := (picture.height + 15) >> 4;
   preds_w := 4 * mb_w + 1;
@@ -137,44 +135,19 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ p
   samples_size :=
       2 * top_stride * sizeof(*enc.y_top)  // top-luma/u/v
       + WEBP_ALIGN_CST;                     // align all
-  lf_stats_size :=
-      config.Autofilter ? sizeof(*enc.lf_stats) + WEBP_ALIGN_CST : 0;
-  top_derr_size :=
-      (config.Quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1)
-          ? mb_w * sizeof(*enc.top_derr)
-          : 0;
-  mem *uint8;
-  const size uint64  = (uint64)sizeof(*enc)  // main struct
+  lf_stats_size := tenary.If(config.Autofilter, sizeof(*enc.lf_stats) + WEBP_ALIGN_CST,  0)
+  top_derr_size := tenary.If(config.Quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1, mb_w * sizeof(*enc.top_derr), 0)
+  var mem *uint8;
+
+  var size uint64  = uint64(sizeof(*enc)  // main struct
                         + WEBP_ALIGN_CST        // cache alignment
                         + info_size             // modes info
                         + preds_size            // prediction modes
                         + samples_size          // top/left samples
                         + top_derr_size         // top diffusion error
                         + nz_size               // coeff context bits
-                        + lf_stats_size;        // autofilter stats
+                        + lf_stats_size)        // autofilter stats
 
-#ifdef PRINT_MEMORY_INFO
-  printf("===================================\n");
-  printf(
-      "Memory used:\n"
-      "             encoder: %ld\n"
-      "                info: %ld\n"
-      "               preds: %ld\n"
-      "         top samples: %ld\n"
-      "       top diffusion: %ld\n"
-      "            non-zero: %ld\n"
-      "            lf-stats: %ld\n"
-      "               total: %ld\n", sizeof(*enc) + WEBP_ALIGN_CST, info_size, preds_size, samples_size, top_derr_size, nz_size, lf_stats_size, size);
-  printf(
-      "Transient object sizes:\n"
-      "      VP8EncIterator: %ld\n"
-      "        VP8ModeScore: %ld\n"
-      "      VP8SegmentInfo: %ld\n"
-      "         VP8EncProba: %ld\n"
-      "             LFStats: %ld\n", sizeof(VP8EncIterator), sizeof(VP8ModeScore), sizeof(VP8SegmentInfo), sizeof(VP8EncProba), sizeof(LFStats));
-  printf("Picture size (yuv): %ld\n", mb_w * mb_h * 384 * sizeof(uint8));
-  printf("===================================\n");
-#endif
 //   mem = (*uint8)WebPSafeMalloc(size, sizeof(*mem));
 //   if (mem == nil) {
 //     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
@@ -182,21 +155,21 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ p
 //   }
 	mem = make([]uint8, size)
 
-  enc = (*VP8Encoder)mem;
-  mem = (*uint8)WEBP_ALIGN(mem + sizeof(*enc));
-  stdlib.Memset(enc, 0, sizeof(*enc));
-  enc.num_parts = 1 << config.Partitions;
-  enc.mb_w = mb_w;
-  enc.mb_h = mb_h;
-  enc.preds_w = preds_w;
-  enc.mb_info = (*VP8MBInfo)mem;
-  mem += info_size;
-  enc.preds = mem + 1 + enc.preds_w;
-  mem += preds_size;
-  enc.nz = 1 + (*uint32)WEBP_ALIGN(mem);
-  mem += nz_size;
-  enc.lf_stats = lf_stats_size ? (*LFStats)WEBP_ALIGN(mem) : nil;
-  mem += lf_stats_size;
+	enc = (*VP8Encoder)(mem)
+	mem = (*uint8)WEBP_ALIGN(mem + sizeof(*enc));
+	stdlib.Memset(enc, 0, sizeof(*enc));
+	enc.num_parts = 1 << config.Partitions;
+	enc.mb_w = mb_w;
+	enc.mb_h = mb_h;
+	enc.preds_w = preds_w;
+	enc.mb_info = (*VP8MBInfo)mem;
+	mem += info_size;
+	enc.preds = mem + 1 + enc.preds_w;
+	mem += preds_size;
+	enc.nz = 1 + (*uint32)WEBP_ALIGN(mem);
+	mem += nz_size;
+	enc.lf_stats = lf_stats_size ? (*LFStats)WEBP_ALIGN(mem) : nil;
+	mem += lf_stats_size;
 
   // top samples (all 16-aligned)
   mem = (*uint8)WEBP_ALIGN(mem);
@@ -224,7 +197,7 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ p
   // lower quality means smaller output . we modulate a little the page
   // size based on quality. This is just a crude 1rst-order prediction.
   {
-    const float64 scale = 1.0 + config.Quality * 5.0 / 100.0;  // in [1,6]
+    var float64 scale = 1.0 + config.Quality * 5.0 / 100.0;  // in [1,6]
     VP8TBufferInit(&enc.tokens, (int)(mb_w * mb_h * 4 * scale));
   }
   return enc;
@@ -239,61 +212,23 @@ func DeleteVP8Encoder(enc *VP8Encoder) int {
   return ok;
 }
 
-//------------------------------------------------------------------------------
-
-#if !defined(WEBP_DISABLE_STATS)
-func GetPSNR(uint64 err, size uint64 ) float64 {
-  return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
-}
-
-func FinalizePSNR(/* const */ enc *VP8Encoder) {
-  stats *WebPAuxStats = enc.pic.stats;
-  const size uint64  = enc.sse_count;
-  var sse *uint64 = enc.sse;
-  stats.PSNR[0] = (float64)GetPSNR(sse[0], size);
-  stats.PSNR[1] = (float64)GetPSNR(sse[1], size / 4);
-  stats.PSNR[2] = (float64)GetPSNR(sse[2], size / 4);
-  stats.PSNR[3] = (float64)GetPSNR(sse[0] + sse[1] + sse[2], size * 3 / 2);
-  stats.PSNR[4] = (float64)GetPSNR(sse[3], size);
-}
-#endif  // !defined(WEBP_DISABLE_STATS)
-
 func StoreStats(/* const */ enc *VP8Encoder) {
-#if !defined(WEBP_DISABLE_STATS)
-  var stats *WebPAuxStats = enc.pic.stats;
-  if (stats != nil) {
-    int i, s;
-    for i = 0; i < NUM_MB_SEGMENTS; i++ {
-      stats.segment_level[i] = enc.dqm[i].fstrength;
-      stats.segment_quant[i] = enc.dqm[i].quant;
-      for s = 0; s <= 2; s++ {
-        stats.residual_bytes[s][i] = enc.residual_bytes[s][i];
-      }
-    }
-    FinalizePSNR(enc);
-    stats.coded_size = enc.coded_size;
-    for i = 0; i < 3; i++ {
-      stats.block_count[i] = enc.block_count[i];
-    }
-  }
-#else   // defined(WEBP_DISABLE_STATS)
-  WebPReportProgress(enc.pic, 100, &enc.percent);  // done!
-#endif  // !defined(WEBP_DISABLE_STATS)
+	WebPReportProgress(enc.pic, 100, &enc.percent);  // done!
 }
 
 // Assign an error code to a picture. Return false for convenience.
 // Deprecated: time to start using golang errors
-func WebPEncodingSetError(/* const */ pic *WebPPicture, error WebPEncodingError ) int {
+func WebPEncodingSetError(/* const */ pic *picture.WebPPicture, error WebPEncodingError ) int {
   assert.Assert((int)error < VP8_ENC_ERROR_LAST);
   assert.Assert((int)error >= VP8_ENC_OK);
   // The oldest error reported takes precedence over the new one.
   if (pic.error_code == VP8_ENC_OK) {
-    ((*WebPPicture)pic).error_code = error;
+    ((*picture.WebPPicture)pic).error_code = error;
   }
   return 0;
 }
 
-func WebPReportProgress(/* const */ pic *WebPPicture, percent int, /*const*/ percent_store *int) int {
+func WebPReportProgress(/* const */ pic *picture.WebPPicture, percent int, /*const*/ percent_store *int) int {
   if (percent_store != nil && percent != *percent_store) {
     *percent_store = percent;
     if (pic.progress_hook && !pic.progress_hook(percent, pic)) {
@@ -303,9 +238,8 @@ func WebPReportProgress(/* const */ pic *WebPPicture, percent int, /*const*/ per
   }
   return 1;  // ok
 }
-//------------------------------------------------------------------------------
 
-func WebPEncode(/* const */ config *config.Config, pic *WebPPicture) int {
+func WebPEncode(/* const */ config *config.Config, pic *picture.WebPPicture) int {
   ok := 0;
   if pic == nil { return 0  }
 
@@ -330,7 +264,7 @@ func WebPEncode(/* const */ config *config.Config, pic *WebPPicture) int {
     if (pic.use_argb || pic.y == nil || pic.u == nil || pic.v == nil) {
       // Make sure we have YUVA samples.
       if (config.UseSharpYUV || (config.Preprocessing & 4)) {
-        if (!WebPPictureSharpARGBToYUVA(pic)) {
+        if (!picture.WebPPictureSharpARGBToYUVA(pic)) {
           return 0;
         }
       } else {
@@ -342,7 +276,7 @@ func WebPEncode(/* const */ config *config.Config, pic *WebPPicture) int {
           // to 0.5 dithering amplitude at high quality (q.100)
           dithering = 1.0 + (0.5 - 1.0) * x2 * x2;
         }
-        if (!WebPPictureARGBToYUVADithered(pic, WEBP_YUV420, dithering)) {
+        if (!picture.WebPPictureARGBToYUVADithered(pic, WEBP_YUV420, dithering)) {
           return 0;
         }
       }
@@ -354,8 +288,8 @@ func WebPEncode(/* const */ config *config.Config, pic *WebPPicture) int {
 
     enc = InitVP8Encoder(config, pic);
     if enc == nil {
-    return 0  // pic.error is already set.
-}
+		return 0  // pic.error is already set.
+	}
     // Note: each of the tasks below account for 20% in the progress report.
     ok = VP8EncAnalyze(enc);
 
@@ -373,7 +307,7 @@ func WebPEncode(/* const */ config *config.Config, pic *WebPPicture) int {
     ok &= DeleteVP8Encoder(enc);  // must always be called, even if !ok
   } else {
     // Make sure we have ARGB samples.
-    if (pic.argb == nil && !WebPPictureYUVAToARGB(pic)) {
+    if (pic.argb == nil && !picture.WebPPictureYUVAToARGB(pic)) {
       return 0;
     }
 

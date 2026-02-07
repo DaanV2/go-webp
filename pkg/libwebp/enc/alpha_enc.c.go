@@ -55,14 +55,14 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int, use_quality_100 int, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) int {
   ok := 0;
    var config config.Config
-   var picture WebPPicture
+   var picture picture.WebPPicture
 
-  if !WebPPictureInit(&picture) { return 0  }
+  if !picture.WebPPictureInit(&picture) { return 0  }
   picture.width = width;
   picture.height = height;
   picture.use_argb = 1;
   picture.stats = stats;
-  if !WebPPictureAlloc(&picture) { return 0  }
+  if !picture.WebPPictureAlloc(&picture) { return 0  }
 
   // Transfer the alpha values to the green channel.
   WebPDispatchAlphaToGreen(data, width, picture.width, picture.height, picture.argb, picture.argb_stride);
@@ -84,7 +84,7 @@ func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int
   assert.Assert(config.Quality >= 0 && config.Quality <= 100.0);
 
   ok = VP8LEncodeStream(&config, &picture, bw);
-  WebPPictureFree(&picture);
+  picture.WebPPictureFree(&picture);
   ok = ok && !bw.error;
   if (!ok) {
     return 0;
@@ -266,7 +266,7 @@ func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_siz
 }
 
 func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter int, effort_level int, *uint8* const output, /*const*/ output_size *uint64) int  {
-  var pic *WebPPicture = enc.pic;
+  var pic *picture.WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
 
@@ -352,7 +352,7 @@ func CompressAlphaJob(arg *void1, unused *void) int {
 
 func VP8EncInitAlpha(/* const */ enc *VP8Encoder) {
   WebPInitAlphaProcessing();
-  enc.has_alpha = WebPPictureHasTransparency(enc.pic);
+  enc.has_alpha = picture.WebPPictureHasTransparency(enc.pic);
   enc.alpha_data = nil;
   enc.alpha_data_size = 0;
   if (enc.thread_level > 0) {
