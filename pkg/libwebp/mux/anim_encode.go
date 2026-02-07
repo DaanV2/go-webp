@@ -764,11 +764,11 @@ func EncodeCandidate(/* const */ sub_frame *WebPPicture, /*const*/ rect *FrameRe
   // Encode picture.
   WebPMemoryWriterInit(&candidate.mem);
 
-  if (!config.lossless && use_blending) {
+  if (!config.Lossless && use_blending) {
     // Disable filtering to afunc blockiness in reconstructed frames at the
     // time of decoding.
-    config.autofilter = 0;
-    config.filter_strength = 0;
+    config.Autofilter = 0;
+    config.FilterStrength = 0;
   }
   if (!EncodeFrame(&config, sub_frame, &candidate.mem)) {
     error_code = sub_frame.error_code;
@@ -988,7 +988,7 @@ func IncreasePreviousDuration(/* const */ enc *WebPAnimEncoder, duration int) in
         0x52, 0x49, 0x46, 0x46, 0x40, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50, 0x56, 0x50, 0x38, 0x58, 0x0a, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x4c, 0x50, 0x48, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x50, 0x38, 0x20, 0x18, 0x00, 0x00, 0x00, 0x30, 0x01, 0x00, 0x9d, 0x01, 0x2a, 0x01, 0x00, 0x01, 0x00, 0x02, 0x00, 0x34, 0x25, 0xa4, 0x00, 0x03, 0x70, 0x00, 0xfe, 0xfb, 0xfd, 0x50, 0x00}
     var lossy_1x1 WebPData  = {lossy_1x1_bytes, sizeof(lossy_1x1_bytes)}
     can_use_lossless :=
-        (enc.last_config.lossless || enc.options.allow_mixed);
+        (enc.last_config.Lossless || enc.options.allow_mixed);
     var curr_enc_frame *EncodedFrame = GetFrame(enc, enc.count);
     curr_enc_frame.is_key_frame = 0;
     curr_enc_frame.sub_frame.id = WEBP_CHUNK_ANMF;
@@ -1070,7 +1070,7 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config,
   canvas_carryover_disposed *WebPPicture = nil;
   Candidate candidates[CANDIDATE_COUNT];
   best_candidate *Candidate = nil;
-  is_lossless := config.lossless;
+  is_lossless := config.Lossless;
   consider_lossless := is_lossless || enc.options.allow_mixed;
   consider_lossy := !is_lossless || enc.options.allow_mixed;
   is_first_frame := enc.is_first_frame;
@@ -1099,10 +1099,10 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config,
 
   config.Config config_ll = *config;
   config.Config config_lossy = *config;
-  config_ll.lossless = 1;
-  config_lossy.lossless = 0;
+  config_ll.Lossless = 1;
+  config_lossy.Lossless = 0;
   enc.last_config = *config;
-  enc.last_config_reversed = tenary.If(config.lossless, config_lossy, config_ll);
+  enc.last_config_reversed = tenary.If(config.Lossless, config_lossy, config_ll);
   *frame_skipped = 0;
 
   if (!SubFrameParamsInit(&dispose_none_params, 1, empty_rect_allowed_none) ||
@@ -1462,7 +1462,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp int,
       MarkError(enc, "Cannot Init config");
       return 0;
     }
-    config.lossless = 1;
+    config.Lossless = 1;
   }
   assert.Assert(enc.curr_canvas == nil);
   enc.curr_canvas = frame;  // Store reference.

@@ -218,7 +218,7 @@ func AssignSegments(/* const */ enc *VP8Encoder, /*const*/ int alphas[MAX_ALPHA 
   }
 
   if (nb > 1) {
-    smooth := (enc.config.preprocessing & 1);
+    smooth := (enc.config.Preprocessing & 1);
     if smooth { SmoothSegmentMap(enc) }
   }
 
@@ -263,7 +263,7 @@ func MBAnalyzeBestIntra16Mode(/* const */ it *VP8EncIterator) int {
 func FastMBAnalyze(/* const */ it *VP8EncIterator) int {
   // Empirical cut-off value, should be around 16 (~=block size). We use the
   // [8-17] range and favor intra4 at high quality, intra16 for low quality.
-  q := (int)it.enc.config.quality;
+  q := (int)it.enc.config.Quality;
   kThreshold := 8 + (17 - 8) * q / 100;
   var k int
   uint32 dc[16];
@@ -432,7 +432,7 @@ func InitSegmentJob(/* const */ enc *VP8Encoder, /*const*/ job *SegmentJob, star
 func VP8EncAnalyze(/* const */ enc *VP8Encoder) int {
   ok := 1;
   do_segments :=
-      enc.config.emulate_jpeg_size ||  // We need the complexity evaluation.
+      enc.config.EmulateJpegSize ||  // We need the complexity evaluation.
       (enc.segment_hdr.num_segments > 1) ||
       (enc.method <= 1);  // for method 0 - 1, we need preds[] to be filled.
   if (do_segments) {

@@ -273,8 +273,8 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
   width := pic.width;
   height := pic.height;
   var config *config.Config = enc.config;
-  method := config.method;
-  low_effort := (config.method == 0);
+  method := config.Method;
+  low_effort := (config.Method == 0);
   var i int
   var use_palette, transform_bits int 
   var n_lz77s int 
@@ -310,7 +310,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
     if (!AnalyzeEntropy(pic.argb, width, height, pic.argb_stride, use_palette, enc.palette_size, transform_bits, &min_entropy_ix, red_and_blue_always_zero)) {
       return 0;
     }
-    if (method == 6 && config.quality == 100) {
+    if (method == 6 && config.Quality == 100) {
       do_no_cache = 1;
       // Go brute force on all transforms.
       *crunch_configs_size = 0;
@@ -350,7 +350,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
       crunch_configs[0].entropy_idx = min_entropy_ix;
       crunch_configs[0].palette_sorting_type =
           use_palette ? kMinimizeDelta : kUnusedPalette;
-      if (config.quality >= 75 && method == 5) {
+      if (config.Quality >= 75 && method == 5) {
         // Test with and without color cache.
         do_no_cache = 1;
         // If we have a palette, also check in combination with spatial.
@@ -989,12 +989,12 @@ func ApplySubtractGreen(/* const */ enc *VP8LEncoder, width, height int, /*const
 
 func ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, quality int, low_effort int, used_subtract_green int, /*const*/ bw *VP8LBitWriter, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
   near_lossless_strength :=
-      enc.use_palette ? 100 : enc.config.near_lossless;
+      enc.use_palette ? 100 : enc.config.NearLossless;
   max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE);
   min_bits := ClampBits(
-      width, height, max_bits - 2 * (enc.config.method > 4 ? enc.config.method - 4 : 0), MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE);
+      width, height, max_bits - 2 * (enc.config.Method > 4 ? enc.config.Method - 4 : 0), MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE);
 
-  if (!VP8LResidualImage(width, height, min_bits, max_bits, low_effort, enc.argb, enc.argb_scratch, enc.transform_data, near_lossless_strength, enc.config.exact, used_subtract_green, enc.pic, percent_range / 2, percent, best_bits)) {
+  if (!VP8LResidualImage(width, height, min_bits, max_bits, low_effort, enc.argb, enc.argb_scratch, enc.transform_data, near_lossless_strength, enc.config.Exact, used_subtract_green, enc.pic, percent_range / 2, percent, best_bits)) {
     return 0;
   }
   VP8LPutBits(bw, TRANSFORM_PRESENT, 1);
@@ -1371,8 +1371,8 @@ func EncodeStreamHook(input *void, data *void2) int {
 #if !defined(WEBP_DISABLE_STATS)
   var stats *WebPAuxStats = params.stats;
 #endif
-  quality := (int)config.quality;
-  low_effort := (config.method == 0);
+  quality := (int)config.Quality;
+  low_effort := (config.Method == 0);
 #if (WEBP_NEAR_LOSSLESS == 1)
   width := picture.width;
 #endif
@@ -1420,11 +1420,11 @@ func EncodeStreamHook(input *void, data *void2) int {
 #if (WEBP_NEAR_LOSSLESS == 1)
     // Apply near-lossless preprocessing.
     use_near_lossless =
-        (config.near_lossless < 100) && !enc.use_palette && !enc.use_predict;
+        (config.NearLossless < 100) && !enc.use_palette && !enc.use_predict;
     if (use_near_lossless) {
       if !AllocateTransformBuffer(enc, width, height) { goto Error }
       if ((enc.argb_content != kEncoderNearLossless) &&
-          !VP8ApplyNearLossless(picture, config.near_lossless, enc.argb)) {
+          !VP8ApplyNearLossless(picture, config.NearLossless, enc.argb)) {
         WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
         goto Error;
       }
@@ -1562,7 +1562,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *WebP
   }
 
   // Split the configs between the main and side threads (if any).
-  if (config.thread_level > 0) {
+  if (config.ThreadLevel > 0) {
     num_crunch_configs_side = num_crunch_configs_main / 2;
     for idx = 0; idx < num_crunch_configs_side; idx++ {
       params_side.crunch_configs[idx] =
@@ -1701,7 +1701,7 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *WebPP
   height = picture.height;
   // Initialize BitWriter with size corresponding to 16 bpp to photo images and
   // 8 bpp for graphical images.
-  initial_size = (config.image_hint == WEBP_HINT_GRAPH) ? width * height
+  initial_size = (config.ImageHint == WEBP_HINT_GRAPH) ? width * height
                                                          : width * height * 2;
   if (!VP8LBitWriterInit(&bw, initial_size)) {
     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);

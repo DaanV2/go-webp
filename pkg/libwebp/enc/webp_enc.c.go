@@ -20,7 +20,7 @@ func WebPGetEncoderVersion() int {
 
 func ResetSegmentHeader(/* const */ enc *VP8Encoder) {
   var hdr *VP8EncSegmentHeader = &enc.segment_hdr;
-  hdr.num_segments = enc.config.segments;
+  hdr.num_segments = enc.config.Segments;
   hdr.update_map = (hdr.num_segments > 1);
   hdr.size = 0;
 }
@@ -48,7 +48,7 @@ func ResetBoundaryPredictions(/* const */ enc *VP8Encoder) {
   enc.nz[-1] = 0;  // constant
 }
 
-// Mapping from config.method to coding tools used.
+// Mapping from config.Method to coding tools used.
 //-------------------+---+---+---+---+---+---+---+
 //   Method          | 0 | 1 | 2 | 3 |(4)| 5 | 6 |
 //-------------------+---+---+---+---+---+---+---+
@@ -75,8 +75,8 @@ func ResetBoundaryPredictions(/* const */ enc *VP8Encoder) {
 
 func MapConfigToTools(/* const */ enc *VP8Encoder) {
   var config *config.Config = enc.config;
-  method := config.method;
-  limit := 100 - config.partition_limit;
+  method := config.Method;
+  limit := 100 - config.PartitionLimit;
   enc.method = method;
   enc.rd_opt_level = (method >= 6)   ? RD_OPT_TRELLIS_ALL
                       : (method >= 5) ? RD_OPT_TRELLIS
@@ -90,10 +90,10 @@ func MapConfigToTools(/* const */ enc *VP8Encoder) {
   enc.mb_header_limit =
       (score_t)256 * 510 * 8 * 1024 / (enc.mb_w * enc.mb_h);
 
-  enc.thread_level = config.thread_level;
+  enc.thread_level = config.ThreadLevel;
 
-  enc.do_search = (config.target_size > 0 || config.target_PSNR > 0);
-  if (!config.low_memory) {
+  enc.do_search = (config.TargetSize > 0 || config.TargetPSNR > 0);
+  if (!config.LowMemory) {
 #if !defined(DISABLE_TOKEN_BUFFER)
     enc.use_tokens = (enc.rd_opt_level >= RD_OPT_BASIC);  // need rd stats
 #endif
@@ -125,7 +125,7 @@ func MapConfigToTools(/* const */ enc *VP8Encoder) {
 static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ picture *WebPPicture) {
   enc *VP8Encoder;
   use_filter :=
-      (config.filter_strength > 0) || (config.autofilter > 0);
+      (config.FilterStrength > 0) || (config.Autofilter > 0);
   mb_w := (picture.width + 15) >> 4;
   mb_h := (picture.height + 15) >> 4;
   preds_w := 4 * mb_w + 1;
@@ -138,9 +138,9 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ p
       2 * top_stride * sizeof(*enc.y_top)  // top-luma/u/v
       + WEBP_ALIGN_CST;                     // align all
   lf_stats_size :=
-      config.autofilter ? sizeof(*enc.lf_stats) + WEBP_ALIGN_CST : 0;
+      config.Autofilter ? sizeof(*enc.lf_stats) + WEBP_ALIGN_CST : 0;
   top_derr_size :=
-      (config.quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1)
+      (config.Quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1)
           ? mb_w * sizeof(*enc.top_derr)
           : 0;
   mem *uint8;
@@ -185,7 +185,7 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ p
   enc = (*VP8Encoder)mem;
   mem = (*uint8)WEBP_ALIGN(mem + sizeof(*enc));
   stdlib.Memset(enc, 0, sizeof(*enc));
-  enc.num_parts = 1 << config.partitions;
+  enc.num_parts = 1 << config.Partitions;
   enc.mb_w = mb_w;
   enc.mb_h = mb_h;
   enc.preds_w = preds_w;
@@ -208,7 +208,7 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ p
   assert.Assert(mem <= (*uint8)enc + size);
 
   enc.config = config;
-  enc.profile = use_filter ? ((config.filter_type == 1) ? 0 : 1) : 2;
+  enc.profile = use_filter ? ((config.FilterType == 1) ? 0 : 1) : 2;
   enc.pic = picture;
   enc.percent = 0;
 
@@ -224,7 +224,7 @@ static InitVP *VP8Encoder8Encoder(/* const */ config *config.Config, /*const*/ p
   // lower quality means smaller output . we modulate a little the page
   // size based on quality. This is just a crude 1rst-order prediction.
   {
-    const float64 scale = 1.0 + config.quality * 5.0 / 100.0;  // in [1,6]
+    const float64 scale = 1.0 + config.Quality * 5.0 / 100.0;  // in [1,6]
     VP8TBufferInit(&enc.tokens, (int)(mb_w * mb_h * 4 * scale));
   }
   return enc;
@@ -324,19 +324,19 @@ func WebPEncode(/* const */ config *config.Config, pic *WebPPicture) int {
 
   if pic.stats != nil { stdlib.Memset(pic.stats, 0, sizeof(*pic.stats)) }
 
-  if (!config.lossless) {
+  if (!config.Lossless) {
     enc *VP8Encoder = nil;
 
     if (pic.use_argb || pic.y == nil || pic.u == nil || pic.v == nil) {
       // Make sure we have YUVA samples.
-      if (config.use_sharp_yuv || (config.preprocessing & 4)) {
+      if (config.UseSharpYUV || (config.Preprocessing & 4)) {
         if (!WebPPictureSharpARGBToYUVA(pic)) {
           return 0;
         }
       } else {
         float64 dithering = 0.0;
-        if (config.preprocessing & 2) {
-          const float64 x = config.quality / 100.0;
+        if (config.Preprocessing & 2) {
+          const float64 x = config.Quality / 100.0;
           const float64 x2 = x * x;
           // slowly decreasing from max dithering at low quality (q.0)
           // to 0.5 dithering amplitude at high quality (q.100)
@@ -348,7 +348,7 @@ func WebPEncode(/* const */ config *config.Config, pic *WebPPicture) int {
       }
     }
 
-    if (!config.exact) {
+    if (!config.Exact) {
       WebPCleanupTransparentArea(pic);
     }
 
@@ -377,7 +377,7 @@ func WebPEncode(/* const */ config *config.Config, pic *WebPPicture) int {
       return 0;
     }
 
-    if (!config.exact) {
+    if (!config.Exact) {
       WebPReplaceTransparentPixels(pic, 0x000000);
     }
 

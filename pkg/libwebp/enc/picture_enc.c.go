@@ -238,7 +238,7 @@ func Encode(/* const */ rgba *uint8, width, height int, stride int, Importer imp
     return 0;  // shouldn't happen, except if system installation is broken
   }
 
-  config.lossless = !!lossless;
+  config.Lossless = !!lossless;
   pic.use_argb = !!lossless;
   pic.width = width;
   pic.height = height;

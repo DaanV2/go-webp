@@ -36,15 +36,15 @@ type PassStats struct {  // struct for organizing convergence in either size or 
 }
 
 func InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) int {
-  target_size := uint64(enc.config.target_size)
+  target_size := uint64(enc.config.TargetSize)
   do_size_search := (target_size != 0);
-  const float64 target_PSNR = enc.config.target_PSNR;
+  const float64 target_PSNR = enc.config.TargetPSNR;
 
   s.is_first = 1;
   s.dq = 10.0;
-  s.qmin = 1.0 * enc.config.qmin;
-  s.qmax = 1.0 * enc.config.qmax;
-  s.last_q = Clamp(enc.config.quality, s.qmin, s.qmax);
+  s.qmin = 1.0 * enc.config.Qmin;
+  s.qmax = 1.0 * enc.config.Qmax;
+  s.last_q = Clamp(enc.config.Quality, s.qmin, s.qmax);
  	s.q = s.last_q 
   s.target = do_size_search       ? (float64)target_size
               : (target_PSNR > 0.) ? target_PSNR

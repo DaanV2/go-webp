@@ -189,7 +189,7 @@ func CheckLambdaValue(/* const */ v *int) {
 
 func SetupMatrices(enc *VP8Encoder) {
   var i int
-  tlambda_scale := (enc.method >= 4) ? enc.config.sns_strength : 0;
+  tlambda_scale := (enc.method >= 4) ? enc.config.SnsStrength : 0;
   num_segments := enc.segment_hdr.num_segments;
   for i = 0; i < num_segments; i++ {
     var m *VP8SegmentInfo = &enc.dqm[i];
@@ -244,7 +244,7 @@ const FSTRENGTH_CUTOFF =2
 func SetupFilterStrength(/* const */ enc *VP8Encoder) {
   var i int
   // level0 is in [0..500]. Using '-f 50' as filter_strength is mid-filtering.
-  level0 := 5 * enc.config.filter_strength;
+  level0 := 5 * enc.config.FilterStrength;
   for i = 0; i < NUM_MB_SEGMENTS; i++ {
     var m *VP8SegmentInfo = &enc.dqm[i];
     // We focus on the quantization of AC coeffs.
@@ -257,8 +257,8 @@ func SetupFilterStrength(/* const */ enc *VP8Encoder) {
   }
   // We record the initial strength (mainly for the case of 1-segment only).
   enc.filter_hdr.level = enc.dqm[0].fstrength;
-  enc.filter_hdr.simple = (enc.config.filter_type == 0);
-  enc.filter_hdr.sharpness = enc.config.filter_sharpness;
+  enc.filter_hdr.simple = (enc.config.FilterType == 0);
+  enc.filter_hdr.sharpness = enc.config.FilterSharpness;
 }
 
 //------------------------------------------------------------------------------
@@ -351,9 +351,9 @@ func VP8SetSegmentParams(/* const */ enc *VP8Encoder, quality float64) {
   var i int
   int dq_uv_ac, dq_uv_dc;
   num_segments := enc.segment_hdr.num_segments;
-  const float64 amp = SNS_TO_DQ * enc.config.sns_strength / 100. / 128.;
+  const float64 amp = SNS_TO_DQ * enc.config.SnsStrength / 100. / 128.;
   const float64 Q = quality / 100.;
-  const float64 c_base = enc.config.emulate_jpeg_size
+  const float64 c_base = enc.config.EmulateJpegSize
                             ? QualityToJPEGCompression(Q, enc.alpha / 255.)
                             : QualityToCompression(Q);
   for i = 0; i < num_segments; i++ {
@@ -380,13 +380,13 @@ func VP8SetSegmentParams(/* const */ enc *VP8Encoder, quality float64) {
   dq_uv_ac = (enc.uv_alpha - MID_ALPHA) * (MAX_DQ_UV - MIN_DQ_UV) /
              (MAX_ALPHA - MIN_ALPHA);
   // we rescale by the user-defined strength of adaptation
-  dq_uv_ac = dq_uv_ac * enc.config.sns_strength / 100;
+  dq_uv_ac = dq_uv_ac * enc.config.SnsStrength / 100;
   // and make it safe.
   dq_uv_ac = clip(dq_uv_ac, MIN_DQ_UV, MAX_DQ_UV);
   // We also boost the dc-uv-quant a little, based on sns-strength, since
   // U/V channels are quite more reactive to high quants (flat DC-blocks
   // tend to appear, and are unpleasant).
-  dq_uv_dc = -4 * enc.config.sns_strength / 100;
+  dq_uv_dc = -4 * enc.config.SnsStrength / 100;
   dq_uv_dc = clip(dq_uv_dc, -15, 15);  // 4bit-signed max allowed
 
   enc.dq_y1_dc = 0;  // TODO(skal): dq-lum

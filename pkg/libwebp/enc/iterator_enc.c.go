@@ -189,7 +189,7 @@ func ExportBlock(/* const */ src *uint8, dst *uint8, dst_stride int, w int, h in
 // export decimated samples
 func VP8IteratorExport(/* const */ it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc;
-  if (enc.config.show_compressed) {
+  if (enc.config.ShowCompressed) {
     x := it.x, y = it.y;
     var ysrc *uint8 = it.yuv_out + Y_OFF_ENC;
     var usrc *uint8 = it.yuv_out + U_OFF_ENC;

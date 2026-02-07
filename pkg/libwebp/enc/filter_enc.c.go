@@ -61,7 +61,7 @@ func GetILevel(int sharpness, level int) int {
 
 func DoFilter(/* const */ it *VP8EncIterator, level int) {
   var enc *VP8Encoder = it.enc;
-  ilevel := GetILevel(enc.config.filter_sharpness, level);
+  ilevel := GetILevel(enc.config.FilterSharpness, level);
   limit := 2 * level + ilevel;
 
   var y_dst *uint8 = it.yuv_out2 + Y_OFF_ENC;
@@ -186,7 +186,7 @@ func VP8AdjustFilterStrength(/* const */ it *VP8EncIterator) {
     return;
   }
 #endif  // !defined(WEBP_REDUCE_SIZE)
-  if (enc.config.filter_strength > 0) {
+  if (enc.config.FilterStrength > 0) {
     max_level := 0;
     var s int
     for s = 0; s < NUM_MB_SEGMENTS; s++ {

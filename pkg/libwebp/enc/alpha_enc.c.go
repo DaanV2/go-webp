@@ -68,20 +68,20 @@ func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int
   WebPDispatchAlphaToGreen(data, width, picture.width, picture.height, picture.argb, picture.argb_stride);
 
   if !config.ConfigInit(&config) { return 0  }
-  config.lossless = 1;
+  config.Lossless = 1;
   // Enable exact, or it would alter RGB values of transparent alpha, which is
   // normally OK but not here since we are not encoding the input image but  an
   // internal encoding-related image containing necessary exact information in
   // RGB channels.
-  config.exact = 1;
-  config.method = effort_level;  // impact is very small
+  config.Exact = 1;
+  config.Method = effort_level;  // impact is very small
   // Set a low default quality for encoding alpha. Ensure that Alpha quality at
   // lower methods (3 and below) is less than the threshold for triggering
   // costly 'BackwardReferencesTraceBackwards'.
   // If the alpha quality is set to 100 and the method to 6, allow for a high
   // lossless quality to trigger the cruncher.
-  config.quality = tenary.If(use_quality_100 && effort_level == 6, 100, 8.0 * effort_level)
-  assert.Assert(config.quality >= 0 && config.quality <= 100.0);
+  config.Quality = tenary.If(use_quality_100 && effort_level == 6, 100, 8.0 * effort_level)
+  assert.Assert(config.Quality >= 0 && config.Quality <= 100.0);
 
   ok = VP8LEncodeStream(&config, &picture, bw);
   WebPPictureFree(&picture);
@@ -334,12 +334,12 @@ func CompressAlphaJob(arg *void1, unused *void) int {
   var config *config.Config = enc.config;
   alpha_data *uint8 = nil;
   alpha_size := 0;
-  effort_level := config.method;  // maps to [0..6]
+  effort_level := config.Method;  // maps to [0..6]
   var WEBP_FILTER_TYPE filter =
-      (config.alpha_filtering == 0)   ? WEBP_FILTER_NONE
-      : (config.alpha_filtering == 1) ? WEBP_FILTER_FAST
+      (config.AlphaFiltering == 0)   ? WEBP_FILTER_NONE
+      : (config.AlphaFiltering == 1) ? WEBP_FILTER_FAST
                                        : WEBP_FILTER_BEST;
-  if (!EncodeAlpha(enc, config.alpha_quality, config.alpha_compression, filter, effort_level, &alpha_data, &alpha_size)) {
+  if (!EncodeAlpha(enc, config.AlphaQuality, config.AlphaCompression, filter, effort_level, &alpha_data, &alpha_size)) {
     return 0;
   }
   if (alpha_size != uint32(alpha_size)) {  // Soundness check.

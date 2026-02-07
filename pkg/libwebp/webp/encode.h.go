@@ -343,7 +343,7 @@ func WebPPictureInit(picture *WebPPicture) int {
 // 'picture' can hold the source samples in both YUV(A) or ARGB input, depending
 // on the value of 'picture.use_argb'. It is highly recommended to use
 // the former for lossy encoding, and the latter for lossless encoding
-// (when config.lossless is true). Automatic conversion from one format to
+// (when config.Lossless is true). Automatic conversion from one format to
 // another is provided but they both incur some loss.
   int WebPEncode(/* const */ config *config.Config, picture *WebPPicture);
 

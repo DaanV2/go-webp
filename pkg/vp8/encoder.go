@@ -68,7 +68,7 @@ type VP8Encoder struct {
 	rd_opt_level VP8RDLevel   // Deduced from method.
 	max_i4_header_bits int    // partition #0 safeness factor
 	mb_header_limit int       // rough limit for header bits per MB
-	thread_level int          // derived from config.thread_level
+	thread_level int          // derived from config.ThreadLevel
 	do_search int             // derived from config.target_XXX
 	use_tokens int            // if true, use token buffer
 
