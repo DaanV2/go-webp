@@ -134,16 +134,7 @@ const (
 	WEBP_FF_FRAME_COUNT
 )
 
-// Image characteristics hint for the underlying encoder.
-type WebPImageHint int
 
-const (
-	WEBP_HINT_DEFAULT WebPImageHint = iota // default preset.
-	WEBP_HINT_PICTURE                      // digital picture, like portrait, inner shot
-	WEBP_HINT_PHOTO                        // outdoor photograph, with natural lighting
-	WEBP_HINT_GRAPH                        // Discrete tone image (graph, map-tile etc).
-	WEBP_HINT_LAST
-)
 
 // Enumerate some predefined settings for config.WebPConfig, depending on the type
 // of source picture. These presets are used when calling WebPConfigPreset().

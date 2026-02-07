@@ -2,6 +2,17 @@ package config
 
 import "errors"
 
+// Image characteristics hint for the underlying encoder.
+type WebPImageHint int
+
+const (
+	WEBP_HINT_DEFAULT WebPImageHint = iota // default preset.
+	WEBP_HINT_PICTURE                      // digital picture, like portrait, inner shot
+	WEBP_HINT_PHOTO                        // outdoor photograph, with natural lighting
+	WEBP_HINT_GRAPH                        // Discrete tone image (graph, map-tile etc).
+	WEBP_HINT_LAST
+)
+
 // Compression parameters.
 type WebPConfig struct {
 	lossless int // Lossless encoding (0=lossy(default), 1=lossless).
