@@ -2,10 +2,11 @@ package picture
 
 import (
 	"errors"
+	"image/color"
+	"math"
 
 	"github.com/daanv2/go-webp/pkg/color/colorspace"
 	"github.com/daanv2/go-webp/pkg/picture"
-	"github.com/daanv2/go-webp/pkg/stdlib"
 )
 
 const LOSSLESS_DEFAULT_QUALITY = 70.0
@@ -13,7 +14,16 @@ const LOSSLESS_DEFAULT_QUALITY = 70.0
 // Progress hook, called from time to time to report progress. It can return
 // false to request an abort of the encoding process, or true otherwise if
 // everything is OK.
-type WebPProgressHook = func(percent int /*const*/, picture *Picture) error
+type WebPProgressHook = func(percent int /*const*/, pic *Picture) error
+
+// Signature for output function. Should return true if writing was successful.
+// data/data_size is the segment of data to write, and 'picture' is for
+// reference (and so one can make use of picture.CustomPtr).
+type WebPWriterFunction = func(data *uint8, data_size uint64, pic *Picture) int
+
+type YUV struct {
+	Y, U, V uint8
+}
 
 // Main exchange structure (input samples, output bytes, statistics)
 //
@@ -31,24 +41,24 @@ type Picture struct {
 	UseARGB bool
 
 	// YUV input (mostly used for input to lossy compression)
-	ColorSpace        colorspace.CSP // colorspace: should be YUV420 for now (=Y'CbCr).
-	Width, Height     int            // dimensions (less or equal to WEBP_MAX_DIMENSION)
-	Y, U, V           *uint8         // pointers to luma/chroma planes.
-	YStride, UVStride int            // luma/chroma strides.
-	A                 *uint8         // pointer to the alpha plane
-	AStride           int            // stride of the alpha plane
+	ColorSpace    colorspace.CSP // colorspace: should be YUV420 for now (=Y'CbCr).
+	Width, Height int            // dimensions (less or equal to WEBP_MAX_DIMENSION)
+
+	YUV []YUV // pointers to luma/chroma planes.
+	// YStride, UVStride int            // luma/chroma strides.
+	A []color.Alpha // pointer to the alpha plane
+	// AStride           int            // stride of the alpha plane
 	// pad1                [2]uint32  // padding for later use
 
 	// ARGB input (mostly used for input to lossless compression)
-	ARGB       *uint32 // Pointer to argb (32 bit) plane.
-	ARGBStride int     // This is stride in pixels units, not bytes.
+	ARGB       []color.RGBA // Pointer to argb (32 bit) plane.
+	ARGBStride int          // This is stride in pixels units, not bytes.
 	// pad2        [3]uint32 // padding for later use
 
 	//   OUTPUT
 	///////////////
 	// Byte-emission hook, to store compressed bytes as they are ready.
-	Writer    WebPWriterFunction // can be nil
-	CustomPtr *void              // can be used by the writer.
+	Writer WebPWriterFunction // can be nil
 
 	// map for extra information (only for lossy compression mode)
 	// 1: intra type
@@ -92,16 +102,17 @@ type Picture struct {
 }
 
 // Internal, version-checked, entry point
-func WebPPictureInitInternal(picture *picture.Picture, version int) int {
+func WebPPictureInitInternal(picture *Picture) {
 	if picture != nil {
-		stdlib.Memset(picture, 0, sizeof(*picture))
-		picture.Writer = DummyWriter
-		WebPEncodingSetError(picture, VP8_ENC_OK)
+		// stdlib.Memset(picture, 0, sizeof(*picture))
+		*picture = Picture{
+			Writer:    DummyWriter,
+			ErrorCode: VP8_ENC_OK,
+		}
 	}
-	return 1
 }
 
-func DummyWriter(*uint8, uint64, *picture.Picture) int {
+func DummyWriter(*uint8, uint64, *Picture) int {
 	return 1
 }
 
@@ -109,8 +120,8 @@ func DummyWriter(*uint8, uint64, *picture.Picture) int {
 // of version mismatch. WebPPictureInit() must have succeeded before using the
 // 'picture' object.
 // Note that, by default, use_argb is false and colorspace is colorspace.WEBP_YUV420.
-func WebPPictureInit(picture *Picture) int {
-	return WebPPictureInitInternal(picture, WEBP_ENCODER_ABI_VERSION)
+func WebPPictureInit(picture *Picture) {
+	WebPPictureInitInternal(picture)
 }
 
 // Release the memory allocated by WebPPictureAlloc() or *WebPPictureImport().
@@ -128,7 +139,7 @@ func WebPPictureFree(picture *Picture) {
 // will fully own the copied pixels (this is not a view). The 'dst' picture need
 // not be initialized as its content is overwritten.
 // Returns false in case of memory allocation error.
-func WebPPictureCopy( /* const */ src *picture.Picture, dst *picture.Picture) int {
+func WebPPictureCopy( /* const */ src *Picture, dst *Picture) int {
 	if src == nil || dst == nil {
 		return 0
 	}
@@ -137,11 +148,11 @@ func WebPPictureCopy( /* const */ src *picture.Picture, dst *picture.Picture) in
 	}
 
 	PictureGrabSpecs(src, dst)
-	if !picture.WebPPictureAlloc(dst) {
+	if !WebPPictureAlloc(dst) {
 		return 0
 	}
 
-	if !src.use_argb {
+	if !src.UseARGB {
 		WebPCopyPlane(src.y, src.y_stride, dst.y, dst.y_stride, dst.width, dst.height)
 		WebPCopyPlane(src.u, src.uv_stride, dst.u, dst.uv_stride, HALVE(dst.width), HALVE(dst.height))
 		WebPCopyPlane(src.v, src.uv_stride, dst.v, dst.uv_stride, HALVE(dst.width), HALVE(dst.height))
@@ -167,8 +178,8 @@ func WebPValidatePicture( /* const */ picture *picture.Picture) error {
 	if picture == nil {
 		return errors.New("picture is nil")
 	}
-	if picture.Width <= 0 || picture.Width > INT_MAX/4 ||
-		picture.Height <= 0 || picture.Height > INT_MAX/4 {
+	if picture.Width <= 0 || picture.Width > math.MaxInt/4 ||
+		picture.Height <= 0 || picture.Height > math.MaxInt/4 {
 		return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION)
 	}
 	if picture.ColorSpace != colorspace.WEBP_YUV420 &&
@@ -211,6 +222,23 @@ func (pic *Picture) SetEncodingError(err error) error {
 	pic.ErrorCode = errors.Join(pic.ErrorCode, err)
 
 	return err
+}
+
+// Checking for the presence of non-opaque alpha.
+// Scan the picture 'picture' for the presence of non fully opaque alpha values.
+// Returns true in such case. Otherwise returns false (indicating that the
+// alpha plane can be ignored altogether e.g.).
+func WebPPictureHasTransparency( /* const */ picture *Picture) int {
+	if picture == nil {
+		return 0
+	}
+	if picture.UseARGB {
+		if picture.ARGB != nil {
+			return CheckNonOpaque(picture.ARGB+ALPHA_OFFSET, picture.Width, picture.Height, 4, picture.ARGBStride*sizeof(*picture.ARGB))
+		}
+		return 0
+	}
+	return CheckNonOpaque(picture.A, picture.Width, picture.Height, 1, picture.AStride)
 }
 
 func WebPReportProgress( /* const */ pic *Picture, percent int /*const*/, percent_store *int) error {

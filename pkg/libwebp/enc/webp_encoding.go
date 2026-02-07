@@ -7,6 +7,16 @@ import (
 	"github.com/daanv2/go-webp/pkg/stdlib"
 )
 
+// Main encoding call, after config and picture have been initialized.
+// 'picture' must be less than 16384x16384 in dimension (cf WEBP_MAX_DIMENSION),
+// and the 'config' object must be a valid one.
+// Returns false in case of error, true otherwise.
+// In case of error, picture.ErrorCode is updated accordingly.
+// 'picture' can hold the source samples in both YUV(A) or ARGB input, depending
+// on the value of 'picture.UseARGB'. It is highly recommended to use
+// the former for lossy encoding, and the latter for lossless encoding
+// (when config.Lossless is true). Automatic conversion from one format to
+// another is provided but they both incur some loss.
 func WebPEncode( /* const */ config *config.Config, pic *picture.Picture) int {
 	ok := 0
 	if pic == nil {

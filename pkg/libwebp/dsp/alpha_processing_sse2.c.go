@@ -258,20 +258,7 @@ func ApplyAlphaMultiply_SSE2(rgba *uint8, alpha_first int, w int, h int, stride 
 //------------------------------------------------------------------------------
 // Alpha detection
 
-func HasAlpha8b_SSE2(/* const */ src *uint8, length int) int {
-  const __m128i all_0xff = _mm_set1_epi8((byte)0xff);
-  i := 0;
-  for ; i + 16 <= length; i += 16 {
-    const __m128i v = _mm_loadu_si128((/* const */ __*m128i)(src + i));
-    const __m128i bits = _mm_cmpeq_epi8(v, all_0xff);
-    mask := _mm_movemask_epi8(bits);
-    if mask != 0xffff { return 1  }
-  }
-  for ; i < length; i++ {
-    if src[i] != 0xff { return 1  }
-  }
-  return 0;
-}
+
 
 func HasAlpha32b_SSE2(/* const */ src *uint8, length int) int {
   const __m128i alpha_mask = _mm_set1_epi32(0xff);
@@ -395,7 +382,7 @@ func MultRow_SSE2(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uint8, wi
 
 extern func WebPInitAlphaProcessingSSE2(void);
 
-WEBP_TSAN_IGNORE_FUNCTION func WebPInitAlphaProcessingSSE2(){
+func WebPInitAlphaProcessingSSE2(){
   WebPMultARGBRow = MultARGBRow_SSE2;
   WebPMultRow = MultRow_SSE2;
   WebPApplyAlphaMultiply = ApplyAlphaMultiply_SSE2;

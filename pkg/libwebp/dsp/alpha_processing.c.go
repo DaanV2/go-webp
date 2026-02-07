@@ -252,27 +252,7 @@ func ExtractGreen_C(/* const */ argb *uint32, alpha *uint8, size int) {
 
 //------------------------------------------------------------------------------
 
-func HasAlpha8b_C(/* const */ src *uint8, length int) int {
-  while (length-- > 0) {
-    if *src++ != 0xff { return 1  }
-  }
-  return 0;
-}
 
-func HasAlpha32b_C(/* const */ src *uint8, length int) int {
-  var x int
-  for x = 0; length-- > 0; x += 4 {
-    if src[x] != 0xff { return 1  }
-  }
-  return 0;
-}
-
-func AlphaReplace_C(src *uint32, length int, color uint32) {
-  var x int
-  for x = 0; x < length; x++ {
-    if (src[x] >> 24) == 0 { src[x] = color }
-  }
-}
 
 //------------------------------------------------------------------------------
 // Simple channel manipulations.

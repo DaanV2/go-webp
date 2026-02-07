@@ -194,6 +194,9 @@ func MakeARGB32(int r, g int, b int) uint32 {
   return (uint(0xff000000) | (r << 16) | (g << 8) | b);
 }
 
+// Remove the transparency information (if present) by blending the color with
+// the background color 'background_rgb' (specified as 24bit RGB triplet).
+// After this call, all alpha values are reset to 0xff.
 func WebPBlendAlpha(picture *picture.Picture, uint32 background_rgb) {
   red := (background_rgb >> 16) & 0xff;
   green := (background_rgb >> 8) & 0xff;
