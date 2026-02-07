@@ -30,10 +30,18 @@ const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 // These functions compress using the lossy format, and the quality_factor
 // can go from 0 (smaller output, lower quality) to 100 (best quality,
 // larger output).
- uint64 WebPEncodeRGB(/* const */ rgb *uint8, width, height int, stride int, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGR(/* const */ bgr *uint8, width, height int, stride int, float quality_factor, *uint8* output);
- uint64 WebPEncodeRGBA(/* const */ rgba *uint8, width, height int, stride int, float quality_factor, *uint8* output);
- uint64 WebPEncodeBGRA(/* const */ bgra *uint8, width, height int, stride int, float quality_factor, *uint8* output);
+func WebPEncodeRGB(/* const */ rgb *uint8, width, height int, stride int, quality_factor float64 , output *uint8) uint64 {
+	// TODO:
+}
+func WebPEncodeBGR(/* const */ bgr *uint8, width, height int, stride int, quality_factor float64 , output *uint8) uint64 {
+	// TODO:
+}
+func WebPEncodeRGBA(/* const */ rgba *uint8, width, height int, stride int, quality_factor float64 , output *uint8) uint64 {
+	// TODO:
+}
+func WebPEncodeBGRA(/* const */ bgra *uint8, width, height int, stride int, quality_factor float64 , output *uint8) uint64 {
+	// TODO:
+}
 
 // These functions are the equivalent of the above, but compressing in a
 // lossless manner. Files are usually larger than lossy format, but will
@@ -43,159 +51,21 @@ const WEBP_ENCODER_ABI_VERSION = 0x0210  // MAJOR(8b) + MINOR(8b)
 // transparent areas (that is, areas with alpha values equal to 0) will be
 // modified to improve compression. To afunc this, use WebPEncode() and set
 // WebPConfig::exact to 1.
- uint64 WebPEncodeLosslessRGB(/* const */ rgb *uint8, width, height int, stride int, *uint8* output);
- uint64 WebPEncodeLosslessBGR(/* const */ bgr *uint8, width, height int, stride int, *uint8* output);
- uint64 WebPEncodeLosslessRGBA(/* const */ rgba *uint8, width, height int, stride int, *uint8* output);
- uint64 WebPEncodeLosslessBGRA(/* const */ bgra *uint8, width, height int, stride int, *uint8* output);
-
-
-// Compression parameters.
-type WebPConfig struct {
-	lossless int   // Lossless encoding (0=lossy(default), 1=lossless).
-	// between 0 and 100. For lossy, 0 gives the smallest
-	// size and 100 the largest. For lossless, this
-	// parameter is the amount of effort put into the
-	// compression: 0 is the fastest but gives larger
-	// files compared to the slowest, but best, 100.
-	quality float64
-	method int     // quality/speed trade-off (0=fast, 6=slower-better)
-
-	image_hint WebPImageHint  // Hint for image type (lossless only for now).
-
-	// if non-zero, set the desired target size in bytes.
-	// Takes precedence over the 'compression' parameter.
-	target_size int        
-	// if non-zero, specifies the minimal distortion to
-	// try to achieve. Takes precedence over target_size.
-	target_PSNR float64
-	segments int           // maximum number of segments to use, in [1..4]
-	sns_strength int       // Spatial Noise Shaping. 0=off, 100=maximum.
-	filter_strength int    // range: [0 = off .. 100 = strongest]
-	filter_sharpness int   // range: [0 = off .. 7 = least sharp]
-	// filtering type: 0 = simple, 1 = strong (only used
-	// if filter_strength > 0 or autofilter > 0)
-	filter_type int        
-	autofilter int         // Auto adjust filter's strength [0 = off, 1 = on]
-	alpha_compression int  // Algorithm for encoding the alpha plane (0 = none, // 1 = compressed with WebP lossless). Default is 1.
-	// Predictive filtering method for alpha plane.
-	//  0: none, 1: fast, 2: best. Default if 1. 
-	alpha_filtering int    
-	// Between 0 (smallest size) and 100 (lossless).
-	// Default is 100.
-	alpha_quality int      
-	pass int               // number of entropy-analysis passes (in [1..10]).
-
-	// if true, export the compressed picture back.
-	// In-loop filtering is not applied.
-	show_compressed int    
-	// preprocessing filter:
-	// 0=none, 1=segment-smooth, 2=pseudo-random dithering
-	preprocessing int      
-	// log2(number of token partitions) in [0..3]. Default
-	// is set to 0 for easier progressive decoding.
-	partitions int         
-	// quality degradation allowed to fit the 512k limit
-	// on prediction modes coding (0: no degradation, // 100: maximum possible degradation).
-	partition_limit int    
-	// If true, compression parameters will be remapped
-	// to better match the expected output size from
-	// JPEG compression. Generally, the output size will
-	// be similar but the degradation will be lower.
-	emulate_jpeg_size int  
-	thread_level int       // If non-zero, try and use multi-threaded encoding.
-	low_memory int         // If set, reduce memory usage (but increase CPU use).
-
-	// Near lossless encoding [0 = max loss .. 100 = off
-	// (default)].
-	near_lossless int  
-
-	// if non-zero, preserve the exact RGB values under
-	// transparent area. Otherwise, discard this invisible
-	// RGB information for better compression. The default
-	// value is 0.
-	exact int;          
-
-	use_delta_palette int  // reserved
-	use_sharp_yuv int      // if needed, use sharp (and slow) RGB.YUV conversion
-
-	qmin int  // minimum permissible quality factor
-	qmax int  // maximum permissible quality factor
+func WebPEncodeLosslessRGB(/* const */ rgb *uint8, width, height int, stride int, output *uint8) uint64 {
+	// TODO:
+}
+func WebPEncodeLosslessBGR(/* const */ bgr *uint8, width, height int, stride int, output *uint8) uint64 {
+	// TODO:
+}
+func WebPEncodeLosslessRGBA(/* const */ rgba *uint8, width, height int, stride int, output *uint8) uint64 {
+	// TODO:
+}
+func WebPEncodeLosslessBGRA(/* const */ bgra *uint8, width, height int, stride int, output *uint8) uint64 {
+	// TODO:
 }
 
 
 
-// Internal, version-checked, entry point
-  int WebPConfigInitInternal(*WebPConfig, WebPPreset, float, int);
-
-// Should always be called, to initialize a fresh WebPConfig structure before
-// modification. Returns false in case of version mismatch. WebPConfigInit()
-// must have succeeded before using the 'config' object.
-// Note that the default values are lossless=0 and quality=75.
-func WebPConfigInit(config *WebPConfig) int {
-  return WebPConfigInitInternal(config, WEBP_PRESET_DEFAULT, 75.f, WEBP_ENCODER_ABI_VERSION);
-}
-
-// This function will initialize the configuration according to a predefined
-// set of parameters (referred to by 'preset') and a given quality factor.
-// This function can be called as a replacement to WebPConfigInit(). Will
-// return false in case of error.
-func WebPConfigPreset(config *WebPConfig, WebPPreset preset, quality float) int {
-  return WebPConfigInitInternal(config, preset, quality, WEBP_ENCODER_ABI_VERSION);
-}
-
-// Activate the lossless compression mode with the desired efficiency level
-// between 0 (fastest, lowest compression) and 9 (slower, best compression).
-// A good default level is '6', providing a fair tradeoff between compression
-// speed and final compressed size.
-// This function will overwrite several fields from config: 'method', 'quality'
-// and 'lossless'. Returns false in case of parameter error.
-  int WebPConfigLosslessPreset(config *WebPConfig, level int);
-
-// Returns true if 'config' is non-nil and all configuration parameters are
-// within their valid ranges.
-  int WebPValidateConfig(/* const */ config *WebPConfig);
-
-//------------------------------------------------------------------------------
-// Input / Output
-// Structure for storing auxiliary statistics.
-
-type WebPAuxStats struct {
-  coded_size int  // final size
-
-  PSNR [5]float64;             // peak-signal-to-noise ratio for Y/U/V/All/Alpha
-  block_count [3]int        // number of intra4/intra16/skipped macroblocks
-
-  // approximate number of bytes spent for header
-                             // and mode-partition #0
-  header_bytes [2]int       
-
-							 // approximate number of bytes spent for
-                             // DC/AC/uv coefficients for each (0..3) segments.
-  residual_bytes[3][4]int  
-  segment_size [4]int       // number of macroblocks in each segments
-  segment_quant [4]int      // quantizer values for each segments
-  segment_level [4]int      // filtering strength for each segments [0..63]
-
-  alpha_data_size int  // size of the transparency data
-  layer_data_size int  // size of the enhancement layer data
-
-	// lossless encoder statistics
-	// bit0:predictor
-	// bit1:cross-color transform
-	// bit2:subtract-green
-	// bit3:color indexing
-  lossless_features uint32  
-  histogram_bits int          // number of precision bits of histogram
-  transform_bits int          // precision bits for predictor transform
-  cache_bits int              // number of bits for color cache lookup
-  palette_size int            // number of color in palette, if used
-  lossless_size int           // final lossless size
-  lossless_hdr_size int       // lossless header (transform, huffman etc) size
-  lossless_data_size int      // lossless image data size
-  cross_color_transform_bits int  // precision bits for cross-color transform
-
-  pad [1]uint32  // padding for later use
-}
 
 // Signature for output function. Should return true if writing was successful.
 // data/data_size is the segment of data to write, and 'picture' is for
@@ -349,7 +219,7 @@ func WebPPictureInit(picture *WebPPicture) int {
 // 'src/ref_stride' is the byte distance between rows.
 // Returns false in case of error (bad parameter, memory allocation error, ...).
   int WebPPlaneDistortion(
-    const src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, type int,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
+    /* const */ src *uint8, src_stride uint64 , /*const*/ ref *uint8, ref_stride uint64 , width, height int, x_step uint64 , vtype int,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
     distortion *float, result *float);
 
 // Compute PSNR, SSIM or LSIM distortion metric between two pictures. Results
