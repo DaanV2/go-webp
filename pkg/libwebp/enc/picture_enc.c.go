@@ -16,9 +16,6 @@ func DummyWriter(/* const */ data *uint8, data_size uint64, /*const*/ picture *W
 }
 
 func WebPPictureInitInternal(picture *WebPPicture, version int) int {
-  if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_ENCODER_ABI_VERSION)) {
-    return 0;  // caller/system version mismatch!
-  }
   if (picture != nil) {
     stdlib.Memset(picture, 0, sizeof(*picture));
     picture.writer = DummyWriter;

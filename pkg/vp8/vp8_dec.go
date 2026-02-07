@@ -121,9 +121,6 @@ func SetOk(/* const */ dec *VP8Decoder) {
 
 // Internal, version-checked, entry point
 func VP8InitIoInternal(/* const */ io *VP8Io, version int) int {
-  if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION)) {
-    return 0;  // mismatch error
-  }
   if (io != nil) {
     stdlib.Memset(io, 0, sizeof(*io));
   }

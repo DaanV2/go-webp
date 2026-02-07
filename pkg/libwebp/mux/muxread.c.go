@@ -214,9 +214,7 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 	var chunk_list_ends [WEBP_CHUNK_NIL + 1]*WebPChunk
 	ChunkInit(&chunk)
 
-	if WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_MUX_ABI_VERSION) {
-		return nil // version mismatch
-	}
+
 	if bitstream == nil {
 		{
 			return nil

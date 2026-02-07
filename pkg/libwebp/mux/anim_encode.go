@@ -166,8 +166,7 @@ func DefaultEncoderOptions(/* const */ enc_options *WebPAnimEncoderOptions) {
 }
 
 func WebPAnimEncoderOptionsInitInternal(enc_options *WebPAnimEncoderOptions, abi_version int) int {
-  if (enc_options == nil ||
-      WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_MUX_ABI_VERSION)) {
+  if (enc_options == nil) {
     return 0;
   }
   DefaultEncoderOptions(enc_options);
@@ -215,9 +214,6 @@ func WebPAnimEncoder(
     width, height int, /*const*/ enc_options *WebPAnimEncoderOptions, abi_version int) *WebPAnimEncoderNewInternal {
   var enc *WebPAnimEncoder;
 
-  if (WEBP_ABI_IS_INCOMPATIBLE(abi_version, WEBP_MUX_ABI_VERSION)) {
-    return nil;
-  }
   if (width <= 0 || height <= 0 ||
       (width * uint64(height)) >= MAX_IMAGE_AREA) {
     return nil;

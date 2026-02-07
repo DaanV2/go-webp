@@ -784,9 +784,6 @@ func WebPGetInfo( /* const */ data *uint8, data_size uint64, width *int, height 
 // Advance decoding API
 
 func WebPInitDecoderConfigInternal(config *WebPDecoderConfig, version int) int {
-	if WEBP_ABI_IS_INCOMPATIBLE(version, constants.WEBP_DECODER_ABI_VERSION) {
-		return 0 // version mismatch
-	}
 	if config == nil {
 		return 0
 	}
@@ -863,9 +860,6 @@ func WebPValidateDecoderConfig( /* const */ config *WebPDecoderConfig) int {
 }
 
 func WebPGetFeaturesInternal( /* const */ data *uint8, data_size uint64, features *WebPBitstreamFeatures, version int) vp8.VP8StatusCode {
-	if WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DECODER_ABI_VERSION) {
-		return vp8.VP8_STATUS_INVALID_PARAM // version mismatch
-	}
 	if features == nil {
 		return vp8.VP8_STATUS_INVALID_PARAM
 	}

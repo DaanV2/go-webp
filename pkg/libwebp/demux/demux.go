@@ -647,7 +647,6 @@ func WebPDemuxerFn(/* const */ data *WebPData, allow_partial int, state *WebPDem
 
   if (state != nil) {*state = WEBP_DEMUX_PARSE_ERROR}
 
-  if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_DEMUX_ABI_VERSION)) { return nil }
   if (data == nil || data.bytes == nil || data.size == 0) { return nil }
 
   if (!InitMemBuffer(&mem, data.bytes, data.size)) { return nil }

@@ -19,8 +19,3 @@ const WEBP_DEMUX_ABI_VERSION = 0x0107                               // MAJOR(8b)
 func WebPGetDecoderVersion() int {
 	return dec.WebPGetDecoderVersion()
 }
-
-// WEBP_ABI_IS_INCOMPATIBLE Macro to check ABI compatibility (same major revision number)
-func WEBP_ABI_IS_INCOMPATIBLE(a, b int) bool {
-	return (((a) >> 8) != ((b) >> 8))
-}

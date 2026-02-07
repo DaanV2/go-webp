@@ -16,15 +16,13 @@ func MuxInit(/* const */ mux *WebPMux) {
 }
 
 func WebPNewInternal(version int) *WebPMux {
-  if (WEBP_ABI_IS_INCOMPATIBLE(version, WEBP_MUX_ABI_VERSION)) {
-    return nil;
-  } else {
+
     // var mux *WebPMux = (*WebPMux)WebPSafeMalloc(uint64(1), sizeof(WebPMux));
     // if mux != nil { MuxInit(mux) }
 	mux = new(WebPMux)
 
     return mux;
-  }
+  
 }
 
 // Delete all images in 'wpi_list'.

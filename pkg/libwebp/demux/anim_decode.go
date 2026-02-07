@@ -11,7 +11,6 @@ package demux
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
 	"github.com/daanv2/go-webp/pkg/constants"
-	"github.com/daanv2/go-webp/pkg/libwebp/webp"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
@@ -44,7 +43,7 @@ func DefaultDecoderOptions( /* const */ dec_options *WebPAnimDecoderOptions) {
 }
 
 func WebPAnimDecoderOptionsInitInternal(dec_options *WebPAnimDecoderOptions, abi_version int) int {
-	if dec_options == nil || webp.WEBP_ABI_IS_INCOMPATIBLE(abi_version, constants.WEBP_DEMUX_ABI_VERSION) {
+	if dec_options == nil {
 		return 0
 	}
 
@@ -76,7 +75,7 @@ func WebPAnimDecoder( /* const */ webp_data *WebPData /* const */, dec_options *
 	var options WebPAnimDecoderOptions
 	var features WebPBitstreamFeatures
 	var dec *WebPAnimDecoder = nil
-	if webp_data == nil || webp.WEBP_ABI_IS_INCOMPATIBLE(abi_version, constants.WEBP_DEMUX_ABI_VERSION) {
+	if webp_data == nil {
 		return nil
 	}
 
