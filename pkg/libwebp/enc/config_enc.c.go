@@ -10,7 +10,7 @@ package enc
 
 
 //------------------------------------------------------------------------------
-// config.WebPConfig
+// config.Config
 //------------------------------------------------------------------------------
 
 
@@ -33,7 +33,7 @@ vart kLosslessPresets = [MAX_LEVEL + 1]MQ{{0, 0},  {1, 20}, {2, 25}, {3, 30}, {3
 // speed and final compressed size.
 // This function will overwrite several fields from config: 'method', 'quality'
 // and 'lossless'. Returns false in case of parameter error.
-func WebPConfigLosslessPreset(config *config.WebPConfig, level int) int {
+func WebPConfigLosslessPreset(config *config.Config, level int) int {
   if config == nil || level < 0 || level > MAX_LEVEL { return 0  }
   config.lossless = 1;
   config.method = kLosslessPresets[level].method;

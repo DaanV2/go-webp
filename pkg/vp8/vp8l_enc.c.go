@@ -272,7 +272,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
   var pic *WebPPicture = enc.pic;
   width := pic.width;
   height := pic.height;
-  var config *config.WebPConfig = enc.config;
+  var config *config.Config = enc.config;
   method := config.method;
   low_effort := (config.method == 0);
   var i int
@@ -1319,7 +1319,7 @@ func EncodePalette(/* const */ bw *VP8LBitWriter, low_effort int, /*const*/ enc 
 // -----------------------------------------------------------------------------
 // VP8LEncoder
 
-func VP8LEncoderNew(/* const */ config *config.WebPConfig, /*const*/ picture *WebPPicture) *VP8LEncoder {
+func VP8LEncoderNew(/* const */ config *config.Config, /*const*/ picture *WebPPicture) *VP8LEncoder {
 //   var enc *VP8LEncoder = (*VP8LEncoder)WebPSafeCalloc(uint64(1), sizeof(*enc));
 //   if (enc == nil) {
 //     WebPEncodingSetError(picture, VP8_ENC_ERROR_OUT_OF_MEMORY);
@@ -1349,7 +1349,7 @@ func VP8LEncoderDelete(enc *VP8LEncoder) {
 // Main call
 
 type StreamEncodeContext struct {
-	config *config.WebPConfig
+	config *config.Config
 	picture *WebPPicture
 	bw *VP8LBitWriter
 	enc *VP8LEncoder
@@ -1361,7 +1361,7 @@ type StreamEncodeContext struct {
 
 func EncodeStreamHook(input *void, data *void2) int {
   var params *StreamEncodeContext = (*StreamEncodeContext)input;
-  var config *config.WebPConfig = params.config;
+  var config *config.Config = params.config;
   var picture *WebPPicture = params.picture;
   var bw *VP8LBitWriter = params.bw;
   var enc *VP8LEncoder = params.enc;
@@ -1528,7 +1528,7 @@ Error:
 
 // Encodes the main image stream using the supplied bit writer.
 // Returns false in case of error (stored in picture.error_code).
-func VP8LEncodeStream(/* const */ config *config.WebPConfig, /*const*/ picture *WebPPicture, /*const*/ bw_main *VP8LBitWriter) int {
+func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *WebPPicture, /*const*/ bw_main *VP8LBitWriter) int {
   var enc_main *VP8LEncoder = VP8LEncoderNew(config, picture);
   enc_side *VP8LEncoder = nil;
   CrunchConfig crunch_configs[CRUNCH_CONFIGS_MAX];
@@ -1683,7 +1683,7 @@ Error:
 // Encodes the picture.
 // Returns 0 if config or picture is nil or picture doesn't have valid argb
 // input.
-func VP8LEncodeImage(/* const */ config *config.WebPConfig, /*const*/ picture *WebPPicture) int {
+func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *WebPPicture) int {
   var  width, height int
   var  has_alpha int
   var coded_size uint64

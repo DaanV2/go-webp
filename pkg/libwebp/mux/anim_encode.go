@@ -23,12 +23,12 @@ type WebPAnimEncoder struct {
 	canvas_height int;               // Canvas height.
 	options WebPAnimEncoderOptions  // Global encoding options.
 
-	last_config config.WebPConfig            // Cached in case a re-encode is needed.
+	last_config config.Config            // Cached in case a re-encode is needed.
 	// If 'last_config' uses lossless, then
 	// this config uses lossy and vice versa;
 	// only valid if 'options.allow_mixed'
 	// is true.
-	last_config_reversed config.WebPConfig   
+	last_config_reversed config.Config   
 
 	curr_canvas *WebPPicture;  // Only pointer; we don't own memory.
 
@@ -724,7 +724,7 @@ func FlattenSimilarBlocks(/* const */ src *WebPPicture, /*const*/ rect *FrameRec
   return modified;
 }
 
-func EncodeFrame(/* const */ config *config.WebPConfig, /*const*/ pic *WebPPicture, /*const*/ memory *WebPMemoryWriter) int {
+func EncodeFrame(/* const */ config *config.Config, /*const*/ pic *WebPPicture, /*const*/ memory *WebPMemoryWriter) int {
   pic.use_argb = 1;
   pic.writer = WebPMemoryWrite;
   pic.custom_ptr = memory;
@@ -749,8 +749,8 @@ type Candidate struct {
 }
 
 // Generates a candidate encoded frame given a picture and metadata.
-func EncodeCandidate(/* const */ sub_frame *WebPPicture, /*const*/ rect *FrameRectangle, /*const*/ encoder_config *config.WebPConfig, use_blending int, /*const*/ candidate *Candidate) WebPEncodingError {
-  config.WebPConfig config = *encoder_config;
+func EncodeCandidate(/* const */ sub_frame *WebPPicture, /*const*/ rect *FrameRectangle, /*const*/ encoder_config *config.Config, use_blending int, /*const*/ candidate *Candidate) WebPEncodingError {
+  config.Config config = *encoder_config;
   WebPEncodingError error_code = VP8_ENC_OK;
   assert.Assert(candidate != nil);
   stdlib.Memset(candidate, 0, sizeof(*candidate));
@@ -861,7 +861,7 @@ func PickBestCandidate(/* const */ enc *WebPAnimEncoder, /*const*/ candidate *Ca
         // Note: The canvas_carryover could contain the pixel values with loss
         //       due to quantization as if they were decoded, to even better
         //       estimate which areas of the canvas should be explicitly encoded
-        //       at each frame. Setting config.WebPConfig::show_compressed=1 is a way
+        //       at each frame. Setting config.Config::show_compressed=1 is a way
         //       to approximate this. That works poorly: in lossy mode most
         //       areas of the decoded canvas change because of quantization loss
         //       in a frame, resulting in the encoder trying to explicitly
@@ -896,7 +896,7 @@ func PickBestCandidate(/* const */ enc *WebPAnimEncoder, /*const*/ candidate *Ca
 // Generates candidates for a given dispose method given pre-filled subframe
 // 'params'.
 static WebPEncodingError GenerateCandidates(
-    const enc *WebPAnimEncoder, Candidate candidates[CANDIDATE_COUNT], WebPMuxAnimDispose dispose_method, /*const*/ canvas_carryover_disposed *WebPPicture, is_lossless bool, is_key_frame int, /*const*/ params *SubFrameParams, /*const*/ config_ll *config.WebPConfig, /*const*/ config_lossy *config.WebPConfig, *Candidate* const best_candidate, /*const*/ encoded_frame *EncodedFrame) {
+    const enc *WebPAnimEncoder, Candidate candidates[CANDIDATE_COUNT], WebPMuxAnimDispose dispose_method, /*const*/ canvas_carryover_disposed *WebPPicture, is_lossless bool, is_key_frame int, /*const*/ params *SubFrameParams, /*const*/ config_ll *config.Config, /*const*/ config_lossy *config.Config, *Candidate* const best_candidate, /*const*/ encoded_frame *EncodedFrame) {
   WebPEncodingError error_code = VP8_ENC_OK;
   is_dispose_none := (dispose_method == WEBP_MUX_DISPOSE_NONE);
   const candidate_ll *Candidate =
@@ -1064,7 +1064,7 @@ func CopyMaskedPixels(/* const */ src *WebPPicture, /*const*/ mask *uint8, /*con
 // (lossy/lossless), dispose methods, blending methods etc to encode the current
 // frame and outputs the best one in 'encoded_frame'.
 // 'frame_skipped' will be set to true if this frame should actually be skipped.
-func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.WebPConfig, is_key_frame int , /*const*/ best_candidate_rect *FrameRectangle, /*const*/ encoded_frame *EncodedFrame, /*const*/ frame_skipped *int) WebPEncodingError {
+func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config, is_key_frame int , /*const*/ best_candidate_rect *FrameRectangle, /*const*/ encoded_frame *EncodedFrame, /*const*/ frame_skipped *int) WebPEncodingError {
   var i int
   WebPEncodingError error_code = VP8_ENC_OK;
   var curr_canvas *WebPPicture = &enc.curr_canvas_copy;
@@ -1101,8 +1101,8 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.WebPCon
    var dispose_none_params SubFrameParams
    var dispose_bg_params SubFrameParams
 
-  config.WebPConfig config_ll = *config;
-  config.WebPConfig config_lossy = *config;
+  config.Config config_ll = *config;
+  config.Config config_lossy = *config;
   config_ll.lossless = 1;
   config_lossy.lossless = 0;
   enc.last_config = *config;
@@ -1197,7 +1197,7 @@ func KeyFramePenalty(/* const */ encoded_frame *EncodedFrame) int64 {
   return ((int64)encoded_frame.key_frame.bitstream.size - encoded_frame.sub_frame.bitstream.size);
 }
 
-func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.WebPConfig) int {
+func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config) int {
   ok := 0;
   frame_skipped := 0;
   WebPEncodingError error_code = VP8_ENC_OK;
@@ -1397,8 +1397,8 @@ func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
 #undef DELTA_INFINITY
 #undef KEYFRAME_NONE
 
-func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp int, /*const*/ encoder_config *config.WebPConfig) int {
-   var config config.WebPConfig
+func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp int, /*const*/ encoder_config *config.Config) int {
+   var config config.Config
   var ok int
 
   if (enc == nil) {
@@ -1457,7 +1457,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp int,
   if (encoder_config != nil) {
 	err := config.Validate()
     if (err != nil) { // TODO: return err
-      MarkError(enc, "ERROR adding frame: Invalid config.WebPConfig");
+      MarkError(enc, "ERROR adding frame: Invalid config.Config");
       return 0;
     }
     config = *encoder_config;

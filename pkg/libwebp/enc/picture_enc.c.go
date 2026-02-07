@@ -230,7 +230,7 @@ typedef int (*Importer)(/* const */ *WebPPicture, /*const*/ *uint8, int);
 
 func Encode(/* const */ rgba *uint8, width, height int, stride int, Importer import, float64 quality_factor, lossless int, *uint8* output) uint64 {
    var pic WebPPicture
-   var config config.WebPConfig
+   var config config.Config
    var wrt WebPMemoryWriter
   var ok int
 

@@ -10,7 +10,7 @@ import (
 	"github.com/daanv2/go-webp/pkg/encoding/lossy"
 )
 
-func Encode(w io.Writer, img image.Image, options *config.WebPConfig) error {
+func Encode(w io.Writer, img image.Image, options *config.Config) error {
 	if options == nil {
 		return errors.New("options is nil")
 	}

@@ -3,10 +3,10 @@ package config
 import "errors"
 
 // Image characteristics hint for the underlying encoder.
-type WebPImageHint int
+type ImageHint int
 
 const (
-	WEBP_HINT_DEFAULT WebPImageHint = iota // default preset.
+	WEBP_HINT_DEFAULT ImageHint = iota // default preset.
 	WEBP_HINT_PICTURE                      // digital picture, like portrait, inner shot
 	WEBP_HINT_PHOTO                        // outdoor photograph, with natural lighting
 	WEBP_HINT_GRAPH                        // Discrete tone image (graph, map-tile etc).
@@ -14,7 +14,7 @@ const (
 )
 
 // Compression parameters.
-type WebPConfig struct {
+type Config struct {
 	lossless int // Lossless encoding (0=lossy(default), 1=lossless).
 	// between 0 and 100. For lossy, 0 gives the smallest
 	// size and 100 the largest. For lossless, this
@@ -24,7 +24,7 @@ type WebPConfig struct {
 	quality float64
 	method  int // quality/speed trade-off (0=fast, 6=slower-better)
 
-	image_hint WebPImageHint // Hint for image type (lossless only for now).
+	image_hint ImageHint // Hint for image type (lossless only for now).
 
 	// if non-zero, set the desired target size in bytes.
 	// Takes precedence over the 'compression' parameter.

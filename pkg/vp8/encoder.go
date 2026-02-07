@@ -14,7 +14,7 @@ import (
 )
 
 type VP8Encoder struct {
-	config *config.WebPConfig;  // user configuration and parameters
+	config *config.Config;  // user configuration and parameters
 	pic *WebPPicture;          // input / output picture
 
 	// headers
@@ -85,7 +85,7 @@ type VP8Encoder struct {
 }
 
 type VP8LEncoder struct {
-	config *config.WebPConfig  // user configuration and parameters
+	config *config.Config  // user configuration and parameters
 	pic    *WebPPicture // input picture.
 
 	argb         *uint32                // Transformed argb image data.

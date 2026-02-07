@@ -54,7 +54,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 
 func EncodeLossless(/* const */ data *uint8, width, height int, effort_level int, use_quality_100 int, /*const*/ bw *VP8LBitWriter, /*const*/ stats *WebPAuxStats) int {
   ok := 0;
-   var config config.WebPConfig
+   var config config.Config
    var picture WebPPicture
 
   if !WebPPictureInit(&picture) { return 0  }
@@ -331,7 +331,7 @@ func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter in
 
 func CompressAlphaJob(arg *void1, unused *void) int {
   var enc *VP8Encoder = (*VP8Encoder)arg1;
-  var config *config.WebPConfig = enc.config;
+  var config *config.Config = enc.config;
   alpha_data *uint8 = nil;
   alpha_size := 0;
   effort_level := config.method;  // maps to [0..6]

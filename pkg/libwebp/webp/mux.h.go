@@ -407,7 +407,7 @@ func WebPMuxAssemble(mux *mux.WebPMux, assembled_data *WebPData) WebPMuxError {
   // Tune 'enc_options' as needed.
   *WebPAnimEncoder enc = WebPAnimEncoderNew(width, height, &enc_options);
   while(<there are more frames>) {
-     var config config.WebPConfig
+     var config config.Config
     WebPConfigInit(&config);
     // Tune 'config' as needed.
     WebPAnimEncoderAdd(enc, frame, timestamp_ms, &config);
@@ -493,7 +493,7 @@ func WebPAnimEncoder(width, height int, enc_options *WebPAnimEncoderOptions) *We
 // Returns:
 //   On error, returns false and frame.error_code is set appropriately.
 //   Otherwise, returns true.
-func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp_ms int, config *config.WebPConfig) int {
+func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *WebPPicture, timestamp_ms int, config *config.Config) int {
 	// TODO: implement function
 	return 0
 }
