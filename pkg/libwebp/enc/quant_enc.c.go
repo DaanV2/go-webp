@@ -895,9 +895,9 @@ func ReconstructUV(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore,
 func StoreMaxDelta(/* const */ dqm *VP8SegmentInfo, /*const*/ int16 DCs[16]) {
   // We look at the first three AC coefficients to determine what is the average
   // delta between each sub-4x4 block.
-  v0 := abs(DCs[1]);
-  v1 := abs(DCs[2]);
-  v2 := abs(DCs[4]);
+  v0 := stdlib.Abs(DCs[1]);
+  v1 := stdlib.Abs(DCs[2]);
+  v2 := stdlib.Abs(DCs[4]);
   max_v := tenary.If(v1 > v0, v1, v0)
   max_v = tenary.If(v2 > max_v, v2, max_v)
   if max_v > dqm.max_edge { dqm.max_edge = max_v }

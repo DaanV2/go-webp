@@ -589,7 +589,6 @@ func SimpleHFilter16i_C(p *uint8, stride int, thresh int) {
 //------------------------------------------------------------------------------
 // Complex In-loop filtering (Paragraph 15.3)
 
-#if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 func FilterLoop26_C(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
   thresh2 := 2 * thresh + 1;
   while (size-- > 0) {

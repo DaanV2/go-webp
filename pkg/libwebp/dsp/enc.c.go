@@ -72,7 +72,7 @@ func CollectHistogram_C(/* const */ ref *uint8, /*const*/ pred *uint8, start_blo
 
     // Convert coefficients to bin.
     for k = 0; k < 16; k++ {
-      v := abs(out[k]) >> 3;
+      v := stdlib.Abs(out[k]) >> 3;
       clipped_value := clip_max(v, MAX_COEFF_THRESH);
       ++distribution[clipped_value];
     }

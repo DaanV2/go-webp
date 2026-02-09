@@ -198,7 +198,7 @@ func AssignSegments(/* const */ enc *VP8Encoder, /*const*/ int alphas[MAX_ALPHA 
     for n = 0; n < nb; n++ {
       if (accum[n]) {
         new_center := (dist_accum[n] + accum[n] / 2) / accum[n];
-        displaced += abs(centers[n] - new_center);
+        displaced += stdlib.Abs(centers[n] - new_center);
         centers[n] = new_center;
         weighted_average += new_center * accum[n];
         total_weight += accum[n];

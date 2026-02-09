@@ -310,7 +310,7 @@ func ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*const*/ co
     num_symbols := VP8LReadBits(br, 1) + 1
     first_symbol_len_code := VP8LReadBits(br, 1)
     // The first code is either 1 bit or 8 bit code.
-    symbol := VP8LReadBits(br, (first_symbol_len_code == 0) ? 1 : 8)
+    symbol := VP8LReadBits(br, tenary.If(first_symbol_len_code == 0, 1, 8))
     code_lengths[symbol] = 1
     // The second code (if present), is always 8 bits long.
     if num_symbols == 2 {
@@ -433,7 +433,7 @@ Error:
 // limit memory usage.
 func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htree_groups_max int, /*const*/ mapping *int, /*const*/ dec *VP8LDecoder, /*const*/ huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) int {
   int i, j, ok = 0, 0, 0
-  max_alphabet_size := kAlphabetSize[0] + ((color_cache_bits > 0) ? 1 << color_cache_bits : 0)
+  max_alphabet_size := kAlphabetSize[0] + tenary.If((color_cache_bits > 0), 1 << color_cache_bits, 0)
   table_size := kTableSize[color_cache_bits]
 
   if ((mapping == nil && num_htree_groups != num_htree_groups_max) ||
@@ -467,8 +467,8 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
         }
       }
     } else {
-      const htree_group *HTreeGroup = &(*htree_groups)[(mapping == nil) ? i : mapping[i]]
-      *HuffmanCode* const htrees = htree_group.htrees
+      var htree_group *HTreeGroup = &(*htree_groups)[tenary.If(mapping == nil, i, mapping[i])]
+      var htrees *HuffmanCode  = htree_group.htrees
       var size int
       total_size := 0
       is_trivial_literal := 1
@@ -536,10 +536,9 @@ func AllocateAndInitRescaler(/* const */ dec *VP8LDecoder, /*const*/ io *VP8Io) 
   in_height := io.mb_h
   out_height := io.scaled_height
   work_size := 2 * num_channels * uint64(out_width)
-  var work *rescaler_t;  // Rescaler work area.
+  var work *rescaler_t  // Rescaler work area.
   scaled_data_size := uint64(out_width)
-  var scaled_data *uint32
-      ;  // Temporary storage for scaled BGRA data.
+  var scaled_data *uint32 // Temporary storage for scaled BGRA data.
   // C: memory_size := sizeof(*dec.rescaler) +
                                // C: work_size * sizeof(*work) +
                                // C: scaled_data_size * sizeof(*scaled_data)
@@ -853,18 +852,11 @@ func ProcessRows(/* const */ dec *VP8LDecoder, row int, wait_for_biggest_batch i
       if WebPIsRGBMode(output.colorspace) {  // convert to RGBA
         var buf *WebPRGBABuffer = &output.u.RGBA
         var rgba *uint8 = buf.rgba + ptrdiff_t(dec.last_out_row) * buf.stride
-        num_rows_out :=
-// C: #if !defined(WEBP_REDUCE_SIZE)
-            io.use_scaling ? EmitRescaledRowsRGBA(dec, rows_data, in_stride, io.mb_h, rgba, buf.stride)
-                            :
-// C: #endif  // WEBP_REDUCE_SIZE
-                            EmitRows(output.colorspace, rows_data, in_stride, io.mb_w, io.mb_h, rgba, buf.stride)
+        num_rows_out := tenary.If(io.use_scaling, EmitRescaledRowsRGBA(dec, rows_data, in_stride, io.mb_h, rgba, buf.stride), EmitRows(output.colorspace, rows_data, in_stride, io.mb_w, io.mb_h, rgba, buf.stride))
         // Update 'last_out_row'.
         dec.last_out_row += num_rows_out
       } else {  // convert to YUVA
-        dec.last_out_row = io.use_scaling
-                ? EmitRescaledRowsYUVA(dec, rows_data, in_stride, io.mb_h)
-                : EmitRowsYUVA(rows_data, io, in_stride, dec.accumulated_rgb_pixels, dec)
+        dec.last_out_row = tenary.If(io.use_scaling, EmitRescaledRowsYUVA(dec, rows_data, in_stride, io.mb_h), EmitRowsYUVA(rows_data, io, in_stride, dec.accumulated_rgb_pixels, dec))
       }
       assert.Assert(dec.last_out_row <= output.height)
     }
@@ -883,7 +875,7 @@ func Is8bOptimizable(/* const */ hdr *VP8LMetadata) int {
   // When the Huffman tree contains only one symbol, we can skip the
   // call to ReadSymbol() for red/blue/alpha channels.
   for i = 0; i < hdr.num_htree_groups; i++ {
-    *HuffmanCode* const htrees = hdr.htree_groups[i].htrees
+    var htrees *HuffmanCode = hdr.htree_groups[i].htrees
     if htrees[RED][0].bits > 0 { return 0  }
     if htrees[BLUE][0].bits > 0 { return 0  }
     if htrees[ALPHA][0].bits > 0 { return 0  }
@@ -1438,7 +1430,7 @@ func UpdateDecoder(/* const */ dec *VP8LDecoder, width, height int) {
   dec.height = height
 
   hdr.huffman_xsize = VP8LSubSampleSize(width, num_bits)
-  hdr.huffman_mask = (num_bits == 0) ? ~0 : (1 << num_bits) - 1
+  hdr.huffman_mask = tenary.If(num_bits == 0, ~0, (1 << num_bits) - 1)
 }
 
 func DecodeImageStream(xsize int, ysize int, int is_level0, /*const*/ dec *VP8LDecoder, *uint32* const decoded_data) int {
