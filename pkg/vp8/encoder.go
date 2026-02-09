@@ -15,8 +15,8 @@ import (
 )
 
 type VP8Encoder struct {
-	config *config.Config;  // user configuration and parameters
-	pic *picture.Picture;          // input / output picture
+	config *config.Config  // user configuration and parameters
+	pic *picture.Picture          // input / output picture
 
 	// headers
 	filter_hdr VP8EncFilterHeader    // filtering information
@@ -40,7 +40,7 @@ type VP8Encoder struct {
 
 	// transparency blob
 	has_alpha int 
-	alpha_data *uint8;  // non-nil if transparency is present
+	alpha_data *uint8  // non-nil if transparency is present
 	alpha_data_size uint32
 	alpha_worker WebPWorker 
 
@@ -61,8 +61,8 @@ type VP8Encoder struct {
 	sse [4]uint64     // sum of Y/U/V/A squared errors for all macroblocks
 	sse_count uint64  // pixel count for the sse[] stats
 	coded_size int
-	residual_bytes[3][4]int 
-	block_count[3]int
+	residual_bytes [3][4]int 
+	block_count    [3]int
 
 	// quality/speed settings
 	method int                // 0=fastest, 6=best/slowest.
@@ -74,15 +74,15 @@ type VP8Encoder struct {
 	use_tokens int            // if true, use token buffer
 
 	// Memory
-	mb_info *VP8MBInfo;  // contextual macroblock infos (mb_w + 1)
-	preds *uint8;      // predictions modes: (4*mb_w+1) * (4*mb_h+1)
-	nz *uint32;        // non-zero bit context: mb_w+1
-	y_top *uint8;      // top luma samples.
+	mb_info *VP8MBInfo  // contextual macroblock infos (mb_w + 1)
+	preds *uint8      // predictions modes: (4*mb_w+1) * (4*mb_h+1)
+	nz *uint32        // non-zero bit context: mb_w+1
+	y_top *uint8      // top luma samples.
 	// top u/v samples.
 	// U and V are packed into 16 bytes (8 U + 8 V)
 	uv_top *uint8
-	lf_stats *LFStats;   // autofilter stats (if nil, autofilter is off)
-	top_derr *DError;    // diffusion error (nil if disabled)
+	lf_stats *LFStats   // autofilter stats (if nil, autofilter is off)
+	top_derr *DError    // diffusion error (nil if disabled)
 }
 
 type VP8LEncoder struct {
