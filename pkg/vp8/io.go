@@ -8,9 +8,11 @@
 
 package vp8
 
+import "github.com/daanv2/go-webp/pkg/constants"
+
 // Must be called to make sure 'io' is initialized properly.
 // Returns false in case of version mismatch. Upon such failure, no other
 // decoding function should be called (VP8Decode, VP8GetHeaders, ...)
-func VP8InitIo(/* const */ io *VP8Io) int {
-  return VP8InitIoInternal(io, /*const*/ants.WEBP_DECODER_ABI_VERSION)
+func VP8InitIo(io *VP8Io) int {
+  return VP8InitIoInternal(io, constants.WEBP_DECODER_ABI_VERSION)
 }
