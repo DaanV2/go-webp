@@ -69,8 +69,7 @@ int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_heig
     ratio := num / den;
     if (ratio != (uint32)ratio) {
       // When ratio == WEBP_RESCALER_ONE, we can't represent the ratio with the
-      // current fixed-point precision. This happens when src_height ==
-      // rescaler.y_add (which == src_height), and rescaler.x_add == 1.
+      // current fixed-point precision. This happens when src_height == // rescaler.y_add (which == src_height), and rescaler.x_add == 1.
       // => We special-case fxy_scale = 0, in WebPRescalerExportRow().
       rescaler.fxy_scale = 0;
     } else {
@@ -96,13 +95,11 @@ func WebPRescalerGetScaledDimensions(src_width int, src_height int, /*const*/ sc
 
     // if width is unspecified, scale original proportionally to height ratio.
     if (width == 0 && src_height > 0) {
-      width =
-          (int)(((uint64)src_width * height + src_height - 1) / src_height);
+      width = (int)(((uint64)src_width * height + src_height - 1) / src_height);
     }
     // if height is unspecified, scale original proportionally to width ratio.
     if (height == 0 && src_width > 0) {
-      height =
-          (int)(((uint64)src_height * width + src_width - 1) / src_width);
+      height = (int)(((uint64)src_height * width + src_width - 1) / src_width);
     }
     // Check if the overall dimensions still make sense.
     if (width <= 0 || height <= 0 || width > max_size || height > max_size) {

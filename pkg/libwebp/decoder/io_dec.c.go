@@ -177,15 +177,13 @@ func EmitAlphaRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams,  expected_n
   if (alpha != nil) {
     mb_w := io.mb_w;
     WEBP_CSP_MODE := p.output.colorspace;
-    alpha_first =
-        (colorspace == MODE_ARGB || colorspace == MODE_Argb);
+    alpha_first = (colorspace == MODE_ARGB || colorspace == MODE_Argb);
     var buf *WebPRGBABuffer = &p.output.u.RGBA;
     num_rows int ;
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows);
     var base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride;
     var dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3));
-    has_alpha :=
-        WebPDispatchAlpha(alpha, io.width, mb_w, num_rows, dst, buf.stride);
+    has_alpha := WebPDispatchAlpha(alpha, io.width, mb_w, num_rows, dst, buf.stride);
     (void)expected_num_lines_out;
     assert.Assert(expected_num_lines_out == num_rows);
     // has_alpha is true if there's non-trivial alpha to premultiply with.
@@ -341,8 +339,7 @@ func InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 // RGBA rescaling
 
 func ExportRGB(/* const */ p *WebPDecParams, y_pos int) int {
-  var convert WebPYUV444Converter =
-      WebPYUV444Converters[p.output.colorspace];
+  var convert WebPYUV444Converter = WebPYUV444Converters[p.output.colorspace];
   var buf *WebPRGBABuffer = &p.output.u.RGBA;
   dst *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride;
   num_lines_out := 0;
@@ -368,8 +365,7 @@ func EmitRescaledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   j := 0, uv_j = 0;
   num_lines_out := 0;
   while (j < mb_h) {
-    y_lines_in :=
-        WebPRescalerImport(p.scaler_y, mb_h - j, io.y + (ptrdiff_t)j * io.y_stride, io.y_stride);
+    y_lines_in := WebPRescalerImport(p.scaler_y, mb_h - j, io.y + (ptrdiff_t)j * io.y_stride, io.y_stride);
     j += y_lines_in;
     if (WebPRescaleNeededLines(p.scaler_u, uv_mb_h - uv_j)) {
       u_lines_in := WebPRescalerImport(
@@ -578,8 +574,7 @@ func CustomSetup(io *VP8Io) int {
       p.emit = EmitYUV;
     }
     if (is_alpha) {  // need transparency output
-      p.emit_alpha =
-          tenary.If(colorspace == MODE_RGBA_4444 || colorspace == MODE_rgbA_4444, EmitAlphaRGBA4444, tenary.If(is_rgb, EmitAlphaRGB, EmitAlphaYUV))
+      p.emit_alpha = tenary.If(colorspace == MODE_RGBA_4444 || colorspace == MODE_rgbA_4444, EmitAlphaRGBA4444, tenary.If(is_rgb, EmitAlphaRGB, EmitAlphaYUV))
       if (is_rgb) {
         WebPInitAlphaProcessing();
       }

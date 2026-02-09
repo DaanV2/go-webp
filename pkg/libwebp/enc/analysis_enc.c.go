@@ -124,8 +124,7 @@ func GetAlpha(/* const */ histo *VP8Histogram) int {
   // for handling the useful small values which contribute most.
   max_value := histo.max_value;
   last_non_zero := histo.last_non_zero;
-  alpha :=
-      tenary.If(max_value > 1, ALPHA_SCALE * last_non_zero / max_value, 0)
+  alpha := tenary.If(max_value > 1, ALPHA_SCALE * last_non_zero / max_value, 0)
   return alpha;
 }
 
@@ -431,8 +430,7 @@ func InitSegmentJob(/* const */ enc *VP8Encoder, /*const*/ job *SegmentJob, star
 // Assigns a first guess for Intra16 and 'uvmode' prediction modes
 func VP8EncAnalyze(/* const */ enc *VP8Encoder) int {
   ok := 1;
-  do_segments :=
-      enc.config.EmulateJpegSize ||  // We need the complexity evaluation.
+  do_segments := enc.config.EmulateJpegSize ||  // We need the complexity evaluation.
       (enc.segment_hdr.num_segments > 1) ||
       (enc.method <= 1);  // for method 0 - 1, we need preds[] to be filled.
   if (do_segments) {
@@ -446,8 +444,7 @@ func VP8EncAnalyze(/* const */ enc *VP8Encoder) int {
 #else
     do_mt := 0;
 #endif
-    const worker_interface *WebPWorkerInterface =
-        WebPGetWorkerInterface();
+    const worker_interface *WebPWorkerInterface = WebPGetWorkerInterface();
      var main_job SegmentJob
     if (do_mt) {
 #ifdef WEBP_USE_THREAD

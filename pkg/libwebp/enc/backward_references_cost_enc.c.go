@@ -283,8 +283,7 @@ func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uin
       }
       cur.end = i + 1;
     }
-    assert.Assert((uint64)(cur - manager.cache_intervals) + 1 ==
-           manager.cache_intervals_size);
+    assert.Assert((uint64)(cur - manager.cache_intervals) + 1 == manager.cache_intervals_size);
   }
 
 //   manager.costs = (*int64)WebPSafeMalloc(pix_count, sizeof(*manager.costs));
@@ -433,8 +432,7 @@ func PushInterval(/* const */ manager *CostManager, int64 distance_cost, positio
   var i uint64
   interval *CostInterval = manager.head;
   interval_next *CostInterval;
-  const cost_cache_intervals *CostCacheInterval =
-      manager.cache_intervals;
+  const cost_cache_intervals *CostCacheInterval = manager.cache_intervals;
   // If the interval is small enough, no need to deal with the heavy
   // interval logic, just serialize it right away. This constant is empirical.
   kSkipDistance := 10;
@@ -460,8 +458,7 @@ func PushInterval(/* const */ manager *CostManager, int64 distance_cost, positio
        ++i) {
     // Define the intersection of the ith interval with the new one.
     start := position + cost_cache_intervals[i].start;
-    end :=
-        position +
+    end := position +
         (cost_cache_intervals[i].end > len ? len : cost_cache_intervals[i].end);
     cost := distance_cost + cost_cache_intervals[i].cost;
 
@@ -535,8 +532,7 @@ func BackwardReferencesHashChainDistanceOnly(xsize, ysize int, /*const*/ argb *u
   cc_init := 0;
   pix_count := xsize * ysize;
   use_color_cache := (cache_bits > 0);
-  literal_array_size :=
-      sizeof(*((*CostModel)nil).literal) * VP8LHistogramNumCodes(cache_bits);
+  literal_array_size := sizeof(*((*CostModel)nil).literal) * VP8LHistogramNumCodes(cache_bits);
   cost_model_size := sizeof(CostModel) + literal_array_size;
   var hashers VP8LColorCache 
   
@@ -690,8 +686,7 @@ static int BackwardReferencesHashChainFollowChosenPath(
       i += len;
     } else {
        var v PixOrCopy
-      idx :=
-          use_color_cache ? VP8LColorCacheContains(&hashers, argb[i]) : -1;
+      idx := use_color_cache ? VP8LColorCacheContains(&hashers, argb[i]) : -1;
       if (idx >= 0) {
         // use_color_cache is true and hashers contains argb[i]
         // push pixel as a color cache index

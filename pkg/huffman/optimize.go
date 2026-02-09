@@ -64,8 +64,7 @@ func OptimizeHuffmanForRle(length int, good_for_rle []uint8, counts []uint32) {
 				sum = 0
 				if i < length-3 {
 					// All interesting strides have a count of at least 4, // at least when non-zeros.
-					limit =
-						(counts[i] + counts[i+1] + counts[i+2] + counts[i+3] + 2) /
+					limit = (counts[i] + counts[i+1] + counts[i+2] + counts[i+3] + 2) /
 							4
 				} else if i < length {
 					limit = counts[i]

@@ -73,8 +73,7 @@ func VP8CalculateLevelCosts(/* const */ proba *VP8EncProba) {
     }
     for n = 0; n < 16; n++ {  // replicate bands. We don't need to sentinel.
       for ctx = 0; ctx < NUM_CTX; ctx++ {
-        proba.remapped_costs[ctype][n][ctx] =
-            proba.level_cost[ctype][VP8EncBands[n]][ctx];
+        proba.remapped_costs[ctype][n][ctx] = proba.level_cost[ctype][VP8EncBands[n]][ctx];
       }
     }
   }

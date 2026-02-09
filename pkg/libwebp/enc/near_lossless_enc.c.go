@@ -54,8 +54,7 @@ func ClosestDiscretizedArgb(uint32 a, bits int) uint32 {
 func IsNear(uint32 a, uint32 b, limit int) int {
   var k int
   for k = 0; k < 4; k++ {
-    delta :=
-        (int)((a >> (k * 8)) & 0xff) - (int)((b >> (k * 8)) & 0xff);
+    delta := (int)((a >> (k * 8)) & 0xff) - (int)((b >> (k * 8)) & 0xff);
     if (delta >= limit || delta <= -limit) {
       return 0;
     }

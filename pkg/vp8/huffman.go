@@ -25,8 +25,7 @@ func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, cod
   if total_size == 0 || root_table == nil { return total_size }
 
   // C: if (root_table.curr_segment.curr_table + total_size >= root_table.curr_segment.start + root_table.curr_segment.size)
-  // C: if root_table.curr_segment.curr_table + total_size >=
-  // C:     root_table.curr_segment.start + root_table.curr_segment.size {
+  // C: if root_table.curr_segment.curr_table + total_size >= // C:     root_table.curr_segment.start + root_table.curr_segment.size {
   if true {
     // If 'root_table' does not have enough memory, allocate a new segment.
     // The available part of root_table.curr_segment is left unused because we

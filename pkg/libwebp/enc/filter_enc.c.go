@@ -193,8 +193,7 @@ func VP8AdjustFilterStrength(/* const */ it *VP8EncIterator) {
       var dqm *VP8SegmentInfo = &enc.dqm[s];
       // this '>> 3' accounts for some inverse WHT scaling
       delta := (dqm.max_edge * dqm.y2.q[1]) >> 3;
-      level :=
-          VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, delta);
+      level := VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, delta);
       if (level > dqm.fstrength) {
         dqm.fstrength = level;
       }

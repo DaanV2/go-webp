@@ -200,11 +200,9 @@ func SetSegmentProbas(/* const */ enc *VP8Encoder) {
     probas[1] = GetProba(p[0], p[1]);
     probas[2] = GetProba(p[2], p[3]);
 
-    enc.segment_hdr.update_map =
-        (probas[0] != 255) || (probas[1] != 255) || (probas[2] != 255);
+    enc.segment_hdr.update_map = (probas[0] != 255) || (probas[1] != 255) || (probas[2] != 255);
     if !enc.segment_hdr.update_map { ResetSegments(enc) }
-    enc.segment_hdr.size =
-        p[0] * (VP8BitCost(0, probas[0]) + VP8BitCost(0, probas[1])) +
+    enc.segment_hdr.size = p[0] * (VP8BitCost(0, probas[0]) + VP8BitCost(0, probas[1])) +
         p[1] * (VP8BitCost(0, probas[0]) + VP8BitCost(1, probas[1])) +
         p[2] * (VP8BitCost(1, probas[0]) + VP8BitCost(0, probas[2])) +
         p[3] * (VP8BitCost(1, probas[0]) + VP8BitCost(1, probas[2]));
@@ -305,8 +303,7 @@ func CodeResiduals(/* const */ bw *VP8BitWriter, /*const*/ it *VP8EncIterator, /
   if (i16) {
     VP8InitResidual(0, 1, enc, &res);
     VP8SetResidualCoeffs(rd.y_dc_levels, &res);
-    it.top_nz[8] = it.left_nz[8] =
-        PutCoeffs(bw, it.top_nz[8] + it.left_nz[8], &res);
+    it.top_nz[8] = it.left_nz[8] = PutCoeffs(bw, it.top_nz[8] + it.left_nz[8], &res);
     VP8InitResidual(1, 0, enc, &res);
   } else {
     VP8InitResidual(0, 3, enc, &res);
@@ -329,8 +326,7 @@ func CodeResiduals(/* const */ bw *VP8BitWriter, /*const*/ it *VP8EncIterator, /
       for x = 0; x < 2; x++ {
         ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
-        it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
-            PutCoeffs(bw, ctx, &res);
+        it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] = PutCoeffs(bw, ctx, &res);
       }
     }
   }
@@ -354,8 +350,7 @@ func RecordResiduals(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore)
   if (it.mb.type == 1) {  // i16x16
     VP8InitResidual(0, 1, enc, &res);
     VP8SetResidualCoeffs(rd.y_dc_levels, &res);
-    it.top_nz[8] = it.left_nz[8] =
-        VP8RecordCoeffs(it.top_nz[8] + it.left_nz[8], &res);
+    it.top_nz[8] = it.left_nz[8] = VP8RecordCoeffs(it.top_nz[8] + it.left_nz[8], &res);
     VP8InitResidual(1, 0, enc, &res);
   } else {
     VP8InitResidual(0, 3, enc, &res);
@@ -377,8 +372,7 @@ func RecordResiduals(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore)
       for x = 0; x < 2; x++ {
         ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
-        it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
-            VP8RecordCoeffs(ctx, &res);
+        it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] = VP8RecordCoeffs(ctx, &res);
       }
     }
   }
@@ -423,8 +417,7 @@ func RecordTokens(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore, /*
       for x = 0; x < 2; x++ {
         ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
         VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
-        it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] =
-            VP8RecordCoeffTokens(ctx, &res, tokens);
+        it.top_nz[4 + ch + x] = it.left_nz[4 + ch + y] = VP8RecordCoeffTokens(ctx, &res, tokens);
       }
     }
   }
@@ -605,11 +598,9 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
   fast_probe := ((method == 0 || method == 3) && !do_search);
   num_pass_left := enc.config.pass;
   task_percent := 20;
-  percent_per_pass :=
-      (task_percent + num_pass_left / 2) / num_pass_left;
+  percent_per_pass := (task_percent + num_pass_left / 2) / num_pass_left;
   final_percent := enc.percent + task_percent;
-  var rd_opt VP8RDLevel =
-      (method >= 3 || do_search) ? RD_OPT_BASIC : RD_OPT_NONE;
+  var rd_opt VP8RDLevel = (method >= 3 || do_search) ? RD_OPT_BASIC : RD_OPT_NONE;
   nb_mbs := enc.mb_w * enc.mb_h;
    var stats PassStats
 
@@ -629,8 +620,7 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
     is_last_pass := (fabs(stats.dq) <= DQ_LIMIT) ||
                              (num_pass_left == 0) ||
                              (enc.max_i4_header_bits == 0);
-    size_p0 :=
-        OneStatPass(enc, rd_opt, nb_mbs, percent_per_pass, &stats);
+    size_p0 := OneStatPass(enc, rd_opt, nb_mbs, percent_per_pass, &stats);
     if size_p0 == 0 { return 0  }
 #if (DEBUG_SEARCH > 0)
     printf("#%d value:%.1lf . %.1lf   q:%.2f . %.2f\n", num_pass_left, stats.last_value, stats.value, stats.last_q, stats.q);
@@ -668,8 +658,7 @@ func PreLoopInitialize(/* const */ enc *VP8Encoder) int {
   var p int
   ok := 1;
   average_bytes_per_MB := kAverageBytesPerMB[enc.base_quant >> 4];
-  bytes_per_parts :=
-      enc.mb_w * enc.mb_h * average_bytes_per_MB / enc.num_parts;
+  bytes_per_parts := enc.mb_w * enc.mb_h * average_bytes_per_MB / enc.num_parts;
   // Initialize the bit-writers
   for p = 0; ok && p < enc.num_parts; p++ {
     ok = VP8BitWriterInit(enc.parts + p, bytes_per_parts);

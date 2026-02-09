@@ -157,14 +157,11 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
       }
       entropy[kDirect] = entropy_comp[kHistoAlpha] + entropy_comp[kHistoRed] +
                          entropy_comp[kHistoGreen] + entropy_comp[kHistoBlue]
-      entropy[kSpatial] =
-          entropy_comp[kHistoAlphaPred] + entropy_comp[kHistoRedPred] +
+      entropy[kSpatial] = entropy_comp[kHistoAlphaPred] + entropy_comp[kHistoRedPred] +
           entropy_comp[kHistoGreenPred] + entropy_comp[kHistoBluePred]
-      entropy[kSubGreen] =
-          entropy_comp[kHistoAlpha] + entropy_comp[kHistoRedSubGreen] +
+      entropy[kSubGreen] = entropy_comp[kHistoAlpha] + entropy_comp[kHistoRedSubGreen] +
           entropy_comp[kHistoGreen] + entropy_comp[kHistoBlueSubGreen]
-      entropy[kSpatialSubGreen] =
-          entropy_comp[kHistoAlphaPred] + entropy_comp[kHistoRedPredSubGreen] +
+      entropy[kSpatialSubGreen] = entropy_comp[kHistoAlphaPred] + entropy_comp[kHistoRedPredSubGreen] +
           entropy_comp[kHistoGreenPred] + entropy_comp[kHistoBluePredSubGreen]
       entropy[kPalette] = entropy_comp[kHistoPalette]
 
@@ -176,8 +173,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
                            VP8LFastLog2(14)
       // For color transforms: 24 as only 3 channels are considered in a
       // ColorTransformElement.
-      entropy[kSpatialSubGreen] +=
-          uint64(VP8LSubSampleSize)(width, transform_bits) *
+      entropy[kSpatialSubGreen] += uint64(VP8LSubSampleSize)(width, transform_bits) *
           VP8LSubSampleSize(height, transform_bits) * VP8LFastLog2(24)
       // For palettes, add the cost of storing the palette.
       // We empirically estimate the cost of a compressed entry as 8 bits.
@@ -199,10 +195,8 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
       {
         kHistoPairs = [5][2]uint8{
             {kHistoRed, kHistoBlue}, {kHistoRedPred, kHistoBluePred}, {kHistoRedSubGreen, kHistoBlueSubGreen}, {kHistoRedPredSubGreen, kHistoBluePredSubGreen}, {kHistoRed, kHistoBlue}}
-        const red_histo *HistogramBuckets =
-            &histo.category[kHistoPairs[*min_entropy_ix][0]]
-        const blue_histo *HistogramBuckets =
-            &histo.category[kHistoPairs[*min_entropy_ix][1]]
+        const red_histo *HistogramBuckets = &histo.category[kHistoPairs[*min_entropy_ix][0]]
+        const blue_histo *HistogramBuckets = &histo.category[kHistoPairs[*min_entropy_ix][1]]
         for i = 1; i < NUM_BUCKETS; i++ {
           if ((*red_histo)[i] | (*blue_histo)[i]) != 0 {
             *red_and_blue_always_zero = 0
@@ -222,8 +216,7 @@ func ClampBits(width, height int, bits int, min_bits int, max_bits int, image_si
   image_size = VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits)
   for bits < max_bits && image_size > image_size_max {
     bits++
-    image_size =
-        VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits)
+    image_size = VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits)
   }
   // In case the bits reduce the image too much, choose the smallest value
   // setting the histogram image size to 1.
@@ -244,8 +237,7 @@ func GetHistoBits(int method, use_palette int, width, height int) int {
 
 func GetTransformBits(int method, histo_bits int) int {
   max_transform_bits := tenary.If(method < 4, 6, tenary.If(method > 4, 4, 5))
-    res :=
-      tenary.If(histo_bits > max_transform_bits, max_transform_bits, histo_bits)
+    res := tenary.If(histo_bits > max_transform_bits, max_transform_bits, histo_bits)
   assert.Assert(res <= MAX_TRANSFORM_BITS)
   return res
 }
@@ -299,8 +291,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
   if low_effort {
     // AnalyzeEntropy is somewhat slow.
     crunch_configs[0].entropy_idx = tenary.If(use_palette, kPalette, kSpatialSubGreen)
-    crunch_configs[0].palette_sorting_type =
-      tenary.If(use_palette, kSortedDefault, kUnusedPalette)
+    crunch_configs[0].palette_sorting_type = tenary.If(use_palette, kSortedDefault, kUnusedPalette)
     n_lz77s = 1
     *crunch_configs_size = 1
   } else {
@@ -323,8 +314,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
             var sorting_method int
             for (sorting_method = 0; sorting_method < kPaletteSortingNum;
                  sorting_method++) {
-              var typed_sorting_method PaletteSorting =
-                  PaletteSorting(sorting_method)
+              var typed_sorting_method PaletteSorting = PaletteSorting(sorting_method)
               // TODO(vrabaud) kSortedDefault should be tested. It is omitted
               // for now for backward compatibility.
               if (typed_sorting_method == kUnusedPalette ||
@@ -332,14 +322,12 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
                 continue
               }
               crunch_configs[(*crunch_configs_size)].entropy_idx = i
-              crunch_configs[(*crunch_configs_size)].palette_sorting_type =
-                  typed_sorting_method
+              crunch_configs[(*crunch_configs_size)].palette_sorting_type = typed_sorting_method
               *crunch_configs_size++
             }
           } else {
             crunch_configs[(*crunch_configs_size)].entropy_idx = i
-            crunch_configs[(*crunch_configs_size)].palette_sorting_type =
-                kUnusedPalette
+            crunch_configs[(*crunch_configs_size)].palette_sorting_type = kUnusedPalette
             *crunch_configs_size++
           }
         }
@@ -348,8 +336,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
       // Only choose the guessed best transform.
       *crunch_configs_size = 1
       crunch_configs[0].entropy_idx = min_entropy_ix
-        crunch_configs[0].palette_sorting_type =
-          tenary.If(use_palette, kMinimizeDelta, kUnusedPalette)
+        crunch_configs[0].palette_sorting_type = tenary.If(use_palette, kMinimizeDelta, kUnusedPalette)
       if config.Quality >= 75 && method == 5 {
         // Test with and without color cache.
         do_no_cache = 1
@@ -368,8 +355,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
     var j int
     for j = 0; j < n_lz77s; j++ {
       assert.Assert(j < CRUNCH_SUBCONFIGS_MAX)
-        crunch_configs[i].sub_configs[j].lz77 =
-          tenary.If(j == 0, kLZ77Standard | kLZ77RLE, kLZ77Box)
+        crunch_configs[i].sub_configs[j].lz77 = tenary.If(j == 0, kLZ77Standard | kLZ77RLE, kLZ77Box)
       crunch_configs[i].sub_configs[j].do_no_cache = do_no_cache
     }
     crunch_configs[i].sub_configs_size = n_lz77s
@@ -410,8 +396,7 @@ func GetHuffBitLengthsAndCodes(/* const */ histogram_image *VP8LHistogramSet, /*
     var codes *HuffmanTreeCode = &huffman_codes[5 * i]
     assert.Assert(histo != nil)
     for k = 0; k < 5; k++ {
-        num_symbols :=
-          tenary.If(k == 0, VP8LHistogramNumCodes(histo.palette_code_bits),
+        num_symbols := tenary.If(k == 0, VP8LHistogramNumCodes(histo.palette_code_bits),
               tenary.If(k == 4, NUM_DISTANCE_CODES, 256))
       codes[k].num_symbols = num_symbols
       total_length_size += num_symbols
@@ -779,8 +764,7 @@ func EncodeImageInternal(
 	init_byte_position uint64 , /*const*/ hdr_size *int, /*const*/ data_size *int,
 	 /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int) int {
 
-  histogram_image_xysize :=
-      VP8LSubSampleSize(width, histogram_bits_in) *
+  histogram_image_xysize := VP8LSubSampleSize(width, histogram_bits_in) *
       VP8LSubSampleSize(height, histogram_bits_in)
   remaining_percent := percent_range
   percent_start := *percent
@@ -839,8 +823,7 @@ func EncodeImageInternal(
 
   for (sub_configs_idx = 0; sub_configs_idx < config.sub_configs_size;
        sub_configs_idx++) {
-    const sub_config *CrunchSubConfig =
-        &config.sub_configs[sub_configs_idx]
+    const sub_config *CrunchSubConfig = &config.sub_configs[sub_configs_idx]
     var cache_bits_best, i_cache int
     i_remaining_percent := remaining_percent / config.sub_configs_size
     i_percent_range := i_remaining_percent / 4
@@ -862,8 +845,7 @@ func EncodeImageInternal(
       VP8LBitWriterReset(&bw_init, bw)
 
       // Build histogram image and symbols from backward references.
-      histogram_image =
-          VP8LAllocateHistogramSet(histogram_image_xysize, cache_bits_tmp)
+      histogram_image = VP8LAllocateHistogramSet(histogram_image_xysize, cache_bits_tmp)
       tmp_histo = VP8LAllocateHistogram(cache_bits_tmp)
       if histogram_image == nil || tmp_histo == nil {
         pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
@@ -958,8 +940,7 @@ func EncodeImageInternal(
         bw_size_best = VP8LBitWriterNumBytes(bw)
         *cache_bits = cache_bits_tmp
         *hdr_size = hdr_size_tmp
-        *data_size =
-            int(VP8LBitWriterNumBytes(bw) - init_byte_position - *hdr_size)
+        *data_size = int(VP8LBitWriterNumBytes(bw) - init_byte_position - *hdr_size)
         VP8LBitWriterSwap(bw, &bw_best)
       }
       tokens = nil
@@ -989,8 +970,7 @@ func ApplySubtractGreen(/* const */ enc *VP8LEncoder, width, height int, /*const
 }
 
 func ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, quality int, low_effort int, used_subtract_green int, /*const*/ bw *VP8LBitWriter, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
-  near_lossless_strength :=
-      tenary.If(enc.use_palette, 100, enc.config.NearLossless)
+  near_lossless_strength := tenary.If(enc.use_palette, 100, enc.config.NearLossless)
   max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
     min_bits := ClampBits(
       width, height, max_bits - 2 * tenary.If(enc.config.Method > 4, enc.config.Method - 4, 0), MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
@@ -1392,10 +1372,8 @@ func EncodeStreamHook(input *void, data *void2) int {
     entropy_idx := crunch_configs[idx].entropy_idx
     remaining_percent := 97 / num_crunch_configs, percent_range
     predictor_transform_bits := 0, cross_color_transform_bits = 0
-    enc.use_palette =
-        (entropy_idx == kPalette) || (entropy_idx == kPaletteAndSpatial)
-    enc.use_subtract_green =
-        (entropy_idx == kSubGreen) || (entropy_idx == kSpatialSubGreen)
+    enc.use_palette = (entropy_idx == kPalette) || (entropy_idx == kPaletteAndSpatial)
+    enc.use_subtract_green = (entropy_idx == kSubGreen) || (entropy_idx == kSpatialSubGreen)
     enc.use_predict = (entropy_idx == kSpatial) ||
                        (entropy_idx == kSpatialSubGreen) ||
                        (entropy_idx == kPaletteAndSpatial)
@@ -1412,8 +1390,7 @@ func EncodeStreamHook(input *void, data *void2) int {
 
 // C: #if WEBP_NEAR_LOSSLESS == 1
     // Apply near-lossless preprocessing.
-    use_near_lossless =
-        (config.NearLossless < 100) && !enc.use_palette && !enc.use_predict
+    use_near_lossless = (config.NearLossless < 100) && !enc.use_palette && !enc.use_predict
     if use_near_lossless {
       if !AllocateTransformBuffer(enc, width, height) { goto Error }
       if ((enc.argb_content != kEncoderNearLossless) &&
@@ -1558,8 +1535,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
   if config.ThreadLevel > 0 {
     num_crunch_configs_side = num_crunch_configs_main / 2
     for idx = 0; idx < num_crunch_configs_side; idx++ {
-      params_side.crunch_configs[idx] =
-          crunch_configs[num_crunch_configs_main - num_crunch_configs_side +
+      params_side.crunch_configs[idx] = crunch_configs[num_crunch_configs_main - num_crunch_configs_side +
                          idx]
     }
     params_side.num_crunch_configs = num_crunch_configs_side
@@ -1607,8 +1583,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
         // Copy the values that were computed for the main encoder.
         enc_side.histo_bits = enc_main.histo_bits
         enc_side.predictor_transform_bits = enc_main.predictor_transform_bits
-        enc_side.cross_color_transform_bits =
-            enc_main.cross_color_transform_bits
+        enc_side.cross_color_transform_bits = enc_main.cross_color_transform_bits
         enc_side.palette_size = enc_main.palette_size
         // C: memcpy(enc_side.palette, enc_main.palette, sizeof(enc_main.palette))
         // C: memcpy(enc_side.palette_sorted, enc_main.palette_sorted, sizeof(enc_main.palette_sorted))

@@ -249,8 +249,7 @@ func ParseVP8Header( /* const */ data_ptr *uint8 /* const */, data_size *uint64,
 	data * uint8 = *data_ptr
 	is_vp8 := !memcmp(data, "VP8 ", TAG_SIZE)
 	is_vp8l := !memcmp(data, "VP8L", TAG_SIZE)
-	minimal_size :=
-		TAG_SIZE + CHUNK_HEADER_SIZE // "WEBP" + "VP8 nnnn" OR
+	minimal_size := TAG_SIZE + CHUNK_HEADER_SIZE // "WEBP" + "VP8 nnnn" OR
 		// "WEBP" + "VP8Lnnnn"
 		//   (void)local_data_size;
 	assert.Assert(data != nil)
@@ -518,8 +517,7 @@ func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) 
 			status = WebPAllocateDecBuffer(io.width, io.height, params.options, params.output)
 			if status == vp8.VP8_STATUS_OK { // Decode
 				// This change must be done before calling VP8Decode()
-				dec.mt_method =
-					VP8GetThreadMethod(params.options, &headers, io.width, io.height)
+				dec.mt_method = VP8GetThreadMethod(params.options, &headers, io.width, io.height)
 				VP8InitDithering(params.options, dec)
 				if !VP8Decode(dec, &io) {
 					status = dec.status
@@ -973,8 +971,7 @@ func WebPIoInitFromOptions( /* const */ options *WebPDecoderOptions /*const*/, i
 
 	if io.use_scaling {
 		// disable filter (only for large downscaling ratio).
-		io.bypass_filtering |=
-			(io.scaled_width < W*3/4) && (io.scaled_height < H*3/4)
+		io.bypass_filtering |= (io.scaled_width < W*3/4) && (io.scaled_height < H*3/4)
 		io.fancy_upsampling = 0
 	}
 	return 1

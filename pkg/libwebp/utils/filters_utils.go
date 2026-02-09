@@ -48,8 +48,7 @@ func WebPEstimateBestFilter(/* const */  data []uint8/* ((uint64)height *width) 
       diff0 := SDIFF(p[i], mean);
       diff1 := SDIFF(p[i], p[i - 1]);
       diff2 := SDIFF(p[i], p[i - width]);
-      grad_pred :=
-          GradientPredictor(p[i - 1], p[i - width], p[i - width - 1]);
+      grad_pred := GradientPredictor(p[i - 1], p[i - width], p[i - width - 1]);
       diff3 := SDIFF(p[i], grad_pred);
       bins[WEBP_FILTER_NONE][diff0] = 1;
       bins[WEBP_FILTER_HORIZONTAL][diff1] = 1;

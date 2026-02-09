@@ -643,8 +643,7 @@ func InitThreadContext(/* const */ dec *vp8.VP8Decoder) int  {
     worker.data1 = dec
     worker.data2 = (*void)&dec.thread_ctx.io
     worker.hook = FinishRow
-    dec.num_caches =
-        tenary.If(dec.filter_type > 0, MT_CACHE_LINES, MT_CACHE_LINES - 1)
+    dec.num_caches = tenary.If(dec.filter_type > 0, MT_CACHE_LINES, MT_CACHE_LINES - 1)
   } else {
     dec.num_caches = ST_CACHE_LINES
   }
@@ -683,8 +682,7 @@ func AllocateMemory(/* const */ dec *VP8Decoder) int {
   f_info_size := tenary.If(dec.filter_type > 0, mb_w * (tenary.If(dec.mt_method > 0, 2, 1)) * sizeof(VP8FInfo), 0)
   yuv_size := YUV_SIZE * sizeof(*dec.yuv_b);
   mb_data_size := tenary.If(dec.mt_method == 2, 2, 1) * mb_w * sizeof(*dec.mb_data);
-  cache_height :=
-      (16 * num_caches + kFilterExtraRows[dec.filter_type]) * 3 / 2;
+  cache_height := (16 * num_caches + kFilterExtraRows[dec.filter_type]) * 3 / 2;
   cache_size := top_size * cache_height;
   // alpha_size is the only one that scales as width x height.
   alpha_size := tenary.If(dec.alpha_data != nil, uint64(dec.pic_hdr.width * dec.pic_hdr.height), uint64(0))
@@ -748,10 +746,8 @@ func AllocateMemory(/* const */ dec *VP8Decoder) int {
     extra_y := extra_rows * dec.cache_y_stride;
     extra_uv := (extra_rows / 2) * dec.cache_uv_stride;
     dec.cache_y = mem + extra_y;
-    dec.cache_u =
-        dec.cache_y + 16 * num_caches * dec.cache_y_stride + extra_uv;
-    dec.cache_v =
-        dec.cache_u + 8 * num_caches * dec.cache_uv_stride + extra_uv;
+    dec.cache_u = dec.cache_y + 16 * num_caches * dec.cache_y_stride + extra_uv;
+    dec.cache_v = dec.cache_u + 8 * num_caches * dec.cache_uv_stride + extra_uv;
     dec.cache_id = 0;
   }
   mem += cache_size;

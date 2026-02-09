@@ -85,8 +85,7 @@ func MapConfigToTools(/* const */ enc *VP8Encoder) {
     enc.rd_opt_level = RD_OPT_NONE
   }
 
-  enc.max_i4_header_bits =
-      256 * 16 * 16 *                 // upper bound: up to 16bit per 4x4 block
+  enc.max_i4_header_bits = 256 * 16 * 16 *                 // upper bound: up to 16bit per 4x4 block
       (limit * limit) / (100 * 100);  // ... modulated with a quadratic curve.
 
   // partition0 = 512k max.
@@ -132,8 +131,7 @@ func InitVP8Encoder(/* const */ config *config.Config, /*const*/ picture *pictur
   top_stride := mb_w * 16;
   nz_size := (mb_w + 1) * sizeof(*enc.nz) + WEBP_ALIGN_CST;
   info_size := mb_w * mb_h * sizeof(*enc.mb_info);
-  samples_size :=
-      2 * top_stride * sizeof(*enc.y_top)  // top-luma/u/v
+  samples_size := 2 * top_stride * sizeof(*enc.y_top)  // top-luma/u/v
       + WEBP_ALIGN_CST;                     // align all
   lf_stats_size := tenary.If(config.Autofilter, sizeof(*enc.lf_stats) + WEBP_ALIGN_CST,  0)
   top_derr_size := tenary.If(config.Quality <= ERROR_DIFFUSION_QUALITY || config.pass > 1, mb_w * sizeof(*enc.top_derr), 0)

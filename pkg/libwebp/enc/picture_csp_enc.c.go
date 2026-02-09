@@ -207,8 +207,7 @@ func WebPPictureYUVAToARGB(picture *picture.Picture) int {
     argb_stride := 4 * picture.ARGBStride;
     dst *uint8 = (*uint8)picture.ARGB;
     *cur_u = picture.U, *cur_v = picture.V, *cur_y := picture.Y;
-    WebPUpsampleLinePairFunc upsample =
-        WebPGetLinePairConverter(ALPHA_OFFSET > 0);
+    WebPUpsampleLinePairFunc upsample = WebPGetLinePairConverter(ALPHA_OFFSET > 0);
 
     // First row, with replicated top samples.
     upsample(cur_y, nil, cur_u, cur_v, cur_u, cur_v, dst, nil, width);

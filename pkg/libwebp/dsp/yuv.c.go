@@ -91,8 +91,7 @@ func ConvertARGBToY_C(/* const */ argb *uint32, y *uint8, width int) {
   var i int
   for i = 0; i < width; i++ {
     p := argb[i];
-    y[i] =
-        VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);
+    y[i] = VP8RGBToY((p >> 16) & 0xff, (p >> 8) & 0xff, (p >> 0) & 0xff, YUV_HALF);
   }
 }
 
@@ -186,8 +185,7 @@ func WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
      = (double)(1 << GAMMA_TAB_FIX) / kGammaScale;
      = 1. / 255.;
     for v = 0; v <= 255; v++ {
-      kGammaToLinearTab[v] =
-          (uint16)(pow(norm * v, kGamma) * kGammaScale + .5);
+      kGammaToLinearTab[v] = (uint16)(pow(norm * v, kGamma) * kGammaScale + .5);
     }
     for v = 0; v <= GAMMA_TAB_SIZE; v++ {
       kLinearToGammaTab[v] = (int)(255. * pow(scale * v, 1. / kGamma) + .5);
@@ -266,8 +264,7 @@ static const uint32 kInvAlpha[4 * 0xff + 1] = {
 #endif  // USE_INVERSE_ALPHA_TABLE
 
 func LinearToGammaWeighted(/* const */ src *uint8, /*const*/ a_ptr *uint8, uint32 total_a, step int, rgb_stride int) int {
-  sum :=
-      a_ptr[0] * GammaToLinear(src[0]) +
+  sum := a_ptr[0] * GammaToLinear(src[0]) +
       a_ptr[step] * GammaToLinear(src[step]) +
       a_ptr[rgb_stride] * GammaToLinear(src[rgb_stride]) +
       a_ptr[rgb_stride + step] * GammaToLinear(src[rgb_stride + step]);
@@ -368,8 +365,7 @@ func ImportYUVAFromRGBA_C(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*co
     }
     dst_y += 2 * y_stride;
     if (has_alpha) {
-      rows_have_alpha &=
-          !WebPExtractAlpha(a_ptr, rgb_stride, width, 2, dst_a, a_stride);
+      rows_have_alpha &= !WebPExtractAlpha(a_ptr, rgb_stride, width, 2, dst_a, a_stride);
       dst_a += 2 * a_stride;
     } else if (dst_a != nil) {
       var i int

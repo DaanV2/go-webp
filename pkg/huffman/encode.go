@@ -111,8 +111,7 @@ func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens []*HuffmanTre
 		if value == 0 {
 			current_token = CodeRepeatedZeros(runs, current_token)
 		} else {
-			current_token =
-				CodeRepeatedValues(runs, current_token, value, prev_value)
+			current_token = CodeRepeatedValues(runs, current_token, value, prev_value)
 			prev_value = value
 		}
 		i += runs

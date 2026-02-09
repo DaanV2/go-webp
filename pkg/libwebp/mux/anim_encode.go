@@ -383,8 +383,7 @@ func QualityToMaxDiff(quality float) int {
 // Assumes that an initial valid guess of change rectangle 'rect' is passed.
 func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture, /*const*/ rect *FrameRectangle, is_lossless bool, quality float) {
   var i, j int
-  var compare_pixels ComparePixelsFunc =
-      tenary.If(is_lossless, ComparePixelsLossless, ComparePixelsLossy);
+  var compare_pixels ComparePixelsFunc = tenary.If(is_lossless, ComparePixelsLossless, ComparePixelsLossy);
   max_allowed_diff_lossy := QualityToMaxDiff(quality);
   max_allowed_diff := tenary.If(is_lossless, 0, max_allowed_diff_lossy);
 
@@ -395,10 +394,8 @@ func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *pi
 
   // Left boundary.
   for i = rect.x_offset; i < rect.x_offset + rect.width; i++ {
-    var src_argb *uint32 =
-        &src.argb[rect.y_offset * src.argb_stride + i];
-    var dst_argb *uint32 =
-        &dst.argb[rect.y_offset * dst.argb_stride + i];
+    var src_argb *uint32 = &src.argb[rect.y_offset * src.argb_stride + i];
+    var dst_argb *uint32 = &dst.argb[rect.y_offset * dst.argb_stride + i];
     if (compare_pixels(src_argb, src.argb_stride, dst_argb, dst.argb_stride, rect.height, max_allowed_diff)) {
       rect.width--  // Redundant column.
       rect.x_offset++
@@ -410,10 +407,8 @@ func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *pi
 
   // Right boundary.
   for i = rect.x_offset + rect.width - 1; i >= rect.x_offset; i-- {
-    var src_argb *uint32 =
-        &src.argb[rect.y_offset * src.argb_stride + i];
-    var dst_argb *uint32 =
-        &dst.argb[rect.y_offset * dst.argb_stride + i];
+    var src_argb *uint32 = &src.argb[rect.y_offset * src.argb_stride + i];
+    var dst_argb *uint32 = &dst.argb[rect.y_offset * dst.argb_stride + i];
     if (compare_pixels(src_argb, src.argb_stride, dst_argb, dst.argb_stride, rect.height, max_allowed_diff)) {
       rect.width--  // Redundant column.
     } else {
@@ -424,10 +419,8 @@ func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *pi
 
   // Top boundary.
   for j = rect.y_offset; j < rect.y_offset + rect.height; j++ {
-    var src_argb *uint32 =
-        &src.argb[j * src.argb_stride + rect.x_offset];
-    var dst_argb *uint32 =
-        &dst.argb[j * dst.argb_stride + rect.x_offset];
+    var src_argb *uint32 = &src.argb[j * src.argb_stride + rect.x_offset];
+    var dst_argb *uint32 = &dst.argb[j * dst.argb_stride + rect.x_offset];
     if (compare_pixels(src_argb, 1, dst_argb, 1, rect.width, max_allowed_diff)) {
       rect.height--  // Redundant row.
       rect.y_offset++
@@ -439,10 +432,8 @@ func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *pi
 
   // Bottom boundary.
   for j = rect.y_offset + rect.height - 1; j >= rect.y_offset; j-- {
-    var src_argb *uint32 =
-        &src.argb[j * src.argb_stride + rect.x_offset];
-    var dst_argb *uint32 =
-        &dst.argb[j * dst.argb_stride + rect.x_offset];
+    var src_argb *uint32 = &src.argb[j * src.argb_stride + rect.x_offset];
+    var dst_argb *uint32 = &dst.argb[j * dst.argb_stride + rect.x_offset];
     if (compare_pixels(src_argb, 1, dst_argb, 1, rect.width, max_allowed_diff)) {
       rect.height--  // Redundant row.
     } else {
@@ -757,8 +748,7 @@ func EncodeCandidate(/* const */ sub_frame *picture.Picture, /*const*/ rect *Fra
   candidate.info.x_offset = rect.x_offset;
   candidate.info.y_offset = rect.y_offset;
   candidate.info.dispose_method = WEBP_MUX_DISPOSE_NONE;  // Set later.
-  candidate.info.blend_method =
-      tenary.If(use_blending, WEBP_MUX_BLEND, WEBP_MUX_NO_BLEND);
+  candidate.info.blend_method = tenary.If(use_blending, WEBP_MUX_BLEND, WEBP_MUX_NO_BLEND);
   candidate.info.duration = 0;  // Set in next call to WebPAnimEncoderAdd().
 
   // Encode picture.
@@ -839,8 +829,7 @@ func SetPreviousDisposeMethod(/* const */ enc *WebPAnimEncoder, WebPMuxAnimDispo
 func PickBestCandidate(/* const */ enc *WebPAnimEncoder, /*const*/ candidate *Candidate, WebPMuxAnimDispose dispose_method, is_key_frame int, *Candidate* const best_candidate, /*const*/ encoded_frame *EncodedFrame) {
   if (*best_candidate == nil ||
       candidate.mem.size < (*best_candidate).mem.size) {
-    const dst *WebPMuxFrameInfo =
-        is_key_frame ? &encoded_frame.key_frame : &encoded_frame.sub_frame;
+    const dst *WebPMuxFrameInfo = is_key_frame ? &encoded_frame.key_frame : &encoded_frame.sub_frame;
     *dst = candidate.info;
     GetEncodedData(&candidate.mem, &dst.bitstream);
     if (!is_key_frame) {
@@ -895,22 +884,18 @@ static WebPEncodingError GenerateCandidates(
     const enc *WebPAnimEncoder, Candidate candidates[CANDIDATE_COUNT], WebPMuxAnimDispose dispose_method, /*const*/ canvas_carryover_disposed *picture.Picture, is_lossless bool, is_key_frame int, /*const*/ params *SubFrameParams, /*const*/ config_ll *config.Config, /*const*/ config_lossy *config.Config, *Candidate* const best_candidate, /*const*/ encoded_frame *EncodedFrame) {
   WebPEncodingError error_code = ENC_OK;
   is_dispose_none := (dispose_method == WEBP_MUX_DISPOSE_NONE);
-  const candidate_ll *Candidate =
-      is_dispose_none ? &candidates[LL_DISP_NONE] : &candidates[LL_DISP_BG];
+  const candidate_ll *Candidate = is_dispose_none ? &candidates[LL_DISP_NONE] : &candidates[LL_DISP_BG];
   var candidate_lossy *Candidate = is_dispose_none
                                          ? &candidates[LOSSY_DISP_NONE]
                                          : &candidates[LOSSY_DISP_BG];
   var curr_canvas *picture.Picture = &enc.curr_canvas_copy;
-  const canvas_carryover *picture.Picture =
-      is_dispose_none ? &enc.canvas_carryover : canvas_carryover_disposed;
+  const canvas_carryover *picture.Picture = is_dispose_none ? &enc.canvas_carryover : canvas_carryover_disposed;
   int use_blending_ll, use_blending_lossy;
   int evaluate_ll, evaluate_lossy;
 
   CopyCurrentCanvas(enc);
-  use_blending_ll =
-      !is_key_frame && IsLosslessBlendingPossible(canvas_carryover, curr_canvas, &params.rect_ll);
-  use_blending_lossy =
-      !is_key_frame &&
+  use_blending_ll = !is_key_frame && IsLosslessBlendingPossible(canvas_carryover, curr_canvas, &params.rect_ll);
+  use_blending_lossy = !is_key_frame &&
       IsLossyBlendingPossible(canvas_carryover, curr_canvas, &params.rect_lossy, config_lossy.quality);
 
   // Pick candidates to be tried.
@@ -933,8 +918,7 @@ static WebPEncodingError GenerateCandidates(
       // Reset the whole carryover mask to "all pixels are explicitly encoded in
       // this current frame".
       stdlib.Memset(enc.candidate_carryover_mask, 0, params.rect_ll.width * params.rect_ll.height);
-      enc.curr_canvas_copy_modified =
-          IncreaseTransparency(canvas_carryover, &params.rect_ll, curr_canvas, enc.candidate_carryover_mask);
+      enc.curr_canvas_copy_modified = IncreaseTransparency(canvas_carryover, &params.rect_ll, curr_canvas, enc.candidate_carryover_mask);
     }
     error_code = EncodeCandidate(&params.sub_frame_ll, &params.rect_ll, config_ll, use_blending_ll, candidate_ll);
     if error_code != ENC_OK { return error_code  }
@@ -950,8 +934,7 @@ static WebPEncodingError GenerateCandidates(
       enc.curr_canvas_copy_modified = FlattenSimilarBlocks(
           canvas_carryover, &params.rect_lossy, curr_canvas, config_lossy.quality, enc.candidate_carryover_mask);
     }
-    error_code =
-        EncodeCandidate(&params.sub_frame_lossy, &params.rect_lossy, config_lossy, use_blending_lossy, candidate_lossy);
+    error_code = EncodeCandidate(&params.sub_frame_lossy, &params.rect_lossy, config_lossy, use_blending_lossy, candidate_lossy);
     if error_code != ENC_OK { return error_code  }
     candidate_lossy.carries_over = enc.curr_canvas_copy_modified;
     enc.curr_canvas_copy_modified = 1;
@@ -970,10 +953,8 @@ func IncreasePreviousDuration(/* const */ enc *WebPAnimEncoder, duration int) in
 
   assert.Assert(enc.count >= 1);
   assert.Assert(!prev_enc_frame.is_key_frame ||
-         prev_enc_frame.sub_frame.duration ==
-             prev_enc_frame.key_frame.duration);
-  assert.Assert(prev_enc_frame.sub_frame.duration ==
-         (prev_enc_frame.sub_frame.duration & (MAX_DURATION - 1)));
+         prev_enc_frame.sub_frame.duration == prev_enc_frame.key_frame.duration);
+  assert.Assert(prev_enc_frame.sub_frame.duration == (prev_enc_frame.sub_frame.duration & (MAX_DURATION - 1)));
   assert.Assert(duration == (duration & (MAX_DURATION - 1)));
 
   new_duration = prev_enc_frame.sub_frame.duration + duration;
@@ -987,8 +968,7 @@ func IncreasePreviousDuration(/* const */ enc *WebPAnimEncoder, duration int) in
     lossy_1x1_bytes[] := {
         0x52, 0x49, 0x46, 0x46, 0x40, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50, 0x56, 0x50, 0x38, 0x58, 0x0a, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x4c, 0x50, 0x48, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x50, 0x38, 0x20, 0x18, 0x00, 0x00, 0x00, 0x30, 0x01, 0x00, 0x9d, 0x01, 0x2a, 0x01, 0x00, 0x01, 0x00, 0x02, 0x00, 0x34, 0x25, 0xa4, 0x00, 0x03, 0x70, 0x00, 0xfe, 0xfb, 0xfd, 0x50, 0x00}
     var lossy_1x1 WebPData  = {lossy_1x1_bytes, sizeof(lossy_1x1_bytes)}
-    can_use_lossless :=
-        (enc.last_config.Lossless || enc.options.allow_mixed);
+    can_use_lossless := (enc.last_config.Lossless || enc.options.allow_mixed);
     var curr_enc_frame *EncodedFrame = GetFrame(enc, enc.count);
     curr_enc_frame.is_key_frame = 0;
     curr_enc_frame.sub_frame.id = WEBP_CHUNK_ANMF;
@@ -1091,8 +1071,7 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config,
   // either a subframe or a keyframe, then we can't be sure about what frame
   // rectangle would be disposed. In that case too, we don't try dispose to
   // background.
-  dispose_bg_possible :=
-      !is_key_frame && !enc.prev_candidate_undecided;
+  dispose_bg_possible := !is_key_frame && !enc.prev_candidate_undecided;
 
    var dispose_none_params SubFrameParams
    var dispose_bg_params SubFrameParams
@@ -1157,8 +1136,7 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config,
   }
 
   if (dispose_none_params.should_try) {
-    error_code =
-        GenerateCandidates(enc, candidates, WEBP_MUX_DISPOSE_NONE, /*canvas_carryover_disposed=*/nil, is_lossless, is_key_frame, &dispose_none_params, &config_ll, &config_lossy, &best_candidate, encoded_frame);
+    error_code = GenerateCandidates(enc, candidates, WEBP_MUX_DISPOSE_NONE, /*canvas_carryover_disposed=*/nil, is_lossless, is_key_frame, &dispose_none_params, &config_ll, &config_lossy, &best_candidate, encoded_frame);
     if error_code != ENC_OK { goto Err }
   }
 
@@ -1295,8 +1273,7 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Confi
     // There is no carried over pixel in the disposed rectangle, if any.
     // Note that this could not have been done earlier because the decision to
     // dispose a frame is taken when encoding a next frame's candidate.
-    var prev_dispose_method WebPMuxAnimDispose =
-        GetPreviousDisposeMethod(enc);
+    var prev_dispose_method WebPMuxAnimDispose = GetPreviousDisposeMethod(enc);
     assert.Assert(prev_dispose_method == WEBP_MUX_DISPOSE_NONE ||
            !enc.prev_candidate_undecided);
     DisposeFrameRectangle(prev_dispose_method, &enc.prev_rect, &enc.canvas_carryover);
@@ -1359,8 +1336,7 @@ func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
   while (enc.flush_count > 0) {
     var err WebPMuxError 
     var curr *EncodedFrame = GetFrame(enc, 0);
-    const info *WebPMuxFrameInfo =
-        curr.is_key_frame ? &curr.key_frame : &curr.sub_frame;
+    const info *WebPMuxFrameInfo = curr.is_key_frame ? &curr.key_frame : &curr.sub_frame;
     assert.Assert(enc.mux != nil);
     err = WebPMuxPushFrame(enc.mux, info, 1);
     if (err != WEBP_MUX_OK) {
@@ -1404,8 +1380,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp 
 
   if (!enc.is_first_frame) {
     // Make sure timestamps are non-decreasing (integer wrap-around is OK).
-    prev_frame_duration :=
-        (uint32)timestamp - enc.prev_timestamp;
+    prev_frame_duration := (uint32)timestamp - enc.prev_timestamp;
     if (prev_frame_duration >= MAX_DURATION) {
       if (frame != nil) {
         frame.ErrorCode = ENC_ERROR_INVALID_CONFIGURATION;
@@ -1491,8 +1466,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp 
     return 0;
   }
   WebPUtilClearPic(canvas, nil);
-  if (WebPGetFeatures(image.bytes, image.size, &config.input) !=
-      VP8_STATUS_OK) {
+  if (WebPGetFeatures(image.bytes, image.size, &config.input) != VP8_STATUS_OK) {
     return 0;
   }
   if (!picture.WebPPictureView(canvas, frame.x_offset, frame.y_offset, config.input.width, config.input.height, &sub_image)) {
@@ -1602,8 +1576,7 @@ func WebPAnimEncoderAssemble(enc *WebPAnimEncoder, webp_data *WebPData) int {
 
   if (!enc.got_nil_frame && enc.in_frame_count > 1 && enc.count > 0) {
     // set duration of the last frame to be avg of durations of previous frames.
-     =
-        (uint32)enc.prev_timestamp - enc.first_timestamp;
+     = (uint32)enc.prev_timestamp - enc.first_timestamp;
     average_duration := (int)(delta_time / (enc.in_frame_count - 1));
     if (!IncreasePreviousDuration(enc, average_duration)) {
       return 0;

@@ -246,8 +246,7 @@ func BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) uint64 {
   {
     min_limit := (uint64)(2 * entropy.sum - entropy.max_val)
                          << LOG_2_PRECISION_BITS;
-    min_limit =
-        DivRound(mix * min_limit + (1000 - mix) * entropy.entropy, 1000);
+    min_limit = DivRound(mix * min_limit + (1000 - mix) * entropy.entropy, 1000);
     return (entropy.entropy < min_limit) ? min_limit : entropy.entropy;
   }
 }
@@ -628,8 +627,7 @@ func HistogramAnalyzeEntropyBin(/* const */ image_histo *VP8LHistogramSet, low_e
   // bin-hash histograms on three of the dominant (literal, red and blue)
   // symbol costs and store the resulting bin_id for each histogram.
   for i = 0; i < histo_size; i++ {
-    histograms[i].bin_id =
-        GetHistoBinIndex(histograms[i], &cost_range, low_effort);
+    histograms[i].bin_id = GetHistoBinIndex(histograms[i], &cost_range, low_effort);
   }
 }
 
@@ -664,8 +662,7 @@ func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_c
     } else {
       // try to merge #idx into #first (both share the same bin_id)
       bit_cost := histograms[idx].bit_cost;
-      bit_cost_thresh :=
-          -DivRound((int64)bit_cost * combine_cost_factor, 100);
+      bit_cost_thresh := -DivRound((int64)bit_cost * combine_cost_factor, 100);
       if (HistogramAddEval(histograms[first], histograms[idx], cur_combo, bit_cost_thresh)) {
         max_combine_failures := 32;
         // Try to merge two histograms only if the combo is a trivial one or
@@ -678,12 +675,10 @@ func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_c
             cur_combo.trivial_symbol[BLUE] != VP8L_NON_TRIVIAL_SYM &&
             cur_combo.trivial_symbol[ALPHA] != VP8L_NON_TRIVIAL_SYM;
         if (!try_combine) {
-          try_combine =
-              histograms[idx].trivial_symbol[RED] == VP8L_NON_TRIVIAL_SYM ||
+          try_combine = histograms[idx].trivial_symbol[RED] == VP8L_NON_TRIVIAL_SYM ||
               histograms[idx].trivial_symbol[BLUE] == VP8L_NON_TRIVIAL_SYM ||
               histograms[idx].trivial_symbol[ALPHA] == VP8L_NON_TRIVIAL_SYM;
-          try_combine &=
-              histograms[first].trivial_symbol[RED] == VP8L_NON_TRIVIAL_SYM ||
+          try_combine &= histograms[first].trivial_symbol[RED] == VP8L_NON_TRIVIAL_SYM ||
               histograms[first].trivial_symbol[BLUE] == VP8L_NON_TRIVIAL_SYM ||
               histograms[first].trivial_symbol[ALPHA] == VP8L_NON_TRIVIAL_SYM;
         }
@@ -945,8 +940,7 @@ func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, min_c
       if idx2 >= idx1 { ++idx2 }
 
       // Calculate cost reduction on combination.
-      curr_cost =
-          HistoQueuePush(&histo_queue, histograms, idx1, idx2, best_cost);
+      curr_cost = HistoQueuePush(&histo_queue, histograms, idx1, idx2, best_cost);
       if (curr_cost < 0) {  // found a better pair?
         best_cost = curr_cost;
         // Empty the queue if we reached full capacity.
@@ -1060,13 +1054,10 @@ func GetCombineCostFactor(int histo_size, quality int) int32 {
 }
 
 func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, histogram_bits int, cache_bits int, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int) int {
-  histo_xsize :=
-      histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1;
-  histo_ysize :=
-      histogram_bits ? VP8LSubSampleSize(ysize, histogram_bits) : 1;
+  histo_xsize := histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1;
+  histo_ysize := histogram_bits ? VP8LSubSampleSize(ysize, histogram_bits) : 1;
   image_histo_raw_size := histo_xsize * histo_ysize;
-  var orig_histo *VP8LHistogramSet =
-      VP8LAllocateHistogramSet(image_histo_raw_size, cache_bits);
+  var orig_histo *VP8LHistogramSet = VP8LAllocateHistogramSet(image_histo_raw_size, cache_bits);
   // Don't attempt linear bin-partition heuristic for
   // histograms of small sizes (as bin_map will be very sparse) and
   // maximum quality q==100 (to preserve the compression gains at that level).
@@ -1080,12 +1071,10 @@ func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackward
   // Construct the histograms from backward references.
   HistogramBuild(xsize, histogram_bits, refs, orig_histo);
   HistogramCopyAndAnalyze(orig_histo, image_histo);
-  entropy_combine =
-      (image_histo.size > entropy_combine_num_bins * 2) && (quality < 100);
+  entropy_combine = (image_histo.size > entropy_combine_num_bins * 2) && (quality < 100);
 
   if (entropy_combine) {
-    combine_cost_factor :=
-        GetCombineCostFactor(image_histo_raw_size, quality);
+    combine_cost_factor := GetCombineCostFactor(image_histo_raw_size, quality);
 
     HistogramAnalyzeEntropyBin(image_histo, low_effort);
     // Collapse histograms with similar entropy.
@@ -1096,8 +1085,7 @@ func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackward
   // low-effort compression mode.
   if (!low_effort || !entropy_combine) {
     // cubic ramp between 1 and MAX_HISTO_GREEDY:
-    threshold_size :=
-        (int)(1 + DivRound(quality * quality * quality * (MAX_HISTO_GREEDY - 1), 100 * 100 * 100));
+    threshold_size := (int)(1 + DivRound(quality * quality * quality * (MAX_HISTO_GREEDY - 1), 100 * 100 * 100));
     var do_greedy int
     if (!HistogramCombineStochastic(image_histo, threshold_size, &do_greedy)) {
       pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)

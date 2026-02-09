@@ -80,8 +80,7 @@ func CheckDecBuffer( /* const */ buffer *WebPDecBuffer) vp8.VP8StatusCode {
 	} else { // RGB checks
 		var buf *WebPRGBABuffer = &buffer.u.RGBA
 		stride := stdlib.Abs(buf.stride)
-		size :=
-			MIN_BUFFER_SIZE(width*kModeBpp[mode], height, stride)
+		size := MIN_BUFFER_SIZE(width*kModeBpp[mode], height, stride)
 		ok &= (size <= buf.size)
 		ok &= (stride >= width*kModeBpp[mode])
 		ok &= (buf.rgba != nil)

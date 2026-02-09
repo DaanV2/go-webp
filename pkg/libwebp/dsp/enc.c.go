@@ -115,10 +115,8 @@ func ITransformOne(/* const */ ref *uint8, /*const*/ in *int16, dst *uint8) {
   for i = 0; i < 4; i++ {  // vertical pass
     a := in[0] + in[8];
     b := in[0] - in[8];
-    c :=
-        WEBP_TRANSFORM_AC3_MUL2(in[4]) - WEBP_TRANSFORM_AC3_MUL1(in[12]);
-    d :=
-        WEBP_TRANSFORM_AC3_MUL1(in[4]) + WEBP_TRANSFORM_AC3_MUL2(in[12]);
+    c := WEBP_TRANSFORM_AC3_MUL2(in[4]) - WEBP_TRANSFORM_AC3_MUL1(in[12]);
+    d := WEBP_TRANSFORM_AC3_MUL1(in[4]) + WEBP_TRANSFORM_AC3_MUL2(in[12]);
     tmp[0] = a + d;
     tmp[1] = b + c;
     tmp[2] = b - c;
@@ -132,10 +130,8 @@ func ITransformOne(/* const */ ref *uint8, /*const*/ in *int16, dst *uint8) {
     dc := tmp[0] + 4;
     a := dc + tmp[8];
     b := dc - tmp[8];
-    c :=
-        WEBP_TRANSFORM_AC3_MUL2(tmp[4]) - WEBP_TRANSFORM_AC3_MUL1(tmp[12]);
-    d :=
-        WEBP_TRANSFORM_AC3_MUL1(tmp[4]) + WEBP_TRANSFORM_AC3_MUL2(tmp[12]);
+    c := WEBP_TRANSFORM_AC3_MUL2(tmp[4]) - WEBP_TRANSFORM_AC3_MUL1(tmp[12]);
+    d := WEBP_TRANSFORM_AC3_MUL1(tmp[4]) + WEBP_TRANSFORM_AC3_MUL2(tmp[12]);
     STORE(0, i, a + d);
     STORE(1, i, b + c);
     STORE(2, i, b - c);

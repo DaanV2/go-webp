@@ -239,8 +239,7 @@ func ReadHuffmanCodeLengths(/* const */ dec *VP8LDecoder, /*const*/ code_length_
   var max_symbol int
   prev_code_len := DEFAULT_CODE_LENGTH
    var tables HuffmanTables
-  var bounded_code_lengths *int =
-      WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
+  var bounded_code_lengths *int = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
           // C: const *int, code_length_code_lengths, NUM_CODE_LENGTH_CODES * sizeof(*code_length_code_lengths))
 
   if (!VP8LHuffmanTablesAllocate(1 << LENGTHS_TABLE_BITS, &tables) ||
@@ -333,8 +332,7 @@ func ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*const*/ co
 
   ok = ok && !br.eos
   if ok {
-    var bounded_code_lengths *int =
-        // C: code_lengths // bidi index -> alphabet_size * sizeof(int)
+    var bounded_code_lengths *int = // C: code_lengths // bidi index -> alphabet_size * sizeof(int)
     size = VP8LBuildHuffmanTable(table, HUFFMAN_TABLE_BITS, bounded_code_lengths, alphabet_size)
   }
   if !ok || size == 0 {
@@ -361,8 +359,7 @@ func ReadHuffmanCodes(/* const */ dec *VP8LDecoder, xsize int, ysize int, color_
 
   if allow_recursion && VP8LReadBits(br, 1) {
     // use meta Huffman codes.
-    huffman_precision :=
-        MIN_HUFFMAN_BITS + VP8LReadBits(br, NUM_HUFFMAN_BITS)
+    huffman_precision := MIN_HUFFMAN_BITS + VP8LReadBits(br, NUM_HUFFMAN_BITS)
     huffman_xsize := VP8LSubSampleSize(xsize, huffman_precision)
     huffman_ysize := VP8LSubSampleSize(ysize, huffman_precision)
     huffman_pixs := huffman_xsize * huffman_ysize
@@ -436,8 +433,7 @@ Error:
 // limit memory usage.
 func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htree_groups_max int, /*const*/ mapping *int, /*const*/ dec *VP8LDecoder, /*const*/ huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) int {
   int i, j, ok = 0, 0, 0
-  max_alphabet_size :=
-      kAlphabetSize[0] + ((color_cache_bits > 0) ? 1 << color_cache_bits : 0)
+  max_alphabet_size := kAlphabetSize[0] + ((color_cache_bits > 0) ? 1 << color_cache_bits : 0)
   table_size := kTableSize[color_cache_bits]
 
   if ((mapping == nil && num_htree_groups != num_htree_groups_max) ||
@@ -471,8 +467,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
         }
       }
     } else {
-      const htree_group *HTreeGroup =
-          &(*htree_groups)[(mapping == nil) ? i : mapping[i]]
+      const htree_group *HTreeGroup = &(*htree_groups)[(mapping == nil) ? i : mapping[i]]
       *HuffmanCode* const htrees = htree_group.htrees
       var size int
       total_size := 0
@@ -483,8 +478,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
         if j == 0 && color_cache_bits > 0 {
           alphabet_size += (1 << color_cache_bits)
         }
-        size =
-            ReadHuffmanCode(alphabet_size, dec, code_lengths, huffman_tables)
+        size = ReadHuffmanCode(alphabet_size, dec, code_lengths, huffman_tables)
         htrees[j] = huffman_tables.curr_segment.curr_table
         if size == 0 {
           goto Error
@@ -517,8 +511,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
           htree_group.literal_arb |= htrees[GREEN][0].value << 8
         }
       }
-      htree_group.use_packed_table =
-          !htree_group.is_trivial_code && (max_bits < HUFFMAN_PACKED_BITS)
+      htree_group.use_packed_table = !htree_group.is_trivial_code && (max_bits < HUFFMAN_PACKED_BITS)
       if htree_group.use_packed_table { BuildPackedTable(htree_group) }
     }
   }
@@ -606,8 +599,7 @@ func EmitRescaledRowsRGBA(/* const */ dec *VP8LDecoder, in *uint8, in_stride int
     var lines_imported int
     assert.Assert(needed_lines > 0 && needed_lines <= lines_left)
     WebPMultARGBRows(row_in, in_stride, dec.rescaler.src_width, needed_lines, 0)
-    lines_imported =
-        WebPRescalerImport(dec.rescaler, lines_left, row_in, in_stride)
+    lines_imported = WebPRescalerImport(dec.rescaler, lines_left, row_in, in_stride)
     assert.Assert(lines_imported == needed_lines)
     num_lines_in += lines_imported
     num_lines_out += Export(dec.rescaler, colorspace, out_stride, row_out)
@@ -680,8 +672,7 @@ func EmitRescaledRowsYUVA(/* const */ dec *VP8LDecoder, in *uint8, in_stride, mb
     needed_lines := WebPRescaleNeededLines(dec.rescaler, lines_left)
     var lines_imported int
     WebPMultARGBRows(in, in_stride, dec.rescaler.src_width, needed_lines, 0)
-    lines_imported =
-        WebPRescalerImport(dec.rescaler, lines_left, in, in_stride)
+    lines_imported = WebPRescalerImport(dec.rescaler, lines_left, in, in_stride)
     assert.Assert(lines_imported == needed_lines)
     num_lines_in += lines_imported
     in += ptrdiff_t(needed_lines) * in_stride
@@ -861,8 +852,7 @@ func ProcessRows(/* const */ dec *VP8LDecoder, row int, wait_for_biggest_batch i
       var output *WebPDecBuffer = decoder.output
       if WebPIsRGBMode(output.colorspace) {  // convert to RGBA
         var buf *WebPRGBABuffer = &output.u.RGBA
-        var rgba *uint8 =
-            buf.rgba + ptrdiff_t(dec.last_out_row) * buf.stride
+        var rgba *uint8 = buf.rgba + ptrdiff_t(dec.last_out_row) * buf.stride
         num_rows_out :=
 // C: #if !defined(WEBP_REDUCE_SIZE)
             io.use_scaling ? EmitRescaledRowsRGBA(dec, rows_data, in_stride, io.mb_h, rgba, buf.stride)
@@ -872,8 +862,7 @@ func ProcessRows(/* const */ dec *VP8LDecoder, row int, wait_for_biggest_batch i
         // Update 'last_out_row'.
         dec.last_out_row += num_rows_out
       } else {  // convert to YUVA
-        dec.last_out_row =
-            io.use_scaling
+        dec.last_out_row = io.use_scaling
                 ? EmitRescaledRowsYUVA(dec, rows_data, in_stride, io.mb_h)
                 : EmitRowsYUVA(rows_data, io, in_stride, dec.accumulated_rgb_pixels, dec)
       }
@@ -1070,8 +1059,7 @@ func DecodeAlphaData(/* const */ dec *VP8LDecoder, /*const*/ data *uint8, width,
   last := width * last_row;  // Last pixel to decode
   len_code_limit := NUM_LITERAL_CODES + NUM_LENGTH_CODES
   mask := hdr.huffman_mask
-  const htree_group *HTreeGroup =
-      (pos < last) ? GetHtreeGroupForPos(hdr, col, row) : nil
+  const htree_group *HTreeGroup = (pos < last) ? GetHtreeGroupForPos(hdr, col, row) : nil
   assert.Assert(pos <= end)
   assert.Assert(last_row <= height)
   assert.Assert(Is8bOptimizable(hdr))
@@ -1173,11 +1161,9 @@ func DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width
   len_code_limit := NUM_LITERAL_CODES + NUM_LENGTH_CODES
   color_cache_limit := len_code_limit + hdr.color_cache_size
   next_sync_row := dec.incremental ? row : 1 << 24
-  var color_cache *VP8LColorCache =
-      (hdr.color_cache_size > 0) ? &hdr.color_cache : nil
+  var color_cache *VP8LColorCache = (hdr.color_cache_size > 0) ? &hdr.color_cache : nil
   mask := hdr.huffman_mask
-  var htree_group *HTreeGroup =
-      (src < src_last) ? GetHtreeGroupForPos(hdr, col, row) : nil
+  var htree_group *HTreeGroup = (src < src_last) ? GetHtreeGroupForPos(hdr, col, row) : nil
   assert.Assert(dec.last_row < last_row)
   assert.Assert(src_last <= src_end)
 
@@ -1350,8 +1336,7 @@ func ReadTransform(/* const */ xsize *int, ysize int *const, /*const*/ decoder *
   ok := 1
   var br *VP8LBitReader = &decoder.br
   transform *VP8LTransform = &dec.transforms[dec.next_transform]
-  var type VP8LImageTransformType =
-      VP8LImageTransformType(VP8LReadBits)(br, 2)
+  var type VP8LImageTransformType = VP8LImageTransformType(VP8LReadBits)(br, 2)
 
   // Each transform type can only be present once in the stream.
   if dec.transforms_seen & (uint(1) << type) {
@@ -1369,8 +1354,7 @@ func ReadTransform(/* const */ xsize *int, ysize int *const, /*const*/ decoder *
   switch type {
     case PREDICTOR_TRANSFORM:
     case CROSS_COLOR_TRANSFORM:
-      transform.bits =
-          MIN_TRANSFORM_BITS + VP8LReadBits(br, NUM_TRANSFORM_BITS)
+      transform.bits = MIN_TRANSFORM_BITS + VP8LReadBits(br, NUM_TRANSFORM_BITS)
       ok = DecodeImageStream(
           VP8LSubSampleSize(transform.xsize, transform.bits), VP8LSubSampleSize(transform.ysize, transform.bits), /*is_level0=*/0, dec, &transform.data)
       break
@@ -1554,11 +1538,9 @@ func AllocateInternalBuffers32b(/* const */ dec *VP8LDecoder, final_width int) i
   var total_num_pixels uint64
   if dec.output != nil && !WebPIsRGBMode(dec.output.colorspace) {
     uv_width := (dec.io.crop_right - dec.io.crop_left + 1) >> 1
-    accumulated_rgb_pixels =
-        // C: 4 * uv_width * sizeof(*dec.accumulated_rgb_pixels) / sizeof(uint32)
+    accumulated_rgb_pixels = // C: 4 * uv_width * sizeof(*dec.accumulated_rgb_pixels) / sizeof(uint32)
   }
-  total_num_pixels =
-      num_pixels + cache_top_pixels + cache_pixels + accumulated_rgb_pixels
+  total_num_pixels = num_pixels + cache_top_pixels + cache_pixels + accumulated_rgb_pixels
   assert.Assert(dec.width <= final_width)
 //   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint32));
 //   if (dec.pixels == nil) {
@@ -1568,8 +1550,7 @@ func AllocateInternalBuffers32b(/* const */ dec *VP8LDecoder, final_width int) i
   dec.pixels = make([]uint32, total_num_pixels) // NOTE: have the feeling that this should be divided by 4
 
   dec.argb_cache = dec.pixels + num_pixels + cache_top_pixels
-  dec.accumulated_rgb_pixels =
-      accumulated_rgb_pixels == 0
+  dec.accumulated_rgb_pixels = accumulated_rgb_pixels == 0
           ? nil
           : (*uint16)(dec.pixels + num_pixels + cache_top_pixels +
                         cache_pixels)
@@ -1602,8 +1583,7 @@ func ExtractAlphaRows(/* const */ dec *VP8LDecoder, last_row int, wait_for_bigge
   }
   assert.Assert(last_row <= dec.io.crop_bottom)
   for num_rows > 0 {
-    num_rows_to_process :=
-        (num_rows > NUM_ARGB_CACHE_ROWS) ? NUM_ARGB_CACHE_ROWS : num_rows
+    num_rows_to_process := (num_rows > NUM_ARGB_CACHE_ROWS) ? NUM_ARGB_CACHE_ROWS : num_rows
     // Extract alpha (which is stored in the green plane).
     var alph_dec *ALPHDecoder = (*ALPHDecoder)dec.io.opaque
     var output *uint8 = alph_dec.output

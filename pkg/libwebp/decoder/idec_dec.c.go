@@ -171,10 +171,8 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   /* const */ mem *MemBuffer = &idec.mem;
   need_compressed_alpha := NeedCompressedAlpha(idec);
-    var old_start *uint8 =
-      tenary.If(mem.buf == nil, nil, mem.buf + mem.start);
-  var old_base *uint8 =
-      tenary.If(need_compressed_alpha, dec.alpha_data, old_start);
+    var old_start *uint8 = tenary.If(mem.buf == nil, nil, mem.buf + mem.start);
+  var old_base *uint8 = tenary.If(need_compressed_alpha, dec.alpha_data, old_start);
   assert.Assert(mem.buf != nil || mem.start == 0);
   assert.Assert(mem.mode == MEM_MODE_APPEND);
   if (data_size > MAX_CHUNK_PAYLOAD) {
@@ -213,8 +211,7 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
 func RemapMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) int {
   /* const */ mem *MemBuffer = &idec.mem;
   var old_buf *uint8 = mem.buf;
-    var old_start *uint8 =
-      tenary.If(old_buf == nil, nil, old_buf + mem.start);
+    var old_start *uint8 = tenary.If(old_buf == nil, nil, old_buf + mem.start);
   assert.Assert(old_buf != nil || mem.start == 0);
   assert.Assert(mem.mode == MEM_MODE_MAP);
 
@@ -355,8 +352,7 @@ func DecodeVP8FrameHeader(/* const */ idec *WebPIDecoder) VP8StatusCode {
     return VP8_STATUS_SUSPENDED;
   }
   {
-    var bounded_data *uint8 =
-        WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(/* const */ *uint8, , curr_size);
+    var bounded_data *uint8 = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(/* const */ *uint8, , curr_size);
     if (!VP8GetInfo(bounded_data, curr_size, idec.chunk_size, &width, &height)) {
       return IDecError(idec, VP8_STATUS_BITSTREAM_ERROR);
     }
@@ -424,14 +420,12 @@ func DecodePartition0(/* const */ idec *WebPIDecoder) VP8StatusCode {
   }
 
   // Allocate/Verify output buffer now
-  dec.status =
-      WebPAllocateDecBuffer(io.width, io.height, params.options, output);
+  dec.status = WebPAllocateDecBuffer(io.width, io.height, params.options, output);
   if (dec.status != VP8_STATUS_OK) {
     return IDecError(idec, dec.status);
   }
   // This change must be done before calling VP8InitFrame()
-  dec.mt_method =
-      VP8GetThreadMethod(params.options, nil, io.width, io.height);
+  dec.mt_method = VP8GetThreadMethod(params.options, nil, io.width, io.height);
   VP8InitDithering(params.options, dec);
 
   dec.status = CopyParts0Data(idec);
@@ -474,8 +468,7 @@ func DecodeRemaining(/* const */ idec *WebPIDecoder) VP8StatusCode {
       idec.last_mb_y = dec.mb_y;
     }
     for ; dec.mb_x < dec.mb_w; ++dec.mb_x {
-      const token_br *VP8BitReader =
-          &dec.parts[dec.mb_y & dec.num_parts_minus_one];
+      const token_br *VP8BitReader = &dec.parts[dec.mb_y & dec.num_parts_minus_one];
        var context MBContext
       SaveContext(dec, token_br, &context);
       if (!VP8DecodeMB(dec, token_br)) {
@@ -544,8 +537,7 @@ func DecodeVP8LHeader(/* const */ idec *WebPIDecoder) VP8StatusCode {
     return ErrorStatusLossless(idec, dec.status);
   }
   // Allocate/verify output buffer now.
-  dec.status =
-      WebPAllocateDecBuffer(io.width, io.height, params.options, output);
+  dec.status = WebPAllocateDecBuffer(io.width, io.height, params.options, output);
   if (dec.status != VP8_STATUS_OK) {
     return IDecError(idec, dec.status);
   }
@@ -657,8 +649,7 @@ func WebPINewDecoder (output_buffer *WebPDecBuffer) *WebPIDecoder {
 WebPIDecode *WebPIDecoder(/* const */ data *uint8, data_size uint64, config *WebPDecoderConfig) {
   idec *WebPIDecoder;
    var tmp_features WebPBitstreamFeatures
-    const features *WebPBitstreamFeatures =
-      tenary.If(config == nil, &tmp_features, &config.input);
+    const features *WebPBitstreamFeatures = tenary.If(config == nil, &tmp_features, &config.input);
   stdlib.Memset(&tmp_features, 0, sizeof(tmp_features));
 
   // Parse the bitstream's features, if requested:

@@ -121,8 +121,7 @@ func WebPPictureCrop(pic *picture.Picture, left int, top int, width, height int)
       WebPCopyPlane(pic.a + a_offset, pic.a_stride, tmp.a, tmp.a_stride, width, height);
     }
   } else {
-    var src *uint8 =
-        (/* const */ *uint8)(pic.argb + top * pic.argb_stride + left);
+    var src *uint8 = (/* const */ *uint8)(pic.argb + top * pic.argb_stride + left);
     WebPCopyPlane(src, pic.argb_stride * 4, (*uint8)tmp.argb, tmp.argb_stride * 4, width * 4, height);
   }
   picture.WebPPictureFree(pic);

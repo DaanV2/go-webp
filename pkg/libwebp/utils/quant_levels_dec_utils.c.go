@@ -126,8 +126,7 @@ func HFilter(/* const */ p *SmoothParams) {
     out[x] = (delta * scale) >> FIX;
   }
   for ; x < w; x++ {  // right mirroring
-    delta :=
-        2 * in[w - 1] - in[2 * w - 2 - r - x] - in[x - r - 1];
+    delta := 2 * in[w - 1] - in[2 * w - 2 - r - x] - in[x - r - 1];
     out[x] = (delta * scale) >> FIX;
   }
 }
@@ -138,8 +137,7 @@ func ApplyFilter(/* const */ p *SmoothParams) {
   w := p.width;
   // correction is , pointing to the start of the LUT.
   // We need the middle pointer for negative indexing.
-  var correction *int16 =
-      p.correction + LUT_SIZE;
+  var correction *int16 = p.correction + LUT_SIZE;
   var dither *uint8 = kOrderedDither[p.row % DSIZE];
   var dst *uint8 = p.dst;
   var x int

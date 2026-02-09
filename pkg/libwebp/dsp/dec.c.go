@@ -76,10 +76,8 @@ func TransformOne_C(/* const */ in *int16, dst *uint8) {
     dc := tmp[0] + 4;
     a := dc + tmp[8];
     b := dc - tmp[8];
-    c :=
-        WEBP_TRANSFORM_AC3_MUL2(tmp[4]) - WEBP_TRANSFORM_AC3_MUL1(tmp[12]);
-    d :=
-        WEBP_TRANSFORM_AC3_MUL1(tmp[4]) + WEBP_TRANSFORM_AC3_MUL2(tmp[12]);
+    c := WEBP_TRANSFORM_AC3_MUL2(tmp[4]) - WEBP_TRANSFORM_AC3_MUL1(tmp[12]);
+    d := WEBP_TRANSFORM_AC3_MUL1(tmp[4]) + WEBP_TRANSFORM_AC3_MUL2(tmp[12]);
     STORE(0, 0, a + d);
     STORE(1, 0, b + c);
     STORE(2, 0, b - c);
@@ -687,8 +685,7 @@ func DitherCombine8x8_C(/* const */ dither *uint8, dst *uint8, dst_stride int) {
   for j = 0; j < 8; j++ {
     for i = 0; i < 8; i++ {
       delta0 := dither[i] - VP8_DITHER_AMP_CENTER;
-      delta1 :=
-          (delta0 + VP8_DITHER_DESCALE_ROUNDER) >> VP8_DITHER_DESCALE;
+      delta1 := (delta0 + VP8_DITHER_DESCALE_ROUNDER) >> VP8_DITHER_DESCALE;
       dst[i] = clip_8b((int)dst[i] + delta1);
     }
     dst += dst_stride;

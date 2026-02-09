@@ -128,8 +128,7 @@ func MuxImageParse( /* const */ chunk *WebPChunk, copy_data int /*const*/, wpi *
 		if size < hdr_size {
 			goto Fail
 		}
-		if ChunkAssignData(&subchunk, &temp, copy_data, chunk.tag) !=
-			WEBP_MUX_OK {
+		if ChunkAssignData(&subchunk, &temp, copy_data, chunk.tag) != WEBP_MUX_OK {
 			goto Fail
 		}
 	}
@@ -145,8 +144,7 @@ func MuxImageParse( /* const */ chunk *WebPChunk, copy_data int /*const*/, wpi *
 
 	for bytes != last {
 		ChunkInit(&subchunk)
-		if ChunkVerifyAndAssign(&subchunk, bytes, size, size, copy_data) !=
-			WEBP_MUX_OK {
+		if ChunkVerifyAndAssign(&subchunk, bytes, size, size, copy_data) != WEBP_MUX_OK {
 			goto Fail
 		}
 		switch ChunkGetIdFromTag(subchunk.tag) {
@@ -287,8 +285,7 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 	for data != end {
 		var data_size uint64
 		var id WebPChunkId
-		if ChunkVerifyAndAssign(&chunk, data, size, riff_size, copy_data) !=
-			WEBP_MUX_OK {
+		if ChunkVerifyAndAssign(&chunk, data, size, riff_size, copy_data) != WEBP_MUX_OK {
 			goto Err
 		}
 		data_size = ChunkDiskSize(&chunk)
@@ -333,8 +330,7 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 				// getting all chunks of an image.
 			}
 			if chunk_list_ends[id] == nil {
-				chunk_list_ends[id] =
-					MuxGetChunkListFromId(mux, id) // List to add this chunk.
+				chunk_list_ends[id] = MuxGetChunkListFromId(mux, id) // List to add this chunk.
 			}
 			if ChunkAppend(&chunk, &chunk_list_ends[id]) != WEBP_MUX_OK {
 				goto Err
@@ -566,8 +562,7 @@ func MuxGetFrameInternal(wpi *WebPMuxImage, frame *WebPMuxFrameInfo) WebPMuxErro
 	{
 		bits := frame_data.bytes[15]
 		frame.duration = GetLE24(frame_data.bytes + 12)
-		frame.dispose_method =
-			tenary.If(bits&1, WEBP_MUX_DISPOSE_BACKGROUND, WEBP_MUX_DISPOSE_NONE)
+		frame.dispose_method = tenary.If(bits&1, WEBP_MUX_DISPOSE_BACKGROUND, WEBP_MUX_DISPOSE_NONE)
 		frame.blend_method = tenary.If(bits&2, WEBP_MUX_NO_BLEND, WEBP_MUX_BLEND)
 	}
 	frame.id = ChunkGetIdFromTag(wpi.header.tag)

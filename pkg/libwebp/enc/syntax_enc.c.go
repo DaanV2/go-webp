@@ -319,8 +319,7 @@ func VP8EncWrite(/* const */ enc *VP8Encoder) int {
   if !ok { return 0  }
 
   // Compute VP8 size
-  vp8_size =
-      VP8_FRAME_HEADER_SIZE + VP8BitWriterSize(bw) + 3 * (enc.num_parts - 1);
+  vp8_size = VP8_FRAME_HEADER_SIZE + VP8BitWriterSize(bw) + 3 * (enc.num_parts - 1);
   for p = 0; p < enc.num_parts; p++ {
     vp8_size += VP8BitWriterSize(enc.parts + p);
   }
@@ -334,8 +333,7 @@ func VP8EncWrite(/* const */ enc *VP8Encoder) int {
     riff_size += CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE;
   }
   if (enc.has_alpha) {  // Add size for: ALPH header + data.
-    padded_alpha_size :=
-        enc.alpha_data_size + (enc.alpha_data_size & 1);
+    padded_alpha_size := enc.alpha_data_size + (enc.alpha_data_size & 1);
     riff_size += CHUNK_HEADER_SIZE + padded_alpha_size;
   }
   // RIFF size should fit in 32-bits.

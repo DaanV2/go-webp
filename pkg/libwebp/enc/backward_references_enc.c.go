@@ -326,8 +326,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
     best_length := 0;
     best_distance := 0;
     var best_argb uint32
-    min_pos :=
-        tenary.If(base_position > window_size, base_position - window_size, 0)
+    min_pos := tenary.If(base_position > window_size, base_position - window_size, 0)
     length_max := tenary.If(max_len < 256, max_len, 256)
     var max_base_position uint32
 
@@ -344,8 +343,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
         --iter;
       }
       // Heuristic: compare to the previous pixel.
-      curr_length =
-          FindMatchLength(argb_start - 1, argb_start, best_length, max_len);
+      curr_length = FindMatchLength(argb_start - 1, argb_start, best_length, max_len);
       if (curr_length > best_length) {
         best_length = curr_length;
         best_distance = 1;
@@ -377,8 +375,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
     for {
       assert.Assert(best_length <= MAX_LENGTH);
       assert.Assert(best_distance <= WINDOW_SIZE);
-      p.offset_length[base_position] =
-          (best_distance << MAX_LENGTH_BITS) | (uint32)best_length;
+      p.offset_length[base_position] = (best_distance << MAX_LENGTH_BITS) | (uint32)best_length;
       --base_position;
       // Stop if we don't have a match or if we are out of bounds.
       if best_distance == 0 || base_position == 0 { break }
@@ -443,8 +440,7 @@ func BackwardReferencesRle(xsize int, ysize int, /*const*/ argb *uint32, cache_b
   while (i < pix_count) {
     max_len := MaxFindCopyLength(pix_count - i);
     rle_len := FindMatchLength(argb + i, argb + i - 1, 0, max_len);
-    prev_row_len :=
-        (i < xsize) ? 0
+    prev_row_len := (i < xsize) ? 0
                     : FindMatchLength(argb + i, argb + i - xsize, 0, max_len);
     if (rle_len >= prev_row_len && rle_len >= MIN_LENGTH) {
       VP8LBackwardRefsCursorAdd(refs, PixOrCopyCreateCopy(1, rle_len));
@@ -492,8 +488,7 @@ func BackwardReferencesLz77(xsize int, ysize int, /*const*/ argb *uint32, cache_
     if (len >= MIN_LENGTH) {
       len_ini := len;
       max_reach := 0;
-      j_max :=
-          (i + len_ini >= pix_count) ? pix_count - 1 : i + len_ini;
+      j_max := (i + len_ini >= pix_count) ? pix_count - 1 : i + len_ini;
       // Only start from what we have not checked already.
       i_last_check = tenary.If(i > i_last_check, i, i_last_check)
       // We know the best match for the current pixel but we try to find the
@@ -504,8 +499,7 @@ func BackwardReferencesLz77(xsize int, ysize int, /*const*/ argb *uint32, cache_
       // [i,j) (where j<=i+len) + [j, length of best match at j)
       for j = i_last_check + 1; j <= j_max; j++ {
         len_j := VP8LHashChainFindLength(hash_chain, j);
-        reach :=
-            j + (len_j >= MIN_LENGTH ? len_j : 1);  // 1 for single literal.
+        reach := j + (len_j >= MIN_LENGTH ? len_j : 1);  // 1 for single literal.
         if (reach > max_reach) {
           len = j - i;
           max_reach = reach;
@@ -625,10 +619,8 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, cac
       // Figure out if we should use the offset/length from the previous pixel
       // as an initial guess and therefore only inspect the offsets in
       // window_offsets_new[].
-      use_prev :=
-          (best_length_prev > 1) && (best_length_prev < MAX_LENGTH);
-      num_ind :=
-          use_prev ? window_offsets_new_size : window_offsets_size;
+      use_prev := (best_length_prev > 1) && (best_length_prev < MAX_LENGTH);
+      num_ind := use_prev ? window_offsets_new_size : window_offsets_size;
       best_length = use_prev ? best_length_prev - 1 : 0;
       best_offset = use_prev ? best_offset_prev : 0;
       // Find the longest match in a window around the pixel.
@@ -644,8 +636,7 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, cac
           counts_j_offset := counts_ini[j_offset];
           counts_j := counts_ini[j];
           if (counts_j_offset != counts_j) {
-            curr_length +=
-                tenary.If(counts_j_offset < counts_j, counts_j_offset, counts_j)
+            curr_length += tenary.If(counts_j_offset < counts_j, counts_j_offset, counts_j)
             break;
           }
           // The same color is repeated counts_pos times at j_offset and j.
@@ -655,8 +646,7 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, cac
         } while (curr_length <= MAX_LENGTH && j < pix_count &&
                  argb[j_offset] == argb[j]);
         if (best_length < curr_length) {
-          best_offset =
-              use_prev ? window_offsets_new[ind] : window_offsets[ind];
+          best_offset = use_prev ? window_offsets_new[ind] : window_offsets[ind];
           if (curr_length >= MAX_LENGTH) {
             best_length = MAX_LENGTH;
             break;
@@ -674,8 +664,7 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, cac
       best_offset_prev = 0;
       best_length_prev = 0;
     } else {
-      hash_chain.offset_length[i] =
-          (best_offset << MAX_LENGTH_BITS) | (uint32)best_length;
+      hash_chain.offset_length[i] = (best_offset << MAX_LENGTH_BITS) | (uint32)best_length;
       best_offset_prev = best_offset;
       best_length_prev = best_length;
     }
@@ -939,8 +928,7 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
     if ((lz77_types_best[i] == kLZ77Standard ||
          lz77_types_best[i] == kLZ77Box) &&
         quality >= 25) {
-      const hash_chain_tmp *VP8LHashChain =
-          (lz77_types_best[i] == kLZ77Standard) ? hash_chain : &hash_chain_box;
+      const hash_chain_tmp *VP8LHashChain = (lz77_types_best[i] == kLZ77Standard) ? hash_chain : &hash_chain_box;
       cache_bits := tenary.If(i == 1, 0, *cache_bits_best)
       var bit_cost_trace uint64
       if (!VP8LBackwardReferencesTraceBackwards(width, height, argb, cache_bits, hash_chain_tmp, &refs[i], refs_tmp)) {

@@ -311,8 +311,7 @@ func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter in
     // 16 alpha levels gives quite a low MSE w.r.t original alpha plane hence
     // mapped to moderate quality 70. Hence Quality:[0, 70] . Levels:[2, 16]
     // and Quality:]70, 100] . Levels:]16, 256].
-    alpha_levels :=
-        tenary.If(quality <= 70, (2 + quality / 5), (16 + (quality - 70) * 8))
+    alpha_levels := tenary.If(quality <= 70, (2 + quality / 5), (16 + (quality - 70) * 8))
     ok = QuantizeLevels(quant_alpha, width, height, alpha_levels, &sse);
   }
 
@@ -336,8 +335,7 @@ func CompressAlphaJob(arg *void1, unused *void) int {
   alpha_data *uint8 = nil;
   alpha_size := 0;
   effort_level := config.Method;  // maps to [0..6]
-  var WEBP_FILTER_TYPE filter =
-      (config.AlphaFiltering == 0)   ? WEBP_FILTER_NONE
+  var WEBP_FILTER_TYPE filter = (config.AlphaFiltering == 0)   ? WEBP_FILTER_NONE
       : (config.AlphaFiltering == 1) ? WEBP_FILTER_FAST
                                        : WEBP_FILTER_BEST;
   if (!EncodeAlpha(enc, config.AlphaQuality, config.AlphaCompression, filter, effort_level, &alpha_data, &alpha_size)) {

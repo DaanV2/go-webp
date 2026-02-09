@@ -249,8 +249,7 @@ func SetupFilterStrength(/* const */ enc *VP8Encoder) {
     var m *VP8SegmentInfo = &enc.dqm[i];
     // We focus on the quantization of AC coeffs.
     qstep := kAcTable[clip(m.quant, 0, 127)] >> 2;
-    base_strength :=
-        VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, qstep);
+    base_strength := VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, qstep);
     // Segments with lower complexity ('beta') will be less filtered.
     f := base_strength * level0 / (256 + m.beta);
     m.fstrength = (f < FSTRENGTH_CUTOFF) ? 0 : tenary.If(f > 63, 63, f)
@@ -533,8 +532,7 @@ enum { TYPE_I16_AC = 0, TYPE_I16_DC = 1, TYPE_CHROMA_A = 2, TYPE_I4_AC = 3 }
 
 func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16], int16 out[16], int ctx0, coeff_type int, /*const*/ /* const */ mtx *VP8Matrix, lambda int) int {
   var probas *ProbaArray = enc.proba.coeffs[coeff_type];
-  CostArrayPtr const costs =
-      (CostArrayPtr)enc.proba.remapped_costs[coeff_type];
+  CostArrayPtr const costs = (CostArrayPtr)enc.proba.remapped_costs[coeff_type];
   first := tenary.If(coeff_type == TYPE_I16_AC, 1, 0)
   Node nodes[16][NUM_NODES];
   ScoreState score_states[2][NUM_NODES];
@@ -624,8 +622,7 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
         // subtract to max_error as distortion.
         // Here, distortion = sum of (|coeff_i| - level_i * Q_i)^2
         new_error := coeff0 - level * Q;
-        delta_error :=
-            kWeightTrellis[j] * (new_error * new_error - coeff0 * coeff0);
+        delta_error := kWeightTrellis[j] * (new_error * new_error - coeff0 * coeff0);
         base_score = RDScoreTrellis(lambda, 0, delta_error);
       }
 
@@ -633,8 +630,7 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
       // The base_score is added to all scores so it is only added for the final
       // value after the loop.
       cost = VP8LevelCost(ss_prev[-MIN_DELTA].costs, level);
-      best_cur_score =
-          ss_prev[-MIN_DELTA].score + RDScoreTrellis(lambda, cost, 0);
+      best_cur_score = ss_prev[-MIN_DELTA].score + RDScoreTrellis(lambda, cost, 0);
       best_prev = -MIN_DELTA;
       for p = -MIN_DELTA + 1; p <= MAX_DELTA; p++ {
         // Dead nodes (with ss_prev[p].score >= MAX_COST) are automatically
@@ -656,8 +652,7 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
 
       // Now, record best terminal node (and thus best entry in the graph).
       if (level != 0 && best_cur_score < best_score) {
-         =
-            tenary.If(n < 15, VP8BitCost(0, probas[band][ctx][0]), 0)
+         = tenary.If(n < 15, VP8BitCost(0, probas[band][ctx][0]), 0)
          = RDScoreTrellis(lambda, last_pos_cost, 0);
         score = best_cur_score + last_pos_score;
         if (score < best_score) {
@@ -934,8 +929,7 @@ func PickBestIntra16(/* const */ it *VP8EncIterator, rd *VP8ModeScore) {
 
     // Measure RD-score
     rd_cur.D = VP8SSE16x16(src, tmp_dst);
-    rd_cur.SD =
-        tlambda ? MULT_8B(tlambda, VP8TDisto16x16(src, tmp_dst, kWeightY)) : 0;
+    rd_cur.SD = tlambda ? MULT_8B(tlambda, VP8TDisto16x16(src, tmp_dst, kWeightY)) : 0;
     rd_cur.H = VP8FixedCostsI16[mode];
     rd_cur.R = VP8GetCostLuma16(it, rd_cur);
     if (is_flat) {
@@ -1020,8 +1014,7 @@ func PickBestIntra4(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore
 
       // Compute RD-score
       rd_tmp.D = VP8SSE4x4(src, tmp_dst);
-      rd_tmp.SD =
-          tlambda ? MULT_8B(tlambda, VP8TDisto4x4(src, tmp_dst, kWeightY)) : 0;
+      rd_tmp.SD = tlambda ? MULT_8B(tlambda, VP8TDisto4x4(src, tmp_dst, kWeightY)) : 0;
       rd_tmp.H = mode_costs[mode];
 
       // Add flatness penalty, to afunc flat area to be mispredicted

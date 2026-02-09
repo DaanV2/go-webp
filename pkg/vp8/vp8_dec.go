@@ -8,25 +8,26 @@
 
 package vp8
 
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
+
 // import "github.com/daanv2/go-webp/pkg/string"
 // import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
 // import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
 // import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
 // import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
 // import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+
 // import "github.com/daanv2/go-webp/pkg/libwebp/dsp" // duplicate
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+
 // import "github.com/daanv2/go-webp/pkg/libwebp/utils" // duplicate
 // import "github.com/daanv2/go-webp/pkg/libwebp/utils" // duplicate
 // import "github.com/daanv2/go-webp/pkg/libwebp/utils" // duplicate
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+
 // import "github.com/daanv2/go-webp/pkg/libwebp/webp" // duplicate
 // import "github.com/daanv2/go-webp/pkg/libwebp/webp" // duplicate
-import "github.com/daanv2/go-webp/pkg/util/tenary"
 
 var (
 kCat3 = []uint8{173, 148, 140, 0}
@@ -748,8 +749,7 @@ func VP8InitScanline(/* const */ dec *VP8Decoder) {
 func ParseFrame(/* const */ dec *VP8Decoder, io *VP8Io) int {
   for dec.mb_y = 0; dec.mb_y < dec.br_mb_y; dec.mb_y++ {
     // Parse bitstream for this row.
-    var token_br *VP8BitReader =
-        &dec.parts[dec.mb_y & dec.num_parts_minus_one]
+    var token_br *VP8BitReader = &dec.parts[dec.mb_y & dec.num_parts_minus_one]
     if VP8ParseIntraModeRow(&dec.br, dec) == 0 {
       return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "Premature end-of-partition0 encountered.")
     }

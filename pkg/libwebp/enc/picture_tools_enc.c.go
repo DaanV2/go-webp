@@ -226,8 +226,7 @@ func WebPBlendAlpha(picture *picture.Picture, uint32 background_rgb) {
       }
       // Chroma blending every even line
       if ((y & 1) == 0) {
-        var a_ptr *uint82 =
-            (y + 1 == picture.Height) ? a_ptr : a_ptr + picture.AStride;
+        var a_ptr *uint82 = (y + 1 == picture.Height) ? a_ptr : a_ptr + picture.AStride;
         for x = 0; x < uv_width; x++ {
           // Average four alpha values into a single blending weight.
           // TODO(skal): might lead to visible contouring. Can we do better?

@@ -74,7 +74,7 @@ func ParseIntraMode(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder, mb_
   block.is_i4x4 = !VP8GetBit(br, 145, "block-size");
   if (!block.is_i4x4) {
     // Hardcoded 16x16 intra-mode decision tree.
-    ymode :=tenary.If(VP8GetBit(br, 156, "pred-modes"),  tenary.If(VP8GetBit(br, 128, "pred-modes"), TM_PRED, H_PRED), tenary.If(VP8GetBit(br, 163, "pred-modes") ? V_PRED, DC_PRED))
+    ymode :=tenary.If(VP8GetBit(br, 156, "pred-modes"),  tenary.If(VP8GetBit(br, 128, "pred-modes"), TM_PRED, H_PRED), tenary.If(VP8GetBit(br, 163, "pred-modes"), V_PRED, DC_PRED))
     block.imodes[0] = ymode;
     stdlib.Memset(top, ymode, 4 * sizeof(*top));
     stdlib.Memset(left, ymode, 4 * sizeof(*left));
@@ -95,8 +95,7 @@ func ParseIntraMode(/* const */ br *VP8BitReader, /*const*/ dec *VP8Decoder, mb_
         ymode = -i;
 #else
         // Hardcoded tree parsing
-        ymode =
-            !VP8GetBit(br, prob[0], "pred-modes")   ? B_DC_PRED
+        ymode = !VP8GetBit(br, prob[0], "pred-modes")   ? B_DC_PRED
             : !VP8GetBit(br, prob[1], "pred-modes") ? B_TM_PRED
             : !VP8GetBit(br, prob[2], "pred-modes") ? B_VE_PRED
             : !VP8GetBit(br, prob[3], "pred-modes")

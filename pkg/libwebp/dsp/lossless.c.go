@@ -97,8 +97,7 @@ static LOCAL_INLINE int Sub3(int a, b int, c int) {
 #undef LOCAL_INLINE
 
 func Select(uint32 a, uint32 b, uint32 c) uint32 {
-  pa_minus_pb :=
-      Sub3((a >> 24), (b >> 24), (c >> 24)) +
+  pa_minus_pb := Sub3((a >> 24), (b >> 24), (c >> 24)) +
       Sub3((a >> 16) & 0xff, (b >> 16) & 0xff, (c >> 16) & 0xff) +
       Sub3((a >> 8) & 0xff, (b >> 8) & 0xff, (c >> 8) & 0xff) +
       Sub3((a) & 0xff, (b) & 0xff, (c) & 0xff);
@@ -212,8 +211,7 @@ func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, y_start i
     tile_width := 1 << transform.bits;
     mask := tile_width - 1;
     tiles_per_row := VP8LSubSampleSize(width, transform.bits);
-    var pred_mode_base *uint32 =
-        transform.data + (y >> transform.bits) * tiles_per_row;
+    var pred_mode_base *uint32 = transform.data + (y >> transform.bits) * tiles_per_row;
 
     while (y < y_end) {
       var pred_mode_src *uint32 = pred_mode_base;
@@ -222,8 +220,7 @@ func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, y_start i
       PredictorAdd2_C(in, out - width, 1, out);
       // .. the rest:
       while (x < width) {
-        var pred_func VP8LPredictorAddSubFunc =
-            VP8LPredictorsAdd[((*pred_mode_src++) >> 8) & 0xf];
+        var pred_func VP8LPredictorAddSubFunc = VP8LPredictorsAdd[((*pred_mode_src++) >> 8) & 0xf];
         x_end := (x & ~mask) + tile_width;
         if x_end > width { x_end = width }
         pred_func(in + x, out + x - width, x_end - x, out + x);
@@ -289,8 +286,7 @@ func ColorSpaceInverseTransform_C(/* const */ transform *VP8LTransform, y_start 
   remaining_width := width - safe_width;
   tiles_per_row := VP8LSubSampleSize(width, transform.bits);
   y := y_start;
-  var pred_row *uint32 =
-      transform.data + (y >> transform.bits) * tiles_per_row;
+  var pred_row *uint32 = transform.data + (y >> transform.bits) * tiles_per_row;
 
   while (y < y_end) {
     var pred *uint32 = pred_row;
@@ -391,8 +387,7 @@ func VP8LInverseTransform(/* const */ transform *VP8LTransform, row_start int, r
         // the effective width of VP8LSubSampleSize(xsize, bits). All other
         // transforms work on effective width of 'xsize'.
         out_stride := (row_end - row_start) * width;
-        in_stride :=
-            (row_end - row_start) *
+        in_stride := (row_end - row_start) *
             VP8LSubSampleSize(transform.xsize, transform.bits);
         var src *uint32 = out + out_stride - in_stride;
         memmove(src, out, in_stride * sizeof(*src));
