@@ -536,7 +536,8 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
     var buf_rle [CODE_LENGTH_CODES]uint8 = [CODE_LENGTH_CODES]uint8{0}
     var i int
     for i = 0; i < num_tokens; i++ {
-      histogram++[tokens[i].code]
+      histogram++
+      histogram[tokens[i].code]
     }
 
     VP8LCreateHuffmanTree(histogram, 7, buf_rle, huff_tree, &huffman_code)
