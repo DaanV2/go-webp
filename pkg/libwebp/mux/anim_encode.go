@@ -747,7 +747,7 @@ type Candidate struct {
 // Generates a candidate encoded frame given a picture and metadata.
 func EncodeCandidate(/* const */ sub_frame *picture.Picture, /*const*/ rect *FrameRectangle, /*const*/ encoder_config *config.Config, use_blending int, /*const*/ candidate *Candidate) WebPEncodingError {
   config.Config config = *encoder_config;
-  WebPEncodingError error_code = VP8_ENC_OK;
+  WebPEncodingError error_code = ENC_OK;
   assert.Assert(candidate != nil);
   stdlib.Memset(candidate, 0, sizeof(*candidate));
 
@@ -893,7 +893,7 @@ func PickBestCandidate(/* const */ enc *WebPAnimEncoder, /*const*/ candidate *Ca
 // 'params'.
 static WebPEncodingError GenerateCandidates(
     const enc *WebPAnimEncoder, Candidate candidates[CANDIDATE_COUNT], WebPMuxAnimDispose dispose_method, /*const*/ canvas_carryover_disposed *picture.Picture, is_lossless bool, is_key_frame int, /*const*/ params *SubFrameParams, /*const*/ config_ll *config.Config, /*const*/ config_lossy *config.Config, *Candidate* const best_candidate, /*const*/ encoded_frame *EncodedFrame) {
-  WebPEncodingError error_code = VP8_ENC_OK;
+  WebPEncodingError error_code = ENC_OK;
   is_dispose_none := (dispose_method == WEBP_MUX_DISPOSE_NONE);
   const candidate_ll *Candidate =
       is_dispose_none ? &candidates[LL_DISP_NONE] : &candidates[LL_DISP_BG];
@@ -937,7 +937,7 @@ static WebPEncodingError GenerateCandidates(
           IncreaseTransparency(canvas_carryover, &params.rect_ll, curr_canvas, enc.candidate_carryover_mask);
     }
     error_code = EncodeCandidate(&params.sub_frame_ll, &params.rect_ll, config_ll, use_blending_ll, candidate_ll);
-    if error_code != VP8_ENC_OK { return error_code  }
+    if error_code != ENC_OK { return error_code  }
     candidate_ll.carries_over = enc.curr_canvas_copy_modified;
     PickBestCandidate(enc, candidate_ll, dispose_method, is_key_frame, best_candidate, encoded_frame);
   }
@@ -952,7 +952,7 @@ static WebPEncodingError GenerateCandidates(
     }
     error_code =
         EncodeCandidate(&params.sub_frame_lossy, &params.rect_lossy, config_lossy, use_blending_lossy, candidate_lossy);
-    if error_code != VP8_ENC_OK { return error_code  }
+    if error_code != ENC_OK { return error_code  }
     candidate_lossy.carries_over = enc.curr_canvas_copy_modified;
     enc.curr_canvas_copy_modified = 1;
     PickBestCandidate(enc, candidate_lossy, dispose_method, is_key_frame, best_candidate, encoded_frame);
@@ -1062,7 +1062,7 @@ func CopyMaskedPixels(/* const */ src *picture.Picture, /*const*/ mask *uint8, /
 // 'frame_skipped' will be set to true if this frame should actually be skipped.
 func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config, is_key_frame int , /*const*/ best_candidate_rect *FrameRectangle, /*const*/ encoded_frame *EncodedFrame, /*const*/ frame_skipped *int) WebPEncodingError {
   var i int
-  WebPEncodingError error_code = VP8_ENC_OK;
+  WebPEncodingError error_code = ENC_OK;
   var curr_canvas *picture.Picture = &enc.curr_canvas_copy;
   var canvas_carryover *picture.Picture = &enc.canvas_carryover;
   // canvas_carryover with the area corresponding to the previous frame disposed
@@ -1107,14 +1107,14 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config,
 
   if (!SubFrameParamsInit(&dispose_none_params, 1, empty_rect_allowed_none) ||
       !SubFrameParamsInit(&dispose_bg_params, 0, empty_rect_allowed_bg)) {
-    return VP8_ENC_ERROR_INVALID_CONFIGURATION;
+    return ENC_ERROR_INVALID_CONFIGURATION;
   }
 
   stdlib.Memset(candidates, 0, sizeof(candidates));
 
   // Change-rectangle assuming previous frame was DISPOSE_NONE.
   if (!GetSubRects(canvas_carryover, curr_canvas, is_key_frame, is_first_frame, config_lossy.quality, &dispose_none_params)) {
-    error_code = VP8_ENC_ERROR_INVALID_CONFIGURATION;
+    error_code = ENC_ERROR_INVALID_CONFIGURATION;
     goto Err;
   }
 
@@ -1137,7 +1137,7 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config,
     DisposeFrameRectangle(WEBP_MUX_DISPOSE_BACKGROUND, &enc.prev_rect, canvas_carryover_disposed);
 
     if (!GetSubRects(canvas_carryover_disposed, curr_canvas, is_key_frame, is_first_frame, config_lossy.quality, &dispose_bg_params)) {
-      error_code = VP8_ENC_ERROR_INVALID_CONFIGURATION;
+      error_code = ENC_ERROR_INVALID_CONFIGURATION;
       goto Err;
     }
     assert.Assert(!IsEmptyRect(&dispose_bg_params.rect_ll));
@@ -1159,7 +1159,7 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config,
   if (dispose_none_params.should_try) {
     error_code =
         GenerateCandidates(enc, candidates, WEBP_MUX_DISPOSE_NONE, /*canvas_carryover_disposed=*/nil, is_lossless, is_key_frame, &dispose_none_params, &config_ll, &config_lossy, &best_candidate, encoded_frame);
-    if error_code != VP8_ENC_OK { goto Err }
+    if error_code != ENC_OK { goto Err }
   }
 
   if (dispose_bg_params.should_try) {
@@ -1167,7 +1167,7 @@ func SetFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config,
     assert.Assert(dispose_bg_possible);
     error_code = GenerateCandidates(
         enc, candidates, WEBP_MUX_DISPOSE_BACKGROUND, canvas_carryover_disposed, is_lossless, is_key_frame, &dispose_bg_params, &config_ll, &config_lossy, &best_candidate, encoded_frame);
-    if error_code != VP8_ENC_OK { goto Err }
+    if error_code != ENC_OK { goto Err }
   }
 
   assert.Assert(best_candidate != nil);
@@ -1196,7 +1196,7 @@ func KeyFramePenalty(/* const */ encoded_frame *EncodedFrame) int64 {
 func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config) int {
   ok := 0;
   frame_skipped := 0;
-  WebPEncodingError error_code = VP8_ENC_OK;
+  WebPEncodingError error_code = ENC_OK;
   position := enc.count;
   var encoded_frame *EncodedFrame = GetFrame(enc, position);
   var best_key_candidate_rect, best_sub_candidate_rect FrameRectangle
@@ -1206,7 +1206,7 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Confi
 
   if (enc.is_first_frame) {  // Add this as a keyframe.
     error_code = SetFrame(enc, config, 1, &best_key_candidate_rect, encoded_frame, &frame_skipped);
-    if error_code != VP8_ENC_OK { goto End }
+    if error_code != ENC_OK { goto End }
     assert.Assert(frame_skipped == 0);  // First frame can't be skipped, even if empty.
     assert.Assert(position == 0 && enc.count == 1);
     encoded_frame.is_key_frame = 1;
@@ -1229,7 +1229,7 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Confi
     if (enc.count_since_key_frame <= enc.options.kmin) {
       // Add this as a frame rectangle.
       error_code = SetFrame(enc, config, 0, &best_sub_candidate_rect, encoded_frame, &frame_skipped);
-      if (error_code != VP8_ENC_OK){ goto End;}
+      if (error_code != ENC_OK){ goto End;}
       if frame_skipped { {goto Skip }}
       encoded_frame.is_key_frame = 0;
       enc.flush_count = enc.count - 1;
@@ -1243,12 +1243,12 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Confi
       //       enc.best_delta < DELTA_INFINITY).
       //       frame_skipped should still be tested to keep exact same behavior.
       error_code = SetFrame(enc, config, 0, &best_sub_candidate_rect, encoded_frame, &frame_skipped);
-      if error_code != VP8_ENC_OK { goto End }
+      if error_code != ENC_OK { goto End }
       if frame_skipped { goto Skip }
 
       // Add this as a keyframe to enc, too.
       error_code = SetFrame(enc, config, 1, &best_key_candidate_rect, encoded_frame, &frame_skipped);
-      if error_code != VP8_ENC_OK { goto End }
+      if error_code != ENC_OK { goto End }
       assert.Assert(frame_skipped == 0);  // keyframe cannot be an empty rectangle.
 
       // Analyze size difference of the two variants.
@@ -1305,7 +1305,7 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Confi
     // Focus on the current frame rectangle.
     if (!picture.WebPPictureView(enc.curr_canvas, curr_rect.x_offset, curr_rect.y_offset, curr_rect.width, curr_rect.height, &curr_canvas_in_curr_rect) ||
         !picture.WebPPictureView(&enc.canvas_carryover, curr_rect.x_offset, curr_rect.y_offset, curr_rect.width, curr_rect.height, &canvas_carryover_in_curr_rect)) {
-      error_code = VP8_ENC_ERROR_INVALID_CONFIGURATION;
+      error_code = ENC_ERROR_INVALID_CONFIGURATION;
       goto End;
     }
 
@@ -1351,7 +1351,7 @@ End:
     }
   }
   enc.curr_canvas.ErrorCode = error_code;  // report error_code
-  assert.Assert(ok || error_code != VP8_ENC_OK);
+  assert.Assert(ok || error_code != ENC_OK);
   return ok;
 }
 
@@ -1408,7 +1408,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp 
         (uint32)timestamp - enc.prev_timestamp;
     if (prev_frame_duration >= MAX_DURATION) {
       if (frame != nil) {
-        frame.ErrorCode = VP8_ENC_ERROR_INVALID_CONFIGURATION;
+        frame.ErrorCode = ENC_ERROR_INVALID_CONFIGURATION;
       }
       MarkError(enc, "ERROR adding frame: timestamps must be non-decreasing");
       return 0;
@@ -1434,7 +1434,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp 
 
   if (frame.width != enc.canvas_width ||
       frame.height != enc.canvas_height) {
-    frame.ErrorCode = VP8_ENC_ERROR_INVALID_CONFIGURATION;
+    frame.ErrorCode = ENC_ERROR_INVALID_CONFIGURATION;
     MarkError(enc, "ERROR adding frame: Invalid frame dimensions");
     return 0;
   }

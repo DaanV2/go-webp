@@ -689,7 +689,7 @@ func StoreImageToBitMask(/* const */ bw *VP8LBitWriter, width int, histo_bits in
     VP8LRefsCursorNext(&c)
   }
   if bw.error {
-    return pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    return pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
   }
   return 1
 }
@@ -708,7 +708,7 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
 //   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(
 //       uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
 //   if (huff_tree == nil) {
-//     pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+//     pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //     goto Error;
 //   }
   huff_tree := make([]HuffmanTree, 3*CODE_LENGTH_CODES)
@@ -723,7 +723,7 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
   refs = &refs_array[0]
   histogram_image = VP8LAllocateHistogramSet(1, cache_bits)
   if histogram_image == nil {
-    pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
   VP8LHistogramSetClear(histogram_image)
@@ -734,7 +734,7 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
   // Create Huffman bit lengths and codes for each histogram image.
   assert.Assert(histogram_image.size == 1)
   if !GetHuffBitLengthsAndCodes(histogram_image, huffman_codes) {
-    pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
 
@@ -751,7 +751,7 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
 
 //   tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens));
 //   if (tokens == nil) {
-//     pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+//     pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //     goto Error;
 //   }
   tokens := make([]HuffmanTreeToken, max_tokens)
@@ -769,7 +769,7 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
   }
 
 Error:
-  return (pic.ErrorCode == VP8_ENC_OK)
+  return (pic.ErrorCode == ENC_OK)
 }
 
 // pic and percent are for progress.
@@ -810,14 +810,14 @@ func EncodeImageInternal(
 
   // C: stdlib.Memset(&hash_chain_histogram, 0, sizeof(hash_chain_histogram))
   if !VP8LBitWriterInit(&bw_best, 0) {
-    pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
 
 //   // Make sure we can allocate the different objects.
 //   if (huff_tree == nil || histogram_argb == nil ||
 //       !VP8LHashChainInit(&hash_chain_histogram, histogram_image_xysize)) {
-//     pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+//     pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //     goto Error;
 //   }
 
@@ -834,7 +834,7 @@ func EncodeImageInternal(
   // If several iterations will happen, clone into bw_best.
   if ((config.sub_configs_size > 1 || config.sub_configs[0].do_no_cache) &&
       !VP8LBitWriterClone(bw, &bw_best)) {
-    pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
 
@@ -867,7 +867,7 @@ func EncodeImageInternal(
           VP8LAllocateHistogramSet(histogram_image_xysize, cache_bits_tmp)
       tmp_histo = VP8LAllocateHistogram(cache_bits_tmp)
       if histogram_image == nil || tmp_histo == nil {
-        pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+        pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
         goto Error
       }
 
@@ -886,7 +886,7 @@ func EncodeImageInternal(
       // latter need to outlive the following call to
       // GetHuffBitLengthsAndCodes().
       if !GetHuffBitLengthsAndCodes(histogram_image, huffman_codes) {
-        pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+        pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
         goto Error
       }
       // Free combined histograms.
@@ -938,7 +938,7 @@ func EncodeImageInternal(
 
         // tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens));
         // if (tokens == nil) {
-        //   pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+        //   pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
         //   goto Error;
         // }
 		tokens = make([]HuffmanTreeToken, max_tokens)
@@ -977,7 +977,7 @@ func EncodeImageInternal(
 
 Error:
   VP8LHashChainClear(&hash_chain_histogram)
-  return (pic.ErrorCode == VP8_ENC_OK)
+  return (pic.ErrorCode == ENC_OK)
 }
 
 // -----------------------------------------------------------------------------
@@ -1056,18 +1056,18 @@ func WriteImage(/* const */ pic *picture.Picture, /*const*/ bw *VP8LBitWriter, /
   *coded_size = 0
 
   if bw.error {
-    return pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    return pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
   }
 
   if (!WriteRiffHeader(pic, riff_size, vp8l_size) ||
       !pic.writer(webpll_data, webpll_size, pic)) {
-    return pic.SetEncodingError(picture.VP8_ENC_ERROR_BAD_WRITE)
+    return pic.SetEncodingError(picture.ENC_ERROR_BAD_WRITE)
   }
 
   if pad {
     pad_byte[1] := {0}
     if !pic.writer(pad_byte, 1, pic) {
-      return pic.SetEncodingError(picture.VP8_ENC_ERROR_BAD_WRITE)
+      return pic.SetEncodingError(picture.ENC_ERROR_BAD_WRITE)
     }
   }
   *coded_size = CHUNK_HEADER_SIZE + riff_size
@@ -1110,7 +1110,7 @@ func AllocateTransformBuffer(/* const */ enc *VP8LEncoder, width, height int) in
 
     // mem = (*uint32)WebPSafeMalloc(mem_size, sizeof(*mem));
     // if (mem == nil) {
-    //   return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    //   return enc.pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     // }
 	mem = make([]uint32, mem_size)
 
@@ -1215,7 +1215,7 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
   
 //   var tmp_row *uint8 = (*uint8)WebPSafeMalloc(width, sizeof(*tmp_row));
 //   if (tmp_row == nil) {
-//     return pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+//     return pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //   }
 	tmp_row := make([]uint8, width)
 
@@ -1324,7 +1324,7 @@ func EncodePalette(/* const */ bw *VP8LBitWriter, low_effort int, /*const*/ enc 
 func VP8LEncoderNew(/* const */ config *config.Config, /*const*/ picture *picture.Picture) *VP8LEncoder {
 //   var enc *VP8LEncoder = (*VP8LEncoder)WebPSafeCalloc(uint64(1), sizeof(*enc));
 //   if (enc == nil) {
-//     picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+//     picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //     return nil;
 //   }
   enc := &VP8LEncoder{
@@ -1394,7 +1394,7 @@ func EncodeStreamHook(input *void, data *void2) int {
 
   if (!VP8LBitWriterInit(&bw_best, 0) ||
       (num_crunch_configs > 1 && !VP8LBitWriterClone(bw, &bw_best))) {
-    picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
 
@@ -1428,7 +1428,7 @@ func EncodeStreamHook(input *void, data *void2) int {
       if !AllocateTransformBuffer(enc, width, height) { goto Error }
       if ((enc.argb_content != kEncoderNearLossless) &&
           !VP8ApplyNearLossless(picture, config.NearLossless, enc.argb)) {
-        picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+        picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
         goto Error
       }
       enc.argb_content = kEncoderNearLossless
@@ -1442,7 +1442,7 @@ func EncodeStreamHook(input *void, data *void2) int {
     // Encode palette
     if enc.use_palette {
       if !PaletteSort(crunch_configs[idx].palette_sorting_type, enc.pic, enc.palette_sorted, enc.palette_size, enc.palette) {
-        enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+        enc.pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
         goto Error
       }
       percent_range = remaining_percent / 4
@@ -1526,7 +1526,7 @@ func EncodeStreamHook(input *void, data *void2) int {
 
 Error:
   // The hook should return false in case of error.
-  return (params.picture.ErrorCode == VP8_ENC_OK)
+  return (params.picture.ErrorCode == ENC_OK)
 }
 
 // Encodes the main image stream using the supplied bit writer.
@@ -1549,7 +1549,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
 
   if enc_main == nil || !VP8LBitWriterInit(&bw_side, 0) {
     VP8LEncoderDelete(enc_main)
-    return picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    return picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
   }
 
   // Afunc "garbage value" error from Clang's static analysis tool.
@@ -1560,7 +1560,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
   // Analyze image (entropy, num_palettes etc)
   if (!EncoderAnalyze(enc_main, crunch_configs, &num_crunch_configs_main, &red_and_blue_always_zero) ||
       !EncoderInit(enc_main)) {
-    picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
 
@@ -1605,14 +1605,14 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
         param.stats = (picture.stats == nil) ? nil : &stats_side
         // Create a side bit writer.
         if !VP8LBitWriterClone(bw_main, &bw_side) {
-          picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+          picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
           goto Error
         }
         param.bw = &bw_side
         // Create a side encoder.
         enc_side = VP8LEncoderNew(config, &picture_side)
         if enc_side == nil || !EncoderInit(enc_side) {
-          picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+          picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
           goto Error
         }
         // Copy the values that were computed for the main encoder.
@@ -1636,7 +1636,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
   // Start the second thread if needed.
   if num_crunch_configs_side != 0 {
     if !worker_interface.Reset(&worker_side) {
-      picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+      picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
       goto Error
     }
 
@@ -1658,8 +1658,8 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
     ok_side := worker_interface.Sync(&worker_side)
     worker_interface.End(&worker_side)
     if !ok_main || !ok_side {
-      if picture.ErrorCode == VP8_ENC_OK {
-        assert.Assert(picture_side.ErrorCode != VP8_ENC_OK)
+      if picture.ErrorCode == ENC_OK {
+        assert.Assert(picture_side.ErrorCode != ENC_OK)
         picture.SetEncodingError(picture.picture_side.ErrorCode)
       }
       goto Error
@@ -1677,7 +1677,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
 Error:
   VP8LEncoderDelete(enc_main)
   VP8LEncoderDelete(enc_side)
-  return (picture.ErrorCode == VP8_ENC_OK)
+  return (picture.ErrorCode == ENC_OK)
 }
 
 // C: #undef CRUNCH_CONFIGS_MAX
@@ -1697,7 +1697,7 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *pictu
   if picture == nil { return 0  }
 
   if config == nil || picture.ARGB == nil {
-    return picture.SetEncodingError(picture.VP8_ENC_ERROR_nil_PARAMETER)
+    return picture.SetEncodingError(picture.ENC_ERROR_nil_PARAMETER)
   }
 
   width = picture.Width
@@ -1707,13 +1707,13 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *pictu
   initial_size = (config.ImageHint == WEBP_HINT_GRAPH) ? width * height
                                                          : width * height * 2
   if !VP8LBitWriterInit(&bw, initial_size) {
-    picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
 
   if !WebPReportProgress(picture, 1, &percent) {
   UserAbort:
-    picture.SetEncodingError(picture.VP8_ENC_ERROR_USER_ABORT)
+    picture.SetEncodingError(picture.ENC_ERROR_USER_ABORT)
     goto Error
   }
   // Reset stats (for pure lossless coding)
@@ -1729,14 +1729,14 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *pictu
 
   // Write image size.
   if !WriteImageSize(picture, &bw) {
-    picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
 
   has_alpha = picture.WebPPictureHasTransparency(picture)
   // Write the non-trivial Alpha flag and lossless version.
   if !WriteRealAlphaAndVersion(&bw, has_alpha) {
-    picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error
   }
 
@@ -1768,9 +1768,9 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *pictu
 
 Error:
   if bw.error {
-    picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
   }
-  return (picture.ErrorCode == VP8_ENC_OK)
+  return (picture.ErrorCode == ENC_OK)
 }
 
 //------------------------------------------------------------------------------

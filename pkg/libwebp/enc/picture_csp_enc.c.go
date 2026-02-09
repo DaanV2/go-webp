@@ -31,7 +31,7 @@ func PreprocessARGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ 
   ok := SharpYuvConvert(
       r_ptr, g_ptr, b_ptr, step, rgb_stride, /*rgb_bit_depth=*/8, picture.Y, picture.YStride, picture.U, picture.UVStride, picture.V, picture.UVStride, /*yuv_bit_depth=*/8, picture.Width, picture.Height, SharpYuvGetConversionMatrix(kSharpYuvMatrixWebp));
   if (!ok) {
-    return picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    return picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
   }
   return ok;
 }
@@ -110,7 +110,7 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
     WebPInitGammaTables();
 
     // if (tmp_rgb == nil) {
-    //   return picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    //   return picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     // }
 
     if (rg == nil) {
@@ -187,13 +187,13 @@ static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, 
 func WebPPictureYUVAToARGB(picture *picture.Picture) int {
   if picture == nil { return 0  }
   if (picture.Y == nil || picture.U == nil || picture.V == nil) {
-    return picture.SetEncodingError(picture.VP8_ENC_ERROR_nil_PARAMETER)
+    return picture.SetEncodingError(picture.ENC_ERROR_nil_PARAMETER)
   }
   if ((picture.ColorSpace & colorspace.WEBP_CSP_ALPHA_BIT) && picture.A == nil) {
-    return picture.SetEncodingError(picture.VP8_ENC_ERROR_nil_PARAMETER)
+    return picture.SetEncodingError(picture.ENC_ERROR_nil_PARAMETER)
   }
   if ((picture.ColorSpace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420) {
-    return picture.SetEncodingError(picture.VP8_ENC_ERROR_INVALID_CONFIGURATION)
+    return picture.SetEncodingError(picture.ENC_ERROR_INVALID_CONFIGURATION)
   }
   // Allocate a new argb buffer (discarding the previous one).
   if !picture.WebPPictureAllocARGB(picture) { return 0  }

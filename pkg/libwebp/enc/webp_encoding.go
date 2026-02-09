@@ -23,19 +23,19 @@ func WebPEncode( /* const */ config *config.Config, pic *picture.Picture) int {
 		return 0
 	}
 
-	pic.ErrorCode = picture.VP8_ENC_OK // all ok so far
+	pic.ErrorCode = picture.ENC_OK // all ok so far
 	if config == nil {         // bad params
-		return WebPEncodingSetError(pic, VP8_ENC_ERROR_nil_PARAMETER)
+		return WebPEncodingSetError(pic, ENC_ERROR_nil_PARAMETER)
 	}
 	err := config.Validate()
 	if err != nil { //TODO: just return err
-		return WebPEncodingSetError(pic, VP8_ENC_ERROR_INVALID_CONFIGURATION)
+		return WebPEncodingSetError(pic, ENC_ERROR_INVALID_CONFIGURATION)
 	}
 	if !WebPValidatePicture(pic) {
 		return 0
 	}
 	if pic.width > WEBP_MAX_DIMENSION || pic.height > WEBP_MAX_DIMENSION {
-		return WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_DIMENSION)
+		return WebPEncodingSetError(pic, ENC_ERROR_BAD_DIMENSION)
 	}
 
 	if pic.stats != nil {

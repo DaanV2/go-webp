@@ -108,7 +108,7 @@ func WebPPictureInitInternal(picture *Picture) {
 		// stdlib.Memset(picture, 0, sizeof(*picture))
 		*picture = Picture{
 			Writer:    DummyWriter,
-			ErrorCode: VP8_ENC_OK,
+			ErrorCode: ENC_OK,
 		}
 	}
 }
@@ -181,11 +181,11 @@ func WebPValidatePicture( /* const */ picture *picture.Picture) error {
 	}
 	if picture.Width <= 0 || picture.Width > math.MaxInt/4 ||
 		picture.Height <= 0 || picture.Height > math.MaxInt/4 {
-		return WebPEncodingSetError(picture, VP8_ENC_ERROR_BAD_DIMENSION)
+		return WebPEncodingSetError(picture, ENC_ERROR_BAD_DIMENSION)
 	}
 	if picture.ColorSpace != colorspace.WEBP_YUV420 &&
 		picture.ColorSpace != colorspace.WEBP_YUV420A {
-		return WebPEncodingSetError(picture, VP8_ENC_ERROR_INVALID_CONFIGURATION)
+		return WebPEncodingSetError(picture, ENC_ERROR_INVALID_CONFIGURATION)
 	}
 
 	return nil

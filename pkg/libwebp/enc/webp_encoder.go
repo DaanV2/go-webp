@@ -150,7 +150,7 @@ func InitVP8Encoder(/* const */ config *config.Config, /*const*/ picture *pictur
 
 //   mem = (*uint8)WebPSafeMalloc(size, sizeof(*mem));
 //   if (mem == nil) {
-//     picture.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+//     picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //     return nil;
 //   }
 	mem = make([]uint8, size)

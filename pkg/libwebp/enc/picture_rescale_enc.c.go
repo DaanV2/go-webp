@@ -161,13 +161,13 @@ func WebPPictureRescale(picture *picture.Picture, width, height int) int {
    var tmp picture.Picture
   int prev_width, prev_height;
   rescaler_t* work;
-  status := VP8_ENC_OK;
+  status := ENC_OK;
 
   if picture == nil { return 0  }
   prev_width = picture.Width;
   prev_height = picture.Height;
   if (!WebPRescalerGetScaledDimensions(prev_width, prev_height, &width, &height)) {
-    return picture.SetEncodingError(picture.VP8_ENC_ERROR_BAD_DIMENSION)
+    return picture.SetEncodingError(picture.ENC_ERROR_BAD_DIMENSION)
   }
 
   PictureGrabSpecs(picture, &tmp);
@@ -180,7 +180,7 @@ func WebPPictureRescale(picture *picture.Picture, width, height int) int {
   if (!picture.UseARGB) {
     // work = (rescaler_t*)WebPSafeMalloc(uint64(2) * width, sizeof(*work));
     // if (work == nil) {
-    //   status = VP8_ENC_ERROR_OUT_OF_MEMORY;
+    //   status = ENC_ERROR_OUT_OF_MEMORY;
     //   goto Cleanup;
     // }
 	work = make([]rescaler_t, 2 * width)
@@ -188,7 +188,7 @@ func WebPPictureRescale(picture *picture.Picture, width, height int) int {
     if (picture.A != nil) {
       WebPInitAlphaProcessing();
       if (!RescalePlane(picture.A, prev_width, prev_height, picture.AStride, tmp.a, width, height, tmp.a_stride, work, 1)) {
-        status = VP8_ENC_ERROR_BAD_DIMENSION;
+        status = ENC_ERROR_BAD_DIMENSION;
         goto Cleanup;
       }
     }
@@ -199,14 +199,14 @@ func WebPPictureRescale(picture *picture.Picture, width, height int) int {
     if (!RescalePlane(picture.Y, prev_width, prev_height, picture.YStride, tmp.y, width, height, tmp.y_stride, work, 1) ||
         !RescalePlane(picture.U, HALVE(prev_width), HALVE(prev_height), picture.UVStride, tmp.u, HALVE(width), HALVE(height), tmp.uv_stride, work, 1) ||
         !RescalePlane(picture.V, HALVE(prev_width), HALVE(prev_height), picture.UVStride, tmp.v, HALVE(width), HALVE(height), tmp.uv_stride, work, 1)) {
-      status = VP8_ENC_ERROR_BAD_DIMENSION;
+      status = ENC_ERROR_BAD_DIMENSION;
       goto Cleanup;
     }
     AlphaMultiplyY(&tmp, 1);
   } else {
     // work = (rescaler_t*)WebPSafeMalloc(uint64(2) * width * 4, sizeof(*work));
     // if (work == nil) {
-    //   status = VP8_ENC_ERROR_BAD_DIMENSION;
+    //   status = ENC_ERROR_BAD_DIMENSION;
     //   goto Cleanup;
     // }
 	work := make([]rescaler_t, 2 * width * 4)
@@ -217,14 +217,14 @@ func WebPPictureRescale(picture *picture.Picture, width, height int) int {
     WebPInitAlphaProcessing();
     AlphaMultiplyARGB(picture, 0);
     if (!RescalePlane((/* const */ *uint8)picture.ARGB, prev_width, prev_height, picture.ARGBStride * 4, (*uint8)tmp.argb, width, height, tmp.argb_stride * 4, work, 4)) {
-      status = VP8_ENC_ERROR_BAD_DIMENSION;
+      status = ENC_ERROR_BAD_DIMENSION;
       goto Cleanup;
     }
     AlphaMultiplyARGB(&tmp, 1);
   }
 
 Cleanup:
-  if (status != VP8_ENC_OK) {
+  if (status != ENC_OK) {
     picture.WebPPictureFree(&tmp);
     return picture.SetEncodingError(picture.status)
   }

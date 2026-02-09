@@ -286,11 +286,11 @@ func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter in
   assert.Assert(filter >= WEBP_FILTER_NONE && filter <= WEBP_FILTER_FAST);
 
   if (quality < 0 || quality > 100) {
-    return pic.SetEncodingError(picture.VP8_ENC_ERROR_INVALID_CONFIGURATION)
+    return pic.SetEncodingError(picture.ENC_ERROR_INVALID_CONFIGURATION)
   }
 
   if (method < ALPHA_NO_COMPRESSION || method > ALPHA_LOSSLESS_COMPRESSION) {
-    return pic.SetEncodingError(picture.VP8_ENC_ERROR_INVALID_CONFIGURATION)
+    return pic.SetEncodingError(picture.ENC_ERROR_INVALID_CONFIGURATION)
   }
 
   if (method == ALPHA_NO_COMPRESSION) {
@@ -300,7 +300,7 @@ func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter in
 
 //   quant_alpha = (*uint8)WebPSafeMalloc(uint64(1), data_size);
 //   if (quant_alpha == nil) {
-//     return pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+//     return pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //   }
   quant_alpha = make([]uint8, data_size)
 
@@ -320,7 +320,7 @@ func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter in
     VP8FiltersInit();
     ok = ApplyFiltersAndEncode(quant_alpha, width, height, data_size, method, filter, reduce_levels, effort_level, output, output_size, pic.stats);
     if (!ok) {
-      pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)  // imprecise
+      pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)  // imprecise
     }
   }
 
@@ -371,7 +371,7 @@ func VP8EncStartAlpha(/* const */ enc *VP8Encoder) int {
       var worker *WebPWorker = &enc.alpha_worker;
       // Makes sure worker is good to go.
       if (!WebPGetWorkerInterface().Reset(worker)) {
-        return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+        return enc.pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
       }
       WebPGetWorkerInterface().Launch(worker);
       return 1;

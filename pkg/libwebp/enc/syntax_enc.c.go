@@ -47,9 +47,9 @@ func PutRIFFHeader(/* const */ enc *VP8Encoder, uint64 riff_size) WebPEncodingEr
   assert.Assert(riff_size == (uint32)riff_size);
   PutLE32(riff + TAG_SIZE, (uint32)riff_size);
   if (!pic.writer(riff, sizeof(riff), pic)) {
-    return VP8_ENC_ERROR_BAD_WRITE;
+    return ENC_ERROR_BAD_WRITE;
   }
-  return VP8_ENC_OK;
+  return ENC_OK;
 }
 
 func PutVP8XHeader(/* const */ enc *VP8Encoder) WebPEncodingError {
@@ -70,9 +70,9 @@ func PutVP8XHeader(/* const */ enc *VP8Encoder) WebPEncodingError {
   PutLE24(vp8x + CHUNK_HEADER_SIZE + 4, pic.width - 1);
   PutLE24(vp8x + CHUNK_HEADER_SIZE + 7, pic.height - 1);
   if (!pic.writer(vp8x, sizeof(vp8x), pic)) {
-    return VP8_ENC_ERROR_BAD_WRITE;
+    return ENC_ERROR_BAD_WRITE;
   }
-  return VP8_ENC_OK;
+  return ENC_OK;
 }
 
 func PutAlphaChunk(/* const */ enc *VP8Encoder) WebPEncodingError {
@@ -84,19 +84,19 @@ func PutAlphaChunk(/* const */ enc *VP8Encoder) WebPEncodingError {
   // Alpha chunk header.
   PutLE32(alpha_chunk_hdr + TAG_SIZE, enc.alpha_data_size);
   if (!pic.writer(alpha_chunk_hdr, sizeof(alpha_chunk_hdr), pic)) {
-    return VP8_ENC_ERROR_BAD_WRITE;
+    return ENC_ERROR_BAD_WRITE;
   }
 
   // Alpha chunk data.
   if (!pic.writer(enc.alpha_data, enc.alpha_data_size, pic)) {
-    return VP8_ENC_ERROR_BAD_WRITE;
+    return ENC_ERROR_BAD_WRITE;
   }
 
   // Padding.
   if ((enc.alpha_data_size & 1) && !PutPaddingByte(pic)) {
-    return VP8_ENC_ERROR_BAD_WRITE;
+    return ENC_ERROR_BAD_WRITE;
   }
-  return VP8_ENC_OK;
+  return ENC_OK;
 }
 
 func PutVP8Header(/* const */ pic *picture.Picture, uint64 vp8_size) WebPEncodingError {
@@ -104,9 +104,9 @@ func PutVP8Header(/* const */ pic *picture.Picture, uint64 vp8_size) WebPEncodin
   assert.Assert(vp8_size == (uint32)vp8_size);
   PutLE32(vp8_chunk_hdr + TAG_SIZE, (uint32)vp8_size);
   if (!pic.writer(vp8_chunk_hdr, sizeof(vp8_chunk_hdr), pic)) {
-    return VP8_ENC_ERROR_BAD_WRITE;
+    return ENC_ERROR_BAD_WRITE;
   }
-  return VP8_ENC_OK;
+  return ENC_OK;
 }
 
 func PutVP8FrameHeader(/* const */ pic *picture.Picture, profile int, uint64 size0) WebPEncodingError {
@@ -114,7 +114,7 @@ func PutVP8FrameHeader(/* const */ pic *picture.Picture, profile int, uint64 siz
   bits uint32;
 
   if (size0 >= VP8_MAX_PARTITION0_SIZE) {  // partition #0 is too big to fit
-    return VP8_ENC_ERROR_PARTITION0_OVERFLOW;
+    return ENC_ERROR_PARTITION0_OVERFLOW;
   }
 
   // Paragraph 9.1.
@@ -136,39 +136,39 @@ func PutVP8FrameHeader(/* const */ pic *picture.Picture, profile int, uint64 siz
   vp8_frm_hdr[9] = pic.height >> 8;
 
   if (!pic.writer(vp8_frm_hdr, sizeof(vp8_frm_hdr), pic)) {
-    return VP8_ENC_ERROR_BAD_WRITE;
+    return ENC_ERROR_BAD_WRITE;
   }
-  return VP8_ENC_OK;
+  return ENC_OK;
 }
 
 // WebP Headers.
 func PutWebPHeaders(/* const */ enc *VP8Encoder, uint64 size0, uint64 vp8_size, uint64 riff_size) int {
   var pic *picture.Picture = enc.pic;
-  WebPEncodingError err = VP8_ENC_OK;
+  WebPEncodingError err = ENC_OK;
 
   // RIFF header.
   err = PutRIFFHeader(enc, riff_size);
-  if err != VP8_ENC_OK { goto Error }
+  if err != ENC_OK { goto Error }
 
   // VP8X.
   if (IsVP8XNeeded(enc)) {
     err = PutVP8XHeader(enc);
-    if err != VP8_ENC_OK { goto Error }
+    if err != ENC_OK { goto Error }
   }
 
   // Alpha.
   if (enc.has_alpha) {
     err = PutAlphaChunk(enc);
-    if err != VP8_ENC_OK { goto Error }
+    if err != ENC_OK { goto Error }
   }
 
   // VP8 header.
   err = PutVP8Header(pic, vp8_size);
-  if err != VP8_ENC_OK { goto Error }
+  if err != ENC_OK { goto Error }
 
   // VP8 frame header.
   err = PutVP8FrameHeader(pic, enc.profile, size0);
-  if err != VP8_ENC_OK { goto Error }
+  if err != ENC_OK { goto Error }
 
   // All OK.
   return 1;
@@ -243,14 +243,14 @@ func EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *picture.Pict
   for p = 0; p < enc.num_parts - 1; p++ {
     part_size := VP8BitWriterSize(enc.parts + p);
     if (part_size >= VP8_MAX_PARTITION_SIZE) {
-      return pic.SetEncodingError(picture.VP8_ENC_ERROR_PARTITION_OVERFLOW)
+      return pic.SetEncodingError(picture.ENC_ERROR_PARTITION_OVERFLOW)
     }
     buf[3 * p + 0] = (part_size >> 0) & 0xff;
     buf[3 * p + 1] = (part_size >> 8) & 0xff;
     buf[3 * p + 2] = (part_size >> 16) & 0xff;
   }
   if (p && !pic.writer(buf, 3 * p, pic)) {
-    return pic.SetEncodingError(picture.VP8_ENC_ERROR_BAD_WRITE)
+    return pic.SetEncodingError(picture.ENC_ERROR_BAD_WRITE)
   }
   return 1;
 }
@@ -264,7 +264,7 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
 
   pos1 = VP8BitWriterPos(bw);
   if (!VP8BitWriterInit(bw, mb_size * 7 / 8)) {  // ~7 bits per macroblock
-    return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    return enc.pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
   }
   vp8.VP8PutBitUniform(bw, 0);  // colorspace
   vp8.VP8PutBitUniform(bw, 0);  // clamp type
@@ -296,7 +296,7 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
   (void)pos3;
 #endif
   if (bw.error) {
-    return enc.pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+    return enc.pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
   }
   return 1;
 }
@@ -340,7 +340,7 @@ func VP8EncWrite(/* const */ enc *VP8Encoder) int {
   }
   // RIFF size should fit in 32-bits.
   if (riff_size > uint(0xfffffffe)) {
-    return pic.SetEncodingError(picture.VP8_ENC_ERROR_FILE_TOO_BIG)
+    return pic.SetEncodingError(picture.ENC_ERROR_FILE_TOO_BIG)
   }
 
   // Emit headers and partition #0
@@ -367,7 +367,7 @@ func VP8EncWrite(/* const */ enc *VP8Encoder) int {
 
   enc.coded_size = (int)(CHUNK_HEADER_SIZE + riff_size);
   ok = ok && WebPReportProgress(pic, final_percent, &enc.percent);
-  if !ok { WebPEncodingSetError(pic, VP8_ENC_ERROR_BAD_WRITE) }
+  if !ok { WebPEncodingSetError(pic, ENC_ERROR_BAD_WRITE) }
   return ok;
 }
 

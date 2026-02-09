@@ -247,7 +247,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
 
 //   hash_to_first_index = (*int32)WebPSafeMalloc(HASH_SIZE, sizeof(*hash_to_first_index));
 //   if (hash_to_first_index == nil) {
-//     return pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+//     return pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //   }
   hash_to_first_index := make([]int32, HASH_SIZE)
 
@@ -978,13 +978,13 @@ int VP8LGetBackwardReferences(
     refs_best = GetBackwardReferencesLowEffort(
         width, height, argb, cache_bits_best, hash_chain, refs);
     if (refs_best == nil) {
-      return pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+      return pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     }
     // Set it in first position.
     BackwardRefsSwap(refs_best, &refs[0]);
   } else {
     if (!GetBackwardReferences(width, height, argb, quality, lz77_types_to_try, cache_bits_max, do_no_cache, hash_chain, refs, cache_bits_best)) {
-      return pic.SetEncodingError(picture.VP8_ENC_ERROR_OUT_OF_MEMORY)
+      return pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     }
   }
 
