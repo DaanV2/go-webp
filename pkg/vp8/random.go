@@ -39,7 +39,7 @@ type VP8Random struct {
 
 // VP8InitRandom initializes random generator with an amplitude 'dithering' in range [0..1].
 func VP8InitRandom( /* const */ rg *VP8Random, dithering float64) {
-	copy(rg.tab, kRandomTable)
+	copy(rg.tab[:], kRandomTable[:])
 
 	rg.index1 = 0
 	rg.index2 = 31
@@ -49,7 +49,7 @@ func VP8InitRandom( /* const */ rg *VP8Random, dithering float64) {
 	} else if dithering > 1.0 {
 		rg.amp = (1 << VP8_RANDOM_DITHER_FIX)
 	} else {
-		rg.amp = (uint32)((1 << VP8_RANDOM_DITHER_FIX) * dithering)
+		rg.amp = int((1 << VP8_RANDOM_DITHER_FIX) * dithering)
 	}
 }
 
@@ -60,11 +60,11 @@ func VP8RandomBits2( /* const  */ rg *VP8Random, num_bits, amp int) int {
 	var diff int
 	assert.Assert(num_bits+VP8_RANDOM_DITHER_FIX <= 31)
 
-	diff = rg.tab[rg.index1] - rg.tab[rg.index2]
+	diff = int(rg.tab[rg.index1]) - int(rg.tab[rg.index2])
 	if diff < 0 {
-		diff += (uint(1) << 31)
+		diff += 1 << 31
 	}
-	rg.tab[rg.index1] = diff
+	rg.tab[rg.index1] = uint32(diff)
 	if rg.index1 == VP8_RANDOM_TABLE_SIZE {
 		rg.index1 = 0
 	} else {

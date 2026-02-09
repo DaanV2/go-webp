@@ -4,6 +4,7 @@ import (
 	"errors"
 	"image/color"
 	"math"
+	"unsafe"
 
 	"github.com/daanv2/go-webp/pkg/color/colorspace"
 	"github.com/daanv2/go-webp/pkg/picture"
@@ -86,7 +87,7 @@ type Picture struct {
 
 	// this field is free to be set to any value and
 	// used during callbacks (like progress-report e.g.).
-	UserData *void
+	UserData unsafe.Pointer
 
 	// pad3 [3]uint32 // padding for later use
 
@@ -96,8 +97,8 @@ type Picture struct {
 
 	// PRIVATE FIELDS
 	////////////////////
-	memory_      *void // row chunk of memory for yuva planes
-	memory_argb_ *void // and for argb too.
+	memory_      unsafe.Pointer // row chunk of memory for yuva planes
+	memory_argb_ unsafe.Pointer // and for argb too.
 	// pad7         [2]*void // padding for later use
 }
 
@@ -234,7 +235,7 @@ func WebPPictureHasTransparency( /* const */ picture *Picture) int {
 	}
 	if picture.UseARGB {
 		if picture.ARGB != nil {
-			return CheckNonOpaque(picture.ARGB+ALPHA_OFFSET, picture.Width, picture.Height, 4, picture.ARGBStride*sizeof(*picture.ARGB))
+			// C: return CheckNonOpaque(picture.ARGB+ALPHA_OFFSET, picture.Width, picture.Height, 4, picture.ARGBStride*sizeof(*picture.ARGB))
 		}
 		return 0
 	}

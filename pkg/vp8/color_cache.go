@@ -10,7 +10,6 @@ package vp8
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
-	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
 
@@ -45,16 +44,16 @@ func VP8LColorCacheClear( /* const */ color_cache *VP8LColorCache) {
 }
 
 func VP8LHashPix(argb uint32, shift int) int {
-	return (int)((argb * kHashMul) >> shift)
+	return int((argb * kHashMul) >> shift)
 }
 
 func VP8LColorCacheLookup( /* const */ cc *VP8LColorCache, key uint32) uint32 {
-	assert.Assert((key >> cc.hash_bits) == uint(0))
+	assert.Assert(key>>cc.hash_bits == 0)
 	return cc.colors[key]
 }
 
 func VP8LColorCacheSet( /* const */ cc *VP8LColorCache, key uint32, argb uint32) {
-	assert.Assert((key >> cc.hash_bits) == uint(0))
+	assert.Assert(key>>cc.hash_bits == 0)
 	cc.colors[key] = argb
 }
 
@@ -77,5 +76,5 @@ func VP8LColorCacheCopy( /* const */ src *VP8LColorCache /*const*/, dst *VP8LCol
 	assert.Assert(src != nil)
 	assert.Assert(dst != nil)
 	assert.Assert(src.hash_bits == dst.hash_bits)
-	stdlib.MemCpy(dst.colors, src.colors, (uint64(1)<<dst.hash_bits)*sizeof(*dst.colors))
+	copy(dst.colors, src.colors)
 }

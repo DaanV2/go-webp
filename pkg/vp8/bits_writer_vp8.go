@@ -27,7 +27,7 @@ type VP8BitWriter struct {
 }
 
 func VP8PutBit( /* const */ bw *VP8BitWriter, bit int, prob int) int {
-	split := (bw.vrange * prob) >> 8
+	split := (bw.vrange * int32(prob)) >> 8
 	if bit != 0 {
 		bw.value += split + 1
 		bw.vrange -= split + 1
@@ -48,9 +48,9 @@ func VP8PutBit( /* const */ bw *VP8BitWriter, bit int, prob int) int {
 
 func VP8PutBitUniform( /* const */ bw *VP8BitWriter, bit int) int {
 	split := bw.vrange >> 1
-	if bit {
+	if bit != 0 {
 		bw.value += split + 1
-		bw.v -= split + 1
+		bw.vrange -= split + 1
 	} else {
 		bw.vrange = split
 	}
@@ -97,7 +97,7 @@ func BitWriterResize( /* const */ bw *VP8BitWriter, extra_size uint64) int {
 		stdlib.MemCpy(new_buf, bw.buf, bw.pos)
 	}
 
-	bw.buf = new_buf // bidi index -> new_size;
+	bw.buf = new_buf // bidi index -> new_size
 	bw.max_pos = new_size
 	return 1
 }
@@ -108,24 +108,24 @@ func Flush( /* const */ bw *VP8BitWriter) {
 	assert.Assert(bw.nb_bits >= 0)
 	bw.value -= bits << s
 	bw.nb_bits -= 8
-	if (bits & 0xff) != 0xff {
+	if bits&0xff != 0xff {
 		pos := bw.pos
-		if !BitWriterResize(bw, bw.run+1) {
+		if BitWriterResize(bw, uint64(bw.run+1)) == 0 {
 			return
 		}
-		if bits & 0x100 { // overflow . propagate carry over pending 0xff's
+		if bits&0x100 != 0 { // overflow . propagate carry over pending 0xff's
 			if pos > 0 {
 				bw.buf[pos-1]++
 			}
 		}
 		if bw.run > 0 {
-			value := tenary.If(bits&0x100, 0x00, 0xff)
+			value := uint8(tenary.If(bits&0x100 != 0, 0x00, 0xff))
 			for ; bw.run > 0; bw.run-- {
 				bw.buf[pos] = value
 				pos++
 			}
 		}
-		bw.buf[pos] = bits & 0xff
+		bw.buf[pos] = uint8(bits & 0xff)
 		pos++
 		bw.pos = pos
 	} else {
@@ -136,19 +136,19 @@ func Flush( /* const */ bw *VP8BitWriter) {
 func VP8PutBits( /* const */ bw *VP8BitWriter, value uint32, nb_bits int) {
 	var mask uint32
 	assert.Assert(nb_bits > 0 && nb_bits < 32)
-	for mask = uint(1) << (nb_bits - 1); mask; mask >>= 1 {
-		VP8PutBitUniform(bw, value&mask)
+	for mask = uint32(1) << uint(nb_bits-1); mask != 0; mask >>= 1 {
+		VP8PutBitUniform(bw, tenary.If(value&mask != 0, 1, 0))
 	}
 }
 
 func VP8PutSignedBits( /* const */ bw *VP8BitWriter, value int, nb_bits int) {
-	if !VP8PutBitUniform(bw, value != 0) {
+	if VP8PutBitUniform(bw, tenary.If(value != 0, 1, 0)) == 0 {
 		return
 	}
 	if value < 0 {
-		VP8PutBits(bw, ((-value)<<1)|1, nb_bits+1)
+		VP8PutBits(bw, uint32((-value)<<1)|1, nb_bits+1)
 	} else {
-		VP8PutBits(bw, value<<1, nb_bits+1)
+		VP8PutBits(bw, uint32(value<<1), nb_bits+1)
 	}
 }
 
@@ -175,15 +175,16 @@ func VP8BitWriterFinish( /* const */ bw *VP8BitWriter) []uint8 {
 }
 
 // Appends some bytes to the internal buffer. Data is copied.
-func VP8BitWriterAppend( /* const */ bw *VP8BitWriter /*const*/, data *uint8, size uint64) int {
+func VP8BitWriterAppend( /* const */ bw *VP8BitWriter /*const*/, data []uint8, size uint64) int {
 	assert.Assert(data != nil)
 	if bw.nb_bits != -8 {
 		return 0 // Flush() must have been called
 	}
-	if !BitWriterResize(bw, size) {
+	if BitWriterResize(bw, size) == 0 {
 		return 0
 	}
-	stdlib.MemCpy(bw.buf+bw.pos, data, size)
+	// C: stdlib.MemCpy(bw.buf+bw.pos, data, size)
+	copy(bw.buf[bw.pos:], data[:size])
 	bw.pos += size
 	return 1
 }
@@ -191,11 +192,11 @@ func VP8BitWriterAppend( /* const */ bw *VP8BitWriter /*const*/, data *uint8, si
 // return approximate write position (in bits)
 func VP8BitWriterPos( /* const */ bw *VP8BitWriter) uint64 {
 	nb_bits := 8 + bw.nb_bits // bw.nb_bits is <= 0, note
-	return (bw.pos+bw.run)*8 + nb_bits
+	return (bw.pos+uint64(bw.run))*8 + uint64(nb_bits)
 }
 
 // Returns a pointer to the internal buffer.
-func VP8BitWriterBuf( /* const */ bw *VP8BitWriter) *uint8 {
+func VP8BitWriterBuf( /* const */ bw *VP8BitWriter) []uint8 {
 	return bw.buf
 }
 

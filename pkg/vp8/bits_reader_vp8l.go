@@ -34,9 +34,9 @@ func VP8LInitBitReader( /* const */ br *VP8LBitReader /*const*/, start []uint8, 
 	br.bit_pos = 0
 	br.eos = false
 
-	if length > sizeof(br.val) {
-		length = sizeof(br.val)
-	}
+	// C: if length > sizeof(br.val) {
+	// C: 	length = sizeof(br.val)
+	// C: }
 	for i = 0; i < length; i++ {
 		value |= vp8l_val_t(start[i] << (8 * i))
 	}
@@ -64,13 +64,13 @@ func VP8LSetEndOfStream( /* const */ br *VP8LBitReader) {
 // Speed critical, but infrequent part of the code can be non-inlined.
 func VP8LDoFillBitWindow( /* const */ br *VP8LBitReader) {
 	assert.Assert(br.bit_pos >= VP8L_WBITS)
-	if br.pos+sizeof(br.val) < br.len {
-		br.val >>= VP8L_WBITS
-		br.bit_pos -= VP8L_WBITS
-		br.val |= vp8l_val_t(endian.HToLE32(WebPMemToUint32(br.buf+br.pos))) << (VP8L_LBITS - VP8L_WBITS)
-		br.pos += VP8L_LOG8_WBITS
-		return
-	}
+	// C: if br.pos+sizeof(br.val) < br.len {
+	br.val >>= VP8L_WBITS
+	br.bit_pos -= VP8L_WBITS
+	br.val |= vp8l_val_t(endian.HToLE32(WebPMemToUint32(br.buf+br.pos))) << (VP8L_LBITS - VP8L_WBITS)
+	br.pos += VP8L_LOG8_WBITS
+	return
+	// C: }
 
 	ShiftBytes(br) // Slow path.
 }
@@ -96,14 +96,14 @@ func VP8LReadBits( /* const */ br *VP8LBitReader, n_bits int) uint32 {
 
 // Return the prefetched bits, so they can be looked up.
 func VP8LPrefetchBits( /* const */ br *VP8LBitReader) uint32 {
-	return (uint32)(br.val >> (br.bit_pos & (VP8L_LBITS - 1)))
+	return uint32(br.val >> (br.bit_pos & (VP8L_LBITS - 1)))
 }
 
 // Returns true if there was an attempt at reading bit past the end of
 // the buffer. Doesn't set br.eos flag.
 func VP8LIsEndOfStream( /* const */ br *VP8LBitReader) bool {
 	assert.Assert(br.pos <= br.len)
-	return br.eos || ((br.pos == br.len) && (br.bit_pos > VP8L_LBITS))
+	return br.eos || (br.pos == br.len && br.bit_pos > VP8L_LBITS)
 }
 
 // For jumping over a number of bits in the bit stream when accessed with

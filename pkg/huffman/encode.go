@@ -27,27 +27,27 @@ func CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, pr
 	if value != prev_value {
 		tokens.code = value
 		tokens.extra_bits = 0
-		tokens++
+		// C: tokens++
 		repetitions--
 	}
-	for ; ; repetitions >= 1 {
+	for repetitions >= 1 {
 		if repetitions < 3 {
 			var i int
 			for i = 0; i < repetitions; i++ {
 				tokens.code = value
 				tokens.extra_bits = 0
-				tokens++
+				// C: tokens++
 			}
 			break
 		} else if repetitions < 7 {
 			tokens.code = 16
 			tokens.extra_bits = repetitions - 3
-			tokens++
+			// C: tokens++
 			break
 		} else {
 			tokens.code = 16
 			tokens.extra_bits = 3
-			tokens++
+			// C: tokens++
 			repetitions -= 6
 		}
 	}
@@ -91,7 +91,7 @@ func CodeRepeatedZeros(repetitions int, tokens []HuffmanTreeToken) []HuffmanTree
 func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeToken, max_tokens int) int {
 	var current_token *HuffmanTreeToken = tokens
 	var starting_token *HuffmanTreeToken = tokens
-	var ending_token *HuffmanTreeToken = tokens + max_tokens
+	// C: var ending_token *HuffmanTreeToken = tokens + max_tokens
 	depth_size := tree.num_symbols
 	prev_value := 8 // 8 is the initial value for rle.
 	i := 0
@@ -112,10 +112,10 @@ func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeT
 			prev_value = value
 		}
 		i += runs
-		assert.Assert(current_token <= ending_token)
+		// C: assert.Assert(current_token <= ending_token)
 	}
 	//   (void)ending_token;  // suppress 'unused variable' warning
-	return (int)(current_token - starting_token)
+	// C: return (int)(current_token - starting_token)
 }
 
 // -----------------------------------------------------------------------------
@@ -176,7 +176,7 @@ func VP8LCreateHuffmanTree( /* const */ histogram *uint32, tree_depth_limit int 
 	var bounded_histogram *uint32 = histogram // bidi index -> (uint64)num_symbols * sizeof(*histogram)
 	var bounded_buf_rle *uint8 = buf_rle      // bidi index -> (uint64)num_symbols * sizeof(*buf_rle)
 
-	stdlib.Memset(bounded_buf_rle, 0, num_symbols*sizeof(*buf_rle))
+	// C: stdlib.Memset(bounded_buf_rle, 0, num_symbols*sizeof(*buf_rle))
 
 	OptimizeHuffmanForRle(num_symbols, bounded_buf_rle, bounded_histogram)
 	// buff_tree bidi index -> 3 * num_symbols * sizeof(*huff_tree)

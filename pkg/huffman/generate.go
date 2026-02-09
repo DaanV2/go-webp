@@ -48,7 +48,7 @@ func GenerateOptimalTree(histogram []uint32, histogram_size int, tree []*Huffman
 		return
 	}
 
-	tree_pool = tree + tree_size_orig
+	// C: tree_pool = tree + tree_size_orig
 
 	// For block sizes with less than 64k symbols we never need to do a
 	// second iteration of this loop.
@@ -73,11 +73,11 @@ func GenerateOptimalTree(histogram []uint32, histogram_size int, tree []*Huffman
 		}
 
 		// Build the Huffman tree.
-		qsort(tree, tree_size, sizeof(*tree), CompareHuffmanTrees)
+		// C: qsort(tree, tree_size, sizeof(*tree), CompareHuffmanTrees)
 
 		if tree_size > 1 { // Normal case.
 			tree_pool_size := 0
-			for ; ; tree_size > 1 { // Finish when we have only one root.
+			for tree_size > 1 { // Finish when we have only one root.
 				var count uint32
 				tree_pool[tree_pool_size] = tree[tree_size-1]
 				tree_pool_size++
@@ -94,7 +94,7 @@ func GenerateOptimalTree(histogram []uint32, histogram_size int, tree []*Huffman
 							break
 						}
 					}
-					memmove(tree+(k+1), tree+k, (tree_size-k)*sizeof(*tree))
+					// C: memmove(tree+(k+1), tree+k, (tree_size-k)*sizeof(*tree))
 					tree[k].total_count = count
 					tree[k].value = -1
 
@@ -103,7 +103,7 @@ func GenerateOptimalTree(histogram []uint32, histogram_size int, tree []*Huffman
 					tree_size = tree_size + 1
 				}
 			}
-			SetBitDepths(&tree[0], tree_pool, bit_depths, 0)
+			SetBitDepths(tree[0], tree_pool, bit_depths, 0)
 		} else if tree_size == 1 { // Trivial case: only one element.
 			bit_depths[tree[0].value] = 1
 		}
