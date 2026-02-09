@@ -8,6 +8,8 @@
 
 package mux
 
+import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+
 func MuxInit(/* const */ mux *WebPMux) {
   assert.Assert(mux != nil);
   stdlib.Memset(mux, 0, sizeof(*mux));
@@ -255,9 +257,7 @@ func WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, copy_data 
 
   if (mux.images != nil) {
     var image *WebPMuxImage = mux.images;
-    image_id := (image.header != nil)
-                                  ? ChunkGetIdFromTag(image.header.tag)
-                                  : WEBP_CHUNK_IMAGE;
+    image_id := tenary.If(image.header != nil, ChunkGetIdFromTag(image.header.tag), WEBP_CHUNK_IMAGE)
     if (image_id != info.id) {
       return WEBP_MUX_INVALID_ARGUMENT;  // Conflicting frame types.
     }
@@ -271,7 +271,7 @@ func WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, copy_data 
   {
      var frame WebPData
     tag := kChunks[IDX_ANMF].tag;
-    WebPMuxFrameInfo tmp = *info;
+    var tmp WebPMuxFrameInfo = *info;
     tmp.x_offset &= ~1;  // Snap offsets to even.
     tmp.y_offset &= ~1;
     if (tmp.x_offset < 0 || tmp.x_offset >= MAX_POSITION_OFFSET ||
@@ -303,8 +303,7 @@ Err:  // Something bad happened.
 
 func WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAnimParams) WebPMuxError {
   var err WebPMuxError
-  uint8 data[ANIM_CHUNK_SIZE];
-  var anim WebPData = {data, ANIM_CHUNK_SIZE}
+  var data [ANIM_CHUNK_SIZE]uint8
 
   if mux == nil || params == nil { return WEBP_MUX_INVALID_ARGUMENT  }
   if (params.loop_count < 0 || params.loop_count >= MAX_LOOP_COUNT) {
@@ -318,6 +317,8 @@ func WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAnimParams
   // Set the animation parameters.
   PutLE32(data, params.bgcolor);
   PutLE16(data + 4, params.loop_count);
+
+  anim := webp.WebPData{data[:], size: IM_CHUNK_SIZE}
   return MuxSet(mux, kChunks[IDX_ANIM].tag, &anim, 1);
 }
 
@@ -326,11 +327,10 @@ func WebPMuxSetCanvasSize(mux *WebPMux, width, height int) WebPMuxError {
   if (mux == nil) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
-  if (width < 0 || height < 0 || width > MAX_CANVAS_SIZE ||
-      height > MAX_CANVAS_SIZE) {
+  if (width < 0 || height < 0 || width > MAX_CANVAS_SIZE || height > MAX_CANVAS_SIZE) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
-  if (width * (uint64)height >= MAX_IMAGE_AREA) {
+  if (uint64(width * height) >= MAX_IMAGE_AREA) {
     return WEBP_MUX_INVALID_ARGUMENT;
   }
   if ((width * height) == 0 && (width | height) != 0) {

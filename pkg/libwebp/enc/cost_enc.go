@@ -33,7 +33,7 @@ type VP8Residual struct {
 	costs      CostArrayPtr
 }
 
-func VariableLevelCost(level int, /*const*/ uint8 probas[NUM_PROBAS]) int {
+func VariableLevelCost(level int, /*const*/ probas [NUM_PROBAS]uint8) int {
   pattern := VP8LevelCodes[level - 1][0];
   bits := VP8LevelCodes[level - 1][1];
   cost := 0;

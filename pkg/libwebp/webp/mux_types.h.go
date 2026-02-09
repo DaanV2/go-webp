@@ -1,5 +1,3 @@
-package webp
-
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,16 +5,8 @@ package webp
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Data-types common to the mux and demux libraries.
-//
-// Author: Urvang (urvang@google.com)
 
-
-import "github.com/daanv2/go-webp/pkg/string"  // memset()
-
-import "."
+package webp
 
 
 // Note: forward declaring enumerations is not allowed in (strict) C and C++,

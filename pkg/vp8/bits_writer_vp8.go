@@ -26,7 +26,7 @@ type VP8BitWriter struct {
 	error   int // true in case of error
 }
 
-func VP8PutBit( /* const */ bw *VP8BitWriter, bit int, prob int) int {
+func VP8PutBit( /* const */ bw *VP8BitWriter, bit bool, prob int) bool {
 	split := (bw.vrange * int32(prob)) >> 8
 	if bit != 0 {
 		bw.value += split + 1

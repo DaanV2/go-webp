@@ -165,7 +165,7 @@ type VP8EncIterator struct {
 	enc         *VP8Encoder   // back-pointer
 	mb          *VP8MBInfo    // current macroblock
 	bw          *VP8BitWriter // current bit-writer
-	preds       *uint8        // intra mode predictors (4x4 blocks)
+	preds       []uint8        // intra mode predictors (4x4 blocks)
 	nz          *uint32       // non-zero pattern
 	i4_boundary [40]uint8     // 32+8 boundary samples needed by intra4x4
 	i4_top      *uint8        // pointer to the current top boundary sample

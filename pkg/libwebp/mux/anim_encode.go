@@ -9,13 +9,7 @@
 package mux
 
 
-const ERROR_STR_MAX_LENGTH =100
-const DELTA_INFINITY =(uint64(1) << 32)
-const KEYFRAME_NONE =(-1)
-const MAX_CACHED_FRAMES =30
-// This value is used to match a later call to WebPReplaceTransparentPixels(),
-// making it a no-op for lossless (see WebPEncode()).
-const TRANSPARENT_COLOR =0x00000000
+
 
 
 type WebPAnimEncoder struct {
