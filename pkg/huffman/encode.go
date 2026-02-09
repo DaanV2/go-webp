@@ -167,7 +167,7 @@ func ConvertBitDepthsToSymbols( /* const */ tree *HuffmanTreeCode) {
 		code_length := tree.code_lengths[i]
 		ncode := next_code[code_length]
 		next_code[code_length] = next_code[code_length] + 1
-		tree.codes[i] = ReverseBits(code_length, ncode)
+		tree.codes[i] = uint16(ReverseBits(int(code_length), ncode))
 	}
 }
 
