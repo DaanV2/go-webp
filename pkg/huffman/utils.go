@@ -22,10 +22,8 @@ import (
 func HTreeGroup8LHtreeGroupsNew(num_htree_groups int) []HTreeGroup {
 	//   var htree_groups *HTreeGroup = (*HTreeGroup)WebPSafeMalloc(num_htree_groups, sizeof(*htree_groups));
 	htree_groups := make([]HTreeGroup, num_htree_groups)
-	if htree_groups == nil {
-		return nil
-	}
 	assert.Assert(num_htree_groups <= MAX_HTREE_GROUPS)
+
 	return htree_groups
 }
 
