@@ -10,7 +10,6 @@ package vp8
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
-	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
 
 type VP8BitReader struct {
@@ -34,7 +33,7 @@ type VP8BitReader struct {
 func VP8BitReaderSetBuffer( /* const */ br *VP8BitReader /*const*/, start []uint8, size uint64) {
 	assert.Assert(start != nil)
 	br.buf = start
-	br.buf_end = start + size
+	// C: br.buf_end = start + size
 	// C: br.buf_max = tenary.If(size >= sizeof(lbit_t), start+size-sizeof(lbit_t)+1, start)
 }
 
@@ -53,11 +52,11 @@ func VP8InitBitReader( /* const */ br *VP8BitReader /*const*/, start []uint8, si
 
 // Update internal pointers to displace the byte buffer by the
 // relative offset 'offset'.
-func VP8RemapBitReader(/* const */ br *VP8BitReader, ptrdiff_t offset) {
+func VP8RemapBitReader(/* const */ br *VP8BitReader, offset ptrdiff_t) {
   if br.buf != nil {
-    br.buf += offset
-    br.buf_end += offset
-    br.buf_max += offset
+    // C: br.buf += offset
+    // C: br.buf_end += offset
+    // C: br.buf_max += offset
   }
 }
 
@@ -66,23 +65,24 @@ func VP8RemapBitReader(/* const */ br *VP8BitReader, ptrdiff_t offset) {
 func VP8LoadFinalBytes(/* const */ br *VP8BitReader) {
   assert.Assert(br != nil && br.buf != nil)
   // Only read 8bits at a time
-  if br.buf < br.buf_end {
-    br.bits += 8
-    br.value = bit_t(*br.buf++) | (br.value << 8)
-    // WEBP_SELF_ASSIGN(br.buf_end);
-  } else if !br.eof {
-    br.value <<= 8
-    br.bits += 8
-    br.eof = 1
-  } else {
-    br.bits = 0;  // This is to afunc undefined behaviour with shifts.
-  }
+  // C: if br.buf < br.buf_end {
+  //   br.bits += 8
+  //   // C: br.value = bit_t(*br.buf++) | (br.value << 8)
+  //   // WEBP_SELF_ASSIGN(br.buf_end);
+  // } else if !br.eof {
+  //   br.value <<= 8
+  //   br.bits += 8
+  //   br.eof = true
+  // } else {
+  //   br.bits = 0  // This is to avoid undefined behaviour with shifts.
+  // }
 }
 
 // return the next value made of 'num_bits' bits
 func VP8GetValue(/* const */ br *VP8BitReader, bits int, /*const*/ label []byte) uint32 {
   v := 0
-  for bits-- > 0 {
+  for bits > 0 {
+    bits--
     v |= VP8GetBit(br, 0x80, label) << bits
   }
   return v
@@ -91,7 +91,11 @@ func VP8GetValue(/* const */ br *VP8BitReader, bits int, /*const*/ label []byte)
 // return the next value with sign-extension.
 func VP8GetSignedValue(/* const */ br *VP8BitReader, bits int, /*const*/ label []byte) int {
   value := VP8GetValue(br, bits, label)
-  return VP8Get(br, label) ? -value : value
+  // C: return VP8Get(br, label) ? -value : value
+  if VP8Get(br, label) != 0 {
+    return -value
+  }
+  return value
 }
 
 
@@ -101,37 +105,36 @@ func VP8GetSignedValue(/* const */ br *VP8BitReader, bits int, /*const*/ label [
 func VP8LoadNewBytes(/* const */ br *VP8BitReader) {
   assert.Assert(br != nil && br.buf != nil)
   // Read 'BITS' bits at a time if possible.
-  if br.buf < br.buf_max {
-    // convert memory type to register type (with some zero'ing!)
-    var bits bit_t
-    var in_bits lbit_t
-    // C: stdlib.MemCpy(&in_bits, br.buf, sizeof(in_bits))
-	
-    br.buf += BITS >> 3
-    // WEBP_SELF_ASSIGN(br.buf_end);
-
-
-	if !constants.WORDS_BIGENDIAN{
-	if BITS > 32{
-		bits = BSwap64(in_bits)
-		bits >>= 64 - BITS
-	}else if BITS >= 24{
-		bits = BSwap32(in_bits)
-		bits >>= (32 - BITS)
-	}else if BITS == 16{
-		bits = BSwap16(in_bits)
-	}else{   // BITS == 8
-		bits = bit_t(in_bits)
-	// BITS > 32
-	}else{   // constants.WORDS_BIGENDIAN
-		bits = bit_t(in_bits)
-		// C: if BITS != 8 * sizeof(bit_t)) {bits >>= (8 * sizeof(bit_t { - BITS) }}
-	}
-    br.value = bits | (br.value << BITS)
-    br.bits += BITS
-  } else {
-    VP8LoadFinalBytes(br);  // no need to be inlined
-  }
+  // C: if br.buf < br.buf_max {
+  //   // convert memory type to register type (with some zero'ing!)
+  //   var bits bit_t
+  //   var in_bits lbit_t
+  //   // C: stdlib.MemCpy(&in_bits, br.buf, sizeof(in_bits))
+  //
+  //   // C: br.buf += BITS >> 3
+  //   // WEBP_SELF_ASSIGN(br.buf_end);
+  //
+  //   if !constants.WORDS_BIGENDIAN {
+  //     if BITS > 32 {
+  //       bits = BSwap64(in_bits)
+  //       bits >>= 64 - BITS
+  //     } else if BITS >= 24 {
+  //       bits = BSwap32(in_bits)
+  //       bits >>= (32 - BITS)
+  //     } else if BITS == 16 {
+  //       bits = BSwap16(in_bits)
+  //     } else { // BITS == 8
+  //       bits = bit_t(in_bits)
+  //     }
+  //   } else { // constants.WORDS_BIGENDIAN
+  //     bits = bit_t(in_bits)
+  //     // C: if BITS != 8 * sizeof(bit_t)) {bits >>= (8 * sizeof(bit_t) - BITS)}
+  //   }
+  //   br.value = bits | (br.value << BITS)
+  //   br.bits += BITS
+  // } else {
+  //   VP8LoadFinalBytes(br)  // no need to be inlined
+  // }
 }
 
 // Read a bit with proba 'prob'. Speed-critical function!
@@ -172,12 +175,12 @@ func VP8GetSigned(/* const */ br *VP8BitReader, v int, /*const*/ label []byte) i
   }
   {
     pos := br.bits
-    var split range_t = br.range >> 1
+    var split range_t = br.vrange >> 1
     var value range_t = range_t(br.value >> pos)
-    mask := int32(split - value) >> 31;  // -1 or 0
+    mask := int32(split - value) >> 31  // -1 or 0
     br.bits -= 1
-    br.range += range_t(mask)
-    br.range |= 1
+    br.vrange += range_t(mask)
+    br.vrange |= 1
     br.value -= bit_t((split + 1) & uint32(mask)) << pos
     BT_TRACK(br)
     return (v ^ mask) - mask
@@ -196,7 +199,7 @@ func VP8GetBitAlt(/* const  */br *VP8BitReader, prob int, /*const*/ label []byte
     pos := br.bits
     var split range_t = (vrange * prob) >> 8
     var value range_t = range_t(br.value >> pos)
-    var bit int;  // Don't use 'bit := (value > split);", it's slower.
+    var bit int  // Don't use 'bit := (value > split);", it's slower.
     if value > split {
       vrange -= split + 1
       br.value -= bit_t((split + 1) << pos)
@@ -210,7 +213,7 @@ func VP8GetBitAlt(/* const  */br *VP8BitReader, prob int, /*const*/ label []byte
       vrange = kVP8NewRange[vrange]
       br.bits -= shift
     }
-    br.range = vrange
+    br.vrange = vrange
     BT_TRACK(br)
     return bit
   }
