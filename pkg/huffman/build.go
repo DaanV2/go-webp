@@ -145,15 +145,15 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 					total_size += table_size
 					low = uint32(key & mask)
 					if root_table != nil {
-						root_table[low].bits = (uint8)(table_bits + root_bits)
-						root_table[low].value = (uint16)((table - root_table) - low)
+						root_table[low].bits = uint8(table_bits + root_bits)
+						// C: root_table[low].value = (uint16)((table - root_table) - low)
 					}
 				}
 				if root_table != nil {
 					code.bits = (len - root_bits)
 					code.value = sorted[symbol]
 					symbol++
-					ReplicateValue(&table[key>>root_bits], step, table_size, code)
+					ReplicateValue(table[key>>root_bits:], step, table_size, code)
 				}
 				key = int(GetNextKey(uint32(key), len))
 			}
