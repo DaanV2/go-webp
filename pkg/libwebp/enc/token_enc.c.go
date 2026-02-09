@@ -55,7 +55,7 @@ func VP8TBufferInit(/* const */ b *VP8TBuffer, page_size int) {
   b.pages = nil;
   b.last_page = &b.pages;
   b.left = 0;
-  b.page_size = (page_size < MIN_PAGE_SIZE) ? MIN_PAGE_SIZE : page_size;
+  b.page_size = tenary.If(page_size < MIN_PAGE_SIZE, MIN_PAGE_SIZE, page_size)
   b.error = 0;
 }
 

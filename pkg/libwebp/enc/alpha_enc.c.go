@@ -312,7 +312,7 @@ func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter in
     // mapped to moderate quality 70. Hence Quality:[0, 70] . Levels:[2, 16]
     // and Quality:]70, 100] . Levels:]16, 256].
     alpha_levels :=
-        (quality <= 70) ? (2 + quality / 5) : (16 + (quality - 70) * 8);
+        tenary.If(quality <= 70, (2 + quality / 5), (16 + (quality - 70) * 8))
     ok = QuantizeLevels(quant_alpha, width, height, alpha_levels, &sse);
   }
 

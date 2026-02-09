@@ -537,7 +537,7 @@ func GetSubRects(/* const */ prev_canvas *picture.Picture, /*const*/ curr_canvas
 }
 
 func clip(v, min_v,max_v int ) int {
-  return (v < min_v) ? min_v : (v > max_v) ? max_v : v;
+  return tenary.If(v < min_v, min_v, tenary.If(v > max_v, max_v, v));
 }
 
 // Picks the optimal rectangle between two pictures, starting with initial

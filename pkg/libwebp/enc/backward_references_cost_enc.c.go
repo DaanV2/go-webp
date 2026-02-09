@@ -228,7 +228,7 @@ func CostManagerClear(/* const */ manager *CostManager) {
 
 func CostManagerInit(/* const */ manager *CostManager, /*const*/ dist_array *uint16, pix_count int, /*const*/ cost_model *CostModel) int {
   var i int
-  cost_cache_size := (pix_count > MAX_LENGTH) ? MAX_LENGTH : pix_count;
+  cost_cache_size := tenary.If(pix_count > MAX_LENGTH, MAX_LENGTH, pix_count)
 
   manager.costs = nil;
   manager.cache_intervals = nil;

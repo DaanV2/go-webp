@@ -96,7 +96,7 @@ static  func DoVerticalFilter_C(/* const */ in *uint8, width, height int, stride
 
 static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
   g := a + b - c;
-  return ((g & ~0xff) == 0) ? g : (g < 0) ? 0 : 255;  // clip to 8bit
+  return ((g & ~0xff) == 0) ? g : tenary.If(g < 0, 0, 255)  // clip to 8bit
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
@@ -154,7 +154,7 @@ func NoneUnfilter_C(/* const */ prev *uint8, /*const*/ in *uint8, out *uint8, wi
 }
 
 func HorizontalUnfilter_C(/* const */ prev *uint8, /*const*/ in *uint8, out *uint8, width int) {
-  pred := (prev == nil) ? 0 : prev[0];
+  pred := tenary.If(prev == nil, 0, prev[0])
   var i int
   for i = 0; i < width; i++ {
     out[i] = (uint8)(pred + in[i]);

@@ -103,7 +103,7 @@ func VP8IteratorProgress(/* const */ it *VP8EncIterator, delta int) int {
 // Import the source samples into the cache. Takes care of replicating
 // boundary pixels if necessary.
 
-func MinSize(a, b int) int { return (a < b) ? a : b; }
+func MinSize(a, b int) int { return tenary.If(a < b, a, b) }
 
 func ImportBlock(/* const */ src *uint8, src_stride int, dst *uint8, w int, h int, size int) {
   var i int

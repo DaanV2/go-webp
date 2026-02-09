@@ -34,7 +34,7 @@ const kLevelsFromDelta = [8][MAX_DELTA_SIZE]uint8{
 // returns the approximate filtering strength needed to smooth a edge
 // step of 'delta', given a sharpness parameter 'sharpness'.
 func VP8FilterStrengthFromDelta(int sharpness, delta int) int {
-  pos := (delta < MAX_DELTA_SIZE) ? delta : MAX_DELTA_SIZE - 1;
+  pos := tenary.If(delta < MAX_DELTA_SIZE, delta, MAX_DELTA_SIZE - 1)
   assert.Assert(sharpness >= 0 && sharpness <= 7);
   return kLevelsFromDelta[sharpness][pos];
 }
@@ -75,7 +75,7 @@ func DoFilter(/* const */ it *VP8EncIterator, level int) {
     VP8SimpleHFilter16i(y_dst, BPS, limit);
     VP8SimpleVFilter16i(y_dst, BPS, limit);
   } else {  // complex
-    hev_thresh := (level >= 40) ? 2 : (level >= 15) ? 1 : 0;
+    hev_thresh := (level >= 40) ? 2 : tenary.If(level >= 15, 1, 0)
     VP8HFilter16i(y_dst, BPS, limit, ilevel, hev_thresh);
     VP8HFilter8i(u_dst, v_dst, BPS, limit, ilevel, hev_thresh);
     VP8VFilter16i(y_dst, BPS, limit, ilevel, hev_thresh);

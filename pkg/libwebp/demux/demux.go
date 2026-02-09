@@ -760,9 +760,7 @@ func GetFramePayload(/* const */ mem_buf *uint8, /*const*/ frame *Frame, /*const
     // if alpha exists it precedes image, update the size allowing for
     // intervening chunks.
     if (alpha.size > 0) {
-      inter_size :=
-          (image.offset > 0) ? image.offset - (alpha.offset + alpha.size)
-                              : 0
+      inter_size := tenary.If((image.offset > 0), image.offset - (alpha.offset + alpha.size), 0)
       start_offset = alpha.offset
       *data_size += alpha.size + inter_size
     }

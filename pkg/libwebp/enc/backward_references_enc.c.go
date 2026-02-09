@@ -217,11 +217,11 @@ func GetWindowSizeForHashChain(quality int, xsize int) int {
                               : (quality > 25) ? (xsize << 6)
                                                : (xsize << 4);
   assert.Assert(xsize > 0);
-  return (max_window_size > WINDOW_SIZE) ? WINDOW_SIZE : max_window_size;
+  return tenary.If(max_window_size > WINDOW_SIZE, WINDOW_SIZE, max_window_size)
 }
 
 func MaxFindCopyLength(int len) int {
-  return (len < MAX_LENGTH) ? len : MAX_LENGTH;
+  return tenary.If(len < MAX_LENGTH, len, MAX_LENGTH)
 }
 
 func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb *uint32, xsize int, ysize int, low_effort int, /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int) int {
@@ -327,8 +327,8 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
     best_distance := 0;
     var best_argb uint32
     min_pos :=
-        (base_position > window_size) ? base_position - window_size : 0;
-    length_max := (max_len < 256) ? max_len : 256;
+        tenary.If(base_position > window_size, base_position - window_size, 0)
+    length_max := tenary.If(max_len < 256, max_len, 256)
     var max_base_position uint32
 
     pos = chain[base_position];
@@ -495,7 +495,7 @@ func BackwardReferencesLz77(xsize int, ysize int, /*const*/ argb *uint32, cache_
       j_max :=
           (i + len_ini >= pix_count) ? pix_count - 1 : i + len_ini;
       // Only start from what we have not checked already.
-      i_last_check = (i > i_last_check) ? i : i_last_check;
+      i_last_check = tenary.If(i > i_last_check, i, i_last_check)
       // We know the best match for the current pixel but we try to find the
       // best matches for the current pixel AND the next one combined.
       // The naive method would use the intervals:
@@ -645,7 +645,7 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, cac
           counts_j := counts_ini[j];
           if (counts_j_offset != counts_j) {
             curr_length +=
-                (counts_j_offset < counts_j) ? counts_j_offset : counts_j;
+                tenary.If(counts_j_offset < counts_j, counts_j_offset, counts_j)
             break;
           }
           // The same color is repeated counts_pos times at j_offset and j.
@@ -706,7 +706,7 @@ func BackwardReferences2DLocality(xsize int, /*const*/ refs *VP8LBackwardRefs) {
 // Returns 0 in case of memory error.
 func CalculateBestCacheSize(/* const */ argb *uint32, quality int, /*const*/ refs *VP8LBackwardRefs, /*const*/ best_cache_bits *int) int {
   var i int
-  cache_bits_max := (quality <= 25) ? 0 : *best_cache_bits;
+  cache_bits_max := tenary.If(quality <= 25, 0, *best_cache_bits)
   entropy_min := WEBP_UINT64_MAX;
   int cc_init[MAX_COLOR_CACHE_BITS + 1] = {0}
   VP8LColorCache hashers[MAX_COLOR_CACHE_BITS + 1];
@@ -892,7 +892,7 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
 
     // Start with the no color cache case.
     for i = 1; i >= 0; --i {
-      cache_bits := (i == 1) ? 0 : cache_bits_max;
+      cache_bits := tenary.If(i == 1, 0, cache_bits_max)
 
       if i == 1 && !do_no_cache { continue }
 
@@ -941,7 +941,7 @@ func GetBackwardReferences(width, height int, /*const*/ argb *uint32, quality in
         quality >= 25) {
       const hash_chain_tmp *VP8LHashChain =
           (lz77_types_best[i] == kLZ77Standard) ? hash_chain : &hash_chain_box;
-      cache_bits := (i == 1) ? 0 : *cache_bits_best;
+      cache_bits := tenary.If(i == 1, 0, *cache_bits_best)
       var bit_cost_trace uint64
       if (!VP8LBackwardReferencesTraceBackwards(width, height, argb, cache_bits, hash_chain_tmp, &refs[i], refs_tmp)) {
         goto Error;

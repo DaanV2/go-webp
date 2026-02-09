@@ -318,7 +318,7 @@ func InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   p.scaler_y = &scalers[0];
   p.scaler_u = &scalers[1];
   p.scaler_v = &scalers[2];
-  p.scaler_a = has_alpha ? &scalers[3] : nil;
+  p.scaler_a = tenary.If(has_alpha, &scalers[3], nil)
 
   if (!WebPRescalerInit(p.scaler_y, io.mb_w, io.mb_h, buf.y, out_width, out_height, buf.y_stride, 1, work) ||
       !WebPRescalerInit(p.scaler_u, uv_in_width, uv_in_height, buf.u, uv_out_width, uv_out_height, buf.u_stride, 1, work + work_size) ||
@@ -496,7 +496,7 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   p.scaler_y = &scalers[0];
   p.scaler_u = &scalers[1];
   p.scaler_v = &scalers[2];
-  p.scaler_a = has_alpha ? &scalers[3] : nil;
+  p.scaler_a = tenary.If(has_alpha, &scalers[3], nil)
 
   if (!WebPRescalerInit(p.scaler_y, io.mb_w, io.mb_h, tmp + 0 * out_width, out_width, out_height, 0, 1, work + 0 * work_size) ||
       !WebPRescalerInit(p.scaler_u, uv_in_width, uv_in_height, tmp + 1 * out_width, out_width, out_height, 0, 1, work + 1 * work_size) ||
@@ -547,7 +547,7 @@ func CustomSetup(io *VP8Io) int {
   }
   if (io.use_scaling) {
 #if !defined(WEBP_REDUCE_SIZE)
-    ok := is_rgb ? InitRGBRescaler(io, p) : InitYUVRescaler(io, p);
+    ok := tenary.If($1, $2, $3)(is_rgb, InitRGBRescaler(io, p), InitYUVRescaler(io, p))
     if (!ok) {
       return 0;  // memory error
     }
@@ -579,10 +579,7 @@ func CustomSetup(io *VP8Io) int {
     }
     if (is_alpha) {  // need transparency output
       p.emit_alpha =
-          (colorspace == MODE_RGBA_4444 || colorspace == MODE_rgbA_4444)
-              ? EmitAlphaRGBA4444
-          : is_rgb ? EmitAlphaRGB
-                   : EmitAlphaYUV;
+          tenary.If(colorspace == MODE_RGBA_4444 || colorspace == MODE_rgbA_4444, EmitAlphaRGBA4444, tenary.If(is_rgb, EmitAlphaRGB, EmitAlphaYUV))
       if (is_rgb) {
         WebPInitAlphaProcessing();
       }

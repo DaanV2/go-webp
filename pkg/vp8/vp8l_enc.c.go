@@ -120,7 +120,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
         pix := curr_row[x]
         pix_diff := VP8LSubPixels(pix, pix_prev)
         pix_prev = pix
-        if pix_diff == 0) || (prev_row != nil && pix == prev_row[x] {
+        if pix_diff == 0 || prev_row != nil && pix == prev_row[x] {
           continue
         }
         AddSingle(pix, histo.category[kHistoAlpha], histo.category[kHistoRed], histo.category[kHistoGreen], histo.category[kHistoBlue])
@@ -218,7 +218,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
 // Clamp histogram and transform bits.
 func ClampBits(width, height int, bits int, min_bits int, max_bits int, image_size_max int) int {
   var image_size int
-  bits = (bits < min_bits) ? min_bits : (bits > max_bits) ? max_bits : bits
+  bits = tenary.If(bits < min_bits, min_bits, tenary.If(bits > max_bits, max_bits, bits))
   image_size = VP8LSubSampleSize(width, bits) * VP8LSubSampleSize(height, bits)
   for bits < max_bits && image_size > image_size_max {
     bits++
@@ -238,14 +238,14 @@ func ClampBits(width, height int, bits int, min_bits int, max_bits int, image_si
 
 func GetHistoBits(int method, use_palette int, width, height int) int {
   // Make tile size a function of encoding method (Range: 0 to 6).
-  histo_bits := (use_palette ? 9 : 7) - method
+  histo_bits := tenary.If(use_palette, 9, 7) - method
   return ClampBits(width, height, histo_bits, MIN_HUFFMAN_BITS, MAX_HUFFMAN_BITS, MAX_HUFF_IMAGE_SIZE)
 }
 
 func GetTransformBits(int method, histo_bits int) int {
-  max_transform_bits := (method < 4) ? 6 : (method > 4) ? 4 : 5
-  res :=
-      (histo_bits > max_transform_bits) ? max_transform_bits : histo_bits
+  max_transform_bits := tenary.If(method < 4, 6, tenary.If(method > 4, 4, 5))
+    res :=
+      tenary.If(histo_bits > max_transform_bits, max_transform_bits, histo_bits)
   assert.Assert(res <= MAX_TRANSFORM_BITS)
   return res
 }
@@ -298,15 +298,15 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
 
   if low_effort {
     // AnalyzeEntropy is somewhat slow.
-    crunch_configs[0].entropy_idx = use_palette ? kPalette : kSpatialSubGreen
+    crunch_configs[0].entropy_idx = tenary.If(use_palette, kPalette, kSpatialSubGreen)
     crunch_configs[0].palette_sorting_type =
-        use_palette ? kSortedDefault : kUnusedPalette
+      tenary.If(use_palette, kSortedDefault, kUnusedPalette)
     n_lz77s = 1
     *crunch_configs_size = 1
   } else {
      var min_entropy_ix EntropyIx
     // Try out multiple LZ77 on images with few colors.
-    n_lz77s = (enc.palette_size > 0 && enc.palette_size <= 16) ? 2 : 1
+    n_lz77s = tenary.If(enc.palette_size > 0 && enc.palette_size <= 16, 2, 1)
     if !AnalyzeEntropy(pic.argb, width, height, pic.argb_stride, use_palette, enc.palette_size, transform_bits, &min_entropy_ix, red_and_blue_always_zero) {
       return 0
     }
@@ -348,8 +348,8 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
       // Only choose the guessed best transform.
       *crunch_configs_size = 1
       crunch_configs[0].entropy_idx = min_entropy_ix
-      crunch_configs[0].palette_sorting_type =
-          use_palette ? kMinimizeDelta : kUnusedPalette
+        crunch_configs[0].palette_sorting_type =
+          tenary.If(use_palette, kMinimizeDelta, kUnusedPalette)
       if config.Quality >= 75 && method == 5 {
         // Test with and without color cache.
         do_no_cache = 1
@@ -368,8 +368,8 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
     var j int
     for j = 0; j < n_lz77s; j++ {
       assert.Assert(j < CRUNCH_SUBCONFIGS_MAX)
-      crunch_configs[i].sub_configs[j].lz77 =
-          (j == 0) ? kLZ77Standard | kLZ77RLE : kLZ77Box
+        crunch_configs[i].sub_configs[j].lz77 =
+          tenary.If(j == 0, kLZ77Standard | kLZ77RLE, kLZ77Box)
       crunch_configs[i].sub_configs[j].do_no_cache = do_no_cache
     }
     crunch_configs[i].sub_configs_size = n_lz77s
@@ -410,10 +410,9 @@ func GetHuffBitLengthsAndCodes(/* const */ histogram_image *VP8LHistogramSet, /*
     var codes *HuffmanTreeCode = &huffman_codes[5 * i]
     assert.Assert(histo != nil)
     for k = 0; k < 5; k++ {
-      num_symbols :=
-          (k == 0)   ? VP8LHistogramNumCodes(histo.palette_code_bits)
-          : (k == 4) ? NUM_DISTANCE_CODES
-                     : 256
+        num_symbols :=
+          tenary.If(k == 0, VP8LHistogramNumCodes(histo.palette_code_bits),
+              tenary.If(k == 4, NUM_DISTANCE_CODES, 256))
       codes[k].num_symbols = num_symbols
       total_length_size += num_symbols
     }
@@ -566,7 +565,7 @@ func StoreFullHuffmanCode(/* const */ bw *VP8LBitWriter, /* const */ huff_tree *
       }
     }
     write_trimmed_length = (trimmed_length > 1 && trailing_zero_bits > 12)
-    length = write_trimmed_length ? trimmed_length : num_tokens
+    length = tenary.If(write_trimmed_length != 0, trimmed_length, num_tokens)
     VP8LPutBits(bw, write_trimmed_length, 1)
     if write_trimmed_length {
       if trimmed_length == 2 {
@@ -635,8 +634,8 @@ func WriteHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ code *HuffmanTree
 }
 
 func StoreImageToBitMask(/* const */ bw *VP8LBitWriter, width int, histo_bits int, /*const*/ refs *VP8LBackwardRefs, /*const*/ histogram_symbols *uint32, /*const*/ huffman_codes *HuffmanTreeCode, /*const*/ pic *picture.Picture) int {
-  histo_xsize := histo_bits ? VP8LSubSampleSize(width, histo_bits) : 1
-  tile_mask := (histo_bits == 0) ? 0 : -(1 << histo_bits)
+  histo_xsize := tenary.If(histo_bits != 0, VP8LSubSampleSize(width, histo_bits), 1)
+  tile_mask := tenary.If(histo_bits == 0, 0, -(1 << histo_bits))
   // x and y trace the position in the image.
   x := 0
   y := 0
@@ -830,7 +829,7 @@ func EncodeImageInternal(
 
   // If the value is different from zero, it has been set during the palette
   // analysis.
-  cache_bits_init = (*cache_bits == 0) ? MAX_COLOR_CACHE_BITS : *cache_bits
+  cache_bits_init = tenary.If(*cache_bits == 0, MAX_COLOR_CACHE_BITS, *cache_bits)
   // If several iterations will happen, clone into bw_best.
   if ((config.sub_configs_size > 1 || config.sub_configs[0].do_no_cache) &&
       !VP8LBitWriterClone(bw, &bw_best)) {
@@ -852,8 +851,8 @@ func EncodeImageInternal(
       goto Error
     }
 
-    for i_cache = 0; i_cache < (sub_config.do_no_cache ? 2 : 1); i_cache++ {
-      cache_bits_tmp := (i_cache == 0) ? cache_bits_best : 0
+    for i_cache = 0; i_cache < tenary.If(sub_config.do_no_cache, 2, 1); i_cache++ {
+      cache_bits_tmp := tenary.If(i_cache == 0, cache_bits_best, 0)
       histogram_bits := histogram_bits_in
       // Speed-up: no need to study the no-cache case if it was already studied
       // in i_cache == 0.
@@ -991,10 +990,10 @@ func ApplySubtractGreen(/* const */ enc *VP8LEncoder, width, height int, /*const
 
 func ApplyPredictFilter(/* const */ enc *VP8LEncoder, width, height int, quality int, low_effort int, used_subtract_green int, /*const*/ bw *VP8LBitWriter, percent_range int, /*const*/ percent *int, /*const*/ best_bits *int) int {
   near_lossless_strength :=
-      enc.use_palette ? 100 : enc.config.NearLossless
+      tenary.If(enc.use_palette, 100, enc.config.NearLossless)
   max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
-  min_bits := ClampBits(
-      width, height, max_bits - 2 * (enc.config.Method > 4 ? enc.config.Method - 4 : 0), MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
+    min_bits := ClampBits(
+      width, height, max_bits - 2 * tenary.If(enc.config.Method > 4, enc.config.Method - 4, 0), MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
 
   if !VP8LResidualImage(width, height, min_bits, max_bits, low_effort, enc.argb, enc.argb_scratch, enc.transform_data, near_lossless_strength, enc.config.Exact, used_subtract_green, enc.pic, percent_range / 2, percent, best_bits) {
     return 0
@@ -1091,15 +1090,9 @@ func AllocateTransformBuffer(/* const */ enc *VP8LEncoder, width, height int) in
   // VP8LResidualImage needs room for 2 scanlines of uint32 pixels with an extra
   // pixel in each, plus 2 regular scanlines of bytes.
   // TODO(skal): Clean up by using arithmetic in bytes instead of words.
-  argb_scratch_size :=
-      // C: enc.use_predict ? (width + 1) * 2 + (width * 2 + sizeof(uint32) - 1) /
-                                               // C: sizeof(uint32)
-                       : 0
-  transform_data_size :=
-      (enc.use_predict || enc.use_cross_color)
-          ? uint64(VP8LSubSampleSize)(width, MIN_TRANSFORM_BITS) *
-                VP8LSubSampleSize(height, MIN_TRANSFORM_BITS)
-          : 0
+    argb_scratch_size := 0
+    transform_data_size := tenary.If(enc.use_predict || enc.use_cross_color,
+      uint64(VP8LSubSampleSize)(width, MIN_TRANSFORM_BITS)*VP8LSubSampleSize(height, MIN_TRANSFORM_BITS), 0)
   // C: max_alignment_in_words := (WEBP_ALIGN_CST + sizeof(uint32) - 1) / sizeof(uint32)
   mem_size := image_size + max_alignment_in_words +
                             argb_scratch_size + max_alignment_in_words +
@@ -1279,9 +1272,9 @@ func MapImageFromPalette(/* const */ enc *VP8LEncoder) int {
   // Replace each input pixel by corresponding palette index.
   // This is done line by line.
   if palette_size <= 4 {
-    xbits = (palette_size <= 2) ? 3 : 2
+    xbits = tenary.If(palette_size <= 2, 3, 2)
   } else {
-    xbits = (palette_size <= 16) ? 1 : 0
+    xbits = tenary.If(palette_size <= 16, 1, 0)
   }
 
   if !AllocateTransformBuffer(enc, VP8LSubSampleSize(width, xbits), height) {
@@ -1303,10 +1296,7 @@ func EncodePalette(/* const */ bw *VP8LBitWriter, low_effort int, /*const*/ enc 
   // If the last element is 0, do not store it and count on automatic palette
   // 0-filling. This can only happen if there is no pixel packing, hence if
   // there are strictly more than 16 colors (after 0 is removed).
-  encoded_palette_size :=
-      (enc.palette[palette_size - 1] == 0 && palette_size > 17)
-          ? palette_size - 1
-          : palette_size
+  encoded_palette_size := tenary.If(enc.palette[palette_size - 1] == 0 && palette_size > 17, palette_size - 1, palette_size)
   VP8LPutBits(bw, TRANSFORM_PRESENT, 1)
   VP8LPutBits(bw, COLOR_INDEXING_TRANSFORM, 2)
   assert.Assert(palette_size >= 1 && palette_size <= MAX_PALETTE_SIZE)
@@ -1413,7 +1403,7 @@ func EncodeStreamHook(input *void, data *void2) int {
     if low_effort || enc.use_palette {
       enc.use_cross_color = 0
     } else {
-      enc.use_cross_color = red_and_blue_always_zero ? 0 : enc.use_predict
+      enc.use_cross_color = tenary.If(red_and_blue_always_zero, 0, enc.use_predict)
     }
     // Reset any parameter in the encoder that is set in the previous iteration.
     enc.cache_bits = 0
@@ -1582,12 +1572,11 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
 
   // Fill in the parameters for the thread workers.
   {
-    params_size := (num_crunch_configs_side > 0) ? 2 : 1
+    params_size := tenary.If(num_crunch_configs_side > 0, 2, 1)
     for idx = 0; idx < params_size; idx++ {
       // Create the parameters for each worker.
-      var worker *WebPWorker = (idx == 0) ? &worker_main : &worker_side
-      const param *StreamEncodeContext =
-          (idx == 0) ? &params_main : &params_side
+      var worker *WebPWorker = tenary.If(idx == 0, &worker_main, &worker_side)
+        const param *StreamEncodeContext = tenary.If(idx == 0, &params_main, &params_side)
       param.config = config
       param.red_and_blue_always_zero = red_and_blue_always_zero
       if idx == 0 {
@@ -1602,7 +1591,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
         }
         picture_side.ProgressHook = nil;  // Progress hook is not thread-safe.
         param.picture = &picture_side;  // No need to free a view afterwards.
-        param.stats = (picture.stats == nil) ? nil : &stats_side
+        param.stats = tenary.If(picture.stats == nil, nil, &stats_side)
         // Create a side bit writer.
         if !VP8LBitWriterClone(bw_main, &bw_side) {
           picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
@@ -1704,8 +1693,7 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *pictu
   height = picture.Height
   // Initialize BitWriter with size corresponding to 16 bpp to photo images and
   // 8 bpp for graphical images.
-  initial_size = (config.ImageHint == WEBP_HINT_GRAPH) ? width * height
-                                                         : width * height * 2
+  initial_size = tenary.If(config.ImageHint == WEBP_HINT_GRAPH, width * height, width * height * 2)
   if !VP8LBitWriterInit(&bw, initial_size) {
     picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     goto Error

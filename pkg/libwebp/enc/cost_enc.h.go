@@ -63,7 +63,7 @@ func VP8BitCost(bit int, uint8 proba) int {
 func VP8CalculateLevelCosts(/* const */ proba *VP8EncProba);
 func VP8LevelCost(/* const */ table *uint16, level int) int {
   return VP8LevelFixedCosts[level] +
-         table[(level > MAX_VARIABLE_LEVEL) ? MAX_VARIABLE_LEVEL : level];
+         table[tenary.If(level > MAX_VARIABLE_LEVEL, MAX_VARIABLE_LEVEL, level])
 }
 
 // Mode costs

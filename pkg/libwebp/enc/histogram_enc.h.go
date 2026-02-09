@@ -84,7 +84,7 @@ VP *VP8LHistogram8LAllocateHistogram(int cache_bits);
 
 func VP8LHistogramNumCodes(int palette_code_bits) int {
   return NUM_LITERAL_CODES + NUM_LENGTH_CODES +
-         ((palette_code_bits > 0) ? (1 << palette_code_bits) : 0);
+         (tenary.If(palette_code_bits > 0, (1 << palette_code_bits), 0))
 }
 
 // Builds the histogram image. pic and percent are for progress.

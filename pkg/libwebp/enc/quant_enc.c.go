@@ -253,7 +253,7 @@ func SetupFilterStrength(/* const */ enc *VP8Encoder) {
         VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, qstep);
     // Segments with lower complexity ('beta') will be less filtered.
     f := base_strength * level0 / (256 + m.beta);
-    m.fstrength = (f < FSTRENGTH_CUTOFF) ? 0 : (f > 63) ? 63 : f;
+    m.fstrength = (f < FSTRENGTH_CUTOFF) ? 0 : tenary.If(f > 63, 63, f)
   }
   // We record the initial strength (mainly for the case of 1-segment only).
   enc.filter_hdr.level = enc.dqm[0].fstrength;
@@ -535,7 +535,7 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
   var probas *ProbaArray = enc.proba.coeffs[coeff_type];
   CostArrayPtr const costs =
       (CostArrayPtr)enc.proba.remapped_costs[coeff_type];
-  first := (coeff_type == TYPE_I16_AC) ? 1 : 0;
+  first := tenary.If(coeff_type == TYPE_I16_AC, 1, 0)
   Node nodes[16][NUM_NODES];
   ScoreState score_states[2][NUM_NODES];
   ss_cur *ScoreState = &SCORE_STATE(0, MIN_DELTA);
@@ -569,7 +569,7 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
 
     // initialize source node.
     for m = -MIN_DELTA; m <= MAX_DELTA; m++ {
-      const score_t rate = (ctx0 == 0) ? VP8BitCost(1, last_proba) : 0;
+      const score_t rate = tenary.If(ctx0 == 0, VP8BitCost(1, last_proba), 0)
       ss_cur[m].score = RDScoreTrellis(lambda, rate, 0);
       ss_cur[m].costs = costs[first][ctx0];
     }
@@ -599,7 +599,7 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
     for m = -MIN_DELTA; m <= MAX_DELTA; m++ {
       var cur *Node = &NODE(n, m);
       level := level0 + m;
-      ctx := (level > 2) ? 2 : level;
+      ctx := tenary.If(level > 2, 2, level)
       band := VP8EncBands[n + 1];
       score_t base_score;
       score_t best_cur_score;
@@ -657,7 +657,7 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
       // Now, record best terminal node (and thus best entry in the graph).
       if (level != 0 && best_cur_score < best_score) {
         const score_t last_pos_cost =
-            (n < 15) ? VP8BitCost(0, probas[band][ctx][0]) : 0;
+            tenary.If(n < 15, VP8BitCost(0, probas[band][ctx][0]), 0)
         const score_t last_pos_score = RDScoreTrellis(lambda, last_pos_cost, 0);
         score = best_cur_score + last_pos_score;
         if (score < best_score) {
@@ -903,8 +903,8 @@ func StoreMaxDelta(/* const */ dqm *VP8SegmentInfo, /*const*/ int16 DCs[16]) {
   v0 := abs(DCs[1]);
   v1 := abs(DCs[2]);
   v2 := abs(DCs[4]);
-  max_v := (v1 > v0) ? v1 : v0;
-  max_v = (v2 > max_v) ? v2 : max_v;
+  max_v := tenary.If(v1 > v0, v1, v0)
+  max_v = tenary.If(v2 > max_v, v2, max_v)
   if max_v > dqm.max_edge { dqm.max_edge = max_v }
 }
 
@@ -975,8 +975,8 @@ func PickBestIntra16(/* const */ it *VP8EncIterator, rd *VP8ModeScore) {
 static const GetCostModeI *uint164(/* const */ it *VP8EncIterator, /*const*/ uint8 modes[16]) {
   preds_w := it.enc.preds_w;
   x := (it.i4 & 3), y = it.i4 >> 2;
-  left := (x == 0) ? it.preds[y * preds_w - 1] : modes[it.i4 - 1];
-  top := (y == 0) ? it.preds[-preds_w + x] : modes[it.i4 - 4];
+  left := tenary.If(x == 0, it.preds[y * preds_w - 1], modes[it.i4 - 1])
+  top := tenary.If(y == 0, it.preds[-preds_w + x], modes[it.i4 - 4])
   return VP8FixedCostsI4[top][left];
 }
 

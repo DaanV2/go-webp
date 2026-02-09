@@ -178,7 +178,7 @@ func VP8YuvToBgr32_SSE41(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *
 // Stub functions that can be called with various rounding values:
 func VP8ClipUV(int uv, rounding int) int {
   uv = (uv + rounding + (128 << (YUV_FIX + 2))) >> (YUV_FIX + 2);
-  return ((uv & ~0xff) == 0) ? uv : (uv < 0) ? 0 : 255;
+  return ((uv & ~0xff) == 0) ? uv : tenary.If(uv < 0, 0, 255)
 }
 
 func VP8RGBToY(int r, g int, b int, rounding int) int {

@@ -171,8 +171,8 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   /* const */ mem *MemBuffer = &idec.mem;
   need_compressed_alpha := NeedCompressedAlpha(idec);
-  const old_start *uint8 =
-      (mem.buf == nil) ? nil : mem.buf + mem.start;
+    const old_start *uint8 =
+      tenary.If(mem.buf == nil, nil, mem.buf + mem.start);
   const old_base *uint8 =
       tenary.If(need_compressed_alpha, dec.alpha_data, old_start);
   assert.Assert(mem.buf != nil || mem.start == 0);
@@ -213,8 +213,8 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
 func RemapMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) int {
   /* const */ mem *MemBuffer = &idec.mem;
   var old_buf *uint8 = mem.buf;
-  const old_start *uint8 =
-      (old_buf == nil) ? nil : old_buf + mem.start;
+    const old_start *uint8 =
+      tenary.If(old_buf == nil, nil, old_buf + mem.start);
   assert.Assert(old_buf != nil || mem.start == 0);
   assert.Assert(mem.mode == MEM_MODE_MAP);
 
@@ -566,8 +566,7 @@ func DecodeVP8LData(/* const */ idec *WebPIDecoder) VP8StatusCode {
     return ErrorStatusLossless(idec, dec.status);
   }
   assert.Assert(dec.status == VP8_STATUS_OK || dec.status == VP8_STATUS_SUSPENDED);
-  return (dec.status == VP8_STATUS_SUSPENDED) ? dec.status
-                                               : FinishDecoding(idec);
+  return tenary.If(dec.status == VP8_STATUS_SUSPENDED, dec.status, FinishDecoding(idec));
 }
 
 // Main decoding loop
@@ -658,8 +657,8 @@ func WebPINewDecoder (output_buffer *WebPDecBuffer) *WebPIDecoder {
 WebPIDecode *WebPIDecoder(/* const */ data *uint8, data_size uint64, config *WebPDecoderConfig) {
   idec *WebPIDecoder;
    var tmp_features WebPBitstreamFeatures
-  const features *WebPBitstreamFeatures =
-      (config == nil) ? &tmp_features : &config.input;
+    const features *WebPBitstreamFeatures =
+      tenary.If(config == nil, &tmp_features, &config.input);
   stdlib.Memset(&tmp_features, 0, sizeof(tmp_features));
 
   // Parse the bitstream's features, if requested:
@@ -670,8 +669,7 @@ WebPIDecode *WebPIDecoder(/* const */ data *uint8, data_size uint64, config *Web
   }
 
   // Create an instance of the incremental decoder
-  idec = (config != nil) ? NewDecoder(&config.output, features)
-                          : NewDecoder(nil, features);
+  idec = tenary.If(config != nil, NewDecoder(&config.output, features), NewDecoder(nil, features));
   if (idec == nil) {
     return nil;
   }
@@ -714,7 +712,7 @@ func WebPIDelete(idec *WebPIDecoder) {
 // parameters are ignored.
 // Returns nil if the allocation failed, or if some parameters are invalid.
 func WebPINewRGB(csp WEBP_CSP_MODE , output_buffer *uint8, output_buffer_size uint64 , output_stride int ) *WebPIDecoder {
-  is_external_memory := (output_buffer != nil) ? 1 : 0;
+  is_external_memory := tenary.If(output_buffer != nil, 1, 0);
   idec *WebPIDecoder;
 
   if csp >= MODE_YUV { return nil }
@@ -750,7 +748,7 @@ func WebPINewRGB(csp WEBP_CSP_MODE , output_buffer *uint8, output_buffer_size ui
 // MODE_YUVA) when decoding starts. All parameters are then ignored.
 // Returns nil if the allocation failed or if a parameter is invalid.
 func WebPINewYUVA(luma *uint8, luma_size uint64, luma_stride int, u *uint8, u_size uint64, u_stride int, v *uint8, v_size uint64, v_stride int, a *uint8, a_size uint64, a_stride int) *WebPIDecoder {
-  is_external_memory := (luma != nil) ? 1 : 0;
+  is_external_memory := tenary.If(luma != nil, 1, 0);
   idec *WebPIDecoder;
   WEBP_CSP_MODE colorspace;
 
@@ -772,7 +770,7 @@ func WebPINewYUVA(luma *uint8, luma_size uint64, luma_stride int, u *uint8, u_si
     if (a != nil) {
       if a_size == 0 || a_stride == 0 { return nil  }
     }
-    colorspace = (a == nil) ? MODE_YUV : MODE_YUVA;
+    colorspace = tenary.If(a == nil, MODE_YUV, MODE_YUVA);
   }
 
   idec = WebPINewDecoder(nil);

@@ -51,14 +51,14 @@ int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_heig
   stdlib.Memset(work, 0, (uint64)total_size);
 
   // for 'x_expand', we use bilinear interpolation
-  rescaler.x_add = rescaler.x_expand ? (x_sub - 1) : x_add;
-  rescaler.x_sub = rescaler.x_expand ? (x_add - 1) : x_sub;
+  rescaler.x_add = tenary.If(rescaler.x_expand, x_sub - 1, x_add);
+  rescaler.x_sub = tenary.If(rescaler.x_expand, x_add - 1, x_sub);
   if (!rescaler.x_expand) {  // fx_scale is not used otherwise
     rescaler.fx_scale = WEBP_RESCALER_FRAC(1, rescaler.x_sub);
   }
   // vertical scaling parameters
-  rescaler.y_add = rescaler.y_expand ? y_add - 1 : y_add;
-  rescaler.y_sub = rescaler.y_expand ? y_sub - 1 : y_sub;
+  rescaler.y_add = tenary.If(rescaler.y_expand, y_add - 1, y_add);
+  rescaler.y_sub = tenary.If(rescaler.y_expand, y_sub - 1, y_sub);
   rescaler.y_accum = tenary.If(rescaler.y_expand, rescaler.y_sub, rescaler.y_add);
   if (!rescaler.y_expand) {
     // This is WEBP_RESCALER_FRAC(dst_height, x_add * y_add) without the cast.
@@ -119,9 +119,9 @@ func WebPRescalerGetScaledDimensions(src_width int, src_height int, /*const*/ sc
 // all-in-one calls
 
 func WebPRescaleNeededLines(/* const */ rescaler *WebPRescaler, max_num_lines int) int {
-  num_lines :=
-      (rescaler.y_accum + rescaler.y_sub - 1) / rescaler.y_sub;
-  return (num_lines > max_num_lines) ? max_num_lines : num_lines;
+	num_lines := (rescaler.y_accum + rescaler.y_sub - 1) / rescaler.y_sub;
+
+	return tenary.If(num_lines > max_num_lines, max_num_lines, num_lines);
 }
 
 func WebPRescalerImport(/* const */ rescaler *WebPRescaler, num_lines int, /*const*/ src *uint8, src_stride int) int {

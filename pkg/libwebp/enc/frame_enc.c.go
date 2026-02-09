@@ -500,7 +500,7 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
         break;
       case 6: {
         b := (int)((it.luma_bits + it.uv_bits + 7) >> 3);
-        *info = (b > 255) ? 255 : b;
+        *info = tenary.If(b > 255, 255, b)
         break;
       }
       case 7:
@@ -619,9 +619,9 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
   // Fast mode: quick analysis pass over few mbs. Better than nothing.
   if (fast_probe) {
     if (method == 3) {  // we need more stats for method 3 to be reliable.
-      nb_mbs = (nb_mbs > 200) ? nb_mbs >> 1 : 100;
+      nb_mbs = tenary.If(nb_mbs > 200, nb_mbs >> 1, 100)
     } else {
-      nb_mbs = (nb_mbs > 200) ? nb_mbs >> 2 : 50;
+      nb_mbs = tenary.If(nb_mbs > 200, nb_mbs >> 2, 50)
     }
   }
 

@@ -8,6 +8,10 @@
 
 package decoder
 
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
 
 //------------------------------------------------------------------------------
 // ALPHDecoder object.
@@ -174,7 +178,7 @@ func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8I
       if (!ALPHInit(dec.alph_dec, dec.alpha_data, dec.alpha_data_size, io, dec.alpha_plane)) {
         var vp *VP8LDecoder8l_dec = dec.alph_dec.vp8l_dec;
         VP8SetError(
-            dec, (vp8l_dec == nil) ? VP8_STATUS_OUT_OF_MEMORY : vp8l_dec.status, "Alpha decoder initialization failed.");
+            dec, tenary.If(vp8l_dec == nil, VP8_STATUS_OUT_OF_MEMORY, vp8l_dec.status), "Alpha decoder initialization failed.");
         goto Error;
       }
       // if we allowed use of alpha dithering, check whether it's needed at all

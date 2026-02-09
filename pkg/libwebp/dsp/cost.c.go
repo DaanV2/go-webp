@@ -54,14 +54,14 @@ func GetResidualCost_C(int ctx0, /*const*/ res *VP8Residual) int {
   // bit_cost(1, p0) is already incorporated in t[] tables, but only if ctx != 0
   // (as required by the syntax). For ctx0 == 0, we need to add it here or it'll
   // be missing during the loop.
-  cost := (ctx0 == 0) ? VP8BitCost(1, p0) : 0;
+  cost := tenary.If((ctx0 == 0), VP8BitCost(1, p0), 0)
 
   if (res.last < 0) {
     return VP8BitCost(0, p0);
   }
   for ; n < res.last; n++ {
     v := abs(res.coeffs[n]);
-    ctx := (v >= 2) ? 2 : v;
+    ctx := tenary.If((v >= 2), 2, v)
     cost += VP8LevelCost(t, v);
     t = costs[n + 1][ctx];
   }
@@ -72,7 +72,7 @@ func GetResidualCost_C(int ctx0, /*const*/ res *VP8Residual) int {
     cost += VP8LevelCost(t, v);
     if (n < 15) {
       b := VP8EncBands[n + 1];
-      ctx := (v == 1) ? 1 : 2;
+      ctx := tenary.If((v == 1), 1, 2)
       last_p0 := res.prob[b][ctx][0];
       cost += VP8BitCost(0, last_p0);
     }

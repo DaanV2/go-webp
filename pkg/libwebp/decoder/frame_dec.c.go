@@ -634,21 +634,21 @@ func VP8ExitCritical(/* const */ dec *vp8.VP8Decoder, /*const*/ io *vp8.VP8Io) i
 
 // Initialize multi/single-thread worker
 func InitThreadContext(/* const */ dec *vp8.VP8Decoder) int  {
-  dec.cache_id = 0;
+  dec.cache_id = 0
   if (dec.mt_method > 0) {
-    var worker *WebPWorker = &dec.worker;
+    var worker *WebPWorker = &dec.worker
     if (!WebPGetWorkerInterface().Reset(worker)) {
-      return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "thread initialization failed.");
+      return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "thread initialization failed.")
     }
-    worker.data1 = dec;
-    worker.data2 = (*void)&dec.thread_ctx.io;
-    worker.hook = FinishRow;
+    worker.data1 = dec
+    worker.data2 = (*void)&dec.thread_ctx.io
+    worker.hook = FinishRow
     dec.num_caches =
-        (dec.filter_type > 0) ? MT_CACHE_LINES : MT_CACHE_LINES - 1;
+        tenary.If(dec.filter_type > 0, MT_CACHE_LINES, MT_CACHE_LINES - 1)
   } else {
-    dec.num_caches = ST_CACHE_LINES;
+    dec.num_caches = ST_CACHE_LINES
   }
-  return 1;
+  return 1
 }
 
 // Return the multi-threading method to use (0=off), depending
@@ -680,25 +680,18 @@ func AllocateMemory(/* const */ dec *VP8Decoder) int {
   intra_pred_mode_size := 4 * mb_w * sizeof(uint8);
   top_size := sizeof(VP8TopSamples) * mb_w;
   mb_info_size := (mb_w + 1) * sizeof(VP8MB);
-  f_info_size :=
-      (dec.filter_type > 0)
-          ? mb_w * (dec.mt_method > 0 ? 2 : 1) * sizeof(VP8FInfo)
-          : 0;
+  f_info_size := tenary.If(dec.filter_type > 0, mb_w * (tenary.If(dec.mt_method > 0, 2, 1)) * sizeof(VP8FInfo), 0)
   yuv_size := YUV_SIZE * sizeof(*dec.yuv_b);
-  mb_data_size :=
-      (dec.mt_method == 2 ? 2 : 1) * mb_w * sizeof(*dec.mb_data);
+  mb_data_size := tenary.If(dec.mt_method == 2, 2, 1) * mb_w * sizeof(*dec.mb_data);
   cache_height :=
       (16 * num_caches + kFilterExtraRows[dec.filter_type]) * 3 / 2;
   cache_size := top_size * cache_height;
   // alpha_size is the only one that scales as width x height.
-  alpha_size :=
-      (dec.alpha_data != nil)
-          ? (uint64)dec.pic_hdr.width * dec.pic_hdr.height
-          : uint64(0);
-  needed := (uint64)intra_pred_mode_size + top_size +
+  alpha_size := tenary.If(dec.alpha_data != nil, uint64(dec.pic_hdr.width * dec.pic_hdr.height), uint64(0))
+  needed := uint64(intra_pred_mode_size + top_size +
                           mb_info_size + f_info_size + yuv_size + mb_data_size +
-                          cache_size + alpha_size + WEBP_ALIGN_CST;
-  mem *uint8;
+                          cache_size + alpha_size + WEBP_ALIGN_CST)
+  var mem *uint8;
 
   if !CheckSizeOverflow(needed) {
     return 0  // check for overflow
@@ -725,7 +718,7 @@ func AllocateMemory(/* const */ dec *VP8Decoder) int {
   dec.mb_info = ((*VP8MB)mem) + 1;
   mem += mb_info_size;
 
-  dec.f_info = f_info_size ? (*VP8FInfo)mem : nil;
+  dec.f_info = tenary.If(f_info_size, (*VP8FInfo)mem, nil)
   mem += f_info_size;
   dec.thread_ctx.id = 0;
   dec.thread_ctx.f_info = dec.f_info;
@@ -764,7 +757,7 @@ func AllocateMemory(/* const */ dec *VP8Decoder) int {
   mem += cache_size;
 
   // alpha plane
-  dec.alpha_plane = alpha_size ? mem : nil;
+  dec.alpha_plane = tenary.If(alpha_size != 0, mem, nil);
   mem += alpha_size;
   assert.Assert(mem <= (*uint8)dec.mem + dec.mem_size);
 

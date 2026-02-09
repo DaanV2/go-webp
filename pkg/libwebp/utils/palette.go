@@ -363,7 +363,7 @@ func PaletteSortModifiedZeng(/* const */ pic *picture.Picture, /*const*/ palette
                  (int32)cooccurrence[best_index * num_colors + l_j];
       }
       if (delta > 0) {
-        first = (first == 0) ? num_colors - 1 : first - 1;
+        first = tenary.If(first == 0, num_colors - 1, first - 1)
         remapping[first] = best_index;
       } else {
         last++

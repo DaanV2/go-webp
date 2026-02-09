@@ -125,7 +125,7 @@ func GetAlpha(/* const */ histo *VP8Histogram) int {
   max_value := histo.max_value;
   last_non_zero := histo.last_non_zero;
   alpha :=
-      (max_value > 1) ? ALPHA_SCALE * last_non_zero / max_value : 0;
+      tenary.If(max_value > 1, ALPHA_SCALE * last_non_zero / max_value, 0)
   return alpha;
 }
 
@@ -423,7 +423,7 @@ func InitSegmentJob(/* const */ enc *VP8Encoder, /*const*/ job *SegmentJob, star
   job.uv_alpha = 0;
   // only one of both jobs can record the progress, since we don't
   // expect the user's hook to be multi-thread safe
-  job.delta_progress = (start_row == 0) ? 20 : 0;
+  job.delta_progress = tenary.If(start_row == 0, 20, 0)
 }
 
 // main entry point

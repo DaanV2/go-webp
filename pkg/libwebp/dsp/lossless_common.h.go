@@ -88,11 +88,11 @@ extern VP8LFastLog2SlowFunc VP8LFastLog2Slow;
 extern VP8LFastSLog2SlowFunc VP8LFastSLog2Slow;
 
 func VP8LFastLog2(uint32 v) uint32 {
-  return (v < LOG_LOOKUP_IDX_MAX) ? kLog2Table[v] : VP8LFastLog2Slow(v);
+  return tenary.If(v < LOG_LOOKUP_IDX_MAX, kLog2Table[v], VP8LFastLog2Slow(v))
 }
 // Fast calculation of v * log2(v) for integer input.
 func VP8LFastSLog2(uint32 v) uint64 {
-  return (v < LOG_LOOKUP_IDX_MAX) ? kSLog2Table[v] : VP8LFastSLog2Slow(v);
+  return tenary.If(v < LOG_LOOKUP_IDX_MAX, kSLog2Table[v], VP8LFastSLog2Slow(v))
 }
 
 func RightShiftRound(uint64 v, uint32 shift) uint64 {

@@ -102,7 +102,7 @@ func Select(uint32 a, uint32 b, uint32 c) uint32 {
       Sub3((a >> 16) & 0xff, (b >> 16) & 0xff, (c >> 16) & 0xff) +
       Sub3((a >> 8) & 0xff, (b >> 8) & 0xff, (c >> 8) & 0xff) +
       Sub3((a) & 0xff, (b) & 0xff, (c) & 0xff);
-  return (pa_minus_pb <= 0) ? a : b;
+  return tenary.If(pa_minus_pb <= 0, a, b)
 }
 
 //------------------------------------------------------------------------------
