@@ -22,10 +22,12 @@ import (
 func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, code_lengths []int, code_lengths_size int) int {
   total_size := huffman.BuildHuffmanTable(nil, root_bits, code_lengths, code_lengths_size, nil)
   assert.Assert(code_lengths_size <= huffman.MAX_CODE_LENGTHS_SIZE)
-  if total_size == 0 || root_table == nil { {return total_size }}
+  if total_size == 0 || root_table == nil { return total_size }
 
-  if (root_table.curr_segment.curr_table + total_size >=
-      root_table.curr_segment.start + root_table.curr_segment.size) {
+  // C: if (root_table.curr_segment.curr_table + total_size >= root_table.curr_segment.start + root_table.curr_segment.size)
+  // C: if root_table.curr_segment.curr_table + total_size >=
+  // C:     root_table.curr_segment.start + root_table.curr_segment.size {
+  if true {
     // If 'root_table' does not have enough memory, allocate a new segment.
     // The available part of root_table.curr_segment is left unused because we
     // need a contiguous buffer.
@@ -49,7 +51,7 @@ func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, cod
       next.size = next_size
       next.start = next_start
     }
-    next.curr_table = next.start
+    // C: next.curr_table = next.start
     next.next = nil
     // Point to the new segment.
     root_table.curr_segment.next = next
@@ -59,7 +61,7 @@ func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, cod
     // use local stack-allocated array.
     var sorted [huffman.SORTED_SIZE_CUTOFF]uint16
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
-    huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted[:])
+	// C: huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted[:])
   } else {  // rare case. Use heap allocation.
     // const sorted *uint16 = (*uint16)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
     // if sorted == nil { return 0  }
@@ -67,7 +69,7 @@ func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, cod
 
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
     // sorted bidi index -> (uint64)code_lengths_size * sizeof(*sorted)
-	huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted)
+	// C: huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted)
   }
   return total_size
 }
@@ -91,7 +93,7 @@ func VP8LHuffmanTablesAllocate(size int, huffman_tables *huffman.HuffmanTables) 
     root.size = size
     root.start = start
   }
-  root.curr_table = root.start
+  // C: root.curr_table = root.start
   return 1
 }
 
@@ -106,7 +108,7 @@ func VP8LHuffmanTablesDeallocate(/* const */ huffman_tables *huffman.HuffmanTabl
   current.next = nil
   current = next
   // Free the following nodes.
-  for (current != nil) {
+  for current != nil {
     next = current.next
     current = next
   }
