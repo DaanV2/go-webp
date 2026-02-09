@@ -388,7 +388,7 @@ func EncoderInit(/* const */ enc *VP8LEncoder) int {
   var i int
   if !VP8LHashChainInit(&enc.hash_chain, pix_cnt) { return 0  }
 
-  for i = 0; i < 4; i++ VP8LBackwardRefsInit(&enc.refs[i], refs_block_size);
+  for i = 0; i < 4; i++ { VP8LBackwardRefsInit(&enc.refs[i], refs_block_size) }
 
 
   return 1
