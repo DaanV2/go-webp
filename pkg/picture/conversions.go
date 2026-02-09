@@ -5,13 +5,13 @@ import (
 	"github.com/daanv2/go-webp/pkg/picture"
 )
 
-func PictureARGBToYUVA(picture *picture.Picture, colorspace colorspace.CSP, dithering float64, use_iterative_conversion int) int {
+func PictureARGBToYUVA(picture *picture.Picture, csp colorspace.CSP, dithering float64, use_iterative_conversion int) int {
 	if picture == nil {
 		return 0
 	}
 	if picture.ARGB == nil {
 		return picture.SetEncodingError(picture.ENC_ERROR_nil_PARAMETER)
-	} else if (colorspace & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420 {
+	} else if (csp & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420 {
 		return picture.SetEncodingError(picture.ENC_ERROR_INVALID_CONFIGURATION)
 	} else {
 		// C: const uint8_t* argb = (const uint8_t*)picture->argb

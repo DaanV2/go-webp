@@ -32,7 +32,7 @@ import (
 // we are not planning to use this with extremely long blocks.
 //
 // See https://en.wikipedia.org/wiki/Huffman_coding
-func GenerateOptimalTree(histogram []uint32, histogram_size int, tree []*HuffmanTree, tree_depth_limit int, bit_depths *uint8) {
+func GenerateOptimalTree(histogram []uint32, histogram_size int, tree []*HuffmanTree, tree_depth_limit int, bit_depths []uint8) {
 	var count_min uint32
 	var tree_pool []*HuffmanTree
 	var i int
@@ -116,7 +116,7 @@ func GenerateOptimalTree(histogram []uint32, histogram_size int, tree []*Huffman
 					max_depth = bit_depths[j]
 				}
 			}
-			if max_depth <= tree_depth_limit {
+			if int(max_depth) <= tree_depth_limit {
 				break
 			}
 		}

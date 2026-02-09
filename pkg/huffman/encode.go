@@ -22,64 +22,69 @@ import (
 func ValuesShouldBeCollapsedToStrideAverage(a, b int) bool {
 	return stdlib.Abs(a-b) < 4
 }
-func CodeRepeatedValues(repetitions int, tokens *HuffmanTreeToken, value int, prev_value int) *HuffmanTreeToken {
+
+func CodeRepeatedValues(repetitions int, tokens []*HuffmanTreeToken, value, prev_value uint8) []*HuffmanTreeToken {
 	assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH)
+
+	// NOTE: we move tokens with tokens = tokens[1:] cause it mimics the C code of tokens++
+	// And it returned how far we moved the tokens, so we can keep track of how many tokens we used.
 	if value != prev_value {
-		tokens.code = value
-		tokens.extra_bits = 0
-		// C: tokens++
+		tokens[0].code = value
+		tokens[0].extra_bits = 0
+		tokens = tokens[1:]
 		repetitions--
 	}
+
 	for repetitions >= 1 {
 		if repetitions < 3 {
 			var i int
 			for i = 0; i < repetitions; i++ {
-				tokens.code = value
-				tokens.extra_bits = 0
-				// C: tokens++
+				tokens[0].code = value
+				tokens[0].extra_bits = 0
+				tokens = tokens[1:]
 			}
 			break
 		} else if repetitions < 7 {
-			tokens.code = 16
-			tokens.extra_bits = repetitions - 3
-			// C: tokens++
+			tokens[0].code = 16
+			tokens[0].extra_bits = uint8(repetitions - 3)
+
 			break
 		} else {
-			tokens.code = 16
-			tokens.extra_bits = 3
-			// C: tokens++
+			tokens[0].code = 16
+			tokens[0].extra_bits = 3
+			tokens = tokens[1:]
 			repetitions -= 6
 		}
 	}
 	return tokens
 }
 
-func CodeRepeatedZeros(repetitions int, tokens []HuffmanTreeToken) []HuffmanTreeToken {
-	token_index := 0
-
+func CodeRepeatedZeros(repetitions int, tokens []*HuffmanTreeToken) []*HuffmanTreeToken {
+	// NOTE: we move tokens with tokens = tokens[1:] cause it mimics the C code of tokens++
+	// And it returned how far we moved the tokens, so we can keep track of how many tokens we used.
 	for repetitions >= 1 {
 		if repetitions < 3 {
 			var i int
 			for i = 0; i < repetitions; i++ {
-				tokens[token_index].code = 0 // 0-value
-				tokens[token_index].extra_bits = 0
-				token_index++
+				tokens[0].code = 0 // 0-value
+				tokens[0].extra_bits = 0
+				tokens = tokens[1:]
 			}
 			break
 		} else if repetitions < 11 {
-			tokens[token_index].code = 17
-			tokens[token_index].extra_bits = uint8(repetitions - 3)
-			token_index++
+			tokens[0].code = 17
+			tokens[0].extra_bits = uint8(repetitions - 3)
+			tokens = tokens[1:]
 			break
 		} else if repetitions < 139 {
-			tokens[token_index].code = 18
-			tokens[token_index].extra_bits = uint8(repetitions - 11)
-			token_index++
+			tokens[0].code = 18
+			tokens[0].extra_bits = uint8(repetitions - 11)
+			tokens = tokens[1:]
 			break
 		} else {
-			tokens[token_index].code = 18
-			tokens[token_index].extra_bits = 0x7f // 138 repeated 0s
-			token_index++
+			tokens[0].code = 18
+			tokens[0].extra_bits = 0x7f // 138 repeated 0s
+			tokens = tokens[1:]
 			repetitions -= 138
 		}
 	}
@@ -88,12 +93,11 @@ func CodeRepeatedZeros(repetitions int, tokens []HuffmanTreeToken) []HuffmanTree
 
 // Turn the Huffman tree into a token sequence.
 // Returns the number of tokens used.
-func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeToken, max_tokens int) int {
-	var current_token *HuffmanTreeToken = tokens
-	var starting_token *HuffmanTreeToken = tokens
+func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens []*HuffmanTreeToken, max_tokens int) int {
+	var current_token []*HuffmanTreeToken = tokens[0:]
 	// C: var ending_token *HuffmanTreeToken = tokens + max_tokens
 	depth_size := tree.num_symbols
-	prev_value := 8 // 8 is the initial value for rle.
+	prev_value := uint8(8) // 8 is the initial value for rle.
 	i := 0
 	assert.Assert(tokens != nil)
 	for i < depth_size {
@@ -115,7 +119,8 @@ func VP8LCreateCompressedHuffmanTree(tree *HuffmanTreeCode, tokens *HuffmanTreeT
 		// C: assert.Assert(current_token <= ending_token)
 	}
 	//   (void)ending_token;  // suppress 'unused variable' warning
-	// C: return (int)(current_token - starting_token)
+	// return (int)(current_token - starting_token)
+	return len(tokens) - len(current_token)
 }
 
 // -----------------------------------------------------------------------------
@@ -156,7 +161,7 @@ func ConvertBitDepthsToSymbols( /* const */ tree *HuffmanTreeCode) {
 		code := 0
 		for i = 1; i <= MAX_ALLOWED_CODE_LENGTH; i++ {
 			code = (code + depth_count[i-1]) << 1
-			next_code[i] = code
+			next_code[i] = uint32(code)
 		}
 	}
 	for i = 0; i < len; i++ {
@@ -171,10 +176,10 @@ func ConvertBitDepthsToSymbols( /* const */ tree *HuffmanTreeCode) {
 // Create an optimized tree, and tokenize it.
 // 'buf_rle' and 'huff_tree' are pre-allocated and the 'tree' is the constructed
 // huffman code tree.
-func VP8LCreateHuffmanTree( /* const */ histogram *uint32, tree_depth_limit int /* const */, buf_rle *uint8 /* const */, huff_tree *HuffmanTree /* const */, huff_code *HuffmanTreeCode) {
+func VP8LCreateHuffmanTree( /* const */ histogram []uint32, tree_depth_limit int /* const */, buf_rle []uint8 /* const */, huff_tree []*HuffmanTree /* const */, huff_code *HuffmanTreeCode) {
 	num_symbols := huff_code.num_symbols
-	var bounded_histogram *uint32 = histogram // bidi index -> (uint64)num_symbols * sizeof(*histogram)
-	var bounded_buf_rle *uint8 = buf_rle      // bidi index -> (uint64)num_symbols * sizeof(*buf_rle)
+	var bounded_histogram []uint32 = histogram[0:] // bidi index -> (uint64)num_symbols * sizeof(*histogram)
+	var bounded_buf_rle []uint8 = buf_rle[0:]      // bidi index -> (uint64)num_symbols * sizeof(*buf_rle)
 
 	// C: stdlib.Memset(bounded_buf_rle, 0, num_symbols*sizeof(*buf_rle))
 

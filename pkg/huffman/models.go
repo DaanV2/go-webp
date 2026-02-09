@@ -13,7 +13,7 @@ type HuffmanTreeCode struct {
 	// Number of symbols.
 	num_symbols int
 	// Code lengths of the symbols.
-	code_lengths *uint8
+	code_lengths []uint8
 	// Symbol Codes. used to be uint16*
 	codes []uint16
 }
