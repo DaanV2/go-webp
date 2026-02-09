@@ -38,17 +38,16 @@ func GenerateOptimalTree(histogram []uint32, histogram_size int, tree []*Huffman
 	var i int
 	tree_size_orig := 0
 
-	for i = 0; i < histogram_size; i++ {
+	for i = range histogram_size {
 		if histogram[i] != 0 {
 			tree_size_orig++
 		}
 	}
-
 	if tree_size_orig == 0 { // pretty optimal already!
 		return
 	}
 
-	// C: tree_pool = tree + tree_size_orig
+	tree_pool = tree[tree_size_orig:]
 
 	// For block sizes with less than 64k symbols we never need to do a
 	// second iteration of this loop.
