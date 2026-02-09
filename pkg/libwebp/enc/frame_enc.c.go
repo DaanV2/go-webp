@@ -60,7 +60,7 @@ func ComputeNextQ(/* const */ s *PassStats) float64 {
     dq = (s.value > s.target) ? -s.dq : s.dq;
     s.is_first = 0;
   } else if (s.value != s.last_value) {
-    const float64 slope = (s.target - s.value) / (s.last_value - s.value);
+    var float64 slope = (s.target - s.value) / (s.last_value - s.value);
     dq = (float64)(slope * (s.last_q - s.q));
   } else {
     dq = 0.;  // we're done?!

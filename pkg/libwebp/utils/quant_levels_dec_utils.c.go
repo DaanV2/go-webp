@@ -81,11 +81,11 @@ func clip_8b(int v) uint8 {
 
 // vertical accumulation
 func VFilter(/* const */ p *SmoothParams) {
-  const src *uint8 = p.src;
+  var src *uint8 = p.src;
   w := p.width;
-  const cur *uint16 = p.cur;
-  const top *uint16 = p.top;
-  const out *uint16 = p.end;
+  var cur *uint16 = p.cur;
+  var top *uint16 = p.top;
+  var out *uint16 = p.end;
   sum := 0;  // all arithmetic is modulo 16bit
   var x int
 
@@ -169,7 +169,7 @@ func InitCorrectionLUT(/* const */ lut_ptr *int16 , min_dist int) {
   delta := threshold1 - threshold2;
   // lut_ptr is , pointing to the start of the LUT.
   // We need the middle pointer (lut) for negative indexing.
-  const lut *int16 = lut_ptr + LUT_SIZE;
+  var lut *int16 = lut_ptr + LUT_SIZE;
   var i int
   for i = 1; i <= LUT_SIZE; i++ {
     c := tenary.If(i <= threshold2, (i << DFIX), tenary.If(i < threshold1, max_threshold * (threshold1 - i) / delta, 0))
@@ -183,7 +183,7 @@ func InitCorrectionLUT(/* const */ lut_ptr *int16 , min_dist int) {
 func CountLevels(/* const */ p *SmoothParams) {
   var i, j, last_level int;
   used_levels = [256]uint8{}
-  const data *uint8 = p.src;
+  var data *uint8 = p.src;
   p.min = 255;
   p.max = 0;
   for j = 0; j < p.height; j++ {

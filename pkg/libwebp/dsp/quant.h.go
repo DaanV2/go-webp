@@ -25,24 +25,24 @@ func horizontal_add_uint32x4(/* const */ uint32x4_t a) uint32 {
 #if WEBP_AARCH64
   return vaddvq_u32(a);
 #else
-  const uint64x2_t b = vpaddlq_u32(a);
-  const uint32x2_t c = vadd_u32(vreinterpret_u32_u64(vget_low_u64(b)), vreinterpret_u32_u64(vget_high_u64(b)));
+  var uint64x2_t b = vpaddlq_u32(a);
+  var uint32x2_t c = vadd_u32(vreinterpret_u32_u64(vget_low_u64(b)), vreinterpret_u32_u64(vget_high_u64(b)));
   return vget_lane_u32(c, 0);
 #endif
 }
 
 func IsFlat(/* const */ levels *int16, num_blocks int, thresh int) int {
-  const int16x8_t tst_ones = vdupq_n_s16(-1);
+  var int16x8_t tst_ones = vdupq_n_s16(-1);
   uint32x4_t sum = vdupq_n_u32(0);
   var i int
 
   for i = 0; i < num_blocks; i++ {
     // Set DC to zero.
-    const int16x8_t a_0 = vsetq_lane_s16(0, vld1q_s16(levels), 0);
-    const int16x8_t a_1 = vld1q_s16(levels + 8);
+    var int16x8_t a_0 = vsetq_lane_s16(0, vld1q_s16(levels), 0);
+    var int16x8_t a_1 = vld1q_s16(levels + 8);
 
-    const uint16x8_t b_0 = vshrq_n_u16(vtstq_s16(a_0, tst_ones), 15);
-    const uint16x8_t b_1 = vshrq_n_u16(vtstq_s16(a_1, tst_ones), 15);
+    var uint16x8_t b_0 = vshrq_n_u16(vtstq_s16(a_0, tst_ones), 15);
+    var uint16x8_t b_1 = vshrq_n_u16(vtstq_s16(a_1, tst_ones), 15);
 
     sum = vpadalq_u16(sum, b_0);
     sum = vpadalq_u16(sum, b_1);

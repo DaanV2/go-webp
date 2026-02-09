@@ -840,7 +840,7 @@ func HistoQueuePush(/* const */ histo_queue *HistoQueue, *VP8LHistogram* const h
 func HistogramCombineGreedy(/* const */ image_histo *VP8LHistogramSet) int {
   ok := 0;
   image_histo_size := image_histo.size;
-  int i, j;
+  var i, j int
   *VP8LHistogram* const histograms = image_histo.histograms;
   // Priority queue of histogram pairs.
    var histo_queue HistoQueue

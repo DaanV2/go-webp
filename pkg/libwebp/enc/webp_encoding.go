@@ -54,8 +54,8 @@ func WebPEncode( /* const */ config *config.Config, pic *picture.Picture) int {
 			} else {
 				var dithering float64 = 0.0
 				if config.Preprocessing & 2 {
-					const float64 x = config.Quality / 100.0
-					const float64 x2 = x * x
+					var float64 x = config.Quality / 100.0
+					var float64 x2 = x * x
 					// slowly decreasing from max dithering at low quality (q.0)
 					// to 0.5 dithering amplitude at high quality (q.100)
 					dithering = 1.0 + (0.5-1.0)*x2*x2

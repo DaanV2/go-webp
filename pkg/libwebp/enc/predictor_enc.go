@@ -345,7 +345,7 @@ func ComputeResidualsForTile(width, height, tile_x, tile_y, min_bits int, update
   assert.Assert(max_x <= (1 << MAX_TRANSFORM_BITS));
   for mode = 0; mode < kNumPredModes; mode++ {
     var relative_y int
-    const histo_argb *uint32 =
+    var histo_argb *uint32 =
         GetHistoArgb(all_argb, /*subsampling_index=*/0, mode);
     if (start_y > 0) {
       // Read the row above the tile which will become the first upper_row.
@@ -645,7 +645,7 @@ func GetBestPredictorsAndSubSampling(
   for (subsampling_index = 0; subsampling_index <= max_subsampling_index;
        ++subsampling_index) {
     var plane int
-    const accumulated *uint32 =
+    var accumulated *uint32 =
         GetAccumulatedHisto(all_accumulated_argb, subsampling_index);
     cost := VP8LShannonEntropy(
         &all_pred_histos[subsampling_index * kNumPredModes], kNumPredModes);
@@ -873,7 +873,7 @@ static VP8LMultipliers GetBestColorTransformForTile(
   all_y_max := min(tile_y_offset + max_tile_size, ysize);
   tile_width := all_x_max - tile_x_offset;
   tile_height := all_y_max - tile_y_offset;
-  const tile_argb *uint32 =
+  var tile_argb *uint32 =
       argb + tile_y_offset * xsize + tile_x_offset;
    var best_tx VP8LMultipliers
   MultipliersClear(&best_tx);

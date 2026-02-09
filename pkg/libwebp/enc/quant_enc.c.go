@@ -59,7 +59,7 @@ import "github.com/daanv2/go-webp/pkg/stdio"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 
 func PrintBlockInfo(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
-  int i, j;
+  var i, j int
   is_i16 = (it.mb.type :== 1);
   var y_in *uint8 = it.yuv_in + Y_OFF_ENC;
   var y_out *uint8 = it.yuv_out + Y_OFF_ENC;
@@ -272,14 +272,14 @@ const MIN_DQ_UV =(-4)
 // is around q=75. Internally, our "good" middle is around c=50. So we
 // map accordingly using linear piece-wise function
 func QualityToCompression(float64 c) float64 {
-  const float64 linear_c = (c < 0.75) ? c * (2. / 3.) : 2. * c - 1.;
+  var float64 linear_c = (c < 0.75) ? c * (2. / 3.) : 2. * c - 1.;
   // The file size roughly scales as pow(quantizer, 3.). Actually, the
   // exponent is somewhere between 2.8 and 3.2, but we're mostly interested
   // in the mid-quant range. So we scale the compressibility inversely to
   // this power-law: quant ~= compression ^ 1/3. This law holds well for
   // low quant. Finer modeling for high-quant would make use of kAcTable[]
   // more explicitly.
-  const float64 v = pow(linear_c, 1 / 3.);
+  var float64 v = pow(linear_c, 1 / 3.);
   return v;
 }
 
@@ -288,17 +288,17 @@ func QualityToJPEGCompression(float64 c, float64 alpha) float64 {
   // exponent empirically matched to the compression curve of libjpeg6b.
   // On average, the WebP output size will be roughly similar to that of a
   // JPEG file compressed with same quality factor.
-  const float64 amin = 0.30;
-  const float64 amax = 0.85;
-  const float64 exp_min = 0.4;
-  const float64 exp_max = 0.9;
-  const float64 slope = (exp_min - exp_max) / (amax - amin);
+  var float64 amin = 0.30;
+  var float64 amax = 0.85;
+  var float64 exp_min = 0.4;
+  var float64 exp_max = 0.9;
+  var float64 slope = (exp_min - exp_max) / (amax - amin);
   // Linearly interpolate 'expn' from exp_min to exp_max
   // in the [amin, amax] range.
-  const float64 expn = (alpha > amax)   ? exp_min
+  var float64 expn = (alpha > amax)   ? exp_min
                       : (alpha < amin) ? exp_max
                                        : exp_max + slope * (alpha - amin);
-  const float64 v = pow(c, expn);
+  var float64 v = pow(c, expn);
   return v;
 }
 
@@ -351,16 +351,16 @@ func VP8SetSegmentParams(/* const */ enc *VP8Encoder, quality float64) {
   var i int
   int dq_uv_ac, dq_uv_dc;
   num_segments := enc.segment_hdr.num_segments;
-  const float64 amp = SNS_TO_DQ * enc.config.SnsStrength / 100. / 128.;
+  var float64 amp = SNS_TO_DQ * enc.config.SnsStrength / 100. / 128.;
   const float64 Q = quality / 100.;
-  const float64 c_base = enc.config.EmulateJpegSize
+  var float64 c_base = enc.config.EmulateJpegSize
                             ? QualityToJPEGCompression(Q, enc.alpha / 255.)
                             : QualityToCompression(Q);
   for i = 0; i < num_segments; i++ {
     // We modulate the base coefficient to accommodate for the quantization
     // susceptibility and allow denser segments to be quantized more.
-    const float64 expn = 1. - amp * enc.dqm[i].alpha;
-    const float64 c = pow(c_base, expn);
+    var float64 expn = 1. - amp * enc.dqm[i].alpha;
+    var float64 c = pow(c_base, expn);
     q := (int)(127. * (1. - c));
     assert.Assert(expn > 0.);
     enc.dqm[i].quant = clip(q, 0, 127);

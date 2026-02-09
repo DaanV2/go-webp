@@ -63,7 +63,7 @@ func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, cod
 	// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
 	// C: huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted[:])
   } else {  // rare case. Use heap allocation.
-    // const sorted *uint16 = (*uint16)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
+    // var sorted *uint16 = (*uint16)WebPSafeMalloc(code_lengths_size, sizeof(*sorted));
     // if sorted == nil { return 0  }
 	sorted := make([]uint16, code_lengths_size)
 

@@ -172,7 +172,7 @@ func ApplyAlphaMultiply_16b_C(rgba *uint84444, w int, h int, stride int) {
 #if !WEBP_NEON_OMIT_C_CODE
 func DispatchAlpha_C(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint8, dst_stride int) int {
   alpha_mask := 0xff;
-  int i, j;
+  var i, j int
 
   for j = 0; j < height; j++ {
     for i = 0; i < width; i++ {
@@ -188,7 +188,7 @@ func DispatchAlpha_C(/* const */ alpha *uint8, alpha_stride int, width, height i
 }
 
 func DispatchAlphaToGreen_C(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint32, dst_stride int) {
-  int i, j;
+  var i, j int
   for j = 0; j < height; j++ {
     for i = 0; i < width; i++ {
       dst[i] = alpha[i] << 8;  // leave A/R/B channels zero'd.
@@ -200,7 +200,7 @@ func DispatchAlphaToGreen_C(/* const */ alpha *uint8, alpha_stride int, width, h
 
 func ExtractAlpha_C(/* const */ argb *uint8, argb_stride int, width, height int, alpha *uint8, alpha_stride int) int {
   alpha_mask := 0xff;
-  int i, j;
+  var i, j int
 
   for j = 0; j < height; j++ {
     for i = 0; i < width; i++ {

@@ -175,7 +175,7 @@ func VP8AdjustFilterStrength(/* const */ it *VP8EncIterator) {
       // Improvement over filter level 0 should be at least 1e-5 (relatively)
       float64 best_v = 1.00001 * (*it.lf_stats)[s][0];
       for i = 1; i < MAX_LF_LEVELS; i++ {
-        const float64 v = (*it.lf_stats)[s][i];
+        var float64 v = (*it.lf_stats)[s][i];
         if (v > best_v) {
           best_v = v;
           best_level = i;

@@ -722,7 +722,7 @@ func WebPDecodeYUV( /* const */ data *uint8, data_size uint64, width *int, heigh
 
 	{
 		var output WebPDecBuffer // only to preserve the side-infos
-		const out *uint8 = Decode(MODE_YUV, data, data_size, width, height, &output)
+		var out *uint8 = Decode(MODE_YUV, data, data_size, width, height, &output)
 
 		if out != nil {
 			var buf *WebPYUVABuffer = &output.u.YUVA

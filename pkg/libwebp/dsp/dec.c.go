@@ -119,7 +119,7 @@ func TransformUV_C(/* const */ in *int16, dst *uint8) {
 #if !WEBP_NEON_OMIT_C_CODE
 func TransformDC_C(/* const */ in *int16, dst *uint8) {
   DC := in[0] + 4;
-  int i, j;
+  var i, j int
   for j = 0; j < 4; j++ {
     for i = 0; i < 4; i++ {
       STORE(i, j, DC);
@@ -683,7 +683,7 @@ func HFilter8i_C(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_th
 //------------------------------------------------------------------------------
 
 func DitherCombine8x8_C(/* const */ dither *uint8, dst *uint8, dst_stride int) {
-  int i, j;
+  var i, j int
   for j = 0; j < 8; j++ {
     for i = 0; i < 8; i++ {
       delta0 := dither[i] - VP8_DITHER_AMP_CENTER;

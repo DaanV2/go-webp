@@ -279,7 +279,7 @@ func LinearToGammaWeighted(/* const */ src *uint8, /*const*/ a_ptr *uint8, uint3
 }
 
 func WebPAccumulateRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, rgb_stride int, dst *uint16, width int) {
-  int i, j;
+  var i, j int
   // we loop over 2x2 blocks and produce one R/G/B/A value for each.
   for i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * 4, dst += 4 {
     a := SUM4ALPHA(a_ptr + j);
@@ -318,7 +318,7 @@ func WebPAccumulateRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*cons
 }
 
 func WebPAccumulateRGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, step int, rgb_stride int, dst *uint16, width int) {
-  int i, j;
+  var i, j int
   for i = 0, j = 0; i < (width >> 1); i += 1, j += 2 * step, dst += 4 {
     dst[0] = SUM4(r_ptr + j, step);
     dst[1] = SUM4(g_ptr + j, step);

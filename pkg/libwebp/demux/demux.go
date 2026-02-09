@@ -909,7 +909,7 @@ func WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, 
 // Returns true on success, false otherwise.
 func WebPDemuxNextChunk( iter *WebPChunkIterator) int {
   if (iter != nil) {
-    const fourcc *byte =
+    var fourcc *byte =
         (/* const */ *byte)iter.chunk.bytes - CHUNK_HEADER_SIZE
     return SetChunk(fourcc, iter.chunk_num + 1, iter)
   }
@@ -918,7 +918,7 @@ func WebPDemuxNextChunk( iter *WebPChunkIterator) int {
 
 func WebPDemuxPrevChunk( iter *WebPChunkIterator) int {
   if (iter != nil && iter.chunk_num > 1) {
-    const fourcc *byte =
+    var fourcc *byte =
         (/* const */ *byte)iter.chunk.bytes - CHUNK_HEADER_SIZE
     return SetChunk(fourcc, iter.chunk_num - 1, iter)
   }

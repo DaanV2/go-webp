@@ -171,9 +171,9 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
   var dec *VP8Decoder = (*VP8Decoder)idec.dec;
   /* const */ mem *MemBuffer = &idec.mem;
   need_compressed_alpha := NeedCompressedAlpha(idec);
-    const old_start *uint8 =
+    var old_start *uint8 =
       tenary.If(mem.buf == nil, nil, mem.buf + mem.start);
-  const old_base *uint8 =
+  var old_base *uint8 =
       tenary.If(need_compressed_alpha, dec.alpha_data, old_start);
   assert.Assert(mem.buf != nil || mem.start == 0);
   assert.Assert(mem.mode == MEM_MODE_APPEND);
@@ -213,7 +213,7 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
 func RemapMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, data_size uint64) int {
   /* const */ mem *MemBuffer = &idec.mem;
   var old_buf *uint8 = mem.buf;
-    const old_start *uint8 =
+    var old_start *uint8 =
       tenary.If(old_buf == nil, nil, old_buf + mem.start);
   assert.Assert(old_buf != nil || mem.start == 0);
   assert.Assert(mem.mode == MEM_MODE_MAP);

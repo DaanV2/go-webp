@@ -375,8 +375,8 @@ func IsEmptyRect(/* const */ rect *FrameRectangle) int {
 }
 
 func QualityToMaxDiff(quality float) int {
-   = pow(quality / 100., 0.5);
-   = 31 * (1 - val) + 1 * val;
+	var val float64 = pow(quality / 100.0, 0.5);
+  var max_diff float64 = 31 * (1 - val) + 1 * val;
   return (int)(max_diff + 0.5);
 }
 
@@ -395,13 +395,13 @@ func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *pi
 
   // Left boundary.
   for i = rect.x_offset; i < rect.x_offset + rect.width; i++ {
-    const src_argb *uint32 =
+    var src_argb *uint32 =
         &src.argb[rect.y_offset * src.argb_stride + i];
-    const dst_argb *uint32 =
+    var dst_argb *uint32 =
         &dst.argb[rect.y_offset * dst.argb_stride + i];
     if (compare_pixels(src_argb, src.argb_stride, dst_argb, dst.argb_stride, rect.height, max_allowed_diff)) {
-      --rect.width;  // Redundant column.
-      ++rect.x_offset;
+      rect.width--  // Redundant column.
+      rect.x_offset++
     } else {
       break;
     }
@@ -409,13 +409,13 @@ func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *pi
   if rect.width == 0 { goto NoChange }
 
   // Right boundary.
-  for i = rect.x_offset + rect.width - 1; i >= rect.x_offset; --i {
-    const src_argb *uint32 =
+  for i = rect.x_offset + rect.width - 1; i >= rect.x_offset; i-- {
+    var src_argb *uint32 =
         &src.argb[rect.y_offset * src.argb_stride + i];
-    const dst_argb *uint32 =
+    var dst_argb *uint32 =
         &dst.argb[rect.y_offset * dst.argb_stride + i];
     if (compare_pixels(src_argb, src.argb_stride, dst_argb, dst.argb_stride, rect.height, max_allowed_diff)) {
-      --rect.width;  // Redundant column.
+      rect.width--  // Redundant column.
     } else {
       break;
     }
@@ -424,13 +424,13 @@ func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *pi
 
   // Top boundary.
   for j = rect.y_offset; j < rect.y_offset + rect.height; j++ {
-    const src_argb *uint32 =
+    var src_argb *uint32 =
         &src.argb[j * src.argb_stride + rect.x_offset];
-    const dst_argb *uint32 =
+    var dst_argb *uint32 =
         &dst.argb[j * dst.argb_stride + rect.x_offset];
     if (compare_pixels(src_argb, 1, dst_argb, 1, rect.width, max_allowed_diff)) {
-      --rect.height;  // Redundant row.
-      ++rect.y_offset;
+      rect.height--  // Redundant row.
+      rect.y_offset++
     } else {
       break;
     }
@@ -438,13 +438,13 @@ func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *pi
   if rect.height == 0 { goto NoChange }
 
   // Bottom boundary.
-  for j = rect.y_offset + rect.height - 1; j >= rect.y_offset; --j {
-    const src_argb *uint32 =
+  for j = rect.y_offset + rect.height - 1; j >= rect.y_offset; j-- {
+    var src_argb *uint32 =
         &src.argb[j * src.argb_stride + rect.x_offset];
-    const dst_argb *uint32 =
+    var dst_argb *uint32 =
         &dst.argb[j * dst.argb_stride + rect.x_offset];
     if (compare_pixels(src_argb, 1, dst_argb, 1, rect.width, max_allowed_diff)) {
-      --rect.height;  // Redundant row.
+      rect.height--  // Redundant row.
     } else {
       break;
     }
@@ -552,7 +552,7 @@ func clip(v, min_v,max_v int ) int {
 // Returns true on success.
 func WebPAnimEncoderRefineRect(/* const */ prev_canvas *picture.Picture, /*const*/ curr_canvas *picture.Picture, is_lossless bool, quality float, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ width *int, /*const*/ height *int) int {
    var rect FrameRectangle
-  int right, left, bottom, top;
+  var right, left, bottom, top int
   if (prev_canvas == nil || curr_canvas == nil ||
       prev_canvas.width != curr_canvas.width ||
       prev_canvas.height != curr_canvas.height || !prev_canvas.use_argb ||
@@ -584,11 +584,11 @@ func DisposeFrameRectangle(dispose_method int, /*const*/ rect *FrameRectangle, /
 }
 
 func RectArea(/* const */ rect *FrameRectangle) uint32 {
-  return (uint32)rect.width * rect.height;
+  return uint32(rect.width * rect.height)
 }
 
 func IsLosslessBlendingPossible(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture, /*const*/ rect *FrameRectangle) int {
-  int i, j;
+  var i, j int
   assert.Assert(src.width == dst.width && src.height == dst.height);
   assert.Assert(rect.x_offset + rect.width <= dst.width);
   assert.Assert(rect.y_offset + rect.height <= dst.height);
@@ -609,7 +609,7 @@ func IsLosslessBlendingPossible(/* const */ src *picture.Picture, /*const*/ dst 
 
 func IsLossyBlendingPossible(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture, /*const*/ rect *FrameRectangle, quality float) int {
   max_allowed_diff_lossy := QualityToMaxDiff(quality);
-  int i, j;
+  var i, j int
   assert.Assert(src.width == dst.width && src.height == dst.height);
   assert.Assert(rect.x_offset + rect.width <= dst.width);
   assert.Assert(rect.y_offset + rect.height <= dst.height);
@@ -634,7 +634,7 @@ func IsLossyBlendingPossible(/* const */ src *picture.Picture, /*const*/ dst *pi
 // Returns true if at least one pixel gets modified.
 // Remember the modified pixel locations as 1s in carryover_mask.
 func IncreaseTransparency(/* const */ src *picture.Picture, /*const*/ rect *FrameRectangle, /*const*/ dst *picture.Picture, /*const*/ carryover_mask *uint8) int {
-  int i, j;
+  var i, j int
   modified := 0;
   // carryover_mask spans over the rect part of the canvas.
   carryover_row *uint8 = carryover_mask;
@@ -655,7 +655,7 @@ func IncreaseTransparency(/* const */ src *picture.Picture, /*const*/ rect *Fram
   return modified;
 }
 
-#undef TRANSPARENT_COLOR
+// C: #undef TRANSPARENT_COLOR
 
 // Replace similar blocks of pixels by a 'see-through' transparent block
 // with uniform average color.
@@ -664,7 +664,7 @@ func IncreaseTransparency(/* const */ src *picture.Picture, /*const*/ rect *Fram
 // Remember the modified pixel locations as 1s in carryover_mask.
 func FlattenSimilarBlocks(/* const */ src *picture.Picture, /*const*/ rect *FrameRectangle, /*const*/ dst *picture.Picture, quality float, /*const*/ carryover_mask *uint8) int {
   max_allowed_diff_lossy := QualityToMaxDiff(quality);
-  int i, j;
+  var i, j int
   modified := 0;
   block_size := 8;
   y_start := (rect.y_offset + block_size) & ~(block_size - 1);

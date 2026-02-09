@@ -212,7 +212,7 @@ func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, y_start i
     tile_width := 1 << transform.bits;
     mask := tile_width - 1;
     tiles_per_row := VP8LSubSampleSize(width, transform.bits);
-    const pred_mode_base *uint32 =
+    var pred_mode_base *uint32 =
         transform.data + (y >> transform.bits) * tiles_per_row;
 
     while (y < y_end) {
@@ -289,7 +289,7 @@ func ColorSpaceInverseTransform_C(/* const */ transform *VP8LTransform, y_start 
   remaining_width := width - safe_width;
   tiles_per_row := VP8LSubSampleSize(width, transform.bits);
   y := y_start;
-  const pred_row *uint32 =
+  var pred_row *uint32 =
       transform.data + (y >> transform.bits) * tiles_per_row;
 
   while (y < y_end) {

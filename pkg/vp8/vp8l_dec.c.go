@@ -861,7 +861,7 @@ func ProcessRows(/* const */ dec *VP8LDecoder, row int, wait_for_biggest_batch i
       var output *WebPDecBuffer = decoder.output
       if WebPIsRGBMode(output.colorspace) {  // convert to RGBA
         var buf *WebPRGBABuffer = &output.u.RGBA
-        const rgba *uint8 =
+        var rgba *uint8 =
             buf.rgba + ptrdiff_t(dec.last_out_row) * buf.stride
         num_rows_out :=
 // C: #if !defined(WEBP_REDUCE_SIZE)
