@@ -49,7 +49,7 @@ func VP8InitRandom( /* const */ rg *VP8Random, dithering float64) {
 	} else if dithering > 1.0 {
 		rg.amp = (1 << VP8_RANDOM_DITHER_FIX)
 	} else {
-		rg.amp = (uint32)((1 << VP8_RANDOM_DITHER_FIX) * dithering)
+		rg.amp = uint32((1 << VP8_RANDOM_DITHER_FIX) * dithering)
 	}
 }
 

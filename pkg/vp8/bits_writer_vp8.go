@@ -97,7 +97,7 @@ func BitWriterResize( /* const */ bw *VP8BitWriter, extra_size uint64) int {
 		stdlib.MemCpy(new_buf, bw.buf, bw.pos)
 	}
 
-	bw.buf = new_buf // bidi index -> new_size;
+	bw.buf = new_buf // bidi index -> new_size
 	bw.max_pos = new_size
 	return 1
 }
@@ -108,7 +108,7 @@ func Flush( /* const */ bw *VP8BitWriter) {
 	assert.Assert(bw.nb_bits >= 0)
 	bw.value -= bits << s
 	bw.nb_bits -= 8
-	if (bits & 0xff) != 0xff {
+	if bits & 0xff != 0xff {
 		pos := bw.pos
 		if !BitWriterResize(bw, bw.run+1) {
 			return

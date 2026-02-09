@@ -45,7 +45,7 @@ func VP8LColorCacheClear( /* const */ color_cache *VP8LColorCache) {
 }
 
 func VP8LHashPix(argb uint32, shift int) int {
-	return (int)((argb * kHashMul) >> shift)
+	return int((argb * kHashMul) >> shift)
 }
 
 func VP8LColorCacheLookup( /* const */ cc *VP8LColorCache, key uint32) uint32 {
@@ -77,5 +77,5 @@ func VP8LColorCacheCopy( /* const */ src *VP8LColorCache /*const*/, dst *VP8LCol
 	assert.Assert(src != nil)
 	assert.Assert(dst != nil)
 	assert.Assert(src.hash_bits == dst.hash_bits)
-	stdlib.MemCpy(dst.colors, src.colors, (uint64(1)<<dst.hash_bits)*sizeof(*dst.colors))
+	// C: stdlib.MemCpy(dst.colors, src.colors, (uint64(1)<<dst.hash_bits)*sizeof(*dst.colors))
 }

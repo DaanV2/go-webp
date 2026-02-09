@@ -47,7 +47,7 @@ func BIAS(b int) int {
 // Fun fact: this is the _only_ line where we're actually being lossy and
 // discarding bits.
 func QUANTDIV(n, iQ, B uint32) int {
-	return (int)((n*iQ + B) >> QFIX)
+	return int((n*iQ + B) >> QFIX)
 }
 
 // Uncomment the following to remove token-buffer code:
@@ -104,9 +104,9 @@ type VP8EncFilterHeader struct {
 type VP8MBInfo struct {
 	// block type
 	vtype   uint  //: 2;  // 0=i4x4, 1=i16x16
-	uv_mode uint  //: 2;
-	skip    uint  //: 1;
-	segment uint  //: 2;
+	uv_mode uint  //: 2
+	skip    uint  //: 1
+	segment uint  //: 2
 	alpha   uint8 // quantization-susceptibility
 }
 

@@ -12,5 +12,5 @@ package vp8
 // Returns false in case of version mismatch. Upon such failure, no other
 // decoding function should be called (VP8Decode, VP8GetHeaders, ...)
 func VP8InitIo(/* const */ io *VP8Io) int {
-  return VP8InitIoInternal(io, /*const*/ants.WEBP_DECODER_ABI_VERSION);
+  return VP8InitIoInternal(io, /*const*/ants.WEBP_DECODER_ABI_VERSION)
 }

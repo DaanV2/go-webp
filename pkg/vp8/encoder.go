@@ -80,7 +80,7 @@ type VP8Encoder struct {
 	y_top *uint8;      // top luma samples.
 	// top u/v samples.
 	// U and V are packed into 16 bytes (8 U + 8 V)
-	uv_top *uint8;     
+	uv_top *uint8
 	lf_stats *LFStats;   // autofilter stats (if nil, autofilter is off)
 	top_derr *DError;    // diffusion error (nil if disabled)
 }
