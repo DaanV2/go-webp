@@ -1,4 +1,3 @@
-
 // Copyright 2010 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -13,110 +12,111 @@ import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
 import "github.com/daanv2/go-webp/pkg/assert"
 import "github.com/daanv2/go-webp/pkg/stdlib"
 // import "github.com/daanv2/go-webp/pkg/string"
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
+// import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
+// import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
+// import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
+// import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
+// import "github.com/daanv2/go-webp/pkg/libwebp/decoder" // duplicate
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
+// import "github.com/daanv2/go-webp/pkg/libwebp/dsp" // duplicate
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+// import "github.com/daanv2/go-webp/pkg/libwebp/utils" // duplicate
+// import "github.com/daanv2/go-webp/pkg/libwebp/utils" // duplicate
+// import "github.com/daanv2/go-webp/pkg/libwebp/utils" // duplicate
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+// import "github.com/daanv2/go-webp/pkg/libwebp/webp" // duplicate
+// import "github.com/daanv2/go-webp/pkg/libwebp/webp" // duplicate
+import "github.com/daanv2/go-webp/pkg/util/tenary"
 
-const (
-	kCat3 = []uint8{173, 148, 140, 0}
-	kCat4 = []uint8{176, 155, 140, 135, 0}
-	kCat5 = []uint8{180, 157, 141, 134, 130, 0}
-	kCat6 = []uint8{254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0}
-	kCat3456 = [][]uint8{kCat3, kCat4, kCat5, kCat6}
-	kZigzag = [16]uint8{0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
+var (
+kCat3 = []uint8{173, 148, 140, 0}
+kCat4 = []uint8{176, 155, 140, 135, 0}
+kCat5 = []uint8{180, 157, 141, 134, 130, 0}
+kCat6 = []uint8{254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0}
+kCat3456 = [][]uint8{kCat3, kCat4, kCat5, kCat6}
+kZigzag = [16]uint8{0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15}
 )
 
 // Input / Output
-type VP8IoPutHook func(/* const */ io *VP8Io)int 
-type VP8IoSetupHook func(io *VP8Io)int 
-type VP8IoTeardownHook func(/* const */ io *VP8Io) 
+type VP8IoPutHook func(/* const */ io *VP8Io) int
+type VP8IoSetupHook func(io *VP8Io) int
+type VP8IoTeardownHook func(/* const */ io *VP8Io)
 
 type VP8Io struct {
-	// set by VP8GetHeaders()
-	// picture dimensions, in pixels (invariable).
-	// These are the original, uncropped dimensions.
-	// The actual area passed to put() is stored
-	// in mb_w / mb_h fields.
+// set by VP8GetHeaders()
+// picture dimensions, in pixels (invariable).
+// These are the original, uncropped dimensions.
+// The actual area passed to put() is stored
+// in mb_w / mb_h fields.
 
-	// set before calling put()
-	width, height int  
-	mb_y int                  // position of the current rows (in pixels)
-	mb_w int                  // number of columns in the sample
-	mb_h int                  // number of rows in the sample
-	y, u, v *uint8  // rows to copy (in yuv420 format)
-	y_stride int              // row stride for luma
-	uv_stride int             // row stride for chroma
+// set before calling put()
+width, height int
+mb_y int                  // position of the current rows (in pixels)
+mb_w int                  // number of columns in the sample
+mb_h int                  // number of rows in the sample
+y, u, v *uint8  // rows to copy (in yuv420 format)
+y_stride int              // row stride for luma
+uv_stride int             // row stride for chroma
 
-	opaque *void;  // user data
+opaque interface{}  // user data
 
-	// called when fresh samples are available. Currently, samples are in
-	// YUV420 format, and can be up to width x 24 in size (depending on the
-	// in-loop filtering level, e.g.). Should return false in case of error
-	// or abort request. The actual size of the area to update is mb_w x mb_h
-	// in size, taking cropping into account.
-	put VP8IoPutHook
+// called when fresh samples are available. Currently, samples are in
+// YUV420 format, and can be up to width x 24 in size (depending on the
+// in-loop filtering level, e.g.). Should return false in case of error
+// or abort request. The actual size of the area to update is mb_w x mb_h
+// in size, taking cropping into account.
+put VP8IoPutHook
 
-	// called just before starting to decode the blocks.
-	// Must return false in case of setup error, true otherwise. If false is
-	// returned, teardown() will NOT be called. But if the setup succeeded
-	// and true is returned, then teardown() will always be called afterward.
-	setup VP8IoSetupHook
+// called just before starting to decode the blocks.
+// Must return false in case of setup error, true otherwise. If false is
+// returned, teardown() will NOT be called. But if the setup succeeded
+// and true is returned, then teardown() will always be called afterward.
+setup VP8IoSetupHook
 
-	// Called just after block decoding is finished (or when an error occurred
-	// during put()). Is NOT called if setup() failed.
-	teardown VP8IoTeardownHook
+// Called just after block decoding is finished (or when an error occurred
+// during put()). Is NOT called if setup() failed.
+teardown VP8IoTeardownHook
 
-	// this is a recommendation for the user-side yuv.rgb converter. This flag
-	// is set when calling setup() hook and can be overwritten by it. It then
-	// can be taken into consideration during the put() method.
-	fancy_upsampling int
+// this is a recommendation for the user-side yuv.rgb converter. This flag
+// is set when calling setup() hook and can be overwritten by it. It then
+// can be taken into consideration during the put() method.
+fancy_upsampling int
 
-	// Input buffer.
-	data_size uint64
-	data *uint8
+// Input buffer.
+data_size uint64
+data *uint8
 
-	// If true, in-loop filtering will not be performed even if present in the
-	// bitstream. Switching off filtering may speed up decoding at the expense
-	// of more visible blocking. Note that output will also be non-compliant
-	// with the VP8 specifications.
-	bypass_filtering int 
+// If true, in-loop filtering will not be performed even if present in the
+// bitstream. Switching off filtering may speed up decoding at the expense
+// of more visible blocking. Note that output will also be non-compliant
+// with the VP8 specifications.
+bypass_filtering int
 
-	// Cropping parameters.
-	use_cropping int 
-	crop_left, crop_right, crop_top, crop_bottom int
+// Cropping parameters.
+use_cropping int
+crop_left, crop_right, crop_top, crop_bottom int
 
-	// Scaling parameters.
-	use_scaling int
-	scaled_width, scaled_height int
+// Scaling parameters.
+use_scaling int
+scaled_width, scaled_height int
 
-	// If non nil, pointer to the alpha data (if present) corresponding to the
-	// start of the current row (That is: it is pre-offset by mb_y and takes
-	// cropping into account).
-	a *uint8
+// If non nil, pointer to the alpha data (if present) corresponding to the
+// start of the current row (That is: it is pre-offset by mb_y and takes
+// cropping into account).
+a *uint8
 }
 
 //------------------------------------------------------------------------------
 // Signature and pointer-to-function for GetCoeffs() variants below.
 
-type GetCoeffsFunc = func(br *VP8BitReader, /* const */ prob []*VP8BandProbas,  ctx int, dq quant_t, n int, out *int16) int
+type GetCoeffsFunc = func(br *VP8BitReader, /* const */ prob []*VP8BandProbas, ctx int, dq quant_t, n int, out *int16) int
 
 //------------------------------------------------------------------------------
 // VP8Decoder
 
 func SetOk(/* const */ dec *VP8Decoder) {
   dec.status = VP8_STATUS_OK
-  dec.error_msg = "OK"
+  // C: dec.error_msg = "OK"
 }
 
 // Internal, version-checked, entry point
@@ -128,29 +128,29 @@ func VP8InitIoInternal(/* const */ io *VP8Io, version int) int {
 }
 
 // Create a new decoder object.
-func VP8Decoder8New() *VP {
-//   var dec *VP8Decoder = (*VP8Decoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
-	dec := &VP8Decoder{}
+func VP8Decoder8New() *VP8Decoder {
+//   C: var dec *VP8Decoder = (*VP8Decoder)(WebPSafeCalloc(uint64(1), sizeof(*dec)))
+dec := &VP8Decoder{}
 
-	SetOk(dec)
-	WebPGetWorkerInterface().Init(&dec.worker)
-	dec.ready = 0
-	dec.num_parts_minus_one = 0
-	InitGetCoeffs()
+SetOk(dec)
+WebPGetWorkerInterface().Init(&dec.worker)
+dec.ready = 0
+dec.num_parts_minus_one = 0
+InitGetCoeffs()
 
-	return dec
+return dec
 }
 
 // Return current status of the decoder:
 func VP8Status(/* const */ dec *VP8Decoder) VP8StatusCode {
-  if !dec { return VP8_STATUS_INVALID_PARAM }
+  if dec == nil { return VP8_STATUS_INVALID_PARAM }
   return dec.status
 }
 
 // return readable string corresponding to the last status.
-func byte8StatusMessage(/* const */ dec *VP8Decoder) *VP {
-  if dec == nil { return "no object"  }
-  if !dec.error_msg { return "OK"  }
+func VP8StatusMessage(/* const */ dec *VP8Decoder) *byte {
+  // C: if dec == nil { return "no object" }
+  // C: if dec.error_msg == nil { return "OK" }
   return dec.error_msg
 }
 
@@ -175,7 +175,10 @@ func VP8SetError(/* const */ dec *VP8Decoder, error VP8StatusCode, /* const */ m
 
 // Returns true if the next 3 bytes in data contain the VP8 signature.
 func VP8CheckSignature(data []uint8, data_size uint64) int {
-  return (data_size >= 3 && data[0] == 0x9d && data[1] == 0x01 && data[2] == 0x2a)
+  if data_size >= 3 && data[0] == 0x9d && data[1] == 0x01 && data[2] == 0x2a {
+    return 1
+  }
+  return 0
 }
 
 // Validates the VP8 data-header and retrieves basic header information viz
@@ -183,43 +186,43 @@ func VP8CheckSignature(data []uint8, data_size uint64) int {
 // can be passed nil.
 func VP8GetInfo(data *uint8, data_size uint64, chunk_size uint64, width *int, height *int) int {
   if data == nil || data_size < VP8_FRAME_HEADER_SIZE {
-    return 0;  // not enough data
+    return 0  // not enough data
   }
   // check signature
-  if !VP8CheckSignature(data + 3, data_size - 3) {
-    return 0;  // Wrong signature.
-  } else {
-    bits := data[0] | (data[1] << 8) | (data[2] << 16)
-    key_frame := !(bits & 1)
-    w := ((data[7] << 8) | data[6]) & 0x3fff
-    h := ((data[9] << 8) | data[8]) & 0x3fff
+  // C: if !VP8CheckSignature(data + 3, data_size - 3) {
+  //   return 0  // Wrong signature.
+  // }
 
-    if !key_frame {  // Not a keyframe.
-      return 0
-    }
+  bits := data[0] | (data[1] << 8) | (data[2] << 16)
+  key_frame := (bits & 1) == 0
+  w := ((data[7] << 8) | data[6]) & 0x3fff
+  h := ((data[9] << 8) | data[8]) & 0x3fff
 
-    if ((bits >> 1) & 7) > 3 {
-      return 0;  // unknown profile
-    }
-    if !((bits >> 4) & 1) {
-      return 0;  // first frame is invisible!
-    }
-    if ((bits >> 5)) >= chunk_size {  // partition_length
-      return 0;                         // inconsistent size information.
-    }
-    if w == 0 || h == 0 {
-      return 0;  // We don't support both width and height to be zero.
-    }
-
-    if width {
-      *width = w
-    }
-    if height {
-      *height = h
-    }
-
-    return 1
+  if !key_frame {  // Not a keyframe.
+    return 0
   }
+
+  if ((bits >> 1) & 7) > 3 {
+    return 0  // unknown profile
+  }
+  if ((bits >> 4) & 1) == 0 {
+    return 0  // first frame is invisible!
+  }
+  if (bits >> 5) >= chunk_size {  // partition_length
+    return 0                       // inconsistent size information.
+  }
+  if w == 0 || h == 0 {
+    return 0  // We don't support both width and height to be zero.
+  }
+
+  if width != nil {
+    *width = w
+  }
+  if height != nil {
+    *height = h
+  }
+
+  return 1
 }
 
 // Header parsing
@@ -237,35 +240,43 @@ func ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP8Proba
   assert.Assert(br != nil)
   assert.Assert(hdr != nil)
   hdr.use_segment = VP8Get(br, "global-header")
-  if hdr.use_segment {
+  if hdr.use_segment != 0 {
     hdr.update_map = VP8Get(br, "global-header")
-    if VP8Get(br, "global-header") {  // update data
+    if VP8Get(br, "global-header") != 0 {  // update data
       var s int
       hdr.absolute_delta = VP8Get(br, "global-header")
       for s = 0; s < NUM_MB_SEGMENTS; s++ {
-        hdr.quantizer[s] = VP8Get(br, "global-header")
-                                ? VP8GetSignedValue(br, 7, "global-header")
-                                : 0
+        if VP8Get(br, "global-header") != 0 {
+          hdr.quantizer[s] = VP8GetSignedValue(br, 7, "global-header")
+        } else {
+          hdr.quantizer[s] = 0
+        }
       }
       for s = 0; s < NUM_MB_SEGMENTS; s++ {
-        hdr.filter_strength[s] =
-            VP8Get(br, "global-header")
-                ? VP8GetSignedValue(br, 6, "global-header")
-                : 0
+        if VP8Get(br, "global-header") != 0 {
+          hdr.filter_strength[s] = VP8GetSignedValue(br, 6, "global-header")
+        } else {
+          hdr.filter_strength[s] = 0
+        }
       }
     }
-    if hdr.update_map {
+    if hdr.update_map != 0 {
       var s int
       for s = 0; s < MB_FEATURE_TREE_PROBS; s++ {
-        proba.segments[s] = VP8Get(br, "global-header")
-                                 ? VP8GetValue(br, 8, "global-header")
-                                 : uint(255)
+        if VP8Get(br, "global-header") != 0 {
+          proba.segments[s] = VP8GetValue(br, 8, "global-header")
+        } else {
+          proba.segments[s] = uint(255)
+        }
       }
     }
   } else {
     hdr.update_map = 0
   }
-  return !br.eof
+  if br.eof {
+    return 0
+  }
+  return 1
 }
 
 // Paragraph 9.5
@@ -277,11 +288,11 @@ func ParseSegmentHeader(br *VP8BitReader, hdr *VP8SegmentHeader, proba *VP8Proba
 // If we don't even have the partitions' sizes, then VP8_STATUS_NOT_ENOUGH_DATA
 // is returned, and this is an unrecoverable error.
 // If the partitions were positioned ok, VP8_STATUS_OK is returned.
-func ParsePartitions(dec *VP8Decoder, buf *uint8, size uint64 ) VP8StatusCode {
+func ParsePartitions(dec *VP8Decoder, buf *uint8, size uint64) VP8StatusCode {
   var br *VP8BitReader = &dec.br
-  var sz *uint8 = buf
-  var buf_end *uint8 = buf + size
-  const part_start *uint8
+  // C: var sz *uint8 = buf
+  // C: var buf_end *uint8 = buf + size
+  // C: var part_start *uint8
   size_left := size
   var last_part uint64
   var p uint64
@@ -292,21 +303,22 @@ func ParsePartitions(dec *VP8Decoder, buf *uint8, size uint64 ) VP8StatusCode {
     // we can't even read the sizes with sz[]! That's a failure.
     return VP8_STATUS_NOT_ENOUGH_DATA
   }
-  part_start = buf + last_part * 3
+  // C: part_start = buf + last_part * 3
   size_left -= last_part * 3
   for p = 0; p < last_part; p++ {
-    psize := sz[0] | (sz[1] << 8) | (sz[2] << 16)
-    if psize > size_left { psize = size_left }
-    VP8InitBitReader(dec.parts + p, part_start, psize)
-    part_start += psize
-    size_left -= psize
-    sz += 3
+    // C: psize := sz[0] | (sz[1] << 8) | (sz[2] << 16)
+    // C: if psize > size_left { psize = size_left }
+    // C: VP8InitBitReader(dec.parts + p, part_start, psize)
+    // C: part_start += psize
+    // C: size_left -= psize
+    // C: sz += 3
+    _ = size_left
   }
-  VP8InitBitReader(dec.parts + last_part, part_start, size_left)
-  if part_start < buf_end {return VP8_STATUS_OK}
+  // C: VP8InitBitReader(dec.parts + last_part, part_start, size_left)
+  // C: if part_start < buf_end { return VP8_STATUS_OK }
 
-  return tenary.If(dec.incremental, 
-		VP8_STATUS_SUSPENDED,  // Init is ok, but there's not enough data
+  return tenary.If(dec.incremental,
+VP8_STATUS_SUSPENDED,  // Init is ok, but there's not enough data
         VP8_STATUS_NOT_ENOUGH_DATA)
 }
 
@@ -317,30 +329,37 @@ func ParseFilterHeader(br *VP8BitReader, /* const */ dec *VP8Decoder) int {
   hdr.level = VP8GetValue(br, 6, "global-header")
   hdr.sharpness = VP8GetValue(br, 3, "global-header")
   hdr.use_lf_delta = VP8Get(br, "global-header")
-  if hdr.use_lf_delta {
-    if VP8Get(br, "global-header") {  // update lf-delta?
+  if hdr.use_lf_delta != 0 {
+    if VP8Get(br, "global-header") != 0 {  // update lf-delta?
       var i int
       for i = 0; i < NUM_REF_LF_DELTAS; i++ {
-        if VP8Get(br, "global-header") {
+        if VP8Get(br, "global-header") != 0 {
           hdr.ref_lf_delta[i] = VP8GetSignedValue(br, 6, "global-header")
         }
       }
       for i = 0; i < NUM_MODE_LF_DELTAS; i++ {
-        if VP8Get(br, "global-header") {
+        if VP8Get(br, "global-header") != 0 {
           hdr.mode_lf_delta[i] = VP8GetSignedValue(br, 6, "global-header")
         }
       }
     }
   }
-  dec.filter_type = (hdr.level == 0) ? 0 : tenary.If(hdr.simple, 1, 2)
-  return !br.eof
+  if hdr.level == 0 {
+    dec.filter_type = 0
+  } else {
+    dec.filter_type = tenary.If(hdr.simple != 0, 1, 2)
+  }
+  if br.eof {
+    return 0
+  }
+  return 1
 }
 
 // Decode the VP8 frame header. Returns true if ok.
 // Note: 'io.data' must be pointing to the start of the VP8 frame header.
 func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   var buf_size uint64
-  var buf *uint8 
+  var buf *uint8
   var frm_hdr *VP8FrameHeader
   var pic_hdr *VP8PictureHeader
   var br *VP8BitReader
@@ -363,34 +382,34 @@ func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   {
     bits := buf[0] | (buf[1] << 8) | (buf[2] << 16)
     frm_hdr = &dec.frm_hdr
-    frm_hdr.key_frame = !(bits & 1)
+    frm_hdr.key_frame = (bits & 1) == 0
     frm_hdr.profile = (bits >> 1) & 7
     frm_hdr.show = (bits >> 4) & 1
     frm_hdr.partition_length = (bits >> 5)
     if frm_hdr.profile > 3 {
       return VP8SetError(dec, VP8_STATUS_BITSTREAM_ERROR, "Incorrect keyframe parameters.")
     }
-    if !frm_hdr.show {
+    if frm_hdr.show == 0 {
       return VP8SetError(dec, VP8_STATUS_UNSUPPORTED_FEATURE, "Frame not displayable.")
     }
-    buf += 3
+    // C: buf += 3
     buf_size -= 3
   }
 
   pic_hdr = &dec.pic_hdr
-  if frm_hdr.key_frame {
+  if frm_hdr.key_frame != 0 {
     // Paragraph 9.2
     if buf_size < 7 {
       return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "cannot parse picture header")
     }
-    if !VP8CheckSignature(buf, buf_size) {
+    if VP8CheckSignature(buf, buf_size) == 0 {
       return VP8SetError(dec, VP8_STATUS_BITSTREAM_ERROR, "Bad code word")
     }
     pic_hdr.width = ((buf[4] << 8) | buf[3]) & 0x3fff
-    pic_hdr.xscale = buf[4] >> 6;  // ratio: 1, 5/4 5/3 or 2
+    pic_hdr.xscale = buf[4] >> 6  // ratio: 1, 5/4 5/3 or 2
     pic_hdr.height = ((buf[6] << 8) | buf[5]) & 0x3fff
     pic_hdr.yscale = buf[6] >> 6
-    buf += 7
+    // C: buf += 7
     buf_size -= 7
 
     dec.mb_w = (pic_hdr.width + 15) >> 4
@@ -411,8 +430,8 @@ func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
     io.scaled_width = io.width
     io.scaled_height = io.height
 
-    io.mb_w = io.width;   // for soundness
-    io.mb_h = io.height;  // ditto
+    io.mb_w = io.width   // for soundness
+    io.mb_h = io.height  // ditto
 
     VP8ResetProba(&dec.proba)
     ResetSegmentHeader(&dec.segment_hdr)
@@ -426,18 +445,18 @@ func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
 
   br = &dec.br
   VP8InitBitReader(br, buf, frm_hdr.partition_length)
-  buf += frm_hdr.partition_length
+  // C: buf += frm_hdr.partition_length
   buf_size -= frm_hdr.partition_length
 
-  if frm_hdr.key_frame {
+  if frm_hdr.key_frame != 0 {
     pic_hdr.colorspace = VP8Get(br, "global-header")
     pic_hdr.clamp_type = VP8Get(br, "global-header")
   }
-  if !ParseSegmentHeader(br, &dec.segment_hdr, &dec.proba) {
+  if ParseSegmentHeader(br, &dec.segment_hdr, &dec.proba) == 0 {
     return VP8SetError(dec, VP8_STATUS_BITSTREAM_ERROR, "cannot parse segment header")
   }
   // Filter specs
-  if !ParseFilterHeader(br, dec) {
+  if ParseFilterHeader(br, dec) == 0 {
     return VP8SetError(dec, VP8_STATUS_BITSTREAM_ERROR, "cannot parse filter header")
   }
   status = ParsePartitions(dec, buf, buf_size)
@@ -449,11 +468,11 @@ func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
   VP8ParseQuant(dec)
 
   // Frame buffer marking
-  if !frm_hdr.key_frame {
+  if frm_hdr.key_frame == 0 {
     return VP8SetError(dec, VP8_STATUS_UNSUPPORTED_FEATURE, "Not a key frame.")
   }
 
-  VP8Get(br, "global-header");  // ignore the value of 'update_proba'
+  VP8Get(br, "global-header")  // ignore the value of 'update_proba'
 
   VP8ParseProba(br, dec)
 
@@ -467,29 +486,30 @@ func VP8GetHeaders(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
 // See section 13-2: https://datatracker.ietf.org/doc/html/rfc6386#section-13.2
 func GetLargeValue(/* const */ br *VP8BitReader, /* const */ p *uint8) int {
   var v int
-  if !VP8GetBit(br, p[3], "coeffs") {
-    if !VP8GetBit(br, p[4], "coeffs") {
+  if VP8GetBit(br, p[3], "coeffs") == 0 {
+    if VP8GetBit(br, p[4], "coeffs") == 0 {
       v = 2
     } else {
       v = 3 + VP8GetBit(br, p[5], "coeffs")
     }
   } else {
-    if !VP8GetBit(br, p[6], "coeffs") {
-      if !VP8GetBit(br, p[7], "coeffs") {
+    if VP8GetBit(br, p[6], "coeffs") == 0 {
+      if VP8GetBit(br, p[7], "coeffs") == 0 {
         v = 5 + VP8GetBit(br, 159, "coeffs")
       } else {
         v = 7 + 2 * VP8GetBit(br, 165, "coeffs")
         v += VP8GetBit(br, 145, "coeffs")
       }
     } else {
-      const tab *uint8
+      var tab *uint8
       bit1 := VP8GetBit(br, p[8], "coeffs")
       bit0 := VP8GetBit(br, p[9 + bit1], "coeffs")
       cat := 2 * bit1 + bit0
       v = 0
-      for tab = kCat3456[cat]; *tab; tab++ {
-        v += v + VP8GetBit(br, *tab, "coeffs")
-      }
+      // C: for tab = kCat3456[cat]; *tab; tab++ {
+      //   v += v + VP8GetBit(br, *tab, "coeffs")
+      // }
+      _ = tab
       v += 3 + (8 << cat)
     }
   }
@@ -497,28 +517,28 @@ func GetLargeValue(/* const */ br *VP8BitReader, /* const */ p *uint8) int {
 }
 
 // Returns the position of the last non-zero coeff plus one
-func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[], ctx int, dq quant_t , n int, out *int16) int {
+func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob []VP8BandProbas, ctx int, dq quant_t, n int, out *int16) int {
   var p *uint8 = prob[n].probas[ctx]
   for ; n < 16; n++ {
-    if !VP8GetBit(br, p[0], "coeffs") {
-      return n;  // previous coeff was last non-zero coeff
+    if VP8GetBit(br, p[0], "coeffs") == 0 {
+      return n  // previous coeff was last non-zero coeff
     }
-    while (!VP8GetBit(br, p[1], "coeffs")) {  // sequence of zero coeffs
-		n++
+    for VP8GetBit(br, p[1], "coeffs") == 0 {  // sequence of zero coeffs
+n++
       p = prob[n].probas[0]
-      if n == 16 { return 16  }
+      if n == 16 { return 16 }
     }
     {  // non zero coeff
       var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0]
       var v int
-      if !VP8GetBit(br, p[2], "coeffs") {
+      if VP8GetBit(br, p[2], "coeffs") == 0 {
         v = 1
         p = p_ctx[1]
       } else {
         v = GetLargeValue(br, p)
         p = p_ctx[2]
       }
-      out[kZigzag[n]] = VP8GetSigned(br, v, "coeffs") * dq[n > 0]
+      // C: out[kZigzag[n]] = VP8GetSigned(br, v, "coeffs") * dq[n > 0]
     }
   }
   return 16
@@ -526,28 +546,28 @@ func GetCoeffsFast(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas
 
 // This version of GetCoeffs() uses VP8GetBitAlt() which is an alternate version
 // of VP8GetBitAlt() targeting specific platforms.
-func GetCoeffsAlt(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[], ctx int , dq quant_t , n int , out *int16) int {
+func GetCoeffsAlt(/* const */ br *VP8BitReader, /* const */ prob []VP8BandProbas, ctx int, dq quant_t, n int, out *int16) int {
   var p *uint8 = prob[n].probas[ctx]
   for ; n < 16; n++ {
-    if !VP8GetBitAlt(br, p[0], "coeffs") {
-      return n;  // previous coeff was last non-zero coeff
+    if VP8GetBitAlt(br, p[0], "coeffs") == 0 {
+      return n  // previous coeff was last non-zero coeff
     }
-    while (!VP8GetBitAlt(br, p[1], "coeffs")) {  // sequence of zero coeffs
+    for VP8GetBitAlt(br, p[1], "coeffs") == 0 {  // sequence of zero coeffs
       n++
-		p = prob[n].probas[0]
-      if n == 16 { {return 16} }
+p = prob[n].probas[0]
+      if n == 16 { return 16 }
     }
     {  // non zero coeff
       var p_ctx *VP8ProbaArray = &prob[n + 1].probas[0]
       var v int
-      if !VP8GetBitAlt(br, p[2], "coeffs") {
+      if VP8GetBitAlt(br, p[2], "coeffs") == 0 {
         v = 1
         p = p_ctx[1]
       } else {
         v = GetLargeValue(br, p)
         p = p_ctx[2]
       }
-      out[kZigzag[n]] = VP8GetSigned(br, v, "coeffs") * dq[n > 0]
+      // C: out[kZigzag[n]] = VP8GetSigned(br, v, "coeffs") * dq[n > 0]
     }
   }
   return 16
@@ -555,7 +575,7 @@ func GetCoeffsAlt(/* const */ br *VP8BitReader, /* const */ prob *VP8BandProbas[
 
 
 func init() {
-	// func WEBP_DSP_INIT_FUNC(InitGetCoeffs) {
+// func WEBP_DSP_INIT_FUNC(InitGetCoeffs) {
   if VP8GetCPUInfo != nil && VP8GetCPUInfo(kSlowSSSE3) {
     GetCoeffs = GetCoeffsAlt
   } else {
@@ -565,17 +585,23 @@ func init() {
 
 func NzCodeBits(nz_coeffs uint32, nz, dc_nz int) uint32 {
   nz_coeffs <<= 2
-  nz_coeffs |= (nz > 3) ? 3 : (nz > 1) ? 2 : dc_nz
+  if nz > 3 {
+    nz_coeffs |= 3
+  } else if nz > 1 {
+    nz_coeffs |= 2
+  } else {
+    nz_coeffs |= uint32(dc_nz)
+  }
   return nz_coeffs
 }
 
-func ParseResiduals(/* const */ dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ token_br *VP8BitReader)int {
-  const *VP8BandProbas(bands *const)[16 + 1] = dec.proba.bands_ptr
-  const ac_proba *VP8BandProbas *const
-  var block *VP8MBData = dec.mb_data + dec.mb_x
+func ParseResiduals(/* const */ dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ token_br *VP8BitReader) int {
+  // C: const *VP8BandProbas(bands *const)[16 + 1] = dec.proba.bands_ptr
+  // C: const ac_proba *VP8BandProbas *const
+  // C: var block *VP8MBData = dec.mb_data + dec.mb_x
   var q *VP8QuantMatrix = &dec.dqm[block.segment]
-  dst *int16 = block.coeffs
-  var left_mb *VP8MB = dec.mb_info - 1
+  // C: dst *int16 = block.coeffs
+  // C: var left_mb *VP8MB = dec.mb_info - 1
   var tnz, lnz uint8
   non_zero_y := 0
   non_zero_uv := 0
@@ -584,18 +610,19 @@ func ParseResiduals(/* const */ dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ 
   var first int
 
   // C: stdlib.Memset(dst, 0, 384 * sizeof(*dst))
-  if !block.is_i4x4 {  // parse DC
-    var dc [16]int16 = [16]int16{0}
+  if block.is_i4x4 == 0 {  // parse DC
+    var dc [16]int16
     ctx := mb.nz_dc + left_mb.nz_dc
     nz := GetCoeffs(token_br, bands[1], ctx, q.y2_mat, 0, dc)
-    mb.nz_dc = left_mb.nz_dc = (nz > 0)
+    // C: mb.nz_dc = left_mb.nz_dc = (nz > 0)
     if nz > 1 {  // more than just the DC . perform the full transform
       VP8TransformWHT(dc, dst)
     } else {  // only DC is non-zero . inlined simplified transform
       var i int
       dc0 := (dc[0] + 3) >> 3
-      for i = 0; i < 16 * 16; i += 16 dst[i] = dc0;
-
+      for i = 0; i < 16 * 16; i += 16 {
+        dst[i] = dc0
+      }
     }
     first = 1
     ac_proba = bands[0]
@@ -604,18 +631,22 @@ func ParseResiduals(/* const */ dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ 
     ac_proba = bands[3]
   }
 
-  tnz = mb.nz & float64(0x0f)
-  lnz = left_mb.nz & float64(0x0f)
+  tnz = mb.nz & 0x0f
+  lnz = left_mb.nz & 0x0f
   for y = 0; y < 4; y++ {
     l := lnz & 1
     nz_coeffs := 0
     for x = 0; x < 4; x++ {
       ctx := l + (tnz & 1)
       nz := GetCoeffs(token_br, ac_proba, ctx, q.y1_mat, first, dst)
-      l = (nz > first)
+      if nz > first {
+        l = 1
+      } else {
+        l = 0
+      }
       tnz = (tnz >> 1) | (l << 7)
-      nz_coeffs = NzCodeBits(nz_coeffs, nz, dst[0] != 0)
-      dst += 16
+      nz_coeffs = NzCodeBits(nz_coeffs, nz, tenary.If(dst[0] != 0, 1, 0))
+      // C: dst += 16
     }
     tnz >>= 4
     lnz = (lnz >> 1) | (l << 7)
@@ -633,10 +664,14 @@ func ParseResiduals(/* const */ dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ 
       for x = 0; x < 2; x++ {
         ctx := l + (tnz & 1)
         nz := GetCoeffs(token_br, bands[2], ctx, q.uv_mat, 0, dst)
-        l = (nz > 0)
+        if nz > 0 {
+          l = 1
+        } else {
+          l = 0
+        }
         tnz = (tnz >> 1) | (l << 3)
-        nz_coeffs = NzCodeBits(nz_coeffs, nz, dst[0] != 0)
-        dst += 16
+        nz_coeffs = NzCodeBits(nz_coeffs, nz, tenary.If(dst[0] != 0, 1, 0))
+        // C: dst += 16
       }
       tnz >>= 2
       lnz = (lnz >> 1) | (l << 5)
@@ -655,25 +690,32 @@ func ParseResiduals(/* const */ dec *VP8Decoder, /*const*/ mb *VP8MB, /*const*/ 
   // We look at the mode-code of each block and check if some blocks have less
   // than three non-zero coeffs (code < 2). This is to afunc dithering flat and
   // empty blocks.
-  block.dither = (non_zero_uv & 0xaaaa) ? 0 : q.dither
+  if (non_zero_uv & 0xaaaa) != 0 {
+    block.dither = 0
+  } else {
+    block.dither = q.dither
+  }
 
-  return !(non_zero_y | non_zero_uv);  // will be used for further optimization
+  if (non_zero_y | non_zero_uv) == 0 {
+    return 1  // will be used for further optimization
+  }
+  return 0
 }
 
 // Main loop
 // Decode one macroblock. Returns false if there is not enough data.
 func VP8DecodeMB(/* const */ dec *VP8Decoder, /* const */ token_br *VP8BitReader) int {
-  var left *VP8MB = dec.mb_info - 1
-  var mb *VP8MB = dec.mb_info + dec.mb_x
-  var block *VP8MBData = dec.mb_data + dec.mb_x
-  skip := tenary.If(dec.use_skip_proba, block.skip, 0)
+  // C: var left *VP8MB = dec.mb_info - 1
+  // C: var mb *VP8MB = dec.mb_info + dec.mb_x
+  // C: var block *VP8MBData = dec.mb_data + dec.mb_x
+  skip := tenary.If(dec.use_skip_proba != 0, block.skip, 0)
 
-  if !skip {
+  if skip == 0 {
     skip = ParseResiduals(dec, mb, token_br)
   } else {
-    left.nz = mb.nz = 0
-    if !block.is_i4x4 {
-      left.nz_dc = mb.nz_dc = 0
+    // C: left.nz = mb.nz = 0
+    if block.is_i4x4 == 0 {
+      // C: left.nz_dc = mb.nz_dc = 0
     }
     block.non_zero_y = 0
     block.non_zero_uv = 0
@@ -681,19 +723,24 @@ func VP8DecodeMB(/* const */ dec *VP8Decoder, /* const */ token_br *VP8BitReader
   }
 
   if dec.filter_type > 0 {  // store filter info
-    var finfo *VP8FInfo = dec.f_info + dec.mb_x
-    *finfo = dec.fstrengths[block.segment][block.is_i4x4]
-    finfo.f_inner |= !skip
+    // C: var finfo *VP8FInfo = dec.f_info + dec.mb_x
+    // C: *finfo = dec.fstrengths[block.segment][block.is_i4x4]
+    if skip == 0 {
+      finfo.f_inner |= 1
+    }
   }
 
-  return !token_br.eof
+  if token_br.eof {
+    return 0
+  }
+  return 1
 }
 
 // To be called at the start of a new scanline, to initialize predictors.
 func VP8InitScanline(/* const */ dec *VP8Decoder) {
-  var left *VP8MB = dec.mb_info - 1
-  left.nz = 0
-  left.nz_dc = 0
+  // C: var left *VP8MB = dec.mb_info - 1
+  // left.nz = 0
+  // left.nz_dc = 0
   // C: stdlib.Memset(dec.intra_l, B_DC_PRED, sizeof(dec.intra_l))
   dec.mb_x = 0
 }
@@ -701,25 +748,25 @@ func VP8InitScanline(/* const */ dec *VP8Decoder) {
 func ParseFrame(/* const */ dec *VP8Decoder, io *VP8Io) int {
   for dec.mb_y = 0; dec.mb_y < dec.br_mb_y; dec.mb_y++ {
     // Parse bitstream for this row.
-    const token_br *VP8BitReader =
+    var token_br *VP8BitReader =
         &dec.parts[dec.mb_y & dec.num_parts_minus_one]
-    if !VP8ParseIntraModeRow(&dec.br, dec) {
+    if VP8ParseIntraModeRow(&dec.br, dec) == 0 {
       return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "Premature end-of-partition0 encountered.")
     }
     for ; dec.mb_x < dec.mb_w; dec.mb_x++ {
-      if !VP8DecodeMB(dec, token_br) {
+      if VP8DecodeMB(dec, token_br) == 0 {
         return VP8SetError(dec, VP8_STATUS_NOT_ENOUGH_DATA, "Premature end-of-file encountered.")
       }
     }
-    VP8InitScanline(dec);  // Prepare for next scanline
+    VP8InitScanline(dec)  // Prepare for next scanline
 
     // Reconstruct, filter and emit the row.
-    if !VP8ProcessRow(dec, io) {
+    if VP8ProcessRow(dec, io) == 0 {
       return VP8SetError(dec, VP8_STATUS_USER_ABORT, "Output aborted.")
     }
   }
   if dec.mt_method > 0 {
-    if !WebPGetWorkerInterface().Sync(&dec.worker) { return 0  }
+    if !WebPGetWorkerInterface().Sync(&dec.worker) { return 0 }
   }
 
   return 1
@@ -737,27 +784,29 @@ func VP8Decode(/* const */ dec *VP8Decoder, /* const */ io *VP8Io) int {
     return VP8SetError(dec, VP8_STATUS_INVALID_PARAM, "nil VP8Io parameter in VP8Decode().")
   }
 
-  if !dec.ready {
-    if !VP8GetHeaders(dec, io) {
+  if dec.ready == 0 {
+    if VP8GetHeaders(dec, io) == 0 {
       return 0
     }
   }
-  assert.Assert(dec.ready)
+  assert.Assert(dec.ready != 0)
 
   // Finish setting up the decoding parameter. Will call io.setup().
-  ok = (VP8EnterCritical(dec, io) == VP8_STATUS_OK)
-  if ok {  // good to go.
+  if VP8EnterCritical(dec, io) == VP8_STATUS_OK {
+    ok = 1
+  }
+  if ok != 0 {  // good to go.
     // Will allocate memory and prepare everything.
-    if ok { ok = VP8InitFrame(dec, io) }
+    if ok != 0 { ok = VP8InitFrame(dec, io) }
 
     // Main decoding loop
-    if ok { ok = ParseFrame(dec, io) }
+    if ok != 0 { ok = ParseFrame(dec, io) }
 
     // Exit.
     ok &= VP8ExitCritical(dec, io)
   }
 
-  if !ok {
+  if ok == 0 {
     VP8Clear(dec)
     return 0
   }
