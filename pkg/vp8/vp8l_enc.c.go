@@ -626,7 +626,7 @@ func WriteHuffmanCode(/* const */ bw *VP8LBitWriter, /*const*/ code *HuffmanTree
   VP8LPutBits(bw, symbol, depth)
 }
 
-// C: static  func WriteHuffmanCodeWithExtraBits(
+// C: func WriteHuffmanCodeWithExtraBits(
     const bw *VP8LBitWriter, /*const*/ code *HuffmanTreeCode, code_index int, bits int, n_bits int) {
   depth := code.code_lengths[code_index]
   symbol := code.codes[code_index]

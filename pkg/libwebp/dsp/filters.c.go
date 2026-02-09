@@ -35,7 +35,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
   } while (0)
 
 #if !WEBP_NEON_OMIT_C_CODE
-static  func PredictLine_C(/* const */ src *uint8, /*const*/ pred *uint8, dst *uint8, length int) {
+func PredictLine_C(/* const */ src *uint8, /*const*/ pred *uint8, dst *uint8, length int) {
   var i int
   for (i = 0; i < length; ++i) dst[i] = (uint8)(src[i] - pred[i]);
 }
@@ -43,7 +43,7 @@ static  func PredictLine_C(/* const */ src *uint8, /*const*/ pred *uint8, dst *u
 //------------------------------------------------------------------------------
 // Horizontal filter.
 
-static  func DoHorizontalFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
+func DoHorizontalFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
   var preds *uint8 = in;
   row int;
   DCHECK(in, out);
@@ -69,7 +69,7 @@ static  func DoHorizontalFilter_C(/* const */ in *uint8, width, height int, stri
 //------------------------------------------------------------------------------
 // Vertical filter.
 
-static  func DoVerticalFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
+func DoVerticalFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
   var preds *uint8 = in;
   row int;
   DCHECK(in, out);
@@ -100,7 +100,7 @@ static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-static  func DoGradientFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
+func DoGradientFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
   var preds *uint8 = in;
   row int;
   DCHECK(in, out);

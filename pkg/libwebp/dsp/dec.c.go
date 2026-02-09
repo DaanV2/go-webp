@@ -483,7 +483,7 @@ VP8PredFunc VP8PredChroma8[NUM_B_DC_MODES];
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
 // 4 pixels in, 2 pixels out
-static  func DoFilter2_C(p *uint8, step int) {
+func DoFilter2_C(p *uint8, step int) {
   p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   a := 3 * (q0 - p0) + VP8ksclip1[p1 - q1];  // in [-893,892]
   a1 := VP8ksclip2[(a + 4) >> 3];            // in [-16,15]
@@ -493,7 +493,7 @@ static  func DoFilter2_C(p *uint8, step int) {
 }
 
 // 4 pixels in, 4 pixels out
-static  func DoFilter4_C(p *uint8, step int) {
+func DoFilter4_C(p *uint8, step int) {
   p1 = p[-2 * step], p0 = p[-step], q0 = p[0], q1 := p[step];
   a := 3 * (q0 - p0);
   a1 := VP8ksclip2[(a + 4) >> 3];
@@ -506,7 +506,7 @@ static  func DoFilter4_C(p *uint8, step int) {
 }
 
 // 6 pixels in, 6 pixels out
-static  func DoFilter6_C(p *uint8, step int) {
+func DoFilter6_C(p *uint8, step int) {
   p2 = p[-3 * step], p1 = p[-2 * step], p0 := p[-step];
   q0 = p[0], q1 = p[step], q2 := p[2 * step];
   a := VP8ksclip1[3 * (q0 - p0) + VP8ksclip1[p1 - q1]];
@@ -592,7 +592,7 @@ func SimpleHFilter16i_C(p *uint8, stride int, thresh int) {
 // Complex In-loop filtering (Paragraph 15.3)
 
 #if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
-static  func FilterLoop26_C(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
+func FilterLoop26_C(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
   thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (NeedsFilter2_C(p, hstride, thresh2, ithresh)) {
@@ -606,7 +606,7 @@ static  func FilterLoop26_C(p *uint8, hstride int, vstride int, size int, thresh
   }
 }
 
-static  func FilterLoop24_C(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
+func FilterLoop24_C(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
   thresh2 := 2 * thresh + 1;
   while (size-- > 0) {
     if (NeedsFilter2_C(p, hstride, thresh2, ithresh)) {

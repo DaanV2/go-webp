@@ -635,7 +635,7 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, cac
       for ind = 0; ind < num_ind; ind++ {
         curr_length := 0;
         j := i;
-        int j_offset =
+        var j_offset int
             use_prev ? i - window_offsets_new[ind] : i - window_offsets[ind];
         if j_offset < 0 || argb[j_offset] != argb[i] { continue }
         // The longest match is the sum of how many times each pixel is

@@ -39,7 +39,7 @@ func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heig
   data_size := height * width;
   int i, num_levels_in, iter;
   double last_err = 1.e38, err = 0.;
-  const double err_threshold = ERROR_THRESHOLD * data_size;
+   = ERROR_THRESHOLD * data_size;
 
   if (data == nil) {
     return 0;
@@ -100,7 +100,7 @@ func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heig
     // Assign new representatives to classes.
     if (num_levels > 2) {
       for slot = 1; slot < num_levels - 1; slot++ {
-        const double count = q_count[slot];
+         = q_count[slot];
         if (count > 0.) {
           inv_q_level[slot] = q_sum[slot] / count;
         }
@@ -110,7 +110,7 @@ func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heig
     // Compute convergence error.
     err = 0.;
     for s = min_s; s <= max_s; s++ {
-      const double error = s - inv_q_level[q_level[s]];
+       = s - inv_q_level[q_level[s]];
       err += freq[s] * error * error;
     }
 

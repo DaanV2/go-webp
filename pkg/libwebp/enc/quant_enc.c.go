@@ -569,7 +569,7 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
 
     // initialize source node.
     for m = -MIN_DELTA; m <= MAX_DELTA; m++ {
-      const score_t rate = tenary.If(ctx0 == 0, VP8BitCost(1, last_proba), 0)
+       = tenary.If(ctx0 == 0, VP8BitCost(1, last_proba), 0)
       ss_cur[m].score = RDScoreTrellis(lambda, rate, 0);
       ss_cur[m].costs = costs[first][ctx0];
     }
@@ -656,9 +656,9 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
 
       // Now, record best terminal node (and thus best entry in the graph).
       if (level != 0 && best_cur_score < best_score) {
-        const score_t last_pos_cost =
+         =
             tenary.If(n < 15, VP8BitCost(0, probas[band][ctx][0]), 0)
-        const score_t last_pos_score = RDScoreTrellis(lambda, last_pos_cost, 0);
+         = RDScoreTrellis(lambda, last_pos_cost, 0);
         score = best_cur_score + last_pos_score;
         if (score < best_score) {
           best_score = score;
@@ -1163,7 +1163,7 @@ func RefineUsingDistortion(/* const */ it *VP8EncIterator, try_both_modes int, r
   lambda_d_uv := 120;
   score_t score_i4 = dqm.i4_penalty;
   score_t i4_bit_sum = 0;
-  const score_t bit_limit = try_both_modes ? it.enc.mb_header_limit
+   = try_both_modes ? it.enc.mb_header_limit
                                            : MAX_COST;  // no early-out allowed
 
   if (is_i16) {  // First, evaluate Intra16 distortion
@@ -1171,7 +1171,7 @@ func RefineUsingDistortion(/* const */ it *VP8EncIterator, try_both_modes int, r
     var src *uint8 = it.yuv_in + Y_OFF_ENC;
     for mode = 0; mode < NUM_PRED_MODES; mode++ {
       var ref *uint8 = it.yuv_p + VP8I16ModeOffsets[mode];
-      const score_t score = (score_t)VP8SSE16x16(src, ref) * RD_DISTO_MULT +
+       = (score_t)VP8SSE16x16(src, ref) * RD_DISTO_MULT +
                             VP8FixedCostsI16[mode] * lambda_d_i16;
       if (mode > 0 && VP8FixedCostsI16[mode] > bit_limit) {
         continue;
@@ -1208,7 +1208,7 @@ func RefineUsingDistortion(/* const */ it *VP8EncIterator, try_both_modes int, r
       MakeIntra4Preds(it);
       for mode = 0; mode < NUM_BMODES; mode++ {
         var ref *uint8 = it.yuv_p + VP8I4ModeOffsets[mode];
-        const score_t score = VP8SSE4x4(src, ref) * RD_DISTO_MULT +
+         = VP8SSE4x4(src, ref) * RD_DISTO_MULT +
                               mode_costs[mode] * lambda_d_i4;
         if (score < best_i4_score) {
           best_i4_mode = mode;
@@ -1246,7 +1246,7 @@ func RefineUsingDistortion(/* const */ it *VP8EncIterator, try_both_modes int, r
     var src *uint8 = it.yuv_in + U_OFF_ENC;
     for mode = 0; mode < NUM_PRED_MODES; mode++ {
       var ref *uint8 = it.yuv_p + VP8UVModeOffsets[mode];
-      const score_t score = VP8SSE16x8(src, ref) * RD_DISTO_MULT +
+       = VP8SSE16x8(src, ref) * RD_DISTO_MULT +
                             VP8FixedCostsUV[mode] * lambda_d_uv;
       if (score < best_uv_score) {
         best_mode = mode;

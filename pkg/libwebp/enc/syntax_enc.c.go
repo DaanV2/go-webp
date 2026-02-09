@@ -355,7 +355,7 @@ func VP8EncWrite(/* const */ enc *VP8Encoder) int {
   // Token partitions
   for p = 0; p < enc.num_parts; p++ {
     var buf *uint8 = VP8BitWriterBuf(enc.parts + p);
-    const size uint64  = VP8BitWriterSize(enc.parts + p);
+      = VP8BitWriterSize(enc.parts + p);
     if size { {ok = ok && pic.writer(buf, size, pic) }}
     ok = ok && WebPReportProgress(pic, enc.percent + percent_per_part, &enc.percent);
   }

@@ -170,7 +170,7 @@ func WebPConvertRGBA32ToUV_C(/* const */ rgb *uint16, u *uint8, v *uint8, width 
 const GAMMA_FIX = 12     // fixed-point precision for linear values
 const GAMMA_TAB_FIX =7  // fixed-point fractional bits precision
 const GAMMA_TAB_SIZE =(1 << (GAMMA_FIX - GAMMA_TAB_FIX))
-const double kGamma = 0.80
+ = 0.80
 const kGammaScale := ((1 << GAMMA_FIX) - 1)
 const kGammaTabScale := (1 << GAMMA_TAB_FIX)
 const kGammaTabRounder := (1 << GAMMA_TAB_FIX >> 1)
@@ -183,8 +183,8 @@ var VP8CPUInfo VP8GetCPUInfo
 func WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
   if (!kGammaTablesOk) {
     var v int
-    const double scale = (double)(1 << GAMMA_TAB_FIX) / kGammaScale;
-    const double norm = 1. / 255.;
+     = (double)(1 << GAMMA_TAB_FIX) / kGammaScale;
+     = 1. / 255.;
     for v = 0; v <= 255; v++ {
       kGammaToLinearTab[v] =
           (uint16)(pow(norm * v, kGamma) * kGammaScale + .5);

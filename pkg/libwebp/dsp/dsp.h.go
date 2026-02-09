@@ -106,7 +106,7 @@ typedef int (*VP8QuantizeBlockWHT)(
     int16 in[16], int16 out[16], /*const*/ struct /* const */ mtx *VP8Matrix);
 extern VP8QuantizeBlockWHT VP8EncQuantizeBlockWHT;
 
-extern const int VP8DspScan[16 + 4 + 4];
+extern [16 + 4 + 4];
 
 // Collect histogram for susceptibility calculation.
 const MAX_COEFF_THRESH =31  // size of histogram used by CollectHistogram.

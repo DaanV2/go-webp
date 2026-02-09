@@ -212,7 +212,7 @@ func VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*cons
     n := b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {
-      const token_t token = tokens[n];
+       = tokens[n];
       bit := (token >> 15) & 1;
       if (token & FIXED_PROBA_BIT) {
         vp8.VP8PutBit(bw, bit, token & uint(0xff));  // constant proba
@@ -238,7 +238,7 @@ uint64 VP8EstimateTokenSize(/* const */ b *VP8TBuffer, /*const*/ probas *uint8) 
     n := b.page_size;
     const token_t* const tokens = TOKEN_DATA(p);
     while (n-- > N) {
-      const token_t token = tokens[n];
+       = tokens[n];
       bit := token & (1 << 15);
       if (token & FIXED_PROBA_BIT) {
         size += VP8BitCost(bit, token & uint(0xff));

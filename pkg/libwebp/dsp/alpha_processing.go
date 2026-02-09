@@ -142,7 +142,7 @@ static  uint8 multiply(uint8 x, uint32 m) {
   return (x * m) >> 16;
 }
 
-static  func ApplyAlphaMultiply4444_C(rgba *uint84444, w int, h int, stride int, rg_byte_pos int /* 0 or 1 */) {
+func ApplyAlphaMultiply4444_C(rgba *uint84444, w int, h int, stride int, rg_byte_pos int /* 0 or 1 */) {
   while (h-- > 0) {
     var i int
     for i = 0; i < w; i++ {

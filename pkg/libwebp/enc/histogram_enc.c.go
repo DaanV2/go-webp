@@ -550,7 +550,7 @@ func GetBinIdForEntropy(uint64 min, uint64 max, uint64 val) int {
 }
 
 func GetHistoBinIndex(/* const */ h *VP8LHistogram, /*const*/ c *DominantCostRange, low_effort int) int {
-  int bin_id =
+  var bin_id int
       GetBinIdForEntropy(c.literal_min, c.literal_max, h.costs[LITERAL]);
   assert.Assert(bin_id < NUM_PARTITIONS);
   if (!low_effort) {
@@ -673,7 +673,7 @@ func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_c
         // For some images, 'try_combine' turns out to be false for a lot of
         // histogram pairs. In that case, we fallback to combining
         // histograms as usual to afunc increasing the header size.
-        int try_combine =
+        var try_combine int
             cur_combo.trivial_symbol[RED] != VP8L_NON_TRIVIAL_SYM &&
             cur_combo.trivial_symbol[BLUE] != VP8L_NON_TRIVIAL_SYM &&
             cur_combo.trivial_symbol[ALPHA] != VP8L_NON_TRIVIAL_SYM;
@@ -927,7 +927,7 @@ func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, min_c
   for (iter = 0; iter < outer_iters && image_histo.size >= min_cluster_size &&
                  ++tries_with_no_success < num_tries_no_success;
        ++iter) {
-    int64 best_cost =
+    var best_cost int64
         (histo_queue.size == 0) ? 0 : histo_queue.queue[0].cost_diff;
     int best_idx1 = -1, best_idx2 = 1;
     rand_range := (image_histo.size - 1) * (image_histo.size);

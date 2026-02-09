@@ -109,7 +109,7 @@ func GetDistanceCost(/* const */ m *CostModel, uint32 distance) int64 {
          ((int64)extra_bits << LOG_2_PRECISION_BITS);
 }
 
-static  func AddSingleLiteralWithCostModel(
+func AddSingleLiteralWithCostModel(
     const argb *uint32, /*const*/ hashers *VP8LColorCache, /*const*/ cost_model *CostModel, idx int, use_color_cache int, int64 prev_cost, /*const*/ cost *int64, /*const*/ dist_array *uint16) {
   cost_val := prev_cost;
   color := argb[idx];

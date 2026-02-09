@@ -315,20 +315,20 @@ func WebPAnimEncoderDelete(enc *WebPAnimEncoder) {
 // Frame addition.
 
 // Returns cached frame at the given 'position'.
-static GetFrame *EncodedFrame(/* const */ enc *WebPAnimEncoder, uint64 position) {
+func GetFrame(/* const */ enc *WebPAnimEncoder, uint64 position) *EncodedFrame {
   assert.Assert(enc.start + position < enc.size);
   return &enc.encoded_frames[enc.start + position];
 }
 
-typedef int (*ComparePixelsFunc)(/* const */ *uint32, int, /*const*/ *uint32, int, int, int);
+type ComparePixelsFunc = func(/* const */ *uint32, int, /*const*/ *uint32, int, int, int)int
 
 // Returns true if 'length' number of pixels in 'src' and 'dst' are equal,
 // assuming the given step sizes between pixels.
 // 'max_allowed_diff' is unused and only there to allow function pointer use.
 func ComparePixelsLossless(/* const */ src *uint32, src_step int, /*const*/ dst *uint32, dst_step int, length int, max_allowed_diff int) int {
-  (void)max_allowed_diff;
+//   (void)max_allowed_diff;
   assert.Assert(length > 0);
-  while (length-- > 0) {
+  for ;length > 0; length-- {
     if (*src != *dst) {
       return 0;
     }
@@ -360,7 +360,7 @@ func PixelsAreSimilar(uint32 src, uint32 dst, max_allowed_diff int) int {
 // error bound, assuming the given step sizes between pixels.
 func ComparePixelsLossy(/* const */ src *uint32, src_step int, /*const*/ dst *uint32, dst_step int, length int, max_allowed_diff int) int {
   assert.Assert(length > 0);
-  while (length-- > 0) {
+  for ;length > 0; length-- {
     if (!PixelsAreSimilar(*src, *dst, max_allowed_diff)) {
       return 0;
     }
@@ -375,14 +375,14 @@ func IsEmptyRect(/* const */ rect *FrameRectangle) int {
 }
 
 func QualityToMaxDiff(quality float) int {
-  const double val = pow(quality / 100., 0.5);
-  const double max_diff = 31 * (1 - val) + 1 * val;
+   = pow(quality / 100., 0.5);
+   = 31 * (1 - val) + 1 * val;
   return (int)(max_diff + 0.5);
 }
 
 // Assumes that an initial valid guess of change rectangle 'rect' is passed.
 func MinimizeChangeRectangle(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture, /*const*/ rect *FrameRectangle, is_lossless bool, quality float) {
-  int i, j;
+  var i, j int
   var compare_pixels ComparePixelsFunc =
       tenary.If(is_lossless, ComparePixelsLossless, ComparePixelsLossy);
   max_allowed_diff_lossy := QualityToMaxDiff(quality);
@@ -1602,7 +1602,7 @@ func WebPAnimEncoderAssemble(enc *WebPAnimEncoder, webp_data *WebPData) int {
 
   if (!enc.got_nil_frame && enc.in_frame_count > 1 && enc.count > 0) {
     // set duration of the last frame to be avg of durations of previous frames.
-    const double delta_time =
+     =
         (uint32)enc.prev_timestamp - enc.first_timestamp;
     average_duration := (int)(delta_time / (enc.in_frame_count - 1));
     if (!IncreasePreviousDuration(enc, average_duration)) {

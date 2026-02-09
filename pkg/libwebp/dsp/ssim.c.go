@@ -46,7 +46,7 @@ func SSIMCalculation(/* const */ stats *VP8DistoStats, n uint32 /*num *samples/)
     den_S := (sxx + syy + C2) >> 8;
     fnum := (2 * xmym + C1) * num_S;
     fden := (xmxm + ymym + C1) * den_S;
-    const double r = (double)fnum / fden;
+     = (double)fnum / fden;
     assert.Assert(r >= 0. && r <= 1.0);
     return r;
   }

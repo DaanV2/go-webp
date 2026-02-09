@@ -47,9 +47,8 @@ func WebPRescalerImportRowExpand_C(/* const */ wrk *WebPRescaler, /*const*/ src 
     x_out := channel;
     // simple bilinear interpolation
     accum := wrk.x_add;
-    rescaler_t left = (rescaler_t)src[x_in];
-    rescaler_t right =
-      tenary.If(wrk.src_width > 1, (rescaler_t)src[x_in + x_stride], left);
+    var left rescaler_t = rescaler_t(src[x_in])
+    var right rescaler_t = tenary.If(wrk.src_width > 1, rescaler_t(src[x_in + x_stride], left))
     x_in += x_stride;
     for {
       wrk.frow[x_out] = right * wrk.x_add + (left - right) * accum;
@@ -60,7 +59,7 @@ func WebPRescalerImportRowExpand_C(/* const */ wrk *WebPRescaler, /*const*/ src 
         left = right;
         x_in += x_stride;
         assert.Assert(x_in < wrk.src_width * x_stride);
-        right = (rescaler_t)src[x_in];
+        right = rescaler_t(src[x_in])
         accum += wrk.x_add;
       }
     }
@@ -80,10 +79,10 @@ func WebPRescalerImportRowShrink_C(/* const */ wrk *WebPRescaler, /*const*/ src 
     x_out := channel;
     sum := 0;
     accum := 0;
-    while (x_out < x_out_max) {
+    for (x_out < x_out_max) {
       base := 0;
       accum += wrk.x_add;
-      while (accum > 0) {
+      for (accum > 0) {
         accum -= wrk.x_sub;
         assert.Assert(x_in < wrk.src_width * x_stride);
         base = src[x_in];
@@ -91,7 +90,7 @@ func WebPRescalerImportRowShrink_C(/* const */ wrk *WebPRescaler, /*const*/ src 
         x_in += x_stride;
       }
       {  // Emit next horizontal pixel.
-        const rescaler_t frac = base * (-accum);
+         = base * (-accum);
         wrk.frow[x_out] = sum * wrk.x_sub - frac;
         // fresh fractional start for next pixel
         sum = (int)MULT_FIX(frac, wrk.fx_scale);

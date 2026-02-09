@@ -187,7 +187,7 @@ func VP8LBitsEntropyUnrefined(/* const */ /* const */ array *uint32, n int, /* c
   entropy.entropy = VP8LFastSLog2(entropy.sum) - entropy.entropy;
 }
 
-static  func GetEntropyUnrefinedHelper(
+func GetEntropyUnrefinedHelper(
     uint32 val, i int, /* const */ val_prev *uint32, /* const */ i_prev *int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
   streak := i - *i_prev;
 

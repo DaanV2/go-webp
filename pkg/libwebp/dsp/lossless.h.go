@@ -92,7 +92,7 @@ extern VP8LMapAlphaFunc VP8LMapColor8b;
 // lossless.c, but used only for alpha decoding. It takes uint8 (rather than
 // uint32) arguments for 'src' and 'dst'.
 func VP8LColorIndexInverseTransformAlpha(
-    const struct const transform *VP8LTransform, y_start int, y_end int, /*const*/ src *uint8, dst *uint8);
+     transform *VP8LTransform, y_start int, y_end int, /*const*/ src *uint8, dst *uint8);
 
 // Expose some C-only fallback functions
 func VP8LTransformColorInverse_C(/* const */ m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32);
