@@ -62,7 +62,7 @@ func WebPPictureAllocYUVA(/* const */ picture *picture.Picture) int {
 
   // From now on, we're in the clear, we can no longer fail...
   // C: picture.memory_ = (void*)mem
-  picture.memory_ = unsafe.Pointer(mem)
+  picture.memory_ = unsafe.Pointer(&mem[0])
   picture.YStride = y_stride
   picture.UVStride = uv_stride
   picture.AStride = a_stride
@@ -102,7 +102,7 @@ func WebPPictureAllocARGB(/* const */ picture *picture.Picture) error {
 	//   }
 	memory := make([]uint8, argb_size + WEBP_ALIGN_CST)
 
-	picture.memory_argb_ = memory
+	picture.memory_argb_ = unsafe.Pointer(&memory[0])
 	// C: picture.ARGB = (uint32*)WEBP_ALIGN(memory)
 	picture.ARGBStride = width
 
