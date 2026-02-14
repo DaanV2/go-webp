@@ -437,7 +437,7 @@ func VP8LConvertBGRAToRGBA4444_C(/* const */ src *uint32, num_pixels int, dst *u
     argb := *src++
     rg := ((argb >> 16) & 0xf0) | ((argb >> 12) & 0xf)
     ba := ((argb >> 0) & 0xf0) | ((argb >> 28) & 0xf)
-#if (WEBP_SWAP_16BIT_CSP == 1)
+#if (TRUE == 1)
     *dst++ = ba
     *dst++ = rg
 #else
@@ -453,7 +453,7 @@ func VP8LConvertBGRAToRGB565_C(/* const */ src *uint32, num_pixels int, dst *uin
     argb := *src++
     rg := ((argb >> 16) & 0xf8) | ((argb >> 13) & 0x7)
     gb := ((argb >> 5) & 0xe0) | ((argb >> 3) & 0x1f)
-#if (WEBP_SWAP_16BIT_CSP == 1)
+#if (TRUE == 1)
     *dst++ = gb
     *dst++ = rg
 #else

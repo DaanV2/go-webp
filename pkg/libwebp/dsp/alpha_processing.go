@@ -74,7 +74,7 @@ type WebPMultRow = func(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uin
 func WebPMultARGBRows(ptr *uint8, stride int, width int, num_rows int , inverse int) {
   var n int
   for n = 0; n < num_rows; n++ {
-    WebPMultARGBRow((*uint32)ptr, width, inverse)
+    WebPMultARGBRow((*uint32)(ptr), width, inverse)
     ptr += stride
   }
 }
@@ -96,24 +96,23 @@ func WebPMultRows(ptr *uint8, stride int, /*const*/ alpha *uint8, alpha_stride i
 // (x * a * 32897) >> 23 is bit-wise equivalent to (int)(x * a / 255.)
 // for all 8bit x or a. For bit-wise equivalence to (int)(x * a / 255. + .5),
 // one can use instead: (x * a * 65793 + (1 << 23)) >> 24
-#if 1  // (int)(x * a / 255.)
-#define MULTIPLIER(a) ((a) * uint(32897))
-#define PREMULTIPLY(x, m) (((x) * (m)) >> 23)
-#else  // (int)(x * a / 255. + .5)
-#define MULTIPLIER(a) ((a) * uint(65793))
-#define PREMULTIPLY(x, m) (((x) * (m) + (uint(1) << 23)) >> 24)
-#endif
 
-#if !WEBP_NEON_OMIT_C_CODE
+func MULTIPLIER1(a uint) int {
+	return int((a) * uint(32897))
+}
+func PREMULTIPLY(x, m uint) int {
+	return (((x) * (m)) >> 23)
+}
+
 func ApplyAlphaMultiply_C(rgba *uint8, alpha_first int, w int, h int, stride int) {
-  while (h-- > 0) {
+  for (h-- > 0) {
     var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0))
     var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3))
     var i int
     for i = 0; i < w; i++ {
       a := alpha[4 * i]
       if (a != 0xff) {
-        mult := MULTIPLIER(a)
+        mult := MULTIPLIER1(a)
         rgb[4 * i + 0] = PREMULTIPLY(rgb[4 * i + 0], mult)
         rgb[4 * i + 1] = PREMULTIPLY(rgb[4 * i + 1], mult)
         rgb[4 * i + 2] = PREMULTIPLY(rgb[4 * i + 2], mult)
@@ -122,28 +121,25 @@ func ApplyAlphaMultiply_C(rgba *uint8, alpha_first int, w int, h int, stride int
     rgba += stride
   }
 }
-#endif  // !WEBP_NEON_OMIT_C_CODE
-#undef MULTIPLIER
-#undef PREMULTIPLY
 
-// rgbA4444
+func MULTIPLIER(a int) int {
+	return ((a) * 0x1111)  // 0x1111 ~= (1 << 16) / 15
+}
 
-#define MULTIPLIER(a) ((a) * 0x1111)  // 0x1111 ~= (1 << 16) / 15
-
-static  uint8 dither_hi(uint8 x) {
+func dither_hi(x uint8) uint8 {
   return (x & 0xf0) | (x >> 4)
 }
 
-static  uint8 dither_lo(uint8 x) {
+func dither_lo(x uint8) uint8 {
   return (x & 0x0f) | (x << 4)
 }
 
-static  uint8 multiply(uint8 x, uint32 m) {
+func multiply(x uint8, m uint32) uint8 {
   return (x * m) >> 16
 }
 
 func ApplyAlphaMultiply4444_C(rgba *uint84444, w int, h int, stride int, rg_byte_pos int /* 0 or 1 */) {
-  while (h-- > 0) {
+  for (h-- > 0) {
     var i int
     for i = 0; i < w; i++ {
       rg := rgba4444[2 * i + rg_byte_pos]
@@ -159,17 +155,11 @@ func ApplyAlphaMultiply4444_C(rgba *uint84444, w int, h int, stride int, rg_byte
     rgba4444 += stride
   }
 }
-#undef MULTIPLIER
 
 func ApplyAlphaMultiply_16b_C(rgba *uint84444, w int, h int, stride int) {
-#if (WEBP_SWAP_16BIT_CSP == 1)
   ApplyAlphaMultiply4444_C(rgba4444, w, h, stride, 1)
-#else
-  ApplyAlphaMultiply4444_C(rgba4444, w, h, stride, 0)
-#endif
 }
 
-#if !WEBP_NEON_OMIT_C_CODE
 func DispatchAlpha_C(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint8, dst_stride int) int {
   alpha_mask := 0xff
   var i, j int
@@ -218,27 +208,17 @@ func ExtractGreen_C(/* const */ argb *uint32, alpha *uint8, size int) {
   var i int
   for (i = 0; i < size; ++i) alpha[i] = argb[i] >> 8
 }
-#endif  // !WEBP_NEON_OMIT_C_CODE
 
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
-// Simple channel manipulations.
-
-func MakeARGB32(int a, r int, g int, b int) uint32 {
-  return (((uint32)a << 24) | (r << 16) | (g << 8) | b)
+func MakeARGB32(a, r, g, b uint32) uint32 {
+  return uint32((a << 24) | (r << 16) | (g << 8) | b)
 }
 
-#ifdef constants.WORDS_BIGENDIAN
 func PackARGB_C(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, out *uint32) {
   var i int
   for i = 0; i < len; i++ {
     out[i] = MakeARGB32(a[4 * i], r[4 * i], g[4 * i], b[4 * i])
   }
 }
-#endif
 
 func PackRGB_C(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, step int, out *uint32) {
   int i, offset = 0
@@ -249,14 +229,12 @@ func PackRGB_C(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len
 }
 
 type WebPApplyAlphaMultiply = func(*uint8, int, int, int, int)
-func (*WebPApplyAlphaMultiply4444)(*uint8, int, int, int)
+func WebPApplyAlphaMultiply4444 = func(*uint8, int, int, int)
 type WebPDispatchAlpha = func(/* const */ *uint8, int, int, int, *uint8, int)
 type WebPDispatchAlphaToGreen = func(/* const */ *uint8, int, int, int, *uint32, int)
 type WebPExtractAlpha = func(/* const */ *uint8, int, int, int, *uint8, int)
 type WebPExtractGreen = func(/* const */ argb *uint32, alpha *uint8, size int)
-#ifdef constants.WORDS_BIGENDIAN
 type WebPPackARGB = func(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int, *uint32)
-#endif
 type WebPPackRGB = func(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, step int, out *uint32)
 
 int (*WebPHasAlpha8b)(/* const */ src *uint8, length int)

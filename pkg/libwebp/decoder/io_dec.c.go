@@ -409,7 +409,7 @@ func ExportAlpha(/* const */ p *WebPDecParams, y_pos int, max_lines_out int) int
 func ExportAlphaRGBA4444(/* const */ p *WebPDecParams, y_pos int, max_lines_out int ) int {
   var buf *WebPRGBABuffer = &p.output.u.RGBA
   var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
-#if (WEBP_SWAP_16BIT_CSP == 1)
+#if (TRUE == 1)
   alpha_dst *uint8 = base_rgba
 #else
   alpha_dst *uint8 = base_rgba + 1
