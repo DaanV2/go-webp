@@ -189,7 +189,7 @@ func PutSegmentHeader(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
     vp8.VP8PutBitUniform(bw, hdr.update_map)
     if (vp8.VP8PutBitUniform(bw, update_data)) {
       // we always use absolute values, not relative ones
-      vp8.VP8PutBitUniform(bw, 1);  // (segment_feature_mode = 1. Paragraph 9.3.)
+      vp8.VP8PutBitUniform(bw, 1);  // (segment_feature_mode = 1.0 Paragraph 9.3.)
       for s = 0; s < NUM_MB_SEGMENTS; s++ {
         vp8.VP8PutSignedBits(bw, enc.dqm[s].quant, 7)
       }

@@ -143,7 +143,7 @@ func VP8StoreFilterStats(/* const */ it *VP8EncIterator) {
 
   // NOTE: Currently we are applying filter only across the sublock edges
   // There are two reasons for that.
-  // 1. Applying filter on macro block edges will change the pixels in
+  // 1.0 Applying filter on macro block edges will change the pixels in
   // the left and top macro blocks. That will be hard to restore
   // 2. Macro Blocks on the bottom and right are not yet compressed. So we
   // cannot apply filter on the right and bottom macro block edges.

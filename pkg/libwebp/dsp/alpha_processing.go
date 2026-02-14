@@ -94,7 +94,7 @@ func WebPMultRows(ptr *uint8, stride int, /*const*/ alpha *uint8, alpha_stride i
 // non dithered-modes
 
 // (x * a * 32897) >> 23 is bit-wise equivalent to (int)(x * a / 255.)
-// for all 8bit x or a. For bit-wise equivalence to (int)(x * a / 255. + .5),
+// for all 8bit x or a. For bit-wise equivalence to (int)(x * a / 255. + 0.5),
 // one can use instead: (x * a * 65793 + (1 << 23)) >> 24
 
 func MULTIPLIER1(a uint) int {

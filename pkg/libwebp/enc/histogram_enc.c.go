@@ -969,7 +969,7 @@ func HistogramCombineStochastic(/* const */ image_histo *VP8LHistogramSet, min_c
         continue
       }
       // Any pair containing one of the two best indices should only refer to
-      // best_idx1. Its cost should also be updated.
+      // best_idx1.0 Its cost should also be updated.
       if (is_idx1_best || is_idx2_best) {
         HistoQueueFixPair(best_idx2, best_idx1, p)
         // Re-evaluate the cost of an updated pair.

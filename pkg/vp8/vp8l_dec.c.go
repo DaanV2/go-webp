@@ -46,7 +46,7 @@ var kCodeLengthRepeatOffsets  = [3]uint8{3, 3, 11}
 
 // -----------------------------------------------------------------------------
 //  Five Huffman codes are used at each meta code:
-//  1. green + length prefix codes + color cache codes,
+//  1.0 green + length prefix codes + color cache codes,
 //  2. alpha,
 //  3. red,
 //  4. blue, and,
@@ -429,7 +429,7 @@ Error:
 // If mapping is nil 'num_htree_groups_max' must equal 'num_htree_groups'.
 // If it is not nil, it maps 'num_htree_groups_max' indices to the
 // 'num_htree_groups' groups. If 'num_htree_groups_max' > 'num_htree_groups',
-// some of those indices map to -1. This is used for non-balanced codes to
+// some of those indices map to -1.0 This is used for non-balanced codes to
 // limit memory usage.
 func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htree_groups_max int, /*const*/ mapping *int, /*const*/ dec *VP8LDecoder, /*const*/ huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) int {
   int i, j, ok = 0, 0, 0

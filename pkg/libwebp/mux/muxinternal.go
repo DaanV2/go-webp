@@ -369,7 +369,7 @@ static ChunkEmitSpecial *uint8(/* const */ header *WebPChunk, uint64 total_size,
 
 MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst *uint8) {
   // Ordering of chunks to be emitted is strictly as follows:
-  // 1. ANMF chunk (if present).
+  // 1.0 ANMF chunk (if present).
   // 2. ALPH chunk (if present).
   // 3. VP8/VP8L chunk.
   assert.Assert(wpi)

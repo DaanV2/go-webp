@@ -116,40 +116,45 @@ func WebPConvertARGBToUV_C(/* const */ argb []uint32, u []uint8, v []uint8, src_
 
 func ConvertRGBToY_C(/* const */ rgb *uint8, y *uint8, width int, step int) {
   var i int
-  for i = 0; i < width; ++i, rgb += step {
+  for i = 0; i < width;  {
     y[i] = VP8RGBToY(rgb[0], rgb[1], rgb[2], YUV_HALF)
+	i++
+	rgb += step
   }
 }
 
 func ConvertBGRToY_C(/* const */ bgr *uint8, y *uint8, width int, step int) {
   var i int
-  for i = 0; i < width; ++i, bgr += step {
+  for i = 0; i < width; {
     y[i] = VP8RGBToY(bgr[2], bgr[1], bgr[0], YUV_HALF)
+	i++
+	rgb += step
   }
 }
 
 func WebPConvertRGBA32ToUV_C(/* const */ rgb *uint16, u *uint8, v *uint8, width int) {
   var i int
-  for i = 0; i < width; i += 1, rgb += 4 {
-    r := rgb[0], g = rgb[1], b = rgb[2]
+  for i = 0; i < width;  {
+    r := rgb[0]
+	g := rgb[1]
+	b := rgb[2]
     u[i] = VP8RGBToU(r, g, b, YUV_HALF << 2)
     v[i] = VP8RGBToV(r, g, b, YUV_HALF << 2)
+	i += 1
+	rgb += 4
   }
 }
 
-//------------------------------------------------------------------------------
-// Code for gamma correction
 
-#if defined(USE_GAMMA_COMPRESSION)
 
 // Gamma correction compensates loss of resolution during chroma subsampling.
 const GAMMA_FIX = 12     // fixed-point precision for linear values
 const GAMMA_TAB_FIX =7  // fixed-point fractional bits precision
 const GAMMA_TAB_SIZE =(1 << (GAMMA_FIX - GAMMA_TAB_FIX))
- = 0.80
-const kGammaScale := ((1 << GAMMA_FIX) - 1)
-const kGammaTabScale := (1 << GAMMA_TAB_FIX)
-const kGammaTabRounder := (1 << GAMMA_TAB_FIX >> 1)
+const kGamma = 0.80
+const kGammaScale = ((1 << GAMMA_FIX) - 1)
+const kGammaTabScale = (1 << GAMMA_TAB_FIX)
+const kGammaTabRounder = (1 << GAMMA_TAB_FIX >> 1)
 
 var kLinearToGammaTab [GAMMA_TAB_SIZE + 1]int
 var kGammaToLinearTab[256]uinuint16
@@ -159,13 +164,13 @@ var VP8CPUInfo VP8GetCPUInfo
 func WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
   if (!kGammaTablesOk) {
     var v int
-     = (float64)(1 << GAMMA_TAB_FIX) / kGammaScale
-     = 1. / 255.
+    const scale = float64((1 << GAMMA_TAB_FIX) / kGammaScale)
+    const norm = float64(1.0 / 255.0)
     for v = 0; v <= 255; v++ {
-      kGammaToLinearTab[v] = (uint16)(pow(norm * v, kGamma) * kGammaScale + .5)
+      kGammaToLinearTab[v] = (uint16)(pow(norm * v, kGamma) * kGammaScale + 0.5)
     }
     for v = 0; v <= GAMMA_TAB_SIZE; v++ {
-      kLinearToGammaTab[v] = (int)(255. * pow(scale * v, 1. / kGamma) + .5)
+      kLinearToGammaTab[v] = (int)(255. * pow(scale * v, 1.0 / kGamma) + 0.5)
     }
     kGammaTablesOk = 1
   }

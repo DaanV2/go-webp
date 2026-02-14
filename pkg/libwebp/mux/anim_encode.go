@@ -258,7 +258,7 @@ func WebPAnimEncoder(
   ResetCounters(enc)
   // Note: one extra storage is for the previous frame.
   enc.size = enc.options.kmax - enc.options.kmin + 1
-  // We need space for at least 2 frames. But when kmin, kmax are both zero, // enc.size will be 1. So we handle that special case below.
+  // We need space for at least 2 frames. But when kmin, kmax are both zero, // enc.size will be 1.0 So we handle that special case below.
   if enc.size < 2 { enc.size = 2 }
 //   enc.encoded_frames = (*EncodedFrame)WebPSafeCalloc(enc.size, sizeof(*enc.encoded_frames))
 //   if enc.encoded_frames == nil { goto Err }

@@ -15,7 +15,7 @@ import (
 type VP8BitReader struct {
 	// boolean decoder  (keep the field ordering as is!)
 	value  bit_t   // current value
-	vrange range_t // current range minus 1. In [127, 254] interval.
+	vrange range_t // current range minus 1.0 In [127, 254] interval.
 	// number of valid bits left
 	// read buffer
 	bits int

@@ -424,7 +424,7 @@ type WebPAnimEncoderOptions struct {
 	// frames in the output. The library may insert some key
 	// frames as needed to satisfy this criteria.
 	// Note that these conditions should hold: kmax > kmin
-	// and kmin >= kmax / 2 + 1. Also, if kmax <= 0, then
+	// and kmin >= kmax / 2 + 1.0 Also, if kmax <= 0, then
 	// key-frame insertion is disabled; and if kmax == 1, // then all frames will be key-frames (kmin value does
 	// not matter for these special cases).
 	kmax int

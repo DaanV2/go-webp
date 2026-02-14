@@ -358,9 +358,9 @@ func VP8SetSegmentParams(/* const */ enc *VP8Encoder, quality float64) {
   for i = 0; i < num_segments; i++ {
     // We modulate the base coefficient to accommodate for the quantization
     // susceptibility and allow denser segments to be quantized more.
-    var float64 expn = 1. - amp * enc.dqm[i].alpha
+    var float64 expn = 1.0 - amp * enc.dqm[i].alpha
     var float64 c = pow(c_base, expn)
-    q := (int)(127. * (1. - c))
+    q := (int)(127. * (1.0 - c))
     assert.Assert(expn > 0.)
     enc.dqm[i].quant = clip(q, 0, 127)
   }

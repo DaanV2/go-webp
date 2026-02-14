@@ -130,7 +130,7 @@ func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heig
     var n uint64
     for s = min_s; s <= max_s; s++ {
       slot := q_level[s]
-      map[s] = (uint8)(inv_q_level[slot] + .5)
+      map[s] = (uint8)(inv_q_level[slot] + 0.5)
     }
     // Final pass.
     for n = 0; n < data_size; n++ {

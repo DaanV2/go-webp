@@ -81,7 +81,7 @@ func FastSLog2Slow_C(uint32 v) uint64 {
     return orig_v * (kLog2Table[v] + (log_cnt << LOG_2_PRECISION_BITS)) +
            correction
   } else {
-    return (uint64)(LOG_2_RECIPROCAL_FIXED_float64 * v * log(float64(v)) + .5)
+    return (uint64)(LOG_2_RECIPROCAL_FIXED_float64 * v * log(float64(v)) + 0.5)
   }
 }
 
@@ -111,7 +111,7 @@ func FastLog2Slow_C(uint32 v) uint32 {
     }
     return log_2
   } else {
-    return (uint32)(LOG_2_RECIPROCAL_FIXED_float64 * log((float64)v) + .5)
+    return (uint32)(LOG_2_RECIPROCAL_FIXED_float64 * log((float64)v) + 0.5)
   }
 }
 
