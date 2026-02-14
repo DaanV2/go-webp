@@ -45,7 +45,7 @@ func PaletteComponentDistance(v uint32) uint32 {
 // Note that the last & 0xff is a no-operation in the next statement, but
 // removed by most compilers and is here only for regularity of the code.
 func PaletteColorDistance(col1, col2 uint32 ) uint32 {
-  diff := VP8LSubPixels(col1, col2)
+  diff := dsp.VP8LSubPixels(col1, col2)
   kMoreWeightForRGBThanForAlpha := 9
   var score uint32
   score = PaletteComponentDistance((diff >> 0) & 0xff)
@@ -179,7 +179,7 @@ func PaletteHasNonMonotonousDeltas(palette *uint32 , num_colors int) int {
   var i int
   sign_found := 0x00
   for i = 0; i < num_colors; i++ {
-    diff := VP8LSubPixels(palette[i], predict)
+    diff := dsp.VP8LSubPixels(palette[i], predict)
     rd := (diff >> 16) & 0xff
     gd := (diff >> 8) & 0xff
     bd := (diff >> 0) & 0xff

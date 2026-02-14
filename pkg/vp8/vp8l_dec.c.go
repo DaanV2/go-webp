@@ -838,7 +838,7 @@ func ExtractPalettedAlphaRows(/* const */ dec *VP8LDecoder, last_row int) {
 }
 
 // cyclic rotation of pattern word
-func Rotate8b(uint32 V) uint32 {
+func Rotate8b(v uint32) uint32 {
 	return ((V & uint(0xff)) << 24) | (V >> 8)
 }
 

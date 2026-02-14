@@ -49,7 +49,7 @@ func Flatten(ptr *uint8, v int, stride int, size int) {
   }
 }
 
-func FlattenARGB(ptr *uint32, uint32 v, stride int, size int) {
+func FlattenARGB(ptr *uint32, v uint32, stride int, size int) {
   var x, y int
   for y = 0; y < size; y++ {
     for (x = 0; x < size; ++x) ptr[x] = v

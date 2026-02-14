@@ -80,7 +80,7 @@ Error:
   return ok
 }
 
-func GetLiteralCost(/* const */ m *CostModel, uint32 v) int64 {
+func GetLiteralCost(/* const */ m *CostModel, v uint32) int64 {
   return int64(m.alpha[v >> 24] + m.red[(v >> 16) & 0xff] +
          m.literal[(v >> 8) & 0xff] + m.blue[v & 0xff])
 }
@@ -94,14 +94,14 @@ func GetLengthCost(/* const */ m *CostModel, uint32 length) int64 {
   var code, extra_bits int
   VP8LPrefixEncodeBits(length, &code, &extra_bits)
   return int64(m.literal[VALUES_IN_BYTE + code] +
-         (int64(extra_bits)<< LOG_2_PRECISION_BITS))
+         (int64(extra_bits)<< dsp.LOG_2_PRECISION_BITS))
 }
 
 func GetDistanceCost(/* const */ m *CostModel, uint32 distance) int64 {
   int code, extra_bits
   VP8LPrefixEncodeBits(distance, &code, &extra_bits)
   return (int64)m.distance[code] +
-         (int64(extra_bits)<< LOG_2_PRECISION_BITS)
+         (int64(extra_bits)<< dsp.LOG_2_PRECISION_BITS)
 }
 
 func AddSingleLiteralWithCostModel(

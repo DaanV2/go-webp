@@ -21,7 +21,7 @@ import (
 )
 
 const HISTO_SIZE =(4 * 256)
-const kSpatialPredictorBias = 15 << constants.LOG_2_PRECISION_BITS
+const kSpatialPredictorBias = 15 << dsp.LOG_2_PRECISION_BITS
 const kPredLowEffort = 11
 const kMaskAlpha = 0xff000000
 const kNumPredModes = 14
@@ -35,9 +35,9 @@ const kNumPredModes = 14
 func PredictionCostBias(/* const */ counts [256]uint32, weight_0 uint64, exp_val uint64) int64 {
   significant_symbols := 256 >> 4
   exp_decay_factor := 6;  // has a scaling factor of 1/10
-  bits := (weight_0 * counts[0]) << constants.LOG_2_PRECISION_BITS
+  bits := (weight_0 * counts[0]) << dsp.LOG_2_PRECISION_BITS
   var i int
-  exp_val <<= constants.LOG_2_PRECISION_BITS
+  exp_val <<= dsp.LOG_2_PRECISION_BITS
   for i = 1; i < significant_symbols; i++ {
     bits += DivRound(exp_val * (counts[i] + counts[256 - i]), 100)
     exp_val = DivRound(exp_decay_factor * exp_val, 10)
@@ -193,7 +193,7 @@ func NearLossless(value uint32, predict uint32 , max_quantization int, max_diff 
   green_diff := 0
   var a, r, g, b uint8
   if (max_diff <= 2) {
-    return VP8LSubPixels(value, predict)
+    return dsp.VP8LSubPixels(value, predict)
   }
   quantization = max_quantization
   for (quantization >= max_diff) {
@@ -243,7 +243,7 @@ func GetResidual(width, height int, /*const*/ upper_row *uint32, /*const*/ curre
 
       if (max_quantization == 1 || mode == 0 || y == 0 || y == height - 1 ||
           x == 0 || x == width - 1) {
-        residual = VP8LSubPixels(current_row[x], predict)
+        residual = dsp.VP8LSubPixels(current_row[x], predict)
       } else {
         residual = NearLossless(current_row[x], predict, max_quantization, max_diffs[x], used_subtract_green)
         // Update the source image.
@@ -744,14 +744,14 @@ func GetPredictionCostCrossColorRed(argb *uint32, stride int, tile_width int, ti
   cur_diff := PredictionCostCrossColor(accumulated_red_histo, histo)
   if (uint8(green_to_red) == prev_x.green_to_red) {
     // favor keeping the areas locally similar
-    cur_diff -= 3 << constants.LOG_2_PRECISION_BITS
+    cur_diff -= 3 << dsp.LOG_2_PRECISION_BITS
   }
   if (uint8(green_to_red) == prev_y.green_to_red) {
     // favor keeping the areas locally similar
-    cur_diff -= 3 << constants.LOG_2_PRECISION_BITS
+    cur_diff -= 3 << dsp.LOG_2_PRECISION_BITS
   }
   if (green_to_red == 0) {
-    cur_diff -= 3 << constants.LOG_2_PRECISION_BITS
+    cur_diff -= 3 << dsp.LOG_2_PRECISION_BITS
   }
   return cur_diff
 }
@@ -791,25 +791,25 @@ static int64 GetPredictionCostCrossColorBlue(
   cur_diff = PredictionCostCrossColor(accumulated_blue_histo, histo)
   if (uint8(green_to_blue)== prev_x.green_to_blue) {
     // favor keeping the areas locally similar
-    cur_diff -= 3ll << LOG_2_PRECISION_BITS
+    cur_diff -= 3ll << dsp.LOG_2_PRECISION_BITS
   }
   if (uint8(green_to_blue)== prev_y.green_to_blue) {
     // favor keeping the areas locally similar
-    cur_diff -= 3ll << LOG_2_PRECISION_BITS
+    cur_diff -= 3ll << dsp.LOG_2_PRECISION_BITS
   }
   if (uint8(red_to_blue)== prev_x.red_to_blue) {
     // favor keeping the areas locally similar
-    cur_diff -= 3ll << LOG_2_PRECISION_BITS
+    cur_diff -= 3ll << dsp.LOG_2_PRECISION_BITS
   }
   if (uint8(red_to_blue)== prev_y.red_to_blue) {
     // favor keeping the areas locally similar
-    cur_diff -= 3ll << LOG_2_PRECISION_BITS
+    cur_diff -= 3ll << dsp.LOG_2_PRECISION_BITS
   }
   if (green_to_blue == 0) {
-    cur_diff -= 3ll << LOG_2_PRECISION_BITS
+    cur_diff -= 3ll << dsp.LOG_2_PRECISION_BITS
   }
   if (red_to_blue == 0) {
-    cur_diff -= 3ll << LOG_2_PRECISION_BITS
+    cur_diff -= 3ll << dsp.LOG_2_PRECISION_BITS
   }
   return cur_diff
 }

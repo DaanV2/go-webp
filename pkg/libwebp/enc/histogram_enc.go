@@ -252,7 +252,7 @@ func BitsEntropyRefine( /* const */ entropy *VP8LBitEntropy) uint64 {
 		// Let's mix in a bit of entropy to favor good clustering when
 		// distributions of these are combined.
 		if entropy.nonzeros == 2 {
-			return DivRound(99*(uint64)(entropy.sum<<LOG_2_PRECISION_BITS)+entropy.entropy, 100)
+			return DivRound(99*(uint64)(entropy.sum<<dsp.LOG_2_PRECISION_BITS)+entropy.entropy, 100)
 		}
 		// No matter what the entropy says, we cannot be better than min_limit
 		// with Huffman coding. I am mixing a bit of entropy into the
@@ -268,7 +268,7 @@ func BitsEntropyRefine( /* const */ entropy *VP8LBitEntropy) uint64 {
 	}
 
 	{
-		min_limit := uint64(2*entropy.sum-entropy.max_val) << LOG_2_PRECISION_BITS
+		min_limit := uint64(2*entropy.sum-entropy.max_val) << dsp.LOG_2_PRECISION_BITS
 		min_limit = DivRound(mix*min_limit+(1000-mix)*entropy.entropy, 1000)
 		return tenary.If(entropy.entropy < min_limit, min_limit, entropy.entropy)
 	}
@@ -287,11 +287,11 @@ func InitialHuffmanCost() uint64 {
 	// full length.
 	kHuffmanCodeOfHuffmanCodeSize := constants.CODE_LENGTH_CODES * 3
 	// Subtract a bias of 9.1.
-	return (kHuffmanCodeOfHuffmanCodeSize << LOG_2_PRECISION_BITS) - DivRound(uint64(91)<<LOG_2_PRECISION_BITS, 10)
+	return (kHuffmanCodeOfHuffmanCodeSize << dsp.LOG_2_PRECISION_BITS) - DivRound(uint64(91)<<dsp.LOG_2_PRECISION_BITS, 10)
 }
 
 // Finalize the Huffman cost based on streak numbers and length type (<3 or >=3)
-func FinalHuffmanCost( /* const */ stats *VP8LStreaks) uint64 {
+func FinalHuffmanCost( /* const */ stats *dsp.VP8LStreaks) uint64 {
 	// The constants in this function are empirical and got rounded from
 	// their original values in 1/8 when switched to 1/1024.
 	retval := InitialHuffmanCost()
@@ -306,7 +306,7 @@ func FinalHuffmanCost( /* const */ stats *VP8LStreaks) uint64 {
 	retval_extra += 1840 * stats.streaks[0][0]
 	// Originally 26/8.
 	retval_extra += 3360 * stats.streaks[1][0]
-	return retval + (uint64(retval_extra) << (LOG_2_PRECISION_BITS - 10))
+	return retval + (uint64(retval_extra) << (dsp.LOG_2_PRECISION_BITS - 10))
 }
 
 // Get the symbol entropy for the distribution 'population'.
@@ -353,11 +353,11 @@ func (histo *VP8LHistogram) GetPopulationInfo(index HistogramIndex) (population 
 // non-zero: both the zero-th one, or both the last one.
 // 'index' is the index of the symbol in the histogram (literal, red, blue,
 // alpha, distance).
-func GetCombinedEntropy( /* const */ h *VP8LHistogram1 /*const*/, h *VP8LHistogram2, HistogramIndex index) uint64 {
+func GetCombinedEntropy( /* const */ h1 *VP8LHistogram /*const*/, h2 *VP8LHistogram, index HistogramIndex) uint64 {
 	var stats dsp.VP8LStreaks
 	var bit_entropy dsp.VP8LBitEntropy
-	is_h1_used := h1.is_used[index]
-	is_h2_used := h2.is_used[index]
+	is_h1_used := h1.is_used[index] != 0
+	is_h2_used := h2.is_used[index] != 0
 	is_trivial := h1.trivial_symbol[index] != VP8L_NON_TRIVIAL_SYM && h1.trivial_symbol[index] == h2.trivial_symbol[index]
 
 	if is_trivial || !is_h1_used || !is_h2_used {
@@ -370,7 +370,7 @@ func GetCombinedEntropy( /* const */ h *VP8LHistogram1 /*const*/, h *VP8LHistogr
 
 	X := GetPopulationInfo(h1, index)
 	Y := GetPopulationInfo(h2, index)
-	VP8LGetCombinedEntropyUnrefined(X, Y, length, &bit_entropy, &stats)
+	dsp.VP8LGetCombinedEntropyUnrefined(X, Y, &bit_entropy, &stats)
 	return BitsEntropyRefine(&bit_entropy) + FinalHuffmanCost(&stats)
 }
 
@@ -379,12 +379,12 @@ func GetCombinedEntropy( /* const */ h *VP8LHistogram1 /*const*/, h *VP8LHistogr
 // Estimates the Entropy + Huffman + other block overhead size cost.
 func VP8LHistogramEstimateBits( /* const */ h *VP8LHistogram) uint64 {
 	var i int
-	cost := 0
+	var cost uint64 = 0
 	for i = 0; i < 5; i++ {
 		population := GetPopulationInfo(h, HistogramIndex(i))
-		cost += PopulationCost(population, length /*trivial_sym=*/, nil /*is_used=*/, nil)
+		cost += PopulationCost(population, nil, nil)
 	}
-	cost += ((uint64)(VP8LExtraCost(h.literal+constants.NUM_LITERAL_CODES, constants.NUM_LENGTH_CODES)+VP8LExtraCost(h.distance, constants.NUM_DISTANCE_CODES)) << LOG_2_PRECISION_BITS)
+	cost += (dsp.VP8LExtraCost(h.literal[constants.NUM_LITERAL_CODES:], constants.NUM_LENGTH_CODES) + dsp.VP8LExtraCost(h.distance, constants.NUM_DISTANCE_CODES)<<dsp.LOG_2_PRECISION_BITS)
 	return cost
 }
 

@@ -72,7 +72,7 @@ func AnalyzeEntropy( /* const */ argb []uint32, width, height, argb_stride int, 
 	for y = 0; y < height; y++ {
 		for x = 0; x < width; x++ {
 			pix := curr_row[x]
-			pix_diff := VP8LSubPixels(pix, pix_prev)
+			pix_diff := dsp.VP8LSubPixels(pix, pix_prev)
 			pix_prev = pix
 			if pix_diff == 0 || prev_row != nil && pix == prev_row[x] {
 				continue
@@ -133,7 +133,7 @@ func AnalyzeEntropy( /* const */ argb []uint32, width, height, argb_stride int, 
 		// We empirically estimate the cost of a compressed entry as 8 bits.
 		// The palette is differential-coded when compressed hence a much
 		// lower cost than generics.SizeOf(uint32)*8.
-		entropy[kPalette] += (palette_size * uint64(8)) << LOG_2_PRECISION_BITS
+		entropy[kPalette] += (palette_size * uint64(8)) << dsp.LOG_2_PRECISION_BITS
 
 		*min_entropy_ix = kDirect
 		for k = kDirect + 1; k <= last_mode_to_analyze; k++ {
@@ -1258,7 +1258,7 @@ func EncodePalette( /* const */ bw *VP8LBitWriter, low_effort int /*const*/, enc
 	assert.Assert(palette_size >= 1 && palette_size <= constants.MAX_PALETTE_SIZE)
 	VP8LPutBits(bw, encoded_palette_size-1, 8)
 	for i = encoded_palette_size - 1; i >= 1; i-- {
-		tmp_palette[i] = VP8LSubPixels(palette[i], palette[i-1])
+		tmp_palette[i] = dsp.VP8LSubPixels(palette[i], palette[i-1])
 	}
 	tmp_palette[0] = palette[0]
 	return EncodeImageNoHuffman(bw, tmp_palette, &enc.hash_chain, &enc.refs[0], encoded_palette_size, 1 /*quality=*/, 20, low_effort, enc.pic, percent_range, percent)
