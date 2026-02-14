@@ -249,7 +249,7 @@ const FANCY_UPSAMPLING = // undefined to remove fancy upsampling support
 
 // Convert a pair of y/u/v lines together to the output rgb/a colorspace.
 // bottom_y can be nil if only one line of output is needed (at top/bottom).
-typedef func (*WebPUpsampleLinePairFunc)(
+type WebPUpsampleLinePairFunc = func(
     const top_y *uint8, /*const*/ bottom_y *uint8, /*const*/ top_u *uint8, /*const*/ top_v *uint8, /*const*/ cur_u *uint8, /*const*/ cur_v *uint8, top_dst *uint8, bottom_dst *uint8, len int);
 
 #ifdef FANCY_UPSAMPLING
@@ -260,7 +260,7 @@ extern WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
 #endif  // FANCY_UPSAMPLING
 
 // Per-row point-sampling methods.
-typedef func (*WebPSamplerRowFunc)(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int);
+type WebPSamplerRowFunc = func(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int);
 // Generic function to apply 'WebPSamplerRowFunc' to the whole plane:
 func WebPSamplerProcessPlane(/* const */ y *uint8, y_stride int, /*const*/ u *uint8, /*const*/ v *uint8, uv_stride int, dst *uint8, dst_stride int, width, height int, WebPSamplerRowFunc func);
 
@@ -317,7 +317,7 @@ struct WebPRescaler;
 // Import a row of data and save its contribution in the rescaler.
 // 'channel' denotes the channel number to be imported. 'Expand' corresponds to
 // the wrk.x_expand case. Otherwise, 'Shrink' is to be used.
-typedef func (*WebPRescalerImportRowFunc)(
+type WebPRescalerImportRowFunc = func(
     struct /* const */ wrk *WebPRescaler, /*const*/ src *uint8);
 
 extern WebPRescalerImportRowFunc WebPRescalerImportRowExpand;
@@ -326,7 +326,7 @@ extern WebPRescalerImportRowFunc WebPRescalerImportRowShrink;
 // Export one row (starting at x_out position) from rescaler.
 // 'Expand' corresponds to the wrk.y_expand case.
 // Otherwise 'Shrink' is to be used
-typedef func (*WebPRescalerExportRowFunc)(struct const wrk *WebPRescaler);
+type WebPRescalerExportRowFunc = func(struct const wrk *WebPRescaler);
 extern WebPRescalerExportRowFunc WebPRescalerExportRowExpand;
 extern WebPRescalerExportRowFunc WebPRescalerExportRowShrink;
 
@@ -426,10 +426,10 @@ const (  // Filter types.
   WEBP_FILTER_LAST  = WEBP_FILTER_GRADIENT + 1,  // end marker
 )
 
-typedef func (*WebPFilterFunc)(/* const */ in *uint8, width, height int, stride int, out *uint8);
+type WebPFilterFunc = func(/* const */ in *uint8, width, height int, stride int, out *uint8);
 // In-place un-filtering.
 // Warning! 'prev_line' pointer can be equal to 'cur_line' or 'preds'.
-typedef func (*WebPUnfilterFunc)(/* const */ prev_line *uint8, /*const*/ preds *uint8, cur_line *uint8, width int);
+type WebPUnfilterFunc = func(/* const */ prev_line *uint8, /*const*/ preds *uint8, cur_line *uint8, width int);
 
 // Filter the given data using the given predictor.
 // 'in' corresponds to a 2-dimensional pixel array of size (stride * height)

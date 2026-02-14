@@ -791,7 +791,7 @@ func GetMetaIndex(/* const */ image *uint32, xsize int, bits int, x int, y int) 
 
 // If 'wait_for_biggest_batch' is true, wait for enough data to fill the
 // argb_cache as much as possible (usually NUM_ARGB_CACHE_ROWS).
-// C: typedef func (*ProcessRowsFunc)(/* const */ dec *VP8LDecoder, row int, wait_for_biggest_batch int)
+type ProcessRowsFunc = func(/* const */ dec *VP8LDecoder, row int, wait_for_biggest_batch int)
 
 func ApplyInverseTransforms(/* const */ dec *VP8LDecoder, start_row int, num_rows int , /*const*/ rows *uint32) {
   n := dec.next_transform
