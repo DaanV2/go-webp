@@ -334,7 +334,7 @@ func AddVectorEq_C(/* const */ a *uint32, out *uint32, size int) {
 
 func PredictorSub0_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
-  for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], ARGB_BLACK)
+  for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], constants.ARGB_BLACK)
   _ = upper
 }
 

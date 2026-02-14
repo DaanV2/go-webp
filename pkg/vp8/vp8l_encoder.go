@@ -25,14 +25,14 @@ const NUM_BUCKETS = histograms.NUM_BUCKETS
 
 // Maximum number of histogram images (sub-blocks).
 const MAX_HUFF_IMAGE_SIZE = 2600
-const MAX_HUFFMAN_BITS = (webp.MIN_HUFFMAN_BITS + (1 << webp.NUM_HUFFMAN_BITS) - 1)
+const MAX_HUFFMAN_BITS = (webp.constants.MIN_HUFFMAN_BITS + (1 << webp.constants.NUM_HUFFMAN_BITS) - 1)
 
 // Empirical value for which it becomes too computationally expensive to
 // compute the best predictor image.
 const MAX_PREDICTOR_IMAGE_SIZE = (1 << 14)
 
 //go:fix inline
-const MAX_PALETTE_SIZE = constants.MAX_PALETTE_SIZE
+const constants.MAX_PALETTE_SIZE = constants.MAX_PALETTE_SIZE
 
 func AddSingleSubGreen(p uint32, r, b histograms.HistogramBuckets) {
 	green := p >> 8 // The upper bits are masked away later.
@@ -188,7 +188,7 @@ func ClampBits(width, height int, bits int, min_bits int, max_bits int, image_si
 func GetHistoBits(int method, use_palette int, width, height int) int {
 	// Make tile size a function of encoding method (Range: 0 to 6).
 	histo_bits := tenary.If(use_palette, 9, 7) - method
-	return ClampBits(width, height, histo_bits, MIN_HUFFMAN_BITS, MAX_HUFFMAN_BITS, MAX_HUFF_IMAGE_SIZE)
+	return ClampBits(width, height, histo_bits, constants.MIN_HUFFMAN_BITS, MAX_HUFFMAN_BITS, MAX_HUFF_IMAGE_SIZE)
 }
 
 func GetTransformBits(int method, histo_bits int) int {
@@ -234,7 +234,7 @@ func EncoderAnalyze( /* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIG
 
 	// Check whether a palette is possible.
 	enc.palette_size = GetColorPalette(pic, enc.palette_sorted)
-	use_palette = (enc.palette_size <= MAX_PALETTE_SIZE)
+	use_palette = (enc.palette_size <= constants.MAX_PALETTE_SIZE)
 	if !use_palette {
 		enc.palette_size = 0
 	}
@@ -356,7 +356,7 @@ func GetHuffBitLengthsAndCodes( /* const */ histogram_image *VP8LHistogramSet /*
 		assert.Assert(histo != nil)
 		for k = 0; k < 5; k++ {
 			num_symbols := tenary.If(k == 0, VP8LHistogramNumCodes(histo.palette_code_bits),
-				tenary.If(k == 4, NUM_DISTANCE_CODES, 256))
+				tenary.If(k == 4, constants.NUM_DISTANCE_CODES, 256))
 			codes[k].num_symbols = num_symbols
 			total_length_size += num_symbols
 		}
@@ -410,11 +410,11 @@ End:
 func StoreHuffmanTreeOfHuffmanTreeToBitMask( /* const */ bw *VP8LBitWriter /* const */, code_length_bitdepth *uint8) {
 	// RFC 1951 will calm you down if you are worried about this funny sequence.
 	// This sequence is tuned from that, but more weighted for lower symbol count, // and more spiking histograms.
-	kStorageOrder = [CODE_LENGTH_CODES]uint8{
+	kStorageOrder = [constants.CODE_LENGTH_CODES]uint8{
 		17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
 	var i int
 	// Throw away trailing zeros:
-	codes_to_store := CODE_LENGTH_CODES
+	codes_to_store := constants.CODE_LENGTH_CODES
 	for ; codes_to_store > 4; codes_to_store-- {
 		if code_length_bitdepth[kStorageOrder[codes_to_store-1]] != 0 {
 			break
@@ -465,20 +465,20 @@ func StoreHuffmanTreeToBitMask( /* const */ bw *VP8LBitWriter /* const */, token
 
 // 'huff_tree' and 'tokens' are pre-alloacted buffers.
 func StoreFullHuffmanCode( /* const */ bw *VP8LBitWriter /* const */, huff_tree *huffman.HuffmanTree /* const */, tokens *huffman.HuffmanTreeToken /* const */, tree *huffman.HuffmanTreeCode) {
-	var code_length_bitdepth [CODE_LENGTH_CODES]uint8 = [CODE_LENGTH_CODES]uint8{0}
-	var code_length_bitdepth_symbols [CODE_LENGTH_CODES]uint16 = [CODE_LENGTH_CODES]uint16{0}
+	var code_length_bitdepth [constants.CODE_LENGTH_CODES]uint8 = [constants.CODE_LENGTH_CODES]uint8{0}
+	var code_length_bitdepth_symbols [constants.CODE_LENGTH_CODES]uint16 = [constants.CODE_LENGTH_CODES]uint16{0}
 	max_tokens := tree.num_symbols
 	var num_tokens int
 	var huffman_code HuffmanTreeCode
-	huffman_code.num_symbols = CODE_LENGTH_CODES
+	huffman_code.num_symbols = constants.CODE_LENGTH_CODES
 	huffman_code.code_lengths = code_length_bitdepth
 	huffman_code.codes = code_length_bitdepth_symbols
 
 	VP8LPutBits(bw, 0, 1)
 	num_tokens = VP8LCreateCompressedHuffmanTree(tree, tokens, max_tokens)
 	{
-		var histogram [CODE_LENGTH_CODES]uint32 = [CODE_LENGTH_CODES]uint32{0}
-		var buf_rle [CODE_LENGTH_CODES]uint8 = [CODE_LENGTH_CODES]uint8{0}
+		var histogram [constants.CODE_LENGTH_CODES]uint32 = [constants.CODE_LENGTH_CODES]uint32{0}
+		var buf_rle [constants.CODE_LENGTH_CODES]uint8 = [constants.CODE_LENGTH_CODES]uint8{0}
 		var i int
 		for i = 0; i < num_tokens; i++ {
 			histogram++
@@ -607,7 +607,7 @@ func StoreImageToBitMask( /* const */ bw *VP8LBitWriter, width int, histo_bits i
 			}
 		} else if PixOrCopyIsCacheIdx(v) {
 			code := PixOrCopyCacheIdx(v)
-			literal_ix := 256 + NUM_LENGTH_CODES + code
+			literal_ix := 256 + constants.NUM_LENGTH_CODES + code
 			WriteHuffmanCode(bw, codes, literal_ix)
 		} else {
 			var bits, n_bits int
@@ -649,12 +649,12 @@ func EncodeImageNoHuffman( /* const */ bw *VP8LBitWriter /*const*/, argb *uint32
 	cache_bits := 0
 	var histogram_image *VP8LHistogramSet = nil
 	//   var huff_tree *huffman.HuffmanTree = (*huffman.HuffmanTree)WebPSafeMalloc(
-	//       uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree))
+	//       uint64(3) * constants.CODE_LENGTH_CODES, sizeof(*huff_tree))
 	//   if (huff_tree == nil) {
 	//     pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 	//     goto Error
 	//   }
-	huff_tree := make([]HuffmanTree, 3*CODE_LENGTH_CODES)
+	huff_tree := make([]HuffmanTree, 3*constants.CODE_LENGTH_CODES)
 
 	// Calculate backward references from ARGB image.
 	if !VP8LHashChainFill(hash_chain, quality, argb, width, height, low_effort, pic, percent_range/2, percent) {
@@ -734,9 +734,9 @@ func EncodeImageInternal(
 	tokens * huffman.HuffmanTreeToken = nil
 	huffman_codes * huffman.HuffmanTreeCode = nil
 
-	//   var huff_tree *huffman.HuffmanTree = (*huffman.HuffmanTree)WebPSafeMalloc(uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree))
+	//   var huff_tree *huffman.HuffmanTree = (*huffman.HuffmanTree)WebPSafeMalloc(uint64(3) * constants.CODE_LENGTH_CODES, sizeof(*huff_tree))
 	//   var histogram_argb *uint32 = (*uint32)WebPSafeMalloc(histogram_image_xysize, sizeof(*histogram_argb))
-	huff_tree := make([]HuffmanTree, 3*CODE_LENGTH_CODES)
+	huff_tree := make([]HuffmanTree, 3*constants.CODE_LENGTH_CODES)
 	histogram_argb := make([]uint32, histogram_image_xysize)
 
 	var sub_configs_idx int
@@ -745,7 +745,7 @@ func EncodeImageInternal(
 	var hdr_size_tmp int
 	var hash_chain_histogram VP8LHashChain // histogram image hash chain
 	bw_size_best := ~uint64(0)
-	assert.Assert(histogram_bits_in >= MIN_HUFFMAN_BITS)
+	assert.Assert(histogram_bits_in >= constants.MIN_HUFFMAN_BITS)
 	assert.Assert(histogram_bits_in <= MAX_HUFFMAN_BITS)
 	assert.Assert(hdr_size != nil)
 	assert.Assert(data_size != nil)
@@ -924,24 +924,24 @@ Error:
 // Transforms
 
 func ApplySubtractGreen( /* const */ enc *VP8LEncoder, width, height int /*const*/, bw *VP8LBitWriter) {
-	VP8LPutBits(bw, TRANSFORM_PRESENT, 1)
+	VP8LPutBits(bw, constants.TRANSFORM_PRESENT, 1)
 	VP8LPutBits(bw, SUBTRACT_GREEN_TRANSFORM, 2)
 	VP8LSubtractGreenFromBlueAndRed(enc.argb, width*height)
 }
 
 func ApplyPredictFilter( /* const */ enc *VP8LEncoder, width, height int, quality int, low_effort int, used_subtract_green int /*const*/, bw *VP8LBitWriter, percent_range int /*const*/, percent *int /*const*/, best_bits *int) int {
 	near_lossless_strength := tenary.If(enc.use_palette, 100, enc.config.NearLossless)
-	max_bits := ClampBits(width, height, enc.predictor_transform_bits, MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
+	max_bits := ClampBits(width, height, enc.predictor_transform_bits, constants.MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
 	min_bits := ClampBits(
-		width, height, max_bits-2*tenary.If(enc.config.Method > 4, enc.config.Method-4, 0), MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
+		width, height, max_bits-2*tenary.If(enc.config.Method > 4, enc.config.Method-4, 0), constants.MIN_TRANSFORM_BITS, MAX_TRANSFORM_BITS, MAX_PREDICTOR_IMAGE_SIZE)
 
 	if !VP8LResidualImage(width, height, min_bits, max_bits, low_effort, enc.argb, enc.argb_scratch, enc.transform_data, near_lossless_strength, enc.config.Exact, used_subtract_green, enc.pic, percent_range/2, percent, best_bits) {
 		return 0
 	}
-	VP8LPutBits(bw, TRANSFORM_PRESENT, 1)
+	VP8LPutBits(bw, constants.TRANSFORM_PRESENT, 1)
 	VP8LPutBits(bw, PREDICTOR_TRANSFORM, 2)
-	assert.Assert(*best_bits >= MIN_TRANSFORM_BITS && *best_bits <= MAX_TRANSFORM_BITS)
-	VP8LPutBits(bw, *best_bits-MIN_TRANSFORM_BITS, NUM_TRANSFORM_BITS)
+	assert.Assert(*best_bits >= constants.MIN_TRANSFORM_BITS && *best_bits <= MAX_TRANSFORM_BITS)
+	VP8LPutBits(bw, *best_bits-constants.MIN_TRANSFORM_BITS, constants.NUM_TRANSFORM_BITS)
 	return EncodeImageNoHuffman(
 		bw, enc.transform_data, &enc.hash_chain, &enc.refs[0], VP8LSubSampleSize(width, *best_bits), VP8LSubSampleSize(height, *best_bits), quality, low_effort, enc.pic, percent_range-percent_range/2, percent)
 }
@@ -952,10 +952,10 @@ func ApplyCrossColorFilter( /* const */ enc *VP8LEncoder, width, height int, qua
 	if !VP8LColorSpaceTransform(width, height, min_bits, quality, enc.argb, enc.transform_data, enc.pic, percent_range/2, percent, best_bits) {
 		return 0
 	}
-	VP8LPutBits(bw, TRANSFORM_PRESENT, 1)
+	VP8LPutBits(bw, constants.TRANSFORM_PRESENT, 1)
 	VP8LPutBits(bw, CROSS_COLOR_TRANSFORM, 2)
-	assert.Assert(*best_bits >= MIN_TRANSFORM_BITS && *best_bits <= MAX_TRANSFORM_BITS)
-	VP8LPutBits(bw, *best_bits-MIN_TRANSFORM_BITS, NUM_TRANSFORM_BITS)
+	assert.Assert(*best_bits >= constants.MIN_TRANSFORM_BITS && *best_bits <= MAX_TRANSFORM_BITS)
+	VP8LPutBits(bw, *best_bits-constants.MIN_TRANSFORM_BITS, constants.NUM_TRANSFORM_BITS)
 	return EncodeImageNoHuffman(
 		bw, enc.transform_data, &enc.hash_chain, &enc.refs[0], VP8LSubSampleSize(width, *best_bits), VP8LSubSampleSize(height, *best_bits), quality, low_effort, enc.pic, percent_range-percent_range/2, percent)
 }
@@ -963,10 +963,10 @@ func ApplyCrossColorFilter( /* const */ enc *VP8LEncoder, width, height int, qua
 // -----------------------------------------------------------------------------
 
 func WriteRiffHeader( /* const */ pic *picture.Picture, uint64 riff_size, uint64 vp8l_size) int {
-	riff := [RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE + VP8L_SIGNATURE_SIZE]uint8{
-		'R', 'I', 'F', 'F', 0, 0, 0, 0, 'W', 'E', 'B', 'P', 'V', 'P', '8', 'L', 0, 0, 0, 0, VP8L_MAGIC_BYTE}
-	PutLE32(riff+TAG_SIZE, uint32(riff_size))
-	PutLE32(riff+RIFF_HEADER_SIZE+TAG_SIZE, uint32(vp8l_size))
+	riff := [constants.RIFF_HEADER_SIZE + constants.CHUNK_HEADER_SIZE + constants.VP8L_SIGNATURE_SIZE]uint8{
+		'R', 'I', 'F', 'F', 0, 0, 0, 0, 'W', 'E', 'B', 'P', 'V', 'P', '8', 'L', 0, 0, 0, 0, constants.VP8L_MAGIC_BYTE}
+	PutLE32(riff+constants.TAG_SIZE, uint32(riff_size))
+	PutLE32(riff+constants.RIFF_HEADER_SIZE+constants.TAG_SIZE, uint32(vp8l_size))
 	return pic.writer(riff, sizeof(riff), pic)
 }
 
@@ -975,23 +975,23 @@ func WriteImageSize( /* const */ pic *picture.Picture /*const*/, bw *VP8LBitWrit
 	height := pic.height - 1
 	assert.Assert(width < WEBP_MAX_DIMENSION && height < WEBP_MAX_DIMENSION)
 
-	VP8LPutBits(bw, width, VP8L_IMAGE_SIZE_BITS)
-	VP8LPutBits(bw, height, VP8L_IMAGE_SIZE_BITS)
+	VP8LPutBits(bw, width, constants.VP8L_IMAGE_SIZE_BITS)
+	VP8LPutBits(bw, height, constants.VP8L_IMAGE_SIZE_BITS)
 	return !bw.error
 }
 
 func WriteRealAlphaAndVersion( /* const */ bw *VP8LBitWriter, has_alpha int) int {
 	VP8LPutBits(bw, has_alpha, 1)
-	VP8LPutBits(bw, VP8L_VERSION, VP8L_VERSION_BITS)
+	VP8LPutBits(bw, constants.VP8L_VERSION, constants.VP8L_VERSION_BITS)
 	return !bw.error
 }
 
 func WriteImage( /* const */ pic *picture.Picture /*const*/, bw *VP8LBitWriter /*const*/, coded_size *uint64) int {
 	var webpll_data *uint8 = VP8LBitWriterFinish(bw)
 	webpll_size := VP8LBitWriterNumBytes(bw)
-	vp8l_size := VP8L_SIGNATURE_SIZE + webpll_size
+	vp8l_size := constants.VP8L_SIGNATURE_SIZE + webpll_size
 	pad := vp8l_size & 1
-	riff_size := TAG_SIZE + CHUNK_HEADER_SIZE + vp8l_size + pad
+	riff_size := constants.TAG_SIZE + constants.CHUNK_HEADER_SIZE + vp8l_size + pad
 	*coded_size = 0
 
 	if bw.error {
@@ -1009,7 +1009,7 @@ func WriteImage( /* const */ pic *picture.Picture /*const*/, bw *VP8LBitWriter /
 			return pic.SetEncodingError(picture.ENC_ERROR_BAD_WRITE)
 		}
 	}
-	*coded_size = CHUNK_HEADER_SIZE + riff_size
+	*coded_size = constants.CHUNK_HEADER_SIZE + riff_size
 	return 1
 }
 
@@ -1032,7 +1032,7 @@ func AllocateTransformBuffer( /* const */ enc *VP8LEncoder, width, height int) i
 	// TODO(skal): Clean up by using arithmetic in bytes instead of words.
 	argb_scratch_size := 0
 	transform_data_size := tenary.If(enc.use_predict || enc.use_cross_color,
-		uint64(VP8LSubSampleSize)(width, MIN_TRANSFORM_BITS)*VP8LSubSampleSize(height, MIN_TRANSFORM_BITS), 0)
+		uint64(VP8LSubSampleSize)(width, constants.MIN_TRANSFORM_BITS)*VP8LSubSampleSize(height, constants.MIN_TRANSFORM_BITS), 0)
 	// C: max_alignment_in_words := (WEBP_ALIGN_CST + sizeof(uint32) - 1) / sizeof(uint32)
 	mem_size := image_size + max_alignment_in_words +
 		argb_scratch_size + max_alignment_in_words +
@@ -1201,8 +1201,8 @@ func ApplyPalette( /* const */ src []uint32, src_stride uint32, dst *uint32, dst
 		} else if i == 2 {
 			APPLY_PALETTE_FOR(buffer[ApplyPaletteHash2(pix)])
 		} else {
-			var idx_map uint32[MAX_PALETTE_SIZE]
-			var palette_sorted uint32[MAX_PALETTE_SIZE]
+			var idx_map uint32[constants.MAX_PALETTE_SIZE]
+			var palette_sorted uint32[constants.MAX_PALETTE_SIZE]
 			PrepareMapToPalette(palette, palette_size, palette_sorted, idx_map)
 			APPLY_PALETTE_FOR(
 				idx_map[SearchColorNoIdx(palette_sorted, pix, palette_size)])
@@ -1246,16 +1246,16 @@ func MapImageFromPalette( /* const */ enc *VP8LEncoder) int {
 // Save palette[] to bitstream.
 func EncodePalette( /* const */ bw *VP8LBitWriter, low_effort int /*const*/, enc *VP8LEncoder, percent_range int /*const*/, percent *int) int {
 	var i int
-	var tmp_palette uint32[MAX_PALETTE_SIZE]
+	var tmp_palette uint32[constants.MAX_PALETTE_SIZE]
 	palette_size := enc.palette_size
 	var palette *uint32 = enc.palette
 	// If the last element is 0, do not store it and count on automatic palette
 	// 0-filling. This can only happen if there is no pixel packing, hence if
 	// there are strictly more than 16 colors (after 0 is removed).
 	encoded_palette_size := tenary.If(enc.palette[palette_size-1] == 0 && palette_size > 17, palette_size-1, palette_size)
-	VP8LPutBits(bw, TRANSFORM_PRESENT, 1)
+	VP8LPutBits(bw, constants.TRANSFORM_PRESENT, 1)
 	VP8LPutBits(bw, COLOR_INDEXING_TRANSFORM, 2)
-	assert.Assert(palette_size >= 1 && palette_size <= MAX_PALETTE_SIZE)
+	assert.Assert(palette_size >= 1 && palette_size <= constants.MAX_PALETTE_SIZE)
 	VP8LPutBits(bw, encoded_palette_size-1, 8)
 	for i = encoded_palette_size - 1; i >= 1; i-- {
 		tmp_palette[i] = VP8LSubPixels(palette[i], palette[i-1])
@@ -1427,7 +1427,7 @@ func EncodeStreamHook(input *StreamEncodeContext, data *void2) int {
 			remaining_percent -= percent_range
 		}
 
-		VP8LPutBits(bw, !TRANSFORM_PRESENT, 1) // No more transforms.
+		VP8LPutBits(bw, !constants.TRANSFORM_PRESENT, 1) // No more transforms.
 
 		// -------------------------------------------------------------------------
 		// Encode and write the transformed image.

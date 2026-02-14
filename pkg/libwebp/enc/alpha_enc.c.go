@@ -115,9 +115,9 @@ func EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter,
 
   assert.Assert(uint64(data_size)== uint64(width)* height);  // as per spec
   assert.Assert(filter >= 0 && filter < WEBP_FILTER_LAST)
-  assert.Assert(method >= ALPHA_NO_COMPRESSION)
-  assert.Assert(method <= ALPHA_LOSSLESS_COMPRESSION)
-  assert.Assert(sizeof(header) == ALPHA_HEADER_LEN)
+  assert.Assert(method >= constants.ALPHA_NO_COMPRESSION)
+  assert.Assert(method <= constants.ALPHA_LOSSLESS_COMPRESSION)
+  assert.Assert(sizeof(header) == constants.ALPHA_HEADER_LEN)
 
   filter_func = WebPFilters[filter]
   if (filter_func != nil) {
@@ -127,7 +127,7 @@ func EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter,
     alpha_src = data
   }
 
-  if (method != ALPHA_NO_COMPRESSION) {
+  if (method != constants.ALPHA_NO_COMPRESSION) {
     ok = VP8LBitWriterInit(&tmp_bw, data_size >> 3)
     ok = ok && EncodeLossless(alpha_src, width, height, effort_level, !reduce_levels, &tmp_bw, &result.stats)
     if (ok) {
@@ -139,7 +139,7 @@ func EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter,
       output_size = VP8LBitWriterNumBytes(&tmp_bw)
       if (output_size > data_size) {
         // compressed size is larger than source! Revert to uncompressed mode.
-        method = ALPHA_NO_COMPRESSION
+        method = constants.ALPHA_NO_COMPRESSION
       }
     } else {
       stdlib.Memset(&result.bw, 0, sizeof(result.bw))
@@ -147,7 +147,7 @@ func EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter,
     }
   }
 
-  if (method == ALPHA_NO_COMPRESSION) {
+  if (method == constants.ALPHA_NO_COMPRESSION) {
     output = alpha_src
     output_size = data_size
     ok = 1
@@ -155,10 +155,10 @@ func EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter,
 
   // Emit final result.
   header = method | (filter << 2)
-  if reduce_levels { header |= ALPHA_PREPROCESSED_LEVELS << 4 }
+  if reduce_levels { header |= constants.ALPHA_PREPROCESSED_LEVELS << 4 }
 
-  if !VP8BitWriterInit(&result.bw, ALPHA_HEADER_LEN + output_size) { ok = 0 }
-  ok = ok && VP8BitWriterAppend(&result.bw, &header, ALPHA_HEADER_LEN)
+  if !VP8BitWriterInit(&result.bw, constants.ALPHA_HEADER_LEN + output_size) { ok = 0 }
+  ok = ok && VP8BitWriterAppend(&result.bw, &header, constants.ALPHA_HEADER_LEN)
   ok = ok && VP8BitWriterAppend(&result.bw, output, output_size)
 
   ok = ok && !result.bw.error
@@ -289,11 +289,11 @@ func EncodeAlpha(/* const */ enc *vp8.VP8Encoder, quality int, method int, filte
     return pic.SetEncodingError(picture.ENC_ERROR_INVALID_CONFIGURATION)
   }
 
-  if (method < ALPHA_NO_COMPRESSION || method > ALPHA_LOSSLESS_COMPRESSION) {
+  if (method < constants.ALPHA_NO_COMPRESSION || method > constants.ALPHA_LOSSLESS_COMPRESSION) {
     return pic.SetEncodingError(picture.ENC_ERROR_INVALID_CONFIGURATION)
   }
 
-  if (method == ALPHA_NO_COMPRESSION) {
+  if (method == constants.ALPHA_NO_COMPRESSION) {
     // Don't filter, as filtering will make no impact on compressed size.
     filter = WEBP_FILTER_NONE
   }

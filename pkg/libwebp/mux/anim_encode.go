@@ -209,7 +209,7 @@ func WebPAnimEncoder(
   var enc *WebPAnimEncoder
 
   if (width <= 0 || height <= 0 ||
-      (width * uint64(height)) >= MAX_IMAGE_AREA) {
+      (width * uint64(height)) >= constants.MAX_IMAGE_AREA) {
     return nil
   }
 
@@ -950,11 +950,11 @@ func IncreasePreviousDuration(/* const */ enc *WebPAnimEncoder, duration int) in
   assert.Assert(enc.count >= 1)
   assert.Assert(!prev_enc_frame.is_key_frame ||
          prev_enc_frame.sub_frame.duration == prev_enc_frame.key_frame.duration)
-  assert.Assert(prev_enc_frame.sub_frame.duration == (prev_enc_frame.sub_frame.duration & (MAX_DURATION - 1)))
-  assert.Assert(duration == (duration & (MAX_DURATION - 1)))
+  assert.Assert(prev_enc_frame.sub_frame.duration == (prev_enc_frame.sub_frame.duration & (constants.MAX_DURATION - 1)))
+  assert.Assert(duration == (duration & (constants.MAX_DURATION - 1)))
 
   new_duration = prev_enc_frame.sub_frame.duration + duration
-  if (new_duration >= MAX_DURATION) {  // Special case.
+  if (new_duration >= constants.MAX_DURATION) {  // Special case.
     // Separate out previous frame from earlier merged frames to afunc overflow.
     // We add a 1x1 transparent frame for the previous frame, with blending on.
     var rect FrameRectangle  = {0, 0, 1, 1}
@@ -1377,7 +1377,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp 
   if (!enc.is_first_frame) {
     // Make sure timestamps are non-decreasing (integer wrap-around is OK).
     prev_frame_duration := uint32(timestamp)- enc.prev_timestamp
-    if (prev_frame_duration >= MAX_DURATION) {
+    if (prev_frame_duration >= constants.MAX_DURATION) {
       if (frame != nil) {
         frame.ErrorCode = ENC_ERROR_INVALID_CONFIGURATION
       }
@@ -1388,7 +1388,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp 
       return 0
     }
     // IncreasePreviousDuration() may add a frame to afunc exceeding
-    // MAX_DURATION which could cause CacheFrame() to over read 'encoded_frames'
+    // constants.MAX_DURATION which could cause CacheFrame() to over read 'encoded_frames'
     // before the next flush.
     if (enc.count == enc.size && !FlushFrames(enc)) {
       return 0

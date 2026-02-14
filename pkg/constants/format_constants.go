@@ -7,11 +7,6 @@ package constants
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-//  Internal header for constants related to WebP file format.
-//
-// Author: Urvang (urvang@google.com)
 
 // Create fourcc of the chunk from the chunk tag characters.
 func MKFOURCC(a, b, c, d uint32) uint32 {

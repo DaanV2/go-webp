@@ -62,15 +62,15 @@ const (
 )
 
 var kAlphabetSize = [constants.HUFFMAN_CODES_PER_META_CODE]uint16{
-    NUM_LITERAL_CODES + NUM_LENGTH_CODES, NUM_LITERAL_CODES, NUM_LITERAL_CODES, NUM_LITERAL_CODES, NUM_DISTANCE_CODES,
+    constants.NUM_LITERAL_CODES + constants.NUM_LENGTH_CODES, constants.NUM_LITERAL_CODES, constants.NUM_LITERAL_CODES, constants.NUM_LITERAL_CODES, constants.NUM_DISTANCE_CODES,
 }
 
 var kLiteralMap = [constants.HUFFMAN_CODES_PER_META_CODE]uint8{0, 1, 1, 1, 0}
 
-const NUM_CODE_LENGTH_CODES = 19
+const NUM_constants.CODE_LENGTH_CODES = 19
 const CODE_TO_PLANE_CODES =120
 
-var kCodeLengthCodeOrder = [NUM_CODE_LENGTH_CODES]uint8{
+var kCodeLengthCodeOrder = [NUM_constants.CODE_LENGTH_CODES]uint8{
     17, 18, 0, 1, 2, 3, 4, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
 
 var kCodeToPlane = [CODE_TO_PLANE_CODES]uint8{
@@ -105,16 +105,16 @@ func DecodeImageStream(xsize int , ysize int , is_level0 int, /* const */ dec *V
 
 // Returns true if the next byte(s) in data is a VP8L signature.
 func VP8LCheckSignature(/* const */  data *uint8 , size uint64) int {
-  return (size >= VP8L_FRAME_HEADER_SIZE && data[0] == VP8L_MAGIC_BYTE &&
+  return (size >= constants.VP8L_FRAME_HEADER_SIZE && data[0] == constants.VP8L_MAGIC_BYTE &&
           (data[4] >> 5) == 0);  // version
 }
 
 func ReadImageInfo(/* const */ br *VP8LBitReader, /* const */ width *int, /* const */ height *int, /* const */ has_alpha *int) int {
-  if VP8LReadBits(br, 8) != VP8L_MAGIC_BYTE {return 0}
-  *width = VP8LReadBits(br, VP8L_IMAGE_SIZE_BITS) + 1
-  *height = VP8LReadBits(br, VP8L_IMAGE_SIZE_BITS) + 1
+  if VP8LReadBits(br, 8) != constants.VP8L_MAGIC_BYTE {return 0}
+  *width = VP8LReadBits(br, constants.VP8L_IMAGE_SIZE_BITS) + 1
+  *height = VP8LReadBits(br, constants.VP8L_IMAGE_SIZE_BITS) + 1
   *has_alpha = VP8LReadBits(br, 1)
-  if VP8LReadBits(br, VP8L_VERSION_BITS) != 0 {return 0}
+  if VP8LReadBits(br, constants.VP8L_VERSION_BITS) != 0 {return 0}
   return !br.eos
 }
 
@@ -122,7 +122,7 @@ func ReadImageInfo(/* const */ br *VP8LBitReader, /* const */ width *int, /* con
 // width, height and alpha. Returns 0 in case of formatting error.
 // width/height/has_alpha can be passed nil.
 func VP8LGetInfo(/* const */ data *uint8, data_size uint64 , /* const */ width *int, /* const */ height *int, /* const */ has_alpha *int) int {
-  if data == nil || data_size < VP8L_FRAME_HEADER_SIZE {
+  if data == nil || data_size < constants.VP8L_FRAME_HEADER_SIZE {
     return 0;  // not enough data
   } else if !VP8LCheckSignature(data, data_size) {
     return 0;  // bad signature
@@ -188,7 +188,7 @@ func ReadSymbol(/* const */ table *huffman.HuffmanCode, /*const*/ br *VP8LBitRea
 
 // Reads packed symbol depending on GREEN channel
 const BITS_SPECIAL_MARKER =0x100  // something large enough (and a bit-mask)
-const PACKED_NON_LITERAL_CODE =0  // must be < NUM_LITERAL_CODES
+const PACKED_NON_LITERAL_CODE =0  // must be < constants.NUM_LITERAL_CODES
 func ReadPackedSymbols(/* const */ group *HTreeGroup, /*const*/ br *VP8LBitReader, /*const*/ dst *uint32) int {
   val := VP8LPrefetchBits(br) & (HUFFMAN_PACKED_TABLE_SIZE - 1)
   var code HuffmanCode32 = group.packed_table[val]
@@ -199,7 +199,7 @@ func ReadPackedSymbols(/* const */ group *HTreeGroup, /*const*/ br *VP8LBitReade
     return PACKED_NON_LITERAL_CODE
   } else {
     VP8LSetBitPos(br, br.bit_pos + code.bits - BITS_SPECIAL_MARKER)
-    assert.Assert(code.value >= NUM_LITERAL_CODES)
+    assert.Assert(code.value >= constants.NUM_LITERAL_CODES)
     return code.value
   }
 }
@@ -217,7 +217,7 @@ func BuildPackedTable(/* const */ htree_group *HTreeGroup) {
     bits := code
     var huff *huffman.HuffmanCode32 = &htree_group.packed_table[bits]
     var hcode HuffmanCode = htree_group.htrees[GREEN][bits]
-    if hcode.value >= NUM_LITERAL_CODES {
+    if hcode.value >= constants.NUM_LITERAL_CODES {
       huff.bits = hcode.bits + BITS_SPECIAL_MARKER
       huff.value = hcode.value
     } else {
@@ -237,13 +237,13 @@ func ReadHuffmanCodeLengths(/* const */ dec *VP8LDecoder, /*const*/ code_length_
   var br *VP8LBitReader = &decoder.br
   var symbol int
   var max_symbol int
-  prev_code_len := DEFAULT_CODE_LENGTH
+  prev_code_len := constants.DEFAULT_CODE_LENGTH
    var tables HuffmanTables
   var bounded_code_lengths *int = WEBP_UNSAFE_FORGE_BIDI_INDEXABLE(
-          // C: const *int, code_length_code_lengths, NUM_CODE_LENGTH_CODES * sizeof(*code_length_code_lengths))
+          // C: const *int, code_length_code_lengths, NUM_constants.CODE_LENGTH_CODES * sizeof(*code_length_code_lengths))
 
   if (!VP8LHuffmanTablesAllocate(1 << LENGTHS_TABLE_BITS, &tables) ||
-      !VP8LBuildHuffmanTable(&tables, LENGTHS_TABLE_BITS, bounded_code_lengths, NUM_CODE_LENGTH_CODES)) {
+      !VP8LBuildHuffmanTable(&tables, LENGTHS_TABLE_BITS, bounded_code_lengths, NUM_constants.CODE_LENGTH_CODES)) {
     goto End
   }
 
@@ -320,9 +320,9 @@ func ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*const*/ co
     ok = 1
   } else {  // Decode Huffman-coded code lengths.
     var i int
-    var code_length_code_lengths [NUM_CODE_LENGTH_CODES]int = [NUM_CODE_LENGTH_CODES]int{0}
+    var code_length_code_lengths [NUM_constants.CODE_LENGTH_CODES]int = [NUM_constants.CODE_LENGTH_CODES]int{0}
     num_codes := VP8LReadBits(br, 4) + 4
-    assert.Assert(num_codes <= NUM_CODE_LENGTH_CODES)
+    assert.Assert(num_codes <= NUM_constants.CODE_LENGTH_CODES)
 
     for i = 0; i < num_codes; i++ {
       code_length_code_lengths[kCodeLengthCodeOrder[i]] = VP8LReadBits(br, 3)
@@ -359,7 +359,7 @@ func ReadHuffmanCodes(/* const */ dec *VP8LDecoder, xsize int, ysize int, color_
 
   if allow_recursion && VP8LReadBits(br, 1) {
     // use meta Huffman codes.
-    huffman_precision := MIN_HUFFMAN_BITS + VP8LReadBits(br, NUM_HUFFMAN_BITS)
+    huffman_precision := constants.MIN_HUFFMAN_BITS + VP8LReadBits(br, constants.NUM_HUFFMAN_BITS)
     huffman_xsize := VP8LSubSampleSize(xsize, huffman_precision)
     huffman_ysize := VP8LSubSampleSize(ysize, huffman_precision)
     huffman_pixs := huffman_xsize * huffman_ysize
@@ -456,7 +456,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
     // If the index "i" is unused in the Huffman image, just make sure the
     // coefficients are valid but do not store them.
     if mapping != nil && mapping[i] == -1 {
-      for j = 0; j < HUFFMAN_CODES_PER_META_CODE; j++ {
+      for j = 0; j < constants.HUFFMAN_CODES_PER_META_CODE; j++ {
         alphabet_size := kAlphabetSize[j]
         if j == 0 && color_cache_bits > 0 {
           alphabet_size += (1 << color_cache_bits)
@@ -473,7 +473,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
       total_size := 0
       is_trivial_literal := 1
       max_bits := 0
-      for j = 0; j < HUFFMAN_CODES_PER_META_CODE; j++ {
+      for j = 0; j < constants.HUFFMAN_CODES_PER_META_CODE; j++ {
         alphabet_size := kAlphabetSize[j]
         if j == 0 && color_cache_bits > 0 {
           alphabet_size += (1 << color_cache_bits)
@@ -506,7 +506,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
         blue := htrees[BLUE][0].value
         alpha := htrees[ALPHA][0].value
         htree_group.literal_arb = (uint32(alpha) << 24) | (red << 16) | blue
-        if total_size == 0 && htrees[GREEN][0].value < NUM_LITERAL_CODES {
+        if total_size == 0 && htrees[GREEN][0].value < constants.NUM_LITERAL_CODES {
           htree_group.is_trivial_code = 1
           htree_group.literal_arb |= htrees[GREEN][0].value << 8
         }
@@ -943,7 +943,7 @@ func DecodeAlphaData(/* const */ dec *VP8LDecoder, /*const*/ data *uint8, width,
   pos := dec.last_pixel;          // current position
   end := width * height;     // End of data
   last := width * last_row;  // Last pixel to decode
-  len_code_limit := NUM_LITERAL_CODES + NUM_LENGTH_CODES
+  len_code_limit := constants.NUM_LITERAL_CODES + constants.NUM_LENGTH_CODES
   mask := hdr.huffman_mask
   const htree_group *HTreeGroup = (pos < last) ? GetHtreeGroupForPos(hdr, col, row) : nil
   assert.Assert(pos <= end)
@@ -959,7 +959,7 @@ func DecodeAlphaData(/* const */ dec *VP8LDecoder, /*const*/ data *uint8, width,
     assert.Assert(htree_group != nil)
     VP8LFillBitWindow(br)
     code = ReadSymbol(htree_group.htrees[GREEN], br)
-    if code < NUM_LITERAL_CODES {  // Literal
+    if code < constants.NUM_LITERAL_CODES {  // Literal
       data[pos] = code
       pos++
       col++
@@ -972,7 +972,7 @@ func DecodeAlphaData(/* const */ dec *VP8LDecoder, /*const*/ data *uint8, width,
       }
     } else if code < len_code_limit {  // Backward reference
       var dist_code, dist int
-      length_sym := code - NUM_LITERAL_CODES
+      length_sym := code - constants.NUM_LITERAL_CODES
       length := GetCopyLength(length_sym, br)
       dist_symbol := ReadSymbol(htree_group.htrees[DIST], br)
       VP8LFillBitWindow(br)
@@ -1044,7 +1044,7 @@ func DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width
   last_cached *uint32 = src
   var src_end *uint32 = data + width * height;     // End of data
   var src_last *uint32 = data + width * last_row;  // Last pixel to decode
-  len_code_limit := NUM_LITERAL_CODES + NUM_LENGTH_CODES
+  len_code_limit := constants.NUM_LITERAL_CODES + constants.NUM_LENGTH_CODES
   color_cache_limit := len_code_limit + hdr.color_cache_size
   next_sync_row := dec.incremental ? row : 1 << 24
   var color_cache *VP8LColorCache = (hdr.color_cache_size > 0) ? &hdr.color_cache : nil
@@ -1079,7 +1079,7 @@ func DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width
       code = ReadSymbol(htree_group.htrees[GREEN], br)
     }
     if VP8LIsEndOfStream(br) { break }
-    if code < NUM_LITERAL_CODES {  // Literal
+    if code < constants.NUM_LITERAL_CODES {  // Literal
       if htree_group.is_trivial_literal {
         *src = htree_group.literal_arb | (code << 8)
       } else {
@@ -1110,7 +1110,7 @@ func DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width
       }
     } else if code < len_code_limit {  // Backward reference
       var dist_code, dist int
-      length_sym := code - NUM_LITERAL_CODES
+      length_sym := code - constants.NUM_LITERAL_CODES
       length := GetCopyLength(length_sym, br)
       dist_symbol := ReadSymbol(htree_group.htrees[DIST], br)
       VP8LFillBitWindow(br)
@@ -1235,12 +1235,12 @@ func ReadTransform(/* const */ xsize *int, ysize int *const, /*const*/ decoder *
   transform.ysize = *ysize
   transform.data = nil
   dec.next_transform++
-  assert.Assert(dec.next_transform <= NUM_TRANSFORMS)
+  assert.Assert(dec.next_transform <= constants.NUM_TRANSFORMS)
 
   switch type {
     case PREDICTOR_TRANSFORM:
     case CROSS_COLOR_TRANSFORM:
-      transform.bits = MIN_TRANSFORM_BITS + VP8LReadBits(br, NUM_TRANSFORM_BITS)
+      transform.bits = constants.MIN_TRANSFORM_BITS + VP8LReadBits(br, constants.NUM_TRANSFORM_BITS)
       ok = DecodeImageStream(
           VP8LSubSampleSize(transform.xsize, transform.bits), VP8LSubSampleSize(transform.ysize, transform.bits), /*is_level0=*/0, dec, &transform.data)
       break
@@ -1346,7 +1346,7 @@ func DecodeImageStream(xsize int, ysize int, int is_level0, /*const*/ dec *VP8LD
   // Color cache
   if ok && VP8LReadBits(br, 1) {
     color_cache_bits = VP8LReadBits(br, 4)
-    ok = (color_cache_bits >= 1 && color_cache_bits <= MAX_CACHE_BITS)
+    ok = (color_cache_bits >= 1 && color_cache_bits <= constants.MAX_CACHE_BITS)
     if !ok {
       VP8LSetError(dec, VP8_STATUS_BITSTREAM_ERROR)
       goto End

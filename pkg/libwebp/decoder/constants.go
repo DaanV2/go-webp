@@ -14,10 +14,10 @@ import (
 )
 
 const (
-	CHUNK_HEADER_SIZE = constants.CHUNK_HEADER_SIZE
-	MAX_CHUNK_PAYLOAD = constants.MAX_CHUNK_PAYLOAD
-	RIFF_HEADER_SIZE  = constants.RIFF_HEADER_SIZE
-	TAG_SIZE          = constants.TAG_SIZE
+	constants.CHUNK_HEADER_SIZE = constants.CHUNK_HEADER_SIZE
+	constants.MAX_CHUNK_PAYLOAD = constants.MAX_CHUNK_PAYLOAD
+	constants.RIFF_HEADER_SIZE  = constants.RIFF_HEADER_SIZE
+	constants.TAG_SIZE          = constants.TAG_SIZE
 
 	// minimal amp that will provide a non-zero dithering effect
 	MIN_DITHER_AMP      = 4

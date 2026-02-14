@@ -142,16 +142,16 @@ func DoRemap(/* const */ idec *WebPIDecoder, offset ptrdiff_t) {
         dec.alpha_data += offset
         // WEBP_SELF_ASSIGN(dec.alpha_data_size)
         if (alph_dec != nil && alph_dec.vp8l_dec != nil) {
-          if (alph_dec.method == ALPHA_LOSSLESS_COMPRESSION) {
+          if (alph_dec.method == constants.ALPHA_LOSSLESS_COMPRESSION) {
             var alph_vp8l_dec *vp8.VP8LDecoder = alph_dec.vp8l_dec
             data_size uint64
             var bounded_alpha_data *uint8
 
-            assert.Assert(dec.alpha_data_size >= ALPHA_HEADER_LEN)
-            data_size = dec.alpha_data_size - ALPHA_HEADER_LEN
-            bounded_alpha_data = dec.alpha_data + ALPHA_HEADER_LEN // bidi index -> data_size
+            assert.Assert(dec.alpha_data_size >= constants.ALPHA_HEADER_LEN)
+            data_size = dec.alpha_data_size - constants.ALPHA_HEADER_LEN
+            bounded_alpha_data = dec.alpha_data + constants.ALPHA_HEADER_LEN // bidi index -> data_size
             vp8.VP8EncoderSetBuffer(&alph_vp8l_dec.br, bounded_alpha_data, data_size)
-          } else {  // alph_dec.method == ALPHA_NO_COMPRESSION
+          } else {  // alph_dec.method == constants.ALPHA_NO_COMPRESSION
             // Nothing special to do in this case.
           }
         }
@@ -175,7 +175,7 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
   var old_base *uint8 = tenary.If(need_compressed_alpha, dec.alpha_data, old_start)
   assert.Assert(mem.buf != nil || mem.start == 0)
   assert.Assert(mem.mode == MEM_MODE_APPEND)
-  if (data_size > MAX_CHUNK_PAYLOAD) {
+  if (data_size > constants.MAX_CHUNK_PAYLOAD) {
     // security safeguard: trying to allocate more than what the format
     // allows for a chunk should be considered a smoke smell.
     return 0
@@ -347,7 +347,7 @@ func DecodeVP8FrameHeader(/* const */ idec *WebPIDecoder) VP8StatusCode {
   var width, height int
   var bits uint32
 
-  if (curr_size < VP8_FRAME_HEADER_SIZE) {
+  if (curr_size < constants.VP8_FRAME_HEADER_SIZE) {
     // Not enough data bytes to extract VP8 Frame Header.
     return VP8_STATUS_SUSPENDED
   }
@@ -359,7 +359,7 @@ func DecodeVP8FrameHeader(/* const */ idec *WebPIDecoder) VP8StatusCode {
   }
 
   bits = data[0] | (data[1] << 8) | (data[2] << 16)
-  idec.mem.part0_size = (bits >> 5) + VP8_FRAME_HEADER_SIZE
+  idec.mem.part0_size = (bits >> 5) + constants.VP8_FRAME_HEADER_SIZE
 
   idec.io.data = data
   idec.io.data_size = curr_size

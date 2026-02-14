@@ -112,10 +112,10 @@ func ALPHDecode(/* const  */dec *VP8Decoder, row, num_rows int) int {
   var alph_dec *ALPHDecoder = dec.alph_dec
   width := alph_dec.width
   height := alph_dec.io.crop_bottom
-  if (alph_dec.method == ALPHA_NO_COMPRESSION) {
+  if (alph_dec.method == constants.ALPHA_NO_COMPRESSION) {
     var y int
     var prev_line *uint8 = dec.alpha_prev_line
-    var deltas *uint8 = dec.alpha_data + ALPHA_HEADER_LEN + row * width
+    var deltas *uint8 = dec.alpha_data + constants.ALPHA_HEADER_LEN + row * width
     dst []uint8 = dec.alpha_plane + row * width
     assert.Assert(deltas <= &dec.alpha_data[dec.alpha_data_size])
     assert.Assert(WebPUnfilters[alph_dec.filter] != nil)
@@ -126,7 +126,7 @@ func ALPHDecode(/* const  */dec *VP8Decoder, row, num_rows int) int {
       deltas += width
     }
     dec.alpha_prev_line = prev_line
-  } else {  // alph_dec.method == ALPHA_LOSSLESS_COMPRESSION
+  } else {  // alph_dec.method == constants.ALPHA_LOSSLESS_COMPRESSION
     assert.Assert(alph_dec.vp8l_dec != nil)
     if (!VP8LDecodeAlphaImageStream(alph_dec, row + num_rows)) {
       return 0
@@ -182,7 +182,7 @@ func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8I
         goto Error
       }
       // if we allowed use of alpha dithering, check whether it's needed at all
-      if (dec.alph_dec.pre_processing != ALPHA_PREPROCESSED_LEVELS) {
+      if (dec.alph_dec.pre_processing != constants.ALPHA_PREPROCESSED_LEVELS) {
         dec.alpha_dithering = 0;  // disable dithering
       } else {
         num_rows = height - row;  // decode everything in one pass

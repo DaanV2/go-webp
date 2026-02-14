@@ -135,7 +135,7 @@ func SetFrameInfo(start_offset, size uint64, frame_num, complete int , features 
 func StoreFrame(frame_num int, min_size uint32, /* const */ mem *MemBuffer, frame *Frame)  ParseStatus {
   alpha_chunks = 0
   image_chunks = 0
-  done = (MemDataSize(mem) < CHUNK_HEADER_SIZE || MemDataSize(mem) < min_size)
+  done = (MemDataSize(mem) < constants.CHUNK_HEADER_SIZE || MemDataSize(mem) < min_size)
   status := PARSE_OK
 
   if (done) {
@@ -150,14 +150,14 @@ func StoreFrame(frame_num int, min_size uint32, /* const */ mem *MemBuffer, fram
     var payload_available uint64
     var chunk_size uint64
 
-    if (payload_size > MAX_CHUNK_PAYLOAD) {
+    if (payload_size > constants.MAX_CHUNK_PAYLOAD) {
 		return PARSE_ERROR
 	}
 
     payload_size_padded = payload_size + (payload_size & 1)
     payload_available = tenary.If(payload_size_padded > MemDataSize(mem), MemDataSize(mem), payload_size_padded)
 
-    chunk_size = CHUNK_HEADER_SIZE + payload_available
+    chunk_size = constants.CHUNK_HEADER_SIZE + payload_available
     if (SizeIsInvalid(mem, payload_size_padded)) {return PARSE_ERROR}
     if (payload_size_padded > MemDataSize(mem)) {status = PARSE_NEED_MORE_DATA
 }
@@ -202,14 +202,14 @@ func StoreFrame(frame_num int, min_size uint32, /* const */ mem *MemBuffer, fram
       default:
       Done:
         // Restore fourcc/size when moving up one level in parsing.
-        Rewind(mem, CHUNK_HEADER_SIZE)
+        Rewind(mem, constants.CHUNK_HEADER_SIZE)
         done = 1
         break
     }
 
     if (mem.start == mem.riff_end) {
       done = 1
-    } else if (MemDataSize(mem) < CHUNK_HEADER_SIZE) {
+    } else if (MemDataSize(mem) < constants.CHUNK_HEADER_SIZE) {
       status = PARSE_NEED_MORE_DATA
     }
 
@@ -242,13 +242,13 @@ func NewFrame(/* const */ mem *MemBuffer, min_size uint32 , actual_size uint32, 
 // 'frame_chunk_size' is the previously validated, padded chunk size.
 func ParseAnimationFrame(/* const */ dmux *WebPDemuxer, frame_chunk_size uint32 ) ParseStatus {
   is_animation := !!(dmux.feature_flags & ANIMATION_FLAG)
-  anmf_payload_size := frame_chunk_size - ANMF_CHUNK_SIZE
+  anmf_payload_size := frame_chunk_size - constants.ANMF_CHUNK_SIZE
   added_frame := 0
   var bits int 
   /* const */ mem *MemBuffer = &dmux.mem
   frame *Frame
   var start_offset uint64 
-  var status ParseStatus = NewFrame(mem, ANMF_CHUNK_SIZE, frame_chunk_size, &frame)
+  var status ParseStatus = NewFrame(mem, constants.ANMF_CHUNK_SIZE, frame_chunk_size, &frame)
   if (status != PARSE_OK) {return status}
 
   frame.x_offset = 2 * ReadLE24s(mem)
@@ -259,7 +259,7 @@ func ParseAnimationFrame(/* const */ dmux *WebPDemuxer, frame_chunk_size uint32 
   bits = ReadByte(mem)
   frame.dispose_method = tenary.If(bits & 1, WEBP_MUX_DISPOSE_BACKGROUND, WEBP_MUX_DISPOSE_NONE)
   frame.blend_method = tenary.If(bits & 2, WEBP_MUX_NO_BLEND, WEBP_MUX_BLEND)
-  if (frame.width * frame.height >= MAX_IMAGE_AREA) {
+  if (frame.width * frame.height >= constants.MAX_IMAGE_AREA) {
     return PARSE_ERROR
   }
 
@@ -304,33 +304,33 @@ func StoreChunk(/* const */ dmux *WebPDemuxer, start_offset uint64 , size uint32
 // Primary chunk parsing
 
 func ReadHeader(/* const */ mem *MemBuffer) ParseStatus {
-  min_size := RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE
+  min_size := constants.RIFF_HEADER_SIZE + constants.CHUNK_HEADER_SIZE
   var riff_size uint32 
 
   // Basic file level validation.
   if (MemDataSize(mem) < min_size) { return PARSE_NEED_MORE_DATA }
-  if (stdlib.MemCmp(GetBuffer(mem), "RIFF", CHUNK_SIZE_BYTES) ||
-      stdlib.MemCmp(GetBuffer(mem) + CHUNK_HEADER_SIZE, "WEBP", CHUNK_SIZE_BYTES)) {
+  if (stdlib.MemCmp(GetBuffer(mem), "RIFF", constants.CHUNK_SIZE_BYTES) ||
+      stdlib.MemCmp(GetBuffer(mem) + constants.CHUNK_HEADER_SIZE, "WEBP", constants.CHUNK_SIZE_BYTES)) {
     return PARSE_ERROR
   }
 
-  riff_size = GetLE32(GetBuffer(mem) + TAG_SIZE)
-  if (riff_size < CHUNK_HEADER_SIZE){ return PARSE_ERROR}
-  if (riff_size > MAX_CHUNK_PAYLOAD) {return PARSE_ERROR}
+  riff_size = GetLE32(GetBuffer(mem) + constants.TAG_SIZE)
+  if (riff_size < constants.CHUNK_HEADER_SIZE){ return PARSE_ERROR}
+  if (riff_size > constants.MAX_CHUNK_PAYLOAD) {return PARSE_ERROR}
 
   // There's no point in reading past the end of the RIFF chunk
-  mem.riff_end = riff_size + CHUNK_HEADER_SIZE
+  mem.riff_end = riff_size + constants.CHUNK_HEADER_SIZE
   if (mem.buf_size > mem.riff_end) {
     mem.end = mem.riff_end
 	mem.buf_size = mem.riff_end
   }
 
-  Skip(mem, RIFF_HEADER_SIZE)
+  Skip(mem, constants.RIFF_HEADER_SIZE)
   return PARSE_OK
 }
 
 func ParseSingleImage(/* const */ dmux *WebPDemuxer) ParseStatus {
-  min_size := CHUNK_HEADER_SIZE
+  min_size := constants.CHUNK_HEADER_SIZE
   /* const */ var mem *MemBuffer = &dmux.mem
   var frame *Frame
   var status ParseStatus
@@ -388,7 +388,7 @@ func ParseVP8XChunks(/* const */ dmux *WebPDemuxer) ParseStatus {
     chunk_size := ReadLE32(mem)
     var chunk_size_padded uint32
 
-    if (chunk_size > MAX_CHUNK_PAYLOAD) {return PARSE_ERROR}
+    if (chunk_size > constants.MAX_CHUNK_PAYLOAD) {return PARSE_ERROR}
 
     chunk_size_padded = chunk_size + (chunk_size & 1)
     if (SizeIsInvalid(mem, chunk_size_padded)) {return PARSE_ERROR}
@@ -403,12 +403,12 @@ func ParseVP8XChunks(/* const */ dmux *WebPDemuxer) ParseStatus {
         // check that this isn't an animation (all frames should be in an ANMF).
         if (anim_chunks > 0 || is_animation) { return PARSE_ERROR }
 
-        Rewind(mem, CHUNK_HEADER_SIZE)
+        Rewind(mem, constants.CHUNK_HEADER_SIZE)
         status = ParseSingleImage(dmux)
         break
       }
       case MKFOURCC('A', 'N', 'I', 'M'): {
-        if (chunk_size_padded < ANIM_CHUNK_SIZE) { return PARSE_ERROR }
+        if (chunk_size_padded < constants.ANIM_CHUNK_SIZE) { return PARSE_ERROR }
 
         if (MemDataSize(mem) < chunk_size_padded) {
           status = PARSE_NEED_MORE_DATA
@@ -416,7 +416,7 @@ func ParseVP8XChunks(/* const */ dmux *WebPDemuxer) ParseStatus {
           anim_chunks++
           dmux.bgcolor = ReadLE32(mem)
           dmux.loop_count = ReadLE16s(mem)
-          Skip(mem, chunk_size_padded - ANIM_CHUNK_SIZE)
+          Skip(mem, chunk_size_padded - constants.ANIM_CHUNK_SIZE)
         } else {
           store_chunk = 0
           goto Skip
@@ -448,7 +448,7 @@ func ParseVP8XChunks(/* const */ dmux *WebPDemuxer) ParseStatus {
           if (store_chunk) {
             // Store only the chunk header and unpadded size as only the payload
             // will be returned to the user.
-            if (!StoreChunk(dmux, chunk_start_offset, CHUNK_HEADER_SIZE + chunk_size)) {
+            if (!StoreChunk(dmux, chunk_start_offset, constants.CHUNK_HEADER_SIZE + chunk_size)) {
               return PARSE_ERROR
             }
           }
@@ -461,7 +461,7 @@ func ParseVP8XChunks(/* const */ dmux *WebPDemuxer) ParseStatus {
 
     if (mem.start == mem.riff_end) {
       break
-    } else if (MemDataSize(mem) < CHUNK_HEADER_SIZE) {
+    } else if (MemDataSize(mem) < constants.CHUNK_HEADER_SIZE) {
       status = PARSE_NEED_MORE_DATA
     }
 
@@ -479,13 +479,13 @@ func ParseVP8X(/* const */ dmux *WebPDemuxer) ParseStatus {
   /* const */var mem *MemBuffer = &dmux.mem
   var vp8x_size uint32 
 
-  if (MemDataSize(mem) < CHUNK_HEADER_SIZE) {return PARSE_NEED_MORE_DATA}
+  if (MemDataSize(mem) < constants.CHUNK_HEADER_SIZE) {return PARSE_NEED_MORE_DATA}
 
   dmux.is_ext_format = 1
-  Skip(mem, TAG_SIZE)  // VP8X
+  Skip(mem, constants.TAG_SIZE)  // VP8X
   vp8x_size = ReadLE32(mem)
-  if (vp8x_size > MAX_CHUNK_PAYLOAD) {return PARSE_ERROR}
-  if (vp8x_size < VP8X_CHUNK_SIZE) {return PARSE_ERROR}
+  if (vp8x_size > constants.MAX_CHUNK_PAYLOAD) {return PARSE_ERROR}
+  if (vp8x_size < constants.VP8X_CHUNK_SIZE) {return PARSE_ERROR}
   vp8x_size += vp8x_size & 1
   if (SizeIsInvalid(mem, vp8x_size)) {return PARSE_ERROR}
   if (MemDataSize(mem) < vp8x_size) {return PARSE_NEED_MORE_DATA}
@@ -494,14 +494,14 @@ func ParseVP8X(/* const */ dmux *WebPDemuxer) ParseStatus {
   Skip(mem, 3)  // Reserved.
   dmux.canvas_width = 1 + ReadLE24s(mem)
   dmux.canvas_height = 1 + ReadLE24s(mem)
-  if (dmux.canvas_width * dmux.canvas_height >= MAX_IMAGE_AREA) {
+  if (dmux.canvas_width * dmux.canvas_height >= constants.MAX_IMAGE_AREA) {
     return PARSE_ERROR  // image final dimension is too large
   }
-  Skip(mem, vp8x_size - VP8X_CHUNK_SIZE)  // skip any trailing data.
+  Skip(mem, vp8x_size - constants.VP8X_CHUNK_SIZE)  // skip any trailing data.
   dmux.state = WEBP_DEMUX_PARSED_HEADER
 
-  if (SizeIsInvalid(mem, CHUNK_HEADER_SIZE)) {return PARSE_ERROR}
-  if (MemDataSize(mem) < CHUNK_HEADER_SIZE) {return PARSE_NEED_MORE_DATA}
+  if (SizeIsInvalid(mem, constants.CHUNK_HEADER_SIZE)) {return PARSE_ERROR}
+  if (MemDataSize(mem) < constants.CHUNK_HEADER_SIZE) {return PARSE_NEED_MORE_DATA}
 
   return ParseVP8XChunks(dmux)
 }
@@ -677,7 +677,7 @@ func WebPDemuxerFn(/* const */ data *WebPData, allow_partial int, state *WebPDem
 
   status = PARSE_ERROR
   for parser = kMasterChunks; parser.parse != nil; parser++ {
-    if (!stdlib.MemCmp(parser.id, GetBuffer(&dmux.mem), TAG_SIZE)) {
+    if (!stdlib.MemCmp(parser.id, GetBuffer(&dmux.mem), constants.TAG_SIZE)) {
       status = parser.parse(dmux)
       if (status == PARSE_OK) {dmux.state = WEBP_DEMUX_DONE}
       if (status == PARSE_NEED_MORE_DATA && !partial) {status = PARSE_ERROR}
@@ -849,7 +849,7 @@ func ChunkCount(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte) int {
   count := 0
   for c = dmux.chunks c != nil c = c.next {
     var header *uint8 = mem_buf + c.data.offset
-    if (!stdlib.MemCmp(header, fourcc, TAG_SIZE)) ++count
+    if (!stdlib.MemCmp(header, fourcc, constants.TAG_SIZE)) ++count
   }
   return count
 }
@@ -860,7 +860,7 @@ static GetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, chunk_n
   count := 0
   for c = dmux.chunks c != nil c = c.next {
     var header *uint8 = mem_buf + c.data.offset
-    if (!stdlib.MemCmp(header, fourcc, TAG_SIZE)) ++count
+    if (!stdlib.MemCmp(header, fourcc, constants.TAG_SIZE)) ++count
     if (count == chunk_num) break
   }
   return c
@@ -878,8 +878,8 @@ func SetChunk(/* const */ fourcc [4]byte, chunk_num int, /*const*/ iter *WebPChu
   if (chunk_num <= count) {
     var mem_buf *uint8 = dmux.mem.buf
     var chunk *Chunk = GetChunk(dmux, fourcc, chunk_num)
-    iter.chunk.bytes = mem_buf + chunk.data.offset + CHUNK_HEADER_SIZE
-    iter.chunk.size = chunk.data.size - CHUNK_HEADER_SIZE
+    iter.chunk.bytes = mem_buf + chunk.data.offset + constants.CHUNK_HEADER_SIZE
+    iter.chunk.size = chunk.data.size - constants.CHUNK_HEADER_SIZE
     iter.num_chunks = count
     iter.chunk_num = chunk_num
     return 1
@@ -909,7 +909,7 @@ func WebPDemuxGetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, 
 // Returns true on success, false otherwise.
 func WebPDemuxNextChunk( iter *WebPChunkIterator) int {
   if (iter != nil) {
-    var fourcc *byte = (/* const */ *byte)iter.chunk.bytes - CHUNK_HEADER_SIZE
+    var fourcc *byte = (/* const */ *byte)iter.chunk.bytes - constants.CHUNK_HEADER_SIZE
     return SetChunk(fourcc, iter.chunk_num + 1, iter)
   }
   return 0
@@ -917,7 +917,7 @@ func WebPDemuxNextChunk( iter *WebPChunkIterator) int {
 
 func WebPDemuxPrevChunk( iter *WebPChunkIterator) int {
   if (iter != nil && iter.chunk_num > 1) {
-    var fourcc *byte = (/* const */ *byte)iter.chunk.bytes - CHUNK_HEADER_SIZE
+    var fourcc *byte = (/* const */ *byte)iter.chunk.bytes - constants.CHUNK_HEADER_SIZE
     return SetChunk(fourcc, iter.chunk_num - 1, iter)
   }
   return 0

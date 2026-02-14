@@ -10,6 +10,7 @@ package mux
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 	"github.com/daanv2/go-webp/pkg/vp8"
 )
@@ -49,13 +50,13 @@ func ChunkVerifyAndAssign(chunk *WebPChunk /*const*/, data *uint8, data_size uin
 	var chunk_data WebPData
 
 	// Correctness checks.
-	if data_size < CHUNK_HEADER_SIZE {
+	if data_size < constants.CHUNK_HEADER_SIZE {
 		{
 			return WEBP_MUX_NOT_ENOUGH_DATA
 		}
 	}
-	chunk_size = GetLE32(data + TAG_SIZE)
-	if chunk_size > MAX_CHUNK_PAYLOAD {
+	chunk_size = GetLE32(data + constants.TAG_SIZE)
+	if chunk_size > constants.MAX_CHUNK_PAYLOAD {
 		{
 			return WEBP_MUX_BAD_DATA
 		}
@@ -76,7 +77,7 @@ func ChunkVerifyAndAssign(chunk *WebPChunk /*const*/, data *uint8, data_size uin
 	}
 
 	// Data assignment.
-	chunk_data.bytes = data + CHUNK_HEADER_SIZE
+	chunk_data.bytes = data + constants.CHUNK_HEADER_SIZE
 	chunk_data.size = chunk_size
 	return ChunkAssignData(chunk, &chunk_data, copy_data, GetLE32(data+0))
 }
@@ -121,7 +122,7 @@ func MuxImageParse( /* const */ chunk *WebPChunk, copy_data int /*const*/, wpi *
 
 	// ANMF.
 	{
-		hdr_size := ANMF_CHUNK_SIZE
+		hdr_size := constants.ANMF_CHUNK_SIZE
 		var temp WebPData = WebPData{bytes, hdr_size}
 		// Each of ANMF chunk contain a header at the beginning. So, its size should
 		// be at least 'hdr_size'.
@@ -138,7 +139,7 @@ func MuxImageParse( /* const */ chunk *WebPChunk, copy_data int /*const*/, wpi *
 	wpi.is_partial = 1 // Waiting for ALPH and/or VP8/VP8L chunks.
 
 	// Rest of the chunks.
-	subchunk_size = ChunkDiskSize(&subchunk) - CHUNK_HEADER_SIZE
+	subchunk_size = ChunkDiskSize(&subchunk) - constants.CHUNK_HEADER_SIZE
 	bytes += subchunk_size
 	size -= subchunk_size
 
@@ -227,13 +228,13 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 			return nil
 		}
 	}
-	if size < RIFF_HEADER_SIZE+CHUNK_HEADER_SIZE {
+	if size < constants.RIFF_HEADER_SIZE+constants.CHUNK_HEADER_SIZE {
 		{
 			return nil
 		}
 	}
 	if GetLE32(data+0) != MKFOURCC('R', 'I', 'F', 'F') ||
-		GetLE32(data+CHUNK_HEADER_SIZE) != MKFOURCC('W', 'E', 'B', 'P') {
+		GetLE32(data+constants.CHUNK_HEADER_SIZE) != MKFOURCC('W', 'E', 'B', 'P') {
 		return nil
 	}
 
@@ -244,14 +245,14 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 		}
 	}
 
-	tag = GetLE32(data + RIFF_HEADER_SIZE)
+	tag = GetLE32(data + constants.RIFF_HEADER_SIZE)
 	if tag != kChunks[IDX_VP8].tag && tag != kChunks[IDX_VP8L].tag &&
 		tag != kChunks[IDX_VP8X].tag {
 		goto Err // First chunk should be VP8, VP8L or VP8X.
 	}
 
-	riff_size = GetLE32(data + TAG_SIZE)
-	if riff_size > MAX_CHUNK_PAYLOAD {
+	riff_size = GetLE32(data + constants.TAG_SIZE)
+	if riff_size > constants.MAX_CHUNK_PAYLOAD {
 		goto Err
 	}
 
@@ -259,21 +260,21 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 	// pad the file size.
 	riff_size = SizeWithPadding(riff_size)
 	// Make sure the whole RIFF header is available.
-	if riff_size < RIFF_HEADER_SIZE {
+	if riff_size < constants.RIFF_HEADER_SIZE {
 		goto Err
 	}
 	if riff_size > size {
 		goto Err
 	}
 	// There's no point in reading past the end of the RIFF chunk. Note riff_size
-	// includes CHUNK_HEADER_SIZE after SizeWithPadding().
+	// includes constants.CHUNK_HEADER_SIZE after SizeWithPadding().
 	if size > riff_size {
 		size = riff_size
 	}
 
 	end = data + size
-	data += RIFF_HEADER_SIZE
-	size -= RIFF_HEADER_SIZE
+	data += constants.RIFF_HEADER_SIZE
+	size -= constants.RIFF_HEADER_SIZE
 
 	//   wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*wpi))
 	//   if wpi == nil { goto Err }
@@ -336,7 +337,7 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 				goto Err
 			}
 			if id == WEBP_CHUNK_VP8X { // grab global specs
-				if data_size < CHUNK_HEADER_SIZE+VP8X_CHUNK_SIZE {
+				if data_size < constants.CHUNK_HEADER_SIZE+constants.VP8X_CHUNK_SIZE {
 					goto Err
 				}
 				mux.canvas_width = GetLE24(data+12) + 1
@@ -399,7 +400,7 @@ func MuxGetCanvasInfo( /* const */ mux *WebPMux, width *int, height *int, flags 
 
 	// Check if VP8X chunk is present.
 	if MuxGet(mux, IDX_VP8X, 1, &data) == WEBP_MUX_OK {
-		if data.size < VP8X_CHUNK_SIZE {
+		if data.size < constants.VP8X_CHUNK_SIZE {
 			{
 				return WEBP_MUX_BAD_DATA
 			}
@@ -424,7 +425,7 @@ func MuxGetCanvasInfo( /* const */ mux *WebPMux, width *int, height *int, flags 
 			}
 		}
 	}
-	if w * uint64(h >= MAX_IMAGE_AREA) {
+	if w * uint64(h >= constants.MAX_IMAGE_AREA) {
 		return WEBP_MUX_BAD_DATA
 	}
 
@@ -457,15 +458,15 @@ func WebPMuxGetFeatures( /* const */ mux *WebPMux, flags *uint32) WebPMuxError {
 }
 
 func EmitVP8XChunk( /* const */ dst []uint8, width, height int, flags uint32) *uint8 {
-	vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE
+	vp8x_size := constants.CHUNK_HEADER_SIZE + constants.VP8X_CHUNK_SIZE
 	assert.Assert(width >= 1 && height >= 1)
-	assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE)
-	assert.Assert(width * uint64(height < MAX_IMAGE_AREA))
+	assert.Assert(width <= constants.MAX_CANVAS_SIZE && height <= constants.MAX_CANVAS_SIZE)
+	assert.Assert(width * uint64(height < constants.MAX_IMAGE_AREA))
 	PutLE32(dst, MKFOURCC('V', 'P', '8', 'X'))
-	PutLE32(dst+TAG_SIZE, VP8X_CHUNK_SIZE)
-	PutLE32(dst+CHUNK_HEADER_SIZE, flags)
-	PutLE24(dst+CHUNK_HEADER_SIZE+4, width-1)
-	PutLE24(dst+CHUNK_HEADER_SIZE+7, height-1)
+	PutLE32(dst+constants.TAG_SIZE, constants.VP8X_CHUNK_SIZE)
+	PutLE32(dst+constants.CHUNK_HEADER_SIZE, flags)
+	PutLE24(dst+constants.CHUNK_HEADER_SIZE+4, width-1)
+	PutLE24(dst+constants.CHUNK_HEADER_SIZE+7, height-1)
 	return dst + vp8x_size
 }
 
@@ -475,10 +476,10 @@ func SynthesizeBitstream( /* const */ wpi *WebPMuxImage /*const*/, bitstream *We
 
 	// Allocate data.
 	need_vp8x := (wpi.alpha != nil)
-	vp8x_size := tenary.If(need_vp8x, CHUNK_HEADER_SIZE+VP8X_CHUNK_SIZE, 0)
+	vp8x_size := tenary.If(need_vp8x, constants.CHUNK_HEADER_SIZE+constants.VP8X_CHUNK_SIZE, 0)
 	alpha_size := tenary.If(need_vp8x, ChunkDiskSize(wpi.alpha), 0)
 	// Note: No need to output ANMF chunk for a single image.
-	var size uint64 = RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img)
+	var size uint64 = constants.RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img)
 	//   var data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size)
 	//   if data == nil { return WEBP_MUX_MEMORY_ERROR  }
 	data := make([]uint8, size)

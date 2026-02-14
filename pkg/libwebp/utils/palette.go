@@ -22,7 +22,7 @@ const(
 	kUnusedPalette PaletteSorting = 3
 	kPaletteSortingNum PaletteSorting = 4
 
-	COLOR_HASH_SIZE =(MAX_PALETTE_SIZE * 4)
+	COLOR_HASH_SIZE =(constants.MAX_PALETTE_SIZE * 4)
 	COLOR_HASH_RIGHT_SHIFT =22  // 32 - log2(COLOR_HASH_SIZE).
 )
 
@@ -104,13 +104,13 @@ func PrepareMapToPalette(palette []uint32,  num_colors uint32, sorted []uint32, 
 
 
 // Returns count of unique colors in 'pic', assuming pic.use_argb is true.
-// If the unique color count is more than MAX_PALETTE_SIZE, returns
-// MAX_PALETTE_SIZE+1.
+// If the unique color count is more than constants.MAX_PALETTE_SIZE, returns
+// constants.MAX_PALETTE_SIZE+1.
 // If 'palette' is not nil and the number of unique colors is less than or
-// equal to MAX_PALETTE_SIZE, also outputs the actual unique colors into
+// equal to constants.MAX_PALETTE_SIZE, also outputs the actual unique colors into
 // 'palette' in a sorted order. Note: 'palette' is assumed to be an array
-// already allocated with at least MAX_PALETTE_SIZE elements.
-func GetColorPalette(/* const */ pic *picture.Picture, /*const*/   palette *uint32/* (MAX_PALETTE_SIZE) */ ) int {
+// already allocated with at least constants.MAX_PALETTE_SIZE elements.
+func GetColorPalette(/* const */ pic *picture.Picture, /*const*/   palette *uint32/* (constants.MAX_PALETTE_SIZE) */ ) int {
   var i int
   var x, y int
   num_colors := 0
@@ -136,8 +136,8 @@ func GetColorPalette(/* const */ pic *picture.Picture, /*const*/   palette *uint
           colors[key] = last_pix
           in_use[key] = 1
           num_colors++
-          if (num_colors > MAX_PALETTE_SIZE) {
-            return MAX_PALETTE_SIZE + 1;  // Exact count not needed.
+          if (num_colors > constants.MAX_PALETTE_SIZE) {
+            return constants.MAX_PALETTE_SIZE + 1;  // Exact count not needed.
           }
           break
         } else if (colors[key] == last_pix) {
@@ -265,8 +265,8 @@ func CoOccurrenceBuild(/* const */ pic *picture.Picture, /*const*/ palette *uint
   var src []uint32 = pic.argb
   prev_pix := ~src[0]
   prev_idx := uint(0)
-  var idx_map [MAX_PALETTE_SIZE]uint32
-  var palette_sorted [MAX_PALETTE_SIZE]uint32
+  var idx_map [constants.MAX_PALETTE_SIZE]uint32
+  var palette_sorted [constants.MAX_PALETTE_SIZE]uint32
 //   lines = (*uint32)WebPSafeMalloc(2 * pic.width, sizeof(*lines))
 //   if (lines == nil) {
 //     return 0
@@ -310,8 +310,8 @@ func CoOccurrenceBuild(/* const */ pic *picture.Picture, /*const*/ palette *uint
 
 func PaletteSortModifiedZeng(/* const */ pic *picture.Picture, /*const*/ palette_in *uint32 , num_colors uint32, /*const*/ palette *uint32) int {
   var i, j, ind uint32
-  var remapping [MAX_PALETTE_SIZE]uint8
-  var  sums[MAX_PALETTE_SIZE]Sum
+  var remapping [constants.MAX_PALETTE_SIZE]uint8
+  var  sums[constants.MAX_PALETTE_SIZE]Sum
    var first, last uint32
   var num_sums uint32
   // TODO(vrabaud) check whether one color images should use palette or not.

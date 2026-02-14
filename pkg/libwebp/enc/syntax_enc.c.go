@@ -44,9 +44,9 @@ func PutPaddingByte(/* const */ pic *picture.Picture) int {
 
 func PutRIFFHeader(/* const */ enc *vp8.VP8Encoder, uint64 riff_size) WebPEncodingError {
   var pic *picture.Picture = enc.pic
-  var riff [RIFF_HEADER_SIZE]uint8 = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
+  var riff [constants.RIFF_HEADER_SIZE]uint8 = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
   assert.Assert(riff_size == uint32(riff_size))
-  PutLE32(riff + TAG_SIZE, uint32(riff_size))
+  PutLE32(riff + constants.TAG_SIZE, uint32(riff_size))
   if (!pic.writer(riff, sizeof(riff), pic)) {
     return ENC_ERROR_BAD_WRITE
   }
@@ -55,21 +55,21 @@ func PutRIFFHeader(/* const */ enc *vp8.VP8Encoder, uint64 riff_size) WebPEncodi
 
 func PutVP8XHeader(/* const */ enc *vp8.VP8Encoder) WebPEncodingError {
   var pic *picture.Picture = enc.pic
-  uint8 vp8x[CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE] = {'V', 'P', '8', 'X'}
+  uint8 vp8x[constants.CHUNK_HEADER_SIZE + constants.VP8X_CHUNK_SIZE] = {'V', 'P', '8', 'X'}
   flags := 0
 
   assert.Assert(IsVP8XNeeded(enc))
   assert.Assert(pic.width >= 1 && pic.height >= 1)
-  assert.Assert(pic.width <= MAX_CANVAS_SIZE && pic.height <= MAX_CANVAS_SIZE)
+  assert.Assert(pic.width <= constants.MAX_CANVAS_SIZE && pic.height <= constants.MAX_CANVAS_SIZE)
 
   if (enc.has_alpha) {
     flags |= ALPHA_FLAG
   }
 
-  PutLE32(vp8x + TAG_SIZE, VP8X_CHUNK_SIZE)
-  PutLE32(vp8x + CHUNK_HEADER_SIZE, flags)
-  PutLE24(vp8x + CHUNK_HEADER_SIZE + 4, pic.width - 1)
-  PutLE24(vp8x + CHUNK_HEADER_SIZE + 7, pic.height - 1)
+  PutLE32(vp8x + constants.TAG_SIZE, constants.VP8X_CHUNK_SIZE)
+  PutLE32(vp8x + constants.CHUNK_HEADER_SIZE, flags)
+  PutLE24(vp8x + constants.CHUNK_HEADER_SIZE + 4, pic.width - 1)
+  PutLE24(vp8x + constants.CHUNK_HEADER_SIZE + 7, pic.height - 1)
   if (!pic.writer(vp8x, sizeof(vp8x), pic)) {
     return ENC_ERROR_BAD_WRITE
   }
@@ -78,12 +78,12 @@ func PutVP8XHeader(/* const */ enc *vp8.VP8Encoder) WebPEncodingError {
 
 func PutAlphaChunk(/* const */ enc *vp8.VP8Encoder) WebPEncodingError {
   var pic *picture.Picture = enc.pic
-  uint8 alpha_chunk_hdr[CHUNK_HEADER_SIZE] = {'A', 'L', 'P', 'H'}
+  uint8 alpha_chunk_hdr[constants.CHUNK_HEADER_SIZE] = {'A', 'L', 'P', 'H'}
 
   assert.Assert(enc.has_alpha)
 
   // Alpha chunk header.
-  PutLE32(alpha_chunk_hdr + TAG_SIZE, enc.alpha_data_size)
+  PutLE32(alpha_chunk_hdr + constants.TAG_SIZE, enc.alpha_data_size)
   if (!pic.writer(alpha_chunk_hdr, sizeof(alpha_chunk_hdr), pic)) {
     return ENC_ERROR_BAD_WRITE
   }
@@ -101,9 +101,9 @@ func PutAlphaChunk(/* const */ enc *vp8.VP8Encoder) WebPEncodingError {
 }
 
 func PutVP8Header(/* const */ pic *picture.Picture, uint64 vp8_size) WebPEncodingError {
-  uint8 vp8_chunk_hdr[CHUNK_HEADER_SIZE] = {'V', 'P', '8', ' '}
+  uint8 vp8_chunk_hdr[constants.CHUNK_HEADER_SIZE] = {'V', 'P', '8', ' '}
   assert.Assert(vp8_size == uint32(vp8_size))
-  PutLE32(vp8_chunk_hdr + TAG_SIZE, uint32(vp8_size))
+  PutLE32(vp8_chunk_hdr + constants.TAG_SIZE, uint32(vp8_size))
   if (!pic.writer(vp8_chunk_hdr, sizeof(vp8_chunk_hdr), pic)) {
     return ENC_ERROR_BAD_WRITE
   }
@@ -111,10 +111,10 @@ func PutVP8Header(/* const */ pic *picture.Picture, uint64 vp8_size) WebPEncodin
 }
 
 func PutVP8FrameHeader(/* const */ pic *picture.Picture, profile int, uint64 size0) WebPEncodingError {
-  uint8 vp8_frm_hdr[VP8_FRAME_HEADER_SIZE]
+  uint8 vp8_frm_hdr[constants.VP8_FRAME_HEADER_SIZE]
   bits uint32
 
-  if (size0 >= VP8_MAX_PARTITION0_SIZE) {  // partition #0 is too big to fit
+  if (size0 >= constants.VP8_MAX_PARTITION0_SIZE) {  // partition #0 is too big to fit
     return ENC_ERROR_PARTITION0_OVERFLOW
   }
 
@@ -127,9 +127,9 @@ func PutVP8FrameHeader(/* const */ pic *picture.Picture, profile int, uint64 siz
   vp8_frm_hdr[1] = (bits >> 8) & 0xff
   vp8_frm_hdr[2] = (bits >> 16) & 0xff
   // signature
-  vp8_frm_hdr[3] = (VP8_SIGNATURE >> 16) & 0xff
-  vp8_frm_hdr[4] = (VP8_SIGNATURE >> 8) & 0xff
-  vp8_frm_hdr[5] = (VP8_SIGNATURE >> 0) & 0xff
+  vp8_frm_hdr[3] = (constants.VP8_SIGNATURE >> 16) & 0xff
+  vp8_frm_hdr[4] = (constants.VP8_SIGNATURE >> 8) & 0xff
+  vp8_frm_hdr[5] = (constants.VP8_SIGNATURE >> 0) & 0xff
   // dimensions
   vp8_frm_hdr[6] = pic.width & 0xff
   vp8_frm_hdr[7] = pic.width >> 8
@@ -243,7 +243,7 @@ func EmitPartitionsSize(/* const */ enc *vp8.VP8Encoder, /*const*/ pic *picture.
   var p int
   for p = 0; p < enc.num_parts - 1; p++ {
     part_size := VP8BitWriterSize(enc.parts + p)
-    if (part_size >= VP8_MAX_PARTITION_SIZE) {
+    if (part_size >= constants.VP8_MAX_PARTITION_SIZE) {
       return pic.SetEncodingError(picture.ENC_ERROR_PARTITION_OVERFLOW)
     }
     buf[3 * p + 0] = (part_size >> 0) & 0xff
@@ -306,7 +306,7 @@ func VP8EncWrite(/* const */ enc *vp8.VP8Encoder) int {
   if !ok { return 0  }
 
   // Compute VP8 size
-  vp8_size = VP8_FRAME_HEADER_SIZE + VP8BitWriterSize(bw) + 3 * (enc.num_parts - 1)
+  vp8_size = constants.VP8_FRAME_HEADER_SIZE + VP8BitWriterSize(bw) + 3 * (enc.num_parts - 1)
   for p = 0; p < enc.num_parts; p++ {
     vp8_size += VP8BitWriterSize(enc.parts + p)
   }
@@ -315,13 +315,13 @@ func VP8EncWrite(/* const */ enc *vp8.VP8Encoder) int {
 
   // Compute RIFF size
   // At the minimum it is: "WEBPVP8 nnnn" + VP8 data size.
-  riff_size = TAG_SIZE + CHUNK_HEADER_SIZE + vp8_size
+  riff_size = constants.TAG_SIZE + constants.CHUNK_HEADER_SIZE + vp8_size
   if (IsVP8XNeeded(enc)) {  // Add size for: VP8X header + data.
-    riff_size += CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE
+    riff_size += constants.CHUNK_HEADER_SIZE + constants.VP8X_CHUNK_SIZE
   }
   if (enc.has_alpha) {  // Add size for: ALPH header + data.
     padded_alpha_size := enc.alpha_data_size + (enc.alpha_data_size & 1)
-    riff_size += CHUNK_HEADER_SIZE + padded_alpha_size
+    riff_size += constants.CHUNK_HEADER_SIZE + padded_alpha_size
   }
   // RIFF size should fit in 32-bits.
   if (riff_size > uint(0xfffffffe)) {
@@ -350,7 +350,7 @@ func VP8EncWrite(/* const */ enc *vp8.VP8Encoder) int {
     ok = PutPaddingByte(pic)
   }
 
-  enc.coded_size = (int)(CHUNK_HEADER_SIZE + riff_size)
+  enc.coded_size = (int)(constants.CHUNK_HEADER_SIZE + riff_size)
   ok = ok && WebPReportProgress(pic, final_percent, &enc.percent)
   if !ok { WebPEncodingSetError(pic, ENC_ERROR_BAD_WRITE) }
   return ok

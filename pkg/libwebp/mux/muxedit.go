@@ -117,8 +117,8 @@ func CreateFrameData(width, height int, /*const*/ info *WebPMuxFrameInfo, /*cons
 // Also outputs 'is_lossless' to be true if the given bitstream is lossless.
 func GetImageData(/* const */ bitstream *WebPData, /*const*/ image *WebPData, /*const*/ alpha *WebPData, /*const*/ is_lossless *int) WebPMuxError {
   WebPDataInit(alpha);  // Default: no alpha.
-  if (bitstream.size < TAG_SIZE ||
-      stdlib.MemCmp(bitstream.bytes, "RIFF", TAG_SIZE)) {
+  if (bitstream.size < constants.TAG_SIZE ||
+      stdlib.MemCmp(bitstream.bytes, "RIFF", constants.TAG_SIZE)) {
     // It is NOT webp file data. Return input data as is.
     *image = *bitstream
   } else {
@@ -167,7 +167,7 @@ func WebPMuxSetChunk(mux *WebPMux, /*const*/ fourcc [4]byte, /*const*/ chunk_dat
   var tag uint32
   var err WebPMuxError
   if (mux == nil || fourcc == nil || chunk_data == nil ||
-      chunk_data.bytes == nil || chunk_data.size > MAX_CHUNK_PAYLOAD) {
+      chunk_data.bytes == nil || chunk_data.size > constants.MAX_CHUNK_PAYLOAD) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
   tag = ChunkGetTagFromFourCC(fourcc)
@@ -217,7 +217,7 @@ func WebPMuxSetImage(mux *WebPMux, /*const*/ bitstream *WebPData, copy_data int)
   var err WebPMuxError
 
   if (mux == nil || bitstream == nil || bitstream.bytes == nil ||
-      bitstream.size > MAX_CHUNK_PAYLOAD) {
+      bitstream.size > constants.MAX_CHUNK_PAYLOAD) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
 
@@ -251,7 +251,7 @@ func WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, copy_data 
   if info.id != WEBP_CHUNK_ANMF { return WEBP_MUX_INVALID_ARGUMENT  }
 
   if (info.bitstream.bytes == nil ||
-      info.bitstream.size > MAX_CHUNK_PAYLOAD) {
+      info.bitstream.size > constants.MAX_CHUNK_PAYLOAD) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
 
@@ -274,9 +274,9 @@ func WebPMuxPushFrame(mux *WebPMux, /*const*/ info *WebPMuxFrameInfo, copy_data 
     var tmp WebPMuxFrameInfo = *info
     tmp.x_offset &= ~1;  // Snap offsets to even.
     tmp.y_offset &= ~1
-    if (tmp.x_offset < 0 || tmp.x_offset >= MAX_POSITION_OFFSET ||
-        tmp.y_offset < 0 || tmp.y_offset >= MAX_POSITION_OFFSET ||
-        (tmp.duration < 0 || tmp.duration >= MAX_DURATION) ||
+    if (tmp.x_offset < 0 || tmp.x_offset >= constants.MAX_POSITION_OFFSET ||
+        tmp.y_offset < 0 || tmp.y_offset >= constants.MAX_POSITION_OFFSET ||
+        (tmp.duration < 0 || tmp.duration >= constants.MAX_DURATION) ||
         tmp.dispose_method != (tmp.dispose_method & 1)) {
       err = WEBP_MUX_INVALID_ARGUMENT
       goto Err
@@ -303,10 +303,10 @@ Err:  // Something bad happened.
 
 func WebPMuxSetAnimationParams(mux *WebPMux, /*const*/ params *WebPMuxAnimParams) WebPMuxError {
   var err WebPMuxError
-  var data [ANIM_CHUNK_SIZE]uint8
+  var data [constants.ANIM_CHUNK_SIZE]uint8
 
   if mux == nil || params == nil { return WEBP_MUX_INVALID_ARGUMENT  }
-  if (params.loop_count < 0 || params.loop_count >= MAX_LOOP_COUNT) {
+  if (params.loop_count < 0 || params.loop_count >= constants.MAX_LOOP_COUNT) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
 
@@ -327,10 +327,10 @@ func WebPMuxSetCanvasSize(mux *WebPMux, width, height int) WebPMuxError {
   if (mux == nil) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
-  if (width < 0 || height < 0 || width > MAX_CANVAS_SIZE || height > MAX_CANVAS_SIZE) {
+  if (width < 0 || height < 0 || width > constants.MAX_CANVAS_SIZE || height > constants.MAX_CANVAS_SIZE) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
-  if (uint64(width * height) >= MAX_IMAGE_AREA) {
+  if (uint64(width * height) >= constants.MAX_IMAGE_AREA) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
   if ((width * height) == 0 && (width | height) != 0) {
@@ -364,7 +364,7 @@ func WebPMuxDeleteFrame(mux *WebPMux, nth uint32) WebPMuxError {
 
 func GetFrameInfo(/* const */ frame_chunk *WebPChunk, /*const*/ x_offset *int, /*const*/ y_offset *int, /*const*/ duration *int) WebPMuxError {
   var data *WebPData = &frame_chunk.data
-  expected_data_size := ANMF_CHUNK_SIZE
+  expected_data_size := constants.ANMF_CHUNK_SIZE
   assert.Assert(frame_chunk.tag == kChunks[IDX_ANMF].tag)
   assert.Assert(frame_chunk != nil)
   if data.size != expected_data_size { return WEBP_MUX_INVALID_ARGUMENT  }
@@ -413,8 +413,8 @@ func GetAdjustedCanvasSize(/* const */ mux *WebPMux, /*const*/ width *int, /*con
 	  max_x_pos := x_offset + w
       max_y_pos := y_offset + h
       if err != WEBP_MUX_OK { return err }
-      assert.Assert(x_offset < MAX_POSITION_OFFSET)
-      assert.Assert(y_offset < MAX_POSITION_OFFSET)
+      assert.Assert(x_offset < constants.MAX_POSITION_OFFSET)
+      assert.Assert(y_offset < constants.MAX_POSITION_OFFSET)
 
       if max_x_pos > max_x { max_x = max_x_pos }
       if max_y_pos > max_y { max_y = max_y_pos }
@@ -439,8 +439,8 @@ func CreateVP8XChunk(/* const */ mux *WebPMux) WebPMuxError {
   flags := 0
   width := 0
   height := 0
-  uint8 data[VP8X_CHUNK_SIZE]
-  const WebPData vp8x = {data, VP8X_CHUNK_SIZE}
+  uint8 data[constants.VP8X_CHUNK_SIZE]
+  const WebPData vp8x = {data, constants.VP8X_CHUNK_SIZE}
   var images *WebPMuxImage = nil
 
   assert.Assert(mux != nil)
@@ -481,7 +481,7 @@ func CreateVP8XChunk(/* const */ mux *WebPMux) WebPMuxError {
   if (width <= 0 || height <= 0) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
-  if (width > MAX_CANVAS_SIZE || height > MAX_CANVAS_SIZE) {
+  if (width > constants.MAX_CANVAS_SIZE || height > constants.MAX_CANVAS_SIZE) {
     return WEBP_MUX_INVALID_ARGUMENT
   }
 
@@ -593,7 +593,7 @@ func WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) WebPMuxError {
   size = ChunkListDiskSize(mux.vp8x) + ChunkListDiskSize(mux.iccp) +
          ChunkListDiskSize(mux.anim) + ImageListDiskSize(mux.images) +
          ChunkListDiskSize(mux.exif) + ChunkListDiskSize(mux.xmp) +
-         ChunkListDiskSize(mux.unknown) + RIFF_HEADER_SIZE
+         ChunkListDiskSize(mux.unknown) + constants.RIFF_HEADER_SIZE
 
 //   data = (*uint8)WebPSafeMalloc(uint64(1), size)
 //   if data == nil { return WEBP_MUX_MEMORY_ERROR  }

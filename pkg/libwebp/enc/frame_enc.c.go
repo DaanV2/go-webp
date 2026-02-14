@@ -16,10 +16,10 @@ const DEBUG_SEARCH =0  // useful to track search convergence
 //------------------------------------------------------------------------------
 // multi-pass convergence
 
-const HEADER_SIZE_ESTIMATE = (RIFF_HEADER_SIZE + CHUNK_HEADER_SIZE + VP8_FRAME_HEADER_SIZE)
+const HEADER_SIZE_ESTIMATE = (constants.RIFF_HEADER_SIZE + constants.CHUNK_HEADER_SIZE + constants.VP8_FRAME_HEADER_SIZE)
 const DQ_LIMIT =0.4  // convergence is considered reached if dq < DQ_LIMIT
 // we allow 2k of extra head-room in PARTITION0 limit.
-const PARTITION0_SIZE_LIMIT =((VP8_MAX_PARTITION0_SIZE - uint64(2048)) << 11)
+const PARTITION0_SIZE_LIMIT =((constants.VP8_MAX_PARTITION0_SIZE - uint64(2048)) << 11)
 
 func Clamp(float64 v, float64 min, float64 max) float64 {
   return tenary.If(v < min, min, tenary.If(v > max, max, v))

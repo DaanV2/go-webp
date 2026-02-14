@@ -29,20 +29,15 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 const VALUES_IN_BYTE =256
 
-extern func VP8LClearBackwardRefs(/* const */ refs *VP8LBackwardRefs)
-extern int VP8LDistanceToPlaneCode(xsize int, dist int)
-extern func VP8LBackwardRefsCursorAdd(/* const */ refs *VP8LBackwardRefs, /*const*/ PixOrCopy v)
-
 type CostModel struct {
-  uint32 alpha[VALUES_IN_BYTE]
-  uint32 red[VALUES_IN_BYTE]
-  uint32 blue[VALUES_IN_BYTE]
-  uint32 distance[NUM_DISTANCE_CODES]
+   alpha [VALUES_IN_BYTE]uint32
+   red [VALUES_IN_BYTE]uint32
+   blue [VALUES_IN_BYTE]uint32
+   distance [constants.NUM_DISTANCE_CODES]uint32
   literal *uint32
 }
 
-func ConvertPopulationCountTableToBitEstimates(
-    int num_symbols, /*const*/ uint32 population_counts[], uint32 output[]) {
+func ConvertPopulationCountTableToBitEstimates(num_symbols int , /*const*/  population_counts []uint32, output []uint32) {
   sum := 0
   nonzeros := 0
   var i int
@@ -77,7 +72,7 @@ func CostModelBuild(/* const */ m *CostModel,  xsize , cache_bits int, /*const*/
   ConvertPopulationCountTableToBitEstimates(VALUES_IN_BYTE, histo.red, m.red)
   ConvertPopulationCountTableToBitEstimates(VALUES_IN_BYTE, histo.blue, m.blue)
   ConvertPopulationCountTableToBitEstimates(VALUES_IN_BYTE, histo.alpha, m.alpha)
-  ConvertPopulationCountTableToBitEstimates(NUM_DISTANCE_CODES, histo.distance, m.distance)
+  ConvertPopulationCountTableToBitEstimates(constants.NUM_DISTANCE_CODES, histo.distance, m.distance)
   ok = 1
 
 Error:
@@ -86,20 +81,20 @@ Error:
 }
 
 func GetLiteralCost(/* const */ m *CostModel, uint32 v) int64 {
-  return (int64)m.alpha[v >> 24] + m.red[(v >> 16) & 0xff] +
-         m.literal[(v >> 8) & 0xff] + m.blue[v & 0xff]
+  return int64(m.alpha[v >> 24] + m.red[(v >> 16) & 0xff] +
+         m.literal[(v >> 8) & 0xff] + m.blue[v & 0xff])
 }
 
 func GetCacheCost(/* const */ m *CostModel, idx uint32) int64 {
-  literal_idx := VALUES_IN_BYTE + NUM_LENGTH_CODES + idx
-  return (int64)m.literal[literal_idx]
+  literal_idx := VALUES_IN_BYTE + constants.NUM_LENGTH_CODES + idx
+  return int64(m.literal[literal_idx])
 }
 
 func GetLengthCost(/* const */ m *CostModel, uint32 length) int64 {
-  int code, extra_bits
+  var code, extra_bits int
   VP8LPrefixEncodeBits(length, &code, &extra_bits)
-  return (int64)m.literal[VALUES_IN_BYTE + code] +
-         (int64(extra_bits)<< LOG_2_PRECISION_BITS)
+  return int64(m.literal[VALUES_IN_BYTE + code] +
+         (int64(extra_bits)<< LOG_2_PRECISION_BITS))
 }
 
 func GetDistanceCost(/* const */ m *CostModel, uint32 distance) int64 {

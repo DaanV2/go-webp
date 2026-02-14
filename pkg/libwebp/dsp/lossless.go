@@ -17,6 +17,7 @@ package dsp
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/generics"
 	"github.com/daanv2/go-webp/pkg/libwebp/webp"
 	"github.com/daanv2/go-webp/pkg/stdlib"
@@ -90,7 +91,7 @@ func Select(a, b, c uint32) uint32 {
 func VP8LPredictor0_C( /* const */ left []uint32 /*const*/, top []uint32) uint32 {
 	_ = top
 	_ = left
-	return ARGB_BLACK
+	return constants.ARGB_BLACK
 }
 func VP8LPredictor1_C( /* const */ left []uint32 /*const*/, top []uint32) uint32 {
 	_ = top
@@ -151,7 +152,7 @@ func PredictorAdd0_C( /* const */ in []uint32 /*const*/, upper []uint32, num_pix
 	var x int
 	_ = upper
 	for x = 0; x < num_pixels; x++ {
-		out[x] = VP8LAddPixels(in[x], ARGB_BLACK)
+		out[x] = VP8LAddPixels(in[x], constants.ARGB_BLACK)
 	}
 }
 func PredictorAdd1_C( /* const */ in []uint32 /*const*/, upper []uint32, num_pixels int, out []uint32) {

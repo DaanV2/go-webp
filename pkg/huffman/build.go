@@ -10,6 +10,7 @@ package huffman
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
 )
 
 // sorted[code_lengths_size] is a pre-allocated array for sorting symbols
@@ -21,9 +22,9 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 	var len int                  // current code length
 	var symbol int               // symbol index in original or sorted table
 	// number of codes of each length:
-	var count = [MAX_ALLOWED_CODE_LENGTH + 1]int{0}
+	var count = [constants.MAX_ALLOWED_CODE_LENGTH + 1]int{0}
 	// offsets in sorted table for each length:
-	var offset [MAX_ALLOWED_CODE_LENGTH + 1]int
+	var offset [constants.MAX_ALLOWED_CODE_LENGTH + 1]int
 
 	assert.Assert(code_lengths_size != 0)
 	assert.Assert(code_lengths != nil)
@@ -32,7 +33,7 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 
 	// Build histogram of code lengths.
 	for symbol = 0; symbol < code_lengths_size; symbol++ {
-		if code_lengths[symbol] > MAX_ALLOWED_CODE_LENGTH {
+		if code_lengths[symbol] > constants.MAX_ALLOWED_CODE_LENGTH {
 			return 0
 		}
 		count[code_lengths[symbol]] = count[code_lengths[symbol]] + 1
@@ -45,7 +46,7 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 
 	// Generate offsets into sorted symbol table by code length.
 	offset[1] = 0
-	for len = 1; len < MAX_ALLOWED_CODE_LENGTH; len++ {
+	for len = 1; len < constants.MAX_ALLOWED_CODE_LENGTH; len++ {
 		if count[len] > (1 << len) {
 			return 0
 		}
@@ -73,7 +74,7 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 	}
 
 	// Special case code with only one value.
-	if offset[MAX_ALLOWED_CODE_LENGTH] == 1 {
+	if offset[constants.MAX_ALLOWED_CODE_LENGTH] == 1 {
 		if sorted != nil {
 			code := &HuffmanCode{
 				bits:  0,
@@ -126,7 +127,7 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 		// Fill in 2nd level tables and add pointers to root table.
 		len = root_bits + 1
 		step = 2
-		for len <= MAX_ALLOWED_CODE_LENGTH {
+		for len <= constants.MAX_ALLOWED_CODE_LENGTH {
 			num_open <<= 1
 			num_nodes += num_open
 			num_open -= count[len]
@@ -163,7 +164,7 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 		}
 
 		// Check if tree is full.
-		if num_nodes != 2*offset[MAX_ALLOWED_CODE_LENGTH]-1 {
+		if num_nodes != 2*offset[constants.MAX_ALLOWED_CODE_LENGTH]-1 {
 			return 0
 		}
 	}

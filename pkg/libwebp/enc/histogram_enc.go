@@ -49,11 +49,11 @@ type VP8LHistogram struct {
 	// 'literal' contains green literal, palette-code and
 	// copy-length-prefix histogram
 	literal []uint32 // Pointer to the allocated buffer for literal.
-	red     [NUM_LITERAL_CODES]uint32
-	blue    [NUM_LITERAL_CODES]uint32
-	alpha   [NUM_LITERAL_CODES]uint32
+	red     [constants.NUM_LITERAL_CODES]uint32
+	blue    [constants.NUM_LITERAL_CODES]uint32
+	alpha   [constants.NUM_LITERAL_CODES]uint32
 	// Backward reference prefix-code histogram.
-	distance          [NUM_DISTANCE_CODES]uint32
+	distance          [constants.NUM_DISTANCE_CODES]uint32
 	palette_code_bits int
 	// The following members are only used within VP8LGetHistoImageSymbols.
 
@@ -229,7 +229,7 @@ func HistogramAddSinglePixOrCopy(histo *VP8LHistogram /*const*/, v *PixOrCopy, d
 	} else {
 		var code, extra_bits int
 		VP8LPrefixEncodeBits(PixOrCopyLength(v), &code, &extra_bits)
-		histo.literal[NUM_LITERAL_CODES+code] = histo.literal[NUM_LITERAL_CODES+code] + 1
+		histo.literal[constants.NUM_LITERAL_CODES+code] = histo.literal[constants.NUM_LITERAL_CODES+code] + 1
 		if distance_modifier == nil {
 			VP8LPrefixEncodeBits(PixOrCopyDistance(v), &code, &extra_bits)
 		} else {
@@ -296,7 +296,7 @@ func VP8LBitsEntropy( /* const */ array *uint32, n int) uint64 {
 func InitialHuffmanCost() uint64 {
 	// Small bias because Huffman code length is typically not stored in
 	// full length.
-	kHuffmanCodeOfHuffmanCodeSize := CODE_LENGTH_CODES * 3
+	kHuffmanCodeOfHuffmanCodeSize := constants.CODE_LENGTH_CODES * 3
 	// Subtract a bias of 9.1.
 	return (kHuffmanCodeOfHuffmanCodeSize << LOG_2_PRECISION_BITS) - DivRound(uint64(91)<<LOG_2_PRECISION_BITS, 10)
 }
@@ -393,7 +393,7 @@ func VP8LHistogramEstimateBits( /* const */ h *VP8LHistogram) uint64 {
 		population := GetPopulationInfo(h, HistogramIndex(i))
 		cost += PopulationCost(population, length /*trivial_sym=*/, nil /*is_used=*/, nil)
 	}
-	cost += ((uint64)(VP8LExtraCost(h.literal+NUM_LITERAL_CODES, NUM_LENGTH_CODES)+VP8LExtraCost(h.distance, NUM_DISTANCE_CODES)) << LOG_2_PRECISION_BITS)
+	cost += ((uint64)(VP8LExtraCost(h.literal+constants.NUM_LITERAL_CODES, constants.NUM_LENGTH_CODES)+VP8LExtraCost(h.distance, constants.NUM_DISTANCE_CODES)) << LOG_2_PRECISION_BITS)
 	return cost
 }
 

@@ -75,7 +75,7 @@ func UpdateHisto(uint32 histo_argb[HISTO_SIZE], argb uint32) {
 func PredictBatch(int mode, x_start int, y int, num_pixels int, /*const*/ current *uint32, /*const*/ upper *uint32, out *uint32) {
   if (x_start == 0) {
     if (y == 0) {
-      // ARGB_BLACK.
+      // constants.ARGB_BLACK.
       VP8LPredictorsSub[0](current, nil, 1, out)
     } else {
       // Top one.
@@ -234,7 +234,7 @@ func GetResidual(width, height int, /*const*/ upper_row *uint32, /*const*/ curre
       var predict uint32
       var residual uint32
       if (y == 0) {
-        predict = tenary.If(x == 0, ARGB_BLACK, current_row[x - 1])  // Left.
+        predict = tenary.If(x == 0, constants.ARGB_BLACK, current_row[x - 1])  // Left.
       } else if (x == 0) {
         predict = upper_row[x];  // Top.
       } else {
@@ -311,7 +311,7 @@ func GetBestPredictorForTile(/* const */ all_argb *uint32, subsampling_index int
   }
   // Update the accumulated histogram.
   VP8LAddVectorEq(best_histo, accumulated_argb, HISTO_SIZE)
-  modes[tile_y * tiles_per_row + tile_x] = ARGB_BLACK | (best_mode << 8)
+  modes[tile_y * tiles_per_row + tile_x] = constants.ARGB_BLACK | (best_mode << 8)
   pred_histos[best_mode] = pred_histos[best_mode] + 1
 }
 
@@ -671,7 +671,7 @@ func VP8LResidualImage(width, height int, min_bits int, max_bits int, low_effort
     tiles_per_col := VP8LSubSampleSize(height, max_bits)
     var i int
     for i = 0; i < tiles_per_row * tiles_per_col; i++ {
-      image[i] = ARGB_BLACK | (kPredLowEffort << 8)
+      image[i] = constants.ARGB_BLACK | (kPredLowEffort << 8)
     }
     *best_bits = max_bits
   } else {

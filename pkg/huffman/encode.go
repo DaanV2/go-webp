@@ -24,7 +24,7 @@ func ValuesShouldBeCollapsedToStrideAverage(a, b int) bool {
 }
 
 func CodeRepeatedValues(repetitions int, tokens []*HuffmanTreeToken, value, prev_value uint8) []*HuffmanTreeToken {
-	assert.Assert(value <= MAX_ALLOWED_CODE_LENGTH)
+	assert.Assert(value <= constants.MAX_ALLOWED_CODE_LENGTH)
 
 	// NOTE: we move tokens with tokens = tokens[1:] cause it mimics the C code of tokens++
 	// And it returned how far we moved the tokens, so we can keep track of how many tokens we used.
@@ -151,14 +151,14 @@ func ConvertBitDepthsToSymbols( /* const */ tree *HuffmanTreeCode) {
 	len = tree.num_symbols
 	for i = 0; i < len; i++ {
 		code_length := tree.code_lengths[i]
-		assert.Assert(code_length <= MAX_ALLOWED_CODE_LENGTH)
+		assert.Assert(code_length <= constants.MAX_ALLOWED_CODE_LENGTH)
 		depth_count[code_length] = depth_count[code_length] + 1
 	}
 	depth_count[0] = 0 // ignore unused symbol
 	next_code[0] = 0
 	{
 		code := 0
-		for i = 1; i <= MAX_ALLOWED_CODE_LENGTH; i++ {
+		for i = 1; i <= constants.MAX_ALLOWED_CODE_LENGTH; i++ {
 			code = (code + depth_count[i-1]) << 1
 			next_code[i] = uint32(code)
 		}

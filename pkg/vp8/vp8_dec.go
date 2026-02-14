@@ -10,6 +10,7 @@ package vp8
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
 
@@ -186,7 +187,7 @@ func VP8CheckSignature(data []uint8, data_size uint64) int {
 // width and height. Returns 0 in case of formatting error. *width/*height
 // can be passed nil.
 func VP8GetInfo(data *uint8, data_size uint64, chunk_size uint64, width *int, height *int) int {
-  if data == nil || data_size < VP8_FRAME_HEADER_SIZE {
+  if data == nil || data_size < constants.VP8_FRAME_HEADER_SIZE {
     return 0  // not enough data
   }
   // check signature

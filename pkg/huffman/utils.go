@@ -15,6 +15,7 @@ package huffman
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
 
@@ -57,9 +58,9 @@ func ReplicateValue(table []*HuffmanCode /*(end - step +1)*/, step int, end int,
 // Returns the table width of the next 2nd level table. count is the histogram
 // of bit lengths for the remaining symbols, len is the code length of the next
 // processed symbol
-func NextTableBitSize(count []int /* (MAX_ALLOWED_CODE_LENGTH + 1) */, len int, root_bits int) int {
+func NextTableBitSize(count []int /* (constants.MAX_ALLOWED_CODE_LENGTH + 1) */, len int, root_bits int) int {
 	left := 1 << (len - root_bits)
-	for len < MAX_ALLOWED_CODE_LENGTH {
+	for len < constants.MAX_ALLOWED_CODE_LENGTH {
 		left -= count[len]
 		if left <= 0 {
 			break

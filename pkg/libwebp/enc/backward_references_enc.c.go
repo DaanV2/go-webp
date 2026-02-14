@@ -742,7 +742,7 @@ func CalculateBestCacheSize(/* const */ argb *uint32, quality int, /*const*/ ref
       // Deal with cache_bits > 0.
       for i = cache_bits_max; i >= 1; --i, key >>= 1 {
         if (VP8LColorCacheLookup(&hashers[i], key) == pix) {
-          ++histos[i].literal[NUM_LITERAL_CODES + NUM_LENGTH_CODES + key]
+          ++histos[i].literal[constants.NUM_LITERAL_CODES + constants.NUM_LENGTH_CODES + key]
         } else {
           VP8LColorCacheSet(&hashers[i], key, pix)
           ++histos[i].blue[b]
@@ -762,7 +762,7 @@ func CalculateBestCacheSize(/* const */ argb *uint32, quality int, /*const*/ ref
       argb_prev := *argb ^ uint(0xffffffff)
       VP8LPrefixEncode(len, &code, &extra_bits, &extra_bits_value)
       for i = 0; i <= cache_bits_max; i++ {
-        ++histos[i].literal[NUM_LITERAL_CODES + code]
+        ++histos[i].literal[constants.NUM_LITERAL_CODES + code]
       }
       // Update the color caches.
       for {
