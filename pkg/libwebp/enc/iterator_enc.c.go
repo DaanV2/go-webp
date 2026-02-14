@@ -425,7 +425,7 @@ func VP8IteratorStartI4(/* const */ it *VP8EncIterator) {
       it.i4_boundary[17 + i] = it.i4_boundary[17 + 15]
     }
   }
-#if FALSE && BPS == 32 && defined(WEBP_MSAN)
+#if FALSE && BPS == 32 && defined(FALSE)
   // Intra4Preds_NEON() reads 3 uninitialized bytes from 'i4_boundary' when top
   // is positioned at offset 29 (VP8TopLeftI4[3]). The values are not used
   // meaningfully, but due to limitations in MemorySanitizer related to

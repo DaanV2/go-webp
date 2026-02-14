@@ -301,8 +301,8 @@ type WebPConvertRGBToY = func(/* const */ rgb *uint8, y *uint8, width int, step 
 type WebPConvertBGRToY = func(/* const */ bgr *uint8, y *uint8, width int, step int)
 
 // used for plain-C fallback.
-extern func WebPConvertARGBToUV_C(/* const */ argb *uint32, u *uint8, v *uint8, src_width int, do_store int)
-extern func WebPConvertRGBA32ToUV_C(/* const */ rgb *uint16, u *uint8, v *uint8, width int)
+extern func WebPConvertARGBToUV(/* const */ argb *uint32, u *uint8, v *uint8, src_width int, do_store int)
+extern func WebPConvertRGBA32ToUV(/* const */ rgb *uint16, u *uint8, v *uint8, width int)
 
 // Must be called before using the above.
 func WebPInitConvertARGBToYUV(void)

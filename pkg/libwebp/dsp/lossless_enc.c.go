@@ -554,7 +554,7 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
 #endif
   }
 
-#if defined(WEBP_HAVE_NEON)
+#if FALSE
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     VP8LEncDspInitNEON()

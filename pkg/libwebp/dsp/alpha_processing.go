@@ -105,7 +105,7 @@ func PREMULTIPLY(x, m uint) int {
 }
 
 func ApplyAlphaMultiply_C(rgba *uint8, alpha_first int, w int, h int, stride int) {
-  for (h-- > 0) {
+  for ; h > 0; h-- {
     var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0))
     var alpha *uint8 = rgba + (tenary.If(alpha_first, 0, 3))
     var i int
@@ -139,7 +139,7 @@ func multiply(x uint8, m uint32) uint8 {
 }
 
 func ApplyAlphaMultiply4444_C(rgba *uint84444, w int, h int, stride int, rg_byte_pos int /* 0 or 1 */) {
-  for (h-- > 0) {
+  for ; h > 0; h-- {
     var i int
     for i = 0; i < w; i++ {
       rg := rgba4444[2 * i + rg_byte_pos]
@@ -206,7 +206,9 @@ func ExtractAlpha_C(/* const */ argb *uint8, argb_stride int, width, height int,
 
 func ExtractGreen_C(/* const */ argb *uint32, alpha *uint8, size int) {
   var i int
-  for (i = 0; i < size; ++i) alpha[i] = argb[i] >> 8
+  for (i = 0; i < size; ++i) {
+	alpha[i] = argb[i] >> 8
+}
 }
 
 func MakeARGB32(a, r, g, b uint32) uint32 {
@@ -290,7 +292,7 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
 #endif
   }
 
-#if defined(WEBP_HAVE_NEON)
+#if FALSE
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
     WebPInitAlphaProcessingNEON()
