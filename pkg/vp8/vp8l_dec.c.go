@@ -171,7 +171,7 @@ func PlaneCodeToDistance(xsize, plane_code int ) int {
 // Decodes the next Huffman code from bit-stream.
 // VP8LFillBitWindow(br) needs to be called at minimum every second call
 // to ReadSymbol, in order to pre-fetch enough bits.
-func ReadSymbol(/* const */ table *HuffmanCode, /*const*/ br *VP8LBitReader) int {
+func ReadSymbol(/* const */ table *huffman.HuffmanCode, /*const*/ br *VP8LBitReader) int {
   var nbits int
   val := VP8LPrefetchBits(br)
   table += val & HUFFMAN_TABLE_MASK
@@ -204,7 +204,7 @@ func ReadPackedSymbols(/* const */ group *HTreeGroup, /*const*/ br *VP8LBitReade
   }
 }
 
-func AccumulateHCode(HuffmanCode hcode, shift int, /*const*/ huff *HuffmanCode32) int {
+func AccumulateHCode(HuffmanCode hcode, shift int, /*const*/ huff *huffman.HuffmanCode32) int {
   huff.bits += hcode.bits
   huff.value |= uint32(hcode.value) << shift
   assert.Assert(huff.bits <= HUFFMAN_TABLE_BITS)
@@ -215,7 +215,7 @@ func BuildPackedTable(/* const */ htree_group *HTreeGroup) {
   var code uint32
   for code = 0; code < HUFFMAN_PACKED_TABLE_SIZE; code++ {
     bits := code
-    var huff *HuffmanCode32 = &htree_group.packed_table[bits]
+    var huff *huffman.HuffmanCode32 = &htree_group.packed_table[bits]
     var hcode HuffmanCode = htree_group.htrees[GREEN][bits]
     if hcode.value >= NUM_LITERAL_CODES {
       huff.bits = hcode.bits + BITS_SPECIAL_MARKER
@@ -259,7 +259,7 @@ func ReadHuffmanCodeLengths(/* const */ dec *VP8LDecoder, /*const*/ code_length_
 
   symbol = 0
   for symbol < num_symbols {
-    const p *HuffmanCode
+    const p *huffman.HuffmanCode
     var code_len int
     if max_symbol-- == 0 { break }
     VP8LFillBitWindow(br)
@@ -298,7 +298,7 @@ End:
 
 // 'code_lengths' is pre-allocated temporary buffer, used for creating Huffman
 // tree.
-func ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*const*/ code_lengths *int, /*const*/ table *HuffmanTables) int {
+func ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*const*/ code_lengths *int, /*const*/ table *huffman.HuffmanTables) int {
   ok := 0
   size := 0
   var br *VP8LBitReader = &decoder.br
@@ -347,7 +347,7 @@ func ReadHuffmanCodes(/* const */ dec *VP8LDecoder, xsize int, ysize int, color_
   var hdr *VP8LMetadata = &decoder.hdr
   huffman_image *uint32 = nil
   htree_groups *HTreeGroup = nil
-  huffman_tables *HuffmanTables = &hdr.huffman_tables
+  huffman_tables *huffman.HuffmanTables = &hdr.huffman_tables
   num_htree_groups := 1
   num_htree_groups_max := 1
   mapping *int = nil
@@ -431,7 +431,7 @@ Error:
 // 'num_htree_groups' groups. If 'num_htree_groups_max' > 'num_htree_groups',
 // some of those indices map to -1.0 This is used for non-balanced codes to
 // limit memory usage.
-func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htree_groups_max int, /*const*/ mapping *int, /*const*/ dec *VP8LDecoder, /*const*/ huffman_tables *HuffmanTables, *HTreeGroup* const htree_groups) int {
+func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htree_groups_max int, /*const*/ mapping *int, /*const*/ dec *VP8LDecoder, /*const*/ huffman_tables *huffman.HuffmanTables, *HTreeGroup* const htree_groups) int {
   int i, j, ok = 0, 0, 0
   max_alphabet_size := kAlphabetSize[0] + tenary.If((color_cache_bits > 0), 1 << color_cache_bits, 0)
   table_size := kTableSize[color_cache_bits]
@@ -468,7 +468,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
       }
     } else {
       var htree_group *HTreeGroup = &(*htree_groups)[tenary.If(mapping == nil, i, mapping[i])]
-      var htrees *HuffmanCode  = htree_group.htrees
+      var htrees *huffman.HuffmanCode  = htree_group.htrees
       var size int
       total_size := 0
       is_trivial_literal := 1
@@ -875,7 +875,7 @@ func Is8bOptimizable(/* const */ hdr *VP8LMetadata) int {
   // When the Huffman tree contains only one symbol, we can skip the
   // call to ReadSymbol() for red/blue/alpha channels.
   for i = 0; i < hdr.num_htree_groups; i++ {
-    var htrees *HuffmanCode = hdr.htree_groups[i].htrees
+    var htrees *huffman.HuffmanCode = hdr.htree_groups[i].htrees
     if htrees[RED][0].bits > 0 { return 0  }
     if htrees[BLUE][0].bits > 0 { return 0  }
     if htrees[ALPHA][0].bits > 0 { return 0  }
