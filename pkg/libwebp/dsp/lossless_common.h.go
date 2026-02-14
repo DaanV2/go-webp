@@ -84,8 +84,8 @@ extern const uint64 kSLog2Table[LOG_LOOKUP_IDX_MAX];
 typedef uint32 (*VP8LFastLog2SlowFunc)(uint32 v);
 typedef uint64 (*VP8LFastSLog2SlowFunc)(uint32 v);
 
-extern VP8LFastLog2SlowFunc VP8LFastLog2Slow;
-extern VP8LFastSLog2SlowFunc VP8LFastSLog2Slow;
+
+
 
 func VP8LFastLog2(uint32 v) uint32 {
   return tenary.If(v < LOG_LOOKUP_IDX_MAX, kLog2Table[v], VP8LFastLog2Slow(v))

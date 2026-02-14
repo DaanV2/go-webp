@@ -194,7 +194,7 @@ func GradientUnfilter_C(/* const */ prev *uint8, /*const*/ in *uint8, out *uint8
 WebPFilterFunc WebPFilters[WEBP_FILTER_LAST];
 WebPUnfilterFunc WebPUnfilters[WEBP_FILTER_LAST];
 
-extern VP8CPUInfo VP8GetCPUInfo;
+
 extern func VP8FiltersInitMIPSdspR2(void);
 extern func VP8FiltersInitMSA(void);
 extern func VP8FiltersInitNEON(void);

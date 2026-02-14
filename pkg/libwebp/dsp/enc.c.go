@@ -712,7 +712,7 @@ VP8QuantizeBlockWHT VP8EncQuantizeBlockWHT;
 VP8BlockCopy VP8Copy4x4;
 VP8BlockCopy VP8Copy16x8;
 
-extern VP8CPUInfo VP8GetCPUInfo;
+
 extern func VP8EncDspInitSSE2(void);
 extern func VP8EncDspInitSSE41(void);
 extern func VP8EncDspInitNEON(void);

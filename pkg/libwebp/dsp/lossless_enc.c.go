@@ -454,7 +454,7 @@ VP8LPredictorAddSubFunc VP8LPredictorsSub[16];
 VP8LPredictorAddSubFunc VP8LPredictorsSub_C[16];
 VP8LPredictorAddSubFunc VP8LPredictorsSub_SSE[16];
 
-extern VP8CPUInfo VP8GetCPUInfo;
+
 extern func VP8LEncDspInitSSE2(void);
 extern func VP8LEncDspInitSSE41(void);
 extern func VP8LEncDspInitAVX2(void);

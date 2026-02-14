@@ -266,7 +266,7 @@ type WebPAlphaReplace = func(src *uint32, length int, color uint32);
 //------------------------------------------------------------------------------
 // Init function
 
-extern VP8CPUInfo VP8GetCPUInfo;
+
 extern func WebPInitAlphaProcessingMIPSdspR2(void);
 extern func WebPInitAlphaProcessingSSE2(void);
 extern func WebPInitAlphaProcessingSSE41(void);

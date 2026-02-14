@@ -715,7 +715,7 @@ VP8SimpleFilterFunc VP8SimpleHFilter16i;
 
 func (*VP8DitherCombine8x8)(/* const */ dither *uint8, dst *uint8, dst_stride int);
 
-extern VP8CPUInfo VP8GetCPUInfo;
+
 extern func VP8DspInitSSE2(void);
 extern func VP8DspInitSSE41(void);
 extern func VP8DspInitNEON(void);

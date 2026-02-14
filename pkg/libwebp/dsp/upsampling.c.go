@@ -226,7 +226,7 @@ const WebPYuv444ToRgb565_C =EmptyYuv444Func
 
 WebPYUV444Converter WebPYUV444Converters[MODE_LAST];
 
-extern VP8CPUInfo VP8GetCPUInfo;
+
 extern func WebPInitYUV444ConvertersMIPSdspR2(void);
 extern func WebPInitYUV444ConvertersSSE2(void);
 extern func WebPInitYUV444ConvertersSSE41(void);

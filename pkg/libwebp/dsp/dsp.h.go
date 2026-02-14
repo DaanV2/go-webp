@@ -63,17 +63,17 @@ const =__restrict
 type VP8Idct = func(/* const */ ref *uint8, /*const*/ in *int16, dst *uint8, do_two int);
 type VP8Fdct = func(/* const */ src *uint8, /*const*/ ref *uint8, out *int16);
 type VP8WHT = func(/* const */ in *int16, out *int16);
-extern VP8Idct VP8ITransform;
-extern VP8Fdct VP8FTransform;
-extern VP8Fdct VP8FTransform2;  // performs two transforms at a time
-extern VP8WHT VP8FTransformWHT;
+
+
+
+
 // Predictions
 // is the destination *dst block. and can be *top nil *left.
 type VP8IntraPreds = func(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8);
 type VP8Intra4Preds = func(dst *uint8, /*const*/ top *uint8);
-extern VP8Intra4Preds VP8EncPredLuma4;
-extern VP8IntraPreds VP8EncPredLuma16;
-extern VP8IntraPreds VP8EncPredChroma8;
+
+
+
 
 typedef int (*VP8Metric)(/* const */ pix *uint8, /*const*/ ref *uint8);
 extern VP8Metric VP8SSE16x16, VP8SSE16x8, VP8SSE8x8, VP8SSE4x4;
@@ -85,11 +85,11 @@ extern VP8WMetric VP8TDisto4x4, VP8TDisto16x16;
 // Compute the average (DC) of four 4x4 blocks.
 // Each sub-4x4 block #i sum is stored in dc[i].
 type VP8MeanMetric = func(/* const */ ref *uint8, uint32 dc[4]);
-extern VP8MeanMetric VP8Mean16x4;
+
 
 type VP8BlockCopy = func(/* const */ src *uint8, dst *uint8);
-extern VP8BlockCopy VP8Copy4x4;
-extern VP8BlockCopy VP8Copy16x8;
+
+
 // Quantization
 struct VP8Matrix;  // forward declaration
 typedef int (*VP8QuantizeBlock)(
@@ -98,13 +98,13 @@ typedef int (*VP8QuantizeBlock)(
 typedef int (*VP8Quantize2Blocks)(
     int16 in[32], int16 out[32], /*const*/ struct /* const */ mtx *VP8Matrix);
 
-extern VP8QuantizeBlock VP8EncQuantizeBlock;
-extern VP8Quantize2Blocks VP8EncQuantize2Blocks;
+
+
 
 // specific to 2nd transform:
 typedef int (*VP8QuantizeBlockWHT)(
     int16 in[16], int16 out[16], /*const*/ struct /* const */ mtx *VP8Matrix);
-extern VP8QuantizeBlockWHT VP8EncQuantizeBlockWHT;
+
 
 extern [16 + 4 + 4];
 
@@ -116,7 +116,7 @@ type VP8Histogram struct {
   last_non_zero int
 } 
 type VP8CHisto = func(/* const */ ref *uint8, /*const*/ pred *uint8, start_block int, end_block int, /* const */ histo *VP8Histogram);
-extern VP8CHisto VP8CollectHistogram;
+
 // General-purpose util function to help VP8CollectHistogram().
 func VP8SetHistogramData(/* const */ int distribution[MAX_COEFF_THRESH + 1], /*const*/ histo *VP8Histogram);
 
@@ -133,11 +133,11 @@ extern const uint8 VP8EncBands[16 + 1];
 
 struct VP8Residual;
 type VP8SetResidualCoeffsFunc = func(/*const*//* const */ coeffs *int16, struct /* const */ res *VP8Residual);
-extern VP8SetResidualCoeffsFunc VP8SetResidualCoeffs;
+
 
 // Cost calculation function.
 typedef int (*VP8GetResidualCostFunc)(int ctx0, /*const*/ struct const res *VP8Residual);
-extern VP8GetResidualCostFunc VP8GetResidualCost;
+
 
 // must be called before anything using the above
 func VP8EncDspCostInit(void);
@@ -166,8 +166,8 @@ typedef double (*VP8SSIMGetClippedFunc)(/* const */ src *uint81, int stride1, /*
 // 8 rows at offset src1 and src2
 typedef double (*VP8SSIMGetFunc)(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2);
 
-extern VP8SSIMGetFunc VP8SSIMGet;                // unclipped / unchecked
-extern VP8SSIMGetClippedFunc VP8SSIMGetClipped;  // with clipping
+
+
 #endif
 
 
@@ -181,12 +181,12 @@ func VP8SSIMDspInit(void);
 type VP8DecIdct = func(/* const */ coeffs *int16, dst *uint8);
 // when doing two transforms, coeffs is actually int16[2][16].
 type VP8DecIdct2 = func(/* const */ coeffs *int16, dst *uint8, do_two int);
-extern VP8DecIdct2 VP8Transform;
-extern VP8DecIdct VP8TransformAC3;
-extern VP8DecIdct VP8TransformUV;
-extern VP8DecIdct VP8TransformDC;
-extern VP8DecIdct VP8TransformDCUV;
-extern VP8WHT VP8TransformWHT;
+
+
+
+
+
+
 
 const WEBP_TRANSFORM_AC3_C1 =20091
 const WEBP_TRANSFORM_AC3_C2 =35468
@@ -210,25 +210,25 @@ func VP8InitClipTables(void);
 
 // simple filter (only for luma)
 type VP8SimpleFilterFunc = func(p *uint8, stride int, thresh int);
-extern VP8SimpleFilterFunc VP8SimpleVFilter16;
-extern VP8SimpleFilterFunc VP8SimpleHFilter16;
-extern VP8SimpleFilterFunc VP8SimpleVFilter16i;  // filter 3 inner edges
-extern VP8SimpleFilterFunc VP8SimpleHFilter16i;
+
+
+
+
 
 // regular filter (on both macroblock edges and inner edges)
 type VP8LumaFilterFunc = func(luma *uint8, stride int, thresh int, ithresh int, hev_t int);
 type VP8ChromaFilterFunc = func(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_t int);
 // on outer edge
-extern VP8LumaFilterFunc VP8VFilter16;
-extern VP8LumaFilterFunc VP8HFilter16;
-extern VP8ChromaFilterFunc VP8VFilter8;
-extern VP8ChromaFilterFunc VP8HFilter8;
+
+
+
+
 
 // on inner edge
-extern VP8LumaFilterFunc VP8VFilter16i;  // filtering 3 inner edges altogether
-extern VP8LumaFilterFunc VP8HFilter16i;
-extern VP8ChromaFilterFunc VP8VFilter8i;  // filtering u and v altogether
-extern VP8ChromaFilterFunc VP8HFilter8i;
+
+
+
+
 
 // Dithering. Combines dithering values (centered around 128) with dst[],
 // according to: dst[] = clip(dst[] + (((dither[]-128) + 8) >> 4)
@@ -318,15 +318,15 @@ struct WebPRescaler;
 type WebPRescalerImportRowFunc = func(
     struct /* const */ wrk *WebPRescaler, /*const*/ src *uint8);
 
-extern WebPRescalerImportRowFunc WebPRescalerImportRowExpand;
-extern WebPRescalerImportRowFunc WebPRescalerImportRowShrink;
+
+
 
 // Export one row (starting at x_out position) from rescaler.
 // 'Expand' corresponds to the wrk.y_expand case.
 // Otherwise 'Shrink' is to be used
 type WebPRescalerExportRowFunc = func(struct const wrk *WebPRescaler);
-extern WebPRescalerExportRowFunc WebPRescalerExportRowExpand;
-extern WebPRescalerExportRowFunc WebPRescalerExportRowShrink;
+
+
 
 // Plain-C implementation, as fall-back.
 extern func WebPRescalerImportRowExpand_C(
