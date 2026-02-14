@@ -14,6 +14,7 @@ import (
 	"github.com/daanv2/go-webp/pkg/assert"
 	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/generics"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
 	"github.com/daanv2/go-webp/pkg/picture"
 	"github.com/daanv2/go-webp/pkg/ptr"
 	"github.com/daanv2/go-webp/pkg/stdlib"
@@ -78,8 +79,8 @@ type VP8LHistogramSet struct {
 // Return the size of the histogram for a given cache_bits.
 func GetHistogramSize(cache_bits int) int {
 	literal_size := VP8LHistogramNumCodes(cache_bits)
-	total_size := generics.SizeOf(VP8LHistogram) + generics.SizeOfFor[int]()*literal_size
-	assert.Assert(total_size <= uint64(0x7fffffff))
+	total_size := generics.SizeOfFor[VP8LHistogram]() + generics.SizeOfFor[int]()*literal_size
+	assert.Assert(uint64(total_size) <= uint64(0x7fffffff))
 
 	return int(total_size)
 }
@@ -107,15 +108,9 @@ func HistogramClear( /* const */ h *VP8LHistogram) {
 	HistogramStatsClear(h)
 }
 
+// Deprecated: We no longer use C style pointer arithmetic to allocate the histograms. This function is a no-op now.
 func HistogramCopy( /* const */ src *VP8LHistogram /*const*/, dst *VP8LHistogram) {
-	var dst_literal *uint32 = dst.literal
-	dst_cache_bits := dst.palette_code_bits
-	literal_size := VP8LHistogramNumCodes(dst_cache_bits)
-	histo_size := GetHistogramSize(dst_cache_bits)
-	assert.Assert(src.palette_code_bits == dst_cache_bits)
-	stdlib.MemCpy(dst, src, histo_size)
-	dst.literal = dst_literal
-	stdlib.MemCpy(dst.literal, src.literal, literal_size*sizeof(*dst.literal))
+	*dst = *src
 }
 
 // Create the histogram.
@@ -123,7 +118,7 @@ func HistogramCopy( /* const */ src *VP8LHistogram /*const*/, dst *VP8LHistogram
 // The input data is the PixOrCopy data, which models the literals, stop
 // codes and backward references (both distances and lengths).  Also: if
 // palette_code_bits is >= 0, initialize the histogram with this value.
-func VP8LHistogramCreate( /* const */ h *VP8LHistogram /*const*/, refs *VP8LBackwardRefs, palette_code_bits int) {
+func VP8LHistogramCreate(h *VP8LHistogram, refs *VP8LBackwardRefs, palette_code_bits int) {
 	if palette_code_bits >= 0 {
 		h.palette_code_bits = palette_code_bits
 	}
@@ -146,16 +141,10 @@ func VP8LHistogramInit( /* const */ h *VP8LHistogram, palette_code_bits int, ini
 // Returns nil in case of memory error.
 // Special case of VP8LAllocateHistogramSet, with size equals 1.
 func VP8LAllocateHistogram(cache_bits int) *VP8LHistogram {
-	histo * VP8LHistogram = nil
-	total_size := GetHistogramSize(cache_bits)
-	//   var memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory))
-	//   if memory == nil { return nil  }
-	// memory := make([]uint8, total_size)
-
-	histo = &VP8LHistogram{}
-	// 'literal' won't necessary be aligned.
-	//   histo.literal = (*uint32)(memory + sizeof(VP8LHistogram))
-	VP8LHistogramInit(histo, cache_bits /*init_arrays=*/, 0)
+	histo := &VP8LHistogram{
+		literal: make([]uint32, VP8LHistogramNumCodes(cache_bits)),
+	}
+	VP8LHistogramInit(histo, cache_bits, false)
 	return histo
 }
 
@@ -322,10 +311,10 @@ func FinalHuffmanCost( /* const */ stats *VP8LStreaks) uint64 {
 
 // Get the symbol entropy for the distribution 'population'.
 // Set 'trivial_sym', if there's only one symbol present in the distribution.
-func PopulationCost( /* const */ population *uint32, length int /*const*/, trivial_sym *uint16 /*const*/, is_used *uint8) uint64 {
-	var bit_entropy VP8LBitEntropy
-	var stats VP8LStreaks
-	VP8LGetEntropyUnrefined(population, length, &bit_entropy, &stats)
+func PopulationCost( /* const */ population []uint32, trivial_sym *uint16 /*const*/, is_used *uint8) uint64 {
+	var bit_entropy dsp.VP8LBitEntropy
+	var stats dsp.VP8LStreaks
+	dsp.VP8LGetEntropyUnrefined(population, &bit_entropy, &stats)
 	if trivial_sym != nil {
 		*trivial_sym = tenary.If(bit_entropy.nonzeros == 1, bit_entropy.nonzero_code, VP8L_NON_TRIVIAL_SYM)
 	}
@@ -348,13 +337,15 @@ func (histo *VP8LHistogram) GetPopulationInfo(index HistogramIndex) (population 
 		length := VP8LHistogramNumCodes(histo.palette_code_bits)
 		return histo.literal[:length]
 	case RED:
-		return histo.red
+		return histo.red[:]
 	case BLUE:
-		return histo.blue
+		return histo.blue[:]
 	case ALPHA:
-		return histo.alpha
+		return histo.alpha[:]
 	case DISTANCE:
-		return histo.distance
+		return histo.distance[:]
+	default:
+		panic("invalid histogram index")
 	}
 }
 
@@ -363,8 +354,8 @@ func (histo *VP8LHistogram) GetPopulationInfo(index HistogramIndex) (population 
 // 'index' is the index of the symbol in the histogram (literal, red, blue,
 // alpha, distance).
 func GetCombinedEntropy( /* const */ h *VP8LHistogram1 /*const*/, h *VP8LHistogram2, HistogramIndex index) uint64 {
-	var stats VP8LStreaks
-	var bit_entropy VP8LBitEntropy
+	var stats dsp.VP8LStreaks
+	var bit_entropy dsp.VP8LBitEntropy
 	is_h1_used := h1.is_used[index]
 	is_h2_used := h2.is_used[index]
 	is_trivial := h1.trivial_symbol[index] != VP8L_NON_TRIVIAL_SYM && h1.trivial_symbol[index] == h2.trivial_symbol[index]
@@ -570,16 +561,14 @@ func ComputeHistogramCost( /* const */ h *VP8LHistogram) {
 	// No need to add the extra cost for length and distance as it is a constant
 	// that does not influence the histograms.
 	for i = 0; i < 5; i++ {
-		const population *uint32
-		var length int
-		GetPopulationInfo(h, i, &population, &length)
+		population := GetPopulationInfo(h, HistogramIndex(i))
 		h.costs[i] = PopulationCost(population, length, &h.trivial_symbol[i], &h.is_used[i])
 	}
 	h.bit_cost = h.costs[LITERAL] + h.costs[RED] + h.costs[BLUE] +
 		h.costs[ALPHA] + h.costs[DISTANCE]
 }
 
-func GetBinIdForEntropy(uint64 min, uint64 max, uint64 val) int {
+func GetBinIdForEntropy(min uint64, max uint64, val uint64) int {
 	vrange := max - min
 	if vrange > 0 {
 		delta := val - min
@@ -589,7 +578,7 @@ func GetBinIdForEntropy(uint64 min, uint64 max, uint64 val) int {
 	}
 }
 
-func GetHistoBinIndex( /* const */ h *VP8LHistogram /*const*/, c *DominantCostRange, low_effort int) int {
+func GetHistoBinIndex( /* const */ h *VP8LHistogram /*const*/, c *DominantCostRange, low_effort bool) int {
 	var bin_id int
 	GetBinIdForEntropy(c.literal_min, c.literal_max, h.costs[LITERAL])
 	assert.Assert(bin_id < NUM_PARTITIONS)
@@ -1182,7 +1171,7 @@ func VP8LGetHistoImageSymbols(xsize int, ysize int /*const*/, refs *VP8LBackward
 	}
 
 Error:
-	return (pic.ErrorCode == ENC_OK)
+	return (pic.ErrorCode == picture.ENC_OK)
 }
 
 func VP8LHistogramNumCodes(palette_code_bits int) int {

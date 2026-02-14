@@ -158,8 +158,7 @@ func GetEntropyUnrefinedHelper(
   *i_prev = i
 }
 
-func GetEntropyUnrefined_C(
-    const X []uint32, length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
+func GetEntropyUnrefined_C(X []uint32, bit_entropy *VP8LBitEntropy, stats *VP8LStreaks) {
   var i int
   i_prev := 0
   x_prev := X[0]
@@ -167,7 +166,7 @@ func GetEntropyUnrefined_C(
   stdlib.Memset(stats, 0, sizeof(*stats))
   VP8LBitEntropyInit(bit_entropy)
 
-  for i = 1; i < length; i++ {
+  for i = 1; i < len(X); i++ {
     x := X[i]
     if (x != x_prev) {
       GetEntropyUnrefinedHelper(x, i, &x_prev, &i_prev, bit_entropy, stats)
@@ -178,8 +177,7 @@ func GetEntropyUnrefined_C(
   bit_entropy.entropy = VP8LFastSLog2(bit_entropy.sum) - bit_entropy.entropy
 }
 
-func GetCombinedEntropyUnrefined_C(
-    const X []uint32, /*const*/ Y []uint32, length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
+func GetCombinedEntropyUnrefined_C(X []uint32, Y []uint32, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
   i := 1
   i_prev := 0
   xy_prev := X[0] + Y[0]
@@ -187,7 +185,7 @@ func GetCombinedEntropyUnrefined_C(
   stdlib.Memset(stats, 0, sizeof(*stats))
   VP8LBitEntropyInit(bit_entropy)
 
-  for i = 1; i < length; i++ {
+  for i = 1; i < len(X); i++ {
     xy := X[i] + Y[i]
     if (xy != xy_prev) {
       GetEntropyUnrefinedHelper(xy, i, &xy_prev, &i_prev, bit_entropy, stats)
@@ -372,76 +370,29 @@ GENERATE_PREDICTOR_SUB(11)
 GENERATE_PREDICTOR_SUB(12)
 GENERATE_PREDICTOR_SUB(13)
 
-//------------------------------------------------------------------------------
+var (
+	VP8LSubtractGreenFromBlueAndRed = VP8LSubtractGreenFromBlueAndRed_C
+	VP8LTransformColor = VP8LTransformColor_C
+	VP8LCollectColorBlueTransforms = VP8LCollectColorBlueTransforms_C
+	VP8LCollectColorRedTransforms = VP8LCollectColorRedTransforms_C
+	VP8LFastLog2Slow = FastLog2Slow_C
+	VP8LFastSLog2Slow = FastSLog2Slow_C
+	VP8LExtraCost = ExtraCost_C
+	VP8LCombinedShannonEntropy = CombinedShannonEntropy_C
+	VP8LShannonEntropy = ShannonEntropy_C
+	VP8LGetEntropyUnrefined = GetEntropyUnrefined_C
+	VP8LGetCombinedEntropyUnrefined = GetCombinedEntropyUnrefined_C
+	VP8LAddVector = AddVector_C
+	VP8LAddVectorEq = AddVectorEq_C
+	VP8LVectorMismatch = VectorMismatch_C
+	VP8LBundleColorMap = VP8LBundleColorMap_C
+)
 
-VP8LProcessEncBlueAndRedFunc VP8LSubtractGreenFromBlueAndRed
-VP8LProcessEncBlueAndRedFunc VP8LSubtractGreenFromBlueAndRed_SSE
-
-VP8LTransformColorFunc VP8LTransformColor
-VP8LTransformColorFunc VP8LTransformColor_SSE
-
-VP8LCollectColorBlueTransformsFunc VP8LCollectColorBlueTransforms
-VP8LCollectColorBlueTransformsFunc VP8LCollectColorBlueTransforms_SSE
-VP8LCollectColorRedTransformsFunc VP8LCollectColorRedTransforms
-VP8LCollectColorRedTransformsFunc VP8LCollectColorRedTransforms_SSE
-
-VP8LFastLog2SlowFunc VP8LFastLog2Slow
-VP8LFastSLog2SlowFunc VP8LFastSLog2Slow
-
-VP8LCostFunc VP8LExtraCost
-VP8LCombinedShannonEntropyFunc VP8LCombinedShannonEntropy
-VP8LShannonEntropyFunc VP8LShannonEntropy
-
-VP8LGetEntropyUnrefinedFunc VP8LGetEntropyUnrefined
-VP8LGetCombinedEntropyUnrefinedFunc VP8LGetCombinedEntropyUnrefined
-
-VP8LAddVectorFunc VP8LAddVector
-VP8LAddVectorEqFunc VP8LAddVectorEq
-
-VP8LVectorMismatchFunc VP8LVectorMismatch
-VP8LBundleColorMapFunc VP8LBundleColorMap
-VP8LBundleColorMapFunc VP8LBundleColorMap_SSE
-
-VP8LPredictorAddSubFunc VP8LPredictorsSub[16]
-VP8LPredictorAddSubFunc VP8LPredictorsSub_C[16]
-VP8LPredictorAddSubFunc VP8LPredictorsSub_SSE[16]
-
-
-extern func VP8LEncDspInitSSE2(void)
-extern func VP8LEncDspInitSSE41(void)
-extern func VP8LEncDspInitAVX2(void)
-extern func VP8LEncDspInitNEON(void)
-extern func VP8LEncDspInitMIPS32(void)
-extern func VP8LEncDspInitMIPSdspR2(void)
-extern func VP8LEncDspInitMSA(void)
-
-WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
+// VP8LEncDspInit
+func init() {
   VP8LDspInit()
 
-#if !WEBP_NEON_OMIT_C_CODE
-  VP8LSubtractGreenFromBlueAndRed = VP8LSubtractGreenFromBlueAndRed_C
 
-  VP8LTransformColor = VP8LTransformColor_C
-#endif
-
-  VP8LCollectColorBlueTransforms = VP8LCollectColorBlueTransforms_C
-  VP8LCollectColorRedTransforms = VP8LCollectColorRedTransforms_C
-
-  VP8LFastLog2Slow = FastLog2Slow_C
-  VP8LFastSLog2Slow = FastSLog2Slow_C
-
-  VP8LExtraCost = ExtraCost_C
-  VP8LCombinedShannonEntropy = CombinedShannonEntropy_C
-  VP8LShannonEntropy = ShannonEntropy_C
-
-  VP8LGetEntropyUnrefined = GetEntropyUnrefined_C
-  VP8LGetCombinedEntropyUnrefined = GetCombinedEntropyUnrefined_C
-
-  VP8LAddVector = AddVector_C
-  VP8LAddVectorEq = AddVectorEq_C
-
-  VP8LVectorMismatch = VectorMismatch_C
-  VP8LBundleColorMap = VP8LBundleColorMap_C
 
   VP8LPredictorsSub[0] = PredictorSub0_C
   VP8LPredictorsSub[1] = PredictorSub1_C
@@ -477,54 +428,4 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
   VP8LPredictorsSub_C[14] = PredictorSub0_C;  // <- padding security sentinels
   VP8LPredictorsSub_C[15] = PredictorSub0_C
 
-
-  assert.Assert(VP8LSubtractGreenFromBlueAndRed != nil)
-  assert.Assert(VP8LTransformColor != nil)
-  assert.Assert(VP8LCollectColorBlueTransforms != nil)
-  assert.Assert(VP8LCollectColorRedTransforms != nil)
-  assert.Assert(VP8LFastLog2Slow != nil)
-  assert.Assert(VP8LFastSLog2Slow != nil)
-  assert.Assert(VP8LExtraCost != nil)
-  assert.Assert(VP8LCombinedShannonEntropy != nil)
-  assert.Assert(VP8LShannonEntropy != nil)
-  assert.Assert(VP8LGetEntropyUnrefined != nil)
-  assert.Assert(VP8LGetCombinedEntropyUnrefined != nil)
-  assert.Assert(VP8LAddVector != nil)
-  assert.Assert(VP8LAddVectorEq != nil)
-  assert.Assert(VP8LVectorMismatch != nil)
-  assert.Assert(VP8LBundleColorMap != nil)
-  assert.Assert(VP8LPredictorsSub[0] != nil)
-  assert.Assert(VP8LPredictorsSub[1] != nil)
-  assert.Assert(VP8LPredictorsSub[2] != nil)
-  assert.Assert(VP8LPredictorsSub[3] != nil)
-  assert.Assert(VP8LPredictorsSub[4] != nil)
-  assert.Assert(VP8LPredictorsSub[5] != nil)
-  assert.Assert(VP8LPredictorsSub[6] != nil)
-  assert.Assert(VP8LPredictorsSub[7] != nil)
-  assert.Assert(VP8LPredictorsSub[8] != nil)
-  assert.Assert(VP8LPredictorsSub[9] != nil)
-  assert.Assert(VP8LPredictorsSub[10] != nil)
-  assert.Assert(VP8LPredictorsSub[11] != nil)
-  assert.Assert(VP8LPredictorsSub[12] != nil)
-  assert.Assert(VP8LPredictorsSub[13] != nil)
-  assert.Assert(VP8LPredictorsSub[14] != nil)
-  assert.Assert(VP8LPredictorsSub[15] != nil)
-  assert.Assert(VP8LPredictorsSub_C[0] != nil)
-  assert.Assert(VP8LPredictorsSub_C[1] != nil)
-  assert.Assert(VP8LPredictorsSub_C[2] != nil)
-  assert.Assert(VP8LPredictorsSub_C[3] != nil)
-  assert.Assert(VP8LPredictorsSub_C[4] != nil)
-  assert.Assert(VP8LPredictorsSub_C[5] != nil)
-  assert.Assert(VP8LPredictorsSub_C[6] != nil)
-  assert.Assert(VP8LPredictorsSub_C[7] != nil)
-  assert.Assert(VP8LPredictorsSub_C[8] != nil)
-  assert.Assert(VP8LPredictorsSub_C[9] != nil)
-  assert.Assert(VP8LPredictorsSub_C[10] != nil)
-  assert.Assert(VP8LPredictorsSub_C[11] != nil)
-  assert.Assert(VP8LPredictorsSub_C[12] != nil)
-  assert.Assert(VP8LPredictorsSub_C[13] != nil)
-  assert.Assert(VP8LPredictorsSub_C[14] != nil)
-  assert.Assert(VP8LPredictorsSub_C[15] != nil)
 }
-
-//------------------------------------------------------------------------------
