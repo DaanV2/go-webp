@@ -2,6 +2,7 @@ package stdlib
 
 // MemCpy is a conversion of C's memcpy function for Go slices.
 // Deprecated: Use [MemCpy2] instead.
+//go:fix inline
 func MemCpy[T any](dst, src []T, size int) {
 	MemCpy2(dst[:size], src[:size])
 }

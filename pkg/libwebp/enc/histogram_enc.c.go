@@ -13,6 +13,7 @@ package enc
 //
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/generics"
 	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
 	"github.com/daanv2/go-webp/pkg/libwebp/enc"
 	"github.com/daanv2/go-webp/pkg/libwebp/utils"
@@ -44,7 +45,7 @@ const (
 // Return the size of the histogram for a given cache_bits.
 func GetHistogramSize(cache_bits int) int  {
   literal_size := VP8LHistogramNumCodes(cache_bits)
-  total_size := sizeof(VP8LHistogram) + sizeof(int) * literal_size
+  total_size := generics.SizeOf(VP8LHistogram) + generics.SizeOf(int) * literal_size
   assert.Assert(total_size <= uint64(0x7fffffff))
 
   return int(total_size)

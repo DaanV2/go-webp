@@ -332,7 +332,7 @@ func ReadHuffmanCode(int alphabet_size, /*const*/ dec *VP8LDecoder, /*const*/ co
 
   ok = ok && !br.eos
   if ok {
-    var bounded_code_lengths *int = // C: code_lengths // bidi index -> alphabet_size * sizeof(int)
+    var bounded_code_lengths *int = // C: code_lengths // bidi index -> alphabet_size * generics.SizeOf(int)
     size = VP8LBuildHuffmanTable(table, HUFFMAN_TABLE_BITS, bounded_code_lengths, alphabet_size)
   }
   if !ok || size == 0 {
@@ -970,7 +970,7 @@ func CopyBlock8b(/* const */ dst *uint8, dist int, length int) {
         break
       case 2:
 if !constants.FALSE {
-        // C: stdlib.MemCpy(&pattern, src, sizeof(uint16))
+        stdlib.MemCpy(&pattern, src, generics.SizeOf(uint16))
 } else {
         pattern = (uint32(src[0]) << 8) | src[1]
 	  }
@@ -983,7 +983,7 @@ if !constants.FALSE {
 // C: #endif
         break
       case 4:
-        // C: stdlib.MemCpy(&pattern, src, sizeof(uint32))
+        stdlib.MemCpy(&pattern, src, generics.SizeOf(uint32))
         break
       default:
         goto Copy
@@ -1530,11 +1530,11 @@ func AllocateInternalBuffers32b(/* const */ dec *VP8LDecoder, final_width int) i
   var total_num_pixels uint64
   if dec.output != nil && !WebPIsRGBMode(dec.output.colorspace) {
     uv_width := (dec.io.crop_right - dec.io.crop_left + 1) >> 1
-    accumulated_rgb_pixels = // C: 4 * uv_width * sizeof(*dec.accumulated_rgb_pixels) / sizeof(uint32)
+    accumulated_rgb_pixels = 4 * uv_width * sizeof(*dec.accumulated_rgb_pixels) / generics.SizeOf(uint32)
   }
   total_num_pixels = num_pixels + cache_top_pixels + cache_pixels + accumulated_rgb_pixels
   assert.Assert(dec.width <= final_width)
-//   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint32))
+//   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, generics.SizeOf(uint32))
 //   if (dec.pixels == nil) {
 //     dec.argb_cache = nil;  // for soundness
 //     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY)

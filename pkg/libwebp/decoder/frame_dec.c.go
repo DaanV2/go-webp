@@ -676,9 +676,9 @@ func AllocateMemory(/* const */ dec *VP8Decoder) int {
   num_caches := dec.num_caches
   mb_w := dec.mb_w
   // Note: we use 'uint64' when there's no overflow risk, uint64 otherwise.
-  intra_pred_mode_size := 4 * mb_w * sizeof(uint8)
-  top_size := sizeof(VP8TopSamples) * mb_w
-  mb_info_size := (mb_w + 1) * sizeof(VP8MB)
+  intra_pred_mode_size := 4 * mb_w * generics.SizeOf(uint8)
+  top_size := generics.SizeOf(VP8TopSamples) * mb_w
+  mb_info_size := (mb_w + 1) * generics.SizeOf(VP8MB)
   f_info_size := tenary.If(dec.filter_type > 0, mb_w * (tenary.If(dec.mt_method > 0, 2, 1)) * sizeof(VP8FInfo), 0)
   yuv_size := YUV_SIZE * sizeof(*dec.yuv_b)
   mb_data_size := tenary.If(dec.mt_method == 2, 2, 1) * mb_w * sizeof(*dec.mb_data)
@@ -696,7 +696,7 @@ func AllocateMemory(/* const */ dec *VP8Decoder) int {
 }
   if (needed > dec.mem_size) {
     dec.mem_size = 0
-    // dec.mem = WebPSafeMalloc(needed, sizeof(uint8))
+    // dec.mem = WebPSafeMalloc(needed, generics.SizeOf(uint8))
     // if (dec.mem == nil) {
     //   return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "no memory during frame initialization.")
     // }

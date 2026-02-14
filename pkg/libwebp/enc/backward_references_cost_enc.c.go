@@ -533,7 +533,7 @@ func BackwardReferencesHashChainDistanceOnly(xsize, ysize int, /*const*/ argb *u
   pix_count := xsize * ysize
   use_color_cache := (cache_bits > 0)
   literal_array_size := sizeof(*((*CostModel)nil).literal) * VP8LHistogramNumCodes(cache_bits)
-  cost_model_size := sizeof(CostModel) + literal_array_size
+  cost_model_size := generics.SizeOf(CostModel) + literal_array_size
   var hashers VP8LColorCache 
   
 //   var cost_model *CostModel = (*CostModel)WebPSafeCalloc(uint64(1), cost_model_size)

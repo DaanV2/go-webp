@@ -2,10 +2,9 @@ package stdlib
 
 // Memset is a conversion of C's memset function for Go slices.
 // Deprecated: Use built-in memory management or [stdlib.Memset2] instead.
+//go:fix inline
 func Memset[T any](data []T, value T, num int) {
-	for i := range data[:num] {
-		data[i] = value
-	}
+	Memset2(data[:num], value)
 }
 
 // Memset2 is a conversion of C's memset function for Go slices.

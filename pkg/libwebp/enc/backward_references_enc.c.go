@@ -154,7 +154,7 @@ func BackwardRefsClone(/* const */ from *VP8LBackwardRefs, /*const*/ to *VP8LBac
   for (block_from != nil) {
     var block_to *PixOrCopyBlock = BackwardRefsNewBlock(to)
     if block_to == nil { return 0  }
-    stdlib.MemCpy(block_to.start, block_from.start, block_from.size * sizeof(PixOrCopy))
+    stdlib.MemCpy(block_to.start, block_from.start, block_from.size * generics.SizeOf(PixOrCopy))
     block_to.size = block_from.size
     block_from = block_from.next
   }

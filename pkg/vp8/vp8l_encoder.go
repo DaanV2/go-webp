@@ -132,7 +132,7 @@ func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride int, u
 		// For palettes, add the cost of storing the palette.
 		// We empirically estimate the cost of a compressed entry as 8 bits.
 		// The palette is differential-coded when compressed hence a much
-		// lower cost than sizeof(uint32)*8.
+		// lower cost than generics.SizeOf(uint32)*8.
 		entropy[kPalette] += (palette_size * uint64(8)) << LOG_2_PRECISION_BITS
 
 		*min_entropy_ix = kDirect

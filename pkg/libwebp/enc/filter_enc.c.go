@@ -69,7 +69,7 @@ func DoFilter(/* const */ it *VP8EncIterator, level int) {
   var v_dst *uint8 = it.yuv_out2 + V_OFF_ENC
 
   // copy current block to yuv_out2
-  stdlib.MemCpy(y_dst, it.yuv_out, YUV_SIZE_ENC * sizeof(uint8))
+  stdlib.MemCpy(y_dst, it.yuv_out, YUV_SIZE_ENC * generics.SizeOf(uint8))
 
   if (enc.filter_hdr.simple == 1) {  // simple
     VP8SimpleHFilter16i(y_dst, BPS, limit)
