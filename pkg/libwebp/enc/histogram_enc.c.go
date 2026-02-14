@@ -42,7 +42,7 @@ const (
 )
 
 // Return the size of the histogram for a given cache_bits.
-func GetHistogramSize(int cache_bits) int  {
+func GetHistogramSize(cache_bits int) int  {
   literal_size := VP8LHistogramNumCodes(cache_bits)
   total_size := sizeof(VP8LHistogram) + sizeof(int) * literal_size
   assert.Assert(total_size <= uint64(0x7fffffff))
@@ -226,9 +226,8 @@ func BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) uint64 {
     // Two symbols, they will be 0 and 1 in a Huffman code.
     // Let's mix in a bit of entropy to favor good clustering when
     // distributions of these are combined.
-    if (entropy.nonzeros == 2) {
-      return DivRound(99 * ((uint64)entropy.sum << LOG_2_PRECISION_BITS) +
-                          entropy.entropy, 100)
+    if entropy.nonzeros == 2 {
+      return DivRound(99 * ((uint64)entropy.sum << LOG_2_PRECISION_BITS) + entropy.entropy, 100)
     }
     // No matter what the entropy says, we cannot be better than min_limit
     // with Huffman coding. I am mixing a bit of entropy into the
@@ -247,24 +246,23 @@ func BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) uint64 {
     min_limit := (uint64)(2 * entropy.sum - entropy.max_val)
                          << LOG_2_PRECISION_BITS
     min_limit = DivRound(mix * min_limit + (1000 - mix) * entropy.entropy, 1000)
-    return (entropy.entropy < min_limit) ? min_limit : entropy.entropy
+    return tenary.If(entropy.entropy < min_limit, min_limit, entropy.entropy)
   }
 }
 
-uint64 VP8LBitsEntropy(/* const */ array *uint32, n int) {
-   var entropy VP8LBitEntropy
-  VP8LBitsEntropyUnrefined(array, n, &entropy)
+func VP8LBitsEntropy(/* const */ array *uint32, n int) uint64 {
+	var entropy VP8LBitEntropy
+	VP8LBitsEntropyUnrefined(array, n, &entropy)
 
-  return BitsEntropyRefine(&entropy)
+	return BitsEntropyRefine(&entropy)
 }
 
-static uint64 InitialHuffmanCost(){
+func InitialHuffmanCost() uint64 {
   // Small bias because Huffman code length is typically not stored in
   // full length.
-  static const kHuffmanCodeOfHuffmanCodeSize := CODE_LENGTH_CODES * 3
+  kHuffmanCodeOfHuffmanCodeSize := CODE_LENGTH_CODES * 3
   // Subtract a bias of 9.1.
-  return (kHuffmanCodeOfHuffmanCodeSize << LOG_2_PRECISION_BITS) -
-         DivRound(91ll << LOG_2_PRECISION_BITS, 10)
+  return (kHuffmanCodeOfHuffmanCodeSize << LOG_2_PRECISION_BITS) - DivRound(uint64(91) << LOG_2_PRECISION_BITS, 10)
 }
 
 // Finalize the Huffman cost based on streak numbers and length type (<3 or >=3)

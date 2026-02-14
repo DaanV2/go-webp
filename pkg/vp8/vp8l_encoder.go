@@ -13,14 +13,19 @@ import (
 	"github.com/daanv2/go-webp/pkg/config"
 	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/huffman"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
 	"github.com/daanv2/go-webp/pkg/picture"
+	"github.com/daanv2/go-webp/pkg/statistics/histograms"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
 
+//go:fix inline
+const NUM_BUCKETS = histograms.NUM_BUCKETS
+
 // Maximum number of histogram images (sub-blocks).
 const MAX_HUFF_IMAGE_SIZE = 2600
-const MAX_HUFFMAN_BITS = (MIN_HUFFMAN_BITS + (1 << NUM_HUFFMAN_BITS) - 1)
+const MAX_HUFFMAN_BITS = (webp.MIN_HUFFMAN_BITS + (1 << webp.NUM_HUFFMAN_BITS) - 1)
 
 // Empirical value for which it becomes too computationally expensive to
 // compute the best predictor image.
@@ -29,56 +34,13 @@ const MAX_PREDICTOR_IMAGE_SIZE = (1 << 14)
 //go:fix inline
 const MAX_PALETTE_SIZE = constants.MAX_PALETTE_SIZE
 
-// These five modes are evaluated and their respective entropy is computed.
-type EntropyIx int
-
-const (
-	kDirect            EntropyIx = 0
-	kSpatial           EntropyIx = 1
-	kSubGreen          EntropyIx = 2
-	kSpatialSubGreen   EntropyIx = 3
-	kPalette           EntropyIx = 4
-	kPaletteAndSpatial EntropyIx = 5
-	kNumEntropyIx      EntropyIx = 6
-)
-
-type HistoIx int
-
-const (
-	kHistoAlpha HistoIx = iota
-	kHistoAlphaPred
-	kHistoGreen
-	kHistoGreenPred
-	kHistoRed
-	kHistoRedPred
-	kHistoBlue
-	kHistoBluePred
-	kHistoRedSubGreen
-	kHistoRedPredSubGreen
-	kHistoBlueSubGreen
-	kHistoBluePredSubGreen
-	kHistoPalette
-	kHistoTotal // Must be last.
-)
-
-const NUM_BUCKETS = 256
-
-type HistogramBuckets [NUM_BUCKETS]uint32
-
-// Keeping track of histograms, indexed by HistoIx.
-// Ideally, this would just be a struct with meaningful fields, but the
-// calculation of `entropy_comp` uses the index. One refactoring at a time :)
-type Histograms struct {
-	category [kHistoTotal]HistogramBuckets
-}
-
-func AddSingleSubGreen(p uint32, r, b HistogramBuckets) {
+func AddSingleSubGreen(p uint32, r, b histograms.HistogramBuckets) {
 	green := p >> 8 // The upper bits are masked away later.
 	r[((p>>16)-green)&0xff]++
 	b[((p>>0)-green)&0xff]++
 }
 
-func AddSingle(p uint32, a, r, g, b HistogramBuckets) {
+func AddSingle(p uint32, a, r, g, b histograms.HistogramBuckets) {
 	a[(p>>24)&0xff]++
 	r[(p>>16)&0xff]++
 	g[(p>>8)&0xff]++
@@ -91,9 +53,7 @@ func HashPix(pix uint32) uint8 {
 	return (((uint64(pix) + (pix >> 19)) * uint64(0x39c5fba7)) & uint64(0xffffffff)) >> 24
 }
 
-func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride, use_palette, palette_size, transform_bits int /* const */, min_entropy_ix *EntropyIx /* const */, red_and_blue_always_zero *int) int {
-	var histo *Histograms
-
+func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride int, use_palette bool, palette_size, transform_bits int /* const */, min_entropy_ix *EntropyIx /* const */, red_and_blue_always_zero *int) int {
 	if use_palette && palette_size <= 16 {
 		// In the case of small palettes, we pack 2, 4 or 8 pixels together. In
 		// practice, small palettes are better than any other transform.
@@ -103,7 +63,7 @@ func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride, use_p
 	}
 
 	//   histo = (*Histograms)WebPSafeCalloc(1, sizeof(*histo))
-	hist := &Histograms{}
+	histo := &histograms.Histograms{}
 
 	var i, x, y int
 	var prev_row *uint32 = nil
@@ -117,21 +77,21 @@ func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride, use_p
 			if pix_diff == 0 || prev_row != nil && pix == prev_row[x] {
 				continue
 			}
-			AddSingle(pix, histo.category[kHistoAlpha], histo.category[kHistoRed], histo.category[kHistoGreen], histo.category[kHistoBlue])
-			AddSingle(pix_diff, histo.category[kHistoAlphaPred], histo.category[kHistoRedPred], histo.category[kHistoGreenPred], histo.category[kHistoBluePred])
-			AddSingleSubGreen(pix, histo.category[kHistoRedSubGreen], histo.category[kHistoBlueSubGreen])
-			AddSingleSubGreen(pix_diff, histo.category[kHistoRedPredSubGreen], histo.category[kHistoBluePredSubGreen])
+			AddSingle(pix, histo.Category[histograms.HistoAlpha], histo.Category[histograms.HistoRed], histo.Category[histograms.HistoGreen], histo.Category[histograms.HistoBlue])
+			AddSingle(pix_diff, histo.Category[histograms.HistoAlphaPred], histo.Category[histograms.HistoRedPred], histo.Category[histograms.HistoGreenPred], histo.Category[histograms.HistoBluePred])
+			AddSingleSubGreen(pix, histo.Category[histograms.HistoRedSubGreen], histo.Category[histograms.HistoBlueSubGreen])
+			AddSingleSubGreen(pix_diff, histo.Category[histograms.HistoRedPredSubGreen], histo.Category[histograms.HistoBluePredSubGreen])
 			{
 				// Approximate the palette by the entropy of the multiplicative hash.
 				hash := HashPix(pix)
-				histo.category[kHistoPalette][hash] = histo.category[kHistoPalette][hash] + 1
+				histo.Category[histograms.HistoPalette][hash] = histo.Category[histograms.HistoPalette][hash] + 1
 			}
 		}
 		prev_row = curr_row
 		curr_row += argb_stride
 	}
 	{
-		var entropy_comp [kHistoTotal]uint64
+		var entropy_comp [histograms.HistoTotal]uint64
 		var entropy [kNumEntropyIx]uint64
 		var k int
 		var j int
@@ -139,25 +99,25 @@ func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride, use_p
 		// Let's add one zero to the predicted histograms. The zeros are removed
 		// too efficiently by the pix_diff == 0 comparison, at least one of the
 		// zeros is likely to exist.
-		histo.category[kHistoRedPredSubGreen][0]++
-		histo.category[kHistoBluePredSubGreen][0]++
-		histo.category[kHistoRedPred][0]++
-		histo.category[kHistoGreenPred][0]++
-		histo.category[kHistoBluePred][0]++
-		histo.category[kHistoAlphaPred][0]++
+		histo.Category[histograms.HistoRedPredSubGreen][0]++
+		histo.Category[histograms.HistoBluePredSubGreen][0]++
+		histo.Category[histograms.HistoRedPred][0]++
+		histo.Category[histograms.HistoGreenPred][0]++
+		histo.Category[histograms.HistoBluePred][0]++
+		histo.Category[histograms.HistoAlphaPred][0]++
 
-		for j = 0; j < kHistoTotal; j++ {
-			entropy_comp[j] = VP8LBitsEntropy(histo.category[j], NUM_BUCKETS)
+		for j = 0; j < int(histograms.HistoTotal); j++ {
+			entropy_comp[j] = VP8LBitsEntropy(histo.Category[j], NUM_BUCKETS)
 		}
-		entropy[kDirect] = entropy_comp[kHistoAlpha] + entropy_comp[kHistoRed] +
-			entropy_comp[kHistoGreen] + entropy_comp[kHistoBlue]
-		entropy[kSpatial] = entropy_comp[kHistoAlphaPred] + entropy_comp[kHistoRedPred] +
-			entropy_comp[kHistoGreenPred] + entropy_comp[kHistoBluePred]
-		entropy[kSubGreen] = entropy_comp[kHistoAlpha] + entropy_comp[kHistoRedSubGreen] +
-			entropy_comp[kHistoGreen] + entropy_comp[kHistoBlueSubGreen]
-		entropy[kSpatialSubGreen] = entropy_comp[kHistoAlphaPred] + entropy_comp[kHistoRedPredSubGreen] +
-			entropy_comp[kHistoGreenPred] + entropy_comp[kHistoBluePredSubGreen]
-		entropy[kPalette] = entropy_comp[kHistoPalette]
+		entropy[kDirect] = entropy_comp[histograms.HistoAlpha] + entropy_comp[histograms.HistoRed] +
+			entropy_comp[histograms.HistoGreen] + entropy_comp[histograms.HistoBlue]
+		entropy[kSpatial] = entropy_comp[histograms.HistoAlphaPred] + entropy_comp[histograms.HistoRedPred] +
+			entropy_comp[histograms.HistoGreenPred] + entropy_comp[histograms.HistoBluePred]
+		entropy[kSubGreen] = entropy_comp[histograms.HistoAlpha] + entropy_comp[histograms.HistoRedSubGreen] +
+			entropy_comp[histograms.HistoGreen] + entropy_comp[histograms.HistoBlueSubGreen]
+		entropy[kSpatialSubGreen] = entropy_comp[histograms.HistoAlphaPred] + entropy_comp[histograms.HistoRedPredSubGreen] +
+			entropy_comp[histograms.HistoGreenPred] + entropy_comp[histograms.HistoBluePredSubGreen]
+		entropy[kPalette] = entropy_comp[histograms.HistoPalette]
 
 		// When including transforms, there is an overhead in bits from
 		// storing them. This overhead is small but matters for small images.
@@ -187,10 +147,10 @@ func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride, use_p
 		// non-zero red and blue values. If all are zero, we can later skip
 		// the cross color optimization.
 		{
-			kHistoPairs = [5][2]uint8{
-				{kHistoRed, kHistoBlue}, {kHistoRedPred, kHistoBluePred}, {kHistoRedSubGreen, kHistoBlueSubGreen}, {kHistoRedPredSubGreen, kHistoBluePredSubGreen}, {kHistoRed, kHistoBlue}}
-			const red_histo *HistogramBuckets = &histo.category[kHistoPairs[*min_entropy_ix][0]]
-			const blue_histo *HistogramBuckets = &histo.category[kHistoPairs[*min_entropy_ix][1]]
+			histograms.HistoPairs = [5][2]uint8{
+				{histograms.HistoRed, histograms.HistoBlue}, {histograms.HistoRedPred, histograms.HistoBluePred}, {histograms.HistoRedSubGreen, histograms.HistoBlueSubGreen}, {histograms.HistoRedPredSubGreen, histograms.HistoBluePredSubGreen}, {histograms.HistoRed, histograms.HistoBlue}}
+			const red_histo *HistogramBuckets = &histo.Category[histograms.HistoPairs[*min_entropy_ix][0]]
+			const blue_histo *HistogramBuckets = &histo.Category[histograms.HistoPairs[*min_entropy_ix][1]]
 			for i = 1; i < NUM_BUCKETS; i++ {
 				if ((*red_histo)[i] | (*blue_histo)[i]) != 0 {
 					*red_and_blue_always_zero = 0
