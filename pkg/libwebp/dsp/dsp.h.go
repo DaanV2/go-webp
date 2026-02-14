@@ -60,17 +60,17 @@ const =__restrict
 // Transforms
 // VP8Idct: Does one of two inverse transforms. If do_two is set, the transforms
 //          will be done for (ref, in, dst) and (ref + 4, in + 16, dst + 4).
-typedef func (*VP8Idct)(/* const */ ref *uint8, /*const*/ in *int16, dst *uint8, do_two int);
-typedef func (*VP8Fdct)(/* const */ src *uint8, /*const*/ ref *uint8, out *int16);
-typedef func (*VP8WHT)(/* const */ in *int16, out *int16);
+type VP8Idct = func(/* const */ ref *uint8, /*const*/ in *int16, dst *uint8, do_two int);
+type VP8Fdct = func(/* const */ src *uint8, /*const*/ ref *uint8, out *int16);
+type VP8WHT = func(/* const */ in *int16, out *int16);
 extern VP8Idct VP8ITransform;
 extern VP8Fdct VP8FTransform;
 extern VP8Fdct VP8FTransform2;  // performs two transforms at a time
 extern VP8WHT VP8FTransformWHT;
 // Predictions
 // is the destination *dst block. and can be *top nil *left.
-typedef func (*VP8IntraPreds)(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8);
-typedef func (*VP8Intra4Preds)(dst *uint8, /*const*/ top *uint8);
+type VP8IntraPreds = func(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8);
+type VP8Intra4Preds = func(dst *uint8, /*const*/ top *uint8);
 extern VP8Intra4Preds VP8EncPredLuma4;
 extern VP8IntraPreds VP8EncPredLuma16;
 extern VP8IntraPreds VP8EncPredChroma8;
@@ -84,10 +84,10 @@ extern VP8WMetric VP8TDisto4x4, VP8TDisto16x16;
 
 // Compute the average (DC) of four 4x4 blocks.
 // Each sub-4x4 block #i sum is stored in dc[i].
-typedef func (*VP8MeanMetric)(/* const */ ref *uint8, uint32 dc[4]);
+type VP8MeanMetric = func(/* const */ ref *uint8, uint32 dc[4]);
 extern VP8MeanMetric VP8Mean16x4;
 
-typedef func (*VP8BlockCopy)(/* const */ src *uint8, dst *uint8);
+type VP8BlockCopy = func(/* const */ src *uint8, dst *uint8);
 extern VP8BlockCopy VP8Copy4x4;
 extern VP8BlockCopy VP8Copy16x8;
 // Quantization
@@ -115,7 +115,7 @@ type VP8Histogram struct {
   max_value int
   last_non_zero int
 } 
-typedef func (*VP8CHisto)(/* const */ ref *uint8, /*const*/ pred *uint8, start_block int, end_block int, /* const */ histo *VP8Histogram);
+type VP8CHisto = func(/* const */ ref *uint8, /*const*/ pred *uint8, start_block int, end_block int, /* const */ histo *VP8Histogram);
 extern VP8CHisto VP8CollectHistogram;
 // General-purpose util function to help VP8CollectHistogram().
 func VP8SetHistogramData(/* const */ int distribution[MAX_COEFF_THRESH + 1], /*const*/ histo *VP8Histogram);
@@ -132,8 +132,7 @@ extern const uint16 VP8LevelFixedCosts[2047 /*MAX_*LEVEL/ + 1];
 extern const uint8 VP8EncBands[16 + 1];
 
 struct VP8Residual;
-typedef func (*VP8SetResidualCoeffsFunc)(
-    const /* const */ coeffs *int16, struct /* const */ res *VP8Residual);
+type VP8SetResidualCoeffsFunc = func(/*const*//* const */ coeffs *int16, struct /* const */ res *VP8Residual);
 extern VP8SetResidualCoeffsFunc VP8SetResidualCoeffs;
 
 // Cost calculation function.
@@ -179,9 +178,9 @@ func VP8SSIMDspInit(void);
 //------------------------------------------------------------------------------
 // Decoding
 
-typedef func (*VP8DecIdct)(/* const */ coeffs *int16, dst *uint8);
+type VP8DecIdct = func(/* const */ coeffs *int16, dst *uint8);
 // when doing two transforms, coeffs is actually int16[2][16].
-typedef func (*VP8DecIdct2)(/* const */ coeffs *int16, dst *uint8, do_two int);
+type VP8DecIdct2 = func(/* const */ coeffs *int16, dst *uint8, do_two int);
 extern VP8DecIdct2 VP8Transform;
 extern VP8DecIdct VP8TransformAC3;
 extern VP8DecIdct VP8TransformUV;
@@ -196,7 +195,7 @@ const WEBP_TRANSFORM_AC3_C2 =35468
 
 // is the destination *dst block, with stride BPS. Boundary samples are
 // assumed accessible when needed.
-typedef func (*VP8PredFunc)(dst *uint8);
+type VP8PredFunc = func(dst *uint8);
 extern VP8PredFunc VP8PredLuma16[NUM_B_DC_MODES];
 extern VP8PredFunc VP8PredChroma8[NUM_B_DC_MODES];
 extern VP8PredFunc VP8PredLuma4[NUM_BMODES];
@@ -210,15 +209,15 @@ extern const VP *uint88kabs0;   // abs(x) for x in [-255,255]
 func VP8InitClipTables(void);
 
 // simple filter (only for luma)
-typedef func (*VP8SimpleFilterFunc)(p *uint8, stride int, thresh int);
+type VP8SimpleFilterFunc = func(p *uint8, stride int, thresh int);
 extern VP8SimpleFilterFunc VP8SimpleVFilter16;
 extern VP8SimpleFilterFunc VP8SimpleHFilter16;
 extern VP8SimpleFilterFunc VP8SimpleVFilter16i;  // filter 3 inner edges
 extern VP8SimpleFilterFunc VP8SimpleHFilter16i;
 
 // regular filter (on both macroblock edges and inner edges)
-typedef func (*VP8LumaFilterFunc)(luma *uint8, stride int, thresh int, ithresh int, hev_t int);
-typedef func (*VP8ChromaFilterFunc)(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_t int);
+type VP8LumaFilterFunc = func(luma *uint8, stride int, thresh int, ithresh int, hev_t int);
+type VP8ChromaFilterFunc = func(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_t int);
 // on outer edge
 extern VP8LumaFilterFunc VP8VFilter16;
 extern VP8LumaFilterFunc VP8HFilter16;
@@ -237,7 +236,7 @@ const VP8_DITHER_DESCALE =4
 const VP8_DITHER_DESCALE_ROUNDER =(1 << (VP8_DITHER_DESCALE - 1))
 const VP8_DITHER_AMP_BITS =7
 const VP8_DITHER_AMP_CENTER =(1 << VP8_DITHER_AMP_BITS)
-extern func (*VP8DitherCombine8x8)(/* const */ dither *uint8, dst *uint8, dst_stride int);
+type VP8DitherCombine8x8 = func(/* const */ dither *uint8, dst *uint8, dst_stride int);
 
 // must be called before anything using the above
 func VP8DspInit(void);
@@ -249,8 +248,7 @@ const FANCY_UPSAMPLING = // undefined to remove fancy upsampling support
 
 // Convert a pair of y/u/v lines together to the output rgb/a colorspace.
 // bottom_y can be nil if only one line of output is needed (at top/bottom).
-type WebPUpsampleLinePairFunc = func(
-    const top_y *uint8, /*const*/ bottom_y *uint8, /*const*/ top_u *uint8, /*const*/ top_v *uint8, /*const*/ cur_u *uint8, /*const*/ cur_v *uint8, top_dst *uint8, bottom_dst *uint8, len int);
+type WebPUpsampleLinePairFunc = func(/*const*/top_y *uint8, /*const*/ bottom_y *uint8, /*const*/ top_u *uint8, /*const*/ top_v *uint8, /*const*/ cur_u *uint8, /*const*/ cur_v *uint8, top_dst *uint8, bottom_dst *uint8, len int);
 
 #ifdef FANCY_UPSAMPLING
 
@@ -273,7 +271,7 @@ extern WebPSamplerRowFunc WebPSamplers[MODE_LAST];
 WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last);
 
 // YUV444.RGB converters
-typedef func (*WebPYUV444Converter)(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int);
+type WebPYUV444Converter = func(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int);
 
 extern WebPYUV444Converter WebPYUV444Converters[MODE_LAST];
 
@@ -289,18 +287,18 @@ func WebPInitYUV444Converters(void);
 // ARGB . YUV converters
 
 // Convert ARGB samples to luma Y.
-extern func (*WebPConvertARGBToY)(/* const */ argb *uint32, y *uint8, width int);
+type WebPConvertARGBToY = func(/* const */ argb *uint32, y *uint8, width int);
 // Convert ARGB samples to U/V with downsampling. do_store should be '1' for
 // even lines and '0' for odd ones. 'src_width' is the original width, not
 // the U/V one.
-extern func (*WebPConvertARGBToUV)(/* const */ argb *uint32, u *uint8, v *uint8, src_width int, do_store int);
+type WebPConvertARGBToUV = func(/* const */ argb *uint32, u *uint8, v *uint8, src_width int, do_store int);
 
 // Convert a row of accumulated (four-values) of rgba32 toward U/V
-extern func (*WebPConvertRGBA32ToUV)(/* const */ rgb *uint16, u *uint8, v *uint8, width int);
+type WebPConvertRGBA32ToUV = func(/* const */ rgb *uint16, u *uint8, v *uint8, width int);
 
 // Convert RGB or BGR to Y. Step is 3 or 4. If step is 4, data is RGBA or BGRA.
-extern func (*WebPConvertRGBToY)(/* const */ rgb *uint8, y *uint8, width int, step int);
-extern func (*WebPConvertBGRToY)(/* const */ bgr *uint8, y *uint8, width int, step int);
+type WebPConvertRGBToY = func(/* const */ rgb *uint8, y *uint8, width int, step int);
+type WebPConvertBGRToY = func(/* const */ bgr *uint8, y *uint8, width int, step int);
 
 // used for plain-C fallback.
 extern func WebPConvertARGBToUV_C(/* const */ argb *uint32, u *uint8, v *uint8, src_width int, do_store int);
@@ -351,39 +349,39 @@ func WebPRescalerDspInit(void);
 
 // Apply alpha pre-multiply on an rgba, bgra or argb plane of size w * h.
 // alpha_first should be 0 for argb, 1 for rgba or bgra (where alpha is last).
-extern func (*WebPApplyAlphaMultiply)(rgba *uint8, alpha_first int, w int, h int, stride int);
+type WebPApplyAlphaMultiply = func(rgba *uint8, alpha_first int, w int, h int, stride int);
 
 // Same, buf specifically for RGBA4444 format
-extern func (*WebPApplyAlphaMultiply4444)(rgba *uint84444, w int, h int, stride int);
+type WebPApplyAlphaMultiply4444 = func(rgba *uint84444, w int, h int, stride int);
 
 // Dispatch the values from alpha[] plane to the ARGB destination 'dst'.
 // Returns true if alpha[] plane has non-trivial values different from 0xff.
-extern int (*WebPDispatchAlpha)(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint8, dst_stride int);
+type WebPDispatchAlpha = func(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint8, dst_stride int);
 
 // Transfer packed 8b alpha[] values to green channel in dst[], zero'ing the
 // A/R/B values. 'dst_stride' is the stride for dst[] in uint32 units.
-extern func (*WebPDispatchAlphaToGreen)(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint32, dst_stride int);
+type WebPDispatchAlphaToGreen = func(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint32, dst_stride int);
 
 // Extract the alpha values from 32b values in argb[] and pack them into alpha[]
 // (this is the opposite of WebPDispatchAlpha).
 // Returns true if there's only trivial 0xff alpha values.
-extern int (*WebPExtractAlpha)(/* const */ argb *uint8, argb_stride int, width, height int, alpha *uint8, alpha_stride int);
+type WebPExtractAlpha = func(/* const */ argb *uint8, argb_stride int, width, height int, alpha *uint8, alpha_stride int);
 
 // Extract the green values from 32b values in argb[] and pack them into alpha[]
 // (this is the opposite of WebPDispatchAlphaToGreen).
-extern func (*WebPExtractGreen)(/* const */ argb *uint32, alpha *uint8, size int);
+type WebPExtractGreen = func(/* const */ argb *uint32, alpha *uint8, size int);
 
 // Pre-Multiply operation transforms x into x * A / 255  (where x=Y,R,G or B).
 // Un-Multiply operation transforms x into x * 255 / A.
 
 // Pre-Multiply or Un-Multiply (if 'inverse' is true) argb values in a row.
-extern func (*WebPMultARGBRow)(/* const */ ptr *uint32, width int, inverse int);
+type WebPMultARGBRow = func(/* const */ ptr *uint32, width int, inverse int);
 
 // Same a WebPMultARGBRow(), but for several rows.
 func WebPMultARGBRows(ptr *uint8, stride int, width int, num_rows int , inverse int);
 
 // Same for a row of single values, with side alpha values.
-extern func (*WebPMultRow)(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uint8, width int, inverse int);
+type WebPMultRow = func(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uint8, width int, inverse int);
 
 // Same a WebPMultRow(), but for several 'num_rows' rows.
 func WebPMultRows(ptr *uint8, stride int, /*const*/ alpha *uint8, alpha_stride int, width int, num_rows int , inverse int);
@@ -394,18 +392,18 @@ func WebPMultARGBRow_C(/* const */ ptr *uint32, width int, inverse int);
 
 #ifdef constants.WORDS_BIGENDIAN
 // ARGB packing function: a/r/g/b input is rgba or bgra order.
-extern func (*WebPPackARGB)(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, out *uint32);
+type WebPPackARGB = func(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, out *uint32);
 #endif
 
 // RGB packing function. 'step' can be 3 or 4. r/g/b input is rgb or bgr order.
-extern func (*WebPPackRGB)(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, step int, out *uint32);
+type WebPPackRGB = func(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, step int, out *uint32);
 
 // This function returns true if src[i] contains a value different from 0xff.
 extern int (*WebPHasAlpha8b)(/* const */ src *uint8, length int);
 // This function returns true if src[4*i] contains a value different from 0xff.
 extern int (*WebPHasAlpha32b)(/* const */ src *uint8, length int);
 // replaces transparent values in src[] by 'color'.
-extern func (*WebPAlphaReplace)(src *uint32, length int, color uint32);
+type WebPAlphaReplace = func(src *uint32, length int, color uint32);
 
 // To be called first before using the above.
 func WebPInitAlphaProcessing(void);

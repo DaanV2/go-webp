@@ -65,8 +65,8 @@ func WebPMultRow_C(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uint8, w
   }
 }
 
-func (*WebPMultARGBRow)(/* const */ ptr *uint32, width int, inverse int);
-func (*WebPMultRow)(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uint8, width int, inverse int);
+type WebPMultARGBRow = func(/* const */ ptr *uint32, width int, inverse int);
+type WebPMultRow = func(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uint8, width int, inverse int);
 
 //------------------------------------------------------------------------------
 // Generic per-plane calls
@@ -248,20 +248,20 @@ func PackRGB_C(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len
   }
 }
 
-func (*WebPApplyAlphaMultiply)(*uint8, int, int, int, int);
+type WebPApplyAlphaMultiply = func(*uint8, int, int, int, int);
 func (*WebPApplyAlphaMultiply4444)(*uint8, int, int, int);
-int (*WebPDispatchAlpha)(/* const */ *uint8, int, int, int, *uint8, int);
-func (*WebPDispatchAlphaToGreen)(/* const */ *uint8, int, int, int, *uint32, int);
-int (*WebPExtractAlpha)(/* const */ *uint8, int, int, int, *uint8, int);
-func (*WebPExtractGreen)(/* const */ argb *uint32, alpha *uint8, size int);
+type WebPDispatchAlpha = func(/* const */ *uint8, int, int, int, *uint8, int);
+type WebPDispatchAlphaToGreen = func(/* const */ *uint8, int, int, int, *uint32, int);
+type WebPExtractAlpha = func(/* const */ *uint8, int, int, int, *uint8, int);
+type WebPExtractGreen = func(/* const */ argb *uint32, alpha *uint8, size int);
 #ifdef constants.WORDS_BIGENDIAN
-func (*WebPPackARGB)(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int, *uint32);
+type WebPPackARGB = func(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, int, *uint32);
 #endif
-func (*WebPPackRGB)(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, step int, out *uint32);
+type WebPPackRGB = func(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, step int, out *uint32);
 
 int (*WebPHasAlpha8b)(/* const */ src *uint8, length int);
 int (*WebPHasAlpha32b)(/* const */ src *uint8, length int);
-func (*WebPAlphaReplace)(src *uint32, length int, color uint32);
+type WebPAlphaReplace = func(src *uint32, length int, color uint32);
 
 //------------------------------------------------------------------------------
 // Init function

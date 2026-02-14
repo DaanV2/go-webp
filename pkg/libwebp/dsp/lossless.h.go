@@ -41,12 +41,12 @@ uint32 VP8LPredictor12_C(/* const */ left *uint32, /*const*/ top *uint32);
 uint32 VP8LPredictor13_C(/* const */ left *uint32, /*const*/ top *uint32);
 
 // These Add/Sub function expects upper[-1] and out[-1] to be readable.
-typedef func (*VP8LPredictorAddSubFunc)(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32);
+type VP8LPredictorAddSubFunc = func(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32);
 extern VP8LPredictorAddSubFunc VP8LPredictorsAdd[16];
 extern VP8LPredictorAddSubFunc VP8LPredictorsAdd_C[16];
 extern VP8LPredictorAddSubFunc VP8LPredictorsAdd_SSE[16];
 
-typedef func (*VP8LProcessDecBlueAndRedFunc)(/* const */ src *uint32, num_pixels int, dst *uint32);
+type VP8LProcessDecBlueAndRedFunc = func(/* const */ src *uint32, num_pixels int, dst *uint32);
 extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed;
 extern VP8LProcessDecBlueAndRedFunc VP8LAddGreenToBlueAndRed_SSE;
 
@@ -57,7 +57,7 @@ type VP8LMultipliers struct {
   green_to_blue uint8
   red_to_blue uint8
 }
-typedef func (*VP8LTransformColorInverseFunc)(/* const */ m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32);
+type VP8LTransformColorInverseFunc = func(/* const */ m *VP8LMultipliers, /*const*/ src *uint32, num_pixels int, dst *uint32);
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse;
 extern VP8LTransformColorInverseFunc VP8LTransformColorInverse_SSE;
 
@@ -70,7 +70,7 @@ struct VP8LTransform;  // Defined in dec/vp8li.h.
 func VP8LInverseTransform(/* const */ struct const transform *VP8LTransform, row_start int, row_end int, /*const*/ in *uint32, /*const*/ out *uint32);
 
 // Color space conversion.
-typedef func (*VP8LConvertFunc)(/* const */ src *uint32, num_pixels int, dst *uint8);
+type VP8LConvertFunc = func(/* const */ src *uint32, num_pixels int, dst *uint8);
 extern VP8LConvertFunc VP8LConvertBGRAToRGB;
 extern VP8LConvertFunc VP8LConvertBGRAToRGBA;
 extern VP8LConvertFunc VP8LConvertBGRAToRGBA4444;
@@ -82,8 +82,8 @@ extern VP8LConvertFunc VP8LConvertBGRAToRGBA_SSE;
 // Converts from BGRA to other color spaces.
 func VP8LConvertFromBGRA(/* const */ in_data *uint32, num_pixels int, WEBP_CSP_MODE out_colorspace, /*const*/ rgba *uint8);
 
-typedef func (*VP8LMapARGBFunc)(/* const */ src *uint32, /*const*/ color_map *uint32, dst *uint32, y_start int, y_end int, width int);
-typedef func (*VP8LMapAlphaFunc)(/* const */ src *uint8, /*const*/ color_map *uint32, dst *uint8, y_start int, y_end int, width int);
+type VP8LMapARGBFunc = func(/* const */ src *uint32, /*const*/ color_map *uint32, dst *uint32, y_start int, y_end int, width int);
+type VP8LMapAlphaFunc = func(/* const */ src *uint8, /*const*/ color_map *uint32, dst *uint8, y_start int, y_end int, width int);
 
 extern VP8LMapARGBFunc VP8LMapColor32b;
 extern VP8LMapAlphaFunc VP8LMapColor8b;
@@ -110,20 +110,17 @@ func VP8LDspInit(void);
 //------------------------------------------------------------------------------
 // Encoding
 
-typedef func (*VP8LProcessEncBlueAndRedFunc)(dst *uint32, num_pixels int);
+type VP8LProcessEncBlueAndRedFunc = func(dst *uint32, num_pixels int);
 extern VP8LProcessEncBlueAndRedFunc VP8LSubtractGreenFromBlueAndRed;
 extern VP8LProcessEncBlueAndRedFunc VP8LSubtractGreenFromBlueAndRed_SSE;
-typedef func (*VP8LTransformColorFunc)(
-    const /* const */ m *VP8LMultipliers, dst *uint32, num_pixels int);
+type VP8LTransformColorFunc = func(/*const*//* const */ m *VP8LMultipliers, dst *uint32, num_pixels int);
 extern VP8LTransformColorFunc VP8LTransformColor;
 extern VP8LTransformColorFunc VP8LTransformColor_SSE;
-typedef func (*VP8LCollectColorBlueTransformsFunc)(
-    const argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]);
+type VP8LCollectColorBlueTransformsFunc = func(/*const*/argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]);
 extern VP8LCollectColorBlueTransformsFunc VP8LCollectColorBlueTransforms;
 extern VP8LCollectColorBlueTransformsFunc VP8LCollectColorBlueTransforms_SSE;
 
-typedef func (*VP8LCollectColorRedTransformsFunc)(
-    const argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]);
+type VP8LCollectColorRedTransformsFunc = func(/*const*/argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]);
 extern VP8LCollectColorRedTransformsFunc VP8LCollectColorRedTransforms;
 extern VP8LCollectColorRedTransformsFunc VP8LCollectColorRedTransforms_SSE;
 
@@ -141,9 +138,9 @@ type VP8LCombinedShannonEntropyFunc = func(/* const */ X [256]uint32, /*const*/ 
 type VP8LShannonEntropyFunc = func(/* const */ X *uint32, length int)uint64
 
 type VP8LStreaks struct {      // small struct to hold counters
-   counts[2]int     // index: 0=zero streak, 1=non-zero streak
-  streaks[2][2]int   // [zero/non-zero][streak<3 / streak>=3]
-} ;
+   counts [2]int     // index: 0=zero streak, 1=non-zero streak
+  streaks [2][2]int   // [zero/non-zero][streak<3 / streak>=3]
+}
 
 type VP8LBitEntropy struct {          // small struct to hold bit entropy results
   entropy uint64       // entropy
@@ -158,20 +155,18 @@ func VP8LBitEntropyInit(/* const */ entropy *VP8LBitEntropy);
 // Get the combined symbol bit entropy and Huffman cost stats for the
 // distributions 'X' and 'Y'. Those results can then be refined according to
 // codec specific heuristics.
-typedef func (*VP8LGetCombinedEntropyUnrefinedFunc)(
-    const uint32 X[], /*const*/ uint32 Y[], length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks);
+type VP8LGetCombinedEntropyUnrefinedFunc = func(/*const*/uint32 X[], /*const*/ uint32 Y[], length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks);
 extern VP8LGetCombinedEntropyUnrefinedFunc VP8LGetCombinedEntropyUnrefined;
 
 // Get the entropy for the distribution 'X'.
-typedef func (*VP8LGetEntropyUnrefinedFunc)(
-    const uint32 X[], length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks);
+type VP8LGetEntropyUnrefinedFunc = func(/*const*/uint32 X[], length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks);
 extern VP8LGetEntropyUnrefinedFunc VP8LGetEntropyUnrefined;
 
 func VP8LBitsEntropyUnrefined(/* const */ /* const */ array *uint32, n int, /* const */ entropy *VP8LBitEntropy);
 
-typedef func (*VP8LAddVectorFunc)(/* const */ a *uint32, /*const*/ b *uint32, out *uint32, size int);
+type VP8LAddVectorFunc = func(/* const */ a *uint32, /*const*/ b *uint32, out *uint32, size int);
 extern VP8LAddVectorFunc VP8LAddVector;
-typedef func (*VP8LAddVectorEqFunc)(/* const */ a *uint32, out *uint32, size int);
+type VP8LAddVectorEqFunc = func(/* const */ a *uint32, out *uint32, size int);
 extern VP8LAddVectorEqFunc VP8LAddVectorEq;
 
 // -----------------------------------------------------------------------------
@@ -181,7 +176,7 @@ typedef int (*VP8LVectorMismatchFunc)(/* const */ array *uint321, /*const*/ arra
 // Returns the first index where array1 and array2 are different.
 extern VP8LVectorMismatchFunc VP8LVectorMismatch;
 
-typedef func (*VP8LBundleColorMapFunc)(/* const */ /* const */ row *uint8, width int, xbits int, dst *uint32);
+type VP8LBundleColorMapFunc = func(/* const */ /* const */ row *uint8, width int, xbits int, dst *uint32);
 extern VP8LBundleColorMapFunc VP8LBundleColorMap;
 extern VP8LBundleColorMapFunc VP8LBundleColorMap_SSE;
 func VP8LBundleColorMap_C(/* const */ /* const */ row *uint8, width int, xbits int, dst *uint32);
