@@ -6,7 +6,9 @@ import (
 	"math"
 	"unsafe"
 
+	"github.com/daanv2/go-webp/pkg/assert"
 	"github.com/daanv2/go-webp/pkg/color/colorspace"
+	"github.com/daanv2/go-webp/pkg/color/yuv"
 	"github.com/daanv2/go-webp/pkg/picture"
 )
 
@@ -21,10 +23,6 @@ type WebPProgressHook = func(percent int /*const*/, pic *Picture) error
 // data/data_size is the segment of data to write, and 'picture' is for
 // reference (and so one can make use of picture.CustomPtr).
 type WebPWriterFunction = func(data *uint8, data_size uint64, pic *Picture) int
-
-type YUV struct {
-	Y, U, V uint8
-}
 
 // Main exchange structure (input samples, output bytes, statistics)
 //
@@ -42,11 +40,15 @@ type Picture struct {
 	UseARGB bool
 
 	// YUV input (mostly used for input to lossy compression)
-	ColorSpace    colorspace.CSP // colorspace: should be YUV420 for now (=Y'CbCr).
-	Width, Height int            // dimensions (less or equal to WEBP_MAX_DIMENSION)
+	// colorspace: should be YUV420 for now (=Y'CbCr).
+	ColorSpace    colorspace.CSP
+	Width, Height int // dimensions (less or equal to WEBP_MAX_DIMENSION)
 
-	YUV []YUV // pointers to luma/chroma planes.
-	// YStride, UVStride int            // luma/chroma strides.
+	// pointers to luma/chroma planes.
+	// YStride, UVStride int
+	// luma/chroma strides.
+	YUV []yuv.YUV420
+
 	A []color.Alpha // pointer to the alpha plane
 	// AStride           int            // stride of the alpha plane
 	// pad1                [2]uint32  // padding for later use
@@ -258,4 +260,12 @@ func (pic *Picture) ReportProgress(percent int /*const*/, percent_store *int) er
 	}
 
 	return nil
+}
+
+// Grab the 'specs' (writer, *opaque, width, height...) from 'src' and copy them
+// into 'dst'. Mark 'dst' as not owning any memory.
+func PictureGrabSpecs(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture) {
+  assert.Assert(src != nil && dst != nil);
+  *dst = *src;
+  picture.WebPPictureResetBuffers(dst);
 }

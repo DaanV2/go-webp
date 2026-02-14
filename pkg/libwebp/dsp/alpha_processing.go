@@ -295,17 +295,17 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != nil) {
-#if defined(WEBP_HAVE_SSE2)
+#if false
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitAlphaProcessingSSE2();
-#if defined(WEBP_HAVE_SSE41)
+#if false
       if (VP8GetCPUInfo(kSSE4_1)) {
         WebPInitAlphaProcessingSSE41();
       }
 #endif
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+#if false
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       WebPInitAlphaProcessingMIPSdspR2();
     }

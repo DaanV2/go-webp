@@ -28,13 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 
 #define HALVE(x) (((x) + 1) >> 1)
 
-// Grab the 'specs' (writer, *opaque, width, height...) from 'src' and copy them
-// into 'dst'. Mark 'dst' as not owning any memory.
-func PictureGrabSpecs(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture) {
-  assert.Assert(src != nil && dst != nil);
-  *dst = *src;
-  picture.WebPPictureResetBuffers(dst);
-}
+
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +65,7 @@ func WebPPictureView(/* const */ src *picture.Picture, left int, top int, width,
   if !AdjustAndCheckRectangle(src, &left, &top, width, height) { return 0  }
 
   if (src != dst) {  // beware of aliasing! We don't want to leak 'memory_'.
-    PictureGrabSpecs(src, dst);
+    picture.PictureGrabSpecs(src, dst);
   }
   dst.width = width;
   dst.height = height;
@@ -102,7 +96,7 @@ func WebPPictureCrop(pic *picture.Picture, left int, top int, width, height int)
   if pic == nil { return 0  }
   if !AdjustAndCheckRectangle(pic, &left, &top, width, height) { return 0  }
 
-  PictureGrabSpecs(pic, &tmp);
+  picture.PictureGrabSpecs(pic, &tmp);
   tmp.width = width;
   tmp.height = height;
   if (!picture.WebPPictureAlloc(&tmp)) {
@@ -169,7 +163,7 @@ func WebPPictureRescale(picture *picture.Picture, width, height int) int {
     return picture.SetEncodingError(picture.ENC_ERROR_BAD_DIMENSION)
   }
 
-  PictureGrabSpecs(picture, &tmp);
+  picture.PictureGrabSpecs(picture, &tmp);
   tmp.width = width;
   tmp.height = height;
   if (!picture.WebPPictureAlloc(&tmp)) {

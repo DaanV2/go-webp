@@ -16,90 +16,90 @@ func MKFOURCC(a, b, c, d uint32) uint32 {
 }
 
 const (
-	// Deprecated: use [constants.VP8_SIGNATURE]
+	//go:fix inline
 	VP8_SIGNATURE = constants.VP8_SIGNATURE
-	// Deprecated: use [constants.VP8_MAX_PARTITION0_SIZE]
+	//go:fix inline
 	VP8_MAX_PARTITION0_SIZE = constants.VP8_MAX_PARTITION0_SIZE
-	// Deprecated: use [constants.VP8_MAX_PARTITION_SIZE]
+	//go:fix inline
 	VP8_MAX_PARTITION_SIZE = constants.VP8_MAX_PARTITION_SIZE
-	// Deprecated: use [constants.VP8_FRAME_HEADER_SIZE]
+	//go:fix inline
 	VP8_FRAME_HEADER_SIZE = constants.VP8_FRAME_HEADER_SIZE
-	// Deprecated: use [constants.VP8L_SIGNATURE_SIZE]
+	//go:fix inline
 	VP8L_SIGNATURE_SIZE = constants.VP8L_SIGNATURE_SIZE
-	// Deprecated: use [constants.VP8L_MAGIC_BYTE]
+	//go:fix inline
 	VP8L_MAGIC_BYTE = constants.VP8L_MAGIC_BYTE
-	// Deprecated: use [constants.VP8L_IMAGE_SIZE_BITS]
+	//go:fix inline
 	VP8L_IMAGE_SIZE_BITS = constants.VP8L_IMAGE_SIZE_BITS
-	// Deprecated: use [constants.VP8L_VERSION_BITS]
+	//go:fix inline
 	VP8L_VERSION_BITS = constants.VP8L_VERSION_BITS
-	// Deprecated: use [constants.VP8L_VERSION]
+	//go:fix inline
 	VP8L_VERSION = constants.VP8L_VERSION
-	// Deprecated: use [constants.VP8L_FRAME_HEADER_SIZE]
+	//go:fix inline
 	VP8L_FRAME_HEADER_SIZE = constants.VP8L_FRAME_HEADER_SIZE
-	// Deprecated: use [constants.MAX_PALETTE_SIZE]
+	//go:fix inline
 	MAX_PALETTE_SIZE = constants.MAX_PALETTE_SIZE
-	// Deprecated: use [constants.MAX_CACHE_BITS]
+	//go:fix inline
 	MAX_CACHE_BITS = constants.MAX_CACHE_BITS
-	// Deprecated: use [constants.HUFFMAN_CODES_PER_META_CODE]
+	//go:fix inline
 	HUFFMAN_CODES_PER_META_CODE = constants.HUFFMAN_CODES_PER_META_CODE
-	// Deprecated: use [constants.ARGB_BLACK]
+	//go:fix inline
 	ARGB_BLACK = constants.ARGB_BLACK
-	// Deprecated: use [constants.DEFAULT_CODE_LENGTH]
+	//go:fix inline
 	DEFAULT_CODE_LENGTH = constants.DEFAULT_CODE_LENGTH
-	// Deprecated: use [constants.MAX_ALLOWED_CODE_LENGTH]
+	//go:fix inline
 	MAX_ALLOWED_CODE_LENGTH = constants.MAX_ALLOWED_CODE_LENGTH
-	// Deprecated: use [constants.NUM_LITERAL_CODES]
+	//go:fix inline
 	NUM_LITERAL_CODES = constants.NUM_LITERAL_CODES
-	// Deprecated: use [constants.NUM_LENGTH_CODES]
+	//go:fix inline
 	NUM_LENGTH_CODES = constants.NUM_LENGTH_CODES
-	// Deprecated: use [constants.NUM_DISTANCE_CODES]
+	//go:fix inline
 	NUM_DISTANCE_CODES = constants.NUM_DISTANCE_CODES
-	// Deprecated: use [constants.CODE_LENGTH_CODES]
+	//go:fix inline
 	CODE_LENGTH_CODES = constants.CODE_LENGTH_CODES
-	// Deprecated: use [constants.MIN_HUFFMAN_BITS]
+	//go:fix inline
 	MIN_HUFFMAN_BITS = constants.MIN_HUFFMAN_BITS
-	// Deprecated: use [constants.NUM_HUFFMAN_BITS]
+	//go:fix inline
 	NUM_HUFFMAN_BITS = constants.NUM_HUFFMAN_BITS
-	// Deprecated: use [constants.MIN_TRANSFORM_BITS]
+	//go:fix inline
 	MIN_TRANSFORM_BITS = constants.MIN_TRANSFORM_BITS
-	// Deprecated: use [constants.NUM_TRANSFORM_BITS]
+	//go:fix inline
 	NUM_TRANSFORM_BITS = constants.NUM_TRANSFORM_BITS
-	// Deprecated: use [constants.TRANSFORM_PRESENT]
+	//go:fix inline
 	TRANSFORM_PRESENT = constants.TRANSFORM_PRESENT
-	// Deprecated: use [constants.NUM_TRANSFORMS]
+	//go:fix inline
 	NUM_TRANSFORMS = constants.NUM_TRANSFORMS
-	// Deprecated: use [constants.ALPHA_HEADER_LEN]
+	//go:fix inline
 	ALPHA_HEADER_LEN = constants.ALPHA_HEADER_LEN
-	// Deprecated: use [constants.ALPHA_NO_COMPRESSION]
+	//go:fix inline
 	ALPHA_NO_COMPRESSION = constants.ALPHA_NO_COMPRESSION
-	// Deprecated: use [constants.ALPHA_LOSSLESS_COMPRESSION]
+	//go:fix inline
 	ALPHA_LOSSLESS_COMPRESSION = constants.ALPHA_LOSSLESS_COMPRESSION
-	// Deprecated: use [constants.ALPHA_PREPROCESSED_LEVELS]
+	//go:fix inline
 	ALPHA_PREPROCESSED_LEVELS = constants.ALPHA_PREPROCESSED_LEVELS
-	// Deprecated: use [constants.TAG_SIZE]
+	//go:fix inline
 	TAG_SIZE = constants.TAG_SIZE
-	// Deprecated: use [constants.CHUNK_SIZE_BYTES]
+	//go:fix inline
 	CHUNK_SIZE_BYTES = constants.CHUNK_SIZE_BYTES
-	// Deprecated: use [constants.CHUNK_HEADER_SIZE]
+	//go:fix inline
 	CHUNK_HEADER_SIZE = constants.CHUNK_HEADER_SIZE
-	// Deprecated: use [constants.RIFF_HEADER_SIZE]
+	//go:fix inline
 	RIFF_HEADER_SIZE = constants.RIFF_HEADER_SIZE
-	// Deprecated: use [constants.ANMF_CHUNK_SIZE]
+	//go:fix inline
 	ANMF_CHUNK_SIZE = constants.ANMF_CHUNK_SIZE
-	// Deprecated: use [constants.ANIM_CHUNK_SIZE]
+	//go:fix inline
 	ANIM_CHUNK_SIZE = constants.ANIM_CHUNK_SIZE
-	// Deprecated: use [constants.VP8X_CHUNK_SIZE]
+	//go:fix inline
 	VP8X_CHUNK_SIZE = constants.VP8X_CHUNK_SIZE
-	// Deprecated: use [constants.MAX_CANVAS_SIZE]
+	//go:fix inline
 	MAX_CANVAS_SIZE = constants.MAX_CANVAS_SIZE
-	// Deprecated: use [constants.MAX_IMAGE_AREA]
+	//go:fix inline
 	MAX_IMAGE_AREA = constants.MAX_IMAGE_AREA
-	// Deprecated: use [constants.MAX_LOOP_COUNT]
+	//go:fix inline
 	MAX_LOOP_COUNT = constants.MAX_LOOP_COUNT
-	// Deprecated: use [constants.MAX_DURATION]
+	//go:fix inline
 	MAX_DURATION = constants.MAX_DURATION
-	// Deprecated: use [constants.MAX_POSITION_OFFSET]
+	//go:fix inline
 	MAX_POSITION_OFFSET = constants.MAX_POSITION_OFFSET
-	// Deprecated: use [constants.MAX_CHUNK_PAYLOAD]
+	//go:fix inline
 	MAX_CHUNK_PAYLOAD = constants.MAX_CHUNK_PAYLOAD
 )

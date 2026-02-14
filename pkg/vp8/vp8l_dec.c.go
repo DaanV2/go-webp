@@ -962,7 +962,7 @@ func CopyBlock8b(/* const */ dst *uint8, dist int, length int) {
 // C: #if defined(__arm__) || defined(_M_ARM)  // arm doesn't like multiply that much
         pattern |= pattern << 8
         pattern |= pattern << 16
-// C: #elif defined(WEBP_USE_MIPS_DSP_R2)
+// C: #elif false
         __asm__ volatile("replv.qb %0, %0" : "+r"(pattern))
 // C: #else
         pattern = uint(0x01010101) * pattern
@@ -976,7 +976,7 @@ if !constants.WORDS_BIGENDIAN {
 	  }
 // C: #if defined(__arm__) || defined(_M_ARM)
         pattern |= pattern << 16
-// C: #elif defined(WEBP_USE_MIPS_DSP_R2)
+// C: #elif false
         __asm__ volatile("replv.ph %0, %0" : "+r"(pattern))
 // C: #else
         pattern = uint(0x00010001) * pattern

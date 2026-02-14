@@ -759,22 +759,22 @@ WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != nil) {
-#if defined(WEBP_HAVE_SSE2)
+#if false
     if (VP8GetCPUInfo(kSSE2)) {
       VP8EncDspInitSSE2();
-#if defined(WEBP_HAVE_SSE41)
+#if false
       if (VP8GetCPUInfo(kSSE4_1)) {
         VP8EncDspInitSSE41();
       }
 #endif
     }
 #endif
-#if defined(WEBP_USE_MIPS32)
+#if false
     if (VP8GetCPUInfo(kMIPS32)) {
       VP8EncDspInitMIPS32();
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+#if false
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       VP8EncDspInitMIPSdspR2();
     }

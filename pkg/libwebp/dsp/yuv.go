@@ -8,6 +8,7 @@
 
 package dsp
 
+//go:fix inline
 func row_func(callfn func(y, u, v, rgb *uint8), XSTEP int) func(y, u, v, dst *uint8, len int) {
   return func(y , u, v, dst *uint8, len int) {
     var end *uint8 = dst + (len & ~1) * (XSTEP)
@@ -27,13 +28,13 @@ func row_func(callfn func(y, u, v, rgb *uint8), XSTEP int) func(y, u, v, dst *ui
 }
 
 // All variants implemented.
-const YuvToRgbRow = row_func( VP8YuvToRgb, 3)
-const YuvToBgrRow = row_func( VP8YuvToBgr, 3)
-const YuvToRgbaRow = row_func( VP8YuvToRgba, 4)
-const YuvToBgraRow = row_func( VP8YuvToBgra, 4)
-const YuvToArgbRow = row_func( VP8YuvToArgb, 4)
-const YuvToRgba4444Row = row_func( VP8YuvToRgba4444, 2)
-const YuvToRgb565Row = row_func( VP8YuvToRgb565, 2)
+const YuvToRgbRow = row_func(yuv.YuvToRgb, 3)
+const YuvToBgrRow = row_func(yuv.YuvToBgr, 3)
+const YuvToRgbaRow = row_func(yuv.YuvToRgba, 4)
+const YuvToBgraRow = row_func(yuv.YuvToBgra, 4)
+const YuvToArgbRow = row_func(yuv.YuvToArgb, 4)
+const YuvToRgba4444Row = row_func(yuv.YuvToRgba4444, 2)
+const YuvToRgb565Row = row_func(yuv.YuvToRgb565, 2)
 
 // Main call for processing a plane with a WebPSamplerRowFunc function:
 func WebPSamplerProcessPlane(/* const */ y *uint8, y_stride int, /*const*/ u *uint8, /*const*/ v *uint8, uv_stride int, dst *uint8, dst_stride int, width, height int, fn WebPSamplerRowFunc) {
@@ -61,33 +62,9 @@ func WEBP_DSP_INIT_FUNC(WebPInitSamplers) {
   WebPSamplers[MODE_bgrA] = YuvToBgraRow;
   WebPSamplers[MODE_Argb] = YuvToArgbRow;
   WebPSamplers[MODE_rgbA_4444] = YuvToRgba4444Row;
-
-  // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != nil) {
-#if defined(WEBP_HAVE_SSE2)
-    if (VP8GetCPUInfo(kSSE2)) {
-      WebPInitSamplersSSE2();
-    }
-#endif  // WEBP_HAVE_SSE2
-#if defined(WEBP_HAVE_SSE41)
-    if (VP8GetCPUInfo(kSSE4_1)) {
-      WebPInitSamplersSSE41();
-    }
-#endif  // WEBP_HAVE_SSE41
-#if defined(WEBP_USE_MIPS32)
-    if (VP8GetCPUInfo(kMIPS32)) {
-      WebPInitSamplersMIPS32();
-    }
-#endif  // WEBP_USE_MIPS32
-#if defined(WEBP_USE_MIPS_DSP_R2)
-    if (VP8GetCPUInfo(kMIPSdspR2)) {
-      WebPInitSamplersMIPSdspR2();
-    }
-#endif  // WEBP_USE_MIPS_DSP_R2
-  }
 }
 
-func ConvertARGBToY_C(/* const */ argb *uint32, y *uint8, width int) {
+func ConvertARGBToY_C(/* const */ argb []uint32, y []uint8, width int) {
   var i int
   for i = 0; i < width; i++ {
     p := argb[i];
@@ -95,7 +72,7 @@ func ConvertARGBToY_C(/* const */ argb *uint32, y *uint8, width int) {
   }
 }
 
-func WebPConvertARGBToUV_C(/* const */ argb *uint32, u *uint8, v *uint8, src_width int, do_store int) {
+func WebPConvertARGBToUV_C(/* const */ argb []uint32, u []uint8, v []uint8, src_width int, do_store int) {
   // No rounding. Last pixel is dealt with separately.
   uv_width := src_width >> 1;
   var i int
@@ -452,12 +429,12 @@ func WEBP_DSP_INIT_FUNC(WebPInitConvertARGBToYUV) {
   WebPImportYUVAFromRGBALastLine = ImportYUVAFromRGBALastLine_C;
 
   if (VP8GetCPUInfo != nil) {
-#if defined(WEBP_HAVE_SSE2)
+#if false
     if (VP8GetCPUInfo(kSSE2)) {
       WebPInitConvertARGBToYUVSSE2();
     }
 #endif  // WEBP_HAVE_SSE2
-#if defined(WEBP_HAVE_SSE41)
+#if false
     if (VP8GetCPUInfo(kSSE4_1)) {
       WebPInitConvertARGBToYUVSSE41();
     }
@@ -476,4 +453,32 @@ func WEBP_DSP_INIT_FUNC(WebPInitConvertARGBToYUV) {
   assert.Assert(WebPConvertRGBToY != nil);
   assert.Assert(WebPConvertBGRToY != nil);
   assert.Assert(WebPConvertRGBA32ToUV != nil);
+}
+
+// Macros to give the offset of each channel in a uint32 containing ARGB.
+func CHANNEL_OFFSET(i int) int {
+	if constants.WORDS_BIGENDIAN {
+		// uint32 0xff000000 is 0xff,00,00,00 in memory
+		return i
+	}
+
+	// uint32 0xff000000 is 0x00,00,00,ff in memory
+	return 3 - i
+}
+//------------------------------------------------------------------------------
+// slower on x86 by ~7-8%, but bit-exact with the SSE2/NEON version
+
+//go:fix inline
+func VP8YUVToR(y int, v int) int {
+	return yuv.YUVToR(y, v)
+}
+
+//go:fix inline
+func VP8YUVToG(y int, u int, v int) int {
+	return yuv.YUVToG(y, u, v)
+}
+
+//go:fix inline
+func VP8YUVToB(y int, u int) int {
+	return yuv.YUVToB(y, v)
 }

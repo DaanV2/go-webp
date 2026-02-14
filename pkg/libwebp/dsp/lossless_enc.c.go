@@ -527,10 +527,10 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != nil) {
-#if defined(WEBP_HAVE_SSE2)
+#if false
     if (VP8GetCPUInfo(kSSE2)) {
       VP8LEncDspInitSSE2();
-#if defined(WEBP_HAVE_SSE41)
+#if false
       if (VP8GetCPUInfo(kSSE4_1)) {
         VP8LEncDspInitSSE41();
 #if defined(WEBP_HAVE_AVX2)
@@ -542,12 +542,12 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
 #endif
     }
 #endif
-#if defined(WEBP_USE_MIPS32)
+#if false
     if (VP8GetCPUInfo(kMIPS32)) {
       VP8LEncDspInitMIPS32();
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+#if false
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       VP8LEncDspInitMIPSdspR2();
     }

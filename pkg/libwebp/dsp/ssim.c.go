@@ -145,7 +145,7 @@ WEBP_DSP_INIT_FUNC(VP8SSIMDspInit) {
 #endif
 
   if (VP8GetCPUInfo != nil) {
-#if defined(WEBP_HAVE_SSE2)
+#if false
     if (VP8GetCPUInfo(kSSE2)) {
       VP8SSIMDspInitSSE2();
     }

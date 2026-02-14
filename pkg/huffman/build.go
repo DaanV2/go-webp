@@ -16,12 +16,12 @@ import (
 // by code length.
 func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* const */, code_lengths []int, code_lengths_size int, sorted []uint16) int {
 	// next available space in table
-	var table []*HuffmanCode = root_table
+	var table = root_table
 	total_size := 1 << root_bits // total size root table + 2nd level table
 	var len int                  // current code length
 	var symbol int               // symbol index in original or sorted table
 	// number of codes of each length:
-	var count [MAX_ALLOWED_CODE_LENGTH + 1]int = [MAX_ALLOWED_CODE_LENGTH + 1]int{0}
+	var count = [MAX_ALLOWED_CODE_LENGTH + 1]int{0}
 	// offsets in sorted table for each length:
 	var offset [MAX_ALLOWED_CODE_LENGTH + 1]int
 
@@ -135,7 +135,7 @@ func BuildHuffmanTable( /* const */ root_table []*HuffmanCode, root_bits int /* 
 			}
 			for ; count[len] > 0; count[len]-- {
 				var code HuffmanCode
-				if uint32(key & mask) != low {
+				if uint32(key&mask) != low {
 					if root_table != nil {
 						// This was moving the pointer
 						table = table[table_size:]

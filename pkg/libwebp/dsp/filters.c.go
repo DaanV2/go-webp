@@ -216,12 +216,12 @@ WEBP_DSP_INIT_FUNC(VP8FiltersInit) {
 #endif
 
   if (VP8GetCPUInfo != nil) {
-#if defined(WEBP_HAVE_SSE2)
+#if false
     if (VP8GetCPUInfo(kSSE2)) {
       VP8FiltersInitSSE2();
     }
 #endif
-#if defined(WEBP_USE_MIPS_DSP_R2)
+#if false
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       VP8FiltersInitMIPSdspR2();
     }
