@@ -290,7 +290,7 @@ func VectorMismatch_C( /* const */ array []uint321 /*const*/, array []uint322, l
 }
 
 // Bundles multiple (1, 2, 4 or 8) pixels into a single pixel.
-func VP8LBundleColorMap_C( /* const */ /* const */ row *uint8, width int, xbits int, dst []uint32) {
+func VP8LBundleColorMap_C( /* const */ /* const */ row []uint8, width int, xbits int, dst []uint32) {
 	var x int
 	if xbits > 0 {
 		bit_depth := 1 << (3 - xbits)
@@ -312,11 +312,11 @@ func VP8LBundleColorMap_C( /* const */ /* const */ row *uint8, width int, xbits 
 }
 
 func ExtraCost_C(population []uint32) uint32 {
-	length := len(population)
-	var i int
+	length := uint32(len(population))
+	var i uint32
 	cost := population[4] + population[5]
 	assert.Assert(length%2 == 0)
-	for i = 2; i < length/2-1; i++ {
+	for i = 2; i < (length/2 - 1); i++ {
 		cost += i * (population[2*i+2] + population[2*i+3])
 	}
 	return cost

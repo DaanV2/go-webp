@@ -6,7 +6,6 @@
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
 
-
 package utils
 
 
@@ -75,43 +74,8 @@ func WebPInt32ToMem(/* const */ ptr *uint8, val int) {
 // #define MALLOC_FAIL_AT
 // #define MALLOC_LIMIT
 
-//------------------------------------------------------------------------------
-// Checked memory allocation
 
-var num_malloc_calls = 0
-var num_calloc_calls = 0
-var num_free_calls = 0
-var countdown_to_fail = 0  // 0 = off
-
-type MemBlock struct {
-  ptr *void
-  size uint64 
-  next *MemBlock
-}
-
-var all_blocks *MemBlock = nil
-var total_mem = 0
-var total_mem_allocated = 0
-var high_water_mark = 0
-var mem_limit = 0
-var exit_registered = 0
-
-func PrintMemInfo(){
-  fprintf(stderr, "\nMEMORY INFO:\n")
-  fprintf(stderr, "num calls to: malloc = %4d\n", num_malloc_calls)
-  fprintf(stderr, "              calloc = %4d\n", num_calloc_calls)
-  fprintf(stderr, "              free   = %4d\n", num_free_calls)
-  fprintf(stderr, "total_mem: %u\n", uint32(total_mem))
-  fprintf(stderr, "total_mem allocated: %u\n", uint32(total_mem_allocated))
-  fprintf(stderr, "high-water mark: %u\n", uint32(high_water_mark))
-  for (all_blocks != nil) {
-    b *MemBlock = all_blocks
-    all_blocks = b.next
-    free(b)
-  }
-}
-
-func Increment(/* const */ v *int) {
+func Increment(/* const */ v []int) {
   if (!exit_registered) {
 // #if defined(MALLOC_FAIL_AT)
     {
@@ -132,17 +96,17 @@ func Increment(/* const */ v *int) {
       }
     }
 // #endif
-    (void)countdown_to_fail
-    (void)mem_limit
+    _ = countdown_to_fail
+    _ = mem_limit
     atexit(PrintMemInfo)
     exit_registered = 1
   }
-  ++*v
+  v[0]++
 }
 
 func AddMem(ptr *void, size uint64 ) {
   if (ptr != nil) {
-    var b *MemBlock = (*MemBlock)malloc(sizeof(*b))
+    // var b *MemBlock = (*MemBlock)malloc(sizeof(*b))
     if b == nil { {abort() }}
     b.next = all_blocks
     all_blocks = b
@@ -165,7 +129,7 @@ func SubMem(ptr *void) {
   if (ptr != nil) {
     *MemBlock* b = &all_blocks
     // Inefficient search, but that's just for debugging.
-    while (*b != nil && (*b).ptr != ptr) b = &(*b).next
+    for *b != nil && (*b).ptr != ptr {b = &(*b).next}
     if (*b == nil) {
       fprintf(stderr, "Invalid pointer free! (%p)\n", ptr)
       abort()
@@ -209,53 +173,6 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
   return 1
 }
 
-// size-checking safe malloc/calloc: verify that the requested size is not too
-// large, or return nil. You don't need to call these for constructs like
-// malloc(sizeof(foo)), but only if there's picture-dependent size involved
-// somewhere (like: malloc(num_pixels * sizeof(*something))). That's why this
-// safe malloc() borrows the signature from calloc(), pointing at the dangerous
-// underlying multiply involved.
-// Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
-// func WebPSafeMalloc(nmemb uint64, size uint64 ) *void/* (size *nmemb) */ {
-//   var ptr *void
-//   Increment(&num_malloc_calls)
-//   if !CheckSizeArgumentsOverflow(nmemb, size) { return nil  }
-//   assert.Assert(nmemb * size > 0)
-//   ptr = malloc((uint64)(nmemb * size))
-//   AddMem(ptr, (uint64)(nmemb * size))
-//   return ptr // bidi index -> (uint64)(nmemb * size)
-// }
-
-// Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
-// in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
-// Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
-// func WebPSafeCalloc(nmemb, size uint64) *void/* (size *nmemb) */ {
-//   ptr *void
-//   Increment(&num_calloc_calls)
-//   if !CheckSizeArgumentsOverflow(nmemb, size) { return nil  }
-//   assert.Assert(nmemb * size > 0)
-//   ptr = calloc(uint64(nmemb), size)
-//   AddMem(ptr, (uint64)(nmemb * size))
-//   return ptr // bidi index -> (uint64)(nmemb * size)
-// }
-
-// Public API functions.
-
-// func WebPMalloc(size uint64 ) *void {
-//   // Currently WebPMalloc/WebPFree are declared in src/webp/types.h, which does
-//   // not include bounds_safety.h. As such, the "default" annotation for the
-//   // pointers they accept/return is __single.
-//   //
-//   // All callers will need to immediately cast the returned pointer to
-//   // or via
-//   // WEBP_UNSAFE_FORGE_BIDI_INDEXABLE.
-//   //
-//   // TODO: https://issues.webmproject.org/432511225 - Remove this once we can
-//   // annotate WebPMalloc/WebPFree.
-//   return WEBP_UNSAFE_FORGE_SINGLE(*void, WebPSafeMalloc(1, size))
-// }
-
-
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
 func WebPCopyPlane(/* const */ src *uint8, src_stride int, dst []uint8, dst_stride int, width, height int) {
   assert.Assert(src != nil && dst != nil)
@@ -288,12 +205,3 @@ func WebPCopyPixels(/* const */ src *picture.Picture, /*const*/ dst *picture.Pic
 func WebPGetColorPalette(/* const  */pic *picture.Picture, /*const*/  palette []uint32/* (constants.MAX_PALETTE_SIZE) */) int {
   return GetColorPalette(pic, palette)
 }
-
-//------------------------------------------------------------------------------
-
-// 31 ^ clz(i)
-var  WebPLogTable8bit = [256]uint8{  
-    0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}
-
-
-//------------------------------------------------------------------------------
