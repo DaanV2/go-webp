@@ -97,7 +97,9 @@ func WebPReplaceTransparentPixels(/* const */ pic *picture.Picture, color uint32
     argb *uint32 = pic.argb
     color &= uint(0xffffff);  // force alpha=0
     WebPInitAlphaProcessing()
-    while (y-- > 0) {
+    for y > 0 {
+    y--
+
       WebPAlphaReplace(argb, pic.width, color)
       argb += pic.argb_stride
     }

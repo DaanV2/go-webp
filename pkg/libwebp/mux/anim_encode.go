@@ -322,7 +322,8 @@ type ComparePixelsFunc = func(/* const */ *uint32, int, /*const*/ *uint32, int, 
 func ComparePixelsLossless(/* const */ src *uint32, src_step int, /*const*/ dst *uint32, dst_step int, length int, max_allowed_diff int) int {
 //   (void)max_allowed_diff
   assert.Assert(length > 0)
-  for ;length > 0; length-- {
+  for ;length > 0;  {
+	length--
     if (*src != *dst) {
       return 0
     }
@@ -354,7 +355,8 @@ func PixelsAreSimilar(uint32 src, uint32 dst, max_allowed_diff int) int {
 // error bound, assuming the given step sizes between pixels.
 func ComparePixelsLossy(/* const */ src *uint32, src_step int, /*const*/ dst *uint32, dst_step int, length int, max_allowed_diff int) int {
   assert.Assert(length > 0)
-  for ;length > 0; length-- {
+  for ;length > 0;  {
+	length--
     if (!PixelsAreSimilar(*src, *dst, max_allowed_diff)) {
       return 0
     }
@@ -1327,7 +1329,7 @@ End:
 }
 
 func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
-  while (enc.flush_count > 0) {
+  for enc.flush_count > 0 {
     var err WebPMuxError 
     var curr *EncodedFrame = GetFrame(enc, 0)
     const info *WebPMuxFrameInfo = curr.is_key_frame ? &curr.key_frame : &curr.sub_frame

@@ -231,7 +231,7 @@ func EmitAlphaRGBA4444(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expect
 #if FALSE
 func Rescale(/* const */ src *uint8, src_stride int, new_lines int , /*const*/ wrk *WebPRescaler) int {
   num_lines_out := 0
-  while (new_lines > 0) {  // import new contributions of source rows.
+  for new_lines > 0 {  // import new contributions of source rows.
     lines_in := WebPRescalerImport(wrk, new_lines, src, src_stride)
     src += lines_in * src_stride
     new_lines -= lines_in
@@ -364,7 +364,7 @@ func EmitRescaledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   uv_mb_h := (mb_h + 1) >> 1
   j := 0, uv_j = 0
   num_lines_out := 0
-  while (j < mb_h) {
+  for j < mb_h {
     y_lines_in := WebPRescalerImport(p.scaler_y, mb_h - j, io.y + (ptrdiff_t)j * io.y_stride, io.y_stride)
     j += y_lines_in
     if (WebPRescaleNeededLines(p.scaler_u, uv_mb_h - uv_j)) {
@@ -441,7 +441,7 @@ func EmitRescaledAlphaRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, exp
     var scaler *WebPRescaler = p.scaler_a
     lines_left := expected_num_out_lines
     y_end := p.last_y + lines_left
-    while (lines_left > 0) {
+    for lines_left > 0 {
       row_offset := (ptrdiff_t)scaler.src_y - io.mb_y
       WebPRescalerImport(scaler, io.mb_h + io.mb_y - scaler.src_y, io.a + row_offset * io.width, io.width)
       lines_left -= p.emit_alpha_row(p, y_end - lines_left, lines_left)

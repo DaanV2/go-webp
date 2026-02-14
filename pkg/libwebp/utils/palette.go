@@ -352,7 +352,7 @@ func PaletteSortModifiedZeng(/* const */ pic *picture.Picture, /*const*/ palette
       j++
     }
 
-    while (num_sums > 0) {
+    for num_sums > 0 {
       best_index := best_sum.index
       // Compute delta to know if we need to prepend or append the best index.
       delta := 0

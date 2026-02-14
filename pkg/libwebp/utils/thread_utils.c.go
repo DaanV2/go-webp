@@ -131,9 +131,9 @@ func ThreadLoop(ptr *void) THREADFN {
   var worker *WebPWorker = (*WebPWorker)ptr
   var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl
   done := 0
-  while (!done) {
+  for !done {
     pthread_mutex_lock(&impl.mutex)
-    while (worker.status == OK) {  // wait in idling mode
+    for worker.status == OK {  // wait in idling mode
       pthread_cond_wait(&impl.condition, &impl.mutex)
     }
     if (worker.status == WORK) {
@@ -164,7 +164,7 @@ func ChangeState(/* const */ worker *WebPWorker, WebPWorkerStatus new_status) {
   pthread_mutex_lock(&impl.mutex)
   if (worker.status >= OK) {
     // wait for the worker to finish
-    while (worker.status != OK) {
+    for worker.status != OK {
       pthread_cond_wait(&impl.condition, &impl.mutex)
     }
     // assign new status and release the working thread if needed

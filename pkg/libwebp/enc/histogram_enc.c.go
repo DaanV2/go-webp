@@ -569,12 +569,12 @@ func HistogramBuild(xsize int, histo_bits int , /*const*/ backward_refs *VP8LBac
   VP8LRefsCursor c = VP8LRefsCursorInit(backward_refs)
   assert.Assert(histo_bits > 0)
   VP8LHistogramSetClear(image_histo)
-  while (VP8LRefsCursorOk(&c)) {
+  for VP8LRefsCursorOk(&c) {
     var v *PixOrCopy = c.cur_pos
     ix := (y >> histo_bits) * histo_xsize + (x >> histo_bits)
     HistogramAddSinglePixOrCopy(histograms[ix], v, nil, 0)
     x += PixOrCopyLength(v)
-    while (x >= xsize) {
+    for x >= xsize {
       x -= xsize
       y++
     }
@@ -857,7 +857,7 @@ func HistogramCombineGreedy(/* const */ image_histo *VP8LHistogramSet) int {
     }
   }
 
-  while (histo_queue.size > 0) {
+  for histo_queue.size > 0 {
     idx1 := histo_queue.queue[0].idx1
     idx2 := histo_queue.queue[0].idx2
     HistogramAdd(histograms[idx2], histograms[idx1], histograms[idx1])

@@ -8,7 +8,7 @@
 //	output_buffer.colorspace = mode
 //	...
 //	idec *WebPIDecoder = WebPINewDecoder(&output_buffer)
-//	while (additional_data_is_available) {
+//	for additional_data_is_available {
 //		// ... (get additional data in some new_data[] buffer)
 //		status = WebPIAppend(idec, new_data, new_data_size)
 //		if (status != VP8_STATUS_OK && status != VP8_STATUS_SUSPENDED) {

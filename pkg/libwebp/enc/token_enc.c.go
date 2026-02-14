@@ -126,7 +126,7 @@ func VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*co
     return 0
   }
 
-  while (n < 16) {
+  for n < 16 {
     c := coeffs[n]
 	n++
     sign := c < 0
@@ -180,7 +180,7 @@ func VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*co
           mask = 1 << 10
           tab = VP8Cat6
         }
-        while (mask) {
+        for mask {
           AddConstantToken(tokens, !!(residue & mask), *tab++)
           mask >>= 1
         }
@@ -211,7 +211,9 @@ func VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*cons
     N = (next :== nil) ? b.left : 0
     n := b.page_size
     const token_t* const tokens = TOKEN_DATA(p)
-    while (n-- > N) {
+    for n > N {
+    n--
+
        = tokens[n]
       bit := (token >> 15) & 1
       if (token & FIXED_PROBA_BIT) {
@@ -232,12 +234,14 @@ uint64 VP8EstimateTokenSize(/* const */ b *VP8TBuffer, /*const*/ probas *uint8) 
   size uint64  = 0
   var p *VP8Tokens = b.pages
   assert.Assert(!b.error)
-  while (p != nil) {
+  for p != nil {
     var next *VP8Tokens = p.next
     N := tenary.If((next == nil), b.left,  0)
     n := b.page_size
     const token_t* const tokens = TOKEN_DATA(p)
-    while (n-- > N) {
+    for n > N {
+    n--
+
        = tokens[n]
       bit := token & (1 << 15)
       if (token & FIXED_PROBA_BIT) {

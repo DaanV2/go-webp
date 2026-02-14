@@ -551,7 +551,7 @@ func MuxCleanup(/* const */ mux *WebPMux) WebPMuxError {
 // Total size of a list of images.
 func ImageListDiskSize(/* const */ wpi_list *WebPMuxImage) uint64 {
   size uint64  = 0
-  while (wpi_list != nil) {
+  for wpi_list != nil {
     size += MuxImageDiskSize(wpi_list)
     wpi_list = wpi_list.next
   }

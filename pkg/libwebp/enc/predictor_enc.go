@@ -445,7 +445,7 @@ func VP8LOptimizeSampling(/* const */ image *uint32, full_width int, full_height
   best_bits := bits
   *best_bits_out = bits
   // Check rows first.
-  while (best_bits < max_bits) {
+  for best_bits < max_bits {
     new_square_size := 1 << (best_bits + 1 - bits)
     is_good := 1
     square_size = 1 << (best_bits - bits)
@@ -465,7 +465,7 @@ func VP8LOptimizeSampling(/* const */ image *uint32, full_width int, full_height
   if best_bits == bits { return }
 
   // Check columns.
-  while (best_bits > bits) {
+  for best_bits > bits {
     is_good := 1
     square_size = 1 << (best_bits - bits)
     for y = 0; is_good && y < height; y++ {
@@ -562,7 +562,7 @@ func GetBestPredictorsAndSubSampling(
   *best_mode = nil
   if raw_data == nil { return }
 
-  while (tile_y < tiles_per_col) {
+  for tile_y < tiles_per_col {
     ComputeResidualsForTile(width, height, tile_x, tile_y, min_bits, update_up_to_index, all_argb, argb_scratch, argb, max_quantization, exact, used_subtract_green)
 
     // Update all the super-tiles that are complete.
@@ -880,7 +880,9 @@ func CopyTileWithColorTransform(xsize int, ysize int, tile_x int, tile_y int, ma
   xscan := min(max_tile_size, xsize - tile_x)
   yscan := min(max_tile_size, ysize - tile_y)
   argb += tile_y * xsize + tile_x
-  while (yscan-- > 0) {
+  for yscan > 0 {
+    yscan--
+
     VP8LTransformColor(&color_transform, argb, xscan)
     argb += xsize
   }

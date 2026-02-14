@@ -79,7 +79,7 @@ func ChunkSearchList(first *WebPChunk, nth uint32, tag uint32) *WebPChunk {
   first = ChunkSearchNextInList(first, tag)
   if first == nil { return nil  }
 
-  while (--iter != 0) {
+  for --iter != 0 {
     next_chunk *WebPChunk = ChunkSearchNextInList(first.next, tag)
     if next_chunk == nil { break }
     first = next_chunk
@@ -182,7 +182,7 @@ func ChunkEmit(/* const */ chunk *WebPChunk, dst *uint8) *uint8 {
 
 // Write out the given list of chunks into 'dst'.
 func ChunkListEmit(/* const */ chunk_list *WebPChunk, dst *uint8) *uint8 {
-  while (chunk_list != nil) {
+  for chunk_list != nil {
     dst = ChunkEmit(chunk_list, dst)
     chunk_list = chunk_list.next
   }
@@ -192,7 +192,7 @@ func ChunkListEmit(/* const */ chunk_list *WebPChunk, dst *uint8) *uint8 {
 // Total size of a list of chunks.
 func ChunkListDiskSize(/* const */ chunk_list *WebPChunk) uint64 {
   size uint64  = 0
-  while (chunk_list != nil) {
+  for chunk_list != nil {
     size += ChunkDiskSize(chunk_list)
     chunk_list = chunk_list.next
   }
@@ -290,7 +290,7 @@ func SearchImageToGetOrDelete(wpi_list *WebPMuxImage, nth uint32, wpi_list *WebP
 func MuxImagePush(/* const */ wpi *WebPMuxImage, wpi_list *WebPMuxImage) WebPMuxError {
   new_wpi *WebPMuxImage
 
-  while (*wpi_list != nil) {
+  for *wpi_list != nil {
     var cur_wpi *WebPMuxImage = *wpi_list
     if cur_wpi.next == nil { break }
     wpi_list = &cur_wpi.next
@@ -385,7 +385,7 @@ MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst *uint8) {
 // Checks if the given image list contains at least one image with alpha.
 // Write out RIFF header into 'data', given total data size 'size'.
 func MuxHasAlpha(/* const */ images *WebPMuxImage) int {
-  while (images != nil) {
+  for images != nil {
     if images.has_alpha { return 1  }
     images = images.next
   }

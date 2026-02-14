@@ -272,7 +272,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
       // The last pixel has a different 64 bit hash, as its next pixel does
       // not have the same color, so we just need to get to the last pixel equal
       // to its follower.
-      while (pos + (int)len + 2 < size && argb[pos + len + 2] == argb[pos]) {
+      for pos + (int)len + 2 < size && argb[pos + len + 2] == argb[pos] {
         len++
       }
       if (len > MAX_LENGTH) {
@@ -285,7 +285,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
         len = MAX_LENGTH
       }
       // Process the rest of the hash chain.
-      while (len) {
+      for len {
         tmp[1] = len--
         hash_code = GetPixPairHash64(tmp)
         chain[pos] = hash_to_first_index[hash_code]
@@ -437,7 +437,7 @@ func BackwardReferencesRle(xsize int, ysize int, /*const*/ argb *uint32, cache_b
   // Add first pixel as literal.
   AddSingleLiteral(argb[0], use_color_cache, &hashers, refs)
   i = 1
-  while (i < pix_count) {
+  for i < pix_count {
     max_len := MaxFindCopyLength(pix_count - i)
     rle_len := FindMatchLength(argb + i, argb + i - 1, 0, max_len)
     prev_row_len := (i < xsize) ? 0
@@ -678,7 +678,7 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, cac
 
 func BackwardReferences2DLocality(xsize int, /*const*/ refs *VP8LBackwardRefs) {
   VP8LRefsCursor c = VP8LRefsCursorInit(refs)
-  while (VP8LRefsCursorOk(&c)) {
+  for VP8LRefsCursorOk(&c) {
     if (PixOrCopyIsCopy(c.cur_pos)) {
       dist := c.cur_pos.argb_or_distance
       transformed_dist := VP8LDistanceToPlaneCode(xsize, dist)
@@ -724,7 +724,7 @@ func CalculateBestCacheSize(/* const */ argb *uint32, quality int, /*const*/ ref
   // Find the cache_bits giving the lowest entropy. The search is done in a
   // brute-force way as the function (entropy w.r.t cache_bits) can be
   // anything in practice.
-  while (VP8LRefsCursorOk(&c)) {
+  for VP8LRefsCursorOk(&c) {
     var v *PixOrCopy = c.cur_pos
     if (PixOrCopyIsLiteral(v)) {
       pix := *argb++
@@ -803,7 +803,7 @@ func BackwardRefsWithLocalCache(/* const */ argb *uint32, cache_bits int, /*cons
   VP8LRefsCursor c = VP8LRefsCursorInit(refs)
   if !VP8LColorCacheInit(&hashers, cache_bits) { return 0  }
 
-  while (VP8LRefsCursorOk(&c)) {
+  for VP8LRefsCursorOk(&c) {
     var v *PixOrCopy = c.cur_pos
     if (PixOrCopyIsLiteral(v)) {
       argb_literal := v.argb_or_distance

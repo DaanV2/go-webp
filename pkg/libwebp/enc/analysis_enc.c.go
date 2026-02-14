@@ -181,7 +181,7 @@ func AssignSegments(/* const */ enc *vp8.VP8Encoder, /*const*/ int alphas[MAX_AL
     n = 0;  // track the nearest center for current 'a'
     for a = min_a; a <= max_a; a++ {
       if (alphas[a]) {
-        while (n + 1 < nb && abs(a - centers[n + 1]) < abs(a - centers[n])) {
+        for n + 1 < nb && abs(a - centers[n + 1]) < abs(a - centers[n]) {
           n++
         }
         map[a] = n

@@ -379,12 +379,12 @@ func ColorSpaceInverseTransform_C(/* const */ transform *VP8LTransform, y_start 
   y := y_start
   var pred_row *uint32 = transform.data + (y >> transform.bits) * tiles_per_row
 
-  while (y < y_end) {
+  for y < y_end {
     var pred *uint32 = pred_row
     VP8LMultipliers m = {0, 0, 0}
     var src_safe_end *uint32 = src + safe_width
     var src_end *uint32 = src + width
-    while (src < src_safe_end) {
+    for src < src_safe_end {
       ColorCodeToMultipliers(*pred++, &m)
       VP8LTransformColorInverse(&m, src, tile_width, dst)
       src += tile_width
@@ -520,7 +520,7 @@ func VP8LInverseTransform(/* const */ transform *VP8LTransform, row_start int, r
 
 func VP8LConvertBGRAToRGB_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels
-  while (src < src_end) {
+  for src < src_end {
     argb := *src++
     *dst++ = (argb >> 16) & 0xff
     *dst++ = (argb >> 8) & 0xff
@@ -530,7 +530,7 @@ func VP8LConvertBGRAToRGB_C(/* const */ src *uint32, num_pixels int, dst *uint8)
 
 func VP8LConvertBGRAToRGBA_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels
-  while (src < src_end) {
+  for src < src_end {
     argb := *src++
     *dst++ = (argb >> 16) & 0xff
     *dst++ = (argb >> 8) & 0xff
@@ -541,7 +541,7 @@ func VP8LConvertBGRAToRGBA_C(/* const */ src *uint32, num_pixels int, dst *uint8
 
 func VP8LConvertBGRAToRGBA4444_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels
-  while (src < src_end) {
+  for src < src_end {
     argb := *src++
     rg := ((argb >> 16) & 0xf0) | ((argb >> 12) & 0xf)
     ba := ((argb >> 0) & 0xf0) | ((argb >> 28) & 0xf)
@@ -557,7 +557,7 @@ func VP8LConvertBGRAToRGBA4444_C(/* const */ src *uint32, num_pixels int, dst *u
 
 func VP8LConvertBGRAToRGB565_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels
-  while (src < src_end) {
+  for src < src_end {
     argb := *src++
     rg := ((argb >> 16) & 0xf8) | ((argb >> 13) & 0x7)
     gb := ((argb >> 5) & 0xe0) | ((argb >> 3) & 0x1f)
@@ -573,7 +573,7 @@ func VP8LConvertBGRAToRGB565_C(/* const */ src *uint32, num_pixels int, dst *uin
 
 func VP8LConvertBGRAToBGR_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
   var src_end *uint32 = src + num_pixels
-  while (src < src_end) {
+  for src < src_end {
     argb := *src++
     *dst++ = (argb >> 0) & 0xff
     *dst++ = (argb >> 8) & 0xff
@@ -584,7 +584,7 @@ func VP8LConvertBGRAToBGR_C(/* const */ src *uint32, num_pixels int, dst *uint8)
 func CopyOrSwap(/* const */ src *uint32, num_pixels int, dst *uint8, swap_on_big_endian int) {
   if (false == swap_on_big_endian) {
     var src_end *uint32 = src + num_pixels
-    while (src < src_end) {
+    for src < src_end {
       argb := *src++
       WebPUint32ToMem(dst, BSwap32(argb))
       dst += sizeof(argb)

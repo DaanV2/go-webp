@@ -530,7 +530,9 @@ Error:
 func EmitRows(WEBP_CSP_MODE colorspace, /*const*/ row_in *uint8, in_stride int, mb_w int, mb_h int, /*const*/ out *uint8, out_stride int) int {
   lines := mb_h
   row_out *uint8 = out
-  for lines-- > 0 {
+  for lines > 0 {
+    lines--
+
     VP8LConvertFromBGRA((/* const */ *uint32)row_in, mb_w, colorspace, row_out)
     row_in += in_stride
     row_out += out_stride
@@ -713,7 +715,9 @@ func ApplyInverseTransforms(/* const */ dec *VP8LDecoder, start_row int, num_row
   var rows_out *uint32 = decoder.argb_cache
 
   // Inverse transforms.
-  for n-- > 0 {
+  for n > 0 {
+    n--
+
     var transform *VP8LTransform = &decoder.transforms[n]
     VP8LInverseTransform(transform, start_row, end_row, rows_in, rows_out)
     rows_in = rows_out

@@ -128,7 +128,7 @@ func RescalePlane(/* const */ src *uint8, src_width int , src_height int, src_st
   if (!WebPRescalerInit(&rescaler, src_width, src_height, dst, dst_width, dst_height, dst_stride, num_channels, work)) {
     return 0
   }
-  while (y < src_height) {
+  for y < src_height {
     y += WebPRescalerImport(&rescaler, src_height - y, src + y * src_stride, src_stride)
     WebPRescalerExport(&rescaler)
   }

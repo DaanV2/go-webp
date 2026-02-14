@@ -274,7 +274,7 @@ func PutCoeffs(/* const */ bw *VP8BitWriter, ctx int, /*const*/ res *VP8Residual
           mask = 1 << 10
           tab = VP8Cat6
         }
-        while (mask) {
+        for mask {
           vp8.VP8PutBit(bw, !!(v & mask), *tab++)
           mask >>= 1
         }
@@ -616,7 +616,9 @@ func StatLoop(/* const */ enc *vp8.VP8Encoder) int {
     }
   }
 
-  while (num_pass_left-- > 0) {
+  for num_pass_left > 0 {
+    num_pass_left--
+
     is_last_pass := (fabs(stats.dq) <= DQ_LIMIT) ||
                              (num_pass_left == 0) ||
                              (enc.max_i4_header_bits == 0)
@@ -778,7 +780,7 @@ func VP8EncTokenLoop(/* const */ enc *vp8.VP8Encoder) int {
   assert.Assert(rd_opt >= RD_OPT_BASIC);  // otherwise, token-buffer won't be useful
   assert.Assert(num_pass_left > 0)
 
-  while (ok && num_pass_left-- > 0) {
+  for ok && num_pass_left-- > 0 {
     is_last_pass := (fabs(stats.dq) <= DQ_LIMIT) ||
                              (num_pass_left == 0) ||
                              (enc.max_i4_header_bits == 0)

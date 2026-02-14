@@ -150,7 +150,7 @@ func WebPRescalerImport(/* const */ rescaler *WebPRescaler, num_lines int, /*con
 
 func WebPRescalerExport(/* const */ rescaler *WebPRescaler) int {
   total_exported := 0
-  while (WebPRescalerHasPendingOutput(rescaler)) {
+  for WebPRescalerHasPendingOutput(rescaler) {
     WebPRescalerExportRow(rescaler)
     total_exported++
   }

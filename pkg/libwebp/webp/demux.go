@@ -75,7 +75,7 @@ func WebPDemuxPartial( /* const */ data *WebPData, state *WebPDemuxState) *WebPD
    var anim_info WebPAnimInfo
   WebPAnimDecoderGetInfo(dec, &anim_info)
   for i := 0; i < anim_info.loop_count; i++ {
-    while (WebPAnimDecoderHasMoreFrames(dec)) {
+    for WebPAnimDecoderHasMoreFrames(dec) {
       buf *uint8
       var timestamp int
       WebPAnimDecoderGetNext(dec, &buf, &timestamp)

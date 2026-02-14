@@ -591,7 +591,9 @@ func SimpleHFilter16i_C(p *uint8, stride int, thresh int) {
 
 func FilterLoop26_C(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
   thresh2 := 2 * thresh + 1
-  while (size-- > 0) {
+  for size > 0 {
+    size--
+
     if (NeedsFilter2_C(p, hstride, thresh2, ithresh)) {
       if (Hev(p, hstride, hev_thresh)) {
         DoFilter2_C(p, hstride)
@@ -605,7 +607,9 @@ func FilterLoop26_C(p *uint8, hstride int, vstride int, size int, thresh int, it
 
 func FilterLoop24_C(p *uint8, hstride int, vstride int, size int, thresh int, ithresh int, hev_thresh int) {
   thresh2 := 2 * thresh + 1
-  while (size-- > 0) {
+  for size > 0 {
+    size--
+
     if (NeedsFilter2_C(p, hstride, thresh2, ithresh)) {
       if (Hev(p, hstride, hev_thresh)) {
         DoFilter2_C(p, hstride)

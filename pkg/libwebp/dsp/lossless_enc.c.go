@@ -298,7 +298,9 @@ func TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) uin
 }
 
 func VP8LCollectColorRedTransforms_C(/* const */ argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, histo []uint32) {
-  while (tile_height-- > 0) {
+  for tile_height > 0 {
+    tile_height--
+
     var x int
     for x = 0; x < tile_width; x++ {
       ++histo[TransformColorRed((uint8)green_to_red, argb[x])]
@@ -308,7 +310,9 @@ func VP8LCollectColorRedTransforms_C(/* const */ argb *uint32, stride int, tile_
 }
 
 func VP8LCollectColorBlueTransforms_C(/* const */ argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, histo []uint32) {
-  while (tile_height-- > 0) {
+  for tile_height > 0 {
+    tile_height--
+
     var x int
     for x = 0; x < tile_width; x++ {
       ++histo[TransformColorBlue((uint8)green_to_blue, (uint8)red_to_blue, argb[x])]
@@ -322,7 +326,7 @@ func VP8LCollectColorBlueTransforms_C(/* const */ argb *uint32, stride int, tile
 func VectorMismatch_C(/* const */ array *uint321, /*const*/ array *uint322, length int) int {
   match_len := 0
 
-  while (match_len < length && array1[match_len] == array2[match_len]) {
+  for match_len < length && array1[match_len] == array2[match_len] {
     match_len++
   }
   return match_len

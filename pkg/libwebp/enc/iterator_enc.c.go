@@ -179,7 +179,9 @@ func VP8IteratorImport(/* const */ it *vp8.VP8EncIterator, /*const*/ tmp_ *uint8
 // Copy back the compressed samples into user space if requested.
 
 func ExportBlock(/* const */ src *uint8, dst *uint8, dst_stride int, w int, h int) {
-  while (h-- > 0) {
+  for h > 0 {
+    h--
+
     stdlib.MemCpy(dst, src, w)
     dst += dst_stride
     src += BPS

@@ -205,7 +205,7 @@ func CostManagerInitFreeList(/* const */ manager *CostManager) {
 }
 
 func DeleteIntervalList(/* const */ manager *CostManager, /*const*/ interval *CostInterval) {
-  while (interval != nil) {
+  for interval != nil {
     var next *CostInterval = interval.next
 
     interval = next
@@ -351,7 +351,7 @@ func PopInterval(/* const */ manager *CostManager, /*const*/ interval *CostInter
 func UpdateCostAtIndex(/* const */ manager *CostManager, i int, do_clean_intervals int) {
   current *CostInterval = manager.head
 
-  while (current != nil && current.start <= i) {
+  for current != nil && current.start <= i {
     var next *CostInterval = current.next
     if (current.end <= i) {
       if (do_clean_intervals) {
@@ -372,7 +372,7 @@ func PositionOrphanInterval(/* const */ manager *CostManager, /*const*/ current 
   assert.Assert(current != nil)
 
   if previous == nil { previous = manager.head }
-  while (previous != nil && current.start < previous.start) {
+  for previous != nil && current.start < previous.start {
     previous = previous.previous
   }
   while (previous != nil && previous.next != nil &&
@@ -647,7 +647,7 @@ Error:
 func TraceBackwards(/* const */ dist_array *uint16, dist_array_size int, *uint16* const chosen_path, /*const*/ chosen_path_size *int) {
   path *uint16 = dist_array + dist_array_size
   cur *uint16 = dist_array + dist_array_size - 1
-  while (cur >= dist_array) {
+  for cur >= dist_array {
     k := *cur
     --path
     *path = k
