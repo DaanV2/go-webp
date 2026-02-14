@@ -80,7 +80,7 @@ func WebPPictureYUVAToARGB(picture *picture.Picture) int {
     width := picture.Width
     height := picture.Height
     argb_stride := 4 * picture.ARGBStride
-    dst *uint8 = (*uint8)picture.ARGB
+    dst []uint8 = (*uint8)picture.ARGB
     *cur_u = picture.U, *cur_v = picture.V, *cur_y := picture.Y
     WebPUpsampleLinePairFunc upsample = WebPGetLinePairConverter(ALPHA_OFFSET > 0)
 
@@ -212,7 +212,7 @@ func WebPPictureImportRGB(picture *picture.Picture, /*const*/ rgb *uint8, rgb_st
              : 0
 }
 
-func WebPPictureImportRGBA(picture *picture.Picture, /*const*/ rgba *uint8, rgba_stride int) int {
+func WebPPictureImportRGBA(picture *picture.Picture, /*const*/ rgba []uint8, rgba_stride int) int {
   return (picture != nil && rgba != nil)
              ? Import(picture, rgba, rgba_stride, 4, 0, 1)
              : 0

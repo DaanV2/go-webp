@@ -271,7 +271,7 @@ type WebPHasAlpha8b = func(/* const */ src []uint8, length int) int
 // This function returns true if src[4*i] contains a value different from 0xff.
 type WebPHasAlpha32b = func(/* const */ src []uint8, length int) int
 // replaces transparent values in src[] by 'color'.
-type WebPAlphaReplace = func(src *uint32, length int, color uint32)
+type WebPAlphaReplace = func(src []uint32, length int, color uint32)
 
 // To be called first before using the above.
 func WebPInitAlphaProcessing(void)

@@ -556,7 +556,7 @@ func DecodeInto(data *uint8, data_size uint64 /*const*/, params *WebPDecParams) 
 }
 
 // Helpers
-func DecodeIntoRGBABuffer(colorspace WEBP_CSP_MODE, data *uint8, data_size uint64, rgba *uint8, stride int, size uint64) *uint8 {
+func DecodeIntoRGBABuffer(colorspace WEBP_CSP_MODE, data *uint8, data_size uint64, rgba []uint8, stride int, size uint64) *uint8 {
 	var params WebPDecParams
 	var buf WebPDecBuffer
 	if rgba == nil || !WebPInitDecBuffer(&buf) {

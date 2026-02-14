@@ -36,9 +36,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 func EmitYUV(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   output *WebPDecBuffer = p.output
   var buf *WebPYUVABuffer = &output.u.YUVA
-  var y_dst *uint8 = buf.y + (ptrdiff_t)io.mb_y * buf.y_stride
-  var u_dst *uint8 = buf.u + (ptrdiff_t)(io.mb_y >> 1) * buf.u_stride
-  var v_dst *uint8 = buf.v + (ptrdiff_t)(io.mb_y >> 1) * buf.v_stride
+  var y_dst []uint8 = buf.y + (ptrdiff_t)io.mb_y * buf.y_stride
+  var u_dst []uint8 = buf.u + (ptrdiff_t)(io.mb_y >> 1) * buf.u_stride
+  var v_dst []uint8 = buf.v + (ptrdiff_t)(io.mb_y >> 1) * buf.v_stride
   mb_w := io.mb_w
   mb_h := io.mb_h
   uv_w := (mb_w + 1) / 2
@@ -53,7 +53,7 @@ func EmitYUV(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 func EmitSampledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   var output *WebPDecBuffer = p.output
   var buf *WebPRGBABuffer = &output.u.RGBA
-  var dst *uint8 = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride
+  var dst []uint8 = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride
   WebPSamplerProcessPlane(io.y, io.y_stride, io.u, io.v, io.uv_stride, dst, buf.stride, io.mb_w, io.mb_h, WebPSamplers[output.colorspace])
   return io.mb_h
 }
@@ -65,7 +65,7 @@ func EmitSampledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 func EmitFancyRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   num_lines_out := io.mb_h;  // a priori guess
   var buf *WebPRGBABuffer = &p.output.u.RGBA
-  dst *uint8 = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride
+  dst []uint8 = buf.rgba + (ptrdiff_t)io.mb_y * buf.stride
   WebPUpsampleLinePairFunc upsample = WebPUpsamplers[p.output.colorspace]
   var cur_y *uint8 = io.y
   var cur_u *uint8 = io.u
@@ -118,7 +118,7 @@ func EmitFancyRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 
 //------------------------------------------------------------------------------
 
-func FillAlphaPlane(dst *uint8, wx, h, stride int) {
+func FillAlphaPlane(dst []uint8, wx, h, stride int) {
   for j := 0; j < h; j++ {
     stdlib.Memset(dst, 0xff, w * sizeof(*dst))
     dst += stride
@@ -130,7 +130,7 @@ func EmitAlphaYUV(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expected_nu
   var buf *WebPYUVABuffer = &p.output.u.YUVA
   mb_w := io.mb_w
   mb_h := io.mb_h
-  dst *uint8 = buf.a + (ptrdiff_t)io.mb_y * buf.a_stride
+  dst []uint8 = buf.a + (ptrdiff_t)io.mb_y * buf.a_stride
   var j int
   (void)expected_num_lines_out
   assert.Assert(expected_num_lines_out == mb_h)
@@ -181,8 +181,8 @@ func EmitAlphaRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams,  expected_n
     var buf *WebPRGBABuffer = &p.output.u.RGBA
     num_rows int 
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows)
-    var base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride
-    var dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3))
+    var base_rgba []uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride
+    var dst []uint8 = base_rgba + (tenary.If(alpha_first, 0, 3))
     has_alpha := WebPDispatchAlpha(alpha, io.width, mb_w, num_rows, dst, buf.stride)
     (void)expected_num_lines_out
     assert.Assert(expected_num_lines_out == num_rows)
@@ -202,8 +202,8 @@ func EmitAlphaRGBA4444(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expect
     var buf *WebPRGBABuffer = &p.output.u.RGBA
     num_rows int 
     start_y := GetAlphaSourceRow(io, &alpha, &num_rows)
-    var base_rgba *uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride
-    alpha_dst *uint8 = base_rgba
+    var base_rgba []uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride
+    alpha_dst []uint8 = base_rgba
     alpha_mask := float64(0x0)
     var i, j int
     for j = 0; j < num_rows; j++ {
@@ -341,7 +341,7 @@ func InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 func ExportRGB(/* const */ p *WebPDecParams, y_pos int) int {
   var convert WebPYUV444Converter = WebPYUV444Converters[p.output.colorspace]
   var buf *WebPRGBABuffer = &p.output.u.RGBA
-  dst *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
+  dst []uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
   num_lines_out := 0
   // For RGB rescaling, because of the YUV420, current scan position
   // U/V can be +1/-1 line from the Y one.  Hence the float64 test.
@@ -383,10 +383,10 @@ func EmitRescaledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 
 func ExportAlpha(/* const */ p *WebPDecParams, y_pos int, max_lines_out int) int {
   var buf *WebPRGBABuffer = &p.output.u.RGBA
-  var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
+  var base_rgba []uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
   var colorspace WEBP_CSP_MODE = p.output.colorspace
   alpha_first := (colorspace == MODE_ARGB || colorspace == MODE_Argb)
-  dst *uint8 = base_rgba + (tenary.If(alpha_first, 0, 3))
+  dst []uint8 = base_rgba + (tenary.If(alpha_first, 0, 3))
   num_lines_out := 0
   is_premult_alpha := WebPIsPremultipliedMode(colorspace)
   non_opaque := 0
@@ -408,8 +408,8 @@ func ExportAlpha(/* const */ p *WebPDecParams, y_pos int, max_lines_out int) int
 
 func ExportAlphaRGBA4444(/* const */ p *WebPDecParams, y_pos int, max_lines_out int ) int {
   var buf *WebPRGBABuffer = &p.output.u.RGBA
-  var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
-  var alpha_dst *uint8 = base_rgba
+  var base_rgba []uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
+  var alpha_dst []uint8 = base_rgba
   num_lines_out := 0
   var colorspace WEBP_CSP_MODE = p.output.colorspace
   width := p.scaler_a.dst_width

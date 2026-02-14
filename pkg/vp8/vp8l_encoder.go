@@ -1075,7 +1075,7 @@ func MakeInputImageCopy( /* const */ enc *VP8LEncoder) int {
 
 	{
 		dst * uint32 = enc.argb
-		var src *uint32 = picture.ARGB
+		var src []uint32 = picture.ARGB
 		var y int
 		for y = 0; y < height; y++ {
 			// C: memcpy(dst, src, width * sizeof(*dst))
@@ -1151,7 +1151,7 @@ func APPLY_PALETTE_FOR(COLOR_INDEX int) {
 // using 'row' as a temporary buffer of size 'width'.
 // We assume that all src[] values have a corresponding entry in the palette.
 // Note: src[] can be the same as dst[]
-func ApplyPalette( /* const */ src *uint32, src_stride uint32, dst *uint32, dst_stride uint32 /* const */, palette *uint32, palette_size, width, height, xbits int /* const */, pic *picture.Picture) int {
+func ApplyPalette( /* const */ src []uint32, src_stride uint32, dst *uint32, dst_stride uint32 /* const */, palette *uint32, palette_size, width, height, xbits int /* const */, pic *picture.Picture) int {
 	// TODO(skal): this tmp buffer is not needed if VP8LBundleColorMap() can be
 	// made to work in-place.
 	var x, y int

@@ -16,8 +16,8 @@ import (
 )
 
 //go:fix inline
-func row_func(callfn func(y, u, v, rgb *uint8), XSTEP int) func(y, u, v, dst *uint8, len int) {
-	return func(y, u, v, dst *uint8, len int) {
+func row_func(callfn func(y, u, v, rgb *uint8), XSTEP int) func(y, u, v, dst []uint8, len int) {
+	return func(y, u, v, dst []uint8, len int) {
 		var end *uint8 = dst + (len&~1)*(XSTEP)
 
 		for dst != end {
@@ -44,7 +44,7 @@ var YuvToRgba4444Row = row_func(yuv.YuvToRgba4444, 2)
 var YuvToRgb565Row = row_func(yuv.YuvToRgb565, 2)
 
 // Main call for processing a plane with a WebPSamplerRowFunc function:
-func WebPSamplerProcessPlane( /* const */ y *uint8, y_stride int /*const*/, u *uint8 /*const*/, v *uint8, uv_stride int, dst *uint8, dst_stride int, width, height int, fn WebPSamplerRowFunc) {
+func WebPSamplerProcessPlane( /* const */ y *uint8, y_stride int /*const*/, u *uint8 /*const*/, v *uint8, uv_stride int, dst []uint8, dst_stride int, width, height int, fn WebPSamplerRowFunc) {
 	var j int
 	for j = 0; j < height; j++ {
 		fn(y, u, v, dst, width)

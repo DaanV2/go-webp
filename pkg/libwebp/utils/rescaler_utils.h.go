@@ -37,7 +37,7 @@ type WebPRescaler struct {
   src_width, src_height int  // source dimensions
   dst_width, dst_height int  // destination dimensions
   src_y, dst_y int           // row counters for input and output
-  dst *uint8
+  dst []uint8
   dst_stride int
   // work buffer
   irow (dst_num_channels *width) *rescaler_t
@@ -46,7 +46,7 @@ type WebPRescaler struct {
 
 // Initialize a rescaler given scratch area 'work' and dimensions of src & dst.
 // Returns false in case of error.
-int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_height int, /*const*/ dst *uint8, dst_width int, dst_height int, dst_stride int, num_channels int, rescaler_t* const (uint64(2) * dst_width *
+int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_height int, /*const*/ dst []uint8, dst_width int, dst_height int, dst_stride int, num_channels int, rescaler_t* const (uint64(2) * dst_width *
                                                        num_channels) work)
 
 // If either 'scaled_width' or 'scaled_height' (but not both) is 0 the value

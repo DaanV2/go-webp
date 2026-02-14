@@ -541,7 +541,7 @@ func EmitRows(WEBP_CSP_MODE colorspace, /*const*/ row_in *uint8, in_stride int, 
 }
 
 
-func ConvertToYUVA(/* const */ src *uint32, width int, y_pos int, /*const*/ output *WebPDecBuffer) {
+func ConvertToYUVA(/* const */ src []uint32, width int, y_pos int, /*const*/ output *WebPDecBuffer) {
 	var buf *WebPYUVABuffer = &output.u.YUVA
 
 	// first, the luma plane
@@ -564,7 +564,7 @@ func ConvertToYUVA(/* const */ src *uint32, width int, y_pos int, /*const*/ outp
 
 func ExportYUVA(/* const */ dec *VP8LDecoder, y_pos int) int {
   var rescaler *WebPRescaler = decoder.rescaler
-  var src *uint32 = (*uint32)rescaler.dst
+  var src []uint32 = (*uint32)rescaler.dst
   dst_width := rescaler.dst_width
   num_lines_out := 0
   for WebPRescalerHasPendingOutput(rescaler) {
@@ -767,7 +767,7 @@ func ProcessRows(/* const */ dec *VP8LDecoder, row int, wait_for_biggest_batch i
       var output *WebPDecBuffer = decoder.output
       if WebPIsRGBMode(output.colorspace) {  // convert to RGBA
         var buf *WebPRGBABuffer = &output.u.RGBA
-        var rgba *uint8 = buf.rgba + ptrdiff_t(dec.last_out_row) * buf.stride
+        var rgba []uint8 = buf.rgba + ptrdiff_t(dec.last_out_row) * buf.stride
         num_rows_out := tenary.If(io.use_scaling, EmitRescaledRowsRGBA(dec, rows_data, in_stride, io.mb_h, rgba, buf.stride), EmitRows(output.colorspace, rows_data, in_stride, io.mb_w, io.mb_h, rgba, buf.stride))
         // Update 'last_out_row'.
         dec.last_out_row += num_rows_out
@@ -843,7 +843,7 @@ func Rotate8b(uint32 V) uint32 {
 }
 
 // copy 1, 2 or 4-bytes pattern
-func CopySmallPattern8b(/* const */ src *uint8, dst *uint8, length int, uint32 pattern) {
+func CopySmallPattern8b(/* const */ src *uint8, dst []uint8, length int, uint32 pattern) {
   var i int
   // align 'dst' to 4-bytes boundary. Adjust the pattern along the way.
   for (uintptr_t)dst & 3 {
@@ -861,7 +861,7 @@ func CopySmallPattern8b(/* const */ src *uint8, dst *uint8, length int, uint32 p
   }
 }
 
-func CopyBlock8b(/* const */ dst *uint8, dist int, length int) {
+func CopyBlock8b(/* const */ dst []uint8, dist int, length int) {
   var src *uint8 = dst - dist
   if length >= 8 {
     pattern := 0
@@ -896,7 +896,7 @@ Copy:
 }
 
 // copy pattern of 1 or 2 uint32's
-func CopySmallPattern32b(/* const */ src *uint32, dst *uint32, length int, uint64 pattern) {
+func CopySmallPattern32b(/* const */ src []uint32, dst *uint32, length int, uint64 pattern) {
   var i int
   if (uintptr_t)dst & 4 {  // Align 'dst' to 8-bytes boundary.
     *dst++ = *src++
@@ -913,7 +913,7 @@ func CopySmallPattern32b(/* const */ src *uint32, dst *uint32, length int, uint6
 }
 
 func CopyBlock32b(/* const */ dst *uint32, dist int, length int) {
-  var src *uint32 = dst - dist
+  var src []uint32 = dst - dist
   if dist <= 2 && length >= 4 && ((uintptr_t)dst & 3) == 0 {
     var pattern uint64
     if dist == 1 {
@@ -1040,7 +1040,7 @@ func DecodeImageData(/* const */ dec *VP8LDecoder, /*const*/ data *uint32, width
   col := dec.last_pixel % width
   var br *VP8LBitReader = &decoder.br
   var hdr *VP8LMetadata = &decoder.hdr
-  src *uint32 = data + dec.last_pixel
+  src []uint32 = data + dec.last_pixel
   last_cached *uint32 = src
   var src_end *uint32 = data + width * height;     // End of data
   var src_last *uint32 = data + width * last_row;  // Last pixel to decode
@@ -1475,8 +1475,8 @@ func ExtractAlphaRows(/* const */ dec *VP8LDecoder, last_row int, wait_for_bigge
     var output *uint8 = alph_dec.output
     width := dec.io.width;  // the final width (!= dec.width)
     cache_pixs := width * num_rows_to_process
-    var dst *uint8 = output + width * cur_row
-    var src *uint32 = decoder.argb_cache
+    var dst []uint8 = output + width * cur_row
+    var src []uint32 = decoder.argb_cache
     ApplyInverseTransforms(dec, cur_row, num_rows_to_process, in)
     WebPExtractGreen(src, dst, cache_pixs)
     AlphaApplyFilter(alph_dec, cur_row, cur_row + num_rows_to_process, dst, width)

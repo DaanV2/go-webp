@@ -105,7 +105,7 @@ func VP8IteratorProgress(/* const */ it *vp8.VP8EncIterator, delta int) int {
 
 func MinSize(a, b int) int { return tenary.If(a < b, a, b) }
 
-func ImportBlock(/* const */ src *uint8, src_stride int, dst *uint8, w int, h int, size int) {
+func ImportBlock(/* const */ src *uint8, src_stride int, dst []uint8, w int, h int, size int) {
   var i int
   for i = 0; i < h; i++ {
     stdlib.MemCpy(dst, src, w)
@@ -121,7 +121,7 @@ func ImportBlock(/* const */ src *uint8, src_stride int, dst *uint8, w int, h in
   }
 }
 
-func ImportLine(/* const */ src *uint8, src_stride int, dst *uint8, len int, total_len int) {
+func ImportLine(/* const */ src *uint8, src_stride int, dst []uint8, len int, total_len int) {
   var i int
   for (i = 0; i < len; ++i, src += src_stride) dst[i] = *src
   for (; i < total_len; ++i) dst[i] = dst[len - 1]
@@ -178,7 +178,7 @@ func VP8IteratorImport(/* const */ it *vp8.VP8EncIterator, /*const*/ tmp_ *uint8
 //------------------------------------------------------------------------------
 // Copy back the compressed samples into user space if requested.
 
-func ExportBlock(/* const */ src *uint8, dst *uint8, dst_stride int, w int, h int) {
+func ExportBlock(/* const */ src *uint8, dst []uint8, dst_stride int, w int, h int) {
   for h > 0 {
     h--
 
@@ -197,9 +197,9 @@ func VP8IteratorExport(/* const */ it *vp8.VP8EncIterator) {
     var usrc *uint8 = it.yuv_out + U_OFF_ENC
     var vsrc *uint8 = it.yuv_out + V_OFF_ENC
     var pic *picture.Picture = enc.pic
-    var ydst *uint8 = pic.y + (y * pic.y_stride + x) * 16
-    var udst *uint8 = pic.u + (y * pic.uv_stride + x) * 8
-    var vdst *uint8 = pic.v + (y * pic.uv_stride + x) * 8
+    var ydst []uint8 = pic.y + (y * pic.y_stride + x) * 16
+    var udst []uint8 = pic.u + (y * pic.uv_stride + x) * 8
+    var vdst []uint8 = pic.v + (y * pic.uv_stride + x) * 8
     w := (pic.width - x * 16)
     h := (pic.height - y * 16)
 

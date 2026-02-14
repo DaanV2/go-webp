@@ -319,7 +319,7 @@ type ComparePixelsFunc = func(/* const */ *uint32, int, /*const*/ *uint32, int, 
 // Returns true if 'length' number of pixels in 'src' and 'dst' are equal,
 // assuming the given step sizes between pixels.
 // 'max_allowed_diff' is unused and only there to allow function pointer use.
-func ComparePixelsLossless(/* const */ src *uint32, src_step int, /*const*/ dst *uint32, dst_step int, length int, max_allowed_diff int) int {
+func ComparePixelsLossless(/* const */ src []uint32, src_step int, /*const*/ dst *uint32, dst_step int, length int, max_allowed_diff int) int {
 //   (void)max_allowed_diff
   assert.Assert(length > 0)
   for ;length > 0;  {
@@ -353,7 +353,7 @@ func PixelsAreSimilar(uint32 src, uint32 dst, max_allowed_diff int) int {
 
 // Returns true if 'length' number of pixels in 'src' and 'dst' are within an
 // error bound, assuming the given step sizes between pixels.
-func ComparePixelsLossy(/* const */ src *uint32, src_step int, /*const*/ dst *uint32, dst_step int, length int, max_allowed_diff int) int {
+func ComparePixelsLossy(/* const */ src []uint32, src_step int, /*const*/ dst *uint32, dst_step int, length int, max_allowed_diff int) int {
   assert.Assert(length > 0)
   for ;length > 0;  {
 	length--
@@ -628,7 +628,7 @@ func IncreaseTransparency(/* const */ src *picture.Picture, /*const*/ rect *Fram
   assert.Assert(src != nil && dst != nil && rect != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   for j = rect.y_offset; j < rect.y_offset + rect.height; j++ {
-    var psrc *uint32 = src.argb + j * src.argb_stride
+    var psrc []uint32 = src.argb + j * src.argb_stride
     var pdst *uint32 = dst.argb + j * dst.argb_stride
     for i = rect.x_offset; i < rect.x_offset + rect.width; i++ {
       if (psrc[i] == pdst[i] && pdst[i] != TRANSPARENT_COLOR) {
@@ -672,7 +672,7 @@ func FlattenSimilarBlocks(/* const */ src *picture.Picture, /*const*/ rect *Fram
       cnt := 0
       avg_r := 0, avg_g = 0, avg_b = 0
       var x, y int
-      var psrc *uint32 = src.argb + j * src.argb_stride + i
+      var psrc []uint32 = src.argb + j * src.argb_stride + i
       var pdst *uint32 = dst.argb + j * dst.argb_stride + i
       for y = 0; y < block_size; y++ {
         for x = 0; x < block_size; x++ {
@@ -1014,7 +1014,7 @@ func CopyIdenticalPixels(/* const */ a *picture.Picture, /*const*/ b *picture.Pi
 // Copies the pixels where 'mask' is 0 from 'src' to 'dst'.
 func CopyMaskedPixels(/* const */ src *picture.Picture, /*const*/ mask *uint8, /*const*/ dst *picture.Picture) {
   int y, x
-  var row_src *uint32 = src.argb
+  var row_src []uint32 = src.argb
   var row_mask *uint8 = mask
   row_dst *uint32 = dst.argb
   assert.Assert(src.width == dst.width && src.height == dst.height)

@@ -104,7 +104,7 @@ func PREMULTIPLY(x, m uint) int {
 	return (((x) * (m)) >> 23)
 }
 
-func ApplyAlphaMultiply_C(rgba *uint8, alpha_first int, w int, h int, stride int) {
+func ApplyAlphaMultiply_C(rgba []uint8, alpha_first int, w int, h int, stride int) {
   for ; h > 0;  {
 	h--
     var rgb *uint8 = rgba + (tenary.If(alpha_first, 1, 0))
@@ -139,7 +139,7 @@ func multiply(x uint8, m uint32) uint8 {
   return (x * m) >> 16
 }
 
-func ApplyAlphaMultiply4444_C(rgba *uint84444, w int, h int, stride int, rg_byte_pos int /* 0 or 1 */) {
+func ApplyAlphaMultiply4444_C(rgba []uint84444, w int, h int, stride int, rg_byte_pos int /* 0 or 1 */) {
   for ; h > 0; {
 	h-- 
     var i int
@@ -158,11 +158,11 @@ func ApplyAlphaMultiply4444_C(rgba *uint84444, w int, h int, stride int, rg_byte
   }
 }
 
-func ApplyAlphaMultiply_16b_C(rgba *uint84444, w int, h int, stride int) {
+func ApplyAlphaMultiply_16b_C(rgba []uint84444, w int, h int, stride int) {
   ApplyAlphaMultiply4444_C(rgba4444, w, h, stride, 1)
 }
 
-func DispatchAlpha_C(/* const */ alpha *uint8, alpha_stride int, width, height int, dst *uint8, dst_stride int) int {
+func DispatchAlpha_C(/* const */ alpha *uint8, alpha_stride int, width, height int, dst []uint8, dst_stride int) int {
   alpha_mask := 0xff
   var i, j int
 
@@ -243,7 +243,7 @@ type WebPPackRGB = func(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *u
 
 int (*WebPHasAlpha8b)(/* const */ src *uint8, length int)
 int (*WebPHasAlpha32b)(/* const */ src *uint8, length int)
-type WebPAlphaReplace = func(src *uint32, length int, color uint32)
+type WebPAlphaReplace = func(src []uint32, length int, color uint32)
 
 
 WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {

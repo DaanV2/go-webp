@@ -266,7 +266,7 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
-func WebPCopyPlane(/* const */ src *uint8, src_stride int, dst *uint8, dst_stride int, width, height int) {
+func WebPCopyPlane(/* const */ src *uint8, src_stride int, dst []uint8, dst_stride int, width, height int) {
   assert.Assert(src != nil && dst != nil)
   assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width)
   for (height-- > 0) {

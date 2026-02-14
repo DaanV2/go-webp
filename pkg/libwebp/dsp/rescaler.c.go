@@ -106,7 +106,7 @@ func WebPRescalerImportRowShrink_C(/* const */ wrk *WebPRescaler, /*const*/ src 
 
 func WebPRescalerExportRowExpand_C(/* const */ wrk *WebPRescaler) {
   var x_out int
-  var dst *uint8 = wrk.dst
+  var dst []uint8 = wrk.dst
   rescaler_t* const irow = wrk.irow
   x_out_max := wrk.dst_width * wrk.num_channels
   const rescaler_t* const frow = wrk.frow
@@ -134,7 +134,7 @@ func WebPRescalerExportRowExpand_C(/* const */ wrk *WebPRescaler) {
 
 func WebPRescalerExportRowShrink_C(/* const */ wrk *WebPRescaler) {
   var x_out int
-  var dst *uint8 = wrk.dst
+  var dst []uint8 = wrk.dst
   rescaler_t* const irow = wrk.irow
   x_out_max := wrk.dst_width * wrk.num_channels
   const rescaler_t* const frow = wrk.frow

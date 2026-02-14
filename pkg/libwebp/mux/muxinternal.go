@@ -168,7 +168,7 @@ func ChunkListDelete(chunk_list *WebPChunk) {
 //------------------------------------------------------------------------------
 // Chunk serialization methods.
 
-func ChunkEmit(/* const */ chunk *WebPChunk, dst *uint8) *uint8 {
+func ChunkEmit(/* const */ chunk *WebPChunk, dst []uint8) *uint8 {
   chunk_size := chunk.data.size
   assert.Assert(chunk)
   assert.Assert(chunk.tag != NIL_TAG)
@@ -181,7 +181,7 @@ func ChunkEmit(/* const */ chunk *WebPChunk, dst *uint8) *uint8 {
 }
 
 // Write out the given list of chunks into 'dst'.
-func ChunkListEmit(/* const */ chunk_list *WebPChunk, dst *uint8) *uint8 {
+func ChunkListEmit(/* const */ chunk_list *WebPChunk, dst []uint8) *uint8 {
   for chunk_list != nil {
     dst = ChunkEmit(chunk_list, dst)
     chunk_list = chunk_list.next
@@ -353,7 +353,7 @@ func MuxImageDiskSize(/* const */ wpi *WebPMuxImage) uint64 {
 }
 
 // Special case as ANMF chunk encapsulates other image chunks.
-static ChunkEmitSpecial *uint8(/* const */ header *WebPChunk, uint64 total_size, dst *uint8) {
+static ChunkEmitSpecial *uint8(/* const */ header *WebPChunk, uint64 total_size, dst []uint8) {
   header_size := header.data.size
   offset_to_next := total_size - CHUNK_HEADER_SIZE
   assert.Assert(header.tag == kChunks[IDX_ANMF].tag)
@@ -367,7 +367,7 @@ static ChunkEmitSpecial *uint8(/* const */ header *WebPChunk, uint64 total_size,
   return dst + ChunkDiskSize(header)
 }
 
-MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst *uint8) {
+MuxImageEmit *uint8(/* const */ wpi *WebPMuxImage, dst []uint8) {
   // Ordering of chunks to be emitted is strictly as follows:
   // 1.0 ANMF chunk (if present).
   // 2. ALPH chunk (if present).

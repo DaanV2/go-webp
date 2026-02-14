@@ -46,7 +46,7 @@ func clip_8b(v int) uint8 {
   } while (0)
 
 #if !WEBP_NEON_OMIT_C_CODE
-func TransformOne_C(/* const */ in *int16, dst *uint8) {
+func TransformOne_C(/* const */ in *int16, dst []uint8) {
   int C[4 * 4], *tmp
   var i int
   tmp = C
@@ -88,7 +88,7 @@ func TransformOne_C(/* const */ in *int16, dst *uint8) {
 }
 
 // Simplified transform when only in[0], in[1] and in[4] are non-zero
-func TransformAC3_C(/* const */ in *int16, dst *uint8) {
+func TransformAC3_C(/* const */ in *int16, dst []uint8) {
   a := in[0] + 4
   c4 := WEBP_TRANSFORM_AC3_MUL2(in[4])
   d4 := WEBP_TRANSFORM_AC3_MUL1(in[4])
@@ -101,7 +101,7 @@ func TransformAC3_C(/* const */ in *int16, dst *uint8) {
 }
 #undef STORE2
 
-func TransformTwo_C(/* const */ in *int16, dst *uint8, do_two int) {
+func TransformTwo_C(/* const */ in *int16, dst []uint8, do_two int) {
   TransformOne_C(in, dst)
   if (do_two) {
     TransformOne_C(in + 16, dst + 4)
@@ -109,13 +109,13 @@ func TransformTwo_C(/* const */ in *int16, dst *uint8, do_two int) {
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func TransformUV_C(/* const */ in *int16, dst *uint8) {
+func TransformUV_C(/* const */ in *int16, dst []uint8) {
   VP8Transform(in + 0 * 16, dst, 1)
   VP8Transform(in + 2 * 16, dst + 4 * BPS, 1)
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-func TransformDC_C(/* const */ in *int16, dst *uint8) {
+func TransformDC_C(/* const */ in *int16, dst []uint8) {
   DC := in[0] + 4
   var i, j int
   for j = 0; j < 4; j++ {
@@ -126,7 +126,7 @@ func TransformDC_C(/* const */ in *int16, dst *uint8) {
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func TransformDCUV_C(/* const */ in *int16, dst *uint8) {
+func TransformDCUV_C(/* const */ in *int16, dst []uint8) {
   if in[0 * 16] { VP8TransformDC(in + 0 * 16, dst) }
   if in[1 * 16] { VP8TransformDC(in + 1 * 16, dst + 4) }
   if in[2 * 16] { VP8TransformDC(in + 2 * 16, dst + 4 * BPS) }
@@ -175,7 +175,7 @@ VP8WHT VP8TransformWHT
 #define DST(x, y) dst[(x) + (y) * BPS]
 
 #if !WEBP_NEON_OMIT_C_CODE
-func TrueMotion(dst *uint8, size int) {
+func TrueMotion(dst []uint8, size int) {
   var top *uint8 = dst - BPS
   var clip *uint80 = VP8kclip1 - top[-1]
   var y int
@@ -188,21 +188,21 @@ func TrueMotion(dst *uint8, size int) {
     dst += BPS
   }
 }
-func TM4_C(dst *uint8) { TrueMotion(dst, 4); }
-func TM8uv_C(dst *uint8) { TrueMotion(dst, 8); }
-func TM16_C(dst *uint8) { TrueMotion(dst, 16); }
+func TM4_C(dst []uint8) { TrueMotion(dst, 4); }
+func TM8uv_C(dst []uint8) { TrueMotion(dst, 8); }
+func TM16_C(dst []uint8) { TrueMotion(dst, 16); }
 
 //------------------------------------------------------------------------------
 // 16x16
 
-func VE16_C(dst *uint8) {  // vertical
+func VE16_C(dst []uint8) {  // vertical
   var j int
   for j = 0; j < 16; j++ {
     memcpy(dst + j * BPS, dst - BPS, 16)
   }
 }
 
-func HE16_C(dst *uint8) {  // horizontal
+func HE16_C(dst []uint8) {  // horizontal
   var j int
   for j = 16; j > 0; --j {
     stdlib.Memset(dst, dst[-1], 16)
@@ -210,14 +210,14 @@ func HE16_C(dst *uint8) {  // horizontal
   }
 }
 
-func Put16(v int, dst *uint8) {
+func Put16(v int, dst []uint8) {
   var j int
   for j = 0; j < 16; j++ {
     stdlib.Memset(dst + j * BPS, v, 16)
   }
 }
 
-func DC16_C(dst *uint8) {  // DC
+func DC16_C(dst []uint8) {  // DC
   DC := 16
   var j int
   for j = 0; j < 16; j++ {
@@ -226,7 +226,7 @@ func DC16_C(dst *uint8) {  // DC
   Put16(DC >> 5, dst)
 }
 
-func DC16NoTop_C(dst *uint8) {  // DC with top samples not available
+func DC16NoTop_C(dst []uint8) {  // DC with top samples not available
   DC := 8
   var j int
   for j = 0; j < 16; j++ {
@@ -235,7 +235,7 @@ func DC16NoTop_C(dst *uint8) {  // DC with top samples not available
   Put16(DC >> 4, dst)
 }
 
-func DC16NoLeft_C(dst *uint8) {  // DC with left samples not available
+func DC16NoLeft_C(dst []uint8) {  // DC with left samples not available
   DC := 8
   var i int
   for i = 0; i < 16; i++ {
@@ -244,7 +244,7 @@ func DC16NoLeft_C(dst *uint8) {  // DC with left samples not available
   Put16(DC >> 4, dst)
 }
 
-func DC16NoTopLeft_C(dst *uint8) {  // DC with no top and left samples
+func DC16NoTopLeft_C(dst []uint8) {  // DC with no top and left samples
   Put16(0x80, dst)
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
@@ -258,7 +258,7 @@ VP8PredFunc VP8PredLuma16[NUM_B_DC_MODES]
 #define AVG2(a, b) (((a) + (b) + 1) >> 1)
 
 #if !WEBP_NEON_OMIT_C_CODE
-func VE4_C(dst *uint8) {  // vertical
+func VE4_C(dst []uint8) {  // vertical
   var top *uint8 = dst - BPS
   vals[4] := {
       AVG3(top[-1], top[0], top[1]), AVG3(top[0], top[1], top[2]), AVG3(top[1], top[2], top[3]), AVG3(top[2], top[3], top[4]), }
@@ -269,7 +269,7 @@ func VE4_C(dst *uint8) {  // vertical
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func HE4_C(dst *uint8) {  // horizontal
+func HE4_C(dst []uint8) {  // horizontal
   A := dst[-1 - BPS]
   B := dst[-1]
   C := dst[-1 + BPS]
@@ -282,7 +282,7 @@ func HE4_C(dst *uint8) {  // horizontal
 }
 
 #if !WEBP_NEON_OMIT_C_CODE
-func DC4_C(dst *uint8) {  // DC
+func DC4_C(dst []uint8) {  // DC
   dc := 4
   var i int
   for (i = 0; i < 4; ++i) dc += dst[i - BPS] + dst[-1 + i * BPS]
@@ -290,7 +290,7 @@ func DC4_C(dst *uint8) {  // DC
   for (i = 0; i < 4; ++i) stdlib.Memset(dst + i * BPS, dc, 4)
 }
 
-func RD4_C(dst *uint8) {  // Down-right
+func RD4_C(dst []uint8) {  // Down-right
   I := dst[-1 + 0 * BPS]
   J := dst[-1 + 1 * BPS]
   K := dst[-1 + 2 * BPS]
@@ -309,7 +309,7 @@ func RD4_C(dst *uint8) {  // Down-right
   DST(3, 0) = AVG3(D, C, B)
 }
 
-func LD4_C(dst *uint8) {  // Down-Left
+func LD4_C(dst []uint8) {  // Down-Left
   A := dst[0 - BPS]
   B := dst[1 - BPS]
   C := dst[2 - BPS]
@@ -328,7 +328,7 @@ func LD4_C(dst *uint8) {  // Down-Left
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-func VR4_C(dst *uint8) {  // Vertical-Right
+func VR4_C(dst []uint8) {  // Vertical-Right
   I := dst[-1 + 0 * BPS]
   J := dst[-1 + 1 * BPS]
   K := dst[-1 + 2 * BPS]
@@ -350,7 +350,7 @@ func VR4_C(dst *uint8) {  // Vertical-Right
   DST(3, 1) = AVG3(B, C, D)
 }
 
-func VL4_C(dst *uint8) {  // Vertical-Left
+func VL4_C(dst []uint8) {  // Vertical-Left
   A := dst[0 - BPS]
   B := dst[1 - BPS]
   C := dst[2 - BPS]
@@ -372,7 +372,7 @@ func VL4_C(dst *uint8) {  // Vertical-Left
   DST(3, 3) = AVG3(F, G, H)
 }
 
-func HU4_C(dst *uint8) {  // Horizontal-Up
+func HU4_C(dst []uint8) {  // Horizontal-Up
   I := dst[-1 + 0 * BPS]
   J := dst[-1 + 1 * BPS]
   K := dst[-1 + 2 * BPS]
@@ -386,7 +386,7 @@ func HU4_C(dst *uint8) {  // Horizontal-Up
   DST(3, 2) = DST(2, 2) = DST(0, 3) = DST(1, 3) = DST(2, 3) = DST(3, 3) = L
 }
 
-func HD4_C(dst *uint8) {  // Horizontal-Down
+func HD4_C(dst []uint8) {  // Horizontal-Down
   I := dst[-1 + 0 * BPS]
   J := dst[-1 + 1 * BPS]
   K := dst[-1 + 2 * BPS]
@@ -419,14 +419,14 @@ VP8PredFunc VP8PredLuma4[NUM_BMODES]
 // Chroma
 
 #if !WEBP_NEON_OMIT_C_CODE
-func VE8uv_C(dst *uint8) {  // vertical
+func VE8uv_C(dst []uint8) {  // vertical
   var j int
   for j = 0; j < 8; j++ {
     memcpy(dst + j * BPS, dst - BPS, 8)
   }
 }
 
-func HE8uv_C(dst *uint8) {  // horizontal
+func HE8uv_C(dst []uint8) {  // horizontal
   var j int
   for j = 0; j < 8; j++ {
     stdlib.Memset(dst, dst[-1], 8)
@@ -435,14 +435,14 @@ func HE8uv_C(dst *uint8) {  // horizontal
 }
 
 // helper for chroma-DC predictions
-func Put8x8uv(uint8 value, dst *uint8) {
+func Put8x8uv(uint8 value, dst []uint8) {
   var j int
   for j = 0; j < 8; j++ {
     stdlib.Memset(dst + j * BPS, value, 8)
   }
 }
 
-func DC8uv_C(dst *uint8) {  // DC
+func DC8uv_C(dst []uint8) {  // DC
   int dc0 = 8
   var i int
   for i = 0; i < 8; i++ {
@@ -451,7 +451,7 @@ func DC8uv_C(dst *uint8) {  // DC
   Put8x8uv(dc0 >> 4, dst)
 }
 
-func DC8uvNoLeft_C(dst *uint8) {  // DC with no left samples
+func DC8uvNoLeft_C(dst []uint8) {  // DC with no left samples
   int dc0 = 4
   var i int
   for i = 0; i < 8; i++ {
@@ -460,7 +460,7 @@ func DC8uvNoLeft_C(dst *uint8) {  // DC with no left samples
   Put8x8uv(dc0 >> 3, dst)
 }
 
-func DC8uvNoTop_C(dst *uint8) {  // DC with no top samples
+func DC8uvNoTop_C(dst []uint8) {  // DC with no top samples
   int dc0 = 4
   var i int
   for i = 0; i < 8; i++ {
@@ -469,7 +469,7 @@ func DC8uvNoTop_C(dst *uint8) {  // DC with no top samples
   Put8x8uv(dc0 >> 3, dst)
 }
 
-func DC8uvNoTopLeft_C(dst *uint8) {  // DC with nothing
+func DC8uvNoTopLeft_C(dst []uint8) {  // DC with nothing
   Put8x8uv(0x80, dst)
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
@@ -683,7 +683,7 @@ func HFilter8i_C(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_th
 
 //------------------------------------------------------------------------------
 
-func DitherCombine8x8_C(/* const */ dither *uint8, dst *uint8, dst_stride int) {
+func DitherCombine8x8_C(/* const */ dither *uint8, dst []uint8, dst_stride int) {
   var i, j int
   for j = 0; j < 8; j++ {
     for i = 0; i < 8; i++ {
@@ -697,7 +697,7 @@ func DitherCombine8x8_C(/* const */ dither *uint8, dst *uint8, dst_stride int) {
 }
 
 
-type VP8DitherCombine8x8 = func(/* const */ dither *uint8, dst *uint8, dst_stride int)
+type VP8DitherCombine8x8 = func(/* const */ dither *uint8, dst []uint8, dst_stride int)
 
 WEBP_DSP_INIT_FUNC(VP8DspInit) {
   VP8InitClipTables()

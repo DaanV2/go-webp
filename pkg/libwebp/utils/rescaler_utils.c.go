@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_height int, /*const*/ dst *uint8, dst_width int, dst_height int, dst_stride int, num_channels int, rescaler_t* const (uint64(2) * dst_width *
+int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_height int, /*const*/ dst []uint8, dst_width int, dst_height int, dst_stride int, num_channels int, rescaler_t* const (uint64(2) * dst_width *
                                                        num_channels) work) {
   x_add := src_width, x_sub = dst_width
   y_add := src_height, y_sub = dst_height

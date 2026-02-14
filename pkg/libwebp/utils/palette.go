@@ -262,7 +262,7 @@ func CoOccurrenceFindMax(cooccurrence []uint32/* (num_num_colors *colors) */ , n
 func CoOccurrenceBuild(/* const */ pic *picture.Picture, /*const*/ palette *uint32 , num_colors uint32, cooccurrence []uint32/* (num_num_colors *colors) */) int {
   var lines, line_top, line_current, line_tmp *uint32
   var x, y int
-  var src *uint32 = pic.argb
+  var src []uint32 = pic.argb
   prev_pix := ~src[0]
   prev_idx := uint(0)
   var idx_map [MAX_PALETTE_SIZE]uint32

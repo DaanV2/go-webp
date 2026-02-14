@@ -851,7 +851,7 @@ func PickBestIntra16(/* const */ it *vp8.VP8EncIterator, rd *VP8ModeScore) {
 
   rd.mode_i16 = -1
   for mode = 0; mode < NUM_PRED_MODES; mode++ {
-    var tmp_dst *uint8 = it.yuv_out2 + Y_OFF_ENC;  // scratch buffer
+    var tmp_dst []uint8 = it.yuv_out2 + Y_OFF_ENC;  // scratch buffer
     rd_cur.mode_i16 = mode
 
     // Reconstruct
@@ -930,7 +930,7 @@ func PickBestIntra4(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeS
     var src *uint8 = src0 + VP8Scan[it.i4]
     var mode_costs *uint16 = GetCostModeI4(it, rd.modes_i4)
     best_block *uint8 = best_blocks + VP8Scan[it.i4]
-    tmp_dst *uint8 = it.yuv_p + I4TMP;  // scratch buffer.
+    tmp_dst []uint8 = it.yuv_p + I4TMP;  // scratch buffer.
 
     InitScore(&rd_i4)
     MakeIntra4Preds(it)
@@ -1002,9 +1002,9 @@ func PickBestUV(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeScore
   var dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment]
   lambda := dqm.lambda_uv
   var src *uint8 = it.yuv_in + U_OFF_ENC
-  tmp_dst *uint8 = it.yuv_out2 + U_OFF_ENC;  // scratch buffer
-  dst *uint80 = it.yuv_out + U_OFF_ENC
-  dst *uint8 = dst0
+  tmp_dst []uint8 = it.yuv_out2 + U_OFF_ENC;  // scratch buffer
+  dst []uint80 = it.yuv_out + U_OFF_ENC
+  dst []uint8 = dst0
    var rd_best VP8ModeScore
   var mode int
 
@@ -1061,7 +1061,7 @@ func SimpleQuantize(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeS
     for {
       mode := it.preds[(it.i4 & 3) + (it.i4 >> 2) * enc.preds_w]
       var src *uint8 = it.yuv_in + Y_OFF_ENC + VP8Scan[it.i4]
-      var dst *uint8 = it.yuv_out + Y_OFF_ENC + VP8Scan[it.i4]
+      var dst []uint8 = it.yuv_out + Y_OFF_ENC + VP8Scan[it.i4]
       MakeIntra4Preds(it)
       nz |= ReconstructIntra4(it, rd.y_ac_levels[it.i4], src, dst, mode)
             << it.i4
@@ -1146,7 +1146,7 @@ func RefineUsingDistortion(/* const */ it *vp8.VP8EncIterator, try_both_modes in
         is_i16 = 1
         break
       } else {  // reconstruct partial block inside yuv_out2 buffer
-        var tmp_dst *uint8 = it.yuv_out2 + Y_OFF_ENC + VP8Scan[it.i4]
+        var tmp_dst []uint8 = it.yuv_out2 + Y_OFF_ENC + VP8Scan[it.i4]
         nz |= ReconstructIntra4(it, rd.y_ac_levels[it.i4], src, tmp_dst, best_i4_mode)
               << it.i4
       }

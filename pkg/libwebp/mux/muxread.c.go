@@ -456,7 +456,7 @@ func WebPMuxGetFeatures( /* const */ mux *WebPMux, flags *uint32) WebPMuxError {
 	return MuxGetCanvasInfo(mux, nil, nil, flags)
 }
 
-func EmitVP8XChunk( /* const */ dst *uint8, width, height int, flags uint32) *uint8 {
+func EmitVP8XChunk( /* const */ dst []uint8, width, height int, flags uint32) *uint8 {
 	vp8x_size := CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE
 	assert.Assert(width >= 1 && height >= 1)
 	assert.Assert(width <= MAX_CANVAS_SIZE && height <= MAX_CANVAS_SIZE)
@@ -471,7 +471,7 @@ func EmitVP8XChunk( /* const */ dst *uint8, width, height int, flags uint32) *ui
 
 // Assemble a single image WebP bitstream from 'wpi'.
 func SynthesizeBitstream( /* const */ wpi *WebPMuxImage /*const*/, bitstream *WebPData) WebPMuxError {
-	var dst *uint8
+	var dst []uint8
 
 	// Allocate data.
 	need_vp8x := (wpi.alpha != nil)

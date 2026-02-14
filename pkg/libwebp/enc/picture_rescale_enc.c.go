@@ -122,7 +122,7 @@ func WebPPictureCrop(pic *picture.Picture, left int, top int, width, height int)
 //------------------------------------------------------------------------------
 // Simple picture rescaler
 
-func RescalePlane(/* const */ src *uint8, src_width int , src_height int, src_stride int, dst *uint8, dst_width int, dst_height int, dst_stride int, work *rescaler_t, num_channels int) int {
+func RescalePlane(/* const */ src *uint8, src_width int , src_height int, src_stride int, dst []uint8, dst_width int, dst_height int, dst_stride int, work *rescaler_t, num_channels int) int {
    var rescaler WebPRescaler
   y := 0
   if (!WebPRescalerInit(&rescaler, src_width, src_height, dst, dst_width, dst_height, dst_stride, num_channels, work)) {

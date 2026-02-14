@@ -60,7 +60,7 @@ func WebPMemoryWriterClear(writer *WebPMemoryWriter) {
 
 type Importer = func(/* const */ *picture.Picture, /*const*/ *uint8, int)int
 
-func Encode(/* const */ rgba *uint8, width, height int, stride int, import Importer, float64 quality_factor, lossless int, out *uint8 put) uint64 {
+func Encode(/* const */ rgba []uint8, width, height int, stride int, import Importer, float64 quality_factor, lossless int, out *uint8 put) uint64 {
    var pic picture.Picture
    var config config.Config
    var wrt WebPMemoryWriter

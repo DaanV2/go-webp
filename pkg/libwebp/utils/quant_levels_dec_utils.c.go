@@ -49,7 +49,7 @@ type SmoothParams struct {
   stride int;                   // stride in bytes
   row int;                      // current input row being processed
   src *uint8;  // input pointer
-  dst *uint8;  // output pointer
+  dst []uint8;  // output pointer
 
    radius int;  // filter radius (=delay)
    scale int;   // normalization factor, in FIX bits precision
@@ -139,7 +139,7 @@ func ApplyFilter(/* const */ p *SmoothParams) {
   // We need the middle pointer for negative indexing.
   var correction *int16 = p.correction + LUT_SIZE
   var dither *uint8 = kOrderedDither[p.row % DSIZE]
-  var dst *uint8 = p.dst
+  var dst []uint8 = p.dst
   var x int
   for x = 0; x < w; x++ {
     v := dst[x]

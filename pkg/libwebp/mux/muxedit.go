@@ -559,7 +559,7 @@ func ImageListDiskSize(/* const */ wpi_list *WebPMuxImage) uint64 {
 }
 
 // Write out the given list of images into 'dst'.
-func ImageListEmit(/* const */ wpi_list *WebPMuxImage, dst *uint8) *uint8 {
+func ImageListEmit(/* const */ wpi_list *WebPMuxImage, dst []uint8) *uint8 {
   for wpi_list != nil {
     dst = MuxImageEmit(wpi_list, dst)
     wpi_list = wpi_list.next
@@ -570,7 +570,7 @@ func ImageListEmit(/* const */ wpi_list *WebPMuxImage, dst *uint8) *uint8 {
 func WebPMuxAssemble(mux *WebPMux, assembled_data *WebPData) WebPMuxError {
   size uint64  = 0
   data *uint8 = nil
-  dst *uint8 = nil
+  dst []uint8 = nil
   var err WebPMuxError
 
   if (assembled_data == nil) {

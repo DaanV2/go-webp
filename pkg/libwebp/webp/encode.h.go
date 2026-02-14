@@ -38,7 +38,7 @@ func WebPEncodeRGB(/* const */ rgb *uint8, width, height int, stride int, qualit
 func WebPEncodeBGR(/* const */ bgr *uint8, width, height int, stride int, quality_factor float64 , output *uint8) uint64 {
 	// TODO:
 }
-func WebPEncodeRGBA(/* const */ rgba *uint8, width, height int, stride int, quality_factor float64 , output *uint8) uint64 {
+func WebPEncodeRGBA(/* const */ rgba []uint8, width, height int, stride int, quality_factor float64 , output *uint8) uint64 {
 	// TODO:
 }
 func WebPEncodeBGRA(/* const */ bgra *uint8, width, height int, stride int, quality_factor float64 , output *uint8) uint64 {
@@ -59,7 +59,7 @@ func WebPEncodeLosslessRGB(/* const */ rgb *uint8, width, height int, stride int
 func WebPEncodeLosslessBGR(/* const */ bgr *uint8, width, height int, stride int, output *uint8) uint64 {
 	// TODO:
 }
-func WebPEncodeLosslessRGBA(/* const */ rgba *uint8, width, height int, stride int, output *uint8) uint64 {
+func WebPEncodeLosslessRGBA(/* const */ rgba []uint8, width, height int, stride int, output *uint8) uint64 {
 	// TODO:
 }
 func WebPEncodeLosslessBGRA(/* const */ bgra *uint8, width, height int, stride int, output *uint8) uint64 {
@@ -156,7 +156,7 @@ int WebPPictureRescale(picture *picture.Picture, width, height int)
 // Returns false in case of memory error.
 int WebPPictureImportRGB(picture *picture.Picture, /*const*/ rgb *uint8, rgb_stride int)
 // Same, but for RGBA buffer.
-int WebPPictureImportRGBA(picture *picture.Picture, /*const*/ rgba *uint8, rgba_stride int)
+int WebPPictureImportRGBA(picture *picture.Picture, /*const*/ rgba []uint8, rgba_stride int)
 // Same, but for RGBA buffer. Imports the RGB direct from the 32-bit format
 // input buffer ignoring the alpha channel. Avoids needing to copy the data
 // to a temporary 24-bit RGB buffer to import the RGB only.

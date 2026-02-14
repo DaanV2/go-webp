@@ -16,8 +16,8 @@ import (
 )
 
 type BlendRowFunc = func( /* const */ *uint32 /* const */, *uint32, int)
-type BlendPixelRowNonPremult = func( /* const */ src *uint32 /* const */, dst *uint32, num_pixels int)
-type BlendPixelRowPremult = func( /* const */ src *uint32 /* const */, dst *uint32, num_pixels int)
+type BlendPixelRowNonPremult = func( /* const */ src []uint32 /* const */, dst *uint32, num_pixels int)
+type BlendPixelRowPremult = func( /* const */ src []uint32 /* const */, dst *uint32, num_pixels int)
 
 type WebPAnimDecoder struct {
 	demux *WebPDemuxer // Demuxer created from given WebP bitstream.
@@ -168,7 +168,7 @@ func ZeroFillFrameRect(buf *uint8, buf_stride, x_offset, y_offset, width, height
 }
 
 // Copy width * height pixels from 'src' to 'dst'.
-func CopyCanvas( /* const */ src *uint8, dst *uint8, width, height uint32) int {
+func CopyCanvas( /* const */ src *uint8, dst []uint8, width, height uint32) int {
 	size := width * height * NUM_CHANNELS
 	//   if !CheckSizeOverflow(size) { return 0  }
 	assert.Assert(src != nil && dst != nil)
@@ -231,7 +231,7 @@ func BlendPixelNonPremult(uint32 src, uint32 dst) uint32 {
 
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are NOT pre-multiplied
 // by alpha.
-func BlendPixelRowNonPremult( /* const */ src *uint32 /*const*/, dst *uint32, num_pixels int) {
+func BlendPixelRowNonPremult( /* const */ src []uint32 /*const*/, dst *uint32, num_pixels int) {
 	var i int
 	for i = 0; i < num_pixels; i++ {
 		src_alpha := (src[i] >> CHANNEL_SHIFT(3)) & 0xff
@@ -257,7 +257,7 @@ func BlendPixelPremult(src, dst uint32) uint32 {
 
 // Blend 'num_pixels' in 'src' over 'dst' assuming they are pre-multiplied by
 // alpha.
-func BlendPixelRowPremult( /* const */ src *uint32 /* const */, dst *uint32, num_pixels int) {
+func BlendPixelRowPremult( /* const */ src []uint32 /* const */, dst *uint32, num_pixels int) {
 	var i int
 	for i = 0; i < num_pixels; i++ {
 		src_alpha := (src[i] >> CHANNEL_SHIFT(3)) & 0xff

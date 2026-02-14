@@ -36,11 +36,11 @@ func CheckMode(mb_x, mb_y, mode int) int {
   return mode
 }
 
-func Copy32b(/* const */ dst *uint8, /*const*/ src *uint8) {
+func Copy32b(/* const */ dst []uint8, /*const*/ src *uint8) {
   stdlib.MemCpy(dst, src, 4)
 }
 
-func DoTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
+func DoTransform(bits uint32, /*const*/ src *int16, /*const*/ dst []uint8) {
   switch (bits >> 30) {
     case 3:
       VP8Transform(src, dst, 0)
@@ -56,7 +56,7 @@ func DoTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
   }
 }
 
-func DoUVTransform(bits uint32, /*const*/ src *int16, /*const*/ dst *uint8) {
+func DoUVTransform(bits uint32, /*const*/ src *int16, /*const*/ dst []uint8) {
   if (bits & 0xff) {             // any non-zero coeff at all?
     if (bits & 0xaa) {           // any non-zero AC coefficient?
       VP8TransformUV(src, dst);  // note we don't use the AC3 variant for U/V
@@ -71,9 +71,9 @@ func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext
   var mb_x int
   mb_y := ctx.mb_y
   cache_id := ctx.id
-  var y_dst *uint8 = dec.yuv_b + Y_OFF
-  var u_dst *uint8 = dec.yuv_b + U_OFF
-  var v_dst *uint8 = dec.yuv_b + V_OFF
+  var y_dst []uint8 = dec.yuv_b + Y_OFF
+  var u_dst []uint8 = dec.yuv_b + U_OFF
+  var v_dst []uint8 = dec.yuv_b + V_OFF
 
   // Initialize left-most block.
   for j = 0; j < 16; j++ {
@@ -143,7 +143,7 @@ func ReconstructRow(/* const */ dec *VP8Decoder, /*const*/ ctx *VP8ThreadContext
 
         // predict and add residuals for all 4x4 blocks in turn.
         for n = 0; n < 16;  {
-          var dst *uint8 = y_dst + kScan[n]
+          var dst []uint8 = y_dst + kScan[n]
           VP8PredLuma4[block.imodes[n]](dst)
           DoTransform(bits, coeffs + n * 16, dst)
 		  n++
@@ -206,7 +206,7 @@ func DoFilter(/* const */ dec *VP8Decoder, mb_x int, mb_y int) {
   cache_id := ctx.id
   y_bps := dec.cache_y_stride
   var f_info *VP8FInfo = ctx.f_info + mb_x
-  var y_dst *uint8 = dec.cache_y + cache_id * 16 * y_bps + mb_x * 16
+  var y_dst []uint8 = dec.cache_y + cache_id * 16 * y_bps + mb_x * 16
   ilevel := f_info.f_ilevel
   limit := f_info.f_limit
   if (limit == 0) {
@@ -228,8 +228,8 @@ func DoFilter(/* const */ dec *VP8Decoder, mb_x int, mb_y int) {
     }
   } else {  // complex
     uv_bps := dec.cache_uv_stride
-    var u_dst *uint8 = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8
-    var v_dst *uint8 = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8
+    var u_dst []uint8 = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8
+    var v_dst []uint8 = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8
     hev_thresh := f_info.hev_thresh
     if (mb_x > 0) {
       VP8HFilter16(y_dst, y_bps, limit + 4, ilevel, hev_thresh)
@@ -353,7 +353,7 @@ func VP8InitDithering(/* const */ options *WebPDecoderOptions, /*const*/ dec *VP
 }
 
 // Convert to range: [-2,2] for dither=50, [-4,4] for dither=100
-func Dither8x8(/* const */ rg *VP8Random, dst *uint8, bps int, amp int) {
+func Dither8x8(/* const */ rg *VP8Random, dst []uint8, bps int, amp int) {
   var dither [64]uint8
   for i := 0; i < 8 * 8; i++ {
     dither[i] = VP8RandomBits2(rg, VP8_DITHER_AMP_BITS + 1, amp)
@@ -370,8 +370,8 @@ func DitherRow(/* const */ dec *VP8Decoder) {
     cache_id := ctx.id
     uv_bps := dec.cache_uv_stride
     if (data.dither >= MIN_DITHER_AMP) {
-      var u_dst *uint8 = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8
-      var v_dst *uint8 = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8
+      var u_dst []uint8 = dec.cache_u + cache_id * 8 * uv_bps + mb_x * 8
+      var v_dst []uint8 = dec.cache_v + cache_id * 8 * uv_bps + mb_x * 8
       Dither8x8(&dec.dithering_rg, u_dst, uv_bps, data.dither)
       Dither8x8(&dec.dithering_rg, v_dst, uv_bps, data.dither)
     }
@@ -406,9 +406,9 @@ func FinishRow(arg *vp8.VP8Decoder, arg *vp8.VP8Io) int {
   uvsize := (extra_y_rows / 2) * dec.cache_uv_stride
   y_offset := cache_id * 16 * dec.cache_y_stride
   uv_offset := cache_id * 8 * dec.cache_uv_stride
-  var ydst *uint8 = dec.cache_y - ysize + y_offset
-  var udst *uint8 = dec.cache_u - uvsize + uv_offset
-  var vdst *uint8 = dec.cache_v - uvsize + uv_offset
+  var ydst []uint8 = dec.cache_y - ysize + y_offset
+  var udst []uint8 = dec.cache_u - uvsize + uv_offset
+  var vdst []uint8 = dec.cache_v - uvsize + uv_offset
   mb_y := ctx.mb_y
   is_first_row := (mb_y == 0)
   is_last_row := (mb_y >= dec.br_mb_y - 1)

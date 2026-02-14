@@ -31,14 +31,14 @@ type VP8LBitEntropy struct { // small struct to hold bit entropy results
 
 // These Add/Sub function expects upper[-1] and out[-1] to be readable.
 type VP8LPredictorAddSubFunc = func( /* const */ in *uint32 /*const*/, upper *uint32, num_pixels int, out *uint32)
-type VP8LProcessDecBlueAndRedFunc = func( /* const */ src *uint32, num_pixels int, dst *uint32)
-type VP8LTransformColorInverseFunc = func( /* const */ m *VP8LMultipliers /*const*/, src *uint32, num_pixels int, dst *uint32)
+type VP8LProcessDecBlueAndRedFunc = func( /* const */ src []uint32, num_pixels int, dst *uint32)
+type VP8LTransformColorInverseFunc = func( /* const */ m *VP8LMultipliers /*const*/, src []uint32, num_pixels int, dst *uint32)
 type VP8LPredictorFunc = func( /* const */ left *uint32 /*const*/, top *uint32)
 
 // Color space conversion.
-type VP8LConvertFunc = func( /* const */ src *uint32, num_pixels int, dst *uint8)
-type VP8LMapARGBFunc = func( /* const */ src *uint32 /*const*/, color_map *uint32, dst *uint32, y_start int, y_end int, width int)
-type VP8LMapAlphaFunc = func( /* const */ src *uint8 /*const*/, color_map *uint32, dst *uint8, y_start int, y_end int, width int)
+type VP8LConvertFunc = func( /* const */ src []uint32, num_pixels int, dst []uint8)
+type VP8LMapARGBFunc = func( /* const */ src []uint32 /*const*/, color_map *uint32, dst *uint32, y_start int, y_end int, width int)
+type VP8LMapAlphaFunc = func( /* const */ src *uint8 /*const*/, color_map *uint32, dst []uint8, y_start int, y_end int, width int)
 
 type VP8LProcessEncBlueAndRedFunc = func(dst *uint32, num_pixels int)
 type VP8LTransformColorFunc = func( /*const*/ /* const */ m *VP8LMultipliers, dst *uint32, num_pixels int)
