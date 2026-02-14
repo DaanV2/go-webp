@@ -5,7 +5,10 @@ import (
 )
 
 // SizeOf returns the size of the type T in bytes.
-func SizeOf[T any]() int {
-	var t T
-	return int(reflect.TypeOf(t).Size())
+func SizeOf[T any](v T) int {
+	return int(reflect.TypeOf(v).Size())
+}
+
+func SizeOfPtr[T any](v *T) int {
+	return int(reflect.TypeFor[T]().Size())
 }

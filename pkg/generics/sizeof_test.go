@@ -8,8 +8,15 @@ import (
 )
 
 func TestSizeOf(t *testing.T) {
-	require.Equal(t, 4, generics.SizeOf[int32]())
-	require.Equal(t, 8, generics.SizeOf[int64]())
-	require.Equal(t, 4, generics.SizeOf[float32]())
-	require.Equal(t, 8, generics.SizeOf[float64]())
+	testSize[int32](t, 4)
+	testSize[int64](t, 8)
+	testSize[float32](t, 4)
+	testSize[float64](t, 8)
+}
+
+func testSize[T any](t *testing.T, expected int) {
+	t.Helper()
+
+	var zero T
+	require.Equal(t, expected, generics.SizeOf(zero))
 }
