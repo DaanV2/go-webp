@@ -8,7 +8,7 @@
 
 package decoder
 
-
+import "github.com/daanv2/go-webp/pkg/vp8"
 
 // In append mode, buffer allocations increase as multiples of this value.
 // Needs to be a power of 2.
@@ -102,7 +102,7 @@ func NeedCompressedAlpha(/* const */ idec *WebPIDecoder) int {
   }
 }
 
-func DoRemap(/* const */ idec *WebPIDecoder, ptrdiff_t offset) {
+func DoRemap(/* const */ idec *WebPIDecoder, offset ptrdiff_t) {
   /* const */ mem *MemBuffer = &idec.mem
   var new_base *uint8 = mem.buf + mem.start
   // note: for VP8, setting up idec.io is only really needed at the beginning
@@ -150,7 +150,7 @@ func DoRemap(/* const */ idec *WebPIDecoder, ptrdiff_t offset) {
             assert.Assert(dec.alpha_data_size >= ALPHA_HEADER_LEN)
             data_size = dec.alpha_data_size - ALPHA_HEADER_LEN
             bounded_alpha_data = dec.alpha_data + ALPHA_HEADER_LEN // bidi index -> data_size
-            VP8LBitReaderSetBuffer(&alph_vp8l_dec.br, bounded_alpha_data, data_size)
+            vp8.VP8EncoderSetBuffer(&alph_vp8l_dec.br, bounded_alpha_data, data_size)
           } else {  // alph_dec.method == ALPHA_NO_COMPRESSION
             // Nothing special to do in this case.
           }
@@ -160,7 +160,7 @@ func DoRemap(/* const */ idec *WebPIDecoder, ptrdiff_t offset) {
       var dec *VP8LDecoder = (*VP8LDecoder)idec.dec
       data_size := MemDataSize(mem)
       var bounded_new_base *uint8 = new_base // bidi index -> data_size
-      VP8LBitReaderSetBuffer(&dec.br, bounded_new_base, data_size)
+      vp8.VP8EncoderSetBuffer(&dec.br, bounded_new_base, data_size)
     }
   }
 }

@@ -9,15 +9,14 @@
 package vp8
 
 // If not at EOS, reload up to VP8L_LBITS byte-by-byte
-func ShiftBytes(/* const */ br *VP8LBitReader) {
-  for br.bit_pos >= 8 && br.pos < br.len {
-    br.val >>= 8
-    br.val |= vp8l_val_t(br.buf[br.pos]) << (VP8L_LBITS - 8)
-    br.pos++
-    br.bit_pos -= 8
-  }
-  if VP8LIsEndOfStream(br) {
-    VP8LSetEndOfStream(br)
-  }
+func ShiftBytes( /* const */ br *VP8LBitReader) {
+	for br.bit_pos >= 8 && br.pos < br.len {
+		br.val >>= 8
+		br.val |= vp8l_val_t(br.buf[br.pos]) << (VP8L_LBITS - 8)
+		br.pos++
+		br.bit_pos -= 8
+	}
+	if VP8LIsEndOfStream(br) {
+		VP8LSetEndOfStream(br)
+	}
 }
-

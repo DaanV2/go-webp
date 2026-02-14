@@ -11,6 +11,7 @@ package vp8
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
 	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
 
 type VP8BitReader struct {
@@ -34,8 +35,8 @@ type VP8BitReader struct {
 func VP8BitReaderSetBuffer( /* const */ br *VP8BitReader /*const*/, start []uint8, size uint64) {
 	assert.Assert(start != nil)
 	br.buf = start
-	// C: br.buf_end = start + size
-	// C: br.buf_max = tenary.If(size >= sizeof(lbit_t), start+size-sizeof(lbit_t)+1, start)
+	br.buf_end = start + size
+	br.buf_max = tenary.If(size >= sizeof(lbit_t), start+size-sizeof(lbit_t)+1, start)
 }
 
 // Initialize the bit reader and the boolean decoder.
@@ -55,9 +56,9 @@ func VP8InitBitReader( /* const */ br *VP8BitReader /*const*/, start []uint8, si
 // relative offset 'offset'.
 func VP8RemapBitReader( /* const */ br *VP8BitReader, offset ptrdiff_t) {
 	if br.buf != nil {
-		// C: br.buf += offset
-		// C: br.buf_end += offset
-		// C: br.buf_max += offset
+		br.buf += offset
+		br.buf_end += offset
+		br.buf_max += offset
 	}
 }
 

@@ -22,7 +22,12 @@ type VP8LBitReader struct {
 	eos     bool       // true if a bit was read past the end of buffer
 }
 
+//go:fix inline
 func VP8LInitBitReader( /* const */ br *VP8LBitReader /*const*/, start []uint8, length uint64) {
+	br.Init(start, length)
+}
+
+func (br *VP8LBitReader) Init(start []uint8, length uint64) {
 	var i uint64
 	var value vp8l_val_t = 0
 	assert.Assert(br != nil)
@@ -34,9 +39,9 @@ func VP8LInitBitReader( /* const */ br *VP8LBitReader /*const*/, start []uint8, 
 	br.bit_pos = 0
 	br.eos = false
 
-	// C: if length > sizeof(br.val) {
-	// C: 	length = sizeof(br.val)
-	// C: }
+	if length > sizeof(br.val) {
+		length = sizeof(br.val)
+	}
 	for i = 0; i < length; i++ {
 		value |= vp8l_val_t(start[i] << (8 * i))
 	}
