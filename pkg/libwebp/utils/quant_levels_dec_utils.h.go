@@ -24,7 +24,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 // Strength is in [0..100] and controls the amount of dithering applied.
 // Returns false in case of error (data is nil, invalid parameters,
 // malloc failure, ...).
-int WebPDequantizeLevels( *uint8((uint64)height *stride)
+int WebPDequantizeLevels( *uint8(uint64(height)*stride)
                              const data, width, height int, stride int, strength int)
 
 

@@ -518,7 +518,7 @@ func HistogramAddThresh(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram
     return 0
   }
 
-  *cost_out = (int64)cost - (int64)a.bit_cost
+  *cost_out = int64(cost)- (int64)a.bit_cost
   return 1
 }
 
@@ -691,7 +691,7 @@ func HistogramCombineEntropyBin(/* const */ image_histo *VP8LHistogramSet, cur_c
     } else {
       // try to merge #idx into #first (both share the same bin_id)
       bit_cost := histograms[idx].bit_cost
-      bit_cost_thresh := -DivRound((int64)bit_cost * combine_cost_factor, 100)
+      bit_cost_thresh := -DivRound(int64(bit_cost)* combine_cost_factor, 100)
       if (HistogramAddEval(histograms[first], histograms[idx], cur_combo, bit_cost_thresh)) {
         max_combine_failures := 32
         // Try to merge two histograms only if the combo is a trivial one or

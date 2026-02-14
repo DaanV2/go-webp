@@ -69,7 +69,7 @@ func VP8LBuildHuffmanTable(root_table *huffman.HuffmanTables, root_bits int, cod
 		sorted := make([]uint16, code_lengths_size)
 
 		// root_table.curr_segment.curr_table bidi index -> total_size * sizeof(*root_table.curr_segment.curr_table)
-		// sorted bidi index -> (uint64)code_lengths_size * sizeof(*sorted)
+		// sorted bidi index -> uint64(code_lengths_size)* sizeof(*sorted)
 		// C: huffman.BuildHuffmanTable(root_table.curr_segment.curr_table, root_bits, code_lengths, code_lengths_size, sorted)
 	}
 	return total_size

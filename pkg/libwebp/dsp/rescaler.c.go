@@ -124,7 +124,7 @@ func WebPRescalerExportRowExpand_C(/* const */ wrk *WebPRescaler) {
     B := WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub)
     A := (uint32)(WEBP_RESCALER_ONE - B)
     for x_out = 0; x_out < x_out_max; x_out++ {
-      I := (uint64)A * frow[x_out] + (uint64)B * irow[x_out]
+      I := uint64(A)* frow[x_out] + uint64(B)* irow[x_out]
       J := (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX)
       v := (int)MULT_FIX(J, wrk.fy_scale)
       dst[x_out] = tenary.If(v > 255, uint(255), (uint8)v)

@@ -272,7 +272,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
       // The last pixel has a different 64 bit hash, as its next pixel does
       // not have the same color, so we just need to get to the last pixel equal
       // to its follower.
-      for pos + (int)len + 2 < size && argb[pos + len + 2] == argb[pos] {
+      for pos + int(len)+ 2 < size && argb[pos + len + 2] == argb[pos] {
         len++
       }
       if (len > MAX_LENGTH) {

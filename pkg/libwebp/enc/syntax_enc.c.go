@@ -122,7 +122,7 @@ func PutVP8FrameHeader(/* const */ pic *picture.Picture, profile int, uint64 siz
   bits = 0                          // keyframe (1b)
          | (profile << 1)           // profile (3b)
          | (1 << 4)                 // visible (1b)
-         | ((uint32)size0 << 5);  // partition length (19b)
+         | (uint32(size0)<< 5);  // partition length (19b)
   vp8_frm_hdr[0] = (bits >> 0) & 0xff
   vp8_frm_hdr[1] = (bits >> 8) & 0xff
   vp8_frm_hdr[2] = (bits >> 16) & 0xff

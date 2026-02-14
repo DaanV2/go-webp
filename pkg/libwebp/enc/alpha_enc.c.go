@@ -113,7 +113,7 @@ func EncodeAlphaInternal(/* const */ data *uint8, width, height, method, filter,
   var output *uint8 = nil
   var tmp_bw VP8LBitWriter
 
-  assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
+  assert.Assert(uint64(data_size)== uint64(width)* height);  // as per spec
   assert.Assert(filter >= 0 && filter < WEBP_FILTER_LAST)
   assert.Assert(method >= ALPHA_NO_COMPRESSION)
   assert.Assert(method <= ALPHA_LOSSLESS_COMPRESSION)
@@ -278,7 +278,7 @@ func EncodeAlpha(/* const */ enc *vp8.VP8Encoder, quality int, method int, filte
   reduce_levels := (quality < 100)
 
   // quick correctness checks
-  assert.Assert((uint64)data_size == (uint64)width * height);  // as per spec
+  assert.Assert(uint64(data_size)== uint64(width)* height);  // as per spec
   assert.Assert(enc != nil && pic != nil && pic.a != nil)
   assert.Assert(output != nil && output_size != nil)
   assert.Assert(width > 0 && height > 0)

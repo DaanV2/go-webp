@@ -789,19 +789,19 @@ static int64 GetPredictionCostCrossColorBlue(
   VP8LCollectColorBlueTransforms(argb, stride, tile_width, tile_height, green_to_blue, red_to_blue, histo)
 
   cur_diff = PredictionCostCrossColor(accumulated_blue_histo, histo)
-  if ((uint8)green_to_blue == prev_x.green_to_blue) {
+  if (uint8(green_to_blue)== prev_x.green_to_blue) {
     // favor keeping the areas locally similar
     cur_diff -= 3ll << LOG_2_PRECISION_BITS
   }
-  if ((uint8)green_to_blue == prev_y.green_to_blue) {
+  if (uint8(green_to_blue)== prev_y.green_to_blue) {
     // favor keeping the areas locally similar
     cur_diff -= 3ll << LOG_2_PRECISION_BITS
   }
-  if ((uint8)red_to_blue == prev_x.red_to_blue) {
+  if (uint8(red_to_blue)== prev_x.red_to_blue) {
     // favor keeping the areas locally similar
     cur_diff -= 3ll << LOG_2_PRECISION_BITS
   }
-  if ((uint8)red_to_blue == prev_y.red_to_blue) {
+  if (uint8(red_to_blue)== prev_y.red_to_blue) {
     // favor keeping the areas locally similar
     cur_diff -= 3ll << LOG_2_PRECISION_BITS
   }

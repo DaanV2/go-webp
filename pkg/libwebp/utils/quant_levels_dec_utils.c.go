@@ -211,7 +211,7 @@ func CountLevels(/* const */ p *SmoothParams) {
 }
 
 // Initialize all params.
-func InitParams(data []uint8/* ((uint64)height *stride) */, width, height, stride, radius int, p *SmoothParams) int {
+func InitParams(data []uint8/* (uint64(height)*stride) */, width, height, stride, radius int, p *SmoothParams) int {
   R := 2 * radius + 1;  // total size of the kernel
 
   size_scratch_m := (R + 1) * width * sizeof(*p.start)
@@ -255,7 +255,7 @@ func InitParams(data []uint8/* ((uint64)height *stride) */, width, height, strid
   return 1
 }
 
-func WebPDequantizeLevels(data []uint8/* ((uint64)height *stride) */ , width, height, stride , strength int ) int {
+func WebPDequantizeLevels(data []uint8/* (uint64(height)*stride) */ , width, height, stride , strength int ) int {
   radius := 4 * strength / 100
 
   if strength < 0 || strength > 100 { return 0  }

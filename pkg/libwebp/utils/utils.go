@@ -199,7 +199,7 @@ func CheckSizeOverflow(size uint64 ) bool {
 func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
   total_size := nmemb * size
   if nmemb == 0 { return 1  }
-  if (uint64)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb { return 0  }
+  if uint64(size)> WEBP_MAX_ALLOCABLE_MEMORY / nmemb { return 0  }
   if !CheckSizeOverflow(total_size) { return 0  }
 // #if defined(PRINT_MEM_INFO) && defined(MALLOC_FAIL_AT)
   if (countdown_to_fail > 0 && --countdown_to_fail == 0) {
@@ -208,7 +208,7 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 // #endif
 // #if defined(PRINT_MEM_INFO) && defined(MALLOC_LIMIT)
   if (mem_limit > 0) {
-    new_total_mem := (uint64)total_mem + total_size
+    new_total_mem := uint64(total_mem)+ total_size
     if (!CheckSizeOverflow(new_total_mem) || new_total_mem > mem_limit) {
       return 0;  // fake fail!
     }

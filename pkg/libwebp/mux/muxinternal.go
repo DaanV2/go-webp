@@ -394,7 +394,7 @@ func MuxHasAlpha(/* const */ images *WebPMuxImage) int {
 
 MuxEmitRiffHeader *uint8(/* const */ data *uint8, size uint64 ) {
   PutLE32(data + 0, MKFOURCC('R', 'I', 'F', 'F'))
-  PutLE32(data + TAG_SIZE, (uint32)size - CHUNK_HEADER_SIZE)
+  PutLE32(data + TAG_SIZE, uint32(size)- CHUNK_HEADER_SIZE)
   assert.Assert(size == (uint32)size)
   PutLE32(data + TAG_SIZE + CHUNK_SIZE_BYTES, MKFOURCC('W', 'E', 'B', 'P'))
   return data + RIFF_HEADER_SIZE

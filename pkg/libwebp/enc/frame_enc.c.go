@@ -559,7 +559,7 @@ func OneStatPass(/* const */ enc *vp8.VP8Encoder, VP8RDLevel rd_opt, nb_mbs int,
   size uint64  = 0
   uint64 size_p0 = 0
   distortion := 0
-  pixel_count := (uint64)nb_mbs * 384
+  pixel_count := uint64(nb_mbs)* 384
 
   VP8IteratorInit(enc, &it)
   SetLoopParams(enc, s.q)

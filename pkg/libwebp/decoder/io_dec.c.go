@@ -294,9 +294,9 @@ func InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   scalers *WebPRescaler
   num_rescalers := tenary.If(has_alpha, 4, 3)
 
-  total_size = ((uint64)work_size + 2 * uv_work_size) * sizeof(*work)
+  total_size = (uint64(work_size)+ 2 * uv_work_size) * sizeof(*work)
   if (has_alpha) {
-    total_size += (uint64)work_size * sizeof(*work)
+    total_size += uint64(work_size)* sizeof(*work)
   }
   rescaler_size = num_rescalers * sizeof(*p.scaler_y) + WEBP_ALIGN_CST
   total_size += rescaler_size
@@ -465,8 +465,8 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   scalers *WebPRescaler
   num_rescalers := tenary.If(has_alpha, 4, 3)
 
-  tmp_size1 = (uint64)num_rescalers * work_size
-  tmp_size2 = (uint64)num_rescalers * out_width
+  tmp_size1 = uint64(num_rescalers)* work_size
+  tmp_size2 = uint64(num_rescalers)* out_width
   total_size = tmp_size1 * sizeof(*work) + tmp_size2 * sizeof(*tmp)
   rescaler_size = num_rescalers * sizeof(*p.scaler_y) + WEBP_ALIGN_CST
   total_size += rescaler_size

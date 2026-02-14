@@ -35,7 +35,7 @@ func GradientPredictor(a, b, c uint8) int {
 }
 
 // Fast estimate of a potentially good filter.
-func WebPEstimateBestFilter( /* const */ data []uint8 /* ((uint64)height *width) */, width, height int) {
+func WebPEstimateBestFilter( /* const */ data []uint8 /* (uint64(height)*width) */, width, height int) {
 	var i, j int
 	var bins [constants.WEBP_FILTER_LAST][SMAX]int
 	stdlib.Memset(bins, 0, sizeof(bins))

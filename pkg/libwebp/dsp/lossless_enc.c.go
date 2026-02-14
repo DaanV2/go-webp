@@ -207,12 +207,12 @@ func VP8LSubtractGreenFromBlueAndRed_C(argb_data *uint32, num_pixels int) {
     green := (argb >> 8) & 0xff
     new_r := (((argb >> 16) & 0xff) - green) & 0xff
     new_b := (((argb >> 0) & 0xff) - green) & 0xff
-    argb_data[i] = ((uint32)argb & uint(0xff00ff00)) | (new_r << 16) | new_b
+    argb_data[i] = (uint32(argb)& uint(0xff00ff00)) | (new_r << 16) | new_b
   }
 }
 
 func ColorTransformDelta(int8 color_pred, int8 color) int {
-  return ((int)color_pred * color) >> 5
+  return (int(color_pred)* color) >> 5
 }
 
 func U32ToS8(uint32 v) int8 { return (int8)(v & 0xff) }

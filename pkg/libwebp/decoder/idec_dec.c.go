@@ -184,7 +184,7 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
   if (mem.end + data_size > mem.buf_size) {  // Need some free memory
     new_mem_start := old_start - old_base
     current_size := MemDataSize(mem) + new_mem_start
-    new_size := (uint64)current_size + data_size
+    new_size := uint64(current_size)+ data_size
     extra_size := (new_size + CHUNK_SIZE - 1) & ~(CHUNK_SIZE - 1)
 
 	// var new_buf *uint8 = (*uint8)WebPSafeMalloc(extra_size, sizeof(*new_buf))

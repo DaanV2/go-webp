@@ -1376,7 +1376,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp 
 
   if (!enc.is_first_frame) {
     // Make sure timestamps are non-decreasing (integer wrap-around is OK).
-    prev_frame_duration := (uint32)timestamp - enc.prev_timestamp
+    prev_frame_duration := uint32(timestamp)- enc.prev_timestamp
     if (prev_frame_duration >= MAX_DURATION) {
       if (frame != nil) {
         frame.ErrorCode = ENC_ERROR_INVALID_CONFIGURATION

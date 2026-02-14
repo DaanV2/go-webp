@@ -64,7 +64,7 @@ int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_heig
     // This is WEBP_RESCALER_FRAC(dst_height, x_add * y_add) without the cast.
     // Its value is <= WEBP_RESCALER_ONE, because dst_height <= rescaler.y_add
     // and rescaler.x_add >= 1
-    num := (uint64)dst_height * WEBP_RESCALER_ONE
+    num := uint64(dst_height)* WEBP_RESCALER_ONE
     den := (uint64)rescaler.x_add * rescaler.y_add
     ratio := num / den
     if (ratio != (uint32)ratio) {
@@ -95,11 +95,11 @@ func WebPRescalerGetScaledDimensions(src_width int, src_height int, /*const*/ sc
 
     // if width is unspecified, scale original proportionally to height ratio.
     if (width == 0 && src_height > 0) {
-      width = (int)(((uint64)src_width * height + src_height - 1) / src_height)
+      width = (int)((uint64(src_width)* height + src_height - 1) / src_height)
     }
     // if height is unspecified, scale original proportionally to width ratio.
     if (height == 0 && src_width > 0) {
-      height = (int)(((uint64)src_height * width + src_width - 1) / src_width)
+      height = (int)((uint64(src_height)* width + src_width - 1) / src_width)
     }
     // Check if the overall dimensions still make sense.
     if (width <= 0 || height <= 0 || width > max_size || height > max_size) {

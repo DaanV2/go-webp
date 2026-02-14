@@ -177,8 +177,8 @@ func ConvertBitDepthsToSymbols( /* const */ tree *HuffmanTreeCode) {
 // huffman code tree.
 func VP8LCreateHuffmanTree( /* const */ histogram []uint32, tree_depth_limit int /* const */, buf_rle []uint8 /* const */, huff_tree []*HuffmanTree /* const */, huff_code *HuffmanTreeCode) {
 	num_symbols := huff_code.num_symbols
-	var bounded_histogram = histogram[0:] // bidi index -> (uint64)num_symbols * sizeof(*histogram)
-	var bounded_buf_rle = buf_rle[0:]     // bidi index -> (uint64)num_symbols * sizeof(*buf_rle)
+	var bounded_histogram = histogram[0:] // bidi index -> uint64(num_symbols)* sizeof(*histogram)
+	var bounded_buf_rle = buf_rle[0:]     // bidi index -> uint64(num_symbols)* sizeof(*buf_rle)
 
 	// C: stdlib.Memset(bounded_buf_rle, 0, num_symbols*sizeof(*buf_rle))
 
