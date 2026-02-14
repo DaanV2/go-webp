@@ -1,6 +1,6 @@
 module github.com/daanv2/go-webp
 
-go 1.25.5
+go 1.26
 
 tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
