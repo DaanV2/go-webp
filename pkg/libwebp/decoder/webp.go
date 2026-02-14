@@ -88,8 +88,8 @@ func ParseRIFF( /* const */ data *uint8 /* (*data_size) */ /* const */, data_siz
 	assert.Assert(riff_size != nil)
 
 	*riff_size = 0 // Default: no RIFF present.
-	if *data_size >= RIFF_HEADER_SIZE && !memcmp(*data, "RIFF", TAG_SIZE) {
-		if memcmp(*data+8, "WEBP", TAG_SIZE) {
+	if *data_size >= RIFF_HEADER_SIZE && !stdlib.MemCmp(*data, "RIFF", TAG_SIZE) {
+		if stdlib.MemCmp(*data+8, "WEBP", TAG_SIZE) {
 			return vp8.VP8_STATUS_BITSTREAM_ERROR // Wrong image file signature.
 		} else {
 			size := GetLE32(*data + TAG_SIZE)
@@ -131,7 +131,7 @@ func ParseVP8X( /* const */ data *uint8 /* const */, data_size *uint64 /* const 
 		return vp8.VP8_STATUS_NOT_ENOUGH_DATA // Insufficient data.
 	}
 
-	if !memcmp(*data, "VP8X", TAG_SIZE) {
+	if !stdlib.MemCmp(*data, "VP8X", TAG_SIZE) {
 		var width, height int
 		var flags uint32
 		chunk_size := GetLE32(*data + TAG_SIZE)
@@ -217,7 +217,7 @@ func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint6
 		// parsed all the optional chunks.
 		// Note: This check must occur before the check 'buf_size < disk_chunk_size'
 		// below to allow incomplete VP8/VP8L chunks.
-		if !memcmp(buf, "VP8 ", TAG_SIZE) || !memcmp(buf, "VP8L", TAG_SIZE) {
+		if !stdlib.MemCmp(buf, "VP8 ", TAG_SIZE) || !stdlib.MemCmp(buf, "VP8L", TAG_SIZE) {
 			return vp8.VP8_STATUS_OK
 		}
 
@@ -225,7 +225,7 @@ func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint6
 			return vp8.VP8_STATUS_NOT_ENOUGH_DATA
 		}
 
-		if !memcmp(buf, "ALPH", TAG_SIZE) { // A valid ALPH header.
+		if !stdlib.MemCmp(buf, "ALPH", TAG_SIZE) { // A valid ALPH header.
 			*alpha_data = buf + CHUNK_HEADER_SIZE
 			*alpha_size = chunk_size
 		}
@@ -247,8 +247,8 @@ func ParseOptionalChunks( /* const */ data *uint8 /*  const */, data_size *uint6
 func ParseVP8Header( /* const */ data_ptr *uint8 /* const */, data_size *uint64, have_all_data int, riff_size uint64 /* const */, chunk_size *uint64 /* const */, is_lossless *int) vp8.VP8StatusCode {
 	local_data_size := *data_size
 	data * uint8 = *data_ptr
-	is_vp8 := !memcmp(data, "VP8 ", TAG_SIZE)
-	is_vp8l := !memcmp(data, "VP8L", TAG_SIZE)
+	is_vp8 := !stdlib.MemCmp(data, "VP8 ", TAG_SIZE)
+	is_vp8l := !stdlib.MemCmp(data, "VP8L", TAG_SIZE)
 	minimal_size := TAG_SIZE + CHUNK_HEADER_SIZE // "WEBP" + "VP8 nnnn" OR
 		// "WEBP" + "VP8Lnnnn"
 		//   (void)local_data_size
@@ -364,7 +364,7 @@ func ParseHeadersInternal( /* const */ data_param *uint8, data_size_param uint64
 
 	// Skip over optional chunks if data started with "RIFF + VP8X" or "ALPH".
 	if (found_riff && found_vp8x) ||
-		(!found_riff && !found_vp8x && !memcmp(data, "ALPH", TAG_SIZE)) {
+		(!found_riff && !found_vp8x && !stdlib.MemCmp(data, "ALPH", TAG_SIZE)) {
 		local_alpha_data_size := 0
 		local_alpha_data := nil
 		status = ParseOptionalChunks(&data, &data_size, hdrs.riff_size, &local_alpha_data, &local_alpha_data_size)

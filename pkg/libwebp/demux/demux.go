@@ -309,8 +309,8 @@ func ReadHeader(/* const */ mem *MemBuffer) ParseStatus {
 
   // Basic file level validation.
   if (MemDataSize(mem) < min_size) { return PARSE_NEED_MORE_DATA }
-  if (memcmp(GetBuffer(mem), "RIFF", CHUNK_SIZE_BYTES) ||
-      memcmp(GetBuffer(mem) + CHUNK_HEADER_SIZE, "WEBP", CHUNK_SIZE_BYTES)) {
+  if (stdlib.MemCmp(GetBuffer(mem), "RIFF", CHUNK_SIZE_BYTES) ||
+      stdlib.MemCmp(GetBuffer(mem) + CHUNK_HEADER_SIZE, "WEBP", CHUNK_SIZE_BYTES)) {
     return PARSE_ERROR
   }
 
@@ -677,7 +677,7 @@ func WebPDemuxerFn(/* const */ data *WebPData, allow_partial int, state *WebPDem
 
   status = PARSE_ERROR
   for parser = kMasterChunks; parser.parse != nil; parser++ {
-    if (!memcmp(parser.id, GetBuffer(&dmux.mem), TAG_SIZE)) {
+    if (!stdlib.MemCmp(parser.id, GetBuffer(&dmux.mem), TAG_SIZE)) {
       status = parser.parse(dmux)
       if (status == PARSE_OK) {dmux.state = WEBP_DEMUX_DONE}
       if (status == PARSE_NEED_MORE_DATA && !partial) {status = PARSE_ERROR}
@@ -849,7 +849,7 @@ func ChunkCount(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte) int {
   count := 0
   for c = dmux.chunks c != nil c = c.next {
     var header *uint8 = mem_buf + c.data.offset
-    if (!memcmp(header, fourcc, TAG_SIZE)) ++count
+    if (!stdlib.MemCmp(header, fourcc, TAG_SIZE)) ++count
   }
   return count
 }
@@ -860,7 +860,7 @@ static GetChunk(/* const */ dmux *WebPDemuxer, /*const*/ fourcc [4]byte, chunk_n
   count := 0
   for c = dmux.chunks c != nil c = c.next {
     var header *uint8 = mem_buf + c.data.offset
-    if (!memcmp(header, fourcc, TAG_SIZE)) ++count
+    if (!stdlib.MemCmp(header, fourcc, TAG_SIZE)) ++count
     if (count == chunk_num) break
   }
   return c

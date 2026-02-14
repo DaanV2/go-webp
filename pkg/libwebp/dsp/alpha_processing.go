@@ -223,7 +223,7 @@ func PackARGB_C(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*
 }
 
 func PackRGB_C(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, step int, out *uint32) {
-  int i, offset = 0
+  var i, offset int = 0
   for i = 0; i < len; i++ {
     out[i] = MakeARGB32(0xff, r[offset], g[offset], b[offset])
     offset += step

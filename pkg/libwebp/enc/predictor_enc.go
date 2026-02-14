@@ -451,7 +451,7 @@ func VP8LOptimizeSampling(/* const */ image *uint32, full_width int, full_height
     square_size = 1 << (best_bits - bits)
     for y = 0; y + square_size < height; y += new_square_size {
       // Check the first lines of consecutive line groups.
-      if (memcmp(&image[y * width], &image[(y + square_size) * width], width * sizeof(*image)) != 0) {
+      if (stdlib.MemCmp(&image[y * width], &image[(y + square_size) * width], width * sizeof(*image)) != 0) {
         is_good = 0
         break
       }

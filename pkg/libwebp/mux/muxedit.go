@@ -118,7 +118,7 @@ func CreateFrameData(width, height int, /*const*/ info *WebPMuxFrameInfo, /*cons
 func GetImageData(/* const */ bitstream *WebPData, /*const*/ image *WebPData, /*const*/ alpha *WebPData, /*const*/ is_lossless *int) WebPMuxError {
   WebPDataInit(alpha);  // Default: no alpha.
   if (bitstream.size < TAG_SIZE ||
-      memcmp(bitstream.bytes, "RIFF", TAG_SIZE)) {
+      stdlib.MemCmp(bitstream.bytes, "RIFF", TAG_SIZE)) {
     // It is NOT webp file data. Return input data as is.
     *image = *bitstream
   } else {

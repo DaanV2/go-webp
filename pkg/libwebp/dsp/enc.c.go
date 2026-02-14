@@ -545,7 +545,7 @@ func SSE4x4_C(/* const */ a *uint8, /*const*/ b *uint8) int {
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
 func Mean16x4_C(/* const */ ref *uint8, uint32 dc[4]) {
-  int k, x, y
+  var k, x, y int
   for k = 0; k < 4; k++ {
     avg := 0
     for y = 0; y < 4; y++ {

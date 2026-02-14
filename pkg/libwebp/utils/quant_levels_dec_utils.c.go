@@ -75,7 +75,7 @@ type SmoothParams struct {
 //------------------------------------------------------------------------------
 
 const CLIP_8b_MASK = (int)(~uint(0) << (8 + DFIX))
-func clip_8b(int v) uint8 {
+func clip_8b(v int) uint8 {
   return tenary.If(!(v & CLIP_8b_MASK), (uint8)(v >> DFIX), tenary.If(v < 0, uint(0), uint(255)))
 }
 

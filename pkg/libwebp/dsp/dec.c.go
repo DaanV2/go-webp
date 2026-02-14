@@ -210,7 +210,7 @@ func HE16_C(dst *uint8) {  // horizontal
   }
 }
 
-func Put16(int v, dst *uint8) {
+func Put16(v int, dst *uint8) {
   var j int
   for j = 0; j < 16; j++ {
     stdlib.Memset(dst + j * BPS, v, 16)

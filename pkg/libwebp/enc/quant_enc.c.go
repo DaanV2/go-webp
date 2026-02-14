@@ -127,7 +127,7 @@ func PrintBlockInfo(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) 
 
 //------------------------------------------------------------------------------
 
-static  int clip(int v, m int, int M) {
+static  int clip(v int, m int, int M) {
   return v < m ? m : v > M ? M : v
 }
 
