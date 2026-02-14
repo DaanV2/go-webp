@@ -8,14 +8,8 @@
 
 package demux
 
-import "github.com/daanv2/go-webp/pkg/constants"
-
 // Channel extraction from a uint32 representation of a uint8 RGBA/BGRA
 // buffer.
 func CHANNEL_SHIFT(i int) int {
-	if constants.WORDS_BIGENDIAN {
-		return (24 - (i) * 8)
-	}
-
-	return((i) * 8)
+	return ((i) * 8)
 }

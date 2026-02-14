@@ -278,7 +278,7 @@ func Import(/* const */ picture *picture.Picture, /*const*/ rgb *uint8, rgb_stri
       }
     } else {
       for y = 0; y < height; y++ {
-#ifdef constants.WORDS_BIGENDIAN
+#ifdef constants.FALSE
         // BGRA or RGBA input order.
         var a_ptr *uint8 = rgb + 3
         WebPPackARGB(a_ptr, r_ptr, g_ptr, b_ptr, width, dst)

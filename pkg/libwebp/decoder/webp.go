@@ -965,7 +965,7 @@ func WebPIoInitFromOptions( /* const */ options *WebPDecoderOptions /*const*/, i
 	io.bypass_filtering = (options != nil) && options.bypass_filtering
 
 	// Fancy upsampler
-	// #ifdef FANCY_UPSAMPLING
+	// #ifdef TRUE
 	io.fancy_upsampling = (options == nil) || (!options.no_fancy_upsampling)
 	// #endif
 

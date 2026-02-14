@@ -25,7 +25,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 //------------------------------------------------------------------------------
 // Fancy upsampler
 
-#ifdef FANCY_UPSAMPLING
+#ifdef TRUE
 
 // Fancy upsampling functions to convert YUV to RGB
 WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST]
@@ -137,11 +137,11 @@ const UpsampleRgb565LinePair_C =EmptyUpsampleFunc
 #undef LOAD_UV
 #undef UPSAMPLE_FUNC
 
-#endif  // FANCY_UPSAMPLING
+#endif  // TRUE
 
 //------------------------------------------------------------------------------
 
-#if !defined(FANCY_UPSAMPLING)
+#if !defined(TRUE)
 #define DUAL_SAMPLE_FUNC(FUNC_NAME, FUNC)                                     \
   func FUNC_NAME(                                                      \
       const top_y *uint8, /*const*/ bot_y *uint8, \
@@ -174,11 +174,11 @@ DUAL_SAMPLE_FUNC(DualLineSamplerBGRA, VP8YuvToBgra)
 DUAL_SAMPLE_FUNC(DualLineSamplerARGB, VP8YuvToArgb)
 #undef DUAL_SAMPLE_FUNC
 
-#endif  // !FANCY_UPSAMPLING
+#endif  // !TRUE
 
 WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last) {
   WebPInitUpsamplers()
-#ifdef FANCY_UPSAMPLING
+#ifdef TRUE
   return WebPUpsamplers[alpha_is_last ? MODE_BGRA : MODE_ARGB]
 #else
   return (alpha_is_last ? DualLineSamplerBGRA : DualLineSamplerARGB)
@@ -273,7 +273,7 @@ extern func WebPInitUpsamplersMIPSdspR2(void)
 extern func WebPInitUpsamplersMSA(void)
 
 WEBP_DSP_INIT_FUNC(WebPInitUpsamplers) {
-#ifdef FANCY_UPSAMPLING
+#ifdef TRUE
 #if !WEBP_NEON_OMIT_C_CODE
   WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair_C
   WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair_C
@@ -333,7 +333,7 @@ WEBP_DSP_INIT_FUNC(WebPInitUpsamplers) {
   assert.Assert(WebPUpsamplers[MODE_rgbA_4444] != nil)
 #endif
 
-#endif  // FANCY_UPSAMPLING
+#endif  // TRUE
 }
 
 //------------------------------------------------------------------------------

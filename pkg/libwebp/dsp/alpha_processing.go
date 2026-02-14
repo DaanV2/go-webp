@@ -243,23 +243,11 @@ int (*WebPHasAlpha8b)(/* const */ src *uint8, length int)
 int (*WebPHasAlpha32b)(/* const */ src *uint8, length int)
 type WebPAlphaReplace = func(src *uint32, length int, color uint32)
 
-//------------------------------------------------------------------------------
-// Init function
-
-
-extern func WebPInitAlphaProcessingMIPSdspR2(void)
-extern func WebPInitAlphaProcessingSSE2(void)
-extern func WebPInitAlphaProcessingSSE41(void)
-extern func WebPInitAlphaProcessingNEON(void)
 
 WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
   WebPMultARGBRow = WebPMultARGBRow_C
   WebPMultRow = WebPMultRow_C
   WebPApplyAlphaMultiply4444 = ApplyAlphaMultiply_16b_C
-
-#ifdef constants.WORDS_BIGENDIAN
-  WebPPackARGB = PackARGB_C
-#endif
   WebPPackRGB = PackRGB_C
 #if !WEBP_NEON_OMIT_C_CODE
   WebPApplyAlphaMultiply = ApplyAlphaMultiply_C
@@ -275,29 +263,10 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != nil) {
-#if false
-    if (VP8GetCPUInfo(kSSE2)) {
-      WebPInitAlphaProcessingSSE2()
-#if false
-      if (VP8GetCPUInfo(kSSE4_1)) {
-        WebPInitAlphaProcessingSSE41()
-      }
-#endif
-    }
-#endif
-#if false
-    if (VP8GetCPUInfo(kMIPSdspR2)) {
-      WebPInitAlphaProcessingMIPSdspR2()
-    }
-#endif
+
+
   }
 
-#if FALSE
-  if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
-    WebPInitAlphaProcessingNEON()
-  }
-#endif
 
   assert.Assert(WebPMultARGBRow != nil)
   assert.Assert(WebPMultRow != nil)
@@ -307,9 +276,7 @@ WEBP_DSP_INIT_FUNC(WebPInitAlphaProcessing) {
   assert.Assert(WebPDispatchAlphaToGreen != nil)
   assert.Assert(WebPExtractAlpha != nil)
   assert.Assert(WebPExtractGreen != nil)
-#ifdef constants.WORDS_BIGENDIAN
-  assert.Assert(WebPPackARGB != nil)
-#endif
+
   assert.Assert(WebPPackRGB != nil)
   assert.Assert(WebPHasAlpha8b != nil)
   assert.Assert(WebPHasAlpha32b != nil)

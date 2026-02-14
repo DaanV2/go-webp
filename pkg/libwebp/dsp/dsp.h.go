@@ -152,32 +152,9 @@ type VP8DistoStats struct {
 	xxm, xym, yym uint32  // sum(w_i * x_i * x_i), etc.
 }
 
-// Compute the final SSIM value
-// The non-clipped version assumes stats.w = (2 * VP8_SSIM_KERNEL + 1)^2.
-float64 VP8SSIMFromStats(/* const */ stats *VP8DistoStats)
-float64 VP8SSIMFromStatsClipped(/* const */ stats *VP8DistoStats)
-
 const VP8_SSIM_KERNEL =3  // total size of the kernel: 2 * VP8_SSIM_KERNEL + 1
-typedef float64 (*VP8SSIMGetClippedFunc)(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2, xo int, yo int,  // center position
-                                        int W, int H);   // plane dimension
 
-#if FALSE
-// This version is called with the guarantee that you can load 8 bytes and
-// 8 rows at offset src1 and src2
-typedef float64 (*VP8SSIMGetFunc)(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2)
-
-
-
-#endif
-
-
-
-// must be called before using any of the above directly
-func VP8SSIMDspInit(void)
-
-//------------------------------------------------------------------------------
-// Decoding
-
+type VP8SSIMGetClippedFunc = func(/* const */ src *uint81, int stride1, /*const*/ src *uint82,  stride2 int, xo int, yo int, W int, H  int) float64    // plane dimensio
 type VP8DecIdct = func(/* const */ coeffs *int16, dst *uint8)
 // when doing two transforms, coeffs is actually int16[2][16].
 type VP8DecIdct2 = func(/* const */ coeffs *int16, dst *uint8, do_two int)
@@ -201,34 +178,18 @@ extern VP8PredFunc VP8PredChroma8[NUM_B_DC_MODES]
 extern VP8PredFunc VP8PredLuma4[NUM_BMODES]
 
 // clipping tables (for filtering)
-extern const VP *int88ksclip1;  // clips [-1020, 1020] to [-128, 127]
-extern const VP *int88ksclip2;  // clips [-112, 112] to [-16, 15]
-extern const VP *uint88kclip1;  // clips [-255,511] to [0,255]
-extern const VP *uint88kabs0;   // abs(x) for x in [-255,255]
+const VP8ksclip1 []int8  // clips [-1020, 1020] to [-128, 127]
+const VP8ksclip2 []int8  // clips [-112, 112] to [-16, 15]
+const VP8kclip1 []uint8  // clips [-255,511] to [0,255]
+const VP8kabs0 []uint8   // abs(x) for x in [-255,255]
 // must be called first
 func VP8InitClipTables(void)
 
 // simple filter (only for luma)
 type VP8SimpleFilterFunc = func(p *uint8, stride int, thresh int)
-
-
-
-
-
 // regular filter (on both macroblock edges and inner edges)
 type VP8LumaFilterFunc = func(luma *uint8, stride int, thresh int, ithresh int, hev_t int)
 type VP8ChromaFilterFunc = func(u *uint8, v *uint8, stride int, thresh int, ithresh int, hev_t int)
-// on outer edge
-
-
-
-
-
-// on inner edge
-
-
-
-
 
 // Dithering. Combines dithering values (centered around 128) with dst[],
 // according to: dst[] = clip(dst[] + (((dither[]-128) + 8) >> 4)
@@ -238,24 +199,22 @@ const VP8_DITHER_AMP_BITS =7
 const VP8_DITHER_AMP_CENTER =(1 << VP8_DITHER_AMP_BITS)
 type VP8DitherCombine8x8 = func(/* const */ dither *uint8, dst *uint8, dst_stride int)
 
-// must be called before anything using the above
-func VP8DspInit(void)
 
 //------------------------------------------------------------------------------
 // WebP I/O
 
-const FANCY_UPSAMPLING = // undefined to remove fancy upsampling support
+const TRUE = // undefined to remove fancy upsampling support
 
 // Convert a pair of y/u/v lines together to the output rgb/a colorspace.
 // bottom_y can be nil if only one line of output is needed (at top/bottom).
 type WebPUpsampleLinePairFunc = func(/*const*/top_y *uint8, /*const*/ bottom_y *uint8, /*const*/ top_u *uint8, /*const*/ top_v *uint8, /*const*/ cur_u *uint8, /*const*/ cur_v *uint8, top_dst *uint8, bottom_dst *uint8, len int)
 
-#ifdef FANCY_UPSAMPLING
+#ifdef TRUE
 
 // Fancy upsampling functions to convert YUV to RGB(A) modes
 extern WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST]
 
-#endif  // FANCY_UPSAMPLING
+#endif  // TRUE
 
 // Per-row point-sampling methods.
 type WebPSamplerRowFunc = func(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int)
@@ -390,7 +349,7 @@ func WebPMultRows(ptr *uint8, stride int, /*const*/ alpha *uint8, alpha_stride i
 func WebPMultRow_C(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uint8, width int, inverse int)
 func WebPMultARGBRow_C(/* const */ ptr *uint32, width int, inverse int)
 
-#ifdef constants.WORDS_BIGENDIAN
+#ifdef constants.FALSE
 // ARGB packing function: a/r/g/b input is rgba or bgra order.
 type WebPPackARGB = func(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, out *uint32)
 #endif

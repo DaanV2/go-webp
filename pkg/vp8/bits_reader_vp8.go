@@ -110,7 +110,7 @@ func VP8LoadNewBytes( /* const */ br *VP8BitReader) {
 	//   // C: br.buf += BITS >> 3
 	//   // WEBP_SELF_ASSIGN(br.buf_end)
 	//
-	//   if !constants.WORDS_BIGENDIAN {
+	//   if !constants.FALSE {
 	//     if BITS > 32 {
 	//       bits = BSwap64(in_bits)
 	//       bits >>= 64 - BITS
@@ -122,7 +122,7 @@ func VP8LoadNewBytes( /* const */ br *VP8BitReader) {
 	//     } else { // BITS == 8
 	//       bits = bit_t(in_bits)
 	//     }
-	//   } else { // constants.WORDS_BIGENDIAN
+	//   } else { // constants.FALSE
 	//     bits = bit_t(in_bits)
 	//     // C: if BITS != 8 * sizeof(bit_t)) {bits >>= (8 * sizeof(bit_t) - BITS)}
 	//   }

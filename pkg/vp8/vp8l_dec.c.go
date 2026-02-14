@@ -640,7 +640,7 @@ func ConvertToYUVA(/* const */ src *uint32, width int, y_pos int, /*const*/ outp
   // Lastly, store alpha if needed.
   if buf.a != nil {
     var a *uint8 = buf.a + ptrdiff_t(y_pos) * buf.a_stride
-if constants.WORDS_BIGENDIAN {
+if constants.FALSE {
     WebPExtractAlpha((*uint8)src + 0, 0, width, 1, a, 0)
 } else {
     WebPExtractAlpha((*uint8)src + 3, 0, width, 1, a, 0)
@@ -926,7 +926,7 @@ func ExtractPalettedAlphaRows(/* const */ dec *VP8LDecoder, last_row int) {
 
 // cyclic rotation of pattern word
 func Rotate8b(uint32 V) uint32 {
-	if constants.WORDS_BIGENDIAN {
+	if constants.FALSE {
 	return ((V & uint(0xff000000)) >> 24) | (V << 8)
 	} else {
 	return ((V & uint(0xff)) << 24) | (V >> 8)
@@ -969,7 +969,7 @@ func CopyBlock8b(/* const */ dst *uint8, dist int, length int) {
 // C: #endif
         break
       case 2:
-if !constants.WORDS_BIGENDIAN {
+if !constants.FALSE {
         // C: stdlib.MemCpy(&pattern, src, sizeof(uint16))
 } else {
         pattern = (uint32(src[0]) << 8) | src[1]

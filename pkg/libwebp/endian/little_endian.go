@@ -46,14 +46,14 @@ func PutLE32( /* const */ data []uint8 /* (4) */, val uint32) {
 }
 
 func HToLE32(x uint32) uint32 {
-	if constants.WORDS_BIGENDIAN {
+	if constants.FALSE {
 		return BSwap32(x)
 	} else {
 		return x
 	}
 }
 func HToLE16(x uint16) uint16 {
-	if constants.WORDS_BIGENDIAN {
+	if constants.FALSE {
 		return BSwap16(x)
 	} else {
 		return x

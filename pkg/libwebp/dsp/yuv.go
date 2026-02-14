@@ -383,7 +383,7 @@ func WebPImportYUVAFromRGBALastLine( /* const */ r_ptr *uint8 /*const*/, g_ptr *
 
 // Macros to give the offset of each channel in a uint32 containing ARGB.
 func CHANNEL_OFFSET(i int) int {
-	if constants.WORDS_BIGENDIAN {
+	if constants.FALSE {
 		// uint32 0xff000000 is 0xff,00,00,00 in memory
 		return i
 	}

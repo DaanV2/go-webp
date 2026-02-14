@@ -61,7 +61,7 @@ func EmitSampledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
 //------------------------------------------------------------------------------
 // Fancy upsampling
 
-#ifdef FANCY_UPSAMPLING
+#ifdef TRUE
 func EmitFancyRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   num_lines_out := io.mb_h;  // a priori guess
   var buf *WebPRGBABuffer = &p.output.u.RGBA
@@ -114,7 +114,7 @@ func EmitFancyRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   return num_lines_out
 }
 
-#endif /* FANCY_UPSAMPLING */
+#endif /* TRUE */
 
 //------------------------------------------------------------------------------
 
@@ -304,10 +304,10 @@ func InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
     return 0
   }
 
-//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size)
-//   if (work == nil) {
-//     return 0;  // memory error
-//   }
+	//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size)
+	//   if (work == nil) {
+	//     return 0;  // memory error
+	//   }
   work = &rescaler_t{}
   p.memory = work
 
@@ -409,11 +409,7 @@ func ExportAlpha(/* const */ p *WebPDecParams, y_pos int, max_lines_out int) int
 func ExportAlphaRGBA4444(/* const */ p *WebPDecParams, y_pos int, max_lines_out int ) int {
   var buf *WebPRGBABuffer = &p.output.u.RGBA
   var base_rgba *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
-#if (TRUE == 1)
-  alpha_dst *uint8 = base_rgba
-#else
-  alpha_dst *uint8 = base_rgba + 1
-#endif
+  var alpha_dst *uint8 = base_rgba
   num_lines_out := 0
   var colorspace WEBP_CSP_MODE = p.output.colorspace
   width := p.scaler_a.dst_width
@@ -478,10 +474,10 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
     return 0
   }
 
-//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size)
-//   if (work == nil) {
-//     return 0;  // memory error
-//   }
+	//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size)
+	//   if (work == nil) {
+	//     return 0;  // memory error
+	//   }
   work := make([]rescaler_t, total_size)
 
   p.memory = work
@@ -542,20 +538,12 @@ func CustomSetup(io *VP8Io) int {
     WebPInitUpsamplers()
   }
   if (io.use_scaling) {
-#if FALSE
-    ok := tenary.If($1, $2, $3)(is_rgb, InitRGBRescaler(io, p), InitYUVRescaler(io, p))
-    if (!ok) {
-      return 0;  // memory error
-    }
-#else
     return 0;  // rescaling support not compiled
-#endif
   } else {
     if (is_rgb) {
       WebPInitSamplers()
       p.emit = EmitSampledRGB;  // default
       if (io.fancy_upsampling) {
-#ifdef FANCY_UPSAMPLING
         uv_width := (io.mb_w + 1) >> 1
         // p.memory = WebPSafeMalloc(uint64(1), (uint64)(io.mb_w + 2 * uv_width))
         // if (p.memory == nil) {
@@ -568,7 +556,6 @@ func CustomSetup(io *VP8Io) int {
         p.tmp_v = p.tmp_u + uv_width
         p.emit = EmitFancyRGB
         WebPInitUpsamplers()
-#endif
       }
     } else {
       p.emit = EmitYUV
