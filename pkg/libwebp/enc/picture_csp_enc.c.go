@@ -58,7 +58,7 @@ func ConvertRowsToUV(/* const */ rgb *uint16, /*const*/ dst_u *uint8, /*const*/ 
 extern func SharpYuvInit(VP8CPUInfo cpu_info_func);
 
 static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,        // bytes per pixel
-                              int rgb_stride,  // bytes per scanline
+                              rgb_stride int,  // bytes per scanline
                               float64 dithering, use_iterative_conversion int, /*const*/ picture *picture.Picture) {
   var y int
   width := picture.Width;

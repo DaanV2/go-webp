@@ -338,8 +338,8 @@ func WebPAccumulateRGB(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const
 }
 
 func ImportYUVAFromRGBA_C(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,        // bytes per pixel
-                                 int rgb_stride,  // bytes per scanline
-                                 int has_alpha, width, height int, tmp_rgb *uint16, y_stride int, uv_stride int, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
+                                 rgb_stride int,  // bytes per scanline
+                                 has_alpha bool, width, height int, tmp_rgb *uint16, y_stride int, uv_stride int, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
   var y int
   is_rgb := (r_ptr < b_ptr);  // otherwise it's bgr
   uv_width := (width + 1) >> 1;
@@ -393,7 +393,7 @@ func ImportYUVAFromRGBA_C(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*co
 
 func ImportYUVAFromRGBALastLine_C(
     const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,  // bytes per pixel
-    int has_alpha, width int, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
+    has_alpha bool, width int, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8) {
   is_rgb := (r_ptr < b_ptr);  // otherwise it's bgr
   uv_width := (width + 1) >> 1;
   row_has_alpha := has_alpha && dst_a != nil;
@@ -426,11 +426,11 @@ func (*WebPConvertBGRToY)(/* const */ bgr *uint8, y *uint8, width int, step int)
 func (*WebPConvertRGBA32ToUV)(/* const */ rgb *uint16, u *uint8, v *uint8, width int);
 
 func (*WebPImportYUVAFromRGBA)(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,        // bytes per pixel
-                               int rgb_stride,  // bytes per scanline
-                               int has_alpha, width, height int, tmp_rgb *uint16, y_stride int, uv_stride int, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
+                               rgb_stride int,  // bytes per scanline
+                               has_alpha bool, width, height int, tmp_rgb *uint16, y_stride int, uv_stride int, a_stride int, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 func (*WebPImportYUVAFromRGBALastLine)(
     const r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,  // bytes per pixel
-    int has_alpha, width int, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
+    has_alpha bool, width int, tmp_rgb *uint16, dst_y *uint8, dst_u *uint8, dst_v *uint8, dst_a *uint8);
 
 func (*WebPConvertARGBToY)(/* const */ argb *uint32, y *uint8, width int);
 func (*WebPConvertARGBToUV)(/* const */ argb *uint32, u *uint8, v *uint8, src_width int, do_store int);

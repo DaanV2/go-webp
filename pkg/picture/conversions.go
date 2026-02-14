@@ -14,11 +14,11 @@ func PictureARGBToYUVA(picture *picture.Picture, csp colorspace.CSP, dithering f
 	} else if (csp & colorspace.WEBP_CSP_UV_MASK) != colorspace.WEBP_YUV420 {
 		return picture.SetEncodingError(picture.ENC_ERROR_INVALID_CONFIGURATION)
 	} else {
-		// C: const uint8_t* argb = (const uint8_t*)picture->argb
-		// C: const uint8_t* a = argb + CHANNEL_OFFSET(0)
-		// C: const uint8_t* r = argb + CHANNEL_OFFSET(1)
-		// C: const uint8_t* g = argb + CHANNEL_OFFSET(2)
-		// C: const uint8_t* b = argb + CHANNEL_OFFSET(3)
+		var argb []uint8 = picture->argb
+		var a []uint8 = argb + CHANNEL_OFFSET(0)
+		var r []uint8 = argb + CHANNEL_OFFSET(1)
+		var g []uint8 = argb + CHANNEL_OFFSET(2)
+		var b []uint8 = argb + CHANNEL_OFFSET(3)
 
 		picture.ColorSpace = colorspace.WEBP_YUV420
 		return ImportYUVAFromRGBA(r, g, b, a, 4, 4*picture.ARGBStride, dithering, use_iterative_conversion, picture)
