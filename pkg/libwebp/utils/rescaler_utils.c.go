@@ -48,7 +48,7 @@ int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_heig
   rescaler.num_channels = num_channels
   rescaler.irow = work
   rescaler.frow = work + num_channels * dst_width
-  stdlib.Memset(work, 0, (uint64)total_size)
+  stdlib.Memset(work, 0, uint64(total_size))
 
   // for 'x_expand', we use bilinear interpolation
   rescaler.x_add = tenary.If(rescaler.x_expand, x_sub - 1, x_add)
@@ -65,15 +65,15 @@ int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_heig
     // Its value is <= WEBP_RESCALER_ONE, because dst_height <= rescaler.y_add
     // and rescaler.x_add >= 1
     num := uint64(dst_height)* WEBP_RESCALER_ONE
-    den := (uint64)rescaler.x_add * rescaler.y_add
+    den := uint64(rescaler.x_add) * rescaler.y_add
     ratio := num / den
-    if (ratio != (uint32)ratio) {
+    if (ratio != uint32(ratio)) {
       // When ratio == WEBP_RESCALER_ONE, we can't represent the ratio with the
       // current fixed-point precision. This happens when src_height == // rescaler.y_add (which == src_height), and rescaler.x_add == 1.
       // => We special-case fxy_scale = 0, in WebPRescalerExportRow().
       rescaler.fxy_scale = 0
     } else {
-      rescaler.fxy_scale = (uint32)ratio
+      rescaler.fxy_scale = uint32(ratio)
     }
     rescaler.fy_scale = WEBP_RESCALER_FRAC(1, rescaler.y_sub)
   } else {

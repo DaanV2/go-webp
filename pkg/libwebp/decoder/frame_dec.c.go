@@ -703,7 +703,7 @@ func AllocateMemory(/* const */ dec *VP8Decoder) int {
 	dec.mem = make([]uint8, needed)
 
     // down-cast is ok, thanks to WebPSafeMalloc() above.
-    dec.mem_size = (uint64)needed
+    dec.mem_size = uint64(needed)
   }
 
   mem = (*uint8)dec.mem

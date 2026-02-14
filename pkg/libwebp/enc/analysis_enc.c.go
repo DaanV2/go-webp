@@ -262,7 +262,7 @@ func MBAnalyzeBestIntra16Mode(/* const */ it *vp8.VP8EncIterator) int {
 func FastMBAnalyze(/* const */ it *vp8.VP8EncIterator) int {
   // Empirical cut-off value, should be around 16 (~=block size). We use the
   // [8-17] range and favor intra4 at high quality, intra16 for low quality.
-  q := (int)it.enc.config.Quality
+  q := int(it.enc.config.Quality)
   kThreshold := 8 + (17 - 8) * q / 100
   var k int
   uint32 dc[16]

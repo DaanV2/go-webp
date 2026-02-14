@@ -725,15 +725,15 @@ func WebPDemuxGetI(/* const */ dmux *WebPDemuxer, WebPFormatFeature feature) uin
     case constants.WEBP_FF_FORMAT_FLAGS:
       return dmux.feature_flags
     case constants.WEBP_FF_CANVAS_WIDTH:
-      return (uint32)dmux.canvas_width
+      return uint32(dmux.canvas_width)
     case constants.WEBP_FF_CANVAS_HEIGHT:
-      return (uint32)dmux.canvas_height
+      return uint32(dmux.canvas_height)
     case constants.WEBP_FF_LOOP_COUNT:
-      return (uint32)dmux.loop_count
+      return uint32(dmux.loop_count)
     case constants.WEBP_FF_BACKGROUND_COLOR:
       return dmux.bgcolor
     case constants.WEBP_FF_FRAME_COUNT:
-      return (uint32)dmux.num_frames
+      return uint32(dmux.num_frames)
   }
   return 0
 }

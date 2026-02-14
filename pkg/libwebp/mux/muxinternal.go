@@ -173,8 +173,8 @@ func ChunkEmit(/* const */ chunk *WebPChunk, dst []uint8) *uint8 {
   assert.Assert(chunk)
   assert.Assert(chunk.tag != NIL_TAG)
   PutLE32(dst + 0, chunk.tag)
-  PutLE32(dst + TAG_SIZE, (uint32)chunk_size)
-  assert.Assert(chunk_size == (uint32)chunk_size)
+  PutLE32(dst + TAG_SIZE, uint32(chunk_size))
+  assert.Assert(chunk_size == uint32(chunk_size))
   memcpy(dst + CHUNK_HEADER_SIZE, chunk.data.bytes, chunk_size)
   if chunk_size & 1 { dst[CHUNK_HEADER_SIZE + chunk_size] = 0 }  // Add padding.
   return dst + ChunkDiskSize(chunk)
@@ -358,8 +358,8 @@ static ChunkEmitSpecial *uint8(/* const */ header *WebPChunk, uint64 total_size,
   offset_to_next := total_size - CHUNK_HEADER_SIZE
   assert.Assert(header.tag == kChunks[IDX_ANMF].tag)
   PutLE32(dst + 0, header.tag)
-  PutLE32(dst + TAG_SIZE, (uint32)offset_to_next)
-  assert.Assert(header_size == (uint32)header_size)
+  PutLE32(dst + TAG_SIZE, uint32(offset_to_next))
+  assert.Assert(header_size == uint32(header_size))
   memcpy(dst + CHUNK_HEADER_SIZE, header.data.bytes, header_size)
   if (header_size & 1) {
     dst[CHUNK_HEADER_SIZE + header_size] = 0;  // Add padding.
@@ -395,7 +395,7 @@ func MuxHasAlpha(/* const */ images *WebPMuxImage) int {
 MuxEmitRiffHeader *uint8(/* const */ data *uint8, size uint64 ) {
   PutLE32(data + 0, MKFOURCC('R', 'I', 'F', 'F'))
   PutLE32(data + TAG_SIZE, uint32(size)- CHUNK_HEADER_SIZE)
-  assert.Assert(size == (uint32)size)
+  assert.Assert(size == uint32(size))
   PutLE32(data + TAG_SIZE + CHUNK_SIZE_BYTES, MKFOURCC('W', 'E', 'B', 'P'))
   return data + RIFF_HEADER_SIZE
 }
@@ -423,7 +423,7 @@ func IsNotCompatible(int feature, num_items int) int {
   return (feature != 0) != (num_items > 0)
 }
 
-const NO_FLAG =((WebPFeatureFlags)0)
+const NO_FLAG =(WebPFeatureFlags(0))
 
 // Test basic constraints:
 // retrieval, maximum number of chunks by index (use -1 to skip)

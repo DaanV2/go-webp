@@ -441,7 +441,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
     goto Error
   }
 
-//   code_lengths = (*int)WebPSafeCalloc((uint64)max_alphabet_size, sizeof(*code_lengths))
+//   code_lengths = (*int)WebPSafeCalloc(uint64(max_alphabet_size), sizeof(*code_lengths))
   code_lengths := make([]int, max_alphabet_size)
   
   *htree_groups = VP8LHtreeGroupsNew(num_htree_groups)
@@ -1196,7 +1196,7 @@ Error:
 func ExpandColorMap(num_colors int, /*const*/ transform *VP8LTransform) int {
   var i int
   final_num_colors := 1 << (8 >> transform.bits)
-//   var new_color_map *uint32 = (*uint32)WebPSafeMalloc((uint64)final_num_colors, sizeof(*new_color_map))
+//   var new_color_map *uint32 = (*uint32)WebPSafeMalloc(uint64(final_num_colors), sizeof(*new_color_map))
 //   if (new_color_map == nil) {
 //     return 0
 //   } else {

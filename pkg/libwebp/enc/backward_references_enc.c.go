@@ -334,7 +334,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
     if (!low_effort) {
       var curr_length int
       // Heuristic: use the comparison with the above line as an initialization.
-      if (base_position >= (uint32)xsize) {
+      if (base_position >= uint32(xsize)) {
         curr_length = FindMatchLength(argb_start - xsize, argb_start, best_length, max_len)
         if (curr_length > best_length) {
           best_length = curr_length
@@ -356,7 +356,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
 
     for ; pos >= min_pos && --iter; pos = chain[pos] {
       var curr_length int
-      assert.Assert(base_position > (uint32)pos)
+      assert.Assert(base_position > uint32(pos))
 
       if argb[pos + best_length] != best_argb { continue }
 
@@ -375,7 +375,7 @@ func VP8LHashChainFill(/* const */ p *VP8LHashChain, quality int, /*const*/ argb
     for {
       assert.Assert(best_length <= MAX_LENGTH)
       assert.Assert(best_distance <= WINDOW_SIZE)
-      p.offset_length[base_position] = (best_distance << MAX_LENGTH_BITS) | (uint32)best_length
+      p.offset_length[base_position] = (best_distance << MAX_LENGTH_BITS) | uint32(best_length)
       --base_position
       // Stop if we don't have a match or if we are out of bounds.
       if best_distance == 0 || base_position == 0 { break }
@@ -664,7 +664,7 @@ func BackwardReferencesLz77Box(xsize int, ysize int, /*const*/ argb *uint32, cac
       best_offset_prev = 0
       best_length_prev = 0
     } else {
-      hash_chain.offset_length[i] = (best_offset << MAX_LENGTH_BITS) | (uint32)best_length
+      hash_chain.offset_length[i] = (best_offset << MAX_LENGTH_BITS) | uint32(best_length)
       best_offset_prev = best_offset
       best_length_prev = best_length
     }

@@ -132,7 +132,7 @@ func EmitAlphaYUV(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expected_nu
   mb_h := io.mb_h
   dst []uint8 = buf.a + (ptrdiff_t)io.mb_y * buf.a_stride
   var j int
-  (void)expected_num_lines_out
+  void(expected_num_lines_out)
   assert.Assert(expected_num_lines_out == mb_h)
   if (alpha != nil) {
     for j = 0; j < mb_h; j++ {
@@ -184,7 +184,7 @@ func EmitAlphaRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams,  expected_n
     var base_rgba []uint8 = buf.rgba + (ptrdiff_t)start_y * buf.stride
     var dst []uint8 = base_rgba + (tenary.If(alpha_first, 0, 3))
     has_alpha := WebPDispatchAlpha(alpha, io.width, mb_w, num_rows, dst, buf.stride)
-    (void)expected_num_lines_out
+    void(expected_num_lines_out)
     assert.Assert(expected_num_lines_out == num_rows)
     // has_alpha is true if there's non-trivial alpha to premultiply with.
     if (has_alpha && WebPIsPremultipliedMode(colorspace)) {
@@ -216,7 +216,7 @@ func EmitAlphaRGBA4444(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expect
       alpha += io.width
       alpha_dst += buf.stride
     }
-    (void)expected_num_lines_out
+    void(expected_num_lines_out)
     assert.Assert(expected_num_lines_out == num_rows)
     if (alpha_mask != 0x0f && WebPIsPremultipliedMode(colorspace)) {
       WebPApplyAlphaMultiply4444(base_rgba, mb_w, num_rows, buf.stride)
@@ -286,7 +286,7 @@ func InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   uv_in_width := (io.mb_w + 1) >> 1
   uv_in_height := (io.mb_h + 1) >> 1
   // scratch memory for luma rescaler
-  work_size := 2 * (uint64)out_width
+  work_size := 2 * uint64(out_width)
   uv_work_size := 2 * uv_out_width;  // and for each u/v ones
   var total_size uint64
   var rescaler_size uint64
@@ -304,7 +304,7 @@ func InitYUVRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
     return 0
   }
 
-	//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size)
+	//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), uint64(total_size))
 	//   if (work == nil) {
 	//     return 0;  // memory error
 	//   }
@@ -372,7 +372,7 @@ func EmitRescaledRGB(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
           p.scaler_u, uv_mb_h - uv_j, io.u + (ptrdiff_t)uv_j * io.uv_stride, io.uv_stride)
       v_lines_in := WebPRescalerImport(
           p.scaler_v, uv_mb_h - uv_j, io.v + (ptrdiff_t)uv_j * io.uv_stride, io.uv_stride)
-      (void)v_lines_in;  // remove a gcc warning
+      void(v_lines_in);  // remove a gcc warning
       assert.Assert(u_lines_in == v_lines_in)
       uv_j += u_lines_in
     }
@@ -457,7 +457,7 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   uv_in_width := (io.mb_w + 1) >> 1
   uv_in_height := (io.mb_h + 1) >> 1
   // scratch memory for one rescaler
-  work_size := 2 * (uint64)out_width
+  work_size := 2 * uint64(out_width)
   var work rescaler_t*   // rescalers work area
   var tmp *uint8// tmp storage for scaled YUV444 samples before RGB conversion
   var tmp_size1, tmp_size2, total_size uint64
@@ -474,7 +474,7 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
     return 0
   }
 
-	//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), (uint64)total_size)
+	//   work = (rescaler_t*)WebPSafeMalloc(uint64(1), uint64(total_size))
 	//   if (work == nil) {
 	//     return 0;  // memory error
 	//   }

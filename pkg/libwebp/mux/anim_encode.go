@@ -246,8 +246,8 @@ func WebPAnimEncoder(
   enc.curr_canvas_copy_modified = 1
 
   // Allocate for the whole canvas so that it can be reused for any subframe.
-//   enc.candidate_carryover_mask = (*uint8)WebPSafeMalloc(width * (uint64)height, sizeof(*enc.candidate_carryover_mask))
-//   enc.best_candidate_carryover_mask = (*uint8)WebPSafeMalloc(width * (uint64)height, sizeof(*enc.best_candidate_carryover_mask))
+//   enc.candidate_carryover_mask = (*uint8)WebPSafeMalloc(width * uint64(height), sizeof(*enc.candidate_carryover_mask))
+//   enc.best_candidate_carryover_mask = (*uint8)WebPSafeMalloc(width * uint64(height), sizeof(*enc.best_candidate_carryover_mask))
 //   if enc.candidate_carryover_mask == nil { goto Err }
 //   if enc.best_candidate_carryover_mask == nil { goto Err }
 
@@ -1164,7 +1164,7 @@ End:
 // Calculate the penalty incurred if we encode given frame as a keyframe
 // instead of a subframe.
 func KeyFramePenalty(/* const */ encoded_frame *EncodedFrame) int64 {
-  return ((int64)encoded_frame.key_frame.bitstream.size - encoded_frame.sub_frame.bitstream.size)
+  return (int64(encoded_frame.key_frame.bitstream.size) - encoded_frame.sub_frame.bitstream.size)
 }
 
 func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Config) int {
@@ -1235,7 +1235,7 @@ func CacheFrame(/* const */ enc *WebPAnimEncoder, /*const*/ config *config.Confi
         }
         encoded_frame.is_key_frame = 1
         candidate_undecided = 1
-        enc.keyframe = (int)position
+        enc.keyframe = int(position)
         enc.best_delta = curr_delta
         enc.flush_count = enc.count - 1;  // We can flush previous frames.
       } else {
@@ -1352,7 +1352,7 @@ func FlushFrames(/* const */ enc *WebPAnimEncoder) int {
 
   if (enc.count == 1 && enc.start != 0) {
     // Move enc.start to index 0.
-    enc_start_tmp := (int)enc.start
+    enc_start_tmp := int(enc.start)
     EncodedFrame temp = enc.encoded_frames[0]
     enc.encoded_frames[0] = enc.encoded_frames[enc_start_tmp]
     enc.encoded_frames[enc_start_tmp] = temp
@@ -1384,7 +1384,7 @@ func WebPAnimEncoderAdd(enc *WebPAnimEncoder, frame *picture.Picture, timestamp 
       MarkError(enc, "ERROR adding frame: timestamps must be non-decreasing")
       return 0
     }
-    if (!IncreasePreviousDuration(enc, (int)prev_frame_duration)) {
+    if (!IncreasePreviousDuration(enc, int(prev_frame_duration))) {
       return 0
     }
     // IncreasePreviousDuration() may add a frame to afunc exceeding
@@ -1572,7 +1572,7 @@ func WebPAnimEncoderAssemble(enc *WebPAnimEncoder, webp_data *WebPData) int {
 
   if (!enc.got_nil_frame && enc.in_frame_count > 1 && enc.count > 0) {
     // set duration of the last frame to be avg of durations of previous frames.
-     = (uint32)enc.prev_timestamp - enc.first_timestamp
+     = uint32(enc.prev_timestamp) - enc.first_timestamp
     average_duration := (int)(delta_time / (enc.in_frame_count - 1))
     if (!IncreasePreviousDuration(enc, average_duration)) {
       return 0

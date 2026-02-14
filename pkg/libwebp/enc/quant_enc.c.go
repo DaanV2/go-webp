@@ -754,9 +754,9 @@ func CorrectDCValues(/* const */ /* const */ it *vp8.VP8EncIterator, /*const*/ /
     // error 'err' is bounded by mtx.q[0] which is 132 at max. Hence
     // err >> DSCALE will fit in an int8 type if DSCALE>=1.
     assert.Assert(abs(err1) <= 127 && abs(err2) <= 127 && abs(err3) <= 127)
-    rd.derr[ch][0] = (int8)err1
-    rd.derr[ch][1] = (int8)err2
-    rd.derr[ch][2] = (int8)err3
+    rd.derr[ch][0] = int8(err1)
+    rd.derr[ch][1] = int8(err2)
+    rd.derr[ch][2] = int8(err3)
   }
 }
 
@@ -975,7 +975,7 @@ func PickBestIntra4(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeS
     if (rd_best.score >= rd.score) {
       return 0
     }
-    total_header_bits += (int)rd_i4.H;  // <- equal to mode_costs[best_mode]
+    total_header_bits += int(rd_i4.H);  // <- equal to mode_costs[best_mode]
     if (total_header_bits > enc.max_i4_header_bits) {
       return 0
     }

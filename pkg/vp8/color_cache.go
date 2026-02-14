@@ -22,7 +22,7 @@ func VP8LColorCacheInit( /* const */ color_cache *VP8LColorCache, hash_bits int)
 	assert.Assert(color_cache != nil)
 	assert.Assert(hash_bits > 0)
 
-	//   colors *uint32 = (*uint32)WebPSafeCalloc((uint64)hash_size, sizeof(*color_cache.colors))
+	//   colors *uint32 = (*uint32)WebPSafeCalloc(uint64(hash_size), sizeof(*color_cache.colors))
 	colors := make([]uint32, hash_size)
 	if colors == nil {
 		color_cache.colors = nil

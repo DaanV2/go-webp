@@ -110,9 +110,9 @@ func PrintMemInfo(){
   fprintf(stderr, "num calls to: malloc = %4d\n", num_malloc_calls)
   fprintf(stderr, "              calloc = %4d\n", num_calloc_calls)
   fprintf(stderr, "              free   = %4d\n", num_free_calls)
-  fprintf(stderr, "total_mem: %u\n", (uint32)total_mem)
-  fprintf(stderr, "total_mem allocated: %u\n", (uint32)total_mem_allocated)
-  fprintf(stderr, "high-water mark: %u\n", (uint32)high_water_mark)
+  fprintf(stderr, "total_mem: %u\n", uint32(total_mem))
+  fprintf(stderr, "total_mem allocated: %u\n", uint32(total_mem_allocated))
+  fprintf(stderr, "high-water mark: %u\n", uint32(high_water_mark))
   for (all_blocks != nil) {
     b *MemBlock = all_blocks
     all_blocks = b.next
@@ -134,7 +134,7 @@ func Increment(/* const */ v *int) {
     {
       var malloc_limit_str *byte = getenv("MALLOC_LIMIT")
 // #if MALLOC_LIMIT > 1
-      mem_limit = (uint64)MALLOC_LIMIT
+      mem_limit = uint64(MALLOC_LIMIT)
 // #endif
       if (malloc_limit_str != nil) {
         mem_limit = atoi(malloc_limit_str)
@@ -161,9 +161,9 @@ func AddMem(ptr *void, size uint64 ) {
     total_mem_allocated += size
 // #if defined(PRINT_MEM_TRAFFIC)
 // #if defined(MALLOC_FAIL_AT)
-    fprintf(stderr, "fail-count: %5d [mem=%u]\n", num_malloc_calls + num_calloc_calls, (uint32)total_mem)
+    fprintf(stderr, "fail-count: %5d [mem=%u]\n", num_malloc_calls + num_calloc_calls, uint32(total_mem))
 // #else
-    fprintf(stderr, "Mem: %u (+%u)\n", (uint32)total_mem, (uint32)size)
+    fprintf(stderr, "Mem: %u (+%u)\n", uint32(total_mem), uint32(size))
 // #endif
 // #endif
     if total_mem > high_water_mark { high_water_mark = total_mem }
@@ -184,7 +184,7 @@ func SubMem(ptr *void) {
       *b = block.next
       total_mem -= block.size
 // #if defined(PRINT_MEM_TRAFFIC)
-      fprintf(stderr, "Mem: %u (-%u)\n", (uint32)total_mem, (uint32)block.size)
+      fprintf(stderr, "Mem: %u (-%u)\n", uint32(total_mem), uint32(block.size))
 // #endif
       free(block)
     }
@@ -192,7 +192,7 @@ func SubMem(ptr *void) {
 }
 
 func CheckSizeOverflow(size uint64 ) bool {
-  return size == (uint64)size
+  return size == uint64(size)
 }
 
 // Returns 0 in case of overflow of nmemb * size.
@@ -243,7 +243,7 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 //   Increment(&num_calloc_calls)
 //   if !CheckSizeArgumentsOverflow(nmemb, size) { return nil  }
 //   assert.Assert(nmemb * size > 0)
-//   ptr = calloc((uint64)nmemb, size)
+//   ptr = calloc(uint64(nmemb), size)
 //   AddMem(ptr, (uint64)(nmemb * size))
 //   return ptr // bidi index -> (uint64)(nmemb * size)
 // }

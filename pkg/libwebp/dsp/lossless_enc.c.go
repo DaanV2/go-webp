@@ -225,10 +225,10 @@ func VP8LTransformColor_C(/* const */ /* const */ m *VP8LMultipliers, data *uint
     red := U32ToS8(argb >> 16)
     new_red := red & 0xff
     new_blue := argb & 0xff
-    new_red -= ColorTransformDelta((int8)m.green_to_red, green)
+    new_red -= ColorTransformDelta(int8(m.green_to_red), green)
     new_red &= 0xff
-    new_blue -= ColorTransformDelta((int8)m.green_to_blue, green)
-    new_blue -= ColorTransformDelta((int8)m.red_to_blue, red)
+    new_blue -= ColorTransformDelta(int8(m.green_to_blue), green)
+    new_blue -= ColorTransformDelta(int8(m.red_to_blue), red)
     new_blue &= 0xff
     data[i] = (argb & uint(0xff00ff00)) | (new_red << 16) | (new_blue)
   }
@@ -237,7 +237,7 @@ func VP8LTransformColor_C(/* const */ /* const */ m *VP8LMultipliers, data *uint
 func TransformColorRed(uint8 green_to_red, argb uint32) uint8 {
   green := U32ToS8(argb >> 8)
   new_red := argb >> 16
-  new_red -= ColorTransformDelta((int8)green_to_red, green)
+  new_red -= ColorTransformDelta(int8(green_to_red), green)
   return (new_red & 0xff)
 }
 
@@ -245,8 +245,8 @@ func TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) uin
   green := U32ToS8(argb >> 8)
   red := U32ToS8(argb >> 16)
   new_blue := argb & 0xff
-  new_blue -= ColorTransformDelta((int8)green_to_blue, green)
-  new_blue -= ColorTransformDelta((int8)red_to_blue, red)
+  new_blue -= ColorTransformDelta(int8(green_to_blue), green)
+  new_blue -= ColorTransformDelta(int8(red_to_blue), red)
   return (new_blue & 0xff)
 }
 
@@ -256,7 +256,7 @@ func VP8LCollectColorRedTransforms_C(/* const */ argb *uint32, stride int, tile_
 
     var x int
     for x = 0; x < tile_width; x++ {
-      ++histo[TransformColorRed((uint8)green_to_red, argb[x])]
+      ++histo[TransformColorRed(uint8(green_to_red), argb[x])]
     }
     argb += stride
   }
@@ -268,7 +268,7 @@ func VP8LCollectColorBlueTransforms_C(/* const */ argb *uint32, stride int, tile
 
     var x int
     for x = 0; x < tile_width; x++ {
-      ++histo[TransformColorBlue((uint8)green_to_blue, (uint8)red_to_blue, argb[x])]
+      ++histo[TransformColorBlue(uint8(green_to_blue), uint8(red_to_blue), argb[x])]
     }
     argb += stride
   }

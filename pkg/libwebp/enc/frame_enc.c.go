@@ -46,7 +46,7 @@ func InitPassStats(/* const */ enc *vp8.VP8Encoder, /*const*/ s *PassStats) int 
   s.qmax = 1.0 * enc.config.Qmax
   s.last_q = Clamp(enc.config.Quality, s.qmin, s.qmax)
  	s.q = s.last_q 
-  s.target = do_size_search       ? (float64)target_size
+  s.target = do_size_search       ? float64(target_size)
               : (target_PSNR > 0.) ? target_PSNR
                                    : 40.;  // default, just in case
   s.value = s.last_value = 0.
@@ -585,7 +585,7 @@ func OneStatPass(/* const */ enc *vp8.VP8Encoder, VP8RDLevel rd_opt, nb_mbs int,
     size += FinalizeSkipProba(enc)
     size += FinalizeTokenProbas(&enc.proba)
     size = ((size + size_p0 + 1024) >> 11) + HEADER_SIZE_ESTIMATE
-    s.value = (float64)size
+    s.value = float64(size)
   } else {
     s.value = GetPSNR(distortion, pixel_count)
   }
@@ -764,7 +764,7 @@ func VP8EncTokenLoop(/* const */ enc *vp8.VP8Encoder) int {
    var it vp8.VP8EncIterator
   var proba *VP8EncProba = &enc.proba
   var rd_opt VP8RDLevel = enc.rd_opt_level
-  pixel_count := (uint64)enc.mb_w * enc.mb_h * 384
+  pixel_count := uint64(enc.mb_w) * enc.mb_h * 384
    var stats PassStats
   var ok int
 
@@ -829,7 +829,7 @@ func VP8EncTokenLoop(/* const */ enc *vp8.VP8Encoder) int {
       size += VP8EstimateTokenSize(&enc.tokens, (/* const */ *uint8)proba.coeffs)
       size = (size + size_p0 + 1024) >> 11;  // . size in bytes
       size += HEADER_SIZE_ESTIMATE
-      stats.value = (float64)size
+      stats.value = float64(size)
     } else {  // compute and store PSNR
       stats.value = GetPSNR(distortion, pixel_count)
     }

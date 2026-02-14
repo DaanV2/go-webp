@@ -359,7 +359,7 @@ func PaletteSortModifiedZeng(/* const */ pic *picture.Picture, /*const*/ palette
       n := num_colors - num_sums
       for ind = first, j = 0; (ind + j) % num_colors != last + 1; j++ {
         l_j := remapping[(ind + j) % num_colors]
-        delta += (n - 1 - 2 * (int32)j) *
+        delta += (n - 1 - 2 * int32(j)) *
                  (int32)cooccurrence[best_index * num_colors + l_j]
       }
       if (delta > 0) {

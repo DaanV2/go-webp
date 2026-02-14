@@ -194,7 +194,7 @@ func AppendToMemBuffer(/* const */ idec *WebPIDecoder, /*const*/ data *uint8, da
 	if old_base != nil { {stdlib.MemCpy(new_buf, old_base, current_size) }}
 
     mem.buf = new_buf
-    mem.buf_size = (uint64)extra_size
+    mem.buf_size = uint64(extra_size)
     mem.start = new_mem_start
     mem.end = current_size
   }

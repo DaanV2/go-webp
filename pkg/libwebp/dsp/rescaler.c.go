@@ -118,7 +118,7 @@ func WebPRescalerExportRowExpand_C(/* const */ wrk *WebPRescaler) {
     for x_out = 0; x_out < x_out_max; x_out++ {
       J := frow[x_out]
       v := (int)MULT_FIX(J, wrk.fy_scale)
-      dst[x_out] = tenary.If(v > 255, uint(255), (uint8)v)
+      dst[x_out] = tenary.If(v > 255, uint(255), uint8(v))
     }
   } else {
     B := WEBP_RESCALER_FRAC(-wrk.y_accum, wrk.y_sub)
@@ -127,7 +127,7 @@ func WebPRescalerExportRowExpand_C(/* const */ wrk *WebPRescaler) {
       I := uint64(A)* frow[x_out] + uint64(B)* irow[x_out]
       J := (uint32)((I + ROUNDER) >> WEBP_RESCALER_RFIX)
       v := (int)MULT_FIX(J, wrk.fy_scale)
-      dst[x_out] = tenary.If(v > 255, uint(255), (uint8)v)
+      dst[x_out] = tenary.If(v > 255, uint(255), uint8(v))
     }
   }
 }
@@ -146,13 +146,13 @@ func WebPRescalerExportRowShrink_C(/* const */ wrk *WebPRescaler) {
     for x_out = 0; x_out < x_out_max; x_out++ {
       frac := (uint32)MULT_FIX_FLOOR(frow[x_out], yscale)
       v := (int)MULT_FIX(irow[x_out] - frac, wrk.fxy_scale)
-      dst[x_out] = tenary.If(v > 255, uint(255), (uint8)v)
+      dst[x_out] = tenary.If(v > 255, uint(255), uint8(v))
       irow[x_out] = frac;  // new fractional start
     }
   } else {
     for x_out = 0; x_out < x_out_max; x_out++ {
       v := (int)MULT_FIX(irow[x_out], wrk.fxy_scale)
-      dst[x_out] = tenary.If(v > 255, uint(255), (uint8)v)
+      dst[x_out] = tenary.If(v > 255, uint(255), uint8(v))
       irow[x_out] = 0
     }
   }

@@ -45,8 +45,8 @@ func PutPaddingByte(/* const */ pic *picture.Picture) int {
 func PutRIFFHeader(/* const */ enc *vp8.VP8Encoder, uint64 riff_size) WebPEncodingError {
   var pic *picture.Picture = enc.pic
   var riff [RIFF_HEADER_SIZE]uint8 = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
-  assert.Assert(riff_size == (uint32)riff_size)
-  PutLE32(riff + TAG_SIZE, (uint32)riff_size)
+  assert.Assert(riff_size == uint32(riff_size))
+  PutLE32(riff + TAG_SIZE, uint32(riff_size))
   if (!pic.writer(riff, sizeof(riff), pic)) {
     return ENC_ERROR_BAD_WRITE
   }
@@ -102,8 +102,8 @@ func PutAlphaChunk(/* const */ enc *vp8.VP8Encoder) WebPEncodingError {
 
 func PutVP8Header(/* const */ pic *picture.Picture, uint64 vp8_size) WebPEncodingError {
   uint8 vp8_chunk_hdr[CHUNK_HEADER_SIZE] = {'V', 'P', '8', ' '}
-  assert.Assert(vp8_size == (uint32)vp8_size)
-  PutLE32(vp8_chunk_hdr + TAG_SIZE, (uint32)vp8_size)
+  assert.Assert(vp8_size == uint32(vp8_size))
+  PutLE32(vp8_chunk_hdr + TAG_SIZE, uint32(vp8_size))
   if (!pic.writer(vp8_chunk_hdr, sizeof(vp8_chunk_hdr), pic)) {
     return ENC_ERROR_BAD_WRITE
   }

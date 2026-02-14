@@ -518,7 +518,7 @@ func HistogramAddThresh(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram
     return 0
   }
 
-  *cost_out = int64(cost)- (int64)a.bit_cost
+  *cost_out = int64(cost)- int64(a.bit_cost)
   return 1
 }
 
@@ -822,7 +822,7 @@ func HistoQueueUpdatePair(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistog
   if (!GetCombinedHistogramEntropy(h1, h2, cost_threshold, &pair.cost_combo, pair.costs)) {
     return 0
   }
-  pair.cost_diff = (int64)pair.cost_combo - sum_cost
+  pair.cost_diff = int64(pair.cost_combo) - sum_cost
   return 1
 }
 
