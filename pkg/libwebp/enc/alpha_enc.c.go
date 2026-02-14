@@ -245,7 +245,7 @@ func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_siz
     ok = EncodeAlphaInternal(alpha, width, height, method, WEBP_FILTER_NONE, reduce_levels, effort_level, nil, &best)
   }
   if (ok) {
-#if !defined(WEBP_DISABLE_STATS)
+#if FALSE
     if (stats != nil) {
       stats.lossless_features = best.stats.lossless_features
       stats.histogram_bits = best.stats.histogram_bits

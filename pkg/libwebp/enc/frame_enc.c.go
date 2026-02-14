@@ -187,7 +187,7 @@ func SetSegmentProbas(/* const */ enc *VP8Encoder) {
     var mb *VP8MBInfo = &enc.mb_info[n]
     ++p[mb.segment]
   }
-#if !defined(WEBP_DISABLE_STATS)
+#if FALSE
   if (enc.pic.stats != nil) {
     for n = 0; n < NUM_MB_SEGMENTS; n++ {
       enc.pic.stats.segment_size[n] = p[n]
@@ -430,7 +430,7 @@ func RecordTokens(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore, /*
 //------------------------------------------------------------------------------
 // ExtraInfo map / Debug function
 
-#if !defined(WEBP_DISABLE_STATS)
+#if FALSE
 
 #if SEGMENT_VISU
 func SetBlock(p *uint8, value int, size int) {
@@ -519,7 +519,7 @@ func ResetSideInfo(/* const */ it *VP8EncIterator) {
   }
   ResetSSE(enc)
 }
-#else   // defined(WEBP_DISABLE_STATS)
+#else   // TRUE
 func ResetSSE(/* const */ enc *VP8Encoder) { _ = enc; }
 func StoreSideInfo(/* const */ it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc
@@ -532,7 +532,7 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
 }
 
 func ResetSideInfo(/* const */ it *VP8EncIterator) { _ = it; }
-#endif  // !defined(WEBP_DISABLE_STATS)
+#endif  // FALSE
 
 func GetPSNR(uint64 mse, size uint64 ) float64 {
   return (mse > 0 && size > 0) ? 10. * log10(255. * 255. * size / mse) : 99
@@ -680,7 +680,7 @@ func PostLoopFinalize(/* const */ it *VP8EncIterator, ok int) int {
   }
 
   if (ok) {  // All good. Finish up.
-#if !defined(WEBP_DISABLE_STATS)
+#if FALSE
     if (enc.pic.stats != nil) {  // finalize byte counters...
       int i, s
       for i = 0; i <= 2; i++ {

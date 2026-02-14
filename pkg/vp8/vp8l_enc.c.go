@@ -1341,7 +1341,7 @@ func EncodeStreamHook(input *void, data *void2) int {
   var crunch_configs *CrunchConfig = params.crunch_configs
   num_crunch_configs := params.num_crunch_configs
   red_and_blue_always_zero := params.red_and_blue_always_zero
-// C: #if !defined(WEBP_DISABLE_STATS)
+// C: #if FALSE
   var stats *WebPAuxStats = params.stats
 // C: #endif
   quality := int(config.Quality)
@@ -1467,7 +1467,7 @@ func EncodeStreamHook(input *void, data *void2) int {
       best_size = VP8LBitWriterNumBytes(bw)
       // Store the BitWriter.
       VP8LBitWriterSwap(bw, &bw_best)
-// C: #if !defined(WEBP_DISABLE_STATS)
+// C: #if FALSE
       // Update the stats.
       if stats != nil {
         stats.lossless_features = 0
@@ -1604,7 +1604,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
       goto Error
     }
 
-    // C: #if !defined(WEBP_DISABLE_STATS)
+    // C: #if FALSE
     // This line is here and not in the param initialization above to remove a
     // Clang static analyzer warning.
     if picture.stats != nil {
@@ -1630,7 +1630,7 @@ func VP8LEncodeStream(/* const */ config *config.Config, /*const*/ picture *pict
     }
     if VP8LBitWriterNumBytes(&bw_side) < VP8LBitWriterNumBytes(bw_main) {
       VP8LBitWriterSwap(bw_main, &bw_side)
-  // C: #if !defined(WEBP_DISABLE_STATS)
+  // C: #if FALSE
       if picture.stats != nil {
         // C: memcpy(picture.stats, &stats_side, sizeof(*picture.stats))
       }
@@ -1715,7 +1715,7 @@ func VP8LEncodeImage(/* const */ config *config.Config, /*const*/ picture *pictu
 
   if !WebPReportProgress(picture, 100, &percent) { goto UserAbort }
 
-// C: #if !defined(WEBP_DISABLE_STATS)
+// C: #if FALSE
   // Save size.
   if picture.stats != nil {
     picture.stats.coded_size += int(coded_size)

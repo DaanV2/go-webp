@@ -318,19 +318,19 @@ func IntraChromaPreds_C(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8)
 //------------------------------------------------------------------------------
 // luma 16x16 prediction (paragraph 12.3)
 
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64
+#if !WEBP_NEON_OMIT_C_CODE || !FALSE
 func Intra16Preds_C(dst *uint8, /*const*/ left *uint8, /*const*/ top *uint8) {
   DCMode(I16DC16 + dst, left, top, 16, 16, 5)
   VerticalPred(I16VE16 + dst, top, 16)
   HorizontalPred(I16HE16 + dst, left, 16)
   TrueMotion(I16TM16 + dst, left, top, 16)
 }
-#endif  // !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64
+#endif  // !WEBP_NEON_OMIT_C_CODE || !FALSE
 
 //------------------------------------------------------------------------------
 // luma 4x4 prediction
 
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || constants.BPS != 32
+#if !WEBP_NEON_OMIT_C_CODE || !FALSE || constants.BPS != 32
 
 #define DST(x, y) dst[(x) + (y) * constants.BPS]
 #define AVG3(a, b, c) ((uint8)(((a) + 2 * (b) + (c) + 2) >> 2))
@@ -515,7 +515,7 @@ func Intra4Preds_C(dst *uint8, /*const*/ top *uint8) {
   HU4(I4HU4 + dst, top)
 }
 
-#endif  // !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || constants.BPS != 32
+#endif  // !WEBP_NEON_OMIT_C_CODE || !FALSE || constants.BPS != 32
 
 //------------------------------------------------------------------------------
 // Metric
@@ -744,10 +744,10 @@ WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
   VP8EncQuantizeBlockWHT = QuantizeBlock_C
 #endif
 
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64 || constants.BPS != 32
+#if !WEBP_NEON_OMIT_C_CODE || !FALSE || constants.BPS != 32
   VP8EncPredLuma4 = Intra4Preds_C
 #endif
-#if !WEBP_NEON_OMIT_C_CODE || !WEBP_AARCH64
+#if !WEBP_NEON_OMIT_C_CODE || !FALSE
   VP8EncPredLuma16 = Intra16Preds_C
 #endif
 

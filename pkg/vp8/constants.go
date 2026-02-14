@@ -125,7 +125,7 @@ func WebPGetDecoderVersion() int {
 // const BITS = 56
 // #elif defined(__arm__) || defined(_M_ARM)  // ARM
 // const BITS = 24
-// #elif WEBP_AARCH64  // ARM 64bit
+// #elif FALSE  // ARM 64bit
 // const BITS = 56
 // #elif defined(__mips__)  // MIPS
 // const BITS = 24

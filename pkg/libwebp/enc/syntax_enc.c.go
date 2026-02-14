@@ -284,7 +284,7 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
 
   pos3 = VP8BitWriterPos(bw)
 
-#if !defined(WEBP_DISABLE_STATS)
+#if FALSE
   if (enc.pic.stats) {
     enc.pic.stats.header_bytes[0] = (int)((pos2 - pos1 + 7) >> 3)
     enc.pic.stats.header_bytes[1] = (int)((pos3 - pos2 + 7) >> 3)
