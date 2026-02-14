@@ -1,5 +1,3 @@
-package utils
-
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -9,16 +7,9 @@ package utils
 // be found in the AUTHORS file in the root of the source tree.
 
 
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
+package utils
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"  // for memcpy()
 
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 func CheckSizeOverflow(size uint64) bool {
 	return size == size_t(size)
