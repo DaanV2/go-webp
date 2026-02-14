@@ -29,7 +29,7 @@ import (
 //------------------------------------------------------------------------------
 // Helper functions
 
-func IsVP8XNeeded(/* const */ enc *VP8Encoder) int {
+func IsVP8XNeeded(/* const */ enc *vp8.VP8Encoder) int {
   return !!enc.has_alpha;  // Currently the only case when VP8X is needed.
                             // This could change in the future.
 }
@@ -42,7 +42,7 @@ func PutPaddingByte(/* const */ pic *picture.Picture) int {
 //------------------------------------------------------------------------------
 // Writers for header's various pieces (in order of appearance)
 
-func PutRIFFHeader(/* const */ enc *VP8Encoder, uint64 riff_size) WebPEncodingError {
+func PutRIFFHeader(/* const */ enc *vp8.VP8Encoder, uint64 riff_size) WebPEncodingError {
   var pic *picture.Picture = enc.pic
   var riff [RIFF_HEADER_SIZE]uint8 = {'R', 'I', 'F', 'F', 0,   0, 0,   0,   'W', 'E', 'B', 'P'}
   assert.Assert(riff_size == (uint32)riff_size)
@@ -53,7 +53,7 @@ func PutRIFFHeader(/* const */ enc *VP8Encoder, uint64 riff_size) WebPEncodingEr
   return ENC_OK
 }
 
-func PutVP8XHeader(/* const */ enc *VP8Encoder) WebPEncodingError {
+func PutVP8XHeader(/* const */ enc *vp8.VP8Encoder) WebPEncodingError {
   var pic *picture.Picture = enc.pic
   uint8 vp8x[CHUNK_HEADER_SIZE + VP8X_CHUNK_SIZE] = {'V', 'P', '8', 'X'}
   flags := 0
@@ -76,7 +76,7 @@ func PutVP8XHeader(/* const */ enc *VP8Encoder) WebPEncodingError {
   return ENC_OK
 }
 
-func PutAlphaChunk(/* const */ enc *VP8Encoder) WebPEncodingError {
+func PutAlphaChunk(/* const */ enc *vp8.VP8Encoder) WebPEncodingError {
   var pic *picture.Picture = enc.pic
   uint8 alpha_chunk_hdr[CHUNK_HEADER_SIZE] = {'A', 'L', 'P', 'H'}
 
@@ -143,7 +143,7 @@ func PutVP8FrameHeader(/* const */ pic *picture.Picture, profile int, uint64 siz
 }
 
 // WebP Headers.
-func PutWebPHeaders(/* const */ enc *VP8Encoder, uint64 size0, uint64 vp8_size, uint64 riff_size) int {
+func PutWebPHeaders(/* const */ enc *vp8.VP8Encoder, uint64 size0, uint64 vp8_size, uint64 riff_size) int {
   var pic *picture.Picture = enc.pic
   WebPEncodingError err = ENC_OK
 
@@ -180,7 +180,7 @@ Error:
 }
 
 // Segmentation header
-func PutSegmentHeader(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
+func PutSegmentHeader(/* const */ bw *VP8BitWriter, /*const*/ enc *vp8.VP8Encoder) {
   var hdr *VP8EncSegmentHeader = &enc.segment_hdr
   var proba *VP8EncProba = &enc.proba
   if (vp8.VP8PutBitUniform(bw, (hdr.num_segments > 1))) {
@@ -228,7 +228,7 @@ func PutFilterHeader(/* const */ bw *VP8BitWriter, /*const*/ hdr *VP8EncFilterHe
 }
 
 // Nominal quantization parameters
-func PutQuant(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
+func PutQuant(/* const */ bw *VP8BitWriter, /*const*/ enc *vp8.VP8Encoder) {
   vp8.VP8PutBits(bw, enc.base_quant, 7)
   vp8.VP8PutSignedBits(bw, enc.dq_y1_dc, 4)
   vp8.VP8PutSignedBits(bw, enc.dq_y2_dc, 4)
@@ -238,7 +238,7 @@ func PutQuant(/* const */ bw *VP8BitWriter, /*const*/ enc *VP8Encoder) {
 }
 
 // Partition sizes
-func EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *picture.Picture) int {
+func EmitPartitionsSize(/* const */ enc *vp8.VP8Encoder, /*const*/ pic *picture.Picture) int {
   uint8 buf[3 * (MAX_NUM_PARTITIONS - 1)]
   var p int
   for p = 0; p < enc.num_parts - 1; p++ {
@@ -258,7 +258,7 @@ func EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *picture.Pict
 
 //------------------------------------------------------------------------------
 
-func GeneratePartition0(/* const */ enc *VP8Encoder) int {
+func GeneratePartition0(/* const */ enc *vp8.VP8Encoder) int {
   var bw *vp8.VP8BitWriter = &enc.bw
   mb_size := enc.mb_w * enc.mb_h
   var pos1, pos2, pos3 uint64
@@ -291,7 +291,7 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
 // Generates the final bitstream by coding the partition0 and headers,
 // and appending an assembly of all the pre-coded token partitions.
 // Return true if everything is ok.
-func VP8EncWrite(/* const */ enc *VP8Encoder) int {
+func VP8EncWrite(/* const */ enc *vp8.VP8Encoder) int {
   var pic *picture.Picture = enc.pic
   var bw *VP8BitWriter = &enc.bw
   task_percent := 19

@@ -5,6 +5,7 @@ import (
 	"github.com/daanv2/go-webp/pkg/config"
 	"github.com/daanv2/go-webp/pkg/picture"
 	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/vp8"
 )
 
 // Main encoding call, after config and picture have been initialized.
@@ -43,7 +44,7 @@ func WebPEncode( /* const */ config *config.Config, pic *picture.Picture) int {
 	}
 
 	if !config.Lossless {
-		enc * VP8Encoder = nil
+		enc * vp8.VP8Encoder = nil
 
 		if pic.use_argb || pic.y == nil || pic.u == nil || pic.v == nil {
 			// Make sure we have YUVA samples.
@@ -70,7 +71,7 @@ func WebPEncode( /* const */ config *config.Config, pic *picture.Picture) int {
 			WebPCleanupTransparentArea(pic)
 		}
 
-		enc = InitVP8Encoder(config, pic)
+		enc = Initvp8.VP8Encoder(config, pic)
 		if enc == nil {
 			return 0 // pic.error is already set.
 		}
@@ -88,7 +89,7 @@ func WebPEncode( /* const */ config *config.Config, pic *picture.Picture) int {
 
 		ok = ok && VP8EncWrite(enc)
 		StoreStats(enc)
-		ok &= DeleteVP8Encoder(enc) // must always be called, even if !ok
+		ok &= Deletevp8.VP8Encoder(enc) // must always be called, even if !ok
 	} else {
 		// Make sure we have ARGB samples.
 		if pic.argb == nil && !picture.WebPPictureYUVAToARGB(pic) {

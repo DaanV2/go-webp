@@ -22,14 +22,14 @@ func WebPGetEncoderVersion() int {
 	return (constants.ENC_MAJ_VERSION << 16) | (constants.ENC_MIN_VERSION << 8) | constants.ENC_REV_VERSION
 }
 
-func ResetSegmentHeader( /* const */ enc *VP8Encoder) {
+func ResetSegmentHeader( /* const */ enc *vp8.VP8Encoder) {
 	var hdr *VP8EncSegmentHeader = &enc.segment_hdr
 	hdr.num_segments = enc.config.Segments
 	hdr.update_map = (hdr.num_segments > 1)
 	hdr.size = 0
 }
 
-func ResetFilterHeader( /* const */ enc *VP8Encoder) {
+func ResetFilterHeader( /* const */ enc *vp8.VP8Encoder) {
 	var hdr *VP8EncFilterHeader = &enc.filter_hdr
 	hdr.simple = 1
 	hdr.level = 0
@@ -37,7 +37,7 @@ func ResetFilterHeader( /* const */ enc *VP8Encoder) {
 	hdr.i4x4_lf_delta = 0
 }
 
-func ResetBoundaryPredictions( /* const */ enc *VP8Encoder) {
+func ResetBoundaryPredictions( /* const */ enc *vp8.VP8Encoder) {
 	// init boundary values once for all
 	// Note: actually, initializing the 'preds[]' is only needed for intra4.
 	var i int
@@ -76,7 +76,7 @@ func ResetBoundaryPredictions( /* const */ enc *VP8Encoder) {
 //-------------------+---+---+---+---+---+---+---+
 // full-SNS          |   |   |   |   | x | x | x |
 //-------------------+---+---+---+---+---+---+---+
-func MapConfigToTools( /* const */ enc *VP8Encoder) {
+func MapConfigToTools( /* const */ enc *vp8.VP8Encoder) {
 	var config *config.Config = enc.config
 	method := config.Method
 	limit := 100 - config.PartitionLimit
@@ -122,14 +122,14 @@ func MapConfigToTools( /* const */ enc *VP8Encoder) {
 //             lf-stats: 0
 //                total: 45658
 // Transient object sizes:
-//       VP8EncIterator: 3360
+//       vp8.VP8EncIterator: 3360
 //         VP8ModeScore: 872
 //       VP8SegmentInfo: 732
 //          VP8EncProba: 18352
 //              LFStats: 2048
 // Picture size (yuv): 419328
-func InitVP8Encoder( /* const */ config *config.Config /*const*/, picture *picture.Picture) *VP8Encoder {
-	var enc *VP8Encoder
+func Initvp8.VP8Encoder( /* const */ config *config.Config /*const*/, picture *picture.Picture) *vp8.VP8Encoder {
+	var enc *vp8.VP8Encoder
 	use_filter := (config.FilterStrength > 0) || (config.Autofilter > 0)
 	mb_w := (picture.Width + 15) >> 4
 	mb_h := (picture.Height + 15) >> 4
@@ -161,7 +161,7 @@ func InitVP8Encoder( /* const */ config *config.Config /*const*/, picture *pictu
 	//   }
 	mem = make([]uint8, size)
 
-	enc = (*VP8Encoder)(mem)
+	enc = (*vp8.VP8Encoder)(mem)
 	// mem = (*uint8)WEBP_ALIGN(mem + sizeof(*enc))
 	stdlib.Memset(enc, 0, sizeof(*enc))
 	enc.num_parts = 1 << config.Partitions
@@ -209,7 +209,7 @@ func InitVP8Encoder( /* const */ config *config.Config /*const*/, picture *pictu
 	return enc
 }
 
-func DeleteVP8Encoder(enc *vp8.VP8Encoder) int {
+func Deletevp8.VP8Encoder(enc *vp8.VP8Encoder) int {
 	ok := 1
 	if enc != nil {
 		ok = VP8EncDeleteAlpha(enc)

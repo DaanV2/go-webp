@@ -25,18 +25,18 @@ import (
 	"github.com/daanv2/go-webp/pkg/string"
 ) // for abs()
 
-const DO_TRELLIS_I4 =1
-const DO_TRELLIS_I16 =1  // not a huge gain, but ok at low bitrate.
-const DO_TRELLIS_UV =0   // disable trellis for UV. Risky. Not worth.
-const USE_TDISTO =1
+const DO_TRELLIS_I4 = 1
+const DO_TRELLIS_I16 = 1  // not a huge gain, but ok at low bitrate.
+const DO_TRELLIS_UV = 0   // disable trellis for UV. Risky. Not worth.
+const USE_TDISTO = 1
 
-const MID_ALPHA =64   // neutral value for susceptibility
-const MIN_ALPHA =30   // lowest usable value for susceptibility
-const MAX_ALPHA =100  // higher meaningful value for susceptibility
+const MID_ALPHA = 64   // neutral value for susceptibility
+const MIN_ALPHA = 30   // lowest usable value for susceptibility
+const MAX_ALPHA = 100  // higher meaningful value for susceptibility
 
-const SNS_TO_DQ =\
-  0.9  // Scaling constant between the sns value and the QP
-       // power-law modulation. Must be strictly less than 1.
+// Scaling constant between the sns value and the QP
+// power-law modulation. Must be strictly less than 1.
+const SNS_TO_DQ  = 0.9  
 
 // number of non-zero coeffs below which we consider the block very flat
 // (and apply a penalty to complex predictions)
@@ -45,120 +45,51 @@ const FLATNESS_LIMIT_I4 =3   // I4 mode
 const FLATNESS_LIMIT_UV =2   // UV mode
 const FLATNESS_PENALTY =140  // roughly ~1bit per block
 
-#define MULT_8B(a, b) (((a) * (b) + 128) >> 8)
-
 const RD_DISTO_MULT =256  // distortion multiplier (equivalent of lambda)
 
-// #define DEBUG_BLOCK
+// Very small filter-strength values have close to no visual effect. So we can
+// save a little decoding-CPU by turning filtering off for these.
+const FSTRENGTH_CUTOFF =2
+
+func MULT_8B(a, b int) int {
+	return (((a) * (b) + 128) >> 8)
+}
+
 
 //------------------------------------------------------------------------------
 
-#if defined(DEBUG_BLOCK)
-
-import "github.com/daanv2/go-webp/pkg/stdio"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-
-func PrintBlockInfo(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
-  var i, j int
-  is_i16 = (it.mb.type :== 1)
-  var y_in *uint8 = it.yuv_in + Y_OFF_ENC
-  var y_out *uint8 = it.yuv_out + Y_OFF_ENC
-  var uv_in *uint8 = it.yuv_in + U_OFF_ENC
-  var uv_out *uint8 = it.yuv_out + U_OFF_ENC
-  printf("SOURCE / OUTPUT / ABS DELTA\n")
-  for j = 0; j < 16; j++ {
-    for (i = 0; i < 16; ++i) printf("%3d ", y_in[i + j * BPS])
-    printf("     ")
-    for (i = 0; i < 16; ++i) printf("%3d ", y_out[i + j * BPS])
-    printf("     ")
-    for i = 0; i < 16; i++ {
-      printf("%1d ", abs(y_in[i + j * BPS] - y_out[i + j * BPS]))
-    }
-    printf("\n")
-  }
-  printf("\n");  // newline before the U/V block
-  for j = 0; j < 8; j++ {
-    for (i = 0; i < 8; ++i) printf("%3d ", uv_in[i + j * BPS])
-    printf(" ")
-    for (i = 8; i < 16; ++i) printf("%3d ", uv_in[i + j * BPS])
-    printf("    ")
-    for (i = 0; i < 8; ++i) printf("%3d ", uv_out[i + j * BPS])
-    printf(" ")
-    for (i = 8; i < 16; ++i) printf("%3d ", uv_out[i + j * BPS])
-    printf("   ")
-    for i = 0; i < 8; i++ {
-      printf("%1d ", abs(uv_out[i + j * BPS] - uv_in[i + j * BPS]))
-    }
-    printf(" ")
-    for i = 8; i < 16; i++ {
-      printf("%1d ", abs(uv_out[i + j * BPS] - uv_in[i + j * BPS]))
-    }
-    printf("\n")
-  }
-  printf("\nD:%d SD:%d R:%d H:%d nz:0x%x score:%d\n", (int)rd.D, (int)rd.SD, (int)rd.R, (int)rd.H, (int)rd.nz, (int)rd.score)
-  if (is_i16) {
-    printf("Mode: %d\n", rd.mode_i16)
-    printf("y_dc_levels:")
-    for (i = 0; i < 16; ++i) printf("%3d ", rd.y_dc_levels[i])
-    printf("\n")
-  } else {
-    printf("Modes[16]: ")
-    for (i = 0; i < 16; ++i) printf("%d ", rd.modes_i4[i])
-    printf("\n")
-  }
-  printf("y_ac_levels:\n")
-  for j = 0; j < 16; j++ {
-    for i = tenary.If(is_i16, 1, 0); i < 16; i++ {
-      printf("%4d ", rd.y_ac_levels[j][i])
-    }
-    printf("\n")
-  }
-  printf("\n")
-  printf("uv_levels (mode=%d):\n", rd.mode_uv)
-  for j = 0; j < 8; j++ {
-    for i = 0; i < 16; i++ {
-      printf("%4d ", rd.uv_levels[j][i])
-    }
-    printf("\n")
-  }
+func clip(v, m, M int) int {
+  return tenary.If(v < m, m, tenary.If(v > M, M, v))
 }
 
-#endif  // DEBUG_BLOCK
+var kZigzag = [16]uint8{0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
 
-//------------------------------------------------------------------------------
-
-static  int clip(v int, m int, int M) {
-  return v < m ? m : v > M ? M : v
-}
-
-var kZigzag = [16]uint8 = {0, 1,  4,  8,  5, 2,  3,  6, 9, 12, 13, 10, 7, 11, 14, 15}
-
-var kDcTable = [128]uint8 = {
+var kDcTable = [128]uint8{
     4,   5,   6,   7,   8,   9,   10,  10,  11,  12,  13,  14,  15,  16,  17, 17,  18,  19,  20,  20,  21,  21,  22,  22,  23,  23,  24,  25,  25,  26, 27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  37,  38,  39,  40, 41,  42,  43,  44,  45,  46,  46,  47,  48,  49,  50,  51,  52,  53,  54, 55,  56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69, 70,  71,  72,  73,  74,  75,  76,  76,  77,  78,  79,  80,  81,  82,  83, 84,  85,  86,  87,  88,  89,  91,  93,  95,  96,  98,  100, 101, 102, 104, 106, 108, 110, 112, 114, 116, 118, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 143, 145, 148, 151, 154, 157}
 
-var kAcTable = [128]uint16 = {
+var kAcTable = [128]uint16{
     4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18, 19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33, 34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,  48, 49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  60,  62,  64,  66,  68, 70,  72,  74,  76,  78,  80,  82,  84,  86,  88,  90,  92,  94,  96,  98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 119, 122, 125, 128, 131, 134, 137, 140, 143, 146, 149, 152, 155, 158, 161, 164, 167, 170, 173, 177, 181, 185, 189, 193, 197, 201, 205, 209, 213, 217, 221, 225, 229, 234, 239, 245, 249, 254, 259, 264, 269, 274, 279, 284}
 
-var kAcTable2 = [128]uint16 = {
+var kAcTable2 = [128]uint16{
     8,   8,   9,   10,  12,  13,  15,  17,  18,  20,  21,  23,  24,  26,  27, 29,  31,  32,  34,  35,  37,  38,  40,  41,  43,  44,  46,  48,  49,  51, 52,  54,  55,  57,  58,  60,  62,  63,  65,  66,  68,  69,  71,  72,  74, 75,  77,  79,  80,  82,  83,  85,  86,  88,  89,  93,  96,  99,  102, 105, 108, 111, 114, 117, 120, 124, 127, 130, 133, 136, 139, 142, 145, 148, 151, 155, 158, 161, 164, 167, 170, 173, 176, 179, 184, 189, 193, 198, 203, 207, 212, 217, 221, 226, 230, 235, 240, 244, 249, 254, 258, 263, 268, 274, 280, 286, 292, 299, 305, 311, 317, 323, 330, 336, 342, 348, 354, 362, 370, 379, 385, 393, 401, 409, 416, 424, 432, 440}
 
-var kBiasMatrices = [3][2]uint8 = {  // [luma-ac,luma-dc,chroma][dc,ac]
+var kBiasMatrices = [3][2]uint8{  // [luma-ac,luma-dc,chroma][dc,ac]
     {96, 110}, {96, 108}, {110, 115}}
 
 // Sharpening by (slightly) raising the hi-frequency coeffs.
 // Hack-ish but helpful for mid-bitrate range. Use with care.
 const SHARPEN_BITS =11  // number of descaling bits for sharpening bias
-var kFreqSharpening = [16]uint8 = {0,  30, 60, 90, 30, 60, 90, 90, 60, 90, 90, 90, 90, 90, 90, 90}
+var kFreqSharpening = [16]uint8{0,  30, 60, 90, 30, 60, 90, 90, 60, 90, 90, 90, 90, 90, 90, 90}
 
 //------------------------------------------------------------------------------
 // Initialize quantization parameters in VP8Matrix
 
 // Returns the average quantizer
-func ExpandMatrix(/* const */ m *VP8Matrix, type int) int {
-  int i, sum
+func ExpandMatrix(/* const */ m *VP8Matrix, vtype int) int {
+  var i, sum int
   for i = 0; i < 2; i++ {
     is_ac_coeff := (i > 0)
-    bias := kBiasMatrices[type][is_ac_coeff]
+    bias := kBiasMatrices[vtype][is_ac_coeff]
     m.iq[i] = (1 << QFIX) / m.q[i]
     m.bias[i] = BIAS(bias)
     // zthresh is the exact value such that QUANTDIV(coeff, iQ, B) is:
@@ -172,8 +103,12 @@ func ExpandMatrix(/* const */ m *VP8Matrix, type int) int {
     m.bias[i] = m.bias[1]
     m.zthresh[i] = m.zthresh[1]
   }
-  for sum = 0, i = 0; i < 16; i++ {
-    if (type == 0) {  // we only use sharpening for AC luma coeffs
+
+  sum = 0
+  i = 0
+
+  for ; i < 16; i++ {
+    if (vtype == 0) {  // we only use sharpening for AC luma coeffs
       m.sharpen[i] = (kFreqSharpening[i] * m.q[i]) >> SHARPEN_BITS
     } else {
       m.sharpen[i] = 0
@@ -187,14 +122,14 @@ func CheckLambdaValue(/* const */ v *int) {
   if *v < 1 { *v = 1 }
 }
 
-func SetupMatrices(enc *VP8Encoder) {
+func SetupMatrices(enc *vp8.VP8Encoder) {
   var i int
-  tlambda_scale := (enc.method >= 4) ? enc.config.SnsStrength : 0
+  tlambda_scale := tenary.If(enc.method >= 4, enc.config.SnsStrength, 0)
   num_segments := enc.segment_hdr.num_segments
   for i = 0; i < num_segments; i++ {
     var m *VP8SegmentInfo = &enc.dqm[i]
     q := m.quant
-    int q_i4, q_i16, q_uv
+    var q_i4, q_i16, q_uv int
     m.y1.q[0] = kDcTable[clip(q + enc.dq_y1_dc, 0, 127)]
     m.y1.q[1] = kAcTable[clip(q, 0, 127)]
 
@@ -234,14 +169,9 @@ func SetupMatrices(enc *VP8Encoder) {
   }
 }
 
-//------------------------------------------------------------------------------
-// Initialize filtering parameters
 
-// Very small filter-strength values have close to no visual effect. So we can
-// save a little decoding-CPU by turning filtering off for these.
-const FSTRENGTH_CUTOFF =2
 
-func SetupFilterStrength(/* const */ enc *VP8Encoder) {
+func SetupFilterStrength(/* const */ enc *vp8.VP8Encoder) {
   var i int
   // level0 is in [0..500]. Using '-f 50' as filter_strength is mid-filtering.
   level0 := 5 * enc.config.FilterStrength
@@ -252,7 +182,7 @@ func SetupFilterStrength(/* const */ enc *VP8Encoder) {
     base_strength := VP8FilterStrengthFromDelta(enc.filter_hdr.sharpness, qstep)
     // Segments with lower complexity ('beta') will be less filtered.
     f := base_strength * level0 / (256 + m.beta)
-    m.fstrength = (f < FSTRENGTH_CUTOFF) ? 0 : tenary.If(f > 63, 63, f)
+    m.fstrength = tenary.If(f < FSTRENGTH_CUTOFF, 0, tenary.If(f > 63, 63, f))
   }
   // We record the initial strength (mainly for the case of 1-segment only).
   enc.filter_hdr.level = enc.dqm[0].fstrength
@@ -270,34 +200,34 @@ const MIN_DQ_UV =(-4)
 // We want to emulate jpeg-like behaviour where the expected "good" quality
 // is around q=75. Internally, our "good" middle is around c=50. So we
 // map accordingly using linear piece-wise function
-func QualityToCompression(float64 c) float64 {
-  var float64 linear_c = (c < 0.75) ? c * (2. / 3.) : 2. * c - 1.
+func QualityToCompression(c float64) float64 {
+  var  linear_c float64 = tenary.If(c < 0.75, c * (2.0 / 3.0), 2.0 * c - 1.0)
   // The file size roughly scales as pow(quantizer, 3.). Actually, the
   // exponent is somewhere between 2.8 and 3.2, but we're mostly interested
   // in the mid-quant range. So we scale the compressibility inversely to
   // this power-law: quant ~= compression ^ 1/3. This law holds well for
   // low quant. Finer modeling for high-quant would make use of kAcTable[]
   // more explicitly.
-  var float64 v = pow(linear_c, 1 / 3.)
+  var  v float64 = pow(linear_c, 1 / 3.)
   return v
 }
 
-func QualityToJPEGCompression(float64 c, float64 alpha) float64 {
+func QualityToJPEGCompression(c float64, alpha float64) float64 {
   // We map the complexity 'alpha' and quality setting 'c' to a compression
   // exponent empirically matched to the compression curve of libjpeg6b.
   // On average, the WebP output size will be roughly similar to that of a
   // JPEG file compressed with same quality factor.
-  var float64 amin = 0.30
-  var float64 amax = 0.85
-  var float64 exp_min = 0.4
-  var float64 exp_max = 0.9
-  var float64 slope = (exp_min - exp_max) / (amax - amin)
+  var  amin float64 = 0.30
+  var  amax float64 = 0.85
+  var  exp_min float64 = 0.4
+  var  exp_max float64 = 0.9
+  var  slope float64 = (exp_min - exp_max) / (amax - amin)
   // Linearly interpolate 'expn' from exp_min to exp_max
   // in the [amin, amax] range.
-  var float64 expn = (alpha > amax)   ? exp_min
+  var  expn float64 = (alpha > amax)   ? exp_min
                       : (alpha < amin) ? exp_max
                                        : exp_max + slope * (alpha - amin)
-  var float64 v = pow(c, expn)
+  var v float64 = pow(c, expn)
   return v
 }
 
@@ -305,7 +235,7 @@ func SegmentsAreEquivalent(/* const */ S *VP8SegmentInfo1, /*const*/ S *VP8Segme
   return (S1.quant == S2.quant) && (S1.0strength == S2.0strength)
 }
 
-func SimplifySegments(/* const */ enc *VP8Encoder) {
+func SimplifySegments(/* const */ enc *vp8.VP8Encoder) {
   int map[NUM_MB_SEGMENTS] = {0, 1, 2, 3}
   // 'num_segments' is previously validated and <= NUM_MB_SEGMENTS, but an
   // explicit check is needed to afunc a spurious warning about 'i' exceeding
@@ -346,7 +276,7 @@ func SimplifySegments(/* const */ enc *VP8Encoder) {
 }
 
 // Sets up segment's quantization values, 'base_quant' and filter strengths.
-func VP8SetSegmentParams(/* const */ enc *VP8Encoder, quality float64) {
+func VP8SetSegmentParams(/* const */ enc *vp8.VP8Encoder, quality float64) {
   var i int
   int dq_uv_ac, dq_uv_dc
   num_segments := enc.segment_hdr.num_segments
@@ -413,14 +343,14 @@ const VP8I4ModeOffsets = [NUM_BMODES]uint16{
     I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4}
 
 	//Form all the four Intra16x16 predictions in the 'yuv_p' cache
-func VP8MakeLuma16Preds(/* const */ it *VP8EncIterator) {
+func VP8MakeLuma16Preds(/* const */ it *vp8.VP8EncIterator) {
   var left *uint8 = it.x ? it.y_left : nil
   var top *uint8 = it.y ? it.y_top : nil
   VP8EncPredLuma16(it.yuv_p, left, top)
 }
 
 // Form all the four Chroma8x8 predictions in the 'yuv_p' cache
-func VP8MakeChroma8Preds(/* const */ it *VP8EncIterator) {
+func VP8MakeChroma8Preds(/* const */ it *vp8.VP8EncIterator) {
   var left *uint8 = it.x ? it.u_left : nil
   var top *uint8 = it.y ? it.uv_top : nil
   VP8EncPredChroma8(it.yuv_p, left, top)
@@ -428,7 +358,7 @@ func VP8MakeChroma8Preds(/* const */ it *VP8EncIterator) {
 
 // Form all the ten Intra4x4 predictions in the 'yuv_p' cache
 // for the 4x4 block it.i4
-func MakeIntra4Preds(/* const */ it *VP8EncIterator) {
+func MakeIntra4Preds(/* const */ it *vp8.VP8EncIterator) {
   VP8EncPredLuma4(it.yuv_p, it.i4_top)
 }
 
@@ -530,7 +460,7 @@ func RDScoreTrellis(int lambda, score_t rate, score_t distortion) score_t {
 // Coefficient type.
 enum { TYPE_I16_AC = 0, TYPE_I16_DC = 1, TYPE_CHROMA_A = 2, TYPE_I4_AC = 3 }
 
-func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16], int16 out[16], int ctx0, coeff_type int, /*const*/ /* const */ mtx *VP8Matrix, lambda int) int {
+func TrellisQuantizeBlock(/* const */ /* const */ enc *vp8.VP8Encoder, int16 in[16], int16 out[16], int ctx0, coeff_type int, /*const*/ /* const */ mtx *VP8Matrix, lambda int) int {
   var probas *ProbaArray = enc.proba.coeffs[coeff_type]
   CostArrayPtr const costs = (CostArrayPtr)enc.proba.remapped_costs[coeff_type]
   first := tenary.If(coeff_type == TYPE_I16_AC, 1, 0)
@@ -706,8 +636,8 @@ func TrellisQuantizeBlock(/* const */ /* const */ enc *VP8Encoder, int16 in[16],
 // all at once. Output is the reconstructed block in *yuv_out, and the
 // quantized levels in *levels.
 
-func ReconstructIntra16(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore, /* const */ yuv_out *uint8, mode int) int {
-  var enc *VP8Encoder = it.enc
+func ReconstructIntra16(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeScore, /* const */ yuv_out *uint8, mode int) int {
+  var enc *vp8.VP8Encoder = it.enc
   var ref *uint8 = it.yuv_p + VP8I16ModeOffsets[mode]
   var src *uint8 = it.yuv_in + Y_OFF_ENC
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment]
@@ -754,8 +684,8 @@ func ReconstructIntra16(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeS
   return nz
 }
 
-func ReconstructIntra4(/* const */ it *VP8EncIterator, int16 levels[16], /*const*/ /* const */ src *uint8, /* const */ yuv_out *uint8, mode int) int {
-  var enc *VP8Encoder = it.enc
+func ReconstructIntra4(/* const */ it *vp8.VP8EncIterator, int16 levels[16], /*const*/ /* const */ src *uint8, /* const */ yuv_out *uint8, mode int) int {
+  var enc *vp8.VP8Encoder = it.enc
   var ref *uint8 = it.yuv_p + VP8I4ModeOffsets[mode]
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment]
   nz := 0
@@ -799,7 +729,7 @@ func QuantizeSingle(/* const */ v *int16, /*const*/ /* const */ mtx *VP8Matrix) 
   return (sign ? -V : V) >> DSCALE
 }
 
-func CorrectDCValues(/* const */ /* const */ it *VP8EncIterator, /*const*/ /* const */ mtx *VP8Matrix, int16 tmp[][16], /* const */ rd *VP8ModeScore) {
+func CorrectDCValues(/* const */ /* const */ it *vp8.VP8EncIterator, /*const*/ /* const */ mtx *VP8Matrix, int16 tmp[][16], /* const */ rd *VP8ModeScore) {
   //         | top[0] | top[1]
   // --------+--------+---------
   // left[0] | tmp[0]   tmp[1]  <.   err0 err1
@@ -830,7 +760,7 @@ func CorrectDCValues(/* const */ /* const */ it *VP8EncIterator, /*const*/ /* co
   }
 }
 
-func StoreDiffusionErrors(/* const */ it *VP8EncIterator, /*const*/ /* const */ rd *VP8ModeScore) {
+func StoreDiffusionErrors(/* const */ it *vp8.VP8EncIterator, /*const*/ /* const */ rd *VP8ModeScore) {
   var ch int
   for ch = 0; ch <= 1; ch++ {
     var top *int8 = it.top_derr[it.x][ch]
@@ -849,8 +779,8 @@ func StoreDiffusionErrors(/* const */ it *VP8EncIterator, /*const*/ /* const */ 
 
 //------------------------------------------------------------------------------
 
-func ReconstructUV(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore, /* const */ yuv_out *uint8, mode int) int {
-  var enc *VP8Encoder = it.enc
+func ReconstructUV(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeScore, /* const */ yuv_out *uint8, mode int) int {
+  var enc *vp8.VP8Encoder = it.enc
   var ref *uint8 = it.yuv_p + VP8UVModeOffsets[mode]
   var src *uint8 = it.yuv_in + U_OFF_ENC
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment]
@@ -903,11 +833,11 @@ func StoreMaxDelta(/* const */ dqm *VP8SegmentInfo, /*const*/ int16 DCs[16]) {
   if max_v > dqm.max_edge { dqm.max_edge = max_v }
 }
 
-func SwapOut(/* const */ it *VP8EncIterator) {
+func SwapOut(/* const */ it *vp8.VP8EncIterator) {
   ptr.Swap(&it.yuv_out, &it.yuv_out2)
 }
 
-func PickBestIntra16(/* const */ it *VP8EncIterator, rd *VP8ModeScore) {
+func PickBestIntra16(/* const */ it *vp8.VP8EncIterator, rd *VP8ModeScore) {
   kNumBlocks := 16
   var dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment]
   lambda := dqm.lambda_i16
@@ -966,7 +896,7 @@ func PickBestIntra16(/* const */ it *VP8EncIterator, rd *VP8ModeScore) {
 //------------------------------------------------------------------------------
 
 // return the cost array corresponding to the surrounding prediction modes.
-static const GetCostModeI *uint164(/* const */ it *VP8EncIterator, /*const*/ uint8 modes[16]) {
+static const GetCostModeI *uint164(/* const */ it *vp8.VP8EncIterator, /*const*/ uint8 modes[16]) {
   preds_w := it.enc.preds_w
   x := (it.i4 & 3), y = it.i4 >> 2
   left := tenary.If(x == 0, it.preds[y * preds_w - 1], modes[it.i4 - 1])
@@ -974,8 +904,8 @@ static const GetCostModeI *uint164(/* const */ it *VP8EncIterator, /*const*/ uin
   return VP8FixedCostsI4[top][left]
 }
 
-func PickBestIntra4(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore) int {
-  var enc *VP8Encoder = it.enc
+func PickBestIntra4(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeScore) int {
+  var enc *vp8.VP8Encoder = it.enc
   var dqm *VP8SegmentInfo = &enc.dqm[it.mb.segment]
   lambda := dqm.lambda_i4
   tlambda := dqm.tlambda
@@ -1067,7 +997,7 @@ func PickBestIntra4(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore
 
 //------------------------------------------------------------------------------
 
-func PickBestUV(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore) {
+func PickBestUV(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeScore) {
   kNumBlocks := 8
   var dqm *VP8SegmentInfo = &it.enc.dqm[it.mb.segment]
   lambda := dqm.lambda_uv
@@ -1119,8 +1049,8 @@ func PickBestUV(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore) {
 //------------------------------------------------------------------------------
 // Final reconstruction and quantization.
 
-func SimpleQuantize(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore) {
-  var enc *VP8Encoder = it.enc
+func SimpleQuantize(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeScore) {
+  var enc *vp8.VP8Encoder = it.enc
   is_i16 = (it.mb.type :== 1)
   nz := 0
 
@@ -1143,7 +1073,7 @@ func SimpleQuantize(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore
 }
 
 // Refine intra16/intra4 sub-modes based on distortion only (not rate).
-func RefineUsingDistortion(/* const */ it *VP8EncIterator, try_both_modes int, refine_uv_mode int, /* const */ rd *VP8ModeScore) {
+func RefineUsingDistortion(/* const */ it *vp8.VP8EncIterator, try_both_modes int, refine_uv_mode int, /* const */ rd *VP8ModeScore) {
   score_t best_score = MAX_COST
   nz := 0
   var mode int
@@ -1258,7 +1188,7 @@ func RefineUsingDistortion(/* const */ it *VP8EncIterator, try_both_modes int, r
 // Entry point
 
 // Pick best modes and fills the levels. Returns true if skipped.
-func VP8Decimate(/* const */ it *VP8EncIterator, /* const */ rd *VP8ModeScore, VP8RDLevel rd_opt) int {
+func VP8Decimate(/* const */ it *vp8.VP8EncIterator, /* const */ rd *VP8ModeScore, VP8RDLevel rd_opt) int {
   var is_skipped int
   method := it.enc.method
 

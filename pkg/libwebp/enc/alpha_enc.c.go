@@ -266,7 +266,7 @@ func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_siz
   return ok
 }
 
-func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter int, effort_level int, *uint8* const output, /*const*/ output_size *uint64) int  {
+func EncodeAlpha(/* const */ enc *vp8.VP8Encoder, quality int, method int, filter int, effort_level int, *uint8* const output, /*const*/ output_size *uint64) int  {
   var pic *picture.Picture = enc.pic
   width := pic.width
   height := pic.height
@@ -330,7 +330,7 @@ func EncodeAlpha(/* const */ enc *VP8Encoder, quality int, method int, filter in
 // Main calls
 
 func CompressAlphaJob(arg *void1, unused *void) int {
-  var enc *VP8Encoder = (*VP8Encoder)arg1
+  var enc *vp8.VP8Encoder = (*vp8.VP8Encoder)arg1
   var config *config.Config = enc.config
   alpha_data *uint8 = nil
   alpha_size := 0
@@ -349,7 +349,7 @@ func CompressAlphaJob(arg *void1, unused *void) int {
   return 1
 }
 
-func VP8EncInitAlpha(/* const */ enc *VP8Encoder) {
+func VP8EncInitAlpha(/* const */ enc *vp8.VP8Encoder) {
   WebPInitAlphaProcessing()
   enc.has_alpha = picture.WebPPictureHasTransparency(enc.pic)
   enc.alpha_data = nil
@@ -363,7 +363,7 @@ func VP8EncInitAlpha(/* const */ enc *VP8Encoder) {
   }
 }
 
-func VP8EncStartAlpha(/* const */ enc *VP8Encoder) int {
+func VP8EncStartAlpha(/* const */ enc *vp8.VP8Encoder) int {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
       var worker *WebPWorker = &enc.alpha_worker
@@ -380,7 +380,7 @@ func VP8EncStartAlpha(/* const */ enc *VP8Encoder) int {
   return 1
 }
 
-func VP8EncFinishAlpha(/* const */ enc *VP8Encoder) int  {
+func VP8EncFinishAlpha(/* const */ enc *vp8.VP8Encoder) int  {
   if (enc.has_alpha) {
     if (enc.thread_level > 0) {
       var worker *WebPWorker = &enc.alpha_worker
@@ -392,7 +392,7 @@ func VP8EncFinishAlpha(/* const */ enc *VP8Encoder) int  {
   return WebPReportProgress(enc.pic, enc.percent + 20, &enc.percent)
 }
 
-func VP8EncDeleteAlpha(/* const */ enc *VP8Encoder) int  {
+func VP8EncDeleteAlpha(/* const */ enc *vp8.VP8Encoder) int  {
   ok := 1
   if (enc.thread_level > 0) {
     var worker *WebPWorker = &enc.alpha_worker

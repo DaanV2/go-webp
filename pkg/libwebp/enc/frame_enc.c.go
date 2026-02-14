@@ -35,7 +35,7 @@ type PassStats struct {  // struct for organizing convergence in either size or 
 	do_size_search int
 }
 
-func InitPassStats(/* const */ enc *VP8Encoder, /*const*/ s *PassStats) int {
+func InitPassStats(/* const */ enc *vp8.VP8Encoder, /*const*/ s *PassStats) int {
   target_size := uint64(enc.config.TargetSize)
   do_size_search := (target_size != 0)
   const float64 target_PSNR = enc.config.TargetPSNR
@@ -81,7 +81,7 @@ const VP8Cat4 = []uint8 {176, 155, 140, 135}
 const VP8Cat5 = []uint8 {180, 157, 141, 134, 130}
 const VP8Cat6 = []uint8 {254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129}
 
-func ResetStats(/* const */ enc *VP8Encoder) {
+func ResetStats(/* const */ enc *vp8.VP8Encoder) {
   var proba *VP8EncProba = &enc.proba
   VP8CalculateLevelCosts(proba)
   proba.nb_skip = 0
@@ -95,7 +95,7 @@ func CalcSkipProba(uint64 nb, uint64 total) int {
 }
 
 // Returns the bit-cost for coding the skip probability.
-func FinalizeSkipProba(/* const */ enc *VP8Encoder) int {
+func FinalizeSkipProba(/* const */ enc *vp8.VP8Encoder) int {
   var proba *VP8EncProba = &enc.proba
   nb_mbs := enc.mb_w * enc.mb_h
   nb_events := proba.nb_skip
@@ -123,7 +123,7 @@ func BranchCost(nb int, total int, proba int) int {
   return nb * VP8BitCost(1, proba) + (total - nb) * VP8BitCost(0, proba)
 }
 
-func ResetTokenStats(/* const */ enc *VP8Encoder) {
+func ResetTokenStats(/* const */ enc *vp8.VP8Encoder) {
   var proba *VP8EncProba = &enc.proba
   stdlib.Memset(proba.stats, 0, sizeof(proba.stats))
 }
@@ -173,13 +173,13 @@ func GetProba(a, b int) int {
  return (255 * a + total / 2) / total;  // rounded proba
 }
 
-func ResetSegments(/* const */ enc *VP8Encoder) {
+func ResetSegments(/* const */ enc *vp8.VP8Encoder) {
   for n := 0; n < enc.mb_w * enc.mb_h; n++ {
     enc.mb_info[n].segment = 0
   }
 }
 
-func SetSegmentProbas(/* const */ enc *VP8Encoder) {
+func SetSegmentProbas(/* const */ enc *vp8.VP8Encoder) {
   int p[NUM_MB_SEGMENTS] = {0}
   var n int
 
@@ -289,13 +289,13 @@ func PutCoeffs(/* const */ bw *VP8BitWriter, ctx int, /*const*/ res *VP8Residual
   return 1
 }
 
-func CodeResiduals(/* const */ bw *VP8BitWriter, /*const*/ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
+func CodeResiduals(/* const */ bw *VP8BitWriter, /*const*/ it *vp8.VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   int x, y, ch
    var res VP8Residual
   uint64 pos1, pos2, pos3
   i16 = (it.mb.type :== 1)
   segment := it.mb.segment
-  var enc *VP8Encoder = it.enc
+  var enc *vp8.VP8Encoder = it.enc
 
   VP8IteratorNzToBytes(it)
 
@@ -340,10 +340,10 @@ func CodeResiduals(/* const */ bw *VP8BitWriter, /*const*/ it *VP8EncIterator, /
 
 // Same as CodeResiduals, but doesn't actually write anything.
 // Instead, it just records the event distribution.
-func RecordResiduals(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) {
+func RecordResiduals(/* const */ it *vp8.VP8EncIterator, /*const*/ rd *VP8ModeScore) {
   int x, y, ch
    var res VP8Residual
-  var enc *VP8Encoder = it.enc
+  var enc *vp8.VP8Encoder = it.enc
 
   VP8IteratorNzToBytes(it)
 
@@ -385,10 +385,10 @@ func RecordResiduals(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore)
 
 #if !defined(DISABLE_TOKEN_BUFFER)
 
-func RecordTokens(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore, /*const*/ tokens *VP8TBuffer) int {
+func RecordTokens(/* const */ it *vp8.VP8EncIterator, /*const*/ rd *VP8ModeScore, /*const*/ tokens *VP8TBuffer) int {
   int x, y, ch
    var res VP8Residual
-  var enc *VP8Encoder = it.enc
+  var enc *vp8.VP8Encoder = it.enc
 
   VP8IteratorNzToBytes(it)
   if (it.mb.type == 1) {  // i16x16
@@ -442,7 +442,7 @@ func SetBlock(p *uint8, value int, size int) {
 }
 #endif
 
-func ResetSSE(/* const */ enc *VP8Encoder) {
+func ResetSSE(/* const */ enc *vp8.VP8Encoder) {
   enc.sse[0] = 0
   enc.sse[1] = 0
   enc.sse[2] = 0
@@ -450,8 +450,8 @@ func ResetSSE(/* const */ enc *VP8Encoder) {
   enc.sse_count = 0
 }
 
-func StoreSSE(/* const */ it *VP8EncIterator) {
-  var enc *VP8Encoder = it.enc
+func StoreSSE(/* const */ it *vp8.VP8EncIterator) {
+  var enc *vp8.VP8Encoder = it.enc
   var in *uint8 = it.yuv_in
   var out *uint8 = it.yuv_out
   // Note: not totally accurate at boundary. And doesn't include in-loop filter.
@@ -461,8 +461,8 @@ func StoreSSE(/* const */ it *VP8EncIterator) {
   enc.sse_count += 16 * 16
 }
 
-func StoreSideInfo(/* const */ it *VP8EncIterator) {
-  var enc *VP8Encoder = it.enc
+func StoreSideInfo(/* const */ it *vp8.VP8EncIterator) {
+  var enc *vp8.VP8Encoder = it.enc
   var mb *VP8MBInfo = it.mb
   var pic *picture.Picture = enc.pic
 
@@ -511,8 +511,8 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
 #endif
 }
 
-func ResetSideInfo(/* const */ it *VP8EncIterator) {
-  var enc *VP8Encoder = it.enc
+func ResetSideInfo(/* const */ it *vp8.VP8EncIterator) {
+  var enc *vp8.VP8Encoder = it.enc
   var pic *picture.Picture = enc.pic
   if (pic.stats != nil) {
     stdlib.Memset(enc.block_count, 0, sizeof(enc.block_count))
@@ -520,9 +520,9 @@ func ResetSideInfo(/* const */ it *VP8EncIterator) {
   ResetSSE(enc)
 }
 #else   // TRUE
-func ResetSSE(/* const */ enc *VP8Encoder) { _ = enc; }
-func StoreSideInfo(/* const */ it *VP8EncIterator) {
-  var enc *VP8Encoder = it.enc
+func ResetSSE(/* const */ enc *vp8.VP8Encoder) { _ = enc; }
+func StoreSideInfo(/* const */ it *vp8.VP8EncIterator) {
+  var enc *vp8.VP8Encoder = it.enc
   var pic *picture.Picture = enc.pic
   if (pic.ExtraInfo != nil) {
     if (it.x == 0 && it.y == 0) {  // only do it once, at start
@@ -531,7 +531,7 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
   }
 }
 
-func ResetSideInfo(/* const */ it *VP8EncIterator) { _ = it; }
+func ResetSideInfo(/* const */ it *vp8.VP8EncIterator) { _ = it; }
 #endif  // FALSE
 
 func GetPSNR(uint64 mse, size uint64 ) float64 {
@@ -543,7 +543,7 @@ func GetPSNR(uint64 mse, size uint64 ) float64 {
 //  This is used for deciding optimal probabilities. It also modifies the
 //  quantizer value if some target (size, PSNR) was specified.
 
-func SetLoopParams(/* const */ enc *VP8Encoder, float64 q) {
+func SetLoopParams(/* const */ enc *vp8.VP8Encoder, float64 q) {
   // Make sure the quality parameter is inside valid bounds
   q = Clamp(q, 0.0, 100.0)
 
@@ -554,8 +554,8 @@ func SetLoopParams(/* const */ enc *VP8Encoder, float64 q) {
   ResetSSE(enc)
 }
 
-func OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, nb_mbs int, percent_delta int, /*const*/ s *PassStats) uint64 {
-   var it VP8EncIterator
+func OneStatPass(/* const */ enc *vp8.VP8Encoder, VP8RDLevel rd_opt, nb_mbs int, percent_delta int, /*const*/ s *PassStats) uint64 {
+   var it vp8.VP8EncIterator
   size uint64  = 0
   uint64 size_p0 = 0
   distortion := 0
@@ -592,7 +592,7 @@ func OneStatPass(/* const */ enc *VP8Encoder, VP8RDLevel rd_opt, nb_mbs int, per
   return size_p0
 }
 
-func StatLoop(/* const */ enc *VP8Encoder) int {
+func StatLoop(/* const */ enc *vp8.VP8Encoder) int {
   method := enc.method
   do_search := enc.do_search
   fast_probe := ((method == 0 || method == 3) && !do_search)
@@ -654,7 +654,7 @@ func StatLoop(/* const */ enc *VP8Encoder) int {
 
 var kAverageBytesPerMB = [8]uint8 = {50, 24, 16, 9, 7, 5, 3, 2}
 
-func PreLoopInitialize(/* const */ enc *VP8Encoder) int {
+func PreLoopInitialize(/* const */ enc *vp8.VP8Encoder) int {
   var p int
   ok := 1
   average_bytes_per_MB := kAverageBytesPerMB[enc.base_quant >> 4]
@@ -669,8 +669,8 @@ func PreLoopInitialize(/* const */ enc *VP8Encoder) int {
   return ok
 }
 
-func PostLoopFinalize(/* const */ it *VP8EncIterator, ok int) int {
-  var enc *VP8Encoder = it.enc
+func PostLoopFinalize(/* const */ it *vp8.VP8EncIterator, ok int) int {
+  var enc *vp8.VP8Encoder = it.enc
   if (ok) {  // Finalize the partitions, check for extra errors.
     var p int
     for p = 0; p < enc.num_parts; p++ {
@@ -700,7 +700,7 @@ func PostLoopFinalize(/* const */ it *VP8EncIterator, ok int) int {
 //------------------------------------------------------------------------------
 //  VP8EncLoop(): does the final bitstream coding.
 
-func ResetAfterSkip(/* const */ it *VP8EncIterator) {
+func ResetAfterSkip(/* const */ it *vp8.VP8EncIterator) {
   if (it.mb.type == 1) {
     *it.nz = 0;  // reset all predictors
     it.left_nz[8] = 0
@@ -709,8 +709,8 @@ func ResetAfterSkip(/* const */ it *VP8EncIterator) {
   }
 }
 
-func VP8EncLoop(/* const */ enc *VP8Encoder) int {
-   var it VP8EncIterator
+func VP8EncLoop(/* const */ enc *vp8.VP8Encoder) int {
+   var it vp8.VP8EncIterator
   ok := PreLoopInitialize(enc)
   if !ok { return 0  }
 
@@ -753,13 +753,13 @@ func VP8EncLoop(/* const */ enc *VP8Encoder) int {
 
 const MIN_COUNT =96  // minimum number of macroblocks before updating stats
 
-func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
+func VP8EncTokenLoop(/* const */ enc *vp8.VP8Encoder) int {
   // Roughly refresh the proba eight times per pass
   max_count := (enc.mb_w * enc.mb_h) >> 3
   num_pass_left := enc.config.pass
   remaining_progress := 40;  // percents
   do_search := enc.do_search
-   var it VP8EncIterator
+   var it vp8.VP8EncIterator
   var proba *VP8EncProba = &enc.proba
   var rd_opt VP8RDLevel = enc.rd_opt_level
   pixel_count := (uint64)enc.mb_w * enc.mb_h * 384
@@ -864,7 +864,7 @@ func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
 
 #else
 
-func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
+func VP8EncTokenLoop(/* const */ enc *vp8.VP8Encoder) int {
   _ = enc
   return 0;  // we shouldn't be here.
 }

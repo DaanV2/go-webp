@@ -12,6 +12,7 @@ import (
 	"github.com/daanv2/go-webp/pkg/libwebp/decoder"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
+	"github.com/daanv2/go-webp/pkg/vp8"
 )
 
 // For each given level, the following table gives the pattern of contexts to
@@ -93,7 +94,7 @@ var VP8FixedCostsI4 = [decoder.NUM_BMODES][decoder.NUM_BMODES][decoder.NUM_BMODE
 //------------------------------------------------------------------------------
 // helper functions for residuals struct VP8Residual.
 
-func VP8InitResidual(int first, coeff_type int, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual) {
+func VP8InitResidual(int first, coeff_type int, /*const*/ enc *vp8.VP8Encoder, /*const*/ res *VP8Residual) {
 	res.coeff_type = coeff_type
 	res.prob = enc.proba.coeffs[coeff_type]
 	res.stats = enc.proba.stats[coeff_type]
@@ -104,11 +105,11 @@ func VP8InitResidual(int first, coeff_type int, /*const*/ enc *VP8Encoder, /*con
 //------------------------------------------------------------------------------
 // Mode costs
 
-func VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ levels [16]int16) int {
+func VP8GetCostLuma4(/* const */ it *vp8.VP8EncIterator, /*const*/ levels [16]int16) int {
 	x := (it.i4 & 3)
 	y := (it.i4 >> 2)
 	var res VP8Residual
-	var enc *VP8Encoder = it.enc
+	var enc *vp8.VP8Encoder = it.enc
 	R := 0
 	var ctx int
 
@@ -119,9 +120,9 @@ func VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ levels [16]int16)
 	return R
 }
 
-func VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
+func VP8GetCostLuma16(/* const */ it *vp8.VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
    var res VP8Residual
-  var enc *VP8Encoder = it.enc
+  var enc *vp8.VP8Encoder = it.enc
   var x, y int
   R := 0
 
@@ -148,9 +149,9 @@ func VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore
   return R
 }
 
-func VP8GetCostUV(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
+func VP8GetCostUV(/* const */ it *vp8.VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
    var res VP8Residual
-  var enc *VP8Encoder = it.enc
+  var enc *vp8.VP8Encoder = it.enc
   var ch, x, y int
   R := 0
 
