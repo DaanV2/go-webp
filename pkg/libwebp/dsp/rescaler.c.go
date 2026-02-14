@@ -212,7 +212,7 @@ extern func WebPRescalerDspInitMSA(void)
 extern func WebPRescalerDspInitNEON(void)
 
 WEBP_DSP_INIT_FUNC(WebPRescalerDspInit) {
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
 #if !WEBP_NEON_OMIT_C_CODE
   WebPRescalerExportRowExpand = WebPRescalerExportRowExpand_C
   WebPRescalerExportRowShrink = WebPRescalerExportRowShrink_C
@@ -255,5 +255,5 @@ WEBP_DSP_INIT_FUNC(WebPRescalerDspInit) {
   assert.Assert(WebPRescalerExportRowShrink != nil)
   assert.Assert(WebPRescalerImportRowExpand != nil)
   assert.Assert(WebPRescalerImportRowShrink != nil)
-#endif  // WEBP_REDUCE_SIZE
+#endif  // TRUE
 }

@@ -12,6 +12,26 @@ import (
 	"github.com/daanv2/go-webp/pkg/vp8"
 )
 
+// The threshold till approximate version of log_2 can be used.
+// Practically, we can get rid of the call to log() as the two values match to
+// very high degree (the ratio of these two is 0.99999x).
+// Keeping a high threshold for now.
+const APPROX_LOG_WITH_CORRECTION_MAX = 65536
+const APPROX_LOG_MAX = 4096
+
+// VP8LFastLog2 and VP8LFastSLog2 are used on elements from image histograms.
+// The histogram values cannot exceed the maximum number of pixels, which
+// is (1 << 14) * (1 << 14). Therefore S * log(S) < (1 << 33).
+// No more than 32 bits of precision should be chosen.
+// To match the original float implementation, 23 bits of precision are used.
+const LOG_2_PRECISION_BITS = 23
+const LOG_2_RECIPROCAL = 1.44269504088896338700465094007086
+
+// LOG_2_RECIPROCAL * (1 << LOG_2_PRECISION_BITS)
+const LOG_2_RECIPROCAL_FIXED_float64 = 12102203.161561485379934310913085937500
+const LOG_2_RECIPROCAL_FIXED = uint64(12102203)
+const LOG_LOOKUP_IDX_MAX = 256
+
 //------------------------------------------------------------------------------
 // Boolean-cost cost table
 

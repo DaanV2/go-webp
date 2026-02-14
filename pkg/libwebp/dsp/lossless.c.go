@@ -108,24 +108,24 @@ func Select(uint32 a, uint32 b, uint32 c) uint32 {
 // Predictors
 
 func VP8LPredictor0_C(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
-  (void)top
-  (void)left
+  _ = top
+  _ = left
   return ARGB_BLACK
 }
 func VP8LPredictor1_C(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
-  (void)top
+  _ = top
   return *left
 }
 uint32 VP8LPredictor2_C(/* const */ left *uint32, /*const*/ top *uint32) {
-  (void)left
+  _ = left
   return top[0]
 }
 uint32 VP8LPredictor3_C(/* const */ left *uint32, /*const*/ top *uint32) {
-  (void)left
+  _ = left
   return top[1]
 }
 uint32 VP8LPredictor4_C(/* const */ left *uint32, /*const*/ top *uint32) {
-  (void)left
+  _ = left
   return top[-1]
 }
 uint32 VP8LPredictor5_C(/* const */ left *uint32, /*const*/ top *uint32) {
@@ -142,12 +142,12 @@ uint32 VP8LPredictor7_C(/* const */ left *uint32, /*const*/ top *uint32) {
 }
 uint32 VP8LPredictor8_C(/* const */ left *uint32, /*const*/ top *uint32) {
   pred := Average2(top[-1], top[0])
-  (void)left
+  _ = left
   return pred
 }
 uint32 VP8LPredictor9_C(/* const */ left *uint32, /*const*/ top *uint32) {
   pred := Average2(top[0], top[1])
-  (void)left
+  _ = left
   return pred
 }
 uint32 VP8LPredictor10_C(/* const */ left *uint32, /*const*/ top *uint32) {
@@ -169,13 +169,13 @@ uint32 VP8LPredictor13_C(/* const */ left *uint32, /*const*/ top *uint32) {
 
 func PredictorAdd0_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var x int
-  (void)upper
+  _ = upper
   for (x = 0; x < num_pixels; ++x) out[x] = VP8LAddPixels(in[x], ARGB_BLACK)
 }
 func PredictorAdd1_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   left := out[-1]
-  (void)upper
+  _ = upper
   for i = 0; i < num_pixels; i++ {
     out[i] = left = VP8LAddPixels(in[i], left)
   }

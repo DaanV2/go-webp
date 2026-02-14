@@ -228,7 +228,7 @@ func EmitAlphaRGBA4444(/* const */ io *VP8Io, /*const*/ p *WebPDecParams, expect
 //------------------------------------------------------------------------------
 // YUV rescaling (no final RGB conversion needed)
 
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
 func Rescale(/* const */ src *uint8, src_stride int, new_lines int , /*const*/ wrk *WebPRescaler) int {
   num_lines_out := 0
   while (new_lines > 0) {  // import new contributions of source rows.
@@ -344,7 +344,7 @@ func ExportRGB(/* const */ p *WebPDecParams, y_pos int) int {
   dst *uint8 = buf.rgba + (ptrdiff_t)y_pos * buf.stride
   num_lines_out := 0
   // For RGB rescaling, because of the YUV420, current scan position
-  // U/V can be +1/-1 line from the Y one.  Hence the double test.
+  // U/V can be +1/-1 line from the Y one.  Hence the float64 test.
   while (WebPRescalerHasPendingOutput(p.scaler_y) &&
          WebPRescalerHasPendingOutput(p.scaler_u)) {
     assert.Assert(y_pos + num_lines_out < p.output.height)
@@ -518,7 +518,7 @@ func InitRGBRescaler(/* const */ io *VP8Io, /*const*/ p *WebPDecParams) int {
   return 1
 }
 
-#endif  // WEBP_REDUCE_SIZE
+#endif  // TRUE
 
 //------------------------------------------------------------------------------
 // Default custom functions
@@ -542,7 +542,7 @@ func CustomSetup(io *VP8Io) int {
     WebPInitUpsamplers()
   }
   if (io.use_scaling) {
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
     ok := tenary.If($1, $2, $3)(is_rgb, InitRGBRescaler(io, p), InitYUVRescaler(io, p))
     if (!ok) {
       return 0;  // memory error

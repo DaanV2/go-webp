@@ -258,7 +258,7 @@ func ApplyFiltersAndEncode(/* const */ alpha *uint8, width, height int, data_siz
       stats.lossless_data_size = best.stats.lossless_data_size
     }
 #else
-    (void)stats
+    _ = stats
 #endif
     *output_size = VP8BitWriterSize(&best.bw)
     *output = VP8BitWriterBuf(&best.bw)

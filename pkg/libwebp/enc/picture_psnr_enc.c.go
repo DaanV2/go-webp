@@ -10,14 +10,14 @@ package enc
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ ref *uint8, uint64 ref_stride, width, height int, uint64 x_step, vtype int, distortion *float64, result *float64) int {
-//   (void)src
+//   _ = src
 //   (void)src_stride
-//   (void)ref
+//   _ = ref
 //   (void)ref_stride
-//   (void)width
-//   (void)height
+//   _ = width
+//   _ = height
 //   (void)x_step
-//   (void)vtype
+//   _ = vtype
   if distortion == nil || result == nil { return 0  }
   *distortion = 0.0
   *result = 0.0
@@ -26,9 +26,9 @@ func WebPPlaneDistortion(/* const */ src *uint8, uint64 src_stride, /*const*/ re
 
 func WebPPictureDistortion(/* const */ src *picture.Picture, /*const*/ ref *picture.Picture, vtype int, results [5]float64) int {
   var i int
-//   (void)src
-//   (void)ref
-//   (void)type
+//   _ = src
+//   _ = ref
+//   _ = type
   if results == nil { return 0  }
   for (i = 0; i < 5; ++i) results[i] = 0.0
   return 1

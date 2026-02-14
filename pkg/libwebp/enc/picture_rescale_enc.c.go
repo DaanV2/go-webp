@@ -21,10 +21,10 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-#endif  // !defined(WEBP_REDUCE_SIZE)
+#endif  // FALSE
 
 #define HALVE(x) (((x) + 1) >> 1)
 
@@ -86,7 +86,7 @@ func WebPPictureView(/* const */ src *picture.Picture, left int, top int, width,
   return 1
 }
 
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
 //------------------------------------------------------------------------------
 // Picture cropping
 

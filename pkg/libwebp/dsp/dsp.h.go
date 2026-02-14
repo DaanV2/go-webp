@@ -154,17 +154,17 @@ type VP8DistoStats struct {
 
 // Compute the final SSIM value
 // The non-clipped version assumes stats.w = (2 * VP8_SSIM_KERNEL + 1)^2.
-double VP8SSIMFromStats(/* const */ stats *VP8DistoStats)
-double VP8SSIMFromStatsClipped(/* const */ stats *VP8DistoStats)
+float64 VP8SSIMFromStats(/* const */ stats *VP8DistoStats)
+float64 VP8SSIMFromStatsClipped(/* const */ stats *VP8DistoStats)
 
 const VP8_SSIM_KERNEL =3  // total size of the kernel: 2 * VP8_SSIM_KERNEL + 1
-typedef double (*VP8SSIMGetClippedFunc)(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2, xo int, yo int,  // center position
+typedef float64 (*VP8SSIMGetClippedFunc)(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2, xo int, yo int,  // center position
                                         int W, int H);   // plane dimension
 
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
 // This version is called with the guarantee that you can load 8 bytes and
 // 8 rows at offset src1 and src2
-typedef double (*VP8SSIMGetFunc)(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2)
+typedef float64 (*VP8SSIMGetFunc)(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2)
 
 
 

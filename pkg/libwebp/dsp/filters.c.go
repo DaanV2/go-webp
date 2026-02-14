@@ -149,7 +149,7 @@ func GradientFilter_C(/* const */ data *uint8, width, height int, stride int, fi
 //------------------------------------------------------------------------------
 
 func NoneUnfilter_C(/* const */ prev *uint8, /*const*/ in *uint8, out *uint8, width int) {
-  (void)prev
+  _ = prev
   if out != in { memcpy(out, in, width * sizeof(*out)) }
 }
 

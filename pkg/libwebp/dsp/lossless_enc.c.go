@@ -81,7 +81,7 @@ func FastSLog2Slow_C(uint32 v) uint64 {
     return orig_v * (kLog2Table[v] + (log_cnt << LOG_2_PRECISION_BITS)) +
            correction
   } else {
-    return (uint64)(LOG_2_RECIPROCAL_FIXED_DOUBLE * v * log(float64(v)) + .5)
+    return (uint64)(LOG_2_RECIPROCAL_FIXED_float64 * v * log(float64(v)) + .5)
   }
 }
 
@@ -111,7 +111,7 @@ func FastLog2Slow_C(uint32 v) uint32 {
     }
     return log_2
   } else {
-    return (uint32)(LOG_2_RECIPROCAL_FIXED_DOUBLE * log((double)v) + .5)
+    return (uint32)(LOG_2_RECIPROCAL_FIXED_float64 * log((float64)v) + .5)
   }
 }
 
@@ -378,13 +378,13 @@ func AddVectorEq_C(/* const */ a *uint32, out *uint32, size int) {
 func PredictorSub0_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], ARGB_BLACK)
-  (void)upper
+  _ = upper
 }
 
 func PredictorSub1_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   for (i = 0; i < num_pixels; ++i) out[i] = VP8LSubPixels(in[i], in[i - 1])
-  (void)upper
+  _ = upper
 }
 
 // It subtracts the prediction from the input pixel and stores the residual

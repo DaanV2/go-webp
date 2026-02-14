@@ -122,7 +122,7 @@ func EmptyUpsampleFunc(/* const */ top_y *uint8, /*const*/ bottom_y *uint8, /*co
   (void)cur_v
   (void)top_dst
   (void)bottom_dst
-  (void)len
+  _ = len
   assert.Assert(0);  // COLORSPACE SUPPORT NOT COMPILED
 }
 const UpsampleArgbLinePair_C =EmptyUpsampleFunc
@@ -209,11 +209,11 @@ YUV444_FUNC(WebPYuv444ToRgba4444_C, VP8YuvToRgba4444, 2)
 YUV444_FUNC(WebPYuv444ToRgb565_C, VP8YuvToRgb565, 2)
 #else
 func EmptyYuv444Func(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int) {
-  (void)y
-  (void)u
-  (void)v
-  (void)dst
-  (void)len
+  _ = y
+  _ = u
+  _ = v
+  _ = dst
+  _ = len
 }
 const WebPYuv444ToRgb_C =EmptyYuv444Func
 const WebPYuv444ToBgr_C =EmptyYuv444Func

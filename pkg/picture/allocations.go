@@ -88,7 +88,7 @@ func WebPPictureAllocYUVA( /* const */ picture *picture.Picture) error {
 	// C:   picture.A = mem
 	// C:   mem += a_size
 	// C: }
-	// C: (void)mem  // makes the static analyzer happy
+	// C: _ = mem  // makes the static analyzer happy
 	return 1
 }
 

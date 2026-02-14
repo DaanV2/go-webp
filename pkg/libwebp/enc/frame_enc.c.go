@@ -30,8 +30,8 @@ type PassStats struct {  // struct for organizing convergence in either size or 
 	dq float64
 	q, last_q float64
 	qmin, qmax float64
-	value, last_value double64  // PSNR or size
-	target double64
+	value, last_value float6464  // PSNR or size
+	target float6464
 	do_size_search int
 }
 
@@ -520,7 +520,7 @@ func ResetSideInfo(/* const */ it *VP8EncIterator) {
   ResetSSE(enc)
 }
 #else   // defined(WEBP_DISABLE_STATS)
-func ResetSSE(/* const */ enc *VP8Encoder) { (void)enc; }
+func ResetSSE(/* const */ enc *VP8Encoder) { _ = enc; }
 func StoreSideInfo(/* const */ it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc
   var pic *picture.Picture = enc.pic
@@ -531,7 +531,7 @@ func StoreSideInfo(/* const */ it *VP8EncIterator) {
   }
 }
 
-func ResetSideInfo(/* const */ it *VP8EncIterator) { (void)it; }
+func ResetSideInfo(/* const */ it *VP8EncIterator) { _ = it; }
 #endif  // !defined(WEBP_DISABLE_STATS)
 
 func GetPSNR(uint64 mse, size uint64 ) float64 {
@@ -865,7 +865,7 @@ func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
 #else
 
 func VP8EncTokenLoop(/* const */ enc *VP8Encoder) int {
-  (void)enc
+  _ = enc
   return 0;  // we shouldn't be here.
 }
 

@@ -227,7 +227,7 @@ func BuildPackedTable(/* const */ htree_group *HTreeGroup) {
       bits >>= AccumulateHCode(htree_group.htrees[RED][bits], 16, huff)
       bits >>= AccumulateHCode(htree_group.htrees[BLUE][bits], 0, huff)
       bits >>= AccumulateHCode(htree_group.htrees[ALPHA][bits], 24, huff)
-      // C: (void)bits
+      // C: _ = bits
     }
   }
 }
@@ -528,7 +528,7 @@ Error:
 //------------------------------------------------------------------------------
 // Scaling.
 
-// C: #if !defined(WEBP_REDUCE_SIZE)
+// C: #if FALSE
 func AllocateAndInitRescaler(/* const */ dec *VP8LDecoder, /*const*/ io *VP8Io) int {
   num_channels := 4
   in_width := io.mb_w
@@ -562,12 +562,12 @@ func AllocateAndInitRescaler(/* const */ dec *VP8LDecoder, /*const*/ io *VP8Io) 
   }
   return 1
 }
-// C: #endif  // WEBP_REDUCE_SIZE
+// C: #endif  // TRUE
 
 //------------------------------------------------------------------------------
 // Export to ARGB
 
-// C: #if !defined(WEBP_REDUCE_SIZE)
+// C: #if FALSE
 
 // We have special "export" function since we need to convert from BGRA
 func Export(/* const */ rescaler *WebPRescaler, WEBP_CSP_MODE colorspace, rgba_stride int, /*const*/ rgba *uint8) int {
@@ -606,7 +606,7 @@ func EmitRescaledRowsRGBA(/* const */ dec *VP8LDecoder, in *uint8, in_stride int
   return num_lines_out
 }
 
-// C: #endif  // WEBP_REDUCE_SIZE
+// C: #endif  // TRUE
 
 // Emit rows without any scaling.
 func EmitRows(WEBP_CSP_MODE colorspace, /*const*/ row_in *uint8, in_stride int, mb_w int, mb_h int, /*const*/ out *uint8, out_stride int) int {
@@ -1728,7 +1728,7 @@ func VP8LDecodeImage(/* const */ dec *VP8LDecoder) int {
 
     if !AllocateInternalBuffers32b(dec, io.width) { goto Err }
 
-// C: #if !defined(WEBP_REDUCE_SIZE)
+// C: #if FALSE
     if io.use_scaling && !AllocateAndInitRescaler(dec, io) { goto Err }
 // C: #else
     if io.use_scaling {

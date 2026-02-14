@@ -34,11 +34,11 @@ const ERROR_THRESHOLD =1e-4  // MSE stopping criterion.
 func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, height int, num_levels int, /*const*/ sse *uint64) int {
   int freq[NUM_SYMBOLS] = {0}
   int q_level[NUM_SYMBOLS] = {0}
-  double inv_q_level[NUM_SYMBOLS] = {0}
+  float64 inv_q_level[NUM_SYMBOLS] = {0}
   min_s := 255, max_s = 0
   data_size := height * width
   int i, num_levels_in, iter
-  double last_err = 1.e38, err = 0.
+  float64 last_err = 1.e38, err = 0.
    = ERROR_THRESHOLD * data_size
 
   if (data == nil) {
@@ -68,7 +68,7 @@ func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heig
 
   // Start with uniformly spread centroids.
   for i = 0; i < num_levels; i++ {
-    inv_q_level[i] = min_s + (double)(max_s - min_s) * i / (num_levels - 1)
+    inv_q_level[i] = min_s + (float64)(max_s - min_s) * i / (num_levels - 1)
   }
 
   // Fixed values. Won't be changed.
@@ -79,8 +79,8 @@ func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heig
 
   // k-Means iterations.
   for iter = 0; iter < MAX_ITER; iter++ {
-    double q_sum[NUM_SYMBOLS] = {0}
-    double q_count[NUM_SYMBOLS] = {0}
+    float64 q_sum[NUM_SYMBOLS] = {0}
+    float64 q_count[NUM_SYMBOLS] = {0}
     int s, slot = 0
 
     // Assign classes to representatives.
@@ -122,7 +122,7 @@ func QuantizeLevels(/* const */  *uint8((uint64)height *width) data, width, heig
 
   // Remap the alpha plane to quantized values.
   {
-    // double.int rounding operation can be costly, so we do it
+    // float64.int rounding operation can be costly, so we do it
     // once for all before remapping. We also perform the data[] . slot
     // mapping, while at it (afunc one indirection in the final loop).
     uint8 map[NUM_SYMBOLS]

@@ -20,16 +20,16 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
 
 //------------------------------------------------------------------------------
 // SSIM / PSNR
 
 // hat-shaped filter. Sum of coefficients is equal to 16.
-static const uint32 kWeight[2 * VP8_SSIM_KERNEL + 1] = {1, 2, 3, 4, 3, 2, 1}
-static const kWeightSum := 16 * 16;  // sum{kWeight}^2
+var kWeight = [2 * VP8_SSIM_KERNEL + 1]uint32{1, 2, 3, 4, 3, 2, 1}
+const kWeightSum = 16 * 16;  // sum{kWeight}^2
 
-func SSIMCalculation(/* const */ stats *VP8DistoStats, n uint32 /*num *samples/) double {
+func SSIMCalculation(/* const */ stats *VP8DistoStats, n uint32 /*num samples*/) float64 {
   w2 := N * N
   C1 := 20 * w2
   C2 := 60 * w2
@@ -46,22 +46,22 @@ func SSIMCalculation(/* const */ stats *VP8DistoStats, n uint32 /*num *samples/)
     den_S := (sxx + syy + C2) >> 8
     fnum := (2 * xmym + C1) * num_S
     fden := (xmxm + ymym + C1) * den_S
-     = (double)fnum / fden
+     = (float64)fnum / fden
     assert.Assert(r >= 0. && r <= 1.0)
     return r
   }
   return 1.;  // area is too dark to contribute meaningfully
 }
 
-double VP8SSIMFromStats(/* const */ stats *VP8DistoStats) {
+float64 VP8SSIMFromStats(/* const */ stats *VP8DistoStats) {
   return SSIMCalculation(stats, kWeightSum)
 }
 
-double VP8SSIMFromStatsClipped(/* const */ stats *VP8DistoStats) {
+float64 VP8SSIMFromStatsClipped(/* const */ stats *VP8DistoStats) {
   return SSIMCalculation(stats, stats.w)
 }
 
-func SSIMGetClipped_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2, xo int, yo int, int W, int H) double {
+func SSIMGetClipped_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2, xo int, yo int, int W, int H) float64 {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
   ymin := (yo - VP8_SSIM_KERNEL < 0) ? 0 : yo - VP8_SSIM_KERNEL
   ymax := (yo + VP8_SSIM_KERNEL > H - 1) ? H - 1 : yo + VP8_SSIM_KERNEL
@@ -86,7 +86,7 @@ func SSIMGetClipped_C(/* const */ src *uint81, int stride1, /*const*/ src *uint8
   return VP8SSIMFromStatsClipped(&stats)
 }
 
-func SSIMGet_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2) double {
+func SSIMGet_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2) float64 {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
   var x, y int
   for y = 0; y <= 2 * VP8_SSIM_KERNEL; ++y, src1 += stride1, src2 += stride2 {
@@ -104,7 +104,7 @@ func SSIMGet_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int 
   return VP8SSIMFromStats(&stats)
 }
 
-#endif  // !defined(WEBP_REDUCE_SIZE)
+#endif  // FALSE
 
 //------------------------------------------------------------------------------
 
@@ -123,7 +123,7 @@ func AccumulateSSE_C(/* const */ src *uint81, /*const*/ src *uint82, len int) ui
 
 //------------------------------------------------------------------------------
 
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
 VP8SSIMGetFunc VP8SSIMGet
 VP8SSIMGetClippedFunc VP8SSIMGetClipped
 #endif
@@ -135,7 +135,7 @@ VP8AccumulateSSEFunc VP8AccumulateSSE
 extern func VP8SSIMDspInitSSE2(void)
 
 WEBP_DSP_INIT_FUNC(VP8SSIMDspInit) {
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
   VP8SSIMGetClipped = SSIMGetClipped_C
   VP8SSIMGet = SSIMGet_C
 #endif

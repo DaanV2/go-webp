@@ -159,7 +159,7 @@ var VP8CPUInfo VP8GetCPUInfo
 func WEBP_DSP_INIT_FUNC(WebPInitGammaTables) {
   if (!kGammaTablesOk) {
     var v int
-     = (double)(1 << GAMMA_TAB_FIX) / kGammaScale
+     = (float64)(1 << GAMMA_TAB_FIX) / kGammaScale
      = 1. / 255.
     for v = 0; v <= 255; v++ {
       kGammaToLinearTab[v] = (uint16)(pow(norm * v, kGamma) * kGammaScale + .5)

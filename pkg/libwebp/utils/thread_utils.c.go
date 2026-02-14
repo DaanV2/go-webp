@@ -78,7 +78,7 @@ func pthread_join(thread pthread_t, value_ptr *void) int {
 
 // Mutex
 func pthread_mutex_init(pthread_mutex_t* const mutex, mutexattr *void) int {
-  (void)mutexattr
+  _ = mutexattr
   InitializeSRWLock(mutex)
   return 0
 }
@@ -94,13 +94,13 @@ func pthread_mutex_unlock(pthread_mutex_t* const mutex) int {
 }
 
 func pthread_mutex_destroy(pthread_mutex_t* const mutex) int {
-  (void)mutex
+  _ = mutex
   return 0
 }
 
 // Condition
 func pthread_cond_destroy(pthread_cond_t* const condition) int {
-  (void)condition
+  _ = condition
   return 0
 }
 

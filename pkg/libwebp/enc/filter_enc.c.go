@@ -42,7 +42,7 @@ func VP8FilterStrengthFromDelta(int sharpness, delta int) int {
 //------------------------------------------------------------------------------
 // Paragraph 15.4: compute the inner-edge filtering strength
 
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
 
 func GetILevel(int sharpness, level int) int {
   if (sharpness > 0) {
@@ -105,14 +105,14 @@ func GetMBSSIM(/* const */ yuv *uint81, /*const*/ yuv *uint82) float64 {
   return sum
 }
 
-#endif  // !defined(WEBP_REDUCE_SIZE)
+#endif  // FALSE
 
 //------------------------------------------------------------------------------
 // Exposed APIs: Encoder should call the following 3 functions to adjust
 // loop filter strength
 
 func VP8InitFilter(/* const */ it *VP8EncIterator) {
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
   if (it.lf_stats != nil) {
     int s, i
     for s = 0; s < NUM_MB_SEGMENTS; s++ {
@@ -123,12 +123,12 @@ func VP8InitFilter(/* const */ it *VP8EncIterator) {
     VP8SSIMDspInit()
   }
 #else
-  (void)it
+  _ = it
 #endif
 }
 
 func VP8StoreFilterStats(/* const */ it *VP8EncIterator) {
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
   var d int
   var enc *VP8Encoder = it.enc
   s := it.mb.segment
@@ -160,14 +160,14 @@ func VP8StoreFilterStats(/* const */ it *VP8EncIterator) {
     DoFilter(it, level)
     (*it.lf_stats)[s][level] += GetMBSSIM(it.yuv_in, it.yuv_out2)
   }
-#else   // defined(WEBP_REDUCE_SIZE)
-  (void)it
-#endif  // !defined(WEBP_REDUCE_SIZE)
+#else   // defined(TRUE)
+  _ = it
+#endif  // FALSE
 }
 
 func VP8AdjustFilterStrength(/* const */ it *VP8EncIterator) {
   var enc *VP8Encoder = it.enc
-#if !defined(WEBP_REDUCE_SIZE)
+#if FALSE
   if (it.lf_stats != nil) {
     var s int
     for s = 0; s < NUM_MB_SEGMENTS; s++ {
@@ -185,7 +185,7 @@ func VP8AdjustFilterStrength(/* const */ it *VP8EncIterator) {
     }
     return
   }
-#endif  // !defined(WEBP_REDUCE_SIZE)
+#endif  // FALSE
   if (enc.config.FilterStrength > 0) {
     max_level := 0
     var s int

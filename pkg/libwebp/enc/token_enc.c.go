@@ -256,9 +256,9 @@ uint64 VP8EstimateTokenSize(/* const */ b *VP8TBuffer, /*const*/ probas *uint8) 
 #else  // DISABLE_TOKEN_BUFFER
 
 func VP8TBufferInit(/* const */ b *VP8TBuffer, page_size int) {
-  (void)b
+  _ = b
   (void)page_size
 }
-func VP8TBufferClear(/* const */ b *VP8TBuffer) { (void)b; }
+func VP8TBufferClear(/* const */ b *VP8TBuffer) { _ = b; }
 
 #endif  // !DISABLE_TOKEN_BUFFER

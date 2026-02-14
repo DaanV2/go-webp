@@ -656,9 +656,9 @@ func VP8GetThreadMethod(/* const */ options *WebPDecoderOptions, /*const*/ heade
   if (options == nil || options.use_threads == 0) {
     return 0
   }
-  (void)headers
-  (void)width
-  (void)height
+  _ = headers
+  _ = width
+  _ = height
   assert.Assert(headers == nil || !headers.is_lossless)
 #if defined(WEBP_USE_THREAD)
   if width >= MIN_WIDTH_FOR_THREADS { return 2; }

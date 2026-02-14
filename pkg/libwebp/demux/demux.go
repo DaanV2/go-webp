@@ -838,7 +838,7 @@ func WebPDemuxPrevFrame(iter *WebPIterator) int {
 // Must be called before any subsequent calls to WebPDemuxGetChunk() on the same
 // iter. Also, must be called before destroying the associated WebPDemuxer with
 // WebPDemuxDelete().
-func WebPDemuxReleaseIterator(iter *WebPIterator) { (void)iter }
+func WebPDemuxReleaseIterator(iter *WebPIterator) { _ = iter }
 
 // -----------------------------------------------------------------------------
 // Chunk iteration
@@ -926,4 +926,4 @@ func WebPDemuxPrevChunk( iter *WebPChunkIterator) int {
 // Releases any memory associated with 'iter'.
 // Must be called before destroying the associated WebPDemuxer with
 // WebPDemuxDelete().
-func WebPDemuxReleaseChunkIterator(iter *WebPChunkIterator) { (void)iter }
+func WebPDemuxReleaseChunkIterator(iter *WebPChunkIterator) { _ = iter }
