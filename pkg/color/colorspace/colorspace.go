@@ -3,6 +3,10 @@ package colorspace
 // Color spaces.
 type CSP int
 
+func (c CSP) Value() int {
+	return int(c)
+}
+
 const (
 	// chroma sampling
 	WEBP_YUV420        CSP = 0 // 4:2:0

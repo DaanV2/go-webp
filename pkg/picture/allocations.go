@@ -29,8 +29,8 @@ func WebPPictureAlloc(pict *Picture) error {
 // Uses picture.csp to determine whether an alpha buffer is needed.
 // Preserves the ARGB buffer.
 // Returns false in case of error (invalid param, out-of-memory).
-func WebPPictureAllocYUVA( /* const */ picture *picture.Picture) error {
-	has_alpha := int(picture.ColorSpace) & colorspace.WEBP_CSP_ALPHA_BIT
+func WebPPictureAllocYUVA( /* const */ picture *Picture) error {
+	has_alpha := picture.ColorSpace.Value() & colorspace.WEBP_CSP_ALPHA_BIT.Value() != 0
 	width := picture.Width
 	height := picture.Height
 	y_stride := width
@@ -60,7 +60,7 @@ func WebPPictureAllocYUVA( /* const */ picture *picture.Picture) error {
 	// Security and validation checks
 	if width <= 0 || height <= 0 || // luma/alpha param error
 		uv_width <= 0 || uv_height <= 0 { // u/v param error
-		return picture.SetEncodingError(picture.ENC_ERROR_BAD_DIMENSION)
+		return picture.SetEncodingError(ENC_ERROR_BAD_DIMENSION)
 	}
 	// allocate a new buffer.
 
@@ -78,17 +78,17 @@ func WebPPictureAllocYUVA( /* const */ picture *picture.Picture) error {
 	picture.AStride = a_stride
 
 	// TODO(skal): we could align the y/u/v planes and adjust stride.
-	// C: picture.Y = mem
-	// C: mem += y_size
-	// C: picture.U = mem
-	// C: mem += uv_size
-	// C: picture.V = mem
-	// C: mem += uv_size
-	// C: if (a_size > 0) {
-	// C:   picture.A = mem
-	// C:   mem += a_size
-	// C: }
-	// C: _ = mem  // makes the static analyzer happy
+	picture.Y = mem
+	mem += y_size
+	picture.U = mem
+	mem += uv_size
+	picture.V = mem
+	mem += uv_size
+	if (a_size > 0) {
+	  picture.A = mem
+	  mem += a_size
+	}
+	_ = mem  // makes the static analyzer happy
 	return 1
 }
 

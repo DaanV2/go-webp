@@ -14,15 +14,7 @@ package enc
 // Author: Skal (pascal.massimino@gmail.com)
 
 const ALPHA_OFFSET =CHANNEL_OFFSET(0)
-
-//------------------------------------------------------------------------------
-// Detection of non-trivial transparency
-
-
-//------------------------------------------------------------------------------
-// Sharp RGB.YUV conversion
-
-const kMinDimensionIterativeConversion = 4
+const MinDimensionIterativeConversion = 4
 
 //------------------------------------------------------------------------------
 // Main function
@@ -57,124 +49,7 @@ func ConvertRowsToUV(/* const */ rgb *uint16, /*const*/ dst_u *uint8, /*const*/ 
 
 extern func SharpYuvInit(VP8CPUInfo cpu_info_func)
 
-static int ImportYUVAFromRGBA(/* const */ r_ptr *uint8, /*const*/ g_ptr *uint8, /*const*/ b_ptr *uint8, /*const*/ a_ptr *uint8, step int,        // bytes per pixel
-                              rgb_stride int,  // bytes per scanline
-                              float64 dithering, use_iterative_conversion int, /*const*/ picture *picture.Picture) {
-  var y int
-  width := picture.Width
-  height := picture.Height
-  has_alpha := CheckNonOpaque(a_ptr, width, height, step, rgb_stride)
 
-  picture.ColorSpace = tenary.If(has_alpha, colorspace.WEBP_YUV420A, colorspace.WEBP_YUV420)
-  picture.UseARGB = false
-
-  // disable smart conversion if source is too small (overkill).
-  if (width < kMinDimensionIterativeConversion ||
-      height < kMinDimensionIterativeConversion) {
-    use_iterative_conversion = 0
-  }
-
-  if (!picture.WebPPictureAllocYUVA(picture)) {
-    return 0
-  }
-  if (has_alpha) {
-    assert.Assert(step == 4)
-  }
-
-  if (use_iterative_conversion) {
-    SharpYuvInit(VP8GetCPUInfo)
-    if (!PreprocessARGB(r_ptr, g_ptr, b_ptr, step, rgb_stride, picture)) {
-      return 0
-    }
-    if (has_alpha) {
-      WebPExtractAlpha(a_ptr, rgb_stride, width, height, picture.A, picture.AStride)
-    }
-  } else {
-    uv_width := (width + 1) >> 1
-    // temporary storage for accumulated R/G/B values during conversion to U/V
-    // var tmp_rgb *uint16 = (*uint16)WebPSafeMalloc(4 * uv_width, sizeof(*tmp_rgb))
-	tmp_rgb = make([]uint16, 4 * uv_width)
-
-	var dst_y *uint8 = picture.Y
-    var dst_u *uint8 = picture.U
-    var dst_v *uint8 = picture.V
-    var dst_a *uint8 = picture.A
-
-     var base_rg VP8Random
-    rg *VP8Random = nil
-    if (dithering > 0.) {
-      VP8InitRandom(&base_rg, dithering)
-      rg = &base_rg
-    }
-    WebPInitConvertARGBToYUV()
-    WebPInitGammaTables()
-
-    // if (tmp_rgb == nil) {
-    //   return picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
-    // }
-
-    if (rg == nil) {
-      // Downsample Y/U/V planes, two rows at a time
-      WebPImportYUVAFromRGBA(r_ptr, g_ptr, b_ptr, a_ptr, step, rgb_stride, has_alpha, width, height, tmp_rgb, picture.YStride, picture.UVStride, picture.AStride, dst_y, dst_u, dst_v, dst_a)
-      if (height & 1) {
-        dst_y += (height - 1) * (ptrdiff_t)picture.YStride
-        dst_u += (height >> 1) * (ptrdiff_t)picture.UVStride
-        dst_v += (height >> 1) * (ptrdiff_t)picture.UVStride
-        r_ptr += (height - 1) * (ptrdiff_t)rgb_stride
-        b_ptr += (height - 1) * (ptrdiff_t)rgb_stride
-        g_ptr += (height - 1) * (ptrdiff_t)rgb_stride
-        if (has_alpha) {
-          dst_a += (height - 1) * (ptrdiff_t)picture.AStride
-          a_ptr += (height - 1) * (ptrdiff_t)rgb_stride
-        }
-        WebPImportYUVAFromRGBALastLine(r_ptr, g_ptr, b_ptr, a_ptr, step, has_alpha, width, tmp_rgb, dst_y, dst_u, dst_v, dst_a)
-      }
-    } else {
-      // Copy of WebPImportYUVAFromRGBA/WebPImportYUVAFromRGBALastLine, // but with dithering.
-      for y = 0; y < (height >> 1); y++ {
-        rows_have_alpha := has_alpha
-        ConvertRowToY(r_ptr, g_ptr, b_ptr, step, dst_y, width, rg)
-        ConvertRowToY(r_ptr + rgb_stride, g_ptr + rgb_stride, b_ptr + rgb_stride, step, dst_y + picture.YStride, width, rg)
-        dst_y += 2 * picture.YStride
-        if (has_alpha) {
-          rows_have_alpha &= !WebPExtractAlpha(a_ptr, rgb_stride, width, 2, dst_a, picture.AStride)
-          dst_a += 2 * picture.AStride
-        }
-        // Collect averaged R/G/B(/A)
-        if (!rows_have_alpha) {
-          WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, rgb_stride, tmp_rgb, width)
-        } else {
-          WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, rgb_stride, tmp_rgb, width)
-        }
-        // Convert to U/V
-        ConvertRowsToUV(tmp_rgb, dst_u, dst_v, uv_width, rg)
-        dst_u += picture.UVStride
-        dst_v += picture.UVStride
-        r_ptr += 2 * rgb_stride
-        b_ptr += 2 * rgb_stride
-        g_ptr += 2 * rgb_stride
-        if has_alpha { a_ptr += 2 * rgb_stride }
-      }
-      if (height & 1) {  // extra last row
-        row_has_alpha := has_alpha
-        ConvertRowToY(r_ptr, g_ptr, b_ptr, step, dst_y, width, rg)
-        if (row_has_alpha) {
-          row_has_alpha &= !WebPExtractAlpha(a_ptr, 0, width, 1, dst_a, 0)
-        }
-        // Collect averaged R/G/B(/A)
-        if (!row_has_alpha) {
-          // Collect averaged R/G/B
-          WebPAccumulateRGB(r_ptr, g_ptr, b_ptr, step, /*rgb_stride=*/0, tmp_rgb, width)
-        } else {
-          WebPAccumulateRGBA(r_ptr, g_ptr, b_ptr, a_ptr, /*rgb_stride=*/0, tmp_rgb, width)
-        }
-        ConvertRowsToUV(tmp_rgb, dst_u, dst_v, uv_width, rg)
-      }
-    }
-
-  }
-  return 1
-}
 
 //------------------------------------------------------------------------------
 // call for ARGB.YUVA conversion

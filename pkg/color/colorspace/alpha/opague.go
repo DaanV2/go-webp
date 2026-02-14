@@ -13,6 +13,16 @@ func CheckNonOpaque( /* const */ alpha []color.Alpha) bool {
 	return false
 }
 
+func CheckNonOpaqueUint8( /* const */ alpha []uint8) bool {
+	for _, a := range alpha {
+		if a != 0xff {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Returns true if alpha[] has non-0xff values.
 func CheckNonOpaque2[T color.Color]( /* const */ clrs []T) bool {
 	for _, i := range clrs {

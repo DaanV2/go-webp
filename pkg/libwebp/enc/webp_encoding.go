@@ -25,7 +25,7 @@ func WebPEncode( /* const */ config *config.Config, pic *picture.Picture) int {
 
 	pic.ErrorCode = picture.ENC_OK // all ok so far
 	if config == nil {         // bad params
-		return WebPEncodingSetError(pic, ENC_ERROR_nil_PARAMETER)
+		return picture.WebPEncodingSetError(pic, ENC_ERROR_nil_PARAMETER)
 	}
 	err := config.Validate()
 	if err != nil { //TODO: just return err

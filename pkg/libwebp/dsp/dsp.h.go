@@ -120,8 +120,6 @@ type VP8CHisto = func(/* const */ ref *uint8, /*const*/ pred *uint8, start_block
 // General-purpose util function to help VP8CollectHistogram().
 func VP8SetHistogramData(/* const */ int distribution[MAX_COEFF_THRESH + 1], /*const*/ histo *VP8Histogram)
 
-// must be called before using any of the above
-func VP8EncDspInit(void)
 
 //------------------------------------------------------------------------------
 // cost functions (encoding)

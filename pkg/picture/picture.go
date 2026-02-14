@@ -212,6 +212,7 @@ func WebPPictureResetBufferYUVA( /* const */ picture *picture.Picture) {
 
 // Assign an error code to a picture. Return false for convenience.
 // Deprecated: use: pic.SetEncodingError(err) instead, which returns the error for convenience.
+//go:fix inline
 func WebPEncodingSetError( /* const */ pic *Picture, err error) error {
 	return pic.SetEncodingError(err)
 }
@@ -244,6 +245,7 @@ func WebPPictureHasTransparency( /* const */ picture *Picture) int {
 	return CheckNonOpaque(picture.A, picture.Width, picture.Height, 1, picture.AStride)
 }
 
+//go:fix inline
 func WebPReportProgress( /* const */ pic *Picture, percent int /*const*/, percent_store *int) error {
 	return pic.ReportProgress(percent, percent_store)
 }
