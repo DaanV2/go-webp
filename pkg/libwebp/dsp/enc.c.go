@@ -1,5 +1,3 @@
-package dsp
-
 // Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -8,12 +6,14 @@ package dsp
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
 
+package dsp
+
 import (
 	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/stdlib"
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 	"github.com/daanv2/go-webp/pkg/vp8"
-) // for abs()
+)
 
 func clip_8b(v int) uint8 {
 	return tenary.If(!(v & ~0xff), v, tenary.If(v < 0, 0, 255))
