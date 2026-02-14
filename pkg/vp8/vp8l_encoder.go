@@ -50,10 +50,10 @@ func AddSingle(p uint32, a, r, g, b histograms.HistogramBuckets) {
 func HashPix(pix uint32) uint8 {
 	// Note that masking with uint(0xffffffff) is for preventing an
 	// 'unsigned int overflow' warning. Doesn't impact the compiled code.
-	return (((uint64(pix) + (pix >> 19)) * uint64(0x39c5fba7)) & uint64(0xffffffff)) >> 24
+	return uint8((((uint64(pix + pix>>19)) * uint64(0x39c5fba7)) & uint64(0xffffffff)) >> 24)
 }
 
-func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride int, use_palette bool, palette_size, transform_bits int /* const */, min_entropy_ix *EntropyIx /* const */, red_and_blue_always_zero *int) int {
+func AnalyzeEntropy( /* const */ argb []uint32, width, height, argb_stride int, use_palette bool, palette_size, transform_bits int /* const */, min_entropy_ix *EntropyIx /* const */, red_and_blue_always_zero *int) int {
 	if use_palette && palette_size <= 16 {
 		// In the case of small palettes, we pack 2, 4 or 8 pixels together. In
 		// practice, small palettes are better than any other transform.
@@ -66,8 +66,8 @@ func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride int, u
 	histo := &histograms.Histograms{}
 
 	var i, x, y int
-	var prev_row *uint32 = nil
-	var curr_row *uint32 = argb
+	var prev_row []uint32 = nil
+	var curr_row []uint32 = argb
 	pix_prev := argb[0] // Skip the first pixel.
 	for y = 0; y < height; y++ {
 		for x = 0; x < width; x++ {
@@ -88,7 +88,7 @@ func AnalyzeEntropy( /* const */ argb *uint32, width, height, argb_stride int, u
 			}
 		}
 		prev_row = curr_row
-		curr_row += argb_stride
+		curr_row = curr_row[argb_stride:]
 	}
 	{
 		var entropy_comp [histograms.HistoTotal]uint64

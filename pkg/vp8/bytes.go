@@ -8,6 +8,8 @@
 
 package vp8
 
+import "github.com/daanv2/go-webp/pkg/libwebp/endian"
+
 // If not at EOS, reload up to VP8L_LBITS byte-by-byte
 func ShiftBytes( /* const */ br *VP8LBitReader) {
 	for br.bit_pos >= 8 && br.pos < br.len {
@@ -19,4 +21,8 @@ func ShiftBytes( /* const */ br *VP8LBitReader) {
 	if VP8LIsEndOfStream(br) {
 		VP8LSetEndOfStream(br)
 	}
+}
+
+func WSWAP(x uint32) uint32 {
+	return endian.HToLE32(x)
 }

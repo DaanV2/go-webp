@@ -15,21 +15,16 @@ package dsp
 //          Jyrki Alakuijala (jyrki@google.com)
 //          Urvang Joshi (urvang@google.com)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stdlib"
-import "github.com/daanv2/go-webp/pkg/string"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dec"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/libwebp/dec"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/stdlib"
+	"github.com/daanv2/go-webp/pkg/string"
+	"github.com/daanv2/go-webp/pkg/vp8"
+)
 
 //------------------------------------------------------------------------------
 // Image transforms.
@@ -56,47 +51,38 @@ func Clip255(uint32 a) uint32 {
 }
 
 func AddSubtractComponentFull(int a, b int, c int) int {
-  return Clip255((uint32)(a + b - c))
+  return Clip255(uint32(a + b - c))
 }
 
-func ClampedAddSubtractFull(uint32 c0, uint32 c1, uint32 c2) uint32 {
+func ClampedAddSubtractFull(c0, c1, c2 uint32) uint32 {
   a := AddSubtractComponentFull(c0 >> 24, c1 >> 24, c2 >> 24)
   r := AddSubtractComponentFull((c0 >> 16) & 0xff, (c1 >> 16) & 0xff, (c2 >> 16) & 0xff)
   g := AddSubtractComponentFull((c0 >> 8) & 0xff, (c1 >> 8) & 0xff, (c2 >> 8) & 0xff)
   b := AddSubtractComponentFull(c0 & 0xff, c1 & 0xff, c2 & 0xff)
-  return ((uint32)a << 24) | (r << 16) | (g << 8) | b
+  return uint32((a << 24) | (r << 16) | (g << 8) | b)
 }
 
 func AddSubtractComponentHalf(int a, b int) int {
   return Clip255((uint32)(a + (a - b) / 2))
 }
 
-func ClampedAddSubtractHalf(uint32 c0, uint32 c1, uint32 c2) uint32 {
+func ClampedAddSubtractHalf(c0, c1, c2 uint32) uint32 {
   ave := Average2(c0, c1)
   a := AddSubtractComponentHalf(ave >> 24, c2 >> 24)
   r := AddSubtractComponentHalf((ave >> 16) & 0xff, (c2 >> 16) & 0xff)
   g := AddSubtractComponentHalf((ave >> 8) & 0xff, (c2 >> 8) & 0xff)
   b := AddSubtractComponentHalf((ave >> 0) & 0xff, (c2 >> 0) & 0xff)
-  return ((uint32)a << 24) | (r << 16) | (g << 8) | b
+  return uint32((a << 24) | (r << 16) | (g << 8) | b)
 }
 
-// gcc <= 4.9 on ARM generates incorrect code in Select() when Sub3() is
-// inlined.
-#if defined(__arm__) && defined(__GNUC__) && LOCAL_GCC_VERSION <= 0x409
-const LOCAL_INLINE =__attribute__((noinline))
-#else
-const LOCAL_INLINE =
-#endif
 
-static LOCAL_INLINE int Sub3(int a, b int, c int) {
+func Sub3(a int, b int, c int) int {
   pb := b - c
   pa := a - c
-  return abs(pb) - abs(pa)
+  return stdlib.Abs(pb) - stdlib.Abs(pa)
 }
 
-#undef LOCAL_INLINE
-
-func Select(uint32 a, uint32 b, uint32 c) uint32 {
+func Select(a, b,  c uint32) uint32 {
   pa_minus_pb := Sub3((a >> 24), (b >> 24), (c >> 24)) +
       Sub3((a >> 16) & 0xff, (b >> 16) & 0xff, (c >> 16) & 0xff) +
       Sub3((a >> 8) & 0xff, (b >> 8) & 0xff, (c >> 8) & 0xff) +
@@ -104,65 +90,62 @@ func Select(uint32 a, uint32 b, uint32 c) uint32 {
   return tenary.If(pa_minus_pb <= 0, a, b)
 }
 
-//------------------------------------------------------------------------------
-// Predictors
-
-func VP8LPredictor0_C(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
+func VP8LPredictor0_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   _ = top
   _ = left
   return ARGB_BLACK
 }
-func VP8LPredictor1_C(/* const */ left *uint32, /*const*/ top *uint32) uint32 {
+func VP8LPredictor1_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   _ = top
   return *left
 }
-uint32 VP8LPredictor2_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor2_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   _ = left
   return top[0]
 }
-uint32 VP8LPredictor3_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor3_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   _ = left
   return top[1]
 }
-uint32 VP8LPredictor4_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor4_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   _ = left
   return top[-1]
 }
-uint32 VP8LPredictor5_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor5_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := Average3(*left, top[0], top[1])
   return pred
 }
-uint32 VP8LPredictor6_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor6_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := Average2(*left, top[-1])
   return pred
 }
-uint32 VP8LPredictor7_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor7_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := Average2(*left, top[0])
   return pred
 }
-uint32 VP8LPredictor8_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor8_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := Average2(top[-1], top[0])
   _ = left
   return pred
 }
-uint32 VP8LPredictor9_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor9_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := Average2(top[0], top[1])
   _ = left
   return pred
 }
-uint32 VP8LPredictor10_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor10_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := Average4(*left, top[-1], top[0], top[1])
   return pred
 }
-uint32 VP8LPredictor11_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor11_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := Select(top[0], *left, top[-1])
   return pred
 }
-uint32 VP8LPredictor12_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor12_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := ClampedAddSubtractFull(*left, top[0], top[-1])
   return pred
 }
-uint32 VP8LPredictor13_C(/* const */ left *uint32, /*const*/ top *uint32) {
+func VP8LPredictor13_C(/* const */ left []uin32, /*const*/ top []uint32) uint32 {
   pred := ClampedAddSubtractHalf(*left, top[0], top[-1])
   return pred
 }
@@ -170,33 +153,141 @@ uint32 VP8LPredictor13_C(/* const */ left *uint32, /*const*/ top *uint32) {
 func PredictorAdd0_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var x int
   _ = upper
-  for (x = 0; x < num_pixels; ++x) out[x] = VP8LAddPixels(in[x], ARGB_BLACK)
+  for x = 0; x < num_pixels; x++ {out[x] = VP8LAddPixels(in[x], ARGB_BLACK)}
 }
 func PredictorAdd1_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
   var i int
   left := out[-1]
   _ = upper
   for i = 0; i < num_pixels; i++ {
-    out[i] = left = VP8LAddPixels(in[i], left)
+    v = VP8LAddPixels(in[i], left)
+	out[i] = v
+	left = v
   }
 }
-GENERATE_PREDICTOR_ADD(VP8LPredictor2_C, PredictorAdd2_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor3_C, PredictorAdd3_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor4_C, PredictorAdd4_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor5_C, PredictorAdd5_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor6_C, PredictorAdd6_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor7_C, PredictorAdd7_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor8_C, PredictorAdd8_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor9_C, PredictorAdd9_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor10_C, PredictorAdd10_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor11_C, PredictorAdd11_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor12_C, PredictorAdd12_C)
-GENERATE_PREDICTOR_ADD(VP8LPredictor13_C, PredictorAdd13_C)
 
-//------------------------------------------------------------------------------
+func PredictorAdd2_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor2_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd3_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor3_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd4_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor4_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd5_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor5_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd6_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor6_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd7_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor7_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd8_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor8_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd9_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor9_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd10_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor10_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd11_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor11_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd12_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor12_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
+
+func PredictorAdd13_C(/* const */ in *uint32, /*const*/ upper *uint32, num_pixels int, out *uint32) {
+    var x int
+    assert.Assert(upper != nil);
+
+    for x = 0; x < num_pixels; x++ {
+      pred := VP8LPredictor13_C(&out[x - 1], upper + x);
+      out[x] = VP8LAddPixels(in[x], pred);
+    }
+}
 
 // Inverse prediction.
-func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, y_start int, y_end int, /*const*/ in *uint32, out *uint32) {
+func PredictorInverseTransform_C(/* const */ transform *vp8.VP8LTransform, y_start int, y_end int, /*const*/ in []uint32, out []uint32) {
   width := transform.xsize
   if (y_start == 0) {  // First Row follows the L (mode=1) mode.
     PredictorAdd0_C(in, nil, 1, out)
@@ -213,14 +304,14 @@ func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, y_start i
     tiles_per_row := VP8LSubSampleSize(width, transform.bits)
     var pred_mode_base *uint32 = transform.data + (y >> transform.bits) * tiles_per_row
 
-    while (y < y_end) {
+    for y < y_end {
       var pred_mode_src *uint32 = pred_mode_base
       x := 1
       // First pixel follows the T (mode=2) mode.
       PredictorAdd2_C(in, out - width, 1, out)
       // .. the rest:
-      while (x < width) {
-        var pred_func VP8LPredictorAddSubFunc = VP8LPredictorsAdd[((*pred_mode_src++) >> 8) & 0xf]
+      for (x < width) {
+        var pred_func VP8LPredictorAddSubFunc = vp8.VP8LPredictorsAdd[((*pred_mode_src++) >> 8) & 0xf]
         x_end := (x & ~mask) + tile_width
         if x_end > width { x_end = width }
         pred_func(in + x, out + x - width, x_end - x, out + x)
@@ -238,7 +329,7 @@ func PredictorInverseTransform_C(/* const */ transform *VP8LTransform, y_start i
 
 // Add green to blue and red channels (i.e. perform the inverse transform of
 // 'subtract green').
-func VP8LAddGreenToBlueAndRed_C(/* const */ src *uint32, num_pixels int, dst *uint32) {
+func VP8LAddGreenToBlueAndRed_C(/* const */ src []uint32, num_pixels int, dst []uint32) {
   var i int
   for i = 0; i < num_pixels; i++ {
     argb := src[i]
@@ -250,8 +341,8 @@ func VP8LAddGreenToBlueAndRed_C(/* const */ src *uint32, num_pixels int, dst *ui
   }
 }
 
-func ColorTransformDelta(int8 color_pred, int8 color) int {
-  return ((int)color_pred * color) >> 5
+func ColorTransformDelta(color_pred int8 ,  color int8) int {
+  return (color_pred * color) >> 5
 }
 
 func ColorCodeToMultipliers(uint32 color_code, /*const*/ m *VP8LMultipliers) {
@@ -310,58 +401,79 @@ func ColorSpaceInverseTransform_C(/* const */ transform *VP8LTransform, y_start 
   }
 }
 
-// Separate out pixels packed together using pixel-bundling.
-// We define two methods for ARGB data (uint32) and alpha-only data (uint8).
-// clang-format off
-#define COLOR_INDEX_INVERSE(FUNC_NAME, F_NAME, STATIC_DECL, TYPE, BIT_SUFFIX,  \
-                            GET_INDEX, GET_VALUE)                              \
-func F_NAME(/* const */ src *TYPE, /*const*/ color_map *uint32,           \
-                   dst *TYPE, y_start int, y_end int, width int) {             \
-  var y int                                                                       \
-  for y = y_start; y < y_end; y++ {                                          \
-    var x int                                                                     \
-    for x = 0; x < width; x++ {                                              \
-      *dst++ = GET_VALUE(color_map[GET_INDEX(*src++)]);                        \
-    }                                                                          \
-  }                                                                            \
-}                                                                              \
-STATIC_DECL func FUNC_NAME(/* const */ transform *VP8LTransform,               \
-                           int y_start, y_end int, /*const*/ src *TYPE,            \
-                           dst *TYPE) {                                        \
-  var y int                                                                       \
-  bits_per_pixel := 8 >> transform.bits;                             \
-  width := transform.xsize;                                          \
-  var color_map *uint32 = transform.data;                           \
-  if (bits_per_pixel < 8) {                                                    \
-    pixels_per_byte := 1 << transform.bits;                          \
-    count_mask := pixels_per_byte - 1;                                \
-    bit_mask := (1 << bits_per_pixel) - 1;                       \
-    for y = y_start; y < y_end; y++ {                                        \
-      packed_pixels := 0;                                              \
-      var x int                                                                   \
-      for x = 0; x < width; x++ {                                            \
-        /* We need to load fresh 'packed_pixels' once every                */  \
-        /* 'pixels_per_byte' increments of x. Fortunately, pixels_per_byte */  \
-        /* is a power of 2, so can just use a mask for that, instead of    */  \
-        /* decrementing a counter.                                         */  \
-        if (x & count_mask) == 0 { packed_pixels = GET_INDEX(*src++) }          \
-        *dst++ = GET_VALUE(color_map[packed_pixels & bit_mask]);               \
-        packed_pixels >>= bits_per_pixel;                                      \
-      }                                                                        \
-    }                                                                          \
-  } else {                                                                     \
-    VP8LMapColor##BIT_SUFFIX(src, color_map, dst, y_start, y_end, width);      \
-  }                                                                            \
+func MapARGB_C(/* const */ src *uint32, /*const*/ color_map *uint32, dst *uint32, y_start int, y_end int, width int) {
+  var y int
+  for y = y_start; y < y_end; y++ {
+    var x int
+    for x = 0; x < width; x++ {
+      *dst++ = VP8GetARGBValue(color_map[VP8GetARGBIndex(*src++)]);
+    }
+  }
 }
-// clang-format on
 
-COLOR_INDEX_INVERSE(ColorIndexInverseTransform_C, MapARGB_C, static, uint32, 32b, VP8GetARGBIndex, VP8GetARGBValue)
-// Similar to the static method ColorIndexInverseTransform() that is part of
-// lossless.c, but used only for alpha decoding. It takes uint8 (rather than
-// uint32) arguments for 'src' and 'dst'.
-COLOR_INDEX_INVERSE(VP8LColorIndexInverseTransformAlpha, MapAlpha_C, , uint8, 8b, VP8GetAlphaIndex, VP8GetAlphaValue)
+func ColorIndexInverseTransform_C(/* const */ transform *VP8LTransform, y_start int, y_end int, /*const*/ src *uint32, dst *uint32) {
+  var y int
+  bits_per_pixel := 8 >> transform.bits;
+  width := transform.xsize;
+  var color_map *uint32 = transform.data;
+  if (bits_per_pixel < 8) {
+    pixels_per_byte := 1 << transform.bits;
+    count_mask := pixels_per_byte - 1;
+    bit_mask := (1 << bits_per_pixel) - 1;
+    for y = y_start; y < y_end; y++ {
+      packed_pixels := 0;
+      var x int
+      for x = 0; x < width; x++ {
+        /* We need to load fresh 'packed_pixels' once every                */
+        /* 'pixels_per_byte' increments of x. Fortunately, pixels_per_byte */
+        /* is a power of 2, so can just use a mask for that, instead of    */
+        /* decrementing a counter.                                         */
+        if (x & count_mask) == 0 { packed_pixels = VP8GetARGBIndex(*src++) }
+        *dst++ = VP8GetARGBValue(color_map[packed_pixels & bit_mask]);
+        packed_pixels >>= bits_per_pixel;
+      }
+    }
+  } else {
+    VP8LMapColor32b(src, color_map, dst, y_start, y_end, width);
+  }
+}
 
-#undef COLOR_INDEX_INVERSE
+func MapAlpha_C(/* const */ src *uint8, /*const*/ color_map *uint32, dst *uint8, y_start int, y_end int, width int) {
+  var y int
+  for y = y_start; y < y_end; y++ {
+    var x int
+    for x = 0; x < width; x++ {
+      *dst++ = VP8GetAlphaValue(color_map[VP8GetAlphaIndex(*src++)]);
+    }
+  }
+}
+
+func VP8LColorIndexInverseTransformAlpha(/* const */ transform *VP8LTransform, y_start int, y_end int, /*const*/ src *uint8, dst *uint8) {
+  var y int
+  bits_per_pixel := 8 >> transform.bits;
+  width := transform.xsize;
+  var color_map *uint32 = transform.data;
+  if (bits_per_pixel < 8) {
+    pixels_per_byte := 1 << transform.bits;
+    count_mask := pixels_per_byte - 1;
+    bit_mask := (1 << bits_per_pixel) - 1;
+    for y = y_start; y < y_end; y++ {
+      packed_pixels := 0;
+      var x int
+      for x = 0; x < width; x++ {
+        /* We need to load fresh 'packed_pixels' once every                */
+        /* 'pixels_per_byte' increments of x. Fortunately, pixels_per_byte */
+        /* is a power of 2, so can just use a mask for that, instead of    */
+        /* decrementing a counter.                                         */
+        if (x & count_mask) == 0 { packed_pixels = VP8GetAlphaIndex(*src++) }
+        *dst++ = VP8GetAlphaValue(color_map[packed_pixels & bit_mask]);
+        packed_pixels >>= bits_per_pixel;
+      }
+    }
+  } else {
+    VP8LMapColor8b(src, color_map, dst, y_start, y_end, width);
+  }
+}
 
 // Performs inverse transform of data given transform information, start and end
 // rows. Transform will be applied to rows [row_start, row_end[.
@@ -380,7 +492,7 @@ func VP8LInverseTransform(/* const */ transform *VP8LTransform, row_start int, r
       if (row_end != transform.ysize) {
         // The last predicted row in this iteration will be the top-pred row
         // for the first row in next iteration.
-        memcpy(out - width, out + (row_end - row_start - 1) * width, width * sizeof(*out))
+        stdlib.MemCpy(out - width, out + (row_end - row_start - 1) * width, width * sizeof(*out))
       }
       break
     case CROSS_COLOR_TRANSFORM:
@@ -404,17 +516,6 @@ func VP8LInverseTransform(/* const */ transform *VP8LTransform, row_start int, r
       }
       break
   }
-}
-
-//------------------------------------------------------------------------------
-// Color space conversion.
-
-static int is_big_endian(){
-  static const union {
-    var w uint16
-    uint8 b[2]
-  } tmp = {1}
-  return (tmp.b[0] != 1)
 }
 
 func VP8LConvertBGRAToRGB_C(/* const */ src *uint32, num_pixels int, dst *uint8) {
@@ -481,7 +582,7 @@ func VP8LConvertBGRAToBGR_C(/* const */ src *uint32, num_pixels int, dst *uint8)
 }
 
 func CopyOrSwap(/* const */ src *uint32, num_pixels int, dst *uint8, swap_on_big_endian int) {
-  if (is_big_endian() == swap_on_big_endian) {
+  if (false == swap_on_big_endian) {
     var src_end *uint32 = src + num_pixels
     while (src < src_end) {
       argb := *src++
@@ -489,7 +590,7 @@ func CopyOrSwap(/* const */ src *uint32, num_pixels int, dst *uint8, swap_on_big
       dst += sizeof(argb)
     }
   } else {
-    memcpy(dst, src, num_pixels * sizeof(*src))
+    stdlib.MemCpy(dst, src, num_pixels * sizeof(*src))
   }
 }
 

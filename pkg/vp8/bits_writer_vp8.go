@@ -28,7 +28,7 @@ type VP8BitWriter struct {
 
 func VP8PutBit( /* const */ bw *VP8BitWriter, bit bool, prob int) bool {
 	split := (bw.vrange * int32(prob)) >> 8
-	if bit != 0 {
+	if bit != false {
 		bw.value += split + 1
 		bw.vrange -= split + 1
 	} else {
@@ -36,9 +36,9 @@ func VP8PutBit( /* const */ bw *VP8BitWriter, bit bool, prob int) bool {
 	}
 	if bw.vrange < 127 { // emit 'shift' bits out and renormalize
 		shift := kNorm[bw.vrange]
-		bw.vrange = kNewRange[bw.vrange]
+		bw.vrange = int32(kNewRange[bw.vrange])
 		bw.value <<= shift
-		bw.nb_bits += shift
+		bw.nb_bits += int(shift)
 		if bw.nb_bits > 0 {
 			Flush(bw)
 		}
@@ -55,7 +55,7 @@ func VP8PutBitUniform( /* const */ bw *VP8BitWriter, bit int) int {
 		bw.vrange = split
 	}
 	if bw.vrange < 127 {
-		bw.vrange = kNewRange[bw.vrange]
+		bw.vrange = int32(kNewRange[bw.vrange])
 		bw.value <<= 1
 		bw.nb_bits += 1
 		if bw.nb_bits > 0 {

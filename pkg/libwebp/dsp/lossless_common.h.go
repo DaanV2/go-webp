@@ -1,5 +1,3 @@
-package dsp
-
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,25 +5,34 @@ package dsp
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Image transforms and color space conversion methods for lossless decoder.
-//
-// Authors: Vikas Arora (vikaas.arora@gmail.com)
-//          Jyrki Alakuijala (jyrki@google.com)
-//          Vincent Rabaud (vrabaud@google.com)
+
+package dsp
+
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/stddef"
+	"github.com/daanv2/go-webp/pkg/util/tenary"
+)
+
+const WEBP_INT64_MAX =((int64)((uint64(1) << 63) - 1))
+const WEBP_UINT64_MAX =(^uint64(0))
+const PREFIX_LOOKUP_IDX_MAX = 512
+
+// These tables are derived using VP8LPrefixEncodeNoLUT.
+var kPrefixEncodeCode VP8LPrefixCode[PREFIX_LOOKUP_IDX_MAX]
+var kPrefixEncodeExtraBitsValue uint8[PREFIX_LOOKUP_IDX_MAX]
+
+type VP8LPrefixCode struct {
+  code int8
+  extra_bits int8
+} 
 
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stddef"
-
-import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-
-
-//------------------------------------------------------------------------------
-// Decoding
+type VP8LFastLog2SlowFunc = func (v uint32) uint32
+type VP8LFastSLog2SlowFunc = func (v uint32 ) uint64
 
 // color mapping related functions.
 func VP8GetARGBIndex(uint32 idx) uint32 {
@@ -34,14 +41,11 @@ func VP8GetARGBIndex(uint32 idx) uint32 {
 
 func VP8GetAlphaIndex(uint8 idx) uint8 { return idx; }
 
-func VP8GetARGBValue(uint32 val) uint32 { return val; }
+func VP8GetARGBValue(v uint32al) uint32 { return val; }
 
-func VP8GetAlphaValue(uint32 val) uint8 {
+func VP8GetAlphaValue(v uint32al) uint8 {
   return (val >> 8) & 0xff
 }
-
-//------------------------------------------------------------------------------
-// Misc methods.
 
 // Computes sampled size of 'size' when sampling using 'sampling bits'.
 func VP8LSubSampleSize(size uint32, uint32 sampling_bits) uint32 {
@@ -49,7 +53,7 @@ func VP8LSubSampleSize(size uint32, uint32 sampling_bits) uint32 {
 }
 
 // Converts near lossless quality into max number of bits shaved off.
-func VP8LNearLosslessBits(int near_lossless_quality) int {
+func VP8LNearLosslessBits(distance intnear_lossless_quality) distance int{
   //    100 . 0
   // 80..99 . 1
   // 60..79 . 2
@@ -59,34 +63,23 @@ func VP8LNearLosslessBits(int near_lossless_quality) int {
   return 5 - near_lossless_quality / 20
 }
 
-// -----------------------------------------------------------------------------
-// Faster logarithm for integers. Small values use a look-up table.
-
-
-type VP8LFastLog2SlowFunc = func (v uint32) uint32
-type VP8LFastSLog2SlowFunc = func (v uint32 ) uint64
-
-
-
-
-func VP8LFastLog2(uint32 v) uint32 {
+func VP8LFastLog2(v uint32) uint32 {
   return tenary.If(v < LOG_LOOKUP_IDX_MAX, kLog2Table[v], VP8LFastLog2Slow(v))
 }
 // Fast calculation of v * log2(v) for integer input.
-func VP8LFastSLog2(uint32 v) uint64 {
+func VP8LFastSLog2(v uint32) uint64 {
   return tenary.If(v < LOG_LOOKUP_IDX_MAX, kSLog2Table[v], VP8LFastSLog2Slow(v))
 }
 
-func RightShiftRound(uint64 v, uint32 shift) uint64 {
+func RightShiftRound(v uint64, uint32 shift) uint64 {
   return (v + (uint64(1) << shift >> 1)) >> shift
 }
 
 func DivRound(int64 a, int64 b) int64 {
-  return ((a < 0) == (b < 0)) ? ((a + b / 2) / b) : ((a - b / 2) / b)
+  return tenary.If((a < 0) == (b < 0), (a + b / 2) / b, (a - b / 2) / b)
 }
 
-const WEBP_INT64_MAX =((int64)((uint64(1) << 63) - 1))
-const WEBP_UINT64_MAX =(~uint64(0))
+
 
 // -----------------------------------------------------------------------------
 // PrefixEncode()
@@ -94,14 +87,14 @@ const WEBP_UINT64_MAX =(~uint64(0))
 // Splitting of distance and length codes into prefixes and
 // extra bits. The prefixes are encoded with an entropy code
 // while the extra bits are stored just as normal bits.
-func VP8LPrefixEncodeBitsNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
+func VP8LPrefixEncodeBitsNoLUT(distance intdistance, /*const*/ code *int, /*const*/ extra_bits *int) {
   highest_bit := BitsLog2Floor(--distance)
   second_highest_bit := (distance >> (highest_bit - 1)) & 1
   *extra_bits = highest_bit - 1
   *code = 2 * highest_bit + second_highest_bit
 }
 
-func VP8LPrefixEncodeNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
+func VP8LPrefixEncodeNoLUT(distance intdistance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
   highest_bit := BitsLog2Floor(--distance)
   second_highest_bit := (distance >> (highest_bit - 1)) & 1
   *extra_bits = highest_bit - 1
@@ -109,16 +102,7 @@ func VP8LPrefixEncodeNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bi
   *code = 2 * highest_bit + second_highest_bit
 }
 
-const PREFIX_LOOKUP_IDX_MAX =512
-type VP8LPrefixCode struct {
-  code int8
-  extra_bits int8
-} 
-
-// These tables are derived using VP8LPrefixEncodeNoLUT.
-extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX]
-extern const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX]
-func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
+func VP8LPrefixEncodeBits(distance intdistance, /*const*/ code *int, /*const*/ extra_bits *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     var prefix_code VP8LPrefixCode = kPrefixEncodeCode[distance]
     *code = prefix_code.code
@@ -128,7 +112,7 @@ func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ extra_bit
   }
 }
 
-func VP8LPrefixEncode(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
+func VP8LPrefixEncode(distance int, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
     var prefix_code VP8LPrefixCode = kPrefixEncodeCode[distance]
     *code = prefix_code.code
@@ -140,40 +124,17 @@ func VP8LPrefixEncode(int distance, /*const*/ code *int, /*const*/ extra_bits *i
 }
 
 // Sum of each component, mod 256.
-static   uint32
-VP8LAddPixels(uint32 a, uint32 b) {
+func VP8LAddPixels(a uint32, b uint32) uint32 {
   alpha_and_green := (a & uint(0xff00ff00)) + (b & uint(0xff00ff00))
   red_and_blue := (a & uint(0x00ff00ff)) + (b & uint(0x00ff00ff))
   return (alpha_and_green & uint(0xff00ff00)) | (red_and_blue & uint(0x00ff00ff))
 }
 
 // Difference of each component, mod 256.
-static   uint32
-VP8LSubPixels(uint32 a, uint32 b) {
+func VP8LSubPixels(a uint32, b uint32) uint32 {
   alpha_and_green := uint(0x00ff00ff) + (a & uint(0xff00ff00)) - (b & uint(0xff00ff00))
   red_and_blue := uint(0xff00ff00) + (a & uint(0x00ff00ff)) - (b & uint(0x00ff00ff))
   return (alpha_and_green & uint(0xff00ff00)) | (red_and_blue & uint(0x00ff00ff))
 }
 
-//------------------------------------------------------------------------------
-// Transform-related functions used in both encoding and decoding.
 
-// Macros used to create a batch predictor that iteratively uses a
-// one-pixel predictor.
-
-// The predictor is added to the output pixel (which
-// is therefore considered as a residual) to get the final prediction.
-#define GENERATE_PREDICTOR_ADD(PREDICTOR, PREDICTOR_ADD)                   \
-  func PREDICTOR_ADD(/* const */ in *uint32, /*const*/ upper *uint32,     \
-                            num_pixels int, out *uint32) { \
-    var x int                                                                 \
-    assert.Assert(upper != nil);                                                 \
-    for x = 0; x < num_pixels; x++ {                                     \
-      pred := (PREDICTOR)(&out[x - 1], upper + x);           \
-      out[x] = VP8LAddPixels(in[x], pred);                                 \
-    }                                                                      \
-  }
-
-
-
-#endif  // WEBP_DSP_LOSSLESS_COMMON_H_
