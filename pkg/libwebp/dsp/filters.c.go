@@ -21,18 +21,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/dsp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-//------------------------------------------------------------------------------
-// Helpful macro.
 
-#define DCHECK(in, out)      \
-  for {                       \
-    assert.Assert((in) != nil);    \
-    assert.Assert((out) != nil);   \
-    assert.Assert((in) != (out));   \
-    assert.Assert(width > 0);       \
-    assert.Assert(height > 0);      \
-    assert.Assert(stride >= width); \
-  } while (0)
 
 #if !WEBP_NEON_OMIT_C_CODE
 func PredictLine_C(/* const */ src *uint8, /*const*/ pred *uint8, dst *uint8, length int) {
@@ -46,7 +35,6 @@ func PredictLine_C(/* const */ src *uint8, /*const*/ pred *uint8, dst *uint8, le
 func DoHorizontalFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
   var preds *uint8 = in
   row int
-  DCHECK(in, out)
 
   // Leftmost pixel is the same as input for topmost scanline.
   out[0] = in[0]
@@ -72,7 +60,6 @@ func DoHorizontalFilter_C(/* const */ in *uint8, width, height int, stride int, 
 func DoVerticalFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
   var preds *uint8 = in
   row int
-  DCHECK(in, out)
 
   // Very first top-left pixel is copied.
   out[0] = in[0]
@@ -103,7 +90,6 @@ static  int GradientPredictor_C(uint8 a, uint8 b, uint8 c) {
 func DoGradientFilter_C(/* const */ in *uint8, width, height int, stride int, out *uint8) {
   var preds *uint8 = in
   row int
-  DCHECK(in, out)
 
   // left prediction for top scan-line
   out[0] = in[0]
@@ -128,7 +114,6 @@ func DoGradientFilter_C(/* const */ in *uint8, width, height int, stride int, ou
 }
 #endif  // !WEBP_NEON_OMIT_C_CODE
 
-#undef DCHECK
 
 //------------------------------------------------------------------------------
 

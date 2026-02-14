@@ -206,7 +206,7 @@ func GetEntropyUnrefinedHelper(
 }
 
 func GetEntropyUnrefined_C(
-    const uint32 X[], length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
+    const X []uint32, length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
   var i int
   i_prev := 0
   x_prev := X[0]
@@ -226,7 +226,7 @@ func GetEntropyUnrefined_C(
 }
 
 func GetCombinedEntropyUnrefined_C(
-    const uint32 X[], /*const*/ uint32 Y[], length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
+    const X []uint32, /*const*/ Y []uint32, length int, /* const */ bit_entropy *VP8LBitEntropy, /* const */ stats *VP8LStreaks) {
   i := 1
   i_prev := 0
   xy_prev := X[0] + Y[0]
@@ -297,7 +297,7 @@ func TransformColorBlue(uint8 green_to_blue, uint8 red_to_blue, argb uint32) uin
   return (new_blue & 0xff)
 }
 
-func VP8LCollectColorRedTransforms_C(/* const */ argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, uint32 histo[]) {
+func VP8LCollectColorRedTransforms_C(/* const */ argb *uint32, stride int, tile_width int, tile_height int, green_to_red int, histo []uint32) {
   while (tile_height-- > 0) {
     var x int
     for x = 0; x < tile_width; x++ {
@@ -307,7 +307,7 @@ func VP8LCollectColorRedTransforms_C(/* const */ argb *uint32, stride int, tile_
   }
 }
 
-func VP8LCollectColorBlueTransforms_C(/* const */ argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, uint32 histo[]) {
+func VP8LCollectColorBlueTransforms_C(/* const */ argb *uint32, stride int, tile_width int, tile_height int, green_to_blue int, red_to_blue int, histo []uint32) {
   while (tile_height-- > 0) {
     var x int
     for x = 0; x < tile_width; x++ {

@@ -356,10 +356,17 @@ STATIC_DECL func FUNC_NAME(/* const */ transform *VP8LTransform,               \
 // clang-format on
 
 COLOR_INDEX_INVERSE(ColorIndexInverseTransform_C, MapARGB_C, static, uint32, 32b, VP8GetARGBIndex, VP8GetARGBValue)
+// Similar to the static method ColorIndexInverseTransform() that is part of
+// lossless.c, but used only for alpha decoding. It takes uint8 (rather than
+// uint32) arguments for 'src' and 'dst'.
 COLOR_INDEX_INVERSE(VP8LColorIndexInverseTransformAlpha, MapAlpha_C, , uint8, 8b, VP8GetAlphaIndex, VP8GetAlphaValue)
 
 #undef COLOR_INDEX_INVERSE
 
+// Performs inverse transform of data given transform information, start and end
+// rows. Transform will be applied to rows [row_start, row_end[.
+// The and pointers refer *in to *out source and destination data respectively
+// corresponding to the intermediate row (row_start).
 func VP8LInverseTransform(/* const */ transform *VP8LTransform, row_start int, row_end int, /*const*/ in *uint32, /*const*/ out *uint32) {
   width := transform.xsize
   assert.Assert(row_start < row_end)
@@ -486,6 +493,7 @@ func CopyOrSwap(/* const */ src *uint32, num_pixels int, dst *uint8, swap_on_big
   }
 }
 
+// Converts from BGRA to other color spaces.
 func VP8LConvertFromBGRA(/* const */ in_data *uint32, num_pixels int, WEBP_CSP_MODE out_colorspace, /*const*/ rgba *uint8) {
   switch (out_colorspace) {
     case MODE_RGB:
