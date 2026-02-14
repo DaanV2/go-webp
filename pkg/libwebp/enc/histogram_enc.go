@@ -42,10 +42,11 @@ const (
 	DISTANCE
 )
 
+
 // Return the size of the histogram for a given cache_bits.
 func GetHistogramSize(cache_bits int) int  {
   literal_size := VP8LHistogramNumCodes(cache_bits)
-  total_size := generics.SizeOf(VP8LHistogram) + generics.SizeOf(int) * literal_size
+  total_size := generics.SizeOf(VP8LHistogram) + generics.SizeOfFor[int]() * literal_size
   assert.Assert(total_size <= uint64(0x7fffffff))
 
   return int(total_size)
@@ -71,6 +72,7 @@ func HistogramClear(/* const */ h *VP8LHistogram) {
   h.literal = literal
   HistogramStatsClear(h)
 }
+
 
 func HistogramCopy(/* const */ src *VP8LHistogram, /*const*/ dst *VP8LHistogram) {
   var dst_literal *uint32 = dst.literal

@@ -17,14 +17,6 @@ import (
 	"github.com/daanv2/go-webp/pkg/util/tenary"
 )
 
-const WEBP_INT64_MAX =((int64)((uint64(1) << 63) - 1))
-const WEBP_UINT64_MAX =(^uint64(0))
-const PREFIX_LOOKUP_IDX_MAX = 512
-
-// These tables are derived using VP8LPrefixEncodeNoLUT.
-var kPrefixEncodeCode VP8LPrefixCode[PREFIX_LOOKUP_IDX_MAX]
-var kPrefixEncodeExtraBitsValue uint8[PREFIX_LOOKUP_IDX_MAX]
-
 type VP8LPrefixCode struct {
   code int8
   extra_bits int8
@@ -35,15 +27,15 @@ type VP8LFastLog2SlowFunc = func (v uint32) uint32
 type VP8LFastSLog2SlowFunc = func (v uint32 ) uint64
 
 // color mapping related functions.
-func VP8GetARGBIndex(uint32 idx) uint32 {
+func VP8GetARGBIndex(idx uint32) uint32 {
   return (idx >> 8) & 0xff
 }
 
-func VP8GetAlphaIndex(uint8 idx) uint8 { return idx; }
+func VP8GetAlphaIndex(idx uint8) uint8 { return idx; }
 
-func VP8GetARGBValue(v uint32al) uint32 { return val; }
+func VP8GetARGBValue(val uint32) uint32 { return val; }
 
-func VP8GetAlphaValue(v uint32al) uint8 {
+func VP8GetAlphaValue(val uint32) uint8 {
   return (val >> 8) & 0xff
 }
 

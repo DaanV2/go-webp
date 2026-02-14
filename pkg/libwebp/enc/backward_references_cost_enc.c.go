@@ -90,7 +90,7 @@ func GetLiteralCost(/* const */ m *CostModel, uint32 v) int64 {
          m.literal[(v >> 8) & 0xff] + m.blue[v & 0xff]
 }
 
-func GetCacheCost(/* const */ m *CostModel, uint32 idx) int64 {
+func GetCacheCost(/* const */ m *CostModel, idx uint32) int64 {
   literal_idx := VALUES_IN_BYTE + NUM_LENGTH_CODES + idx
   return (int64)m.literal[literal_idx]
 }
