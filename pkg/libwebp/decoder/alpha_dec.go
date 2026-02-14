@@ -45,63 +45,63 @@ func ALPHNew() *ALPHDecoder {
 // Returns false in case of error in alpha header (data too short, invalid
 // compression method or filter, error in lossless header data etc).
 func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, data_size uint64, src_io *VP8Io, output *uint8) int {
-  ok := 0;
-  var alpha_data *uint8 = data + constants.ALPHA_HEADER_LEN;
-  alpha_data_size := data_size - constants.ALPHA_HEADER_LEN;
+  ok := 0
+  var alpha_data *uint8 = data + constants.ALPHA_HEADER_LEN
+  alpha_data_size := data_size - constants.ALPHA_HEADER_LEN
   var rsrv int
   var io *VP8Io = &dec.io
 
-  assert.Assert(data != nil && output != nil && src_io != nil);
+  assert.Assert(data != nil && output != nil && src_io != nil)
 
-  VP8FiltersInit();
-  dec.output = output;
-  dec.width = src_io.width;
-  dec.height = src_io.height;
-  assert.Assert(dec.width > 0 && dec.height > 0);
+  VP8FiltersInit()
+  dec.output = output
+  dec.width = src_io.width
+  dec.height = src_io.height
+  assert.Assert(dec.width > 0 && dec.height > 0)
 
   if (data_size <= constants.ALPHA_HEADER_LEN) {
-    return 0;
+    return 0
   }
 
-  dec.method = (data[0] >> 0) & 0x03;
-  dec.filter = (WEBP_FILTER_TYPE)((data[0] >> 2) & 0x03);
-  dec.pre_processing = (data[0] >> 4) & 0x03;
-  rsrv = (data[0] >> 6) & 0x03;
+  dec.method = (data[0] >> 0) & 0x03
+  dec.filter = (WEBP_FILTER_TYPE)((data[0] >> 2) & 0x03)
+  dec.pre_processing = (data[0] >> 4) & 0x03
+  rsrv = (data[0] >> 6) & 0x03
   if (dec.method < constants.ALPHA_NO_COMPRESSION ||
       dec.method > constants.ALPHA_LOSSLESS_COMPRESSION ||
       dec.filter >= constants.WEBP_FILTER_LAST ||
       dec.pre_processing > constants.ALPHA_PREPROCESSED_LEVELS || rsrv != 0) {
-    return 0;
+    return 0
   }
 
   // Copy the necessary parameters from src_io to io
   if (!VP8InitIo(io)) {
-    return 0;
+    return 0
   }
-  WebPInitCustomIo(nil, io);
-  io.opaque = dec;
-  io.width = src_io.width;
-  io.height = src_io.height;
+  WebPInitCustomIo(nil, io)
+  io.opaque = dec
+  io.width = src_io.width
+  io.height = src_io.height
 
-  io.use_cropping = src_io.use_cropping;
-  io.crop_left = src_io.crop_left;
-  io.crop_right = src_io.crop_right;
-  io.crop_top = src_io.crop_top;
-  io.crop_bottom = src_io.crop_bottom;
+  io.use_cropping = src_io.use_cropping
+  io.crop_left = src_io.crop_left
+  io.crop_right = src_io.crop_right
+  io.crop_top = src_io.crop_top
+  io.crop_bottom = src_io.crop_bottom
   // No need to copy the scaling parameters.
 
   if (dec.method == constants.ALPHA_NO_COMPRESSION) {
-    alpha_decoded_size := dec.width * dec.height;
-    ok = (alpha_data_size >= alpha_decoded_size);
+    alpha_decoded_size := dec.width * dec.height
+    ok = (alpha_data_size >= alpha_decoded_size)
   } else {
-    assert.Assert(dec.method == constants.ALPHA_LOSSLESS_COMPRESSION);
+    assert.Assert(dec.method == constants.ALPHA_LOSSLESS_COMPRESSION)
     {
       var bounded_alpha_data *uint8 = alpha_data
-      ok = VP8LDecodeAlphaHeader(dec, bounded_alpha_data, alpha_data_size);
+      ok = VP8LDecodeAlphaHeader(dec, bounded_alpha_data, alpha_data_size)
     }
   }
 
-  return ok;
+  return ok
 }
 
 // Decodes, unfilters and dequantizes *at *least 'num_rows' rows of alpha
@@ -109,77 +109,77 @@ func ALPHInit(/* const */ dec *ALPHDecoder, /* const */ data *uint8, data_size u
 // already been decoded.
 // Returns false in case of bitstream error.
 func ALPHDecode(/* const  */dec *VP8Decoder, row, num_rows int) int {
-  var alph_dec *ALPHDecoder = dec.alph_dec;
-  width := alph_dec.width;
-  height := alph_dec.io.crop_bottom;
+  var alph_dec *ALPHDecoder = dec.alph_dec
+  width := alph_dec.width
+  height := alph_dec.io.crop_bottom
   if (alph_dec.method == ALPHA_NO_COMPRESSION) {
-    var y int;
-    var prev_line *uint8 = dec.alpha_prev_line;
-    var deltas *uint8 = dec.alpha_data + ALPHA_HEADER_LEN + row * width;
-    dst *uint8 = dec.alpha_plane + row * width;
-    assert.Assert(deltas <= &dec.alpha_data[dec.alpha_data_size]);
-    assert.Assert(WebPUnfilters[alph_dec.filter] != nil);
+    var y int
+    var prev_line *uint8 = dec.alpha_prev_line
+    var deltas *uint8 = dec.alpha_data + ALPHA_HEADER_LEN + row * width
+    dst *uint8 = dec.alpha_plane + row * width
+    assert.Assert(deltas <= &dec.alpha_data[dec.alpha_data_size])
+    assert.Assert(WebPUnfilters[alph_dec.filter] != nil)
     for y = 0; y < num_rows; y++ {
-      WebPUnfilters[alph_dec.filter](prev_line, deltas, dst, width);
-      prev_line = dst;
-      dst += width;
-      deltas += width;
+      WebPUnfilters[alph_dec.filter](prev_line, deltas, dst, width)
+      prev_line = dst
+      dst += width
+      deltas += width
     }
-    dec.alpha_prev_line = prev_line;
+    dec.alpha_prev_line = prev_line
   } else {  // alph_dec.method == ALPHA_LOSSLESS_COMPRESSION
-    assert.Assert(alph_dec.vp8l_dec != nil);
+    assert.Assert(alph_dec.vp8l_dec != nil)
     if (!VP8LDecodeAlphaImageStream(alph_dec, row + num_rows)) {
-      return 0;
+      return 0
     }
   }
 
   if (row + num_rows >= height) {
-    dec.is_alpha_decoded = 1;
+    dec.is_alpha_decoded = 1
   }
-  return 1;
+  return 1
 }
 
 func AllocateAlphaPlane(/* const */ dec *vp8.VP8Decoder, /* const */ io *VP8Io) {
-	stride := io.width;
-	height := io.crop_bottom;
-	alpha_size := uint64(stride * height);
-	assert.Assert(dec.alpha_plane_mem == nil);
-	//   dec.alpha_plane_mem = (*uint8)WebPSafeMalloc(alpha_size, sizeof(*dec.alpha_plane));
+	stride := io.width
+	height := io.crop_bottom
+	alpha_size := uint64(stride * height)
+	assert.Assert(dec.alpha_plane_mem == nil)
+	//   dec.alpha_plane_mem = (*uint8)WebPSafeMalloc(alpha_size, sizeof(*dec.alpha_plane))
 	//   if (dec.alpha_plane_mem == nil) {
-	//     return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "Alpha decoder initialization failed.");
+	//     return VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "Alpha decoder initialization failed.")
 	//   }
 	dec.alpha_plane_mem = make([]uint8, alpha_size)
 
-	dec.alpha_plane = dec.alpha_plane_mem;
-	dec.alpha_prev_line = nil;
+	dec.alpha_plane = dec.alpha_plane_mem
+	dec.alpha_prev_line = nil
 }
 
 //------------------------------------------------------------------------------
 // Main entry point.
 
 func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8Io, row int, num_rows int ) *VP {
-  width := io.width;
-  height := io.crop_bottom;
+  width := io.width
+  height := io.crop_bottom
 
-  assert.Assert(dec != nil && io != nil);
+  assert.Assert(dec != nil && io != nil)
 
   if (row < 0 || num_rows <= 0 || row + num_rows > height) {
-    return nil;
+    return nil
   }
 
   if (!dec.is_alpha_decoded) {
     if (dec.alph_dec == nil) {  // Initialize decoder.
-      dec.alph_dec = ALPHNew();
+      dec.alph_dec = ALPHNew()
       if (dec.alph_dec == nil) {
-        VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "Alpha decoder initialization failed.");
-        return nil;
+        VP8SetError(dec, VP8_STATUS_OUT_OF_MEMORY, "Alpha decoder initialization failed.")
+        return nil
       }
       if !AllocateAlphaPlane(dec, io) { goto Error }
       if (!ALPHInit(dec.alph_dec, dec.alpha_data, dec.alpha_data_size, io, dec.alpha_plane)) {
-        var vp *VP8LDecoder8l_dec = dec.alph_dec.vp8l_dec;
+        var vp *VP8LDecoder8l_dec = dec.alph_dec.vp8l_dec
         VP8SetError(
-            dec, tenary.If(vp8l_dec == nil, VP8_STATUS_OUT_OF_MEMORY, vp8l_dec.status), "Alpha decoder initialization failed.");
-        goto Error;
+            dec, tenary.If(vp8l_dec == nil, VP8_STATUS_OUT_OF_MEMORY, vp8l_dec.status), "Alpha decoder initialization failed.")
+        goto Error
       }
       // if we allowed use of alpha dithering, check whether it's needed at all
       if (dec.alph_dec.pre_processing != ALPHA_PREPROCESSED_LEVELS) {
@@ -189,25 +189,25 @@ func uint88DecompressAlphaRows(/* const */ dec *VP8Decoder, /* const */ io *VP8I
       }
     }
 
-    assert.Assert(dec.alph_dec != nil);
-    assert.Assert(row + num_rows <= height);
+    assert.Assert(dec.alph_dec != nil)
+    assert.Assert(row + num_rows <= height)
     if !ALPHDecode(dec, row, num_rows) { goto Error }
 
     if (dec.is_alpha_decoded) {  // finished?
-      dec.alph_dec = nil;
+      dec.alph_dec = nil
       if (dec.alpha_dithering > 0) {
-        var alpha *uint8 = dec.alpha_plane + io.crop_top * width + io.crop_left;
+        var alpha *uint8 = dec.alpha_plane + io.crop_top * width + io.crop_left
         var bounded_alpha *uint8 = alpha; // bidi index -> (uint64)*width(io.crop_bottom - io.crop_top)
         if (!WebPDequantizeLevels(bounded_alpha, io.crop_right - io.crop_left, io.crop_bottom - io.crop_top, width, dec.alpha_dithering)) {
-          goto Error;
+          goto Error
         }
       }
     }
   }
 
   // Return a pointer to the current decoded row.
-  return dec.alpha_plane + row * width;
+  return dec.alpha_plane + row * width
 
 Error:
-  return nil;
+  return nil
 }

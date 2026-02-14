@@ -265,7 +265,7 @@ func (pic *Picture) ReportProgress(percent int /*const*/, percent_store *int) er
 // Grab the 'specs' (writer, *opaque, width, height...) from 'src' and copy them
 // into 'dst'. Mark 'dst' as not owning any memory.
 func PictureGrabSpecs(/* const */ src *picture.Picture, /*const*/ dst *picture.Picture) {
-  assert.Assert(src != nil && dst != nil);
-  *dst = *src;
-  picture.WebPPictureResetBuffers(dst);
+  assert.Assert(src != nil && dst != nil)
+  *dst = *src
+  picture.WebPPictureResetBuffers(dst)
 }

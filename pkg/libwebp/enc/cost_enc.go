@@ -34,18 +34,18 @@ type VP8Residual struct {
 }
 
 func VariableLevelCost(level int, /*const*/ probas [NUM_PROBAS]uint8) int {
-  pattern := VP8LevelCodes[level - 1][0];
-  bits := VP8LevelCodes[level - 1][1];
-  cost := 0;
+  pattern := VP8LevelCodes[level - 1][0]
+  bits := VP8LevelCodes[level - 1][1]
+  cost := 0
   var i int
   for i = 2; pattern; i++ {
     if (pattern & 1) {
-      cost += VP8BitCost(bits & 1, probas[i]);
+      cost += VP8BitCost(bits & 1, probas[i])
     }
-    bits >>= 1;
-    pattern >>= 1;
+    bits >>= 1
+    pattern >>= 1
   }
-  return cost;
+  return cost
 }
 
 func VP8CalculateLevelCosts(/* const */ proba *VP8EncProba) {
@@ -59,15 +59,15 @@ func VP8CalculateLevelCosts(/* const */ proba *VP8EncProba) {
     for band = 0; band < NUM_BANDS; band++ {
       for ctx = 0; ctx < NUM_CTX; ctx++ {
 
-        var p *uint8 = proba.coeffs[ctype][band][ctx];
-        var table *uint16 = proba.level_cost[ctype][band][ctx];
+        var p *uint8 = proba.coeffs[ctype][band][ctx]
+        var table *uint16 = proba.level_cost[ctype][band][ctx]
 
         cost0 := tenary.If(ctx > 0, VP8BitCost(1, p[0]), 0)
-        cost_base := VP8BitCost(1, p[1]) + cost0;
+        cost_base := VP8BitCost(1, p[1]) + cost0
         var v int
-        table[0] = VP8BitCost(0, p[1]) + cost0;
+        table[0] = VP8BitCost(0, p[1]) + cost0
         for v = 1; v <= MAX_VARIABLE_LEVEL; v++ {
-          table[v] = cost_base + VariableLevelCost(v, p);
+          table[v] = cost_base + VariableLevelCost(v, p)
         }
         // Starting at level 67 and up, the variable part of the cost is
         // actually constant.
@@ -75,11 +75,11 @@ func VP8CalculateLevelCosts(/* const */ proba *VP8EncProba) {
     }
     for n = 0; n < 16; n++ {  // replicate bands. We don't need to sentinel.
       for ctx = 0; ctx < NUM_CTX; ctx++ {
-        proba.remapped_costs[ctype][n][ctx] = proba.level_cost[ctype][VP8EncBands[n]][ctx];
+        proba.remapped_costs[ctype][n][ctx] = proba.level_cost[ctype][VP8EncBands[n]][ctx]
       }
     }
   }
-  proba.dirty = 0;
+  proba.dirty = 0
 }
 
 // These are the fixed probabilities (in the coding trees) turned into bit-cost
@@ -94,11 +94,11 @@ var VP8FixedCostsI4 = [decoder.NUM_BMODES][decoder.NUM_BMODES][decoder.NUM_BMODE
 // helper functions for residuals struct VP8Residual.
 
 func VP8InitResidual(int first, coeff_type int, /*const*/ enc *VP8Encoder, /*const*/ res *VP8Residual) {
-	res.coeff_type = coeff_type;
-	res.prob = enc.proba.coeffs[coeff_type];
-	res.stats = enc.proba.stats[coeff_type];
-	res.costs = enc.proba.remapped_costs[coeff_type];
-	res.first = first;
+	res.coeff_type = coeff_type
+	res.prob = enc.proba.coeffs[coeff_type]
+	res.stats = enc.proba.stats[coeff_type]
+	res.costs = enc.proba.remapped_costs[coeff_type]
+	res.first = first
 }
 
 //------------------------------------------------------------------------------
@@ -108,79 +108,79 @@ func VP8GetCostLuma4(/* const */ it *VP8EncIterator, /*const*/ levels [16]int16)
 	x := (it.i4 & 3)
 	y := (it.i4 >> 2)
 	var res VP8Residual
-	var enc *VP8Encoder = it.enc;
-	R := 0;
+	var enc *VP8Encoder = it.enc
+	R := 0
 	var ctx int
 
-	VP8InitResidual(0, 3, enc, &res);
-	ctx = it.top_nz[x] + it.left_nz[y];
-	VP8SetResidualCoeffs(levels, &res);
-	R += VP8GetResidualCost(ctx, &res);
-	return R;
+	VP8InitResidual(0, 3, enc, &res)
+	ctx = it.top_nz[x] + it.left_nz[y]
+	VP8SetResidualCoeffs(levels, &res)
+	R += VP8GetResidualCost(ctx, &res)
+	return R
 }
 
 func VP8GetCostLuma16(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
    var res VP8Residual
-  var enc *VP8Encoder = it.enc;
+  var enc *VP8Encoder = it.enc
   var x, y int
-  R := 0;
+  R := 0
 
   VP8IteratorNzToBytes(it);  // re-import the non-zero context
 
   // DC
-  VP8InitResidual(0, 1, enc, &res);
-  VP8SetResidualCoeffs(rd.y_dc_levels, &res);
-  R += VP8GetResidualCost(it.top_nz[8] + it.left_nz[8], &res);
+  VP8InitResidual(0, 1, enc, &res)
+  VP8SetResidualCoeffs(rd.y_dc_levels, &res)
+  R += VP8GetResidualCost(it.top_nz[8] + it.left_nz[8], &res)
 
   // AC
-  VP8InitResidual(1, 0, enc, &res);
+  VP8InitResidual(1, 0, enc, &res)
   for y = 0; y < 4; y++ {
     for x = 0; x < 4; x++ {
-      ctx := it.top_nz[x] + it.left_nz[y];
-      VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res);
-      R += VP8GetResidualCost(ctx, &res);
+      ctx := it.top_nz[x] + it.left_nz[y]
+      VP8SetResidualCoeffs(rd.y_ac_levels[x + y * 4], &res)
+      R += VP8GetResidualCost(ctx, &res)
 
 	  tmp := (res.last >= 0)
       it.top_nz[x] = tmp
 	  it.left_nz[y] = tmp
     }
   }
-  return R;
+  return R
 }
 
 func VP8GetCostUV(/* const */ it *VP8EncIterator, /*const*/ rd *VP8ModeScore) int {
    var res VP8Residual
-  var enc *VP8Encoder = it.enc;
+  var enc *VP8Encoder = it.enc
   var ch, x, y int
-  R := 0;
+  R := 0
 
   VP8IteratorNzToBytes(it);  // re-import the non-zero context
 
-  VP8InitResidual(0, 2, enc, &res);
+  VP8InitResidual(0, 2, enc, &res)
   for ch = 0; ch <= 2; ch += 2 {
     for y = 0; y < 2; y++ {
       for x = 0; x < 2; x++ {
-		ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y];
-		VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res);
-		R += VP8GetResidualCost(ctx, &res);
+		ctx := it.top_nz[4 + ch + x] + it.left_nz[4 + ch + y]
+		VP8SetResidualCoeffs(rd.uv_levels[ch * 2 + x + y * 2], &res)
+		R += VP8GetResidualCost(ctx, &res)
 		tmp := (res.last >= 0)
 		it.top_nz[4 + ch + x] = tmp
 		it.left_nz[4 + ch + y] = tmp
       }
     }
   }
-  return R;
+  return R
 }
 
 // Simulate block coding, but only record statistics.
 // Note: no need to record the fixed probas.
 func VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual) int {
-  n := res.first;
+  n := res.first
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
-  var s *proba_t = res.stats[n][ctx];
+  var s *proba_t = res.stats[n][ctx]
   if (res.last < 0) {
-    VP8RecordStats(0, s + 0);
-    return 0;
+    VP8RecordStats(0, s + 0)
+    return 0
   }
   for (n <= res.last) {
     var v int
@@ -192,22 +192,22 @@ func VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual) int {
 		if v != 0 {
 			break
 		}
-		VP8RecordStats(0, s + 1);
-		s = res.stats[VP8EncBands[n]][0];
+		VP8RecordStats(0, s + 1)
+		s = res.stats[VP8EncBands[n]][0]
 	}
 
-    VP8RecordStats(1, s + 1);
+    VP8RecordStats(1, s + 1)
     if (!VP8RecordStats(uint(2) < uint(v + 1), s + 2)) {  // v = -1 or 1
-      s = res.stats[VP8EncBands[n]][1];
+      s = res.stats[VP8EncBands[n]][1]
     } else {
-      v = stdlib.Abs(v);
+      v = stdlib.Abs(v)
       if (v > MAX_VARIABLE_LEVEL) {
-        v = MAX_VARIABLE_LEVEL;
+        v = MAX_VARIABLE_LEVEL
       }
 
       {
-        bits := VP8LevelCodes[v - 1][1];
-        pattern := VP8LevelCodes[v - 1][0];
+        bits := VP8LevelCodes[v - 1][1]
+        pattern := VP8LevelCodes[v - 1][0]
         var i int
         for i = 0; ; i++ {
           pattern >>= 1
@@ -224,11 +224,11 @@ func VP8RecordCoeffs(int ctx, /*const*/ res *VP8Residual) int {
           }
         }
       }
-      s = res.stats[VP8EncBands[n]][2];
+      s = res.stats[VP8EncBands[n]][2]
     }
   }
   if n < 16 { VP8RecordStats(0, s + 0) }
-  return 1;
+  return 1
 }
 
 // Record proba context used.

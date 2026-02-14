@@ -31,7 +31,7 @@ func WEBP_ALIGN(PTR any) {
 
 // Returns (int)floor(log2(n)). n must be > 0.
 func BitsLog2Floor(n uint32) int  {
-  return 31 ^ gcc.Builtin_CLZ(n);
+  return 31 ^ gcc.Builtin_CLZ(n)
 }
 
 // counts the number of trailing zero
@@ -106,17 +106,17 @@ var mem_limit = 0
 var exit_registered = 0
 
 func PrintMemInfo(){
-  fprintf(stderr, "\nMEMORY INFO:\n");
-  fprintf(stderr, "num calls to: malloc = %4d\n", num_malloc_calls);
-  fprintf(stderr, "              calloc = %4d\n", num_calloc_calls);
-  fprintf(stderr, "              free   = %4d\n", num_free_calls);
-  fprintf(stderr, "total_mem: %u\n", (uint32)total_mem);
-  fprintf(stderr, "total_mem allocated: %u\n", (uint32)total_mem_allocated);
-  fprintf(stderr, "high-water mark: %u\n", (uint32)high_water_mark);
+  fprintf(stderr, "\nMEMORY INFO:\n")
+  fprintf(stderr, "num calls to: malloc = %4d\n", num_malloc_calls)
+  fprintf(stderr, "              calloc = %4d\n", num_calloc_calls)
+  fprintf(stderr, "              free   = %4d\n", num_free_calls)
+  fprintf(stderr, "total_mem: %u\n", (uint32)total_mem)
+  fprintf(stderr, "total_mem allocated: %u\n", (uint32)total_mem_allocated)
+  fprintf(stderr, "high-water mark: %u\n", (uint32)high_water_mark)
   for (all_blocks != nil) {
-    b *MemBlock = all_blocks;
-    all_blocks = b.next;
-    free(b);
+    b *MemBlock = all_blocks
+    all_blocks = b.next
+    free(b)
   }
 }
 
@@ -124,46 +124,46 @@ func Increment(/* const */ v *int) {
   if (!exit_registered) {
 // #if defined(MALLOC_FAIL_AT)
     {
-      var malloc_fail_at_str *byte = getenv("MALLOC_FAIL_AT");
+      var malloc_fail_at_str *byte = getenv("MALLOC_FAIL_AT")
       if (malloc_fail_at_str != nil) {
-        countdown_to_fail = atoi(malloc_fail_at_str);
+        countdown_to_fail = atoi(malloc_fail_at_str)
       }
     }
 // #endif
 // #if defined(MALLOC_LIMIT)
     {
-      var malloc_limit_str *byte = getenv("MALLOC_LIMIT");
+      var malloc_limit_str *byte = getenv("MALLOC_LIMIT")
 // #if MALLOC_LIMIT > 1
-      mem_limit = (uint64)MALLOC_LIMIT;
+      mem_limit = (uint64)MALLOC_LIMIT
 // #endif
       if (malloc_limit_str != nil) {
-        mem_limit = atoi(malloc_limit_str);
+        mem_limit = atoi(malloc_limit_str)
       }
     }
 // #endif
-    (void)countdown_to_fail;
-    (void)mem_limit;
-    atexit(PrintMemInfo);
-    exit_registered = 1;
+    (void)countdown_to_fail
+    (void)mem_limit
+    atexit(PrintMemInfo)
+    exit_registered = 1
   }
-  ++*v;
+  ++*v
 }
 
 func AddMem(ptr *void, size uint64 ) {
   if (ptr != nil) {
-    var b *MemBlock = (*MemBlock)malloc(sizeof(*b));
+    var b *MemBlock = (*MemBlock)malloc(sizeof(*b))
     if b == nil { {abort() }}
-    b.next = all_blocks;
-    all_blocks = b;
-    b.ptr = ptr;
-    b.size = size;
-    total_mem += size;
-    total_mem_allocated += size;
+    b.next = all_blocks
+    all_blocks = b
+    b.ptr = ptr
+    b.size = size
+    total_mem += size
+    total_mem_allocated += size
 // #if defined(PRINT_MEM_TRAFFIC)
 // #if defined(MALLOC_FAIL_AT)
-    fprintf(stderr, "fail-count: %5d [mem=%u]\n", num_malloc_calls + num_calloc_calls, (uint32)total_mem);
+    fprintf(stderr, "fail-count: %5d [mem=%u]\n", num_malloc_calls + num_calloc_calls, (uint32)total_mem)
 // #else
-    fprintf(stderr, "Mem: %u (+%u)\n", (uint32)total_mem, (uint32)size);
+    fprintf(stderr, "Mem: %u (+%u)\n", (uint32)total_mem, (uint32)size)
 // #endif
 // #endif
     if total_mem > high_water_mark { high_water_mark = total_mem }
@@ -172,32 +172,32 @@ func AddMem(ptr *void, size uint64 ) {
 
 func SubMem(ptr *void) {
   if (ptr != nil) {
-    *MemBlock* b = &all_blocks;
+    *MemBlock* b = &all_blocks
     // Inefficient search, but that's just for debugging.
-    while (*b != nil && (*b).ptr != ptr) b = &(*b).next;
+    while (*b != nil && (*b).ptr != ptr) b = &(*b).next
     if (*b == nil) {
-      fprintf(stderr, "Invalid pointer free! (%p)\n", ptr);
-      abort();
+      fprintf(stderr, "Invalid pointer free! (%p)\n", ptr)
+      abort()
     }
     {
-      var block *MemBlock = *b;
-      *b = block.next;
-      total_mem -= block.size;
+      var block *MemBlock = *b
+      *b = block.next
+      total_mem -= block.size
 // #if defined(PRINT_MEM_TRAFFIC)
-      fprintf(stderr, "Mem: %u (-%u)\n", (uint32)total_mem, (uint32)block.size);
+      fprintf(stderr, "Mem: %u (-%u)\n", (uint32)total_mem, (uint32)block.size)
 // #endif
-      free(block);
+      free(block)
     }
   }
 }
 
 func CheckSizeOverflow(size uint64 ) bool {
-  return size == (uint64)size;
+  return size == (uint64)size
 }
 
 // Returns 0 in case of overflow of nmemb * size.
 func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
-  total_size := nmemb * size;
+  total_size := nmemb * size
   if nmemb == 0 { return 1  }
   if (uint64)size > WEBP_MAX_ALLOCABLE_MEMORY / nmemb { return 0  }
   if !CheckSizeOverflow(total_size) { return 0  }
@@ -208,14 +208,14 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 // #endif
 // #if defined(PRINT_MEM_INFO) && defined(MALLOC_LIMIT)
   if (mem_limit > 0) {
-    new_total_mem := (uint64)total_mem + total_size;
+    new_total_mem := (uint64)total_mem + total_size
     if (!CheckSizeOverflow(new_total_mem) || new_total_mem > mem_limit) {
       return 0;  // fake fail!
     }
   }
 // #endif
 
-  return 1;
+  return 1
 }
 
 // size-checking safe malloc/calloc: verify that the requested size is not too
@@ -226,26 +226,26 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 // underlying multiply involved.
 // Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
 // func WebPSafeMalloc(nmemb uint64, size uint64 ) *void/* (size *nmemb) */ {
-//   var ptr *void;
-//   Increment(&num_malloc_calls);
+//   var ptr *void
+//   Increment(&num_malloc_calls)
 //   if !CheckSizeArgumentsOverflow(nmemb, size) { return nil  }
-//   assert.Assert(nmemb * size > 0);
-//   ptr = malloc((uint64)(nmemb * size));
-//   AddMem(ptr, (uint64)(nmemb * size));
-//   return ptr // bidi index -> (uint64)(nmemb * size);
+//   assert.Assert(nmemb * size > 0)
+//   ptr = malloc((uint64)(nmemb * size))
+//   AddMem(ptr, (uint64)(nmemb * size))
+//   return ptr // bidi index -> (uint64)(nmemb * size)
 // }
 
 // Note that WebPSafeCalloc() expects the second argument type to be 'uint64'
 // in order to favor the "calloc(num_foo, sizeof(foo))" pattern.
 // Deprecated: WebPSafeMalloc is just new in golang. Do not to check if its an array or just an object.
 // func WebPSafeCalloc(nmemb, size uint64) *void/* (size *nmemb) */ {
-//   ptr *void;
-//   Increment(&num_calloc_calls);
+//   ptr *void
+//   Increment(&num_calloc_calls)
 //   if !CheckSizeArgumentsOverflow(nmemb, size) { return nil  }
-//   assert.Assert(nmemb * size > 0);
-//   ptr = calloc((uint64)nmemb, size);
-//   AddMem(ptr, (uint64)(nmemb * size));
-//   return ptr // bidi index -> (uint64)(nmemb * size);
+//   assert.Assert(nmemb * size > 0)
+//   ptr = calloc((uint64)nmemb, size)
+//   AddMem(ptr, (uint64)(nmemb * size))
+//   return ptr // bidi index -> (uint64)(nmemb * size)
 // }
 
 // Public API functions.
@@ -261,18 +261,18 @@ func CheckSizeArgumentsOverflow(nmemb uint64, size uint64 ) int {
 //   //
 //   // TODO: https://issues.webmproject.org/432511225 - Remove this once we can
 //   // annotate WebPMalloc/WebPFree.
-//   return WEBP_UNSAFE_FORGE_SINGLE(*void, WebPSafeMalloc(1, size));
+//   return WEBP_UNSAFE_FORGE_SINGLE(*void, WebPSafeMalloc(1, size))
 // }
 
 
 // Copy width x height pixels from 'src' to 'dst' honoring the strides.
 func WebPCopyPlane(/* const */ src *uint8, src_stride int, dst *uint8, dst_stride int, width, height int) {
-  assert.Assert(src != nil && dst != nil);
-  assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width);
+  assert.Assert(src != nil && dst != nil)
+  assert.Assert(abs(src_stride) >= width && abs(dst_stride) >= width)
   for (height-- > 0) {
-    stdlib.MemCpy(dst, src, width);
-    src += src_stride;
-    dst += dst_stride;
+    stdlib.MemCpy(dst, src, width)
+    src += src_stride
+    dst += dst_stride
   }
 }
 
@@ -282,7 +282,7 @@ func WebPCopyPixels(/* const */ src *picture.Picture, /*const*/ dst *picture.Pic
   assert.Assert(src != nil && dst != nil)
   assert.Assert(src.width == dst.width && src.height == dst.height)
   assert.Assert(src.use_argb && dst.use_argb)
-  WebPCopyPlane((*uint8)src.argb, 4 * src.argb_stride, (*uint8)dst.argb, 4 * dst.argb_stride, 4 * src.width, src.height);
+  WebPCopyPlane((*uint8)src.argb, 4 * src.argb_stride, (*uint8)dst.argb, 4 * dst.argb_stride, 4 * src.width, src.height)
 }
 
 
@@ -295,7 +295,7 @@ func WebPCopyPixels(/* const */ src *picture.Picture, /*const*/ dst *picture.Pic
 // MAX_PALETTE_SIZE elements.
 // TODO(vrabaud) remove whenever we can break the ABI.
 func WebPGetColorPalette(/* const  */pic *picture.Picture, /*const*/  palette []uint32/* (MAX_PALETTE_SIZE) */) int {
-  return GetColorPalette(pic, palette);
+  return GetColorPalette(pic, palette)
 }
 
 //------------------------------------------------------------------------------

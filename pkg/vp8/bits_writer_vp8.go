@@ -85,10 +85,10 @@ func BitWriterResize( /* const */ bw *VP8BitWriter, extra_size uint64) int {
 	if new_size < 1024 {
 		new_size = 1024
 	}
-	//   new_buf = (*uint8)WebPSafeMalloc(uint64(1), new_size);
+	//   new_buf = (*uint8)WebPSafeMalloc(uint64(1), new_size)
 	//   if (new_buf == nil) {
-	//     bw.error = 1;
-	//     return 0;
+	//     bw.error = 1
+	//     return 0
 	//   }
 	new_buf = make([]uint8, new_size)
 

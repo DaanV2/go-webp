@@ -11,9 +11,9 @@ package webp
 
 // Note: forward declaring enumerations is not allowed in (strict) C and C++,
 // the types are left here for reference.
-// typedef enum WebPFeatureFlags WebPFeatureFlags;
-// typedef enum WebPMuxAnimDispose WebPMuxAnimDispose;
-// typedef enum WebPMuxAnimBlend WebPMuxAnimBlend;
+// typedef enum WebPFeatureFlags WebPFeatureFlags
+// typedef enum WebPMuxAnimDispose WebPMuxAnimDispose
+// typedef enum WebPMuxAnimBlend WebPMuxAnimBlend
 // Data type used to describe 'raw' data, e.g., chunk data
 // (ICC profile, metadata) and WebP compressed image data.
 // 'bytes' memory must be allocated using WebPMalloc() and such.
@@ -25,7 +25,7 @@ type WebPData struct {
 // Initializes the contents of the 'webp_data' object with default values.
 func WebPDataInit(webp_data *WebPData) {
   if (webp_data != nil) {
-    stdlib.Memset(webp_data, 0, sizeof(*webp_data));
+    stdlib.Memset(webp_data, 0, sizeof(*webp_data))
   }
 }
 
@@ -33,7 +33,7 @@ func WebPDataInit(webp_data *WebPData) {
 // Does not deallocate the object itself.
  func WebPDataClear(webp_data *WebPData) {
   if (webp_data != nil) {
-    WebPDataInit(webp_data);
+    WebPDataInit(webp_data)
   }
 }
 
@@ -41,16 +41,16 @@ func WebPDataInit(webp_data *WebPData) {
 // Returns true on success.
 func  WebPDataCopy(/* const */ src *WebPData, dst *WebPData) int {
   if src == nil || dst == nil { return 0  }
-  WebPDataInit(dst);
+  WebPDataInit(dst)
   if (src.bytes != nil && src.size != 0) {
-    // dst.bytes = (*uint8)WebPMalloc(src.size);
+    // dst.bytes = (*uint8)WebPMalloc(src.size)
 	dst.bytes = make([]uint8, src.size)
 
     if dst.bytes == nil { return 0  }
-    stdlib.MemCpy(dst.bytes, src.bytes, src.size);
-    dst.size = src.size;
+    stdlib.MemCpy(dst.bytes, src.bytes, src.size)
+    dst.size = src.size
   }
-  return 1;
+  return 1
 }
 
 

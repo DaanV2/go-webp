@@ -20,7 +20,7 @@ import (
 
 // Creates the instance of HTreeGroup with specified number of tree-groups.
 func HTreeGroup8LHtreeGroupsNew(num_htree_groups int) []HTreeGroup {
-	//   var htree_groups *HTreeGroup = (*HTreeGroup)WebPSafeMalloc(num_htree_groups, sizeof(*htree_groups));
+	//   var htree_groups *HTreeGroup = (*HTreeGroup)WebPSafeMalloc(num_htree_groups, sizeof(*htree_groups))
 	htree_groups := make([]HTreeGroup, num_htree_groups)
 	assert.Assert(num_htree_groups <= MAX_HTREE_GROUPS)
 

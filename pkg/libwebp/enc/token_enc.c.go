@@ -51,41 +51,41 @@ type VP8Tokens struct {
 //------------------------------------------------------------------------------
 
 func VP8TBufferInit(/* const */ b *VP8TBuffer, page_size int) {
-  b.tokens = nil;
-  b.pages = nil;
-  b.last_page = &b.pages;
-  b.left = 0;
+  b.tokens = nil
+  b.pages = nil
+  b.last_page = &b.pages
+  b.left = 0
   b.page_size = tenary.If(page_size < MIN_PAGE_SIZE, MIN_PAGE_SIZE, page_size)
-  b.error = 0;
+  b.error = 0
 }
 
 func VP8TBufferClear(/* const */ b *VP8TBuffer) {
   if (b != nil) {
-    p *VP8Tokens = b.pages;
+    p *VP8Tokens = b.pages
     // for (p != nil) {
-    //   var next *VP8Tokens = p.next;
-    //   WebPSafeFree(p);
-    //   p = next;
+    //   var next *VP8Tokens = p.next
+    //   WebPSafeFree(p)
+    //   p = next
     // }
-    VP8TBufferInit(b, b.page_size);
+    VP8TBufferInit(b, b.page_size)
   }
 }
 
 func TBufferNewPage(/* const */ b *VP8TBuffer) int {
-  page *VP8Tokens = nil;
+  page *VP8Tokens = nil
   if (!b.error) {
-    var size uint64  = sizeof(*page) + b.page_size * sizeof(token_t);
-    // page = (*VP8Tokens)WebPSafeMalloc(uint64(1), size);
+    var size uint64  = sizeof(*page) + b.page_size * sizeof(token_t)
+    // page = (*VP8Tokens)WebPSafeMalloc(uint64(1), size)
 	page = new(VP8Tokens)
 
   }
-  page.next = nil;
+  page.next = nil
 
-  *b.last_page = page;
-  b.last_page = &page.next;
-  b.left = b.page_size;
-  b.tokens = (token_t*)TOKEN_DATA(page);
-  return 1;
+  *b.last_page = page
+  b.last_page = &page.next
+  b.left = b.page_size
+  b.tokens = (token_t*)TOKEN_DATA(page)
+  return 1
 }
 
 //------------------------------------------------------------------------------
@@ -94,106 +94,106 @@ func TBufferNewPage(/* const */ b *VP8TBuffer) int {
   (NUM_PROBAS * ((ctx) + NUM_CTX * ((b) + NUM_BANDS * (t))))
 
 func AddToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba_idx, proba_t* const stats) uint32 {
-  assert.Assert(proba_idx < FIXED_PROBA_BIT);
-  assert.Assert(bit <= 1);
+  assert.Assert(proba_idx < FIXED_PROBA_BIT)
+  assert.Assert(bit <= 1)
   if (b.left > 0 || TBufferNewPage(b)) {
-    slot := --b.left;
-    b.tokens[slot] = (bit << 15) | proba_idx;
+    slot := --b.left
+    b.tokens[slot] = (bit << 15) | proba_idx
   }
-  VP8RecordStats(bit, stats);
-  return bit;
+  VP8RecordStats(bit, stats)
+  return bit
 }
 
 func AddConstantToken(/* const */ b *VP8TBuffer, uint32 bit, uint32 proba) {
-  assert.Assert(proba < 256);
-  assert.Assert(bit <= 1);
+  assert.Assert(proba < 256)
+  assert.Assert(bit <= 1)
   if (b.left > 0 || TBufferNewPage(b)) {
-    slot := --b.left;
-    b.tokens[slot] = (bit << 15) | FIXED_PROBA_BIT | proba;
+    slot := --b.left
+    b.tokens[slot] = (bit << 15) | FIXED_PROBA_BIT | proba
   }
 }
 
 // record the coding of coefficients without knowing the probabilities yet
 func VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*const*/ tokens *VP8TBuffer) int {
-  var coeffs *int16 = res.coeffs;
-  coeff_type := res.coeff_type;
-  last := res.last;
-  n := res.first;
-  base_id := TOKEN_ID(coeff_type, n, ctx);
+  var coeffs *int16 = res.coeffs
+  coeff_type := res.coeff_type
+  last := res.last
+  n := res.first
+  base_id := TOKEN_ID(coeff_type, n, ctx)
   // should be stats[VP8EncBands[n]], but it's equivalent for n=0 or 1
-  proba_t* s = res.stats[n][ctx];
+  proba_t* s = res.stats[n][ctx]
   if (!AddToken(tokens, last >= 0, base_id + 0, s + 0)) {
-    return 0;
+    return 0
   }
 
   while (n < 16) {
-    c := coeffs[n];
+    c := coeffs[n]
 	n++
-    sign := c < 0;
-    v := tenary.If(sign, -c, c);
+    sign := c < 0
+    v := tenary.If(sign, -c, c)
     if (!AddToken(tokens, v != 0, base_id + 1, s + 1)) {
       base_id = TOKEN_ID(coeff_type, VP8EncBands[n], 0);  // ctx=0
-      s = res.stats[VP8EncBands[n]][0];
-      continue;
+      s = res.stats[VP8EncBands[n]][0]
+      continue
     }
     if (!AddToken(tokens, v > 1, base_id + 2, s + 2)) {
       base_id = TOKEN_ID(coeff_type, VP8EncBands[n], 1);  // ctx=1
-      s = res.stats[VP8EncBands[n]][1];
+      s = res.stats[VP8EncBands[n]][1]
     } else {
       if (!AddToken(tokens, v > 4, base_id + 3, s + 3)) {
         if (AddToken(tokens, v != 2, base_id + 4, s + 4)) {
-          AddToken(tokens, v == 4, base_id + 5, s + 5);
+          AddToken(tokens, v == 4, base_id + 5, s + 5)
         }
       } else if (!AddToken(tokens, v > 10, base_id + 6, s + 6)) {
         if (!AddToken(tokens, v > 6, base_id + 7, s + 7)) {
-          AddConstantToken(tokens, v == 6, 159);
+          AddConstantToken(tokens, v == 6, 159)
         } else {
-          AddConstantToken(tokens, v >= 9, 165);
-          AddConstantToken(tokens, !(v & 1), 145);
+          AddConstantToken(tokens, v >= 9, 165)
+          AddConstantToken(tokens, !(v & 1), 145)
         }
       } else {
         var mask int
-        const tab *uint8;
-        residue := v - 3;
+        const tab *uint8
+        residue := v - 3
         if (residue < (8 << 1)) {  // VP8Cat3  (3b)
-          AddToken(tokens, 0, base_id + 8, s + 8);
-          AddToken(tokens, 0, base_id + 9, s + 9);
-          residue -= (8 << 0);
-          mask = 1 << 2;
-          tab = VP8Cat3;
+          AddToken(tokens, 0, base_id + 8, s + 8)
+          AddToken(tokens, 0, base_id + 9, s + 9)
+          residue -= (8 << 0)
+          mask = 1 << 2
+          tab = VP8Cat3
         } else if (residue < (8 << 2)) {  // VP8Cat4  (4b)
-          AddToken(tokens, 0, base_id + 8, s + 8);
-          AddToken(tokens, 1, base_id + 9, s + 9);
-          residue -= (8 << 1);
-          mask = 1 << 3;
-          tab = VP8Cat4;
+          AddToken(tokens, 0, base_id + 8, s + 8)
+          AddToken(tokens, 1, base_id + 9, s + 9)
+          residue -= (8 << 1)
+          mask = 1 << 3
+          tab = VP8Cat4
         } else if (residue < (8 << 3)) {  // VP8Cat5  (5b)
-          AddToken(tokens, 1, base_id + 8, s + 8);
-          AddToken(tokens, 0, base_id + 10, s + 9);
-          residue -= (8 << 2);
-          mask = 1 << 4;
-          tab = VP8Cat5;
+          AddToken(tokens, 1, base_id + 8, s + 8)
+          AddToken(tokens, 0, base_id + 10, s + 9)
+          residue -= (8 << 2)
+          mask = 1 << 4
+          tab = VP8Cat5
         } else {  // VP8Cat6 (11b)
-          AddToken(tokens, 1, base_id + 8, s + 8);
-          AddToken(tokens, 1, base_id + 10, s + 9);
-          residue -= (8 << 3);
-          mask = 1 << 10;
-          tab = VP8Cat6;
+          AddToken(tokens, 1, base_id + 8, s + 8)
+          AddToken(tokens, 1, base_id + 10, s + 9)
+          residue -= (8 << 3)
+          mask = 1 << 10
+          tab = VP8Cat6
         }
         while (mask) {
-          AddConstantToken(tokens, !!(residue & mask), *tab++);
-          mask >>= 1;
+          AddConstantToken(tokens, !!(residue & mask), *tab++)
+          mask >>= 1
         }
       }
       base_id = TOKEN_ID(coeff_type, VP8EncBands[n], 2);  // ctx=2
-      s = res.stats[VP8EncBands[n]][2];
+      s = res.stats[VP8EncBands[n]][2]
     }
-    AddConstantToken(tokens, sign, 128);
+    AddConstantToken(tokens, sign, 128)
     if (n == 16 || !AddToken(tokens, n <= last, base_id + 0, s + 0)) {
       return 1;  // EOB
     }
   }
-  return 1;
+  return 1
 }
 
 #undef TOKEN_ID
@@ -204,51 +204,51 @@ func VP8RecordCoeffTokens(int ctx, /*const*/ struct const res *VP8Residual, /*co
 // Finalizes bitstream when probabilities are known.
 // Deletes the allocated token memory if final_pass is true.
 func VP8EmitTokens(/* const */ b *VP8TBuffer, /*const*/ bw *VP8BitWriter, /*const*/ probas *uint8, final_pass int) int {
-  var p *VP8Tokens = b.pages;
-  assert.Assert(!b.error);
+  var p *VP8Tokens = b.pages
+  assert.Assert(!b.error)
   for p != nil {
-    var next *VP8Tokens = p.next;
-    N = (next :== nil) ? b.left : 0;
-    n := b.page_size;
-    const token_t* const tokens = TOKEN_DATA(p);
+    var next *VP8Tokens = p.next
+    N = (next :== nil) ? b.left : 0
+    n := b.page_size
+    const token_t* const tokens = TOKEN_DATA(p)
     while (n-- > N) {
-       = tokens[n];
-      bit := (token >> 15) & 1;
+       = tokens[n]
+      bit := (token >> 15) & 1
       if (token & FIXED_PROBA_BIT) {
         vp8.VP8PutBit(bw, bit, token & uint(0xff));  // constant proba
       } else {
-        vp8.VP8PutBit(bw, bit, probas[token & uint(0x3fff)]);
+        vp8.VP8PutBit(bw, bit, probas[token & uint(0x3fff)])
       }
     }
-    p = next;
+    p = next
   }
   if final_pass { b.pages = nil }
-  return 1;
+  return 1
 }
 
 // Size estimation
 // Estimate the final coded size given a set of 'probas'.
 uint64 VP8EstimateTokenSize(/* const */ b *VP8TBuffer, /*const*/ probas *uint8) {
-  size uint64  = 0;
-  var p *VP8Tokens = b.pages;
-  assert.Assert(!b.error);
+  size uint64  = 0
+  var p *VP8Tokens = b.pages
+  assert.Assert(!b.error)
   while (p != nil) {
-    var next *VP8Tokens = p.next;
-    N := tenary.If((next == nil), b.left,  0);
-    n := b.page_size;
-    const token_t* const tokens = TOKEN_DATA(p);
+    var next *VP8Tokens = p.next
+    N := tenary.If((next == nil), b.left,  0)
+    n := b.page_size
+    const token_t* const tokens = TOKEN_DATA(p)
     while (n-- > N) {
-       = tokens[n];
-      bit := token & (1 << 15);
+       = tokens[n]
+      bit := token & (1 << 15)
       if (token & FIXED_PROBA_BIT) {
-        size += VP8BitCost(bit, token & uint(0xff));
+        size += VP8BitCost(bit, token & uint(0xff))
       } else {
-        size += VP8BitCost(bit, probas[token & uint(0x3fff)]);
+        size += VP8BitCost(bit, probas[token & uint(0x3fff)])
       }
     }
-    p = next;
+    p = next
   }
-  return size;
+  return size
 }
 
 //------------------------------------------------------------------------------
@@ -256,8 +256,8 @@ uint64 VP8EstimateTokenSize(/* const */ b *VP8TBuffer, /*const*/ probas *uint8) 
 #else  // DISABLE_TOKEN_BUFFER
 
 func VP8TBufferInit(/* const */ b *VP8TBuffer, page_size int) {
-  (void)b;
-  (void)page_size;
+  (void)b
+  (void)page_size
 }
 func VP8TBufferClear(/* const */ b *VP8TBuffer) { (void)b; }
 

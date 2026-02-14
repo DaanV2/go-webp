@@ -622,7 +622,7 @@ func CreateRawImageDemuxer(/* const */ mem *MemBuffer, demuxer *WebPDemuxer) Par
 	frame := &Frame{}
 
     InitDemux(dmux, mem)
-    SetFrameInfo(0, mem.buf_size, 1 /*frame_num*/, 1 /*complete*/, &features, frame);
+    SetFrameInfo(0, mem.buf_size, 1 /*frame_num*/, 1 /*complete*/, &features, frame)
     if (!AddFrame(dmux, frame)) {goto Error}
     dmux.state = WEBP_DEMUX_DONE
     dmux.canvas_width = frame.width

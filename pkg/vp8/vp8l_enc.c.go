@@ -108,7 +108,7 @@ func AnalyzeEntropy(/* const */ argb *uint32, width, height, argb_stride, use_pa
     return 1
   }
 
-	//   histo = (*Histograms)WebPSafeCalloc(1, sizeof(*histo));
+	//   histo = (*Histograms)WebPSafeCalloc(1, sizeof(*histo))
 	hist := &Histograms{}
 
     var i, x, y int
@@ -312,7 +312,7 @@ func EncoderAnalyze(/* const */ enc *VP8LEncoder, crunch_configs [CRUNCH_CONFIGS
           assert.Assert(*crunch_configs_size < CRUNCH_CONFIGS_MAX)
           if use_palette && (i == kPalette || i == kPaletteAndSpatial) {
             var sorting_method int
-            for (sorting_method = 0; sorting_method < kPaletteSortingNum;
+            for (sorting_method = 0; sorting_method < kPaletteSortingNum
                  sorting_method++) {
               var typed_sorting_method PaletteSorting = PaletteSorting(sorting_method)
               // TODO(vrabaud) kSortedDefault should be tested. It is omitted
@@ -407,11 +407,11 @@ func GetHuffBitLengthsAndCodes(/* const */ histogram_image *VP8LHistogramSet, /*
   {
     codes := make([]uint16, total_length_size)
     lengths := make([]uint8, total_length_size)
-    // mem_buf = (*uint8)WebPSafeCalloc(total_length_size, sizeof(*lengths) + sizeof(*codes));
+    // mem_buf = (*uint8)WebPSafeCalloc(total_length_size, sizeof(*lengths) + sizeof(*codes))
     // if mem_buf == nil { goto End }
 
-    // codes = (*uint16)mem_buf;
-    // lengths = (*uint8)&codes[total_length_size];
+    // codes = (*uint16)mem_buf
+    // lengths = (*uint8)&codes[total_length_size]
     for i = 0; i < 5 * histogram_image_size; i++ {
       bit_length := huffman_codes[i].num_symbols
       huffman_codes[i].codes = codes
@@ -424,8 +424,8 @@ func GetHuffBitLengthsAndCodes(/* const */ histogram_image *VP8LHistogramSet, /*
     }
   }
 
-//   buf_rle = (*uint8)WebPSafeMalloc(uint64(1), max_num_symbols);
-//   huff_tree = (*HuffmanTree)WebPSafeMalloc(uint64(3) * max_num_symbols, sizeof(*huff_tree));
+//   buf_rle = (*uint8)WebPSafeMalloc(uint64(1), max_num_symbols)
+//   huff_tree = (*HuffmanTree)WebPSafeMalloc(uint64(3) * max_num_symbols, sizeof(*huff_tree))
 //   if buf_rle == nil || huff_tree == nil { goto End }
   buf_rle := make([]uint8, max_num_symbols)
   huff_tree := make([]HuffmanTree, 3 * max_num_symbols)
@@ -690,10 +690,10 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
   cache_bits := 0
   var histogram_image *VP8LHistogramSet = nil
 //   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(
-//       uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
+//       uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree))
 //   if (huff_tree == nil) {
 //     pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
-//     goto Error;
+//     goto Error
 //   }
   huff_tree := make([]HuffmanTree, 3*CODE_LENGTH_CODES)
 
@@ -733,10 +733,10 @@ func EncodeImageNoHuffman(/* const */ bw *VP8LBitWriter, /*const*/ argb *uint32,
     }
   }
 
-//   tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens));
+//   tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens))
 //   if (tokens == nil) {
 //     pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
-//     goto Error;
+//     goto Error
 //   }
   tokens := make([]HuffmanTreeToken, max_tokens)
 
@@ -775,8 +775,8 @@ func EncodeImageInternal(
   tokens *HuffmanTreeToken = nil
   huffman_codes *HuffmanTreeCode = nil
 
-//   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree));
-//   var histogram_argb *uint32 = (*uint32)WebPSafeMalloc(histogram_image_xysize, sizeof(*histogram_argb));
+//   var huff_tree *HuffmanTree = (*HuffmanTree)WebPSafeMalloc(uint64(3) * CODE_LENGTH_CODES, sizeof(*huff_tree))
+//   var histogram_argb *uint32 = (*uint32)WebPSafeMalloc(histogram_image_xysize, sizeof(*histogram_argb))
 	huff_tree := make([]HuffmanTree, 3*CODE_LENGTH_CODES)
 	histogram_argb := make([]uint32, histogram_image_xysize)
 
@@ -801,7 +801,7 @@ func EncodeImageInternal(
 //   if (huff_tree == nil || histogram_argb == nil ||
 //       !VP8LHashChainInit(&hash_chain_histogram, histogram_image_xysize)) {
 //     pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
-//     goto Error;
+//     goto Error
 //   }
 
   percent_range = remaining_percent / 5
@@ -821,7 +821,7 @@ func EncodeImageInternal(
     goto Error
   }
 
-  for (sub_configs_idx = 0; sub_configs_idx < config.sub_configs_size;
+  for (sub_configs_idx = 0; sub_configs_idx < config.sub_configs_size
        sub_configs_idx++) {
     const sub_config *CrunchSubConfig = &config.sub_configs[sub_configs_idx]
     var cache_bits_best, i_cache int
@@ -861,7 +861,7 @@ func EncodeImageInternal(
       // Create Huffman bit lengths and codes for each histogram image.
       histogram_image_size = histogram_image.size
       bit_array_size = 5 * histogram_image_size
-    //   huffman_codes = (*HuffmanTreeCode)WebPSafeCalloc(bit_array_size, sizeof(*huffman_codes));
+    //   huffman_codes = (*HuffmanTreeCode)WebPSafeCalloc(bit_array_size, sizeof(*huffman_codes))
 	  huffman_codes = make([]HuffmanTreeCode, bit_array_size)
       // Note: some histogram_image entries may point to tmp_histos[], so the
       // latter need to outlive the following call to
@@ -917,10 +917,10 @@ func EncodeImageInternal(
           }
         }
 
-        // tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens));
+        // tokens = (*HuffmanTreeToken)WebPSafeMalloc(max_tokens, sizeof(*tokens))
         // if (tokens == nil) {
         //   pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
-        //   goto Error;
+        //   goto Error
         // }
 		tokens = make([]HuffmanTreeToken, max_tokens)
 
@@ -1081,7 +1081,7 @@ func AllocateTransformBuffer(/* const */ enc *VP8LEncoder, width, height int) in
   if mem == nil || mem_size > enc.transform_mem_size {
     ClearTransformBuffer(enc)
 
-    // mem = (*uint32)WebPSafeMalloc(mem_size, sizeof(*mem));
+    // mem = (*uint32)WebPSafeMalloc(mem_size, sizeof(*mem))
     // if (mem == nil) {
     //   return enc.pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
     // }
@@ -1186,7 +1186,7 @@ func ApplyPalette(/* const */ src *uint32,  src_stride uint32, dst *uint32,  dst
   // made to work in-place.
   var x, y int
   
-//   var tmp_row *uint8 = (*uint8)WebPSafeMalloc(width, sizeof(*tmp_row));
+//   var tmp_row *uint8 = (*uint8)WebPSafeMalloc(width, sizeof(*tmp_row))
 //   if (tmp_row == nil) {
 //     return pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 //   }
@@ -1292,10 +1292,10 @@ func EncodePalette(/* const */ bw *VP8LBitWriter, low_effort int, /*const*/ enc 
 // VP8LEncoder
 
 func VP8LEncoderNew(/* const */ config *config.Config, /*const*/ picture *picture.Picture) *VP8LEncoder {
-//   var enc *VP8LEncoder = (*VP8LEncoder)WebPSafeCalloc(uint64(1), sizeof(*enc));
+//   var enc *VP8LEncoder = (*VP8LEncoder)WebPSafeCalloc(uint64(1), sizeof(*enc))
 //   if (enc == nil) {
 //     picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
-//     return nil;
+//     return nil
 //   }
   enc := &VP8LEncoder{
 	config = config

@@ -44,7 +44,7 @@ type VP8LHistogram struct {
   costs [5]uint64
   is_used [5]uint8  // 5 for literal, red, blue, alpha, distance
   bin_id uint16     // entropy bin index.
-} ;
+} 
 
 // Collection of histograms with fixed capacity, allocated as one
 // big memory chunk.
@@ -52,35 +52,35 @@ type VP8LHistogramSet struct {
   size int      // number of slots currently in use
   max_size int  // maximum capacity
   histograms *VP8LHistogram
-} ;
+} 
 
 // Create the histogram.
 //
 // The input data is the PixOrCopy data, which models the literals, stop
 // codes and backward references (both distances and lengths).  Also: if
 // palette_code_bits is >= 0, initialize the histogram with this value.
-func VP8LHistogramCreate(/* const */ h *VP8LHistogram, /*const*/ refs *VP8LBackwardRefs, palette_code_bits int);
+func VP8LHistogramCreate(/* const */ h *VP8LHistogram, /*const*/ refs *VP8LBackwardRefs, palette_code_bits int)
 
 // Set the palette_code_bits and reset the stats.
 // If init_arrays is true, the arrays are also filled with 0's.
-func VP8LHistogramInit(/* const */ h *VP8LHistogram, palette_code_bits int, init_arrays int);
+func VP8LHistogramInit(/* const */ h *VP8LHistogram, palette_code_bits int, init_arrays int)
 
 // Collect all the references into a histogram (without reset)
 // The distance modifier function is applied to the distance before
 // the histogram is updated. It can be nil.
-func VP8LHistogramStoreRefs(/* const */ refs *VP8LBackwardRefs, int (distance_modifier *const)(int, int), int distance_modifier_arg0, /*const*/ histo *VP8LHistogram);
+func VP8LHistogramStoreRefs(/* const */ refs *VP8LBackwardRefs, int (distance_modifier *const)(int, int), int distance_modifier_arg0, /*const*/ histo *VP8LHistogram)
 
 // Allocate an array of pointer to histograms, allocated and initialized
 // using 'cache_bits'. Return nil in case of memory error.
-VP *VP8LHistogramSet8LAllocateHistogramSet(size int, cache_bits int);
+VP *VP8LHistogramSet8LAllocateHistogramSet(size int, cache_bits int)
 
 // Set the histograms in set to 0.
-func VP8LHistogramSetClear(/* const */ set *VP8LHistogramSet);
+func VP8LHistogramSetClear(/* const */ set *VP8LHistogramSet)
 
 // Allocate and initialize histogram object with specified 'cache_bits'.
 // Returns nil in case of memory error.
 // Special case of VP8LAllocateHistogramSet, with size equals 1.
-VP *VP8LHistogram8LAllocateHistogram(int cache_bits);
+VP *VP8LHistogram8LAllocateHistogram(int cache_bits)
 
 func VP8LHistogramNumCodes(int palette_code_bits) int {
   return NUM_LITERAL_CODES + NUM_LENGTH_CODES +
@@ -89,14 +89,14 @@ func VP8LHistogramNumCodes(int palette_code_bits) int {
 
 // Builds the histogram image. pic and percent are for progress.
 // Returns false in case of error (stored in pic.ErrorCode).
-int VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, histogram_bits int, cache_bits int, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int);
+int VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, histogram_bits int, cache_bits int, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int)
 
 // Returns the entropy for the symbols in the input array.
-uint64 VP8LBitsEntropy(/* const */ array *uint32, n int);
+uint64 VP8LBitsEntropy(/* const */ array *uint32, n int)
 
 // Estimate how many bits the combined entropy of literals and distance
 // approximately maps to.
-uint64 VP8LHistogramEstimateBits(/* const */ h *VP8LHistogram);
+uint64 VP8LHistogramEstimateBits(/* const */ h *VP8LHistogram)
 
 #ifdef __cplusplus
 }

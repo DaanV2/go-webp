@@ -29,46 +29,46 @@ var kAcTable = [128]uint16{
 // Paragraph 9.6
 
 func VP8ParseQuant(/* const */ dec *VP8Decoder) {
-  var br *VP8BitReader = &dec.br;
-  base_q0 := VP8GetValue(br, 7, "global-header");
+  var br *VP8BitReader = &dec.br
+  base_q0 := VP8GetValue(br, 7, "global-header")
   dqy1_dc := tenary.If(VP8Get(br, "global-header"), VP8GetSignedValue(br, 4, "global-header"), 0)
   dqy2_dc := tenary.If(VP8Get(br, "global-header"), VP8GetSignedValue(br, 4, "global-header"), 0)
   dqy2_ac := tenary.If(VP8Get(br, "global-header"), VP8GetSignedValue(br, 4, "global-header"), 0)
   dquv_dc := tenary.If(VP8Get(br, "global-header"), VP8GetSignedValue(br, 4, "global-header"), 0)
   dquv_ac := tenary.If(VP8Get(br, "global-header"), VP8GetSignedValue(br, 4, "global-header"), 0)
 
-  var hdr *VP8SegmentHeader = &dec.segment_hdr;
+  var hdr *VP8SegmentHeader = &dec.segment_hdr
   var i int
 
   for i = 0; i < NUM_MB_SEGMENTS; i++ {
     var q int
     if (hdr.use_segment) {
-      q = hdr.quantizer[i];
+      q = hdr.quantizer[i]
       if (!hdr.absolute_delta) {
-        q += base_q0;
+        q += base_q0
       }
     } else {
       if (i > 0) {
-        dec.dqm[i] = dec.dqm[0];
-        continue;
+        dec.dqm[i] = dec.dqm[0]
+        continue
       } else {
-        q = base_q0;
+        q = base_q0
       }
     }
     {
-      var m *VP8QuantMatrix = &dec.dqm[i];
-      m.y1_mat[0] = kDcTable[clip(q + dqy1_dc, 127)];
-      m.y1_mat[1] = kAcTable[clip(q + 0, 127)];
+      var m *VP8QuantMatrix = &dec.dqm[i]
+      m.y1_mat[0] = kDcTable[clip(q + dqy1_dc, 127)]
+      m.y1_mat[1] = kAcTable[clip(q + 0, 127)]
 
-      m.y2_mat[0] = kDcTable[clip(q + dqy2_dc, 127)] * 2;
+      m.y2_mat[0] = kDcTable[clip(q + dqy2_dc, 127)] * 2
       // For all x in [0..284], x*155/100 is bitwise equal to (x*101581) >> 16.
       // The smallest precision for that is '(x*6349) >> 12' but 16 is a good
       // word size.
-      m.y2_mat[1] = (kAcTable[clip(q + dqy2_ac, 127)] * 101581) >> 16;
+      m.y2_mat[1] = (kAcTable[clip(q + dqy2_ac, 127)] * 101581) >> 16
       if m.y2_mat[1] < 8 { m.y2_mat[1] = 8 }
 
-      m.uv_mat[0] = kDcTable[clip(q + dquv_dc, 117)];
-      m.uv_mat[1] = kAcTable[clip(q + dquv_ac, 127)];
+      m.uv_mat[0] = kDcTable[clip(q + dquv_dc, 117)]
+      m.uv_mat[1] = kAcTable[clip(q + dquv_ac, 127)]
 
       m.uv_quant = q + dquv_ac;  // for dithering strength evaluation
     }

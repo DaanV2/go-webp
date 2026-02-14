@@ -384,10 +384,10 @@ func ReadHuffmanCodes(/* const */ dec *VP8LDecoder, xsize int, ysize int, color_
     if num_htree_groups_max > 1000 || num_htree_groups_max > xsize * ysize {
       // Create a mapping from the used indices to the minimal set of used
       // values [0, num_htree_groups)
-    //   mapping = (*int)WebPSafeMalloc(num_htree_groups_max, sizeof(*mapping));
+    //   mapping = (*int)WebPSafeMalloc(num_htree_groups_max, sizeof(*mapping))
     //   if (mapping == nil) {
-    //     VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
-    //     goto Error;
+    //     VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY)
+    //     goto Error
     //   }
 	  mapping := make([]int, num_htree_groups_max)
       // -1 means a value is unmapped, and therefore unused in the Huffman
@@ -441,7 +441,7 @@ func ReadHuffmanCodesHelper(int color_cache_bits, num_htree_groups int, num_htre
     goto Error
   }
 
-//   code_lengths = (*int)WebPSafeCalloc((uint64)max_alphabet_size, sizeof(*code_lengths));
+//   code_lengths = (*int)WebPSafeCalloc((uint64)max_alphabet_size, sizeof(*code_lengths))
   code_lengths := make([]int, max_alphabet_size)
   
   *htree_groups = VP8LHtreeGroupsNew(num_htree_groups)
@@ -542,9 +542,9 @@ func AllocateAndInitRescaler(/* const */ dec *VP8LDecoder, /*const*/ io *VP8Io) 
   // C: memory_size := sizeof(*dec.rescaler) +
                                // C: work_size * sizeof(*work) +
                                // C: scaled_data_size * sizeof(*scaled_data)
-//   var memory *uint8 = (*uint8)WebPSafeMalloc(memory_size, sizeof(*memory));
+//   var memory *uint8 = (*uint8)WebPSafeMalloc(memory_size, sizeof(*memory))
 //   if (memory == nil) {
-//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
+//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY)
 //   }
   memory := make([]uint8, memory_size)
 
@@ -996,7 +996,7 @@ Copy:
     // C: stdlib.MemCpy(dst, src, length * sizeof(*dst))
   } else {
     var i int
-    for i = 0; i < length; i++ dst[i] = src[i];
+    for i = 0; i < length; i++ dst[i] = src[i]
 
   }
 }
@@ -1033,7 +1033,7 @@ func CopyBlock32b(/* const */ dst *uint32, dist int, length int) {
     // C: stdlib.MemCpy(dst, src, length * sizeof(*dst))
   } else {
     var i int
-    for i = 0; i < length; i++ dst[i] = src[i];
+    for i = 0; i < length; i++ dst[i] = src[i]
 
   }
 }
@@ -1302,9 +1302,9 @@ Error:
 func ExpandColorMap(num_colors int, /*const*/ transform *VP8LTransform) int {
   var i int
   final_num_colors := 1 << (8 >> transform.bits)
-//   var new_color_map *uint32 = (*uint32)WebPSafeMalloc((uint64)final_num_colors, sizeof(*new_color_map));
+//   var new_color_map *uint32 = (*uint32)WebPSafeMalloc((uint64)final_num_colors, sizeof(*new_color_map))
 //   if (new_color_map == nil) {
-//     return 0;
+//     return 0
 //   } else {
 	new_color_map := make([]uint32, final_num_colors)
 
@@ -1397,7 +1397,7 @@ func ClearMetadata(/* const */ hdr *VP8LMetadata) {
 
 // Allocates and initialize a new lossless decoder instance.
 func VP8LNew() *VP8LDecoder{
-//   var dec *VP8LDecoder = (*VP8LDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec));
+//   var dec *VP8LDecoder = (*VP8LDecoder)WebPSafeCalloc(uint64(1), sizeof(*dec))
 //   if dec == nil { return nil }
 	dec := &VP8LDecoder{
 		status = VP8_STATUS_OK
@@ -1485,10 +1485,10 @@ func DecodeImageStream(xsize int, ysize int, int is_level0, /*const*/ dec *VP8LD
 
   {
     total_size := uint64(transform_xsize * transform_ysize)
-    // data = (*uint32)WebPSafeMalloc(total_size, sizeof(*data));
+    // data = (*uint32)WebPSafeMalloc(total_size, sizeof(*data))
     // if (data == nil) {
-    //   ok = VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
-    //   goto End;
+    //   ok = VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY)
+    //   goto End
     // }
 	data := make([]uint32, total_size)
   }
@@ -1534,10 +1534,10 @@ func AllocateInternalBuffers32b(/* const */ dec *VP8LDecoder, final_width int) i
   }
   total_num_pixels = num_pixels + cache_top_pixels + cache_pixels + accumulated_rgb_pixels
   assert.Assert(dec.width <= final_width)
-//   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint32));
+//   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint32))
 //   if (dec.pixels == nil) {
 //     dec.argb_cache = nil;  // for soundness
-//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
+//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY)
 //   }
   dec.pixels = make([]uint32, total_num_pixels) // NOTE: have the feeling that this should be divided by 4
 
@@ -1553,9 +1553,9 @@ func AllocateInternalBuffers32b(/* const */ dec *VP8LDecoder, final_width int) i
 func AllocateInternalBuffers8b(/* const */ dec *VP8LDecoder) int {
   total_num_pixels := uint64(dec.width * dec.height;)
   dec.argb_cache = nil;  // for soundness
-//   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint8));
+//   dec.pixels = (*uint32)WebPSafeMalloc(total_num_pixels, sizeof(uint8))
 //   if (dec.pixels == nil) {
-//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY);
+//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY)
 //   }
   dec.pixels = make([]uint32, total_num_pixels) // NOTE: have the feeling that this should be divided by 4
 

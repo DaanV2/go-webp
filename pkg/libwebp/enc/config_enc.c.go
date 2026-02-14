@@ -35,10 +35,10 @@ vart kLosslessPresets = [MAX_LEVEL + 1]MQ{{0, 0},  {1, 20}, {2, 25}, {3, 30}, {3
 // and 'lossless'. Returns false in case of parameter error.
 func WebPConfigLosslessPreset(config *config.Config, level int) int {
   if config == nil || level < 0 || level > MAX_LEVEL { return 0  }
-  config.Lossless = 1;
-  config.Method = kLosslessPresets[level].method;
-  config.Quality = kLosslessPresets[level].quality;
-  return 1;
+  config.Lossless = 1
+  config.Method = kLosslessPresets[level].method
+  config.Quality = kLosslessPresets[level].quality
+  return 1
 }
 
 //------------------------------------------------------------------------------

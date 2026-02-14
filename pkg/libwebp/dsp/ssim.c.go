@@ -30,60 +30,60 @@ static const uint32 kWeight[2 * VP8_SSIM_KERNEL + 1] = {1, 2, 3, 4, 3, 2, 1}
 static const kWeightSum := 16 * 16;  // sum{kWeight}^2
 
 func SSIMCalculation(/* const */ stats *VP8DistoStats, n uint32 /*num *samples/) double {
-  w2 := N * N;
-  C1 := 20 * w2;
-  C2 := 60 * w2;
+  w2 := N * N
+  C1 := 20 * w2
+  C2 := 60 * w2
   C3 := 8 * 8 * w2;  // 'dark' limit ~= 6
-  xmxm := (uint64)stats.xm * stats.xm;
-  ymym := (uint64)stats.ym * stats.ym;
+  xmxm := (uint64)stats.xm * stats.xm
+  ymym := (uint64)stats.ym * stats.ym
   if (xmxm + ymym >= C3) {
-    xmym := (int64)stats.xm * stats.ym;
+    xmym := (int64)stats.xm * stats.ym
     sxy := (int64)stats.xym * N - xmym;  // can be negative
-    sxx := (uint64)stats.xxm * N - xmxm;
-    syy := (uint64)stats.yym * N - ymym;
+    sxx := (uint64)stats.xxm * N - xmxm
+    syy := (uint64)stats.yym * N - ymym
     // we descale by 8 to prevent overflow during the fnum/fden multiply.
-    num_S := (2 * (uint64)(sxy < 0 ? 0 : sxy) + C2) >> 8;
-    den_S := (sxx + syy + C2) >> 8;
-    fnum := (2 * xmym + C1) * num_S;
-    fden := (xmxm + ymym + C1) * den_S;
-     = (double)fnum / fden;
-    assert.Assert(r >= 0. && r <= 1.0);
-    return r;
+    num_S := (2 * (uint64)(sxy < 0 ? 0 : sxy) + C2) >> 8
+    den_S := (sxx + syy + C2) >> 8
+    fnum := (2 * xmym + C1) * num_S
+    fden := (xmxm + ymym + C1) * den_S
+     = (double)fnum / fden
+    assert.Assert(r >= 0. && r <= 1.0)
+    return r
   }
   return 1.;  // area is too dark to contribute meaningfully
 }
 
 double VP8SSIMFromStats(/* const */ stats *VP8DistoStats) {
-  return SSIMCalculation(stats, kWeightSum);
+  return SSIMCalculation(stats, kWeightSum)
 }
 
 double VP8SSIMFromStatsClipped(/* const */ stats *VP8DistoStats) {
-  return SSIMCalculation(stats, stats.w);
+  return SSIMCalculation(stats, stats.w)
 }
 
 func SSIMGetClipped_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2, xo int, yo int, int W, int H) double {
   VP8DistoStats stats = {0, 0, 0, 0, 0, 0}
-  ymin := (yo - VP8_SSIM_KERNEL < 0) ? 0 : yo - VP8_SSIM_KERNEL;
-  ymax := (yo + VP8_SSIM_KERNEL > H - 1) ? H - 1 : yo + VP8_SSIM_KERNEL;
-  xmin := (xo - VP8_SSIM_KERNEL < 0) ? 0 : xo - VP8_SSIM_KERNEL;
-  xmax := (xo + VP8_SSIM_KERNEL > W - 1) ? W - 1 : xo + VP8_SSIM_KERNEL;
+  ymin := (yo - VP8_SSIM_KERNEL < 0) ? 0 : yo - VP8_SSIM_KERNEL
+  ymax := (yo + VP8_SSIM_KERNEL > H - 1) ? H - 1 : yo + VP8_SSIM_KERNEL
+  xmin := (xo - VP8_SSIM_KERNEL < 0) ? 0 : xo - VP8_SSIM_KERNEL
+  xmax := (xo + VP8_SSIM_KERNEL > W - 1) ? W - 1 : xo + VP8_SSIM_KERNEL
   var x, y int
-  src1 += ymin * stride1;
-  src2 += ymin * stride2;
+  src1 += ymin * stride1
+  src2 += ymin * stride2
   for y = ymin; y <= ymax; ++y, src1 += stride1, src2 += stride2 {
     for x = xmin; x <= xmax; x++ {
-      w := kWeight[VP8_SSIM_KERNEL + x - xo] * kWeight[VP8_SSIM_KERNEL + y - yo];
-      s1 := src1[x];
-      s2 := src2[x];
-      stats.w += w;
-      stats.xm += w * s1;
-      stats.ym += w * s2;
-      stats.xxm += w * s1 * s1;
-      stats.xym += w * s1 * s2;
-      stats.yym += w * s2 * s2;
+      w := kWeight[VP8_SSIM_KERNEL + x - xo] * kWeight[VP8_SSIM_KERNEL + y - yo]
+      s1 := src1[x]
+      s2 := src2[x]
+      stats.w += w
+      stats.xm += w * s1
+      stats.ym += w * s2
+      stats.xxm += w * s1 * s1
+      stats.xym += w * s1 * s2
+      stats.yym += w * s2 * s2
     }
   }
-  return VP8SSIMFromStatsClipped(&stats);
+  return VP8SSIMFromStatsClipped(&stats)
 }
 
 func SSIMGet_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int stride2) double {
@@ -91,17 +91,17 @@ func SSIMGet_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int 
   var x, y int
   for y = 0; y <= 2 * VP8_SSIM_KERNEL; ++y, src1 += stride1, src2 += stride2 {
     for x = 0; x <= 2 * VP8_SSIM_KERNEL; x++ {
-      w := kWeight[x] * kWeight[y];
-      s1 := src1[x];
-      s2 := src2[x];
-      stats.xm += w * s1;
-      stats.ym += w * s2;
-      stats.xxm += w * s1 * s1;
-      stats.xym += w * s1 * s2;
-      stats.yym += w * s2 * s2;
+      w := kWeight[x] * kWeight[y]
+      s1 := src1[x]
+      s2 := src2[x]
+      stats.xm += w * s1
+      stats.ym += w * s2
+      stats.xxm += w * s1 * s1
+      stats.xym += w * s1 * s2
+      stats.yym += w * s2 * s2
     }
   }
-  return VP8SSIMFromStats(&stats);
+  return VP8SSIMFromStats(&stats)
 }
 
 #endif  // !defined(WEBP_REDUCE_SIZE)
@@ -111,43 +111,43 @@ func SSIMGet_C(/* const */ src *uint81, int stride1, /*const*/ src *uint82, int 
 #if !defined(WEBP_DISABLE_STATS)
 func AccumulateSSE_C(/* const */ src *uint81, /*const*/ src *uint82, len int) uint32 {
   var i int
-  uint32 sse2 = 0;
+  uint32 sse2 = 0
   assert.Assert(len <= 65535);  // to ensure that accumulation fits within uint32
   for i = 0; i < len; i++ {
-    diff := src1[i] - src2[i];
-    sse2 += diff * diff;
+    diff := src1[i] - src2[i]
+    sse2 += diff * diff
   }
-  return sse2;
+  return sse2
 }
 #endif
 
 //------------------------------------------------------------------------------
 
 #if !defined(WEBP_REDUCE_SIZE)
-VP8SSIMGetFunc VP8SSIMGet;
-VP8SSIMGetClippedFunc VP8SSIMGetClipped;
+VP8SSIMGetFunc VP8SSIMGet
+VP8SSIMGetClippedFunc VP8SSIMGetClipped
 #endif
 #if !defined(WEBP_DISABLE_STATS)
-VP8AccumulateSSEFunc VP8AccumulateSSE;
+VP8AccumulateSSEFunc VP8AccumulateSSE
 #endif
 
 
-extern func VP8SSIMDspInitSSE2(void);
+extern func VP8SSIMDspInitSSE2(void)
 
 WEBP_DSP_INIT_FUNC(VP8SSIMDspInit) {
 #if !defined(WEBP_REDUCE_SIZE)
-  VP8SSIMGetClipped = SSIMGetClipped_C;
-  VP8SSIMGet = SSIMGet_C;
+  VP8SSIMGetClipped = SSIMGetClipped_C
+  VP8SSIMGet = SSIMGet_C
 #endif
 
 #if !defined(WEBP_DISABLE_STATS)
-  VP8AccumulateSSE = AccumulateSSE_C;
+  VP8AccumulateSSE = AccumulateSSE_C
 #endif
 
   if (VP8GetCPUInfo != nil) {
 #if false
     if (VP8GetCPUInfo(kSSE2)) {
-      VP8SSIMDspInitSSE2();
+      VP8SSIMDspInitSSE2()
     }
 #endif
   }

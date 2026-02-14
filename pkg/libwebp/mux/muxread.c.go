@@ -275,7 +275,7 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 	data += RIFF_HEADER_SIZE
 	size -= RIFF_HEADER_SIZE
 
-	//   wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*wpi));
+	//   wpi = (*WebPMuxImage)WebPSafeMalloc(uint64(1), sizeof(*wpi))
 	//   if wpi == nil { goto Err }
 	wpi := new(WebPMuxImage)
 
@@ -360,7 +360,7 @@ func WebPMuxCreateInternal( /* const */ bitstream *WebPData, copy_data int, vers
 	}
 
 	MuxImageDelete(wpi)
-	return mux // All OK;
+	return mux // All OK
 
 Err: // Something bad happened.
 	ChunkRelease(&chunk)
@@ -479,7 +479,7 @@ func SynthesizeBitstream( /* const */ wpi *WebPMuxImage /*const*/, bitstream *We
 	alpha_size := tenary.If(need_vp8x, ChunkDiskSize(wpi.alpha), 0)
 	// Note: No need to output ANMF chunk for a single image.
 	var size uint64 = RIFF_HEADER_SIZE + vp8x_size + alpha_size + ChunkDiskSize(wpi.img)
-	//   var data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size);
+	//   var data *uint8 = (*uint8)WebPSafeMalloc(uint64(1), size)
 	//   if data == nil { return WEBP_MUX_MEMORY_ERROR  }
 	data := make([]uint8, size)
 

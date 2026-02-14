@@ -29,7 +29,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 // color mapping related functions.
 func VP8GetARGBIndex(uint32 idx) uint32 {
-  return (idx >> 8) & 0xff;
+  return (idx >> 8) & 0xff
 }
 
 func VP8GetAlphaIndex(uint8 idx) uint8 { return idx; }
@@ -37,7 +37,7 @@ func VP8GetAlphaIndex(uint8 idx) uint8 { return idx; }
 func VP8GetARGBValue(uint32 val) uint32 { return val; }
 
 func VP8GetAlphaValue(uint32 val) uint8 {
-  return (val >> 8) & 0xff;
+  return (val >> 8) & 0xff
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ func VP8GetAlphaValue(uint32 val) uint8 {
 
 // Computes sampled size of 'size' when sampling using 'sampling bits'.
 func VP8LSubSampleSize(size uint32, uint32 sampling_bits) uint32 {
-  return (size + (1 << sampling_bits) - 1) >> sampling_bits;
+  return (size + (1 << sampling_bits) - 1) >> sampling_bits
 }
 
 // Converts near lossless quality into max number of bits shaved off.
@@ -56,7 +56,7 @@ func VP8LNearLosslessBits(int near_lossless_quality) int {
   // 40..59 . 3
   // 20..39 . 4
   //  0..19 . 5
-  return 5 - near_lossless_quality / 20;
+  return 5 - near_lossless_quality / 20
 }
 
 // -----------------------------------------------------------------------------
@@ -79,10 +79,10 @@ const LOG_2_RECIPROCAL =1.44269504088896338700465094007086
 const LOG_2_RECIPROCAL_FIXED_DOUBLE =12102203.161561485379934310913085937500
 const LOG_2_RECIPROCAL_FIXED =((uint64)12102203)
 const LOG_LOOKUP_IDX_MAX =256
-extern const uint32 kLog2Table[LOG_LOOKUP_IDX_MAX];
-extern const uint64 kSLog2Table[LOG_LOOKUP_IDX_MAX];
-typedef uint32 (*VP8LFastLog2SlowFunc)(uint32 v);
-typedef uint64 (*VP8LFastSLog2SlowFunc)(uint32 v);
+extern const uint32 kLog2Table[LOG_LOOKUP_IDX_MAX]
+extern const uint64 kSLog2Table[LOG_LOOKUP_IDX_MAX]
+typedef uint32 (*VP8LFastLog2SlowFunc)(uint32 v)
+typedef uint64 (*VP8LFastSLog2SlowFunc)(uint32 v)
 
 
 
@@ -96,11 +96,11 @@ func VP8LFastSLog2(uint32 v) uint64 {
 }
 
 func RightShiftRound(uint64 v, uint32 shift) uint64 {
-  return (v + (uint64(1) << shift >> 1)) >> shift;
+  return (v + (uint64(1) << shift >> 1)) >> shift
 }
 
 func DivRound(int64 a, int64 b) int64 {
-  return ((a < 0) == (b < 0)) ? ((a + b / 2) / b) : ((a - b / 2) / b);
+  return ((a < 0) == (b < 0)) ? ((a + b / 2) / b) : ((a - b / 2) / b)
 }
 
 const WEBP_INT64_MAX =((int64)((uint64(1) << 63) - 1))
@@ -113,18 +113,18 @@ const WEBP_UINT64_MAX =(~uint64(0))
 // extra bits. The prefixes are encoded with an entropy code
 // while the extra bits are stored just as normal bits.
 func VP8LPrefixEncodeBitsNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
-  highest_bit := BitsLog2Floor(--distance);
-  second_highest_bit := (distance >> (highest_bit - 1)) & 1;
-  *extra_bits = highest_bit - 1;
-  *code = 2 * highest_bit + second_highest_bit;
+  highest_bit := BitsLog2Floor(--distance)
+  second_highest_bit := (distance >> (highest_bit - 1)) & 1
+  *extra_bits = highest_bit - 1
+  *code = 2 * highest_bit + second_highest_bit
 }
 
 func VP8LPrefixEncodeNoLUT(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
-  highest_bit := BitsLog2Floor(--distance);
-  second_highest_bit := (distance >> (highest_bit - 1)) & 1;
-  *extra_bits = highest_bit - 1;
-  *extra_bits_value = distance & ((1 << *extra_bits) - 1);
-  *code = 2 * highest_bit + second_highest_bit;
+  highest_bit := BitsLog2Floor(--distance)
+  second_highest_bit := (distance >> (highest_bit - 1)) & 1
+  *extra_bits = highest_bit - 1
+  *extra_bits_value = distance & ((1 << *extra_bits) - 1)
+  *code = 2 * highest_bit + second_highest_bit
 }
 
 const PREFIX_LOOKUP_IDX_MAX =512
@@ -134,43 +134,43 @@ type VP8LPrefixCode struct {
 } 
 
 // These tables are derived using VP8LPrefixEncodeNoLUT.
-extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX];
-extern const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX];
+extern const VP8LPrefixCode kPrefixEncodeCode[PREFIX_LOOKUP_IDX_MAX]
+extern const uint8 kPrefixEncodeExtraBitsValue[PREFIX_LOOKUP_IDX_MAX]
 func VP8LPrefixEncodeBits(int distance, /*const*/ code *int, /*const*/ extra_bits *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
-    var prefix_code VP8LPrefixCode = kPrefixEncodeCode[distance];
-    *code = prefix_code.code;
-    *extra_bits = prefix_code.extra_bits;
+    var prefix_code VP8LPrefixCode = kPrefixEncodeCode[distance]
+    *code = prefix_code.code
+    *extra_bits = prefix_code.extra_bits
   } else {
-    VP8LPrefixEncodeBitsNoLUT(distance, code, extra_bits);
+    VP8LPrefixEncodeBitsNoLUT(distance, code, extra_bits)
   }
 }
 
 func VP8LPrefixEncode(int distance, /*const*/ code *int, /*const*/ extra_bits *int, /*const*/ extra_bits_value *int) {
   if (distance < PREFIX_LOOKUP_IDX_MAX) {
-    var prefix_code VP8LPrefixCode = kPrefixEncodeCode[distance];
-    *code = prefix_code.code;
-    *extra_bits = prefix_code.extra_bits;
-    *extra_bits_value = kPrefixEncodeExtraBitsValue[distance];
+    var prefix_code VP8LPrefixCode = kPrefixEncodeCode[distance]
+    *code = prefix_code.code
+    *extra_bits = prefix_code.extra_bits
+    *extra_bits_value = kPrefixEncodeExtraBitsValue[distance]
   } else {
-    VP8LPrefixEncodeNoLUT(distance, code, extra_bits, extra_bits_value);
+    VP8LPrefixEncodeNoLUT(distance, code, extra_bits, extra_bits_value)
   }
 }
 
 // Sum of each component, mod 256.
 static   uint32
 VP8LAddPixels(uint32 a, uint32 b) {
-  alpha_and_green := (a & uint(0xff00ff00)) + (b & uint(0xff00ff00));
-  red_and_blue := (a & uint(0x00ff00ff)) + (b & uint(0x00ff00ff));
-  return (alpha_and_green & uint(0xff00ff00)) | (red_and_blue & uint(0x00ff00ff));
+  alpha_and_green := (a & uint(0xff00ff00)) + (b & uint(0xff00ff00))
+  red_and_blue := (a & uint(0x00ff00ff)) + (b & uint(0x00ff00ff))
+  return (alpha_and_green & uint(0xff00ff00)) | (red_and_blue & uint(0x00ff00ff))
 }
 
 // Difference of each component, mod 256.
 static   uint32
 VP8LSubPixels(uint32 a, uint32 b) {
-  alpha_and_green := uint(0x00ff00ff) + (a & uint(0xff00ff00)) - (b & uint(0xff00ff00));
-  red_and_blue := uint(0xff00ff00) + (a & uint(0x00ff00ff)) - (b & uint(0x00ff00ff));
-  return (alpha_and_green & uint(0xff00ff00)) | (red_and_blue & uint(0x00ff00ff));
+  alpha_and_green := uint(0x00ff00ff) + (a & uint(0xff00ff00)) - (b & uint(0xff00ff00))
+  red_and_blue := uint(0xff00ff00) + (a & uint(0x00ff00ff)) - (b & uint(0x00ff00ff))
+  return (alpha_and_green & uint(0xff00ff00)) | (red_and_blue & uint(0x00ff00ff))
 }
 
 //------------------------------------------------------------------------------

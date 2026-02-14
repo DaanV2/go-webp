@@ -28,7 +28,7 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 #ifdef FANCY_UPSAMPLING
 
 // Fancy upsampling functions to convert YUV to RGB
-WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST];
+WebPUpsampleLinePairFunc WebPUpsamplers[MODE_LAST]
 
 // Given samples laid out in a square as:
 //  [a b]
@@ -114,15 +114,15 @@ UPSAMPLE_FUNC(UpsampleRgba4444LinePair_C, VP8YuvToRgba4444, 2)
 UPSAMPLE_FUNC(UpsampleRgb565LinePair_C, VP8YuvToRgb565, 2)
 #else
 func EmptyUpsampleFunc(/* const */ top_y *uint8, /*const*/ bottom_y *uint8, /*const*/ top_u *uint8, /*const*/ top_v *uint8, /*const*/ cur_u *uint8, /*const*/ cur_v *uint8, top_dst *uint8, bottom_dst *uint8, len int) {
-  (void)top_y;
-  (void)bottom_y;
-  (void)top_u;
-  (void)top_v;
-  (void)cur_u;
-  (void)cur_v;
-  (void)top_dst;
-  (void)bottom_dst;
-  (void)len;
+  (void)top_y
+  (void)bottom_y
+  (void)top_u
+  (void)top_v
+  (void)cur_u
+  (void)cur_v
+  (void)top_dst
+  (void)bottom_dst
+  (void)len
   assert.Assert(0);  // COLORSPACE SUPPORT NOT COMPILED
 }
 const UpsampleArgbLinePair_C =EmptyUpsampleFunc
@@ -177,11 +177,11 @@ DUAL_SAMPLE_FUNC(DualLineSamplerARGB, VP8YuvToArgb)
 #endif  // !FANCY_UPSAMPLING
 
 WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last) {
-  WebPInitUpsamplers();
+  WebPInitUpsamplers()
 #ifdef FANCY_UPSAMPLING
-  return WebPUpsamplers[alpha_is_last ? MODE_BGRA : MODE_ARGB];
+  return WebPUpsamplers[alpha_is_last ? MODE_BGRA : MODE_ARGB]
 #else
-  return (alpha_is_last ? DualLineSamplerBGRA : DualLineSamplerARGB);
+  return (alpha_is_last ? DualLineSamplerBGRA : DualLineSamplerARGB)
 #endif
 }
 
@@ -209,11 +209,11 @@ YUV444_FUNC(WebPYuv444ToRgba4444_C, VP8YuvToRgba4444, 2)
 YUV444_FUNC(WebPYuv444ToRgb565_C, VP8YuvToRgb565, 2)
 #else
 func EmptyYuv444Func(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int) {
-  (void)y;
-  (void)u;
-  (void)v;
-  (void)dst;
-  (void)len;
+  (void)y
+  (void)u
+  (void)v
+  (void)dst
+  (void)len
 }
 const WebPYuv444ToRgb_C =EmptyYuv444Func
 const WebPYuv444ToBgr_C =EmptyYuv444Func
@@ -224,40 +224,40 @@ const WebPYuv444ToRgb565_C =EmptyYuv444Func
 
 #undef YUV444_FUNC
 
-WebPYUV444Converter WebPYUV444Converters[MODE_LAST];
+WebPYUV444Converter WebPYUV444Converters[MODE_LAST]
 
 
-extern func WebPInitYUV444ConvertersMIPSdspR2(void);
-extern func WebPInitYUV444ConvertersSSE2(void);
-extern func WebPInitYUV444ConvertersSSE41(void);
+extern func WebPInitYUV444ConvertersMIPSdspR2(void)
+extern func WebPInitYUV444ConvertersSSE2(void)
+extern func WebPInitYUV444ConvertersSSE41(void)
 
 WEBP_DSP_INIT_FUNC(WebPInitYUV444Converters) {
-  WebPYUV444Converters[MODE_RGBA] = WebPYuv444ToRgba_C;
-  WebPYUV444Converters[MODE_BGRA] = WebPYuv444ToBgra_C;
-  WebPYUV444Converters[MODE_RGB] = WebPYuv444ToRgb_C;
-  WebPYUV444Converters[MODE_BGR] = WebPYuv444ToBgr_C;
-  WebPYUV444Converters[MODE_ARGB] = WebPYuv444ToArgb_C;
-  WebPYUV444Converters[MODE_RGBA_4444] = WebPYuv444ToRgba4444_C;
-  WebPYUV444Converters[MODE_RGB_565] = WebPYuv444ToRgb565_C;
-  WebPYUV444Converters[MODE_rgbA] = WebPYuv444ToRgba_C;
-  WebPYUV444Converters[MODE_bgrA] = WebPYuv444ToBgra_C;
-  WebPYUV444Converters[MODE_Argb] = WebPYuv444ToArgb_C;
-  WebPYUV444Converters[MODE_rgbA_4444] = WebPYuv444ToRgba4444_C;
+  WebPYUV444Converters[MODE_RGBA] = WebPYuv444ToRgba_C
+  WebPYUV444Converters[MODE_BGRA] = WebPYuv444ToBgra_C
+  WebPYUV444Converters[MODE_RGB] = WebPYuv444ToRgb_C
+  WebPYUV444Converters[MODE_BGR] = WebPYuv444ToBgr_C
+  WebPYUV444Converters[MODE_ARGB] = WebPYuv444ToArgb_C
+  WebPYUV444Converters[MODE_RGBA_4444] = WebPYuv444ToRgba4444_C
+  WebPYUV444Converters[MODE_RGB_565] = WebPYuv444ToRgb565_C
+  WebPYUV444Converters[MODE_rgbA] = WebPYuv444ToRgba_C
+  WebPYUV444Converters[MODE_bgrA] = WebPYuv444ToBgra_C
+  WebPYUV444Converters[MODE_Argb] = WebPYuv444ToArgb_C
+  WebPYUV444Converters[MODE_rgbA_4444] = WebPYuv444ToRgba4444_C
 
   if (VP8GetCPUInfo != nil) {
 #if false
     if (VP8GetCPUInfo(kSSE2)) {
-      WebPInitYUV444ConvertersSSE2();
+      WebPInitYUV444ConvertersSSE2()
     }
 #endif
 #if false
     if (VP8GetCPUInfo(kSSE4_1)) {
-      WebPInitYUV444ConvertersSSE41();
+      WebPInitYUV444ConvertersSSE41()
     }
 #endif
 #if false
     if (VP8GetCPUInfo(kMIPSdspR2)) {
-      WebPInitYUV444ConvertersMIPSdspR2();
+      WebPInitYUV444ConvertersMIPSdspR2()
     }
 #endif
   }
@@ -266,48 +266,48 @@ WEBP_DSP_INIT_FUNC(WebPInitYUV444Converters) {
 //------------------------------------------------------------------------------
 // Main calls
 
-extern func WebPInitUpsamplersSSE2(void);
-extern func WebPInitUpsamplersSSE41(void);
-extern func WebPInitUpsamplersNEON(void);
-extern func WebPInitUpsamplersMIPSdspR2(void);
-extern func WebPInitUpsamplersMSA(void);
+extern func WebPInitUpsamplersSSE2(void)
+extern func WebPInitUpsamplersSSE41(void)
+extern func WebPInitUpsamplersNEON(void)
+extern func WebPInitUpsamplersMIPSdspR2(void)
+extern func WebPInitUpsamplersMSA(void)
 
 WEBP_DSP_INIT_FUNC(WebPInitUpsamplers) {
 #ifdef FANCY_UPSAMPLING
 #if !WEBP_NEON_OMIT_C_CODE
-  WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair_C;
-  WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair_C;
-  WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair_C;
-  WebPUpsamplers[MODE_bgrA] = UpsampleBgraLinePair_C;
-  WebPUpsamplers[MODE_RGB] = UpsampleRgbLinePair_C;
-  WebPUpsamplers[MODE_BGR] = UpsampleBgrLinePair_C;
-  WebPUpsamplers[MODE_ARGB] = UpsampleArgbLinePair_C;
-  WebPUpsamplers[MODE_RGBA_4444] = UpsampleRgba4444LinePair_C;
-  WebPUpsamplers[MODE_RGB_565] = UpsampleRgb565LinePair_C;
-  WebPUpsamplers[MODE_Argb] = UpsampleArgbLinePair_C;
-  WebPUpsamplers[MODE_rgbA_4444] = UpsampleRgba4444LinePair_C;
+  WebPUpsamplers[MODE_RGBA] = UpsampleRgbaLinePair_C
+  WebPUpsamplers[MODE_BGRA] = UpsampleBgraLinePair_C
+  WebPUpsamplers[MODE_rgbA] = UpsampleRgbaLinePair_C
+  WebPUpsamplers[MODE_bgrA] = UpsampleBgraLinePair_C
+  WebPUpsamplers[MODE_RGB] = UpsampleRgbLinePair_C
+  WebPUpsamplers[MODE_BGR] = UpsampleBgrLinePair_C
+  WebPUpsamplers[MODE_ARGB] = UpsampleArgbLinePair_C
+  WebPUpsamplers[MODE_RGBA_4444] = UpsampleRgba4444LinePair_C
+  WebPUpsamplers[MODE_RGB_565] = UpsampleRgb565LinePair_C
+  WebPUpsamplers[MODE_Argb] = UpsampleArgbLinePair_C
+  WebPUpsamplers[MODE_rgbA_4444] = UpsampleRgba4444LinePair_C
 #endif
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != nil) {
 #if false
     if (VP8GetCPUInfo(kSSE2)) {
-      WebPInitUpsamplersSSE2();
+      WebPInitUpsamplersSSE2()
     }
 #endif
 #if false
     if (VP8GetCPUInfo(kSSE4_1)) {
-      WebPInitUpsamplersSSE41();
+      WebPInitUpsamplersSSE41()
     }
 #endif
 #if false
     if (VP8GetCPUInfo(kMIPSdspR2)) {
-      WebPInitUpsamplersMIPSdspR2();
+      WebPInitUpsamplersMIPSdspR2()
     }
 #endif
 #if defined(WEBP_USE_MSA)
     if (VP8GetCPUInfo(kMSA)) {
-      WebPInitUpsamplersMSA();
+      WebPInitUpsamplersMSA()
     }
 #endif
   }
@@ -315,22 +315,22 @@ WEBP_DSP_INIT_FUNC(WebPInitUpsamplers) {
 #if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
-    WebPInitUpsamplersNEON();
+    WebPInitUpsamplersNEON()
   }
 #endif
 
-  assert.Assert(WebPUpsamplers[MODE_RGBA] != nil);
-  assert.Assert(WebPUpsamplers[MODE_BGRA] != nil);
-  assert.Assert(WebPUpsamplers[MODE_rgbA] != nil);
-  assert.Assert(WebPUpsamplers[MODE_bgrA] != nil);
+  assert.Assert(WebPUpsamplers[MODE_RGBA] != nil)
+  assert.Assert(WebPUpsamplers[MODE_BGRA] != nil)
+  assert.Assert(WebPUpsamplers[MODE_rgbA] != nil)
+  assert.Assert(WebPUpsamplers[MODE_bgrA] != nil)
 #if !defined(WEBP_REDUCE_CSP) || !WEBP_NEON_OMIT_C_CODE
-  assert.Assert(WebPUpsamplers[MODE_RGB] != nil);
-  assert.Assert(WebPUpsamplers[MODE_BGR] != nil);
-  assert.Assert(WebPUpsamplers[MODE_ARGB] != nil);
-  assert.Assert(WebPUpsamplers[MODE_RGBA_4444] != nil);
-  assert.Assert(WebPUpsamplers[MODE_RGB_565] != nil);
-  assert.Assert(WebPUpsamplers[MODE_Argb] != nil);
-  assert.Assert(WebPUpsamplers[MODE_rgbA_4444] != nil);
+  assert.Assert(WebPUpsamplers[MODE_RGB] != nil)
+  assert.Assert(WebPUpsamplers[MODE_BGR] != nil)
+  assert.Assert(WebPUpsamplers[MODE_ARGB] != nil)
+  assert.Assert(WebPUpsamplers[MODE_RGBA_4444] != nil)
+  assert.Assert(WebPUpsamplers[MODE_RGB_565] != nil)
+  assert.Assert(WebPUpsamplers[MODE_Argb] != nil)
+  assert.Assert(WebPUpsamplers[MODE_rgbA_4444] != nil)
 #endif
 
 #endif  // FANCY_UPSAMPLING

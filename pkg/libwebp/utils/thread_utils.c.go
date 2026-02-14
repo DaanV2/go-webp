@@ -27,13 +27,13 @@ import "github.com/daanv2/go-webp/pkg/libwebp/utils"
 #if defined(_WIN32)
 
 import "github.com/daanv2/go-webp/pkg/windows"
-typedef HANDLE pthread_t;
+typedef HANDLE pthread_t
 
 #if _WIN32_WINNT < 0x0600
 #error _WIN32_WINNT must target Windows Vista / Server 2008 or newer.
 #endif
-typedef SRWLOCK pthread_mutex_t;
-typedef CONDITION_VARIABLE pthread_cond_t;
+typedef SRWLOCK pthread_mutex_t
+typedef CONDITION_VARIABLE pthread_cond_t
 
 #define WINAPI_FAMILY_PARTITION(x) x
 #endif
@@ -49,9 +49,9 @@ import "github.com/daanv2/go-webp/pkg/pthread"
 #endif  // _WIN32
 
 type WebPWorkerImpl struct {
-  pthread_mutex_t mutex;
-  pthread_cond_t condition;
-  pthread_t thread;
+  pthread_mutex_t mutex
+  pthread_cond_t condition
+  pthread_t thread
 }
 
 #if defined(_WIN32)
@@ -67,57 +67,57 @@ const THREADFN = unsigned int __stdcall
 
 // Deprecated: use go routines instead.
 func pthread_create(thread *pthread_t, /* const */ attr *void, unsigned int(__start *stdcall)(*void), arg *void) int {
-  return 0;
+  return 0
 }
 
 func pthread_join(thread pthread_t, value_ptr *void) int {
-  (void)value_ptr;
+  (void)value_ptr
   return (WaitForSingleObject(thread, INFINITE) != WAIT_OBJECT_0 ||
-          CloseHandle(thread) == 0);
+          CloseHandle(thread) == 0)
 }
 
 // Mutex
 func pthread_mutex_init(pthread_mutex_t* const mutex, mutexattr *void) int {
-  (void)mutexattr;
-  InitializeSRWLock(mutex);
-  return 0;
+  (void)mutexattr
+  InitializeSRWLock(mutex)
+  return 0
 }
 
 func pthread_mutex_lock(pthread_mutex_t* const mutex) int {
-  AcquireSRWLockExclusive(mutex);
-  return 0;
+  AcquireSRWLockExclusive(mutex)
+  return 0
 }
 
 func pthread_mutex_unlock(pthread_mutex_t* const mutex) int {
-  ReleaseSRWLockExclusive(mutex);
-  return 0;
+  ReleaseSRWLockExclusive(mutex)
+  return 0
 }
 
 func pthread_mutex_destroy(pthread_mutex_t* const mutex) int {
-  (void)mutex;
-  return 0;
+  (void)mutex
+  return 0
 }
 
 // Condition
 func pthread_cond_destroy(pthread_cond_t* const condition) int {
-  (void)condition;
-  return 0;
+  (void)condition
+  return 0
 }
 
 func pthread_cond_init(pthread_cond_t* const condition, cond_attr *void) int {
-  (void)cond_attr;
-  InitializeConditionVariable(condition);
-  return 0;
+  (void)cond_attr
+  InitializeConditionVariable(condition)
+  return 0
 }
 
 func pthread_cond_signal(pthread_cond_t* const condition) int {
-  WakeConditionVariable(condition);
-  return 0;
+  WakeConditionVariable(condition)
+  return 0
 }
 
 func pthread_cond_wait(pthread_cond_t* const condition, pthread_mutex_t* const mutex) int {
-  ok := SleepConditionVariableSRW(condition, mutex, INFINITE, 0);
-  return !ok;
+  ok := SleepConditionVariableSRW(condition, mutex, INFINITE, 0)
+  return !ok
 }
 
 #else  // !_WIN32
@@ -128,27 +128,27 @@ const THREADFN = *void
 //------------------------------------------------------------------------------
 
 func ThreadLoop(ptr *void) THREADFN {
-  var worker *WebPWorker = (*WebPWorker)ptr;
-  var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
-  done := 0;
+  var worker *WebPWorker = (*WebPWorker)ptr
+  var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl
+  done := 0
   while (!done) {
-    pthread_mutex_lock(&impl.mutex);
+    pthread_mutex_lock(&impl.mutex)
     while (worker.status == OK) {  // wait in idling mode
-      pthread_cond_wait(&impl.condition, &impl.mutex);
+      pthread_cond_wait(&impl.condition, &impl.mutex)
     }
     if (worker.status == WORK) {
-      WebPGetWorkerInterface().Execute(worker);
-      worker.status = OK;
+      WebPGetWorkerInterface().Execute(worker)
+      worker.status = OK
     } else if (worker.status == NOT_OK) {  // finish the worker
-      done = 1;
+      done = 1
     }
     // signal to the main thread that we're done (for Sync())
     // Note the associated mutex does not need to be held when signaling the
     // condition. Unlocking the mutex first may improve performance in some
     // implementations, avoiding the case where the waiting thread can't
     // reacquire the mutex when woken.
-    pthread_mutex_unlock(&impl.mutex);
-    pthread_cond_signal(&impl.condition);
+    pthread_mutex_unlock(&impl.mutex)
+    pthread_cond_signal(&impl.condition)
   }
   return THREAD_RETURN(nil);  // Thread is finished
 }
@@ -158,28 +158,28 @@ func ChangeState(/* const */ worker *WebPWorker, WebPWorkerStatus new_status) {
   // No-op when attempting to change state on a thread that didn't come up.
   // Checking 'status' without acquiring the lock first would result in a data
   // race.
-  var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
+  var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl
   if impl == nil { return }
 
-  pthread_mutex_lock(&impl.mutex);
+  pthread_mutex_lock(&impl.mutex)
   if (worker.status >= OK) {
     // wait for the worker to finish
     while (worker.status != OK) {
-      pthread_cond_wait(&impl.condition, &impl.mutex);
+      pthread_cond_wait(&impl.condition, &impl.mutex)
     }
     // assign new status and release the working thread if needed
     if (new_status != OK) {
-      worker.status = new_status;
+      worker.status = new_status
       // Note the associated mutex does not need to be held when signaling the
       // condition. Unlocking the mutex first may improve performance in some
       // implementations, avoiding the case where the waiting thread can't
       // reacquire the mutex when woken.
-      pthread_mutex_unlock(&impl.mutex);
-      pthread_cond_signal(&impl.condition);
-      return;
+      pthread_mutex_unlock(&impl.mutex)
+      pthread_cond_signal(&impl.condition)
+      return
     }
   }
-  pthread_mutex_unlock(&impl.mutex);
+  pthread_mutex_unlock(&impl.mutex)
 }
 
 #endif  // WEBP_USE_THREAD
@@ -187,87 +187,87 @@ func ChangeState(/* const */ worker *WebPWorker, WebPWorkerStatus new_status) {
 //------------------------------------------------------------------------------
 
 func Init(/* const */ worker *WebPWorker) {
-  stdlib.Memset(worker, 0, sizeof(*worker));
-  worker.status = NOT_OK;
+  stdlib.Memset(worker, 0, sizeof(*worker))
+  worker.status = NOT_OK
 }
 
 func Sync(/* const */ worker *WebPWorker) int {
 #ifdef WEBP_USE_THREAD
-  ChangeState(worker, OK);
+  ChangeState(worker, OK)
 #endif
-  assert.Assert(worker.status <= OK);
-  return !worker.had_error;
+  assert.Assert(worker.status <= OK)
+  return !worker.had_error
 }
 
 func Reset(/* const */ worker *WebPWorker) int {
-  ok := 1;
-  worker.had_error = 0;
+  ok := 1
+  worker.had_error = 0
   if (worker.status < OK) {
 #ifdef WEBP_USE_THREAD
-    // var impl *WebPWorkerImpl = (*WebPWorkerImpl)WebPSafeCalloc(1, sizeof(WebPWorkerImpl));
+    // var impl *WebPWorkerImpl = (*WebPWorkerImpl)WebPSafeCalloc(1, sizeof(WebPWorkerImpl))
     impl := &WebPWorkerImpl{}
 
-    worker.impl = (*void)impl;
+    worker.impl = (*void)impl
     if (worker.impl == nil) {
-      return 0;
+      return 0
     }
     if (pthread_mutex_init(&impl.mutex, nil)) {
-      goto Error;
+      goto Error
     }
     if (pthread_cond_init(&impl.condition, nil)) {
-      pthread_mutex_destroy(&impl.mutex);
-      goto Error;
+      pthread_mutex_destroy(&impl.mutex)
+      goto Error
     }
-    pthread_mutex_lock(&impl.mutex);
-    ok = !pthread_create(&impl.thread, nil, ThreadLoop, worker);
+    pthread_mutex_lock(&impl.mutex)
+    ok = !pthread_create(&impl.thread, nil, ThreadLoop, worker)
     if ok { worker.status = OK }
-    pthread_mutex_unlock(&impl.mutex);
+    pthread_mutex_unlock(&impl.mutex)
     if (!ok) {
-      pthread_mutex_destroy(&impl.mutex);
-      pthread_cond_destroy(&impl.condition);
+      pthread_mutex_destroy(&impl.mutex)
+      pthread_cond_destroy(&impl.condition)
     Error:
-      worker.impl = nil;
-      return 0;
+      worker.impl = nil
+      return 0
     }
 #else
-    worker.status = OK;
+    worker.status = OK
 #endif
   } else if (worker.status > OK) {
-    ok = Sync(worker);
+    ok = Sync(worker)
   }
-  assert.Assert(!ok || (worker.status == OK));
-  return ok;
+  assert.Assert(!ok || (worker.status == OK))
+  return ok
 }
 
 func Execute(/* const */ worker *WebPWorker) {
   if (worker.hook != nil) {
-    worker.had_error |= !worker.hook(worker.data1, worker.data2);
+    worker.had_error |= !worker.hook(worker.data1, worker.data2)
   }
 }
 
 func Launch(/* const */ worker *WebPWorker) {
 #ifdef WEBP_USE_THREAD
-  ChangeState(worker, WORK);
+  ChangeState(worker, WORK)
 #else
-  Execute(worker);
+  Execute(worker)
 #endif
 }
 
 func End(/* const */ worker *WebPWorker) {
 #ifdef WEBP_USE_THREAD
   if (worker.impl != nil) {
-    var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl;
-    ChangeState(worker, NOT_OK);
-    pthread_join(impl.thread, nil);
-    pthread_mutex_destroy(&impl.mutex);
-    pthread_cond_destroy(&impl.condition);
-    worker.impl = nil;
+    var impl *WebPWorkerImpl = (*WebPWorkerImpl)worker.impl
+    ChangeState(worker, NOT_OK)
+    pthread_join(impl.thread, nil)
+    pthread_mutex_destroy(&impl.mutex)
+    pthread_cond_destroy(&impl.condition)
+    worker.impl = nil
   }
 #else
-  worker.status = NOT_OK;
-  assert.Assert(worker.impl == nil);
+  worker.status = NOT_OK
+  assert.Assert(worker.impl == nil)
 #endif
-  assert.Assert(worker.status == NOT_OK);
+  assert.Assert(worker.status == NOT_OK)
 }
 
 //------------------------------------------------------------------------------
@@ -279,14 +279,14 @@ func WebPSetWorkerInterface(/* const */ winterface *WebPWorkerInterface) int {
       winterface.Reset == nil || winterface.Sync == nil ||
       winterface.Launch == nil || winterface.Execute == nil ||
       winterface.End == nil) {
-    return 0;
+    return 0
   }
-  g_worker_interface = *winterface;
-  return 1;
+  g_worker_interface = *winterface
+  return 1
 }
 
 const WebPGetWorkerInterface *WebPWorkerInterface(){
-  return &g_worker_interface;
+  return &g_worker_interface
 }
 
 //------------------------------------------------------------------------------

@@ -81,11 +81,11 @@ type WebPMemoryWriter struct {
 }
 
 // The following must be called first before any use.
- func WebPMemoryWriterInit(writer *WebPMemoryWriter);
+ func WebPMemoryWriterInit(writer *WebPMemoryWriter)
 
 // The following must be called to deallocate writer.mem memory. The 'writer'
 // object itself is not deallocated.
- func WebPMemoryWriterClear(writer *WebPMemoryWriter);
+ func WebPMemoryWriterClear(writer *WebPMemoryWriter)
 
 
 
@@ -106,7 +106,7 @@ const WEBP_MAX_DIMENSION =16383
 // Returns false in case of error (bad parameter, memory allocation error, ...).
 int WebPPlaneDistortion(
 /* const */ src *uint8, src_stride uint64 , /*const*/ ref *uint8, ref_stride uint64 , width, height int, x_step uint64 , vtype int,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
-distortion *float, result *float);
+distortion *float, result *float)
 
 // Compute PSNR, SSIM or LSIM distortion metric between two pictures. Results
 // are in dB, stored in result[] in the B/G/R/A/All order. The distortion is
@@ -114,7 +114,7 @@ distortion *float, result *float);
 // picture will be internally converted to ARGB (just for the measurement).
 // Warning: this function is rather CPU-intensive.
 int WebPPictureDistortion(/* const */ src *picture.Picture, /*const*/ ref *picture.Picture, metric_type int,  // 0 = PSNR, 1 = SSIM, 2 = LSIM
-    float result[5]);
+    float result[5])
 
 // self-crops a picture to the rectangle defined by top/left/width/height.
 // Returns false in case of memory allocation error, or if the rectangle is
@@ -124,7 +124,7 @@ int WebPPictureDistortion(/* const */ src *picture.Picture, /*const*/ ref *pictu
 // must be fully be comprised inside the 'src' source picture. If the source
 // picture uses the YUV420 colorspace, the top and left coordinates will be
 // snapped to even values.
-int WebPPictureCrop(picture *picture.Picture, left int, top int, width, height int);
+int WebPPictureCrop(picture *picture.Picture, left int, top int, width, height int)
 
 // Extracts a view from 'src' picture into 'dst'. The rectangle for the view
 // is defined by the top-left corner pixel coordinates (left, top) as well
@@ -137,35 +137,35 @@ int WebPPictureCrop(picture *picture.Picture, left int, top int, width, height i
 // with picture.WebPPictureInit() if it is different from 'src', since its content will
 // be overwritten.
 // Returns false in case of invalid parameters.
-int WebPPictureView(/* const */ src *picture.Picture, left int, top int, width, height int, dst *picture.Picture);
+int WebPPictureView(/* const */ src *picture.Picture, left int, top int, width, height int, dst *picture.Picture)
 
 // Returns true if the 'picture' is actually a view and therefore does
 // not own the memory for pixels.
-int WebPPictureIsView(/* const */ picture *picture.Picture);
+int WebPPictureIsView(/* const */ picture *picture.Picture)
 
 // Rescale a picture to new dimension width x height.
 // If either 'width' or 'height' (but not both) is 0 the corresponding
 // dimension will be calculated preserving the aspect ratio.
 // No gamma correction is applied.
 // Returns false in case of error (invalid parameter or insufficient memory).
-int WebPPictureRescale(picture *picture.Picture, width, height int);
+int WebPPictureRescale(picture *picture.Picture, width, height int)
 
 // Colorspace conversion function to import RGB samples.
 // Previous buffer will be free'd, if any.
 // buffer should have *rgb a size of at least height * rgb_stride.
 // Returns false in case of memory error.
-int WebPPictureImportRGB(picture *picture.Picture, /*const*/ rgb *uint8, rgb_stride int);
+int WebPPictureImportRGB(picture *picture.Picture, /*const*/ rgb *uint8, rgb_stride int)
 // Same, but for RGBA buffer.
-int WebPPictureImportRGBA(picture *picture.Picture, /*const*/ rgba *uint8, rgba_stride int);
+int WebPPictureImportRGBA(picture *picture.Picture, /*const*/ rgba *uint8, rgba_stride int)
 // Same, but for RGBA buffer. Imports the RGB direct from the 32-bit format
 // input buffer ignoring the alpha channel. Avoids needing to copy the data
 // to a temporary 24-bit RGB buffer to import the RGB only.
-int WebPPictureImportRGBX(picture *picture.Picture, /*const*/ rgbx *uint8, rgbx_stride int);
+int WebPPictureImportRGBX(picture *picture.Picture, /*const*/ rgbx *uint8, rgbx_stride int)
 
 // Variants of the above, but taking BGR(A|X) input.
-int WebPPictureImportBGR(picture *picture.Picture, /*const*/ bgr *uint8, bgr_stride int);
-int WebPPictureImportBGRA(picture *picture.Picture, /*const*/ bgra *uint8, bgra_stride int);
-int WebPPictureImportBGRX(picture *picture.Picture, /*const*/ bgrx *uint8, bgrx_stride int);
+int WebPPictureImportBGR(picture *picture.Picture, /*const*/ bgr *uint8, bgr_stride int)
+int WebPPictureImportBGRA(picture *picture.Picture, /*const*/ bgra *uint8, bgra_stride int)
+int WebPPictureImportBGRX(picture *picture.Picture, /*const*/ bgrx *uint8, bgrx_stride int)
 
 // Converts picture.ARGB data to the YUV420A format. The 'colorspace'
 // parameter is deprecated and should be equal to colorspace.WEBP_YUV420.
@@ -173,22 +173,22 @@ int WebPPictureImportBGRX(picture *picture.Picture, /*const*/ bgrx *uint8, bgrx_
 // non-opaque transparent values is detected, and 'colorspace' will be
 // adjusted accordingly. Note that this method is lossy.
 // Returns false in case of error.
-int WebPPictureARGBToYUVA(picture *picture.Picture, colorspace.CSP /*colorspace = WEBP_*YUV420*/);
+int WebPPictureARGBToYUVA(picture *picture.Picture, colorspace.CSP /*colorspace = WEBP_*YUV420*/)
 
 // Same as picture.WebPPictureARGBToYUVA(), but the conversion is done using
 // pseudo-random dithering with a strength 'dithering' between
 // 0.0 (no dithering) and 1.0 (maximum dithering). This is useful
 // for photographic picture.
-int WebPPictureARGBToYUVADithered(picture *picture.Picture, colorspace.CSP colorspace, float dithering);
+int WebPPictureARGBToYUVADithered(picture *picture.Picture, colorspace.CSP colorspace, float dithering)
 
 // Performs 'sharp' RGBA.YUVA420 downsampling and colorspace conversion
 // Downsampling is handled with extra care in case of color clipping. This
 // method is roughly 2x slower than picture.WebPPictureARGBToYUVA() but produces better
 // and sharper YUV representation.
 // Returns false in case of error.
-int WebPPictureSharpARGBToYUVA(picture *picture.Picture);
+int WebPPictureSharpARGBToYUVA(picture *picture.Picture)
 // kept for backward compatibility:
-int WebPPictureSmartARGBToYUVA(picture *picture.Picture);
+int WebPPictureSmartARGBToYUVA(picture *picture.Picture)
 
 // Converts picture.yuv to picture.ARGB and sets picture.UseARGB to true.
 // The input format must be YUV_420 or YUV_420A. The conversion from YUV420 to
@@ -196,16 +196,16 @@ int WebPPictureSmartARGBToYUVA(picture *picture.Picture);
 // Note that the use of this colorspace is discouraged if one has access to the
 // raw ARGB samples, since using YUV420 is comparatively lossy.
 // Returns false in case of error.
-int WebPPictureYUVAToARGB(picture *picture.Picture);
+int WebPPictureYUVAToARGB(picture *picture.Picture)
 
 // Helper function: given a width x height plane of RGBA or YUV(A) samples
 // clean-up or smoothen the YUV or RGB samples under fully transparent area,
 // to help compressibility (no guarantee, though).
-func WebPCleanupTransparentArea(picture *picture.Picture);
+func WebPCleanupTransparentArea(picture *picture.Picture)
 
 // Scan the picture 'picture' for the presence of non fully opaque alpha values.
 // Returns true in such case. Otherwise returns false (indicating that the
 // alpha plane can be ignored altogether e.g.).
-int WebPPictureHasTransparency(/* const */ picture *picture.Picture);
+int WebPPictureHasTransparency(/* const */ picture *picture.Picture)
 
 

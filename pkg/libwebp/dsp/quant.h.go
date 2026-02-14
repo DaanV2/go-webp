@@ -23,33 +23,33 @@ const IsFlat = IsFlat_NEON
 
 func horizontal_add_uint32x4(/* const */ uint32x4_t a) uint32 {
 #if WEBP_AARCH64
-  return vaddvq_u32(a);
+  return vaddvq_u32(a)
 #else
-  var uint64x2_t b = vpaddlq_u32(a);
-  var uint32x2_t c = vadd_u32(vreinterpret_u32_u64(vget_low_u64(b)), vreinterpret_u32_u64(vget_high_u64(b)));
-  return vget_lane_u32(c, 0);
+  var uint64x2_t b = vpaddlq_u32(a)
+  var uint32x2_t c = vadd_u32(vreinterpret_u32_u64(vget_low_u64(b)), vreinterpret_u32_u64(vget_high_u64(b)))
+  return vget_lane_u32(c, 0)
 #endif
 }
 
 func IsFlat(/* const */ levels *int16, num_blocks int, thresh int) int {
-  var int16x8_t tst_ones = vdupq_n_s16(-1);
-  uint32x4_t sum = vdupq_n_u32(0);
+  var int16x8_t tst_ones = vdupq_n_s16(-1)
+  uint32x4_t sum = vdupq_n_u32(0)
   var i int
 
   for i = 0; i < num_blocks; i++ {
     // Set DC to zero.
-    var int16x8_t a_0 = vsetq_lane_s16(0, vld1q_s16(levels), 0);
-    var int16x8_t a_1 = vld1q_s16(levels + 8);
+    var int16x8_t a_0 = vsetq_lane_s16(0, vld1q_s16(levels), 0)
+    var int16x8_t a_1 = vld1q_s16(levels + 8)
 
-    var uint16x8_t b_0 = vshrq_n_u16(vtstq_s16(a_0, tst_ones), 15);
-    var uint16x8_t b_1 = vshrq_n_u16(vtstq_s16(a_1, tst_ones), 15);
+    var uint16x8_t b_0 = vshrq_n_u16(vtstq_s16(a_0, tst_ones), 15)
+    var uint16x8_t b_1 = vshrq_n_u16(vtstq_s16(a_1, tst_ones), 15)
 
-    sum = vpadalq_u16(sum, b_0);
-    sum = vpadalq_u16(sum, b_1);
+    sum = vpadalq_u16(sum, b_0)
+    sum = vpadalq_u16(sum, b_1)
 
-    levels += 16;
+    levels += 16
   }
-  return thresh >= (int)horizontal_add_uint32x4(sum);
+  return thresh >= (int)horizontal_add_uint32x4(sum)
 }
 
 #else
@@ -57,32 +57,32 @@ func IsFlat(/* const */ levels *int16, num_blocks int, thresh int) int {
 const IsFlat = IsFlat_C
 
 func IsFlat(/* const */ levels *int16, num_blocks int, thresh int) int {
-  score := 0;
+  score := 0
   while (num_blocks-- > 0) {  // TODO(skal): refine positional scoring?
     var i int
     for i = 1; i < 16; i++ {  // omit DC, we're only interested in AC
-      score += (levels[i] != 0);
+      score += (levels[i] != 0)
       if score > thresh { return 0  }
     }
-    levels += 16;
+    levels += 16
   }
-  return 1;
+  return 1
 }
 
 #endif  // defined(WEBP_USE_NEON) && !defined(WEBP_ANDROID_NEON) &&
         // !defined(WEBP_HAVE_NEON_RTCD)
 
 func IsFlatSource16(/* const */ src *uint8) int {
-  v := src[0] * uint(0x01010101);
+  v := src[0] * uint(0x01010101)
   var i int
   for i = 0; i < 16; i++ {
     if (memcmp(src + 0, &v, 4) || memcmp(src + 4, &v, 4) ||
         memcmp(src + 8, &v, 4) || memcmp(src + 12, &v, 4)) {
-      return 0;
+      return 0
     }
-    src += BPS;
+    src += BPS
   }
-  return 1;
+  return 1
 }
 
 #endif  // WEBP_DSP_QUANT_H_

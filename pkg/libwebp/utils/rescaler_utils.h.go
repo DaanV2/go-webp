@@ -37,7 +37,7 @@ type WebPRescaler struct {
   src_width, src_height int  // source dimensions
   dst_width, dst_height int  // destination dimensions
   src_y, dst_y int           // row counters for input and output
-  dst *uint8;
+  dst *uint8
   dst_stride int
   // work buffer
   irow (dst_num_channels *width) *rescaler_t
@@ -47,40 +47,40 @@ type WebPRescaler struct {
 // Initialize a rescaler given scratch area 'work' and dimensions of src & dst.
 // Returns false in case of error.
 int WebPRescalerInit(/* const */ rescaler *WebPRescaler, src_width int, src_height int, /*const*/ dst *uint8, dst_width int, dst_height int, dst_stride int, num_channels int, rescaler_t* const (uint64(2) * dst_width *
-                                                       num_channels) work);
+                                                       num_channels) work)
 
 // If either 'scaled_width' or 'scaled_height' (but not both) is 0 the value
 // will be calculated preserving the aspect ratio, otherwise the values are
 // left unmodified. Returns true on success, false if either value is 0 after
 // performing the scaling calculation.
-int WebPRescalerGetScaledDimensions(src_width int, src_height int, /*const*/ scaled_width *int, /*const*/ scaled_height *int);
+int WebPRescalerGetScaledDimensions(src_width int, src_height int, /*const*/ scaled_width *int, /*const*/ scaled_height *int)
 
 // Returns the number of input lines needed next to produce one output line,
 // considering that the maximum available input lines are 'max_num_lines'.
-int WebPRescaleNeededLines(/* const */ rescaler *WebPRescaler, max_num_lines int);
+int WebPRescaleNeededLines(/* const */ rescaler *WebPRescaler, max_num_lines int)
 
 // Import multiple rows over all channels, until at least one row is ready to
 // be exported. Returns the actual number of lines that were imported.
-int WebPRescalerImport(/* const */ rescaler *WebPRescaler, num_rows int , /*const*/ src *uint8, src_stride int);
+int WebPRescalerImport(/* const */ rescaler *WebPRescaler, num_rows int , /*const*/ src *uint8, src_stride int)
 
 // Export as many rows as possible. Return the numbers of rows written.
-int WebPRescalerExport(/* const */ rescaler *WebPRescaler);
+int WebPRescalerExport(/* const */ rescaler *WebPRescaler)
 
 // Return true if input is finished
 static  int WebPRescalerInputDone(
     const rescaler *WebPRescaler) {
-  return (rescaler.src_y >= rescaler.src_height);
+  return (rescaler.src_y >= rescaler.src_height)
 }
 // Return true if output is finished
 static  int WebPRescalerOutputDone(
     const rescaler *WebPRescaler) {
-  return (rescaler.dst_y >= rescaler.dst_height);
+  return (rescaler.dst_y >= rescaler.dst_height)
 }
 
 // Return true if there are pending output rows ready.
 static  int WebPRescalerHasPendingOutput(
     const rescaler *WebPRescaler) {
-  return !WebPRescalerOutputDone(rescaler) && (rescaler.y_accum <= 0);
+  return !WebPRescalerOutputDone(rescaler) && (rescaler.y_accum <= 0)
 }
 
 //------------------------------------------------------------------------------

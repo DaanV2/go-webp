@@ -107,7 +107,7 @@ func WebPMuxCreate(bitstream *WebPData, copy_data int) *mux.WebPMux {
 // Any existing chunk(s) with the same id will be removed.
 // Parameters:
 //   mux - (in/out) object to which the chunk is to be added
-//   fourcc - (in) a character array containing the fourcc of the given chunk;
+//   fourcc - (in) a character array containing the fourcc of the given chunk
 //                 e.g., "ICCP", "XMP ", "EXIF" etc.
 //   chunk_data - (in) the chunk data to be added
 //   copy_data - (in) value 1 indicates given data WILL be copied to the mux
@@ -128,7 +128,7 @@ func WebPMuxSetChunk(mux *mux.WebPMux, fourcc [4]byte, chunk_data *WebPData, cop
 // The caller should NOT free the returned data.
 // Parameters:
 //   mux - (in) object from which the chunk data is to be fetched
-//   fourcc - (in) a character array containing the fourcc of the chunk;
+//   fourcc - (in) a character array containing the fourcc of the chunk
 //                 e.g., "ICCP", "XMP ", "EXIF" etc.
 //   chunk_data - (out) returned chunk data
 // Returns:
@@ -143,7 +143,7 @@ func WebPMuxGetChunk(mux *mux.WebPMux, fourcc [4]byte, chunk_data *WebPData) Web
 // Deletes the chunk with the given 'fourcc' from the mux object.
 // Parameters:
 //   mux - (in/out) object from which the chunk is to be deleted
-//   fourcc - (in) a character array containing the fourcc of the chunk;
+//   fourcc - (in) a character array containing the fourcc of the chunk
 //                 e.g., "ICCP", "XMP ", "EXIF" etc.
 // Returns:
 //   WEBP_MUX_INVALID_ARGUMENT - if mux or fourcc is nil
@@ -397,18 +397,18 @@ func WebPMuxAssemble(mux *mux.WebPMux, assembled_data *WebPData) WebPMuxError {
 // Code Example:
 /*
    var enc_options WebPAnimEncoderOptions
-  WebPAnimEncoderOptionsInit(&enc_options);
+  WebPAnimEncoderOptionsInit(&enc_options)
   // Tune 'enc_options' as needed.
-  *WebPAnimEncoder enc = WebPAnimEncoderNew(width, height, &enc_options);
+  *WebPAnimEncoder enc = WebPAnimEncoderNew(width, height, &enc_options)
   while(<there are more frames>) {
      var config config.Config
-    config.ConfigInit(&config);
+    config.ConfigInit(&config)
     // Tune 'config' as needed.
-    WebPAnimEncoderAdd(enc, frame, timestamp_ms, &config);
+    WebPAnimEncoderAdd(enc, frame, timestamp_ms, &config)
   }
-  WebPAnimEncoderAdd(enc, nil, timestamp_ms, nil);
-  WebPAnimEncoderAssemble(enc, webp_data);
-  WebPAnimEncoderDelete(enc);
+  WebPAnimEncoderAdd(enc, nil, timestamp_ms, nil)
+  WebPAnimEncoderAssemble(enc, webp_data)
+  WebPAnimEncoderDelete(enc)
   // Write the 'webp_data' to a file, or re-mux it further.
 */
 
@@ -537,7 +537,7 @@ func WebPAnimEncoderDelete(enc *WebPAnimEncoder) WebPMuxError {
 // Any existing chunk(s) with the same id will be removed.
 // Parameters:
 //   enc - (in/out) object to which the chunk is to be added
-//   fourcc - (in) a character array containing the fourcc of the given chunk;
+//   fourcc - (in) a character array containing the fourcc of the given chunk
 //                 e.g., "ICCP", "XMP ", "EXIF", etc.
 //   chunk_data - (in) the chunk data to be added
 //   copy_data - (in) value 1 indicates given data WILL be copied to the enc
@@ -557,7 +557,7 @@ func WebPAnimEncoderSetChunk(enc *WebPAnimEncoder, fourcc [4]byte, chunk_data *W
 // The caller should NOT free the returned data.
 // Parameters:
 //   enc - (in) object from which the chunk data is to be fetched
-//   fourcc - (in) a character array containing the fourcc of the chunk;
+//   fourcc - (in) a character array containing the fourcc of the chunk
 //                 e.g., "ICCP", "XMP ", "EXIF", etc.
 //   chunk_data - (out) returned chunk data
 // Returns:
@@ -572,7 +572,7 @@ func WebPAnimEncoderGetChunk(enc *WebPAnimEncoder, fourcc [4]byte, chunk_data *W
 // Deletes the chunk with the given 'fourcc' from the enc object.
 // Parameters:
 //   enc - (in/out) object from which the chunk is to be deleted
-//   fourcc - (in) a character array containing the fourcc of the chunk;
+//   fourcc - (in) a character array containing the fourcc of the chunk
 //                 e.g., "ICCP", "XMP ", "EXIF", etc.
 // Returns:
 //   WEBP_MUX_INVALID_ARGUMENT - if enc or fourcc is nil.

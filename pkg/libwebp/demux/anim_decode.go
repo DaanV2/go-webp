@@ -112,11 +112,11 @@ func WebPAnimDecoder( /* const */ webp_data *WebPData /* const */, dec_options *
 
 	// Note: calloc() because we fill frame with zeroes as well.
 	dec.curr_frame = make([]uint8, dec.info.canvas_width*dec.info.canvas_height*NUM_CHANNELS)
-	//   dec.curr_frame = (*uint8)WebPSafeCalloc(dec.info.canvas_width * NUM_CHANNELS, dec.info.canvas_height);
+	//   dec.curr_frame = (*uint8)WebPSafeCalloc(dec.info.canvas_width * NUM_CHANNELS, dec.info.canvas_height)
 	// if dec.curr_frame == nil { {goto Error }}
 
 	dec.prev_frame_disposed = make([]uint8, dec.info.canvas_width*dec.info.canvas_height*NUM_CHANNELS)
-	//   dec.prev_frame_disposed = (*uint8)WebPSafeCalloc(dec.info.canvas_width * NUM_CHANNELS, dec.info.canvas_height);
+	//   dec.prev_frame_disposed = (*uint8)WebPSafeCalloc(dec.info.canvas_width * NUM_CHANNELS, dec.info.canvas_height)
 	//   if dec.prev_frame_disposed == nil { goto Error }
 
 	WebPAnimDecoderReset(dec)
@@ -152,7 +152,7 @@ func ZeroFillCanvas(buf []uint8, canvas_width uint32, canvas_height uint32) bool
 
 	// if !CheckSizeOverflow(size) { return 0  }
 
-	//   stdlib.Memset(buf, 0, size);
+	//   stdlib.Memset(buf, 0, size)
 	stdlib.Memset2(buf, 0)
 	return true
 }

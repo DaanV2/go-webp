@@ -19,7 +19,7 @@ type lbit_t = uint64
 type bit_t uint64
 
 // #else
-// typedef uint32 bit_t;
+// typedef uint32 bit_t
 // #endif
 
 type range_t uint32

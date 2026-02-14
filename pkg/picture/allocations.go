@@ -64,7 +64,7 @@ func WebPPictureAllocYUVA( /* const */ picture *picture.Picture) error {
 	}
 	// allocate a new buffer.
 
-	//   mem = (*uint8)WebPSafeMalloc(total_size, sizeof(*mem));
+	//   mem = (*uint8)WebPSafeMalloc(total_size, sizeof(*mem))
 	//   if (mem == nil) {
 	//     return picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 	//   }
@@ -108,7 +108,7 @@ func WebPPictureAllocARGB( /* const */ picture *picture.Picture) error {
 	WebPPictureResetBufferARGB(picture)
 
 	// allocate a new buffer.
-	//   memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.ARGB));
+	//   memory = WebPSafeMalloc(argb_size + WEBP_ALIGN_CST, sizeof(*picture.ARGB))
 	//   if (memory == nil) {
 	//     return picture.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
 	//   }

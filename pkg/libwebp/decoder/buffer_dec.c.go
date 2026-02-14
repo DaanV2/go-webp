@@ -123,9 +123,9 @@ func AllocateBuffer( /* const */ buffer *WebPDecBuffer) vp8.VP8StatusCode {
 		}
 		total_size = size + 2*uv_size + a_size
 
-		// output = (*uint8)WebPSafeMalloc(total_size, sizeof(*output));
+		// output = (*uint8)WebPSafeMalloc(total_size, sizeof(*output))
 		// if (output == nil) {
-		//   return VP8_STATUS_OUT_OF_MEMORY;
+		//   return VP8_STATUS_OUT_OF_MEMORY
 		// }
 		ouput = make([]uint8, total_size)
 

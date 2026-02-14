@@ -251,7 +251,7 @@ func ParseVP8Header( /* const */ data_ptr *uint8 /* const */, data_size *uint64,
 	is_vp8l := !memcmp(data, "VP8L", TAG_SIZE)
 	minimal_size := TAG_SIZE + CHUNK_HEADER_SIZE // "WEBP" + "VP8 nnnn" OR
 		// "WEBP" + "VP8Lnnnn"
-		//   (void)local_data_size;
+		//   (void)local_data_size
 	assert.Assert(data != nil)
 	assert.Assert(data_size != nil)
 	assert.Assert(chunk_size != nil)
@@ -452,7 +452,7 @@ func WebPParseHeaders( /* const */ headers *WebPHeaderStructure) vp8.VP8StatusCo
 	assert.Assert(headers != nil)
 	// fill out headers, ignore width/height/has_alpha.
 	{
-		var bounded_data *uint8 = headers.data // bidi index -> headers.data_size;
+		var bounded_data *uint8 = headers.data // bidi index -> headers.data_size
 		status = ParseHeadersInternal(bounded_data, headers.data_size, nil, nil, nil, &has_animation, nil, headers)
 	}
 	if status == vp8.VP8_STATUS_OK || status == vp8.VP8_STATUS_NOT_ENOUGH_DATA {
