@@ -520,46 +520,6 @@ WEBP_DSP_INIT_FUNC(VP8LEncDspInit) {
   VP8LPredictorsSub_C[14] = PredictorSub0_C;  // <- padding security sentinels
   VP8LPredictorsSub_C[15] = PredictorSub0_C
 
-  // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != nil) {
-#if false
-    if (VP8GetCPUInfo(kSSE2)) {
-      VP8LEncDspInitSSE2()
-#if false
-      if (VP8GetCPUInfo(kSSE4_1)) {
-        VP8LEncDspInitSSE41()
-#if defined(WEBP_HAVE_AVX2)
-        if (VP8GetCPUInfo(kAVX2)) {
-          VP8LEncDspInitAVX2()
-        }
-#endif
-      }
-#endif
-    }
-#endif
-#if false
-    if (VP8GetCPUInfo(kMIPS32)) {
-      VP8LEncDspInitMIPS32()
-    }
-#endif
-#if false
-    if (VP8GetCPUInfo(kMIPSdspR2)) {
-      VP8LEncDspInitMIPSdspR2()
-    }
-#endif
-#if defined(WEBP_USE_MSA)
-    if (VP8GetCPUInfo(kMSA)) {
-      VP8LEncDspInitMSA()
-    }
-#endif
-  }
-
-#if FALSE
-  if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
-    VP8LEncDspInitNEON()
-  }
-#endif
 
   assert.Assert(VP8LSubtractGreenFromBlueAndRed != nil)
   assert.Assert(VP8LTransformColor != nil)

@@ -1441,32 +1441,6 @@ func EncodeStreamHook(input *StreamEncodeContext, data *void2) int {
 			best_size = VP8LBitWriterNumBytes(bw)
 			// Store the BitWriter.
 			VP8LBitWriterSwap(bw, &bw_best)
-			// C: #if FALSE
-			// Update the stats.
-			if stats != nil {
-				stats.lossless_features = 0
-				if enc.use_predict {
-					stats.lossless_features |= 1
-				}
-				if enc.use_cross_color {
-					stats.lossless_features |= 2
-				}
-				if enc.use_subtract_green {
-					stats.lossless_features |= 4
-				}
-				if enc.use_palette {
-					stats.lossless_features |= 8
-				}
-				stats.histogram_bits = enc.histo_bits
-				stats.transform_bits = predictor_transform_bits
-				stats.cross_color_transform_bits = cross_color_transform_bits
-				stats.cache_bits = enc.cache_bits
-				stats.palette_size = enc.palette_size
-				stats.lossless_size = int(best_size - byte_position)
-				stats.lossless_hdr_size = hdr_size
-				stats.lossless_data_size = data_size
-			}
-			// C: #endif
 		}
 		// Reset the bit writer for the following iteration if any.
 		if num_crunch_configs > 1 {
@@ -1588,13 +1562,6 @@ func VP8LEncodeStream( /* const */ config *config.Config /*const*/, picture *pic
 			goto Error
 		}
 
-		// C: #if FALSE
-		// This line is here and not in the param initialization above to remove a
-		// Clang static analyzer warning.
-		if picture.stats != nil {
-			// C: memcpy(&stats_side, picture.stats, sizeof(stats_side))
-		}
-		// C: #endif
 		worker_interface.Launch(&worker_side)
 	}
 	// Execute the main thread.
@@ -1614,11 +1581,6 @@ func VP8LEncodeStream( /* const */ config *config.Config /*const*/, picture *pic
 		}
 		if VP8LBitWriterNumBytes(&bw_side) < VP8LBitWriterNumBytes(bw_main) {
 			VP8LBitWriterSwap(bw_main, &bw_side)
-			// C: #if FALSE
-			if picture.stats != nil {
-				// C: memcpy(picture.stats, &stats_side, sizeof(*picture.stats))
-			}
-			// C: #endif
 		}
 	}
 

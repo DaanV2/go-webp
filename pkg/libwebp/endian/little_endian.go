@@ -10,7 +10,6 @@ package endian
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
-	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/gcc"
 )
 
@@ -46,18 +45,10 @@ func PutLE32( /* const */ data []uint8 /* (4) */, val uint32) {
 }
 
 func HToLE32(x uint32) uint32 {
-	if constants.FALSE {
-		return BSwap32(x)
-	} else {
-		return x
-	}
+	return x
 }
 func HToLE16(x uint16) uint16 {
-	if constants.FALSE {
-		return BSwap16(x)
-	} else {
-		return x
-	}
+	return x
 }
 
 func BSwap16(x uint16) uint16 {

@@ -525,88 +525,6 @@ Error:
   return ok
 }
 
-//------------------------------------------------------------------------------
-// Scaling.
-
-// C: #if FALSE
-func AllocateAndInitRescaler(/* const */ dec *VP8LDecoder, /*const*/ io *VP8Io) int {
-  num_channels := 4
-  in_width := io.mb_w
-  out_width := io.scaled_width
-  in_height := io.mb_h
-  out_height := io.scaled_height
-  work_size := 2 * num_channels * uint64(out_width)
-  var work *rescaler_t  // Rescaler work area.
-  scaled_data_size := uint64(out_width)
-  var scaled_data *uint32 // Temporary storage for scaled BGRA data.
-  // C: memory_size := sizeof(*dec.rescaler) +
-                               // C: work_size * sizeof(*work) +
-                               // C: scaled_data_size * sizeof(*scaled_data)
-//   var memory *uint8 = (*uint8)WebPSafeMalloc(memory_size, sizeof(*memory))
-//   if (memory == nil) {
-//     return VP8LSetError(dec, VP8_STATUS_OUT_OF_MEMORY)
-//   }
-  memory := make([]uint8, memory_size)
-
-  assert.Assert(dec.rescaler_memory == nil)
-  dec.rescaler_memory = memory
-
-  dec.rescaler = (*WebPRescaler)memory
-  // C: memory += sizeof(*dec.rescaler)
-  work = (rescaler_t*)memory
-  // C: memory += work_size * sizeof(*work)
-  scaled_data = (*uint32)memory
-
-  if !WebPRescalerInit(dec.rescaler, in_width, in_height, (*uint8)scaled_data, out_width, out_height, 0, num_channels, work) {
-    return 0
-  }
-  return 1
-}
-// C: #endif  // TRUE
-
-//------------------------------------------------------------------------------
-// Export to ARGB
-
-// C: #if FALSE
-
-// We have special "export" function since we need to convert from BGRA
-func Export(/* const */ rescaler *WebPRescaler, WEBP_CSP_MODE colorspace, rgba_stride int, /*const*/ rgba *uint8) int {
-  var src *uint32 = (*uint32)rescaler.dst
-  dst *uint8 = rgba
-  dst_width := rescaler.dst_width
-  num_lines_out := 0
-  for (WebPRescalerHasPendingOutput(rescaler)) {
-    WebPRescalerExportRow(rescaler)
-    WebPMultARGBRow(src, dst_width, 1)
-    VP8LConvertFromBGRA(src, dst_width, colorspace, dst)
-    dst += rgba_stride
-    num_lines_out++
-  }
-  return num_lines_out
-}
-
-// Emit scaled rows.
-func EmitRescaledRowsRGBA(/* const */ dec *VP8LDecoder, in *uint8, in_stride int, mb_h int, /*const*/ out *uint8, out_stride int) int {
-  var colorspace WEBP_CSP_MODE = dec.output.colorspace
-  num_lines_in := 0
-  num_lines_out := 0
-  for num_lines_in < mb_h {
-    var row_in *uint8 = in + ptrdiff_t(num_lines_in) * in_stride
-    var row_out *uint8 = out + ptrdiff_t(num_lines_out) * out_stride
-    lines_left := mb_h - num_lines_in
-    needed_lines := WebPRescaleNeededLines(dec.rescaler, lines_left)
-    var lines_imported int
-    assert.Assert(needed_lines > 0 && needed_lines <= lines_left)
-    WebPMultARGBRows(row_in, in_stride, dec.rescaler.src_width, needed_lines, 0)
-    lines_imported = WebPRescalerImport(dec.rescaler, lines_left, row_in, in_stride)
-    assert.Assert(lines_imported == needed_lines)
-    num_lines_in += lines_imported
-    num_lines_out += Export(dec.rescaler, colorspace, out_stride, row_out)
-  }
-  return num_lines_out
-}
-
-// C: #endif  // TRUE
 
 // Emit rows without any scaling.
 func EmitRows(WEBP_CSP_MODE colorspace, /*const*/ row_in *uint8, in_stride int, mb_w int, mb_h int, /*const*/ out *uint8, out_stride int) int {
@@ -620,32 +538,26 @@ func EmitRows(WEBP_CSP_MODE colorspace, /*const*/ row_in *uint8, in_stride int, 
   return mb_h;  // Num rows out == num rows in.
 }
 
-//------------------------------------------------------------------------------
-// Export to YUVA
 
 func ConvertToYUVA(/* const */ src *uint32, width int, y_pos int, /*const*/ output *WebPDecBuffer) {
-  var buf *WebPYUVABuffer = &output.u.YUVA
+	var buf *WebPYUVABuffer = &output.u.YUVA
 
-  // first, the luma plane
-  WebPConvertARGBToY(src, buf.y + ptrdiff_t(y_pos) * buf.y_stride, width)
+	// first, the luma plane
+	WebPConvertARGBToY(src, buf.y + ptrdiff_t(y_pos) * buf.y_stride, width)
 
-  // then U/V planes
-  {
-    var u *uint8 = buf.u + ptrdiff_t(y_pos >> 1) * buf.u_stride
-    var v *uint8 = buf.v + ptrdiff_t(y_pos >> 1) * buf.v_stride
-    // even lines: store values
-    // odd lines: average with previous values
-    WebPConvertARGBToUV(src, u, v, width, !(y_pos & 1))
-  }
-  // Lastly, store alpha if needed.
-  if buf.a != nil {
-    var a *uint8 = buf.a + ptrdiff_t(y_pos) * buf.a_stride
-if constants.FALSE {
-    WebPExtractAlpha((*uint8)src + 0, 0, width, 1, a, 0)
-} else {
-    WebPExtractAlpha((*uint8)src + 3, 0, width, 1, a, 0)
-}
-  }
+	// then U/V planes
+	{
+		var u *uint8 = buf.u + ptrdiff_t(y_pos >> 1) * buf.u_stride
+		var v *uint8 = buf.v + ptrdiff_t(y_pos >> 1) * buf.v_stride
+		// even lines: store values
+		// odd lines: average with previous values
+		WebPConvertARGBToUV(src, u, v, width, !(y_pos & 1))
+	}
+	// Lastly, store alpha if needed.
+	if buf.a != nil {
+	var a *uint8 = buf.a + ptrdiff_t(y_pos) * buf.a_stride
+	WebPExtractAlpha((*uint8)src + 3, 0, width, 1, a, 0)
+	}
 }
 
 func ExportYUVA(/* const */ dec *VP8LDecoder, y_pos int) int {
@@ -921,16 +833,9 @@ func ExtractPalettedAlphaRows(/* const */ dec *VP8LDecoder, last_row int) {
   dec.last_row = dec.last_out_row = last_row
 }
 
-//------------------------------------------------------------------------------
-// Helper functions for fast pattern copy (8b and 32b)
-
 // cyclic rotation of pattern word
 func Rotate8b(uint32 V) uint32 {
-	if constants.FALSE {
-	return ((V & uint(0xff000000)) >> 24) | (V << 8)
-	} else {
 	return ((V & uint(0xff)) << 24) | (V >> 8)
-	}
 }
 
 // copy 1, 2 or 4-bytes pattern
@@ -959,28 +864,13 @@ func CopyBlock8b(/* const */ dst *uint8, dist int, length int) {
     switch dist {
       case 1:
         pattern = src[0]
-// C: #if defined(__arm__) || defined(_M_ARM)  // arm doesn't like multiply that much
         pattern |= pattern << 8
         pattern |= pattern << 16
-// C: #elif false
-        __asm__ volatile("replv.qb %0, %0" : "+r"(pattern))
-// C: #else
-        pattern = uint(0x01010101) * pattern
-// C: #endif
         break
       case 2:
-if !constants.FALSE {
         stdlib.MemCpy(&pattern, src, generics.SizeOf(uint16))
-} else {
-        pattern = (uint32(src[0]) << 8) | src[1]
-	  }
-// C: #if defined(__arm__) || defined(_M_ARM)
+
         pattern |= pattern << 16
-// C: #elif false
-        __asm__ volatile("replv.ph %0, %0" : "+r"(pattern))
-// C: #else
-        pattern = uint(0x00010001) * pattern
-// C: #endif
         break
       case 4:
         stdlib.MemCpy(&pattern, src, generics.SizeOf(uint32))
@@ -1728,14 +1618,10 @@ func VP8LDecodeImage(/* const */ dec *VP8LDecoder) int {
 
     if !AllocateInternalBuffers32b(dec, io.width) { goto Err }
 
-// C: #if FALSE
-    if io.use_scaling && !AllocateAndInitRescaler(dec, io) { goto Err }
-// C: #else
     if io.use_scaling {
       VP8LSetError(dec, VP8_STATUS_INVALID_PARAM)
       goto Err
     }
-// C: #endif
     if io.use_scaling || WebPIsPremultipliedMode(dec.output.colorspace) {
       // need the alpha-multiply functions for premultiplied output or rescaling
       WebPInitAlphaProcessing()

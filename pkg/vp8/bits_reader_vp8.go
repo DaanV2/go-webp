@@ -10,6 +10,7 @@ package vp8
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/stdlib"
 )
 
 type VP8BitReader struct {
@@ -101,36 +102,31 @@ func VP8GetSignedValue( /* const */ br *VP8BitReader, bits int /*const*/, label 
 func VP8LoadNewBytes( /* const */ br *VP8BitReader) {
 	assert.Assert(br != nil && br.buf != nil)
 	// Read 'BITS' bits at a time if possible.
-	// C: if br.buf < br.buf_max {
-	//   // convert memory type to register type (with some zero'ing!)
-	//   var bits bit_t
-	//   var in_bits lbit_t
-	//   // C: stdlib.MemCpy(&in_bits, br.buf, sizeof(in_bits))
-	//
-	//   // C: br.buf += BITS >> 3
-	//   // WEBP_SELF_ASSIGN(br.buf_end)
-	//
-	//   if !constants.FALSE {
-	//     if BITS > 32 {
-	//       bits = BSwap64(in_bits)
-	//       bits >>= 64 - BITS
-	//     } else if BITS >= 24 {
-	//       bits = BSwap32(in_bits)
-	//       bits >>= (32 - BITS)
-	//     } else if BITS == 16 {
-	//       bits = BSwap16(in_bits)
-	//     } else { // BITS == 8
-	//       bits = bit_t(in_bits)
-	//     }
-	//   } else { // constants.FALSE
-	//     bits = bit_t(in_bits)
-	//     // C: if BITS != 8 * sizeof(bit_t)) {bits >>= (8 * sizeof(bit_t) - BITS)}
-	//   }
-	//   br.value = bits | (br.value << BITS)
-	//   br.bits += BITS
-	// } else {
-	//   VP8LoadFinalBytes(br)  // no need to be inlined
-	// }
+	if br.buf < br.buf_max {
+		// convert memory type to register type (with some zero'ing!)
+		var bits bit_t
+		var in_bits lbit_t
+		stdlib.MemCpy(&in_bits, br.buf, sizeof(in_bits))
+
+		br.buf += BITS >> 3
+		// WEBP_SELF_ASSIGN(br.buf_end)
+
+		if BITS > 32 {
+			bits = BSwap64(in_bits)
+			bits >>= 64 - BITS
+		} else if BITS >= 24 {
+			bits = BSwap32(in_bits)
+			bits >>= (32 - BITS)
+		} else if BITS == 16 {
+			bits = BSwap16(in_bits)
+		} else { // BITS == 8
+			bits = bit_t(in_bits)
+		}
+		br.value = bits | (br.value << BITS)
+		br.bits += BITS
+	} else {
+		VP8LoadFinalBytes(br) // no need to be inlined
+	}
 }
 
 // Read a bit with proba 'prob'. Speed-critical function!

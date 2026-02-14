@@ -21,13 +21,9 @@ import "github.com/daanv2/go-webp/pkg/libwebp/enc"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
-#if FALSE
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-#endif  // FALSE
-
-#define HALVE(x) (((x) + 1) >> 1)
-
+func HALVE(x int) int {
+	return (((x) + 1) >> 1)
+}
 
 
 //------------------------------------------------------------------------------

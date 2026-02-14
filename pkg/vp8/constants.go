@@ -119,22 +119,6 @@ func WebPGetDecoderVersion() int {
 // BITS can be any multiple of 8 from 8 to 56 (inclusive).
 // Pick values that fit natural register size.
 
-// #if defined(__i386__) || defined(_M_IX86)  // x86 32bit
-// const BITS = 24
-// #elif defined(__x86_64__) || defined(_M_X64)  // x86 64bit
-// const BITS = 56
-// #elif defined(__arm__) || defined(_M_ARM)  // ARM
-// const BITS = 24
-// #elif FALSE  // ARM 64bit
-// const BITS = 56
-// #elif defined(__mips__)  // MIPS
-// const BITS = 24
-// #elif defined(__wasm__)  // WASM
-// const BITS = 56
-// #else  // reasonable default
-
-// #endif
-
 const (
 	BITS                  = 56
 	VP8L_MAX_NUM_BIT_READ = 24
@@ -148,9 +132,9 @@ const (
 	// when extra space is needed.
 	MIN_EXTRA_SIZE = (uint64(32768))
 
-	// C: VP8L_WRITER_BYTES    = 4  // sizeof(vp8l_wtype_t)
-	// C: VP8L_WRITER_BITS     = 32 // 8 * sizeof(vp8l_wtype_t)
-	// C: VP8L_WRITER_MAX_BITS = 64 // 8 * sizeof(vp8l_atype_t)
+	VP8L_WRITER_BYTES    = 4  // sizeof(vp8l_wtype_t)
+	VP8L_WRITER_BITS     = 32 // 8 * sizeof(vp8l_wtype_t)
+	VP8L_WRITER_MAX_BITS = 64 // 8 * sizeof(vp8l_atype_t)
 
 	SYNC_EVERY_N_ROWS = 8 // minimum number of rows between check-points
 )

@@ -93,17 +93,17 @@ type VP8BlockCopy = func(/* const */ src *uint8, dst *uint8)
 // Quantization
 struct VP8Matrix;  // forward declaration
 typedef int (*VP8QuantizeBlock)(
-    int16 in[16], int16 out[16], /*const*/ struct /* const */ mtx *VP8Matrix)
+    int16 in[16], int16 out[16], /*const*/ mtx *VP8Matrix)
 // Same as VP8QuantizeBlock, but quantizes two consecutive blocks.
 typedef int (*VP8Quantize2Blocks)(
-    int16 in[32], int16 out[32], /*const*/ struct /* const */ mtx *VP8Matrix)
+    int16 in[32], int16 out[32], /*const*/ mtx *VP8Matrix)
 
 
 
 
 // specific to 2nd transform:
 typedef int (*VP8QuantizeBlockWHT)(
-    int16 in[16], int16 out[16], /*const*/ struct /* const */ mtx *VP8Matrix)
+    int16 in[16], int16 out[16], /*const*/ mtx *VP8Matrix)
 
 
 extern [16 + 4 + 4]
@@ -132,7 +132,7 @@ extern const uint16 VP8LevelFixedCosts[2047 /*MAX_*LEVEL/ + 1]
 extern const uint8 VP8EncBands[16 + 1]
 
 struct VP8Residual
-type VP8SetResidualCoeffsFunc = func(/*const*//* const */ coeffs *int16, struct /* const */ res *VP8Residual)
+type VP8SetResidualCoeffsFunc = func(/*const*//* const */ coeffs *int16, res *VP8Residual)
 
 
 // Cost calculation function.
@@ -232,8 +232,6 @@ WebPUpsampleLinePairFunc WebPGetLinePairConverter(int alpha_is_last)
 // YUV444.RGB converters
 type WebPYUV444Converter = func(/* const */ y *uint8, /*const*/ u *uint8, /*const*/ v *uint8, dst *uint8, len int)
 
-extern WebPYUV444Converter WebPYUV444Converters[MODE_LAST]
-
 // Must be called before using the WebPUpsamplers[] (and for premultiplied
 // colorspaces like rgbA, rgbA4444, etc)
 func WebPInitUpsamplers(void)
@@ -259,23 +257,13 @@ type WebPConvertRGBA32ToUV = func(/* const */ rgb *uint16, u *uint8, v *uint8, w
 type WebPConvertRGBToY = func(/* const */ rgb *uint8, y *uint8, width int, step int)
 type WebPConvertBGRToY = func(/* const */ bgr *uint8, y *uint8, width int, step int)
 
-// used for plain-C fallback.
-extern func WebPConvertARGBToUV(/* const */ argb *uint32, u *uint8, v *uint8, src_width int, do_store int)
-extern func WebPConvertRGBA32ToUV(/* const */ rgb *uint16, u *uint8, v *uint8, width int)
-
 // Must be called before using the above.
 func WebPInitConvertARGBToYUV(void)
-
-//------------------------------------------------------------------------------
-// Rescaler
-
-struct WebPRescaler
 
 // Import a row of data and save its contribution in the rescaler.
 // 'channel' denotes the channel number to be imported. 'Expand' corresponds to
 // the wrk.x_expand case. Otherwise, 'Shrink' is to be used.
-type WebPRescalerImportRowFunc = func(
-    struct /* const */ wrk *WebPRescaler, /*const*/ src *uint8)
+type WebPRescalerImportRowFunc = func(wrk *WebPRescaler, /*const*/ src *uint8)
 
 
 
@@ -287,16 +275,8 @@ type WebPRescalerExportRowFunc = func(struct const wrk *WebPRescaler)
 
 
 
-// Plain-C implementation, as fall-back.
-extern func WebPRescalerImportRowExpand_C(
-    struct /* const */ wrk *WebPRescaler, /*const*/ src *uint8)
-extern func WebPRescalerImportRowShrink_C(
-    struct /* const */ wrk *WebPRescaler, /*const*/ src *uint8)
-extern func WebPRescalerExportRowExpand_C(struct const wrk *WebPRescaler)
-extern func WebPRescalerExportRowShrink_C(struct const wrk *WebPRescaler)
-
 // Main entry calls:
-extern func WebPRescalerImportRow(struct /* const */ wrk *WebPRescaler, /*const*/ src *uint8)
+extern func WebPRescalerImportRow(wrk *WebPRescaler, /*const*/ src *uint8)
 // Export one row (starting at x_out position) from rescaler.
 extern func WebPRescalerExportRow(struct const wrk *WebPRescaler)
 
@@ -349,60 +329,20 @@ func WebPMultRows(ptr *uint8, stride int, /*const*/ alpha *uint8, alpha_stride i
 func WebPMultRow_C(/* const */ ptr *uint8, /*const*/ /* const */ alpha *uint8, width int, inverse int)
 func WebPMultARGBRow_C(/* const */ ptr *uint32, width int, inverse int)
 
-#ifdef constants.FALSE
-// ARGB packing function: a/r/g/b input is rgba or bgra order.
-type WebPPackARGB = func(/* const */ a *uint8, /*const*/ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, out *uint32)
-#endif
-
 // RGB packing function. 'step' can be 3 or 4. r/g/b input is rgb or bgr order.
 type WebPPackRGB = func(/* const */ r *uint8, /*const*/ g *uint8, /*const*/ b *uint8, len int, step int, out *uint32)
 
 // This function returns true if src[i] contains a value different from 0xff.
-extern int (*WebPHasAlpha8b)(/* const */ src *uint8, length int)
+type WebPHasAlpha8b = func(/* const */ src *uint8, length int) int
 // This function returns true if src[4*i] contains a value different from 0xff.
-extern int (*WebPHasAlpha32b)(/* const */ src *uint8, length int)
+type WebPHasAlpha32b = func(/* const */ src *uint8, length int) int
 // replaces transparent values in src[] by 'color'.
 type WebPAlphaReplace = func(src *uint32, length int, color uint32)
 
 // To be called first before using the above.
 func WebPInitAlphaProcessing(void)
 
-//------------------------------------------------------------------------------
-// Filter functions
-
-type WEBP_FILTER_TYPE int
-
-const (  // Filter types.
-  WEBP_FILTER_NONE WEBP_FILTER_TYPE = 0, 
-  WEBP_FILTER_HORIZONTAL , 
-  WEBP_FILTER_VERTICAL , 
-  WEBP_FILTER_GRADIENT , 
-  WEBP_FILTER_BEST ,                             // meta-types
-  WEBP_FILTER_FAST 
-
-  WEBP_FILTER_LAST  = WEBP_FILTER_GRADIENT + 1,  // end marker
-)
-
 type WebPFilterFunc = func(/* const */ in *uint8, width, height int, stride int, out *uint8)
 // In-place un-filtering.
 // Warning! 'prev_line' pointer can be equal to 'cur_line' or 'preds'.
 type WebPUnfilterFunc = func(/* const */ prev_line *uint8, /*const*/ preds *uint8, cur_line *uint8, width int)
-
-// Filter the given data using the given predictor.
-// 'in' corresponds to a 2-dimensional pixel array of size (stride * height)
-// in raster order.
-// 'stride' is number of bytes per scan line (with possible padding).
-// 'out' should be pre-allocated.
-extern WebPFilterFunc WebPFilters[WEBP_FILTER_LAST]
-
-// In-place reconstruct the original data from the given filtered data.
-// The reconstruction will be done for 'num_rows' rows starting from 'row'
-// (assuming rows upto 'row - 1' are already reconstructed).
-extern WebPUnfilterFunc WebPUnfilters[WEBP_FILTER_LAST]
-
-// To be called first before using the above.
-func VP8FiltersInit(void)
-
-
-
-#endif  // WEBP_DSP_DSP_H_

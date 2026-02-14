@@ -7,11 +7,6 @@ package dsp
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Speed-critical encoding functions.
-//
-// Author: Skal (pascal.massimino@gmail.com)
 
 import (
 	"github.com/daanv2/go-webp/pkg/assert"
@@ -686,40 +681,6 @@ func Copy16x8_C(/* const */ src *uint8, dst *uint8) {
   Copy(src, dst, 16, 8)
 }
 
-//------------------------------------------------------------------------------
-// Initialization
-
-// Speed-critical function pointers. We have to initialize them to the default
-// implementations within VP8EncDspInit().
-VP8CHisto VP8CollectHistogram
-VP8Idct VP8ITransform
-VP8Fdct VP8FTransform
-VP8Fdct VP8FTransform2
-VP8WHT VP8FTransformWHT
-VP8Intra4Preds VP8EncPredLuma4
-VP8IntraPreds VP8EncPredLuma16
-VP8IntraPreds VP8EncPredChroma8
-VP8Metric VP8SSE16x16
-VP8Metric VP8SSE8x8
-VP8Metric VP8SSE16x8
-VP8Metric VP8SSE4x4
-VP8WMetric VP8TDisto4x4
-VP8WMetric VP8TDisto16x16
-VP8MeanMetric VP8Mean16x4
-VP8QuantizeBlock VP8EncQuantizeBlock
-VP8Quantize2Blocks VP8EncQuantize2Blocks
-VP8QuantizeBlockWHT VP8EncQuantizeBlockWHT
-VP8BlockCopy VP8Copy4x4
-VP8BlockCopy VP8Copy16x8
-
-
-extern func VP8EncDspInitSSE2(void)
-extern func VP8EncDspInitSSE41(void)
-extern func VP8EncDspInitNEON(void)
-extern func VP8EncDspInitMIPS32(void)
-extern func VP8EncDspInitMIPSdspR2(void)
-extern func VP8EncDspInitMSA(void)
-
 WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
   VP8DspInit();  // common inverse transforms
   InitTables()
@@ -756,61 +717,4 @@ WEBP_DSP_INIT_FUNC(VP8EncDspInit) {
   VP8Mean16x4 = Mean16x4_C
   VP8Copy4x4 = Copy4x4_C
   VP8Copy16x8 = Copy16x8_C
-
-  // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != nil) {
-#if false
-    if (VP8GetCPUInfo(kSSE2)) {
-      VP8EncDspInitSSE2()
-#if false
-      if (VP8GetCPUInfo(kSSE4_1)) {
-        VP8EncDspInitSSE41()
-      }
-#endif
-    }
-#endif
-#if false
-    if (VP8GetCPUInfo(kMIPS32)) {
-      VP8EncDspInitMIPS32()
-    }
-#endif
-#if false
-    if (VP8GetCPUInfo(kMIPSdspR2)) {
-      VP8EncDspInitMIPSdspR2()
-    }
-#endif
-#if defined(WEBP_USE_MSA)
-    if (VP8GetCPUInfo(kMSA)) {
-      VP8EncDspInitMSA()
-    }
-#endif
-  }
-
-#if FALSE
-  if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
-    VP8EncDspInitNEON()
-  }
-#endif
-
-  assert.Assert(VP8ITransform != nil)
-  assert.Assert(VP8FTransform != nil)
-  assert.Assert(VP8FTransformWHT != nil)
-  assert.Assert(VP8TDisto4x4 != nil)
-  assert.Assert(VP8TDisto16x16 != nil)
-  assert.Assert(VP8CollectHistogram != nil)
-  assert.Assert(VP8SSE16x16 != nil)
-  assert.Assert(VP8SSE16x8 != nil)
-  assert.Assert(VP8SSE8x8 != nil)
-  assert.Assert(VP8SSE4x4 != nil)
-  assert.Assert(VP8EncQuantizeBlock != nil)
-  assert.Assert(VP8EncQuantize2Blocks != nil)
-  assert.Assert(VP8FTransform2 != nil)
-  assert.Assert(VP8EncPredLuma4 != nil)
-  assert.Assert(VP8EncPredLuma16 != nil)
-  assert.Assert(VP8EncPredChroma8 != nil)
-  assert.Assert(VP8Mean16x4 != nil)
-  assert.Assert(VP8EncQuantizeBlockWHT != nil)
-  assert.Assert(VP8Copy4x4 != nil)
-  assert.Assert(VP8Copy16x8 != nil)
 }

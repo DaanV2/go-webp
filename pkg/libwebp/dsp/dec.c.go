@@ -26,8 +26,8 @@ import "github.com/daanv2/go-webp/pkg/libwebp/webp"
 
 //------------------------------------------------------------------------------
 
-static  uint8 clip_8b(int v) {
-  return (!(v & ~0xff)) ? v : tenary.If(v < 0, 0, 255)
+func clip_8b(v int) uint8 {
+  return tenary.If(!(v & ~0xff), v, tenary.If(v < 0, 0, 255))
 }
 
 //------------------------------------------------------------------------------
@@ -692,178 +692,34 @@ func DitherCombine8x8_C(/* const */ dither *uint8, dst *uint8, dst_stride int) {
   }
 }
 
-//------------------------------------------------------------------------------
 
-VP8DecIdct2 VP8Transform
-VP8DecIdct VP8TransformAC3
-VP8DecIdct VP8TransformUV
-VP8DecIdct VP8TransformDC
-VP8DecIdct VP8TransformDCUV
-
-VP8LumaFilterFunc VP8VFilter16
-VP8LumaFilterFunc VP8HFilter16
-VP8ChromaFilterFunc VP8VFilter8
-VP8ChromaFilterFunc VP8HFilter8
-VP8LumaFilterFunc VP8VFilter16i
-VP8LumaFilterFunc VP8HFilter16i
-VP8ChromaFilterFunc VP8VFilter8i
-VP8ChromaFilterFunc VP8HFilter8i
-VP8SimpleFilterFunc VP8SimpleVFilter16
-VP8SimpleFilterFunc VP8SimpleHFilter16
-VP8SimpleFilterFunc VP8SimpleVFilter16i
-VP8SimpleFilterFunc VP8SimpleHFilter16i
-
-func (*VP8DitherCombine8x8)(/* const */ dither *uint8, dst *uint8, dst_stride int)
-
-
-extern func VP8DspInitSSE2(void)
-extern func VP8DspInitSSE41(void)
-extern func VP8DspInitNEON(void)
-extern func VP8DspInitMIPS32(void)
-extern func VP8DspInitMIPSdspR2(void)
-extern func VP8DspInitMSA(void)
+type VP8DitherCombine8x8 = func(/* const */ dither *uint8, dst *uint8, dst_stride int)
 
 WEBP_DSP_INIT_FUNC(VP8DspInit) {
   VP8InitClipTables()
 
-#if !WEBP_NEON_OMIT_C_CODE
-  VP8TransformWHT = TransformWHT_C
-  VP8Transform = TransformTwo_C
-  VP8TransformDC = TransformDC_C
-  VP8TransformAC3 = TransformAC3_C
-#endif
-  VP8TransformUV = TransformUV_C
-  VP8TransformDCUV = TransformDCUV_C
 
-#if !WEBP_NEON_OMIT_C_CODE
-  VP8VFilter16 = VFilter16_C
-  VP8VFilter16i = VFilter16i_C
-  VP8HFilter16 = HFilter16_C
-  VP8VFilter8 = VFilter8_C
-  VP8VFilter8i = VFilter8i_C
-  VP8SimpleVFilter16 = SimpleVFilter16_C
-  VP8SimpleHFilter16 = SimpleHFilter16_C
-  VP8SimpleVFilter16i = SimpleVFilter16i_C
-  VP8SimpleHFilter16i = SimpleHFilter16i_C
-#endif
-
-#if !WEBP_NEON_OMIT_C_CODE || WEBP_NEON_WORK_AROUND_GCC
-  VP8HFilter16i = HFilter16i_C
-  VP8HFilter8 = HFilter8_C
-  VP8HFilter8i = HFilter8i_C
-#endif
-
-#if !WEBP_NEON_OMIT_C_CODE
-  VP8PredLuma4[0] = DC4_C
-  VP8PredLuma4[1] = TM4_C
-  VP8PredLuma4[2] = VE4_C
-  VP8PredLuma4[4] = RD4_C
-  VP8PredLuma4[6] = LD4_C
-#endif
-
-  VP8PredLuma4[3] = HE4_C
-  VP8PredLuma4[5] = VR4_C
-  VP8PredLuma4[7] = VL4_C
-  VP8PredLuma4[8] = HD4_C
-  VP8PredLuma4[9] = HU4_C
-
-#if !WEBP_NEON_OMIT_C_CODE
-  VP8PredLuma16[0] = DC16_C
-  VP8PredLuma16[1] = TM16_C
-  VP8PredLuma16[2] = VE16_C
-  VP8PredLuma16[3] = HE16_C
-  VP8PredLuma16[4] = DC16NoTop_C
-  VP8PredLuma16[5] = DC16NoLeft_C
-  VP8PredLuma16[6] = DC16NoTopLeft_C
-
-  VP8PredChroma8[0] = DC8uv_C
-  VP8PredChroma8[1] = TM8uv_C
-  VP8PredChroma8[2] = VE8uv_C
-  VP8PredChroma8[3] = HE8uv_C
-  VP8PredChroma8[4] = DC8uvNoTop_C
-  VP8PredChroma8[5] = DC8uvNoLeft_C
-  VP8PredChroma8[6] = DC8uvNoTopLeft_C
-#endif
-
-  VP8DitherCombine8x8 = DitherCombine8x8_C
-
-  // If defined, use CPUInfo() to overwrite some pointers with faster versions.
-  if (VP8GetCPUInfo != nil) {
-#if false
-    if (VP8GetCPUInfo(kSSE2)) {
-      VP8DspInitSSE2()
-#if false
-      if (VP8GetCPUInfo(kSSE4_1)) {
-        VP8DspInitSSE41()
-      }
-#endif
-    }
-#endif
-#if false
-    if (VP8GetCPUInfo(kMIPS32)) {
-      VP8DspInitMIPS32()
-    }
-#endif
-#if false
-    if (VP8GetCPUInfo(kMIPSdspR2)) {
-      VP8DspInitMIPSdspR2()
-    }
-#endif
-#if defined(WEBP_USE_MSA)
-    if (VP8GetCPUInfo(kMSA)) {
-      VP8DspInitMSA()
-    }
-#endif
-  }
-
-#if FALSE
-  if (WEBP_NEON_OMIT_C_CODE ||
-      (VP8GetCPUInfo != nil && VP8GetCPUInfo(kNEON))) {
-    VP8DspInitNEON()
-  }
-#endif
-
-  assert.Assert(VP8TransformWHT != nil)
-  assert.Assert(VP8Transform != nil)
-  assert.Assert(VP8TransformDC != nil)
-  assert.Assert(VP8TransformAC3 != nil)
-  assert.Assert(VP8TransformUV != nil)
-  assert.Assert(VP8TransformDCUV != nil)
-  assert.Assert(VP8VFilter16 != nil)
-  assert.Assert(VP8HFilter16 != nil)
-  assert.Assert(VP8VFilter8 != nil)
-  assert.Assert(VP8HFilter8 != nil)
-  assert.Assert(VP8VFilter16i != nil)
-  assert.Assert(VP8HFilter16i != nil)
-  assert.Assert(VP8VFilter8i != nil)
-  assert.Assert(VP8HFilter8i != nil)
-  assert.Assert(VP8SimpleVFilter16 != nil)
-  assert.Assert(VP8SimpleHFilter16 != nil)
-  assert.Assert(VP8SimpleVFilter16i != nil)
-  assert.Assert(VP8SimpleHFilter16i != nil)
-  assert.Assert(VP8PredLuma4[0] != nil)
-  assert.Assert(VP8PredLuma4[1] != nil)
-  assert.Assert(VP8PredLuma4[2] != nil)
-  assert.Assert(VP8PredLuma4[3] != nil)
-  assert.Assert(VP8PredLuma4[4] != nil)
-  assert.Assert(VP8PredLuma4[5] != nil)
-  assert.Assert(VP8PredLuma4[6] != nil)
-  assert.Assert(VP8PredLuma4[7] != nil)
-  assert.Assert(VP8PredLuma4[8] != nil)
-  assert.Assert(VP8PredLuma4[9] != nil)
-  assert.Assert(VP8PredLuma16[0] != nil)
-  assert.Assert(VP8PredLuma16[1] != nil)
-  assert.Assert(VP8PredLuma16[2] != nil)
-  assert.Assert(VP8PredLuma16[3] != nil)
-  assert.Assert(VP8PredLuma16[4] != nil)
-  assert.Assert(VP8PredLuma16[5] != nil)
-  assert.Assert(VP8PredLuma16[6] != nil)
-  assert.Assert(VP8PredChroma8[0] != nil)
-  assert.Assert(VP8PredChroma8[1] != nil)
-  assert.Assert(VP8PredChroma8[2] != nil)
-  assert.Assert(VP8PredChroma8[3] != nil)
-  assert.Assert(VP8PredChroma8[4] != nil)
-  assert.Assert(VP8PredChroma8[5] != nil)
-  assert.Assert(VP8PredChroma8[6] != nil)
-  assert.Assert(VP8DitherCombine8x8 != nil)
 }
+
+var VP8TransformWHT = TransformWHT_C
+var VP8Transform = TransformTwo_C
+var VP8TransformDC = TransformDC_C
+var VP8TransformAC3 = TransformAC3_C
+var VP8TransformUV = TransformUV_C
+var VP8TransformDCUV = TransformDCUV_C
+var VP8VFilter16 = VFilter16_C
+var VP8VFilter16i = VFilter16i_C
+var VP8HFilter16 = HFilter16_C
+var VP8VFilter8 = VFilter8_C
+var VP8VFilter8i = VFilter8i_C
+var VP8SimpleVFilter16 = SimpleVFilter16_C
+var VP8SimpleHFilter16 = SimpleHFilter16_C
+var VP8SimpleVFilter16i = SimpleVFilter16i_C
+var VP8SimpleHFilter16i = SimpleHFilter16i_C
+var VP8HFilter16i = HFilter16i_C
+var VP8HFilter8 = HFilter8_C
+var VP8HFilter8i = HFilter8i_C
+
+var VP8PredLuma4 = {DC4_C, TM4_C, VE4_C, RD4_C, LD4_C, HE4_C, VR4_C, VL4_C, HD4_C, HU4_C}
+var VP8PredLuma16 = {DC16_C, TM16_C, VE16_C, HE16_C, DC16NoTop_C, DC16NoLeft_C, DC16NoTopLeft_C}
+var VP8PredChroma8 = {DC8uv_C, TM8uv_C, VE8uv_C, HE8uv_C, DC8uvNoTop_C, DC8uvNoLeft_C, DC8uvNoTopLeft_C}

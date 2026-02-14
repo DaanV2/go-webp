@@ -222,22 +222,22 @@ WEBP_DSP_INIT_FUNC(WebPRescalerDspInit) {
   WebPRescalerImportRowShrink = WebPRescalerImportRowShrink_C
 
   if (VP8GetCPUInfo != nil) {
-#if false
+#if FALSE
     if (VP8GetCPUInfo(kSSE2)) {
       WebPRescalerDspInitSSE2()
     }
 #endif
-#if false
+#if FALSE
     if (VP8GetCPUInfo(kMIPS32)) {
       WebPRescalerDspInitMIPS32()
     }
 #endif
-#if false
+#if FALSE
     if (VP8GetCPUInfo(kMIPSdspR2)) {
       WebPRescalerDspInitMIPSdspR2()
     }
 #endif
-#if defined(WEBP_USE_MSA)
+#if FALSE
     if (VP8GetCPUInfo(kMSA)) {
       WebPRescalerDspInitMSA()
     }

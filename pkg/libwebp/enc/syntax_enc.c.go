@@ -13,17 +13,18 @@ package enc
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
-import "github.com/daanv2/go-webp/pkg/assert"
-import "github.com/daanv2/go-webp/pkg/stddef"
+import (
+	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/libwebp/decoder"
+	"github.com/daanv2/go-webp/pkg/libwebp/enc"
+	"github.com/daanv2/go-webp/pkg/libwebp/utils"
+	"github.com/daanv2/go-webp/pkg/libwebp/webp"
+	"github.com/daanv2/go-webp/pkg/stddef"
+	"github.com/daanv2/go-webp/pkg/vp8"
+)
 
-import "github.com/daanv2/go-webp/pkg/libwebp/decoder"
-import "github.com/daanv2/go-webp/pkg/libwebp/enc"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/utils"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"  // RIFF constants
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"         // ALPHA_FLAG
-import "github.com/daanv2/go-webp/pkg/libwebp/webp"
+// RIFF constants
+// ALPHA_FLAG
 
 //------------------------------------------------------------------------------
 // Helper functions
@@ -258,9 +259,9 @@ func EmitPartitionsSize(/* const */ enc *VP8Encoder, /*const*/ pic *picture.Pict
 //------------------------------------------------------------------------------
 
 func GeneratePartition0(/* const */ enc *VP8Encoder) int {
-  var bw *VP8BitWriter = &enc.bw
+  var bw *vp8.VP8BitWriter = &enc.bw
   mb_size := enc.mb_w * enc.mb_h
-  uint64 pos1, pos2, pos3
+  var pos1, pos2, pos3 uint64
 
   pos1 = VP8BitWriterPos(bw)
   if (!VP8BitWriterInit(bw, mb_size * 7 / 8)) {  // ~7 bits per macroblock
@@ -271,10 +272,7 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
 
   PutSegmentHeader(bw, enc)
   PutFilterHeader(bw, &enc.filter_hdr)
-  vp8.VP8PutBits(bw, enc.num_parts == 8   ? 3
-             : enc.num_parts == 4 ? 2
-             : enc.num_parts == 2 ? 1
-                                   : 0, 2)
+  vp8.VP8PutBits(bw, tenary.If(enc.num_parts == 8, 3, tenary.If(enc.num_parts == 4, 2, tenary.If(enc.num_parts == 2, 1, 0), 2)))
   PutQuant(bw, enc)
   vp8.VP8PutBitUniform(bw, 0);  // no proba update
   VP8WriteProbas(bw, &enc.proba)
@@ -284,17 +282,6 @@ func GeneratePartition0(/* const */ enc *VP8Encoder) int {
 
   pos3 = VP8BitWriterPos(bw)
 
-#if FALSE
-  if (enc.pic.stats) {
-    enc.pic.stats.header_bytes[0] = (int)((pos2 - pos1 + 7) >> 3)
-    enc.pic.stats.header_bytes[1] = (int)((pos3 - pos2 + 7) >> 3)
-    enc.pic.stats.alpha_data_size = (int)enc.alpha_data_size
-  }
-#else
-  (void)pos1
-  (void)pos2
-  (void)pos3
-#endif
   if (bw.error) {
     return enc.pic.SetEncodingError(picture.ENC_ERROR_OUT_OF_MEMORY)
   }
