@@ -1,5 +1,3 @@
-package enc
-
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
 // Use of this source code is governed by a BSD-style license
@@ -7,12 +5,14 @@ package enc
 // tree. An additional intellectual property rights grant can be found
 // in the file PATENTS. All contributing project authors may
 // be found in the AUTHORS file in the root of the source tree.
-// -----------------------------------------------------------------------------
-//
-// Author: Jyrki Alakuijala (jyrki@google.com)
-//
+
+package enc
+
 import (
+	"slices"
+
 	"github.com/daanv2/go-webp/pkg/assert"
+	"github.com/daanv2/go-webp/pkg/constants"
 	"github.com/daanv2/go-webp/pkg/generics"
 	"github.com/daanv2/go-webp/pkg/libwebp/dsp"
 	"github.com/daanv2/go-webp/pkg/libwebp/enc"
@@ -30,6 +30,8 @@ const NUM_PARTITIONS =4
 const BIN_SIZE =(NUM_PARTITIONS * NUM_PARTITIONS * NUM_PARTITIONS)
 // Maximum number of histograms allowed in greedy combining algorithm.
 const MAX_HISTO_GREEDY =100
+// Not a trivial literal symbol.
+const VP8L_NON_TRIVIAL_SYM =uint16(0xffff)
 
 // Enum to meaningfully access the elements of the Histogram arrays.
 type HistogramIndex int
@@ -41,6 +43,40 @@ const (
 	ALPHA
 	DISTANCE
 )
+
+
+// A simple container for histograms of data.
+type VP8LHistogram struct {
+  // 'literal' contains green literal, palette-code and
+  // copy-length-prefix histogram
+  literal []uint32  // Pointer to the allocated buffer for literal.
+  red [NUM_LITERAL_CODES]uint32
+  blue [NUM_LITERAL_CODES]uint32
+  alpha [NUM_LITERAL_CODES]uint32
+  // Backward reference prefix-code histogram.
+  distance [NUM_DISTANCE_CODES]uint32
+  palette_code_bits int
+  // The following members are only used within VP8LGetHistoImageSymbols.
+
+  // Index of the unique value of a histogram if any, VP8L_NON_TRIVIAL_SYM
+  // otherwise.
+  trivial_symbol [5]uint16
+  bit_cost uint64  // Cached value of total bit cost.
+  // Cached values of entropy costs: literal, red, blue, alpha, distance
+  costs [5]uint64
+  is_used [5]uint8  // 5 for literal, red, blue, alpha, distance
+  bin_id uint16     // entropy bin index.
+}
+
+// Collection of histograms with fixed capacity, allocated as one
+// big memory chunk.
+type VP8LHistogramSet struct {
+//   size int: just use histograms      // number of slots currently in use
+//   max_size int: just use histograms  // maximum capacity
+  histograms []*VP8LHistogram
+}
+
+
 
 
 // Return the size of the histogram for a given cache_bits.
@@ -60,17 +96,19 @@ func HistogramStatsClear(/* const */ h *VP8LHistogram) {
     h.is_used[i] = 1
   }
   h.bit_cost = 0
-  stdlib.Memset(h.costs, 0, sizeof(h.costs))
+  h.costs = [5]uint64{}
+//   stdlib.Memset(h.costs, 0, sizeof(h.costs))
 }
 
 func HistogramClear(/* const */ h *VP8LHistogram) {
-  var literal *uint32 = h.literal
-  cache_bits := h.palette_code_bits
-  histo_size := GetHistogramSize(cache_bits)
-  stdlib.Memset(h, 0, histo_size)
-  h.palette_code_bits = cache_bits
-  h.literal = literal
-  HistogramStatsClear(h)
+	//   var literal *uint32 = h.literal
+	//   cache_bits := h.palette_code_bits
+	//   histo_size := GetHistogramSize(cache_bits)
+	//   stdlib.Memset(h, 0, histo_size)
+	//   h.palette_code_bits = cache_bits
+	//   h.literal = literal
+	*h = VP8LHistogram{}
+	HistogramStatsClear(h)
 }
 
 
@@ -85,6 +123,11 @@ func HistogramCopy(/* const */ src *VP8LHistogram, /*const*/ dst *VP8LHistogram)
   stdlib.MemCpy(dst.literal, src.literal, literal_size * sizeof(*dst.literal))
 }
 
+// Create the histogram.
+//
+// The input data is the PixOrCopy data, which models the literals, stop
+// codes and backward references (both distances and lengths).  Also: if
+// palette_code_bits is >= 0, initialize the histogram with this value.
 func VP8LHistogramCreate(/* const */ h *VP8LHistogram, /*const*/ refs *VP8LBackwardRefs, palette_code_bits int) {
   if (palette_code_bits >= 0) {
     h.palette_code_bits = palette_code_bits
@@ -93,7 +136,9 @@ func VP8LHistogramCreate(/* const */ h *VP8LHistogram, /*const*/ refs *VP8LBackw
   VP8LHistogramStoreRefs(refs, /*distance_modifier=*/nil, /*distance_modifier_arg0=*/0, h)
 }
 
-func VP8LHistogramInit(/* const */ h *VP8LHistogram, palette_code_bits int, init_arrays int) {
+// Set the palette_code_bits and reset the stats.
+// If init_arrays is true, the arrays are also filled with 0's.
+func VP8LHistogramInit(/* const */ h *VP8LHistogram, palette_code_bits int, init_arrays bool) {
   h.palette_code_bits = palette_code_bits
   if (init_arrays) {
     HistogramClear(h)
@@ -102,74 +147,64 @@ func VP8LHistogramInit(/* const */ h *VP8LHistogram, palette_code_bits int, init
   }
 }
 
+// Allocate and initialize histogram object with specified 'cache_bits'.
+// Returns nil in case of memory error.
+// Special case of VP8LAllocateHistogramSet, with size equals 1.
 func VP8LAllocateHistogram(cache_bits int) *VP8LHistogram {
   histo *VP8LHistogram = nil
   total_size := GetHistogramSize(cache_bits)
-//   var memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory))
-//   if memory == nil { return nil  }
-	memory := make([]uint8, total_size)
+	//   var memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory))
+	//   if memory == nil { return nil  }
+	// memory := make([]uint8, total_size)
 
-  histo = (*VP8LHistogram)memory
+  histo = &VP8LHistogram{}
   // 'literal' won't necessary be aligned.
-  histo.literal = (*uint32)(memory + sizeof(VP8LHistogram))
+//   histo.literal = (*uint32)(memory + sizeof(VP8LHistogram))
   VP8LHistogramInit(histo, cache_bits, /*init_arrays=*/0)
   return histo
 }
 
 // Resets the pointers of the histograms to point to the bit buffer in the set.
+// Deprecated: We no longer use C style pointer arithmetic to allocate the histograms. This function is a no-op now.
+//go:fix inline
 func HistogramSetResetPointers(/* const */ set *VP8LHistogramSet, cache_bits int) {
-  var i int
-  histo_size := GetHistogramSize(cache_bits)
-  memory *uint8 = (*uint8)(set.histograms)
-  memory += set.max_size * sizeof(*set.histograms)
-  for i = 0; i < set.max_size; i++ {
-    memory = (*uint8)WEBP_ALIGN(memory)
-    set.histograms[i] = (*VP8LHistogram)memory
-    // 'literal' won't necessary be aligned.
-    set.histograms[i].literal = (*uint32)(memory + sizeof(VP8LHistogram))
-    memory += histo_size
-  }
+  
 }
 
 // Returns the total size of the VP8LHistogramSet.
 func HistogramSetTotalSize(size int, cache_bits int) uint64 {
   histo_size := GetHistogramSize(cache_bits)
-  return (sizeof(VP8LHistogramSet) +
-          size * (sizeof(*VP8LHistogram) + histo_size + WEBP_ALIGN_CST))
+  return (generics.SizeOfFor[VP8LHistogramSet]() + size * (sizeof(*VP8LHistogram) + histo_size + WEBP_ALIGN_CST))
 }
 
+// Allocate an array of pointer to histograms, allocated and initialized
+// using 'cache_bits'. Return nil in case of memory error.
 func VP8LAllocateHistogramSet(size int, cache_bits int) *VP8LHistogramSet {
   var i int
   var set *VP8LHistogramSet
-  total_size := HistogramSetTotalSize(size, cache_bits)
+//   total_size := HistogramSetTotalSize(size, cache_bits)
 //   memory *uint8 = (*uint8)WebPSafeMalloc(total_size, sizeof(*memory))
 //   if memory == nil { return nil  }
-  memory := make([]uint8, total_size)
+//   memory := make([]uint8, total_size)
 
-  set = (*VP8LHistogramSet)memory
+  set = &VP8LHistogramSet{}
   memory += sizeof(*set)
-  set.histograms = (*VP8LHistogram*)memory
-  set.max_size = size
-  set.size = size
-  HistogramSetResetPointers(set, cache_bits)
+  set.histograms = make([]VP8LHistogram, 0, size)
+//   set.max_size = size
+//   set.size = size
+//   HistogramSetResetPointers(set, cache_bits)
   for i = 0; i < size; i++ {
+	set.histograms[i] = &VP8LHistogram{}
     VP8LHistogramInit(set.histograms[i], cache_bits, /*init_arrays=*/0)
   }
   return set
 }
 
+// Set the histograms in set to 0.
 func VP8LHistogramSetClear(/* const */ set *VP8LHistogramSet) {
-  var i int
-  cache_bits := set.histograms[0].palette_code_bits
-  size := set.max_size
-  total_size := HistogramSetTotalSize(size, cache_bits)
-  memory *uint8 = (*uint8)set
-
-  stdlib.Memset(memory, 0, total_size)
-  memory += sizeof(*set)
-  set.histograms = (*VP8LHistogram*)memory
-  set.max_size = size
-  set.size = size
+  for _, h := range set.histograms {
+	HistogramClear(h)
+  }
   HistogramSetResetPointers(set, cache_bits)
   for i = 0; i < size; i++ {
     set.histograms[i].palette_code_bits = cache_bits
@@ -178,8 +213,8 @@ func VP8LHistogramSetClear(/* const */ set *VP8LHistogramSet) {
 
 // Removes the histogram 'i' from 'set'.
 func HistogramSetRemoveHistogram(/* const */ set *VP8LHistogramSet, i int) {
-  set.histograms[i] = set.histograms[set.size - 1]
-  --set.size
+  set.histograms[i] = slices.Delete(set.histograms, i, i+1)
+//   --set.size
   assert.Assert(set.size > 0)
 }
 
@@ -209,6 +244,9 @@ func HistogramAddSinglePixOrCopy(histo *VP8LHistogram, /*const*/ v *PixOrCopy, d
   }
 }
 
+// Collect all the references into a histogram (without reset)
+// The distance modifier function is applied to the distance before
+// the histogram is updated. It can be nil.
 func VP8LHistogramStoreRefs(/* const */ refs *VP8LBackwardRefs, distance_modifier func(int, int)int, distance_modifier_arg0 int, /*const*/ histo *VP8LHistogram) {
   var c VP8LRefsCursor = VP8LRefsCursorInit(refs)
   for (VP8LRefsCursorOk(&c)) {
@@ -230,7 +268,7 @@ func BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) uint64 {
     // Let's mix in a bit of entropy to favor good clustering when
     // distributions of these are combined.
     if entropy.nonzeros == 2 {
-      return DivRound(99 * ((uint64)entropy.sum << LOG_2_PRECISION_BITS) + entropy.entropy, 100)
+      return DivRound(99 * (uint64)(entropy.sum << LOG_2_PRECISION_BITS) + entropy.entropy, 100)
     }
     // No matter what the entropy says, we cannot be better than min_limit
     // with Huffman coding. I am mixing a bit of entropy into the
@@ -246,13 +284,13 @@ func BitsEntropyRefine(/* const */ entropy *VP8LBitEntropy) uint64 {
   }
 
   {
-    min_limit := (uint64)(2 * entropy.sum - entropy.max_val)
-                         << LOG_2_PRECISION_BITS
+    min_limit := uint64(2 * entropy.sum - entropy.max_val) << LOG_2_PRECISION_BITS
     min_limit = DivRound(mix * min_limit + (1000 - mix) * entropy.entropy, 1000)
     return tenary.If(entropy.entropy < min_limit, min_limit, entropy.entropy)
   }
 }
 
+// Returns the entropy for the symbols in the input array.
 func VP8LBitsEntropy(/* const */ array *uint32, n int) uint64 {
 	var entropy VP8LBitEntropy
 	VP8LBitsEntropyUnrefined(array, n, &entropy)
@@ -284,7 +322,7 @@ func FinalHuffmanCost(/* const */ stats *VP8LStreaks) uint64 {
   retval_extra += 1840 * stats.streaks[0][0]
   // Originally 26/8.
   retval_extra += 3360 * stats.streaks[1][0]
-  return retval + ((uint64)retval_extra << (LOG_2_PRECISION_BITS - 10))
+  return retval + (uint64(retval_extra) << (LOG_2_PRECISION_BITS - 10))
 }
 
 // Get the symbol entropy for the distribution 'population'.
@@ -294,8 +332,7 @@ func PopulationCost(/* const */ population *uint32, length int, /*const*/ trivia
    var stats VP8LStreaks
   VP8LGetEntropyUnrefined(population, length, &bit_entropy, &stats)
   if (trivial_sym != nil) {
-    *trivial_sym = (bit_entropy.nonzeros == 1) ? bit_entropy.nonzero_code
-                                               : VP8L_NON_TRIVIAL_SYM
+    *trivial_sym = tenary.If(bit_entropy.nonzeros == 1, bit_entropy.nonzero_code, VP8L_NON_TRIVIAL_SYM)
   }
   if (is_used != nil) {
     // The histogram is used if there is at least one non-zero streak.
@@ -305,28 +342,25 @@ func PopulationCost(/* const */ population *uint32, length int, /*const*/ trivia
   return BitsEntropyRefine(&bit_entropy) + FinalHuffmanCost(&stats)
 }
 
-func GetPopulationInfo(/* const */ histo *VP8LHistogram, HistogramIndex index, /*const*/ *uint32* population, length *int) {
-  switch (index) {
+
+//go:fix inline
+func GetPopulationInfo(/* const */ histo *VP8LHistogram, index HistogramIndex) (population []uint32) {
+	return histo.GetPopulationInfo(index)
+}
+
+func (histo *VP8LHistogram) GetPopulationInfo(index HistogramIndex) (population []uint32) {
+	  switch (index) {
     case LITERAL:
-      *population = histo.literal
-      *length = VP8LHistogramNumCodes(histo.palette_code_bits)
-      break
+		length := VP8LHistogramNumCodes(histo.palette_code_bits);
+		return histo.literal[:length]
     case RED:
-      *population = histo.red
-      *length = NUM_LITERAL_CODES
-      break
+		return histo.red
     case BLUE:
-      *population = histo.blue
-      *length = NUM_LITERAL_CODES
-      break
+      return histo.blue
     case ALPHA:
-      *population = histo.alpha
-      *length = NUM_LITERAL_CODES
-      break
+      return histo.alpha
     case DISTANCE:
-      *population = histo.distance
-      *length = NUM_DISTANCE_CODES
-      break
+      return histo.distance
   }
 }
 
@@ -335,15 +369,11 @@ func GetPopulationInfo(/* const */ histo *VP8LHistogram, HistogramIndex index, /
 // 'index' is the index of the symbol in the histogram (literal, red, blue,
 // alpha, distance).
 func GetCombinedEntropy(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, HistogramIndex index) uint64 {
-  const X *uint32
-  const Y *uint32
-  var length int
-   var stats VP8LStreaks
-   var bit_entropy VP8LBitEntropy
-  is_h1_used := h1.is_used[index]
-  is_h2_used := h2.is_used[index]
-  is_trivial := h1.trivial_symbol[index] != VP8L_NON_TRIVIAL_SYM &&
-                         h1.trivial_symbol[index] == h2.trivial_symbol[index]
+	var stats VP8LStreaks
+	var bit_entropy VP8LBitEntropy
+	is_h1_used := h1.is_used[index]
+	is_h2_used := h2.is_used[index]
+	is_trivial := h1.trivial_symbol[index] != VP8L_NON_TRIVIAL_SYM && h1.trivial_symbol[index] == h2.trivial_symbol[index]
 
   if (is_trivial || !is_h1_used || !is_h2_used) {
     if is_h1_used { return h1.costs[index]  }
@@ -351,25 +381,23 @@ func GetCombinedEntropy(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogra
   }
   assert.Assert(is_h1_used && is_h2_used)
 
-  GetPopulationInfo(h1, index, &X, &length)
-  GetPopulationInfo(h2, index, &Y, &length)
-  VP8LGetCombinedEntropyUnrefined(X, Y, length, &bit_entropy, &stats)
-  return BitsEntropyRefine(&bit_entropy) + FinalHuffmanCost(&stats)
+	X := GetPopulationInfo(h1, index)
+	Y := GetPopulationInfo(h2, index)
+	VP8LGetCombinedEntropyUnrefined(X, Y, length, &bit_entropy, &stats)
+	return BitsEntropyRefine(&bit_entropy) + FinalHuffmanCost(&stats)
 }
 
+// Estimate how many bits the combined entropy of literals and distance
+// approximately maps to.
 // Estimates the Entropy + Huffman + other block overhead size cost.
-uint64 VP8LHistogramEstimateBits(/* const */ h *VP8LHistogram) {
+func VP8LHistogramEstimateBits(/* const */ h *VP8LHistogram) uint64 {
   var i int
   cost := 0
   for i = 0; i < 5; i++ {
-    var length int
-    const population *uint32
-    GetPopulationInfo(h, (HistogramIndex)i, &population, &length)
+    population := GetPopulationInfo(h, HistogramIndex(i))
     cost += PopulationCost(population, length, /*trivial_sym=*/nil, /*is_used=*/nil)
   }
-  cost += ((uint64)(VP8LExtraCost(h.literal + NUM_LITERAL_CODES, NUM_LENGTH_CODES) +
-                      VP8LExtraCost(h.distance, NUM_DISTANCE_CODES))
-           << LOG_2_PRECISION_BITS)
+  cost += ((uint64)(VP8LExtraCost(h.literal + NUM_LITERAL_CODES, NUM_LENGTH_CODES) + VP8LExtraCost(h.distance, NUM_DISTANCE_CODES)) << LOG_2_PRECISION_BITS)
   return cost
 }
 
@@ -377,32 +405,32 @@ uint64 VP8LHistogramEstimateBits(/* const */ h *VP8LHistogram) {
 // Various histogram combine/cost-eval functions
 
 // Set a + b in b, saturating at WEBP_INT64_MAX.
-func SaturateAdd(uint64 a, b *int64) {
-  if (*b < 0 || (int64)a <= WEBP_INT64_MAX - *b) {
-    *b += (int64)a
+func SaturateAdd(a uint64, b []int64) {
+  if b[0] < 0 || int64(a) <=( WEBP_INT64_MAX - b[0]) {
+    b[0] += int64(a)
   } else {
-    *b = WEBP_INT64_MAX
+    b[0] = WEBP_INT64_MAX
   }
 }
 
-// Returns 1 if the cost of the combined histogram is less than the threshold.
-// Otherwise returns 0 and the cost is invalid due to early bail-out.
-func GetCombinedHistogramEntropy(a *VP8LHistogram, /*const*/ b *VP8LHistogram, cost_threshold_in int64 , cost *uint64, costs [5]uint64) int {
+// Returns true if the cost of the combined histogram is less than the threshold.
+// Otherwise returns false and the cost is invalid due to early bail-out.
+func GetCombinedHistogramEntropy(a *VP8LHistogram, /*const*/ b *VP8LHistogram, cost_threshold_in int64 , cost []uint64, costs [5]uint64) bool {
   var i int
-  cost_threshold := (uint64)cost_threshold_in
+  cost_threshold := uint64(cost_threshold_in)
   assert.Assert(a.palette_code_bits == b.palette_code_bits)
-  if cost_threshold_in <= 0 { return 0  }
-  *cost = 0
+  if cost_threshold_in <= 0 { return false  }
+  cost[0] = 0
 
   // No need to add the extra cost for length and distance as it is a constant
   // that does not influence the histograms.
   for i = 0; i < 5; i++ {
-    costs[i] = GetCombinedEntropy(a, b, (HistogramIndex)i)
-    *cost += costs[i]
-    if *cost >= cost_threshold { return 0  }
+    costs[i] = GetCombinedEntropy(a, b,HistogramIndex (i))
+    cost[0] += costs[i]
+    if cost[0] >= cost_threshold { return false  }
   }
 
-  return 1
+  return true
 }
 
 func HistogramAdd(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, /*const*/ hout *VP8LHistogram) {
@@ -413,10 +441,10 @@ func HistogramAdd(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, /*
     var length int
     var p1, p2, pout_const *uint32
     var pout *uint32
-    GetPopulationInfo(h1, (HistogramIndex)i, &p1, &length)
-    GetPopulationInfo(h2, (HistogramIndex)i, &p2, &length)
-    GetPopulationInfo(hout, (HistogramIndex)i, &pout_const, &length)
-    pout = (*uint32)pout_const
+    p1 := GetPopulationInfo(h1, HistogramIndex(i))
+    p2 := GetPopulationInfo(h2, HistogramIndex(i))
+    pout_const := GetPopulationInfo(hout, HistogramIndex(i))
+    pout = pout_const
     if (h2 == hout) {
       if (h1.is_used[i]) {
         if (hout.is_used[i]) {
@@ -441,14 +469,12 @@ func HistogramAdd(/* const */ h *VP8LHistogram1, /*const*/ h *VP8LHistogram2, /*
   }
 
   for i = 0; i < 5; i++ {
-    hout.trivial_symbol[i] = h1.trivial_symbol[i] == h2.trivial_symbol[i]
-                                  ? h1.trivial_symbol[i]
-                                  : VP8L_NON_TRIVIAL_SYM
+    hout.trivial_symbol[i] = tenary.If(h1.trivial_symbol[i] == h2.trivial_symbol[i], h1.trivial_symbol[i], VP8L_NON_TRIVIAL_SYM)
     hout.is_used[i] = h1.is_used[i] || h2.is_used[i]
   }
 }
 
-func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5], /*const*/ h *VP8LHistogram) {
+func UpdateHistogramCost( bit_cost uint64,  costs [5]uint64, /*const*/ h *VP8LHistogram) {
   var i int
   h.bit_cost = bit_cost
   for i = 0; i < 5; i++ {
@@ -466,7 +492,8 @@ func UpdateHistogramCost(uint64 bit_cost, uint64 costs[5], /*const*/ h *VP8LHist
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
 func HistogramAddEval(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram, /*const*/ out *VP8LHistogram, int64 cost_threshold) int {
   sum_cost := a.bit_cost + b.bit_cost
-  uint64 bit_cost, costs[5]
+  var bit_cost uint64
+  var costs [5]uint64
   SaturateAdd(sum_cost, &cost_threshold)
   if (!GetCombinedHistogramEntropy(a, b, cost_threshold, &bit_cost, costs)) {
     return 0
@@ -483,7 +510,8 @@ func HistogramAddEval(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram, 
 // Returns 1 if the cost is less than the threshold.
 // Otherwise returns 0 and the cost is invalid due to early bail-out.
 func HistogramAddThresh(/* const */ a *VP8LHistogram, /*const*/ b *VP8LHistogram, int64 cost_threshold, cost_out *int64) int {
-  uint64 cost, costs[5]
+  var cost uint64
+  var costs [5]uint64
   assert.Assert(a != nil && b != nil)
   SaturateAdd(a.bit_cost, &cost_threshold)
   if (!GetCombinedHistogramEntropy(a, b, cost_threshold, &cost, costs)) {
@@ -1054,6 +1082,8 @@ func GetCombineCostFactor(int histo_size, quality int) int32 {
   return combine_cost_factor
 }
 
+// Builds the histogram image. pic and percent are for progress.
+// Returns false in case of error (stored in pic.ErrorCode).
 func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackwardRefs, quality int, low_effort int, histogram_bits int, cache_bits int, /*const*/ image_histo *VP8LHistogramSet, /*const*/ tmp_histo *VP8LHistogram, /*const*/ histogram_symbols *uint32, /*const*/ pic *picture.Picture, percent_range int, /*const*/ percent *int) int {
   histo_xsize := histogram_bits ? VP8LSubSampleSize(xsize, histogram_bits) : 1
   histo_ysize := histogram_bits ? VP8LSubSampleSize(ysize, histogram_bits) : 1
@@ -1109,4 +1139,9 @@ func VP8LGetHistoImageSymbols(xsize int, ysize int, /*const*/ refs *VP8LBackward
 
 Error:
   return (pic.ErrorCode == ENC_OK)
+}
+
+func VP8LHistogramNumCodes(int palette_code_bits) int {
+  return NUM_LITERAL_CODES + NUM_LENGTH_CODES +
+         (tenary.If(palette_code_bits > 0, (1 << palette_code_bits), 0))
 }
