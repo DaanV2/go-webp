@@ -75,9 +75,7 @@ func (w *BitUint8Writer) WriteBits(bits uint32, count uint8) error {
 
 func (w *BitUint8Writer) Bytes() ([]byte, int) {
 	b := make([]byte, 0, len(w.data))
-	for _, v := range w.data {
-		b = append(b, v)
-	}
+	b = append(b, w.data...)
 	return b, w.bitPos % 8
 }
 
