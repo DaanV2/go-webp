@@ -27,7 +27,10 @@ func NewBitUint32Writer() *BitUint32Writer {
 }
 
 func (w *BitUint32Writer) BitLength() int {
-	return len(w.data)*32 + w.bitPos
+	if len(w.data) == 0 {
+		return 0
+	}
+	return (len(w.data)-1)*32 + w.bitPos
 }
 
 // WriteBit writes a single bit to the output stream. The bit is represented as a boolean value, where true represents 1 and false represents 0.
