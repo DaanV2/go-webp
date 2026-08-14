@@ -62,11 +62,11 @@ func (w *BitUint8Writer) WriteBits(bits uint32, count uint8) error {
 		remainingBitsInCurrent := 8 - w.bitPos
 		n := count
 		if int(n) > remainingBitsInCurrent {
-			n = uint8(remainingBitsInCurrent)
+			n = uint8(remainingBitsInCurrent) // nolint:gosec // Overflow is acceptable
 		}
 
 		mask := uint32(1)<<n - 1
-		w.data[len(w.data)-1] |= uint8(bits&mask) << w.bitPos
+		w.data[len(w.data)-1] |= uint8((bits & mask) << w.bitPos) // nolint:gosec // Overflow is acceptable
 		bits >>= n
 		w.bitPos += int(n)
 		count -= n
