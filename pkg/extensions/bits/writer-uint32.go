@@ -30,6 +30,7 @@ func (w *BitUint32Writer) BitLength() int {
 	if len(w.data) == 0 {
 		return 0
 	}
+
 	return (len(w.data)-1)*32 + w.bitPos
 }
 
@@ -39,6 +40,7 @@ func (w *BitUint32Writer) WriteBit(bit bool) error {
 	if bit {
 		value = 1
 	}
+
 	return w.WriteBits(value, 1)
 }
 
@@ -75,11 +77,11 @@ func (w *BitUint32Writer) WriteBits(bits uint32, count uint8) error {
 }
 
 // Uint32s returns the underlying slice of uint32 values and the current bit position within the last uint32.
-func (w *BitUint32Writer) Uint32s() ([]uint32, int) {
+func (w *BitUint32Writer) Uint32s() (data []uint32, bitPos int) {
 	return w.data, w.bitPos
 }
 
-func (w *BitUint32Writer) Bytes() ([]byte, int) {
+func (w *BitUint32Writer) Bytes() (data []byte, bitPos int) {
 	b := make([]byte, 0, len(w.data)*4)
 	for _, v := range w.data {
 		b = binary.LittleEndian.AppendUint32(b, v)

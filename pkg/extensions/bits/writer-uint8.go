@@ -29,6 +29,7 @@ func (w *BitUint8Writer) BitLength() int {
 	if len(w.data) == 0 {
 		return 0
 	}
+
 	return (len(w.data)-1)*8 + w.bitPos
 }
 
@@ -38,6 +39,7 @@ func (w *BitUint8Writer) WriteBit(bit bool) error {
 	if bit {
 		value = 1
 	}
+
 	return w.WriteBits(value, 1)
 }
 
@@ -73,9 +75,10 @@ func (w *BitUint8Writer) WriteBits(bits uint32, count uint8) error {
 	return nil
 }
 
-func (w *BitUint8Writer) Bytes() ([]byte, int) {
+func (w *BitUint8Writer) Bytes() (data []byte, bitPos int) {
 	b := make([]byte, 0, len(w.data))
 	b = append(b, w.data...)
+
 	return b, w.bitPos % 8
 }
 

@@ -15,6 +15,7 @@ func BuildEncoder[T comparable](tree *Tree[T]) (*Encoder[T], error) {
 		mapValueToCode: make(map[T]Code),
 	}
 	err := enc.buildEncoder(tree)
+
 	return enc, err
 }
 
@@ -38,6 +39,7 @@ func (enc *Encoder[T]) buildEncoder(tree *Tree[T]) error {
 // Encode encodes a value into its corresponding Huffman code.
 func (enc *Encoder[T]) Encode(value T) (Code, bool) {
 	code, ok := enc.mapValueToCode[value]
+
 	return code, ok
 }
 
@@ -53,6 +55,7 @@ func (enc *Encoder[T]) EncodeTo(values []T, w BitsWriter) error {
 			return fmt.Errorf("failed to write bits for value %v", value)
 		}
 	}
+
 	return nil
 }
 

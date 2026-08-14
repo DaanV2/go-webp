@@ -1,6 +1,7 @@
 package huffman
 
 type Tree[T comparable] struct {
+	// The node of the huffman tree, the root is at 0
 	Nodes []Node[T]
 }
 
@@ -35,6 +36,7 @@ func (tree *Tree[T]) DetermineCodeFor(leafIndex int) (Code, bool) {
 		// If the current node is the right child of its parent, append a 1 to the code; otherwise, append a 0
 		code = code.WithAppendedBit(parentNode.RightIndex == nodeIndex)
 	}
+
 	return code, true
 }
 
@@ -44,5 +46,6 @@ func (tree *Tree[T]) FindParentIndex(childIndex int) (int, bool) {
 			return i, true
 		}
 	}
+
 	return -1, false
 }

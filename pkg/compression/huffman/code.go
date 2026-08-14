@@ -14,5 +14,6 @@ func (c Code) WithAppendedBit(bit bool) Code {
 	if bit {
 		cc.Value |= 1
 	}
+
 	return cc
 }
