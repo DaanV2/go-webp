@@ -63,7 +63,7 @@ func (w *BitUint32Writer) WriteBits(bits uint32, count uint8) error {
 		remainingBitsInCurrent := 32 - w.bitPos
 		n := count
 		if int(n) > remainingBitsInCurrent {
-			n = uint8(remainingBitsInCurrent)
+			n = uint8(remainingBitsInCurrent) // nolint:gosec // Overflow is acceptable
 		}
 
 		mask := uint32(1)<<n - 1
@@ -91,7 +91,7 @@ func (w *BitUint32Writer) Bytes() (data []byte, bitPos int) {
 	return b, c
 }
 
-func (w *BitUint32Writer) WriteTo(receiver io.Writer) (int64, error) {
+func (w *BitUint32Writer) WriteTo(receiver io.Writer) (n int64, err error) {
 	buf := [4]byte{}
 	var total int64
 
