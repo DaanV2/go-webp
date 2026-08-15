@@ -1,5 +1,10 @@
 package huffman
 
+const (
+	// The amount of nodes atleast to be found in a tree (rootnode + leaf)
+	TREE_MINIMUM_NODES = 2
+)
+
 type Tree[T comparable] struct {
 	// The node of the huffman tree, the root is at 0
 	Nodes []Node[T]
