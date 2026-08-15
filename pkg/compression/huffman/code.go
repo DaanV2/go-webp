@@ -9,10 +9,10 @@ type Code struct {
 func (c Code) WithAppendedBit(bit bool) Code {
 	cc := Code{
 		Bits:  c.Bits + 1,
-		Value: c.Value << 1,
+		Value: c.Value,
 	}
 	if bit {
-		cc.Value |= 1
+		cc.Value |= 1 << c.Bits
 	}
 
 	return cc
